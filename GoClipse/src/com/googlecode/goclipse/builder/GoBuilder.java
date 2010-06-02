@@ -366,9 +366,9 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	public static final String BUILDER_ID = "GoClipse.goBuilder";
+	public static final String BUILDER_ID = "com.googlecode.goclipse.goBuilder";
 
-	private static final String MARKER_TYPE = "GoClipse.goSyntaxMarker";
+	private static final String MARKER_TYPE = "com.googlecode.goclipse.goSyntaxMarker";
 
 	private void addMarker(String filename, String message, int lineNumber, int severity) {
 		IFile file = getProject().getFile(filename);

@@ -13,7 +13,7 @@ public class GoNature implements IProjectNature {
 	/**
 	 * ID of this project nature
 	 */
-	public static final String NATURE_ID = "GoClipse.goNature";
+	public static final String NATURE_ID = "com.googlecode.goclipse.goNature";
 
 	private IProject project;
 
