@@ -11,12 +11,9 @@ public class GoSourceDocumentProvider extends FileDocumentProvider {
 	protected IDocument createDocument(Object element) throws CoreException {
 		IDocument document = super.createDocument(element);
 		if (document != null) {
-			IDocumentPartitioner partitioner =
-				new FastPartitioner(
+			IDocumentPartitioner partitioner =new FastPartitioner(
 					new GoSourcePartitionScanner(),
-					new String[] {
-						GoSourcePartitionScanner.XML_TAG,
-						GoSourcePartitionScanner.XML_COMMENT });
+					GoSourceConfiguration.KNOWN_CONTENT_TYPES);
 			partitioner.connect(document);
 			document.setDocumentPartitioner(partitioner);
 		}

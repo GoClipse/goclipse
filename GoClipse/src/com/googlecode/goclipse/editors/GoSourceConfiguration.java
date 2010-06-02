@@ -11,69 +11,62 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 public class GoSourceConfiguration extends SourceViewerConfiguration {
-	private GoSourceDoubleClickStrategy doubleClickStrategy;
-	private GoSourceTagScanner tagScanner;
-	private GoSourceScanner scanner;
-	private ColorManager colorManager;
+	// The known content types
+	public static final String[] KNOWN_CONTENT_TYPES =
+		new String[] { IDocument.DEFAULT_CONTENT_TYPE, GoSourcePartitionScanner.GO_COMMENT };
 
-	public GoSourceConfiguration(ColorManager colorManager) {
-		this.colorManager = colorManager;
+	private GoSourceDoubleClickStrategy doubleClickStrategy;
+	private GoSourceScanner scanner;
+
+	public GoSourceConfiguration() {
 	}
+
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		return new String[] {
-			IDocument.DEFAULT_CONTENT_TYPE,
-			GoSourcePartitionScanner.XML_COMMENT,
-			GoSourcePartitionScanner.XML_TAG };
+		return KNOWN_CONTENT_TYPES;
 	}
+
 	public ITextDoubleClickStrategy getDoubleClickStrategy(
-		ISourceViewer sourceViewer,
-		String contentType) {
+			ISourceViewer sourceViewer, String contentType) {
 		if (doubleClickStrategy == null)
 			doubleClickStrategy = new GoSourceDoubleClickStrategy();
 		return doubleClickStrategy;
 	}
 
-	protected GoSourceScanner getXMLScanner() {
-		if (scanner == null) {
-			scanner = new GoSourceScanner(colorManager);
-			scanner.setDefaultReturnToken(
-				new Token(
-					new TextAttribute(
-						colorManager.getColor(IGoSourceColorConstants.DEFAULT))));
-		}
-		return scanner;
-	}
-	protected GoSourceTagScanner getXMLTagScanner() {
-		if (tagScanner == null) {
-			tagScanner = new GoSourceTagScanner(colorManager);
-			tagScanner.setDefaultReturnToken(
-				new Token(
-					new TextAttribute(
-						colorManager.getColor(IGoSourceColorConstants.TAG))));
-		}
-		return tagScanner;
-	}
+	//	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
+	//		return new JavaAnnotationHover();
+	//	}
+	//		
+	//	public IAutoIndentStrategy getAutoIndentStrategy(ISourceViewer sourceViewer, String contentType) {
+	//		return (IDocument.DEFAULT_CONTENT_TYPE.equals(contentType) ? new JavaAutoIndentStrategy() : new DefaultAutoIndentStrategy());
+	//	}
 
-	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
+	public IPresentationReconciler getPresentationReconciler(
+			ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = new PresentationReconciler();
 
-		DefaultDamagerRepairer dr =
-			new DefaultDamagerRepairer(getXMLTagScanner());
-		reconciler.setDamager(dr, GoSourcePartitionScanner.XML_TAG);
-		reconciler.setRepairer(dr, GoSourcePartitionScanner.XML_TAG);
+		//		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getGoTagScanner());
+		//		reconciler.setDamager(dr, GoSourcePartitionScanner.GO_KEYWORD);
+		//		reconciler.setRepairer(dr, GoSourcePartitionScanner.GO_KEYWORD);
 
-		dr = new DefaultDamagerRepairer(getXMLScanner());
-		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+		DefaultDamagerRepairer ddr = new DefaultDamagerRepairer(getGoScanner());
+		reconciler.setDamager(ddr, IDocument.DEFAULT_CONTENT_TYPE);
+		reconciler.setRepairer(ddr, IDocument.DEFAULT_CONTENT_TYPE);
 
-		NonRuleBasedDamagerRepairer ndr =
-			new NonRuleBasedDamagerRepairer(
-				new TextAttribute(
-					colorManager.getColor(IGoSourceColorConstants.GO_COMMENT)));
-		reconciler.setDamager(ndr, GoSourcePartitionScanner.XML_COMMENT);
-		reconciler.setRepairer(ndr, GoSourcePartitionScanner.XML_COMMENT);
+		NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(new TextAttribute(IGoSourceColorConstants.COMMENT));
+		reconciler.setDamager(ndr, GoSourcePartitionScanner.GO_COMMENT);
+		reconciler.setRepairer(ndr, GoSourcePartitionScanner.GO_COMMENT);
 
 		return reconciler;
+	}
+
+	// Heper for getPresentationReconciler()
+	protected GoSourceScanner getGoScanner() {
+		if (scanner == null) {
+			scanner = new GoSourceScanner();
+			scanner.setDefaultReturnToken(new Token(new TextAttribute(
+					IGoSourceColorConstants.DEFAULT)));
+		}
+		return scanner;
 	}
 
 }

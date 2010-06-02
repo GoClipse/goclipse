@@ -55,7 +55,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			if (!resource.getName().endsWith(".go"))
 				return; // These aren't source files
 			
-			monitor.subTask(resource.getName());
+			monitor.subTask("Scanning: " + resource.getName());
 
 			String filepath = resource.getLocation().toOSString();
 			String projpath = resource.getFullPath().toOSString();
@@ -139,7 +139,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				e.printStackTrace();
 			}
 
-			monitor.worked(1);
+			//monitor.worked(1);
 		}
 
 		private InputStream makefileBuffer() {
@@ -252,6 +252,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		{
 			try
 			{
+				monitor.worked(1);
 				monitor.setTaskName("Writing Makefile...");
 				
 				// Write the makefile
@@ -391,8 +392,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	 *      java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@SuppressWarnings("rawtypes") // args is Map<String,String>
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
-	throws CoreException {
+	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
+		monitor.beginTask("Starting Build...", 5);
 		if (kind == FULL_BUILD) {
 			fullBuild(monitor);
 		} else { // INCREMENTAL_BUILD || AUTO_BUILD

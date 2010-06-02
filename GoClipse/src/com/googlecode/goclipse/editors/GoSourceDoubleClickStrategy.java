@@ -17,6 +17,7 @@ public class GoSourceDoubleClickStrategy implements ITextDoubleClickStrategy {
 			selectWord(pos);
 		}
 	}
+	
 	protected boolean selectComment(int caretPos) {
 		IDocument doc = fText.getDocument();
 		int startPos, endPos;
@@ -65,6 +66,7 @@ public class GoSourceDoubleClickStrategy implements ITextDoubleClickStrategy {
 
 		return false;
 	}
+	
 	protected boolean selectWord(int caretPos) {
 
 		IDocument doc = fText.getDocument();

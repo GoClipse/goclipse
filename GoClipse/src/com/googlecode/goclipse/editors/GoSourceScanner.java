@@ -5,18 +5,38 @@ import org.eclipse.jface.text.*;
 
 public class GoSourceScanner extends RuleBasedScanner {
 
-	public GoSourceScanner(ColorManager manager) {
-		IToken procInstr =
-			new Token(
-				new TextAttribute(
-					manager.getColor(IGoSourceColorConstants.PROC_INSTR)));
+	public GoSourceScanner() {
+		IToken eolComment = new Token(new TextAttribute(IGoSourceColorConstants.COMMENT));
+		IToken string = new Token( new TextAttribute(IGoSourceColorConstants.STRING));
 
-		IRule[] rules = new IRule[2];
-		//Add rule for processing instructions
-		rules[0] = new SingleLineRule("<?", "?>", procInstr);
-		// Add generic whitespace rule.
-		rules[1] = new WhitespaceRule(new GoSourceWhitespaceDetector());
+		IRule[] rules = new IRule[] {
+				// Add rule for double quotes
+				new SingleLineRule("\"", "\"", string, '\\'),
+				
+				// Add a rule for single quotes
+				new SingleLineRule("'", "'", string, '\\'),
+				
+				// Add EOL comments
+				new EndOfLineRule("//", eolComment),
+				
+				// Add a keyword rule finder
+				new GoSourceWordScanner(),
+				
+				// Add numerics
+				new GoSourceNumberRule(),
+				
+				// Add generic whitespace rule.
+				new WhitespaceRule(new WhitespaceDetector())
+		};
 
 		setRules(rules);
 	}
+	
+	private static class WhitespaceDetector implements IWhitespaceDetector {
+
+		public boolean isWhitespace(char c) {
+			return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
+		}
+	}
+
 }

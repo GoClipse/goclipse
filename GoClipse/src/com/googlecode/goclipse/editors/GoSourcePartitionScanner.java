@@ -3,18 +3,15 @@ package com.googlecode.goclipse.editors;
 import org.eclipse.jface.text.rules.*;
 
 public class GoSourcePartitionScanner extends RuleBasedPartitionScanner {
-	public final static String XML_COMMENT = "__xml_comment";
-	public final static String XML_TAG = "__xml_tag";
+	public final static String GO_COMMENT = "__go_comment";
 
 	public GoSourcePartitionScanner() {
 
-		IToken xmlComment = new Token(XML_COMMENT);
-		IToken tag = new Token(XML_TAG);
+		IToken goComment = new Token(GO_COMMENT);
 
-		IPredicateRule[] rules = new IPredicateRule[2];
-
-		rules[0] = new MultiLineRule("<!--", "-->", xmlComment);
-		rules[1] = new TagRule(tag);
+		IPredicateRule[] rules = new IPredicateRule[] {
+				new MultiLineRule("/*", "*/", goComment)
+		};
 
 		setPredicateRules(rules);
 	}

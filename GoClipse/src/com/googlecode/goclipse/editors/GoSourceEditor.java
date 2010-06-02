@@ -4,16 +4,17 @@ import org.eclipse.ui.editors.text.TextEditor;
 
 public class GoSourceEditor extends TextEditor {
 
-	private ColorManager colorManager;
-
 	public GoSourceEditor() {
 		super();
-		colorManager = new ColorManager();
-		setSourceViewerConfiguration(new GoSourceConfiguration(colorManager));
 		setDocumentProvider(new GoSourceDocumentProvider());
 	}
+	
+	protected void initializeEditor() {
+		super.initializeEditor();
+		setSourceViewerConfiguration(new GoSourceConfiguration());
+	}
+	
 	public void dispose() {
-		colorManager.dispose();
 		super.dispose();
 	}
 
