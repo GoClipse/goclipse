@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GoClipse
-Bundle-SymbolicName: GoClipse; singleton:=true
+Bundle-SymbolicName: com.googlecode.goclipse;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: com.googlecode.goclipse.Activator
 Require-Bundle: org.eclipse.ui,
