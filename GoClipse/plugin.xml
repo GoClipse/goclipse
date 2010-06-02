@@ -133,5 +133,17 @@
          </includes>
       </viewerContentBinding>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.googlecode.goclipse.editors.GoSourceEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            default="true"
+            extensions="go, g"
+            icon="icons/sample.gif"
+            id="com.googlecode.goclipse.editors.GoSourceEditor"
+            name="Go Editor">
+      </editor>
+   </extension>
 
 </plugin>
