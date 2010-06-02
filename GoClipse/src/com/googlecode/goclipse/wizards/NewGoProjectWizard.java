@@ -1,7 +1,5 @@
 package com.googlecode.goclipse.wizards;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 
@@ -198,36 +196,11 @@ public class NewGoProjectWizard extends Wizard implements INewWizard {
             createFolder((IFolder) parent, monitor);
         }
         if (!file.exists()) {
-            file.create(openContentStream(), false, monitor);
+            file.create(NewGoFileWizard.openDefaultFileContentStream("main"), false, monitor);
         }
     }
     
-	private static InputStream openContentStream() {
-		String contents = "";
-
-		contents += "// Copyright (C) <YEAR>, <YOUR NAME AND EMAIL>. All rights reserved.\n";
-		contents += "\n";
-		contents += "package main\n";
-		contents += "\n";
-		contents += "import (\n";
-		contents += ")\n";
-		contents += "\n";
-		contents += "const (\n";
-		contents += ")\n";
-		contents += "\n";
-		contents += "var (\n";
-		contents += ")\n";
-		contents += "\n";
-		contents += "// Application entry point is always main.main\n";
-		contents += "func main() {\n";
-		contents += "}\n";
-		contents += "\n";
-		contents += "// File created with GoClipse";
-			
-		return new ByteArrayInputStream(contents.getBytes());
-	}
-
-    /**
+	/**
      * Create a folder structure with a parent root, overlay, and a few child
      * folders.
      *

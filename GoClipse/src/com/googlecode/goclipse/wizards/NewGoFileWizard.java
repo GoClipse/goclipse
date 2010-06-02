@@ -98,7 +98,7 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 		IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName));
 		try {
-			InputStream stream = openContentStream(packageName);
+			InputStream stream = openDefaultFileContentStream(packageName);
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
 			} else {
@@ -128,7 +128,7 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 	 * @param String TODO
 	 */
 
-	private InputStream openContentStream(String packageName) {
+	public static InputStream openDefaultFileContentStream(String packageName) {
 		String contents = "";
 		contents += "// Copyright (C) <YEAR>, <YOUR NAME AND EMAIL>. All rights reserved.\n";
 		contents += "\n";
@@ -156,7 +156,7 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 			contents += "}\n";
 		}
 		contents += "\n";
-		contents += "// File created with GoClipse";
+		contents += "// File created with GoClipse\n";
 			
 		return new ByteArrayInputStream(contents.getBytes());
 	}
