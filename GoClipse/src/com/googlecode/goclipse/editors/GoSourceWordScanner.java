@@ -61,6 +61,9 @@ public class GoSourceWordScanner extends WordRule {
 		addWord("var",         keyword);
 		addWord("iota",        keyword);
 		addWord("nil",         keyword);
+		addWord("new",         keyword);
+		addWord("true",        keyword);
+		addWord("false",       keyword);
 
 		// Types
 		//   uint8    int8
