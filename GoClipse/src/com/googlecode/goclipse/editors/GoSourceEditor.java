@@ -9,8 +9,8 @@ public class GoSourceEditor extends TextEditor {
 	public GoSourceEditor() {
 		super();
 		colorManager = new ColorManager();
-		setSourceViewerConfiguration(new XMLConfiguration(colorManager));
-		setDocumentProvider(new XMLDocumentProvider());
+		setSourceViewerConfiguration(new GoSourceConfiguration(colorManager));
+		setDocumentProvider(new GoSourceDocumentProvider());
 	}
 	public void dispose() {
 		colorManager.dispose();
