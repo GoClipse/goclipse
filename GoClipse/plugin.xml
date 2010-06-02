@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="goBuilder"
+         name="Go Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            callOnEmptyDelta="false"
+            hasNature="true">
+         <run
+               class="com.googlecode.goclipse.builder.GoBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="goNature"
+         name="Go Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="com.googlecode.goclipse.builder.GoNature">
+         </run>
+      </runtime>
+      <builder
+            id="GoClipse.goBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            nameFilter="*"
+            id="GoClipse.contribution1">
+         <action
+               label="Add/Remove Go Nature"
+               class="com.googlecode.goclipse.builder.ToggleNatureAction"
+               menubarPath="additions"
+               enablesFor="+"
+               id="GoClipse.addRemoveNatureAction">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         id="xmlProblem"
+         name="XML Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="GoClipse"
+            name="Go">
+      </category>
+      <wizard
+            category="GoClipse"
+            class="com.googlecode.goclipse.wizards.NewGoFileWizard"
+            finalPerspective="com.googlecode.goclipse.perspectives.goPerspective"
+            icon="icons/sample.gif"
+            id="com.googlecode.goclipse.wizards.NewGoFileWizard"
+            name="Go Source File"
+            preferredPerspectives="com.googlecode.goclipse.perspectives.goPerspective">
+      </wizard>
+      <wizard
+            category="GoClipse"
+            class="com.googlecode.goclipse.wizards.NewGoProjectWizard"
+            finalPerspective="com.googlecode.goclipse.perspectives.goPerspective"
+            icon="icons/sample.gif"
+            id="com.googlecode.goclipse.wizards.NewGoProjectWizard"
+            name="New Go Project"
+            project="true">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.googlecode.goclipse.perspectives.GoPerspective"
+            icon="icons/releng_gears.gif"
+            id="com.googlecode.goclipse.perspectives.goPerspective"
+            name="Go">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="GoClipse"
+            name="Go">
+      </category>
+      <view
+            allowMultiple="false"
+            category="GoClipse"
+            class="org.eclipse.ui.navigator.CommonNavigator"
+            fastViewWidthRatio=".25"
+            icon="icons/sample.gif"
+            id="com.googlecode.goclipse.views.goNavigator"
+            name="Go Project Navigator"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerActionBinding
+            viewerId="com.googlecode.goclipse.views.goNavigator">
+         <includes>
+            <actionExtension
+                  pattern="org.eclipse.ui.navigator.resources.*">
+            </actionExtension>
+         </includes>
+      </viewerActionBinding>
+      <viewerContentBinding
+            viewerId="com.googlecode.goclipse.views.goNavigator">
+         <includes>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resourceContent">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.filters.*">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.linkHelper">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.workingSets">
+            </contentExtension>
+         </includes>
+      </viewerContentBinding>
+   </extension>
+
+</plugin>
