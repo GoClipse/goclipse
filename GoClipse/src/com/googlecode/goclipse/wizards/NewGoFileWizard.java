@@ -143,7 +143,7 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 		contents += "var (\n";
 		contents += ")\n";
 		contents += "\n";
-		if (packageName == "main")
+		if (packageName.equals("main"))
 		{
 			contents += "// Application entry point is always main.main\n";
 			contents += "func main() {\n";
