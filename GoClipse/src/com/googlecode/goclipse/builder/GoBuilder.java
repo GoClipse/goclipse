@@ -7,15 +7,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -27,26 +24,27 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
 
 public class GoBuilder extends IncrementalProjectBuilder {
 
 	private class BuildResourceCompiler {
 
 		// To make life easier
-		private IProject project;
+		private IProject project = getProject();
 
 		// Build status maps
 		private Map<String,Vector<String>> packageFiles;
 		private Map<String,Vector<String>> packageDeps;
 
-		public BuildResourceCompiler() 
+		private IProgressMonitor monitor;
+
+		public BuildResourceCompiler(IProgressMonitor monitor) 
 		{
-			project = getProject(); // not strictly necessary, but hey
+			this.monitor = monitor;
 			packageFiles = new HashMap<String,Vector<String>>();
 			packageDeps = new HashMap<String,Vector<String>>();
+			
+			monitor.setTaskName("Updating Makefile...");
 		}
 
 		public void fileChanged(IResource resource)
@@ -56,6 +54,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 
 			if (!resource.getName().endsWith(".go"))
 				return; // These aren't source files
+			
+			monitor.subTask(resource.getName());
 
 			String filepath = resource.getLocation().toOSString();
 			String projpath = resource.getFullPath().toOSString();
@@ -138,6 +138,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			{
 				e.printStackTrace();
 			}
+
+			monitor.worked(1);
 		}
 
 		private InputStream makefileBuffer() {
@@ -246,22 +248,83 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			return depOrdered;
 		}
 
-		public void compile(String targets) 
+		public void compile(String raw_targets) 
 		{
-			IFile mf = project.getFile("Makefile");
-
 			try
 			{
-				if (mf.exists())
+				monitor.setTaskName("Writing Makefile...");
+				
+				// Write the makefile
+				IFile mf = project.getFile("Makefile");
+				if (mf.exists()) mf.setContents(makefileBuffer(), true, false, null);
+				else             mf.create(     makefileBuffer(), true, null);
+				
+				monitor.worked(1);
+				monitor.setTaskName("Launching `make`...");
+
+				// Create the process builder
+				ProcessBuilder make = new ProcessBuilder(new Vector<String>());
+				
+				// Set the working directory
+				make.directory(mf.getRawLocation().removeLastSegments(1).toFile());
+				
+				// Create the command
+				make.command().add("make");
+				for (String piece : raw_targets.split("\\s+"))
+					make.command().add(piece);
+				
+				// Set the environment
+				if (!make.environment().containsKey("GOROOT"))
+					make.environment().put("GOROOT", "/opt/go");
+				if (!make.environment().containsKey("GOOS"))
+					make.environment().put("GOOS", "darwin");
+				if (!make.environment().containsKey("GOARCH"))
+					make.environment().put("GOARCH", "amd64");
+				
+				// Combine stdout and stderr
+				make.redirectErrorStream(true);
+				
+				// Launch the subprocess and close standard input
+				Process proc = make.start();
+				proc.getOutputStream().close();
+				
+				monitor.worked(1);
+				monitor.setTaskName("Compiling:");
+				
+				// Create buffered input streams for the reader and writer
+				BufferedReader stdout = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+
+				// Clear errors
+				deleteMarkers();
+				
+				// Error finder
+				Pattern error = Pattern.compile("^([^:]+?):([^:]+?):\\s+(.+)$");
+				Matcher errors;
+				
+				// Read the output
+				String line;
+				while ((line = stdout.readLine()) != null)
 				{
-					mf.setContents(makefileBuffer(), true, false, null);
+					// Check if the line is an error
+					errors = error.matcher(line);
+					if (errors.matches())
+						addMarker(errors.group(1), errors.group(3), Integer.parseInt(errors.group(2)), IMarker.SEVERITY_ERROR);
+					else
+					{
+						monitor.worked(1);
+						monitor.subTask(line);
+					}
+						
+					// Write to stdout
+					System.out.println(line);
 				}
-				else
-				{
-					mf.create(makefileBuffer(), true, null);
-				}
+				
+				monitor.worked(1);
+				monitor.done();
 			}
 			catch (CoreException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} // Compile everything we discovered
@@ -290,6 +353,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				buildList.fileChanged(resource);
 				break;
 			}
+			
 			//return true to continue visiting children.
 			return true;
 		}
@@ -301,40 +365,12 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	class XMLErrorHandler extends DefaultHandler {
-
-		private IFile file;
-
-		public XMLErrorHandler(IFile file) {
-			this.file = file;
-		}
-
-		private void addMarker(SAXParseException e, int severity) {
-			GoBuilder.this.addMarker(file, e.getMessage(), e
-					.getLineNumber(), severity);
-		}
-
-		public void error(SAXParseException exception) throws SAXException {
-			addMarker(exception, IMarker.SEVERITY_ERROR);
-		}
-
-		public void fatalError(SAXParseException exception) throws SAXException {
-			addMarker(exception, IMarker.SEVERITY_ERROR);
-		}
-
-		public void warning(SAXParseException exception) throws SAXException {
-			addMarker(exception, IMarker.SEVERITY_WARNING);
-		}
-	}
-
 	public static final String BUILDER_ID = "GoClipse.goBuilder";
 
 	private static final String MARKER_TYPE = "GoClipse.xmlProblem";
 
-	private SAXParserFactory parserFactory;
-
-	private void addMarker(IFile file, String message, int lineNumber,
-			int severity) {
+	private void addMarker(String filename, String message, int lineNumber, int severity) {
+		IFile file = getProject().getFile(filename);
 		try {
 			IMarker marker = file.createMarker(MARKER_TYPE);
 			marker.setAttribute(IMarker.MESSAGE, message);
@@ -344,6 +380,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			}
 			marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
 		} catch (CoreException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -369,50 +406,42 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	@SuppressWarnings("unused")
-	private void checkXML(IResource resource) {
-		if (resource instanceof IFile && resource.getName().endsWith(".xml")) {
-			IFile file = (IFile) resource;
-			deleteMarkers(file);
-			XMLErrorHandler reporter = new XMLErrorHandler(file);
-			try {
-				getParser().parse(file.getContents(), reporter);
-			} catch (Exception e1) {
-			}
-		}
-	}
-
-	private void deleteMarkers(IFile file) {
+	private void deleteMarkersOn(IResource resource) {
 		try {
-			file.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_ZERO);
+			resource.deleteMarkers(MARKER_TYPE, false, IResource.DEPTH_ZERO);
 		} catch (CoreException ce) {
 		}
 	}
 
 	protected void fullBuild(final IProgressMonitor monitor)
 	throws CoreException {
-		BuildResourceCompiler brc = new BuildResourceCompiler();
+		BuildResourceCompiler brc = new BuildResourceCompiler(monitor);
 		try {
 			getProject().accept(new GoResourceVisitor(brc));
 		} catch (CoreException e) {
 		}
 		brc.compile("clean all");
 	}
-
-	private SAXParser getParser() throws ParserConfigurationException,
-	SAXException {
-		if (parserFactory == null) {
-			parserFactory = SAXParserFactory.newInstance();
-		}
-		return parserFactory.newSAXParser();
-	}
-
+	
 	protected void incrementalBuild(IResourceDelta delta,
 			IProgressMonitor monitor) throws CoreException {
 		// the visitor does the work.
-		BuildResourceCompiler brc = new BuildResourceCompiler();
+		BuildResourceCompiler brc = new BuildResourceCompiler(monitor);
 		//delta.accept(new GoResourceVisitor(brc));
 		getProject().accept(new GoResourceVisitor(brc));
 		brc.compile("all");
+	}
+
+	/**
+	 * @throws CoreException
+	 */
+	private void deleteMarkers() throws CoreException {
+		getProject().accept(new IResourceVisitor() {
+			public boolean visit(IResource resource) throws CoreException {
+				if (resource.getName().endsWith(".go"))
+					deleteMarkersOn(resource);
+				return true;
+			}
+		});
 	}
 }
