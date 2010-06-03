@@ -144,94 +144,86 @@ public class GoBuilder extends IncrementalProjectBuilder {
 
 		private InputStream makefileBuffer() {
 			String exe = project.getName().toLowerCase();
-			boolean hasMain = packageFiles.containsKey("main");
 			StringBuffer file = new StringBuffer(1024);
 
 			// Print header
-			file.append("include $(subst \" \",\\ ,$(GOROOT))/src/Make.$(GOARCH)\n");
+			file.append("### Usage\n");
+			file.append("# make -f Makefile-generated <target>\n");
+			file.append("#\n");
+			file.append("# Targets:\n");
+			file.append("# + all (the default)\n");
+			file.append("#   - This will build all of the dependencies for and link gobir\n");
+			file.append("# + clean\n");
+			file.append("#   - This will delete the binary and the object directory\n");
+			file.append("# + format\n");
+			file.append("#   - This will format all of your source code with gofmt\n");
 			file.append("\n");
-			file.append("### Variables and Dependencies\n");
-			file.append("## Directories\n");
-			file.append("OBJDIR=_obj/\n");
+			file.append("### Directories\n");
+			file.append("ROOT   = $(subst \" \",\\ ,$(GOROOT))\n");
+			file.append("GOBIN  = $(subst \" \",\\ ,$(HOME))/bin\n");
+			file.append("OBJDIR = _obj/\n");
 			file.append("\n");
-			file.append("## Compiling and Linking\n");
-			file.append("COMP = $(subst \" \",\\ ,$(HOME))/bin/$(GC) -I$(OBJDIR)\n");
-			file.append("LINK = $(subst \" \",\\ ,$(HOME))/bin/$(LD) -L$(OBJDIR)\n");
+			file.append("### Load architecture variables\n");
+			file.append("include $(ROOT)/src/Make.$(GOARCH)\n");
+			file.append("\n");
+			file.append("### Compiling and Linking\n");
+			file.append("COMP = $(GOBIN)/$(GC) -I$(OBJDIR)\n");
+			file.append("LINK = $(GOBIN)/$(LD) -L$(OBJDIR)\n");
+			file.append("PACK = $(GOBIN)/gopack grc\n");
+			file.append("GFMT = $(GOBIN)/gofmt -w\n");
+			file.append("\n");
+			file.append("### Packages and Dependencies\n");
 
 			// Print out variables for each package
 			for (String pkg : packageFiles.keySet())
 			{
 				String var = pkg.toUpperCase();
-				file.append("\n## Package: " + pkg);
-				file.append("\n" + var + "_OBJECT = ");
-				file.append( (pkg.equals("main") ? exe : pkg) );
-				file.append("\n" + var + "_SOURCE =");
+				file.append("# Package: " + pkg + "\n");
+				file.append(var + "_OBJECT = " + (pkg.equals("main") ? exe : pkg) + "\n");
+				file.append(var + "_SOURCE =");
 				for (String pkgfile : packageFiles.get(pkg))
-				{
 					file.append(" " + pkgfile);
-				}
-//				file.append("\n" + var + "_DEPEND =");
-//				for (String pkgdep : packageDeps.get(pkg))
-//				{
-//					file.append(" " + pkgdep);
-//				}
+				file.append("\n");
 				file.append("\n");
 			}
 
-			file.append("\n## Aggregates\n");
-			file.append("OBJECTS = $(addprefix $(OBJDIR), $(addsuffix .$O,");
+			file.append("### Aggregates\n");
+			file.append("PACKAGES =");
 			Vector<String> depOrdered = new Vector<String>();
 			for (String pkg : orderDeps("main", depOrdered))
-			{
-				if (pkg.equals("main")) continue;
-				String var = pkg.toUpperCase();
-				file.append(" $(" + var + "_OBJECT)");
-			}
-			file.append("))\n");
-
-			// Generate the rules (all depends on all objects and then the exe)
-			file.append("\n### Rules\n");
-			file.append("all : $(OBJDIR) $(OBJECTS)");
-			if (hasMain)
-				file.append(" $(MAIN_OBJECT)");
-			file.append("\n\n");
-
-			if (hasMain)
-			{
-				file.append("## Binaries\n");
-				file.append("$(MAIN_OBJECT) : $(addprefix $(OBJDIR), $(addsuffix .$O,");
-				for (String pkg : depOrdered)
-				{
-					String var = pkg.toUpperCase();
-					file.append(" $(" + var + "_OBJECT)");
-				}
-				file.append("))\n");
-				file.append("\t$(LINK) -o $@ $(OBJDIR)$@.$O\n\n");
-			}
-
-			file.append("## Objects\n");
-			for (String pkg : packageFiles.keySet())
-			{
-				String var = pkg.toUpperCase();
-				file.append("$(OBJDIR)$(" + var + "_OBJECT).$O : $(" + var + "_SOURCE)\n");
-				file.append("\t$(COMP) -o $@ $^\n\n");
-			}
+				file.append(" " + pkg.toUpperCase());
+			file.append("\n");
+			file.append("OBJECTS = $(addprefix $(OBJDIR), $(addsuffix .$O, $(foreach PKG,$(PACKAGES),$($(PKG)_OBJECT))))\n");
+			file.append("\n");
+			file.append("### Default rule\n");
+			file.append("all : $(OBJDIR) $(OBJECTS) $(MAIN_OBJECT)\n");
+			file.append("\n");
+			file.append("### Main binary\n");
+			file.append("ifdef MAIN_OBJECT\n");
+			file.append("$(MAIN_OBJECT) : $(OBJECTS)\n");
+			file.append("\t$(LINK) -o $@ $(OBJDIR)$@.$O\n");
+			file.append("endif\n");
+			file.append("\n");
+			file.append("### Objects\n");
+			file.append("define package_template\n");
+			file.append("$$(OBJDIR)$$($(1)_OBJECT).$$O: $$($(1)_SOURCE)\n");
+			file.append("\t$$(COMP) -o $$@ $$^\n");
+			file.append("\t$$(PACK) $$(@:.$$O=.a) $$@\n");
+			file.append("endef\n");
+			file.append("$(foreach PKG,$(PACKAGES),$(eval $(call package_template,$(PKG))))\n");
+			file.append("\n");
 			file.append("### Utility\n");
-			file.append("clean :\n\trm -rf $(OBJDIR) $(MAIN_OBJECT)\n\n");
-			file.append("$(OBJDIR) :\n\tmkdir -p $(OBJDIR)\n\n");
-			file.append("### Makefile automatically generated by GoClipse\n");
+			file.append("clean :\n");
+			file.append("\trm -rf $(OBJDIR) $(MAIN_OBJECT)\n");
+			file.append("\n");
+			file.append("format :\n");
+			file.append("\t$(GFMT) $(foreach PKG,$(PACKAGES),$($(PKG)_SOURCE))\n");
+			file.append("\n");
+			file.append("$(OBJDIR) :\n");
+			file.append("\tmkdir -p $(OBJDIR)\n");
+			file.append("\n");
 
-			//			% : %.6
-			//			  @echo "  GL $@"
-			//			  @$(LINK) $(LINK_ARGS) -o $@ $<
-			//
-			//			%.6 : %.go
-			//			  @echo "  GC $^"
-			//			  @$(COMP) $(COMP_ARGS) -o $@ $^
-			//
-			//			%.a : %.6
-			//			  @echo "  PK $^"
-			//			  @$(PACK) $@ $(PACK_ARGS) $^
+			file.append("### Makefile automatically generated by GoClipse\n");
 
 			return new ByteArrayInputStream(file.toString().getBytes());
 		}
@@ -240,11 +232,14 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			if (!depOrdered.contains(pkg) && packageDeps.containsKey(pkg))
 			{
 				for (String dep : packageDeps.get(pkg))
-				{
 					orderDeps(dep, depOrdered);
-				}
 				depOrdered.add(pkg);
 			}
+			// If we're finding all dependencies (pkg main), see if any are left out
+			if (pkg.equals("main"))
+				for (String ppkg : packageFiles.keySet())
+					if (!depOrdered.contains(ppkg))
+						orderDeps(ppkg, depOrdered);
 			return depOrdered;
 		}
 
