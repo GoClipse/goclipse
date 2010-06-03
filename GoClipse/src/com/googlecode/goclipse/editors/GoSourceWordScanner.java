@@ -62,6 +62,7 @@ public class GoSourceWordScanner extends WordRule {
 		addWord("iota",        keyword);
 		addWord("nil",         keyword);
 		addWord("new",         keyword);
+		addWord("make",        keyword);
 		addWord("true",        keyword);
 		addWord("false",       keyword);
 
