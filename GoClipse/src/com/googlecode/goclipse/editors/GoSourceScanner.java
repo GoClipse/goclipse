@@ -10,14 +10,17 @@ public class GoSourceScanner extends RuleBasedScanner {
 		IToken string = new Token( new TextAttribute(IGoSourceColorConstants.STRING));
 
 		IRule[] rules = new IRule[] {
+				// Add EOL comments
+				new EndOfLineRule("//", eolComment),
+				
 				// Add rule for double quotes
 				new SingleLineRule("\"", "\"", string, '\\'),
 				
 				// Add a rule for single quotes
 				new SingleLineRule("'", "'", string, '\\'),
 				
-				// Add EOL comments
-				new EndOfLineRule("//", eolComment),
+				// Add a rule for exported symbols
+				new GoSourceExportedSymbolScanner(),
 				
 				// Add a keyword rule finder
 				new GoSourceWordScanner(),

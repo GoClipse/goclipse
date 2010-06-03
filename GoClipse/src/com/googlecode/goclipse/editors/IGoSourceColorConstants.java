@@ -13,6 +13,7 @@ public interface IGoSourceColorConstants {
 	final Color NUMBER_UNR = new Color(Display.getCurrent(), 0x80, 0x00, 0x00);
 	final Color STRING     = new Color(Display.getCurrent(), 0x00, 0x80, 0x00);
 	final Color KEYWORD    = new Color(Display.getCurrent(), 0x00, 0x00, 0x80);
+	final Color EXPORTED   = new Color(Display.getCurrent(), 0x00, 0x00, 0x60);
 	final Color TYPE       = new Color(Display.getCurrent(), 0x00, 0x40, 0x00);
 	final Color COMMENT    = new Color(Display.getCurrent(), 0x80, 0x80, 0x80);
 }
