@@ -64,7 +64,7 @@
             category="com.googlecode.goclipse"
             class="com.googlecode.goclipse.wizards.NewGoFileWizard"
             finalPerspective="com.googlecode.goclipse.perspectives.goPerspective"
-            icon="icons/sample.gif"
+            icon="icons/go_source.png"
             id="com.googlecode.goclipse.wizards.NewGoFileWizard"
             name="Go Source File"
             preferredPerspectives="com.googlecode.goclipse.perspectives.goPerspective">
@@ -73,7 +73,7 @@
             category="com.googlecode.goclipse"
             class="com.googlecode.goclipse.wizards.NewGoProjectWizard"
             finalPerspective="com.googlecode.goclipse.perspectives.goPerspective"
-            icon="icons/sample.gif"
+            icon="icons/go_source.png"
             id="com.googlecode.goclipse.wizards.NewGoProjectWizard"
             name="New Go Project"
             project="true">
@@ -83,7 +83,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="com.googlecode.goclipse.perspectives.GoPerspective"
-            icon="icons/releng_gears.gif"
+            icon="icons/go_source.png"
             id="com.googlecode.goclipse.perspectives.goPerspective"
             name="Go">
       </perspective>
@@ -99,7 +99,7 @@
             category="com.googlecode.goclipse"
             class="org.eclipse.ui.navigator.CommonNavigator"
             fastViewWidthRatio=".25"
-            icon="icons/sample.gif"
+            icon="icons/go_source.png"
             id="com.googlecode.goclipse.views.goNavigator"
             name="Go Project Navigator"
             restorable="true">
@@ -140,7 +140,7 @@
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="true"
             extensions="go, g"
-            icon="icons/sample.gif"
+            icon="icons/go_source.png"
             id="com.googlecode.goclipse.editors.GoSourceEditor"
             name="Go Editor">
       </editor>
