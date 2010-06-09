@@ -9,6 +9,7 @@ import org.eclipse.ui.editors.text.FileDocumentProvider;
 public class GoSourceDocumentProvider extends FileDocumentProvider {
 
 	protected IDocument createDocument(Object element) throws CoreException {
+		System.out.println("*** Creating document for " + element.toString());
 		IDocument document = super.createDocument(element);
 		if (document != null) {
 			IDocumentPartitioner partitioner =new FastPartitioner(

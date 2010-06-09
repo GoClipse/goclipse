@@ -74,20 +74,20 @@
        inkscape:collect="always"
        xlink:href="#linearGradient3632"
        id="linearGradient3646"
-       x1="6.1999998"
-       y1="1039.8622"
-       x2="10.8"
-       y2="1039.8622"
+       x1="10.5"
+       y1="1036.8622"
+       x2="7.5"
+       y2="1036.8622"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(1,0)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3622"
        id="linearGradient3654"
-       x1="6.1999998"
-       y1="1039.8622"
-       x2="10.8"
-       y2="1039.8622"
+       x1="10.5"
+       y1="1036.8622"
+       x2="10.5"
+       y2="1041.8622"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(1,0)" />
     <filter
@@ -153,7 +153,7 @@
        id="path2821"
        sodipodi:nodetypes="ccccccc" />
     <path
-       style="fill:url(#linearGradient3646);fill-opacity:1;stroke:url(#linearGradient3654);stroke-width:0.60000002;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:url(#linearGradient3646);fill-opacity:1;stroke:url(#linearGradient3654);stroke-width:0.60000001999999997;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        d="m 8.5,1036.8622 5,5 -5,0 0,-5 z"
        id="path2823"
        sodipodi:nodetypes="cccc" />
