@@ -319,10 +319,33 @@
             id="com.googlecode.goclipse.debug.ui.LaunchShortcut"
             label="Go Application"
             modes="run, debug">
-         <perspective
-               id="com.googlecode.goclipse.perspectives.GoPerspective">
-         </perspective>
+         <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.go"/>
+                 </or>
+               </iterate>
+             </with>
+           </enablement>
+  		 </contextualLaunch>
       </shortcut>
+   </extension>
+   <extension point="org.eclipse.ui.commands">
+      <command
+            name="Launch Go Application"
+            description="Launch Go Application"
+            categoryId="org.eclipse.debug.ui.category.run"
+            id="com.googlecode.goclipse.debug.ui.LaunchShortcut.run">
+      </command>
+      <keyBinding
+            keySequence="M1+X G"
+            contextId="org.eclipse.ui.globalScope"
+            commandId="com.googlecode.goclipse.debug.ui.LaunchShortcut.run"
+            keyConfigurationId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </keyBinding>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">

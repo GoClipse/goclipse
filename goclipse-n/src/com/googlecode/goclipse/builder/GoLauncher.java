@@ -26,6 +26,12 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GoLauncher {
 
+	/**
+	 * 
+	 * @param project name
+	 * @param mainfile path in project
+	 * @return
+	 */
 	public static boolean createExecutable(String project, String mainfile) {
 		boolean ok = true;
 		try {
@@ -161,13 +167,22 @@ public class GoLauncher {
 	}
 
 	public static void execute(ILaunchConfiguration configuration) {
+		String project;
+		try {
+			project = configuration.getAttribute("PROJECT_NAME", "");
+			String mainfile = configuration.getAttribute("MAIN_FILE", "");
+		    String prgArgs = configuration.getAttribute("PROGRAM_ARGS", "");
+		    execute(project, mainfile, prgArgs);
+		} catch (CoreException e) {
+			SysUtils.debug(e);
+		}
+	    
+	}
+	public static void execute(String project, String mainfile, String prgArgs) {	
 		MessageConsole console = GoConstants.findConsole("GO");
 		MessageConsoleStream con = console.newMessageStream();
 		try {
-			String project = configuration.getAttribute("PROJECT_NAME", "");
-		    String mainfile = configuration.getAttribute("MAIN_FILE", "");
-		    String prgArgs = configuration.getAttribute("PROGRAM_ARGS", "");
-		    
+			prgArgs = prgArgs==null?"":prgArgs;
 			con.println("launching " + mainfile + "\n----------------------------");
 			IProject prj = getProject(project, con);
 			if (prj != null) {
