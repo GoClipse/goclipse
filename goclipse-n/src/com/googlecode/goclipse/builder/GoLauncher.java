@@ -39,8 +39,6 @@ public class GoLauncher {
 		try {
 			MessageConsole console = GoConstants.findConsole("GO");
 			MessageConsoleStream con = console.newMessageStream();
-			con.println("Creating executable for: " + mainfile + " in project "
-					+ project);
 
 			IProject prj = getProject(project, con);
 			if (prj != null) {
@@ -75,11 +73,22 @@ public class GoLauncher {
 									+ " was not properly built (there is no obj for it)");
 					ok = false;
 				}
-				File exef = new File(exeFolder.toOSString());
-				if (!exef.exists()) {
-					exef.mkdirs();
-				}
 				if (ok) {
+					File eFile = new File(exeFileName);
+					if (eFile.exists() && eFile.lastModified() >= objFile.lastModified()) {
+						con.println("executable " + exeFileName + " is up to date");
+						ok = false; //exe is up to date
+					}
+				}
+				
+				if (ok) {
+					con.println("Creating executable for: " + mainfile + " in project "
+							+ project);
+					
+					File exef = new File(exeFolder.toOSString());
+					if (!exef.exists()) {
+						exef.mkdirs();
+					}
 					// do linker
 					String linkerPath = Activator.getDefault()
 							.getPreferenceStore().getString(
