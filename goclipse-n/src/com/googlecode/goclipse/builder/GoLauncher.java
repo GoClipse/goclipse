@@ -185,18 +185,18 @@ public class GoLauncher {
 				ExternalCommand run = new ExternalCommand(exeFolder.toOSString() + File.separator + fName + arch.getExecutableExt());
 				run.setEnvironment(GoConstants.environment());
 				run.setWorkingFolder(exeFolder.toOSString());
-				StreamAsLines output = new StreamAsLines();
-				run.setResultsFilter(output);
+				ConsoleFilter outFilter = new ConsoleFilter(con);
+				ConsoleFilter errFilter = new ConsoleFilter(con);
+				errFilter.setPrefix("#>");
+				run.setResultsFilter(outFilter);
+				run.setErrorFilter(errFilter);
 				List<String> args = new ArrayList<String>();
 				args.add(prgArgs);
 				String rez = run.execute(args);
 				if (rez != null) {
 					con.println("rez");
 				}
-				for (String line : output.getLines()) {
-					con.println(line);
-				}
-				
+				con.println("\n----------------------------\n" + "done " + mainfile);
 				
 			}
 		}catch (Exception e) {

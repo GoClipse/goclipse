@@ -11,11 +11,16 @@ import org.eclipse.core.runtime.Path;
 
 import com.googlecode.goclipse.SysUtils;
 
+/**
+ * helper class to run an external process. 
+ *
+ */
 public class ExternalCommand {
 	private String command;
 	private ProcessBuilder pBuilder;
 	private List<String> args = new ArrayList<String>();
 	private ProcessIStreamFilter resultsFilter;
+	private ProcessIStreamFilter errorFilter;
 	
 	/**
 	 * new external command using a full path
@@ -42,7 +47,9 @@ public class ExternalCommand {
 		this.resultsFilter = resultsFilter;
 	}
 
-	
+	public void setErrorFilter(ProcessIStreamFilter errorFilter) {
+		this.errorFilter = errorFilter;
+	}
 
 	public void setCommand(String command) {
 		this.command = command;
@@ -64,25 +71,45 @@ public class ExternalCommand {
 			SysUtils.debug(pBuilder.directory() + " executing: " +  args);
 			
 			Process p = pBuilder.start();
-			InputStream is = p.getInputStream();
-			if (resultsFilter != null) {
-				resultsFilter.clear();
-				resultsFilter.process(is);//the filter will use the stream
-			}
-			consume(is);
-			is.close();
-			//should allow error stream to be filtered
-			InputStream es = p.getErrorStream();
-			consume(es);
-			es.close();
+			InStreamWorker processOutput = new InStreamWorker(p.getInputStream(), "output stream thread");
+			processOutput.setFilter(resultsFilter);
+			InStreamWorker processError = new InStreamWorker(p.getErrorStream(), "error stream thread");
+			processError.setFilter(errorFilter);
 			
+			processOutput.start();
+			processError.start();
+			processOutput.join();
+			processError.join();
+			//done
 		}catch(Exception e) {
 			e.printStackTrace();
 			rez = e.getLocalizedMessage();
 		}
 		return rez;
 	}
-	
+	private class InStreamWorker extends Thread {
+		private InputStream is;
+		private ProcessIStreamFilter filter;
+		public InStreamWorker(InputStream is, String threadName) {
+			super(threadName);
+			this.is = is;
+		}
+		public void setFilter(ProcessIStreamFilter filter) {
+			this.filter = filter;
+			
+		}
+		public void run() {
+			try {
+				if (filter != null) {
+					filter.process(is);
+				}
+				consume(is); //make sure it consumes everything
+				is.close();
+			} catch (IOException e) {
+				SysUtils.debug(e);
+			}
+		}
+	}
 	private void consume(InputStream is) {
 		//go through stream up to the end
 		byte[] buf = new byte[256];
