@@ -16,6 +16,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
@@ -200,9 +202,12 @@ public class GoLauncher {
 				ExternalCommand run = new ExternalCommand(exeFolder.toOSString() + File.separator + fName + arch.getExecutableExt());
 				run.setEnvironment(GoConstants.environment());
 				run.setWorkingFolder(exeFolder.toOSString());
-				ConsoleFilter outFilter = new ConsoleFilter(con);
-				ConsoleFilter errFilter = new ConsoleFilter(con);
-				errFilter.setPrefix("#>");
+				
+				ConsoleFilter outFilter = new ConsoleFilter(console);
+				outFilter.setColor(0,0,255);
+				ConsoleFilter errFilter = new ConsoleFilter(console);
+				errFilter.setColor(255,0,0);
+				//errFilter.setPrefix("#>");
 				run.setResultsFilter(outFilter);
 				run.setErrorFilter(errFilter);
 				List<String> args = new ArrayList<String>();
@@ -224,15 +229,13 @@ public class GoLauncher {
 			try {
 				outStream.close();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				SysUtils.debug(e1);
 			}
 		}
 		try {
 			con.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			SysUtils.debug(e);
 		}
 	}
 
