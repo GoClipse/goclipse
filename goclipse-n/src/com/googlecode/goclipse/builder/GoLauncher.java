@@ -183,7 +183,7 @@ public class GoLauncher {
 		MessageConsoleStream con = console.newMessageStream();
 		try {
 			prgArgs = prgArgs==null?"":prgArgs;
-			con.println("launching " + mainfile + "\n----------------------------");
+			con.println("launching " + mainfile + " using params: " + prgArgs + "\n----------------------------");
 			IProject prj = getProject(project, con);
 			if (prj != null) {
 				String binRel = Environment.INSTANCE.getOutputFolder(prj);
@@ -206,7 +206,10 @@ public class GoLauncher {
 				run.setResultsFilter(outFilter);
 				run.setErrorFilter(errFilter);
 				List<String> args = new ArrayList<String>();
-				args.add(prgArgs);
+				List<String> argList = argsAsList(prgArgs);
+				if (argList != null) {
+					args.addAll(argList);
+				}
 				String rez = run.execute(args);
 				if (rez != null) {
 					con.println("rez");
@@ -231,6 +234,56 @@ public class GoLauncher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * builds a list of arguments to be sent to the command
+	 * splits at space but not inside double quotes
+	 * @param prgArgs
+	 * @return
+	 */
+	private static List<String> argsAsList(String prgArgs) {
+		System.out.println(prgArgs);
+		List<String> argList = new ArrayList<String>();
+		boolean inQuote = false;
+		boolean escape = false;
+		StringBuffer arg = new StringBuffer();
+		int i = 0;
+		while (i < prgArgs.length()) {
+			char c = prgArgs.charAt(i);
+			i++;
+			if (escape) {
+				arg.append(c);
+				escape = false;
+				continue;
+			}
+			if (c =='\\') {
+				escape = true;
+				continue;
+			}
+			if (inQuote) {
+				arg.append(c);
+				if (c == '"') {
+					inQuote = false;
+				} 
+			} else {
+				if (c == '"') {
+					inQuote = true;
+					arg.append(c);
+				} else {
+					if (Character.isSpaceChar(c)) {
+						if(arg.length() >0) {
+							argList.add(arg.toString());
+							arg.delete(0, arg.length());
+						}
+					} else {
+						arg.append(c);
+					}
+				}
+			}
+		}
+		argList.add(arg.toString());		
+		return argList.size()==0?null:argList;
 	}
 
 	
