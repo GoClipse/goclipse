@@ -3,6 +3,7 @@ package com.googlecode.goclipse.ui.navigator;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -98,15 +99,15 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 			
 			// FIXME ???? CHECK THE PROJECT ?????
 			IResource resource = (IResource) element;
-
-			if (resource.getParent().getName().equals("src")) {
+			IContainer parent = resource.getParent();
+			if (parent != null && parent.getName().equals("src")) {
 				GoSourceFolder sourceFolderResult = new GoSourceFolder(
 						(IFolder) resource.getParent());
 				
 				return sourceFolderResult;
 			}
 
-			return ((IResource) element).getParent();
+			return parent;
 		}
 
 		return null;
