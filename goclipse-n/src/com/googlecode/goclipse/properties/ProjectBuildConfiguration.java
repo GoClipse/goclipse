@@ -1,0 +1,65 @@
+package com.googlecode.goclipse.properties;
+
+import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.dialogs.PropertyPage;
+
+import com.googlecode.goclipse.Environment;
+
+/**
+ * 
+ */
+public class ProjectBuildConfiguration extends PropertyPage {
+
+	private ProjectBuildConfigurationComposite composite;
+
+	/**
+	 * Constructor for SamplePropertyPage.
+	 */
+	public ProjectBuildConfiguration() {
+		super();
+	}
+
+	/**
+	 * @see PreferencePage#createContents(Composite)
+	 */
+	protected Control createContents(Composite parent) {
+		composite = new ProjectBuildConfigurationComposite(parent, this,
+				SWT.NONE);
+		GridLayout layout = new GridLayout();
+		composite.setLayout(layout);
+		GridData data = new GridData(GridData.FILL);
+		data.grabExcessHorizontalSpace = true;
+		composite.setLayoutData(data);
+		return composite;
+	}
+
+	/**
+	 * 
+	 */
+	protected void performDefaults() {
+		composite.setSourceFolders(new String[] {});
+	}
+
+	/**
+	 * 
+	 */
+	public boolean performOk() {
+		String[] sourcefolders = composite.getSourceFolders();
+		if (sourcefolders != null) {
+			Environment.INSTANCE.setSourceFolders(sourcefolders);
+		}
+
+		String outputfolder = composite.getOutputFolder();
+		if (outputfolder != null) {
+			Environment.INSTANCE.setOutputFolder(outputfolder);
+		}
+		
+		return true;
+	}
+
+}

@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <!-- asdasdasd-->
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.googlecode.goclipse.editors.GoEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            extensions="go"
+            icon="icons/gopage.png"
+            id="com.googlecode.goclipse.editors.Editor"
+            name="Go Editor">
+      </editor>
+   </extension>
+   <extension
+         id="com.googlecode.goclipse.goBuilder"
+         name="Go Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            callOnEmptyDelta="true"
+            hasNature="true"
+            isConfigurable="true">
+         <run
+               class="com.googlecode.goclipse.builder.GoBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="goNature"
+         name="Go"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="com.googlecode.goclipse.builder.GoNature">
+         </run>
+      </runtime>
+      <builder
+            id="com.googlecode.goclipse.goBuilder">
+      </builder>
+      <content-type
+            id="goclipse.content-type1">
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/go-alt.png"
+            id="com.googlecode.goclipse.goNature.image1"
+            natureId="goclipse.goNature">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="com.googlecode.goclipse.wizards.projects"
+            class="com.googlecode.goclipse.wizards.NewGoFileWizard"
+            finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
+            icon="icons/gopage.png"
+            id="com.googlecode.goclipse.wizards.NewGoFileWizard"
+            name="Source File"
+            project="false">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="com.googlecode.goclipse.contribution1"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="com.googlecode.goclipse.builder.ToggleNatureAction"
+               enablesFor="+"
+               id="com.googlecode.goclipse.addRemoveNatureAction"
+               label="Add/Remove Go Nature"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         id="xmlProblem"
+         name="XML Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="goclipse"
+            class="com.googlecode.goclipse.preferences.GoPreferencePage"
+            id="com.googlecode.goclipse.preferences.GoPreferencePage"
+            name="Go">
+      </page>
+      <page
+            category="com.googlecode.goclipse.preferences.GoPreferencePage"
+            class="com.googlecode.goclipse.preferences.EditorPreferencePage"
+            id="goclipse.editor.config"
+            name="Editor Configuration">
+      </page>
+   </extension>
+   <extension
+         id="preferences"
+         name="preferences"
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.googlecode.goclipse.preferences.PreferenceInitializer">
+      </initializer>
+      <scope
+            class="org.eclipse.core.internal.resources.ProjectPreferences"
+            name="project">
+      </scope>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.googlecode.goclipse.perspectives.GoPerspective"
+            icon="icons/go-icon16.png"
+            id="com.googlecode.goclipse.perspectives.GoPerspective"
+            name="Go">
+      </perspective>
+   </extension>
+   <extension point="org.eclipse.core.runtime.adapters">
+         <factory class="com.googlecode.goclipse.ui.navigator.GoModelAdapter" adaptableType="com.googlecode.goclipse.ui.navigator.IGoElement">
+            
+            <adapter type="org.eclipse.ui.IPersistableElement"/>
+            <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
+            <adapter type="org.eclipse.ui.ide.IContributorResourceAdapter2"/>
+            <adapter type="org.eclipse.ui.IContainmentAdapter"/>
+            
+            <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
+            
+            <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+
+            <adapter type="org.eclipse.core.resources.IResource"/>
+            
+			<adapter type="org.eclipse.core.resources.IFolder"/>
+			<adapter type="org.eclipse.core.resources.IProject"/>
+			<adapter type="org.eclipse.core.resources.IContainer"/>
+			<adapter type="org.eclipse.core.resources.IFile"/>
+			<adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
+			<adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
+         </factory>
+         <factory
+               adaptableType="org.eclipse.core.resources.IResource"
+               class="com.googlecode.goclipse.ui.navigator.GoModelResourceAdapter">
+            <adapter
+                  type="com.googlecode.goclipse.ui.navigator.GoPackage">
+            </adapter>
+         </factory>
+    </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+      <viewerContentBinding
+            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+         <includes>
+            <contentExtension
+                  pattern="goclipse.goContent">
+            </contentExtension>
+            <contentExtension
+                  pattern="goclipse.filters.HideBinFolder">
+            </contentExtension>
+            <contentExtension
+                  pattern="goclipse.filters.HideSrcFolder">
+            </contentExtension>
+            <contentExtension
+                  pattern="org.eclipse.ui.navigator.resources.filters.*">
+            </contentExtension></includes>
+      </viewerContentBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="com.googlecode.goclipse.ui.navigator.GoNavigatorContentProvider"
+            id="goclipse.goContent"
+            labelProvider="com.googlecode.goclipse.ui.navigator.GoNavigatorLabelProvider"
+            name="Go Elements"
+            priority="high">
+         <triggerPoints>
+            <or>
+               <adapt
+                     type="org.eclipse.core.resources.IProject">
+                  <test
+                        property="org.eclipse.core.resources.projectNature"
+                        value="goclipse.goNature">
+                  </test>
+               </adapt>
+            </or>
+         </triggerPoints>
+         <possibleChildren>
+         		<or>
+					<instanceof	value="org.eclipse.core.resources.IResource" />
+     <instanceof
+           value="org.eclipse.core.resources.IFolder">
+     </instanceof>
+     <instanceof
+           value="com.googlecode.goclipse.ui.navigator.IGoElement">
+     </instanceof>
+				</or>
+		 </possibleChildren>
+         <commonSorter
+               class="com.googlecode.goclipse.ui.navigator.GoElementsSorter">
+         </commonSorter>
+         <commonWizard
+               type="new"
+               wizardId="com.googlecode.goclipse.wizards.NewGoFileWizard">
+            <enablement></enablement>
+         </commonWizard>
+         <actionProvider
+               class="com.googlecode.goclipse.ui.navigator.GoNavigatorActionProvider">
+         </actionProvider>
+      </navigatorContent>
+      <commonFilter
+            activeByDefault="true"
+            class="com.googlecode.goclipse.ui.navigator.HideBinFolderFilter"
+            id="goclipse.filters.HideBinFolder"
+            name="Hide Go bin Folder">
+      </commonFilter>
+      <commonFilter
+            activeByDefault="true"
+            class="com.googlecode.goclipse.ui.navigator.HideSrcFolderFilter"
+            id="goclipse.filters.HideSrcFolder"
+            name="Hide Go src Folder">
+      </commonFilter>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            canFinishEarly="false"
+            category="com.googlecode.goclipse.wizards.projects"
+            class="com.googlecode.goclipse.wizards.NewProjectWizard"
+            finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
+            icon="icons/go-icon16.png"
+            id="com.googlecode.goclipse.wizards.project.mainwiz"
+            name="Go Project"
+            project="true">
+      </wizard>
+      <category
+            id="com.googlecode.goclipse.wizards.projects"
+            name="Go">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
+            id="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
+            name="Build Configuration"
+            objectClass="org.eclipse.core.resources.IProject">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="com.googlecode.goclipse.debug.LaunchConfigurationDelegate"
+            delegateName="Go Launchery"
+            id="com.googlecode.goclipse.debug.LaunchConfigurationDelegate"
+            modes="run, debug"
+            name="Go Application">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            class="com.googlecode.goclipse.debug.PersistableSourceLocator"
+            id="com.googlecode.goclipse.debug.sourcelocator"
+            name="Go Source Locator">
+      </sourceLocator>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+            class="com.googlecode.goclipse.debug.SourcePathComputerDelegate"
+            id="com.googlecode.goclipse.debug.SourcePathComputerDelegate">
+      </sourcePathComputer>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchGroups">
+      <launchGroup
+            bannerImage="icons/go.png"
+            category="Go Application"
+            id="goclipse.launchGroup1"
+            image="icons/go-icon16.png"
+            label="label"
+            mode="run"
+            public="true"
+            title="Launch Go Application">
+      </launchGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="com.googlecode.goclipse.debug.ui.LaunchConfigurationTabGroup"
+            id="com.googlecode.goclipse.debug.ui.LaunchConfigurationTabGroup"
+            type="com.googlecode.goclipse.debug.LaunchConfigurationDelegate">
+         <launchMode
+               mode="run"
+               perspective="com.googlecode.goclipse.perspectives.GoPerspective">
+         </launchMode>
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="com.googlecode.goclipse.debug.ui.LaunchShortcut"
+            icon="icons/go-icon16.png"
+            id="com.googlecode.goclipse.debug.ui.LaunchShortcut"
+            label="Go Application"
+            modes="run, debug">
+         <perspective
+               id="com.googlecode.goclipse.perspectives.GoPerspective">
+         </perspective>
+      </shortcut>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="com.googlecode.goclipse.debug.LaunchConfigurationDelegate"
+            icon="icons/go-icon16.png"
+            id="com.googlecode.goclipse.debug.launchConfigurationTypeImage">
+      </launchConfigurationTypeImage>
+   </extension>
+
+</plugin>
