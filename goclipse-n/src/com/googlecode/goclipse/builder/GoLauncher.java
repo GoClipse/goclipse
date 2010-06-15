@@ -217,7 +217,7 @@ public class GoLauncher {
 				}
 				String rez = run.execute(args);
 				if (rez != null) {
-					con.println("rez");
+					con.println(rez);
 				}
 				con.println("\n----------------------------\n" + "done " + mainfile);
 				
