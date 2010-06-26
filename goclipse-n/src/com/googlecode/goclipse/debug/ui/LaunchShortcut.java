@@ -27,7 +27,7 @@ public class LaunchShortcut implements ILaunchShortcut {
 
    @Override
    public void launch(ISelection selection, final String mode) {
-      System.out.println("launch shortcut: selection " + selection  + " mode " + mode);
+      SysUtils.debug("launch shortcut: selection " + selection  + " mode " + mode);
       if (selection != null) {
     	  if (selection instanceof TreeSelection) {
     		  TreeSelection ts = (TreeSelection)selection;
@@ -46,7 +46,7 @@ public class LaunchShortcut implements ILaunchShortcut {
 
    @Override
    public void launch(IEditorPart editor, final String mode) {
-	   System.out.println("launch shortcut: editor" + editor.getTitle()  + " mode " + mode);
+	   SysUtils.debug("launch shortcut: editor" + editor.getTitle()  + " mode " + mode);
 	   IEditorInput ei = editor.getEditorInput();
 	   if (ei != null && ei instanceof FileEditorInput) {
 		   FileEditorInput fei = (FileEditorInput)ei;
