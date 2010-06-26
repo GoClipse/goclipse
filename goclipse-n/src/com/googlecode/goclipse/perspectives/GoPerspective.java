@@ -10,11 +10,11 @@
  *******************************************************************************/
 package com.googlecode.goclipse.perspectives;
 
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
-import org.eclipse.jdt.ui.JavaUI;
 
 
 /**
@@ -53,7 +53,7 @@ public class GoPerspective implements IPerspectiveFactory {
 				factory.getEditorArea());
 		bottom.addView(IPageLayout.ID_PROBLEM_VIEW);
 		bottom.addView("org.eclipse.team.ui.GenericHistoryView"); //NON-NLS-1
-		bottom.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
+		bottom.addView(IConsoleConstants.ID_CONSOLE_VIEW);
 
 		IFolderLayout topLeft =
 			factory.createFolder(

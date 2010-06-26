@@ -3,6 +3,7 @@ package com.googlecode.goclipse.debug.ui;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -14,6 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoNature;
 
 /**
@@ -139,10 +141,10 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
    public void initializeFrom(ILaunchConfiguration configuration) {
 
       try {
-         String projectname = configuration.getAttribute("PROJECT_NAME", "");
-         String mainfile = configuration.getAttribute("MAIN_FILE", "");
-         String buildconfig = configuration.getAttribute("BUILD_CONFIG", "");
-         String programargs = configuration.getAttribute("PROGRAM_ARGS", "");
+         String projectname = configuration.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, "");
+         String mainfile = configuration.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN, "");
+         String buildconfig = configuration.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_BUILD_CONFIG, "");
+         String programargs = configuration.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_ARGS, "");
 
          composite.setProject(projectname);
          composite.setMainFile(mainfile);
@@ -169,10 +171,12 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
    @Override
    public void performApply(ILaunchConfigurationWorkingCopy configuration) {
       
-      configuration.setAttribute("PROJECT_NAME", composite.getProject());
-      configuration.setAttribute("MAIN_FILE",    composite.getMainFile());
-      configuration.setAttribute("BUILD_CONFIG", composite.getBuildConfiguration().toString());
-      configuration.setAttribute("PROGRAM_ARGS", composite.getProgramArgs());
+      configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, composite.getProject());
+      configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN,    composite.getMainFile());
+      configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_BUILD_CONFIG, composite.getBuildConfiguration().toString());
+      configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_ARGS, composite.getProgramArgs());
+      configuration.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
+      configuration.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, "UTF-8");
    }
 
    @Override
@@ -180,18 +184,18 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
       IProject project = Environment.INSTANCE.getCurrentProject();
       try {
          if (project.getNature(GoNature.NATURE_ID) != null){
-            configuration.setAttribute("PROJECT_NAME", composite.getProject());
+            configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, composite.getProject());
          }
          else{
-            configuration.setAttribute("PROJECT_NAME", "enter a project here...");
+            configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, "enter a project here...");
          }
       }
       catch (Exception e) {
          // TODO: handle exception
       }
-      configuration.setAttribute("MAIN_FILE",    "");
-      configuration.setAttribute("BUILD_CONFIG", BuildConfiguration.RELEASE.toString());
-      configuration.setAttribute("PROGRAM_ARGS", "");
+      configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN,"");
+      configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_BUILD_CONFIG, BuildConfiguration.RELEASE.toString());
+      configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_ARGS, "");
 
    }
 

@@ -7,10 +7,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import com.googlecode.goclipse.Activator;
@@ -30,6 +26,18 @@ public class GoConstants {
 	public static final String GOROOT = "GOROOT";
 	public static final String GOARCH = "GOARCH";
 	public static final String GOOS = "GOOS";
+
+	/**
+	 * defined in plugin.xml
+	 */
+	public static final String LAUNCH_CONFIGURATION_TYPE = "com.googlecode.goclipse.debug.LaunchConfigurationDelegate";
+	/**
+	 * used in launch configurations
+	 */
+	public static final String GO_CONF_ATTRIBUTE_PROJECT = "PROJECT_NAME";
+	public static final String GO_CONF_ATTRIBUTE_MAIN = "MAIN_FILE";
+	public static final String GO_CONF_ATTRIBUTE_ARGS = "PROGRAM_ARGS";
+	public static final String GO_CONF_ATTRIBUTE_BUILD_CONFIG = "BUILD_CONFIG";
 	
 	public static Map<String, String> environment() {
 		Map<String, String> goEnv = new HashMap<String, String>();
@@ -79,16 +87,4 @@ public class GoConstants {
 		});
 
 	}
-	public static MessageConsole findConsole(String name) {
-	      ConsolePlugin plugin = ConsolePlugin.getDefault();
-	      IConsoleManager conMan = plugin.getConsoleManager();
-	      IConsole[] existing = conMan.getConsoles();
-	      for (int i = 0; i < existing.length; i++)
-	         if (name.equals(existing[i].getName()))
-	            return (MessageConsole) existing[i];
-	      //no console found, so create a new one
-	      MessageConsole myConsole = new MessageConsole(name, null);
-	      conMan.addConsoles(new IConsole[]{myConsole});
-	      return myConsole;
-	   }
 }
