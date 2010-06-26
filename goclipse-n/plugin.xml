@@ -133,9 +133,7 @@
             <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
             <adapter type="org.eclipse.ui.ide.IContributorResourceAdapter2"/>
             <adapter type="org.eclipse.ui.IContainmentAdapter"/>
-            
-            <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
-            
+                        
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
 
             <adapter type="org.eclipse.core.resources.IResource"/>
@@ -252,8 +250,7 @@
       <page
             class="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
             id="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
-            name="Build Configuration"
-            objectClass="org.eclipse.core.resources.IProject">
+            name="Build Configuration">
          <enabledWhen>
             <instanceof
                   value="org.eclipse.core.resources.IProject">
@@ -272,31 +269,24 @@
       </launchConfigurationType>
    </extension>
    <extension
-         point="org.eclipse.debug.core.sourceLocators">
-      <sourceLocator
-            class="com.googlecode.goclipse.debug.PersistableSourceLocator"
-            id="com.googlecode.goclipse.debug.sourcelocator"
-            name="Go Source Locator">
-      </sourceLocator>
-   </extension>
-   <extension
-         point="org.eclipse.debug.core.sourcePathComputers">
-      <sourcePathComputer
-            class="com.googlecode.goclipse.debug.SourcePathComputerDelegate"
-            id="com.googlecode.goclipse.debug.SourcePathComputerDelegate">
-      </sourcePathComputer>
-   </extension>
-   <extension
          point="org.eclipse.debug.ui.launchGroups">
       <launchGroup
             bannerImage="icons/go.png"
-            category="Go Application"
             id="goclipse.launchGroup1"
             image="icons/go-icon16.png"
             label="label"
             mode="run"
             public="true"
             title="Launch Go Application">
+      </launchGroup>
+      <launchGroup
+            bannerImage="icons/go.png"
+            id="goclipse.launchGroup2"
+            image="icons/go-icon16.png"
+            label="label"
+            mode="debug"
+            public="true"
+            title="Debug Go Application">
       </launchGroup>
    </extension>
    <extension
@@ -319,18 +309,25 @@
             id="com.googlecode.goclipse.debug.ui.LaunchShortcut"
             label="Go Application"
             modes="run, debug">
-         <contextualLaunch>
-           <enablement>
-             <with variable="selection">
-               <count value="1"/>
-               <iterate>
-                 <or>
-                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.go"/>
-                 </or>
-               </iterate>
-             </with>
-           </enablement>
-  		 </contextualLaunch>
+            <description
+               description="executes Go Program"
+               mode="run">
+         	</description>
+	         <contextualLaunch>
+	           <enablement>
+	             <with variable="selection">
+	               <count value="1"/>
+	               <iterate>
+	                 <or>
+	                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.go"/>
+	                 </or>
+	               </iterate>
+	             </with>
+	           </enablement>
+	  		 </contextualLaunch>
+	  		 <configurationType id ="com.googlecode.goclipse.debug.LaunchConfigurationDelegate">
+	  		 </configurationType>
+  		 
       </shortcut>
    </extension>
    <extension point="org.eclipse.ui.commands">
@@ -340,13 +337,17 @@
             categoryId="org.eclipse.debug.ui.category.run"
             id="com.googlecode.goclipse.debug.ui.LaunchShortcut.run">
       </command>
-      <keyBinding
-            keySequence="M1+X G"
-            contextId="org.eclipse.ui.globalScope"
-            commandId="com.googlecode.goclipse.debug.ui.LaunchShortcut.run"
-            keyConfigurationId="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </keyBinding>
    </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.googlecode.goclipse.debug.ui.LaunchShortcut.run"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M2+M3+G"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+   </extension>
+   
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
