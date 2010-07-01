@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/goclipse_feature_0.0.12.jar" id="goclipse_feature" version="0.0.12"/>
+   <feature url="features/goclipse_feature_0.0.13.jar" id="goclipse_feature" version="0.0.13">
+      <category name="Go Plug-in for Eclipse"/>
+   </feature>
+   <category-def name="Go Plug-in for Eclipse" label="Go Plug-in for Eclipse"/>
 </site>
