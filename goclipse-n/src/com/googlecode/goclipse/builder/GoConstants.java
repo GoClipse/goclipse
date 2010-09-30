@@ -3,10 +3,15 @@ package com.googlecode.goclipse.builder;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import com.googlecode.goclipse.Activator;
@@ -87,4 +92,17 @@ public class GoConstants {
 		});
 
 	}
+	
+	public static MessageConsole findConsole(String name) {
+	      ConsolePlugin plugin = ConsolePlugin.getDefault();
+	      IConsoleManager conMan = plugin.getConsoleManager();
+	      IConsole[] existing = conMan.getConsoles();
+	      for (int i = 0; i < existing.length; i++)
+	         if (name.equals(existing[i].getName()))
+	            return (MessageConsole) existing[i];
+	      //no console found, so create a new one
+	      MessageConsole myConsole = new MessageConsole(name, null);
+	      conMan.addConsoles(new IConsole[]{myConsole});
+	      return myConsole;
+	   }
 }

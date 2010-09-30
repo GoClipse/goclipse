@@ -119,6 +119,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			goEnv = GoConstants.environment();
 			dependencyManager.setEnvironment(goEnv);
 			compiler.setEnvironment(goEnv);
+			
 			if (kind == FULL_BUILD) {
 				fullBuild(monitor);
 			} else {
@@ -132,6 +133,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				}
 			}
 			dependencyManager.save(getProject());
+			
 		}catch(Exception e) {
 			SysUtils.debug(e);
 		}

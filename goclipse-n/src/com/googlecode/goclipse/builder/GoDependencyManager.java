@@ -145,17 +145,19 @@ public class GoDependencyManager implements Serializable {
 			String dPackName = packages.get(pathInPrj);
 			String key = pPath + dPackName;
 			Package p = mpacks.get(key);
-			//p.fPaths contains all package dependencies
-			//add all first level dependencies of the package
-			for (String packagePath: p.fPaths) {
-				boolean eq = caseInsensitive?pathInPrj.equalsIgnoreCase(packagePath):pathInPrj.equals(packagePath);
-				if (includeTargets || !eq) {
-					work.add(packagePath);
-				} 			
-				List<String> dep = dependents.get(packagePath);
-				if (dep != null) {
-					work.addAll(dep);
-				}	
+			if (p!= null) {
+				//p.fPaths contains all package dependencies
+				//add all first level dependencies of the package
+				for (String packagePath: p.fPaths) {
+					boolean eq = caseInsensitive?pathInPrj.equalsIgnoreCase(packagePath):pathInPrj.equals(packagePath);
+					if (includeTargets || !eq) {
+						work.add(packagePath);
+					} 			
+					List<String> dep = dependents.get(packagePath);
+					if (dep != null) {
+						work.addAll(dep);
+					}	
+				}
 			}
 			
 			

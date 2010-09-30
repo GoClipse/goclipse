@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -18,6 +17,8 @@ import org.eclipse.core.runtime.SubMonitor;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.activities.ParseConnector;
+import com.googlecode.goclipse.model.GoModelRepository;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GoCompiler {
@@ -145,7 +146,10 @@ public class GoCompiler {
 				}
 				
 			}
+			//this is work in progress
+			//GoModelRepository.getInst().updatePackageModel(project, p.name, p.path, p.fPaths);
 		}
+		
 		try {
 			project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		} catch (CoreException e) {

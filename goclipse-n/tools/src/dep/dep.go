@@ -1,14 +1,13 @@
 package main
 
 import "go/ast"
+
 import (
 	"fmt"
 	"flag"
 	"go/parser"
-    "go/token"
-
+	"go/token"
 )
-
 func main() {
 	flag.Parse()
 	narg := flag.NArg()
@@ -17,10 +16,9 @@ func main() {
 		return
 	}
 	filename := flag.Arg(0)
-
-	astf, error := parser.ParseFile(filename, nil, nil, parser.ImportsOnly)
+	astf, error := parser.ParseFile(filename, nil, parser.ImportsOnly)
 	if error == nil  {
-		fmt.Printf("p:%s\n", astf.Name.Obj.Name);
+		fmt.Printf("p:%s\n", astf.Name);
 		for _, d:= range astf.Decls {
 			if gd, ok:=d.(*ast.GenDecl); ok {
 				if gd.Tok == token.IMPORT {

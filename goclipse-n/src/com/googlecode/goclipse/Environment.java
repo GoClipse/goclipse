@@ -1,11 +1,13 @@
 package com.googlecode.goclipse;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,8 +25,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
@@ -40,11 +40,11 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.googlecode.goclipse.builder.Arch;
 import com.googlecode.goclipse.builder.ExternalCommand;
 import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.builder.ProcessIStreamFilter;
 import com.googlecode.goclipse.preferences.GoPreferencePage;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
@@ -64,6 +64,8 @@ public class Environment {
 	private final IPreferencesService preferences;
 	private Map<String, Properties> propertiesMap = new HashMap<String, Properties>();
 	private String depToolPath;
+	
+	private static final int DEP_TOOL_VERSION = 1;
 
 	private Environment() {
 		preferences = Platform.getPreferencesService();
@@ -102,29 +104,57 @@ public class Environment {
 		
 		IWorkspace root = ResourcesPlugin.getWorkspace();
 		IPath base = root.getRoot().getLocation();
-		IPath tools = base.append(".metadata").append(".go").append(goos)
-				.append(goarch).append("tools");
+		IPath versionPath = base.append(".metadata").append(".go");
+		IPath tools = versionPath.append(goos).append(goarch).append("tools");
 		String toolsPath = tools.toOSString();
 		File toolsFile = new File(toolsPath);
 		if (!toolsFile.exists()) {
 			toolsFile.mkdirs();
 		}
 		String depToolName = "dep";
+		String versionPropertiesFileName = "version.properties";
 		String depToolExe = depToolName + arch.getExecutableExt();
 		String depToolGo = depToolName + GoConstants.GO_SOURCE_FILE_EXTENSION;
 		String depToolObj = depToolName + arch.getExtension();
 		depToolPath = toolsPath + File.separator + depToolExe;
 		File exeFile = new File(depToolPath);
+		Properties versionProperties = new Properties();
+		File propertiesFile = new File(versionPath.toOSString() + File.separator + versionPropertiesFileName);
+		if (propertiesFile.exists()) {
+			try {
+				versionProperties.load(new FileInputStream(propertiesFile));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String installedVersion = versionProperties.getProperty("depToolVersion");
+			if (null != installedVersion) {
+				int version = 0;
+				try {
+					version = Integer.parseInt(installedVersion);
+				}catch(NumberFormatException nfe) {
+					
+				}
+				if (version == DEP_TOOL_VERSION && exeFile.exists()) {
+					SysUtils.debug("exe tool is ok");
+					return; // everyting in place		
+				}
+			}
+		}
 		if (exeFile.exists()) {
-			SysUtils.debug("exe tool is ok");
-			return; // everyting in place
+			exeFile.delete();
 		}
 		// will compile it from source
 		//first, save the source in .metadata
 		URL srcString = Activator.getDefault().getBundle().getEntry(
 				"/tools/src/dep/dep.go");
 		saveSource(toolsFile, srcString, toolsPath + File.separator + depToolGo);
+		
 		//setup compile
+		MsgFilter mf = new MsgFilter();
 		String compilerPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.COMPILER_PATH);
 		ExternalCommand compile = new ExternalCommand(compilerPath);
 		compile.setEnvironment(GoConstants.environment());
@@ -134,20 +164,59 @@ public class Environment {
 		args.add(GoConstants.COMPILER_OPTION_O);
 		args.add(depToolObj);
 		args.add(depToolGo);
+		compile.setResultsFilter(mf);
 		compile.execute(args);
 		
-		//do linker
-		String linkerPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.LINKER_PATH);
-		compile.setCommand(linkerPath);
-		args.clear();
-		args.add(GoConstants.COMPILER_OPTION_O);
-		args.add(depToolExe);
-		args.add(depToolObj);
-		compile.execute(args);
-		
+		if (!mf.hadError) {
+			mf.clear();	
+			//do linker
+			String linkerPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.LINKER_PATH);
+			compile.setCommand(linkerPath);
+			args.clear();
+			args.add(GoConstants.COMPILER_OPTION_O);
+			args.add(depToolExe);
+			args.add(depToolObj);
+			compile.execute(args);
+			
+			if (!mf.hadError) {
+				versionProperties.setProperty("depToolVersion", String.valueOf(DEP_TOOL_VERSION));
+				try {
+					versionProperties.store(new FileOutputStream(propertiesFile), "automatically generated, do not change");
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		//done
 	}
 	
+	class MsgFilter implements ProcessIStreamFilter {
+		public boolean hadError = false;
+		@Override
+		public void process(InputStream iStream) {
+			try {
+				InputStreamReader isr = new InputStreamReader(iStream);
+			    BufferedReader br = new BufferedReader(isr);
+			    String line;
+		        while ((line = br.readLine()) != null) {
+		        	SysUtils.debug("error in parse connector:" + line);
+		        	hadError = true;
+		        }
+			}catch(Exception e) {
+				SysUtils.debug(e);
+			}
+		}
+
+		@Override
+		public void clear() {		
+			hadError = false;
+		}
+		
+	}
 
 	private void saveSource(File toolsFile, URL srcURL, String outPath) {
 		if (srcURL != null) {

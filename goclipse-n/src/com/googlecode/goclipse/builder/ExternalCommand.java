@@ -21,13 +21,19 @@ public class ExternalCommand {
 	private List<String> args = new ArrayList<String>();
 	private ProcessIStreamFilter resultsFilter;
 	private ProcessIStreamFilter errorFilter;
+	private ProcessOStreamFilter inputFilter;
+	private boolean blockUntilDone = true;
 	
 	/**
 	 * new external command using a full path
 	 * @param command
 	 */
 	public ExternalCommand(String command) {
+		this(command, true);
+	}
+	public ExternalCommand(String command, boolean blockUntilDone) {
 		this.command = command;
+		this.blockUntilDone  = blockUntilDone;
 		pBuilder = new ProcessBuilder(args);
 		String workingFolder = Path.fromOSString(command).removeLastSegments(1).toOSString();
 		setWorkingFolder(workingFolder);
@@ -49,6 +55,10 @@ public class ExternalCommand {
 
 	public void setErrorFilter(ProcessIStreamFilter errorFilter) {
 		this.errorFilter = errorFilter;
+	}
+	
+	public void setInputFilter(ProcessOStreamFilter inputFilter) {
+		this.inputFilter = inputFilter;
 	}
 
 	public void setCommand(String command) {
@@ -75,11 +85,16 @@ public class ExternalCommand {
 			processOutput.setFilter(resultsFilter);
 			InStreamWorker processError = new InStreamWorker(p.getErrorStream(), "error stream thread");
 			processError.setFilter(errorFilter);
+			if (inputFilter != null) {
+				inputFilter.setStream(p.getOutputStream());
+			}
 			
 			processOutput.start();
 			processError.start();
-			processOutput.join();
-			processError.join();
+			if (blockUntilDone) {
+				processOutput.join();
+				processError.join();
+			}
 			//done
 		}catch(Exception e) {
 			e.printStackTrace();
