@@ -17,8 +17,6 @@ import org.eclipse.core.runtime.SubMonitor;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.SysUtils;
-import com.googlecode.goclipse.activities.ParseConnector;
-import com.googlecode.goclipse.model.GoModelRepository;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GoCompiler {
