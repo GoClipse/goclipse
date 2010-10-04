@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -28,6 +29,7 @@ import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.preferences.GoPreferencePage;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.preferences.PreferenceInitializer;
 
 /**
  * 
@@ -37,8 +39,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	public static final String BUILDER_ID = "com.googlecode.goclipse.goBuilder";
 	private static final String MARKER_TYPE = "com.googlecode.goclipse.problem";
 	Map<String, String> goEnv = new HashMap<String, String>();
-	private GoDependencyManager dependencyManager = new GoDependencyManager();
-	private GoCompiler compiler = new GoCompiler(dependencyManager);
+	private GoDependencyManager dependencyManager;
+	private GoCompiler compiler;
 
 	class CollectResourceDeltaVisitor implements IResourceDeltaVisitor {
 		List<IResource> added = new ArrayList<IResource>();
@@ -115,30 +117,49 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
+		checkBuild();
 		try {
 			goEnv = GoConstants.environment();
 			dependencyManager.setEnvironment(goEnv);
 			compiler.setEnvironment(goEnv);
 			
+			IProject project = getProject();
 			if (kind == FULL_BUILD) {
 				fullBuild(monitor);
 			} else {
-				IResourceDelta delta = getDelta(getProject());
+				IResourceDelta delta = getDelta(project);
 				if (delta == null) {
-					dependencyManager.prepareFull();
+					dependencyManager.prepare(project, true);
 					fullBuild(monitor);
 				} else {
-					dependencyManager.prepareIncremental(getProject());
+					dependencyManager.prepare(project, false);
 					incrementalBuild(delta, monitor);
 				}
 			}
-			dependencyManager.save(getProject());
+			dependencyManager.save(project);
 			
 		}catch(Exception e) {
 			SysUtils.debug(e);
 		}
 		// no project dependencies (yet)
 		return null;
+	}
+
+	private void checkBuild() throws CoreException {
+		if (!Environment.INSTANCE.isValid()){
+			IMarker marker = getProject().createMarker(IMarker.PROBLEM);
+			marker.setAttribute(IMarker.MESSAGE, GoConstants.INVALID_PREFERENCES_MESSAGE);
+			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+			throw new CoreException(new Status(Status.ERROR,Activator.PLUGIN_ID, GoConstants.INVALID_PREFERENCES_MESSAGE));
+		} else {
+			if (dependencyManager == null){
+				dependencyManager = new GoDependencyManager();
+			}
+			if (compiler == null){
+				compiler = new GoCompiler(dependencyManager);
+			}
+		}
 	}
 
 	protected void fullBuild(final IProgressMonitor pmonitor)

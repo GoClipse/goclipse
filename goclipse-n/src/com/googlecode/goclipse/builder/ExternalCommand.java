@@ -95,6 +95,11 @@ public class ExternalCommand {
 				processOutput.join();
 				processError.join();
 			}
+//
+//			int exitValue = p.waitFor();
+//			if (exitValue != 0){
+//				rez = this.command+" completed with non-zero exit value ("+exitValue+")";
+//			}
 			//done
 		}catch(Exception e) {
 			e.printStackTrace();

@@ -25,6 +25,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.preference.IPreferenceNode;
 import org.eclipse.jface.preference.IPreferencePage;
@@ -69,10 +70,39 @@ public class Environment {
 
 	private Environment() {
 		preferences = Platform.getPreferencesService();
-		buildDependencyTool();
 	}
 
+	/**
+	 * 
+	 * @return true if the preferences have been set for all values
+	 */
+	public boolean isValid() {
+		String goarch = Activator.getDefault().getPreferenceStore().getString(
+				PreferenceConstants.GOARCH);
+		
+		String goos = Activator.getDefault().getPreferenceStore().getString(
+				PreferenceConstants.GOOS);
+		
+		String goroot = Activator.getDefault().getPreferenceStore().getString(
+				PreferenceConstants.GOROOT);
+
+		
+		if (goroot == null || goroot.length() == 0 || goos == null
+					|| goos.length() == 0 || goarch == null
+					|| goarch.length() == 0) {
+				Activator.getDefault().getLog().log(new Status(Status.ERROR, Activator.PLUGIN_ID, GoConstants.INVALID_PREFERENCES_MESSAGE));
+				return false;
+		}
+		return true;
+
+
+	}
+	
 	private void buildDependencyTool() {
+
+		if (!isValid()) {
+			return;
+		}
 		String goarch = Activator.getDefault().getPreferenceStore().getString(
 				PreferenceConstants.GOARCH);
 		
@@ -80,27 +110,6 @@ public class Environment {
 				PreferenceConstants.GOOS);
 		
 		Arch arch = Arch.getArch(goarch);
-		
-		// show configuration while invalid - there is a better way
-		while(arch==null || goarch == null || goos == null){
-		   
-		   IPreferencePage page = new GoPreferencePage();
-		   PreferenceManager mgr = new PreferenceManager();
-		   IPreferenceNode node = new PreferenceNode("1", page);
-		   mgr.addToRoot(node);
-		   PreferenceDialog dialog = new PreferenceDialog(getShell(), mgr);
-		   dialog.create();
-		   dialog.setMessage("Go configuration must be defined prior to usage...");
-		   dialog.open();
-		   
-		   goarch = Activator.getDefault().getPreferenceStore().getString(
-	            PreferenceConstants.GOARCH);
-	      
-	      goos = Activator.getDefault().getPreferenceStore().getString(
-	            PreferenceConstants.GOOS);
-	      
-	      arch = Arch.getArch(goarch);
-		}
 		
 		IWorkspace root = ResourcesPlugin.getWorkspace();
 		IPath base = root.getRoot().getLocation();
@@ -116,8 +125,8 @@ public class Environment {
 		String depToolExe = depToolName + arch.getExecutableExt();
 		String depToolGo = depToolName + GoConstants.GO_SOURCE_FILE_EXTENSION;
 		String depToolObj = depToolName + arch.getExtension();
-		depToolPath = toolsPath + File.separator + depToolExe;
-		File exeFile = new File(depToolPath);
+		String aDepToolPath = toolsPath + File.separator + depToolExe;
+		File exeFile = new File(aDepToolPath);
 		Properties versionProperties = new Properties();
 		File propertiesFile = new File(versionPath.toOSString() + File.separator + versionPropertiesFileName);
 		if (propertiesFile.exists()) {
@@ -139,6 +148,7 @@ public class Environment {
 					
 				}
 				if (version == DEP_TOOL_VERSION && exeFile.exists()) {
+					depToolPath = aDepToolPath;
 					SysUtils.debug("exe tool is ok");
 					return; // everyting in place		
 				}
@@ -189,6 +199,7 @@ public class Environment {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				depToolPath = aDepToolPath;
 			}
 		}
 		//done
@@ -243,6 +254,9 @@ public class Environment {
 	}
 
 	public String getDependencyTool() {
+		if (depToolPath == null){
+			buildDependencyTool();
+		}
 		return depToolPath;
 	}
 

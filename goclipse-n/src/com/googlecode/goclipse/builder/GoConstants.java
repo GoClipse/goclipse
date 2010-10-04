@@ -3,19 +3,15 @@ package com.googlecode.goclipse.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.GoPreferencePage;
+import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GoConstants {
@@ -36,6 +32,9 @@ public class GoConstants {
 	 * defined in plugin.xml
 	 */
 	public static final String LAUNCH_CONFIGURATION_TYPE = "com.googlecode.goclipse.debug.LaunchConfigurationDelegate";
+
+	public static final String INVALID_PREFERENCES_MESSAGE = "Invalid Go language settings.  Please adjust on the Go preferences page.";
+
 	/**
 	 * used in launch configurations
 	 */
@@ -56,40 +55,7 @@ public class GoConstants {
 		goEnv.put(GoConstants.GOROOT, goroot);
 		goEnv.put(GoConstants.GOOS, goos);
 		goEnv.put(GoConstants.GOARCH, goarch);
-		validateGoSettings(goroot, goos, goarch);
 		return goEnv;
-
-	}
-	private static void validateGoSettings(final String goroot, final String goos,
-			final String goarch) {
-		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-			public void run() {
-				if (goroot == null || goroot.length() == 0 || goos == null
-						|| goos.length() == 0 || goarch == null
-						|| goarch.length() == 0) {
-					MessageDialog messageDialog = new MessageDialog(
-							PlatformUI.getWorkbench().getDisplay()
-									.getActiveShell(),
-							"Goclipse Environment Configuration",
-							null,
-							"The required Goclipse plug-in variables have not been set.  "
-									+ "Please set the variables on the following preferences page.",
-							MessageDialog.QUESTION,
-							new String[] { IDialogConstants.OK_LABEL }, 0);
-
-					int i = messageDialog.open();
-
-					PreferenceDialog pref = PreferencesUtil
-							.createPreferenceDialogOn(PlatformUI.getWorkbench()
-									.getDisplay().getActiveShell(),
-									GoPreferencePage.ID, null, null);
-
-					if (pref != null) {
-						pref.open();
-					}
-				}// end if
-			}// end run
-		});
 
 	}
 	

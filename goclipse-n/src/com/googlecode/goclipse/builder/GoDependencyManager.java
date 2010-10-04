@@ -464,22 +464,13 @@ public class GoDependencyManager implements Serializable {
 		return paths;
 	}
 
-	public void prepareFull() {
-		fullBuild = true;
-	}
-
-	public void prepareIncremental(IProject project) {
-		
-		if (!firstTime) {
-			return;
-		}
-		firstTime = false;
-		if (!fullBuild) {
+	public void prepare(IProject project, boolean isFull){
+		if (!isFull && !firstTime) {
 			//if full build was not executed at least once this session
 			//then load saved configuration
 			loadSaved(project);
 		}
-		
+		firstTime = false;
 	}
 	
 	public void loadSaved(IProject project) {

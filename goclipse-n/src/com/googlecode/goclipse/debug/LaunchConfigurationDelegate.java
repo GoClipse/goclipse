@@ -87,6 +87,9 @@ public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate
 	 * @return
 	 */
 	public boolean createExecutable(String project, String mainfile) {
+		if (!Environment.INSTANCE.isValid()){
+			return false;
+		}
 		boolean ok = true;
 		try {
 			MessageConsole console = findMessageConsole("Go Console");
