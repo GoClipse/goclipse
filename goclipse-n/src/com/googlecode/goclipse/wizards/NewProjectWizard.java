@@ -133,12 +133,12 @@ public class NewProjectWizard extends Wizard implements INewWizard, IWizard {
 					/**
 					 * 
 					 */
-					IFolder binfolder = project.getFolder("bin");
+					IFolder binfolder = project.getFolder(Environment.DEFAULT_PROJECT_OUTPUT_FOLDER);
                if(!binfolder.exists()){
                   binfolder.create(true, true, null);
                }
                
-               Environment.INSTANCE.setOutputFolder(project, "bin");
+               Environment.INSTANCE.setOutputFolder(project, Environment.DEFAULT_PROJECT_OUTPUT_FOLDER);
 					
 				} catch (CoreException e) {
 				   SysUtils.debug(e);

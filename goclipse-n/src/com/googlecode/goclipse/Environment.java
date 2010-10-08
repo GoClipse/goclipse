@@ -59,6 +59,7 @@ public class Environment {
 
 	private static final String PROJECT_SOURCE_FOLDERS = "com.googlecode.goclipse.environment.source.folders";
 	private static final String PROJECT_OUTPUT_FOLDERS = "com.googlecode.goclipse.environment.output.folders";
+	public static final String DEFAULT_PROJECT_OUTPUT_FOLDER = "bin";
 
 	public static final boolean DEBUG = true;
 	public static final Environment INSTANCE = new Environment();
@@ -529,7 +530,7 @@ public class Environment {
 	public String getOutputFolder(IProject project) {
 		Properties properties = getProperties(project);
 		String str = properties.getProperty(PROJECT_OUTPUT_FOLDERS);
-		return str == null ? "" : str;
+		return str == null ? DEFAULT_PROJECT_OUTPUT_FOLDER : str;
 	}
 
 }

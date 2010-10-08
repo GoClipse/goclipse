@@ -219,16 +219,10 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		SysUtils.debug("cleaning project");
 		getProject().deleteMarkers(IMarker.PROBLEM, false,
 				IResource.DEPTH_INFINITE);
-		String outPath = Environment.INSTANCE.getOutputFolder();
-		File outFolder = new File(getProject().getLocation().toOSString()
-				+ File.separator + outPath);
+		String outPath = Environment.INSTANCE.getOutputFolder(getProject());
+		File outFolder = new File(getProject().getLocation().append(outPath).toOSString());
 		if (outFolder.exists()) {
 			deleteFolder(outFolder, true);
-		}
-		File exeFolder = new File(getProject().getLocation().toOSString()
-				+ File.separator + GoConstants.EXE_FILE_DIRECTORY);
-		if (exeFolder.exists()) {
-			deleteFolder(exeFolder, true);
 		}
 		getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
 	}
