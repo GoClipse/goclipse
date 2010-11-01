@@ -14,6 +14,8 @@ public class Activator extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "goclipse";
 
+	public static final String CONTENT_ASSIST_EXTENSION_ID = "com.googlecode.goclipse.contentassistprocessor";
+	
 	// The shared instance
 	private static Activator plugin;
 	

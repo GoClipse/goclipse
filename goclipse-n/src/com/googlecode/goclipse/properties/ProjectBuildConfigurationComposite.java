@@ -36,12 +36,80 @@ import com.googlecode.goclipse.SysUtils;
  */
 public class ProjectBuildConfigurationComposite extends Composite {
 
+   private static final class TreeContentProvider implements
+			ITreeContentProvider {
+		@Override
+		 public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		 }
+
+		@Override
+		 public void dispose() {
+		 }
+
+		@Override
+		 public Object[] getElements(Object inputElement) {
+		    return getChildren(inputElement);
+		 }
+
+		@Override
+		 public boolean hasChildren(Object element) {
+		    if (getChildren(element).length > 0) {
+		       return true;
+		    }
+		    return false;
+		 }
+
+		@Override
+		 public Object getParent(Object element) {
+		    if (element instanceof IResource) {
+		       return ((IResource) element).getParent();
+		    }
+		    return null;
+		 }
+
+		@Override
+		 public Object[] getChildren(Object parentElement) {
+		    if (parentElement instanceof IFolder) {
+		       ArrayList<IResource> list = new ArrayList<IResource>();
+		       try {
+		          for (IResource resource : ((IFolder) parentElement).members()) {
+		             if (resource instanceof IFolder) {
+		                list.add(resource);
+		             }
+		          }
+		       }
+		       catch (CoreException e) {
+		          SysUtils.debug(e);
+		       }
+		       return list.toArray();
+		    }
+		    else if (parentElement instanceof IProject) {
+
+		       ArrayList<IResource> list = new ArrayList<IResource>();
+		       try {
+		          for (IResource resource : ((IProject) parentElement).members()) {
+		             if (resource instanceof IFolder) {
+		                list.add(resource);
+		             }
+		          }
+		       }
+		       catch (CoreException e) {
+		          SysUtils.debug(e);
+		       }
+		       return list.toArray();
+		    }
+		    return new Object[] {};
+		 }
+	}
+
    private Group                     group                     = null;
    private List                      list                      = null;
    private Button                    addButton                 = null;
    private Group                     group1                    = null;
-   private Text                      text                      = null;
-   private Button                    outputBrowseButton        = null;
+   private Text                      pkgOutputText             = null;
+   private Button                    pkgOutputBrowseButton     = null;
+   private Text                      binOutputText             = null;
+   private Button                    binOutputBrowseButton     = null;
    private Button                    removeButton              = null;
    private TabFolder                 tabFolder                 = null;
    private Composite                 sourceComposite           = null;
@@ -57,7 +125,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
    private Button                    removeLibraryButton       = null;
    private ProjectBuildConfiguration projectBuildConfiguration = null;
 
-   private boolean                   outputFolderOk            = true;
+   private boolean                   outputFoldersOk            = true;
 
    /**
     * @param parent
@@ -242,87 +310,23 @@ public class ProjectBuildConfigurationComposite extends Composite {
       group1.setText("Output Folder");
       group1.setLayoutData(gridData22);
       group1.setLayout(gridLayout2);
-      text = new Text(group1, SWT.BORDER);
-      text.setText(Environment.INSTANCE.getOutputFolder());
-      text.addModifyListener(new ModifyListener() {
+      pkgOutputText = new Text(group1, SWT.BORDER);
+      pkgOutputText.setText(Environment.INSTANCE.getPkgOutputFolder().toOSString());
+      pkgOutputText.addModifyListener(new ModifyListener() {
 
          @Override
          public void modifyText(ModifyEvent e) {
             validate();
          }
       });
-      text.setLayoutData(gridData5);
-      outputBrowseButton = new Button(group1, SWT.NONE);
-      outputBrowseButton.setText("Browse...");
-      outputBrowseButton.setLayoutData(gridData3);
-      outputBrowseButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+      pkgOutputText.setLayoutData(gridData5);
+      pkgOutputBrowseButton = new Button(group1, SWT.NONE);
+      pkgOutputBrowseButton.setText("Browse...");
+      pkgOutputBrowseButton.setLayoutData(gridData3);
+      pkgOutputBrowseButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             FolderSelectionDialog dialog = new FolderSelectionDialog(Environment.INSTANCE.getShell(),
-                  new WorkbenchLabelProvider(), new ITreeContentProvider() {
-
-                     @Override
-                     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-                     }
-
-                     @Override
-                     public void dispose() {
-                     }
-
-                     @Override
-                     public Object[] getElements(Object inputElement) {
-                        return getChildren(inputElement);
-                     }
-
-                     @Override
-                     public boolean hasChildren(Object element) {
-                        if (getChildren(element).length > 0) {
-                           return true;
-                        }
-                        return false;
-                     }
-
-                     @Override
-                     public Object getParent(Object element) {
-                        if (element instanceof IResource) {
-                           return ((IResource) element).getParent();
-                        }
-                        return null;
-                     }
-
-                     @Override
-                     public Object[] getChildren(Object parentElement) {
-                        if (parentElement instanceof IFolder) {
-                           ArrayList<IResource> list = new ArrayList<IResource>();
-                           try {
-                              for (IResource resource : ((IFolder) parentElement).members()) {
-                                 if (resource instanceof IFolder) {
-                                    list.add(resource);
-                                 }
-                              }
-                           }
-                           catch (CoreException e) {
-                              SysUtils.debug(e);
-                           }
-                           return list.toArray();
-                        }
-                        else if (parentElement instanceof IProject) {
-
-                           ArrayList<IResource> list = new ArrayList<IResource>();
-                           try {
-                              for (IResource resource : ((IProject) parentElement).members()) {
-                                 if (resource instanceof IFolder) {
-                                    list.add(resource);
-                                 }
-                              }
-                           }
-                           catch (CoreException e) {
-                              SysUtils.debug(e);
-                           }
-                           return list.toArray();
-                        }
-                        return new Object[] {};
-                     }
-                  });
+                  new WorkbenchLabelProvider(), new TreeContentProvider());
 
             dialog.setTitle("Output Folder Selection");
             dialog.setMessage("Select the output folders from the tree:");
@@ -337,7 +341,42 @@ public class ProjectBuildConfigurationComposite extends Composite {
                IFolder folder = ((IFolder) obj);
                String str = folder.getProjectRelativePath().toString();
                outputFolderName.add(str);
-               text.setText(str);
+               pkgOutputText.setText(str);
+            }            
+         }
+      });
+      binOutputText = new Text(group1, SWT.BORDER);
+      binOutputText.setText(Environment.INSTANCE.getBinOutputFolder().toOSString());
+      binOutputText.addModifyListener(new ModifyListener() {
+
+         @Override
+         public void modifyText(ModifyEvent e) {
+            validate();
+         }
+      });
+      binOutputText.setLayoutData(gridData5);
+      binOutputBrowseButton = new Button(group1, SWT.NONE);
+      binOutputBrowseButton.setText("Browse...");
+      binOutputBrowseButton.setLayoutData(gridData3);
+      binOutputBrowseButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+            FolderSelectionDialog dialog = new FolderSelectionDialog(Environment.INSTANCE.getShell(),
+                  new WorkbenchLabelProvider(), new TreeContentProvider());
+
+            dialog.setTitle("Output Folder Selection");
+            dialog.setMessage("Select the output folders from the tree:");
+
+            dialog.setInput(Environment.INSTANCE.getCurrentProject());
+            dialog.open();
+            Object[] results = dialog.getResult();
+
+            ArrayList<String> outputFolderName = new ArrayList<String>();
+
+            for (Object obj : results) {
+               IFolder folder = ((IFolder) obj);
+               String str = folder.getProjectRelativePath().toString();
+               outputFolderName.add(str);
+               binOutputText.setText(str);
             }            
          }
       });
@@ -347,17 +386,21 @@ public class ProjectBuildConfigurationComposite extends Composite {
     * Check the data and set the dialog state correctly
     */
    private void validate() {
-      IResource resource = Environment.INSTANCE.getCurrentProject().findMember(text.getText());
-      if (resource == null) {
-         projectBuildConfiguration.setErrorMessage(text.getText() + " is not a valid path...");
-         outputFolderOk = false;
+      IResource pkgResource = Environment.INSTANCE.getCurrentProject().findMember(pkgOutputText.getText());
+      IResource binResource = Environment.INSTANCE.getCurrentProject().findMember(binOutputText.getText());
+      if (pkgResource == null) {
+    	  projectBuildConfiguration.setErrorMessage(pkgOutputText.getText() + " is not a valid path...");
+    	  outputFoldersOk = false;
+      } else if (binResource == null) {
+    	  projectBuildConfiguration.setErrorMessage(binOutputText.getText() + " is not a valid path...");
+    	  outputFoldersOk = false;
       }
       else {
          projectBuildConfiguration.setErrorMessage(null);
-         outputFolderOk = true;
+    	  outputFoldersOk = true;
       }
 
-      if (outputFolderOk) {
+      if (outputFoldersOk) {
          projectBuildConfiguration.setValid(true);
       }
       else {
@@ -525,8 +568,16 @@ public class ProjectBuildConfigurationComposite extends Composite {
     * 
     * @return
     */
-   public String getOutputFolder() {
-      return text.getText();
+   public String getPkgOutputFolder() {
+      return pkgOutputText.getText();
+   }
+   /**
+    * Return the input folder given
+    * 
+    * @return
+    */
+   public String getBinOutputFolder() {
+      return binOutputText.getText();
    }
 
 } // @jve:decl-index=0:visual-constraint="10,10"

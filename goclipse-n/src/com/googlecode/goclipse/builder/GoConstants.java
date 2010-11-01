@@ -16,13 +16,16 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GoConstants {
 	public static final String GO_SOURCE_FILE_EXTENSION = ".go";
+	public static final String GO_LIBRARY_FILE_EXTENSION = ".a";
 
-	public static final String OBJ_FILE_DIRECTORY       = "obj";
+	public static final String OBJ_FILE_DIRECTORY       = "_obj";
+	public static final String TEST_FILE_DIRECTORY      = "_test";
 	public static final String EXE_FILE_DIRECTORY       = "out";
 	public static final String COMPILER_OPTION_I = "-I";
 	public static final String COMPILER_OPTION_L = "-L";
 	public static final String COMPILER_OPTION_O = "-o";
 	public static final String COMPILER_OPTION_E = "-e";
+	public static final String PACKER_OPTIONS_GRC = "grc";
 
 	public static final String GOROOT = "GOROOT";
 	public static final String GOARCH = "GOARCH";

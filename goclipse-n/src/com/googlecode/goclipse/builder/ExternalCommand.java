@@ -71,6 +71,9 @@ public class ExternalCommand {
 	 * @return
 	 */
 	public String execute(List<String> parameters) {
+		return execute(parameters, false);
+	}
+	public String execute(List<String> parameters, boolean exitStatusIsError) {
 		String rez = null;
 		try {
 			args.clear();
@@ -95,11 +98,13 @@ public class ExternalCommand {
 				processOutput.join();
 				processError.join();
 			}
-//
-//			int exitValue = p.waitFor();
-//			if (exitValue != 0){
-//				rez = this.command+" completed with non-zero exit value ("+exitValue+")";
-//			}
+
+			if (exitStatusIsError) {
+				int exitValue = p.waitFor();
+				if (exitValue != 0){
+					rez = this.command+" completed with non-zero exit value ("+exitValue+")";
+				}
+			}
 			//done
 		}catch(Exception e) {
 			e.printStackTrace();

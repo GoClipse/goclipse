@@ -1,5 +1,6 @@
 package com.googlecode.goclipse.properties;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -54,9 +55,14 @@ public class ProjectBuildConfiguration extends PropertyPage {
 			Environment.INSTANCE.setSourceFolders(sourcefolders);
 		}
 
-		String outputfolder = composite.getOutputFolder();
-		if (outputfolder != null) {
-			Environment.INSTANCE.setOutputFolder(outputfolder);
+		String pkgOutputfolder = composite.getPkgOutputFolder();
+		if (pkgOutputfolder != null) {
+			Environment.INSTANCE.setPkgOutputFolder(Path.fromOSString(pkgOutputfolder));
+		}
+
+		String binOutputfolder = composite.getBinOutputFolder();
+		if (binOutputfolder != null) {
+			Environment.INSTANCE.setBinOutputFolder(Path.fromOSString(binOutputfolder));
 		}
 		
 		return true;

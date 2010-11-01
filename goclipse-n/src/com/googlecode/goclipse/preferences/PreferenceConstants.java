@@ -18,6 +18,7 @@ public class PreferenceConstants {
 	
 	public static final String COMPILER_PATH   = "com.googlecode.goclipse.compiler.path";
 	public static final String LINKER_PATH 	   = "com.googlecode.goclipse.linker.path";
+	public static final String PACKER_PATH 	   = "com.googlecode.goclipse.packer.path";
 	public static final String FORMATTER_PATH  = "com.googlecode.goclipse.formatter.path";
 	public static final String TESTER_PATH     = "com.googlecode.goclipse.tester.path";
 	public static final String DOCUMENTOR_PATH = "com.googlecode.goclipse.documentor.path";
@@ -35,6 +36,7 @@ public class PreferenceConstants {
 	public static final String ARCH_ARM = "arm";
 	public static final String ARCH_386 = "386";
 	public static final String ARCH_AMD64 = "amd64";
+
 
 	
 }

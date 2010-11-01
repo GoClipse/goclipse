@@ -25,6 +25,7 @@ import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 import org.eclipse.ui.navigator.IExtensionStateModel;
 
+import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoNature;
 
 /**
@@ -45,8 +46,8 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 			IWorkspaceRoot root = (IWorkspaceRoot) parentElement;
 			return root.getProjects();
 		} else if (parentElement instanceof IProject) {
-			return new Object[] { new GoSourceFolder(((IProject) parentElement)
-					.getFolder("src")) };// TODO
+			IFolder srcFolder = ((IProject)parentElement).getFolder("src");
+			return new Object[] { new GoSourceFolder(srcFolder.getFolder("pkg")), new GoSourceFolder(srcFolder.getFolder("cmd")) };
 		} else if (parentElement instanceof IGoSourceContainer) {
 			IGoSourceContainer srcCont = (IGoSourceContainer) parentElement;
 			GoPackage pkg = null;
@@ -65,10 +66,12 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 				baseFolder.refreshLocal(3, new NullProgressMonitor());
 				for (IResource res : baseFolder.members()) {
 					if (res instanceof IFolder) {
-						IFolder folder = (IFolder) res;
-						GoPackage new_package = new GoPackage(sourceFolder,
+						if (!res.getProjectRelativePath().lastSegment().startsWith("_")){
+							IFolder folder = (IFolder) res;
+							GoPackage new_package = new GoPackage(sourceFolder,
 								pkg, folder);
-						result.add(new_package);
+							result.add(new_package);
+						}
 					} else {
 						result.add(res);
 					}
@@ -156,39 +159,40 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 		final int eventType = event.getType();
 		//IResource resource = event.getResource();
 		IResourceDelta delta = event.getDelta();
-		int kind = delta.getKind();
-
+		if (delta != null){
+			int kind = delta.getKind();
 	
-		if (eventType == IResourceChangeEvent.POST_CHANGE
-				&& kind == IResourceDelta.CHANGED) {
-			ArrayList<IResource> addedResources = new ArrayList<IResource>();
-			findAddedResource(delta, addedResources);
-			final ArrayList<IProject> goProjects = new ArrayList<IProject>();
-			for (IResource addedResource : addedResources) {
-				IProject project = addedResource.getProject();
-				try {
-					if (!goProjects.contains(project)
-							&& project.hasNature(GoNature.NATURE_ID)) {
-						goProjects.add(project);
-					}
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
-
-			}
-
-			if (!goProjects.isEmpty()) {
-				Display.getDefault().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						for (IProject project : goProjects) {
-							viewer.refresh(project, true);
+		
+			if (eventType == IResourceChangeEvent.POST_CHANGE
+					&& kind == IResourceDelta.CHANGED) {
+				ArrayList<IResource> addedResources = new ArrayList<IResource>();
+				findAddedResource(delta, addedResources);
+				final ArrayList<IProject> goProjects = new ArrayList<IProject>();
+				for (IResource addedResource : addedResources) {
+					IProject project = addedResource.getProject();
+					try {
+						if (!goProjects.contains(project)
+								&& project.hasNature(GoNature.NATURE_ID)) {
+							goProjects.add(project);
 						}
+					} catch (CoreException e) {
+						e.printStackTrace();
 					}
-				});
+	
+				}
+	
+				if (!goProjects.isEmpty()) {
+					Display.getDefault().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							for (IProject project : goProjects) {
+								viewer.refresh(project, true);
+							}
+						}
+					});
+				}
 			}
 		}
-
 	}
 
 	private void findAddedResource(IResourceDelta delta,

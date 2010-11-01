@@ -7,6 +7,7 @@ import (
 	"flag"
 	"go/parser"
 	"go/token"
+	"os"
 )
 func main() {
 	flag.Parse()
@@ -32,5 +33,6 @@ func main() {
 		}
 	} else {
 		fmt.Printf("- %v\n", error)
+		os.Exit(-1)
 	}
 }

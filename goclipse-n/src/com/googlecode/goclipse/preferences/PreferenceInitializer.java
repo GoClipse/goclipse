@@ -78,6 +78,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		return platformChar+"l"+(Util.isWindows()?".exe":"");
 	}
 	
+	public static String getDefaultPackerName() {
+		return "gopack"+(Util.isWindows()?".exe":"");
+	}
+
 	public static String getDefaultGotestName() {
 		return "gotest" +(Util.isWindows()?".exe":"");
 	}

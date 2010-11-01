@@ -13,6 +13,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -121,24 +122,25 @@ public class NewProjectWizard extends Wizard implements INewWizard, IWizard {
 					   window = workBench.getActiveWorkbenchWindow();
 					}
 					
-					/**
-					 * 
-					 */
-					IFolder srcfolder = project.getFolder("src");
-					if(!srcfolder.exists()){
-					   srcfolder.create(true, true, null);
-					}
-					Environment.INSTANCE.setSourceFolders(project, new String[]{"src"});
+					IFolder srcPkgFolder = project.getFolder("src/pkg");
+					srcPkgFolder.getRawLocation().toFile().mkdirs();
+
+					IFolder srcCmdFolder = project.getFolder("src/cmd");
+					srcCmdFolder.getRawLocation().toFile().mkdirs();
+
+					Environment.INSTANCE.setSourceFolders(project, new String[]{"src/pkg", "src/cmd"});
 					
 					/**
 					 * 
 					 */
-					IFolder binfolder = project.getFolder(Environment.DEFAULT_PROJECT_OUTPUT_FOLDER);
-               if(!binfolder.exists()){
-                  binfolder.create(true, true, null);
-               }
+					IFolder binFolder = project.getFolder(Environment.INSTANCE.getBinOutputFolder(project));
+					binFolder.getRawLocation().toFile().mkdirs();
+					
+					IFolder pkgFolder = project.getFolder(Environment.INSTANCE.getPkgOutputFolder(project));
+					pkgFolder.getRawLocation().toFile().mkdirs();
                
-               Environment.INSTANCE.setOutputFolder(project, Environment.DEFAULT_PROJECT_OUTPUT_FOLDER);
+	               Environment.INSTANCE.setBinOutputFolder(project, binFolder.getProjectRelativePath());
+	               Environment.INSTANCE.setPkgOutputFolder(project, pkgFolder.getProjectRelativePath());
 					
 				} catch (CoreException e) {
 				   SysUtils.debug(e);
@@ -262,4 +264,5 @@ public class NewProjectWizard extends Wizard implements INewWizard, IWizard {
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.selection = selection;
 	}
+
 }

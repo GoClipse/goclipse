@@ -3,9 +3,12 @@ package com.googlecode.goclipse.builder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -15,21 +18,15 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.PreferenceDialog;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.SysUtils;
-import com.googlecode.goclipse.preferences.GoPreferencePage;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
-import com.googlecode.goclipse.preferences.PreferenceInitializer;
+import com.googlecode.goclipse.dependency.IDependencyVisitor;
 
 /**
  * 
@@ -41,6 +38,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	Map<String, String> goEnv = new HashMap<String, String>();
 	private GoDependencyManager dependencyManager;
 	private GoCompiler compiler;
+	private GoLinker linker;
+	private GoPacker packer;
 
 	class CollectResourceDeltaVisitor implements IResourceDeltaVisitor {
 		List<IResource> added = new ArrayList<IResource>();
@@ -58,7 +57,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			// SysUtils.debug("visit");
 
 			IResource resource = delta.getResource();
-			if (resource instanceof IFile && resource.getName().endsWith(".go")) {
+			if (resource instanceof IFile && resource.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)) {
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
 					// handle added resource
@@ -157,7 +156,13 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				dependencyManager = new GoDependencyManager();
 			}
 			if (compiler == null){
-				compiler = new GoCompiler(dependencyManager);
+				compiler = new GoCompiler();
+			}
+			if (linker == null){
+				linker = new GoLinker();
+			}
+			if (packer == null){
+				packer = new GoPacker();
 			}
 		}
 	}
@@ -165,7 +170,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	protected void fullBuild(final IProgressMonitor pmonitor)
 			throws CoreException {
 		SysUtils.debug("fullBuild");
-		SubMonitor monitor = SubMonitor.convert(pmonitor, 250);
+		final SubMonitor monitor = SubMonitor.convert(pmonitor, 250);
 
 		CollectResourceVisitor crv = new CollectResourceVisitor();
 		getProject().accept(crv);
@@ -176,13 +181,68 @@ public class GoBuilder extends IncrementalProjectBuilder {
 														// everything should be
 														// compiled
 		dependencyManager.clearState(monitor.newChild(10));
-		compiler.remove(toCompile, getProject(), monitor.newChild(100));
-		dependencyManager.buildDep(toCompile, monitor.newChild(40));
-		List<String> allPaths = dependencyManager.getDirectDep(toCompile, null, true);
-		compiler.compile(allPaths, getProject(), monitor.newChild(100));
+		clean(monitor.newChild(10));
+		dependencyManager.buildDep(crv.getCollectedResources(), monitor.newChild(40));
+		doBuild(null, monitor);
 		SysUtils.debug("fullBuild - done");
 	}
 
+	private void doBuild(Set<String> fileList, final SubMonitor monitor) {
+		dependencyManager.accept(fileList, new IDependencyVisitor() {
+			@Override
+			public void visit(String aTarget, String... dependencies) {
+				IProject project = getProject();
+				if (isCompile(aTarget, dependencies)) {
+					ensureFolderExists(project, aTarget);
+					compiler.compile(project, monitor.newChild(100), aTarget, dependencies);
+				} else if (isLibArchive(aTarget, dependencies)) {
+					packer.createArchive(project, monitor.newChild(100), aTarget, dependencies);
+				} else if (dependencies.length > 0) {
+					// assume it's an executable compile
+					linker.createExecutable(project, aTarget, dependencies);
+				}
+			}
+
+
+		});
+	}
+
+	private boolean isCompile(String aTarget, String[] dependencies) {
+		if (dependencies.length == 0){
+			return false;
+		}
+		for (String dep : dependencies) {
+			if (!(dep.endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION) || dep.endsWith(GoConstants.GO_LIBRARY_FILE_EXTENSION))) {
+				return false;
+			}
+		}
+		String ext = Environment.INSTANCE.getArch().getExtension();
+		return aTarget.endsWith(ext);
+	}
+
+	private boolean isLibArchive(String aTarget, String[] dependencies) {
+		if (dependencies.length == 0){
+			return false;
+		}
+		String ext = Environment.INSTANCE.getArch().getExtension();
+		for (String dep : dependencies) {
+			if (!dep.endsWith(ext)){
+				return false;
+			}
+		}
+		return aTarget.endsWith(GoConstants.GO_LIBRARY_FILE_EXTENSION);
+	}
+
+	private void ensureFolderExists(IProject project, String aTarget) {
+		IPath file = project.getFile(aTarget).getRawLocation();
+		IPath parentFolder = file.removeLastSegments(1);
+		File parentFile = parentFolder.toFile();
+		if (!parentFile.exists()){
+			parentFile.mkdirs();
+		}
+	}
+
+	
 	protected void incrementalBuild(IResourceDelta delta,
 			IProgressMonitor pmonitor) throws CoreException {
 		SysUtils.debug("incrementalBuild");
@@ -196,17 +256,20 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		List<IResource> toRemove = crdv.getRemoved();
 		//get a snapshot of dependencies for toRemove
 		//dependencies will be sent to compile
-		List<String> tc = dependencyManager.getDirectDep(toRemove, null, false);
-		compiler.remove(crdv.getRemoved(), getProject(), monitor.newChild(50));
-		dependencyManager.removeDep(toRemove, monitor.newChild(10));
-
+		dependencyManager.removeDep(toRemove, pmonitor);
+		
 		// compile
-		List<IResource> toCompile = new ArrayList<IResource>();
-		toCompile.addAll(crdv.getAdded());
-		toCompile.addAll(crdv.getChanged());
-		dependencyManager.buildDep(toCompile, monitor.newChild(10));
-		List<String> allPaths = dependencyManager.getDirectDep(toCompile, tc, true);
-		compiler.compile(allPaths, getProject(), monitor.newChild(100));
+		List<IResource> resourcesToCompile = new ArrayList<IResource>();
+		resourcesToCompile.addAll(crdv.getAdded());
+		resourcesToCompile.addAll(crdv.getChanged());
+		dependencyManager.buildDep(resourcesToCompile, monitor.newChild(10));
+
+		Set<String> toCompile = new HashSet<String>();
+		for (IResource res : resourcesToCompile) {
+			toCompile.add(res.getProjectRelativePath().toOSString());
+		}
+		
+		doBuild(toCompile, monitor);
 		SysUtils.debug("incrementalBuild - done");
 	}
 
@@ -217,14 +280,41 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		SysUtils.debug("cleaning project");
-		getProject().deleteMarkers(IMarker.PROBLEM, false,
+		IProject project = getProject();
+		project.deleteMarkers(IMarker.PROBLEM, false,
 				IResource.DEPTH_INFINITE);
-		String outPath = Environment.INSTANCE.getOutputFolder(getProject());
-		File outFolder = new File(getProject().getLocation().append(outPath).toOSString());
-		if (outFolder.exists()) {
-			deleteFolder(outFolder, true);
+		IPath binPath = Environment.INSTANCE.getBinOutputFolder(project);
+		File binFolder = new File(project.getLocation().append(binPath).toOSString());
+		if (binFolder.exists()) {
+			deleteFolder(binFolder, true);
 		}
-		getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+		IPath pkgPath = Environment.INSTANCE.getPkgOutputFolder(project);
+		File pkgFolder = new File(project.getLocation().append(pkgPath).toOSString());
+		if (pkgFolder.exists()) {
+			deleteFolder(pkgFolder, true);
+		}
+		
+		project.accept(new IResourceVisitor() {
+			@Override
+			public boolean visit(IResource resource) throws CoreException {
+				IPath relativePath = resource.getProjectRelativePath();
+				Environment instance = Environment.INSTANCE;
+				String lastSegment = relativePath.lastSegment();
+				IPath rawLocation = resource.getRawLocation();
+				if (rawLocation != null) {
+					File file = rawLocation.toFile();
+					if (file.exists() && file.isDirectory() &&
+						(instance.isCmdFile(relativePath) || instance.isPkgFile(relativePath)) 
+						&& (lastSegment.equals(GoConstants.OBJ_FILE_DIRECTORY) || lastSegment.equals(GoConstants.TEST_FILE_DIRECTORY)))
+					{
+						deleteFolder(file, true);
+					}
+				}
+				return resource instanceof IContainer;
+			}
+		}, IResource.DEPTH_INFINITE, false);
+		
+		project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 	}
 
 	private boolean deleteFolder(File f, boolean justContents) {

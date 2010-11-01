@@ -38,6 +38,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements
 	private ComboFieldEditor goarchEditor;
 	private FileFieldEditor compilerEditor;
 	private FileFieldEditor linkerEditor;
+	private FileFieldEditor packerEditor;
 	private FileFieldEditor formatterEditor;
 	private FileFieldEditor testerEditor;
 
@@ -67,6 +68,9 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements
 		
 		addField(linkerEditor = new FileFieldEditor(PreferenceConstants.LINKER_PATH,
 				"Go &Linker path:", getFieldEditorParent()));
+
+		addField(packerEditor = new FileFieldEditor(PreferenceConstants.PACKER_PATH,
+				"Go &Packer path:", getFieldEditorParent()));
 		
 		addField(formatterEditor = new FileFieldEditor(PreferenceConstants.FORMATTER_PATH,
 				"&Code formatter path (gofmt):", getFieldEditorParent()));
@@ -113,7 +117,15 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements
 							linkerEditor.setStringValue(linkerFile.getAbsolutePath());
 						}
 					}
-					
+
+					if ("".equals(packerEditor.getStringValue())) {
+						IPath packerPath = binPath.append(PreferenceInitializer.getDefaultPackerName());
+						File packerFile = packerPath.toFile();
+						if (packerFile.exists() && ! packerFile.isDirectory()){
+							packerEditor.setStringValue(packerFile.getAbsolutePath());
+						}
+					}
+
 					if ("".equals(formatterEditor.getStringValue())) {
 						String goFmtName = PreferenceInitializer.getDefaultGofmtName();
 						IPath formatterPath = binPath.append(goFmtName);

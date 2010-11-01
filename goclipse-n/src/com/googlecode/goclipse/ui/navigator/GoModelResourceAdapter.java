@@ -3,6 +3,9 @@ package com.googlecode.goclipse.ui.navigator;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IAdapterFactory;
 
+import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.SysUtils;
+
 /**
  * 
  * @author Mihailo Vasiljevic
@@ -16,7 +19,9 @@ public class GoModelResourceAdapter implements IAdapterFactory {
 				
 		if (adaptableObject instanceof IFolder) {
 			IFolder f = (IFolder) adaptableObject;
-			if (f.getName().equals("src")) {
+			if (Environment.INSTANCE.isCmdFile(f.getProjectRelativePath()) ||
+					Environment.INSTANCE.isPkgFile(f.getProjectRelativePath()))
+			{
 				return new GoSourceFolder(f);
 			}
 			return null;

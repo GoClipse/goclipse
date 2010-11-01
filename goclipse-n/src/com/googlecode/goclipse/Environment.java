@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -58,8 +59,11 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
 public class Environment {
 
 	private static final String PROJECT_SOURCE_FOLDERS = "com.googlecode.goclipse.environment.source.folders";
-	private static final String PROJECT_OUTPUT_FOLDERS = "com.googlecode.goclipse.environment.output.folders";
-	public static final String DEFAULT_PROJECT_OUTPUT_FOLDER = "bin";
+	private static final String PROJECT_PKG_OUTPUT_FOLDERS = "com.googlecode.goclipse.environment.pkg.output.folders";
+	private static final String PROJECT_BIN_OUTPUT_FOLDERS = "com.googlecode.goclipse.environment.bin.output.folders";
+
+	public static final String DEFAULT_PKG_OUTPUT_FOLDER = "pkg";
+	public static final String DEFAULT_BIN_OUTPUT_FOLDER = "bin";
 
 	public static final boolean DEBUG = true;
 	public static final Environment INSTANCE = new Environment();
@@ -504,33 +508,118 @@ public class Environment {
 	/**
 	 * Set the output folder for the active project
 	 */
-	public void setOutputFolder(String outputFolder) {
-		setOutputFolder(getCurrentProject(), outputFolder);
+	public void setPkgOutputFolder(IPath outputFolder) {
+		setPkgOutputFolder(getCurrentProject(), outputFolder);
 	}
 
 	/**
 	 * Set the output folder for the given project
 	 */
-	public void setOutputFolder(IProject project, String outputFolder) {
+	public void setPkgOutputFolder(IProject project, IPath outputFolder) {
 		Properties properties = getProperties(project);
-		properties.setProperty(PROJECT_OUTPUT_FOLDERS, outputFolder);
+		properties.setProperty(PROJECT_PKG_OUTPUT_FOLDERS, outputFolder.toOSString());
 		saveProperties(project);
 	}
 
 	/**
 	 * Return the output folder for the active project
 	 */
-	public String getOutputFolder() {
-		return getOutputFolder(getCurrentProject());
+	public IPath getPkgOutputFolder() {
+		return getPkgOutputFolder(getCurrentProject());
 	}
 
 	/**
 	 * Return the output folder for the active project
 	 */
-	public String getOutputFolder(IProject project) {
+	public IPath getPkgOutputFolder(IProject project) {
 		Properties properties = getProperties(project);
-		String str = properties.getProperty(PROJECT_OUTPUT_FOLDERS);
-		return str == null ? DEFAULT_PROJECT_OUTPUT_FOLDER : str;
+		String property = properties.getProperty(PROJECT_PKG_OUTPUT_FOLDERS);
+		if (property == null) {
+			return getDefaultPkgOutputFolder();
+		} else {
+			IPath path = Path.fromOSString(property);
+			return path;
+		}
+	}
+
+	private IPath getDefaultPkgOutputFolder() {
+		String goarch = Activator.getDefault().getPreferenceStore()
+		.getString(PreferenceConstants.GOARCH);
+		String goos = Activator.getDefault().getPreferenceStore()
+		.getString(PreferenceConstants.GOOS);
+		return Path.fromOSString(DEFAULT_PKG_OUTPUT_FOLDER).append(goos+"_"+goarch);
+	}
+
+	/**
+	 * Set the output folder for the active project
+	 */
+	public void setBinOutputFolder(IPath outputFolder) {
+		setBinOutputFolder(getCurrentProject(), outputFolder);
+	}
+
+	/**
+	 * Set the output folder for the given project
+	 */
+	public void setBinOutputFolder(IProject project, IPath outputFolder) {
+		Properties properties = getProperties(project);
+		properties.setProperty(PROJECT_BIN_OUTPUT_FOLDERS, outputFolder.toOSString());
+		saveProperties(project);
+	}
+
+	/**
+	 * Return the output folder for the active project
+	 */
+	public IPath getBinOutputFolder() {
+		return getBinOutputFolder(getCurrentProject());
+	}
+
+	/**
+	 * Return the output folder for the active project
+	 */
+	public IPath getBinOutputFolder(IProject project) {
+		Properties properties = getProperties(project);
+		String property = properties.getProperty(PROJECT_BIN_OUTPUT_FOLDERS);
+		if (property == null) {
+			String goarch = Activator.getDefault().getPreferenceStore()
+			.getString(PreferenceConstants.GOARCH);
+			String goos = Activator.getDefault().getPreferenceStore()
+			.getString(PreferenceConstants.GOOS);
+			return Path.fromOSString(DEFAULT_BIN_OUTPUT_FOLDER).append(goos + "_" + goarch);
+		} else {
+			IPath path = Path.fromOSString(property);
+			return path;
+		}
+	}
+
+	public IPath getDefaultCmdSourceFolder() {
+		return Path.fromOSString("src").append("cmd");
+	}
+
+	public IPath getDefaultPkgSourceFolder() {
+		return Path.fromOSString("src").append("pkg");
+	}
+
+	public boolean isStandardLibrary(IProject project, String packagePath) {
+		String libraryName = packagePath + GoConstants.GO_LIBRARY_FILE_EXTENSION;
+		String goroot = Activator.getDefault().getPreferenceStore()
+			.getString(PreferenceConstants.GOROOT);
+		
+		File libFile = Path.fromOSString(goroot).append(getDefaultPkgOutputFolder()).append(libraryName).toFile();
+		return libFile.exists();
+	}
+
+	public boolean isCmdFile(IPath path) {
+		return getDefaultCmdSourceFolder().isPrefixOf(path);
+	}
+
+	public boolean isPkgFile(IPath path) {
+		return getDefaultPkgSourceFolder().isPrefixOf(path);
+	}
+
+	public Arch getArch() {
+		String goarch = Activator.getDefault().getPreferenceStore()
+			.getString(PreferenceConstants.GOARCH);
+		return Arch.getArch(goarch);
 	}
 
 }
