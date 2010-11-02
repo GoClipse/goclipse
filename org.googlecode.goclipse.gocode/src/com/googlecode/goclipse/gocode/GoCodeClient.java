@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 
 import com.googlecode.goclipse.Activator;
@@ -14,6 +15,7 @@ import com.googlecode.goclipse.builder.ExternalCommand;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.ProcessOStreamFilter;
 import com.googlecode.goclipse.builder.StreamAsLines;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GoCodeClient {
 
@@ -23,7 +25,12 @@ public class GoCodeClient {
 	}
 	
 	public List<String> getCompletions(String fileName, final String bufferText, int offset) {
-		ExternalCommand command = new ExternalCommand("/home/gmiller/go/bin/gocode");
+		String goroot = 
+Activator.getDefault().getPreferenceStore().getString(
+				PreferenceConstants.GOROOT);
+		
+		ExternalCommand command = new 
+			ExternalCommand(Path.fromOSString(goroot).append("bin").append("gocode").toOSString());
 		StreamAsLines output = new StreamAsLines();
 		command.setResultsFilter(output);
 		command.setInputFilter(new ProcessOStreamFilter() {
