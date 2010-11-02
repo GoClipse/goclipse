@@ -1,14 +1,14 @@
 package com.googlecode.goclipse.editors;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.internal.text.html.BrowserInformationControl;
-import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
-import org.eclipse.jface.text.IWidgetTokenKeeper;
-import org.eclipse.jface.text.IWidgetTokenOwner;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
@@ -19,14 +19,10 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
+
+import com.googlecode.goclipse.Activator;
 
 /**
  * @author steel
@@ -123,11 +119,27 @@ public class Configuration extends SourceViewerConfiguration {
          }
       });
 
-      IContentAssistProcessor cap = new CompletionProcessor();
+      IContentAssistProcessor cap = getCompletionProcessor();
       ca.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
 //      ca.setInformationControlCreator(getInformationControlCreator(sv));
       return ca;
    }
+
+private IContentAssistProcessor getCompletionProcessor() {
+	IConfigurationElement[] config = Platform.getExtensionRegistry()
+		.getConfigurationElementsFor(Activator.CONTENT_ASSIST_EXTENSION_ID);
+	try {
+		for (IConfigurationElement e : config) {
+			final Object o = e.createExecutableExtension("class");
+			if (o instanceof IContentAssistProcessor) {
+				return (IContentAssistProcessor)o;
+			}
+		}
+	} catch (CoreException ex) {
+		// do nothing
+	}
+	return new CompletionProcessor();
+}
 
    /**
     * 

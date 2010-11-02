@@ -63,7 +63,7 @@ public class CompletionProcessor implements IContentAssistProcessor {
 	   
 	}
 	
-	private String lastWord(IDocument doc, int offset) {
+	public static String lastWord(IDocument doc, int offset) {
       try {
          for (int n = offset-1; n >= 0; n--) {
            char c = doc.getChar(n);
@@ -76,7 +76,7 @@ public class CompletionProcessor implements IContentAssistProcessor {
       return "";
    }
 	
-	private String lastIndent(IDocument doc, int offset) {
+	public static String lastIndent(IDocument doc, int offset) {
       try {
          int start = offset-1; 
          while (start >= 0 && doc.getChar(start)!= '\n') start--;
