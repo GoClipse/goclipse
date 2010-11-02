@@ -135,7 +135,7 @@ public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate
 				} else {
 					executablePath = Path.fromOSString(executableName);
 				}
-				String cmdLine = executablePath.toOSString();
+				String cmdLine = exeBase.append(executablePath).toOSString();
 				String workingDirectory = exeBase.toOSString();
 				List<String> args = new ArrayList<String>();
 				args.add(cmdLine);
@@ -173,8 +173,13 @@ public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate
 	 * @return
 	 */
 	private List<String> argsAsList(String prgArgs) {
-		System.out.println(prgArgs);
 		List<String> argList = new ArrayList<String>();
+
+		if (prgArgs == null || prgArgs.trim().length() == 0) {
+			return argList;
+		}
+		
+		System.out.println(prgArgs);
 		boolean inQuote = false;
 		boolean escape = false;
 		StringBuffer arg = new StringBuffer();
