@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Auto Complete with GoCode
+Bundle-SymbolicName: com.googlecode.goclipse.gocode;singleton:=true
+Bundle-Version: 0.0.16
+Bundle-Activator: com.googlecode.goclipse.gocode.Activator
+Bundle-Vendor: goclipse dev team
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ goclipse,
+ org.eclipse.jface.text
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
