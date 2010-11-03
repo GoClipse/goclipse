@@ -357,4 +357,5 @@
       </launchConfigurationTypeImage>
    </extension>
 
+   <extension-point id="com.googlecode.goclipse.contentassistprocessor" name="Content Assist Processor" schema="schema/com.googlecode.goclipse.contentassistprocessor.exsd"/>
 </plugin>

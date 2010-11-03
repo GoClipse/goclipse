@@ -192,19 +192,35 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			@Override
 			public void visit(String aTarget, String... dependencies) {
 				IProject project = getProject();
-				if (isCompile(aTarget, dependencies)) {
-					ensureFolderExists(project, aTarget);
-					compiler.compile(project, monitor.newChild(100), aTarget, dependencies);
-				} else if (isLibArchive(aTarget, dependencies)) {
-					packer.createArchive(project, monitor.newChild(100), aTarget, dependencies);
-				} else if (dependencies.length > 0) {
-					// assume it's an executable compile
-					linker.createExecutable(project, aTarget, dependencies);
+				if (dependenciesExist(project, dependencies)) {
+					if (isCompile(aTarget, dependencies)) {
+						ensureFolderExists(project, aTarget);
+						compiler.compile(project, monitor.newChild(100), aTarget, dependencies);
+					} else if (isLibArchive(aTarget, dependencies)) {
+						packer.createArchive(project, monitor.newChild(100), aTarget, dependencies);
+					} else if (dependencies.length > 0) {
+						// assume it's an executable compile
+						linker.createExecutable(project, aTarget, dependencies);
+					}
 				}
 			}
 
-
 		});
+	}
+
+	private boolean dependenciesExist(IProject project,
+			String[] dependencies) {
+		if (project != null){
+			for (String dependency : dependencies) {
+				IResource member = project.findMember(dependency);
+				if (member==null || !member.getRawLocation().toFile().exists()){
+					return false;
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private boolean isCompile(String aTarget, String[] dependencies) {

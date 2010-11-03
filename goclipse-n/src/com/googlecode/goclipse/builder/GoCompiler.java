@@ -105,7 +105,7 @@ public class GoCompiler {
 		 			addMarker(resource, location, str[1].trim(), -1, -1, IMarker.SEVERITY_ERROR);
 	             } else {
 	            	 //play safe. to show something in UI
-			 		addMarker(resource, 0, str[1].trim(), -1, -1, IMarker.SEVERITY_ERROR);
+			 		addMarker(resource, 0, line, -1, -1, IMarker.SEVERITY_ERROR);
 		         }
 			}         
 	             }
