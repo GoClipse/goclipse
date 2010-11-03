@@ -18,7 +18,12 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
 public class GoLinker {
 
 	void createExecutable(IProject prj, String target, String[] dependencies) {
-		IFile res = prj.getFile(target);
+		IFile res;
+		if (dependencies.length > 0){
+			res = prj.getFile(dependencies[0]);
+		} else {
+			res = prj.getFile(target);
+		}
 		final IPath prjLoc = prj.getLocation();
 
 		// do linker
