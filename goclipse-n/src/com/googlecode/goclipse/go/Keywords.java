@@ -147,6 +147,8 @@ public enum Keywords implements Comparable<Keywords>{
    PANICLN("panicln",TokenClass.BUILT_IN_FUNCTION,""), 
    PRINT("print",TokenClass.BUILT_IN_FUNCTION,""), 
    PRINTLN("println",TokenClass.BUILT_IN_FUNCTION,""),
+   APPEND("append",TokenClass.BUILT_IN_FUNCTION,""),
+   COPY("copy",TokenClass.BUILT_IN_FUNCTION,""),
    
    // KEYWORDS
    BREAK("break",TokenClass.KEYWORD,""),

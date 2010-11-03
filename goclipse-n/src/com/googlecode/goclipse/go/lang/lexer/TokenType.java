@@ -51,6 +51,8 @@ public enum TokenType{
    PANICLN("panicln"), 
    PRINT("print"), 
    PRINTLN("println"),
+   APPEND("append"),
+   COPY("copy"),
    
    // KEYWORDS
    BREAK("break"),
@@ -77,7 +79,7 @@ public enum TokenType{
    FOR("for"),          
    IMPORT("import"),       
    RETURN("return"),       
-   VAR("var"),          
+   VAR("var"),
    
    // COMMENT
    COMMENT("//"),

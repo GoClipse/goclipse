@@ -225,6 +225,12 @@ public class Tokenizer implements LexerListener {
             else if (TokenType.VAR.equals(value)) {
                type = TokenType.VAR;
             }
+            else if (TokenType.APPEND.equals(value)) {
+               type = TokenType.APPEND;
+            }
+            else if (TokenType.COPY.equals(value)) {
+               type = TokenType.COPY;
+            }
             break;
       }
       

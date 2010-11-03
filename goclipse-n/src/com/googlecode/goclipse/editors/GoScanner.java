@@ -109,6 +109,8 @@ public class GoScanner extends RuleBasedScanner {
 			keywordRule.addWord("panicln",	builtinFunction); 
 			keywordRule.addWord("print", 	   builtinFunction); 
 			keywordRule.addWord("println",	builtinFunction); 
+			keywordRule.addWord("append",      builtinFunction);
+			keywordRule.addWord("copy",      builtinFunction);
 	
 			keywordRule.addWord("nil",   value);
 			keywordRule.addWord("true",  value);
