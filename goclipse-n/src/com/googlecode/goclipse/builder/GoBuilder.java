@@ -197,6 +197,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 						ensureFolderExists(project, aTarget);
 						compiler.compile(project, monitor.newChild(100), aTarget, dependencies);
 					} else if (isLibArchive(aTarget, dependencies)) {
+						ensureFolderExists(project, aTarget);
 						packer.createArchive(project, monitor.newChild(100), aTarget, dependencies);
 					} else if (dependencies.length > 0) {
 						// assume it's an executable compile

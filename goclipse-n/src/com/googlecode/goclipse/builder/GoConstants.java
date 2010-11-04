@@ -20,6 +20,7 @@ public class GoConstants {
 
 	public static final String OBJ_FILE_DIRECTORY       = "_obj";
 	public static final String TEST_FILE_DIRECTORY      = "_test";
+	public static final String GO_TEST_MAIN = "_testmain"+GO_SOURCE_FILE_EXTENSION;
 	public static final String EXE_FILE_DIRECTORY       = "out";
 	public static final String COMPILER_OPTION_I = "-I";
 	public static final String COMPILER_OPTION_L = "-L";
@@ -74,4 +75,5 @@ public class GoConstants {
 	      conMan.addConsoles(new IConsole[]{myConsole});
 	      return myConsole;
 	   }
+
 }

@@ -19,7 +19,12 @@ public class GoPacker {
 
 	void createArchive(IProject prj, 
 			IProgressMonitor pmonitor, String target, String[] dependencies) {
-		IFile res = prj.getFile(target);
+		IFile res;
+		if (dependencies.length > 0){
+			res = prj.getFile(dependencies[0]);
+		} else {
+			res = prj.getFile(target);
+		}
 		final IPath prjLoc = prj.getLocation();
 
 		String packerPath = Activator.getDefault().getPreferenceStore()
@@ -38,7 +43,7 @@ public class GoPacker {
 		for (String dependency : dependencies) {
 			args.add(dependency);
 		}
-		String rez = pack.execute(args);
+		String rez = pack.execute(args, true);
 		if (rez != null) {
 			addMarker(res, rez);
 		}

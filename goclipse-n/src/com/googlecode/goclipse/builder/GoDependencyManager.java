@@ -101,8 +101,9 @@ public class GoDependencyManager implements Serializable {
 		depToolCmd.setResultsFilter(output);
 		
 		for (IResource res : toChange) {
-			String resourceFullPath = res.getLocation().toOSString();
-			if (!resourceFullPath.endsWith(GoConstants.TEST_FILE_DIRECTORY+GoConstants.GO_SOURCE_FILE_EXTENSION)){
+			IPath resourceLocation = res.getLocation();
+			String resourceFullPath = resourceLocation.toOSString();
+			if (!isTestFile(resourceLocation.lastSegment())){
 				IPath resourceRelativePath = res.getProjectRelativePath();
 				String pathInPrj = resourceRelativePath.toOSString();
 				IProject project = res.getProject();
@@ -142,7 +143,7 @@ public class GoDependencyManager implements Serializable {
 							manager.addDependency(executablePath.toOSString(), objFile.toOSString()); // e.g bin/linux_386/app.exe depends on src/cmd/app/_obj/a.8
 						} else if (Environment.INSTANCE.isPkgFile(resourceRelativePath)) {
 							dPackName = pkgImport.substring(2, pkgImport.length());
-							IPath packageFullPath= getLocalLibraryPath(dPackName, project);
+							IPath packageFullPath = getLocalLibraryFromPath(srcFolderPath, dPackName, project);
 							IPath objFilePath = getObjectFilePath(dPackName, srcFolderPath);
 							
 							// compilation is two-step, compile into object file, and archive into library
@@ -172,6 +173,10 @@ public class GoDependencyManager implements Serializable {
 		System.out.println(manager.toString());
 	}
 
+	private boolean isTestFile(String fileName) {
+		return fileName.endsWith(GoConstants.TEST_FILE_DIRECTORY+GoConstants.GO_SOURCE_FILE_EXTENSION) || GoConstants.GO_TEST_MAIN.equals(fileName);
+	}
+
 	public static String getCmdName(IPath resourceRelativePath) {
 		IPath srcFolderPath = resourceRelativePath.removeLastSegments(1);
 		String cmdName;
@@ -183,9 +188,22 @@ public class GoDependencyManager implements Serializable {
 		}
 		return cmdName;
 	}
-	
+
 	private IPath getLocalLibraryPath(String packagePath, IProject project) {
 		return Environment.INSTANCE.getPkgOutputFolder(project).append(packagePath+GoConstants.GO_LIBRARY_FILE_EXTENSION);
+	}
+	
+	/**
+	 * 
+	 * @param srcFolderPath the folder that the source file lives in
+	 * @param packageName
+	 * @param project
+	 * @return
+	 */
+	private IPath getLocalLibraryFromPath(IPath srcFolderPath, String packageName, IProject project) {
+		IPath pkgFolder = Environment.INSTANCE.getDefaultPkgSourceFolder();
+		srcFolderPath = srcFolderPath.removeLastSegments(1).makeRelativeTo(pkgFolder);
+		return Environment.INSTANCE.getPkgOutputFolder(project).append(srcFolderPath).append(packageName+GoConstants.GO_LIBRARY_FILE_EXTENSION);
 	}
 
 	public static IPath getExecutablePath(String cmdName, IProject project) {
