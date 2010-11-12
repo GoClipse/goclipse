@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.builder.ExternalCommand;
 import com.googlecode.goclipse.builder.GoConstants;
@@ -25,12 +26,11 @@ public class GoCodeClient {
 	}
 	
 	public List<String> getCompletions(String fileName, final String bufferText, int offset) {
-		String goroot = 
-Activator.getDefault().getPreferenceStore().getString(
+		String goroot = Activator.getDefault().getPreferenceStore().getString(
 				PreferenceConstants.GOROOT);
-		
+		String exeName = "gocode" + Environment.INSTANCE.getExecutableExtension();
 		ExternalCommand command = new 
-			ExternalCommand(Path.fromOSString(goroot).append("bin").append("gocode").toOSString());
+			ExternalCommand(Path.fromOSString(goroot).append("bin").append(exeName).toOSString());
 		StreamAsLines output = new StreamAsLines();
 		command.setResultsFilter(output);
 		command.setInputFilter(new ProcessOStreamFilter() {
