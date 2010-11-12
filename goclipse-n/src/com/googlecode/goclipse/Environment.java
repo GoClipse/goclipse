@@ -127,7 +127,7 @@ public class Environment {
 		}
 		String depToolName = "dep";
 		String versionPropertiesFileName = "version.properties";
-		String depToolExe = depToolName + arch.getExecutableExt();
+		String depToolExe = depToolName + getExecutableExtension();
 		String depToolGo = depToolName + GoConstants.GO_SOURCE_FILE_EXTENSION;
 		String depToolObj = depToolName + arch.getExtension();
 		String aDepToolPath = toolsPath + File.separator + depToolExe;
@@ -622,5 +622,12 @@ public class Environment {
 		return Arch.getArch(goarch);
 	}
 
+	public String getExecutableExtension() {
+		if (PreferenceConstants.OS_WINDOWS.equals(Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS))){
+			return ".exe";
+		}
+		return "";
+	}
+	
 }
 

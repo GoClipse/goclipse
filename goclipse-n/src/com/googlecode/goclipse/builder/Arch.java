@@ -6,12 +6,11 @@ package com.googlecode.goclipse.builder;
  */
 public enum Arch {
    
-   x86(".8", ".exe"),
-   amd64(".6",""),
-   arm(".5", "");
+   x86(".8"),
+   amd64(".6"),
+   arm(".5");
    
    private String extension;
-   private String executableExt;
    
    /**
     * @return the extension
@@ -31,15 +30,10 @@ public enum Arch {
     * 
     * @param extension
     */
-   private Arch(String extension, String executableExt){
+   private Arch(String extension){
       this.extension = extension;
-      this.executableExt = executableExt;
    }
    
-   
-   public String getExecutableExt() {
-	return executableExt;
-}
 
 /**
     * @param arch

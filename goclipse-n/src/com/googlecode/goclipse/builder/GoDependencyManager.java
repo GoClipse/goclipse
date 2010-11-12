@@ -210,7 +210,7 @@ public class GoDependencyManager implements Serializable {
 		Environment instance = Environment.INSTANCE;
 		Arch arch = instance.getArch();
 		IPath binOutputFolder = instance.getBinOutputFolder(project);
-		IPath executablePath = binOutputFolder.append(cmdName+arch.getExecutableExt());
+		IPath executablePath = binOutputFolder.append(cmdName+instance.getExecutableExtension());
 		return executablePath;
 	}
 
