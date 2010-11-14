@@ -12,8 +12,11 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import java.io.*;
+
 import org.eclipse.ui.*;
 import org.eclipse.ui.ide.IDE;
+
+import com.googlecode.goclipse.Environment;
 
 /**
  * This is a sample new wizard. Its role is to create a new file 
@@ -96,7 +99,7 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 		IContainer container = (IContainer) resource;
 		final IFile file = container.getFile(new Path(fileName));
 		try {
-			InputStream stream = openContentStream(fileName);
+			InputStream stream = openContentStream(file);
 			if (file.exists()) {
 				file.setContents(stream, true, true, monitor);
 			} else {
@@ -123,9 +126,37 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 	/**
 	 * We will initialize file contents with a sample text.
 	 */
-	private InputStream openContentStream(String filename) {
-		String contents = "package "+filename.replace(".go", "");
-		return new ByteArrayInputStream(contents.getBytes());
+	private InputStream openContentStream(IFile file) {
+		IPath prjPath = file.getProjectRelativePath();
+		boolean isCmd = Environment.INSTANCE.isCmdFile(prjPath);
+		String pName = null;
+		if (isCmd) {
+			pName = "main";
+		} else {
+			pName = file.getParent().getName();
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("package ").append(pName).append("\n");
+		if (isCmd) {
+			File f = new File(file.getLocation().removeLastSegments(1).toOSString());
+			String[] gofiles = f.list(new FilenameFilter() {
+				
+				@Override
+				public boolean accept(File arg0, String name) {
+					if (name.endsWith(".go")) {
+						return true;
+					}
+					return false;
+				}
+			});
+			if (gofiles == null || gofiles.length == 0) {
+				sb.append("func main() {\n");
+				sb.append("}");
+			}
+		}
+		sb.append("\n");//go requires empty line
+		
+		return new ByteArrayInputStream(sb.toString().getBytes());
 	}
 
 	private void throwCoreException(String message) throws CoreException {

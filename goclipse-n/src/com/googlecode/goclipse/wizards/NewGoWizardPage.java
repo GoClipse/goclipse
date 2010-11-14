@@ -1,8 +1,12 @@
 package com.googlecode.goclipse.wizards;
 
+import java.io.File;
+import java.io.FilenameFilter;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
@@ -14,6 +18,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.ui.navigator.GoSourceFolder;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -63,6 +68,8 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 
 	private void initialize() {
 		setImageDescriptor(Activator.getImageDescriptor("icons/sourceicon.png"));
+		String path = null;
+		IPath prjPath = null;
 		if (selection != null && selection.isEmpty() == false
 				&& selection instanceof IStructuredSelection) {
 			IStructuredSelection ssel = (IStructuredSelection) selection;
@@ -75,10 +82,45 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 					container = (IContainer) obj;
 				else
 					container = ((IResource) obj).getParent();
-				sourceFileComposite.getSourceFolderText().setText(container.getFullPath().toString());
+				prjPath = ((IResource) obj).getProject().getLocation();
+				path = container.getFullPath().toString();
+			} else if (obj instanceof GoSourceFolder) {
+				path = ((GoSourceFolder) obj).getFolder().getFullPath().toString();
+				prjPath = ((GoSourceFolder) obj).getProject().getLocation();
+				sourceFileComposite.getSourceFolderText().setText(path);
 			}
 		}
-		sourceFileComposite.getSourceFileText().setText("new_file.go");
+		final String newFilePrefix = "new_file";
+		String fName = newFilePrefix + ".go";
+		if (path != null && prjPath != null) {
+			sourceFileComposite.getSourceFolderText().setText(path);
+			String fullPath = prjPath.removeLastSegments(1).append(path).toOSString();
+			File f = new File(fullPath);
+			String[] newFiles = f.list(new FilenameFilter() {
+				
+				@Override
+				public boolean accept(File arg0, String name) {
+					if (name.startsWith(newFilePrefix) && name.endsWith(".go")) {
+						return true;
+					}
+					return false;
+				}
+			});
+			if (newFiles != null && newFiles.length > 0) {
+				int i = newFiles.length + 1;
+				while (true) {
+					fName = newFilePrefix + "_" + i + ".go";
+					File nf = new File(fullPath + File.separator + fName);
+					if (nf.exists()) {
+						i ++;
+						continue;
+					}
+					break;
+				}
+			}
+		}
+		
+		sourceFileComposite.getSourceFileText().setText(fName);
 	}
 
 	/**
@@ -94,7 +136,7 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 		IResource file = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(getContainerName()+"/"+fileName));
 
 		if(file!=null){
-			updateStatus("File must not already exist");
+			updateStatus("File " + fileName + " already exists. Choose a new name.");
 			return;
 		}
 		
