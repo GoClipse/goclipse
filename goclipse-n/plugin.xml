@@ -330,13 +330,46 @@
   		 
       </shortcut>
    </extension>
+   <extension point = "org.eclipse.ui.actionSets">
+	   <actionSet id="com.googlecode.goclipse.actionSet"
+		   label="Goclipse hidden actions"
+		   visible="true">
+		   <action id="com.googlecode.goclipse.matchingbracket"
+		   	   label="Go to Matching Bracket"
+			   class="com.googlecode.goclipse.editors.PairMatcher"
+			   definitionId="com.googlecode.goclipse.editors.PairMatcherShortcut.run">
+		   </action>
+	   </actionSet>
+   </extension>
    <extension point="org.eclipse.ui.commands">
+   	  <category
+            name="Navigation"
+            description="Goclipse Navigation"
+            id="com.googlecode.goclipse.editor.navigation">
+      </category>
+      <category
+            name="Launch"
+            description="Goclipse Editor"
+            id="org.eclipse.debug.ui.category.run">
+      </category>
       <command
             name="Launch Go Application"
             description="Launch Go Application"
             categoryId="org.eclipse.debug.ui.category.run"
             id="com.googlecode.goclipse.debug.ui.LaunchShortcut.run">
       </command>
+      <command
+            name="Go to Matching Bracket"
+            description="Go to Matching Bracket"
+            categoryId="com.googlecode.goclipse.editor.navigation"
+            id="com.googlecode.goclipse.editors.PairMatcherShortcut.run">
+      </command>
+   </extension>
+   <extension point="org.eclipse.ui.contexts">
+          <context name="Go editor"
+           description="Go editor"
+           parentId="org.eclipse.ui.textEditorScope"
+           id="com.googlecode.goclipse.editor" />
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -344,6 +377,12 @@
             commandId="com.googlecode.goclipse.debug.ui.LaunchShortcut.run"
             contextId="org.eclipse.ui.contexts.window"
             sequence="M2+M3+G"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+      <key
+            commandId="com.googlecode.goclipse.editors.PairMatcherShortcut.run"
+            contextId="com.googlecode.goclipse.editor"
+            sequence="M1+M2+P"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </key>
    </extension>
