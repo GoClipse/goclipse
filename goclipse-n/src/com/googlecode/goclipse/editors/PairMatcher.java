@@ -37,8 +37,8 @@ public class PairMatcher extends Action implements IWorkbenchWindowActionDelegat
 					int low = ro + 1;
 					int high = ro + r.getLength();
 					int pairOffset = low == startOffset?high:low;
-				
-					st.setCaretOffset(pairOffset);
+
+					editor.setHighlightRange(pairOffset, 1, true);
 				}
 			}
 			
