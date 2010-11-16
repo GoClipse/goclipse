@@ -1,11 +1,15 @@
 package com.googlecode.goclipse.editors;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import com.googlecode.goclipse.Activator;
@@ -19,12 +23,9 @@ public class GoEditor extends TextEditor {
 	private IPropertyChangeListener changeListener;
 	private DefaultCharacterPairMatcher matcher;
 	
-	
 	public GoEditor() {
 		super();
 		setSourceViewerConfiguration(new Configuration());
-		setDocumentProvider(new DocumentProvider());
-		final GoEditor instance = this;
 		
 		setKeyBindingScopes(new String[] {"com.googlecode.goclipse.editor"});
 		
@@ -42,6 +43,20 @@ public class GoEditor extends TextEditor {
 		};
 		
 		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(changeListener);
+	}
+	
+	private IDocumentProvider createDocumentProvider(IEditorInput input) {
+        if(input instanceof IFileEditorInput){
+        	return new DocumentProvider();
+        } else {
+            return new TextDocumentProvider();
+        }
+	}
+
+	@Override
+	protected final void doSetInput(IEditorInput input) throws CoreException {
+	        setDocumentProvider(createDocumentProvider(input));
+	        super.doSetInput(input);
 	}
 	 
 	@Override
@@ -61,8 +76,6 @@ public class GoEditor extends TextEditor {
 		store.setDefault(EDITOR_MATCHING_BRACKETS_COLOR, "128,128,128");
 	}
 
-	
-	
 	public DefaultCharacterPairMatcher getPairMatcher() {
 		return matcher;
 	}

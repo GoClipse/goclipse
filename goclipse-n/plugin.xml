@@ -2,7 +2,14 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <!-- asdasdasd-->
+   <extension point="org.eclipse.core.contenttype.contentTypes"> 
+      <content-type id="com.googlecode.goclipse.gosourcefile"
+       name="Go source file"
+       file-extensions="go"
+       base-type="org.eclipse.core.runtime.text"
+       default-charset="UTF-8">
+      </content-type>
+   </extension> 
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -12,6 +19,9 @@
             icon="icons/gopage.png"
             id="com.googlecode.goclipse.editors.Editor"
             name="Go Editor">
+            <contentTypeBinding
+         		contentTypeId="com.googlecode.goclipse.gosourcefile">
+     		</contentTypeBinding>
       </editor>
    </extension>
    <extension
