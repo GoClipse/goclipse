@@ -40,11 +40,11 @@ public class DependencyGraph implements Serializable {
 	}
 
 	
-	public List<String> getBuildSequence(Set<String> nodes) {
+	public List<String> getBuildSequence(Set<String> nodes) throws CycleException {
 		return graph.getDependers(nodes);
 	}
 
-	public List<String> getCompleteBuildSequence() {
+	public List<String> getCompleteBuildSequence() throws CycleException {
 		return graph.topologicalSort();
 	}
 
@@ -55,8 +55,9 @@ public class DependencyGraph implements Serializable {
 	 * 
 	 * @param toBuild
 	 * @param visitor
+	 * @throws CycleException 
 	 */
-	public void accept(Set<String> toBuild, IDependencyVisitor visitor){
+	public void accept(Set<String> toBuild, IDependencyVisitor visitor) throws CycleException {
 		List<String> sequence = getBuildSequence(toBuild);
 		acceptHelper(visitor, sequence);
 	}
@@ -64,8 +65,9 @@ public class DependencyGraph implements Serializable {
 	/**
 	 * Calls visitor on all nodes in the graph, depth first.
 	 * @param visitor
+	 * @throws CycleException 
 	 */
-	public void accept(IDependencyVisitor visitor) {
+	public void accept(IDependencyVisitor visitor) throws CycleException {
 		List<String> sequence = getCompleteBuildSequence();
 		acceptHelper(visitor, sequence);
 	}

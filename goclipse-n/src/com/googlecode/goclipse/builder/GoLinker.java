@@ -18,6 +18,11 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
 public class GoLinker {
 
 	void createExecutable(IProject prj, String target, String[] dependencies) {
+		if (!GoBuilder.dependenciesExist(prj, dependencies)){
+			SysUtils.warning("Missing dependency for '"+target+"' not compiling");
+			return;
+		}
+
 		IFile res;
 		if (dependencies.length > 0){
 			res = prj.getFile(dependencies[0]);
@@ -73,5 +78,4 @@ public class GoLinker {
 			SysUtils.debug(ce);
 		}
 	}
-
 }

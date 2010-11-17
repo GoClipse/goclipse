@@ -2,34 +2,31 @@ package com.googlecode.goclipse.builder;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.SysUtils;
-import com.googlecode.goclipse.dependency.IDependencyVisitor;
+import com.googlecode.goclipse.dependency.CycleException;
 import com.googlecode.goclipse.dependency.DependencyGraph;
+import com.googlecode.goclipse.dependency.IDependencyVisitor;
 /**
  * limitations: 
  * - dependency is computed at package level - full package is built everytime a file is changed
@@ -93,9 +90,10 @@ public class GoDependencyManager implements Serializable {
 	 * 
 	 * @param toChange
 	 * @param pmonitor
+	 * @throws CoreException 
 	 */
 	public void buildDep(List<IResource> toChange,
-			IProgressMonitor pmonitor) {
+			IProgressMonitor pmonitor) throws CoreException {
 		depToolCmd.setEnvironment(env);
 		StreamAsLines output = new StreamAsLines();
 		depToolCmd.setResultsFilter(output);
@@ -128,9 +126,11 @@ public class GoDependencyManager implements Serializable {
 					//global packages are ignored in source dependencies
 					//first output line contains the name of the declared package with "p:" as prefix
 					IPath srcFolderPath = resourceRelativePath.removeLastSegments(1);
+
 					if (first) {
 						//handle package declaration
 						first = false;
+						dPackName = pkgImport.substring(2, pkgImport.length());
 	
 						if (Environment.INSTANCE.isCmdFile(resourceRelativePath)){
 							String cmdName;
@@ -138,17 +138,26 @@ public class GoDependencyManager implements Serializable {
 							IPath objFile = getObjectFilePath(cmdName, resourceRelativePath.removeLastSegments(1));
 							IPath executablePath = getExecutablePath(cmdName, project);
 
-							// compilation is two-step, compile into object file, and link into executable
-							manager.addDependency(objFile.toOSString(), pathInPrj); // e.g. src/cmd/app/_obj/app.8 depends on src/cmd/app/main.go
-							manager.addDependency(executablePath.toOSString(), objFile.toOSString()); // e.g bin/linux_386/app.exe depends on src/cmd/app/_obj/a.8
+							if (!dPackName.equals("main")) {
+								IResource member = project.findMember(pathInPrj);
+								addPackageError(member, GoConstants.ONLY_PACKAGE_MAIN_MESSAGE);
+							} else {
+								// compilation is two-step, compile into object file, and link into executable
+								manager.addDependency(objFile.toOSString(), pathInPrj); // e.g. src/cmd/app/_obj/app.8 depends on src/cmd/app/main.go
+								manager.addDependency(executablePath.toOSString(), objFile.toOSString()); // e.g bin/linux_386/app.exe depends on src/cmd/app/_obj/a.8
+							}
 						} else if (Environment.INSTANCE.isPkgFile(resourceRelativePath)) {
-							dPackName = pkgImport.substring(2, pkgImport.length());
 							IPath packageFullPath = getLocalLibraryFromPath(srcFolderPath, dPackName, project);
 							IPath objFilePath = getObjectFilePath(dPackName, srcFolderPath);
 							
-							// compilation is two-step, compile into object file, and archive into library
-							manager.addDependency(objFilePath.toOSString(), pathInPrj);  // e.g. src/pkg/foo/_obj/foo.8 depends on src/pkg/foo/foo.go
-							manager.addDependency(packageFullPath.toOSString(), objFilePath.toOSString()); // e.g. pkg/linux_386/foo.a depends on src/pkg/foo/_obj/foo.8
+							if (!dPackName.equals(srcFolderPath.lastSegment())) {
+								IResource member = project.findMember(pathInPrj);
+								addPackageError(member, GoConstants.DECLARED_PACKAGE_INCORRECT_MESSAGE);
+							} else {
+								// compilation is two-step, compile into object file, and archive into library
+								manager.addDependency(objFilePath.toOSString(), pathInPrj);  // e.g. src/pkg/foo/_obj/foo.8 depends on src/pkg/foo/foo.go
+								manager.addDependency(packageFullPath.toOSString(), objFilePath.toOSString()); // e.g. pkg/linux_386/foo.a depends on src/pkg/foo/_obj/foo.8
+							}
 							continue;
 						}
 					} else {
@@ -160,7 +169,6 @@ public class GoDependencyManager implements Serializable {
 								String cmdName = getCmdName(resourceRelativePath);
 								IPath objFile = getObjectFilePath(cmdName, resourceRelativePath.removeLastSegments(1));
 								manager.addDependency(objFile.toOSString(), packageFullPath.toOSString()); // e.g. src/cmd/app/_obj/app.8 depends on pkg/linux_386/bar.a
-								
 							} else if (Environment.INSTANCE.isPkgFile(resourceRelativePath)) {
 								IPath objFilePath = getObjectFilePath(dPackName, srcFolderPath);
 								manager.addDependency(objFilePath.toOSString(), packageFullPath.toOSString()); // e.g. src/pkg/foo/_obj/util.8 depends on pkg/linux_386/bar.a
@@ -171,6 +179,16 @@ public class GoDependencyManager implements Serializable {
 			}
 		}
 		System.out.println(manager.toString());
+	}
+
+	private IMarker addPackageError(IResource member, String message) throws CoreException {
+		IMarker marker;
+		marker = member.createMarker(IMarker.PROBLEM);
+		marker.setAttribute(IMarker.MESSAGE, message);
+		marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+		marker.setAttribute(IMarker.LINE_NUMBER, 1);
+		return marker;
 	}
 
 	private boolean isTestFile(String fileName) {
@@ -249,15 +267,14 @@ public class GoDependencyManager implements Serializable {
 	 * @param pmonitor
 	 * @return <package name>, List<project relative paths>
 	 * there may be files in the same package but in different folders!
+	 * @throws CycleException 
 	 */
-	public void accept(Set<String> paths, IDependencyVisitor visitor) {
+	public void accept(Set<String> paths, IDependencyVisitor visitor) throws CycleException {
 		if (paths == null){
 			manager.accept(visitor);
 		} else {
 			manager.accept(paths, visitor);
 		}
-		
-			
 	}
 
 	public void prepare(IProject project, boolean isFull){

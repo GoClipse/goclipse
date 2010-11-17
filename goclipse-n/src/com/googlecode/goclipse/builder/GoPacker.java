@@ -19,6 +19,11 @@ public class GoPacker {
 
 	void createArchive(IProject prj, 
 			IProgressMonitor pmonitor, String target, String[] dependencies) {
+		if (!GoBuilder.dependenciesExist(prj, dependencies)){
+			SysUtils.warning("Missing dependency for '"+target+"' not compiling");
+			return;
+		}
+
 		IFile res;
 		if (dependencies.length > 0){
 			res = prj.getFile(dependencies[0]);
@@ -73,5 +78,7 @@ public class GoPacker {
 			SysUtils.debug(ce);
 		}
 	}
+	
+
 
 }

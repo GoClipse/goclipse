@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.SubMonitor;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.dependency.CycleException;
 import com.googlecode.goclipse.dependency.IDependencyVisitor;
 
 /**
@@ -40,7 +41,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	private GoCompiler compiler;
 	private GoLinker linker;
 	private GoPacker packer;
-
+	private boolean onlyFullBuild = false;
+	
 	class CollectResourceDeltaVisitor implements IResourceDeltaVisitor {
 		List<IResource> added = new ArrayList<IResource>();
 		List<IResource> removed = new ArrayList<IResource>();
@@ -123,8 +125,9 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			compiler.setEnvironment(goEnv);
 			
 			IProject project = getProject();
-			if (kind == FULL_BUILD) {
+			if (kind == FULL_BUILD || onlyFullBuild) {
 				fullBuild(monitor);
+				onlyFullBuild = false;
 			} else {
 				IResourceDelta delta = getDelta(project);
 				if (delta == null) {
@@ -187,12 +190,12 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		SysUtils.debug("fullBuild - done");
 	}
 
-	private void doBuild(Set<String> fileList, final SubMonitor monitor) {
-		dependencyManager.accept(fileList, new IDependencyVisitor() {
-			@Override
-			public void visit(String aTarget, String... dependencies) {
-				IProject project = getProject();
-				if (dependenciesExist(project, dependencies)) {
+	private void doBuild(Set<String> fileList, final SubMonitor monitor) throws CoreException {
+		try {
+			dependencyManager.accept(fileList, new IDependencyVisitor() {
+				@Override
+				public void visit(String aTarget, String... dependencies) {
+					IProject project = getProject();
 					if (isCompile(aTarget, dependencies)) {
 						ensureFolderExists(project, aTarget);
 						compiler.compile(project, monitor.newChild(100), aTarget, dependencies);
@@ -204,24 +207,31 @@ public class GoBuilder extends IncrementalProjectBuilder {
 						linker.createExecutable(project, aTarget, dependencies);
 					}
 				}
-			}
 
-		});
+			});
+		} catch (CycleException e) {
+			addCycleError(e.getNodes());
+		}
 	}
 
-	private boolean dependenciesExist(IProject project,
-			String[] dependencies) {
-		if (project != null){
-			for (String dependency : dependencies) {
-				IResource member = project.findMember(dependency);
-				if (member==null || !member.getRawLocation().toFile().exists()){
-					return false;
-				}
+	private void addCycleError(Set<String> nodes) throws CoreException {
+		onlyFullBuild = true;
+		StringBuilder builder = new StringBuilder(" [");
+		boolean first = true;
+		for (String node : nodes) {
+			if (!first) {
+				builder.append(", ");
 			}
-			return true;
-		} else {
-			return false;
+			builder.append(node);
+			first = false;
 		}
+		builder.append("]");
+
+		
+		IMarker marker = getProject().createMarker(IMarker.PROBLEM);
+		marker.setAttribute(IMarker.MESSAGE, GoConstants.CYCLE_DETECTED_MESSAGE+builder.toString());
+		marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 	}
 
 	private boolean isCompile(String aTarget, String[] dependencies) {
@@ -353,6 +363,22 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			f.delete();
 		}
 		return true;
+	}
+
+	
+	public static boolean dependenciesExist(IProject project,
+			String[] dependencies) {
+		if (project != null){
+			for (String dependency : dependencies) {
+				IResource member = project.findMember(dependency);
+				if (member==null || !member.getRawLocation().toFile().exists()){
+					return false;
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

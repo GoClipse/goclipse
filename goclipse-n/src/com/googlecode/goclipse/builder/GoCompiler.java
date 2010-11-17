@@ -10,7 +10,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -29,6 +28,11 @@ public class GoCompiler {
 					
 	public void compile(final IProject project,
 			IProgressMonitor pmonitor, String target, String ... dependencies) {
+		if (!dependenciesExist(project, dependencies)){
+			SysUtils.warning("Missing dependency for '"+target+"' not compiling");
+			return;
+		}
+		
 		SubMonitor monitor = SubMonitor.convert(pmonitor, 130);
 		SysUtils.debug("compile():" + dependencies);
 					
@@ -152,4 +156,16 @@ public class GoCompiler {
 		this.env = goEnv;
 		
 	}
+	
+	private boolean dependenciesExist(IProject project,
+			String[] dependencies) {
+		ArrayList<String> sourceDependencies = new ArrayList<String>();
+		for (String dependency : dependencies) {
+			if (dependency.endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)) {
+				sourceDependencies.add(dependency);
+			}
+		}
+		return GoBuilder.dependenciesExist(project, sourceDependencies.toArray(new String[] {}));
+	}
+
 }

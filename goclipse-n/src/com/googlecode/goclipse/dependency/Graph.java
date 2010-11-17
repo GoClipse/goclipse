@@ -66,9 +66,13 @@ public class Graph implements Serializable {
 		}
 	}
 	
-	List<String> topologicalSort() {
+	List<String> topologicalSort() throws CycleException {
 		int numVertexes = vertices.size();
 		LinkedList<String> sortedList = new LinkedList<String>();
+		if (numVertexes == 0) {
+			return sortedList;
+		}
+		
 		Stack<String> zero = new Stack<String>();
 		for (String key : vertices.keySet()) {
 			Vertex vertex = vertices.get(key);
@@ -89,7 +93,13 @@ public class Graph implements Serializable {
 			}
 		}
 		if (numVertexes != sortedList.size()) {
-			return null;
+			CycleException ce = new CycleException();
+			for (String key : vertices.keySet()) {
+				if (!sortedList.contains(key)) {
+					ce.addNode(key);
+				}
+			}
+			throw ce;
 		}
 		return sortedList;
 	}
@@ -99,11 +109,13 @@ public class Graph implements Serializable {
 	 * Returns all the items that depend on this
 	 * @param target
 	 * @return
+	 * @throws CycleException  
 	 */
-	List<String> getDependers(Set<String> targets){
+	List<String> getDependers(Set<String> targets) throws CycleException {
 		LinkedList<String> sortedList = new LinkedList<String>();
+		// use the outbound link counter as a color
 		for (Vertex vertex : vertices.values()) {
-			vertex.outboundLinkCounter = 0;
+			vertex.outboundLinkCounter = 0; //white
 		}
 		for (String target : targets) {
 			dependerSubtreeHelper(target, sortedList);
@@ -112,58 +124,66 @@ public class Graph implements Serializable {
 	}
 
 	private List<String> dependerSubtreeHelper(String target,
-			LinkedList<String> sortedList) {
+			LinkedList<String> sortedList) throws CycleException {
 		Vertex aVertex = vertices.get(target);
 		if (aVertex != null){
 			if (aVertex.outboundLinkCounter == 0){
-				aVertex.outboundLinkCounter = 1;
+				aVertex.outboundLinkCounter = 1; // grey
 				sortedList.add(target);
 				for (String aLink : aVertex.inboundLinks) {
 					dependerSubtreeHelper(aLink, sortedList);
 				}
+				aVertex.outboundLinkCounter = 2; // black
+			} else if (aVertex.outboundLinkCounter == 1) {
+				CycleException cycleException = new CycleException();
+				for (String key : vertices.keySet()) {
+					if (vertices.get(key).outboundLinkCounter == 1) { // check for grey nodes
+						cycleException.addNode(key);
+					}
+				}
+				throw cycleException;
 			}
 		}
 		return sortedList;
 	}
 
 	
-	/** 
-	 * Returns all the items that this target depend on
-	 * @param target
-	 * @return
-	 */
-	List<String> getDependencies(Set<String> targets){
-		LinkedList<String> sortedList = new LinkedList<String>();
-		for (Vertex vertex : vertices.values()) {
-			vertex.outboundLinkCounter = 0;
-		}
-		for (String target : targets) {
-			dependeeSubtreeHelper(target, sortedList);
-		}
-		return sortedList;
-	}
-
-
-	private List<String> dependeeSubtreeHelper(String target,
-			LinkedList<String> sortedList) {
-		Vertex aVertex = vertices.get(target);
-		if (aVertex != null){
-			if (aVertex.outboundLinkCounter == 0){
-				aVertex.outboundLinkCounter = 1;
-				for (String aLink : aVertex.outboundLinks) {
-					dependeeSubtreeHelper(aLink, sortedList);
-				}
-				sortedList.add(target);
-			}
-		}
-		return sortedList;
-	}
+//	/** 
+//	 * Returns all the items that this target depend on
+//	 * @param target
+//	 * @return
+//	 */
+//	List<String> getDependencies(Set<String> targets){
+//		LinkedList<String> sortedList = new LinkedList<String>();
+//		for (Vertex vertex : vertices.values()) {
+//			vertex.outboundLinkCounter = 0;
+//		}
+//		for (String target : targets) {
+//			dependeeSubtreeHelper(target, sortedList);
+//		}
+//		return sortedList;
+//	}
+//
+//
+//	private List<String> dependeeSubtreeHelper(String target,
+//			LinkedList<String> sortedList) {
+//		Vertex aVertex = vertices.get(target);
+//		if (aVertex != null){
+//			if (aVertex.outboundLinkCounter == 0){
+//				aVertex.outboundLinkCounter = 1;
+//				for (String aLink : aVertex.outboundLinks) {
+//					dependeeSubtreeHelper(aLink, sortedList);
+//				}
+//				sortedList.add(target);
+//			}
+//		}
+//		return sortedList;
+//	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		List<String> nodes = topologicalSort();
-		for (String node : nodes) {
+		for (String node : vertices.keySet()) {
 			builder.append(node);
 			builder.append("\n");
 			for (String out : vertices.get(node).outboundLinks) {

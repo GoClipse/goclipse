@@ -38,6 +38,9 @@ public class GoConstants {
 	public static final String LAUNCH_CONFIGURATION_TYPE = "com.googlecode.goclipse.debug.LaunchConfigurationDelegate";
 
 	public static final String INVALID_PREFERENCES_MESSAGE = "Invalid Go language settings.  Please adjust on the Go preferences page.";
+	public static final String CYCLE_DETECTED_MESSAGE = "Dependency cycle detected.";
+	public static final String DECLARED_PACKAGE_INCORRECT_MESSAGE = "Declared package name does not match directory.";
+	public static final String ONLY_PACKAGE_MAIN_MESSAGE = "Only package main is allowed here.";
 
 	/**
 	 * used in launch configurations
