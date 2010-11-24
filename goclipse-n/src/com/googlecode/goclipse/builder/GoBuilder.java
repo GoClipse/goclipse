@@ -272,7 +272,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	
 	protected void incrementalBuild(IResourceDelta delta,
 			IProgressMonitor pmonitor) throws CoreException {
-		SysUtils.debug("incrementalBuild");
 		SubMonitor monitor = SubMonitor.convert(pmonitor, 170);
 		// collect resources
 		CollectResourceDeltaVisitor crdv = new CollectResourceDeltaVisitor();
@@ -281,23 +280,25 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		monitor.worked(20);
 		// remove
 		List<IResource> toRemove = crdv.getRemoved();
-		//get a snapshot of dependencies for toRemove
-		//dependencies will be sent to compile
-		dependencyManager.removeDep(toRemove, pmonitor);
-		
-		// compile
-		List<IResource> resourcesToCompile = new ArrayList<IResource>();
-		resourcesToCompile.addAll(crdv.getAdded());
-		resourcesToCompile.addAll(crdv.getChanged());
-		dependencyManager.buildDep(resourcesToCompile, monitor.newChild(10));
-
-		Set<String> toCompile = new HashSet<String>();
-		for (IResource res : resourcesToCompile) {
-			toCompile.add(res.getProjectRelativePath().toOSString());
+		if (toRemove.size() > 0){
+			fullBuild(pmonitor);
+		} else {
+			SysUtils.debug("incrementalBuild");
+			
+			// compile
+			List<IResource> resourcesToCompile = new ArrayList<IResource>();
+			resourcesToCompile.addAll(crdv.getAdded());
+			resourcesToCompile.addAll(crdv.getChanged());
+			dependencyManager.buildDep(resourcesToCompile, monitor.newChild(10));
+	
+			Set<String> toCompile = new HashSet<String>();
+			for (IResource res : resourcesToCompile) {
+				toCompile.add(res.getProjectRelativePath().toOSString());
+			}
+			
+			doBuild(toCompile, monitor);
+			SysUtils.debug("incrementalBuild - done");
 		}
-		
-		doBuild(toCompile, monitor);
-		SysUtils.debug("incrementalBuild - done");
 	}
 
 	
