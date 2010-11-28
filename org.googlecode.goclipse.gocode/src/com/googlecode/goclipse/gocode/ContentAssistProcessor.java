@@ -22,14 +22,15 @@ import com.googlecode.goclipse.editors.CompletionProcessor;
 public class ContentAssistProcessor implements IContentAssistProcessor {
 
 	GoCodeClient client = new GoCodeClient();
-	private Image go = com.googlecode.goclipse.Activator.getImageDescriptor("icons/go-icon16.png").createImage();
+	private Image go = com.googlecode.goclipse.Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
+	private Image funcImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/func16.png").createImage();
+	private Image interfaceImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/interface16.png").createImage();
 
 	
 	public ContentAssistProcessor() {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
 		IPath path = null;
 		try {
@@ -62,7 +63,14 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 						String descriptiveString = identifier+" : "+spec;
 						IContextInformation info = new ContextInformation(descriptiveString, "");
 						//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
-						results.add(new CompletionProposal(identifier.substring(prefix.length()), offset, 0, identifier.length() - prefix.length(), go, descriptiveString, info, ""));
+						Image image = go;
+						if(descriptiveString!=null && descriptiveString.contains(" : func")){
+						   image = funcImage;
+						}
+						else if(descriptiveString!=null && descriptiveString.contains(" : interface")){
+							image = interfaceImage;
+						}
+						results.add(new CompletionProposal(identifier.substring(prefix.length()), offset, 0, identifier.length() - prefix.length(), image, descriptiveString, info, ""));
 					}
 				}
 			}
@@ -70,31 +78,26 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 		return results.toArray(new ICompletionProposal[] {});
 	}
 
-	@Override
 	public IContextInformation[] computeContextInformation(ITextViewer viewer,
 			int offset) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public char[] getCompletionProposalAutoActivationCharacters() {
 		return new char[] {'.'};
 	}
 
-	@Override
 	public char[] getContextInformationAutoActivationCharacters() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public String getErrorMessage() {
 		// TODO Auto-generated method stub
 		return client.getError();
 	}
 
-	@Override
 	public IContextInformationValidator getContextInformationValidator() {
 		// TODO Auto-generated method stub
 		return null;
