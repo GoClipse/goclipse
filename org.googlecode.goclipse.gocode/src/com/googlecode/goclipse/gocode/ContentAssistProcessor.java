@@ -24,7 +24,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 	GoCodeClient client = new GoCodeClient();
 	private Image go = com.googlecode.goclipse.Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
 	private Image funcImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/func16.png").createImage();
-	private Image interfaceImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/interface16.png").createImage();
+	private Image interfaceImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/interface_alt24.png").createImage();
 
 	
 	public ContentAssistProcessor() {
