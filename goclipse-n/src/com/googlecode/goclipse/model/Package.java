@@ -1,8 +1,6 @@
 package com.googlecode.goclipse.model;
 
-import java.io.Serializable;
-
-public class Member extends Node implements Serializable {
+public class Package extends Node{
 
 	/**
 	 * 

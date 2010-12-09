@@ -15,7 +15,7 @@ public class GoSourceMetadata implements Serializable {
 	private ArrayList<IResource> imports = new ArrayList<IResource>();
 	private ArrayList<IResource> exports = new ArrayList<IResource>();
 	private ArrayList<Method> pubMethods = new ArrayList<Method>();
-	private ArrayList<Member> pubMember = new ArrayList<Member>();
+	private ArrayList<Member> pubMember  = new ArrayList<Member>();
 
 	/**
 	 * @return the imports

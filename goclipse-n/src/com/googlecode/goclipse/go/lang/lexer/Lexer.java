@@ -63,13 +63,13 @@ public class Lexer {
       }
       else{
          for(LexerListener listener:listeners){
-            listener.tokenFound(type, value, columnCount-value.length(), columnCount);
+            listener.tokenFound(type, value, lineCommentState||blockCommentState, columnCount-value.length(), columnCount);
          }
          return;
       }
       
       for(LexerListener listener:listeners){
-         listener.tokenFound(type, value, columnCount+1-value.length(), columnCount+1);
+         listener.tokenFound(type, value, lineCommentState||blockCommentState, columnCount+1-value.length(), columnCount+1);
       }
    }
    
@@ -78,6 +78,7 @@ public class Lexer {
     * @param value
     */
    public void fireNewline(){
+	  lineCommentState = false;
       lineNumber++;
       for(LexerListener listener:listeners){
          listener.newline(lineNumber);
@@ -194,6 +195,7 @@ public class Lexer {
                fireTokenFound(TokenType.MULTIPLY_ASSIGN, TokenType.MULTIPLY_ASSIGN.op);
             }
             else if(ahead=='/'){
+               blockCommentState = false;
                fireTokenFound(TokenType.BLOCK_COMMENT_END, TokenType.BLOCK_COMMENT_END.op);
             }
             else{
@@ -203,11 +205,11 @@ public class Lexer {
             
          case '/': 
             if(ahead=='/'){
-               
+            	lineCommentState = true;
                fireTokenFound(TokenType.COMMENT, TokenType.COMMENT.op);
             }
             else if(ahead=='*'){
-               
+               blockCommentState = true;
                fireTokenFound(TokenType.BLOCK_COMMENT_START, TokenType.BLOCK_COMMENT_START.op);
             }
             break;
@@ -340,9 +342,10 @@ public class Lexer {
             fireTokenFound(TokenType.TAB, TokenType.TAB.op);
             break;
          case '\n':
+        	fireTokenFound(TokenType.NEWLINE, TokenType.NEWLINE.op);
             fireNewline();
             columnCount = 0;
-            fireTokenFound(TokenType.NEWLINE, TokenType.NEWLINE.op);
+            
             break;
          case '\f':
             fireTokenFound(TokenType.FORMFEEDLINE, TokenType.FORMFEEDLINE.op);
@@ -393,7 +396,7 @@ public class Lexer {
          lexer.addLexerListener(new LexerListener(){
 
             @Override
-            public void tokenFound(TokenType type, String value, int start, int end) {
+            public void tokenFound(TokenType type, String value, boolean inComment, int start, int end) {
                System.out.print("\t["+type.name()+", "+value+" "+start+":"+end+" "+"]");
                System.out.println();
             }

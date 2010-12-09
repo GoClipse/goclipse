@@ -8,6 +8,6 @@ public enum Type implements Serializable{
 	  INT,   INT8,    INT16,   INT32,   INT64,
 	FLOAT, FLOAT8,  FLOAT16, FLOAT32, FLOAT64,
 	 BYTE, UINTPTR,  STRING,    BOOL,    CHAN,
-	  MAP
+	  MAP,   ARRAY,    USER
 
 }

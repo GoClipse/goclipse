@@ -11,12 +11,22 @@ package com.googlecode.goclipse.model;
  * 
  * import _ "lib/math"         no access, only runs initialization on given import
  * </pre>
- *  
+ * 
  * @author stanleysteel
  */
-public class Import {
+public class Import extends Node {
+	
+	public enum PrefixType{
+      NONE, ALIAS, INCLUDED, UNKNOWN
+    }
 
-   public String prefix = "";  // either none, some alias, or the package name
-   public String path = "";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public PrefixType prefixType = PrefixType.UNKNOWN;
+	public String prefix = ""; // either none, some alias, or the package name
+	public String path = "";
 
 }

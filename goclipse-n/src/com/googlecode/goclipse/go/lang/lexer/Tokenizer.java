@@ -11,7 +11,8 @@ import java.util.ArrayList;
 public class Tokenizer implements LexerListener {
 
    private ArrayList<TokenListener> listeners = new ArrayList<TokenListener>();
-
+   private int linenumber = 0;
+   
    public Tokenizer(Lexer lexer) {
       lexer.addLexerListener(this);
    }
@@ -35,15 +36,15 @@ public class Tokenizer implements LexerListener {
    
    @Override
    public void newline(int lineNumber) {
-      // TODO Auto-generated method stub
-
+      this.linenumber = lineNumber;
    }
 
    /**
     * Further classifies the token to a more meaningful token type
     */
    @Override
-   public void tokenFound(TokenType type, String value, int start, int end) {
+   public void tokenFound(TokenType type, String value, boolean inComment, int start, int end) {
+	  
       if (TokenType.IDENTIFIER == type) {
          test();
       }
@@ -235,7 +236,7 @@ public class Tokenizer implements LexerListener {
       }
       
       for(TokenListener listener:listeners){
-         listener.tokenFound(type, value, start, end);
+         listener.tokenFound(type, value, inComment, linenumber, start, end);
       }
 
    }
