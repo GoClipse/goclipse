@@ -14,7 +14,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 public class PairMatcher extends Action implements IWorkbenchWindowActionDelegate{
-	private GoEditor editor;
+	private IWorkbenchWindow window;
 	private ISelection selection;
 
 	@Override
@@ -24,6 +24,13 @@ public class PairMatcher extends Action implements IWorkbenchWindowActionDelegat
 
 	@Override
 	public void run(IAction action) {
+		GoEditor editor = null;
+		IEditorPart editorPart = window.getActivePage().getActiveEditor();
+		if (editorPart instanceof GoEditor) {
+			editor = (GoEditor)editorPart;
+		} else {
+			editor = null;
+		}
 		if (editor != null && selection != null && selection instanceof TextSelection) {
 			DefaultCharacterPairMatcher matcher = editor.getPairMatcher();
 			IDocument doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
@@ -54,19 +61,13 @@ public class PairMatcher extends Action implements IWorkbenchWindowActionDelegat
 	@Override
 	public void dispose() {
 		selection = null;
-		editor = null;
+		window = null;
 		
 	}
 
 	@Override
 	public void init(IWorkbenchWindow window) {
-		System.out.println(window);
-		IEditorPart editorPart = window.getActivePage().getActiveEditor();
-		if (editorPart instanceof GoEditor) {
-			editor = (GoEditor)editorPart;
-		} else {
-			editor = null;
-		}
+		this.window = window;
 	}
 	
 	
