@@ -71,7 +71,7 @@ public class Environment {
 	private Map<String, Properties> propertiesMap = new HashMap<String, Properties>();
 	private String depToolPath;
 	
-	private static final int DEP_TOOL_VERSION = 2;
+	private static final int DEP_TOOL_VERSION = 3;
 
 	private Environment() {
 		preferences = Platform.getPreferencesService();
