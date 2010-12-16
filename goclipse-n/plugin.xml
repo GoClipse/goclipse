@@ -341,7 +341,7 @@
       </shortcut>
    </extension>
    <extension point = "org.eclipse.ui.actionSets">
-	   <actionSet id="com.googlecode.goclipse.actionSet"
+	   <actionSet id="com.googlecode.goclipse.hiddenActionSet"
 		   label="Goclipse hidden actions"
 		   visible="true">
 		   <action id="com.googlecode.goclipse.matchingbracket"
@@ -356,6 +356,11 @@
             name="Navigation"
             description="Goclipse Navigation"
             id="com.googlecode.goclipse.editor.navigation">
+      </category>
+   	  <category
+            name="Source"
+            description="Goclipse Source"
+            id="com.googlecode.goclipse.editor.source">
       </category>
       <category
             name="Launch"
@@ -373,6 +378,12 @@
             description="Go to Matching Bracket"
             categoryId="com.googlecode.goclipse.editor.navigation"
             id="com.googlecode.goclipse.editors.PairMatcherShortcut.run">
+      </command>
+      <command
+            name="gofmt"
+            description="Apply gofmt to contents of current editor"
+            categoryId="com.googlecode.goclipse.editor.source"
+            id="com.googlecode.goclipse.editors.GofmtShortcut.run">
       </command>
    </extension>
    <extension point="org.eclipse.ui.contexts">
@@ -395,6 +406,13 @@
             sequence="M1+M2+P"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </key>
+      <key
+            commandId="com.googlecode.goclipse.editors.GofmtShortcut.run"
+            contextId="com.googlecode.goclipse.editor"
+            sequence="M1+M2+F"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+      
    </extension>
    
    <extension
@@ -407,4 +425,27 @@
    </extension>
 
    <extension-point id="com.googlecode.goclipse.contentassistprocessor" name="Content Assist Processor" schema="schema/com.googlecode.goclipse.contentassistprocessor.exsd"/>
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            id="com.googlecode.goclipse.editorContribution"
+            targetID="com.googlecode.goclipse.editors.Editor">
+       <action
+             accelerator="M1+M2+F"
+             class="com.googlecode.goclipse.editors.GofmtActionDelegate"
+             definitionId="com.googlecode.goclipse.editors.GofmtShortcut.run"
+             id="com.googlecode.goclipse.gofmt"
+             label="&amp;Format (gofmt)"
+             menubarPath="com.googlecode.goclipse.editor.sourceMenu/format">
+       </action>
+       <menu
+             id="com.googlecode.goclipse.editor.sourceMenu"
+             label="&amp;Source"
+             path="additions">
+          <separator
+                name="format">
+          </separator>
+       </menu>
+      </editorContribution>
+   </extension>
 </plugin>
