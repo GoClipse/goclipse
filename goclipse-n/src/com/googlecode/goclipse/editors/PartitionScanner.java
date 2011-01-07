@@ -13,14 +13,13 @@ public class PartitionScanner extends RuleBasedPartitionScanner {
 		IToken string  = new Token(STRING);
 		IToken mstring  = new Token(MULTILINE_STRING);
 
-		IPredicateRule[] rules = new IPredicateRule[6];
+		IPredicateRule[] rules = new IPredicateRule[5];
 
-		rules[0] = new MultiLineRule("/*", "*/", comment);
+		rules[0] = new MultiLineRule("/*", "*/", comment, (char) 0, true);
 		rules[1] = new SingleLineRule("//", null, comment);
-      rules[2] = new SingleLineRule("'", "'", string);           // RAW STRING LITERAL
-      rules[3] = new MultiLineRule("`", "`", mstring);           // RAW STRING LITERAL
-      rules[4] = new SingleLineRule("\"", "\"", string, '\\');
-      rules[5] = new SingleLineRule("/*", "", comment);
+        rules[2] = new SingleLineRule("'", "'", string);           // RAW STRING LITERAL
+        rules[3] = new MultiLineRule("`", "`", mstring);           // RAW STRING LITERAL
+        rules[4] = new SingleLineRule("\"", "\"", string, '\\');
 		setPredicateRules(rules);
 	}
 }
