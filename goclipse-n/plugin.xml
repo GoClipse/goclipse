@@ -431,7 +431,6 @@
             id="com.googlecode.goclipse.editorContribution"
             targetID="com.googlecode.goclipse.editors.Editor">
        <action
-             accelerator="M1+M2+F"
              class="com.googlecode.goclipse.editors.GofmtActionDelegate"
              definitionId="com.googlecode.goclipse.editors.GofmtShortcut.run"
              id="com.googlecode.goclipse.gofmt"
