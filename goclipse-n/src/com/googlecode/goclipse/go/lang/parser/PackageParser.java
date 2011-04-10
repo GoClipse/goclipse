@@ -83,4 +83,10 @@ public class PackageParser implements TokenListener{
 			SysUtils.severe(e);
 		}
 	}
+
+	@Override
+	public boolean isWhitespaceParser() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

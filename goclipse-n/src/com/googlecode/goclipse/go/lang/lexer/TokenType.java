@@ -177,6 +177,10 @@ public enum TokenType{
       op = "";
    }
    
+   public String getText(){
+	   return op;
+   }
+   
    public boolean isWhiteSpace(){
       if(this.equals(SPACE)||this.equals(TAB)||this.equals(NEWLINE)||
          this.equals(FORMFEEDLINE)||this.equals(RETURNLINE)||this.equals(BACKSPACE)){

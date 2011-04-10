@@ -1,19 +1,26 @@
-
-
-
 package test
 
 import "other"
 
 import ( 
   fmt "os";
-  "flag"
+  . "flag"
   "boss/dave"
   _ "dook" 
   // command line option parser 
 )
 
 import d "K"
+
+// this does something
+type bb int
+
+type A struct{
+	
+}
+
+func (a *A) method(){
+}
 
 // This is a test comment
 func foo()int{

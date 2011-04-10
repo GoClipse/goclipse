@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -6,7 +5,8 @@ import (
     "go/parser"
     "fmt"
     "os"
-    "go/ast"          
+    "go/ast"     
+    "go/token"     
 );
 
 var filename = flag.String("f", "", "-f [filename]")
@@ -21,8 +21,9 @@ func testfunc(i int) (int){
 // main application - translate go source file to xml 
 func main() {
     flag.Parse()
-    fmt.Printf("%v", *filename)    
-    file, err := parser.ParseFile(*filename, nil, nil, 0)
+    fmt.Printf("parsing: %v\n", *filename)   
+    var fileset *token.FileSet = token.NewFileSet();
+    file, err := parser.ParseFile(fileset, *filename, nil, 0)
 
     if file == nil {
         fmt.Printf("problem: err=%s\n", err.String())
@@ -51,8 +52,9 @@ func main() {
                 // VARIABLES
                 valuespec, ok3 := spec.(*ast.ValueSpec)
                 if ok3 {
+                    var position token.Position = fileset.Position(valuespec.Pos())
                     fmt.Printf("\n\t<variable line=\"%v\" column=\"%v\" name=\"%v\" type=\"%v\" exported=\"%v\"/>", 
-                        valuespec.Pos().Line, valuespec.Pos().Column, valuespec.Names[0], valuespec.Type, ast.IsExported(fmt.Sprint(valuespec.Names[0])))    
+                        position.Line, position.Column, valuespec.Names[0], valuespec.Type, ast.IsExported(fmt.Sprint(valuespec.Names[0])))    
                 }
                 
                 // IMPORTS
@@ -72,7 +74,8 @@ func main() {
         
         if ok2 {
             // BEGIN FUNCTION
-            fmt.Printf("\n\t<func line=\"%v\" column=\"%v\" text=\"%v(", funcDecl.Name.Position.Line, funcDecl.Name.Position.Column, funcDecl.Name);
+            var position token.Position = fileset.Position(funcDecl.Name.NamePos)
+            fmt.Printf("\n\t<func line=\"%v\" column=\"%v\" text=\"%v(", position.Line, position.Column, funcDecl.Name);
             firstIter := true;
              
             if funcDecl.Type.Params.List != nil {

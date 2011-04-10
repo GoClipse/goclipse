@@ -1,29 +1,27 @@
 package com.googlecode.goclipse.model;
 
-import java.util.ArrayList;
 
-public class Method extends Node {
+public class Method extends Function {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private ArrayList<Parameter> parameters = new ArrayList<Parameter>();
+	private Var receiver = new Var();
 
 	/**
-	 * @return the parameters
+	 * @return the receiver
 	 */
-	public ArrayList<Parameter> getParameters() {
-		return parameters;
+	public Var getReceiver() {
+		return receiver;
 	}
 
 	/**
-	 * @param parameters
-	 *            the parameters to set
+	 * @param receiver the receiver to set
 	 */
-	public void setParameters(ArrayList<Parameter> parameters) {
-		this.parameters = parameters;
+	public void setReceiver(Var receiver) {
+		this.receiver = receiver;
 	}
 
 }

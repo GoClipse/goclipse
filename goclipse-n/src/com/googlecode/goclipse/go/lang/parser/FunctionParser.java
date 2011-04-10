@@ -10,23 +10,39 @@ import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.model.Function;
+import com.googlecode.goclipse.model.Method;
 
+/**
+ * 
+ * @author steel
+ *
+ */
 public class FunctionParser implements TokenListener{
 
 	private enum State {
-       START, CONSUME, FINISHED, ERROR
+       START, DETERMINE_TYPE, CONSUME_FUNCTION, CONSUME_METHOD, FINISHED, ERROR
     }
 	
-	private State state = State.START;
+	private State 				state 			= State.START;	
+	private ArrayList<Function> funcs 			= new ArrayList<Function>();
+	private ArrayList<Method>   methods			= new ArrayList<Method>();
+	private Function 			func  			= new Function();
+	private Method   			method 			= new Method();
+	private StringBuffer 	 	comment 		= new StringBuffer();
+	private StringBuffer 	    text 			= new StringBuffer();
+	private int 				lastCommentLine = 0;
+	private int 				tokenOnLineCount= 0;
+	private int                 afterReceiver   = 0;
+	private boolean             exportsOnly     = true;
+	private int                 scope_tracker   = 0;
 	
-	private ArrayList<Function> funcs = new ArrayList<Function>();
-	private Function func = new Function();
-	private StringBuffer comment = new StringBuffer();
-	private StringBuffer functext = new StringBuffer();
-	private int lastCommentLine = 0;
-
-	public FunctionParser(Tokenizer tokenizer) {
+	/**
+	 * 
+	 * @param tokenizer
+	 */
+	public FunctionParser(boolean parseExportsOnly, Tokenizer tokenizer) {
 		tokenizer.addTokenListener(this);
+		exportsOnly = parseExportsOnly;
 	}
 
 	@Override
@@ -41,37 +57,123 @@ public class FunctionParser implements TokenListener{
 				   comment = new StringBuffer();
 			   }
 			   
-			   comment.append(value);
-			   lastCommentLine = linenumber;
+			   if(linenumber>lastCommentLine && TokenType.DIVIDE.equals(type)){
+				   lastCommentLine = linenumber;
+			   }
+			   else{
+			       comment.append(value);
+			       lastCommentLine = linenumber;
+			   }
 		   }
            return;
         }
 		
+		// Parsing top level functions only
+		if(TokenType.LBRACE.equals(type)){
+			scope_tracker++;
+		}
+		
+		if(TokenType.RBRACE.equals(type)){
+			scope_tracker--;
+		}
+
+		// guard against identifiers named 'func'
+		if(!(type.isWhiteSpace())){
+			tokenOnLineCount++;
+		}
+		
+		if(TokenType.NEWLINE.equals(type)){
+			tokenOnLineCount=0;
+		}
+		
 		switch(state){
 		
 		case START:
-			if(TokenType.FUNC.equals(type)){
-				state = State.CONSUME;
+			if(TokenType.FUNC.equals(type) && scope_tracker==0 && tokenOnLineCount==1){
+				
+				if(linenumber-lastCommentLine>1){
+					comment = new StringBuffer();
+				}
+				
+				state = State.DETERMINE_TYPE;
 			}
 			break;
-		case CONSUME:
+
+		case CONSUME_METHOD:
 			if(TokenType.IDENTIFIER.equals(type)){
-				functext.append(value);
-				func.setLine(linenumber);
+				text.append(value);
+				if(afterReceiver==1){
+					method.setInsertionText(value+"()");
+					afterReceiver++;
+				}
 			}
-			else if(TokenType.LBRACE.equals(type)){
-				func.setName(functext.toString());
-				func.setDocumentation(comment.toString());
-				functext = new StringBuffer();
-				funcs.add(func);
-				func = new Function();
-				comment = new StringBuffer();
-				state = State.START;
+			else if(TokenType.RPAREN.equals(type)){
+				text.append(value);
+				afterReceiver++;
+			}
+			else if(TokenType.NEWLINE.equals(type)){
+				
+				method.setName(text.toString().substring(0, text.toString().lastIndexOf('{')));
+				method.setDocumentation(comment.toString());
+				text 	  = new StringBuffer();
+				
+				// sometimes we only wanted exported methods
+				if((exportsOnly && Character.isUpperCase(method.getInsertionText().charAt(0))) || !exportsOnly){
+					methods.add(method);
+				}
+				
+				method 		  = new Method();
+				comment 	  = new StringBuffer();
+				state 		  = State.START;
+				afterReceiver = 0;
 			}
 			else {
-				functext.append(value);
+				text.append(value);
 			}
-			
+			break;
+		case CONSUME_FUNCTION:
+			if(TokenType.IDENTIFIER.equals(type)){
+				text.append(value);
+				
+				if(func.getInsertionText()==null){
+					func.setInsertionText(value+"()");
+				}
+			}
+			else if(TokenType.NEWLINE.equals(type)){
+				
+				func.setName(text.toString().substring(0, text.toString().lastIndexOf('{')));
+				func.setDocumentation(comment.toString());
+				text 	= new StringBuffer();
+				
+				// sometimes we only wanted exported functions
+				if((exportsOnly && Character.isUpperCase(func.getInsertionText().charAt(0))) || !exportsOnly){
+					funcs.add(func);
+				}
+				
+				func 	= new Function();
+				comment = new StringBuffer();
+				state 	= State.START;
+			}
+			else {
+				text.append(value);
+			}
+			break;
+		case DETERMINE_TYPE:
+			if(TokenType.LPAREN.equals(type)){
+				state = State.CONSUME_METHOD;
+				text.append(value);
+			}
+			else if(TokenType.IDENTIFIER.equals(type)){
+				state = State.CONSUME_FUNCTION;
+				
+				text.append(value);
+				func.setLine(linenumber);
+				
+				if(func.getInsertionText()==null){
+					func.setInsertionText(value+"()");
+				}
+			}
+			break;
 		case FINISHED:
 			break;
 		}
@@ -81,20 +183,53 @@ public class FunctionParser implements TokenListener{
 
 		Lexer lexer = new Lexer();
 		Tokenizer tokenizer = new Tokenizer(lexer);
-		FunctionParser fparser = new FunctionParser(tokenizer);
+		FunctionParser fparser = new FunctionParser(false,tokenizer);
 
 		try {
 			lexer.scan(new File("test_go/import_test.go"));
 			for(Function func:fparser.funcs){
-				SysUtils.debug("-------------------------------------------------");
+				SysUtils.debug("=================================================");
 				SysUtils.debug(func.getDocumentation());
 				SysUtils.debug("-------------------------------------------------");
 				SysUtils.debug(func.getName());
+				SysUtils.debug(func.getInsertionText());
+				SysUtils.debug("-------------------------------------------------");
+			}
+			
+			SysUtils.debug("\n");
+			SysUtils.debug("=================================================");
+			SysUtils.debug("[METHODS]");
+			
+			for(Method method:fparser.methods){
+				SysUtils.debug("=================================================");
+				SysUtils.debug(method.getDocumentation());
+				SysUtils.debug("-------------------------------------------------");
+				SysUtils.debug(method.getName());
+				SysUtils.debug(method.getInsertionText());
 				SysUtils.debug("-------------------------------------------------");
 			}
 			
 		} catch (IOException e) {
 			SysUtils.severe(e);
 		}
+	}
+
+	@Override
+	public boolean isWhitespaceParser() {
+		return true;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList<Method> getMethods() {
+		return methods;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList<Function> getFunctions() {
+		return funcs;
 	}
 }

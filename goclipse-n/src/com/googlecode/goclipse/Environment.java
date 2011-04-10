@@ -364,6 +364,16 @@ public class Environment {
 		}
 		return project;
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getAbsoluteProjectPath(){
+		IProject project = getCurrentProject();
+		IPath path = project.getWorkspace().getRoot().getRawLocation();
+		return path.toOSString()+"/"+project.getName();
+	}
 
 	/**
 	 * Returns the selected resource

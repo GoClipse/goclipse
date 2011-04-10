@@ -108,18 +108,7 @@ public class Configuration extends SourceViewerConfiguration {
       ca.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
       ca.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
       ca.setContextInformationPopupBackground(ColorManager.INSTANCE.getColor(new RGB(150, 150, 0)));
-      ca.setInformationControlCreator(new IInformationControlCreator() {
-         
-         @Override
-         public IInformationControl createInformationControl(Shell parent) {
-//            DefaultInformationControl control = new DefaultInformationControl(parent, true);
-//            ContentAssistInformationControl control = new ContentAssistInformationControl(parent, SWT.NONE );
-            BrowserInformationControl control = new BrowserInformationControl(parent, "Arial", true);
-            
-//            control.
-            return control;
-         }
-      });
+      ca.setInformationControlCreator(getInformationControlCreator(sv));
 
       IContentAssistProcessor cap = getCompletionProcessor();
       ca.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);

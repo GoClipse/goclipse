@@ -2,7 +2,7 @@ package com.googlecode.goclipse.model;
 
 import java.io.Serializable;
 
-public class Parameter extends Node implements Serializable {
+public class Var extends Node implements Serializable {
 
 	/**
 	 * 

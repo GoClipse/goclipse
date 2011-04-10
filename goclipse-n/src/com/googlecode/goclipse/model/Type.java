@@ -1,13 +1,22 @@
 package com.googlecode.goclipse.model;
 
-import java.io.Serializable;
+public class Type extends Node{
 
-public enum Type implements Serializable{
+	private TypeClass typeClass = TypeClass.UNKNOWN;
+
+	/**
+	 * @return the typeClass
+	 */
+	public TypeClass getTypeClass() {
+		return typeClass;
+	}
+
+	/**
+	 * @param typeClass the typeClass to set
+	 */
+	public void setTypeClass(TypeClass typeClass) {
+		this.typeClass = typeClass;
+	}
 	
-	 UINT,  UINT8,   UINT16,  UINT32,  UINT64, 
-	  INT,   INT8,    INT16,   INT32,   INT64,
-	FLOAT, FLOAT8,  FLOAT16, FLOAT32, FLOAT64,
-	 BYTE, UINTPTR,  STRING,    BOOL,    CHAN,
-	  MAP,   ARRAY,    USER
-
+	
 }
