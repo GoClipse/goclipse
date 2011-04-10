@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
@@ -51,7 +52,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 			if (completions != null) {
 				for (String string : completions) {
 					String prefix = "";
-			         prefix = CompletionProcessor.lastWord(document, offset);
+			         prefix = lastWord(document, offset);
 
 					int firstComma = string.indexOf(",,");
 					int secondComma = string.indexOf(",,", firstComma+2);
@@ -70,12 +71,32 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 						else if(descriptiveString!=null && descriptiveString.contains(" : interface")){
 							image = interfaceImage;
 						}
-						results.add(new CompletionProposal(identifier.substring(prefix.length()), offset, 0, identifier.length() - prefix.length(), image, descriptiveString, info, ""));
+						String substr = identifier.substring(prefix.length());
+						results.add(new CompletionProposal(substr, offset, 0, identifier.length() - prefix.length(), image, descriptiveString, info, ""));
 					}
 				}
 			}
 		}
 		return results.toArray(new ICompletionProposal[] {});
+	}
+	
+	/**
+	 * 
+	 * @param doc
+	 * @param offset
+	 * @return
+	 */
+	public static String lastWord(IDocument doc, int offset) {
+		try {
+			for (int n = offset - 1; n >= 0; n--) {
+				char c = doc.getChar(n);
+				if (!Character.isJavaIdentifierPart(c))
+					return doc.get(n + 1, offset - n - 1);
+			}
+		} catch (BadLocationException e) {
+			// ... log the exception ...
+		}
+		return "";
 	}
 
 	public IContextInformation[] computeContextInformation(ITextViewer viewer,

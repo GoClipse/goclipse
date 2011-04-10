@@ -11,9 +11,7 @@ import org.eclipse.core.runtime.Status;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.builder.ExternalCommand;
-import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.ProcessOStreamFilter;
 import com.googlecode.goclipse.builder.StreamAsLines;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
@@ -26,11 +24,43 @@ public class GoCodeClient {
 	}
 	
 	public List<String> getCompletions(String fileName, final String bufferText, int offset) {
+		
+		String goarch = Activator.getDefault().getPreferenceStore().getString(
+				PreferenceConstants.GOARCH);
+		
+		String goos = Activator.getDefault().getPreferenceStore().getString(
+				PreferenceConstants.GOOS);
+		
 		String goroot = Activator.getDefault().getPreferenceStore().getString(
 				PreferenceConstants.GOROOT);
+		
 		String exeName = "gocode" + Environment.INSTANCE.getExecutableExtension();
+		
+		ExternalCommand configure = 
+			new ExternalCommand(Path.fromOSString(goroot).append("bin").append(exeName).toOSString());
+		
+		
+		
+		// set the package path for the current project
+		List<String> parameters = new LinkedList<String>();
+		parameters.add("-sock=tcp");
+		parameters.add("set");
+		parameters.add("lib-path");
+				
+		String pkgPath = 
+			Environment.INSTANCE.getAbsoluteProjectPath()+
+			"/"+Environment.INSTANCE.getPkgOutputFolder().toOSString();
+		
+		parameters.add(goroot+"/pkg/"+goos+"_"+goarch+":"+pkgPath);
+		configure.execute(parameters);
+		
+		
+		
+		
+		
 		ExternalCommand command = new 
 			ExternalCommand(Path.fromOSString(goroot).append("bin").append(exeName).toOSString());
+		
 		StreamAsLines output = new StreamAsLines();
 		command.setResultsFilter(output);
 		command.setInputFilter(new ProcessOStreamFilter() {
@@ -47,7 +77,8 @@ public class GoCodeClient {
 			}
 		});
 
-		List<String> parameters = new LinkedList<String>();
+		parameters = new LinkedList<String>();
+		parameters.add("-sock=tcp");
 		parameters.add("-f=csv");
 		parameters.add("autocomplete");
 		parameters.add(fileName);
