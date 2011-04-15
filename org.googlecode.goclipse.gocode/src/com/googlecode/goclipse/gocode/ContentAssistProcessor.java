@@ -1,6 +1,8 @@
 package com.googlecode.goclipse.gocode;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -18,11 +20,12 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
 
-import com.googlecode.goclipse.editors.CompletionProcessor;
+import com.googlecode.goclipse.go.lang.parser.CodeContext;
 
 public class ContentAssistProcessor implements IContentAssistProcessor {
 
 	GoCodeClient client = new GoCodeClient();
+	private static HashMap<String, CodeContext> codeContexts = new HashMap<String, CodeContext>();
 	private Image go = com.googlecode.goclipse.Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
 	private Image funcImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/func16.png").createImage();
 	private Image interfaceImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/interface_alt24.png").createImage();
@@ -43,16 +46,41 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 			}
 		} catch (NullPointerException npe) {
 		}
+		
+		String filename = path.toOSString();
+		IDocument document = viewer.getDocument();
+
+		CodeContext codeContext = codeContexts.get(filename);
+		int linenumber = 0;
+		
+		try {
+			// the following starts on line 0?, so we add 1 to the result
+			linenumber = document.getLineOfOffset(offset)+1;
+		} catch (BadLocationException e1) {
+			e1.printStackTrace();
+		}
+		
+		if (codeContext == null) {
+			
+			try {
+				codeContext = CodeContext.getCodeContext(filename, document.get());
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+			} 
+		}
+		
         ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
-		if (path != null){
-			String fileName = path.toOSString();
-			IDocument document = viewer.getDocument();
-			List<String> completions = client.getCompletions(fileName, document.get(), offset);
-	
+		
+        if (path != null) {
+		
+        	String fileName = path.toOSString();
+			List<String> completions  = client.getCompletions(fileName, document.get(), offset);
+				
 			if (completions != null) {
 				for (String string : completions) {
 					String prefix = "";
-			         prefix = lastWord(document, offset);
+			        prefix = lastWord(document, offset);
 
 					int firstComma = string.indexOf(",,");
 					int secondComma = string.indexOf(",,", firstComma+2);
@@ -62,8 +90,10 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 						String spec = string.substring(secondComma+2);
 						
 						String descriptiveString = identifier+" : "+spec;
-						IContextInformation info = new ContextInformation(descriptiveString, "");
+						String description = codeContext.getDescriptionForName(identifier);
+						IContextInformation info = new ContextInformation(description,description);
 						//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
+						
 						Image image = go;
 						if(descriptiveString!=null && descriptiveString.contains(" : func")){
 						   image = funcImage;
@@ -71,8 +101,9 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 						else if(descriptiveString!=null && descriptiveString.contains(" : interface")){
 							image = interfaceImage;
 						}
+						
 						String substr = identifier.substring(prefix.length());
-						results.add(new CompletionProposal(substr, offset, 0, identifier.length() - prefix.length(), image, descriptiveString, info, ""));
+						results.add(new CompletionProposal(substr, offset, 0, identifier.length() - prefix.length(), image, descriptiveString, info, description));
 					}
 				}
 			}
