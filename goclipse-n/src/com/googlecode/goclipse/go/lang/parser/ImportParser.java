@@ -83,7 +83,7 @@ public class ImportParser implements TokenListener {
 					currentImport.path += value;
 				} else if (TokenType.QUOTE.equals(type)) {
 					currentImport = null;
-					state = State.DETERMINING;
+					state = State.IGNORING;
 				}
 				break;
 			case MULTIPLE:
@@ -169,7 +169,7 @@ public class ImportParser implements TokenListener {
 		ImportParser importParser = new ImportParser(tokenizer);
 
 		try {
-			lexer.scan(new File("test_go/import_test.go"));
+			lexer.scan(new File("test_go/parser.go"));
 
 			for (Import imp : importParser.imports.keySet()) {
 				SysUtils.debug(imp.prefix + " :: " + imp.path + " :: "

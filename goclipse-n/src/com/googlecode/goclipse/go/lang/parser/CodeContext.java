@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
+
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenUnit;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
@@ -91,7 +94,6 @@ public class CodeContext {
 		}
 		
 		for(Type type:typeParser.getTypes()){
-			System.out.println(">> "+type.getName());
 		}
 		
 		return codeContext;
@@ -125,13 +127,13 @@ public class CodeContext {
 		String goroot = Activator.getDefault().getPreferenceStore().getString(
 				PreferenceConstants.GOROOT);
 		
-		File pckdir = new File(goroot+"/src/pkg/"+packagePath);
+		File pkgdir = new File(goroot+"/src/pkg/"+packagePath);
 		
-		if(pckdir.exists()&&pckdir.isDirectory()){
-			File[] files = pckdir.listFiles();
+		if(pkgdir.exists() && pkgdir.isDirectory()){
+			File[] files = pkgdir.listFiles();
 			for(File file:files){
 				if(file.canRead() && file.getName().endsWith(".go") && !file.getName().contains("test")){
-					System.out.println(">>> PARSING: "+file.getAbsolutePath());
+					
 					lexer.reset();
 					lexer.scan(file);
 				
@@ -139,6 +141,24 @@ public class CodeContext {
 					codeContext.methods    = functionParser.getMethods();
 					codeContext.functions  = functionParser.getFunctions();
 			//		codeContext.interfaces = interfaceParser.getFunctions();
+				}
+			}
+		}
+		else{
+			String path = Environment.INSTANCE.getAbsoluteProjectPath();
+			pkgdir = new File(path+"/src/pkg/"+packagePath);
+			if(pkgdir.exists() && pkgdir.isDirectory()){
+				File[] files = pkgdir.listFiles();
+				for(File file:files){
+					if(file.canRead() && file.getName().endsWith(".go") && !file.getName().contains("test")){
+						lexer.reset();
+						lexer.scan(file);
+					
+						codeContext.pkg 	   = packageParser.getPckg();
+						codeContext.methods    = functionParser.getMethods();
+						codeContext.functions  = functionParser.getFunctions();
+				//		codeContext.interfaces = interfaceParser.getFunctions();
+					}
 				}
 			}
 		}
@@ -164,7 +184,6 @@ public class CodeContext {
 		// parse line into parts and determine context
 		List<TokenUnit> lineTokens = page.getTokensForLine(linenumber);
 		for(TokenUnit unit:lineTokens){
-			System.out.println("-> "+unit.text+"     "+unit.tokenType);
 		}
 		
 		arrayList.addAll(methods);
@@ -172,6 +191,30 @@ public class CodeContext {
 		arrayList.addAll(functions);
 		
 		return arrayList;
+	}
+	
+	/**
+	 * 
+	 * @param names
+	 * @return
+	 */
+	public String getDescriptionForName(String name){
+		
+		// slowest possible searches... 
+		for(Method method: methods){
+			if(name.equals(method.getInsertionText())){
+				return method.getDocumentation();
+			}
+		}
+		
+		name+="()";
+		for(Function function: functions){
+			if(name.equals(function.getInsertionText())){
+				return function.getDocumentation();
+			}
+		}
+				
+		return "";
 	}
 	
 	/**
