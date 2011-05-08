@@ -103,7 +103,6 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="goclipse"
             class="com.googlecode.goclipse.preferences.GoPreferencePage"
             id="com.googlecode.goclipse.preferences.GoPreferencePage"
             name="Go">
@@ -440,7 +439,7 @@
        <menu
              id="com.googlecode.goclipse.editor.sourceMenu"
              label="&amp;Source"
-             path="additions">
+             path="edit">
           <separator
                 name="format">
           </separator>
