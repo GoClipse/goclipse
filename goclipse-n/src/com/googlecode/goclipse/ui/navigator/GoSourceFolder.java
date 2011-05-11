@@ -53,6 +53,11 @@ public class GoSourceFolder implements IGoSourceFolder, IAdaptable,
 	}
 
 	@Override
+	public String toString() {
+		return getName();
+	}
+	
+	@Override
 	public Object getAdapter(@SuppressWarnings("unchecked") Class adapter) {
 		if (adapter == IResource.class) {
 			return folder;

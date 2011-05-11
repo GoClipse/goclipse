@@ -66,6 +66,11 @@ public class GoPackage implements IGoPackage, IAdaptable,
 	}
 
 	@Override
+	public String toString() {
+		return getName();
+	}
+	
+	@Override
 	public Object getAdapter(@SuppressWarnings("unchecked") Class adapter) {
 		if (adapter == IContributorResourceAdapter.class) {
 			return this;

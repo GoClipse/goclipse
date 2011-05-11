@@ -25,7 +25,7 @@ import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 import org.eclipse.ui.navigator.IExtensionStateModel;
 
-import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.builder.GoNature;
 
 /**
@@ -47,11 +47,16 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 			return root.getProjects();
 		} else if (parentElement instanceof IProject) {
 			IFolder srcFolder = ((IProject)parentElement).getFolder("src");
-			return new Object[] { new GoSourceFolder(srcFolder.getFolder("pkg")), new GoSourceFolder(srcFolder.getFolder("cmd")) };
+			
+			return new Object[] { 
+					new GoSourceFolder(srcFolder.getFolder("pkg")),
+					new GoSourceFolder(srcFolder.getFolder("cmd"))
+			};
 		} else if (parentElement instanceof IGoSourceContainer) {
 			IGoSourceContainer srcCont = (IGoSourceContainer) parentElement;
 			GoPackage pkg = null;
 			IGoSourceFolder sourceFolder = null;
+			
 			if (srcCont instanceof GoPackage) {
 				pkg = (GoPackage) srcCont;
 				sourceFolder = pkg.getGoSource();
@@ -66,10 +71,8 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 				baseFolder.refreshLocal(3, new NullProgressMonitor());
 				for (IResource res : baseFolder.members()) {
 					if (res instanceof IFolder) {
-						if (!res.getProjectRelativePath().lastSegment().startsWith("_")){
-							IFolder folder = (IFolder) res;
-							GoPackage new_package = new GoPackage(sourceFolder,
-								pkg, folder);
+						if (!res.getProjectRelativePath().lastSegment().startsWith("_")) {
+							GoPackage new_package = new GoPackage(sourceFolder, pkg, (IFolder) res);
 							result.add(new_package);
 						}
 					} else {
@@ -79,16 +82,22 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 
 				return result.toArray();
 			} catch (CoreException e) {
-				e.printStackTrace();
-				throw new RuntimeException(e);
+				SysUtils.severe(e);
+				
+				return NO_CHILDREN;
 			}
 		}
+		
 		return NO_CHILDREN;
 	}
 
 	@Override
 	public Object getParent(Object element) {
-		if (element instanceof IGoSourceFolder) {
+		if (element instanceof IWorkspaceRoot) {
+			return null;
+		} else if (element instanceof IProject) {
+			return ((IProject)element).getParent();
+		} else if (element instanceof IGoSourceFolder) {
 			return ((IGoSourceFolder) element).getProject();
 		} else if (element instanceof GoPackage) {
 			GoPackage pkg = (GoPackage) element;
@@ -98,43 +107,56 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 				return pkg.getGoSource();
 			}
 		} else if (element instanceof IResource) {
-
-			
-			// FIXME ???? CHECK THE PROJECT ?????
 			IResource resource = (IResource) element;
 			IContainer parent = resource.getParent();
-			if (parent != null && parent.getName().equals("src")) {
-				GoSourceFolder sourceFolderResult = new GoSourceFolder(
-						(IFolder) resource.getParent());
+			
+			if (parent instanceof IFolder) {
+				String path = parent.getFullPath().toPortableString();
 				
-				return sourceFolderResult;
+				if (path.endsWith("/src/cmd") || path.endsWith("/src/pkg")) {
+					return new GoSourceFolder((IFolder)parent);
+				} else if (path.contains("/src/pkg/") && !parent.getProjectRelativePath().lastSegment().startsWith("_")) {
+					return createGoPackage((IFolder) parent);
+				}
 			}
-
+			
 			return parent;
 		}
 
 		return null;
 	}
 
+	private IGoPackage createGoPackage(IFolder folder) {
+		IGoSourceContainer srcCont = (IGoSourceContainer)getParent(folder);
+		
+		GoPackage pkg = null;
+		IGoSourceFolder sourceFolder = null;
+		
+		if (srcCont instanceof GoPackage) {
+			pkg = (GoPackage) srcCont;
+			sourceFolder = pkg.getGoSource();
+		} else if (srcCont instanceof IGoSourceFolder) {
+			pkg = null;
+			sourceFolder = (IGoSourceFolder) srcCont;
+		}
+
+		GoPackage goPackage = new GoPackage(sourceFolder, pkg, folder);
+		
+		return goPackage;
+	}
+
 	@Override
 	public boolean hasChildren(Object element) {
-		if (element instanceof IProject) {
-			return ((IProject) element).isAccessible();
-		} else if (element instanceof IGoSourceContainer) {
-			return true;
-		}
-		return false;
+		return getChildren(element).length > 0;
 	}
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-
-		
 		if (input != null) {
 			return getChildren(input);
+		} else {
+			return NO_CHILDREN;
 		}
-
-		return null;
 	}
 
 	@Override
@@ -144,24 +166,26 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		if (this.viewer != null) {
+			ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+		}
+		
 		this.viewer = (TreeViewer) viewer;
 
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+		if (this.viewer != null) {
+			ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+		}
 
-		input = newInput;
-		
+		input = newInput;		
 	}
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-
 		final int eventType = event.getType();
 		//IResource resource = event.getResource();
 		IResourceDelta delta = event.getDelta();
 		if (delta != null){
 			int kind = delta.getKind();
-	
 		
 			if (eventType == IResourceChangeEvent.POST_CHANGE
 					&& kind == IResourceDelta.CHANGED) {
@@ -178,7 +202,6 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 					} catch (CoreException e) {
 						e.printStackTrace();
 					}
-	
 				}
 	
 				if (!goProjects.isEmpty()) {
