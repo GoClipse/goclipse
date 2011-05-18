@@ -118,10 +118,7 @@ public class FunctionParser implements TokenListener{
 				text 	  = new StringBuffer();
 				
 				// sometimes we only wanted exported methods
-				if(method==null || method.getInsertionText()==null){
-					// TODO repair this
-				}
-				else{
+				if(method!=null && method.getInsertionText()!=null){
 					if((exportsOnly && Character.isUpperCase(method.getInsertionText().charAt(0))) || !exportsOnly){
 						methods.add(method);
 					}
@@ -151,10 +148,7 @@ public class FunctionParser implements TokenListener{
 				text 	= new StringBuffer();
 				
 				// sometimes we only wanted exported functions
-				if(method==null || method.getInsertionText()==null){
-					// TODO repair this
-				}
-				else{
+				if(func!=null && func.getInsertionText()!=null){
 					if((exportsOnly && Character.isUpperCase(func.getInsertionText().charAt(0))) || !exportsOnly){
 						funcs.add(func);
 					}
