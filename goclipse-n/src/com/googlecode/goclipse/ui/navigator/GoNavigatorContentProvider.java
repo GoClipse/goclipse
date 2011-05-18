@@ -194,13 +194,15 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 				final ArrayList<IProject> goProjects = new ArrayList<IProject>();
 				for (IResource addedResource : addedResources) {
 					IProject project = addedResource.getProject();
-					try {
-						if (!goProjects.contains(project)
-								&& project.hasNature(GoNature.NATURE_ID)) {
-							goProjects.add(project);
+					
+					if (project.isOpen()) {
+						try {
+							if (!goProjects.contains(project) && project.hasNature(GoNature.NATURE_ID)) {
+								goProjects.add(project);
+							}
+						} catch (CoreException e) {
+							e.printStackTrace();
 						}
-					} catch (CoreException e) {
-						e.printStackTrace();
 					}
 				}
 	
