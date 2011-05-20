@@ -9,8 +9,24 @@ import java.util.List;
 import com.googlecode.goclipse.SysUtils;
 
 public class StreamAsLines implements ProcessIStreamFilter {
-
+	private boolean combineLines;
+	
 	private List<String> lines = new ArrayList<String>();
+	
+	public StreamAsLines() {
+		
+	}
+	
+	/**
+	 * If true then successive lines indented by a tab will be combined into one line.
+	 * This is used by {@link GoCompiler}.
+	 * 
+	 * @param value
+	 */
+	public void setCombineLines(boolean value) {
+		this.combineLines = value;
+	}
+	
 	@Override
 	public void process(InputStream iStream) {
 		try {
@@ -19,12 +35,19 @@ public class StreamAsLines implements ProcessIStreamFilter {
 		    BufferedReader br = new BufferedReader(isr);
 		    String line;
 	        while ((line = br.readLine()) != null) {
-	        	lines.add(line);
+	        	if (combineLines && line.startsWith("\t") && lines.size() > 0) {
+	        		int index = lines.size() - 1;
+	        		
+	        		lines.set(index, lines.get(index) + " - " + line.substring(1));
+	        	} else {	        	
+	        		lines.add(line);
+	        	}
 	        }
 		}catch(Exception e) {
 			SysUtils.debug(e);
 		}
 	}
+	
 	public List<String> getLines() {
 		return lines;
 	}

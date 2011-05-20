@@ -39,13 +39,14 @@ public class GoCompiler {
 		final IPath prjLoc = project.getLocation();
 		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		String compilerPath = preferenceStore.getString(PreferenceConstants.COMPILER_PATH);
-	    String goarch = preferenceStore.getString(PreferenceConstants.GOARCH);
+	    //String goarch = preferenceStore.getString(PreferenceConstants.GOARCH);
 		IPath pkgPath = Environment.INSTANCE.getPkgOutputFolder(project);
 		final ExternalCommand compilePackageCmd = new ExternalCommand(compilerPath);
 		compilePackageCmd.setEnvironment(env);
 		// get the architecture
-	    Arch arch = Arch.getArch(goarch);
+	    //Arch arch = Arch.getArch(goarch);
 	    StreamAsLines output = new StreamAsLines();
+	    output.setCombineLines(true);
 		compilePackageCmd.setResultsFilter(output);
 		
 		SysUtils.debug("building " + target);
@@ -83,8 +84,7 @@ public class GoCompiler {
 		try {
 			project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			SysUtils.debug(e);
 		}
 	}
 	
