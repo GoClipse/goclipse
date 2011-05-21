@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: goclipse
 Bundle-SymbolicName: goclipse; singleton:=true
-Bundle-Version: 0.0.21
+Bundle-Version: 0.0.22
 Bundle-Activator: com.googlecode.goclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
