@@ -69,11 +69,8 @@ public class GoCodeClient {
 		    pkgPath = pkgPath.replaceFirst("[A-Z]:", "");
         }
 		
-		
 		parameters.add( (rootPath+":"+pkgPath).replace("\\", "/") );
-		long time = System.currentTimeMillis();
 		configure.execute(parameters);
-		System.out.println(System.currentTimeMillis()-time);
 				
 		ExternalCommand command = new 
 			ExternalCommand(Path.fromOSString(goroot).append("bin").append(exeName).toOSString());
