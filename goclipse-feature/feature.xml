@@ -2,7 +2,7 @@
 <feature
       id="goclipse_feature"
       label="GoClipse"
-      version="0.0.20"
+      version="0.0.23"
       provider-name="goclipse dev team">
 
    <description url="http://code.google.com/p/goclipse/">
