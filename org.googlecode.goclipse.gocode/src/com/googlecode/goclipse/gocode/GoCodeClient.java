@@ -1,5 +1,6 @@
 package com.googlecode.goclipse.gocode;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -39,11 +40,12 @@ public class GoCodeClient {
 		ExternalCommand configure = 
 			new ExternalCommand(Path.fromOSString(goroot).append("bin").append(exeName).toOSString());
 		
+		configure.setTimeout(100);
+		configure.setWorkingFolder(Path.fromOSString(goroot).append("bin").toOSString());
 		
 		
 		// set the package path for the current project
 		List<String> parameters = new LinkedList<String>();
-		parameters.add("-sock=tcp");
 		parameters.add("set");
 		parameters.add("lib-path");
 				
@@ -51,13 +53,28 @@ public class GoCodeClient {
 			Environment.INSTANCE.getAbsoluteProjectPath()+
 			"/"+Environment.INSTANCE.getPkgOutputFolder().toOSString();
 		
-		parameters.add(goroot+"/pkg/"+goos+"_"+goarch+":"+pkgPath);
+		String rootPath = goroot+"/pkg/"+goos+"_"+goarch;
+		
+		File pkgDir = new File(goroot+"/pkg/");
+		if(pkgDir.isDirectory() && pkgDir.listFiles().length>0 ){
+		    rootPath = pkgDir.listFiles()[0].getAbsolutePath();
+		}
+		
+		// remove drive letters
+		if(rootPath.contains(":")) {
+		    rootPath = rootPath.replaceFirst("[A-Z]:", "");
+		}
+		
+		if(pkgPath.contains(":")) {
+		    pkgPath = pkgPath.replaceFirst("[A-Z]:", "");
+        }
+		
+		
+		parameters.add( (rootPath+":"+pkgPath).replace("\\", "/") );
+		long time = System.currentTimeMillis();
 		configure.execute(parameters);
-		
-		
-		
-		
-		
+		System.out.println(System.currentTimeMillis()-time);
+				
 		ExternalCommand command = new 
 			ExternalCommand(Path.fromOSString(goroot).append("bin").append(exeName).toOSString());
 		
