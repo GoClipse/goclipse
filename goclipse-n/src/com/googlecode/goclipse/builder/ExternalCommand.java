@@ -23,6 +23,7 @@ public class ExternalCommand {
 	private ProcessIStreamFilter errorFilter;
 	private ProcessOStreamFilter inputFilter;
 	private boolean blockUntilDone = true;
+	private long timeout = 0L;
 	
 	/**
 	 * new external command using a full path
@@ -47,6 +48,10 @@ public class ExternalCommand {
 	
 	public void setWorkingFolder(String folder) {
 		pBuilder.directory(new File(folder));
+	}
+	
+	public void setTimeout(long milliseconds){
+	    this.timeout = milliseconds;
 	}
 	
 	public void setResultsFilter(ProcessIStreamFilter resultsFilter) {
@@ -88,12 +93,18 @@ public class ExternalCommand {
 			processOutput.setFilter(resultsFilter);
 			InStreamWorker processError = new InStreamWorker(p.getErrorStream(), "error stream thread");
 			processError.setFilter(errorFilter);
+			
 			if (inputFilter != null) {
 				inputFilter.setStream(p.getOutputStream());
 			}
 			
+						
 			processOutput.start();
 			processError.start();
+			if(timeout>0){
+                Thread.sleep(timeout);
+                p.destroy();
+			}
 			if (blockUntilDone) {
 				processOutput.join();
 				processError.join();
