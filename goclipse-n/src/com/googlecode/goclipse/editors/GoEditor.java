@@ -6,6 +6,7 @@ import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -22,6 +23,7 @@ public class GoEditor extends TextEditor {
 	private ColorManager colorManager;
 	private IPropertyChangeListener changeListener;
 	private DefaultCharacterPairMatcher matcher;
+	private EditorImageUpdater imageUpdater;
 	
 	public GoEditor() {
 		super();
@@ -45,6 +47,10 @@ public class GoEditor extends TextEditor {
 		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(changeListener);
 	}
 	
+	protected void setTitleImage(Image image) {
+		super.setTitleImage(image);
+	}
+	
 	private IDocumentProvider createDocumentProvider(IEditorInput input) {
         if(input instanceof IFileEditorInput){
         	return new DocumentProvider();
@@ -55,8 +61,13 @@ public class GoEditor extends TextEditor {
 
 	@Override
 	protected final void doSetInput(IEditorInput input) throws CoreException {
-	        setDocumentProvider(createDocumentProvider(input));
-	        super.doSetInput(input);
+	    setDocumentProvider(createDocumentProvider(input));
+	        
+	    super.doSetInput(input);
+	       
+	    if (input instanceof IFileEditorInput) {
+	       	imageUpdater = new EditorImageUpdater(this);
+	    }
 	}
 	 
 	@Override
@@ -83,6 +94,9 @@ public class GoEditor extends TextEditor {
 	public void dispose() {
 		if (colorManager != null) {
 			colorManager.dispose();
+		}
+		if (imageUpdater != null) {
+			imageUpdater.dispose();
 		}
 		super.dispose();
 	}
