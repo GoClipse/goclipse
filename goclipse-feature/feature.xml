@@ -3,7 +3,8 @@
       id="goclipse_feature"
       label="GoClipse"
       version="0.0.23"
-      provider-name="goclipse dev team">
+      provider-name="goclipse dev team"
+      plugin="goclipse">
 
    <description url="http://code.google.com/p/goclipse/">
       This is the development version of the GoClipse Plug-In.  As
