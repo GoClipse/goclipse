@@ -27,7 +27,7 @@ public class GoEditor extends TextEditor {
 	
 	public GoEditor() {
 		super();
-		setSourceViewerConfiguration(new Configuration());
+		setSourceViewerConfiguration(new Configuration(this));
 		
 		setKeyBindingScopes(new String[] {"com.googlecode.goclipse.editor"});
 		
@@ -47,6 +47,13 @@ public class GoEditor extends TextEditor {
 		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(changeListener);
 	}
 	
+	@Override
+	protected void initializeEditor() {
+		super.initializeEditor();
+		
+		setRulerContextMenuId("#GoEditorRulerContext");
+	}
+
 	protected void setTitleImage(Image image) {
 		super.setTitleImage(image);
 	}
@@ -92,12 +99,17 @@ public class GoEditor extends TextEditor {
 	}
 
 	public void dispose() {
+		Activator.getDefault().getPreferenceStore().removePropertyChangeListener(changeListener);
+		
 		if (colorManager != null) {
 			colorManager.dispose();
 		}
+		
 		if (imageUpdater != null) {
 			imageUpdater.dispose();
 		}
+		
 		super.dispose();
 	}
+
 }

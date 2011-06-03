@@ -237,6 +237,29 @@
             name="Hide Go src Folder">
       </commonFilter>
    </extension>
+   
+   <extension point="org.eclipse.ui.decorators">
+      <decorator
+         class="com.googlecode.goclipse.ui.navigator.GoLightweightDecorator"
+         id="com.googlecode.goclipse.ui.navigator.lightweightDecorator"
+         label="Go"
+         lightweight="true"
+         location="TOP_LEFT"
+         state="true">
+         
+         <enablement>
+            <or>
+               <objectClass
+                  name="org.eclipse.core.resources.IResource">
+               </objectClass>
+               <objectClass
+                  name="com.googlecode.goclipse.ui.navigator.IGoSourceContainer">
+               </objectClass>
+            </or>
+         </enablement>
+      </decorator>
+   </extension>
+
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
@@ -446,4 +469,26 @@
        </menu>
       </editorContribution>
    </extension>
+   
+   <!-- hyperlink detection -->
+
+   <extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+      <target
+         id="goclipse.hyperlinkDetectorTarget"
+      	 name="GoEditorHyperlinkDetectorTarget">
+
+         <context type="org.eclipse.ui.texteditor.ITextEditor"/>
+      </target>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+      <hyperlinkDetector
+            class="com.googlecode.goclipse.editors.GoHyperlinkDetector"
+            id="com.googlecode.goclipse.editors.GoHyperlinkDetector"
+            name="GoEditorHyperlinkDetector"
+            targetId="goclipse.hyperlinkDetectorTarget">
+      </hyperlinkDetector>
+   </extension>
+   
 </plugin>

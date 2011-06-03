@@ -2,26 +2,28 @@ package com.googlecode.goclipse.ui.navigator;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * 
- * @author Mihailo Vasiljevic
  * 
+ * @author Mihailo Vasiljevic
  */
-public class GoNavigatorLabelProvider implements ILabelProvider {
+public class GoNavigatorLabelProvider extends LabelProvider {
 
+	public GoNavigatorLabelProvider() {
+
+	}
+	
 	@Override
 	public Image getImage(Object element) {
 		if (element instanceof GoSourceFolder) {
-			return ImageCache.getInstance().getCachedImage(
-					ImageCache.SOURCE_FOLDER_ICON_PATH);
+			return ImageCache.getInstance().getCachedImage(ImageCache.SOURCE_FOLDER_ICON_PATH);
 		} else if (element instanceof GoPackage) {
-			return ImageCache.getInstance().getCachedImage(
-					ImageCache.PACKAGE_ICON_PATH);
+			return ImageCache.getInstance().getCachedImage(ImageCache.PACKAGE_ICON_PATH);
 		}
+		
 		return null;
 	}
 
@@ -34,24 +36,8 @@ public class GoNavigatorLabelProvider implements ILabelProvider {
 		} else if (element instanceof IResource) {
 			return ((IResource) element).getName();
 		}
+		
 		return null;
-	}
-
-	@Override
-	public void addListener(ILabelProviderListener listener) {
-	}
-
-	@Override
-	public void dispose() {
-	}
-
-	@Override
-	public boolean isLabelProperty(Object element, String property) {
-		return false;
-	}
-
-	@Override
-	public void removeListener(ILabelProviderListener listener) {
 	}
 
 }

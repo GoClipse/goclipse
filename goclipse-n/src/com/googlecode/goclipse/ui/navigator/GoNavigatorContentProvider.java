@@ -13,7 +13,6 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -68,7 +67,7 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 			try {
 				List<Object> result = new ArrayList<Object>();
 				IFolder baseFolder = srcCont.getFolder();
-				baseFolder.refreshLocal(3, new NullProgressMonitor());
+				//baseFolder.refreshLocal(3, new NullProgressMonitor());
 				for (IResource res : baseFolder.members()) {
 					if (res instanceof IFolder) {
 						if (!res.getProjectRelativePath().lastSegment().startsWith("_")) {
