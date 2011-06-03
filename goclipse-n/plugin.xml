@@ -49,9 +49,6 @@
       <builder
             id="com.googlecode.goclipse.goBuilder">
       </builder>
-      <content-type
-            id="goclipse.content-type1">
-      </content-type>
    </extension>
    <extension
          point="org.eclipse.ui.ide.projectNatureImages">
