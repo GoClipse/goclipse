@@ -175,7 +175,8 @@
             </contentExtension>
             <contentExtension
                   pattern="org.eclipse.ui.navigator.resources.filters.*">
-            </contentExtension></includes>
+            </contentExtension>
+         </includes>
       </viewerContentBinding>
    </extension>
    <extension
@@ -186,7 +187,8 @@
             id="goclipse.goContent"
             labelProvider="com.googlecode.goclipse.ui.navigator.GoNavigatorLabelProvider"
             name="Go Elements"
-            priority="high">
+            priority="high"
+            icon="icons/go-icon16.png">
          <triggerPoints>
             <or>
                <adapt
@@ -201,12 +203,8 @@
          <possibleChildren>
          		<or>
 					<instanceof	value="org.eclipse.core.resources.IResource" />
-     <instanceof
-           value="org.eclipse.core.resources.IFolder">
-     </instanceof>
-     <instanceof
-           value="com.googlecode.goclipse.ui.navigator.IGoElement">
-     </instanceof>
+                    <instanceof value="org.eclipse.core.resources.IFolder"/>
+                    <instanceof value="com.googlecode.goclipse.ui.navigator.IGoElement"/>
 				</or>
 		 </possibleChildren>
          <commonSorter
@@ -486,6 +484,17 @@
             name="GoEditorHyperlinkDetector"
             targetId="goclipse.hyperlinkDetectorTarget">
       </hyperlinkDetector>
+   </extension>
+   
+   <!-- This is possibly not needed (and has a dependency on the JDT), but is nice to have -->
+   <extension
+         point="org.eclipse.jdt.ui.javaElementFilters">
+      <filter
+          id="goclipse.objFolderFilter"
+          name="Go object folders"
+          description="Hide Go object (_obj) folders"
+          targetId="org.eclipse.jdt.ui.PackageExplorer"
+          pattern="_obj"/>
    </extension>
    
 </plugin>
