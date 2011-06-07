@@ -19,14 +19,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Status;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.dependency.CycleException;
 import com.googlecode.goclipse.dependency.DependencyGraph;
 import com.googlecode.goclipse.dependency.IDependencyVisitor;
+
 /**
  * limitations: 
  * - dependency is computed at package level - full package is built everytime a file is changed
@@ -114,7 +113,9 @@ public class GoDependencyManager implements Serializable {
 				depToolParams.add(resourceFullPath);
 				String result = depToolCmd.execute(depToolParams, true);
 				if (result != null){
-					Activator.getDefault().getLog().log(new Status(Status.WARNING,Activator.PLUGIN_ID, "Error parsing dependencies: "+result));
+					//Activator.getDefault().getLog().log(new Status(Status.WARNING,Activator.PLUGIN_ID, "Error parsing dependencies: "+result));
+					handleParseError(project, output);
+					
 					continue;
 				}
 	
@@ -181,6 +182,81 @@ public class GoDependencyManager implements Serializable {
 		System.out.println(manager.toString());
 	}
 
+	private void handleParseError(IProject project, StreamAsLines output) {
+		List<String> lines = output.getLines();
+
+		if (lines.size() > 0) {
+			String errorLine = lines.get(0);
+
+			errorLine = errorLine.substring(2, errorLine.length());
+
+			int goPos = errorLine.indexOf(GoConstants.GO_SOURCE_FILE_EXTENSION);
+
+			if (goPos != -1) {
+				int fileNameLength = goPos + GoConstants.GO_SOURCE_FILE_EXTENSION.length();
+				String fileName = errorLine.substring(0, fileNameLength);
+				fileName = stripProjectPath(project, fileName);
+				IResource resource = project.findMember(fileName);
+
+				if (resource != null) {
+					errorLine = errorLine.substring(fileNameLength + 1);
+					
+					String[] str = errorLine.split(":", 3);
+					
+					int location = -1; // marker for trouble
+					try {
+						location = Integer.parseInt(str[0]);
+					} catch (NumberFormatException nfe) {
+					}
+					
+					if (location != -1 && str.length > 1) {
+						addMarker(resource, location, str[str.length - 1].trim(), -1, -1, IMarker.SEVERITY_ERROR);
+					} else {
+						// play safe. to show something in UI
+						addMarker(resource, 0, errorLine, -1, -1, IMarker.SEVERITY_ERROR);
+					}
+				}
+			}
+		}
+	}
+
+	private String stripProjectPath(IProject project, String fileName) {
+		String str = project.getLocation().toOSString();
+		
+		if (fileName.startsWith(str)) {
+			return fileName.substring(str.length());
+		} else {
+			return fileName;
+		}
+	}
+
+	private void addMarker(IResource file, int line, String message, int beginChar, int endChar, int severity) {
+		if (file == null || !file.exists()) {
+			return;
+		}
+		try {
+			IMarker marker = file.createMarker(IMarker.PROBLEM);
+			marker.setAttribute(IMarker.MESSAGE, message);
+			marker.setAttribute(IMarker.SEVERITY, severity);
+			if (line == -1) {
+				line = 1;
+			}
+			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+			marker.setAttribute(IMarker.LINE_NUMBER, line);
+
+			// find error type to mark location (experimental)
+			if (beginChar >= 0) {
+				marker.setAttribute(IMarker.CHAR_START, beginChar);
+			}
+			if (endChar >= 0){
+				marker.setAttribute(IMarker.CHAR_END, endChar);
+			}
+
+		} catch (CoreException e) {
+			SysUtils.debug(e);
+		}
+	}
+	
 	private IMarker addPackageError(IResource member, String message) throws CoreException {
 		IMarker marker;
 		marker = member.createMarker(IMarker.PROBLEM);
