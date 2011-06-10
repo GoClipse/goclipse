@@ -61,7 +61,10 @@ public class CodeContext {
 	 * @throws RecognitionException
 	 */
 	public static CodeContext getCodeContext(String filename, String fileText) throws IOException{
-		
+		return getCodeContext(filename, fileText, true);
+	}
+	
+	public static CodeContext getCodeContext(String filename, String fileText, boolean useExternalContext) throws IOException{
 		CodeContext     codeContext     = new CodeContext(filename);
 		Lexer     	    lexer  		    = new Lexer();
 		Tokenizer 	    tokenizer 	    = new Tokenizer(lexer);
@@ -80,15 +83,17 @@ public class CodeContext {
 		codeContext.functions  = functionParser.getFunctions();
 //		codeContext.interfaces = interfaceParser.getFunctions();
 		
-		for(Import imp:codeContext.imports){
-			CodeContext context = externalContexts.get(imp.path);
-			if(context==null){
-				context = getExternalCodeContext(imp.path);
-				externalContexts.put(imp.path, context);
+		if (useExternalContext) {
+			for(Import imp:codeContext.imports){
+				CodeContext context = externalContexts.get(imp.path);
+				if(context==null){
+					context = getExternalCodeContext(imp.path);
+					externalContexts.put(imp.path, context);
+				}
+				
+				codeContext.methods.addAll(context.methods);
+				codeContext.functions.addAll(context.functions);
 			}
-			
-			codeContext.methods.addAll(context.methods);
-			codeContext.functions.addAll(context.functions);
 		}
 		
 		for(Type type:typeParser.getTypes()){

@@ -12,6 +12,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.googlecode.goclipse.Activator;
 
@@ -24,6 +25,8 @@ public class GoEditor extends TextEditor {
 	private IPropertyChangeListener changeListener;
 	private DefaultCharacterPairMatcher matcher;
 	private EditorImageUpdater imageUpdater;
+	
+	private GoEditorOutlinePage outlinePage;
 	
 	public GoEditor() {
 		super();
@@ -56,6 +59,20 @@ public class GoEditor extends TextEditor {
 
 	protected void setTitleImage(Image image) {
 		super.setTitleImage(image);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Object getAdapter(Class required) {
+		if (IContentOutlinePage.class.equals(required)) {
+			if (outlinePage == null) {
+				outlinePage = new GoEditorOutlinePage(getDocumentProvider(), this);
+			}
+			
+			return outlinePage;
+		}
+		
+		return super.getAdapter(required);
 	}
 	
 	private IDocumentProvider createDocumentProvider(IEditorInput input) {

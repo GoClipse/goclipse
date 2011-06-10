@@ -119,6 +119,7 @@ public class FunctionParser implements TokenListener {
 					} else {
 						method.setName(text.toString());
 					}
+					method.setLine(linenumber);
 					method.setDocumentation(comment.toString());
 					text = new StringBuffer();
 

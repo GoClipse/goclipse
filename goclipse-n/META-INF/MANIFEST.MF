@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.debug.core,
  org.eclipse.debug.ui,
- org.eclipse.ui.navigator
+ org.eclipse.ui.navigator,
+ org.eclipse.ui.views
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: goclipse dev team
@@ -37,6 +38,7 @@ Export-Package: com.googlecode.goclipse;
    org.eclipse.core.resources,
    com.googlecode.goclipse.dependency,
    org.eclipse.jface.viewers",
+ com.googlecode.goclipse.debug.ui,
  com.googlecode.goclipse.editors;
   uses:="org.eclipse.jface.text,
    org.eclipse.ui.texteditor,
@@ -58,5 +60,6 @@ Export-Package: com.googlecode.goclipse;
   uses:="org.eclipse.jface.preference,
    org.eclipse.ui,
    org.eclipse.jface.util,
-   org.eclipse.core.runtime.preferences"
+   org.eclipse.core.runtime.preferences",
+ com.googlecode.goclipse.ui.dialogs
 Bundle-ClassPath: .

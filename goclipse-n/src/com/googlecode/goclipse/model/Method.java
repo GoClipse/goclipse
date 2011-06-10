@@ -1,5 +1,9 @@
 package com.googlecode.goclipse.model;
 
+import org.eclipse.swt.graphics.Image;
+
+import com.googlecode.goclipse.Activator;
+
 
 public class Method extends Function {
 
@@ -24,4 +28,11 @@ public class Method extends Function {
 		this.receiver = receiver;
 	}
 
+	/**
+	 * @return the image
+	 */
+	public Image getImage() {
+		return Activator.getImage("icons/public_co.gif");
+	}
+	
 }

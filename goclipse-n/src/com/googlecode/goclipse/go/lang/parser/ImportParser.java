@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
-import com.googlecode.goclipse.go.lang.lexer.LexerListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
@@ -27,7 +27,7 @@ public class ImportParser implements TokenListener {
 
 	private State previousState 			= State.IGNORING;
 	private State state 				    = State.IGNORING;
-	private HashMap<Import, Import> imports = new HashMap<Import, Import>();
+	private HashMap<Import, Import> imports = new LinkedHashMap<Import, Import>();
 	private Import currentImport 			= null;
 	private boolean reading 			    = false;
 

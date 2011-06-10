@@ -1,5 +1,9 @@
 package com.googlecode.goclipse.model;
 
+import org.eclipse.swt.graphics.Image;
+
+import com.googlecode.goclipse.Activator;
+
 /**
  * <pre>
  * 
@@ -28,5 +32,15 @@ public class Import extends Node {
 	public PrefixType prefixType = PrefixType.UNKNOWN;
 	public String prefix = ""; // either none, some alias, or the package name
 	public String path = "";
+	
+	@Override
+	public String getName() {
+		return path;
+	}
+
+	@Override
+	public Image getImage() {
+		return Activator.getImage("icons/imp_obj.gif");
+	}
 
 }

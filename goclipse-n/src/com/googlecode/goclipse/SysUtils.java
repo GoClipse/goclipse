@@ -23,7 +23,7 @@ public class SysUtils {
          e.printStackTrace();
    }
 
-   public static void severe(Exception e) {
+   public static void severe(Throwable e) {
       e.printStackTrace();
    }
 }
