@@ -74,15 +74,14 @@ public class GoPerspective implements IPerspectiveFactory {
 		bottom.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 		bottom.addPlaceholder(IPageLayout.ID_TASK_LIST);
 		bottom.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
-				
-		// TODO: for when we have outline view content
-//		IFolderLayout outlineFolder = 
-//			factory.createFolder(
-//					"right", //$NON-NLS-1$
-//					IPageLayout.RIGHT,
-//					(float)0.75,
-//					factory.getEditorArea());
-//		outlineFolder.addView(IPageLayout.ID_OUTLINE);
+		
+		IFolderLayout outlineFolder = 
+			factory.createFolder(
+					"right", //$NON-NLS-1$
+					IPageLayout.RIGHT,
+					(float)0.75,
+					factory.getEditorArea());
+		outlineFolder.addView(IPageLayout.ID_OUTLINE);
 
 		factory.addFastView("org.eclipse.team.sync.views.SynchronizeView", 0.50f); //NON-NLS-1
 	}
@@ -95,7 +94,6 @@ public class GoPerspective implements IPerspectiveFactory {
 		factory.addActionSet("org.eclipse.ant.ui.actionSet.presentation"); //NON-NLS-1
 		factory.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		
-		// TODO: should probably remove these
 		factory.addActionSet(JavaUI.ID_ACTION_SET);
 		factory.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
 	}
