@@ -240,7 +240,22 @@ public class CodeContext {
 		return null;
 	}
 
-	
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof CodeContext)) {
+			return false;
+		}
+		
+		CodeContext other = (CodeContext)obj;
+		
+		return name.equals(other.name);
+	}
+
 	public static void main(String[] args) {
 		
 		final String filename = "test_go/import_test.go";

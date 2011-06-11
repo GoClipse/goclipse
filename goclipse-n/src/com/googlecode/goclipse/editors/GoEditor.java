@@ -3,6 +3,7 @@ package com.googlecode.goclipse.editors;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocumentExtension3;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -127,6 +128,12 @@ public class GoEditor extends TextEditor {
 		}
 		
 		super.dispose();
+	}
+
+	protected void handleReconcilation(IRegion partition) {
+		if (outlinePage != null) {
+			outlinePage.handleEditorReconcilation();
+		}
 	}
 
 }

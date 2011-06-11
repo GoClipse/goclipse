@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.eclipse.swt.graphics.Image;
 
+import com.googlecode.goclipse.Activator;
+
 /**
  * 
  * @author steel
@@ -108,10 +110,30 @@ public class Node implements Serializable{
 	 * @return the image
 	 */
 	public Image getImage() {
-		if(image==null){
-			image = com.googlecode.goclipse.Activator.getImageDescriptor("icons/go.png").createImage();
+		return Activator.getImage("icons/go.png");
+	}
+
+	@Override
+	public int hashCode() {
+		String name = getName();
+		
+		return name == null ? super.hashCode() : name.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!(this.getClass().isInstance(obj))) {
+			return false;
 		}
-		return image;
+		
+		Node other = (Node)obj;
+		
+		String name1 = getName();
+		String name2 = other.getName();
+		
+		return name1 == null ? name1 == name2 : name1.equals(name2);
 	}
 
 }

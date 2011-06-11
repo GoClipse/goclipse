@@ -15,6 +15,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -30,51 +31,25 @@ import com.googlecode.goclipse.model.Function;
 import com.googlecode.goclipse.model.Import;
 import com.googlecode.goclipse.model.Node;
 
-// TODO: look into supporting a custom reconciler on the editor, which would notify the outline view on changes
-
-
 /**
- * 
- * 
+ * The outline page for the Go editor.
  */
 public class GoEditorOutlinePage extends ContentOutlinePage {
 	private IDocumentProvider documentProvider;
 	private GoEditor editor;
 
+	/**
+	 * Create a new GoEditorOutlinePage.
+	 * 
+	 * @param documentProvider
+	 * @param editor
+	 */
 	public GoEditorOutlinePage(IDocumentProvider documentProvider, GoEditor editor) {
 		this.documentProvider = documentProvider;
 		this.editor = editor;
-		
-		documentProvider.addElementStateListener(new IElementStateListener() {
-			@Override
-			public void elementMoved(Object originalElement, Object movedElement) {
-				
-			}
-			
-			@Override
-			public void elementDirtyStateChanged(Object element, boolean isDirty) {
-				if (!isDirty) {
-					refreshAsync();
-				}
-			}
-			
-			@Override
-			public void elementDeleted(Object element) {
-				
-			}
-			
-			@Override
-			public void elementContentReplaced(Object element) {
-				
-			}
-			
-			@Override
-			public void elementContentAboutToBeReplaced(Object element) {
-				
-			}
-		});
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		
@@ -88,30 +63,21 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 			}
 		});
 		
+		documentProvider.addElementStateListener(new AbstractElementStateListener() {
+			@Override
+			public void elementDirtyStateChanged(Object element, boolean isDirty) {
+				if (!isDirty) {
+					refreshAsync();
+				}
+			}
+		});
+		
 		refresh();
 	}
 
-	private void refreshAsync() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				refresh();
-			}
-		});
-	}
-	
-	private void refresh() {
-		try {
-			IDocument document = documentProvider.getDocument(editor.getEditorInput());
-			
-			CodeContext codeContext = CodeContext.getCodeContext(
-				editor.getPartName(), document.get(), false);
-			
-			getTreeViewer().setInput(codeContext);
-		} 
-		catch (Throwable exception) {
-			SysUtils.severe(exception);
-			
-			getTreeViewer().setInput(null);
+	protected void handleEditorReconcilation() {
+		if (!getControl().isDisposed()) {
+			refreshAsync();
 		}
 	}
 	
@@ -135,6 +101,65 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 		}
 	}
 
+	private void refreshAsync() {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				refresh();
+			}
+		});
+	}
+	
+	private void refresh() {
+		try {
+			if (!getTreeViewer().getControl().isDisposed()) {
+				IDocument document = documentProvider.getDocument(editor.getEditorInput());
+				
+				CodeContext codeContext = CodeContext.getCodeContext(editor.getPartName(), document.get(), false);
+				
+				if (getTreeViewer().getInput() == null) {
+					getTreeViewer().setInput(codeContext);
+				} else {
+					OutlinePageContentProvider contentProvider = 
+						(OutlinePageContentProvider)getTreeViewer().getContentProvider();
+					
+					contentProvider.setCodeContext(codeContext);
+				}
+			}
+		} 
+		catch (Throwable exception) {
+			SysUtils.severe(exception);
+			
+			getTreeViewer().setInput(null);
+		}
+	}
+	
+	private static String[] splitFunctionName(String name) {
+		int index = name.indexOf(')');
+		
+		if (name.startsWith("(")) {
+			index = name.indexOf(')', index + 1);
+		}
+		
+		if (index + 1 < name.length()) {
+			return new String[] {
+				name.substring(0, index + 1),
+				name.substring(index + 1)
+			};
+		} else {
+			return new String[] { name };
+		}
+	}
+	
+	private static boolean objectEquals(Object obj1, Object obj2) {
+		if (obj1 == obj2) {
+			return true;
+		} else if (obj1 == null || obj2 == null) {
+			return false;
+		} else {
+			return obj1.equals(obj2);
+		}
+	}
+	
 	private static Object IMPORT_CONTAINER = "imports";
 	
 	private static class NodeLabelProvider extends LabelProvider implements IStyledLabelProvider {
@@ -200,6 +225,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 	private static class OutlinePageContentProvider implements ITreeContentProvider {
 		private Object[] NO_CHILDREN = new Object[0];
 		
+		private TreeViewer viewer;
 		private CodeContext codeContext;
 		
 		public OutlinePageContentProvider() {
@@ -208,7 +234,18 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 		
 		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			this.viewer = (TreeViewer)viewer;
 			codeContext = (CodeContext)newInput;
+		}
+
+		public void setCodeContext(CodeContext inCodeContext) {
+			this.codeContext = inCodeContext;
+			
+			if (objectEquals(this.codeContext, inCodeContext)) {
+				viewer.refresh();
+			} else {
+				viewer.setInput(this.codeContext);
+			}
 		}
 
 		@Override
@@ -257,6 +294,8 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 		public Object getParent(Object element) {
 			if (element instanceof Import) {
 				return IMPORT_CONTAINER;
+			} else if (element instanceof CodeContext) {
+				return null;
 			} else {
 				return codeContext;
 			}
@@ -268,23 +307,6 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 		}
 	}
 
-	private static String[] splitFunctionName(String name) {
-		int index = name.indexOf(')');
-		
-		if (name.startsWith("(")) {
-			index = name.indexOf(')', index + 1);
-		}
-		
-		if (index + 1 < name.length()) {
-			return new String[] {
-				name.substring(0, index + 1),
-				name.substring(index + 1)
-			};
-		} else {
-			return new String[] { name };
-		}
-	}
-	
 	private static class LineBasedComparator implements Comparator<Node> {
 		@Override
 		public int compare(Node node1, Node node2) {
@@ -292,4 +314,31 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 		}
 	}
 	
+	private static abstract class AbstractElementStateListener implements IElementStateListener {
+		@Override
+		public void elementDirtyStateChanged(Object element, boolean isDirty) {
+			
+		}
+
+		@Override
+		public void elementContentAboutToBeReplaced(Object element) {
+			
+		}
+
+		@Override
+		public void elementContentReplaced(Object element) {
+			
+		}
+
+		@Override
+		public void elementDeleted(Object element) {
+			
+		}
+
+		@Override
+		public void elementMoved(Object originalElement, Object movedElement) {
+			
+		}
+	}
+
 }

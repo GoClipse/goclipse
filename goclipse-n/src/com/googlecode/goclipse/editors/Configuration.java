@@ -14,6 +14,8 @@ import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.URLHyperlinkDetector;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.reconciler.IReconciler;
+import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.DefaultAnnotationHover;
@@ -31,6 +33,7 @@ public class Configuration extends SourceViewerConfiguration {
    private DoubleClickStrategy doubleClickStrategy;
    private GoScanner           keywordScanner;
    private GoEditor			   editor;
+   private MonoReconciler      reconciler;
    
    /**
     * @param colorManager
@@ -153,6 +156,16 @@ private IContentAssistProcessor getCompletionProcessor() {
 			new URLHyperlinkDetector(),
 			new GoHyperlinkDetector(editor)
 		};
+	}
+
+	@Override
+	public IReconciler getReconciler(ISourceViewer sourceViewer) {
+		if (reconciler == null && sourceViewer != null) {
+			reconciler = new MonoReconciler(new GoEditorReconcilingStrategy(editor), false);
+			reconciler.setDelay(500);
+		}
+		
+		return reconciler;
 	}
 
 }

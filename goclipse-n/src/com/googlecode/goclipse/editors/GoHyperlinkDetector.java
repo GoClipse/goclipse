@@ -12,13 +12,12 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import sun.text.normalizer.UTF16;
 
 /**
- * 
- * 
+ * A hyperlink detector for the Go editor.
  */
 public class GoHyperlinkDetector extends AbstractHyperlinkDetector {
 
 	/**
-	 * 
+	 * Create a new GoHyperlinkDetector.
 	 */
 	public GoHyperlinkDetector(GoEditor editor) {
 		setContext(editor);
