@@ -178,7 +178,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 				
 				str.append(strs[0]);
 				
-				if (strs.length > 0) {
+				if (strs.length > 1) {
 					str.append(strs[1], StyledString.DECORATIONS_STYLER);
 				}
 			} else if (element instanceof Node) {
