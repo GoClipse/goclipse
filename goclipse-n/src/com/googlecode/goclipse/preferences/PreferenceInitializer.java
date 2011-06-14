@@ -3,10 +3,8 @@ package com.googlecode.goclipse.preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.Util;
-import org.eclipse.swt.SWT;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.SysUtils;
 
 
 /**
@@ -22,7 +20,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
-		SysUtils.debug("Loading Go Plug-in Preferences...");
+		//SysUtils.debug("Loading Go Plug-in Preferences...");
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(PreferenceConstants.P_BOOLEAN, true);
 		store.setDefault(PreferenceConstants.FIELD_USE_HIGHLIGHTING, PreferenceConstants.VALUE_HIGHLIGHTING_TRUE);

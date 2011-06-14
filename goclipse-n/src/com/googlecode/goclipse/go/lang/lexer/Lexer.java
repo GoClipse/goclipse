@@ -305,7 +305,11 @@ public class Lexer {
 			break;
 
 		case '_':
-			fireTokenFound(TokenType.UNDERSCORE, TokenType.UNDERSCORE.op);
+			if (Character.isJavaIdentifierPart(ahead)) {
+				identifier.append(current);
+			} else {
+				fireTokenFound(TokenType.UNDERSCORE, TokenType.UNDERSCORE.op);
+			}
 			break;
 
 		case '+':

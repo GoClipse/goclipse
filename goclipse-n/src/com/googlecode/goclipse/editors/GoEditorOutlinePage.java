@@ -114,15 +114,17 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 			if (!getTreeViewer().getControl().isDisposed()) {
 				IDocument document = documentProvider.getDocument(editor.getEditorInput());
 				
-				CodeContext codeContext = CodeContext.getCodeContext(editor.getPartName(), document.get(), false);
-				
-				if (getTreeViewer().getInput() == null) {
-					getTreeViewer().setInput(codeContext);
-				} else {
-					OutlinePageContentProvider contentProvider = 
-						(OutlinePageContentProvider)getTreeViewer().getContentProvider();
+				if (document != null) {
+					CodeContext codeContext = CodeContext.getCodeContext(editor.getPartName(), document.get(), false);
 					
-					contentProvider.setCodeContext(codeContext);
+					if (getTreeViewer().getInput() == null) {
+						getTreeViewer().setInput(codeContext);
+					} else {
+						OutlinePageContentProvider contentProvider = 
+							(OutlinePageContentProvider)getTreeViewer().getContentProvider();
+						
+						contentProvider.setCodeContext(codeContext);
+					}
 				}
 			}
 		} 
