@@ -5,15 +5,10 @@ import java.util.Map;
 import org.eclipse.jdt.internal.ui.text.CombinedWordRule;
 import org.eclipse.jdt.internal.ui.text.CombinedWordRule.WordMatcher;
 import org.eclipse.jface.text.TextAttribute;
-import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
-import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 import org.eclipse.jface.text.rules.IWordDetector;
-import org.eclipse.jface.text.rules.MultiLineRule;
-import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
-import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
@@ -22,6 +17,7 @@ import org.eclipse.swt.SWT;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
+@SuppressWarnings("restriction")
 public class GoScanner extends RuleBasedScanner {
 
 	public GoScanner() {

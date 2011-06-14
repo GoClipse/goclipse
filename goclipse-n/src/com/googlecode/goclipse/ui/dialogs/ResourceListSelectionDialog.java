@@ -55,6 +55,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
  * 
  * @since 2.1
  */
+@SuppressWarnings("restriction")
 public class ResourceListSelectionDialog extends SelectionDialog {
 
    private static final String DIALOG_SETTINGS_SECTION    = "ResourceListSelectionDialogSettings"; //$NON-NLS-1$

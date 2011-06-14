@@ -136,7 +136,9 @@ public class ImportParser implements TokenListener {
 			for(Import import1:imports.keySet()){
 				if(import1.prefixType==PrefixType.NONE){
 					String[] pathParts = import1.path.split("/");
-					import1.prefix = pathParts[pathParts.length-1];
+					if (pathParts.length > 0) {
+						import1.prefix = pathParts[pathParts.length-1];
+					}
 				}
 			}
 		} 

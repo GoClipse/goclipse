@@ -264,16 +264,18 @@ public class ProjectBuildConfigurationComposite extends Composite {
             dialog.setInput(Environment.INSTANCE.getCurrentProject());
             dialog.open();
             Object[] results = dialog.getResult();
-
-            ArrayList<String> sourceFolderNames = new ArrayList<String>();
-
-            for (Object obj : results) {
-               IFolder folder = ((IFolder) obj);
-               String str = folder.getProjectRelativePath().toString();
-               sourceFolderNames.add(str);
+            
+            if (results != null) {
+	            ArrayList<String> sourceFolderNames = new ArrayList<String>();
+	
+	            for (Object obj : results) {
+	               IFolder folder = ((IFolder) obj);
+	               String str = folder.getProjectRelativePath().toString();
+	               sourceFolderNames.add(str);
+	            }
+	
+	            list.setItems(sourceFolderNames.toArray(new String[sourceFolderNames.size()]));
             }
-
-            list.setItems(sourceFolderNames.toArray(new String[sourceFolderNames.size()]));
          }
       });
 
