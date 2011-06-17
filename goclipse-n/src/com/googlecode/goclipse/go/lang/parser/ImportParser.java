@@ -3,8 +3,7 @@ package com.googlecode.goclipse.go.lang.parser;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
@@ -25,9 +24,8 @@ public class ImportParser implements TokenListener {
 		MULTIPLE, SINGLE, DETERMINING, IGNORING, ERROR
 	}
 
-	private State previousState 			= State.IGNORING;
 	private State state 				    = State.IGNORING;
-	private HashMap<Import, Import> imports = new LinkedHashMap<Import, Import>();
+	private List<Import> imports            = new ArrayList<Import>();
 	private Import currentImport 			= null;
 	private boolean reading 			    = false;
 
@@ -38,11 +36,11 @@ public class ImportParser implements TokenListener {
 	@Override
 	public void tokenFound(TokenType type, String value, boolean inComment,
 			int linenumber, int start, int end) {
-
+		// IGNORING --> DETERMINING --> SINGLE --> IGNORING
+		// IGNORING --> DETERMINING --> MULTIPLE --> IGNORING
+		
 		try {
-			/*
-			 * do not consider whitespace
-			 */
+			// do not consider whitespace
 			if (type.isWhiteSpace() || inComment) {
 				return;
 			}
@@ -52,7 +50,6 @@ public class ImportParser implements TokenListener {
 				if (TokenType.IMPORT.equals(type)) {
 					state = State.DETERMINING;
 					currentImport = new Import();
-					imports.put(currentImport, currentImport);
 				}
 				break;
 			case DETERMINING:
@@ -76,14 +73,14 @@ public class ImportParser implements TokenListener {
 				}
 				break;
 			case SINGLE:
-				if (TokenType.IDENTIFIER.equals(type)) {
+				if (TokenType.QUOTE.equals(type)) {
+					imports.add(currentImport);
+					currentImport = null;
+					
+					state = State.IGNORING;
+				} else {
 					currentImport.path += value;
 					currentImport.setLine(linenumber);
-				} else if (TokenType.DIVIDE.equals(type)) {
-					currentImport.path += value;
-				} else if (TokenType.QUOTE.equals(type)) {
-					currentImport = null;
-					state = State.IGNORING;
 				}
 				break;
 			case MULTIPLE:
@@ -91,22 +88,7 @@ public class ImportParser implements TokenListener {
 					currentImport = new Import();
 				}
 
-				if (TokenType.IDENTIFIER.equals(type)) {
-
-					if (currentImport.prefixType == Import.PrefixType.UNKNOWN) {
-						currentImport.prefixType = Import.PrefixType.ALIAS;
-						currentImport.prefix = value;
-					} else {
-
-						// a way to ensure it is only added once to import list
-						if (currentImport.path.length() == 0) {
-							imports.put(currentImport, currentImport);
-						}
-						
-						currentImport.path += value;
-						currentImport.setLine(linenumber);
-					}
-				} else if (TokenType.QUOTE.equals(type)) {
+				if (TokenType.QUOTE.equals(type)) {
 					reading = !reading;
 
 					if (currentImport.prefixType == Import.PrefixType.UNKNOWN) {
@@ -114,10 +96,18 @@ public class ImportParser implements TokenListener {
 					}
 
 					if (!reading) {
+						imports.add(currentImport);
 						currentImport = null;
 					}
+				} else if (reading) {
+					if (currentImport.prefixType == Import.PrefixType.UNKNOWN) {
+						currentImport.prefixType = Import.PrefixType.ALIAS;
+						currentImport.prefix = value;
+					} else {
+						currentImport.path += value;
+						currentImport.setLine(linenumber);
+					}
 				} else if (TokenType.PERIOD.equals(type)) {
-
 					if (currentImport.prefixType == Import.PrefixType.UNKNOWN) {
 						currentImport.prefixType = Import.PrefixType.INCLUDED;
 					}
@@ -133,7 +123,7 @@ public class ImportParser implements TokenListener {
 			}
 			
 			// post process
-			for(Import import1:imports.keySet()){
+			for(Import import1:imports){
 				if(import1.prefixType==PrefixType.NONE){
 					String[] pathParts = import1.path.split("/");
 					if (pathParts.length > 0) {
@@ -143,7 +133,7 @@ public class ImportParser implements TokenListener {
 			}
 		} 
 		catch (RuntimeException e) {
-			e.printStackTrace();
+			SysUtils.severe(e);
 		}
 	}
 
@@ -151,19 +141,14 @@ public class ImportParser implements TokenListener {
 	 * @return the imports
 	 */
 	public ArrayList<Import> getImports() {
-		return new ArrayList<Import>(imports.keySet());
+		return new ArrayList<Import>(imports);
 	}
 
-	/**
-	 * @param imports
-	 *            the imports to set
-	 */
-	public void setImports(ArrayList<Import> imports) {
-		for(Import import1:imports){
-			this.imports.put(import1, import1);
-		}
+	@Override
+	public boolean isWhitespaceParser() {
+		return false;
 	}
-
+	
 	public static void main(String[] args) {
 
 		Lexer lexer = new Lexer();
@@ -173,7 +158,7 @@ public class ImportParser implements TokenListener {
 		try {
 			lexer.scan(new File("test_go/parser.go"));
 
-			for (Import imp : importParser.imports.keySet()) {
+			for (Import imp : importParser.imports) {
 				SysUtils.debug(imp.prefix + " :: " + imp.path + " :: "
 						+ imp.getLine());
 			}
@@ -182,8 +167,4 @@ public class ImportParser implements TokenListener {
 		}
 	}
 
-	@Override
-	public boolean isWhitespaceParser() {
-		return false;
-	}
 }
