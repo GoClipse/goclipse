@@ -29,7 +29,6 @@ public enum TokenType{
    BYTE("byte"),        // familiar alias for uint8
    UINT("uint"),        // either 32 or 64 bits
    INT("int"),          // either 32 or 64 bits
-   FLOAT("float"),      // either 32 or 64 bits
    UINTPTR("uintptr"),  // an unsigned integer large enough to store the uninterpreted bits of a pointer value
    STRING("string"),
    BOOL("bool"),

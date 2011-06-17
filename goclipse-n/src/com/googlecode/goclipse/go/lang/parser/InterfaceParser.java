@@ -4,7 +4,7 @@ import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
 
 /**
- * 
+ * Interface Parser that is really a State Machine
  * @author steel
  */
 public class InterfaceParser implements TokenListener {

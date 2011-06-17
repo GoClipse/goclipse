@@ -119,33 +119,41 @@ public class Lexer {
 	 * @throws IOException
 	 */
 	public void scan(File file) throws IOException {
-		BufferedReader br = new BufferedReader(new FileReader(file));
-
-		char behind = 0, ahead = 0, current = 0;
-		int val;
-		int index = 0;
-
-		boolean eatToken = true;
-		identifier = new StringBuilder();
-		fireNewline();
-		while ((val = br.read()) != -1) {
-			columnCount++;
-
-			behind = current;
-			current = ahead;
-			ahead = (char) val;
-
-			if (eatToken) {
-				eatToken = false;
-				continue;
+		BufferedReader br = null;
+		try{
+			br = new BufferedReader(new FileReader(file));
+	
+			char behind = 0, ahead = 0, current = 0;
+			int val;
+			int index = 0;
+	
+			boolean eatToken = true;
+			identifier = new StringBuilder();
+			fireNewline();
+			while ((val = br.read()) != -1) {
+				columnCount++;
+	
+				behind = current;
+				current = ahead;
+				ahead = (char) val;
+	
+				if (eatToken) {
+					eatToken = false;
+					continue;
+				}
+	
+				processCharacter(ahead, current);
 			}
-
+	
+			// process last character
+			current = ahead;
 			processCharacter(ahead, current);
 		}
-
-		// process last character
-		current = ahead;
-		processCharacter(ahead, current);
+		finally{
+			if(br!=null){
+				br.close();
+			}
+		}
 	}
 
 	/**
@@ -203,7 +211,7 @@ public class Lexer {
 		switch (current) {
 
 		case '~':
-			fireTokenFound(TokenType.TILDA, "~");
+			fireTokenFound(TokenType.TILDA, TokenType.TILDA.op);
 			break;
 
 		case '`':

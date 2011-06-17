@@ -76,8 +76,6 @@ public class Tokenizer implements LexerListener {
 				type = TokenType.UINT;
 			} else if (TokenType.INT.equals(value)) {
 				type = TokenType.INT;
-			} else if (TokenType.FLOAT.equals(value)) {
-				type = TokenType.FLOAT;
 			} else if (TokenType.UINTPTR.equals(value)) {
 				type = TokenType.UINTPTR;
 			} else if (TokenType.STRING.equals(value)) {

@@ -120,6 +120,7 @@ public class TypeParser implements TokenListener {
 				text.append(value);
 				type.setInsertionText(value);
 				state = State.DETERMINE;
+				type.setLine(linenumber);
 			}
 			break;
 				
@@ -145,7 +146,6 @@ public class TypeParser implements TokenListener {
 			else if(TokenType.INT16.equals(tokenType))	{type.setTypeClass(TypeClass.INT16);   text.append(": "+TokenType.INT16.getText());}   
 			else if(TokenType.INT32.equals(tokenType))	{type.setTypeClass(TypeClass.INT32);   text.append(": "+TokenType.INT32.getText());}
 			else if(TokenType.INT64.equals(tokenType))	{type.setTypeClass(TypeClass.INT64);   text.append(": "+TokenType.INT64.getText());}
-			else if(TokenType.FLOAT.equals(tokenType))	{type.setTypeClass(TypeClass.FLOAT);   text.append(": "+TokenType.FLOAT.getText());}
 			else if(TokenType.FLOAT32.equals(tokenType)){type.setTypeClass(TypeClass.FLOAT32); text.append(": "+TokenType.FLOAT32.getText());}
 			else if(TokenType.FLOAT64.equals(tokenType)){type.setTypeClass(TypeClass.FLOAT64); text.append(": "+TokenType.FLOAT64.getText());}
 			else if(TokenType.BYTE.equals(tokenType))	{type.setTypeClass(TypeClass.BYTE);    text.append(": "+TokenType.BYTE.getText());}

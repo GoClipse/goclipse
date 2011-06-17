@@ -41,6 +41,7 @@ public class CodeContext {
 	public ArrayList<Method>    methods    = new ArrayList<Method>   ();
 	public ArrayList<Function>  functions  = new ArrayList<Function> ();
 	public ArrayList<Interface> interfaces = new ArrayList<Interface>();
+	public ArrayList<Type>      types      = new ArrayList<Type>     ();
 	
 	/**
 	 * 
@@ -81,6 +82,7 @@ public class CodeContext {
 		codeContext.imports    = importParser.getImports();
 		codeContext.methods    = functionParser.getMethods();
 		codeContext.functions  = functionParser.getFunctions();
+		codeContext.types	   = typeParser.getTypes();
 //		codeContext.interfaces = interfaceParser.getFunctions();
 		
 		if (useExternalContext) {
@@ -94,9 +96,6 @@ public class CodeContext {
 				codeContext.methods.addAll(context.methods);
 				codeContext.functions.addAll(context.functions);
 			}
-		}
-		
-		for(Type type:typeParser.getTypes()){
 		}
 		
 		return codeContext;
