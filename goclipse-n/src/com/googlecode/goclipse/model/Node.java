@@ -23,7 +23,7 @@ public class Node implements Serializable{
 	private   Type      type;
 	private   int    	line;
 	private   String 	documentation;
-	protected Image  	image;
+	protected Image  	image = Activator.getImage("icons/go.png");
 	
 	/**
 	 * @return the documentation
@@ -110,7 +110,7 @@ public class Node implements Serializable{
 	 * @return the image
 	 */
 	public Image getImage() {
-		return Activator.getImage("icons/go.png");
+		return image;
 	}
 
 	@Override

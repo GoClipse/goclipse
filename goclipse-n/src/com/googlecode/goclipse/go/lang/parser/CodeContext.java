@@ -17,7 +17,6 @@ import com.googlecode.goclipse.go.lang.lexer.TokenUnit;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.model.Function;
 import com.googlecode.goclipse.model.Import;
-import com.googlecode.goclipse.model.Interface;
 import com.googlecode.goclipse.model.Method;
 import com.googlecode.goclipse.model.Node;
 import com.googlecode.goclipse.model.Package;
@@ -40,7 +39,6 @@ public class CodeContext {
 	public ArrayList<Import>    imports    = new ArrayList<Import>   ();
 	public ArrayList<Method>    methods    = new ArrayList<Method>   ();
 	public ArrayList<Function>  functions  = new ArrayList<Function> ();
-	public ArrayList<Interface> interfaces = new ArrayList<Interface>();
 	public ArrayList<Type>      types      = new ArrayList<Type>     ();
 	
 	/**
