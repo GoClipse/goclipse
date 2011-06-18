@@ -23,12 +23,13 @@ import org.eclipse.ui.IPathEditorInput;
 import com.googlecode.goclipse.go.lang.parser.CodeContext;
 
 public class ContentAssistProcessor implements IContentAssistProcessor {
-
+	
 	GoCodeClient client = new GoCodeClient();
 	private static HashMap<String, CodeContext> codeContexts = new HashMap<String, CodeContext>();
-	private Image go = com.googlecode.goclipse.Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
-	private Image funcImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/func16.png").createImage();
-	private Image interfaceImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/interface_alt24.png").createImage();
+	private Image go 			 = com.googlecode.goclipse.Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
+	private Image funcImage 	 = com.googlecode.goclipse.Activator.getImageDescriptor("icons/function_co.png").createImage();
+	private Image interfaceImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/interface.gif").createImage();
+	private Image structImage 	 = com.googlecode.goclipse.Activator.getImageDescriptor("icons/struct.png").createImage();
 
 	
 	public ContentAssistProcessor() {
@@ -100,6 +101,9 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 						}
 						else if(descriptiveString!=null && descriptiveString.contains(" : interface")){
 							image = interfaceImage;
+						}
+						else if(descriptiveString!=null && descriptiveString.contains(" : struct")){
+							image = structImage;
 						}
 						
 						String substr = identifier.substring(prefix.length());
