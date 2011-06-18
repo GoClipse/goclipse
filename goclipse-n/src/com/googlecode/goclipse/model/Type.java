@@ -26,9 +26,6 @@ public class Type extends Node{
 	 * @return the image
 	 */
 	public Image getImage() {
-		//return Activator.getImage("icons/function_co.png");
 		return Activator.getImage("icons/struct.png");
 	}
-	
-	
 }
