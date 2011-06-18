@@ -2,7 +2,7 @@
 <feature
       id="goclipse_feature"
       label="GoClipse"
-      version="0.0.25"
+      version="0.0.26"
       provider-name="goclipse dev team"
       plugin="goclipse">
 
