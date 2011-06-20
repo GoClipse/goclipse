@@ -30,6 +30,8 @@ import com.googlecode.goclipse.go.lang.parser.CodeContext;
 import com.googlecode.goclipse.model.Function;
 import com.googlecode.goclipse.model.Import;
 import com.googlecode.goclipse.model.Node;
+import com.googlecode.goclipse.model.Type;
+import com.googlecode.goclipse.model.TypeClass;
 
 /**
  * The outline page for the Go editor.
@@ -215,6 +217,16 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 					str.append(node.getName());
 				} else {
 					str.append(node.toString());
+				}
+				
+				if (node instanceof Type) {
+					Type type = (Type)node;
+					
+					if (type.getTypeClass() != TypeClass.UNKNOWN) {
+						String typeName = type.getTypeClass().name().toLowerCase();
+						
+						str.append(" " + typeName, StyledString.DECORATIONS_STYLER);
+					}
 				}
 			} else {
 				str.append(element.toString());

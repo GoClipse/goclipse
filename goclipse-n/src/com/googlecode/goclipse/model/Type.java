@@ -35,7 +35,7 @@ public class Type extends Node {
 			return Activator.getImage("icons/interface.gif");
 		}
 		else{
-			return super.getImage();
+			return Activator.getImage("icons/type.png");
 		}
 
 	}

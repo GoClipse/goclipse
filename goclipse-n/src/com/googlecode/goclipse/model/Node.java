@@ -11,7 +11,7 @@ import com.googlecode.goclipse.Activator;
  * @author steel
  *
  */
-public class Node implements Serializable{
+public abstract class Node implements Serializable{
 
 	/**
 	 * 
@@ -23,7 +23,9 @@ public class Node implements Serializable{
 	private   Type      type;
 	private   int    	line;
 	private   String 	documentation;
-	protected Image  	image = Activator.getImage("icons/go.png");
+	
+	// This image is displayed if a subclass has not overridden getImage().
+	protected Image  	image = Activator.getImage("icons/private_co.gif");
 	
 	/**
 	 * @return the documentation
@@ -97,13 +99,6 @@ public class Node implements Serializable{
 	 */
 	public void setInsertionText(String insertionText) {
 		this.insertionText = insertionText;
-	}
-
-	/**
-	 * @param image the image to set
-	 */
-	public void setImage(Image image) {
-		this.image = image;
 	}
 
 	/**
