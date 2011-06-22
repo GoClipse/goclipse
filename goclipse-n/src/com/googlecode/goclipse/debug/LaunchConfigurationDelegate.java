@@ -4,11 +4,9 @@
 package com.googlecode.goclipse.debug;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -26,7 +24,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.internal.core.DebugCoreMessages;
 import org.eclipse.jface.util.Util;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -37,13 +34,9 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.SysUtils;
-import com.googlecode.goclipse.builder.Arch;
-import com.googlecode.goclipse.builder.ExternalCommand;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoDependencyManager;
 import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.builder.StreamAsLines;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
  * @author steel

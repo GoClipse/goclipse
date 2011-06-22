@@ -3,15 +3,12 @@ package com.googlecode.goclipse.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GoConstants {

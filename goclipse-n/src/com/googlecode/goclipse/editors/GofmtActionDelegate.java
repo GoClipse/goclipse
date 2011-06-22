@@ -7,17 +7,14 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.internal.Workbench;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.builder.ExternalCommand;
 import com.googlecode.goclipse.builder.GoConstants;

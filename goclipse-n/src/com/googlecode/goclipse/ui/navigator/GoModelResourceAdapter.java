@@ -4,7 +4,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 
 /**
  * 

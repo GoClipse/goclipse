@@ -28,11 +28,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.jface.preference.IPreferenceNode;
-import org.eclipse.jface.preference.IPreferencePage;
-import org.eclipse.jface.preference.PreferenceDialog;
-import org.eclipse.jface.preference.PreferenceManager;
-import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
@@ -47,7 +42,6 @@ import com.googlecode.goclipse.builder.Arch;
 import com.googlecode.goclipse.builder.ExternalCommand;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.ProcessIStreamFilter;
-import com.googlecode.goclipse.preferences.GoPreferencePage;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**

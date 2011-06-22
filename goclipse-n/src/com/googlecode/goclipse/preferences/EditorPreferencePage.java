@@ -1,13 +1,11 @@
 package com.googlecode.goclipse.preferences;
 
-import org.eclipse.jface.preference.*;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
 
 /**
  * This class represents a preference page that is contributed to the
