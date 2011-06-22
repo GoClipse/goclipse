@@ -58,18 +58,7 @@
             natureId="goclipse.goNature">
       </image>
    </extension>
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <wizard
-            category="com.googlecode.goclipse.wizards.projects"
-            class="com.googlecode.goclipse.wizards.NewGoFileWizard"
-            finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
-            icon="icons/gopage.png"
-            id="com.googlecode.goclipse.wizards.NewGoFileWizard"
-            name="Source File"
-            project="false">
-      </wizard>
-   </extension>
+
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -212,8 +201,17 @@
          </commonSorter>
          <commonWizard
                type="new"
+               menuGroupId="com.googlecode.goclipse"
                wizardId="com.googlecode.goclipse.wizards.NewGoFileWizard">
-            <enablement></enablement>
+            <enablement>
+            </enablement>
+         </commonWizard>
+         <commonWizard
+               type="new"
+               menuGroupId="com.googlecode.goclipse"
+               wizardId="com.googlecode.goclipse.wizards.project.mainwiz">
+            <enablement>
+            </enablement>
          </commonWizard>
          <actionProvider
                class="com.googlecode.goclipse.ui.navigator.GoNavigatorActionProvider">
@@ -257,21 +255,50 @@
 
    <extension
          point="org.eclipse.ui.newWizards">
+      <category
+            id="com.googlecode.goclipse.wizards.projects"
+            name="Go">
+      </category>
+      
       <wizard
             canFinishEarly="false"
             category="com.googlecode.goclipse.wizards.projects"
             class="com.googlecode.goclipse.wizards.NewProjectWizard"
             finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
-            icon="icons/go-icon16.png"
+            icon="icons/newprj_obj.png"
             id="com.googlecode.goclipse.wizards.project.mainwiz"
             name="Go Project"
             project="true">
+            <description>
+               Create a new Go language project
+            </description>
       </wizard>
-      <category
-            id="com.googlecode.goclipse.wizards.projects"
-            name="Go">
-      </category>
+      
+      <wizard
+            canFinishEarly="false"
+            category="com.googlecode.goclipse.wizards.projects"
+            class="com.googlecode.goclipse.wizards.GoReferenceProjectWizard"
+            finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
+            icon="icons/newprj_obj.png"
+            id="com.googlecode.goclipse.wizards.referenceProjectWizard"
+            name="Go Reference Project"
+            project="true">
+            <description>
+               Create a new project containing a link to GOROOT/src; this is useful for browsing the source for the Go libraries
+            </description>
+      </wizard>
+      
+      <wizard
+            category="com.googlecode.goclipse.wizards.projects"
+            class="com.googlecode.goclipse.wizards.NewGoFileWizard"
+            finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
+            icon="icons/gopage.png"
+            id="com.googlecode.goclipse.wizards.NewGoFileWizard"
+            name="Source File"
+            project="false">
+      </wizard>
    </extension>
+   
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
