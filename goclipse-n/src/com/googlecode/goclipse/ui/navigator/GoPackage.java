@@ -70,8 +70,9 @@ public class GoPackage implements IGoPackage, IAdaptable,
 		return getName();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
-	public Object getAdapter(@SuppressWarnings("unchecked") Class adapter) {
+	public Object getAdapter(Class adapter) {
 		if (adapter == IContributorResourceAdapter.class) {
 			return this;
 		}

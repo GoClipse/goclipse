@@ -13,7 +13,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -30,8 +29,6 @@ public class ProjectComposite extends Composite {
    private Label     directoryLabel                   = null;
    private Text      existingSourcePathText           = null;
    private Button    browseButton                     = null;
-   private String    selectedPath;
-   private Composite parent;
 
    /**
     * This method initializes contentGroup
@@ -116,7 +113,6 @@ public class ProjectComposite extends Composite {
       // To get to the directory of your Workspace
       IPath path = root.getLocation();
       String stringPath = path.toString();
-      final Shell shell = getShell();
 
       existingSourcePathText = new Text(contentGroup, SWT.BORDER);
       existingSourcePathText.setText(stringPath);
@@ -131,7 +127,7 @@ public class ProjectComposite extends Composite {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            selectedPath = new DirectoryDialog(shell).open();
+            //selectedPath = new DirectoryDialog(shell).open();
          }
 
          @Override
@@ -169,7 +165,7 @@ public class ProjectComposite extends Composite {
 
    public ProjectComposite(Composite parent, int style) {
       super(parent, style);
-      this.parent = parent;
+
       initialize();
    }
 

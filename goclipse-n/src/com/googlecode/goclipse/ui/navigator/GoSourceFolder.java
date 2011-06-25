@@ -57,8 +57,9 @@ public class GoSourceFolder implements IGoSourceFolder, IAdaptable,
 		return getName();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
-	public Object getAdapter(@SuppressWarnings("unchecked") Class adapter) {
+	public Object getAdapter(Class adapter) {
 		if (adapter == IResource.class) {
 			return folder;
 		}

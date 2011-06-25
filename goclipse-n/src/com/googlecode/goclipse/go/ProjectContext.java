@@ -1,6 +1,5 @@
 package com.googlecode.goclipse.go;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +41,6 @@ public class ProjectContext {
 	 */
 	public void addCurrentProjectContext(Package package1){
 		HashMap<Package, Package> map = project.get(Environment.INSTANCE.getCurrentProject().getName());
-		File file;
 		
 		if(map==null){
 			map = new HashMap<Package, Package>();

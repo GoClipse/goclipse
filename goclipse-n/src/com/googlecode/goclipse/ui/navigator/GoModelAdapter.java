@@ -19,15 +19,12 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 public class GoModelAdapter implements IAdapterFactory {
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
-
-		
 		if (adapterType == IResource.class) {
 			if (adaptableObject instanceof IGoSourceContainer) {
-				IFolder folderAdapter = ((IGoSourceContainer) adaptableObject)
-						.getFolder();
+				IFolder folderAdapter = ((IGoSourceContainer) adaptableObject).getFolder();
 				
 				return folderAdapter;
 			}
@@ -43,7 +40,7 @@ public class GoModelAdapter implements IAdapterFactory {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Class[] getAdapterList() {
 		// this is overwritten by the adapter factory extension

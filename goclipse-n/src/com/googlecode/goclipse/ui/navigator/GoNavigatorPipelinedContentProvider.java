@@ -12,8 +12,10 @@ import org.eclipse.ui.navigator.PipelinedViewerUpdate;
 /**
  * 
  * @author Mihailo Vasiljevic
- * 
+ * @deprecated unused - should probably be deleted
  */
+@Deprecated
+@SuppressWarnings("rawtypes")
 public class GoNavigatorPipelinedContentProvider implements
 		IPipelinedTreeContentProvider {
 

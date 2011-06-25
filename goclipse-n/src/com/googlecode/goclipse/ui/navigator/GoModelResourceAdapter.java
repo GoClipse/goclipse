@@ -1,6 +1,7 @@
 package com.googlecode.goclipse.ui.navigator;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 import com.googlecode.goclipse.Environment;
@@ -12,10 +13,9 @@ import com.googlecode.goclipse.Environment;
  */
 public class GoModelResourceAdapter implements IAdapterFactory {
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
-
-				
 		if (adaptableObject instanceof IFolder) {
 			IFolder f = (IFolder) adaptableObject;
 			if (Environment.INSTANCE.isCmdFile(f.getProjectRelativePath()) ||
@@ -29,10 +29,10 @@ public class GoModelResourceAdapter implements IAdapterFactory {
 		return null;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Class[] getAdapterList() {
-
-		return null;
+		return new Class[] { IResource.class };
 	}
 
 }

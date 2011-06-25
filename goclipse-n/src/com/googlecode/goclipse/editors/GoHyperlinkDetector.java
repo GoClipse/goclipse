@@ -35,13 +35,13 @@ public class GoHyperlinkDetector extends AbstractHyperlinkDetector {
 			return null;
 		}
 		
-		try {
-			String word = textViewer.getDocument().get(wordRegion.getOffset(), wordRegion.getLength());
-			
-			//System.out.println("[" + word + "]");
-		} catch (BadLocationException e) {
-			// ignore
-		}
+//		try {
+//			String word = textViewer.getDocument().get(wordRegion.getOffset(), wordRegion.getLength());
+//			
+//			System.out.println("[" + word + "]");
+//		} catch (BadLocationException e) {
+//			// ignore
+//		}
 		
 		return null;
 	}

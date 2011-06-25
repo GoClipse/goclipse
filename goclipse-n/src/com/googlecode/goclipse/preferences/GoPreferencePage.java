@@ -11,6 +11,7 @@ import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.osgi.framework.Version;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
@@ -44,7 +45,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements
 	public GoPreferencePage() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("Goclipse Configuration for Go");
+		setDescription("GoClipse v" + getVersionText());
 	}
 
 	/**
@@ -56,11 +57,13 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements
 		addField(gorootEditor = new DirectoryFieldEditor(PreferenceConstants.GOROOT,
 				"GO&ROOT path:", getFieldEditorParent()));
 		
-		addField(goosEditor = new ComboFieldEditor(PreferenceConstants.GOOS,
-				"G&OOS:", new String[][]{{"", ""}, {PreferenceConstants.OS_DARWIN, PreferenceConstants.OS_DARWIN}, {PreferenceConstants.OS_LINUX, PreferenceConstants.OS_LINUX}, {PreferenceConstants.OS_FREEBSD, PreferenceConstants.OS_FREEBSD}, {PreferenceConstants.OS_NACL, PreferenceConstants.OS_NACL}, {PreferenceConstants.OS_WINDOWS, PreferenceConstants.OS_WINDOWS}},getFieldEditorParent()));
+		goosEditor = new ComboFieldEditor(PreferenceConstants.GOOS,
+			"G&OOS:", new String[][]{{"", ""}, {PreferenceConstants.OS_DARWIN, PreferenceConstants.OS_DARWIN}, {PreferenceConstants.OS_LINUX, PreferenceConstants.OS_LINUX}, {PreferenceConstants.OS_FREEBSD, PreferenceConstants.OS_FREEBSD}, {PreferenceConstants.OS_NACL, PreferenceConstants.OS_NACL}, {PreferenceConstants.OS_WINDOWS, PreferenceConstants.OS_WINDOWS}},getFieldEditorParent());
+		addField(goosEditor);
 		
-		addField(goarchEditor = new ComboFieldEditor(PreferenceConstants.GOARCH,
-				"GO&ARCH:", new String[][]{{"", ""}, {PreferenceConstants.ARCH_AMD64, PreferenceConstants.ARCH_AMD64}, {PreferenceConstants.ARCH_386, PreferenceConstants.ARCH_386}, {PreferenceConstants.ARCH_ARM, PreferenceConstants.ARCH_ARM}}, getFieldEditorParent()));
+		goarchEditor = new ComboFieldEditor(PreferenceConstants.GOARCH,
+			"GO&ARCH:", new String[][]{{"", ""}, {PreferenceConstants.ARCH_AMD64, PreferenceConstants.ARCH_AMD64}, {PreferenceConstants.ARCH_386, PreferenceConstants.ARCH_386}, {PreferenceConstants.ARCH_ARM, PreferenceConstants.ARCH_ARM}}, getFieldEditorParent());
+		addField(goarchEditor);
 		
 		addField(compilerEditor = new FileFieldEditor(PreferenceConstants.COMPILER_PATH,
 				"Go &Compiler path:", getFieldEditorParent()));
@@ -92,8 +95,8 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		// TODO Auto-generated method stub
 		super.propertyChange(event);
+		
 		if (event.getSource() == gorootEditor && PreferenceInitializer.getDefaultCompilerName() != null) {
 			IPath gorootPath = new Path(gorootEditor.getStringValue());
 			File gorootFile = gorootPath.toFile();
@@ -147,4 +150,10 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements
 		}
 	}
 
+	private static String getVersionText() {
+		Version version = Activator.getDefault().getBundle().getVersion();
+		
+		return version.getMajor() + "." + version.getMinor() + "." + version.getMicro();
+	}
+	
 }

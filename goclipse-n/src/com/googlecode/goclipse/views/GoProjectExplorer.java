@@ -10,8 +10,9 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author steel
- *
+ * @deprecated - unused?
  */
+@Deprecated
 public class GoProjectExplorer extends ViewPart {
 
 	public static final String ID = "com.googlecode.goclipse.views.GoProjectExplorer"; // TODO Needs to be whatever is mentioned in plugin.xml

@@ -184,21 +184,20 @@ public class GoScanner extends RuleBasedScanner {
 	}
 	
 	/**
-    * 
-    * @author steel
-    * @deprecated
-    */
-	class KeywordRule extends WordRule{
+	 * 
+	 * @author steel
+	 * @deprecated
+	 */
+	class KeywordRule extends WordRule {
 
-      public KeywordRule(IWordDetector detector) {
-         super(detector);
-      }
-      
-      public Map getFWords(){
-         return fWords;
-      }
-	   
+		public KeywordRule(IWordDetector detector) {
+			super(detector);
+		}
+
+		@SuppressWarnings("rawtypes")
+		public Map getFWords() {
+			return fWords;
+		}
 	}
-	
 	
 }

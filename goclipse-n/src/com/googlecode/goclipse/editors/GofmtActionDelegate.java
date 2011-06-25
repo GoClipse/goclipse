@@ -12,7 +12,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.SysUtils;
@@ -23,7 +22,6 @@ import com.googlecode.goclipse.builder.StreamAsString;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GofmtActionDelegate implements IEditorActionDelegate {
-    private IWorkbenchWindow window;
 	private IEditorPart editorPart;
 
     public GofmtActionDelegate() {
@@ -68,7 +66,7 @@ public class GofmtActionDelegate implements IEditorActionDelegate {
 				String result = gofmtCmd.execute(new ArrayList<String>(), true);
 				
 				if (result != null) {
-					SysUtils.warning("gofmt failed: "+result);
+					SysUtils.displayError(editor.getSite().getShell(), "Error Running Gofmt", result);
 				} else {
 					String formattedText = output.getString();
 					if (!formattedText.equals(currentContent)) {

@@ -23,7 +23,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jface.util.Util;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -137,7 +136,7 @@ public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate
 					args.addAll(argList);
 				}
 				Process p = DebugPlugin.exec(args.toArray(new String[]{}), new File(workingDirectory));
-				IProcess process = DebugPlugin.newProcess(launch, p, executableName);
+				/*IProcess process =*/ DebugPlugin.newProcess(launch, p, executableName);
 			} else {
 				throw new DebugException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, DebugException.TARGET_REQUEST_FAILED,
 						"Executable source files must be in the 'cmd' folder", null));

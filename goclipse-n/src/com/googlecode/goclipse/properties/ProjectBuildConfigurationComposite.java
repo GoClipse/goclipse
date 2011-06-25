@@ -34,6 +34,7 @@ import com.googlecode.goclipse.SysUtils;
 /**
  * @author steel
  */
+@SuppressWarnings("restriction")
 public class ProjectBuildConfigurationComposite extends Composite {
 
    private static final class TreeContentProvider implements

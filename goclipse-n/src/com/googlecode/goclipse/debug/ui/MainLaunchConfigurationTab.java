@@ -14,7 +14,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoNature;
 
@@ -25,12 +27,11 @@ import com.googlecode.goclipse.builder.GoNature;
 public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
    private MainTabComposite composite;
    private String errorMessage = null;
-   private ILaunchConfigurationWorkingCopy workingCopy = null;
    ILaunchConfigurationDialog launchConfigurationDialog = null;
    
    @Override
    public void activated(ILaunchConfigurationWorkingCopy workingCopy) {
-      this.workingCopy = workingCopy;
+
    }
 
    @Override
@@ -123,8 +124,7 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
 
    @Override
    public Image getImage() {
-      // TODO Auto-generated method stub
-      return null;
+      return Activator.getImage("icons/go-icon16.png");
    }
 
    @Override
@@ -182,6 +182,7 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
    @Override
    public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
       IProject project = Environment.INSTANCE.getCurrentProject();
+      
       try {
          if (project.getNature(GoNature.NATURE_ID) != null){
             configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, composite.getProject());
@@ -190,9 +191,10 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
             configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, "enter a project here...");
          }
       }
-      catch (Exception e) {
-         // TODO: handle exception
+      catch (CoreException e) {
+         SysUtils.severe(e);
       }
+      
       configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN,"");
       configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_BUILD_CONFIG, BuildConfiguration.RELEASE.toString());
       configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_ARGS, "");

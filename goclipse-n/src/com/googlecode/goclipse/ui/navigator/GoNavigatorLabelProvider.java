@@ -5,6 +5,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import com.googlecode.goclipse.Activator;
+
 /**
  * 
  * 
@@ -19,9 +21,9 @@ public class GoNavigatorLabelProvider extends LabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		if (element instanceof GoSourceFolder) {
-			return ImageCache.getInstance().getCachedImage(ImageCache.SOURCE_FOLDER_ICON_PATH);
+			return Activator.getImage("icons/source-folder.gif");
 		} else if (element instanceof GoPackage) {
-			return ImageCache.getInstance().getCachedImage(ImageCache.PACKAGE_ICON_PATH);
+			return Activator.getImage("icons/package.gif");
 		}
 		
 		return null;
