@@ -15,7 +15,7 @@ public class SysUtils {
 
 	public static void debug(String msg) {
 		if (Environment.DEBUG) {
-			System.out.println("[DEBUG]   " + msg);
+			System.out.println("[DEBUG]   " + msg.trim());
 		}
 	}
 

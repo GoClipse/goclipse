@@ -97,7 +97,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		private List<IResource> collected = new ArrayList<IResource>();
 
 		public boolean visit(IResource resource) {
-			SysUtils.debug("SampleResourceVisitor.visit:" + resource);
+			//SysUtils.debug("SampleResourceVisitor.visit:" + resource);
+			
 			if (resource instanceof IFile && resource.getName().endsWith(".go")) {
 				collected.add(resource);
 			}

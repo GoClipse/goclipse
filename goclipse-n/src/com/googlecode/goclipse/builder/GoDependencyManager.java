@@ -179,7 +179,8 @@ public class GoDependencyManager implements Serializable {
 				}
 			}
 		}
-		System.out.println(manager.toString());
+		
+		SysUtils.debug("dependencies:\n" + manager.toString());
 	}
 
 	private void handleParseError(IProject project, StreamAsLines output) {
