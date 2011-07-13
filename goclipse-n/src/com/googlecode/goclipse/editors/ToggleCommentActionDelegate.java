@@ -85,7 +85,6 @@ public class ToggleCommentActionDelegate implements IEditorActionDelegate {
 				
 				st.setText(sb.toString());
 				st.setCaretOffset(caretPosition);
-				
 				st.setSelectionRange(selectionStart, selectionLength);
 				
 			}			
