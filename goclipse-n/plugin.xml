@@ -429,6 +429,12 @@
             categoryId="com.googlecode.goclipse.editor.source"
             id="com.googlecode.goclipse.editors.GofmtShortcut.run">
       </command>
+      <command
+            name="toggle comment"
+            description="comment/uncomment current selection"
+            categoryId="com.googlecode.goclipse.editor.source"
+            id="com.googlecode.goclipse.editors.ToggleComment.run">
+      </command>
    </extension>
    <extension point="org.eclipse.ui.contexts">
           <context name="Go editor"
@@ -457,6 +463,11 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </key>
       
+      <key sequence="Ctrl+/"
+			commandId="com.googlecode.goclipse.editors.ToggleComment.run"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			contextId="com.googlecode.goclipse.editor"/>
+
    </extension>
    
    <extension
@@ -481,6 +492,15 @@
              label="&amp;Format (gofmt)"
              menubarPath="com.googlecode.goclipse.editor.sourceMenu/format">
        </action>
+       
+       <action
+             class="com.googlecode.goclipse.editors.ToggleCommentActionDelegate"
+             definitionId="com.googlecode.goclipse.editors.ToggleComment.run"
+             id="com.googlecode.goclipse.togglecomment"
+             label="Togg&amp;le Comment"
+             menubarPath="com.googlecode.goclipse.editor.sourceMenu/format">
+       </action>
+       
        <menu
              id="com.googlecode.goclipse.editor.sourceMenu"
              label="&amp;Source"

@@ -9,11 +9,26 @@ public class Var extends Node implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private boolean isArray = false;
-	private boolean isMap = false;
-	private boolean isChan = false;
+	private boolean isArray   = false;
+	private boolean isMap     = false;
+	private boolean isChan    = false;
 	private boolean isPointer = false;
+	private TypeClass typeClass;
 
+
+	/**
+	 * @return the typeClass
+	 */
+	public TypeClass getTypeClass() {
+		return typeClass;
+	}
+
+	/**
+	 * @param typeClass the typeClass to set
+	 */
+	public void setTypeClass(TypeClass typeClass) {
+		this.typeClass = typeClass;
+	}
 
 	/**
 	 * @return the isArray

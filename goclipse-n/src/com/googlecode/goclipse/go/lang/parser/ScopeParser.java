@@ -1,11 +1,7 @@
 package com.googlecode.goclipse.go.lang.parser;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import com.googlecode.goclipse.SysUtils;
-import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
@@ -15,62 +11,33 @@ import com.googlecode.goclipse.model.Method;
 /**
  * 
  * @author steel
- * 
  */
-public class FunctionParser implements TokenListener {
+public class ScopeParser implements TokenListener {
 
 	private enum State {
-		START, DETERMINE_TYPE, CONSUME_FUNCTION_HEADER, CONSUME_METHOD_HEADER, FINISHED, ERROR
+		START, DETERMINE_TYPE, CONSUME_FUNCTION, CONSUME_METHOD, FINISHED, ERROR
 	}
 
-	private State state = State.START;
-	private ArrayList<FunctionParserListener> funcListeners = new ArrayList<FunctionParserListener>();
-	private ArrayList<Function> funcs = new ArrayList<Function>();
-	private ArrayList<Method> methods = new ArrayList<Method>();
-	private Function func = new Function();
-	private Method method = new Method();
-	private StringBuffer comment = new StringBuffer();
-	private StringBuffer text = new StringBuffer();
-	private int lastCommentLine = 0;
-	private int tokenOnLineCount = 0;
-	private int afterReceiver = 0;
-	private boolean exportsOnly = true;
-	private int scope_tracker = 0;
+	private State               state            = State.START;
+	private ArrayList<Function> funcs            = new ArrayList<Function>();
+	private ArrayList<Method>   methods          = new ArrayList<Method>();
+	private Function            func             = new Function();
+	private Method              method           = new Method();
+	private StringBuffer        comment          = new StringBuffer();
+	private StringBuffer        text             = new StringBuffer();
+	private int 		        lastCommentLine  = 0;
+	private int                 tokenOnLineCount = 0;
+	private int                 afterReceiver    = 0;
+	private boolean             exportsOnly      = true;
+	private int                 scope_tracker    = 0;
 
 	/**
 	 * 
 	 * @param tokenizer
 	 */
-	public FunctionParser(boolean parseExportsOnly, Tokenizer tokenizer) {
+	public ScopeParser(boolean parseExportsOnly, Tokenizer tokenizer) {
 		tokenizer.addTokenListener(this);
 		exportsOnly = parseExportsOnly;
-	}
-	
-	/**
-	 * @param listener
-	 */
-	public void addFuncListeners(FunctionParserListener listener ){
-		if(!funcListeners.contains(listener)){
-			funcListeners.add(listener);
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	public void onFunctionEnter(){
-		for(FunctionParserListener listener: funcListeners){
-			listener.onEnterFunction(func);
-		}
-	}
-	
-	/**
-	 * 
-	 */
-	public void onFunctionExit(){
-		for(FunctionParserListener listener: funcListeners){
-			listener.onExitFunction(func);
-		}
 	}
 
 	@Override
@@ -129,7 +96,7 @@ public class FunctionParser implements TokenListener {
 				}
 				break;
 
-			case CONSUME_METHOD_HEADER:
+			case CONSUME_METHOD:
 				if (TokenType.IDENTIFIER.equals(type)) {
 					text.append(value);
 					if (afterReceiver == 1) {
@@ -167,7 +134,7 @@ public class FunctionParser implements TokenListener {
 					text.append(value);
 				}
 				break;
-			case CONSUME_FUNCTION_HEADER:
+			case CONSUME_FUNCTION:
 				if (TokenType.IDENTIFIER.equals(type)) {
 					text.append(value);
 
@@ -202,10 +169,10 @@ public class FunctionParser implements TokenListener {
 				break;
 			case DETERMINE_TYPE:
 				if (TokenType.LPAREN.equals(type)) {
-					state = State.CONSUME_METHOD_HEADER;
+					state = State.CONSUME_METHOD;
 					text.append(value);
 				} else if (TokenType.IDENTIFIER.equals(type)) {
-					state = State.CONSUME_FUNCTION_HEADER;
+					state = State.CONSUME_FUNCTION;
 
 					text.append(value);
 					func.setLine(linenumber);
@@ -223,39 +190,12 @@ public class FunctionParser implements TokenListener {
 		}
 	}
 
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 
-		Lexer lexer = new Lexer();
-		Tokenizer tokenizer = new Tokenizer(lexer);
-		FunctionParser fparser = new FunctionParser(false, tokenizer);
-
-		try {
-			lexer.scan(new File("test_go/import_test.go"));
-			for (Function func : fparser.funcs) {
-				SysUtils.debug("=================================================");
-				SysUtils.debug(func.getDocumentation());
-				SysUtils.debug("-------------------------------------------------");
-				SysUtils.debug(func.getName());
-				SysUtils.debug(func.getInsertionText());
-				SysUtils.debug("-------------------------------------------------");
-			}
-
-			SysUtils.debug("\n");
-			SysUtils.debug("=================================================");
-			SysUtils.debug("[METHODS]");
-
-			for (Method method : fparser.methods) {
-				SysUtils.debug("=================================================");
-				SysUtils.debug(method.getDocumentation());
-				SysUtils.debug("-------------------------------------------------");
-				SysUtils.debug(method.getName());
-				SysUtils.debug(method.getInsertionText());
-				SysUtils.debug("-------------------------------------------------");
-			}
-
-		} catch (IOException e) {
-			SysUtils.severe(e);
-		}
+		
 	}
 
 	@Override
@@ -277,3 +217,4 @@ public class FunctionParser implements TokenListener {
 		return funcs;
 	}
 }
+

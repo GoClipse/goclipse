@@ -12,14 +12,20 @@ import (
 
 import d "K"
 
+// this is a variable comment
+var variable string
+
 // this does something
 type bb int
+
+var a1 int
 
 type A struct{
 	
 }
 
 func (a *A) method(){
+	return x
 }
 
 // This is a test comment

@@ -21,6 +21,7 @@ import com.googlecode.goclipse.model.Method;
 import com.googlecode.goclipse.model.Node;
 import com.googlecode.goclipse.model.Package;
 import com.googlecode.goclipse.model.Type;
+import com.googlecode.goclipse.model.Var;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -40,6 +41,7 @@ public class CodeContext {
 	public ArrayList<Method>    methods    = new ArrayList<Method>   ();
 	public ArrayList<Function>  functions  = new ArrayList<Function> ();
 	public ArrayList<Type>      types      = new ArrayList<Type>     ();
+	public ArrayList<Var>       vars       = new ArrayList<Var>       ();
 	
 	/**
 	 * 
@@ -71,6 +73,7 @@ public class CodeContext {
 		ImportParser    importParser    = new ImportParser(tokenizer);
 		FunctionParser  functionParser  = new FunctionParser(false, tokenizer);
 		TypeParser      typeParser      = new TypeParser(false, tokenizer);
+		VariableParser  variableParser  = new VariableParser(tokenizer, functionParser);
 //		InterfaceParser interfaceParser = new InterfaceParser(tokenizer);
 		
 		lexer.scan(fileText);
@@ -81,6 +84,7 @@ public class CodeContext {
 		codeContext.methods    = functionParser.getMethods();
 		codeContext.functions  = functionParser.getFunctions();
 		codeContext.types	   = typeParser.getTypes();
+		codeContext.vars       = variableParser.getVars();
 //		codeContext.interfaces = interfaceParser.getFunctions();
 		
 		if (useExternalContext) {

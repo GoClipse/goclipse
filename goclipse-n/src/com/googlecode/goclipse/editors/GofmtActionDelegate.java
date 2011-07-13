@@ -21,7 +21,13 @@ import com.googlecode.goclipse.builder.ProcessOStreamFilter;
 import com.googlecode.goclipse.builder.StreamAsString;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
+/**
+ * 
+ * @author steel
+ *
+ */
 public class GofmtActionDelegate implements IEditorActionDelegate {
+	
 	private IEditorPart editorPart;
 
     public GofmtActionDelegate() {

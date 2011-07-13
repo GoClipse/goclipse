@@ -270,6 +270,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 				nodes.addAll(codeContext.methods);
 				nodes.addAll(codeContext.types);
 				nodes.addAll(codeContext.functions);
+				nodes.addAll(codeContext.vars);
 				
 				Collections.sort(nodes, new LineBasedComparator());
 				

@@ -7,6 +7,7 @@ import com.googlecode.goclipse.Activator;
 public class Type extends Node {
 
 	private TypeClass typeClass = TypeClass.UNKNOWN;
+	
 
 	/**
 	 * @return the typeClass
