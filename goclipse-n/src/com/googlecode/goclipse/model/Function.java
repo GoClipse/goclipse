@@ -35,7 +35,7 @@ public class Function extends Node{
 	 */
 	public Image getImage() {
 		//return Activator.getImage("icons/function_co.png");
-		return Activator.getImage("icons/func16.png");
+		return Activator.getImage("icons/function_co.png");
 	}
 	
 }

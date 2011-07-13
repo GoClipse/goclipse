@@ -228,6 +228,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 						str.append(" " + typeName, StyledString.DECORATIONS_STYLER);
 					}
 				}
+				
 			} else {
 				str.append(element.toString());
 			}
@@ -270,7 +271,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 				nodes.addAll(codeContext.methods);
 				nodes.addAll(codeContext.types);
 				nodes.addAll(codeContext.functions);
-				nodes.addAll(codeContext.vars);
+				//nodes.addAll(codeContext.vars);
 				
 				Collections.sort(nodes, new LineBasedComparator());
 				

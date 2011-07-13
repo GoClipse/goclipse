@@ -497,7 +497,7 @@
              class="com.googlecode.goclipse.editors.ToggleCommentActionDelegate"
              definitionId="com.googlecode.goclipse.editors.ToggleComment.run"
              id="com.googlecode.goclipse.togglecomment"
-             label="Togg&amp;le Comment"
+             label="Toggle Comment"
              menubarPath="com.googlecode.goclipse.editor.sourceMenu/format">
        </action>
        
