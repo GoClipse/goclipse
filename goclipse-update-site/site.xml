@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/goclipse_feature_0.1.1.jar" id="goclipse_feature" version="0.1.1" patch="true">
+   <feature url="features/goclipse_feature_0.1.2.jar" id="goclipse_feature" version="0.1.2" patch="true">
       <category name="goclipse"/>
    </feature>
    <category-def name="goclipse" label="goclipse"/>
