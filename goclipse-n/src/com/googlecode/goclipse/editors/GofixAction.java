@@ -18,33 +18,29 @@ import com.googlecode.goclipse.builder.StreamAsString;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
- * 
- * @author steel
- *
+ * An action to run the gofix command.
  */
-public class GofmtActionDelegate extends TransformTextAction {
+public class GofixAction extends TransformTextAction {
 	
-    public GofmtActionDelegate() {
-    	super("gofmt");
+	public GofixAction() {
+		super("Gofix");
 	}
 
 	@Override
 	protected String transformText(final String text) throws CoreException {
-		final String currentContent = text;
+		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+		String gofixPath = preferenceStore.getString(PreferenceConstants.GOROOT) + "/bin/gofix";
+		
+		final ExternalCommand goFixCmd = new ExternalCommand(gofixPath);
+		goFixCmd.setEnvironment(GoConstants.environment());
 
-		IPreferenceStore preferenceStore = Activator.getDefault()
-				.getPreferenceStore();
-		String gofmtPath = preferenceStore
-				.getString(PreferenceConstants.FORMATTER_PATH);
-		final ExternalCommand gofmtCmd = new ExternalCommand(gofmtPath);
-		gofmtCmd.setEnvironment(GoConstants.environment());
-
-		gofmtCmd.setInputFilter(new ProcessOStreamFilter() {
+		goFixCmd.setInputFilter(new ProcessOStreamFilter() {
 			@Override
 			public void setStream(OutputStream outputStream) {
-				OutputStreamWriter osw = new OutputStreamWriter(outputStream);
+				OutputStreamWriter osw = new OutputStreamWriter(
+						outputStream);
 				try {
-					osw.append(currentContent);
+					osw.append(text);
 					osw.flush();
 					outputStream.close();
 				} catch (IOException e) {
@@ -54,17 +50,17 @@ public class GofmtActionDelegate extends TransformTextAction {
 		});
 
 		StreamAsString output = new StreamAsString();
-		gofmtCmd.setResultsFilter(output);
+		goFixCmd.setResultsFilter(output);
 
-		String result = gofmtCmd.execute(new ArrayList<String>(), true);
-
+		String result = goFixCmd.execute(new ArrayList<String>(), true);
+		
 		if (result != null) {
-			throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error running gofmt: " + result));
+			throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, result));
 		} else {
-			String formattedText = output.getString();
+			String transformedText = output.getString();
 			
-			if (!formattedText.equals(currentContent)) {
-				return formattedText;
+			if (transformedText.length() > 0 && !transformedText.equals(text)) {
+				return transformedText;
 			} else {
 				return null;
 			}

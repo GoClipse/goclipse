@@ -7,6 +7,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -116,6 +117,25 @@ public class GoEditor extends TextEditor {
 		return matcher;
 	}
 
+	public String getText() {
+		return getSourceViewer().getDocument().get();
+	}
+
+	public void replaceText(String newText) {
+		ISelection sel = getSelectionProvider().getSelection();
+		int topIndex = getSourceViewer().getTopIndex();
+		
+		getSourceViewer().getDocument().set(newText);
+		
+		if (sel != null) {
+			getSelectionProvider().setSelection(sel);
+		}
+		
+		if (topIndex != -1) {
+			getSourceViewer().setTopIndex(topIndex);
+		}
+	}
+	
 	public void dispose() {
 		Activator.getDefault().getPreferenceStore().removePropertyChangeListener(changeListener);
 		

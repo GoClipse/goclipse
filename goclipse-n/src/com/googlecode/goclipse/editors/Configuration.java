@@ -168,4 +168,9 @@ private IContentAssistProcessor getCompletionProcessor() {
 		return reconciler;
 	}
 
+	@Override
+	public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
+		return new String[] { "//", "" };
+	}
+	
 }
