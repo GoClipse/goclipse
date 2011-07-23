@@ -33,7 +33,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 
 	
 	public ContentAssistProcessor() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
@@ -52,6 +52,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 		IDocument document = viewer.getDocument();
 
 		CodeContext codeContext = codeContexts.get(filename);
+		@SuppressWarnings("unused")
 		int linenumber = 0;
 		
 		try {
@@ -86,6 +87,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 					int firstComma = string.indexOf(",,");
 					int secondComma = string.indexOf(",,", firstComma+2);
 					if (firstComma != -1 && secondComma != -1) {
+						@SuppressWarnings("unused")
 						String type = string.substring(0, firstComma);
 						String identifier = string.substring(firstComma+2, secondComma);
 						String spec = string.substring(secondComma+2);
@@ -150,7 +152,6 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 	}
 
 	public String getErrorMessage() {
-		// TODO Auto-generated method stub
 		return client.getError();
 	}
 

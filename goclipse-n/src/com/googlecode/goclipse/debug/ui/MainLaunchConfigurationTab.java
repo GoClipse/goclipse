@@ -139,7 +139,6 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
 
    @Override
    public void initializeFrom(ILaunchConfiguration configuration) {
-
       try {
          String projectname = configuration.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, "");
          String mainfile = configuration.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN, "");
@@ -148,9 +147,9 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
 
          composite.setProject(projectname);
          composite.setMainFile(mainfile);
-         composite.setBuildConfig(buildconfig!=null||!buildconfig.equals("")?BuildConfiguration.get(buildconfig):BuildConfiguration.DEBUG);
+         composite.setBuildConfig((buildconfig != null && !buildconfig.equals(""))
+            ? BuildConfiguration.get(buildconfig) : BuildConfiguration.DEBUG);
          composite.setProgramArgs(programargs);
-
       }
       catch (CoreException e) {
          e.printStackTrace();
