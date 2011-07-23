@@ -28,15 +28,21 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.navigator.ResourceNavigator;
 
 import com.googlecode.goclipse.builder.Arch;
 import com.googlecode.goclipse.builder.ExternalCommand;
@@ -329,10 +335,23 @@ public class Environment {
 		IProject project = null;
 
 		try {
-			project = extractSelection(
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-							.getActivePage().getSelection()).getProject();
+			IWorkbench iWorkbench 			  = PlatformUI.getWorkbench();
+			IWorkbenchWindow iWorkbenchWindow = iWorkbench.getActiveWorkbenchWindow();
+			IWorkbenchPage iWorkbenchPage 	  = iWorkbenchWindow.getActivePage();
+			ISelection iSelection 			  = (ISelection)iWorkbenchPage.getSelection();
+			iSelection 						  = iWorkbenchPage.getSelection();
+			
+			if(iSelection instanceof TextSelection){
+				IEditorInput editorInput = iWorkbenchWindow.getActivePage().getActiveEditor().getEditorInput();
+				if(editorInput instanceof IFileEditorInput){
+					return ((IFileEditorInput)editorInput).getFile().getProject();
+				}
+			}
+			
+			extractSelection(iSelection).getProject(); 
+			
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (project == null) {
