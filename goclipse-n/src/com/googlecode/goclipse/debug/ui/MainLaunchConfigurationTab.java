@@ -184,7 +184,7 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
       IProject project = Environment.INSTANCE.getCurrentProject();
       
       try {
-         if (project.getNature(GoNature.NATURE_ID) != null){
+         if (project.getNature(GoNature.NATURE_ID) != null && composite != null) {
             configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, composite.getProject());
          }
          else{
