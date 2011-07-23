@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Auto Complete with GoCode
 Bundle-SymbolicName: com.googlecode.goclipse.gocode;singleton:=true
-Bundle-Version: 0.1.1
+Bundle-Version: 0.1.3
 Bundle-Activator: com.googlecode.goclipse.gocode.Activator
 Bundle-Vendor: goclipse dev team
 Require-Bundle: org.eclipse.ui,

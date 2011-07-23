@@ -92,7 +92,7 @@ public class GoCodeClient {
 		});
 
 		parameters = new LinkedList<String>();
-		parameters.add("-sock=tcp");
+//		parameters.add("-sock=tcp");
 		parameters.add("-f=csv");
 		parameters.add("autocomplete");
 		parameters.add(fileName);
