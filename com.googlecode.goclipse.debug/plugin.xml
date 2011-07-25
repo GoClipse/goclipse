@@ -138,7 +138,7 @@
             category="com.googlecode.goclipse.preferences.GoPreferencePage"
             class="com.googlecode.goclipse.debug.preferences.DebuggerPreferencePage"
             id="com.googlecode.goclipse.debug.page1"
-            name="Debugger">
+            name="Debug">
       </page>
    </extension>
    
