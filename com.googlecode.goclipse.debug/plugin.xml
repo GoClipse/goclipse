@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+      id="breakpointMarker"
+      point="org.eclipse.core.resources.markers">
+
+      <super type="org.eclipse.debug.core.lineBreakpointMarker"/>
+      <persistent value="true"/>
+   </extension>
+
+   <extension point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            class="com.googlecode.goclipse.debug.breakpoints.GoBreakpoint"
+            id="com.googlecode.goclipse.debug.lineBreakpoint"
+            markerType="com.googlecode.goclipse.debug.breakpointMarker"
+            name="Go breakpoint">
+      </breakpoint>
+   </extension>
+
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="com.googlecode.goclipse.editors.GoEditor"
+            class="com.googlecode.goclipse.debug.breakpoints.GoBreakpointAdapterFactory">
+         <adapter
+               type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
+         </adapter>
+      </factory>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            targetID="com.googlecode.goclipse.editors.Editor"
+            id="com.googlecode.goclipse.debug.breakpointActions">
+         <action
+               label="Toggle Breakpoint"
+               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+               actionID="RulerDoubleClick"
+               id="com.googlecode.goclipse.debug.breakpointActions.toggle">
+         </action>
+      </editorContribution>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            targetID="#GoEditorRulerContext"
+            id="com.googlecode.goclipse.debug.CompilationUnitRulerPopupActions">
+         <action
+               label="Enable Breakpoint"
+               class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+               menubarPath="debug"
+               id="com.googlecode.goclipse.debug.breakpointActions.menuEnableDisable">
+         </action>
+         <action
+               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+               icon="icons/obj16/brkp_obj.gif"
+               id="com.googlecode.goclipse.debug.breakpointActions.menuToggle"
+               label="Toggle Breakpoint"
+               menubarPath="debug">
+         </action>
+      </viewerContribution>
+   </extension>
+
+   <!-- launch config -->
+   
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="com.googlecode.goclipse.debug.launch.GoLaunchConfigurationDelegate"
+            delegateName="Go Application Launcher"
+            id="com.googlecode.goclipse.debug.launchConfig"
+            modes="run, debug"
+            name="Go Application [2]"
+            sourceLocatorId="com.googlecode.goclipse.debug.sourceLookupDirector"
+            sourcePathComputerId="com.googlecode.goclipse.debug.sourcePathComputer">
+      </launchConfigurationType>
+   </extension>
+
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="com.googlecode.goclipse.debug.launchConfig"
+            icon="icons/go-icon16.png"
+            id="com.googlecode.goclipse.debug.launch.launchConfigurationTypeImage">
+      </launchConfigurationTypeImage>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="com.googlecode.goclipse.debug.launch.ui.GoLaunchConfigurationTabGroup"
+            id="com.googlecode.goclipse.debug.launch.launchConfigurationTabGroup"
+            type="com.googlecode.goclipse.debug.launchConfig">
+      </launchConfigurationTabGroup>
+   </extension>
+   
+   <!-- TODO: uncomment -->
+   <!-- extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="com.googlecode.goclipse.debug.ui.LaunchShortcut"
+            icon="icons/go-icon16.png"
+            id="com.googlecode.goclipse.debug.ui.LaunchShortcut"
+            label="Go Application"
+            modes="run, debug">
+            
+            <description
+               description="executes Go Program"
+               mode="run">
+         	</description>
+	        
+	        <contextualLaunch>
+	           <enablement>
+	             <with variable="selection">
+	               <count value="1"/>
+	               <iterate>
+	                 <or>
+	                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.go"/>
+	                 </or>
+	               </iterate>
+	             </with>
+	           </enablement>
+	  		</contextualLaunch>
+	  		<configurationType id ="com.googlecode.goclipse.debug.launchConfig">
+	  		</configurationType>
+      </shortcut>
+   </extension -->
+   
+   <!-- debug preference page -->
+   
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="com.googlecode.goclipse.preferences.GoPreferencePage"
+            class="com.googlecode.goclipse.debug.preferences.DebuggerPreferencePage"
+            id="com.googlecode.goclipse.debug.page1"
+            name="Debugger">
+      </page>
+   </extension>
+   
+   <!-- source lookup -->
+   
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+         name="Go Source Lookup"
+         class="com.googlecode.goclipse.debug.sourceLookup.GoSourceLookupDirector"
+         id="com.googlecode.goclipse.debug.sourceLookupDirector">
+      </sourceLocator>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.core.sourcePathComputers">
+      <sourcePathComputer
+         class="com.googlecode.goclipse.debug.sourceLookup.GoSourcePathComputerDelegate"
+         id="com.googlecode.goclipse.debug.sourcePathComputer">
+      </sourcePathComputer>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.ui.debugModelPresentations">
+      <debugModelPresentation
+         class="com.googlecode.goclipse.debug.model.GoModelPresentation"
+         id="com.googlecode.goclipse.debug">
+      </debugModelPresentation>
+   </extension>
+   
+</plugin>
