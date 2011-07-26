@@ -178,7 +178,7 @@ public class GoLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
          }
       }
       catch (CoreException e) {
-         GoDebugPlugin.log(e);
+         GoDebugPlugin.logError(e);
       }
       configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN,"");
       configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_BUILD_CONFIG, BuildConfiguration.RELEASE.toString());

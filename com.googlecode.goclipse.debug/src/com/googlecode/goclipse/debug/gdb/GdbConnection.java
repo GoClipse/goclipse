@@ -111,7 +111,7 @@ public class GdbConnection implements IStreamListener {
 			try {
 				handleGdbInput(eventStr);
 			} catch (IOException exception) {
-				GoDebugPlugin.log(exception);
+				GoDebugPlugin.logError(exception);
 			}
 			
 			eolStart = inBuffer.indexOf(EOL);

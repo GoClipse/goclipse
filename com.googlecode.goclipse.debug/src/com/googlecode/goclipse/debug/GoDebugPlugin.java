@@ -98,7 +98,7 @@ public class GoDebugPlugin extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
-	public static void log(Throwable exception) {
+	public static void logError(Throwable exception) {
 		getPlugin().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, exception.getMessage(), exception));
 	}
 	

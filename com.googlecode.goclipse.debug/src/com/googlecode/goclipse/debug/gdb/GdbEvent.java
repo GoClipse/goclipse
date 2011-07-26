@@ -85,7 +85,7 @@ public class GdbEvent extends GdbProperties {
 			} catch (IOException ioe) {
 				// TODO: display to the user
 				
-				GoDebugPlugin.log(ioe);
+				GoDebugPlugin.logError(ioe);
 			}
 		}
 		

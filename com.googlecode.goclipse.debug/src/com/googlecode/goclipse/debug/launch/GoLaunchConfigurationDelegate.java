@@ -30,10 +30,10 @@ import org.eclipse.ui.console.MessageConsoleStream;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoDependencyManager;
 import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
 import com.googlecode.goclipse.debug.gdb.GdbConnection;
 import com.googlecode.goclipse.debug.model.GoDebugTarget;
 
@@ -76,7 +76,6 @@ public class GoLaunchConfigurationDelegate implements ILaunchConfigurationDelega
 	  execute("debug".equals(mode), configuration, launch, monitor);	
    }
    
-
 	private IProject getProject(String project, MessageConsoleStream con) {
 		IProject prj = null;
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -104,7 +103,7 @@ public class GoLaunchConfigurationDelegate implements ILaunchConfigurationDelega
 				}
 			}
 		} catch (CoreException ce) {
-			SysUtils.debug(ce);
+			GoDebugPlugin.logError(ce);
 		}
 		return prj;
 	}

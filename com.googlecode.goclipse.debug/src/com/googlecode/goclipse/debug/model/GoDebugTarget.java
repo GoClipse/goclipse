@@ -195,7 +195,7 @@ public class GoDebugTarget extends GoDebugElement implements IDebugTarget, GdbCo
 						}
 					});
 				} catch (IOException e) {
-					GoDebugPlugin.log(e);
+					GoDebugPlugin.logError(e);
 				}
 			}
 		}
@@ -212,7 +212,7 @@ public class GoDebugTarget extends GoDebugElement implements IDebugTarget, GdbCo
 				try {
 					connection.removeBreakpoint(bpNumber);
 				} catch (IOException e) {
-					GoDebugPlugin.log(e);
+					GoDebugPlugin.logError(e);
 				}
 			}
 		}
