@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 
 /**
  * @author steel
@@ -80,7 +80,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
 		          }
 		       }
 		       catch (CoreException e) {
-		          SysUtils.debug(e);
+		    	   Activator.logInfo(e);
 		       }
 		       return list.toArray();
 		    }
@@ -95,7 +95,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
 		          }
 		       }
 		       catch (CoreException e) {
-		          SysUtils.debug(e);
+		    	   Activator.logInfo(e);
 		       }
 		       return list.toArray();
 		    }
@@ -236,7 +236,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
                               }
                            }
                            catch (CoreException e) {
-                              SysUtils.debug(e);
+                        	   Activator.logInfo(e);
                            }
                            return list.toArray();
                         }
@@ -251,7 +251,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
                               }
                            }
                            catch (CoreException e) {
-                              SysUtils.debug(e);
+                        	   Activator.logInfo(e);
                            }
                            return list.toArray();
                         }

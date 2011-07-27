@@ -16,7 +16,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GoCompiler {
@@ -29,12 +28,12 @@ public class GoCompiler {
 	public void compile(final IProject project,
 			IProgressMonitor pmonitor, String target, String ... dependencies) {
 		if (!dependenciesExist(project, dependencies)){
-			SysUtils.warning("Missing dependency for '"+target+"' not compiling");
+			Activator.logWarning("Missing dependency for '"+target+"' not compiling");
 			return;
 		}
 		
 		SubMonitor monitor = SubMonitor.convert(pmonitor, 130);
-		SysUtils.debug("compile():" + dependencies);
+		Activator.logInfo("compile():" + dependencies);
 					
 		final IPath prjLoc = project.getLocation();
 		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
@@ -49,7 +48,7 @@ public class GoCompiler {
 	    output.setCombineLines(true);
 		compilePackageCmd.setResultsFilter(output);
 		
-		SysUtils.debug("building " + target);
+		Activator.logInfo("building " + target);
 		List<String> args = new ArrayList<String>();
 
 		args.clear();
@@ -84,13 +83,13 @@ public class GoCompiler {
 		try {
 			project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		} catch (CoreException e) {
-			SysUtils.debug(e);
+			Activator.logInfo(e);
 		}
 	}
 	
 	private void processCompileOutput(StreamAsLines output,  IProject project) {
 		for (String line: output.getLines()) {
-	         SysUtils.debug(line);
+			Activator.logInfo(line);
 	         int goPos = line.indexOf(GoConstants.GO_SOURCE_FILE_EXTENSION);
 	         if (goPos < 0){
 	        	 Activator.getDefault().getLog().log(new Status(Status.ERROR, Activator.PLUGIN_ID, "Could not parse error message (missing .go): "+line));
@@ -138,7 +137,7 @@ public class GoCompiler {
 			}
 
 		} catch (CoreException e) {
-			SysUtils.debug(e);
+			Activator.logError(e);
 		}
 	}
 
@@ -148,7 +147,7 @@ public class GoCompiler {
 				file.deleteMarkers(IMarker.PROBLEM, false, IResource.DEPTH_ZERO);
 			}
 		} catch (CoreException ce) {
-			SysUtils.debug(ce);
+			Activator.logInfo(ce);
 		}
 	}
 

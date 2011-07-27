@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Path;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 
 /**
  * helper class to run an external process. 
@@ -86,7 +86,7 @@ public class ExternalCommand {
 			if (parameters != null) {
 				args.addAll(parameters);
 			}
-			SysUtils.debug(pBuilder.directory() + " executing: " +  args);
+			Activator.logInfo(pBuilder.directory() + " executing: " +  args);
 			
 			Process p = pBuilder.start();
 			InStreamWorker processOutput = new InStreamWorker(p.getInputStream(), "output stream thread");
@@ -142,7 +142,7 @@ public class ExternalCommand {
 				consume(is); //make sure it consumes everything
 				is.close();
 			} catch (IOException e) {
-				SysUtils.debug(e);
+				Activator.logInfo(e);
 			}
 		}
 	}

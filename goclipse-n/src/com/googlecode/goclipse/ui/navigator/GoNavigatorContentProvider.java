@@ -24,7 +24,7 @@ import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 import org.eclipse.ui.navigator.IExtensionStateModel;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.builder.GoNature;
 
 /**
@@ -81,7 +81,7 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 
 				return result.toArray();
 			} catch (CoreException e) {
-				SysUtils.severe(e);
+				Activator.logError(e);
 				
 				return NO_CHILDREN;
 			}

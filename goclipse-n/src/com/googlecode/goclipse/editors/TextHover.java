@@ -5,19 +5,19 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextViewer;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 
 public class TextHover implements ITextHover {
 
 	@Override
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
-		System.out.println("getHoverInfo");
+		Activator.logInfo("getHoverInfo");
 		return null;
 	}
 
 	@Override
 	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
-		SysUtils.debug("getHoverRegion");
+		Activator.logInfo("getHoverRegion");
 		return null;
 	}
 

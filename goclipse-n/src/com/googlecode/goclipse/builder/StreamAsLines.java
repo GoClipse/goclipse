@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 
 public class StreamAsLines implements ProcessIStreamFilter {
 	private boolean combineLines;
@@ -44,7 +44,7 @@ public class StreamAsLines implements ProcessIStreamFilter {
 	        	}
 	        }
 		}catch(Exception e) {
-			SysUtils.debug(e);
+			Activator.logInfo(e);
 		}
 	}
 	

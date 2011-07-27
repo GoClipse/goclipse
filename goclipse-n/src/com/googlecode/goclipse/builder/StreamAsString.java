@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 
 public class StreamAsString implements ProcessIStreamFilter {
 
@@ -21,7 +21,7 @@ public class StreamAsString implements ProcessIStreamFilter {
 	        	streamContent.append(cbuf, 0, n);
 	        }
 		}catch(Exception e) {
-			SysUtils.debug(e);
+			Activator.logInfo(e);
 		}
 	}
 	public String getString() {

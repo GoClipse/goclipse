@@ -15,7 +15,6 @@ import org.osgi.framework.Version;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 
 /**
  * This class represents a preference page that is contributed to the
@@ -89,7 +88,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements
 	 */
 	public void init(IWorkbench workbench) {
 		if(Environment.DEBUG){
-			SysUtils.debug("Prefences Inited");
+			Activator.logInfo("Prefences Inited");
 		}
 	}
 	

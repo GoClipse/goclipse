@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.SubMonitor;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.dependency.CycleException;
 import com.googlecode.goclipse.dependency.IDependencyVisitor;
 
@@ -56,7 +55,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		 * core.resources.IResourceDelta)
 		 */
 		public boolean visit(IResourceDelta delta) throws CoreException {
-			// SysUtils.debug("visit");
+			// Activator.logInfo("visit");
 
 			IResource resource = delta.getResource();
 			if (resource instanceof IFile && resource.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)) {
@@ -97,7 +96,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		private List<IResource> collected = new ArrayList<IResource>();
 
 		public boolean visit(IResource resource) {
-			//SysUtils.debug("SampleResourceVisitor.visit:" + resource);
+			//Activator.logInfo("SampleResourceVisitor.visit:" + resource);
 			
 			if (resource instanceof IFile && resource.getName().endsWith(".go")) {
 				collected.add(resource);
@@ -143,7 +142,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			dependencyManager.save(project);
 			
 		}catch(Exception e) {
-			SysUtils.debug(e);
+			Activator.logError(e);
 		}
 		// no project dependencies (yet)
 		return null;
@@ -174,7 +173,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 
 	protected void fullBuild(final IProgressMonitor pmonitor)
 			throws CoreException {
-		SysUtils.debug("fullBuild");
+		Activator.logInfo("fullBuild");
 		final SubMonitor monitor = SubMonitor.convert(pmonitor, 250);
 
 		CollectResourceVisitor crv = new CollectResourceVisitor();
@@ -189,7 +188,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		clean(monitor.newChild(10));
 		dependencyManager.buildDep(crv.getCollectedResources(), monitor.newChild(40));
 		doBuild(null, monitor);
-		SysUtils.debug("fullBuild - done");
+		Activator.logInfo("fullBuild - done");
 	}
 
 	private void doBuild(Set<String> fileList, final SubMonitor monitor) throws CoreException {
@@ -285,7 +284,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		if (toRemove.size() > 0){
 			fullBuild(pmonitor);
 		} else {
-			SysUtils.debug("incrementalBuild");
+			Activator.logInfo("incrementalBuild");
 			
 			// compile
 			List<IResource> resourcesToCompile = new ArrayList<IResource>();
@@ -299,7 +298,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			}
 			
 			doBuild(toCompile, monitor);
-			SysUtils.debug("incrementalBuild - done");
+			Activator.logInfo("incrementalBuild - done");
 		}
 	}
 
@@ -309,7 +308,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
-		SysUtils.debug("cleaning project");
+		Activator.logInfo("cleaning project");
 		IProject project = getProject();
 		project.deleteMarkers(IMarker.PROBLEM, false,
 				IResource.DEPTH_INFINITE);

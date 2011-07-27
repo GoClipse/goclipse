@@ -28,8 +28,8 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.PerspectiveDescriptor;
 
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.builder.GoNature;
 import com.googlecode.goclipse.perspectives.GoPerspective;
 
@@ -86,7 +86,7 @@ public class NewProjectWizard extends Wizard implements INewWizard, IWizard {
 		try {
 			getContainer().run(false, false, operation);
 		} catch (InvocationTargetException e) {
-			SysUtils.severe(e);
+			Activator.logError(e);
 			
 			return false;
 		} catch (InterruptedException e) {

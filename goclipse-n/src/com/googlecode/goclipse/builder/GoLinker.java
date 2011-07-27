@@ -12,14 +12,13 @@ import org.eclipse.core.runtime.IPath;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GoLinker {
 
 	void createExecutable(IProject prj, String target, String[] dependencies) {
 		if (!GoBuilder.dependenciesExist(prj, dependencies)){
-			SysUtils.warning("Missing dependency for '"+target+"' not compiling");
+			Activator.logWarning("Missing dependency for '"+target+"' not compiling");
 			return;
 		}
 
@@ -75,7 +74,7 @@ public class GoLinker {
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 			marker.setAttribute(IMarker.LINE_NUMBER, 0);
 		} catch (CoreException ce) {
-			SysUtils.debug(ce);
+			Activator.logError(ce);
 		}
 	}
 }

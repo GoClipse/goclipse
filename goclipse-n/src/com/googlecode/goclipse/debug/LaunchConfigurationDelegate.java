@@ -32,7 +32,6 @@ import org.eclipse.ui.console.MessageConsoleStream;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoDependencyManager;
 import com.googlecode.goclipse.builder.GoNature;
@@ -104,7 +103,7 @@ public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate
 				}
 			}
 		} catch (CoreException ce) {
-			SysUtils.debug(ce);
+			Activator.logError(ce);
 		}
 		return prj;
 	}

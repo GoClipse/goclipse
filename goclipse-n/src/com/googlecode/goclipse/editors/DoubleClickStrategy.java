@@ -5,7 +5,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextViewer;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 
 /**
  * 
@@ -80,7 +80,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 			fText.setSelectedRange(offset, len);
 			return true;
 		} catch (BadLocationException x) {
-		   SysUtils.debug(x);
+			Activator.logInfo(x);
 		}
 
 		return false;
@@ -125,7 +125,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 			return true;
 
 		} catch (BadLocationException x) {
-		   SysUtils.debug(x);
+			Activator.logInfo(x);
 		}
 
 		return false;

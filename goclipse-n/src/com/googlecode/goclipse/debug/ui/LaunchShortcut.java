@@ -15,7 +15,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.builder.GoConstants;
 
 /**
@@ -27,7 +27,7 @@ public class LaunchShortcut implements ILaunchShortcut {
 
    @Override
    public void launch(ISelection selection, final String mode) {
-      SysUtils.debug("launch shortcut: selection " + selection  + " mode " + mode);
+	   Activator.logInfo("launch shortcut: selection " + selection  + " mode " + mode);
       if (selection != null) {
     	  if (selection instanceof TreeSelection) {
     		  TreeSelection ts = (TreeSelection)selection;
@@ -46,7 +46,7 @@ public class LaunchShortcut implements ILaunchShortcut {
 
    @Override
    public void launch(IEditorPart editor, final String mode) {
-	   SysUtils.debug("launch shortcut: editor" + editor.getTitle()  + " mode " + mode);
+	   Activator.logInfo("launch shortcut: editor" + editor.getTitle()  + " mode " + mode);
 	   IEditorInput ei = editor.getEditorInput();
 	   if (ei != null && ei instanceof FileEditorInput) {
 		   FileEditorInput fei = (FileEditorInput)ei;
@@ -97,7 +97,7 @@ public class LaunchShortcut implements ILaunchShortcut {
 				found.launch(mode, null, true, true);
 			}
 		} catch (CoreException ce) {
-			SysUtils.debug(ce);
+			Activator.logError(ce);
 		}
 		
 	}

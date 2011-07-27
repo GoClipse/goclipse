@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
@@ -133,7 +133,7 @@ public class ImportParser implements TokenListener {
 			}
 		} 
 		catch (RuntimeException e) {
-			SysUtils.severe(e);
+			Activator.logError(e);
 		}
 	}
 
@@ -159,11 +159,11 @@ public class ImportParser implements TokenListener {
 			lexer.scan(new File("test_go/parser.go"));
 
 			for (Import imp : importParser.imports) {
-				SysUtils.debug(imp.prefix + " :: " + imp.path + " :: "
+				Activator.logInfo(imp.prefix + " :: " + imp.path + " :: "
 						+ imp.getLine());
 			}
 		} catch (IOException e) {
-			SysUtils.severe(e);
+			Activator.logError(e);
 		}
 	}
 

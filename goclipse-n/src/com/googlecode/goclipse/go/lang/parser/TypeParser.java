@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
@@ -208,16 +208,16 @@ public class TypeParser implements TokenListener {
 		try {
 			lexer.scan(new File("test_go/import_test.go"));
 			for(Type func:fparser.types){
-				SysUtils.debug("=================================================");
-				SysUtils.debug(func.getDocumentation());
-				SysUtils.debug("-------------------------------------------------");
-				SysUtils.debug(func.getName());
-				SysUtils.debug(func.getInsertionText());
-				SysUtils.debug("-------------------------------------------------");
+				Activator.logInfo("=================================================");
+				Activator.logInfo(func.getDocumentation());
+				Activator.logInfo("-------------------------------------------------");
+				Activator.logInfo(func.getName());
+				Activator.logInfo(func.getInsertionText());
+				Activator.logInfo("-------------------------------------------------");
 			}
 			
 		} catch (IOException e) {
-			SysUtils.severe(e);
+			Activator.logError(e);
 		}
 	}
 

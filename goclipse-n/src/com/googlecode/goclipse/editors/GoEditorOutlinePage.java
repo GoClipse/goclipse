@@ -25,7 +25,6 @@ import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.go.lang.parser.CodeContext;
 import com.googlecode.goclipse.model.Function;
 import com.googlecode.goclipse.model.Import;
@@ -131,7 +130,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 			}
 		} 
 		catch (Throwable exception) {
-			SysUtils.severe(exception);
+			Activator.logError(exception);
 			
 			getTreeViewer().setInput(null);
 		}

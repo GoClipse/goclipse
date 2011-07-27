@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
@@ -232,29 +232,29 @@ public class FunctionParser implements TokenListener {
 		try {
 			lexer.scan(new File("test_go/import_test.go"));
 			for (Function func : fparser.funcs) {
-				SysUtils.debug("=================================================");
-				SysUtils.debug(func.getDocumentation());
-				SysUtils.debug("-------------------------------------------------");
-				SysUtils.debug(func.getName());
-				SysUtils.debug(func.getInsertionText());
-				SysUtils.debug("-------------------------------------------------");
+				Activator.logInfo("=================================================");
+				Activator.logInfo(func.getDocumentation());
+				Activator.logInfo("-------------------------------------------------");
+				Activator.logInfo(func.getName());
+				Activator.logInfo(func.getInsertionText());
+				Activator.logInfo("-------------------------------------------------");
 			}
 
-			SysUtils.debug("\n");
-			SysUtils.debug("=================================================");
-			SysUtils.debug("[METHODS]");
+			Activator.logInfo("\n");
+			Activator.logInfo("=================================================");
+			Activator.logInfo("[METHODS]");
 
 			for (Method method : fparser.methods) {
-				SysUtils.debug("=================================================");
-				SysUtils.debug(method.getDocumentation());
-				SysUtils.debug("-------------------------------------------------");
-				SysUtils.debug(method.getName());
-				SysUtils.debug(method.getInsertionText());
-				SysUtils.debug("-------------------------------------------------");
+				Activator.logInfo("=================================================");
+				Activator.logInfo(method.getDocumentation());
+				Activator.logInfo("-------------------------------------------------");
+				Activator.logInfo(method.getName());
+				Activator.logInfo(method.getInsertionText());
+				Activator.logInfo("-------------------------------------------------");
 			}
 
 		} catch (IOException e) {
-			SysUtils.severe(e);
+			Activator.logError(e);
 		}
 	}
 

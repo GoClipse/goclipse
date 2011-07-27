@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.Activator;
 
 public class ConsoleFilter implements ProcessIStreamFilter{
 
@@ -54,7 +54,7 @@ public class ConsoleFilter implements ProcessIStreamFilter{
 	        }
 	        con.close();
 		}catch(Exception e) {
-			SysUtils.debug(e);
+			Activator.logInfo(e);
 		}finally {
 			if (c != null) {
 				//the color is still used by the console

@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.dependency.CycleException;
 import com.googlecode.goclipse.dependency.DependencyGraph;
 import com.googlecode.goclipse.dependency.IDependencyVisitor;
@@ -180,7 +180,7 @@ public class GoDependencyManager implements Serializable {
 			}
 		}
 		
-		SysUtils.debug("dependencies:\n" + manager.toString());
+		Activator.logInfo("dependencies:\n" + manager.toString());
 	}
 
 	private void handleParseError(IProject project, StreamAsLines output) {
@@ -254,7 +254,7 @@ public class GoDependencyManager implements Serializable {
 			}
 
 		} catch (CoreException e) {
-			SysUtils.debug(e);
+			Activator.logError(e);
 		}
 	}
 	
@@ -332,7 +332,7 @@ public class GoDependencyManager implements Serializable {
 			if (r != null) {
 				res.add(r);
 			} else {
-				SysUtils.warning("can't find resource: " + path);
+				Activator.logWarning("can't find resource: " + path);
 			}
 		}
 		return res;
@@ -364,7 +364,7 @@ public class GoDependencyManager implements Serializable {
 	}
 	
 	public void loadSaved(IProject project) {
-		SysUtils.debug("loading dependencies");
+		Activator.logInfo("loading dependencies");
 		IWorkspace root = ResourcesPlugin.getWorkspace();
 		IPath base = root.getRoot().getLocation();
 		IPath prj = base.append(".metadata").append(".go").append(".prj").append(project.getName());
@@ -379,14 +379,14 @@ public class GoDependencyManager implements Serializable {
 			Object obj = objIn.readObject();
 			GoDependencyManager gdm = (GoDependencyManager)obj;
 			objIn.close();
-			SysUtils.debug(gdm.toString());
+			Activator.logInfo(gdm.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void save(IProject project) {
-		SysUtils.debug("saving dependencies for project " + project);
+		Activator.logInfo("saving dependencies for project " + project);
 		
 		IWorkspace root = ResourcesPlugin.getWorkspace();
 		IPath base = root.getRoot().getLocation();

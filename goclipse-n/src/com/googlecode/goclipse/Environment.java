@@ -31,18 +31,14 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.navigator.ResourceNavigator;
 
 import com.googlecode.goclipse.builder.Arch;
 import com.googlecode.goclipse.builder.ExternalCommand;
@@ -65,7 +61,8 @@ public class Environment {
 	public static final String DEFAULT_PKG_OUTPUT_FOLDER = "pkg";
 	public static final String DEFAULT_BIN_OUTPUT_FOLDER = "bin";
 
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = Boolean.getBoolean("goclipse.debug");
+	
 	public static final Environment INSTANCE = new Environment();
 	private final IPreferencesService preferences;
 	private Map<String, Properties> propertiesMap = new HashMap<String, Properties>();
@@ -154,8 +151,8 @@ public class Environment {
 				}
 				if (version == DEP_TOOL_VERSION && exeFile.exists()) {
 					depToolPath = aDepToolPath;
-					SysUtils.debug("exe tool is ok");
-					return; // everyting in place		
+					Activator.logInfo("exe tool is ok");
+					return; // everything in place		
 				}
 			}
 		}
@@ -219,11 +216,11 @@ public class Environment {
 			    BufferedReader br = new BufferedReader(isr);
 			    String line;
 		        while ((line = br.readLine()) != null) {
-		        	SysUtils.debug("error in parse connector:" + line);
+		        	Activator.logInfo("error in parse connector:" + line);
 		        	hadError = true;
 		        }
 			}catch(Exception e) {
-				SysUtils.debug(e);
+				Activator.logInfo(e);
 			}
 		}
 
@@ -250,7 +247,7 @@ public class Environment {
 				}
 				in.close();
 				out.close();
-				SysUtils.debug("File copied:" + outPath);
+				Activator.logInfo("File copied:" + outPath);
 			} catch (IOException e) {
 				System.out.println(e.getMessage());
 			}
@@ -408,10 +405,10 @@ public class Environment {
 		return (IResource) adapter;
 	}
 
-	public void getWorkingLocation() {
-		ISelectionService selectionService = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getSelectionService();
-	}
+//	public void getWorkingLocation() {
+//		ISelectionService selectionService = PlatformUI.getWorkbench()
+//				.getActiveWorkbenchWindow().getSelectionService();
+//	}
 
 	/**
 	 * Returns the active editor or null if there is not one
@@ -503,13 +500,12 @@ public class Environment {
 	}
 
 	/**
-	 * Return a list of source folders for the currently active project
+	 * Return a list of source folders for the currently active project.
 	 * 
 	 * @return
 	 */
 	public String[] getSourceFoldersAsStringArray(IProject project) {
 		Properties properties = getProperties(project);
-		ArrayList<IFolder> list = new ArrayList<IFolder>();
 		String str = properties.getProperty(PROJECT_SOURCE_FOLDERS);
 		if (str != null) {
 			return str.split(";");
@@ -519,13 +515,23 @@ public class Environment {
 	}
 
 	/**
-	 * TODO need to implement & make public or delete
+	 * Return a list of source folders for the currently active project.
 	 * 
 	 * @return
 	 */
-	private List<IFolder> getSourceFolders(IProject project) {
-		String[] folderPaths = getSourceFoldersAsStringArray(project);
-		return null;
+	public List<IFolder> getSourceFolders(IProject project) {
+		List<IFolder> result = new ArrayList<IFolder>();
+		
+		for (String path : getSourceFoldersAsStringArray(project)) {
+			IResource resource = project.findMember(path);
+			
+			if (resource instanceof IFolder) {
+				result.add((IFolder)resource);
+			}
+			
+		}
+		
+		return result;
 	}
 
 	/**

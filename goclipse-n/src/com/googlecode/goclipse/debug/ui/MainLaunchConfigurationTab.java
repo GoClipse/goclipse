@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Control;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.SysUtils;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoNature;
 
@@ -191,7 +190,7 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
          }
       }
       catch (CoreException e) {
-         SysUtils.severe(e);
+    	  Activator.logError(e);
       }
       
       configuration.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN,"");

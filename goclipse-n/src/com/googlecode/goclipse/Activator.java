@@ -3,6 +3,8 @@ package com.googlecode.goclipse;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -29,12 +31,9 @@ public class Activator extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public Activator() {
+		
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
@@ -43,10 +42,6 @@ public class Activator extends AbstractUIPlugin {
 		Environment.INSTANCE.toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
@@ -112,6 +107,47 @@ public class Activator extends AbstractUIPlugin {
 		}
 		
 		return image;
+	}
+	
+	/**
+	 * Log the given info message to the Eclipse log.
+	 */
+	public static void logInfo(String message) {
+		if (Environment.DEBUG) {
+			getDefault().getLog().log(new Status(IStatus.INFO, PLUGIN_ID, message));
+		}
+	}
+	
+	/**
+	 * Log the given info message to the Eclipse log.
+	 */
+	public static void logInfo(Throwable t) {
+		if (Environment.DEBUG) {
+			getDefault().getLog().log(new Status(IStatus.INFO, PLUGIN_ID, t.getMessage(), t));
+		}
+	}
+	
+	/**
+	 * Log the given warning message to the Eclipse log.
+	 */
+	public static void logWarning(String message) {
+		getDefault().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message));
+	}
+	
+	/**
+	 * Log the given error message to the Eclipse log.
+	 */
+	public static void logError(String message) {
+		getDefault().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, message));
+	}
+	
+	/**
+	 * Log the given exception to the Eclipse log.
+	 * 
+	 * @param t the exception to log
+	 */
+	public static void logError(Throwable t) {
+		getDefault().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, t.getMessage(), t));
 	}
 
 }
