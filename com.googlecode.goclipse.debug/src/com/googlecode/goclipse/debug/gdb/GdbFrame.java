@@ -23,7 +23,7 @@ public class GdbFrame {
 	}
 
 	public String getName() {
-		return name;
+		return name + "()";
 	}
 
 	public String getFile() {
