@@ -75,9 +75,10 @@
          </action>
       </objectContribution>
    </extension>
+   
    <extension
-         id="xmlProblem"
-         name="XML Problem"
+         id="goProblem"
+         name="Go Problem"
          point="org.eclipse.core.resources.markers">
       <super
             type="org.eclipse.core.resources.problemmarker">
@@ -86,6 +87,7 @@
             value="true">
       </persistent>
    </extension>
+   
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -97,7 +99,7 @@
             category="com.googlecode.goclipse.preferences.GoPreferencePage"
             class="com.googlecode.goclipse.preferences.EditorPreferencePage"
             id="goclipse.editor.config"
-            name="Editor Configuration">
+            name="Editor">
       </page>
    </extension>
    <extension

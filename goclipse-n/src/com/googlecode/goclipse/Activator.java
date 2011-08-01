@@ -10,6 +10,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import com.googlecode.goclipse.builder.GoBuilder;
+
 /**
  * The activator class controls the plug-in life cycle
  * 
@@ -40,6 +42,8 @@ public class Activator extends AbstractUIPlugin {
 		
 		// Force construction of singleton
 		Environment.INSTANCE.toString();
+		
+		GoBuilder.checkForCompilerUpdates(true);
 	}
 
 	public void stop(BundleContext context) throws Exception {

@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -22,6 +21,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
@@ -34,7 +34,7 @@ import com.googlecode.goclipse.dependency.IDependencyVisitor;
  */
 public class GoBuilder extends IncrementalProjectBuilder {
 	public static final String BUILDER_ID = "com.googlecode.goclipse.goBuilder";
-	private static final String MARKER_TYPE = "com.googlecode.goclipse.problem";
+	
 	Map<String, String> goEnv = new HashMap<String, String>();
 	private GoDependencyManager dependencyManager;
 	private GoCompiler compiler;
@@ -47,17 +47,9 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		List<IResource> removed = new ArrayList<IResource>();
 		List<IResource> changed = new ArrayList<IResource>();
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.
-		 * core.resources.IResourceDelta)
-		 */
 		public boolean visit(IResourceDelta delta) throws CoreException {
-			// Activator.logInfo("visit");
-
 			IResource resource = delta.getResource();
+			
 			if (resource instanceof IFile && resource.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)) {
 				switch (delta.getKind()) {
 				case IResourceDelta.ADDED:
@@ -96,8 +88,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		private List<IResource> collected = new ArrayList<IResource>();
 
 		public boolean visit(IResource resource) {
-			//Activator.logInfo("SampleResourceVisitor.visit:" + resource);
-			
 			if (resource instanceof IFile && resource.getName().endsWith(".go")) {
 				collected.add(resource);
 			}
@@ -110,22 +100,39 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
-	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	/**
+	 * Check to see if the Go compiler has been updated since the last build took place.
 	 */
+	public static void checkForCompilerUpdates(boolean delay) {
+		Job job = new GoCompilerUpdateJob();
+		
+		if (delay) {
+			job.schedule(4000);
+		} else {
+			job.schedule();
+		}
+	}
+
+	public GoBuilder() {
+		
+	}
+	
 	@SuppressWarnings("rawtypes")
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
+		IProject project = getProject();
+		
 		checkBuild();
+		
+		if (compiler.requiresRebuild(project)) {
+			kind = FULL_BUILD;
+		}
+		
 		try {
 			goEnv = GoConstants.environment();
 			dependencyManager.setEnvironment(goEnv);
 			compiler.setEnvironment(goEnv);
 			
-			IProject project = getProject();
 			if (kind == FULL_BUILD || onlyFullBuild) {
 				fullBuild(monitor);
 				onlyFullBuild = false;
@@ -139,21 +146,22 @@ public class GoBuilder extends IncrementalProjectBuilder {
 					incrementalBuild(delta, monitor);
 				}
 			}
-			dependencyManager.save(project);
 			
-		}catch(Exception e) {
+			compiler.updateVersion(project);
+			
+			dependencyManager.save(project);
+		} catch(Exception e) {
 			Activator.logError(e);
 		}
+		
 		// no project dependencies (yet)
 		return null;
 	}
 
 	private void checkBuild() throws CoreException {
 		if (!Environment.INSTANCE.isValid()){
-			IMarker marker = getProject().createMarker(IMarker.PROBLEM);
-			marker.setAttribute(IMarker.MESSAGE, GoConstants.INVALID_PREFERENCES_MESSAGE);
-			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+			MarkerUtilities.addMarker(getProject(), GoConstants.INVALID_PREFERENCES_MESSAGE);
+
 			throw new CoreException(new Status(Status.ERROR,Activator.PLUGIN_ID, GoConstants.INVALID_PREFERENCES_MESSAGE));
 		} else {
 			if (dependencyManager == null){
@@ -228,11 +236,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		}
 		builder.append("]");
 
-		
-		IMarker marker = getProject().createMarker(IMarker.PROBLEM);
-		marker.setAttribute(IMarker.MESSAGE, GoConstants.CYCLE_DETECTED_MESSAGE+builder.toString());
-		marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+		MarkerUtilities.addMarker(getProject(), GoConstants.CYCLE_DETECTED_MESSAGE+builder.toString());
 	}
 
 	private boolean isCompile(String aTarget, String[] dependencies) {
@@ -270,7 +274,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	
 	protected void incrementalBuild(IResourceDelta delta,
 			IProgressMonitor pmonitor) throws CoreException {
 		SubMonitor monitor = SubMonitor.convert(pmonitor, 170);
@@ -302,16 +305,11 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		}
 	}
 
-	
-
-	
-
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		Activator.logInfo("cleaning project");
 		IProject project = getProject();
-		project.deleteMarkers(IMarker.PROBLEM, false,
-				IResource.DEPTH_INFINITE);
+		MarkerUtilities.deleteAllMarkers(project);
 		IPath binPath = Environment.INSTANCE.getBinOutputFolder(project);
 		File binFolder = new File(project.getLocation().append(binPath).toOSString());
 		if (binFolder.exists()) {
@@ -367,7 +365,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		return true;
 	}
 
-	
 	public static boolean dependenciesExist(IProject project,
 			String[] dependencies) {
 		if (project != null){

@@ -31,6 +31,7 @@ import com.googlecode.goclipse.model.Import;
 import com.googlecode.goclipse.model.Node;
 import com.googlecode.goclipse.model.Type;
 import com.googlecode.goclipse.model.TypeClass;
+import com.googlecode.goclipse.utils.ObjectUtils;
 
 /**
  * The outline page for the Go editor.
@@ -153,16 +154,6 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 		}
 	}
 	
-	private static boolean objectEquals(Object obj1, Object obj2) {
-		if (obj1 == obj2) {
-			return true;
-		} else if (obj1 == null || obj2 == null) {
-			return false;
-		} else {
-			return obj1.equals(obj2);
-		}
-	}
-	
 	private static Object IMPORT_CONTAINER = "imports";
 	
 	private static class NodeLabelProvider extends LabelProvider implements IStyledLabelProvider {
@@ -255,7 +246,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 		public void setCodeContext(CodeContext inCodeContext) {
 			this.codeContext = inCodeContext;
 			
-			if (objectEquals(this.codeContext, inCodeContext)) {
+			if (ObjectUtils.objectEquals(this.codeContext, inCodeContext)) {
 				viewer.refresh();
 			} else {
 				viewer.setInput(this.codeContext);

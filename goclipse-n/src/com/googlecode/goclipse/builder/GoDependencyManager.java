@@ -141,7 +141,7 @@ public class GoDependencyManager implements Serializable {
 
 							if (!dPackName.equals("main")) {
 								IResource member = project.findMember(pathInPrj);
-								addPackageError(member, GoConstants.ONLY_PACKAGE_MAIN_MESSAGE);
+								MarkerUtilities.addMarker(member, GoConstants.ONLY_PACKAGE_MAIN_MESSAGE);
 							} else {
 								// compilation is two-step, compile into object file, and link into executable
 								manager.addDependency(objFile.toOSString(), pathInPrj); // e.g. src/cmd/app/_obj/app.8 depends on src/cmd/app/main.go
@@ -153,7 +153,7 @@ public class GoDependencyManager implements Serializable {
 							
 							if (!dPackName.equals(srcFolderPath.lastSegment())) {
 								IResource member = project.findMember(pathInPrj);
-								addPackageError(member, GoConstants.DECLARED_PACKAGE_INCORRECT_MESSAGE);
+								MarkerUtilities.addMarker(member, GoConstants.DECLARED_PACKAGE_INCORRECT_MESSAGE);
 							} else {
 								// compilation is two-step, compile into object file, and archive into library
 								manager.addDependency(objFilePath.toOSString(), pathInPrj);  // e.g. src/pkg/foo/_obj/foo.8 depends on src/pkg/foo/foo.go
@@ -211,10 +211,10 @@ public class GoDependencyManager implements Serializable {
 					}
 					
 					if (location != -1 && str.length > 1) {
-						addMarker(resource, location, str[str.length - 1].trim(), -1, -1, IMarker.SEVERITY_ERROR);
+						MarkerUtilities.addMarker(resource, location, str[str.length - 1].trim(), IMarker.SEVERITY_ERROR);
 					} else {
 						// play safe. to show something in UI
-						addMarker(resource, 0, errorLine, -1, -1, IMarker.SEVERITY_ERROR);
+						MarkerUtilities.addMarker(resource, 0, errorLine, IMarker.SEVERITY_ERROR);
 					}
 				}
 			}
@@ -229,43 +229,6 @@ public class GoDependencyManager implements Serializable {
 		} else {
 			return fileName;
 		}
-	}
-
-	private void addMarker(IResource file, int line, String message, int beginChar, int endChar, int severity) {
-		if (file == null || !file.exists()) {
-			return;
-		}
-		try {
-			IMarker marker = file.createMarker(IMarker.PROBLEM);
-			marker.setAttribute(IMarker.MESSAGE, message);
-			marker.setAttribute(IMarker.SEVERITY, severity);
-			if (line == -1) {
-				line = 1;
-			}
-			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.LINE_NUMBER, line);
-
-			// find error type to mark location (experimental)
-			if (beginChar >= 0) {
-				marker.setAttribute(IMarker.CHAR_START, beginChar);
-			}
-			if (endChar >= 0){
-				marker.setAttribute(IMarker.CHAR_END, endChar);
-			}
-
-		} catch (CoreException e) {
-			Activator.logError(e);
-		}
-	}
-	
-	private IMarker addPackageError(IResource member, String message) throws CoreException {
-		IMarker marker;
-		marker = member.createMarker(IMarker.PROBLEM);
-		marker.setAttribute(IMarker.MESSAGE, message);
-		marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-		marker.setAttribute(IMarker.LINE_NUMBER, 1);
-		return marker;
 	}
 
 	private boolean isTestFile(String fileName) {
@@ -303,7 +266,6 @@ public class GoDependencyManager implements Serializable {
 
 	public static IPath getExecutablePath(String cmdName, IProject project) {
 		Environment instance = Environment.INSTANCE;
-		Arch arch = instance.getArch();
 		IPath binOutputFolder = instance.getBinOutputFolder(project);
 		IPath executablePath = binOutputFolder.append(cmdName+instance.getExecutableExtension());
 		return executablePath;

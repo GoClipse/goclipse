@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -51,30 +50,16 @@ public class GoLinker {
 		}
 		String rez = link.execute(args);
 		if (rez != null) {
-			addMarker(res, rez);
+			MarkerUtilities.addMarker(res, rez);
 		}
 		for (String line : output.getLines()) {
-			addMarker(res, line);
+			MarkerUtilities.addMarker(res, line);
 		}
 		try {
 			prj.refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
-			addMarker(prj, e.getLocalizedMessage());
+			MarkerUtilities.addMarker(prj, e.getLocalizedMessage());
 		}
 	}
 	
-	private void addMarker(IResource res, String message) {
-		if (res == null) {
-			return;
-		}
-		try {
-			IMarker marker = res.createMarker(IMarker.PROBLEM);
-			marker.setAttribute(IMarker.MESSAGE, message);
-			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.LINE_NUMBER, 0);
-		} catch (CoreException ce) {
-			Activator.logError(ce);
-		}
-	}
 }

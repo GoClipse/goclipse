@@ -1,6 +1,7 @@
 package com.googlecode.goclipse.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -17,14 +19,55 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.utils.ObjectUtils;
 
+/**
+ * 
+ */
 public class GoCompiler {
+	private static final QualifiedName COMPILER_VERSION_QN = new QualifiedName(Activator.PLUGIN_ID, "compilerVersion");
+	
 	private Map<String, String> env; //environment for build
 
-	public GoCompiler() {
+	private String version;
+	private long versionLastUpdated = 0;
+	
+	/**
+	 * Returns the current compiler version (ex. "6g version release.r58 8787").
+	 * Returns null if we were unable to recover the compiler version. The returned
+	 * string should be treated as an opaque token.
+	 * 
+	 * @return the current compiler version
+	 */
+	public static String getCompilerVersion() {
+		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+		String compilerPath = preferenceStore.getString(PreferenceConstants.COMPILER_PATH);
+		
+		if (compilerPath == null) {
+			return null;
+		}
+		
+		final ExternalCommand compilerCmd = new ExternalCommand(compilerPath);
+	    StreamAsLines output = new StreamAsLines();
+		compilerCmd.setResultsFilter(output);
+		
+		String result = compilerCmd.execute(Collections.singletonList("-V"));
+		
+		if (result != null) {
+			return null;
+		} else {
+			for (String line : output.getLines()) {
+				return line;
+			}
+		}
+		
+		return null;
 	}
-
-					
+				
+	public GoCompiler() {
+		
+	}
+	
 	public void compile(final IProject project,
 			IProgressMonitor pmonitor, String target, String ... dependencies) {
 		if (!dependenciesExist(project, dependencies)){
@@ -70,13 +113,13 @@ public class GoCompiler {
 				if (firstDependency == null){
 					firstDependency = resource;
 				}
-				deleteMarkers(resource);
+				MarkerUtilities.deleteFileMarkers(resource);
 				args.add(dependency);
 			}
 		}
 		String result = compilePackageCmd.execute(args);
 		if (result != null) {
-			addMarker(firstDependency, -1, result, -1, -1, IMarker.SEVERITY_ERROR);
+			MarkerUtilities.addMarker(firstDependency, -1, result, IMarker.SEVERITY_ERROR);
 		}
 		processCompileOutput(output, project);
 		
@@ -105,55 +148,30 @@ public class GoCompiler {
 	        	 }catch(NumberFormatException nfe) {        		 
 	        	 }
 	             if (location != -1 && str.length > 1) {
-		 			addMarker(resource, location, str[1].trim(), -1, -1, IMarker.SEVERITY_ERROR);
+		 			MarkerUtilities.addMarker(resource, location, str[1].trim(), IMarker.SEVERITY_ERROR);
 	             } else {
 	            	 //play safe. to show something in UI
-			 		addMarker(resource, 0, line, -1, -1, IMarker.SEVERITY_ERROR);
+	            	 MarkerUtilities.addMarker(resource, 0, line, IMarker.SEVERITY_ERROR);
 		         }
-			}         
-	             }
-	         }
+			}
+		}
+	}
 	         
-	private void addMarker(IResource file, int line, String message, int beginChar, int endChar, int severity) {
-		if (file == null || !file.exists()) {
-			return;
-		}
-		try {
-			IMarker marker = file.createMarker(IMarker.PROBLEM);
-			marker.setAttribute(IMarker.MESSAGE, message);
-			marker.setAttribute(IMarker.SEVERITY, severity);
-			if (line == -1) {
-				line = 1;
-			}
-			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			marker.setAttribute(IMarker.LINE_NUMBER, line);
-
-			// find error type to mark location (experimental)
-			if (beginChar >= 0) {
-				marker.setAttribute(IMarker.CHAR_START, beginChar);
-			}
-			if (endChar >= 0){
-				marker.setAttribute(IMarker.CHAR_END, endChar);
-			}
-
-		} catch (CoreException e) {
-			Activator.logError(e);
-		}
-	}
-
-	private void deleteMarkers(IResource file) {
-		try {
-			if (file != null && file.exists()) {
-				file.deleteMarkers(IMarker.PROBLEM, false, IResource.DEPTH_ZERO);
-			}
-		} catch (CoreException ce) {
-			Activator.logInfo(ce);
-		}
-	}
-
 	public void setEnvironment(Map<String, String> goEnv) {
 		this.env = goEnv;
+	}
+	
+	public String getVersion() {
+		// The getCompilerVersion() call takes about ~30 msec to compute. Because it's expensive,
+		// we cache the value for a short time.
+		final long TEN_SECONDS = 10 * 1000;
 		
+		if ((System.currentTimeMillis() - versionLastUpdated) > TEN_SECONDS) {
+			version = getCompilerVersion();
+			versionLastUpdated = System.currentTimeMillis();
+		}
+		
+		return version;
 	}
 	
 	private boolean dependenciesExist(IProject project,
@@ -167,4 +185,31 @@ public class GoCompiler {
 		return GoBuilder.dependenciesExist(project, sourceDependencies.toArray(new String[] {}));
 	}
 
+	public void updateVersion(IProject project) {
+		try {
+			project.setPersistentProperty(COMPILER_VERSION_QN, getVersion());
+		} catch (CoreException ex) {
+			Activator.logError(ex);
+		}
+	}
+
+	public boolean requiresRebuild(IProject project) {
+		String storedVersion;
+		
+		try {
+			storedVersion = project.getPersistentProperty(COMPILER_VERSION_QN);
+		} catch (CoreException ex) {
+			storedVersion = null;
+		}
+		
+		String currentVersion = getVersion();
+		
+		if (currentVersion == null) {
+			// We were not able to get the latest compiler version - don't force a rebuild.
+			return false;
+		} else {
+			return !ObjectUtils.objectEquals(storedVersion, currentVersion);
+		}
+	}
+	
 }
