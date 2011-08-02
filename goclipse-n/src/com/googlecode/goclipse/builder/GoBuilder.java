@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 
@@ -122,7 +121,9 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			throws CoreException {
 		IProject project = getProject();
 		
-		checkBuild();
+		if (!checkBuild()) {
+			return null;
+		}
 		
 		if (compiler.requiresRebuild(project)) {
 			kind = FULL_BUILD;
@@ -158,11 +159,11 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	private void checkBuild() throws CoreException {
+	private boolean checkBuild() throws CoreException {
 		if (!Environment.INSTANCE.isValid()){
 			MarkerUtilities.addMarker(getProject(), GoConstants.INVALID_PREFERENCES_MESSAGE);
 
-			throw new CoreException(new Status(Status.ERROR,Activator.PLUGIN_ID, GoConstants.INVALID_PREFERENCES_MESSAGE));
+			return false;
 		} else {
 			if (dependencyManager == null){
 				dependencyManager = new GoDependencyManager();
@@ -176,6 +177,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			if (packer == null){
 				packer = new GoPacker();
 			}
+			
+			return true;
 		}
 	}
 
@@ -307,16 +310,21 @@ public class GoBuilder extends IncrementalProjectBuilder {
 
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
-		Activator.logInfo("cleaning project");
 		IProject project = getProject();
+		
 		MarkerUtilities.deleteAllMarkers(project);
+		
 		IPath binPath = Environment.INSTANCE.getBinOutputFolder(project);
 		File binFolder = new File(project.getLocation().append(binPath).toOSString());
+		
 		if (binFolder.exists()) {
 			deleteFolder(binFolder, true);
 		}
+		
 		IPath pkgPath = Environment.INSTANCE.getPkgOutputFolder(project);
+		
 		File pkgFolder = new File(project.getLocation().append(pkgPath).toOSString());
+		
 		if (pkgFolder.exists()) {
 			deleteFolder(pkgFolder, true);
 		}

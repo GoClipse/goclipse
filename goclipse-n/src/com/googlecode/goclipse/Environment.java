@@ -87,7 +87,6 @@ public class Environment {
 		
 		String goroot = Activator.getDefault().getPreferenceStore().getString(
 				PreferenceConstants.GOROOT);
-
 		
 		if (goroot == null || goroot.length() == 0 || goos == null
 					|| goos.length() == 0 || goarch == null
@@ -95,9 +94,8 @@ public class Environment {
 				Activator.getDefault().getLog().log(new Status(Status.ERROR, Activator.PLUGIN_ID, GoConstants.INVALID_PREFERENCES_MESSAGE));
 				return false;
 		}
+		
 		return true;
-
-
 	}
 	
 	private void buildDependencyTool() {

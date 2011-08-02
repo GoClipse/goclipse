@@ -43,7 +43,7 @@ public class GoCompiler {
 		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		String compilerPath = preferenceStore.getString(PreferenceConstants.COMPILER_PATH);
 		
-		if (compilerPath == null) {
+		if (compilerPath == null || compilerPath.length() == 0) {
 			return null;
 		}
 		

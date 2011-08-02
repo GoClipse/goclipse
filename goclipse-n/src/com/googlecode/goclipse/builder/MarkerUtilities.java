@@ -83,7 +83,7 @@ public class MarkerUtilities {
 			// created using IMarker.PROBLEM.
 			// TODO: at some point in the future, just clean MARKER_ID markers.
 			if (project != null && project.exists()) {
-				project.deleteMarkers(IMarker.PROBLEM, false, IResource.DEPTH_INFINITE);
+				project.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 			}
 		} catch (CoreException ce) {
 			Activator.logInfo(ce);
