@@ -20,10 +20,13 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
  */
 public class GoReferenceProjectWizardPage extends WizardPage {
 
+	/**
+	 * Create a new GoReferenceProjectWizardPage.
+	 */
 	public GoReferenceProjectWizardPage() {
 		super("GoReferenceProjectWizardPage");
 
-		setTitle("New Go Reference Project");
+		setTitle("Create a Go Reference Project");
 		setDescription("Create a new project containing a link to GOROOT/src; this is useful for browsing the source for the Go libraries");
 		setImageDescriptor(Activator.getImageDescriptor("icons/go-icon-wizard.png"));
 	}

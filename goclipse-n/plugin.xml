@@ -265,7 +265,7 @@
       <wizard
             canFinishEarly="false"
             category="com.googlecode.goclipse.wizards.projects"
-            class="com.googlecode.goclipse.wizards.NewProjectWizard"
+            class="com.googlecode.goclipse.wizards.GoProjectWizard"
             finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
             icon="icons/newprj_obj.png"
             id="com.googlecode.goclipse.wizards.project.mainwiz"

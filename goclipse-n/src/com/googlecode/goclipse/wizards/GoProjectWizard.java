@@ -38,14 +38,15 @@ import com.googlecode.goclipse.perspectives.GoPerspective;
  * @author steel
  */
 @SuppressWarnings("restriction")
-public class NewProjectWizard extends Wizard implements INewWizard, IWizard {
-	private NewProjectWizardPage page;
+public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
+	private GoProjectWizardPage page;
 	private ISelection           selection;
 
 	/**
 	 * Constructor for NewGoFileWizard.
 	 */
-	public NewProjectWizard() {
+	public GoProjectWizard() {
+		setWindowTitle("New Go Project");
 		setNeedsProgressMonitor(true);
 	}
 
@@ -64,7 +65,7 @@ public class NewProjectWizard extends Wizard implements INewWizard, IWizard {
 	 */
 
 	public void addPages() {
-		page = new NewProjectWizardPage(selection);
+		page = new GoProjectWizardPage(selection);
 		addPage(page);
 	}
 

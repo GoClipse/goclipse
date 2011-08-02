@@ -182,8 +182,8 @@ public class ProjectComposite extends Composite {
       GridLayout gridLayout = new GridLayout();
       gridLayout.numColumns = 3;
       gridLayout.horizontalSpacing = 5;
-      gridLayout.marginWidth = 10;
-      gridLayout.marginHeight = 10;
+      gridLayout.marginWidth = 0;
+      gridLayout.marginHeight = 0;
       gridLayout.verticalSpacing = 5;
 
       nameLabel = new Label(this, SWT.NONE);

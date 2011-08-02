@@ -35,6 +35,7 @@ public class GoReferenceProjectWizard extends Wizard implements INewWizard {
 	 * Create a new GoReferenceProjectWizard.
 	 */
 	public GoReferenceProjectWizard() {
+		setWindowTitle("New Go Reference Project");
 		setNeedsProgressMonitor(true);
 	}
 

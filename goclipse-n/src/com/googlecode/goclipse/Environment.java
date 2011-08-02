@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -89,10 +88,9 @@ public class Environment {
 				PreferenceConstants.GOROOT);
 		
 		if (goroot == null || goroot.length() == 0 || goos == null
-					|| goos.length() == 0 || goarch == null
-					|| goarch.length() == 0) {
-				Activator.getDefault().getLog().log(new Status(Status.ERROR, Activator.PLUGIN_ID, GoConstants.INVALID_PREFERENCES_MESSAGE));
-				return false;
+				|| goos.length() == 0 || goarch == null || goarch.length() == 0) {
+				//Activator.getDefault().getLog().log(new Status(Status.ERROR, Activator.PLUGIN_ID, GoConstants.INVALID_PREFERENCES_MESSAGE));
+			return false;
 		}
 		
 		return true;
@@ -300,7 +298,7 @@ public class Environment {
 	private void saveProperties(IProject project) {
 		Properties properties = getProperties(project);
 		try {
-			System.out.println("writing to "
+			Activator.logInfo("writing to "
 					+ project.getWorkingLocation(Activator.PLUGIN_ID)
 					+ "/properties.xml");
 			properties.storeToXML(new FileOutputStream(project
