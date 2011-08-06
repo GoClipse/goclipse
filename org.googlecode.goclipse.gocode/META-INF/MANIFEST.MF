@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Auto Complete with GoCode
+Bundle-Name: GoClipse Autocomplete
 Bundle-SymbolicName: com.googlecode.goclipse.gocode;singleton:=true
 Bundle-Version: 0.1.3
 Bundle-Activator: com.googlecode.goclipse.gocode.Activator
