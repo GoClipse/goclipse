@@ -23,7 +23,7 @@ public class GdbContext {
 			for (Object o : stack) {
 				GdbProperties props = (GdbProperties)o;
 				
-				GdbFrame frame = new GdbFrame((GdbProperties)props.getProperty("frame"));
+				GdbFrame frame = new GdbFrame(thread.connection, (GdbProperties)props.getProperty("frame"));
 				
 				frames.add(frame);
 			}

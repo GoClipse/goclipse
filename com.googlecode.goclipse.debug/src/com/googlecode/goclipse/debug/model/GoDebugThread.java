@@ -22,6 +22,7 @@ import com.googlecode.goclipse.debug.gdb.GdbThread;
  */
 public class GoDebugThread extends GoDebugElement implements IThread {
 	private GdbThread gdbThread;
+	private List<GoDebugStackFrame> frames;
 	
 	public GoDebugThread(GoDebugTarget debugTarget, GdbThread gdbThread) {
 		super(debugTarget);
@@ -71,8 +72,6 @@ public class GoDebugThread extends GoDebugElement implements IThread {
 
 	@Override
 	public boolean isStepping() {
-		// TODO:
-		
 		return false;
 	}
 
@@ -121,10 +120,6 @@ public class GoDebugThread extends GoDebugElement implements IThread {
 		getDebugTarget().terminate();
 	}
 
-	// TODO: TEMP
-	private List<GoDebugStackFrame> frames;
-	// TODO: TEMP
-	
 	@Override
 	public IStackFrame[] getStackFrames() throws DebugException {
 		if (frames == null) {
@@ -142,8 +137,7 @@ public class GoDebugThread extends GoDebugElement implements IThread {
 	
 	@Override
 	public boolean hasStackFrames() throws DebugException {
-		// TODO Auto-generated method stub
-		return true;
+		return getStackFrames().length > 0;
 	}
 
 	@Override

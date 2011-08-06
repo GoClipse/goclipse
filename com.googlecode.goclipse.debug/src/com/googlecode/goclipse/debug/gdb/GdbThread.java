@@ -8,10 +8,13 @@ import java.util.List;
  * @author devoncarew
  */
 public class GdbThread {
+	GdbConnection connection;
+	
 	private String id;
 	private List<GdbFrame> frames = new ArrayList<GdbFrame>();
 	
-	public GdbThread(String id) {
+	public GdbThread(GdbConnection connection, String id) {
+		this.connection = connection;
 		this.id = id;
 	}
 	

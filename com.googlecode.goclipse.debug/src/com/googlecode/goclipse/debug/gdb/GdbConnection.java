@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.debug.core.IStreamListener;
@@ -147,7 +148,7 @@ public class GdbConnection implements IStreamListener {
 			// "^running"
 			// The asynchronous operation was successfully started. The target is running.
 			
-			System.out.println("OP-RESULT [" + eventText.substring(1) + "]");
+			//System.out.println("OP-RESULT [" + eventText.substring(1) + "]");
 		} else if (isAsyncResult(eventText)) {
 			handleAsyncResult(eventText);
 		} else {
@@ -157,12 +158,18 @@ public class GdbConnection implements IStreamListener {
 
 	private boolean isAsyncResult(String text) {
 		// nnn^done
-		
-		int index = text.indexOf("^done");
-		
-		if (index != -1) {
+		// 2^error,msg="Undefined MI command: stack-list-localz"
+
+		if (text.indexOf("^done") != -1) {
 			try {
-				Integer.parseInt(text.substring(0, index));
+				Integer.parseInt(text.substring(0, text.indexOf("^done")));
+				return true;
+			} catch (NumberFormatException nfe) {
+				return false;
+			}
+		} else if (text.indexOf("^error") != -1) {
+			try {
+				Integer.parseInt(text.substring(0, text.indexOf("^error")));
 				return true;
 			} catch (NumberFormatException nfe) {
 				return false;
@@ -207,12 +214,12 @@ public class GdbConnection implements IStreamListener {
 		} else {
 			// TODO:
 			
-			System.out.println("STATE     [" + text + "]");
+			//System.out.println("STATE     [" + text + "]");
 		}
 	}
 
 	private void handleThreadCreated(String id, String groupId) {
-		GdbThread thread = new GdbThread(id);
+		GdbThread thread = new GdbThread(this, id);
 		
 		threads.put(id, thread);
 	}
@@ -235,7 +242,7 @@ public class GdbConnection implements IStreamListener {
 		} else {
 			// TODO:
 			
-			System.out.println("EVENT     [" + text + "]");
+			//System.out.println("EVENT     [" + text + "]");
 		}
 	}
 
@@ -258,13 +265,6 @@ public class GdbConnection implements IStreamListener {
 				for (GdbConnectionListener listener : listeners) {
 					listener.handleSuspended(context);
 				}
-			}
-
-			@Override
-			public void handleError() {
-				// TODO:
-				
-				System.out.println("handleError()");
 			}
 		});
 	}
@@ -329,7 +329,6 @@ public class GdbConnection implements IStreamListener {
 	
 	public static interface Callback {
 		public void handleResult(GdbEvent event);
-		public void handleError();
 	}
 	
 	protected void sendAsyncCall(String command, Callback callback) throws IOException {
@@ -352,6 +351,47 @@ public class GdbConnection implements IStreamListener {
 
 	public List<GdbThread> getThreads() {
 		return new ArrayList<GdbThread>(threads.values());
+	}
+
+	public List<GdbVariable> getVariables(GdbFrame gdbFrame) throws IOException {
+		// locals=[name="bob"]
+		final List<GdbVariable> result = new ArrayList<GdbVariable>();
+		final CountDownLatch latch = new CountDownLatch(1);
+		
+		sendCommand("-stack-select-frame " + gdbFrame.getIndex());
+		
+		sendAsyncCall("-stack-list-locals 1", new Callback() {
+			@Override
+			public void handleResult(GdbEvent event) {
+				if (!event.isError()) {
+					Object obj = event.getProperty("locals"); // stack-args
+					
+					if (obj instanceof Object[]) {
+						Object[] objs = (Object[])obj;
+						
+						for (Object o : objs) {
+							if (o instanceof GdbProperties) {
+								GdbProperties props = (GdbProperties)o;
+								
+								result.add(new GdbVariable(
+									props.getPropertyString("name"), props.getPropertyString("value")));
+							}
+						}
+					}
+				}
+				
+				latch.countDown();
+			}
+		});
+		
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 
 }

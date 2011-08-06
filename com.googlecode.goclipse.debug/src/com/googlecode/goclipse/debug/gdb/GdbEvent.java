@@ -40,6 +40,7 @@ public class GdbEvent extends GdbProperties {
 	private boolean simple;
 	
 	private int resultToken = -1;
+	private boolean error;
 	
 	private String extra;
 	
@@ -49,6 +50,10 @@ public class GdbEvent extends GdbProperties {
 	
 	public boolean isSimple() {
 		return simple;
+	}
+	
+	public boolean isError() {
+		return error;
 	}
 	
 	public static GdbEvent parse(String string) {
@@ -105,11 +110,21 @@ public class GdbEvent extends GdbProperties {
 		
 		int index = name.indexOf("^done");
 		
-		if (index != -1) {
+		if (name.indexOf("^done") != -1) {
 			try {
-				resultToken = Integer.parseInt(name.substring(0, index));
+				resultToken = Integer.parseInt(name.substring(0, name.indexOf("^done")));
 				
 				name = name.substring(index);
+			} catch (NumberFormatException nfe) {
+
+			}
+		} else if (name.indexOf("^error") != -1) {
+			try {
+				resultToken = Integer.parseInt(name.substring(0, name.indexOf("^error")));
+				
+				name = name.substring(index);
+				
+				error = true;
 			} catch (NumberFormatException nfe) {
 
 			}

@@ -1,12 +1,20 @@
 package com.googlecode.goclipse.debug.model;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 
+import com.googlecode.goclipse.debug.GoDebugPlugin;
 import com.googlecode.goclipse.debug.gdb.GdbFrame;
+import com.googlecode.goclipse.debug.gdb.GdbVariable;
 
 /**
  * 
@@ -15,6 +23,8 @@ import com.googlecode.goclipse.debug.gdb.GdbFrame;
 public class GoDebugStackFrame extends GoDebugElement implements IStackFrame {
 	private GoDebugThread thread;
 	private GdbFrame frame;
+	
+	private IVariable[] variables;
 	
 	protected GoDebugStackFrame(GoDebugTarget target, GoDebugThread thread, GdbFrame frame) {
 		super(target);
@@ -105,9 +115,27 @@ public class GoDebugStackFrame extends GoDebugElement implements IStackFrame {
 
 	@Override
 	public IVariable[] getVariables() throws DebugException {
-		// TODO:
-		//frame.getVariables();
-		return new IVariable[0];
+		// TODO: handle method args as well --stack-list-arguments 1
+		
+		if (variables == null) {
+			variables = getVariablesImpl();
+		}
+		
+		return variables;
+	}
+	
+	private IVariable[] getVariablesImpl() throws DebugException {
+		try {
+			List<IVariable> result = new ArrayList<IVariable>();
+			
+			for (GdbVariable var : frame.getVariables()) {
+				result.add(new GoDebugVariable(getTarget(), var));
+			}
+			
+			return result.toArray(new IVariable[result.size()]);
+		} catch (IOException ioe) {
+			throw new DebugException(new Status(IStatus.ERROR, GoDebugPlugin.PLUGIN_ID, ioe.getMessage(), ioe));
+		}
 	}
 
 	@Override

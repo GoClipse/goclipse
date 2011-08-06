@@ -1,15 +1,21 @@
 package com.googlecode.goclipse.debug.gdb;
 
+import java.io.IOException;
+import java.util.List;
+
 /**
  * 
  * @author devoncarew
  */
 public class GdbFrame {
+	private GdbConnection connection;
+	
+	private int index;
 	private String name;
 	private String file;
 	private int line;
 
-	public GdbFrame(GdbProperties props) {
+	public GdbFrame(GdbConnection connection, GdbProperties props) {
 		// level="0",
 		// addr="0x0000000000001c29",
 		// func="main.Walk",
@@ -17,6 +23,9 @@ public class GdbFrame {
 		// fullname="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",
 		// line="33"
 		
+		this.connection = connection;
+		
+		this.index = props.getPropertyParseInt("level");
 		this.name = props.getPropertyString("func");
 		this.file = props.getPropertyString("file");
 		this.line = props.getPropertyParseInt("line");
@@ -24,6 +33,10 @@ public class GdbFrame {
 
 	public String getName() {
 		return name + "()";
+	}
+
+	public int getIndex() {
+		return index;
 	}
 
 	public String getFile() {
@@ -44,5 +57,9 @@ public class GdbFrame {
 	public int getLine() {
 		return line;
 	}
-
+	
+	public List<GdbVariable> getVariables() throws IOException {
+		return connection.getVariables(this);
+	}
+	
 }

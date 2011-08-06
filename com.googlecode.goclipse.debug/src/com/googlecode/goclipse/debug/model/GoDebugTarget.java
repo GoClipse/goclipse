@@ -189,10 +189,6 @@ public class GoDebugTarget extends GoDebugElement implements IDebugTarget, GdbCo
 								}
 							}
 						}
-						@Override
-						public void handleError() {
-							
-						}
 					});
 				} catch (IOException e) {
 					GoDebugPlugin.logError(e);
