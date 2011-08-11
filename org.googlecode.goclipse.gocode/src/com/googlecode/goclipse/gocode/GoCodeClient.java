@@ -22,10 +22,10 @@ public class GoCodeClient {
 	private String error;
 
 	public GoCodeClient() {
+		
 	}
 	
 	public List<String> getCompletions(String fileName, final String bufferText, int offset) {
-		
 		String goarch = Activator.getDefault().getPreferenceStore().getString(
 				PreferenceConstants.GOARCH);
 		
@@ -37,12 +37,26 @@ public class GoCodeClient {
 		
 		String exeName = "gocode" + Environment.INSTANCE.getExecutableExtension();
 		
-		ExternalCommand configure = 
+		ExternalCommand goCodeCommand = 
 			new ExternalCommand(Path.fromOSString(goroot).append("bin").append(exeName).toOSString());
+		goCodeCommand.setWorkingFolder(Path.fromOSString(goroot).append("bin").toOSString());
 		
-		configure.setTimeout(100);
-		configure.setWorkingFolder(Path.fromOSString(goroot).append("bin").toOSString());
+		if (!goCodeCommand.commandExists()) {
+			// Caveat: environment variables aren't always available. We only use GOBIN if GOROOT/bin
+			// doesn't contain the gocode command.
+			String goBinPath = System.getenv("GOBIN");
+			
+			if (goBinPath != null) {
+				ExternalCommand command = new ExternalCommand(Path.fromOSString(goBinPath).append(exeName).toOSString());				
+				goCodeCommand.setWorkingFolder(Path.fromOSString(goBinPath).toOSString());
+				
+				if (command.commandExists()) {
+					goCodeCommand = command;
+				}
+			}
+		}
 		
+		goCodeCommand.setTimeout(100);
 		
 		// set the package path for the current project
 		List<String> parameters = new LinkedList<String>();
@@ -70,7 +84,7 @@ public class GoCodeClient {
         }
 		
 		parameters.add( (rootPath+":"+pkgPath).replace("\\", "/") );
-		configure.execute(parameters);
+		goCodeCommand.execute(parameters);
 				
 		ExternalCommand command = new 
 			ExternalCommand(Path.fromOSString(goroot).append("bin").append(exeName).toOSString());
@@ -99,7 +113,10 @@ public class GoCodeClient {
 		parameters.add(""+offset);
 		error = command.execute(parameters, true);
 		if (error != null) {
-			Activator.getDefault().getLog().log(new Status(Status.ERROR, Activator.PLUGIN_ID, error));
+			String out = output.getLinesAsString();
+			
+			Activator.getDefault().getLog().log(
+					new Status(Status.ERROR, Activator.PLUGIN_ID, out == null ? error : error + ": " + out));
 		}
 		return output.getLines();
 	}

@@ -123,7 +123,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 	 * @param offset
 	 * @return
 	 */
-	public static String lastWord(IDocument doc, int offset) {
+	private static String lastWord(IDocument doc, int offset) {
 		try {
 			for (int n = offset - 1; n >= 0; n--) {
 				char c = doc.getChar(n);

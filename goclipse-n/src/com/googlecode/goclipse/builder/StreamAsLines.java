@@ -52,6 +52,24 @@ public class StreamAsLines implements ProcessIStreamFilter {
 		return lines;
 	}
 	
+	public String getLinesAsString() {
+		if (lines.size() == 0) {
+			return null;
+		}
+		
+		StringBuilder builder = new StringBuilder();
+		
+		for (int i = 0; i < lines.size(); i++) {
+			if (i > 0) {
+				builder.append("\n");
+			}
+			
+			builder.append(lines.get(i));
+		}
+		
+		return builder.toString();
+	}
+
 	public void clear() {
 		lines.clear();
 	}

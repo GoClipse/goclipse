@@ -70,6 +70,12 @@ public class ExternalCommand {
 		this.command = command;
 	}
 
+	public boolean commandExists() {
+		File file = new File(command);
+		
+		return file.exists();
+	}
+	
 	/**
 	 * returns an error string or null if no errors occured
 	 * @param parameters
@@ -78,6 +84,7 @@ public class ExternalCommand {
 	public String execute(List<String> parameters) {
 		return execute(parameters, false);
 	}
+	
 	public String execute(List<String> parameters, boolean exitStatusIsError) {
 		String rez = null;
 		try {
