@@ -25,12 +25,12 @@ import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.go.lang.parser.CodeContext;
-import com.googlecode.goclipse.model.Function;
-import com.googlecode.goclipse.model.Import;
-import com.googlecode.goclipse.model.Node;
-import com.googlecode.goclipse.model.Type;
-import com.googlecode.goclipse.model.TypeClass;
+import com.googlecode.goclipse.go.CodeContext;
+import com.googlecode.goclipse.go.lang.model.Function;
+import com.googlecode.goclipse.go.lang.model.Import;
+import com.googlecode.goclipse.go.lang.model.Node;
+import com.googlecode.goclipse.go.lang.model.Type;
+import com.googlecode.goclipse.go.lang.model.TypeClass;
 import com.googlecode.goclipse.utils.ObjectUtils;
 
 /**

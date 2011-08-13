@@ -2,11 +2,12 @@ package com.googlecode.goclipse.go.lang.parser;
 
 import java.util.ArrayList;
 
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
-import com.googlecode.goclipse.model.Function;
-import com.googlecode.goclipse.model.Method;
+import com.googlecode.goclipse.go.lang.model.Function;
+import com.googlecode.goclipse.go.lang.model.Method;
 
 /**
  * 
@@ -15,7 +16,7 @@ import com.googlecode.goclipse.model.Method;
 public class ScopeParser implements TokenListener {
 
 	private enum State {
-		START, DETERMINE_TYPE, CONSUME_FUNCTION, CONSUME_METHOD, FINISHED, ERROR
+		START, MODULE_SCOPE, CONSUME_METHOD_SCOPE, CONSUME_FUNCTION_SCOPE, SCOPE, FINISHED, ERROR
 	}
 
 	private State               state            = State.START;
@@ -84,109 +85,26 @@ public class ScopeParser implements TokenListener {
 
 			switch (state) {
 
-			case START:
-				if (TokenType.FUNC.equals(type) && scope_tracker == 0
-						&& tokenOnLineCount == 1) {
-
-					if (linenumber - lastCommentLine > 1) {
-						comment = new StringBuffer();
-					}
-
-					state = State.DETERMINE_TYPE;
-				}
+			case START:				
 				break;
 
-			case CONSUME_METHOD:
-				if (TokenType.IDENTIFIER.equals(type)) {
-					text.append(value);
-					if (afterReceiver == 1) {
-						method.setInsertionText(value + "()");
-						afterReceiver++;
-					}
-				} else if (TokenType.RPAREN.equals(type)) {
-					text.append(value);
-					afterReceiver++;
-				} else if (TokenType.NEWLINE.equals(type)) {
-
-					if (text.toString().lastIndexOf('{') != -1) {
-						method.setName(text.toString().substring(0,
-								text.toString().lastIndexOf('{')));
-					} else {
-						method.setName(text.toString());
-					}
-					method.setLine(linenumber);
-					method.setDocumentation(comment.toString());
-					text = new StringBuffer();
-
-					// sometimes we only wanted exported methods
-					if (method != null && method.getInsertionText() != null) {
-						if ((exportsOnly && Character.isUpperCase(method
-								.getInsertionText().charAt(0))) || !exportsOnly) {
-							methods.add(method);
-						}
-					}
-
-					method = new Method();
-					comment = new StringBuffer();
-					state = State.START;
-					afterReceiver = 0;
-				} else {
-					text.append(value);
-				}
+			case MODULE_SCOPE:
 				break;
-			case CONSUME_FUNCTION:
-				if (TokenType.IDENTIFIER.equals(type)) {
-					text.append(value);
-
-					if (func.getInsertionText() == null) {
-						func.setInsertionText(value + "()");
-					}
-				} else if (TokenType.NEWLINE.equals(type)) {
-
-					if (text.toString().lastIndexOf('{') != -1) {
-						func.setName(text.toString().substring(0,
-								text.toString().lastIndexOf('{')));
-					} else {
-						func.setName(text.toString());
-					}
-					func.setDocumentation(comment.toString());
-					text = new StringBuffer();
-
-					// sometimes we only wanted exported functions
-					if (func != null && func.getInsertionText() != null) {
-						if ((exportsOnly && Character.isUpperCase(func
-								.getInsertionText().charAt(0))) || !exportsOnly) {
-							funcs.add(func);
-						}
-					}
-
-					func = new Function();
-					comment = new StringBuffer();
-					state = State.START;
-				} else {
-					text.append(value);
-				}
+				
+			case CONSUME_METHOD_SCOPE:
 				break;
-			case DETERMINE_TYPE:
-				if (TokenType.LPAREN.equals(type)) {
-					state = State.CONSUME_METHOD;
-					text.append(value);
-				} else if (TokenType.IDENTIFIER.equals(type)) {
-					state = State.CONSUME_FUNCTION;
-
-					text.append(value);
-					func.setLine(linenumber);
-
-					if (func.getInsertionText() == null) {
-						func.setInsertionText(value + "()");
-					}
-				}
+				
+			case CONSUME_FUNCTION_SCOPE:
 				break;
+				
+			case SCOPE:
+				break;
+				
 			case FINISHED:
 				break;
 			}
 		} catch (RuntimeException e) {
-			System.out.println(e);
+			Activator.logError(e);
 		}
 	}
 

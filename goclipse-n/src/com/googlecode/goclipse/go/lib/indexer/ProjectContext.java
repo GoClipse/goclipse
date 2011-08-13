@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.go;
+package com.googlecode.goclipse.go.lib.indexer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

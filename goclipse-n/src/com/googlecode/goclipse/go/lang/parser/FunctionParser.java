@@ -9,8 +9,8 @@ import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
-import com.googlecode.goclipse.model.Function;
-import com.googlecode.goclipse.model.Method;
+import com.googlecode.goclipse.go.lang.model.Function;
+import com.googlecode.goclipse.go.lang.model.Method;
 
 /**
  * 

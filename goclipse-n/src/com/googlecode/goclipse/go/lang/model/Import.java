@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.model;
+package com.googlecode.goclipse.go.lang.model;
 
 import org.eclipse.swt.graphics.Image;
 

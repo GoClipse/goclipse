@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.go.lang.parser;
+package com.googlecode.goclipse.go;
 
 
 import java.io.BufferedReader;
@@ -15,13 +15,19 @@ import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenUnit;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
-import com.googlecode.goclipse.model.Function;
-import com.googlecode.goclipse.model.Import;
-import com.googlecode.goclipse.model.Method;
-import com.googlecode.goclipse.model.Node;
-import com.googlecode.goclipse.model.Package;
-import com.googlecode.goclipse.model.Type;
-import com.googlecode.goclipse.model.Var;
+import com.googlecode.goclipse.go.lang.model.Function;
+import com.googlecode.goclipse.go.lang.model.Import;
+import com.googlecode.goclipse.go.lang.model.Method;
+import com.googlecode.goclipse.go.lang.model.Node;
+import com.googlecode.goclipse.go.lang.model.Package;
+import com.googlecode.goclipse.go.lang.model.Type;
+import com.googlecode.goclipse.go.lang.model.Var;
+import com.googlecode.goclipse.go.lang.parser.FunctionParser;
+import com.googlecode.goclipse.go.lang.parser.ImportParser;
+import com.googlecode.goclipse.go.lang.parser.PackageParser;
+import com.googlecode.goclipse.go.lang.parser.TokenizedPage;
+import com.googlecode.goclipse.go.lang.parser.TypeParser;
+import com.googlecode.goclipse.go.lang.parser.VariableParser;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**

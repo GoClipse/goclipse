@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.go.lang.parser;
+package com.googlecode.goclipse.go.lib.indexer;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -6,21 +6,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-import com.googlecode.goclipse.go.Func;
-import com.googlecode.goclipse.go.Package;
-import com.googlecode.goclipse.go.Type;
-import com.googlecode.goclipse.go.Type.TypeClass;
-import com.googlecode.goclipse.go.UnresolvedFunc;
-import com.googlecode.goclipse.go.UnresolvedType;
-import com.googlecode.goclipse.go.Var;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
 import com.googlecode.goclipse.go.lang.lexer.TokenUnit;
+import com.googlecode.goclipse.go.lib.indexer.Type.TypeClass;
 
 
-public class LibraryParser {
+public class Indexer {
 
-	public LibraryParser(){
+	public Indexer(){
 		
 	}
 	
@@ -219,7 +213,7 @@ public class LibraryParser {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		LibraryParser libraryParser = new LibraryParser();
+		Indexer libraryParser = new Indexer();
 		libraryParser.parse(new Package("mytest"), "test_go/tester.a");
 	}
 }

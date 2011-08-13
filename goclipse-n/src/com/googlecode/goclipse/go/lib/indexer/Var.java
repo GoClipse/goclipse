@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.go;
+package com.googlecode.goclipse.go.lib.indexer;
 
 /**
  * Too lazy to complete graph right now

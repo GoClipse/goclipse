@@ -21,9 +21,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.go.Keywords;
-import com.googlecode.goclipse.go.lang.parser.CodeContext;
-import com.googlecode.goclipse.model.Node;
+import com.googlecode.goclipse.go.CodeContext;
+import com.googlecode.goclipse.go.lang.model.Node;
+import com.googlecode.goclipse.go.lib.indexer.Keywords;
 
 /**
  * 

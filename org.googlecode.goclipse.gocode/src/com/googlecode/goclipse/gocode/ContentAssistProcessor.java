@@ -20,7 +20,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
 
-import com.googlecode.goclipse.go.lang.parser.CodeContext;
+import com.googlecode.goclipse.go.CodeContext;
 
 public class ContentAssistProcessor implements IContentAssistProcessor {
 	

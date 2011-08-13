@@ -10,8 +10,8 @@ import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
-import com.googlecode.goclipse.model.Import;
-import com.googlecode.goclipse.model.Import.PrefixType;
+import com.googlecode.goclipse.go.lang.model.Import;
+import com.googlecode.goclipse.go.lang.model.Import.PrefixType;
 
 /**
  * Receives a stream of tokens to determine the imports of a given source file
@@ -24,10 +24,10 @@ public class ImportParser implements TokenListener {
 		MULTIPLE, SINGLE, DETERMINING, IGNORING, ERROR
 	}
 
-	private State state 				    = State.IGNORING;
-	private List<Import> imports            = new ArrayList<Import>();
-	private Import currentImport 			= null;
-	private boolean reading 			    = false;
+	private State 		 state 		   = State.IGNORING;
+	private List<Import> imports       = new ArrayList<Import>();
+	private Import 		 currentImport = null;
+	private boolean 	 reading 	   = false;
 
 	public ImportParser(Tokenizer tokenizer) {
 		tokenizer.addTokenListener(this);

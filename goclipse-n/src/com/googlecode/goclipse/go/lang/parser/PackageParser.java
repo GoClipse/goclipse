@@ -8,8 +8,8 @@ import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
-import com.googlecode.goclipse.model.Import;
-import com.googlecode.goclipse.model.Package;
+import com.googlecode.goclipse.go.lang.model.Import;
+import com.googlecode.goclipse.go.lang.model.Package;
 
 public class PackageParser implements TokenListener{
 
