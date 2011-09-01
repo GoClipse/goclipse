@@ -18,6 +18,7 @@ import com.googlecode.goclipse.Activator;
 public class ExternalCommand {
 	private String command;
 	private ProcessBuilder pBuilder;
+	private Process p;
 	private List<String> args = new ArrayList<String>();
 	private ProcessIStreamFilter resultsFilter;
 	private ProcessIStreamFilter errorFilter;
@@ -76,6 +77,12 @@ public class ExternalCommand {
 		return file.exists();
 	}
 	
+	public void destroy(){
+		if (p!=null){
+			p.destroy();
+		}
+	}
+	
 	/**
 	 * returns an error string or null if no errors occured
 	 * @param parameters
@@ -95,7 +102,7 @@ public class ExternalCommand {
 			}
 			Activator.logInfo(pBuilder.directory() + " executing: " +  args);
 			
-			Process p = pBuilder.start();
+			p = pBuilder.start();
 			InStreamWorker processOutput = new InStreamWorker(p.getInputStream(), "output stream thread");
 			processOutput.setFilter(resultsFilter);
 			InStreamWorker processError = new InStreamWorker(p.getErrorStream(), "error stream thread");
@@ -130,6 +137,8 @@ public class ExternalCommand {
 		}
 		return rez;
 	}
+	
+	
 	private class InStreamWorker extends Thread {
 		private InputStream is;
 		private ProcessIStreamFilter filter;
