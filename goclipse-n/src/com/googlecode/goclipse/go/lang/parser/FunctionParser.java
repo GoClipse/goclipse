@@ -23,19 +23,20 @@ public class FunctionParser implements TokenListener {
 		START, DETERMINE_TYPE, CONSUME_FUNCTION_HEADER, CONSUME_METHOD_HEADER, FINISHED, ERROR
 	}
 
-	private State state = State.START;
-	private ArrayList<FunctionParserListener> funcListeners = new ArrayList<FunctionParserListener>();
-	private ArrayList<Function> funcs = new ArrayList<Function>();
-	private ArrayList<Method> methods = new ArrayList<Method>();
-	private Function func = new Function();
-	private Method method = new Method();
-	private StringBuffer comment = new StringBuffer();
-	private StringBuffer text = new StringBuffer();
-	private int lastCommentLine = 0;
-	private int tokenOnLineCount = 0;
-	private int afterReceiver = 0;
-	private boolean exportsOnly = true;
-	private int scope_tracker = 0;
+	private State 							  state 		   = State.START;
+	private ScopeParser 					  scopeParser      = null;     
+	private ArrayList<FunctionParserListener> funcListeners    = new ArrayList<FunctionParserListener>();
+	private ArrayList<Function>               funcs 		   = new ArrayList<Function>();
+	private ArrayList<Method>                 methods 		   = new ArrayList<Method>();
+	private Function 	                      func 			   = new Function();
+	private Method 		                      method 		   = new Method();
+	private StringBuffer                      comment 		   = new StringBuffer();
+	private StringBuffer                      text 			   = new StringBuffer();
+	private int 		                      lastCommentLine  = 0;
+	private int 		                      tokenOnLineCount = 0;
+	private int 		                      afterReceiver    = 0;
+	private boolean 	                      exportsOnly      = true;
+	private int 		                      scope_tracker    = 0;
 
 	/**
 	 * 
@@ -44,6 +45,13 @@ public class FunctionParser implements TokenListener {
 	public FunctionParser(boolean parseExportsOnly, Tokenizer tokenizer) {
 		tokenizer.addTokenListener(this);
 		exportsOnly = parseExportsOnly;
+	}
+	
+	/**
+	 * @param scopeParser
+	 */
+	public void setScopeParser(ScopeParser scopeParser){
+		this.scopeParser = scopeParser;
 	}
 	
 	/**
@@ -129,18 +137,22 @@ public class FunctionParser implements TokenListener {
 				}
 				break;
 
+				
 			case CONSUME_METHOD_HEADER:
+				
 				if (TokenType.IDENTIFIER.equals(type)) {
 					text.append(value);
 					if (afterReceiver == 1) {
 						method.setInsertionText(value + "()");
 						afterReceiver++;
 					}
-				} else if (TokenType.RPAREN.equals(type)) {
+				} 
+				else if (TokenType.RPAREN.equals(type)) {
 					text.append(value);
 					afterReceiver++;
-				} else if (TokenType.NEWLINE.equals(type)) {
-
+				} 
+				else if (TokenType.NEWLINE.equals(type)) {
+					
 					if (text.toString().lastIndexOf('{') != -1) {
 						method.setName(text.toString().substring(0,
 								text.toString().lastIndexOf('{')));
@@ -158,30 +170,42 @@ public class FunctionParser implements TokenListener {
 							methods.add(method);
 						}
 					}
+					
+					// add it to current scope 
+					if (scopeParser!=null){
+						scopeParser.addMethod(method);
+					}
 
 					method = new Method();
 					comment = new StringBuffer();
 					state = State.START;
 					afterReceiver = 0;
-				} else {
+				} 
+				else {
 					text.append(value);
 				}
 				break;
+				
+				
 			case CONSUME_FUNCTION_HEADER:
+				
 				if (TokenType.IDENTIFIER.equals(type)) {
 					text.append(value);
 
 					if (func.getInsertionText() == null) {
 						func.setInsertionText(value + "()");
 					}
-				} else if (TokenType.NEWLINE.equals(type)) {
+				} 
+				else if (TokenType.NEWLINE.equals(type)) {
 
 					if (text.toString().lastIndexOf('{') != -1) {
 						func.setName(text.toString().substring(0,
 								text.toString().lastIndexOf('{')));
-					} else {
+					} 
+					else {
 						func.setName(text.toString());
 					}
+					
 					func.setDocumentation(comment.toString());
 					text = new StringBuffer();
 
@@ -193,18 +217,27 @@ public class FunctionParser implements TokenListener {
 						}
 					}
 
+					// add it to current scope 
+					if (scopeParser!=null){
+						scopeParser.addFunction(func);
+					}
+					
 					func = new Function();
 					comment = new StringBuffer();
 					state = State.START;
-				} else {
+				} 
+				else {
 					text.append(value);
 				}
 				break;
+				
+				
 			case DETERMINE_TYPE:
 				if (TokenType.LPAREN.equals(type)) {
 					state = State.CONSUME_METHOD_HEADER;
 					text.append(value);
-				} else if (TokenType.IDENTIFIER.equals(type)) {
+				} 
+				else if (TokenType.IDENTIFIER.equals(type)) {
 					state = State.CONSUME_FUNCTION_HEADER;
 
 					text.append(value);
@@ -215,11 +248,14 @@ public class FunctionParser implements TokenListener {
 					}
 				}
 				break;
+				
+				
 			case FINISHED:
 				break;
+				
 			}
 		} catch (RuntimeException e) {
-			System.out.println(e);
+			Activator.logError(e);
 		}
 	}
 

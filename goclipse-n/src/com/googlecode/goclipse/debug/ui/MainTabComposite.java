@@ -258,7 +258,7 @@ public class MainTabComposite extends Composite {
 		buildConfigurationGroup.setLayout(new GridLayout());
 		buildConfigurationGroup.setLayoutData(gridData4);
 		createBuildConfigurationCombo();
-		buildConfigurationGroup.setText("Build Configuration:");
+		buildConfigurationGroup.setText("Go Build Path:");
 	}
 
 	/**

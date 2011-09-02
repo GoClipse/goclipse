@@ -37,6 +37,5 @@ public class PreferenceConstants {
 	public static final String ARCH_386 = "386";
 	public static final String ARCH_AMD64 = "amd64";
 
-
-	
+		
 }

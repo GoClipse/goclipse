@@ -14,14 +14,17 @@ import com.googlecode.goclipse.go.lang.model.TypeClass;
 import com.googlecode.goclipse.go.lang.model.Var;
 
 /**
+ * This is a state machine style parser that identifies Go 
+ * types from a set of token events
  * 
  * @author steel
  */
-public class TypeParser implements TokenListener {
+final public class TypeParser implements TokenListener {
 
 	private enum State{START, CONSUME_NAME, DETERMINE, CONSUME_ALIAS, CONSUME_INTERFACE, CONSUME_STRUCT, FINISHED}
 
 	private State 		    state 		     = State.START;
+	private ScopeParser 	scopeParser      = null;     
 	private StringBuffer    comment          = new StringBuffer();
 	private StringBuffer    text 	         = new StringBuffer();
 	private ArrayList<Type> types            = new ArrayList<Type>();
@@ -39,6 +42,13 @@ public class TypeParser implements TokenListener {
 	public TypeParser(boolean parseExportsOnly, Tokenizer tokenizer) {
 		tokenizer.addTokenListener(this);
 		exportsOnly = parseExportsOnly;
+	}
+	
+	/**
+	 * @param scopeParser
+	 */
+	public void setScopeParser(ScopeParser scopeParser){
+		this.scopeParser = scopeParser;
 	}
 	
 	/**
@@ -162,6 +172,11 @@ public class TypeParser implements TokenListener {
 			}
 			type.setName(text.toString());
 			types.add(type);
+			
+			if (scopeParser!=null){
+				scopeParser.addType(type);
+			}
+			
 			text          = new StringBuffer();
 			type 		  = new Type();
 			comment 	  = new StringBuffer();
@@ -185,6 +200,9 @@ public class TypeParser implements TokenListener {
 			
 		case CONSUME_INTERFACE:
 			types.add(type);
+			if (scopeParser!=null){
+				scopeParser.addType(type);
+			}
 			type 		  = new Type();
 			comment 	  = new StringBuffer();
 			state 		  = State.START;

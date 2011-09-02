@@ -33,13 +33,13 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements
    
 	public static final String ID = "com.googlecode.goclipse.preferences.GoPreferencePage";
 	private DirectoryFieldEditor gorootEditor;
-	private ComboFieldEditor goosEditor;
-	private ComboFieldEditor goarchEditor;
-	private FileFieldEditor compilerEditor;
-	private FileFieldEditor linkerEditor;
-	private FileFieldEditor packerEditor;
-	private FileFieldEditor formatterEditor;
-	private FileFieldEditor testerEditor;
+	private ComboFieldEditor 	 goosEditor;
+	private ComboFieldEditor 	 goarchEditor;
+	private FileFieldEditor 	 compilerEditor;
+	private FileFieldEditor 	 linkerEditor;
+	private FileFieldEditor 	 packerEditor;
+	private FileFieldEditor 	 formatterEditor;
+	private FileFieldEditor 	 testerEditor;
 
 	public GoPreferencePage() {
 		super(GRID);

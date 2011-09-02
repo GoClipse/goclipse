@@ -7,6 +7,8 @@ public enum TokenType{
    // 
    IDENTIFIER, 
    NUMBER,
+   STRING_LITERAL,
+   
 	/*
 	 * break default func interface select case defer go map struct chan else
 	 * goto package switch const fallthrough if range type continue for import
@@ -96,8 +98,8 @@ public enum TokenType{
    GREATER_EQ(">="),
    LESS_EQ("<="),
    NOT_EQ("!="),
-   DOUBLE_EQUAL("=="),
-   ASSIGN(":="),
+   EQUAL("=="),
+   INFERENCE(":="),
    
    // LOGIC OPERATORS
    AND("&&"), 
@@ -116,7 +118,7 @@ public enum TokenType{
    DECREMENT("--"),
    
    // ASSIGNMENT
-   EQUAL("="),
+   ASSIGN("="),
    ADD_ASSIGN("+="),
    SUBTRACT_ASSIGN("-="),
    MULTIPLY_ASSIGN("*="),

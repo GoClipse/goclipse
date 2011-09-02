@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 29, 2010 18:17:33 /home/steel/workspace/goclipse/experimental/src/antlr/GoSource.g 2011-08-02 23:51:09
+// $ANTLR 3.3 Nov 29, 2010 18:17:33 /home/steel/workspace/goclipse/experimental/src/antlr/GoSource.g 2011-08-23 22:36:43
 
 package com.googlecode.goclipse.go.antlr;
 

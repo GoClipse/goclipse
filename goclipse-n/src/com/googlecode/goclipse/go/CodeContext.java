@@ -20,11 +20,13 @@ import com.googlecode.goclipse.go.lang.model.Import;
 import com.googlecode.goclipse.go.lang.model.Method;
 import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lang.model.Package;
+import com.googlecode.goclipse.go.lang.model.Scope;
 import com.googlecode.goclipse.go.lang.model.Type;
 import com.googlecode.goclipse.go.lang.model.Var;
 import com.googlecode.goclipse.go.lang.parser.FunctionParser;
 import com.googlecode.goclipse.go.lang.parser.ImportParser;
 import com.googlecode.goclipse.go.lang.parser.PackageParser;
+import com.googlecode.goclipse.go.lang.parser.ScopeParser;
 import com.googlecode.goclipse.go.lang.parser.TokenizedPage;
 import com.googlecode.goclipse.go.lang.parser.TypeParser;
 import com.googlecode.goclipse.go.lang.parser.VariableParser;
@@ -39,15 +41,16 @@ public class CodeContext {
 	
 	static HashMap<String, CodeContext> externalContexts = new HashMap<String, CodeContext>();
 
-	public String               name;
-	public String               filetext;
-	public Package              pkg;
-	public TokenizedPage        page;
-	public ArrayList<Import>    imports    = new ArrayList<Import>   ();
-	public ArrayList<Method>    methods    = new ArrayList<Method>   ();
-	public ArrayList<Function>  functions  = new ArrayList<Function> ();
-	public ArrayList<Type>      types      = new ArrayList<Type>     ();
-	public ArrayList<Var>       vars       = new ArrayList<Var>       ();
+	public String              name;
+	public String              filetext;
+	public Package             pkg;
+	public TokenizedPage       page;
+	public ArrayList<Import>   imports     = new ArrayList<Import>   ();
+	public ArrayList<Method>   methods     = new ArrayList<Method>   ();
+	public ArrayList<Function> functions   = new ArrayList<Function> ();
+	public ArrayList<Type>     types       = new ArrayList<Type>     ();
+	public ArrayList<Var>      vars        = new ArrayList<Var>      ();
+	public ArrayList<Scope>    moduleScope = new ArrayList<Scope>    ();
 	
 	/**
 	 * 
@@ -71,15 +74,31 @@ public class CodeContext {
 		return getCodeContext(filename, fileText, true);
 	}
 	
+	/**
+	 * Static factory method that builds the code context.  Should be renamed.
+	 * 
+	 * @param filename
+	 * @param fileText
+	 * @param useExternalContext
+	 * @return
+	 * @throws IOException
+	 */
 	public static CodeContext getCodeContext(String filename, String fileText, boolean useExternalContext) throws IOException{
 		CodeContext     codeContext     = new CodeContext(filename);
 		Lexer     	    lexer  		    = new Lexer();
 		Tokenizer 	    tokenizer 	    = new Tokenizer(lexer);
 		PackageParser   packageParser   = new PackageParser(tokenizer);
 		ImportParser    importParser    = new ImportParser(tokenizer);
+		ScopeParser     scopeParser     = new ScopeParser(tokenizer);
 		FunctionParser  functionParser  = new FunctionParser(false, tokenizer);
+		functionParser.setScopeParser(scopeParser);
+		
 		TypeParser      typeParser      = new TypeParser(false, tokenizer);
+		typeParser.setScopeParser(scopeParser);
+		
 		VariableParser  variableParser  = new VariableParser(tokenizer, functionParser);
+		variableParser.setScopeParser(scopeParser);
+		
 //		InterfaceParser interfaceParser = new InterfaceParser(tokenizer);
 		
 		lexer.scan(fileText);
@@ -92,6 +111,9 @@ public class CodeContext {
 		codeContext.types	   = typeParser.getTypes();
 		codeContext.vars       = variableParser.getVars();
 //		codeContext.interfaces = interfaceParser.getFunctions();
+		
+		// INFO: not for production
+		//scopeParser.getRootScope().print("");
 		
 		if (useExternalContext) {
 			for(Import imp:codeContext.imports){

@@ -20,17 +20,19 @@ public class Lexer {
 	/**
 	 * Count the line numbers
 	 */
-	private int lineNumber = 0;
-	private int columnCount = -1;
-	private boolean lineCommentState = false;
+	private int 	lineNumber 		  = 0;
+	
+	private int     columnCount 	  = -1;
+	private boolean lineCommentState  = false;
 	private boolean blockCommentState = false;
-
-
+	private boolean rawStringState 	  = false;
+	private boolean stringState 	  = false;
+	private boolean charState 		  = false;
 	
 	/**
 	 * Identifier accumulator;
 	 */
-	StringBuilder identifier;
+	private StringBuilder identifier;
 
 	/**
     * 
@@ -202,12 +204,9 @@ public class Lexer {
 	 */
 	private boolean processCharacter(char ahead, char current) {
 		if (DEBUG) {
-			System.out.print(current);
+			//System.out.print(current);
 		}
 
-		// if(lineNumber==3){
-		// System.out.println("BREAK");
-		// }
 		switch (current) {
 
 		case '~':
@@ -371,7 +370,11 @@ public class Lexer {
 			break;
 
 		case ':':
-			fireTokenFound(TokenType.COLON, TokenType.COLON.op);
+			if (ahead == '=') {
+				fireTokenFound(TokenType.INFERENCE, TokenType.INFERENCE.op);
+			} else {
+				fireTokenFound(TokenType.COLON, TokenType.COLON.op);
+			}
 			break;
 
 		case ';':

@@ -19,9 +19,9 @@ import com.googlecode.goclipse.go.lang.model.Var;
 public class VariableParser implements TokenListener {
 
 	private enum State {
-		START, SIMPLE_VAR, SIMPLE_TYPE, FINISHED, ERROR
+		START, SIMPLE_VAR, SIMPLE_TYPE, INFERENCE, FINISHED, ERROR, 
 	}
-	
+	private ScopeParser 	 scopeParser       = null;
 	private ArrayList<Var>   vars              = new ArrayList<Var>();
 	private State            state 			   = State.START;
 	private TokenType        previousTokenType = TokenType.NEWLINE;
@@ -30,6 +30,7 @@ public class VariableParser implements TokenListener {
 	private StringBuffer     comment 		   = new StringBuffer();
 	private int 			 lastCommentLine   = 0;
 	private FunctionParser   functionParser    = null;
+	private String 			 previousIdentifier;
 	
 	/**
 	 * @param tokenizer
@@ -37,6 +38,13 @@ public class VariableParser implements TokenListener {
 	public VariableParser(Tokenizer tokenizer, FunctionParser functionParser) {
 		tokenizer.addTokenListener(this);
 		this.functionParser = functionParser;
+	}
+	
+	/**
+	 * @param scopeParser
+	 */
+	public void setScopeParser(ScopeParser scopeParser){
+		this.scopeParser = scopeParser;
 	}
 	
 	@Override
@@ -71,6 +79,8 @@ public class VariableParser implements TokenListener {
 			case START:
 				if (TokenType.VAR.equals(type)) {
 					state = State.SIMPLE_VAR;
+				} else if((TokenType.INFERENCE.equals(type))){
+					state = State.INFERENCE;
 				}
 				break;			
 			
@@ -115,18 +125,46 @@ public class VariableParser implements TokenListener {
 				if(found){
 					state = State.START;
 					vars.add(var);
+					if (scopeParser!=null){
+						scopeParser.addVariable(var);
+					}
 					var = new Var();
 					comment = new StringBuffer();
 				}
 				
 				break;
+				
+			case INFERENCE:
+				
+				if (TokenType.NEWLINE.equals(type)){
+					state = State.START;
+					vars.add(var);
+					var.setInsertionText(previousTextValue);
+					if (scopeParser!=null){
+						scopeParser.addVariable(var);
+					}
+					var = new Var();
+					comment = new StringBuffer();
+				} else {
+					// look up type
+					//System.out.println(type);
+				}
+				break;				
+				
 			}
 			
 		}
 		
+		// if not line whitespace character, save value
+		if (!TokenType.SPACE.equals(type) && !TokenType.TAB.equals(type) && !TokenType.BACKSPACE.equals(type)){
+			previousTokenType = type;
+			previousTextValue = value;
+		}
 		
-		previousTokenType = type;
-		previousTextValue = value;
+		// keep track of the last identifier for inferenced variables
+		if (TokenType.IDENTIFIER.equals(type)){
+			previousIdentifier = value;
+		}
 	}
 	
 	@Override
