@@ -22,6 +22,9 @@ import org.eclipse.ui.IPathEditorInput;
 
 import com.googlecode.goclipse.go.CodeContext;
 
+/**
+ * 
+ */
 public class ContentAssistProcessor implements IContentAssistProcessor {
 	
 	GoCodeClient client = new GoCodeClient();
@@ -31,11 +34,16 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 	private Image interfaceImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/interface.gif").createImage();
 	private Image structImage 	 = com.googlecode.goclipse.Activator.getImageDescriptor("icons/struct.png").createImage();
 
-	
+	/**
+	 * 
+	 */
 	public ContentAssistProcessor() {
 		
 	}
 
+	/**
+	 * 
+	 */
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
 		IPath path = null;
 		try {
@@ -47,73 +55,78 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 			}
 		} catch (NullPointerException npe) {
 		}
-		
-		String filename = path.toOSString();
-		IDocument document = viewer.getDocument();
 
-		CodeContext codeContext = codeContexts.get(filename);
-		@SuppressWarnings("unused")
-		int linenumber = 0;
-		
-		try {
-			// the following starts on line 0?, so we add 1 to the result
-			linenumber = document.getLineOfOffset(offset)+1;
-		} catch (BadLocationException e1) {
-			e1.printStackTrace();
-		}
-		
-		if (codeContext == null) {
-			
-			try {
-				codeContext = CodeContext.getCodeContext(filename, document.get());
-			} 
-			catch (IOException e) {
-				e.printStackTrace();
-			} 
-		}
-		
         ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
 		
-        if (path != null) {
-		
-        	String fileName = path.toOSString();
-			List<String> completions  = client.getCompletions(fileName, document.get(), offset);
+        if(path!=null){			
+			
+			String      filename 	= path.toOSString();			
+			IDocument   document 	= viewer.getDocument();
+			CodeContext codeContext = codeContexts.get(filename);
+			
+			@SuppressWarnings("unused")
+			int linenumber = 0;
+			
+			try {
+				// the following starts on line 0?, so we add 1 to the result
+				linenumber = document.getLineOfOffset(offset)+1;
+			} catch (BadLocationException e1) {
+				e1.printStackTrace();
+			}
+			
+			if (codeContext == null) {
 				
-			if (completions != null) {
-				for (String string : completions) {
-					String prefix = "";
-			        prefix = lastWord(document, offset);
-
-					int firstComma = string.indexOf(",,");
-					int secondComma = string.indexOf(",,", firstComma+2);
-					if (firstComma != -1 && secondComma != -1) {
-						@SuppressWarnings("unused")
-						String type = string.substring(0, firstComma);
-						String identifier = string.substring(firstComma+2, secondComma);
-						String spec = string.substring(secondComma+2);
-						
-						String descriptiveString = identifier+" : "+spec;
-						String description = codeContext.getDescriptionForName(identifier);
-						IContextInformation info = new ContextInformation(description,description);
-						//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
-						
-						Image image = go;
-						if(descriptiveString!=null && descriptiveString.contains(" : func")){
-						   image = funcImage;
+				try {
+					codeContext = CodeContext.getCodeContext(filename, document.get());
+				} 
+				catch (IOException e) {
+					e.printStackTrace();
+				} 
+			}
+			
+			
+	        if (path != null) {
+			
+	        	String fileName = path.toOSString();
+				List<String> completions  = client.getCompletions(fileName, document.get(), offset);
+					
+				if (completions != null) {
+					for (String string : completions) {
+						String prefix = "";
+				        prefix = lastWord(document, offset);
+	
+						int firstComma = string.indexOf(",,");
+						int secondComma = string.indexOf(",,", firstComma+2);
+						if (firstComma != -1 && secondComma != -1) {
+							@SuppressWarnings("unused")
+							String type = string.substring(0, firstComma);
+							String identifier = string.substring(firstComma+2, secondComma);
+							String spec = string.substring(secondComma+2);
+							
+							String descriptiveString = identifier+" : "+spec;
+							String description = codeContext.getDescriptionForName(identifier);
+							IContextInformation info = new ContextInformation(description,description);
+							//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
+							
+							Image image = go;
+							if(descriptiveString!=null && descriptiveString.contains(" : func")){
+							   image = funcImage;
+							}
+							else if(descriptiveString!=null && descriptiveString.contains(" : interface")){
+								image = interfaceImage;
+							}
+							else if(descriptiveString!=null && descriptiveString.contains(" : struct")){
+								image = structImage;
+							}
+							
+							String substr = identifier.substring(prefix.length());
+							results.add(new CompletionProposal(substr, offset, 0, identifier.length() - prefix.length(), image, descriptiveString, info, description));
 						}
-						else if(descriptiveString!=null && descriptiveString.contains(" : interface")){
-							image = interfaceImage;
-						}
-						else if(descriptiveString!=null && descriptiveString.contains(" : struct")){
-							image = structImage;
-						}
-						
-						String substr = identifier.substring(prefix.length());
-						results.add(new CompletionProposal(substr, offset, 0, identifier.length() - prefix.length(), image, descriptiveString, info, description));
 					}
 				}
 			}
 		}
+        
 		return results.toArray(new ICompletionProposal[] {});
 	}
 	
@@ -136,25 +149,40 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 		return "";
 	}
 
+	/**
+	 * 
+	 */
 	public IContextInformation[] computeContextInformation(ITextViewer viewer,
 			int offset) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	public char[] getCompletionProposalAutoActivationCharacters() {
 		return new char[] {'.'};
 	}
 
+	/**
+	 * 
+	 */
 	public char[] getContextInformationAutoActivationCharacters() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	public String getErrorMessage() {
 		return client.getError();
 	}
 
+	/**
+	 * 
+	 */
 	public IContextInformationValidator getContextInformationValidator() {
 		// TODO Auto-generated method stub
 		return null;
