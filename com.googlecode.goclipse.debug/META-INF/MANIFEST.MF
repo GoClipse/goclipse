@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GoClipse Debug
 Bundle-SymbolicName: com.googlecode.goclipse.debug;singleton:=true
-Bundle-Version: 0.1.5
+Bundle-Version: 0.1.6
 Bundle-Activator: com.googlecode.goclipse.debug.GoDebugPlugin
 Bundle-Vendor: goclipse dev team
 Require-Bundle: org.eclipse.ui,
