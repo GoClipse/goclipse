@@ -173,5 +173,13 @@ public class ExternalCommand {
 			//ignore
 		}
 	}
+	public Map<String, String> environment() {
+		// TODO Auto-generated method stub
+		return pBuilder.environment();
+	}
+	
+	public String getCommand() {
+		return command;
+	}
 
 }

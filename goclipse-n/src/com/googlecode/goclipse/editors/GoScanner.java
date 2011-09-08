@@ -60,7 +60,7 @@ public class GoScanner extends RuleBasedScanner {
 			Token value     		= new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.VALUE),     		  null, SWT.BOLD|SWT.ITALIC ));
 			Token primitive 		= new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.PRIMITIVE), 		  null, SWT.ITALIC          ));
 			Token comment   		= new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.COMMENT),   		  null, SWT.NORMAL          ));
-			Token builtinFunction= new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.BUILTIN_FUNCTION),null, SWT.BOLD            ));
+			Token builtinFunction   = new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.BUILTIN_FUNCTION),null, SWT.BOLD            ));
 			Token string    		= new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.STRING)                                       ));
 //			Token text           = new Token(new TextAttribute(manager.getColor(IColorConstants.DEFAULT),           null, SWT.BOLD|SWT.ITALIC));
 			
@@ -126,7 +126,6 @@ public class GoScanner extends RuleBasedScanner {
 			keywordRule.addWord("byte",    primitive); // familiar alias for uint8
 			keywordRule.addWord("uint",    primitive); // either 32 or 64 bits
 			keywordRule.addWord("int",     primitive); // either 32 or 64 bits
-			keywordRule.addWord("float",   primitive); // either 32 or 64 bits
 			keywordRule.addWord("uintptr", primitive); // an unsigned integer large enough to store the uninterpreted bits of a pointer value
 			keywordRule.addWord("string",  primitive);
 			keywordRule.addWord("bool",    primitive);
