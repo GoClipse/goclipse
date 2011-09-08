@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
@@ -73,7 +74,7 @@ public class GoCodeClient {
 	public List<String> getCompletions(String fileName, final String bufferText, int offset) {
 		
 		ExternalCommand goCodeCommand = buildGoCodeCommand();
-		
+
 		if (!goCodeCommand.commandExists()) {
 			// Caveat: environment variables aren't always available. We only use GOBIN if GOROOT/bin
 			// doesn't contain the gocode command.
@@ -150,6 +151,7 @@ public class GoCodeClient {
 			Activator.getDefault().getLog().log(
 					new Status(Status.ERROR, Activator.PLUGIN_ID, out == null ? error : error + ": " + out));
 		}
+		
 		return output.getLines();
 	}
 

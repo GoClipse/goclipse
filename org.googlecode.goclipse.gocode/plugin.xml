@@ -5,6 +5,7 @@
          point="com.googlecode.goclipse.contentassistprocessor">
       <content_assist_processor
             class="com.googlecode.goclipse.gocode.ContentAssistProcessor">
+            
       </content_assist_processor>
    </extension>
 

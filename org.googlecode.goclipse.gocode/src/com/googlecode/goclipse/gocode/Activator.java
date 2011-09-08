@@ -58,10 +58,10 @@ public class Activator extends AbstractUIPlugin {
 					goCodeCommand = new ExternalCommand(goCodePath);
 					goCodeCommand.execute(list);
 					
-				} else if (System.getProperty("os.name").toLowerCase().contains("os x") && "amd64".equals(arch)) {
+				} else if (System.getProperty("os.name").toLowerCase().contains("os x") && "x86_64".equals(arch)) {
 					goCodeDir     = file.toString() + "/tools/osx64";
 					goCodePath    = file.toString() + "/tools/osx64/gocode";
-				} else if (System.getProperty("os.name").toLowerCase().contains("linux") && "amd64".equals(arch)) {
+				} else if (System.getProperty("os.name").toLowerCase().contains("linux") && "x86_64".equals(arch)) {
 					goCodeDir     = file.toString() + "/tools/linux64";
 					goCodePath    = file.toString() + "/tools/linux64/gocode";					
 				}

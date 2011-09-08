@@ -109,15 +109,18 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 							//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
 							
 							Image image = go;
-							if(descriptiveString!=null && descriptiveString.contains(" : func")){
+							if(descriptiveString!=null && descriptiveString.contains(" : func")) {
 							   image = funcImage;
-							}
-							else if(descriptiveString!=null && descriptiveString.contains(" : interface")){
+							} else if(descriptiveString!=null && descriptiveString.contains(" : interface")) {
 								image = interfaceImage;
-							}
-							else if(descriptiveString!=null && descriptiveString.contains(" : struct")){
+							} else if(descriptiveString!=null && descriptiveString.contains(" : struct")) {
 								image = structImage;
 							}
+							
+							// format the output
+							descriptiveString = descriptiveString.replace(" : func", " ").replace(
+									" : interface", " ").replace(" : struct", " ").replace(
+											"(", "( ").replace(")", " )");
 							
 							String substr = identifier.substring(prefix.length());
 							results.add(new CompletionProposal(substr, offset, 0, identifier.length() - prefix.length(), image, descriptiveString, info, description));
