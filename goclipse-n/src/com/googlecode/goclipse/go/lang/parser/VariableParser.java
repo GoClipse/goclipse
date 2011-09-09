@@ -24,8 +24,8 @@ public class VariableParser implements TokenListener {
 	private ScopeParser 	 scopeParser       = null;
 	private ArrayList<Var>   vars              = new ArrayList<Var>();
 	private State            state 			   = State.START;
-	private TokenType        previousTokenType = TokenType.NEWLINE;
-	private String           previousTextValue = "\n";
+	//private TokenType        previousTokenType = TokenType.NEWLINE;
+	//private String           previousTextValue = "\n";
 	private Var              var 			   = new Var();
 	private StringBuffer     comment 		   = new StringBuffer();
 	private int 			 lastCommentLine   = 0;
@@ -72,6 +72,9 @@ public class VariableParser implements TokenListener {
 			comment = new StringBuffer();
 		}
 		
+		//System.out.println(state);
+		
+		
 		if (!inComment) {
 			
 			switch (state) {
@@ -80,6 +83,8 @@ public class VariableParser implements TokenListener {
 				if (TokenType.VAR.equals(type)) {
 					state = State.SIMPLE_VAR;
 				} else if((TokenType.INFERENCE.equals(type))){
+					// TODO this inference parsing does not work
+					//System.out.println("State Changed On: "+ type +":"+ value);
 					state = State.INFERENCE;
 				}
 				break;			
@@ -95,7 +100,7 @@ public class VariableParser implements TokenListener {
 				break;
 				
 			case SIMPLE_TYPE:
-				
+				System.out.println("+");
 				boolean found = false;
 				
 				// this isn't very clean, I'll have to come back a rethink all this
@@ -136,29 +141,24 @@ public class VariableParser implements TokenListener {
 				
 			case INFERENCE:
 				
-				if (TokenType.NEWLINE.equals(type)){
-					state = State.START;
-					vars.add(var);
-					var.setInsertionText(previousTextValue);
-					if (scopeParser!=null){
-						scopeParser.addVariable(var);
-					}
-					var = new Var();
-					comment = new StringBuffer();
-				} else {
-					// look up type
-					//System.out.println(type);
+				if(var.getInsertionText()==null){
+					var.setInsertionText(previousIdentifier);
 				}
+				
+				state = State.START;
+				vars.add(var);
+				
+				if (scopeParser!=null){
+					scopeParser.addVariable(var);
+				}
+				
+				var = new Var();
+				comment = new StringBuffer();
+				
 				break;				
 				
 			}
 			
-		}
-		
-		// if not line whitespace character, save value
-		if (!TokenType.SPACE.equals(type) && !TokenType.TAB.equals(type) && !TokenType.BACKSPACE.equals(type)){
-			previousTokenType = type;
-			previousTextValue = value;
 		}
 		
 		// keep track of the last identifier for inferenced variables

@@ -75,7 +75,7 @@ public class ScopeParser implements TokenListener {
 	
 	public void addVariable(Var var){
 		// INFO: not for production
-		//System.out.println(">>>>>>>>>>>.. "+var.getLine());
+		//System.out.println(">>>>>>>>>>>.. "+var.getInsertionText()+" "+var.getLine());
 		currentScope.addVariable(var);
 	}
 	
@@ -90,6 +90,5 @@ public class ScopeParser implements TokenListener {
 	public void addType(Type type){
 		currentScope.addType(type);
 	}
-
 }
 

@@ -11,6 +11,9 @@ import org.eclipse.ui.console.MessageConsole;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
+/**
+ * Steel says, "...I am not responsible for this anti-pattern!"
+ */
 public class GoConstants {
 	public static final String GO_SOURCE_FILE_EXTENSION = ".go";
 	public static final String GO_LIBRARY_FILE_EXTENSION = ".a";

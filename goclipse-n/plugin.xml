@@ -317,13 +317,6 @@
    </extension>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
-      <launchConfigurationType
-            delegate="com.googlecode.goclipse.debug.LaunchConfigurationDelegate"
-            delegateName="Go Launchery"
-            id="com.googlecode.goclipse.debug.LaunchConfigurationDelegate"
-            modes="run, debug"
-            name="Go Application">
-      </launchConfigurationType>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchGroups">
@@ -364,7 +357,7 @@
             class="com.googlecode.goclipse.debug.ui.LaunchShortcut"
             icon="icons/go-icon16.png"
             id="com.googlecode.goclipse.debug.ui.LaunchShortcut"
-            label="Go Application"
+            label="Run Go Application"
             modes="run, debug">
             <description
                description="executes Go Program"

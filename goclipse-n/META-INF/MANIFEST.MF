@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GoClipse
 Bundle-SymbolicName: goclipse; singleton:=true
-Bundle-Version: 0.1.5
+Bundle-Version: 0.2.0
 Bundle-Activator: com.googlecode.goclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -18,7 +18,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.views
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: goclipse dev team
+Bundle-Vendor: The GoClipse Development Team
 Export-Package: com.googlecode.goclipse;
   uses:="org.eclipse.core.runtime,
    org.eclipse.jface.resource,

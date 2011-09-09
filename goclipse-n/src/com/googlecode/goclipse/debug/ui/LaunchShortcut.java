@@ -81,7 +81,7 @@ public class LaunchShortcut implements ILaunchShortcut {
 			}
 			if (found == null) {
 				//create a new launch configuration
-				String cfgName = lm.generateUniqueLaunchConfigurationNameFrom(Path.fromOSString(fName).lastSegment());
+				String cfgName = lm.generateLaunchConfigurationName(Path.fromOSString(fName).lastSegment());
 				ILaunchConfigurationWorkingCopy workingCopy = lct.newInstance(null, cfgName);
 				workingCopy.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, pName);
 				workingCopy.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN, fName);
