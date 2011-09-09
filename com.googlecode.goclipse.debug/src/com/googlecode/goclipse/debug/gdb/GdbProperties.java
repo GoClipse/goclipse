@@ -112,11 +112,12 @@ public class GdbProperties {
 	String parseStringValue(PushbackReader in) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		
+		int lb = ' ';
 		int ch = in.read();
-		
-		while (ch != '"' && ch != -1) {
+				
+		while ((lb=='\\' && ch == '"') || ch != '"' && ch != -1) {
 			builder.append((char)ch);
-			
+			lb = ch;
 			ch = in.read();
 		}
 		
