@@ -110,6 +110,7 @@ public class CodeContext {
 		codeContext.functions  = functionParser.getFunctions();
 		codeContext.types	   = typeParser.getTypes();
 		codeContext.vars       = variableParser.getVars();
+		//scopeParser.print();
 //		codeContext.interfaces = interfaceParser.getFunctions();
 		
 		// INFO: not for production
@@ -310,7 +311,25 @@ public class CodeContext {
 			e.printStackTrace();
 		}
 	}
+
+	public boolean isMethodName(String identifier) {
+		for(Method method: methods){
+			if(method.getInsertionText().startsWith(identifier+"(")){
+				return true;
+			}
+		}
+		return false;
+	}
 	
+	// need to use scope to determine this
+//	public boolean isPackageVariableName(String identifier){
+//		for(Var var: vars){
+//			if(var.getInsertionText().startsWith(identifier)){
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 	
 
 }

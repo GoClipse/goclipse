@@ -21,16 +21,18 @@ public class VariableParser implements TokenListener {
 	private enum State {
 		START, SIMPLE_VAR, SIMPLE_TYPE, INFERENCE, FINISHED, ERROR, 
 	}
-	private ScopeParser 	 scopeParser       = null;
-	private ArrayList<Var>   vars              = new ArrayList<Var>();
-	private State            state 			   = State.START;
+	
+	private ScopeParser 	  scopeParser       = null;
+	private ArrayList<Var>    vars              = new ArrayList<Var>();
+	private State             state			    = State.START;
 	//private TokenType        previousTokenType = TokenType.NEWLINE;
 	//private String           previousTextValue = "\n";
-	private Var              var 			   = new Var();
-	private StringBuffer     comment 		   = new StringBuffer();
-	private int 			 lastCommentLine   = 0;
-	private FunctionParser   functionParser    = null;
-	private String 			 previousIdentifier;
+	private Var               var 			    = new Var();
+	private StringBuffer      comment 		    = new StringBuffer();
+	private int 			  lastCommentLine   = 0;
+	private FunctionParser    functionParser    = null;
+	private ArrayList<String> previousIdentifier= new ArrayList<String>();
+	private ArrayList<Var>    varBuffer         = new ArrayList<Var>();
 	
 	/**
 	 * @param tokenizer
@@ -68,6 +70,8 @@ public class VariableParser implements TokenListener {
 			return;
 		}
 		
+		handleVarBufferFlush(type);
+		
 		if (linenumber - lastCommentLine > 1) {
 			comment = new StringBuffer();
 		}
@@ -100,7 +104,6 @@ public class VariableParser implements TokenListener {
 				break;
 				
 			case SIMPLE_TYPE:
-				System.out.println("+");
 				boolean found = false;
 				
 				// this isn't very clean, I'll have to come back a rethink all this
@@ -130,9 +133,8 @@ public class VariableParser implements TokenListener {
 				if(found){
 					state = State.START;
 					vars.add(var);
-					if (scopeParser!=null){
-						scopeParser.addVariable(var);
-					}
+					var.setLine(linenumber);
+					scopeParser.addVariable(var);
 					var = new Var();
 					comment = new StringBuffer();
 				}
@@ -141,29 +143,66 @@ public class VariableParser implements TokenListener {
 				
 			case INFERENCE:
 				
-				if(var.getInsertionText()==null){
-					var.setInsertionText(previousIdentifier);
-				}
+				for(String s:previousIdentifier){
+					if(var.getInsertionText()==null){
+						var.setInsertionText(s);
+					}
 				
-				state = State.START;
-				vars.add(var);
-				
-				if (scopeParser!=null){
+					state = State.START;
+					vars.add(var);
+					var.setLine(linenumber);
 					scopeParser.addVariable(var);
+					var = new Var();
+					comment = new StringBuffer();
 				}
-				
-				var = new Var();
-				comment = new StringBuffer();
-				
+				previousIdentifier.clear();
 				break;				
 				
 			}
 			
 		}
-		
+//		if(linenumber==43){
+//			//System.out.println("");
+//		}
 		// keep track of the last identifier for inferenced variables
 		if (TokenType.IDENTIFIER.equals(type)){
-			previousIdentifier = value;
+			previousIdentifier.add(value);
+			
+		} else if(!TokenType.COMMA.equals(type)&&
+				  !TokenType.SPACE.equals(type)&&
+				  !TokenType.NEWLINE.equals(type)&&
+				  !TokenType.TAB.equals(type)&&
+				  !TokenType.TYPE.equals(type)){ 
+			
+			previousIdentifier.clear();
+		}
+	}
+
+	/**
+	 * Handle the times we flush the buffer.  We do this so those
+	 * times we declare a var within a statement like a for loop, 
+	 * the new var falls into the inner scope and not the outer.
+	 * @param type
+	 */
+	private void handleVarBufferFlush(TokenType type) {
+		switch (type) {
+		case LBRACE:
+		case RBRACE:
+		case IF:
+		case ELSE:
+		case SWITCH:
+		case FOR:
+		case FUNC:
+		case TYPE:
+		case GO:
+		case CASE:
+		case DEFAULT:
+			if (scopeParser!=null){
+				for(Var var:varBuffer){
+					scopeParser.addVariable(var);
+				}
+				varBuffer.clear();
+			}			
 		}
 	}
 	

@@ -113,6 +113,7 @@ public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate
 		String mainfile = configuration.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN, "");
 		String prgArgs = configuration.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_ARGS, "");
 		IProject prj = getProject(project, null);
+		
 		if (prj != null) {
 			IPath src = Path.fromOSString(mainfile);
 			if (Environment.INSTANCE.isCmdFile(src)) {
@@ -121,19 +122,23 @@ public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate
 				String cmdName = GoDependencyManager.getCmdName(src);
 				IPath executablePath = GoDependencyManager.getExecutablePath(cmdName, prj);
 				String executableName = executablePath.lastSegment();
+				
 				if (!Util.isWindows()){
 					executablePath = Path.fromOSString(".").append(executableName);
 				} else {
 					executablePath = Path.fromOSString(executableName);
 				}
+				
 				String cmdLine = exeBase.append(executablePath).toOSString();
 				String workingDirectory = exeBase.toOSString();
 				List<String> args = new ArrayList<String>();
 				args.add(cmdLine);
 				List<String> argList = argsAsList(prgArgs);
+				
 				if (argList != null) {
 					args.addAll(argList);
 				}
+				
 				Process p = DebugPlugin.exec(args.toArray(new String[]{}), new File(workingDirectory));
 				/*IProcess process =*/ DebugPlugin.newProcess(launch, p, executableName);
 			} else {

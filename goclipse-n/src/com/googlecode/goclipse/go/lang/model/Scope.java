@@ -21,6 +21,7 @@ public class Scope extends Node{
 	private ArrayList<Scope>    children  = new ArrayList<Scope>();
 	private int start;
 	private int end;
+	private String textStartedOn = "none";
 	
 	
 
@@ -28,11 +29,26 @@ public class Scope extends Node{
 	 * Sets parent and adds itself as a child to the parent
 	 * @param parent
 	 */
-	public Scope(Scope parent){
-		this.parent = parent;
+	public Scope(Scope parent, String textStartedOn){
+		this.parent        = parent;
+		this.textStartedOn = textStartedOn;
 		if(parent!=null){
 			parent.children.add(this);
 		}
+	}
+
+	/**
+	 * @return the children
+	 */
+	public ArrayList<Scope> getChildren() {
+		return children;
+	}
+	
+	/**
+	 * @param scope
+	 */
+	public void addChild(Scope scope){
+		children.add(scope);
 	}
 	
 	/**
@@ -139,9 +155,9 @@ public class Scope extends Node{
 	}
 	
 	public void print(String indent){
-		System.out.println(indent+"-------------------------------------------------");
+		System.out.println(indent+"-------------------------------------------------<"+textStartedOn+">");
 		for(Var var: variables){
-			System.out.println(indent+"var    > "+var.getInsertionText());
+			System.out.println(indent+"var    > "+var.getInsertionText()+" : "+var.getLine());
 		}
 		
 		for(Type type: types){
@@ -154,12 +170,7 @@ public class Scope extends Node{
 		
 		for(Function func: functions){
 			System.out.println(indent+"func   > "+func.getInsertionText());
-		}
-		
-		for(Scope scope:children){
-			scope.print(indent+"  ");
-		}
-		System.out.println(indent+"-------------------------------------------------");
+		}		
 	}
 	
 }

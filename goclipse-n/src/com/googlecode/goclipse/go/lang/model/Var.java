@@ -89,5 +89,10 @@ public class Var extends Node implements Serializable {
 	public void setPointer(boolean isPointer) {
 		this.isPointer = isPointer;
 	}
+	
+	@Override
+	public String toString() {
+		return getInsertionText() +" : "+ getName() +" : "+ getType() +" : "+ getLine();
+	}
 
 }
