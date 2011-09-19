@@ -20,6 +20,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
 
+import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.CodeContext;
 
 /**
@@ -29,20 +30,30 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 	
 	GoCodeClient client = new GoCodeClient();
 	private static HashMap<String, CodeContext> codeContexts = new HashMap<String, CodeContext>();
-	private Image go 			 = com.googlecode.goclipse.Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
-	private Image funcImage 	 = com.googlecode.goclipse.Activator.getImageDescriptor("icons/function_co.png").createImage();
-	private Image interfaceImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/interface.gif").createImage();
-	private Image structImage 	 = com.googlecode.goclipse.Activator.getImageDescriptor("icons/struct.png").createImage();
-
+	private Image defaultImage     = com.googlecode.goclipse.Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
+	private Image funcImage        = com.googlecode.goclipse.Activator.getImageDescriptor("icons/function_co.png").createImage();
+	private Image privateFuncImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/public_co.gif").createImage();
+	private Image interfaceImage   = com.googlecode.goclipse.Activator.getImageDescriptor("icons/interface.gif").createImage();
+	private Image structImage 	   = com.googlecode.goclipse.Activator.getImageDescriptor("icons/struct.png").createImage();
+	private Image importImage      = com.googlecode.goclipse.Activator.getImageDescriptor("icons/imp_obj.gif").createImage();
+	private Image privateVarImage  = com.googlecode.goclipse.Activator.getImageDescriptor("icons/field_private_obj.gif").createImage();
+	private Image publicVarImage   = com.googlecode.goclipse.Activator.getImageDescriptor("icons/field_public_obj.gif").createImage();
+	private Image localVarImage    = com.googlecode.goclipse.Activator.getImageDescriptor("icons/variable_local_obj.gif").createImage();
+		
+	public int A = 0;
+	private int A(){
+		return 0;
+	}
 	/**
 	 * 
 	 */
 	public ContentAssistProcessor() {
 		
 	}
-
-	/**
-	 * 
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer, int)
 	 */
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
 		IPath path = null;
@@ -91,30 +102,52 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 				List<String> completions  = client.getCompletions(fileName, document.get(), offset);
 					
 				if (completions != null) {
+					
 					for (String string : completions) {
+						
 						String prefix = "";
-				        prefix = lastWord(document, offset);
-	
+				        prefix = lastWord(document, offset);	
 						int firstComma = string.indexOf(",,");
 						int secondComma = string.indexOf(",,", firstComma+2);
+						
 						if (firstComma != -1 && secondComma != -1) {
+							
 							@SuppressWarnings("unused")
 							String type = string.substring(0, firstComma);
 							String identifier = string.substring(firstComma+2, secondComma);
 							String spec = string.substring(secondComma+2);
 							
 							String descriptiveString = identifier+" : "+spec;
-							String description = codeContext.getDescriptionForName(identifier);
+							String description = codeContext.getDescriptionForName(identifier).trim();
 							IContextInformation info = new ContextInformation(description,description);
 							//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
 							
-							Image image = go;
+							Image image = defaultImage;
+							String substr = identifier.substring(prefix.length());
+							int replacementLength = identifier.length() - prefix.length();
+							
 							if(descriptiveString!=null && descriptiveString.contains(" : func")) {
-							   image = funcImage;
+								if(codeContext.isMethodName(identifier)){
+									image = privateFuncImage;
+								} else {
+									image = funcImage;
+								}
+							    substr = identifier.substring(prefix.length())+"()";
+							    replacementLength++;
 							} else if(descriptiveString!=null && descriptiveString.contains(" : interface")) {
 								image = interfaceImage;
 							} else if(descriptiveString!=null && descriptiveString.contains(" : struct")) {
 								image = structImage;
+							} else if("package".equals(type)) {
+								image = importImage;
+								substr = identifier.substring(prefix.length())+".";
+								replacementLength++;
+							} else {
+								if (Character.isUpperCase(substr.charAt(0))) {
+									image = publicVarImage;
+								} else {
+									image = privateVarImage;
+								}
 							}
 							
 							// format the output
@@ -122,8 +155,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 									" : interface", " ").replace(" : struct", " ").replace(
 											"(", "( ").replace(")", " )");
 							
-							String substr = identifier.substring(prefix.length());
-							results.add(new CompletionProposal(substr, offset, 0, identifier.length() - prefix.length(), image, descriptiveString, info, description));
+							results.add(new CompletionProposal(substr, offset, 0, replacementLength, image, descriptiveString, info, description));
 						}
 					}
 				}
@@ -147,47 +179,48 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 					return doc.get(n + 1, offset - n - 1);
 			}
 		} catch (BadLocationException e) {
-			// ... log the exception ...
+			Activator.logError(e);
 		}
 		return "";
 	}
-
-	/**
-	 * 
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeContextInformation(org.eclipse.jface.text.ITextViewer, int)
 	 */
-	public IContextInformation[] computeContextInformation(ITextViewer viewer,
-			int offset) {
-		// TODO Auto-generated method stub
+	public IContextInformation[] computeContextInformation(ITextViewer viewer,	int offset) {
 		return null;
 	}
 
-	/**
-	 * 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
 	 */
 	public char[] getCompletionProposalAutoActivationCharacters() {
 		return new char[] {'.'};
 	}
 
-	/**
-	 * 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationAutoActivationCharacters()
 	 */
 	public char[] getContextInformationAutoActivationCharacters() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	/**
-	 * 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getErrorMessage()
 	 */
 	public String getErrorMessage() {
 		return client.getError();
 	}
 
-	/**
-	 * 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationValidator()
 	 */
 	public IContextInformationValidator getContextInformationValidator() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
