@@ -2,6 +2,7 @@ package com.googlecode.goclipse.preferences;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
+import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -39,6 +40,14 @@ public class EditorPreferencePage extends FieldEditorPreferencePage implements
 				new String[][] { {  "&Use highlighting.", PreferenceConstants.VALUE_HIGHLIGHTING_TRUE },
 						{ "&Do not use highlighting.", PreferenceConstants.VALUE_HIGHLIGHTING_FALSE } }, 
 						getFieldEditorParent()));
+		
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,          "Keyword",          getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,            "Value",            getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,        "Primitive",        getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR,          "Comment",          getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, "Builtin Function", getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_STRING_COLOR,           "String",           getFieldEditorParent()));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, "Multiline String", getFieldEditorParent()));
 	}
 
 	/*

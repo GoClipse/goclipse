@@ -3,6 +3,8 @@ package com.googlecode.goclipse.editors;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
@@ -22,9 +24,11 @@ import org.eclipse.jface.text.source.DefaultAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
  * @author steel
@@ -79,24 +83,35 @@ public class Configuration extends SourceViewerConfiguration {
       reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
       reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
-      NonRuleBasedDamagerRepairer ndr = 
-         new NonRuleBasedDamagerRepairer(new TextAttribute(ColorManager.INSTANCE
-            .getColor(IColorConstants.COMMENT)));
-      reconciler.setDamager(ndr, PartitionScanner.COMMENT);
-      reconciler.setRepairer(ndr, PartitionScanner.COMMENT);
-
-      NonRuleBasedDamagerRepairer nonRuleBasedDamagerRepairer = 
-         new NonRuleBasedDamagerRepairer(new TextAttribute(ColorManager.INSTANCE
-            .getColor(IColorConstants.STRING)));
-      reconciler.setDamager(nonRuleBasedDamagerRepairer, PartitionScanner.STRING);
-      reconciler.setRepairer(nonRuleBasedDamagerRepairer, PartitionScanner.STRING);
-      
-      NonRuleBasedDamagerRepairer nonRuleBasedDamagerRepairer2 = 
-         new NonRuleBasedDamagerRepairer(new TextAttribute(ColorManager.INSTANCE
-            .getColor(IColorConstants.MULTILINE_STRING)));
-      reconciler.setDamager(nonRuleBasedDamagerRepairer2, PartitionScanner.MULTILINE_STRING);
-      reconciler.setRepairer(nonRuleBasedDamagerRepairer2, PartitionScanner.MULTILINE_STRING);
-
+      IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
+      String useHighlighting = prefStore.getString(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
+		
+	  if(useHighlighting.equals(PreferenceConstants.VALUE_HIGHLIGHTING_TRUE)){
+		  Color commentColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR         ));
+		  Color stringColor          = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_STRING_COLOR          ));
+		  Color multilineStringColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR));
+		  
+		  int commentStyle         = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE         );
+		  int stringStyle          = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_STRING_STYLE          );
+		  int multilineStringStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE);
+		  
+	      NonRuleBasedDamagerRepairer ndr = 
+	         new NonRuleBasedDamagerRepairer(new TextAttribute(commentColor, null, commentStyle));
+	      reconciler.setDamager(ndr, PartitionScanner.COMMENT);
+	      reconciler.setRepairer(ndr, PartitionScanner.COMMENT);
+	
+	      
+	      NonRuleBasedDamagerRepairer nonRuleBasedDamagerRepairer = 
+	         new NonRuleBasedDamagerRepairer(new TextAttribute(stringColor, null, stringStyle));
+	      reconciler.setDamager(nonRuleBasedDamagerRepairer, PartitionScanner.STRING);
+	      reconciler.setRepairer(nonRuleBasedDamagerRepairer, PartitionScanner.STRING);
+	      
+	      
+	      NonRuleBasedDamagerRepairer nonRuleBasedDamagerRepairer2 = 
+	         new NonRuleBasedDamagerRepairer(new TextAttribute(multilineStringColor, null, multilineStringStyle));
+	      reconciler.setDamager(nonRuleBasedDamagerRepairer2, PartitionScanner.MULTILINE_STRING);
+	      reconciler.setRepairer(nonRuleBasedDamagerRepairer2, PartitionScanner.MULTILINE_STRING);
+	  }
       return reconciler;
    }
 

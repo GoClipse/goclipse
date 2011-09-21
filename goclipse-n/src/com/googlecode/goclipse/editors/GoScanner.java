@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.eclipse.jdt.internal.ui.text.CombinedWordRule;
 import org.eclipse.jdt.internal.ui.text.CombinedWordRule.WordMatcher;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
@@ -13,6 +15,7 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
@@ -52,16 +55,30 @@ public class GoScanner extends RuleBasedScanner {
 //            return s.matches("[A-Za-z0-9_]");
 //         }
 //      });
-		String useHighlighting = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
+	    IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
+		String useHighlighting = prefStore.getString(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
 		
 		if(useHighlighting.equals(PreferenceConstants.VALUE_HIGHLIGHTING_TRUE)){
-			// TODO get these settings from preferences
-			Token keyword   		= new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.KEYWORD),   		  null, SWT.BOLD            ));
-			Token value     		= new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.VALUE),     		  null, SWT.BOLD|SWT.ITALIC ));
-			Token primitive 		= new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.PRIMITIVE), 		  null, SWT.ITALIC          ));
-			Token comment   		= new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.COMMENT),   		  null, SWT.NORMAL          ));
-			Token builtinFunction   = new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.BUILTIN_FUNCTION),null, SWT.BOLD            ));
-			Token string    		= new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.STRING)                                       ));
+			Color keywordColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR         ));
+			Color valueColor           = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR           ));
+			Color primitiveColor       = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR       ));
+			//Color commentColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR         ));  // Used in com.googlecode.goclipse.editors.Configuration
+			Color builtinFunctionColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR));
+			//Color stringColor          = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_STRING_COLOR          ));  // Used in com.googlecode.goclipse.editors.Configuration
+			
+			int keywordStyle         = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE         );
+			int valueStyle           = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE           );
+			int primitiveStyle       = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE       );
+			//int commentStyle         = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE         ); // Used in com.googlecode.goclipse.editors.Configuration
+			int builtinFunctionStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE);
+			//int stringStyle          = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_STRING_STYLE          ); // Used in com.googlecode.goclipse.editors.Configuration
+						
+			Token keyword   		= new Token(new TextAttribute(keywordColor,         null, keywordStyle        ));
+			Token value     		= new Token(new TextAttribute(valueColor,           null, valueStyle          ));
+			Token primitive 		= new Token(new TextAttribute(primitiveColor,       null, primitiveStyle      ));
+			//Token comment   		= new Token(new TextAttribute(commentColor,         null, commentStyle        )); // Used in com.googlecode.goclipse.editors.Configuration
+			Token builtinFunction   = new Token(new TextAttribute(builtinFunctionColor, null, builtinFunctionStyle));
+			//Token string    		= new Token(new TextAttribute(stringColor,          null, stringStyle         )); // Used in com.googlecode.goclipse.editors.Configuration
 //			Token text           = new Token(new TextAttribute(manager.getColor(IColorConstants.DEFAULT),           null, SWT.BOLD|SWT.ITALIC));
 			
 			WordMatcher keywordRule = new WordMatcher();
@@ -96,17 +113,17 @@ public class GoScanner extends RuleBasedScanner {
 			keywordRule.addWord("var",         keyword);
 			
 			keywordRule.addWord("cap",  	   builtinFunction); 
-			keywordRule.addWord("close" , 	builtinFunction); 
-			keywordRule.addWord("closed", 	builtinFunction); 
-			keywordRule.addWord("len", 	   builtinFunction); 
+			keywordRule.addWord("close" , 	   builtinFunction); 
+			keywordRule.addWord("closed", 	   builtinFunction); 
+			keywordRule.addWord("len", 	       builtinFunction); 
 			keywordRule.addWord("make", 	   builtinFunction); 
-			keywordRule.addWord("new", 	   builtinFunction); 
+			keywordRule.addWord("new", 	       builtinFunction); 
 			keywordRule.addWord("panic", 	   builtinFunction); 
-			keywordRule.addWord("panicln",	builtinFunction); 
+			keywordRule.addWord("panicln",	   builtinFunction); 
 			keywordRule.addWord("print", 	   builtinFunction); 
-			keywordRule.addWord("println",	builtinFunction); 
+			keywordRule.addWord("println",	   builtinFunction); 
 			keywordRule.addWord("append",      builtinFunction);
-			keywordRule.addWord("copy",      builtinFunction);
+			keywordRule.addWord("copy",        builtinFunction);
 	
 			keywordRule.addWord("nil",   value);
 			keywordRule.addWord("true",  value);

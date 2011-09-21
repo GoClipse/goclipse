@@ -2,9 +2,12 @@ package com.googlecode.goclipse.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.util.Util;
+import org.eclipse.swt.SWT;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.editors.IColorConstants;
 
 
 /**
@@ -24,6 +27,20 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(PreferenceConstants.P_BOOLEAN, true);
 		store.setDefault(PreferenceConstants.FIELD_USE_HIGHLIGHTING, PreferenceConstants.VALUE_HIGHLIGHTING_TRUE);
+		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,          IColorConstants.KEYWORD         );
+		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,            IColorConstants.VALUE           );
+		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,        IColorConstants.PRIMITIVE       );
+		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR,          IColorConstants.COMMENT         ); 
+		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, IColorConstants.BUILTIN_FUNCTION);
+		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_STRING_COLOR,           IColorConstants.STRING          );
+		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, IColorConstants.MULTILINE_STRING);  
+		store.setDefault(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE,          SWT.BOLD           );
+		store.setDefault(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE,            SWT.BOLD|SWT.ITALIC);
+		store.setDefault(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE,        SWT.ITALIC         );
+		store.setDefault(PreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE,          SWT.NORMAL         );
+		store.setDefault(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE, SWT.BOLD           );
+		store.setDefault(PreferenceConstants.FIELD_SYNTAX_STRING_STYLE,           SWT.NORMAL         );
+		store.setDefault(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE, SWT.NORMAL         );
 		store.setDefault(PreferenceConstants.P_STRING,	"Default value");	
 
 		if (Util.isWindows()){
