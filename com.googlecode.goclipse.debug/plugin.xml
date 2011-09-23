@@ -192,7 +192,7 @@
 	             </with>
 	           </enablement>
 	  		 </contextualLaunch>
-	  		 <configurationType id ="com.googlecode.goclipse.debug.launch.GoLaunchConfigurationDelegate">
+	  		 <configurationType id="com.googlecode.goclipse.debug.launchConfig">
 	  		 </configurationType>  		 
       </shortcut>
    </extension>

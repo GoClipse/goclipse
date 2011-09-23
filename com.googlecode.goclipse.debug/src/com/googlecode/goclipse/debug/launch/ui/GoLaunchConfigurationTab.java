@@ -17,7 +17,7 @@ import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoNature;
 import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.ui.BuildConfiguration;
+import com.googlecode.goclipse.debug.launch.BuildConfiguration;
 
 /**
  * 

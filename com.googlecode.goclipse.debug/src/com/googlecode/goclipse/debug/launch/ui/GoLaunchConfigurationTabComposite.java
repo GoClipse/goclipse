@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.debug.ui.BuildConfiguration;
+import com.googlecode.goclipse.debug.launch.BuildConfiguration;
 import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
 
 /**

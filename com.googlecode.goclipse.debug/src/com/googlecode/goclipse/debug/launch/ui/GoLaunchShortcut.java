@@ -17,8 +17,8 @@ import org.eclipse.ui.part.FileEditorInput;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.debug.launch.BuildConfiguration;
 import com.googlecode.goclipse.debug.launch.GoLaunchConfigurationDelegate;
-import com.googlecode.goclipse.debug.ui.BuildConfiguration;
 
 /**
  * 
