@@ -33,10 +33,6 @@ public class Lexer {
 	 * Identifier accumulator;
 	 */
 	private StringBuilder identifier;
-	private boolean inString;
-	private boolean inRawString;
-	private boolean skipNextCharacter;
-	private boolean eatChar = true;
 
 	/**
     * 
@@ -133,6 +129,7 @@ public class Lexer {
 			int val;
 			int index = 0;
 	
+			boolean eatToken = true;
 			identifier = new StringBuilder();
 			fireNewline();
 			while ((val = br.read()) != -1) {
@@ -142,8 +139,8 @@ public class Lexer {
 				current = ahead;
 				ahead = (char) val;
 	
-				if (eatChar) {
-					eatChar = false;
+				if (eatToken) {
+					eatToken = false;
 					continue;
 				}
 	
@@ -206,52 +203,22 @@ public class Lexer {
 	 * @param current
 	 */
 	private boolean processCharacter(char ahead, char current) {
-		
-		if (inRawString) {
-			if(current == '\\' && ahead=='`'){
-				skipNextCharacter = true;
-			} else if(!skipNextCharacter){
-				if(current=='`'){
-					inRawString = false;
-				}
-			} else {
-				skipNextCharacter = false;
-			}
-			return false;
+		if (DEBUG) {
+			//System.out.print(current);
 		}
-		
-		if (inString) {
-			if(current == '\\' && ahead=='\"'){
-				skipNextCharacter = true;
-			} else if(!skipNextCharacter){
-				if(current=='\"'){
-					inString = false;
-				}
-			} else {
-				skipNextCharacter = false;
-			}
-			return false;
-		}
-		
+
 		switch (current) {
 
 		case '~':
 			fireTokenFound(TokenType.TILDA, TokenType.TILDA.op);
 			break;
-		
-		case '"':
-			inString = true;
-			break;
 
-		
 		case '`':
-			// must consume string
-			inRawString = true;
+			fireTokenFound(TokenType.GRAVE_ACCENT, TokenType.GRAVE_ACCENT.op);
 			break;
 
 		case '!':
 			if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.NOT_EQ, TokenType.NOT_EQ.op);
 			} else {
 				fireTokenFound(TokenType.NOT, TokenType.NOT.op);
@@ -272,7 +239,6 @@ public class Lexer {
 
 		case '%':
 			if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.REMAINDER_ASSIGN,
 						TokenType.REMAINDER_ASSIGN.op);
 			} else {
@@ -282,7 +248,6 @@ public class Lexer {
 
 		case '^':
 			if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.BITWISE_XOR_ASSIGN,
 						TokenType.BITWISE_XOR_ASSIGN.op);
 			} else {
@@ -292,10 +257,8 @@ public class Lexer {
 
 		case '&':
 			if (ahead == '&') {
-				eatChar = true;
 				fireTokenFound(TokenType.AND, TokenType.AND.op);
 			} else if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.BITWISE_AND_ASSIGN,
 						TokenType.BITWISE_AND_ASSIGN.op);
 			} else {
@@ -305,11 +268,9 @@ public class Lexer {
 
 		case '*':
 			if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.MULTIPLY_ASSIGN,
 						TokenType.MULTIPLY_ASSIGN.op);
 			} else if (ahead == '/') {
-				eatChar = true;
 				blockCommentState = false;
 				fireTokenFound(TokenType.BLOCK_COMMENT_END,
 						TokenType.BLOCK_COMMENT_END.op);
@@ -343,7 +304,6 @@ public class Lexer {
 
 		case '-':
 			if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.SUBTRACT_ASSIGN,
 						TokenType.SUBTRACT_ASSIGN.op);
 			} else {
@@ -361,10 +321,8 @@ public class Lexer {
 
 		case '+':
 			if (ahead == '+') {
-				eatChar = true;
 				fireTokenFound(TokenType.INCREMENT, TokenType.INCREMENT.op);
 			} else if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.ADD_ASSIGN, TokenType.ADD_ASSIGN.op);
 			} else {
 				fireTokenFound(TokenType.ADD, TokenType.ADD.op);
@@ -374,7 +332,6 @@ public class Lexer {
 		case '=':
 
 			if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.EQUAL, TokenType.EQUAL.op);
 			} else {
 				fireTokenFound(TokenType.ASSIGN, TokenType.ASSIGN.op);
@@ -399,11 +356,9 @@ public class Lexer {
 
 		case '|':
 			if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.BITWISE_OR_ASSIGN,
 						TokenType.BITWISE_OR_ASSIGN.op);
 			} else if (ahead == '|') {
-				eatChar = true;
 				fireTokenFound(TokenType.BITWISE_XOR, TokenType.BITWISE_XOR.op);
 			} else {
 				fireTokenFound(TokenType.ASSIGN, TokenType.ASSIGN.op);
@@ -416,7 +371,6 @@ public class Lexer {
 
 		case ':':
 			if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.INFERENCE, TokenType.INFERENCE.op);
 			} else {
 				fireTokenFound(TokenType.COLON, TokenType.COLON.op);
@@ -427,13 +381,16 @@ public class Lexer {
 			fireTokenFound(TokenType.SEMICOLON, TokenType.SEMICOLON.op);
 			break;
 
+		case '"':
+			fireTokenFound(TokenType.QUOTE, TokenType.QUOTE.op);
+			break;
+
 		case '\'':
 			fireTokenFound(TokenType.APOSTROPHE, TokenType.APOSTROPHE.op);
 			break;
 
 		case '<':
 			if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.LESS_EQ, TokenType.LESS_EQ.op);
 			} else {
 				fireTokenFound(TokenType.LESS, TokenType.LESS.op);
@@ -446,7 +403,6 @@ public class Lexer {
 
 		case '>':
 			if (ahead == '=') {
-				eatChar = true;
 				fireTokenFound(TokenType.GREATER_EQ, TokenType.GREATER_EQ.op);
 			} else {
 				fireTokenFound(TokenType.GREATER, TokenType.GREATER.op);
@@ -554,6 +510,7 @@ public class Lexer {
 
 			lexer.scan("module test\nimport fmt \"fmt\"");
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

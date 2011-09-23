@@ -34,8 +34,7 @@ public class ImportParser implements TokenListener {
 	}
 
 	@Override
-	public void tokenFound(TokenType type, String value, boolean inComment,
-			int linenumber, int start, int end) {
+	public void tokenFound(TokenType type, String value, boolean inComment,	int linenumber, int start, int end) {
 		// IGNORING --> DETERMINING --> SINGLE --> IGNORING
 		// IGNORING --> DETERMINING --> MULTIPLE --> IGNORING
 		
@@ -133,7 +132,7 @@ public class ImportParser implements TokenListener {
 			}
 		} 
 		catch (RuntimeException e) {
-			Activator.logError(e);
+			//Activator.logError(e);
 		}
 	}
 
@@ -156,14 +155,14 @@ public class ImportParser implements TokenListener {
 		ImportParser importParser = new ImportParser(tokenizer);
 
 		try {
-			lexer.scan(new File("test_go/parser.go"));
+			lexer.scan(new File("test/test_go/import_test.go"));
 
 			for (Import imp : importParser.imports) {
-				Activator.logInfo(imp.prefix + " :: " + imp.path + " :: "
+				System.out.println(imp.prefix + " :: " + imp.path + " :: "
 						+ imp.getLine());
 			}
 		} catch (IOException e) {
-			Activator.logError(e);
+			System.out.println(e);
 		}
 	}
 
