@@ -41,7 +41,9 @@ import com.googlecode.goclipse.debug.model.GoDebugTarget;
  * @author steel
  */
 public class GoLaunchConfigurationDelegate implements ILaunchConfigurationDelegate2 {
-
+	
+	public static final String ID = "com.googlecode.goclipse.debug.launchConfig";
+	
    @Override
    public boolean buildForLaunch(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) throws CoreException {
       String project = configuration.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, "");
