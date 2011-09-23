@@ -112,7 +112,6 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 						
 						if (firstComma != -1 && secondComma != -1) {
 							
-							@SuppressWarnings("unused")
 							String type = string.substring(0, firstComma);
 							String identifier = string.substring(firstComma+2, secondComma);
 							String spec = string.substring(secondComma+2);
