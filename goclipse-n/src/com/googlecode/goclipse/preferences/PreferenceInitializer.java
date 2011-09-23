@@ -17,16 +17,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	private static final String OS_ARCH = "os.arch";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-	 */
 	public void initializeDefaultPreferences() {
 		//SysUtils.debug("Loading Go Plug-in Preferences...");
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(PreferenceConstants.P_BOOLEAN, true);
-		store.setDefault(PreferenceConstants.FIELD_USE_HIGHLIGHTING, PreferenceConstants.VALUE_HIGHLIGHTING_TRUE);
+		store.setDefault(PreferenceConstants.FIELD_USE_HIGHLIGHTING, true);
 		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,          IColorConstants.KEYWORD         );
 		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,            IColorConstants.VALUE           );
 		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,        IColorConstants.PRIMITIVE       );

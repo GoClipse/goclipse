@@ -84,9 +84,9 @@ public class Configuration extends SourceViewerConfiguration {
       reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
       IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
-      String useHighlighting = prefStore.getString(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
+      boolean useHighlighting = prefStore.getBoolean(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
 		
-	  if(useHighlighting.equals(PreferenceConstants.VALUE_HIGHLIGHTING_TRUE)){
+	  if(useHighlighting){
 		  Color commentColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR         ));
 		  Color stringColor          = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_STRING_COLOR          ));
 		  Color multilineStringColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR));

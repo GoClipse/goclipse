@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;

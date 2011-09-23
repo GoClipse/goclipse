@@ -1,7 +1,7 @@
 package com.googlecode.goclipse.preferences;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -34,11 +34,8 @@ public class AppEnginePreferencePage extends FieldEditorPreferencePage implement
 	 */
 	public void createFieldEditors() {
 		
-		addField(new RadioGroupFieldEditor(PreferenceConstants.FIELD_USE_HIGHLIGHTING,
-				"Highlighting Options:", 1,
-				new String[][] { {  "&Use highlighting.", PreferenceConstants.VALUE_HIGHLIGHTING_TRUE },
-						{ "&Do not use highlighting.", PreferenceConstants.VALUE_HIGHLIGHTING_FALSE } }, 
-						getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.FIELD_USE_HIGHLIGHTING,
+				"Use Highlighting", getFieldEditorParent()));
 	}
 
 	/*

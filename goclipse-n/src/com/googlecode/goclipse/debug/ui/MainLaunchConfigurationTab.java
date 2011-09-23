@@ -23,6 +23,7 @@ import com.googlecode.goclipse.builder.GoNature;
  * 
  * @author steel
  */
+@Deprecated
 public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
    private MainTabComposite composite;
    private String errorMessage = null;

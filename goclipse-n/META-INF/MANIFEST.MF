@@ -38,7 +38,6 @@ Export-Package: com.googlecode.goclipse;
    org.eclipse.core.resources,
    com.googlecode.goclipse.dependency,
    org.eclipse.jface.viewers",
- com.googlecode.goclipse.debug.ui,
  com.googlecode.goclipse.editors;
   uses:="org.eclipse.jface.text,
    org.eclipse.ui.texteditor,

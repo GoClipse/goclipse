@@ -30,6 +30,7 @@ import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
  * 
  * @author steel
  */
+@Deprecated
 public class MainTabComposite extends Composite {
 	private Group projectGroup;
 	private Text projectField;

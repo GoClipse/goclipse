@@ -10,8 +10,6 @@ public class PreferenceConstants {
 	public static final String P_BOOLEAN = "booleanPreference";
 
 	public static final String FIELD_USE_HIGHLIGHTING   = "use_highlighting";
-	public static final String VALUE_HIGHLIGHTING_TRUE  = "highlight_true";
-	public static final String VALUE_HIGHLIGHTING_FALSE = "highlight_false";
 
 	public static final String FIELD_SYNTAX_KEYWORD_COLOR          = "syntax_highlighting_keyword_color";
 	public static final String FIELD_SYNTAX_KEYWORD_STYLE          = "syntax_highlighting_keyword_style";

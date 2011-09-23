@@ -315,10 +315,8 @@
          </enabledWhen>
       </page>
    </extension>
-   <extension
-         point="org.eclipse.debug.core.launchConfigurationTypes">
-   </extension>
-   <extension
+   
+   <!-- extension
          point="org.eclipse.debug.ui.launchGroups">
       <launchGroup
             bannerImage="icons/go.png"
@@ -338,8 +336,9 @@
             public="true"
             title="Debug Go Application">
       </launchGroup>
-   </extension>
-   <extension
+   </extension -->
+   
+   <!--extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             class="com.googlecode.goclipse.debug.ui.LaunchConfigurationTabGroup"
@@ -350,7 +349,8 @@
                perspective="com.googlecode.goclipse.perspectives.GoPerspective">
          </launchMode>
       </launchConfigurationTabGroup>
-   </extension>
+   </extension -->
+   
    <extension point = "org.eclipse.ui.actionSets">
 	   <actionSet id="com.googlecode.goclipse.hiddenActionSet"
 		   label="Goclipse hidden actions"
@@ -445,14 +445,14 @@
       </key>
    </extension>
    
-   <extension
+   <!-- extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
             configTypeID="com.googlecode.goclipse.debug.LaunchConfigurationDelegate"
             icon="icons/go-icon16.png"
             id="com.googlecode.goclipse.debug.launchConfigurationTypeImage">
       </launchConfigurationTypeImage>
-   </extension>
+   </extension -->
 
    <extension-point id="com.googlecode.goclipse.contentassistprocessor" name="Content Assist Processor" schema="schema/com.googlecode.goclipse.contentassistprocessor.exsd"/>
    <extension

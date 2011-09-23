@@ -9,6 +9,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
  * @author steel
  *
  */
+@Deprecated
 public class LaunchConfigurationTabGroup extends AbstractLaunchConfigurationTabGroup {
 
    /**

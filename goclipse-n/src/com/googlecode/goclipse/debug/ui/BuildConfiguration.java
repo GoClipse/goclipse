@@ -4,6 +4,7 @@ package com.googlecode.goclipse.debug.ui;
  * 
  * @author steel
  */
+@Deprecated
 public enum BuildConfiguration {
 
    DEBUG,

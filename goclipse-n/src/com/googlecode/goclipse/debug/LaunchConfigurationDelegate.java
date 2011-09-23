@@ -39,6 +39,7 @@ import com.googlecode.goclipse.builder.GoNature;
 /**
  * @author steel
  */
+@Deprecated
 public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate2{
 
    @Override
