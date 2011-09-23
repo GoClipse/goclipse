@@ -2,13 +2,17 @@
 <feature
       id="goclipse_feature"
       label="GoClipse"
-      version="0.2.0"
+      version="0.2.1"
       provider-name="The GoClipse Development Team"
       plugin="goclipse">
 
    <description url="http://code.google.com/p/goclipse/">
-      This is the development version of the GoClipse Plug-In.  As such, features may be broken, partially implemented, or removed at anytime.  Thus, use at your own risk.  Stable versions will be released from a secondary update site as major milestones are completed. GoClipse is an Eclipse plug-in that provides a rudimentary level of support for programming with GO.
-
+      This is the development version of the GoClipse Plug-In.  As
+such, features may be broken, partially implemented, or removed
+at anytime.  Thus, use at your own risk.  Stable versions will
+be released from a secondary update site as major milestones
+are completed. GoClipse is an Eclipse plug-in that provides a
+rudimentary level of support for programming with GO.
 Current Features:
 - Syntax highlighting
 - Automatic building of files
@@ -145,7 +149,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="com.googlecode.goclipse.debug"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
 </feature>
