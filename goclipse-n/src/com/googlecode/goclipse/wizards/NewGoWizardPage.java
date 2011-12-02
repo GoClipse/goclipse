@@ -96,6 +96,7 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 				sourceFileComposite.getSourceFolderText().setText(path);
 			}
 		}
+		
 		final String newFilePrefix = "new_file";
 		String fName = newFilePrefix + ".go";
 		if (path != null && prjPath != null) {
@@ -127,6 +128,8 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 		}
 		
 		sourceFileComposite.getSourceFileText().setText(fName);
+		sourceFileComposite.getSourceFileText().setSelection(0, newFilePrefix.length());
+		sourceFileComposite.getSourceFileText().forceFocus();
 	}
 
 	/**

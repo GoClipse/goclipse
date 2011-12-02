@@ -231,18 +231,19 @@ public class CodeContext {
 	 * @param names
 	 * @return
 	 */
-	public String getDescriptionForName(String name){
+	public String getDescriptionForName(final String name){
+		
+		String n = name+"()";
 		
 		// slowest possible searches... 
 		for(Method method: methods){
-			if(name.equals(method.getInsertionText())){
+			if(n.equals(method.getInsertionText())){
 				return method.getDocumentation();
 			}
 		}
 		
-		name+="()";
 		for(Function function: functions){
-			if(name.equals(function.getInsertionText())){
+			if(n.equals(function.getInsertionText())){
 				return function.getDocumentation();
 			}
 		}

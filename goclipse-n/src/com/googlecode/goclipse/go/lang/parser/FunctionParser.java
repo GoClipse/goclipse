@@ -89,7 +89,7 @@ public class FunctionParser implements TokenListener {
 				if (!TokenType.COMMENT.equals(type)
 						&& !TokenType.BLOCK_COMMENT_START.equals(type)
 						&& !TokenType.BLOCK_COMMENT_END.equals(type)) {
-
+					
 					if (linenumber - lastCommentLine > 1) {
 						comment = new StringBuffer();
 					}

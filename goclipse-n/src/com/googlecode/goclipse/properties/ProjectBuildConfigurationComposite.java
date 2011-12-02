@@ -30,6 +30,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import org.eclipse.swt.widgets.Label;
 
 /**
  * @author steel
@@ -308,11 +309,15 @@ public class ProjectBuildConfigurationComposite extends Composite {
       gridData5.grabExcessHorizontalSpace = true;
       gridData5.verticalAlignment = GridData.CENTER;
       GridLayout gridLayout2 = new GridLayout();
-      gridLayout2.numColumns = 2;
+      gridLayout2.numColumns = 3;
       group1 = new Group(sourceComposite, SWT.NONE);
-      group1.setText("Output Folder");
+      group1.setText("Output Folders");
       group1.setLayoutData(gridData22);
       group1.setLayout(gridLayout2);
+      
+      Label lblPackageFolder = new Label(group1, SWT.NONE);
+      lblPackageFolder.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+      lblPackageFolder.setText("Pkg Folder:");
       pkgOutputText = new Text(group1, SWT.BORDER);
       pkgOutputText.setText(Environment.INSTANCE.getPkgOutputFolder().toOSString());
       pkgOutputText.addModifyListener(new ModifyListener() {
@@ -348,6 +353,10 @@ public class ProjectBuildConfigurationComposite extends Composite {
             }            
          }
       });
+      
+      Label lblBinFolder = new Label(group1, SWT.NONE);
+      lblBinFolder.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+      lblBinFolder.setText("Bin Folder:");
       binOutputText = new Text(group1, SWT.BORDER);
       binOutputText.setText(Environment.INSTANCE.getBinOutputFolder().toOSString());
       binOutputText.addModifyListener(new ModifyListener() {
@@ -357,10 +366,16 @@ public class ProjectBuildConfigurationComposite extends Composite {
             validate();
          }
       });
-      binOutputText.setLayoutData(gridData5);
+      GridData gridData6 = new GridData();
+      gridData6.horizontalAlignment = GridData.FILL;
+      gridData6.grabExcessHorizontalSpace = true;
+      gridData6.verticalAlignment = GridData.CENTER;
+      binOutputText.setLayoutData(gridData6);
       binOutputBrowseButton = new Button(group1, SWT.NONE);
       binOutputBrowseButton.setText("Browse...");
-      binOutputBrowseButton.setLayoutData(gridData3);
+      GridData gridData7 = new GridData();
+      gridData7.widthHint = 100;
+      binOutputBrowseButton.setLayoutData(gridData7);
       binOutputBrowseButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             FolderSelectionDialog dialog = new FolderSelectionDialog(Environment.INSTANCE.getShell(),
