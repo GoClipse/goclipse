@@ -112,12 +112,12 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 						
 						if (firstComma != -1 && secondComma != -1) {
 							
-							String type = string.substring(0, firstComma);
+							String type       = string.substring(0, firstComma);
 							String identifier = string.substring(firstComma+2, secondComma);
-							String spec = string.substring(secondComma+2);
+							String spec       = string.substring(secondComma+2);
 							
 							String descriptiveString = identifier+" : "+spec;
-							String description = codeContext.getDescriptionForName(identifier).trim();
+							String description       = codeContext.getDescriptionForName(identifier).trim();
 							IContextInformation info = new ContextInformation(description,description);
 							//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
 							
@@ -142,7 +142,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 								substr = identifier.substring(prefix.length())+".";
 								replacementLength++;
 							} else {
-								if (Character.isUpperCase(substr.charAt(0))) {
+								if (substr!=null && substr.length()>0 && Character.isUpperCase(substr.charAt(0))) {
 									image = publicVarImage;
 								} else {
 									image = privateVarImage;

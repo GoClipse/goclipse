@@ -15,6 +15,7 @@ import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.ExternalCommand;
 import com.googlecode.goclipse.builder.ProcessOStreamFilter;
 import com.googlecode.goclipse.builder.StreamAsLines;
+import com.googlecode.goclipse.gocode.preferences.PreferencePage;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -27,7 +28,7 @@ public class GoCodeClient {
 	private String goarch; 
 	private String goos;   
 	private String goroot; 
-	private String exeName;
+	//private String exeName;
 	
 	public GoCodeClient() {}
 	
@@ -38,25 +39,26 @@ public class GoCodeClient {
 		goarch  = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);		
 		goos    = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);		
 		goroot  = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);		
-		exeName = "gocode" + Environment.INSTANCE.getExecutableExtension();
-		path    = Path.fromOSString(goroot).append("bin").append(exeName).toOSString();
+		//exeName = "gocode" + Environment.INSTANCE.getExecutableExtension();
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public ExternalCommand buildGoCodeCommand(){
-		if(path==null){
+	public ExternalCommand buildGoCodeCommand() {
+		
+		path = Activator.getDefault().getPreferenceStore().getString(PreferencePage.GOCODE_PATH);			
+		if (path == null) {
 			buildGoCodePath();
 		}
 		
 		ExternalCommand goCodeCommand;
-		if(com.googlecode.goclipse.gocode.Activator.getDefault().getGoCodePath() == null){
+		if (com.googlecode.goclipse.gocode.Activator.getDefault().getGoCodePath() == null) {
 			goCodeCommand = new ExternalCommand(path);
 			goCodeCommand.setWorkingFolder(Path.fromOSString(goroot).append("bin").toOSString());
 		} else {
-			goCodeCommand = new ExternalCommand(com.googlecode.goclipse.gocode.Activator.getDefault().getGoCodePath());
+			goCodeCommand = new ExternalCommand(path);
 			goCodeCommand.setWorkingFolder(com.googlecode.goclipse.gocode.Activator.getDefault().getGoCodeDir());
 		}
 		
@@ -72,7 +74,7 @@ public class GoCodeClient {
 	 */
 	public List<String> getCompletions(String fileName, final String bufferText, int offset) {
 		
-		ExternalCommand goCodeCommand = buildGoCodeCommand();
+		ExternalCommand goCodeCommand = new ExternalCommand(Activator.getDefault().getPreferenceStore().getString(PreferencePage.GOCODE_PATH));
 
 		if (!goCodeCommand.commandExists()) {
 			// Caveat: environment variables aren't always available. We only use GOBIN if GOROOT/bin
@@ -80,7 +82,7 @@ public class GoCodeClient {
 			String goBinPath = System.getenv("GOBIN");
 			
 			if (goBinPath != null) {
-				ExternalCommand command = new ExternalCommand(Path.fromOSString(goBinPath).append(exeName).toOSString());				
+				ExternalCommand command = new ExternalCommand(path);				
 				goCodeCommand.setWorkingFolder(Path.fromOSString(goBinPath).toOSString());
 				
 				if (command.commandExists()) {
