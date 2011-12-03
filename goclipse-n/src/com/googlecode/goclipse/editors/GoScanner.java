@@ -114,17 +114,19 @@ public class GoScanner extends RuleBasedScanner {
 			
 			keywordRule.addWord("cap",  	   builtinFunction); 
 			keywordRule.addWord("close" , 	   builtinFunction); 
-			keywordRule.addWord("closed", 	   builtinFunction); 
 			keywordRule.addWord("len", 	       builtinFunction); 
 			keywordRule.addWord("make", 	   builtinFunction); 
 			keywordRule.addWord("new", 	       builtinFunction); 
-			keywordRule.addWord("panic", 	   builtinFunction); 
-			keywordRule.addWord("panicln",	   builtinFunction); 
-			keywordRule.addWord("print", 	   builtinFunction); 
-			keywordRule.addWord("println",	   builtinFunction); 
 			keywordRule.addWord("append",      builtinFunction);
 			keywordRule.addWord("copy",        builtinFunction);
-	
+			keywordRule.addWord("panic", 	   builtinFunction); 
+			keywordRule.addWord("recover",     builtinFunction);
+			keywordRule.addWord("complex",     builtinFunction);
+			keywordRule.addWord("real",        builtinFunction);
+			keywordRule.addWord("imag",        builtinFunction);
+			keywordRule.addWord("print", 	   builtinFunction); 
+			keywordRule.addWord("println",	   builtinFunction); 
+				
 			keywordRule.addWord("nil",   value);
 			keywordRule.addWord("true",  value);
 			keywordRule.addWord("false", value);
