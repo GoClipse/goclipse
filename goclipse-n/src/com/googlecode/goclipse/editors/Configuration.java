@@ -23,17 +23,19 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.DefaultAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
+// TextSourceViewerConfiguration
+
 /**
  * @author steel
  */
-public class Configuration extends SourceViewerConfiguration {
+public class Configuration extends TextSourceViewerConfiguration {
    private DoubleClickStrategy doubleClickStrategy;
    private GoScanner           keywordScanner;
    private GoEditor			   editor;
@@ -46,17 +48,14 @@ public class Configuration extends SourceViewerConfiguration {
 	   this.editor = editor;
    }
 
-   /**
-	 * 
-	 */
-   public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-      return new String[] { IDocument.DEFAULT_CONTENT_TYPE, PartitionScanner.COMMENT, PartitionScanner.STRING, PartitionScanner.MULTILINE_STRING };
+   @Override
+  public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+      return new String[] { IDocument.DEFAULT_CONTENT_TYPE, PartitionScanner.COMMENT,
+          PartitionScanner.STRING, PartitionScanner.MULTILINE_STRING };
    }
 
-   /**
-	 * 
-	 */
-   public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
+   @Override
+  public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
       if (doubleClickStrategy == null)
          doubleClickStrategy = new DoubleClickStrategy();
       return doubleClickStrategy;
@@ -73,10 +72,8 @@ public class Configuration extends SourceViewerConfiguration {
       return keywordScanner;
    }
 
-   /**
-	 * 
-	 */
-   public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
+   @Override
+  public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
       PresentationReconciler reconciler = new PresentationReconciler();
 
       DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getKeywordScanner());
@@ -95,19 +92,19 @@ public class Configuration extends SourceViewerConfiguration {
 		  int stringStyle          = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_STRING_STYLE          );
 		  int multilineStringStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE);
 		  
-	      NonRuleBasedDamagerRepairer ndr = 
+	      NonRuleBasedDamagerRepairer ndr =
 	         new NonRuleBasedDamagerRepairer(new TextAttribute(commentColor, null, commentStyle));
 	      reconciler.setDamager(ndr, PartitionScanner.COMMENT);
 	      reconciler.setRepairer(ndr, PartitionScanner.COMMENT);
 	
 	      
-	      NonRuleBasedDamagerRepairer nonRuleBasedDamagerRepairer = 
+	      NonRuleBasedDamagerRepairer nonRuleBasedDamagerRepairer =
 	         new NonRuleBasedDamagerRepairer(new TextAttribute(stringColor, null, stringStyle));
 	      reconciler.setDamager(nonRuleBasedDamagerRepairer, PartitionScanner.STRING);
 	      reconciler.setRepairer(nonRuleBasedDamagerRepairer, PartitionScanner.STRING);
 	      
 	      
-	      NonRuleBasedDamagerRepairer nonRuleBasedDamagerRepairer2 = 
+	      NonRuleBasedDamagerRepairer nonRuleBasedDamagerRepairer2 =
 	         new NonRuleBasedDamagerRepairer(new TextAttribute(multilineStringColor, null, multilineStringStyle));
 	      reconciler.setDamager(nonRuleBasedDamagerRepairer2, PartitionScanner.MULTILINE_STRING);
 	      reconciler.setRepairer(nonRuleBasedDamagerRepairer2, PartitionScanner.MULTILINE_STRING);
@@ -115,10 +112,8 @@ public class Configuration extends SourceViewerConfiguration {
       return reconciler;
    }
 
-   /**
-	 * 
-	 */
-   public IContentAssistant getContentAssistant(ISourceViewer sv) {
+   @Override
+  public IContentAssistant getContentAssistant(ISourceViewer sv) {
       final ContentAssistant ca = new ContentAssistant();
       ca.enableAutoActivation(true);
       ca.setAutoActivationDelay(100);
@@ -134,28 +129,26 @@ public class Configuration extends SourceViewerConfiguration {
       return ca;
    }
 
-private IContentAssistProcessor getCompletionProcessor() {
-	IConfigurationElement[] config = Platform.getExtensionRegistry()
-		.getConfigurationElementsFor(Activator.CONTENT_ASSIST_EXTENSION_ID);
-	try {
-		for (IConfigurationElement e : config) {
-			final Object o = e.createExecutableExtension("class");
-			if (o instanceof IContentAssistProcessor) {
-				return (IContentAssistProcessor)o;
-			}
-		}
-	} catch (CoreException ex) {
-		// do nothing
-	}
-	return new CompletionProcessor();
-}
+  private IContentAssistProcessor getCompletionProcessor() {
+    IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
+        Activator.CONTENT_ASSIST_EXTENSION_ID);
+    try {
+      for (IConfigurationElement e : config) {
+        final Object o = e.createExecutableExtension("class");
+        if (o instanceof IContentAssistProcessor) {
+          return (IContentAssistProcessor) o;
+        }
+      }
+    } catch (CoreException ex) {
+      // do nothing
+    }
+    return new CompletionProcessor();
+  }
 
-   /**
-    * 
-    */
-   public ITextHover getTextHover(ISourceViewer sv, String contentType) {
+   @Override
+  public ITextHover getTextHover(ISourceViewer sv, String contentType) {
       return new TextHover();
-   }
+  }
 
 	@Override
 	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
@@ -187,5 +180,5 @@ private IContentAssistProcessor getCompletionProcessor() {
 	public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
 		return new String[] { "//", "" };
 	}
-	
+
 }

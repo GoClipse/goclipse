@@ -27,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.eclipse.ui.internal.registry.PerspectiveDescriptor;
+import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
@@ -39,7 +40,8 @@ import com.googlecode.goclipse.perspectives.GoPerspective;
  */
 @SuppressWarnings("restriction")
 public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
-	private GoProjectWizardPage page;
+	private IWorkbench workbench;
+  private GoProjectWizardPage page;
 	private ISelection           selection;
 
 	/**
@@ -56,15 +58,17 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 	 * 
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	@Override
+  public void init(IWorkbench workbench, IStructuredSelection selection) {
+	  this.workbench = workbench;
 		this.selection = selection;
 	}
 	
 	/**
 	 * Adding the page to the wizard.
 	 */
-
-	public void addPages() {
+	@Override
+  public void addPages() {
 		page = new GoProjectWizardPage(selection);
 		addPage(page);
 	}
@@ -99,6 +103,8 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 		if (status.isOK()) {
 			switchToGoPerspective();
 			
+			BasicNewResourceWizard.selectAndReveal(operation.getProject(), workbench.getActiveWorkbenchWindow());
+			
 			return true;
 		} else {
 			ErrorDialog.openError(
@@ -125,6 +131,7 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 	private static class CreateProjectOperation extends WorkspaceModifyOperation {
 		private String projectName;
 		private IStatus result;
+		private IProject project;
 		
 		public CreateProjectOperation(String projectName) {
 			this.projectName = projectName;
@@ -148,6 +155,8 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			project.create(new NullProgressMonitor());
 			project.open(new NullProgressMonitor());
 
+			this.project = project;
+			
 			IProjectDescription description = project.getDescription();
 			String[] natures = description.getNatureIds();
 			String[] newNatures = new String[natures.length + 1];
@@ -184,7 +193,11 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			}
 		}
 
-		public IStatus getResult() {
+		public IProject getProject() {
+      return project;
+    }
+
+    public IStatus getResult() {
 			return result;
 		}
 	}

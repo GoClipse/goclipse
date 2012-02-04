@@ -52,6 +52,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.ide.projectNatureImages">
+         <!-- switch to go-icon8.png? -->
       <image
             icon="icons/go-alt.png"
             id="com.googlecode.goclipse.goNature.image1"
@@ -123,33 +124,46 @@
             name="Go">
       </perspective>
    </extension>
+   
    <extension point="org.eclipse.core.runtime.adapters">
-         <factory class="com.googlecode.goclipse.ui.navigator.GoModelAdapter" adaptableType="com.googlecode.goclipse.ui.navigator.IGoElement">
-            
-            <adapter type="org.eclipse.ui.IPersistableElement"/>
-            <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
-            <adapter type="org.eclipse.ui.ide.IContributorResourceAdapter2"/>
-            <adapter type="org.eclipse.ui.IContainmentAdapter"/>
-                        
-            <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-
-            <adapter type="org.eclipse.core.resources.IResource"/>
-            
-			<adapter type="org.eclipse.core.resources.IFolder"/>
-			<adapter type="org.eclipse.core.resources.IProject"/>
-			<adapter type="org.eclipse.core.resources.IContainer"/>
-			<adapter type="org.eclipse.core.resources.IFile"/>
-			<adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
-			<adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
-         </factory>
-         <factory
+      <factory class="com.googlecode.goclipse.ui.navigator.GoModelAdapter" adaptableType="com.googlecode.goclipse.ui.navigator.IGoElement">
+         <adapter type="org.eclipse.ui.IPersistableElement"/>
+         <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
+         <adapter type="org.eclipse.ui.ide.IContributorResourceAdapter2"/>
+         <adapter type="org.eclipse.ui.IContainmentAdapter"/>
+         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+         <adapter type="org.eclipse.core.resources.IResource"/>
+			   <adapter type="org.eclipse.core.resources.IFolder"/>
+			   <adapter type="org.eclipse.core.resources.IProject"/>
+			   <adapter type="org.eclipse.core.resources.IContainer"/>
+			   <adapter type="org.eclipse.core.resources.IFile"/>
+			   <adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
+			   <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
+      </factory>
+      <factory
                adaptableType="org.eclipse.core.resources.IResource"
                class="com.googlecode.goclipse.ui.navigator.GoModelResourceAdapter">
             <adapter
                   type="com.googlecode.goclipse.ui.navigator.GoPackage">
             </adapter>
-         </factory>
-    </extension>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.ui.IEditorInput"
+            class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
+         <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.core.resources.IResource"
+            class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
+         <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.core.resources.IMarker"
+            class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
+         <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
+      </factory>
+   </extension>
+    
    <extension
          point="org.eclipse.ui.navigator.viewer">
       <viewerContentBinding
@@ -525,6 +539,62 @@
           description="Hide Go object (_obj) folders"
           targetId="org.eclipse.jdt.ui.PackageExplorer"
           pattern="_obj"/>
+   </extension>
+   
+   <!-- Search -->
+   
+   <extension point="org.eclipse.search.searchPages">
+      <page id="org.googlecode.goclipse.searchPage"
+         icon="icons/search_obj.png"
+         label="Go Search"
+         sizeHint="460,160"
+         extensions="go:90"
+         showScopeSection="true"
+         canSearchEnclosingProjects="true"
+         class="com.googlecode.goclipse.search.GoSearchPage">
+      </page>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Go Search"
+            description="Action set containing search related Go actions"
+            visible="false"
+            id="org.googlecode.goclipse.searchActionSet">
+<!-- see http://bugs.eclipse.org/bugs/show_bug.cgi?id=15684    -->
+<!-- Note: The menu (re-) definition has to be here due to bug: -->
+<!-- =================================================================== -->
+<!-- Search Menu                                                         -->
+<!-- =================================================================== -->
+         <menu
+               label="Se&amp;arch"
+               path="navigate"
+               id="org.eclipse.search.menu">
+        <groupMarker name="internalDialogGroup"/>   <!-- not to be used by clients  -->
+        <groupMarker name="dialogGroup"/>           <!-- to be used by clients      -->
+        <separator name="fileSearchContextMenuActionsGroup"/> <!-- to be used by clients      -->
+            <separator name="contextMenuActionsGroup"/> <!-- to be used by clients -->
+            <separator name="occurencesActionsGroup"/> <!-- to be used by clients -->
+            <separator name="extraSearchGroup"/> <!-- to be used by clients -->
+         </menu>
+         <action
+               label="Go..."
+               icon="icons/search_obj.png"
+               class="com.googlecode.goclipse.search.OpenGoSearchPageAction"
+               menubarPath="org.eclipse.search.menu/dialogGroup"
+               id="org.googlecode.goclipse.openSearchPage">
+         </action>
+      </actionSet>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.googlecode.goclipse.searchActionSet">
+         <part id="org.eclipse.search.SearchResultView"/>
+         <part id="com.googlecode.goclipse.editors.Editor"/>
+      </actionSetPartAssociation>
    </extension>
    
 </plugin>
