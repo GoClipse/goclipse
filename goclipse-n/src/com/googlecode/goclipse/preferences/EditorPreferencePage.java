@@ -38,18 +38,18 @@ public class EditorPreferencePage extends FieldEditorPreferencePage implements
     GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
 
 		addField(new BooleanFieldEditor(PreferenceConstants.FIELD_USE_HIGHLIGHTING,
-				"Use Highlighting", fieldParent));
+				"Use highlighting", fieldParent));
 
 		Label splitter = new Label(fieldParent, SWT.SEPARATOR | SWT.HORIZONTAL);
     GridDataFactory.swtDefaults().grab(true, false).span(3, 1).align(SWT.FILL, SWT.TOP).applyTo(splitter);
 
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,          "Keyword:",          fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,            "Value:",            fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,        "Primitive:",        fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR,          "Comment:",          fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, "Builtin Function:", fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_STRING_COLOR,           "String:",           fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, "Multiline String:", fieldParent));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,          "Keyword:",           fieldParent));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,            "Value:",             fieldParent));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,        "Primitive:",         fieldParent));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR,          "Comment:",           fieldParent));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, "Built-in function:", fieldParent));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_STRING_COLOR,           "String:",            fieldParent));
+		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, "Multi-line string:", fieldParent));
 	}
 
 	@Override

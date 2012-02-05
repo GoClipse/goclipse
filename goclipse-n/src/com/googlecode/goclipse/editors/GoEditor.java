@@ -1,10 +1,13 @@
 package com.googlecode.goclipse.editors;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
@@ -15,6 +18,8 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+
+import java.util.ResourceBundle;
 
 import com.googlecode.goclipse.Activator;
 
@@ -31,15 +36,13 @@ public class GoEditor extends TextEditor {
 	private GoEditorOutlinePage outlinePage;
 	
 	public GoEditor() {
-		super();
-		setSourceViewerConfiguration(new Configuration(this));
+		setSourceViewerConfiguration(new GoEditorSourceViewerConfiguration(this));
 		
 		setKeyBindingScopes(new String[] {"com.googlecode.goclipse.editor"});
 		
 		changeListener = new IPropertyChangeListener() {
-
 			@Override
-			public void propertyChange(PropertyChangeEvent event) { 
+			public void propertyChange(PropertyChangeEvent event) {
 //				SysUtils.debug("Preference Change Event");
 //				if (event.getProperty().equals(PreferenceConstants.FIELD_USE_HIGHLIGHTING)) {
 //					setSourceViewerConfiguration(new Configuration(colorManager));
@@ -59,7 +62,8 @@ public class GoEditor extends TextEditor {
 		setRulerContextMenuId("#GoEditorRulerContext");
 	}
 
-	protected void setTitleImage(Image image) {
+	@Override
+  protected void setTitleImage(Image image) {
 		super.setTitleImage(image);
 	}
 	
@@ -98,9 +102,9 @@ public class GoEditor extends TextEditor {
 	 
 	@Override
 	protected void configureSourceViewerDecorationSupport (SourceViewerDecorationSupport support) {
-		super.configureSourceViewerDecorationSupport(support);		
+		super.configureSourceViewerDecorationSupport(support);
 	 
-		char[] matchChars = {'(', ')', '[', ']', '{', '}'}; //which brackets to match		
+		char[] matchChars = {'(', ')', '[', ']', '{', '}'}; //which brackets to match
 		matcher = new DefaultCharacterPairMatcher(matchChars ,
 				IDocumentExtension3.DEFAULT_PARTITIONING);
 		support.setCharacterPairMatcher(matcher);
@@ -113,6 +117,19 @@ public class GoEditor extends TextEditor {
 		store.setDefault(EDITOR_MATCHING_BRACKETS_COLOR, "128,128,128");
 	}
 
+  @Override
+  protected void createActions() {
+    super.createActions();
+
+    IAction action;
+
+    action = new ToggleCommentAction(editorResourceBundle, "ToggleComment.", this);
+    action.setActionDefinitionId("com.googlecode.goclipse.actions.ToggleComment");
+    setAction("ToggleComment", action);
+    markAsStateDependentAction("ToggleComment", true);
+    configureToggleCommentAction();
+  }
+  
 	public DefaultCharacterPairMatcher getPairMatcher() {
 		return matcher;
 	}
@@ -136,7 +153,8 @@ public class GoEditor extends TextEditor {
 		}
 	}
 	
-	public void dispose() {
+	@Override
+  public void dispose() {
 		Activator.getDefault().getPreferenceStore().removePropertyChangeListener(changeListener);
 		
 		if (colorManager != null) {
@@ -150,10 +168,24 @@ public class GoEditor extends TextEditor {
 		super.dispose();
 	}
 
+  private void configureToggleCommentAction() {
+    IAction action = getAction("ToggleComment");
+
+    if (action instanceof ToggleCommentAction) {
+      ISourceViewer sourceViewer = getSourceViewer();
+      SourceViewerConfiguration configuration = getSourceViewerConfiguration();
+      ((ToggleCommentAction) action).configure(sourceViewer, configuration);
+    }
+  }
+  
 	protected void handleReconcilation(IRegion partition) {
 		if (outlinePage != null) {
 			outlinePage.handleEditorReconcilation();
 		}
 	}
+
+  private static final String BUNDLE_ID = "com.googlecode.goclipse.editors.GoEditorMessages";
+
+  private static ResourceBundle editorResourceBundle = ResourceBundle.getBundle(BUNDLE_ID);
 
 }

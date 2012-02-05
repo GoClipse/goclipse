@@ -37,6 +37,7 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
  * 
  * @author steel
  */
+@SuppressWarnings("unused")
 public class CodeContext {
 	
 	static HashMap<String, CodeContext> externalContexts = new HashMap<String, CodeContext>();
@@ -103,7 +104,7 @@ public class CodeContext {
 		
 		lexer.scan(fileText);
 		
-		codeContext.page 	   = new TokenizedPage(tokenizer.getTokenizedStream());		
+		codeContext.page 	   = new TokenizedPage(tokenizer.getTokenizedStream());
 		codeContext.pkg 	   = packageParser.getPckg();
 		codeContext.imports    = importParser.getImports();
 		codeContext.methods    = functionParser.getMethods();
@@ -207,7 +208,7 @@ public class CodeContext {
 	}
 	
 	/**
-	 * @param line 
+	 * @param line
 	 * @return
 	 */
 	public List<Node> getCompletionsForString(String line, String prefix, int linenumber){
@@ -235,7 +236,7 @@ public class CodeContext {
 		
 		String n = name+"()";
 		
-		// slowest possible searches... 
+		// slowest possible searches...
 		for(Method method: methods){
 			if(n.equals(method.getInsertionText())){
 				return method.getDocumentation();
@@ -252,7 +253,7 @@ public class CodeContext {
 	}
 	
 	/**
-	 * Declaration Only: 
+	 * Declaration Only:
 	 * Outside of function
 	 * 
 	 * @param args
@@ -262,7 +263,7 @@ public class CodeContext {
 	}
 	
 	/**
-	 * Declaration Only: 
+	 * Declaration Only:
 	 * Outside of function
 	 * 
 	 * @param args
@@ -297,7 +298,7 @@ public class CodeContext {
 			reader = new BufferedReader(new FileReader(filename));
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
-		}		
+		}
 		
 		try {
 			while((str += reader.readLine())!=null);

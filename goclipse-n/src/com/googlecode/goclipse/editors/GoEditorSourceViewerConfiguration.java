@@ -30,21 +30,19 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
-// TextSourceViewerConfiguration
-
 /**
  * @author steel
  */
-public class Configuration extends TextSourceViewerConfiguration {
+public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfiguration {
    private DoubleClickStrategy doubleClickStrategy;
    private GoScanner           keywordScanner;
-   private GoEditor			   editor;
+   private GoEditor			       editor;
    private MonoReconciler      reconciler;
    
    /**
     * @param colorManager
     */
-   public Configuration(GoEditor editor) {
+   public GoEditorSourceViewerConfiguration(GoEditor editor) {
 	   this.editor = editor;
    }
 
@@ -55,7 +53,7 @@ public class Configuration extends TextSourceViewerConfiguration {
    }
 
    @Override
-  public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
+   public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
       if (doubleClickStrategy == null)
          doubleClickStrategy = new DoubleClickStrategy();
       return doubleClickStrategy;

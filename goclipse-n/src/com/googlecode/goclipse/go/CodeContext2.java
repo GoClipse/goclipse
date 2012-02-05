@@ -19,6 +19,7 @@ import com.googlecode.goclipse.go.lang.model.Import;
 import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lang.model.Var;
 
+@SuppressWarnings("unused")
 public class CodeContext2 {
 
 	private FileScope fileScope;
@@ -31,7 +32,7 @@ public class CodeContext2 {
 	 */
 	class InternalDefaultHandler extends DefaultHandler {
 		
-		private static final String ASSIGNMENT_POSITION = "assignment_position";		
+    private static final String ASSIGNMENT_POSITION = "assignment_position";
 		private static final String COLUMN              = "column";
 		private static final String COMMENT             = "comment";
 		private static final String ENDCOLUMN           = "endcolumn";
@@ -56,11 +57,12 @@ public class CodeContext2 {
 		private static final String TYPE                = "type";
 		private static final String VAR                 = "var";
 		
-		private Node activeNode;		
+		private Node activeNode;
 		
 		/**
 		 */
-		public void endElement(String uri, String localName, String qName)
+		@Override
+    public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 
 			if (qName.equalsIgnoreCase(FILE)) {
@@ -77,11 +79,12 @@ public class CodeContext2 {
 		/**
 		 * 
 		 */
-		public void startElement(String uri, String localName, String qName, Attributes attributes) 
+		@Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes)
 			throws SAXException {
 			try {
 				if (FILE.equals(qName)) {
-					System.out.println(FILE);					
+					System.out.println(FILE);
 					fileScope = new FileScope();
 					fileScope.setStart(Integer.parseInt(attributes.getValue(LINE)));
 					fileScope.setEnd(Integer.parseInt(attributes.getValue(ENDLINE)));
@@ -139,8 +142,8 @@ public class CodeContext2 {
 				}
 				buildCodeContext(builder.toString());
 			} finally {
-				reader.close();				
-			}			
+				reader.close();
+			}
 		} catch ( FileNotFoundException e ) {
 			e.printStackTrace();
 		} catch ( IOException e ) {

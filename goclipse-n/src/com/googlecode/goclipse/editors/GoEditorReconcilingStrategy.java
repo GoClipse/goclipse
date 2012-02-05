@@ -8,7 +8,7 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 /**
  * This IReconcilingStrategy notifies the editor that a reconcile is occuring.
  * 
- * @see Configuration
+ * @see GoEditorSourceViewerConfiguration
  */
 public class GoEditorReconcilingStrategy implements IReconcilingStrategy {
 	private GoEditor editor;

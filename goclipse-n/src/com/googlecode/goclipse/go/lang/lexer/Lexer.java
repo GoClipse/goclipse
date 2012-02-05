@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Lexer {
 
 	/**
@@ -178,7 +179,7 @@ public class Lexer {
 
 			behind = current;
 			current = ahead;
-			ahead = (char) val;
+			ahead = val;
 
 			if (eatToken) {
 				eatToken = false;

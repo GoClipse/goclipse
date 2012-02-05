@@ -14,7 +14,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="com.googlecode.goclipse.editors.GoEditor"
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            contributorClass="com.googlecode.goclipse.editors.GoEditorActionContributor"
             extensions="go"
             icon="icons/gopage.png"
             id="com.googlecode.goclipse.editors.Editor"
@@ -103,6 +103,7 @@
             name="Editor">
       </page>
    </extension>
+
    <extension
          id="preferences"
          name="preferences"
@@ -110,11 +111,8 @@
       <initializer
             class="com.googlecode.goclipse.preferences.PreferenceInitializer">
       </initializer>
-      <scope
-            class="org.eclipse.core.internal.resources.ProjectPreferences"
-            name="go project">
-      </scope>
    </extension>
+
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
@@ -124,7 +122,7 @@
             name="Go">
       </perspective>
    </extension>
-   
+
    <extension point="org.eclipse.core.runtime.adapters">
       <factory class="com.googlecode.goclipse.ui.navigator.GoModelAdapter" adaptableType="com.googlecode.goclipse.ui.navigator.IGoElement">
          <adapter type="org.eclipse.ui.IPersistableElement"/>
@@ -377,6 +375,48 @@
 		   </action>
 	   </actionSet>
    </extension>
+   
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Go Coding"
+            description="Action set containing coding related Go actions"
+            visible="false"
+            id="com.googlecode.goclipse.codingActionSet">
+<!-- edit group -->
+         <action
+               definitionId="org.eclipse.ui.edit.text.shiftLeft"
+               label="S&amp;hift Left"
+               retarget="true"
+               menubarPath="com.googlecode.goclipse.editor.sourceMenu/format"
+               id="com.googlecode.goclipse.actions.ShiftLeft">
+         </action>
+         <action
+               definitionId="org.eclipse.ui.edit.text.shiftRight"
+               label="&amp;Shift Right"
+               retarget="true"
+               menubarPath="com.googlecode.goclipse.editor.sourceMenu/format"
+               id="com.googlecode.goclipse.actions.ShiftRight">
+         </action>
+<!-- Comment Group -->
+         <action
+               definitionId="com.googlecode.goclipse.editors.ToggleComment.run"
+               label="Togg&amp;le Comment"
+               retarget="true"
+               menubarPath="com.googlecode.goclipse.editor.sourceMenu/comment"
+               id="com.googlecode.goclipse.actions.ToggleComment">
+         </action>
+      </actionSet>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="com.googlecode.goclipse.codingActionSet">
+         <part id="com.googlecode.goclipse.editors.Editor"/>
+      </actionSetPartAssociation>
+   </extension>
+   
    <extension point="org.eclipse.ui.commands">
    	  <category
             name="Navigation"
@@ -491,18 +531,11 @@
                menubarPath="com.googlecode.goclipse.editor.sourceMenu/additions">
          </action>
          
-         <action
-               class="com.googlecode.goclipse.editors.ToggleCommentActionDelegate"
-               definitionId="com.googlecode.goclipse.editors.ToggleComment.run"
-               id="com.googlecode.goclipse.togglecomment"
-               label="Toggle Comment"
-               menubarPath="com.googlecode.goclipse.editor.sourceMenu/format">
-         </action>
-       
          <menu
                id="com.googlecode.goclipse.editor.sourceMenu"
                label="&amp;Source"
                path="edit">
+            <separator name="comment"/>
             <separator name="format"/>
             <separator name="additions"/>
          </menu>
