@@ -49,9 +49,8 @@ public class GoCodeClient {
 	public ExternalCommand buildGoCodeCommand() {
 		
 		path = Activator.getDefault().getPreferenceStore().getString(PreferencePage.GOCODE_PATH);
-		if (path == null) {
-			buildGoCodePath();
-		}
+		buildGoCodePath();
+		
 		
 		ExternalCommand goCodeCommand;
 		if (com.googlecode.goclipse.gocode.Activator.getDefault().getGoCodePath() == null) {
@@ -75,7 +74,8 @@ public class GoCodeClient {
 	public List<String> getCompletions(String fileName, final String bufferText, int offset) {
 		
 		ExternalCommand goCodeCommand = new ExternalCommand(Activator.getDefault().getPreferenceStore().getString(PreferencePage.GOCODE_PATH));
-
+		buildGoCodePath();
+		
 		if (!goCodeCommand.commandExists()) {
 			// Caveat: environment variables aren't always available. We only use GOBIN if GOROOT/bin
 			// doesn't contain the gocode command.
