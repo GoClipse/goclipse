@@ -7,7 +7,9 @@ import org.eclipse.jdt.internal.ui.text.CombinedWordRule.WordMatcher;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.TextAttribute;
+import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
+import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
@@ -24,7 +26,7 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
 public class GoScanner extends RuleBasedScanner {
 
 	public GoScanner() {
-	   Token text = new Token(new TextAttribute(ColorManager.INSTANCE.getColor(IColorConstants.DEFAULT), null, SWT.NONE));
+	   Token text = new Token(new TextAttribute( ColorManager.INSTANCE.getColor(IColorConstants.DEFAULT), null, SWT.NONE));
 	   CombinedWordRule combinedWordRule = new CombinedWordRule(new IWordDetector() {
          public boolean isWordStart(char c) {
             String s =new String(new char[]{c});
@@ -38,54 +40,34 @@ public class GoScanner extends RuleBasedScanner {
          }
       }, text);
 	   
-	   
-	   
-	   //WordDetector wordDetector = new WordDetector();
-	   //KeywordRule keywordRule = new KeywordRule(wordDetector);
-	   //wordDetector.keywordRule = keywordRule;
-//		WordRule keywordRule = new WordRule(new IWordDetector() {
-//         public boolean isWordStart(char c) {
-//            String s =new String(new char[]{c});
-//            
-//            return s.matches("[A-Za-z_]");
-//         }
-//
-//         public boolean isWordPart(char c) {
-//            String s =new String(new char[]{c});
-//            return s.matches("[A-Za-z0-9_]");
-//         }
-//      });
 	    IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
 		boolean useHighlighting = prefStore.getBoolean(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
 		
 		if(useHighlighting){
-			Color keywordColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR         ));
-			Color valueColor           = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR           ));
-			Color primitiveColor       = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR       ));
-			//Color commentColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR         ));  // Used in com.googlecode.goclipse.editors.Configuration
-			Color builtinFunctionColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR));
-			//Color stringColor          = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_STRING_COLOR          ));  // Used in com.googlecode.goclipse.editors.Configuration
+			final Color keywordColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR         ));
+			final Color valueColor           = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR           ));
+			final Color primitiveColor       = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR       ));
+			final Color builtinFunctionColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR));
+			final Color textColor            = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_TEXT_COLOR));
 			
-			int keywordStyle         = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE         );
-			int valueStyle           = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE           );
-			int primitiveStyle       = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE       );
-			//int commentStyle         = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE         ); // Used in com.googlecode.goclipse.editors.Configuration
-			int builtinFunctionStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE);
-			//int stringStyle          = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_STRING_STYLE          ); // Used in com.googlecode.goclipse.editors.Configuration
-						
+			final int keywordStyle         = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE         );
+			final int valueStyle           = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE           );
+			final int primitiveStyle       = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE       );
+			final int builtinFunctionStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE);
+			final int textStyle            = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_TEXT_STYLE);
+			
 			Token keyword   		= new Token(new TextAttribute(keywordColor,         null, keywordStyle        ));
 			Token value     		= new Token(new TextAttribute(valueColor,           null, valueStyle          ));
 			Token primitive 		= new Token(new TextAttribute(primitiveColor,       null, primitiveStyle      ));
-			//Token comment   		= new Token(new TextAttribute(commentColor,         null, commentStyle        )); // Used in com.googlecode.goclipse.editors.Configuration
 			Token builtinFunction   = new Token(new TextAttribute(builtinFunctionColor, null, builtinFunctionStyle));
-			//Token string    		= new Token(new TextAttribute(stringColor,          null, stringStyle         )); // Used in com.googlecode.goclipse.editors.Configuration
-//			Token text           = new Token(new TextAttribute(manager.getColor(IColorConstants.DEFAULT),           null, SWT.BOLD|SWT.ITALIC));
+			Token textToken         = new Token(new TextAttribute(textColor,            null, textStyle));
 			
-			WordMatcher keywordRule = new WordMatcher();
+			final WordMatcher keywordRule = new WordMatcher();
 			combinedWordRule.addWordMatcher(keywordRule);
-	      
+			
+			this.setDefaultReturnToken(textToken);
+			
 			// add tokens for each reserved word
-//			rule.addWord("[a-zA-Z_]",   text);
 			keywordRule.addWord("break",       keyword);
 			keywordRule.addWord("default",     keyword);
 			keywordRule.addWord("func",        keyword);
@@ -148,6 +130,7 @@ public class GoScanner extends RuleBasedScanner {
 			keywordRule.addWord("uintptr", primitive); // an unsigned integer large enough to store the uninterpreted bits of a pointer value
 			keywordRule.addWord("string",  primitive);
 			keywordRule.addWord("bool",    primitive);
+			keywordRule.addWord("rune",    primitive);
 	
 			setRules(new IRule[] {  
 					 combinedWordRule,
@@ -155,8 +138,8 @@ public class GoScanner extends RuleBasedScanner {
 						public boolean isWhitespace(char c) {
 							return Character.isWhitespace(c);
 						}
-					 }), 
-					});
+					 }),
+				});
 		}
 
 	}

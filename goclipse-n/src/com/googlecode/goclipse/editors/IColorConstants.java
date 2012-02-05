@@ -13,4 +13,5 @@ public interface IColorConstants {
 	RGB PRIMITIVE  		 = new RGB(127,   0,  85);
 	RGB VALUE      		 = new RGB(127,   0,  85);
 	RGB BUILTIN_FUNCTION = new RGB(  0,   0,   0);
+	RGB NORMAL           = new RGB(  0,   0,   0);
 }
