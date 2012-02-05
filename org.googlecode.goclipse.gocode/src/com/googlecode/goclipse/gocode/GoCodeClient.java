@@ -25,9 +25,9 @@ public class GoCodeClient {
 
 	private String error;
 	private String path;
-	private String goarch; 
-	private String goos;   
-	private String goroot; 
+	private String goarch;
+	private String goos;
+	private String goroot;
 	//private String exeName;
 	
 	public GoCodeClient() {}
@@ -36,9 +36,9 @@ public class GoCodeClient {
 	 * 
 	 */
 	public void buildGoCodePath(){
-		goarch  = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);		
-		goos    = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);		
-		goroot  = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);		
+		goarch  = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);
+		goos    = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);
+		goroot  = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
 		//exeName = "gocode" + Environment.INSTANCE.getExecutableExtension();
 	}
 	
@@ -48,7 +48,7 @@ public class GoCodeClient {
 	 */
 	public ExternalCommand buildGoCodeCommand() {
 		
-		path = Activator.getDefault().getPreferenceStore().getString(PreferencePage.GOCODE_PATH);			
+		path = Activator.getDefault().getPreferenceStore().getString(PreferencePage.GOCODE_PATH);
 		if (path == null) {
 			buildGoCodePath();
 		}
@@ -82,7 +82,7 @@ public class GoCodeClient {
 			String goBinPath = System.getenv("GOBIN");
 			
 			if (goBinPath != null) {
-				ExternalCommand command = new ExternalCommand(path);				
+				ExternalCommand command = new ExternalCommand(path);
 				goCodeCommand.setWorkingFolder(Path.fromOSString(goBinPath).toOSString());
 				
 				if (command.commandExists()) {
@@ -98,7 +98,7 @@ public class GoCodeClient {
 		parameters.add("set");
 		parameters.add("lib-path");
 				
-		String pkgPath = 
+		String pkgPath =
 			Environment.INSTANCE.getAbsoluteProjectPath()+
 			"/"+Environment.INSTANCE.getPkgOutputFolder().toOSString();
 		

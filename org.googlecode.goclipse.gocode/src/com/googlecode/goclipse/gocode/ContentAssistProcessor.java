@@ -29,7 +29,9 @@ import com.googlecode.goclipse.go.CodeContext;
 public class ContentAssistProcessor implements IContentAssistProcessor {
 	
 	GoCodeClient client = new GoCodeClient();
+	
 	private static HashMap<String, CodeContext> codeContexts = new HashMap<String, CodeContext>();
+	
 	private Image defaultImage     = com.googlecode.goclipse.Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
 	private Image funcImage        = com.googlecode.goclipse.Activator.getImageDescriptor("icons/function_co.png").createImage();
 	private Image privateFuncImage = com.googlecode.goclipse.Activator.getImageDescriptor("icons/public_co.gif").createImage();
@@ -38,12 +40,16 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 	private Image importImage      = com.googlecode.goclipse.Activator.getImageDescriptor("icons/imp_obj.gif").createImage();
 	private Image privateVarImage  = com.googlecode.goclipse.Activator.getImageDescriptor("icons/field_private_obj.gif").createImage();
 	private Image publicVarImage   = com.googlecode.goclipse.Activator.getImageDescriptor("icons/field_public_obj.gif").createImage();
-	private Image localVarImage    = com.googlecode.goclipse.Activator.getImageDescriptor("icons/variable_local_obj.gif").createImage();
+	@SuppressWarnings("unused")
+  private Image localVarImage    = com.googlecode.goclipse.Activator.getImageDescriptor("icons/variable_local_obj.gif").createImage();
 		
 	public int A = 0;
-	private int A(){
+	
+	@SuppressWarnings("unused")
+  private int A(){
 		return 0;
 	}
+	
 	/**
 	 * 
 	 */
@@ -51,11 +57,8 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 		
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer, int)
-	 */
-	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
+	@Override
+  public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
 		IPath path = null;
 		try {
 			IEditorPart editor = Activator.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
@@ -69,9 +72,9 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 
         ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
 		
-        if(path!=null){			
+        if(path!=null){
 			
-			String      filename 	= path.toOSString();			
+			String      filename 	= path.toOSString();
 			IDocument   document 	= viewer.getDocument();
 			CodeContext codeContext = codeContexts.get(filename);
 			
@@ -89,10 +92,10 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 				
 				try {
 					codeContext = CodeContext.getCodeContext(filename, document.get());
-				} 
+				}
 				catch (IOException e) {
 					e.printStackTrace();
-				} 
+				}
 			}
 			
 			
@@ -106,7 +109,7 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 					for (String string : completions) {
 						
 						String prefix = "";
-				        prefix = lastWord(document, offset);	
+				        prefix = lastWord(document, offset);
 						int firstComma = string.indexOf(",,");
 						int secondComma = string.indexOf(",,", firstComma+2);
 						
@@ -183,43 +186,28 @@ public class ContentAssistProcessor implements IContentAssistProcessor {
 		return "";
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeContextInformation(org.eclipse.jface.text.ITextViewer, int)
-	 */
-	public IContextInformation[] computeContextInformation(ITextViewer viewer,	int offset) {
+	@Override
+  public IContextInformation[] computeContextInformation(ITextViewer viewer,	int offset) {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getCompletionProposalAutoActivationCharacters()
-	 */
-	public char[] getCompletionProposalAutoActivationCharacters() {
+	@Override
+  public char[] getCompletionProposalAutoActivationCharacters() {
 		return new char[] {'.'};
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationAutoActivationCharacters()
-	 */
-	public char[] getContextInformationAutoActivationCharacters() {
+	@Override
+  public char[] getContextInformationAutoActivationCharacters() {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getErrorMessage()
-	 */
-	public String getErrorMessage() {
+	@Override
+  public String getErrorMessage() {
 		return client.getError();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#getContextInformationValidator()
-	 */
-	public IContextInformationValidator getContextInformationValidator() {
+	@Override
+  public IContextInformationValidator getContextInformationValidator() {
 		return null;
 	}
 

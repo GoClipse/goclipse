@@ -53,7 +53,7 @@ public class Activator extends AbstractUIPlugin {
 				String arch = System.getProperty("os.arch");
 				
 				if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-					winGocodeKill();					
+					winGocodeKill();
 					goCodeDir     = file.toString() + "\\tools\\win32";
 					goCodePath    = file.toString() + "\\tools\\win32\\gocode.exe";
 					goCodeCommand = new ExternalCommand(goCodePath);
@@ -65,7 +65,7 @@ public class Activator extends AbstractUIPlugin {
 					
 				} else if (System.getProperty("os.name").toLowerCase().contains("linux") && ("x86_64".equals(arch) || "amd64".equals(arch))) {
 					goCodeDir     = file.toString() + "/tools/linux64";
-					goCodePath    = file.toString() + "/tools/linux64/gocode";					
+					goCodePath    = file.toString() + "/tools/linux64/gocode";
 				}
 				
 				// log the gocode path
@@ -83,19 +83,15 @@ public class Activator extends AbstractUIPlugin {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 		}
-
-		
 
 		public void stop() {
 			if (goCodeCommand != null) {
 				goCodeCommand.destroy();
 			}
-			
 
 			if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-				winGocodeKill();	
+				winGocodeKill();
 			}
 		}
 	}
@@ -107,31 +103,19 @@ public class Activator extends AbstractUIPlugin {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
-	 * )
-	 */
-	public void start(BundleContext context) throws Exception {
+	@Override
+  public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 		goCodeRunner = new GoCodeRunner();
 		new Thread(goCodeRunner).start();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
-	 * )
-	 */
-	public void stop(BundleContext context) throws Exception {
+	@Override
+  public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
-		goCodeRunner.stop();		
+		goCodeRunner.stop();
 	}
 
 	/**
@@ -147,7 +131,6 @@ public class Activator extends AbstractUIPlugin {
 	 * 
 	 */
 	private void winGocodeKill() {
-		
 		// shutdown previous gocode instances with command:
 		//    TASKKILL /F /IM "gocode.exe"
 		try{
@@ -155,9 +138,9 @@ public class Activator extends AbstractUIPlugin {
 			ArrayList<String> killlist = new ArrayList<String>();
 			killlist.add("/F");
 			killlist.add("/IM");
-			killlist.add("\"gocode.exe\"");		
+			killlist.add("\"gocode.exe\"");
 			KillCommand.execute(killlist);
-		} 
+		}
 		catch(Exception error) {
 			Activator.getDefault().getLog().log(
 					new Status(Status.ERROR, Activator.PLUGIN_ID, "Windows taskkill process failed.  Could not kill gocode process."));
