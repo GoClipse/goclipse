@@ -24,9 +24,12 @@ import java.util.ResourceBundle;
 import com.googlecode.goclipse.Activator;
 
 public class GoEditor extends TextEditor {
-	
 	public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
 	public final static String EDITOR_MATCHING_BRACKETS_COLOR= "matchingBracketsColor";
+
+  private static final String BUNDLE_ID = "com.googlecode.goclipse.editors.GoEditorMessages";
+
+  private static ResourceBundle editorResourceBundle = ResourceBundle.getBundle(BUNDLE_ID);
 
 	private ColorManager colorManager;
 	private IPropertyChangeListener changeListener;
@@ -36,7 +39,7 @@ public class GoEditor extends TextEditor {
 	private GoEditorOutlinePage outlinePage;
 	
 	public GoEditor() {
-		setSourceViewerConfiguration(new GoEditorSourceViewerConfiguration(this));
+		setSourceViewerConfiguration(new GoEditorSourceViewerConfiguration(this, getPreferenceStore()));
 		
 		setKeyBindingScopes(new String[] {"com.googlecode.goclipse.editor"});
 		
@@ -183,9 +186,5 @@ public class GoEditor extends TextEditor {
 			outlinePage.handleEditorReconcilation();
 		}
 	}
-
-  private static final String BUNDLE_ID = "com.googlecode.goclipse.editors.GoEditorMessages";
-
-  private static ResourceBundle editorResourceBundle = ResourceBundle.getBundle(BUNDLE_ID);
 
 }

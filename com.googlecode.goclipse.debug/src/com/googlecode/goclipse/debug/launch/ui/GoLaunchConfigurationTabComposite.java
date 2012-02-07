@@ -8,6 +8,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.ui.ILaunchConfigurationDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -20,385 +22,354 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
 import com.googlecode.goclipse.debug.launch.BuildConfiguration;
 import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
 
 /**
- * 
  * @author steel
  */
 public class GoLaunchConfigurationTabComposite extends Composite {
-	private Group projectGroup;
-	private Text projectField;
-	private Button findProjectButton = null;
-	private Group mainGroup = null;
-	private Text mainSourceField = null;
-	private Button mainSourceSearchButton = null;
-	private Group buildConfigurationGroup = null;
-	private Combo buildConfigurationCombo = null;
-	private Group programArgumentsgroup = null;
-	private Text programArgumentsTextArea = null;
-	private GoLaunchConfigurationTab mainLaunchConfigurationTab = null;
+  private Group projectGroup;
+  private Text projectField;
+  private Button findProjectButton = null;
+  private Group applicationGroup = null;
+  private Text mainSourceField = null;
+  private Button mainSourceSearchButton = null;
+  private Combo buildConfigurationCombo = null;
+  private Text programArgumentsTextArea = null;
+  private GoLaunchConfigurationTab mainLaunchConfigurationTab = null;
+  private ILaunchConfigurationDialog launchDialog;
+  
+  /**
+   * @param parent
+   * @param style
+   */
+  public GoLaunchConfigurationTabComposite(Composite parent, GoLaunchConfigurationTab tab, int style) {
+    super(parent, style);
+    mainLaunchConfigurationTab = tab;
+    initialize();
+  }
 
-	/**
-	 * 
-	 * @param parent
-	 * @param style
-	 */
-	public GoLaunchConfigurationTabComposite(Composite parent, GoLaunchConfigurationTab tab,
-			int style) {
-		super(parent, style);
-		mainLaunchConfigurationTab = tab;
-		initialize();
-	}
-
-	/**
+  /**
 	 * 
 	 */
-	private void initialize() {
-		GridData gridData1 = new GridData();
-		gridData1.grabExcessHorizontalSpace = false;
-		gridData1.horizontalAlignment = GridData.BEGINNING;
-		gridData1.heightHint = -1;
-		gridData1.widthHint = -1;
-		gridData1.verticalAlignment = GridData.CENTER;
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.heightHint = -1;
-		gridData.horizontalIndent = 0;
-		gridData.verticalAlignment = GridData.CENTER;
-		gridData.widthHint = -1;
-		gridData.grabExcessHorizontalSpace = true;
-		setSize(new Point(378, 266));
-		setLayout(new GridLayout());
+  private void initialize() {
+    GridData gridData = new GridData();
+    gridData.horizontalAlignment = GridData.FILL;
+    gridData.heightHint = -1;
+    gridData.horizontalIndent = 0;
+    gridData.verticalAlignment = GridData.CENTER;
+    gridData.widthHint = -1;
+    gridData.grabExcessHorizontalSpace = true;
+    setSize(new Point(378, 266));
+    setLayout(new GridLayout());
 
-		projectGroup = new Group(this, SWT.NONE);
-		createMainGroup();
-		createBuildConfigurationGroup();
-		createProgramArgumentsgroup();
-		projectField = new Text(projectGroup, SWT.BORDER);
-		projectField.setLayoutData(gridData);
-		projectField.addModifyListener(new ModifyListener() {
+    projectGroup = new Group(this, SWT.NONE);
+    createApplicationGroup();
+    projectField = new Text(projectGroup, SWT.BORDER);
+    projectField.setLayoutData(gridData);
+    projectField.addModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        updateState();
+      }
+    });
 
-			@Override
-			public void modifyText(ModifyEvent e) {
-				updateState();
-			}
-		});
+    findProjectButton = mainLaunchConfigurationTab.createPushButton(projectGroup, "&Browse...",
+        null);
+    findProjectButton.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        try {
+          IProject[] projects = Environment.INSTANCE.getCurrentProject().getWorkspace().getRoot().getProjects();
+          ArrayList<IProject> goProjects = new ArrayList<IProject>();
 
-		findProjectButton = new Button(projectGroup, SWT.NONE);
-		findProjectButton.setText("Search...");
-		findProjectButton.setLayoutData(gridData1);
-		findProjectButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
+          for (IProject project : projects) {
+            if (project.isOpen()) {
+              IProjectNature nature = project.getNature(GoNature.NATURE_ID);
+              if (nature != null) {
+                goProjects.add(project);
+              }
+            }
+          }
 
-				try {
-					IProject[] projects = Environment.INSTANCE
-							.getCurrentProject().getWorkspace().getRoot()
-							.getProjects();
-					ArrayList<IProject> goProjects = new ArrayList<IProject>();
+          ResourceListSelectionDialog dialog = new ResourceListSelectionDialog(getShell(),
+              goProjects.toArray(new IProject[goProjects.size()]));
 
-					for (IProject project : projects) {
-						if (project.isOpen()) {
-							IProjectNature nature = project.getNature(GoNature.NATURE_ID);
-							if (nature != null) {
-								goProjects.add(project);
-							}
-						}
-					}
+          dialog.setStartingPattern("?");
+          dialog.setTitle("Go Project Selection:");
 
-					ResourceListSelectionDialog dialog = new ResourceListSelectionDialog(
-							getShell(), goProjects
-									.toArray(new IProject[goProjects.size()]));
+          dialog.open();
+          Object[] objs = dialog.getResult();
+          if (objs != null && objs.length > 0) {
+            projectField.setText(((IProject) objs[0]).getName());
+          }
+        } catch (CoreException e1) {
+          GoDebugPlugin.logError(e1);
+        }
+        mainLaunchConfigurationTab.validate();
+      }
+    });
+    GridLayout projectGroupLayout = new GridLayout();
+    projectGroupLayout.makeColumnsEqualWidth = false;
+    projectGroupLayout.numColumns = 2;
+    projectGroup.setLayout(projectGroupLayout);
+    GridData projectGroupLData = new GridData();
+    projectGroupLData.horizontalAlignment = GridData.FILL;
+    projectGroupLData.grabExcessHorizontalSpace = true;
+    projectGroup.setLayoutData(projectGroupLData);
+    projectGroup.setText("Project:");
 
-					dialog.setStartingPattern("?");
-					dialog.setTitle("Go Project Selection:");
+  }
 
-					dialog.open();
-					Object[] objs = dialog.getResult();
-					if (objs.length > 0) {
-						projectField.setText(((IProject) objs[0]).getName());
-					}
-				} catch (CoreException e1) {
-					e1.printStackTrace();
-				}
-				mainLaunchConfigurationTab.validate();
-			}
-		});
-		GridLayout projectGroupLayout = new GridLayout();
-		projectGroupLayout.makeColumnsEqualWidth = false;
-		projectGroupLayout.numColumns = 2;
-		projectGroup.setLayout(projectGroupLayout);
-		GridData projectGroupLData = new GridData();
-		projectGroupLData.horizontalAlignment = GridData.FILL;
-		projectGroupLData.grabExcessHorizontalSpace = true;
-		projectGroup.setLayoutData(projectGroupLData);
-		projectGroup.setText("Project:");
+  public Text getProjectField() {
+    return projectField;
+  }
 
-	}
+  /**
+   * This method initializes mainGroup
+   */
+  private void createApplicationGroup() {
+    GridData gridData3 = new GridData();
+    gridData3.grabExcessHorizontalSpace = true;
+    gridData3.verticalAlignment = GridData.CENTER;
+    gridData3.horizontalAlignment = GridData.FILL;
+    GridLayout gridLayout = new GridLayout();
+    gridLayout.numColumns = 3;
+    GridData gridData2 = new GridData();
+    gridData2.grabExcessHorizontalSpace = true;
+    gridData2.verticalAlignment = GridData.FILL;
+    gridData2.grabExcessVerticalSpace = false;
+    gridData2.horizontalAlignment = GridData.FILL;
+    applicationGroup = new Group(this, SWT.NONE);
+    applicationGroup.setLayoutData(gridData2);
+    applicationGroup.setLayout(gridLayout);
+    applicationGroup.setText("Application:");
 
-	public Text getProjectField() {
-		return projectField;
-	}
+    Label label = new Label(applicationGroup, SWT.NONE);
+    label.setText("Main source file:");
+    mainSourceField = new Text(applicationGroup, SWT.BORDER);
+    mainSourceField.setLayoutData(gridData3);
+    mainSourceField.addModifyListener(new ModifyListener() {
 
-	/**
-	 * This method initializes mainGroup
-	 * 
-	 */
-	private void createMainGroup() {
-		GridData gridData3 = new GridData();
-		gridData3.grabExcessHorizontalSpace = true;
-		gridData3.verticalAlignment = GridData.CENTER;
-		gridData3.horizontalAlignment = GridData.FILL;
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
-		GridData gridData2 = new GridData();
-		gridData2.grabExcessHorizontalSpace = true;
-		gridData2.verticalAlignment = GridData.FILL;
-		gridData2.grabExcessVerticalSpace = false;
-		gridData2.horizontalAlignment = GridData.FILL;
-		mainGroup = new Group(this, SWT.NONE);
-		mainGroup.setLayoutData(gridData2);
-		mainGroup.setLayout(gridLayout);
-		mainGroup.setText("Go Application Main Source File:");
-		mainSourceField = new Text(mainGroup, SWT.BORDER);
-		mainSourceField.setLayoutData(gridData3);
-		mainSourceField.addModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        updateState();
+      }
+    });
+    mainSourceSearchButton = mainLaunchConfigurationTab.createPushButton(applicationGroup,
+        "Search...", null);
+    mainSourceSearchButton.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        try {
+          IProject project = Environment.INSTANCE.getCurrentProject().getWorkspace().getRoot().getProject(
+              getProject());
+          String[] pathRoots = Environment.INSTANCE.getSourceFoldersAsStringArray(project);
 
-			@Override
-			public void modifyText(ModifyEvent e) {
-				updateState();
-			}
-		});
-		mainSourceSearchButton = new Button(mainGroup, SWT.NONE);
-		mainSourceSearchButton.setText("Search...");
-		mainSourceSearchButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				try {
-					IProject project = Environment.INSTANCE.getCurrentProject()
-							.getWorkspace().getRoot().getProject(getProject());
-					String[] pathRoots = Environment.INSTANCE
-							.getSourceFoldersAsStringArray(project);
+          ArrayList<IResource> resources = new ArrayList<IResource>();
 
-					ArrayList<IResource> resources = new ArrayList<IResource>();
+          // load stack
+          Stack<IFolder> stack = new Stack<IFolder>();
+          for (String path : pathRoots) {
+            IResource res = project.findMember(path);
+            if (res.getType() == IResource.FOLDER) {
+              stack.push((IFolder) res);
+            }
+          }
 
-					// load stack
-					Stack<IFolder> stack = new Stack<IFolder>();
-					for (String path : pathRoots) {
-						IResource res = project.findMember(path);
-						if (res.getType() == IResource.FOLDER) {
-							stack.push((IFolder) res);
-						}
-					}
+          // walk resource tree
+          while (!stack.isEmpty()) {
+            IFolder folder = stack.pop();
+            for (IResource resource : folder.members()) {
+              if (resource.getType() == IResource.FILE && resource.getName().endsWith(".go")) {
+                resources.add(resource);
+              } else if (resource.getType() == IResource.FOLDER) {
+                stack.push((IFolder) resource);
+              }
+            }
+          }
 
-					// walk resource tree
-					while (!stack.isEmpty()) {
-						IFolder folder = stack.pop();
-						for (IResource resource : folder.members()) {
-							if (resource.getType() == IResource.FILE
-									&& resource.getName().endsWith(".go")) {
-								resources.add(resource);
-							} else if (resource.getType() == IResource.FOLDER) {
-								stack.push((IFolder) resource);
-							}
-						}
-					}
+          ResourceListSelectionDialog dialog = new ResourceListSelectionDialog(getShell(),
+              resources.toArray(new IResource[resources.size()]));
 
-					ResourceListSelectionDialog dialog = new ResourceListSelectionDialog(
-							getShell(), resources
-									.toArray(new IResource[resources.size()]));
+          dialog.setStartingPattern("?");
+          dialog.setTitle("Go Main File Selection:");
 
-					dialog.setStartingPattern("?");
-					dialog.setTitle("Go Main File Selection:");
+          dialog.open();
+          Object[] objs = dialog.getResult();
+          if (objs != null && objs.length > 0) {
+            mainSourceField.setText(((IResource) objs[0]).getProjectRelativePath().toString());
+          }
+        } catch (CoreException e1) {
+          GoDebugPlugin.logError(e1);
+        }
+        mainLaunchConfigurationTab.validate();
+      }
+    });
 
-					dialog.open();
-					Object[] objs = dialog.getResult();
-					if (objs.length > 0) {
-						mainSourceField.setText(((IResource) objs[0])
-								.getProjectRelativePath().toString());
-					}
-				} catch (CoreException e1) {
-					e1.printStackTrace();
-				}
-				mainLaunchConfigurationTab.validate();
-			}
-		});
-		
-		setMainConfigEnabled(false);
-	}
+    setMainConfigEnabled(false);
 
-	/**
-	 * This method initializes buildConfigurationGroup
-	 * 
-	 */
-	private void createBuildConfigurationGroup() {
-		GridData gridData4 = new GridData();
-		gridData4.horizontalAlignment = GridData.FILL;
-		gridData4.verticalAlignment = GridData.CENTER;
-		buildConfigurationGroup = new Group(this, SWT.NONE);
-		buildConfigurationGroup.setLayout(new GridLayout());
-		buildConfigurationGroup.setLayoutData(gridData4);
-		createBuildConfigurationCombo();
-		buildConfigurationGroup.setText("Build Configuration:");
-	}
+    createProgramArguments();
 
-	/**
-	 * This method initializes buildConfigurationCombo
-	 * 
-	 */
-	private void createBuildConfigurationCombo() {
-		GridData gridData5 = new GridData();
-		gridData5.grabExcessHorizontalSpace = true;
-		gridData5.verticalAlignment = GridData.CENTER;
-		gridData5.horizontalAlignment = GridData.FILL;
-		buildConfigurationCombo = new Combo(buildConfigurationGroup,
-				SWT.DROP_DOWN | SWT.BORDER | SWT.READ_ONLY);
+    createBuildConfigurationCombo();
+  }
 
-		buildConfigurationCombo.addModifyListener(new ModifyListener() {
+  /**
+   * This method initializes buildConfigurationCombo
+   */
+  private void createBuildConfigurationCombo() {
+    Label label = new Label(applicationGroup, SWT.NONE);
+    label.setText("Build configuration:");
 
-			@Override
-			public void modifyText(ModifyEvent e) {
-				updateState();
-			}
-		});
+    GridData gridData5 = new GridData();
+    gridData5.grabExcessHorizontalSpace = true;
+    gridData5.verticalAlignment = GridData.CENTER;
+    gridData5.horizontalAlignment = GridData.FILL;
+    gridData5.horizontalSpan = 2;
+    buildConfigurationCombo = new Combo(applicationGroup, SWT.DROP_DOWN | SWT.BORDER
+        | SWT.READ_ONLY);
+    buildConfigurationCombo.addModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        updateState();
+      }
+    });
 
-		for (BuildConfiguration buildConfiguration : BuildConfiguration
-				.values()) {
-			buildConfigurationCombo.add(buildConfiguration.toString());
-		}
-		buildConfigurationCombo.select(0);
-		buildConfigurationCombo.setLayoutData(gridData5);
-	}
+    for (BuildConfiguration buildConfiguration : BuildConfiguration.values()) {
+      buildConfigurationCombo.add(buildConfiguration.toString());
+    }
+    buildConfigurationCombo.select(0);
+    buildConfigurationCombo.setLayoutData(gridData5);
+  }
 
-	/**
-	 * This method initializes programArgumentsgroup
-	 * 
-	 */
-	private void createProgramArgumentsgroup() {
-		GridData gridData7 = new GridData();
-		gridData7.grabExcessHorizontalSpace = true;
-		gridData7.horizontalAlignment = GridData.FILL;
-		gridData7.verticalAlignment = GridData.FILL;
-		gridData7.grabExcessVerticalSpace = true;
-		GridData gridData6 = new GridData();
-		gridData6.verticalSpan = 2;
-		gridData6.grabExcessVerticalSpace = true;
-		gridData6.horizontalAlignment = GridData.FILL;
-		gridData6.verticalAlignment = GridData.FILL;
-		gridData6.grabExcessHorizontalSpace = true;
-		programArgumentsgroup = new Group(this, SWT.NONE);
-		programArgumentsgroup.setLayout(new GridLayout());
-		programArgumentsgroup.setLayoutData(gridData6);
-		programArgumentsgroup.setText("Program Arguments:");
-		programArgumentsTextArea = new Text(programArgumentsgroup, SWT.MULTI
-				| SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
-		programArgumentsTextArea.setLayoutData(gridData7);
-		programArgumentsTextArea.addModifyListener(new ModifyListener() {
+  /**
+   * This method initializes programArgumentsgroup
+   */
+  private void createProgramArguments() {
+    GridData gridData7 = new GridData();
+    gridData7.grabExcessHorizontalSpace = true;
+    gridData7.horizontalAlignment = GridData.FILL;
+    gridData7.grabExcessVerticalSpace = true;
+    gridData7.heightHint = 75;
+    gridData7.horizontalSpan = 2;
 
-			@Override
-			public void modifyText(ModifyEvent e) {
-				updateState();
-			}
-		});
-	}
+    Label label = new Label(applicationGroup, SWT.NONE);
+    label.setText("Arguments:");
+    GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(label);
 
-	/**
-	 * @param projectname
-	 */
-	public void setProject(String projectname) {
-		projectField.setText(projectname);
-	}
+    programArgumentsTextArea = new Text(applicationGroup, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL
+        | SWT.BORDER);
+    programArgumentsTextArea.setLayoutData(gridData7);
+    programArgumentsTextArea.addModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        updateState();
+      }
+    });
+  }
 
-	/**
-	 * @return
-	 */
-	public String getProject() {
-		return projectField.getText();
-	}
+  /**
+   * @param projectname
+   */
+  public void setProject(String projectname) {
+    projectField.setText(projectname);
+  }
 
-	/**
-	 * @param file
-	 */
-	public void setMainFile(String file) {
-		mainSourceField.setText(file);
-	}
+  /**
+   * @return
+   */
+  public String getProject() {
+    return projectField.getText();
+  }
 
-	/**
-	 * @return
-	 */
-	public String getMainFile() {
-		return mainSourceField.getText();
-	}
+  /**
+   * @param file
+   */
+  public void setMainFile(String file) {
+    mainSourceField.setText(file);
+  }
 
-	/**
-	 * @param config
-	 */
-	public void setBuildConfig(BuildConfiguration config) {
-		if (config == null) {
-			buildConfigurationCombo.select(0);
-			return;
-		}
+  /**
+   * @return
+   */
+  public String getMainFile() {
+    return mainSourceField.getText();
+  }
 
-		switch (config) {
-		case DEBUG:
-			buildConfigurationCombo.select(config.ordinal());
-		case RELEASE:
-			buildConfigurationCombo.select(config.ordinal());
-		}
-	}
+  /**
+   * @param config
+   */
+  public void setBuildConfig(BuildConfiguration config) {
+    if (config == null) {
+      buildConfigurationCombo.select(0);
+      return;
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public BuildConfiguration getBuildConfiguration() {
-		switch (buildConfigurationCombo.getSelectionIndex()) {
-		case 0:
-			return BuildConfiguration.DEBUG;
-		case 1:
-			return BuildConfiguration.RELEASE;
-		}
-		return null;
-	}
+    switch (config) {
+      case DEBUG:
+        buildConfigurationCombo.select(config.ordinal());
+      case RELEASE:
+        buildConfigurationCombo.select(config.ordinal());
+    }
+  }
 
-	/**
-	 * 
-	 * @param args
-	 */
-	public void setProgramArgs(String args) {
-		programArgumentsTextArea.setText(args);
-	}
+  /**
+   * @return
+   */
+  public BuildConfiguration getBuildConfiguration() {
+    switch (buildConfigurationCombo.getSelectionIndex()) {
+      case 0:
+        return BuildConfiguration.DEBUG;
+      case 1:
+        return BuildConfiguration.RELEASE;
+    }
+    return null;
+  }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public String getProgramArgs() {
-		String ret = programArgumentsTextArea.getText().replace("\n", " ");
-		ret = ret.replace("\r", " ");
-		return ret;
-	}
+  /**
+   * @param args
+   */
+  public void setProgramArgs(String args) {
+    programArgumentsTextArea.setText(args);
+  }
 
-	public void setMainConfigEnabled(boolean b) {
-		mainGroup.setEnabled(b);
-		mainSourceField.setEnabled(b);
-		mainSourceField.setEditable(b);
-		mainSourceSearchButton.setEnabled(b);
-	}
+  /**
+   * @return
+   */
+  public String getProgramArgs() {
+    String ret = programArgumentsTextArea.getText().replace("\n", " ");
+    ret = ret.replace("\r", " ");
+    return ret;
+  }
 
-	/**
+  public void setMainConfigEnabled(boolean b) {
+    applicationGroup.setEnabled(b);
+    mainSourceField.setEnabled(b);
+    mainSourceField.setEditable(b);
+    mainSourceSearchButton.setEnabled(b);
+  }
+
+  /**
     * 
     */
-	private void updateState() {
-		mainLaunchConfigurationTab.validate();
-		mainLaunchConfigurationTab.getLaunchConfigurationDialog().updateButtons();
-		mainLaunchConfigurationTab.getLaunchConfigurationDialog().updateMessage();
-	}
+  private void updateState() {
+    mainLaunchConfigurationTab.validate();
+    
+    if (launchDialog != null) {
+      launchDialog.updateButtons();
+      launchDialog.updateMessage();
+    }
+  }
+
+  public void setLaunchConfigurationDialog(ILaunchConfigurationDialog launchDialog) {
+    this.launchDialog = launchDialog;
+  }
 
 } // @jve:decl-index=0:visual-constraint="10,10"

@@ -1,13 +1,15 @@
 package com.googlecode.goclipse.preferences;
 
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.editors.IColorConstants;
+
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.editors.IColorConstants;
+import java.io.File;
 
 
 /**
@@ -17,7 +19,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	private static final String OS_ARCH = "os.arch";
 
-	public void initializeDefaultPreferences() {
+	@Override
+  public void initializeDefaultPreferences() {
 		//SysUtils.debug("Loading Go Plug-in Preferences...");
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(PreferenceConstants.P_BOOLEAN, true);
@@ -25,10 +28,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,          IColorConstants.KEYWORD         );
 		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,            IColorConstants.VALUE           );
 		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,        IColorConstants.PRIMITIVE       );
-		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR,          IColorConstants.COMMENT         ); 
+		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR,          IColorConstants.COMMENT         );
 		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, IColorConstants.BUILTIN_FUNCTION);
 		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_STRING_COLOR,           IColorConstants.STRING          );
-		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, IColorConstants.MULTILINE_STRING);  
+		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, IColorConstants.MULTILINE_STRING);
 		store.setDefault(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE,          SWT.BOLD           );
 		store.setDefault(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE,            SWT.BOLD|SWT.ITALIC);
 		store.setDefault(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE,        SWT.ITALIC         );
@@ -36,7 +39,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE, SWT.BOLD           );
 		store.setDefault(PreferenceConstants.FIELD_SYNTAX_STRING_STYLE,           SWT.NORMAL         );
 		store.setDefault(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE, SWT.NORMAL         );
-		store.setDefault(PreferenceConstants.P_STRING,	"Default value");	
+		store.setDefault(PreferenceConstants.P_STRING,	"Default value");
 
 		if (Util.isWindows()){
 			store.setDefault(PreferenceConstants.GOOS, PreferenceConstants.OS_WINDOWS);
@@ -51,9 +54,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		} else if (is386()){
 			store.setDefault(PreferenceConstants.GOARCH, PreferenceConstants.ARCH_386);
 		}
+		
+		tryAndDiscoverGDB(store);
 	}
 	
-	private static boolean isAMD64() {
+  private static boolean isAMD64() {
 		String osProp = System.getProperty(OS_ARCH);
 		return "x86_64".equals(osProp) || "amd64".equals(osProp);
 	}
@@ -100,5 +105,21 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		return "gofmt" +(Util.isWindows()?".exe":"");
 	}
 
-	
+  private void tryAndDiscoverGDB(IPreferenceStore store) {
+    final String[] possiblePaths = {
+        "/opt/local/bin/fsf-gdb",
+        "/Developer/usr/bin/gdb"
+    };
+    
+    for (String path : possiblePaths) {
+      File file = new File(path);
+      
+      if (file.exists() && file.canExecute()) {
+        store.setDefault(PreferenceConstants.GDB_PATH, path);
+        
+        return;
+      }
+    }
+  }
+
 }

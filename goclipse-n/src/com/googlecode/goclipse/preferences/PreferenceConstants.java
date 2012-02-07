@@ -40,6 +40,8 @@ public class PreferenceConstants {
 	public static final String GOOS   = "com.googlecode.goclipse.goos";
 	public static final String GOARCH = "com.googlecode.goclipse.goarch";
 	
+	public static final String GDB_PATH = "com.googlecode.goclipse.gdb";
+	
 	public static final String OS_WINDOWS = "windows";
 	public static final String OS_NACL = "nacl";
 	public static final String OS_FREEBSD = "freebsd";
@@ -50,5 +52,4 @@ public class PreferenceConstants {
 	public static final String ARCH_386 = "386";
 	public static final String ARCH_AMD64 = "amd64";
 
-		
 }

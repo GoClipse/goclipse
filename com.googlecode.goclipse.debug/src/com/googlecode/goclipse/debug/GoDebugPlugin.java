@@ -19,6 +19,9 @@ public class GoDebugPlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.googlecode.goclipse.debug";
 
+	// Set the system property go.debugger.verbose to true to enable verbose output.
+  public static final boolean VERBOSE = Boolean.getBoolean("go.debugger.verbose");
+  
 	// The shared instance
 	private static GoDebugPlugin plugin;
 
@@ -26,7 +29,7 @@ public class GoDebugPlugin extends AbstractUIPlugin {
 		@Override
 		public void handleDebugEvents(DebugEvent[] events) {
 			for (DebugEvent event : events) {
-				System.out.println("[" + event + "]");
+				trace("[" + event + "]");
 			}
 		}
 	};
@@ -38,17 +41,23 @@ public class GoDebugPlugin extends AbstractUIPlugin {
 
 	}
 
-	public void start(BundleContext context) throws Exception {
+	@Override
+  public void start(BundleContext context) throws Exception {
 		super.start(context);
 
 		plugin = this;
 		
-		DebugPlugin.getDefault().addDebugEventListener(debuggerEventListener);
+		if (VERBOSE) {
+		  DebugPlugin.getDefault().addDebugEventListener(debuggerEventListener);
+		}
 	}
 
-	public void stop(BundleContext context) throws Exception {
-		DebugPlugin.getDefault().removeDebugEventListener(debuggerEventListener);
-		
+	@Override
+  public void stop(BundleContext context) throws Exception {
+	  if (VERBOSE) {
+	    DebugPlugin.getDefault().removeDebugEventListener(debuggerEventListener);
+	  }
+	  
 		plugin = null;
 
 		super.stop(context);
@@ -102,4 +111,10 @@ public class GoDebugPlugin extends AbstractUIPlugin {
 		getPlugin().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, exception.getMessage(), exception));
 	}
 	
+  public static void trace(String message) {
+    if (VERBOSE) {
+      getPlugin().getLog().log(new Status(IStatus.INFO, PLUGIN_ID, message));
+    }
+  }
+  
 }

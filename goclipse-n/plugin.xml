@@ -446,19 +446,19 @@
             id="com.googlecode.goclipse.editors.PairMatcherShortcut.run">
       </command>
       <command
-            name="gofmt"
+            name="Go Format (gofmt)"
             description="Apply gofmt to contents of current editor"
             categoryId="com.googlecode.goclipse.editor.source"
             id="com.googlecode.goclipse.editors.GofmtShortcut.run">
       </command>
       <command
-            name="Gofix"
+            name="Gofix (gofix)"
             description="Run the gofix command"
             categoryId="com.googlecode.goclipse.editor.source"
             id="com.googlecode.goclipse.editors.GofixShortcut.run">
       </command>
       <command
-            name="toggle comment"
+            name="Toggle Comment"
             description="comment/uncomment current selection"
             categoryId="com.googlecode.goclipse.editor.source"
             id="com.googlecode.goclipse.editors.ToggleComment.run">

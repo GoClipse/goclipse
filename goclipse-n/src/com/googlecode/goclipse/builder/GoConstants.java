@@ -49,6 +49,7 @@ public class GoConstants {
 	public static final String GO_CONF_ATTRIBUTE_MAIN = "MAIN_FILE";
 	public static final String GO_CONF_ATTRIBUTE_ARGS = "PROGRAM_ARGS";
 	public static final String GO_CONF_ATTRIBUTE_BUILD_CONFIG = "BUILD_CONFIG";
+	public static final String GO_CONF_ATTRIBUTE_WORKING_DIRECTORY = "WORKING_DIRECTORY";
 	
 	public static Map<String, String> environment() {
 		Map<String, String> goEnv = new HashMap<String, String>();

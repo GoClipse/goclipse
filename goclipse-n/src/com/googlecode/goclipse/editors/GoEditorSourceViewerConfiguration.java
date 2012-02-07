@@ -26,6 +26,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
@@ -39,10 +40,9 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
    private GoEditor			       editor;
    private MonoReconciler      reconciler;
    
-   /**
-    * @param colorManager
-    */
-   public GoEditorSourceViewerConfiguration(GoEditor editor) {
+   public GoEditorSourceViewerConfiguration(GoEditor editor, IPreferenceStore preferenceStore) {
+     super(preferenceStore);
+     
 	   this.editor = editor;
    }
 
@@ -179,4 +179,16 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 		return new String[] { "//", "" };
 	}
 
+  @Override
+  public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
+    return new String[] { "\t",  "" };
+  }
+  
+  @Override
+  public int getTabWidth(ISourceViewer sourceViewer) {
+    if (fPreferenceStore == null)
+      return super.getTabWidth(sourceViewer);
+    return fPreferenceStore.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+  }
+  
 }
