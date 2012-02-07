@@ -47,7 +47,7 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 		} else if (parentElement instanceof IProject) {
 			IFolder srcFolder = ((IProject)parentElement).getFolder("src");
 			
-			return new Object[] { 
+			return new Object[] {
 					new GoSourceFolder(srcFolder.getFolder("pkg")),
 					new GoSourceFolder(srcFolder.getFolder("cmd"))
 			};
@@ -68,15 +68,17 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 				List<Object> result = new ArrayList<Object>();
 				IFolder baseFolder = srcCont.getFolder();
 				//baseFolder.refreshLocal(3, new NullProgressMonitor());
-				for (IResource res : baseFolder.members()) {
-					if (res instanceof IFolder) {
-						if (!res.getProjectRelativePath().lastSegment().startsWith("_")) {
-							GoPackage new_package = new GoPackage(sourceFolder, pkg, (IFolder) res);
-							result.add(new_package);
-						}
-					} else {
-						result.add(res);
-					}
+				if (baseFolder.exists()) {
+  				for (IResource res : baseFolder.members()) {
+  					if (res instanceof IFolder) {
+  						if (!res.getProjectRelativePath().lastSegment().startsWith("_")) {
+  							GoPackage new_package = new GoPackage(sourceFolder, pkg, (IFolder) res);
+  							result.add(new_package);
+  						}
+  					} else {
+  						result.add(res);
+  					}
+  				}
 				}
 
 				return result.toArray();
@@ -175,7 +177,7 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 			ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 		}
 
-		input = newInput;		
+		input = newInput;
 	}
 
 	@Override
@@ -236,7 +238,8 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 
 	}
 
-	private boolean flatLayout;
+	@SuppressWarnings("unused")
+  private boolean flatLayout;
 	private IPropertyChangeListener layoutPropertyChangeListener;
 	private IExtensionStateModel stateModel;
 	public static final String IS_LAYAOUT_FLAT_PROPERTY_NAME = "isLayoutFlat";
