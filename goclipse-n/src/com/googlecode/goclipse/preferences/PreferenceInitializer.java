@@ -10,6 +10,8 @@ import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -85,6 +87,30 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		return platformChar+"g"+(Util.isWindows()?".exe":"");
 	}
 	
+	protected static String get32bitCompilerName() {
+    return "8g"+(Util.isWindows()?".exe":"");
+	}
+	
+	public static List<String> getSupportedCompilerNames() {
+	  List<String> names = new ArrayList<String>();
+	  
+	  String defaultCompiler = getDefaultCompilerName();
+	  
+	  if (defaultCompiler != null) {
+	    names.add(defaultCompiler);
+	  }
+	  
+	  if (isAMD64()) {
+	    String altCompiler = get32bitCompilerName();
+	    
+	    if (altCompiler != null) {
+	      names.add(altCompiler);
+	    }
+	  }
+	  
+	  return names;
+	}
+	
 	public static String getDefaultLinkerName() {
 		String platformChar = getDefaultPlatformChar();
 		if (platformChar == null){
@@ -93,6 +119,30 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		return platformChar+"l"+(Util.isWindows()?".exe":"");
 	}
 	
+  protected static String get32bitLinkerName() {
+    return "8l"+(Util.isWindows()?".exe":"");
+  }
+  
+  public static List<String> getSupportedLinkerNames() {
+    List<String> names = new ArrayList<String>();
+    
+    String defaultLinker = getDefaultLinkerName();
+    
+    if (defaultLinker != null) {
+      names.add(defaultLinker);
+    }
+    
+    if (isAMD64()) {
+      String altLinker = get32bitLinkerName();
+      
+      if (altLinker != null) {
+        names.add(altLinker);
+      }
+    }
+    
+    return names;
+  }
+  
 	public static String getDefaultPackerName() {
 		return "gopack"+(Util.isWindows()?".exe":"");
 	}

@@ -1,6 +1,7 @@
 package com.googlecode.goclipse.preferences;
 
 import java.io.File;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -131,17 +132,15 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
         File binFile = binPath.toFile();
         if (binFile.exists() && binFile.isDirectory()) {
           if ("".equals(compilerEditor.getStringValue())) {
-            IPath compilerPath = binPath.append(PreferenceInitializer.getDefaultCompilerName());
-            File compilerFile = compilerPath.toFile();
-            if (compilerFile.exists() && !compilerFile.isDirectory()) {
+            File compilerFile = findExistingFile(binPath, PreferenceInitializer.getSupportedCompilerNames());
+            if (compilerFile != null && !compilerFile.isDirectory()) {
               compilerEditor.setStringValue(compilerFile.getAbsolutePath());
             }
           }
 
           if ("".equals(linkerEditor.getStringValue())) {
-            IPath linkerPath = binPath.append(PreferenceInitializer.getDefaultLinkerName());
-            File linkerFile = linkerPath.toFile();
-            if (linkerFile.exists() && !linkerFile.isDirectory()) {
+            File linkerFile = findExistingFile(binPath, PreferenceInitializer.getSupportedLinkerNames());
+            if (linkerFile != null && !linkerFile.isDirectory()) {
               linkerEditor.setStringValue(linkerFile.getAbsolutePath());
             }
           }
@@ -174,6 +173,18 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
         }
       }
     }
+  }
+
+  private File findExistingFile(IPath binPath, List<String> paths) {
+    for (String strPath : paths) {
+      IPath path = binPath.append(strPath);
+      File file = path.toFile();
+      if (file.exists()) {
+        return file;
+      }
+    }
+    
+    return null;
   }
 
   @SuppressWarnings("unused")
