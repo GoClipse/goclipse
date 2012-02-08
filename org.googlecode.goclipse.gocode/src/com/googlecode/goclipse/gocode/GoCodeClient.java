@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -72,6 +73,11 @@ public class GoCodeClient {
 	 * @return
 	 */
 	public List<String> getCompletions(String fileName, final String bufferText, int offset) {
+		String gocodePath = Activator.getDefault().getPreferenceStore().getString(PreferencePage.GOCODE_PATH);
+		
+		if (gocodePath == null || gocodePath.length() == 0) {
+		  return Collections.emptyList();
+		}
 		
 		ExternalCommand goCodeCommand = new ExternalCommand(Activator.getDefault().getPreferenceStore().getString(PreferencePage.GOCODE_PATH));
 		buildGoCodePath();
