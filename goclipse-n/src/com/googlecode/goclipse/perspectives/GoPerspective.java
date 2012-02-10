@@ -18,7 +18,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
 
-// WARNING:  Reset the perspective when testing this class!!!  Otherwise the 
+// WARNING:  Reset the perspective when testing this class!!!  Otherwise the
 //           changes will not display.
 
 /**
@@ -31,10 +31,11 @@ public class GoPerspective implements IPerspectiveFactory {
 	private IPageLayout factory;
 
 	public GoPerspective() {
-		super();
+
 	}
 
-	public void createInitialLayout(IPageLayout factory) {
+	@Override
+  public void createInitialLayout(IPageLayout factory) {
 		this.factory = factory;
 		
 		addViews();
@@ -75,7 +76,7 @@ public class GoPerspective implements IPerspectiveFactory {
 		bottom.addPlaceholder(IPageLayout.ID_TASK_LIST);
 		bottom.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
 		
-		IFolderLayout outlineFolder = 
+		IFolderLayout outlineFolder =
 			factory.createFolder(
 					"right", //$NON-NLS-1$
 					IPageLayout.RIGHT,
@@ -91,9 +92,8 @@ public class GoPerspective implements IPerspectiveFactory {
 		factory.addActionSet("org.eclipse.debug.ui.debugActionSet"); //NON-NLS-1
 		factory.addActionSet("org.eclipse.debug.ui.profileActionSet"); //NON-NLS-1
 		factory.addActionSet("org.eclipse.team.ui.actionSet"); //NON-NLS-1
-		factory.addActionSet("org.eclipse.ant.ui.actionSet.presentation"); //NON-NLS-1
-		factory.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		
+		factory.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		factory.addActionSet(JavaUI.ID_ACTION_SET);
 		factory.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
 	}

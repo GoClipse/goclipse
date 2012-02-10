@@ -2,6 +2,7 @@ package com.googlecode.goclipse.debug.ui;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -59,7 +60,7 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
          IProject iProject = null;
          
          try {
-            iProject = Environment.INSTANCE.getCurrentProject().getWorkspace().getRoot().getProject(project);
+            iProject = ResourcesPlugin.getWorkspace().getRoot().getProject(project);
          }catch (Exception e) {}
          
          if(iProject==null){
@@ -86,7 +87,7 @@ public class MainLaunchConfigurationTab implements ILaunchConfigurationTab {
             errorMessage = "The main file could not be found.  " +
             		"Please make sure the given path is correct and is relative to the project.";
             return false;
-         }    
+         }
          
       }
       catch (CoreException e) {

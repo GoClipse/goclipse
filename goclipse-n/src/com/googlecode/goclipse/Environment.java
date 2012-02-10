@@ -1,21 +1,10 @@
 package com.googlecode.goclipse;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.InvalidPropertiesFormatException;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import com.googlecode.goclipse.builder.Arch;
+import com.googlecode.goclipse.builder.ExternalCommand;
+import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.builder.ProcessIStreamFilter;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -39,11 +28,22 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import com.googlecode.goclipse.builder.Arch;
-import com.googlecode.goclipse.builder.ExternalCommand;
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.builder.ProcessIStreamFilter;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.InvalidPropertiesFormatException;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Provides environmental utility methods for acquiring and storing a user
@@ -148,7 +148,7 @@ public class Environment {
 				if (version == DEP_TOOL_VERSION && exeFile.exists()) {
 					depToolPath = aDepToolPath;
 					Activator.logInfo("exe tool is ok");
-					return; // everything in place		
+					return; // everything in place
 				}
 			}
 		}
@@ -176,7 +176,7 @@ public class Environment {
 		compile.execute(args);
 		
 		if (!mf.hadError) {
-			mf.clear();	
+			mf.clear();
 			//do linker
 			String linkerPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.LINKER_PATH);
 			compile.setCommand(linkerPath);
@@ -221,7 +221,7 @@ public class Environment {
 		}
 
 		@Override
-		public void clear() {		
+		public void clear() {
 			hadError = false;
 		}
 		
@@ -331,7 +331,7 @@ public class Environment {
 			IWorkbench iWorkbench 			  = PlatformUI.getWorkbench();
 			IWorkbenchWindow iWorkbenchWindow = iWorkbench.getActiveWorkbenchWindow();
 			IWorkbenchPage iWorkbenchPage 	  = iWorkbenchWindow.getActivePage();
-			ISelection iSelection 			  = (ISelection)iWorkbenchPage.getSelection();
+			ISelection iSelection 			  = iWorkbenchPage.getSelection();
 			iSelection 						  = iWorkbenchPage.getSelection();
 			
 			if(iSelection instanceof TextSelection){
@@ -341,7 +341,7 @@ public class Environment {
 				}
 			}
 			
-			extractSelection(iSelection).getProject(); 
+			extractSelection(iSelection).getProject();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -377,7 +377,7 @@ public class Environment {
 	 */
 	public String getAbsoluteProjectPath(){
 		IProject project = getCurrentProject();
-		IPath path = project.getWorkspace().getRoot().getRawLocation();
+		IPath path = ResourcesPlugin.getWorkspace().getRoot().getRawLocation();
 		return path.toOSString()+"/"+project.getName();
 	}
 
@@ -444,7 +444,8 @@ public class Environment {
 	class SyncHelper implements Runnable {
 		IResource resource;
 
-		public void run() {
+		@Override
+    public void run() {
 			IWorkbenchWindow activeWindow = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow();
 

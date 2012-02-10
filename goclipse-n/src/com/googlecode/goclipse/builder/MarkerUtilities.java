@@ -1,11 +1,11 @@
 package com.googlecode.goclipse.builder;
 
+import com.googlecode.goclipse.Activator;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-
-import com.googlecode.goclipse.Activator;
 
 /**
  * A utility class for dealing with Go markers.
@@ -16,19 +16,7 @@ public class MarkerUtilities {
 	public static final String MARKER_ID = "goclipse.goProblem";
 
 	public static void addMarker(IResource res, String message) {
-		if (res == null) {
-			return;
-		}
-		
-		try {
-			IMarker marker = res.createMarker(MARKER_ID);
-			
-			marker.setAttribute(IMarker.MESSAGE, message);
-			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-		} catch (CoreException ce) {
-			Activator.logError(ce);
-		}
+    addMarker(res, -1, message, IMarker.SEVERITY_ERROR);
 	}
 	
 	public static void addMarker(IResource file, int line, String message, int severity) {
@@ -79,11 +67,8 @@ public class MarkerUtilities {
 
 	public static void deleteAllMarkers(IProject project) {
 		try {
-			// We use IMarker.PROBLEM here instead of MARKER_ID to clean up older problems
-			// created using IMarker.PROBLEM.
-			// TODO: at some point in the future, just clean MARKER_ID markers.
 			if (project != null && project.exists()) {
-				project.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+				project.deleteMarkers(MARKER_ID, true, IResource.DEPTH_INFINITE);
 			}
 		} catch (CoreException ce) {
 			Activator.logInfo(ce);
