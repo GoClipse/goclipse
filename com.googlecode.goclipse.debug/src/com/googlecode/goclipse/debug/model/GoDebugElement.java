@@ -1,9 +1,9 @@
 package com.googlecode.goclipse.debug.model;
 
-import org.eclipse.debug.core.model.DebugElement;
-
 import com.googlecode.goclipse.debug.GoDebugPlugin;
 import com.googlecode.goclipse.debug.gdb.GdbConnection;
+
+import org.eclipse.debug.core.model.DebugElement;
 
 /**
  * 

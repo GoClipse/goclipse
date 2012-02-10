@@ -1,5 +1,7 @@
 package com.googlecode.goclipse.debug.sourceLookup;
 
+import com.googlecode.goclipse.builder.GoConstants;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -13,8 +15,6 @@ import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.FolderSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.ProjectSourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.WorkspaceSourceContainer;
-
-import com.googlecode.goclipse.builder.GoConstants;
 
 /**
  * 

@@ -1,8 +1,14 @@
 package com.googlecode.goclipse.debug.launch;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.builder.GoDependencyManager;
+import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.debug.gdb.GdbConnection;
+import com.googlecode.goclipse.debug.model.GoDebugTarget;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
@@ -30,15 +36,9 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.builder.GoDependencyManager;
-import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.gdb.GdbConnection;
-import com.googlecode.goclipse.debug.model.GoDebugTarget;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author steel

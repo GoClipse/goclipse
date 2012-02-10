@@ -1,13 +1,13 @@
 package com.googlecode.goclipse.debug.breakpoints;
 
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.LineBreakpoint;
-
-import com.googlecode.goclipse.debug.GoDebugPlugin;
 
 /**
  * 

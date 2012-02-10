@@ -1,5 +1,10 @@
 package com.googlecode.goclipse.debug.launch.ui;
 
+import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.debug.launch.BuildConfiguration;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -15,11 +20,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.launch.BuildConfiguration;
 
 /**
  * @author steel

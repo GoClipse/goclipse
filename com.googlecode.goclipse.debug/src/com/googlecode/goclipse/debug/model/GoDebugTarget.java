@@ -1,10 +1,13 @@
 package com.googlecode.goclipse.debug.model;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.debug.breakpoints.GoBreakpoint;
+import com.googlecode.goclipse.debug.gdb.GdbConnection;
+import com.googlecode.goclipse.debug.gdb.GdbConnectionListener;
+import com.googlecode.goclipse.debug.gdb.GdbContext;
+import com.googlecode.goclipse.debug.gdb.GdbEvent;
+import com.googlecode.goclipse.debug.gdb.GdbProperties;
+import com.googlecode.goclipse.debug.gdb.GdbThread;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.IStatus;
@@ -21,14 +24,11 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.breakpoints.GoBreakpoint;
-import com.googlecode.goclipse.debug.gdb.GdbConnection;
-import com.googlecode.goclipse.debug.gdb.GdbConnectionListener;
-import com.googlecode.goclipse.debug.gdb.GdbContext;
-import com.googlecode.goclipse.debug.gdb.GdbEvent;
-import com.googlecode.goclipse.debug.gdb.GdbProperties;
-import com.googlecode.goclipse.debug.gdb.GdbThread;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author devoncarew

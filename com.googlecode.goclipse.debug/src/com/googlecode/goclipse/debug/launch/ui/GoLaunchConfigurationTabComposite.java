@@ -1,12 +1,16 @@
 package com.googlecode.goclipse.debug.launch.ui;
 
-import java.util.ArrayList;
-import java.util.Stack;
+import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.debug.launch.BuildConfiguration;
+import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -25,11 +29,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.launch.BuildConfiguration;
-import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
+import java.util.ArrayList;
+import java.util.Stack;
 
 /**
  * @author steel
@@ -87,7 +88,7 @@ public class GoLaunchConfigurationTabComposite extends Composite {
       @Override
       public void widgetSelected(SelectionEvent e) {
         try {
-          IProject[] projects = Environment.INSTANCE.getCurrentProject().getWorkspace().getRoot().getProjects();
+          IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
           ArrayList<IProject> goProjects = new ArrayList<IProject>();
 
           for (IProject project : projects) {
@@ -169,7 +170,7 @@ public class GoLaunchConfigurationTabComposite extends Composite {
       @Override
       public void widgetSelected(SelectionEvent e) {
         try {
-          IProject project = Environment.INSTANCE.getCurrentProject().getWorkspace().getRoot().getProject(
+          IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
               getProject());
           String[] pathRoots = Environment.INSTANCE.getSourceFoldersAsStringArray(project);
 
