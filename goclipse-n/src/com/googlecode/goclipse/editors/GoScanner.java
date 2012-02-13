@@ -48,13 +48,17 @@ public class GoScanner extends RuleBasedScanner {
 			final Color valueColor           = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR           ));
 			final Color primitiveColor       = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR       ));
 			final Color builtinFunctionColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR));
-			final Color textColor            = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_TEXT_COLOR));
+			//final Color textColor            = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_TEXT_COLOR));
+			// TODO: added to fix a compilation problem
+			final Color textColor            = ColorManager.INSTANCE.getColor(IColorConstants.DEFAULT);
 			
 			final int keywordStyle         = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE         );
 			final int valueStyle           = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE           );
 			final int primitiveStyle       = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE       );
 			final int builtinFunctionStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE);
-			final int textStyle            = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_TEXT_STYLE);
+			//final int textStyle            = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_TEXT_STYLE);
+			// TODO: added to fix a compilation problem
+			final int textStyle            = 0;
 			
 			Token keyword   		= new Token(new TextAttribute(keywordColor,         null, keywordStyle        ));
 			Token value     		= new Token(new TextAttribute(valueColor,           null, valueStyle          ));
