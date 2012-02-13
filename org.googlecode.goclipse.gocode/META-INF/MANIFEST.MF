@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: GoClipse Autocomplete
+Bundle-Name: GoClipse Auto-Complete
 Bundle-SymbolicName: com.googlecode.goclipse.gocode;singleton:=true
-Bundle-Version: 0.2.1
+Bundle-Version: 0.2.2
 Bundle-Activator: com.googlecode.goclipse.gocode.Activator
 Bundle-Vendor: The GoClipse Development Team
 Require-Bundle: org.eclipse.ui,

@@ -123,6 +123,16 @@
       </perspective>
    </extension>
 
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+         <perspectiveShortcut id="com.googlecode.goclipse.perspectives.GoPerspective"/>
+      </perspectiveExtension>
+
+      <perspectiveExtension targetID="org.eclipse.debug.ui.DebugPerspective">
+         <perspectiveShortcut id="com.googlecode.goclipse.perspectives.GoPerspective"/>
+      </perspectiveExtension>
+   </extension>
+   
    <extension point="org.eclipse.core.runtime.adapters">
       <factory class="com.googlecode.goclipse.ui.navigator.GoModelAdapter" adaptableType="com.googlecode.goclipse.ui.navigator.IGoElement">
          <adapter type="org.eclipse.ui.IPersistableElement"/>
@@ -308,8 +318,11 @@
             finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
             icon="icons/gopage.png"
             id="com.googlecode.goclipse.wizards.NewGoFileWizard"
-            name="Source File"
+            name="Go Source File"
             project="false">
+            <description>
+               Create a new Go source file
+            </description>
       </wizard>
    </extension>
    

@@ -2,7 +2,7 @@
 <feature
       id="goclipse_feature"
       label="GoClipse"
-      version="0.2.1"
+      version="0.2.2"
       provider-name="The GoClipse Development Team"
       plugin="goclipse">
 
@@ -116,28 +116,34 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </license>
 
    <url>
-      <update label="goclipse" url="http://goclipse.googlecode.com/svn/trunk/goclipse-update-site/"/>
+      <update label="GoClipse" url="http://goclipse.googlecode.com/svn/trunk/goclipse-update-site/"/>
       <discovery label="Gocode by NSF" url="https://github.com/nsf/gocode"/>
    </url>
 
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.jdt.ui" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.debug.core" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.debug.ui" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.navigator"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.core.variables"/>
    </requires>
 
    <plugin
          id="goclipse"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="com.googlecode.goclipse.gocode"
@@ -149,6 +155,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="com.googlecode.goclipse.debug"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

@@ -47,7 +47,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
     super(GRID);
 
     setPreferenceStore(Activator.getDefault().getPreferenceStore());
-    //setDescription("GoClipse v" + getVersionText());
+    setDescription("GoClipse v" + getVersionText());
   }
 
   /**
@@ -187,7 +187,6 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
     return null;
   }
 
-  @SuppressWarnings("unused")
   private static String getVersionText() {
     Version version = Activator.getDefault().getBundle().getVersion();
 
