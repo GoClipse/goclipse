@@ -41,10 +41,14 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 import java.io.BufferedReader;
@@ -279,13 +283,47 @@ public class GoSearchPage extends DialogPage implements ISearchPage {
     }
     updateOKStatus();
 
-    IEditorInput editorInput = getContainer().getActiveEditorInput();
-    getContainer().setActiveEditorCanProvideScopeSelection(
-        editorInput != null && editorInput.getAdapter(IFile.class) != null);
+    // TODO: 3.7 only
+//    IEditorInput editorInput = getActiveEditorInput();
+//
+//    getContainer().setActiveEditorCanProvideScopeSelection(
+//        editorInput != null && editorInput.getAdapter(IFile.class) != null);
 
     super.setVisible(visible);
   }
 
+  private IEditorInput getActiveEditorInput() {
+    IEditorPart editor = getActiveEditor();
+    if (editor == null)
+      return null;
+
+    // Handle multi-page editors
+    if (editor instanceof MultiPageEditorPart) {
+      Object page= ((MultiPageEditorPart)editor).getSelectedPage();
+      if (page instanceof IEditorPart)
+        editor= (IEditorPart)page;
+      else
+        return null;
+    }
+
+    return editor.getEditorInput();
+  }
+
+  private IEditorPart getActiveEditor() {
+    IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    if (activePage != null) {
+      IEditorPart activeEditor= activePage.getActiveEditor();
+      IWorkbenchPart activePart= activePage.getActivePart();
+      if (activeEditor == activePart || isOldSearchView(activePart))
+        return activeEditor;
+    }
+    return null;
+  }
+
+  private static boolean isOldSearchView(IWorkbenchPart part) {
+    return org.eclipse.search.ui.SearchUI.SEARCH_RESULT_VIEW_ID.equals(part.getSite().getId());
+  }
+  
   final void updateOKStatus() {
     boolean regexStatus = validateRegex();
 
@@ -479,8 +517,8 @@ public class GoSearchPage extends DialogPage implements ISearchPage {
           }
         }
       }
-    } else if (getContainer().getActiveEditorInput() != null) {
-      resources.add((IFile) getContainer().getActiveEditorInput().getAdapter(IFile.class));
+    } else if (getActiveEditorInput() != null) {
+      resources.add((IFile) getActiveEditorInput().getAdapter(IFile.class));
     }
     IResource[] arr = resources.toArray(new IResource[resources.size()]);
     return FileTextSearchScope.newSearchScope(arr, getExtensions(), false);
