@@ -1,0 +1,19 @@
+#clean repo
+rm -rf $WORKSPACE/buildRepo
+
+---
+
+#!/bin/bash
+
+java \
+  -Dbase=$WORKSPACE/eclipse_35 \
+  -DbuildDirectory=$WORKSPACE \
+  -jar $WORKSPACE/eclipse_35/eclipse/plugins/org.eclipse.equinox.launcher_1.0.200.v20090520.jar \
+  -application org.eclipse.ant.core.antRunner \
+  -buildfile $WORKSPACE/eclipse_35/eclipse/plugins/org.eclipse.pde.build_3.5.0.v20090527-1800/scripts/build.xml \
+  -Dbuilder=$WORKSPACE/com.googlecode.goclipse.build_pde
+
+---
+
+buildRepo/**
+  

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="goclipse-feature">
+      <category name="goclipse.main"/>
+   </feature>
+   <category-def name="goclipse.main" label="GoClipse"/>
+</site>

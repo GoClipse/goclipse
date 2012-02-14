@@ -1,0 +1,18 @@
+<project name="download_target" default="dl_eclipse_35" basedir=".">
+
+    <target name="dl_eclipse_35">
+        <property environment="env" />
+    
+        <echo message="build=${env.BUILD_TAG}"/>
+    
+        <property name="workspace" location="${env.WORKSPACE}"/>
+    
+        <get src="http://archive.eclipse.org/eclipse/downloads/drops/R-3.5-200906111540/eclipse-SDK-3.5-win32.zip" 
+            dest="${workspace}" 
+            verbose="true"
+            usetimestamp="true"/>
+    
+        <unzip src="${workspace}/eclipse-SDK-3.5-win32.zip" dest="${workspace}/eclipse_35" overwrite="false"/>    
+    </target>
+
+</project>
