@@ -7,7 +7,7 @@
     
         <property name="workspace" location="${env.WORKSPACE}"/>
         
-        <get src="http://archive.eclipse.org/eclipse/downloads/drops/R-3.6.2-201102101200/eclipse-SDK-3.6.2-win32.zip"
+        <get src="http://ftp.osuosl.org/pub/eclipse/eclipse/downloads/drops/R-3.6.2-201102101200/eclipse-SDK-3.6.2-win32.zip"
             dest="${workspace}" 
             verbose="true"
             usetimestamp="true"/>
