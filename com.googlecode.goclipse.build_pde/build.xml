@@ -8,7 +8,7 @@
   </target>
 
 	 <!-- pde_build -->
-	<target name="pde_build">
+	<target name="pde_build" depends="init">
 	  <mkdir dir="${env.WORKSPACE}/buildRepo"/>
 		<echo message="hello" file="${env.WORKSPACE}/buildRepo/hello.txt"></echo>
 	</target>
