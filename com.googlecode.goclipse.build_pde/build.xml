@@ -1,0 +1,14 @@
+<project name="GoClipse" default="pde_build">
+
+  <!-- init -->
+	<target name="init">
+	  <echo message="building rev ${SVN_REVISION}"/>
+  </target>
+
+	 <!-- pde_build -->
+	<target name="pde_build">
+	  <mkdir dir="${WORKSPACE}/buildRepo"/>
+		<echo message="hello" file="${WORKSPACE}/buildRepo/hello.txt"></echo>
+	</target>
+	
+</project>
