@@ -2,13 +2,15 @@
 
   <!-- init -->
 	<target name="init">
-	  <echo message="building rev ${SVN_REVISION}"/>
+		<property environment="env" />
+		
+		<echo message="building rev ${env.SVN_REVISION}"/>
   </target>
 
 	 <!-- pde_build -->
 	<target name="pde_build">
-	  <mkdir dir="${WORKSPACE}/buildRepo"/>
-		<echo message="hello" file="${WORKSPACE}/buildRepo/hello.txt"></echo>
+	  <mkdir dir="${env.WORKSPACE}/buildRepo"/>
+		<echo message="hello" file="${env.WORKSPACE}/buildRepo/hello.txt"></echo>
 	</target>
 	
 </project>
