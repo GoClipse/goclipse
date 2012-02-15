@@ -245,10 +245,9 @@ public class Environment {
 				out.close();
 				Activator.logInfo("File copied:" + outPath);
 			} catch (IOException e) {
-				System.out.println(e.getMessage());
+				Activator.logError(e);
 			}
 		}
-
 	}
 
 	public String getDependencyTool() {
