@@ -1,16 +1,120 @@
-<project name="GoClipse" default="pde_build">
+<project name="GoClipse" default="desktop_build">
 
-  <!-- init -->
-	<target name="init">
-		<property environment="env" />
+    <!-- desktop_init -->
+    <target name="desktop_init">
+        <fail message="please create a ${user.name}_build.properties file to config this build (see sample_build.properties)">
+            <condition>
+                <not>
+                    <available file="${user.name}_build.properties" type="file" />
+                </not>
+            </condition>
+        </fail>
+        
+        <property file="${user.name}_build.properties" />
 		
-		<echo message="building rev ${env.SVN_REVISION}"/>
-  </target>
+        <fail unless="build.dir" message="build.dir property is required"/>
+        <mkdir dir="${build.dir}"/>
+        
+        <fail unless="source.dir" message="build.dir property is required"/>
+        <fail message="source.dir does not exist: ${source.dir}">
+            <condition>
+                <not>
+                    <available file="${source.dir}" type="dir" />
+                </not>
+            </condition>
+        </fail>
 
-	 <!-- pde_build -->
-	<target name="pde_build" depends="init">
-	  <mkdir dir="${env.WORKSPACE}/buildRepo"/>
-		<echo message="hello" file="${env.WORKSPACE}/buildRepo/hello.txt"></echo>
-	</target>
+        <property name="svn.revision" value="1"/>
+    </target>
+
+    <!-- desktop_copysources -->
+    <target name="desktop_copysources" depends="desktop_init">
+        <copy todir="${build.dir}/plugins/goclipse"><fileset dir="${source.dir}/goclipse"/></copy>
+        <copy todir="${build.dir}/plugins/com.googlecode.goclipse.gocode"><fileset dir="${source.dir}/com.googlecode.goclipse.gocode"/></copy>
+        <copy todir="${build.dir}/plugins/com.googlecode.goclipse.debug"><fileset dir="${source.dir}/com.googlecode.goclipse.debug"/></copy>
+        
+        <copy todir="${build.dir}/features/goclipse_feature"><fileset dir="${source.dir}/goclipse-feature"/></copy>
+        
+        <copy todir="${build.dir}/com.googlecode.goclipse.build_pde"><fileset dir="${source.dir}/com.googlecode.goclipse.build_pde"/></copy>
+    </target>
+    
+    <!-- desktop_build -->
+    <target name="desktop_build" depends="desktop_init,desktop_copysources,setup,pde_build">
+        <!-- all the work is done in the dependent targets -->
+    </target>
+    
+    <!-- jenkins_init -->
+    <target name="jenkins_init">
+        <property environment="env" />
+    
+        <property name="build.dir" location="${env.WORKSPACE}"/>
+        <property name="svn.revision" value="${env.WORKSPACE}"/>
+    </target>
+    
+    <!-- jenkins_build -->
+    <target name="jenkins_build" depends="jenkins_init,setup,pde_build">
+        <!-- all the work is done in the dependent targets -->
+    </target>
+    
+    <!-- setup -->
+    <target name="setup">
+        <echo message="building svn revision ${svn.revision}"/>
+        <echo message="build dir is ${build.dir}"/>
+        <echo message="building for Eclipse 3.6+"/>
+
+        <!-- TODO: change this to 3.6.0 -->
+        <get src="http://ftp.osuosl.org/pub/eclipse/eclipse/downloads/drops/R-3.6.2-201102101200/eclipse-SDK-3.6.2-win32.zip"
+            dest="${build.dir}" 
+            verbose="true"
+            usetimestamp="true"/>
+    
+        <property name="eclipse.dir" value="${build.dir}/eclipse_36/eclipse"/>
+        
+        <unzip src="${build.dir}/eclipse-SDK-3.6.2-win32.zip" dest="${eclipse.dir}/.." overwrite="false"/>    
+
+        <!-- clean repo -->
+        <delete dir="${build.dir}/buildRepo"/>
+    </target>
+    
+    <!-- pde_build -->
+	  <target name="pde_build" depends="setup">
+	      <mkdir dir="${build.dir}/buildRepo"/>
+	      
+	      <echo message="hello" file="${build.dir}/buildRepo/hello.txt"></echo>
+	      
+        <sequential>
+            <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar" fork="true" 
+                  failonerror="false" errorproperty="pde.build.error">
+                <arg value="-data" />
+                <arg value="${build.dir}/workspace" />
+                <arg value="-application" />
+                <arg value="org.eclipse.ant.core.antRunner" />
+                <arg value="-f" />
+                <arg value="${eclipse.dir}/plugins/org.eclipse.pde.build_3.6.2.R36x_20110203/scripts/build.xml" />
+                <arg value="-Dbuilder=${build.dir}/com.googlecode.goclipse.build_pde" />
+                <arg value="-Dbuild.tmp=${build.dir}/tmp" />
+                <arg value="-Dbuild.target=${eclipse.dir}" />
+                <arg value="-Dbuild.stage=${build.dir}/stage" />
+                <arg value="-DbuildDirectory=${build.dir}" />
+                <arg value="-DbaseLocation=${eclipse.dir}" />
+                <arg value="-noinput" />
+                <arg value="-vmargs" />
+                <arg value="-Xms256M" />
+                <arg value="-Xmx512M" />
+            </java>
+        </sequential>
+        
+        <echo message="" />
+        <echo message="PDE exited with ${pde.build.error}" />
+        <echo message="" />
+        
+        <fail message="PDE build Failed">
+            <condition>
+                <not>
+                    <equals arg1="" arg2="${pde.build.error}" trim="true" />
+                </not>
+            </condition>
+        </fail>
+	  </target>
 	
 </project>
