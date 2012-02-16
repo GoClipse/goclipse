@@ -27,6 +27,18 @@
         <property name="svn.revision" value="1"/>
     </target>
 
+    <!-- desktop_clean -->
+    <target name="desktop_clean" depends="desktop_init">
+        <delete dir="${build.dir}/I.build"/>
+        <delete dir="${build.dir}/buildRepo"/>
+    	  
+        <delete dir="${build.dir}/com.googlecode.goclipse.build_pde"/>
+        <delete dir="${build.dir}/features"/>
+        <delete dir="${build.dir}/plugins"/>
+    	  
+        <delete dir="${build.dir}/workspace"/>
+    </target>
+    
     <!-- desktop_copysources -->
     <target name="desktop_copysources" depends="desktop_init">
         <copy todir="${build.dir}/plugins/goclipse"><fileset dir="${source.dir}/goclipse"/></copy>
@@ -49,6 +61,18 @@
     
         <property name="build.dir" location="${env.WORKSPACE}"/>
         <property name="svn.revision" value="${env.WORKSPACE}"/>
+    </target>
+    
+    <!-- jenkins_clean -->
+    <target name="jenkins_clean" depends="jenkins_init">
+        <delete dir="${build.dir}/I.build"/>
+        <delete dir="${build.dir}/buildRepo"/>
+        
+        <delete dir="${build.dir}/com.googlecode.goclipse.build_pde"/>
+        <delete dir="${build.dir}/features"/>
+        <delete dir="${build.dir}/plugins"/>
+        
+        <delete dir="${build.dir}/workspace"/>
     </target>
     
     <!-- jenkins_build -->
@@ -74,6 +98,10 @@
 
         <!-- clean repo -->
         <delete dir="${build.dir}/buildRepo"/>
+    	
+    	  <xmlproperty file="${build.dir}/features/goclipse_feature/feature.xml" collapseAttributes="true"/>
+    	
+    	  <echo message="GoClipse version ${feature.version}"/>
     </target>
     
     <!-- pde_build -->
@@ -95,6 +123,7 @@
                 <arg value="-Dbuild.stage=${build.dir}/stage" />
                 <arg value="-DbuildDirectory=${build.dir}" />
                 <arg value="-DbaseLocation=${eclipse.dir}" />
+                <arg value="-Dbase=${build.dir}/base" />
                 <arg value="-noinput" />
                 <arg value="-vmargs" />
                 <arg value="-Xms256M" />
@@ -111,6 +140,16 @@
                 </not>
             </condition>
         </fail>
+	  	
+        <delete>
+            <fileset dir="${build.dir}">
+                <include name="assemble.goclipse_feature.*.xml"/>
+                <include name="final*.properties"/>
+                <include name="package.goclipse_feature.*.xml"/>
+            </fileset>
+        </delete>
+	  	
+	  	  <zip destfile="${build.dir}/updatesite-${feature.version}.zip" basedir="${build.dir}/buildRepo"/>
 	  </target>
 	
 </project>
