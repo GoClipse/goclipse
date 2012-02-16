@@ -80,8 +80,6 @@
 	  <target name="pde_build" depends="setup">
 	      <mkdir dir="${build.dir}/buildRepo"/>
 	      
-	      <echo message="hello" file="${build.dir}/buildRepo/hello.txt"></echo>
-	      
         <sequential>
             <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar" fork="true" 
                   failonerror="false" errorproperty="pde.build.error">
@@ -104,11 +102,9 @@
             </java>
         </sequential>
         
-        <echo message="" />
-        <echo message="PDE exited with ${pde.build.error}" />
-        <echo message="" />
+        <echo message="PDE build exited: ${pde.build.error}" />
         
-        <fail message="PDE build Failed">
+        <fail message="PDE build failed">
             <condition>
                 <not>
                     <equals arg1="" arg2="${pde.build.error}" trim="true" />
