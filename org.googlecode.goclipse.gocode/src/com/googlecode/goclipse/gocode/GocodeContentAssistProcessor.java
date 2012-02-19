@@ -31,7 +31,7 @@ import java.util.List;
  * and is called from the GoEditorSourceViewerConfiguration class in the main GoClipse plugin.
  */
 public class GocodeContentAssistProcessor implements IContentAssistProcessorExt {
-  private GocodeClient2 client = new GocodeClient2();
+  private GocodeClient client = new GocodeClient();
 
   private static HashMap<String, CodeContext> codeContexts = new HashMap<String, CodeContext>();
 

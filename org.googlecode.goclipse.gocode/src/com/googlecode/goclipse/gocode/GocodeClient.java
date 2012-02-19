@@ -23,10 +23,10 @@ import java.util.List;
  * Use the configured GoCode settings to call a GoCode client, which ends up talking to a running
  * GoCode server. This class is called from GoCodeContentAssistProcessor.
  */
-public class GocodeClient2 {
+public class GocodeClient {
   private String error;
 
-  public GocodeClient2() {
+  public GocodeClient() {
     
   }
 
