@@ -116,6 +116,8 @@
         <delete dir="${build.dir}/workspace"/>
         <delete includes="goclipse-updatesite-*.zip" dir="${build.dir}"/>
     	
+        <touch file="${build.dir}/features/goclipse_feature/feature.xml"/>
+        
     	  <xmlproperty file="${build.dir}/features/goclipse_feature/feature.xml" collapseAttributes="true"/>
     	
         <echo message="Building svn revision ${svn.revision}"/>
