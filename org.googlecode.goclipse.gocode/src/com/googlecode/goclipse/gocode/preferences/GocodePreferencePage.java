@@ -11,6 +11,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -41,9 +42,13 @@ public class GocodePreferencePage extends FieldEditorPreferencePage implements
     Composite fieldParent = new Composite(group, SWT.NONE);
     GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
 
-    BooleanFieldEditor runServerEditor = new BooleanFieldEditor(
-        GocodePlugin.RUN_SERVER_PREF, "Automatically start Gocode server", fieldParent);
+    final BooleanFieldEditor runServerEditor = new BooleanFieldEditor(
+        GocodePlugin.RUN_SERVER_PREF, "Start Gocode server automatically", fieldParent);
     addField(runServerEditor);
+    
+    Label label = new Label(fieldParent, SWT.NONE);
+    label.setText("(to start manually: gocode -s" + (GocodePlugin.USE_TCP ? " -sock=tcp" : "") + ")");
+    GridDataFactory.swtDefaults().span(3, 1).indent(18, 0).applyTo(label);
     
     FileFieldEditor fieldEditor = new FileFieldEditor(GocodePlugin.GOCODE_PATH_PREF, "Gocode path:", fieldParent);
     addField(fieldEditor);
