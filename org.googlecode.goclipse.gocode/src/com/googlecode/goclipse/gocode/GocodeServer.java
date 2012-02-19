@@ -10,7 +10,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Start up an instance of Gocode in server mode.
@@ -28,7 +29,14 @@ public class GocodeServer {
       GocodePlugin.winGocodeKill();
     }
     
-    //System.out.println("starting gocode [" + path + "]");
+    GocodePlugin.logInfo("starting gocode server [" + path + "]");
+    
+    List<String> args = new ArrayList<String>();
+    args.add("-s");
+    
+    if (GocodePlugin.USE_TCP) {
+      args.add("-sock=tcp");
+    }
     
     command = new ExternalCommand(path, false);
     command.setErrorFilter(new ProcessIStreamFilter() {
@@ -42,13 +50,12 @@ public class GocodeServer {
 
       }
     });
-    command.execute(Arrays.asList(new String[] {"-s"}));
-    
+    command.execute(args);
   }
   
   public void stopServer() {
     if (command != null) {
-      //System.out.println("stopping gocode");
+      GocodePlugin.logInfo("stopping gocode server");
       
       command.destroy();
       command = null;
@@ -61,14 +68,15 @@ public class GocodeServer {
   
   protected void writeInputToLog(InputStream in) {
     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+    char[] buffer = new char[4096];
     
     try {
-      String line = reader.readLine();
+      int count = reader.read(buffer);
       
-      while (line != null) {
-        GocodePlugin.logWarning("gocode: " + line);
+      while (count != -1) {
+        GocodePlugin.logWarning("gocode:\n" + (new String(buffer, 0, count)).trim());
         
-        line = reader.readLine();
+        count = reader.read(buffer);
       }
     } catch (IOException exception) {
       GocodePlugin.logError(exception);

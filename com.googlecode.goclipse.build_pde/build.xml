@@ -23,20 +23,6 @@
                 </not>
             </condition>
         </fail>
-
-        <!-- get the current svn revision number -->
-        <exec executable="cmd" output="${build.dir}/svn_info.properties" osfamily="windows">
-            <arg value="/c"/>
-            <arg value="svn"/>
-            <arg value="info"/>
-        </exec>
-        <exec executable="svn" output="${build.dir}/svn_info.properties" osfamily="unix">
-            <arg value="info"/>
-        </exec>
-        
-        <property file="${build.dir}/svn_info.properties" prefix="tempsvn"/>
-        <delete file="${build.dir}/svn_info.properties"/>
-        <property name="svn.revision" value="${tempsvn.Revision}"/>
     </target>
 
     <!-- desktop_clean -->
@@ -74,7 +60,7 @@
         <!-- echoproperties/ -->
         
         <property name="build.dir" location="${env.WORKSPACE}"/>
-        <property name="svn.revision" value="${env.SVN_REVISION_4}"/>
+        <!-- property name="svn.revision" value="${env.SVN_REVISION_4}"/ -->
     </target>
     
     <!-- jenkins_clean -->
@@ -98,6 +84,22 @@
     <target name="setup">
         <echo message="build dir is ${build.dir}"/>
 
+        <!-- get the current svn revision number -->
+        <exec executable="cmd" output="${build.dir}/svn_info.properties" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="svn"/>
+            <arg value="info"/>
+            <arg value="https://goclipse.googlecode.com/svn/trunk"/>
+        </exec>
+        <exec executable="svn" output="${build.dir}/svn_info.properties" osfamily="unix">
+            <arg value="info"/>
+            <arg value="https://goclipse.googlecode.com/svn/trunk"/>
+        </exec>
+        
+        <property file="${build.dir}/svn_info.properties" prefix="tempsvn"/>
+        <delete file="${build.dir}/svn_info.properties"/>
+        <property name="svn.revision" value="${tempsvn.Revision}"/>
+        
         <!-- TODO: change this to 3.6.0 -->
         <get src="http://ftp.osuosl.org/pub/eclipse/eclipse/downloads/drops/R-3.6.2-201102101200/eclipse-SDK-3.6.2-win32.zip"
             dest="${build.dir}" 

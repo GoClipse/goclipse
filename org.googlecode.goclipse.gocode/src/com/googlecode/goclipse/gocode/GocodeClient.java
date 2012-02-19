@@ -54,6 +54,9 @@ public class GocodeClient {
 
     // set the package path for the current project
     List<String> parameters = new LinkedList<String>();
+    if (GocodePlugin.USE_TCP) {
+      parameters.add("-sock=tcp");
+    }
     parameters.add("set");
     parameters.add("lib-path");
 
@@ -80,6 +83,7 @@ public class GocodeClient {
       }
 
       parameters.add((rootPath + ":" + pkgPathStr).replace("\\", "/"));
+      //parameters.add("/Users/dcarew/go/pkg/" + goos + "_" + goarch);
     }
         
     goCodeCommand.execute(parameters);
@@ -103,7 +107,9 @@ public class GocodeClient {
     });
 
     parameters = new LinkedList<String>();
-//		parameters.add("-sock=tcp");
+    if (GocodePlugin.USE_TCP) {
+      parameters.add("-sock=tcp");
+    }
     parameters.add("-f=csv");
     parameters.add("autocomplete");
     parameters.add(fileName);

@@ -1,6 +1,7 @@
 package com.googlecode.goclipse.gocode;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.ExternalCommand;
 import com.googlecode.goclipse.gocode.utils.Utils;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
@@ -28,6 +29,8 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
 
   public static final String RUN_SERVER_PREF = "com.googlecode.goclipse.gocode.server";
   public static final String GOCODE_PATH_PREF = "com.googlecode.goclipse.gocode.path";
+  
+  public static final boolean USE_TCP = true;
   
   // The shared instance
   private static GocodePlugin plugin;
@@ -83,6 +86,13 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
   }
 
   /**
+   * Log the given error message to the Eclipse log.
+   */
+  public static void logError(String message) {
+    getPlugin().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, message));
+  }
+  
+  /**
    * Log the given exception to the Eclipse log.
    * 
    * @param t the exception to log
@@ -97,6 +107,15 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
   public static void logWarning(String message) {
     getPlugin().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message));
   }
+  
+ /**
+  * Log the given info message to the Eclipse log.
+  */
+ public static void logInfo(String message) {
+   if (Environment.DEBUG) {
+     getPlugin().getLog().log(new Status(IStatus.INFO, PLUGIN_ID, message));
+   }
+ }
   
   @Override
   public void propertyChange(PropertyChangeEvent event) {

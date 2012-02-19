@@ -74,7 +74,6 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
     ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
 
     if (path != null) {
-
       String filename = path.toOSString();
       IDocument document = viewer.getDocument();
       CodeContext codeContext = codeContexts.get(filename);
@@ -110,9 +109,20 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
             int secondComma = string.indexOf(",,", firstComma + 2);
 
             if (firstComma != -1 && secondComma != -1) {
-
               String type = string.substring(0, firstComma);
+              
+              if ("PANIC".equals(type)) {
+                GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
+                continue;
+              }
+              
               String identifier = string.substring(firstComma + 2, secondComma);
+              
+              if ("PANIC".equals(identifier)) {
+                GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
+                continue;
+              }
+              
               String spec = string.substring(secondComma + 2);
 
               String descriptiveString = identifier + " : " + spec;
