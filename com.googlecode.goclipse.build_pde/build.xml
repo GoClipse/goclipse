@@ -24,7 +24,19 @@
             </condition>
         </fail>
 
-        <property name="svn.revision" value="1"/>
+        <!-- get the current svn revision number -->
+        <exec executable="cmd" output="${build.dir}/svn_info.properties" osfamily="windows">
+            <arg value="/c"/>
+            <arg value="svn"/>
+            <arg value="info"/>
+        </exec>
+        <exec executable="svn" output="${build.dir}/svn_info.properties" osfamily="unix">
+            <arg value="info"/>
+        </exec>
+        
+        <property file="${build.dir}/svn_info.properties" prefix="tempsvn"/>
+        <delete file="${build.dir}/svn_info.properties"/>
+        <property name="svn.revision" value="${tempsvn.Revision}"/>
     </target>
 
     <!-- desktop_clean -->
@@ -82,9 +94,7 @@
     
     <!-- setup -->
     <target name="setup">
-        <echo message="building svn revision ${svn.revision}"/>
         <echo message="build dir is ${build.dir}"/>
-        <echo message="building for Eclipse 3.6+"/>
 
         <!-- TODO: change this to 3.6.0 -->
         <get src="http://ftp.osuosl.org/pub/eclipse/eclipse/downloads/drops/R-3.6.2-201102101200/eclipse-SDK-3.6.2-win32.zip"
@@ -101,13 +111,16 @@
     	
     	  <xmlproperty file="${build.dir}/features/goclipse_feature/feature.xml" collapseAttributes="true"/>
     	
-    	  <echo message="GoClipse version ${feature.version}"/>
+        <echo message="Building svn revision ${svn.revision}"/>
+        <echo message="GoClipse version ${feature.version}"/>
+        <echo message="Building for Eclipse 3.6+"/>
     </target>
     
     <!-- pde_build -->
 	  <target name="pde_build" depends="setup">
 	      <mkdir dir="${build.dir}/buildRepo"/>
 	      
+	      <!-- invoke PDE -->
         <sequential>
             <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar" fork="true" 
                   failonerror="false" errorproperty="pde.build.error">
@@ -115,6 +128,7 @@
                 <arg value="${build.dir}/workspace" />
                 <arg value="-application" />
                 <arg value="org.eclipse.ant.core.antRunner" />
+                <arg value="-quiet" />
                 <arg value="-f" />
                 <arg value="${eclipse.dir}/plugins/org.eclipse.pde.build_3.6.2.R36x_20110203/scripts/build.xml" />
                 <arg value="-Dbuilder=${build.dir}/com.googlecode.goclipse.build_pde" />
@@ -124,6 +138,7 @@
                 <arg value="-DbuildDirectory=${build.dir}" />
                 <arg value="-DbaseLocation=${eclipse.dir}" />
                 <arg value="-Dbase=${build.dir}/base" />
+                <arg value="-Dsvn.revision=${svn.revision}" />
                 <arg value="-noinput" />
                 <arg value="-vmargs" />
                 <arg value="-Xms256M" />
@@ -140,7 +155,33 @@
                 </not>
             </condition>
         </fail>
-	  	
+	  	  
+	      <!-- use the P2 Publisher app to create a category in the update site -->
+        <sequential>
+            <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar" fork="true">
+                <arg value="-data" />
+                <arg value="${build.dir}/workspace" />
+                <arg value="-application" />
+                <arg value="org.eclipse.equinox.p2.publisher.CategoryPublisher" />
+                
+                <arg value="-artifactRepository" />
+                <arg value="file:/${build.dir}/buildRepo" />
+                <arg value="-metadataRepository" />
+                <arg value="file:/${build.dir}/buildRepo" />
+                <arg value="-source" />
+                <arg value="${build.dir}/buildRepo" />
+                
+                <arg value="-categoryDefinition" />
+                <arg value="file:/${build.dir}/com.googlecode.goclipse.build_pde/category.xml" />
+                <arg value="-categoryQualifier" />
+                <!-- arg value="-compress" / -->
+                
+                <arg value="-vmargs" />
+                <arg value="-Xms256M" />
+                <arg value="-Xmx512M" />
+            </java>
+        </sequential>
+	      
         <delete>
             <fileset dir="${build.dir}">
                 <include name="assemble.goclipse_feature.*.xml"/>
@@ -148,8 +189,9 @@
                 <include name="package.goclipse_feature.*.xml"/>
             </fileset>
         </delete>
-	  	
-	  	  <zip destfile="${build.dir}/updatesite-${feature.version}.zip" basedir="${build.dir}/buildRepo"/>
+	  	  
+	  	  <!-- zip destfile="${build.dir}/updatesite-${feature.version}.zip" basedir="${build.dir}/buildRepo"/ -->
+        <zip destfile="${build.dir}/goclipse-updatesite-v${svn.revision}.zip" basedir="${build.dir}/buildRepo"/>
 	  </target>
 	
 </project>

@@ -2,17 +2,15 @@
 <feature
       id="goclipse_feature"
       label="GoClipse"
-      version="0.2.2"
+      version="0.2.2.qualifier"
       provider-name="The GoClipse Development Team"
       plugin="goclipse">
 
    <description url="http://code.google.com/p/goclipse/">
-      This is the development version of the GoClipse Plug-In.  As
-such, features may be broken, partially implemented, or removed
-at anytime.  Thus, use at your own risk.  Stable versions will
-be released from a secondary update site as major milestones
-are completed. GoClipse is an Eclipse plug-in that provides a
-rudimentary level of support for programming with GO.
+      This is the development version of the GoClipse Plug-In. As such, features may be broken, partially implemented, or removed
+at anytime. Thus, use at your own risk. Stable versions will be released from a secondary update site as major milestones
+are completed. GoClipse is an Eclipse plug-in that provides a rudimentary level of support for programming with Go.
+
 Current Features:
 - Syntax highlighting
 - Automatic building of files
@@ -22,7 +20,7 @@ Current Features:
    </description>
 
    <copyright>
-      Copyright (c) 2010 Goclipse Development Team
+      Copyright (c) 2010-2012 GoClipse Development Team
    </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
@@ -117,7 +115,6 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <url>
       <update label="GoClipse" url="http://goclipse.googlecode.com/svn/trunk/goclipse-update-site/"/>
-      <discovery label="Gocode by NSF" url="https://github.com/nsf/gocode"/>
    </url>
 
    <requires>
@@ -142,20 +139,20 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="goclipse"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.2.2.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.googlecode.goclipse.gocode"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.2.2.qualifier"/>
 
    <plugin
          id="com.googlecode.goclipse.debug"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.2.2.qualifier"
          unpack="false"/>
 
 </feature>

@@ -4,15 +4,22 @@
    <extension
          point="com.googlecode.goclipse.contentassistprocessor">
       <content_assist_processor
-            class="com.googlecode.goclipse.gocode.ContentAssistProcessor">
-            
+            class="com.googlecode.goclipse.gocode.GocodeContentAssistProcessor">
       </content_assist_processor>
    </extension>
+   
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.googlecode.goclipse.gocode.preferences.GocodePreferenceInitializer">
+      </initializer>
+   </extension>
+   
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="com.googlecode.goclipse.preferences.GoPreferencePage"
-            class="com.googlecode.goclipse.gocode.preferences.PreferencePage"
+            class="com.googlecode.goclipse.gocode.preferences.GocodePreferencePage"
             id="com.googlecode.goclipse.gocode.page"
             name="Gocode">
       </page>

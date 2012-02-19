@@ -1,10 +1,10 @@
-package com.googlecode.goclipse.debug.preferences;
+package com.googlecode.goclipse.gocode.preferences;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.gocode.GocodePlugin;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.swt.SWT;
@@ -14,22 +14,16 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-// TODO: show the version of gdb? see if it'll work w/ Go?
-// gdb --version prints the intro text + version and quits
-
 /**
- * The preference page for the Go debugger.
- * 
- * @author devoncarew
+ * @author steel
  */
-public class DebuggerPreferencePage extends FieldEditorPreferencePage implements
+public class GocodePreferencePage extends FieldEditorPreferencePage implements
     IWorkbenchPreferencePage {
-  private FileFieldEditor gdbFileFieldEditor;
 
-  public DebuggerPreferencePage() {
+  public GocodePreferencePage() {
     super(GRID);
 
-    setPreferenceStore(Activator.getDefault().getPreferenceStore());
+    setPreferenceStore(GocodePlugin.getPlugin().getPreferenceStore());
   }
 
   @Override
@@ -40,19 +34,21 @@ public class DebuggerPreferencePage extends FieldEditorPreferencePage implements
   @Override
   protected void createFieldEditors() {
     Group group = new Group(getFieldEditorParent(), SWT.NONE);
-    group.setText("GDB Path");
+    group.setText("Gocode");
     GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(group);
     GridLayoutFactory.fillDefaults().margins(10, 4).applyTo(group);
 
     Composite fieldParent = new Composite(group, SWT.NONE);
     GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
 
-    gdbFileFieldEditor = new FileFieldEditor(PreferenceConstants.GDB_PATH, "GDB path:", fieldParent);
-    //gdbFileFieldEditor.setValidateStrategy(StringFieldEditor.VALIDATE_ON_KEY_STROKE);
+    BooleanFieldEditor runServerEditor = new BooleanFieldEditor(
+        GocodePlugin.RUN_SERVER_PREF, "Automatically start Gocode server", fieldParent);
+    addField(runServerEditor);
     
-    addField(gdbFileFieldEditor);
-    
-    ((GridData)gdbFileFieldEditor.getTextControl(fieldParent).getLayoutData()).widthHint = 150;
+    FileFieldEditor fieldEditor = new FileFieldEditor(GocodePlugin.GOCODE_PATH_PREF, "Gocode path:", fieldParent);
+    addField(fieldEditor);
+
+    ((GridData) fieldEditor.getTextControl(fieldParent).getLayoutData()).widthHint = 150;
   }
 
 }

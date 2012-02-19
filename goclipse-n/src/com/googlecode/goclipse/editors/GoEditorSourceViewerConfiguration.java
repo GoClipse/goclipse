@@ -1,5 +1,9 @@
 package com.googlecode.goclipse.editors;
 
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -27,9 +31,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
-
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
  * @author steel
@@ -132,15 +133,20 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
         Activator.CONTENT_ASSIST_EXTENSION_ID);
     try {
       for (IConfigurationElement e : config) {
-        final Object o = e.createExecutableExtension("class");
-        if (o instanceof IContentAssistProcessor) {
-          return (IContentAssistProcessor) o;
+        final Object extension = e.createExecutableExtension("class");
+        
+        if (extension instanceof IContentAssistProcessorExt) {
+          ((IContentAssistProcessorExt)extension).setEditorContext(editor);
+        }
+        
+        if (extension instanceof IContentAssistProcessor) {
+          return (IContentAssistProcessor) extension;
         }
       }
     } catch (CoreException ex) {
       // do nothing
     }
-    return new CompletionProcessor();
+    return new CompletionProcessor(editor);
   }
 
    @Override

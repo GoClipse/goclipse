@@ -1,5 +1,10 @@
 package com.googlecode.goclipse.builder;
 
+import com.googlecode.goclipse.Activator;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,12 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Path;
-
-import com.googlecode.goclipse.Activator;
-
 /**
- * helper class to run an external process. 
+ * helper class to run an external process.
  *
  */
 public class ExternalCommand {
@@ -33,12 +34,20 @@ public class ExternalCommand {
 	public ExternalCommand(String command) {
 		this(command, true);
 	}
+	
+  public ExternalCommand(IPath path, boolean blockUntilDone) {
+    this(path.toOSString(), blockUntilDone);
+  }
+  
 	public ExternalCommand(String command, boolean blockUntilDone) {
 		this.command = command;
 		this.blockUntilDone  = blockUntilDone;
 		pBuilder = new ProcessBuilder(args);
-		String workingFolder = Path.fromOSString(command).removeLastSegments(1).toOSString();
-		setWorkingFolder(workingFolder);
+		
+		if (command != null && command.length() > 0) {
+		  String workingFolder = Path.fromOSString(command).removeLastSegments(1).toOSString();
+		  setWorkingFolder(workingFolder);
+		}
 	}
 
 	public void setEnvironment(Map<String, String> env) {
@@ -48,7 +57,9 @@ public class ExternalCommand {
 	}
 	
 	public void setWorkingFolder(String folder) {
-		pBuilder.directory(new File(folder));
+	  if (folder != null && folder.length() > 0) {
+	    pBuilder.directory(new File(folder));
+	  }
 	}
 	
 	public void setTimeout(long milliseconds){
@@ -72,9 +83,13 @@ public class ExternalCommand {
 	}
 
 	public boolean commandExists() {
-		File file = new File(command);
-		
-		return file.exists();
+	  if (command == null || command.length() == 0) {
+	    return false;
+	  } else {
+  		File file = new File(command);
+  		
+  		return file.exists();
+	  }
 	}
 	
 	public void destroy(){
@@ -111,7 +126,6 @@ public class ExternalCommand {
 			if (inputFilter != null) {
 				inputFilter.setStream(p.getOutputStream());
 			}
-			
 						
 			processOutput.start();
 			processError.start();
@@ -131,10 +145,11 @@ public class ExternalCommand {
 				}
 			}
 			//done
-		}catch(Exception e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			Activator.logError(e);
 			rez = e.getLocalizedMessage();
 		}
+		
 		return rez;
 	}
 	
@@ -150,7 +165,8 @@ public class ExternalCommand {
 			this.filter = filter;
 			
 		}
-		public void run() {
+		@Override
+    public void run() {
 			try {
 				if (filter != null) {
 					filter.process(is);
