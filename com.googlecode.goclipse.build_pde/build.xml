@@ -71,10 +71,10 @@
     <target name="jenkins_init">
         <property environment="env" />
     
-        <echoproperties/>
+        <!-- echoproperties/ -->
         
         <property name="build.dir" location="${env.WORKSPACE}"/>
-        <property name="svn.revision" value="${env.SVN_REVISION}"/>
+        <property name="svn.revision" value="${env.SVN_REVISION_4}"/>
     </target>
     
     <!-- jenkins_clean -->
