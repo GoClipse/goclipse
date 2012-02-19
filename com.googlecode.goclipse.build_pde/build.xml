@@ -72,7 +72,7 @@
         <property environment="env" />
     
         <property name="build.dir" location="${env.WORKSPACE}"/>
-        <property name="svn.revision" value="${env.WORKSPACE}"/>
+        <property name="svn.revision" value="${env.SVN_REVISION}"/>
     </target>
     
     <!-- jenkins_clean -->
