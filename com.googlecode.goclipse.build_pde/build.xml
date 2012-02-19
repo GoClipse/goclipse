@@ -112,6 +112,8 @@
 
         <!-- clean repo -->
         <delete dir="${build.dir}/buildRepo"/>
+        <delete dir="${build.dir}/I.build"/>
+        <delete dir="${build.dir}/workspace"/>
         <delete includes="goclipse-updatesite-*.zip" dir="${build.dir}"/>
     	
     	  <xmlproperty file="${build.dir}/features/goclipse_feature/feature.xml" collapseAttributes="true"/>
