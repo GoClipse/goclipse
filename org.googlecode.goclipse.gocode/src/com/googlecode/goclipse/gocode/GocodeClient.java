@@ -9,6 +9,7 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 
 import java.io.File;
@@ -60,30 +61,14 @@ public class GocodeClient {
     parameters.add("set");
     parameters.add("lib-path");
 
-    String rootPath = goroot + "/pkg/" + goos + "_" + goarch;
-
-    File pkgDir = new File(goroot + "/pkg/");
-    if (pkgDir.isDirectory() && pkgDir.listFiles().length > 0) {
-      rootPath = pkgDir.listFiles()[0].getAbsolutePath();
-    }
-
-    // remove drive letters
-    if (rootPath.contains(":")) {
-      rootPath = rootPath.replaceFirst("[A-Z]:", "");
-    }
+    IPath rootPath = new Path(goroot).append("pkg").append(goos + "_" + goarch);
 
     if (project == null) {
-      parameters.add(rootPath.replace("\\", "/"));
+      parameters.add(rootPath.toOSString());
     } else {
-      IPath pkgPath = project.getFullPath().append(Environment.INSTANCE.getPkgOutputFolder(project));
-      String pkgPathStr = pkgPath.toOSString();
+      IPath projectPath = project.getLocation().append(Environment.INSTANCE.getPkgOutputFolder(project));
 
-      if (pkgPathStr.contains(":")) {
-        pkgPathStr = pkgPathStr.replaceFirst("[A-Z]:", "");
-      }
-
-      parameters.add((rootPath + ":" + pkgPathStr).replace("\\", "/"));
-      //parameters.add("/Users/dcarew/go/pkg/" + goos + "_" + goarch);
+      parameters.add(rootPath.toOSString() + File.pathSeparatorChar + projectPath.toOSString());
     }
         
     goCodeCommand.execute(parameters);
