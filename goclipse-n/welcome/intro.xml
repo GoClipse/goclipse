@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+   <extensionContent id="goclipse-introExtension" style="intro.css" name="Go and GoClipse Development" path="overview/@">
+      <group style-id="content-group" id="goclipse-introLink-group">
+         <link
+            label="Go and GoClipse Development"
+            url="http://org.eclipse.ui.intro/openBrowser?url=http://code.google.com/p/goclipse/"
+            id="goclipse-introLink" style-id="content-link">
+               <text>GoClipse is an Eclipse plugin that adds IDE functionality to the Eclipse platform for the Go programming language.</text>
+         </link>
+      </group>
+   </extensionContent>
+</introContent>

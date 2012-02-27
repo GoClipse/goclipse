@@ -1,4 +1,0 @@
-LIMITATIONS:
-
- - Preferences only support global scope, not instance scope
- 
