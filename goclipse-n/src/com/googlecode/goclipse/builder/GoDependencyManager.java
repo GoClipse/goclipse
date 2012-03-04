@@ -1,5 +1,20 @@
 package com.googlecode.goclipse.builder;
 
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.dependency.CycleException;
+import com.googlecode.goclipse.dependency.DependencyGraph;
+import com.googlecode.goclipse.dependency.IDependencyVisitor;
+
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,23 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.dependency.CycleException;
-import com.googlecode.goclipse.dependency.DependencyGraph;
-import com.googlecode.goclipse.dependency.IDependencyVisitor;
-
 /**
- * limitations: 
+ * limitations:
  * - dependency is computed at package level - full package is built everytime a file is changed
  * 
  * @author ami
@@ -39,14 +39,13 @@ public class GoDependencyManager implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private transient Map<String, String> env;
-	private transient boolean caseInsensitive = false;
+	@SuppressWarnings("unused")
+  private transient boolean caseInsensitive = false;
 
 	private transient ExternalCommand depToolCmd = null;
 
 	DependencyGraph manager = new DependencyGraph();
 	
-	//turns true after a full build
-	private transient boolean fullBuild = false;
 	//turns false after first incremental
 	private transient boolean firstTime = true;
 	
@@ -58,7 +57,7 @@ public class GoDependencyManager implements Serializable {
 	public void setEnvironment(Map<String, String> env) {
 		this.env = env;
 		if (env.get(GoConstants.GOOS).equals("windows")) {
-			//paths in Windows are case insensitive. 
+			//paths in Windows are case insensitive.
 			//it will convert all paths to lowercase in maps for searching
 			caseInsensitive = true;
 		} else {
@@ -89,7 +88,7 @@ public class GoDependencyManager implements Serializable {
 	 * 
 	 * @param toChange
 	 * @param pmonitor
-	 * @throws CoreException 
+	 * @throws CoreException
 	 */
 	public void buildDep(List<IResource> toChange,
 			IProgressMonitor pmonitor) throws CoreException {
@@ -173,7 +172,7 @@ public class GoDependencyManager implements Serializable {
 							} else if (Environment.INSTANCE.isPkgFile(resourceRelativePath)) {
 								IPath objFilePath = getObjectFilePath(dPackName, srcFolderPath);
 								manager.addDependency(objFilePath.toOSString(), packageFullPath.toOSString()); // e.g. src/pkg/foo/_obj/util.8 depends on pkg/linux_386/bar.a
-							}			
+							}
 						}
 					}
 				}
@@ -306,7 +305,7 @@ public class GoDependencyManager implements Serializable {
 	 * @param pmonitor
 	 * @return <package name>, List<project relative paths>
 	 * there may be files in the same package but in different folders!
-	 * @throws CycleException 
+	 * @throws CycleException
 	 */
 	public void accept(Set<String> paths, IDependencyVisitor visitor) throws CycleException {
 		if (paths == null){

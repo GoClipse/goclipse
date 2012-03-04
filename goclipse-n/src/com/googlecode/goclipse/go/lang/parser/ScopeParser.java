@@ -1,7 +1,5 @@
 package com.googlecode.goclipse.go.lang.parser;
 
-import java.util.Stack;
-
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
@@ -11,6 +9,8 @@ import com.googlecode.goclipse.go.lang.model.Method;
 import com.googlecode.goclipse.go.lang.model.Scope;
 import com.googlecode.goclipse.go.lang.model.Type;
 import com.googlecode.goclipse.go.lang.model.Var;
+
+import java.util.Stack;
 
 /**
  * @author steel
@@ -81,7 +81,7 @@ public class ScopeParser implements TokenListener {
 				stack.push(type);
 				Scope s = new Scope(currentScope, value+":"+linenumber);
 				currentScope = s;
-				return;		
+				return;
 			}
 
 			// guard against identifiers named 'func'
@@ -91,7 +91,7 @@ public class ScopeParser implements TokenListener {
 
 			if (TokenType.NEWLINE.equals(type)) {
 				tokenOnLineCount = 0;
-			}			
+			}
 			
 		} catch (RuntimeException e) {
 			Activator.logError(e);

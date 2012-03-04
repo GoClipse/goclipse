@@ -1,15 +1,14 @@
 package com.googlecode.goclipse.editors;
 
-import java.util.Map;
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 import org.eclipse.jdt.internal.ui.text.CombinedWordRule;
 import org.eclipse.jdt.internal.ui.text.CombinedWordRule.WordMatcher;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.TextAttribute;
-import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
-import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
@@ -19,8 +18,7 @@ import org.eclipse.jface.text.rules.WordRule;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import java.util.Map;
 
 @SuppressWarnings("restriction")
 public class GoScanner extends RuleBasedScanner {
@@ -28,13 +26,15 @@ public class GoScanner extends RuleBasedScanner {
 	public GoScanner() {
 	   Token text = new Token(new TextAttribute( ColorManager.INSTANCE.getColor(IColorConstants.DEFAULT), null, SWT.NONE));
 	   CombinedWordRule combinedWordRule = new CombinedWordRule(new IWordDetector() {
-         public boolean isWordStart(char c) {
+         @Override
+        public boolean isWordStart(char c) {
             String s =new String(new char[]{c});
             
             return s.matches("[A-Za-z_]");
          }
 
-         public boolean isWordPart(char c) {
+         @Override
+        public boolean isWordPart(char c) {
             String s =new String(new char[]{c});
             return s.matches("[A-Za-z0-9_]");
          }
@@ -98,20 +98,20 @@ public class GoScanner extends RuleBasedScanner {
 			keywordRule.addWord("return",      keyword);
 			keywordRule.addWord("var",         keyword);
 			
-			keywordRule.addWord("cap",  	   builtinFunction); 
-			keywordRule.addWord("close" , 	   builtinFunction); 
-			keywordRule.addWord("len", 	       builtinFunction); 
-			keywordRule.addWord("make", 	   builtinFunction); 
-			keywordRule.addWord("new", 	       builtinFunction); 
+			keywordRule.addWord("cap",  	   builtinFunction);
+			keywordRule.addWord("close" , 	   builtinFunction);
+			keywordRule.addWord("len", 	       builtinFunction);
+			keywordRule.addWord("make", 	   builtinFunction);
+			keywordRule.addWord("new", 	       builtinFunction);
 			keywordRule.addWord("append",      builtinFunction);
 			keywordRule.addWord("copy",        builtinFunction);
-			keywordRule.addWord("panic", 	   builtinFunction); 
+			keywordRule.addWord("panic", 	   builtinFunction);
 			keywordRule.addWord("recover",     builtinFunction);
 			keywordRule.addWord("complex",     builtinFunction);
 			keywordRule.addWord("real",        builtinFunction);
 			keywordRule.addWord("imag",        builtinFunction);
-			keywordRule.addWord("print", 	   builtinFunction); 
-			keywordRule.addWord("println",	   builtinFunction); 
+			keywordRule.addWord("print", 	   builtinFunction);
+			keywordRule.addWord("println",	   builtinFunction);
 				
 			keywordRule.addWord("nil",   value);
 			keywordRule.addWord("true",  value);
@@ -136,10 +136,11 @@ public class GoScanner extends RuleBasedScanner {
 			keywordRule.addWord("bool",    primitive);
 			keywordRule.addWord("rune",    primitive);
 	
-			setRules(new IRule[] {  
+			setRules(new IRule[] {
 					 combinedWordRule,
 					 new WhitespaceRule(new IWhitespaceDetector() {
-						public boolean isWhitespace(char c) {
+						@Override
+            public boolean isWhitespace(char c) {
 							return Character.isWhitespace(c);
 						}
 					 }),
@@ -157,6 +158,7 @@ public class GoScanner extends RuleBasedScanner {
 	   KeywordRule keywordRule;
 	   StringBuilder buffer = new StringBuilder();
 	   
+      @Override
       public boolean isWordStart(char c) {
          if(Character.isWhitespace(c)){
             buffer= new StringBuilder();
@@ -165,10 +167,11 @@ public class GoScanner extends RuleBasedScanner {
          else{
             buffer.append(c);
          }
-         String s =new String(new char[]{c});            
+         String s =new String(new char[]{c});
          return s.matches("[A-Za-z_]");
       }
 
+      @Override
       public boolean isWordPart(char c) {
          if(Character.isWhitespace(c)){
             buffer = new StringBuilder();

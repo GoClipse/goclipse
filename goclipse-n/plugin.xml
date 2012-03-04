@@ -3,13 +3,33 @@
 <plugin>
 
    <extension point="org.eclipse.core.contenttype.contentTypes"> 
-      <content-type id="com.googlecode.goclipse.gosourcefile"
-       name="Go source file"
-       file-extensions="go"
-       base-type="org.eclipse.core.runtime.text"
-       default-charset="UTF-8">
+      <content-type
+         id="com.googlecode.goclipse.gosourcefile"
+         name="Go source file"
+         file-extensions="go"
+         base-type="org.eclipse.core.runtime.text"
+         default-charset="UTF-8">
       </content-type>
-   </extension> 
+      
+      <content-type
+         id="com.googlecode.goclipse.goPackageFile"
+         name="Go package object"
+         file-extensions="a">
+      </content-type>
+      
+      <content-type
+         id="com.googlecode.goclipse.textContentType"
+         name="Text file"
+         base-type="org.eclipse.core.runtime.text"
+         priority="low">
+      </content-type>
+      
+      <file-association
+            content-type="com.googlecode.goclipse.textContentType"
+            file-extensions="c,h">
+      </file-association>
+   </extension>
+   
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -52,14 +72,22 @@
    </extension>
    <extension
          point="org.eclipse.ui.ide.projectNatureImages">
-         <!-- switch to go-icon8.png? -->
+         <!-- use go-alt.png / go-icon8.png / go-nature.png? -->
       <image
-            icon="icons/go-alt.png"
+            icon="icons/go-nature.png"
             id="com.googlecode.goclipse.goNature.image1"
             natureId="goclipse.goNature">
       </image>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="welcome/intro.xml">
+      </configExtension>
+   </extension>
+   
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -170,9 +198,19 @@
             class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
          <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
       </factory>
+      <factory
+            adaptableType="com.googlecode.goclipse.navigator.GoPathElement"
+            class="com.googlecode.goclipse.navigator.GoWorkbenchAdapterFactory">
+         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.core.filesystem.IFileStore"
+            class="com.googlecode.goclipse.navigator.GoWorkbenchAdapterFactory">
+         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
+      </factory>
    </extension>
     
-   <extension
+   <!-- extension
          point="org.eclipse.ui.navigator.viewer">
       <viewerContentBinding
             viewerId="org.eclipse.ui.navigator.ProjectExplorer">
@@ -253,11 +291,11 @@
             id="goclipse.filters.HideSrcFolder"
             name="Hide Go src Folder">
       </commonFilter>
-   </extension>
+   </extension -->
    
    <extension point="org.eclipse.ui.decorators">
       <decorator
-         class="com.googlecode.goclipse.ui.navigator.GoLightweightDecorator"
+         class="com.googlecode.goclipse.navigator.NavigatorLabelDecorator"
          id="com.googlecode.goclipse.ui.navigator.lightweightDecorator"
          label="Go"
          lightweight="true"
@@ -265,18 +303,162 @@
          state="true">
          
          <enablement>
-            <or>
-               <objectClass
-                  name="org.eclipse.core.resources.IResource">
-               </objectClass>
-               <objectClass
-                  name="com.googlecode.goclipse.ui.navigator.IGoSourceContainer">
-               </objectClass>
-            </or>
+            <objectClass
+               name="org.eclipse.core.resources.IResource">
+            </objectClass>
          </enablement>
       </decorator>
    </extension>
 
+   <extension
+      point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+         activeByDefault="true"
+         icon="icons/go-icon16.png"
+         id="com.googlecode.goclipse.navigator.content"
+         labelProvider="com.googlecode.goclipse.navigator.NavigatorLabelProvider"
+         contentProvider="com.googlecode.goclipse.navigator.NavigatorContentProvider"
+         priority="highest"
+         name="Go Elements">
+         
+         <triggerPoints>
+            <adapt type="org.eclipse.core.resources.IProject">
+               <test property="org.eclipse.core.resources.projectNature" value="goclipse.goNature"/>
+            </adapt>
+         </triggerPoints>
+
+         <possibleChildren>
+            <or>
+               <instanceof value="org.eclipse.core.resources.IResource"/>
+               <instanceof value="org.eclipse.core.filesystem.IFileStore"/>
+               <instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
+            </or>
+         </possibleChildren> 
+      
+         <commonSorter
+               class="com.googlecode.goclipse.navigator.NavigatorViewerSorter"
+               id="com.googlecode.goclipse.navigator.sorter">
+            <parentExpression>
+               <or>
+                  <instanceof value="org.eclipse.core.resources.IResource"/>
+                  <instanceof value="org.eclipse.core.filesystem.IFileStore"/>
+                  <instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
+               </or>
+            </parentExpression>
+         </commonSorter>
+         
+         <commonWizard
+            menuGroupId="com.googlecode.goclipse.wizards.projects"
+            type="new"
+            wizardId="com.googlecode.goclipse.wizards.NewGoFileWizard">
+            <enablement>
+            </enablement>
+         </commonWizard>
+       
+         <commonWizard
+            menuGroupId="com.googlecode.goclipse.wizards.projects"
+            type="new"
+            wizardId="com.googlecode.goclipse.wizards.project.mainwiz">
+            <enablement>
+            </enablement>
+         </commonWizard>
+         
+         <actionProvider class="com.googlecode.goclipse.navigator.NavigatorActionProvider"/>         
+      </navigatorContent>
+      
+      <navigatorContent
+         activeByDefault="true"
+         icon="icons/go-icon16.png"
+         id="com.googlecode.goclipse.navigator.content2"
+         labelProvider="com.googlecode.goclipse.navigator.NavigatorLabelProvider"
+         contentProvider="com.googlecode.goclipse.navigator.NavigatorContentProvider2"
+         priority="low"
+         name="Go Root Elements">
+         
+         <triggerPoints>
+            <adapt type="org.eclipse.core.resources.IProject">
+               <test property="org.eclipse.core.resources.projectNature" value="goclipse.goNature"/>
+            </adapt>
+         </triggerPoints>
+
+         <possibleChildren>
+            <or>
+               <instanceof value="org.eclipse.core.resources.IResource"/>
+               <instanceof value="org.eclipse.core.filesystem.IFileStore"/>
+               <instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
+            </or>
+         </possibleChildren> 
+      
+         <commonSorter
+               class="com.googlecode.goclipse.navigator.NavigatorViewerSorter"
+               id="com.googlecode.goclipse.navigator.sorter">
+            <parentExpression>
+               <or>
+                  <instanceof value="org.eclipse.core.resources.IResource"/>
+                  <instanceof value="org.eclipse.core.filesystem.IFileStore"/>
+                  <instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
+               </or>
+            </parentExpression>
+         </commonSorter>
+         
+         <!-- actionProvider class="com.googlecode.goclipse.navigator.NavigatorActionProvider"/ -->         
+      </navigatorContent>
+      
+      <commonFilter
+            activeByDefault="true"
+            class="com.googlecode.goclipse.navigator.NavigatorObjViewerFilter"
+            id="com.googlecode.goclipse.navigator.objFilter"
+            visibleInUI="true"
+            name="Go _obj folders">
+      </commonFilter>
+      
+      <commonFilter
+            activeByDefault="false"
+            class="com.googlecode.goclipse.navigator.NavigatorPackageViewerFilter"
+            id="com.googlecode.goclipse.navigator.packageFilter"
+            visibleInUI="true"
+            name="Go bin, pkg folders">
+      </commonFilter>
+   </extension>
+   
+   <extension
+       point="org.eclipse.ui.navigator.linkHelper">
+      <linkHelper
+            class="com.googlecode.goclipse.navigator.NavigatorLinkHelper"
+            id="com.googlecode.goclipse.navigator.linkHelper">          
+         <editorInputEnablement>
+            <or> 
+               <instanceof value="org.eclipse.ui.IFileEditorInput" />
+               <instanceof value="org.eclipse.ui.ide.FileStoreEditorInput" />               
+            </or>
+         </editorInputEnablement>
+         
+         <selectionEnablement>
+            <or>
+               <adapt type="org.eclipse.core.resources.IProject" >
+                  <test property="org.eclipse.core.resources.projectNature" value="goclipse.goNature"/>
+               </adapt>
+               <instanceof value="org.eclipse.core.resources.IResource" />
+               <instanceof value="org.eclipse.core.filesystem.IFileStore" />
+               <instanceof value="com.googlecode.goclipse.navigator.GoPathElement" />
+            </or>
+         </selectionEnablement>
+      </linkHelper>          
+   </extension>
+   
+   <extension
+        point="org.eclipse.ui.navigator.viewer">
+     <viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
+        <includes>
+           <contentExtension pattern="com.googlecode.goclipse.navigator.content"/>
+           <contentExtension pattern="com.googlecode.goclipse.navigator.content2"/>
+           <contentExtension pattern="com.googlecode.goclipse.navigator.objFilter"/>
+           <contentExtension pattern="com.googlecode.goclipse.navigator.packageFilter"/>
+           <contentExtension pattern="com.googlecode.goclipse.navigator.linkHelper" /> 
+        </includes>
+     </viewerContentBinding>
+   </extension>
+   
    <extension
          point="org.eclipse.ui.newWizards">
       <category
@@ -298,7 +480,7 @@
             </description>
       </wizard>
       
-      <wizard
+      <!-- wizard
             canFinishEarly="false"
             category="com.googlecode.goclipse.wizards.projects"
             class="com.googlecode.goclipse.wizards.GoReferenceProjectWizard"
@@ -310,7 +492,7 @@
             <description>
                Create a new project containing a link to GOROOT/src; this is useful for browsing the source for the Go libraries
             </description>
-      </wizard>
+      </wizard -->
       
       <wizard
             category="com.googlecode.goclipse.wizards.projects"
@@ -318,7 +500,7 @@
             finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
             icon="icons/gopage.png"
             id="com.googlecode.goclipse.wizards.NewGoFileWizard"
-            name="Go Source File"
+            name="Go File"
             project="false">
             <description>
                Create a new Go source file

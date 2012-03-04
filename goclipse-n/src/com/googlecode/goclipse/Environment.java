@@ -437,39 +437,39 @@ public class Environment {
 		return wWindow.getShell();
 	}
 
-	/**
-	 * @author steel
-	 */
-	class SyncHelper implements Runnable {
-		IResource resource;
-
-		@Override
-    public void run() {
-			IWorkbenchWindow activeWindow = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow();
-
-			if (activeWindow != null) {
-				IStructuredSelection ssel = null;
-				ISelection sel = activeWindow.getSelectionService()
-						.getSelection();
-
-				if (sel instanceof IStructuredSelection) {
-					ssel = (IStructuredSelection) sel;
-
-					IResource resource = null;
-					Object obj = ssel.getFirstElement();
-
-					if (obj instanceof IResource) {
-						resource = (IResource) obj;
-					} else if (obj instanceof IAdaptable) {
-						IAdaptable adaptable = (IAdaptable) obj;
-						resource = (IResource) adaptable
-								.getAdapter(IResource.class);
-					}
-				}
-			}
-		}
-	}
+//	/**
+//	 * @author steel
+//	 */
+//	class SyncHelper implements Runnable {
+//		IResource resource;
+//
+//		@Override
+//    public void run() {
+//			IWorkbenchWindow activeWindow = PlatformUI.getWorkbench()
+//					.getActiveWorkbenchWindow();
+//
+//			if (activeWindow != null) {
+//				IStructuredSelection ssel = null;
+//				ISelection sel = activeWindow.getSelectionService()
+//						.getSelection();
+//
+//				if (sel instanceof IStructuredSelection) {
+//					ssel = (IStructuredSelection) sel;
+//
+//					IResource resource = null;
+//					Object obj = ssel.getFirstElement();
+//
+//					if (obj instanceof IResource) {
+//						resource = (IResource) obj;
+//					} else if (obj instanceof IAdaptable) {
+//						IAdaptable adaptable = (IAdaptable) obj;
+//						resource = (IResource) adaptable
+//								.getAdapter(IResource.class);
+//					}
+//				}
+//			}
+//		}
+//	}
 
 	/**
 	 * Sets the source folder properties on the currently active project
