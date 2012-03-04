@@ -40,6 +40,11 @@ public class GdbProperties {
 		return properties.keySet();
 	}
 	
+	@Override
+  public String toString() {
+	  return getName() + "=" + properties;
+	}
+	
 	void parseKeyValues(PushbackReader in) throws IOException {
 		while (true) {
 			parseKeyValue(in);

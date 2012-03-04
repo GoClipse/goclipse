@@ -10,6 +10,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+// TODO: clean up the output stream
+
 /**
  * The activator class controls the plug-in life cycle.
  * 

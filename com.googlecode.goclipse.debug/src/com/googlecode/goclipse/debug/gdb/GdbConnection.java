@@ -26,7 +26,7 @@ import java.util.concurrent.CountDownLatch;
 // step - step in
 // finish - step out
 // kill/quit ?
-// thread - 
+// thread -
 // info threads
 // info locals
 
@@ -66,7 +66,7 @@ public class GdbConnection implements IStreamListener {
 		this.streamsProxy = process.getStreamsProxy();
 	}
 	
-	public void start() {		
+	public void start() {
 		streamsProxy.getOutputStreamMonitor().addListener(this);
 		
 		inBuffer.append(streamsProxy.getOutputStreamMonitor().getContents());
@@ -353,7 +353,66 @@ public class GdbConnection implements IStreamListener {
 		return new ArrayList<GdbThread>(threads.values());
 	}
 
-	public List<GdbVariable> getVariables(GdbFrame gdbFrame) throws IOException {
+  public List<GdbVariable> getListArguments(final GdbFrame gdbFrame) throws IOException {
+    // stack-args=[frame={level="0",args=[{name="val",value="1"}]}]
+    final List<GdbVariable> result = new ArrayList<GdbVariable>();
+    final CountDownLatch latch = new CountDownLatch(1);
+    
+    // TODO: an optimization is to not pass in the frame index, and get the stack args for all the frames -
+    
+    sendAsyncCall("-stack-list-arguments 1 " + gdbFrame.getIndex() + " " + gdbFrame.getIndex(), new Callback() {
+      @Override
+      public void handleResult(GdbEvent event) {
+        try {
+          if (!event.isError()) {
+            Object obj = event.getProperty("stack-args");
+            
+            Object[] args = getArgsFromFrame((Object[])obj, gdbFrame.getIndex());
+            
+            for (Object o : args) {
+              if (o instanceof GdbProperties) {
+                GdbProperties props = (GdbProperties)o;
+                
+                result.add(new GdbVariable(
+                  props.getPropertyString("name"), props.getPropertyString("value")));
+              }
+            }
+          }
+        } finally {
+          latch.countDown();
+        }
+      }
+    });
+    
+    try {
+      latch.await();
+    } catch (InterruptedException e) {
+      throw new IOException(e);
+    }
+    
+    return result;
+  }
+  
+  /**
+   * [frame={level="0",args=[{name="val",value="1"}]}]
+   */
+	private Object[] getArgsFromFrame(Object[] frames, int index) {
+	  for (Object obj : frames) {
+	    if (obj instanceof GdbProperties) {
+	      GdbProperties props = (GdbProperties)obj;
+	      
+	      props = (GdbProperties)props.getProperty("frame");
+	      
+	      if (props.getPropertyParseInt("level") == index) {
+	        return (Object[])props.getProperty("args");
+	      }
+	    }
+	  }
+	  
+    return new Object[0];
+  }
+
+  public List<GdbVariable> getListLocals(GdbFrame gdbFrame) throws IOException {
 		// locals=[name="bob"]
 		final List<GdbVariable> result = new ArrayList<GdbVariable>();
 		final CountDownLatch latch = new CountDownLatch(1);
@@ -363,35 +422,36 @@ public class GdbConnection implements IStreamListener {
 		sendAsyncCall("-stack-list-locals 1", new Callback() {
 			@Override
 			public void handleResult(GdbEvent event) {
-				if (!event.isError()) {
-					Object obj = event.getProperty("locals"); // stack-args
-					
-					if (obj instanceof Object[]) {
-						Object[] objs = (Object[])obj;
-						
-						for (Object o : objs) {
-							if (o instanceof GdbProperties) {
-								GdbProperties props = (GdbProperties)o;
-								
-								result.add(new GdbVariable(
-									props.getPropertyString("name"), props.getPropertyString("value")));
-							}
-						}
-					}
-				}
-				
-				latch.countDown();
+			  try {
+  				if (!event.isError()) {
+  					Object obj = event.getProperty("locals"); // stack-args
+  					
+  					if (obj instanceof Object[]) {
+  						Object[] objs = (Object[])obj;
+  						
+  						for (Object o : objs) {
+  							if (o instanceof GdbProperties) {
+  								GdbProperties props = (GdbProperties)o;
+  								
+  								result.add(new GdbVariable(
+  									props.getPropertyString("name"), props.getPropertyString("value")));
+  							}
+  						}
+  					}
+  				}
+			  } finally {
+			    latch.countDown();
+			  }
 			}
 		});
 		
 		try {
 			latch.await();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+      throw new IOException(e);
 		}
 		
 		return result;
 	}
-
+  
 }

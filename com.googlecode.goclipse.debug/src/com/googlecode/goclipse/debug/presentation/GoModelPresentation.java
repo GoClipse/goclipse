@@ -1,4 +1,8 @@
-package com.googlecode.goclipse.debug.model;
+package com.googlecode.goclipse.debug.presentation;
+
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.debug.breakpoints.GoBreakpoint;
+import com.googlecode.goclipse.debug.model.GoDebugVariable;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.debug.core.model.ILineBreakpoint;
@@ -69,22 +73,27 @@ public class GoModelPresentation implements IDebugModelPresentation {
 
 	@Override
 	public Image getImage(Object element) {
-		// TODO Auto-generated method stub
+	  if (element instanceof GoBreakpoint) {
+	    return null;
+	  }
+	  
+	  if (element instanceof GoDebugVariable) {
+	    return GoDebugPlugin.getImage("icons/obj16/compare_field.gif");
+	  }
 
 		return null;
 	}
 
 	@Override
 	public String getText(Object element) {
-		// TODO Auto-generated method stub
-
 		return null;
 	}
 
 	@Override
 	public void computeDetail(IValue value, IValueDetailListener listener) {
-		// TODO Auto-generated method stub
+		// TODO: add more detailed info about an object
 
+	  listener.detailComputed(value, null);
 	}
 
 }

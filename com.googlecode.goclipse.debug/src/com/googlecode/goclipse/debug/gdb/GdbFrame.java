@@ -58,8 +58,12 @@ public class GdbFrame {
 		return line;
 	}
 	
-	public List<GdbVariable> getVariables() throws IOException {
-		return connection.getVariables(this);
+  public List<GdbVariable> getArguments() throws IOException {
+    return connection.getListArguments(this);
+  }
+  
+	public List<GdbVariable> getLocals() throws IOException {
+		return connection.getListLocals(this);
 	}
 	
 }

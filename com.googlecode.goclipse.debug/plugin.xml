@@ -164,7 +164,7 @@
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
       <debugModelPresentation
-         class="com.googlecode.goclipse.debug.model.GoModelPresentation"
+         class="com.googlecode.goclipse.debug.presentation.GoModelPresentation"
          id="com.googlecode.goclipse.debug">
       </debugModelPresentation>
    </extension>

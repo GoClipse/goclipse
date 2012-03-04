@@ -109,21 +109,22 @@ public class GdbEvent extends GdbProperties {
 	private void checkForResultToken() {
 		// 555^done
 		
-		int index = name.indexOf("^done");
+		int doneIndex = name.indexOf("^done");
+    int errorIndex = name.indexOf("^error");
 		
-		if (name.indexOf("^done") != -1) {
+		if (doneIndex != -1) {
 			try {
-				resultToken = Integer.parseInt(name.substring(0, name.indexOf("^done")));
+				resultToken = Integer.parseInt(name.substring(0, doneIndex));
 				
-				name = name.substring(index);
+				name = name.substring(doneIndex);
 			} catch (NumberFormatException nfe) {
 
 			}
-		} else if (name.indexOf("^error") != -1) {
+		} else if (errorIndex != -1) {
 			try {
-				resultToken = Integer.parseInt(name.substring(0, name.indexOf("^error")));
+				resultToken = Integer.parseInt(name.substring(0, errorIndex));
 				
-				name = name.substring(index);
+				name = name.substring(errorIndex);
 				
 				error = true;
 			} catch (NumberFormatException nfe) {

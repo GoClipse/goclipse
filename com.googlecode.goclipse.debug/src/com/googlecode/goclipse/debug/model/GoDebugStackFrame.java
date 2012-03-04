@@ -115,8 +115,6 @@ public class GoDebugStackFrame extends GoDebugElement implements IStackFrame {
 
 	@Override
 	public IVariable[] getVariables() throws DebugException {
-		// TODO: handle method args as well --stack-list-arguments 1
-		
 		if (variables == null) {
 			variables = getVariablesImpl();
 		}
@@ -128,10 +126,14 @@ public class GoDebugStackFrame extends GoDebugElement implements IStackFrame {
 		try {
 			List<IVariable> result = new ArrayList<IVariable>();
 			
-			for (GdbVariable var : frame.getVariables()) {
+			for (GdbVariable var : frame.getArguments()) {
 				result.add(new GoDebugVariable(getTarget(), var));
 			}
 			
+      for (GdbVariable var : frame.getLocals()) {
+        result.add(new GoDebugVariable(getTarget(), var));
+      }
+      
 			return result.toArray(new IVariable[result.size()]);
 		} catch (IOException ioe) {
 			throw new DebugException(new Status(IStatus.ERROR, GoDebugPlugin.PLUGIN_ID, ioe.getMessage(), ioe));
