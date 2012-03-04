@@ -15,8 +15,9 @@ In order to create a build of GoClipse:
 
 When reving the version number of GoClipse:
 
-  Change the version number in goclipse-feature/feature.xml, and run the command Versions... >
-  Force feature version into plugin manifests. This will update the plugin version to match the feature.
+  Change the version number in goclipse-feature/feature.xml. On the feature's 'Plugins' tab, run the
+  command Versions... > Force feature version into plugin manifests. This will update the plugin versions
+  to match the feature.
   
   Run a build (com.googlecode.goclipse.build_pde/build.xml).
   
