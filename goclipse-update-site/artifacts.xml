@@ -2,7 +2,7 @@
 <?artifactRepository version='1.1.0'?>
 <repository name='file:/scratch/hudson/workspace/GoClipse/buildRepo/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1.0.0'>
   <properties size='2'>
-    <property name='p2.timestamp' value='1330020198917'/>
+    <property name='p2.timestamp' value='1330870250119'/>
     <property name='p2.compressed' value='false'/>
   </properties>
   <mappings size='3'>
@@ -11,28 +11,28 @@
     <rule filter='(&amp; (classifier=org.eclipse.update.feature))' output='${repoUrl}/features/${id}_${version}.jar'/>
   </mappings>
   <artifacts size='4'>
-    <artifact classifier='osgi.bundle' id='com.googlecode.goclipse.debug' version='0.2.3.v322'>
+    <artifact classifier='osgi.bundle' id='com.googlecode.goclipse.gocode' version='0.2.4.v327'>
       <properties size='2'>
         <property name='artifact.size' value='4096'/>
-        <property name='download.size' value='62249'/>
+        <property name='download.size' value='2510968'/>
       </properties>
     </artifact>
-    <artifact classifier='org.eclipse.update.feature' id='goclipse_feature' version='0.2.3.v322'>
+    <artifact classifier='org.eclipse.update.feature' id='goclipse_feature' version='0.2.4.v327'>
       <properties size='2'>
         <property name='download.contentType' value='application/zip'/>
-        <property name='download.size' value='4982'/>
+        <property name='download.size' value='4983'/>
       </properties>
     </artifact>
-    <artifact classifier='osgi.bundle' id='com.googlecode.goclipse.gocode' version='0.2.3.v322'>
+    <artifact classifier='osgi.bundle' id='goclipse' version='0.2.4.v327'>
       <properties size='2'>
         <property name='artifact.size' value='4096'/>
-        <property name='download.size' value='2510967'/>
+        <property name='download.size' value='1071655'/>
       </properties>
     </artifact>
-    <artifact classifier='osgi.bundle' id='goclipse' version='0.2.3.v322'>
+    <artifact classifier='osgi.bundle' id='com.googlecode.goclipse.debug' version='0.2.4.v327'>
       <properties size='2'>
         <property name='artifact.size' value='4096'/>
-        <property name='download.size' value='1042748'/>
+        <property name='download.size' value='62250'/>
       </properties>
     </artifact>
   </artifacts>
