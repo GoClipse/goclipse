@@ -44,13 +44,13 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 		if (parentElement instanceof IWorkspaceRoot) {
 			IWorkspaceRoot root = (IWorkspaceRoot) parentElement;
 			return root.getProjects();
+			
 		} else if (parentElement instanceof IProject) {
 			IFolder srcFolder = ((IProject)parentElement).getFolder("src");
-			
 			return new Object[] {
-					new GoSourceFolder(srcFolder.getFolder("pkg")),
-					new GoSourceFolder(srcFolder.getFolder("cmd"))
+					new GoSourceFolder(srcFolder)
 			};
+			
 		} else if (parentElement instanceof IGoSourceContainer) {
 			IGoSourceContainer srcCont = (IGoSourceContainer) parentElement;
 			GoPackage pkg = null;
@@ -114,9 +114,9 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 			if (parent instanceof IFolder) {
 				String path = parent.getFullPath().toPortableString();
 				
-				if (path.endsWith("/src/cmd") || path.endsWith("/src/pkg")) {
+				if ( path.endsWith("/src") ) {
 					return new GoSourceFolder((IFolder)parent);
-				} else if (path.contains("/src/pkg/") && !parent.getProjectRelativePath().lastSegment().startsWith("_")) {
+				} else if (path.contains("/src/") && !parent.getProjectRelativePath().lastSegment().startsWith("_")) {
 					return createGoPackage((IFolder) parent);
 				}
 			}

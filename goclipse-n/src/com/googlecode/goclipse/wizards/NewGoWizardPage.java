@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.ui.navigator.GoPackage;
 import com.googlecode.goclipse.ui.navigator.GoSourceFolder;
+import com.googlecode.goclipse.wizards.NewSourceFileComposite.SourceFileType;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -28,7 +29,7 @@ import com.googlecode.goclipse.ui.navigator.GoSourceFolder;
  */
 public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 
-	private SourceFileComposite sourceFileComposite;
+	private NewSourceFileComposite sourceFileComposite;
 
 	private ISelection selection;
 
@@ -47,9 +48,10 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 	/**
 	 * @see IDialogPage#createControl(Composite)
 	 */
-	public void createControl(Composite parent) {
+	@Override
+    public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
-		sourceFileComposite = new SourceFileComposite(container, SWT.NULL);
+		sourceFileComposite = new NewSourceFileComposite(container, SWT.NULL);
 		sourceFileComposite.addDialogChangedListener(this);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		sourceFileComposite.setLayoutData(gd);
@@ -93,16 +95,17 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 				prjPath = ((GoPackage) obj).getProject().getLocation();
 			}
 			if (path != null) {
-				sourceFileComposite.getSourceFolderText().setText(path);
+				sourceFileComposite.getSourceFolderName().setText(path);
 			}
 		}
 		
 		final String newFilePrefix = "new_file";
 		String fName = newFilePrefix + ".go";
 		if (path != null && prjPath != null) {
-			sourceFileComposite.getSourceFolderText().setText(path);
+			sourceFileComposite.getSourceFolderName().setText(path);
 			String fullPath = prjPath.removeLastSegments(1).append(path).toOSString();
 			File f = new File(fullPath);
+			
 			String[] newFiles = f.list(new FilenameFilter() {
 				
 				@Override
@@ -113,6 +116,7 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 					return false;
 				}
 			});
+			
 			if (newFiles != null && newFiles.length > 0) {
 				int i = newFiles.length + 1;
 				while (true) {
@@ -127,15 +131,17 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 			}
 		}
 		
-		sourceFileComposite.getSourceFileText().setText(fName);
-		sourceFileComposite.getSourceFileText().setSelection(0, newFilePrefix.length());
-		sourceFileComposite.getSourceFileText().forceFocus();
+		int pos = fName.indexOf(".go");
+		sourceFileComposite.getSourceFilename().setText(fName);
+		sourceFileComposite.getSourceFilename().setSelection(0, pos);
+		sourceFileComposite.getSourceFilename().forceFocus();
 	}
 
 	/**
 	 * Ensures that both text fields are set.
 	 */
-	public void dialogChanged() {
+	@Override
+    public void dialogChanged() {
 		
 		IResource container = ResourcesPlugin.getWorkspace().getRoot()
 				.findMember(new Path(getContainerName()));
@@ -153,23 +159,28 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 			updateStatus("File container must be specified");
 			return;
 		}
+		
 		if (container == null
 				|| (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
 			updateStatus("File container must exist");
 			return;
 		}
+		
 		if (!container.isAccessible()) {
 			updateStatus("Project must be writable");
 			return;
 		}
+		
 		if (fileName.length() == 0) {
 			updateStatus("File name must be specified");
 			return;
 		}
+		
 		if (fileName.replace('\\', '/').indexOf('/', 1) > 0) {
 			updateStatus("File name must be valid");
 			return;
 		}
+		
 		int dotLoc = fileName.lastIndexOf('.');
 		if (dotLoc != -1) {
 			String ext = fileName.substring(dotLoc + 1);
@@ -178,19 +189,43 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 				return;
 			}
 		}
+		
+		if(sourceFileComposite.getSourceFileType()==SourceFileType.TEST){
+			if(!sourceFileComposite.getSourceFilename().getText().endsWith("_test.go")){
+				updateStatus("Tests must end with \"_test.go\" suffix");
+				return;
+			}
+		}
+		
 		updateStatus(null);
 	}
 
+	/**
+	 * @param message
+	 */
 	private void updateStatus(String message) {
 		setErrorMessage(message);
 		setPageComplete(message == null);
 	}
 
+	/**
+	 * @return name of the container
+	 */
 	public String getContainerName() {
-		return sourceFileComposite.getSourceFolderText().getText();
+		return sourceFileComposite.getSourceFolderName().getText();
 	}
 
+	/**
+	 * @return name of the file
+	 */
 	public String getFileName() {
-		return sourceFileComposite.getSourceFileText().getText();
+		return sourceFileComposite.getSourceFilename().getText();
+	}
+	
+	/**
+	 * @return {@link SourceFileType}
+	 */
+	public SourceFileType getSourFileType() {
+		return sourceFileComposite.getSourceFileType();
 	}
 }

@@ -30,7 +30,6 @@ public class StreamAsLines implements ProcessIStreamFilter {
 	@Override
 	public void process(InputStream iStream) {
 		try {
-			lines.clear();
 			InputStreamReader isr = new InputStreamReader(iStream);
 		    BufferedReader br = new BufferedReader(isr);
 		    String line;
@@ -39,7 +38,7 @@ public class StreamAsLines implements ProcessIStreamFilter {
 	        		int index = lines.size() - 1;
 	        		
 	        		lines.set(index, lines.get(index) + " - " + line.substring(1));
-	        	} else {	        	
+	        	} else {
 	        		lines.add(line);
 	        	}
 	        }
@@ -70,7 +69,8 @@ public class StreamAsLines implements ProcessIStreamFilter {
 		return builder.toString();
 	}
 
-	public void clear() {
+	@Override
+    public void clear() {
 		lines.clear();
 	}
 

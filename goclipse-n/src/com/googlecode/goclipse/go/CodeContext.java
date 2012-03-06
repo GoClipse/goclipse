@@ -84,7 +84,7 @@ public class CodeContext {
 	 * @return
 	 * @throws IOException
 	 */
-	public static CodeContext getCodeContext(String filename, String fileText, boolean useExternalContext) throws IOException{
+	public static CodeContext getCodeContext(String filename, String fileText, boolean useExternalContext) throws IOException {
 		CodeContext     codeContext     = new CodeContext(filename);
 		Lexer     	    lexer  		    = new Lexer();
 		Tokenizer 	    tokenizer 	    = new Tokenizer(lexer);

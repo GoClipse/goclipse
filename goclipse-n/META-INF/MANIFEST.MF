@@ -66,4 +66,5 @@ Export-Package: com.googlecode.goclipse;
    org.eclipse.core.runtime.preferences",
  com.googlecode.goclipse.ui.dialogs,
  com.googlecode.goclipse.utils
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ swt-grouplayout.jar

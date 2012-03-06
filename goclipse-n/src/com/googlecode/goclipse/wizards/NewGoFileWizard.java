@@ -1,8 +1,6 @@
 package com.googlecode.goclipse.wizards;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -13,7 +11,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -31,12 +28,12 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
-import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.wizards.NewSourceFileComposite.SourceFileType;
 
 /**
- * This is a sample new wizard. Its role is to create a new file 
+ * This is a sample new wizard. Its role is to create a new file
  * resource in the provided container. If the container resource
- * (a folder or a project) is selected in the workspace 
+ * (a folder or a project) is selected in the workspace
  * when the wizard is opened, it will accept it as the target
  * container. The wizard creates one file with the extension
  * "go". If a sample multi-page editor (also available
@@ -58,7 +55,8 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 	/**
 	 * Adding the page to the wizard.
 	 */
-	public void addPages() {
+	@Override
+    public void addPages() {
 		page = new NewGoWizardPage(selection);
 		addPage(page);
 	}
@@ -68,11 +66,13 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 	 * the wizard. We will create an operation and run it
 	 * using wizard as execution context.
 	 */
-	public boolean performFinish() {
+	@Override
+    public boolean performFinish() {
 		final String containerName = page.getContainerName();
 		final String fileName = page.getFileName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor) throws InvocationTargetException {
+			@Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
 					doFinish(containerName, fileName, monitor);
 				} catch (CoreException e) {
@@ -126,7 +126,8 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 		monitor.worked(1);
 		monitor.setTaskName("Opening file for editing...");
 		getShell().getDisplay().asyncExec(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				IWorkbenchPage page =
 					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				try {
@@ -142,34 +143,65 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 	 * We will initialize file contents with a sample text.
 	 */
 	private InputStream openContentStream(IFile file) {
-		IPath prjPath = file.getProjectRelativePath();
-		boolean isCmd = Environment.INSTANCE.isCmdFile(prjPath);
-		String pName = null;
-		if (isCmd) {
-			pName = "main";
-		} else {
-			pName = file.getParent().getName();
-		}
-		StringBuilder sb = new StringBuilder();
-		sb.append("package ").append(pName).append("\n");
-		if (isCmd) {
-			File f = new File(file.getLocation().removeLastSegments(1).toOSString());
-			String[] gofiles = f.list(new FilenameFilter() {
-				
-				@Override
-				public boolean accept(File arg0, String name) {
-					if (name.endsWith(".go")) {
-						return true;
-					}
-					return false;
-				}
-			});
-			if (gofiles == null || gofiles.length == 0) {
+		
+		SourceFileType type    = page.getSourFileType();
+		StringBuilder  sb      = new StringBuilder();
+		
+		switch (type) {
+			case PACKAGE_FILE:
+				sb.append("package ").append(file.getParent().getName()).append("\n");
+				sb.append("\n");
+				sb.append("import (\n\n");
+				sb.append(")\n\n");
+				break;
+			case MAIN_DEFAULT:
+				sb.append("package main \n\n");
+				sb.append("import (\n\n");
+				sb.append(")\n\n");
+				sb.append("func main() {\n\n");
+				sb.append("}\n\n");
+				break;
+			case MAIN_WITH_PARAMETERS:
+				sb.append("package main \n\n");
+				sb.append("import (\n");
+				sb.append("    \"flag\"\n");
+				sb.append("    \"fmt\"\n");
+				sb.append(")\n\n");
+				sb.append("const APP_VERSION = \"0.1\"\n\n");
+				sb.append("// The flag package provides a default help printer via -h switch\n");
+				sb.append("var versionFlag *bool = flag.Bool(\"v\", false, \"Print the version number.\")\n\n");
 				sb.append("func main() {\n");
-				sb.append("}");
-			}
+				sb.append("    flag.Parse() // Scan the arguments list \n\n");
+				sb.append("    if *versionFlag {\n");
+				sb.append("        fmt.Println(\"Version:\", APP_VERSION)\n");
+				sb.append("    }\n");
+				sb.append("}\n\n");
+				break;
+			case MAIN_WEBSERVER:
+				sb.append("package main \n\n");
+				sb.append("import (\n");
+				sb.append("    \"net/http\"\n");
+				sb.append("    \"fmt\"\n");
+				sb.append(")\n\n");
+				sb.append("// Default Request Handler\n");
+				sb.append("func defaultHandler(w http.ResponseWriter, r *http.Request) {\n");
+				sb.append("    fmt.Fprintf(w, \"<h1>Hello %s!</h1>\", r.URL.Path[1:])\n");
+				sb.append("}\n\n");
+				sb.append("func main() {\n");
+				sb.append("    http.HandleFunc(\"/\", defaultHandler)\n");
+				sb.append("    http.ListenAndServe(\":8080\", nil)\n");
+				sb.append("}\n\n");
+				break;
+			case TEST:
+				sb.append("package ").append(file.getParent().getName()).append("\n");
+				sb.append("\n");
+				sb.append("import (\n");
+				sb.append("    \"testing\"\n");
+				sb.append(")\n\n");
+				sb.append("func TestXYZ(t *testing.T) {\n\n");
+				sb.append("}\n\n");
+				break;
 		}
-		sb.append("\n");//go requires empty line
 		
 		return new ByteArrayInputStream(sb.toString().getBytes());
 	}
@@ -185,7 +217,8 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
 	 * we can initialize from it.
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
+	@Override
+    public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.selection = selection;
 	}
 }

@@ -35,13 +35,11 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
   public static final String ID = "com.googlecode.goclipse.preferences.GoPreferencePage";
 
   private DirectoryFieldEditor gorootEditor;
-  private ComboFieldEditor goosEditor;
-  private ComboFieldEditor goarchEditor;
-  private FileFieldEditor compilerEditor;
-  private FileFieldEditor linkerEditor;
-  private FileFieldEditor packerEditor;
-  private FileFieldEditor formatterEditor;
-  private FileFieldEditor testerEditor;
+  private ComboFieldEditor     goosEditor;
+  private ComboFieldEditor     goarchEditor;
+  private FileFieldEditor      compilerEditor;
+  private FileFieldEditor      formatterEditor;
+  private FileFieldEditor      documentorEditor;
 
   public GoPreferencePage() {
     super(GRID);
@@ -93,19 +91,14 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
     GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
 
     addField(compilerEditor = new FileFieldEditor(PreferenceConstants.COMPILER_PATH,
-        "Go &Compiler path:", fieldParent));
-
-    addField(linkerEditor = new FileFieldEditor(PreferenceConstants.LINKER_PATH,
-        "Go &Linker path:", fieldParent));
-
-    addField(packerEditor = new FileFieldEditor(PreferenceConstants.PACKER_PATH,
-        "Go &Packer path:", fieldParent));
+        "Go &Tool Path (go):", fieldParent));
 
     addField(formatterEditor = new FileFieldEditor(PreferenceConstants.FORMATTER_PATH,
-        "&Code formatter path (gofmt):", fieldParent));
+        "Go &Formatter Path (gofmt):", fieldParent));
+    
+    addField(documentorEditor = new FileFieldEditor(PreferenceConstants.DOCUMENTOR_PATH,
+            "Go &Documentor Path (godoc):", fieldParent));
 
-    addField(testerEditor = new FileFieldEditor(PreferenceConstants.TESTER_PATH,
-        "&Testing tool path (gotest):", fieldParent));
   }
 
   @Override
@@ -125,31 +118,19 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
     super.propertyChange(event);
 
     if (event.getSource() == gorootEditor && PreferenceInitializer.getDefaultCompilerName() != null) {
+    	
       IPath gorootPath = new Path(gorootEditor.getStringValue());
       File gorootFile = gorootPath.toFile();
+      
       if (gorootFile.exists() && gorootFile.isDirectory()) {
         IPath binPath = gorootPath.append("bin");
         File binFile = binPath.toFile();
+      
         if (binFile.exists() && binFile.isDirectory()) {
           if ("".equals(compilerEditor.getStringValue())) {
             File compilerFile = findExistingFile(binPath, PreferenceInitializer.getSupportedCompilerNames());
             if (compilerFile != null && !compilerFile.isDirectory()) {
               compilerEditor.setStringValue(compilerFile.getAbsolutePath());
-            }
-          }
-
-          if ("".equals(linkerEditor.getStringValue())) {
-            File linkerFile = findExistingFile(binPath, PreferenceInitializer.getSupportedLinkerNames());
-            if (linkerFile != null && !linkerFile.isDirectory()) {
-              linkerEditor.setStringValue(linkerFile.getAbsolutePath());
-            }
-          }
-
-          if ("".equals(packerEditor.getStringValue())) {
-            IPath packerPath = binPath.append(PreferenceInitializer.getDefaultPackerName());
-            File packerFile = packerPath.toFile();
-            if (packerFile.exists() && !packerFile.isDirectory()) {
-              packerEditor.setStringValue(packerFile.getAbsolutePath());
             }
           }
 
@@ -162,12 +143,12 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
             }
           }
 
-          if ("".equals(testerEditor.getStringValue())) {
-            String goTestName = PreferenceInitializer.getDefaultGotestName();
-            IPath testerPath = binPath.append(goTestName);
+          if ("".equals(documentorEditor.getStringValue())) {
+            String goDocName = PreferenceInitializer.getDefaultGodocName();
+            IPath testerPath = binPath.append(goDocName);
             File testerFile = testerPath.toFile();
             if (testerFile.exists() && !testerFile.isDirectory()) {
-              testerEditor.setStringValue(testerFile.getAbsolutePath());
+              documentorEditor.setStringValue(testerFile.getAbsolutePath());
             }
           }
         }

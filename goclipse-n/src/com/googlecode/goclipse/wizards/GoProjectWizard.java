@@ -40,9 +40,10 @@ import com.googlecode.goclipse.perspectives.GoPerspective;
  */
 @SuppressWarnings("restriction")
 public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
-	private IWorkbench workbench;
-  private GoProjectWizardPage page;
-	private ISelection           selection;
+
+	private IWorkbench 			workbench;
+	private GoProjectWizardPage page;
+	private ISelection 			selection;
 
 	/**
 	 * Constructor for NewGoFileWizard.
@@ -59,16 +60,16 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 	 * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
 	 */
 	@Override
-  public void init(IWorkbench workbench, IStructuredSelection selection) {
-	  this.workbench = workbench;
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		this.workbench = workbench;
 		this.selection = selection;
 	}
-	
+
 	/**
 	 * Adding the page to the wizard.
 	 */
 	@Override
-  public void addPages() {
+	public void addPages() {
 		page = new GoProjectWizardPage(selection);
 		addPage(page);
 	}
@@ -85,54 +86,62 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 		if (!(projectName.length() > 0)) {
 			return false;
 		}
-		
-		CreateProjectOperation operation = new CreateProjectOperation(projectName);
-		
+
+		CreateProjectOperation operation = new CreateProjectOperation(
+				projectName);
+
 		try {
 			getContainer().run(false, false, operation);
 		} catch (InvocationTargetException e) {
 			Activator.logError(e);
-			
+
 			return false;
 		} catch (InterruptedException e) {
 			return false;
 		}
-		
+
 		IStatus status = operation.getResult();
-		
+
 		if (status.isOK()) {
 			switchToGoPerspective();
-			
-			BasicNewResourceWizard.selectAndReveal(operation.getProject(), workbench.getActiveWorkbenchWindow());
-			
+
+			BasicNewResourceWizard.selectAndReveal(operation.getProject(),
+					workbench.getActiveWorkbenchWindow());
+
 			return true;
 		} else {
-			ErrorDialog.openError(
-					getShell(), "Error Creating Project", status.getMessage(), status);
-			
+			ErrorDialog.openError(getShell(), "Error Creating Project", status.getMessage(), status);
 			return false;
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void switchToGoPerspective() {
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		IWorkbenchWindow window = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow();
 
-		IPerspectiveRegistry reg = WorkbenchPlugin.getDefault().getPerspectiveRegistry();
-		PerspectiveDescriptor rtPerspectiveDesc = (PerspectiveDescriptor)
-			reg.findPerspectiveWithId(GoPerspective.ID);
+		IPerspectiveRegistry reg = WorkbenchPlugin.getDefault()
+				.getPerspectiveRegistry();
+		PerspectiveDescriptor rtPerspectiveDesc = (PerspectiveDescriptor) reg
+				.findPerspectiveWithId(GoPerspective.ID);
 
 		// Now set it as the active perspective.
 		if (window != null) {
-		   IWorkbenchPage page = window.getActivePage();
-		   page.setPerspective(rtPerspectiveDesc);
+			IWorkbenchPage page = window.getActivePage();
+			page.setPerspective(rtPerspectiveDesc);
 		}
 	}
 
-	private static class CreateProjectOperation extends WorkspaceModifyOperation {
+	/**
+	 * 
+	 */
+	private static class CreateProjectOperation extends	WorkspaceModifyOperation {
 		private String projectName;
 		private IStatus result;
 		private IProject project;
-		
+
 		public CreateProjectOperation(String projectName) {
 			this.projectName = projectName;
 		}
@@ -142,13 +151,13 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 				InvocationTargetException, InterruptedException {
 			try {
 				createProject(monitor);
-				
+
 				result = Status.OK_STATUS;
 			} catch (CoreException ce) {
 				result = ce.getStatus();
 			}
 		}
-		
+
 		void createProject(IProgressMonitor monitor) throws CoreException {
 			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 			IProject project = root.getProject(projectName);
@@ -156,7 +165,7 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			project.open(new NullProgressMonitor());
 
 			this.project = project;
-			
+
 			IProjectDescription description = project.getDescription();
 			String[] natures = description.getNatureIds();
 			String[] newNatures = new String[natures.length + 1];
@@ -164,42 +173,38 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			newNatures[natures.length] = GoNature.NATURE_ID;
 			description.setNatureIds(newNatures);
 			project.setDescription(description, null);
-			
-			IFolder srcPkgFolder = project.getFolder("src/pkg");
-			createFolder(srcPkgFolder);
 
-			IFolder srcCmdFolder = project.getFolder("src/cmd");
-			createFolder(srcCmdFolder);
+			IFolder srcFolder = project.getFolder("src");
+			createFolder(srcFolder);
 
-			Environment.INSTANCE.setSourceFolders(project, new String[]{"src/pkg", "src/cmd"});
-			
+			Environment.INSTANCE.setSourceFolders(project, new String[] {"src"});
+
 			IFolder binFolder = project.getFolder(Environment.INSTANCE.getBinOutputFolder(project));
 			createFolder(binFolder);
-			
+
 			IFolder pkgFolder = project.getFolder(Environment.INSTANCE.getPkgOutputFolder(project));
 			createFolder(pkgFolder);
-       
+
 			Environment.INSTANCE.setBinOutputFolder(project, binFolder.getProjectRelativePath());
 			Environment.INSTANCE.setPkgOutputFolder(project, pkgFolder.getProjectRelativePath());
 		}
-		
+
 		private void createFolder(IFolder folder) throws CoreException {
 			if (!folder.exists()) {
 				if (folder.getParent() instanceof IFolder) {
-					createFolder((IFolder)folder.getParent());
+					createFolder((IFolder) folder.getParent());
 				}
-				
+
 				folder.create(false, true, new NullProgressMonitor());
 			}
 		}
 
 		public IProject getProject() {
-      return project;
-    }
+			return project;
+		}
 
-    public IStatus getResult() {
+		public IStatus getResult() {
 			return result;
 		}
 	}
-
 }

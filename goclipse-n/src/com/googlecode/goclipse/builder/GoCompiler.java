@@ -1,10 +1,13 @@
 package com.googlecode.goclipse.builder;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -25,12 +28,13 @@ import com.googlecode.goclipse.utils.ObjectUtils;
  * 
  */
 public class GoCompiler {
+	
 	private static final QualifiedName COMPILER_VERSION_QN = new QualifiedName(Activator.PLUGIN_ID, "compilerVersion");
 	
-	private Map<String, String> env; //environment for build
-
-	private String version;
-	private long versionLastUpdated = 0;
+	/** environment for build */
+	private Map<String, String> env;
+	private String 				version;
+	private long 				versionLastUpdated = 0;
 	
 	/**
 	 * Returns the current compiler version (ex. "6g version release.r58 8787").
@@ -40,6 +44,8 @@ public class GoCompiler {
 	 * @return the current compiler version
 	 */
 	public static String getCompilerVersion() {
+		String version = null;
+		
 		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		String compilerPath = preferenceStore.getString(PreferenceConstants.COMPILER_PATH);
 		
@@ -47,37 +53,158 @@ public class GoCompiler {
 			return null;
 		}
 		
-		final ExternalCommand compilerCmd = new ExternalCommand(compilerPath);
-	    StreamAsLines output = new StreamAsLines();
-		compilerCmd.setResultsFilter(output);
-		
-		String result = compilerCmd.execute(Collections.singletonList("-V"));
-		
-		if (result != null) {
-			return null;
-		} else {
-			for (String line : output.getLines()) {
-				return line;
+		try {
+			String[] cmd = { compilerPath, GoConstants.GO_VERSION_COMMAND};
+			
+			Runtime runtime = Runtime.getRuntime();
+			Process p = runtime.exec(cmd);
+			
+			try {
+				p.waitFor();
+				
+			} catch (InterruptedException e) {
+				Activator.logInfo(e);
 			}
+			
+			InputStream is    = p.getInputStream();
+			InputStream es    = p.getErrorStream();
+			StreamAsLines output = new StreamAsLines();
+			StreamAsLines errors = new StreamAsLines();
+			output.process(is);
+			errors.process(es);
+			
+			final String GO_VERSION = "go version ";
+			
+			for (String line:output.getLines()){
+				if(line != null && line.startsWith(GO_VERSION)){
+					version = line.substring(GO_VERSION.length());
+					break;
+				}
+			}
+			
+		} catch(IOException e) {
+			Activator.logInfo(e);
 		}
 		
-		return null;
+		return version;
 	}
 				
-	public GoCompiler() {
+	/**
+	 * 
+	 */
+	public GoCompiler() {}
+	
+	/**
+	 * @param project
+	 * @param pmonitor
+	 * @param fileList
+	 */
+	public void compileCmd(final IProject project, IProgressMonitor pmonitor, java.io.File target) {
 		
+		final IFile file = project.getFile(target.getAbsolutePath().replace(
+						     project.getLocation().toOSString(), ""));
+		
+		final IPath 		   projectLocation = project.getLocation();
+		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+		final String 		   compilerPath    = preferenceStore.getString(PreferenceConstants.COMPILER_PATH);
+		
+		IPath binFolder = Environment.INSTANCE.getBinOutputFolder();
+		
+		try {
+			String[] cmd = { compilerPath,
+							 GoConstants.GO_BUILD_COMMAND,
+					         GoConstants.COMPILER_OPTION_O,
+					         projectLocation.toOSString()+"/"+binFolder+File.separator+target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, ""),
+					         file.getName()};
+			
+			Runtime runtime = Runtime.getRuntime();
+			Process p = runtime.exec(cmd, new String[]{"GOPATH="+projectLocation.toOSString()}, target.getParentFile());
+			
+			try {
+				p.waitFor();
+				
+			} catch (InterruptedException e) {
+				Activator.logInfo(e);
+			}
+			
+			MarkerUtilities.deleteFileMarkers(file);
+			
+			InputStream is    = p.getInputStream();
+			InputStream es    = p.getErrorStream();
+			StreamAsLines sal = new StreamAsLines();
+			sal.process(is);
+			sal.process(es);
+			processCompileOutput(file, sal, project);
+			
+		} catch (IOException e1) {
+			Activator.logInfo(e1);
+		}
 	}
 	
-	public void compile(final IProject project,
-			IProgressMonitor pmonitor, String target, String ... dependencies) {
+	/**
+	 * @param project
+	 * @param pmonitor
+	 * @param fileList
+	 */
+	public String compilePkg(final IProject project, IProgressMonitor pmonitor, String pkgpath, java.io.File target) {
+		
+		final IFile 		   file 		   = project.getFile(target.getAbsolutePath().replace(project.getLocation().toOSString(), ""));
+		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+		final String 		   compilerPath    = preferenceStore.getString(PreferenceConstants.COMPILER_PATH);
+		final IPath            projectLocation = project.getLocation();
+		
+		try {
+			String[] cmd = { compilerPath,
+							 GoConstants.GO_BUILD_COMMAND,
+					         GoConstants.COMPILER_OPTION_O,
+					         pkgpath,
+					         "."};
+			
+			Runtime runtime = Runtime.getRuntime();
+			Process p = runtime.exec(cmd, new String[]{"GOPATH="+projectLocation.toOSString()}, target.getParentFile());
+			
+			try {
+				p.waitFor();
+				
+			} catch (InterruptedException e) {
+				Activator.logInfo(e);
+			}
+			
+			MarkerUtilities.deleteFileMarkers(file);
+			
+			InputStream is    = p.getInputStream();
+			InputStream es    = p.getErrorStream();
+			StreamAsLines sal = new StreamAsLines();
+			sal.process(is);
+			sal.process(es);
+			processCompileOutput(file, sal, project);
+			
+		} catch (IOException e1) {
+			Activator.logInfo(e1);
+		}
+		
+		return pkgpath;
+	}
+	
+	/**
+	 * 
+	 * @param project
+	 * @param pmonitor
+	 * @param target
+	 * @param dependencies
+	 */
+	public void compile(final IProject project, IProgressMonitor pmonitor, String target, String ... dependencies) {
+		final IFile file = project.getFile(new File(target).getAbsolutePath().replace(
+			     project.getLocation().toOSString(), ""));
+
 		if (!dependenciesExist(project, dependencies)){
 			Activator.logWarning("Missing dependency for '"+target+"' not compiling");
 			return;
 		}
-		
+
 		SubMonitor monitor = SubMonitor.convert(pmonitor, 130);
 		Activator.logInfo("compile():" + dependencies);
-					
+
 		final IPath prjLoc = project.getLocation();
 		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		String compilerPath = preferenceStore.getString(PreferenceConstants.COMPILER_PATH);
@@ -90,7 +217,7 @@ public class GoCompiler {
 	    StreamAsLines output = new StreamAsLines();
 	    output.setCombineLines(true);
 		compilePackageCmd.setResultsFilter(output);
-		
+
 		Activator.logInfo("building " + target);
 		List<String> args = new ArrayList<String>();
 
@@ -104,7 +231,7 @@ public class GoCompiler {
 		args.add(GoConstants.COMPILER_OPTION_O);
 		//output file
 		args.add(target);
-		
+
 		compilePackageCmd.setWorkingFolder(prjLoc.toOSString());
 		IResource firstDependency = null;
 		for (String dependency : dependencies) {
@@ -121,8 +248,8 @@ public class GoCompiler {
 		if (result != null) {
 			MarkerUtilities.addMarker(firstDependency, -1, result, IMarker.SEVERITY_ERROR);
 		}
-		processCompileOutput(output, project);
-		
+		processCompileOutput(file, output, project);
+
 		try {
 			project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		} catch (CoreException e) {
@@ -130,25 +257,39 @@ public class GoCompiler {
 		}
 	}
 	
-	private void processCompileOutput(StreamAsLines output,  IProject project) {
+	private void processCompileOutput(IFile file, StreamAsLines output,  IProject project) {
 		for (String line: output.getLines()) {
+			if(line.startsWith("#")){
+				continue;
+			}
 			Activator.logInfo(line);
 	         int goPos = line.indexOf(GoConstants.GO_SOURCE_FILE_EXTENSION);
+	         
 	         if (goPos < 0){
 	        	 Activator.getDefault().getLog().log(new Status(Status.ERROR, Activator.PLUGIN_ID, "Could not parse error message (missing .go): "+line));
+	        	 
 	         } else {
+	        	 
 	        	 int fileNameLength = goPos + GoConstants.GO_SOURCE_FILE_EXTENSION.length();
+	        	 
 	        	 String fileName = line.substring(0, fileNameLength);
+	        	 fileName = fileName.replace(project.getLocation().toOSString(), "");
+	        	 
 	        	 IResource resource = project.findMember(fileName);
+	        	 if (resource==null) {
+	        		 resource = file;
+	        	 }
+	        	 
 	        	 line = line.substring(fileNameLength + 1);
-	        	 String[] str = line.split(":", 2);
+	        	 String[] str = line.split(":", 3);
 	        	 int location = -1; //marker for trouble
+	        	 
 	        	 try {
 	        		 location = Integer.parseInt(str[0]);
-	        	 }catch(NumberFormatException nfe) {        		 
-	        	 }
+	        	 }catch(NumberFormatException nfe) {}
+	        	 
 	             if (location != -1 && str.length > 1) {
-		 			MarkerUtilities.addMarker(resource, location, str[1].trim(), IMarker.SEVERITY_ERROR);
+		 			MarkerUtilities.addMarker(resource, location, str[str.length-1].trim(), IMarker.SEVERITY_ERROR);
 	             } else {
 	            	 //play safe. to show something in UI
 	            	 MarkerUtilities.addMarker(resource, 0, line, IMarker.SEVERITY_ERROR);

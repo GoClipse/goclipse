@@ -177,14 +177,14 @@ public class Environment {
 		
 		if (!mf.hadError) {
 			mf.clear();
-			//do linker
-			String linkerPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.LINKER_PATH);
-			compile.setCommand(linkerPath);
-			args.clear();
-			args.add(GoConstants.COMPILER_OPTION_O);
-			args.add(depToolExe);
-			args.add(depToolObj);
-			compile.execute(args);
+//			//do linker
+//			String linkerPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.LINKER_PATH);
+//			compile.setCommand(linkerPath);
+//			args.clear();
+//			args.add(GoConstants.COMPILER_OPTION_O);
+//			args.add(depToolExe);
+//			args.add(depToolObj);
+//			compile.execute(args);
 			
 			if (!mf.hadError) {
 				versionProperties.setProperty("depToolVersion", String.valueOf(DEP_TOOL_VERSION));
@@ -329,18 +329,20 @@ public class Environment {
 		try {
 			IWorkbench iWorkbench 			  = PlatformUI.getWorkbench();
 			IWorkbenchWindow iWorkbenchWindow = iWorkbench.getActiveWorkbenchWindow();
-			IWorkbenchPage iWorkbenchPage 	  = iWorkbenchWindow.getActivePage();
-			ISelection iSelection 			  = iWorkbenchPage.getSelection();
-			iSelection 						  = iWorkbenchPage.getSelection();
-			
-			if(iSelection instanceof TextSelection){
-				IEditorInput editorInput = iWorkbenchWindow.getActivePage().getActiveEditor().getEditorInput();
-				if(editorInput instanceof IFileEditorInput){
-					return ((IFileEditorInput)editorInput).getFile().getProject();
+			if (iWorkbenchWindow != null) {
+				IWorkbenchPage iWorkbenchPage 	  = iWorkbenchWindow.getActivePage();
+				ISelection iSelection 			  = iWorkbenchPage.getSelection();
+				iSelection 						  = iWorkbenchPage.getSelection();
+				
+				if(iSelection instanceof TextSelection){
+					IEditorInput editorInput = iWorkbenchWindow.getActivePage().getActiveEditor().getEditorInput();
+					if(editorInput instanceof IFileEditorInput){
+						return ((IFileEditorInput)editorInput).getFile().getProject();
+					}
 				}
+				
+				extractSelection(iSelection).getProject();
 			}
-			
-			extractSelection(iSelection).getProject();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -367,6 +369,7 @@ public class Environment {
 				return projects[0];
 			}
 		}
+		
 		return project;
 	}
 	
@@ -603,13 +606,9 @@ public class Environment {
 	 */
 	public IPath getBinOutputFolder(IProject project) {
 		Properties properties = getProperties(project);
-		String property = properties.getProperty(PROJECT_BIN_OUTPUT_FOLDERS);
+		String property       = properties.getProperty(PROJECT_BIN_OUTPUT_FOLDERS);
 		if (property == null) {
-			String goarch = Activator.getDefault().getPreferenceStore()
-			.getString(PreferenceConstants.GOARCH);
-			String goos = Activator.getDefault().getPreferenceStore()
-			.getString(PreferenceConstants.GOOS);
-			return Path.fromOSString(DEFAULT_BIN_OUTPUT_FOLDER).append(goos + "_" + goarch);
+			return Path.fromOSString(DEFAULT_BIN_OUTPUT_FOLDER);
 		} else {
 			IPath path = Path.fromOSString(property);
 			return path;
@@ -617,17 +616,17 @@ public class Environment {
 	}
 
 	public IPath getDefaultCmdSourceFolder() {
-		return Path.fromOSString("src").append("cmd");
+		return Path.fromOSString("src");
 	}
 
 	public IPath getDefaultPkgSourceFolder() {
-		return Path.fromOSString("src").append("pkg");
+		return Path.fromOSString("src");
 	}
 
 	public boolean isStandardLibrary(IProject project, String packagePath) {
+		
 		String libraryName = packagePath + GoConstants.GO_LIBRARY_FILE_EXTENSION;
-		String goroot = Activator.getDefault().getPreferenceStore()
-			.getString(PreferenceConstants.GOROOT);
+		String goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
 		
 		File libFile = Path.fromOSString(goroot).append(getDefaultPkgOutputFolder()).append(libraryName).toFile();
 		return libFile.exists();
@@ -642,8 +641,7 @@ public class Environment {
 	}
 
 	public Arch getArch() {
-		String goarch = Activator.getDefault().getPreferenceStore()
-			.getString(PreferenceConstants.GOARCH);
+		String goarch = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);
 		return Arch.getArch(goarch);
 	}
 
@@ -653,6 +651,5 @@ public class Environment {
 		}
 		return "";
 	}
-	
 }
 

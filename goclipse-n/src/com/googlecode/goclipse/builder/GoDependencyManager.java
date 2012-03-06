@@ -110,13 +110,13 @@ public class GoDependencyManager implements Serializable {
 				
 				List<String> depToolParams = new ArrayList<String>();
 				depToolParams.add(resourceFullPath);
-				String result = depToolCmd.execute(depToolParams, true);
-				if (result != null){
+//				String result = depToolCmd.execute(depToolParams, true);
+//				if (result != null){
 					//Activator.getDefault().getLog().log(new Status(Status.WARNING,Activator.PLUGIN_ID, "Error parsing dependencies: "+result));
-					handleParseError(project, output);
+//					handleParseError(project, output);
 					
-					continue;
-				}
+//					continue;
+//				}
 	
 				boolean first = true;
 				String dPackName = "";

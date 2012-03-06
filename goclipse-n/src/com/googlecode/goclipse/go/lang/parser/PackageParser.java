@@ -23,7 +23,7 @@ public class PackageParser implements TokenListener{
 	public PackageParser(Tokenizer tokenizer) {
 		tokenizer.addTokenListener(this);
 	}
-
+	
 	@Override
 	public void tokenFound(TokenType type, String value, boolean inComment, int linenumber, int start, int end) {
 		
@@ -75,7 +75,7 @@ public class PackageParser implements TokenListener{
 
 		try {
 			lexer.scan(new File("test_go/import_test.go"));
-			Activator.logInfo(packageParser.pckg.getName()+" line="+packageParser.pckg.getLine());	
+			Activator.logInfo(packageParser.pckg.getName()+" line="+packageParser.pckg.getLine());
 			for (Import imp : importParser.getImports()) {
 				Activator.logInfo(	imp.prefix + " :: " + imp.path+ " :: " + imp.getLine());
 			}
