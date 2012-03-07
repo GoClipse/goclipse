@@ -90,7 +90,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
     fieldParent = new Composite(group, SWT.NONE);
     GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
 
-    addField(compilerEditor = new FileFieldEditor(PreferenceConstants.COMPILER_PATH,
+    addField(compilerEditor = new FileFieldEditor(PreferenceConstants.GO_TOOL_PATH,
         "Go &Tool Path (go):", fieldParent));
 
     addField(formatterEditor = new FileFieldEditor(PreferenceConstants.FORMATTER_PATH,

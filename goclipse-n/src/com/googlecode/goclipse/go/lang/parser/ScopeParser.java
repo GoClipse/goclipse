@@ -1,5 +1,7 @@
 package com.googlecode.goclipse.go.lang.parser;
 
+import java.util.Stack;
+
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.lang.lexer.TokenListener;
 import com.googlecode.goclipse.go.lang.lexer.TokenType;
@@ -9,8 +11,6 @@ import com.googlecode.goclipse.go.lang.model.Method;
 import com.googlecode.goclipse.go.lang.model.Scope;
 import com.googlecode.goclipse.go.lang.model.Type;
 import com.googlecode.goclipse.go.lang.model.Var;
-
-import java.util.Stack;
 
 /**
  * @author steel
@@ -54,18 +54,18 @@ public class ScopeParser implements TokenListener {
 			}
 			
 			if (TokenType.CASE.equals(type) || TokenType.DEFAULT.equals(type)||TokenType.RBRACE.equals(type)) {
-				TokenType ptype = stack.pop();
-				TokenType peek  = stack.peek();
-				currentScope = currentScope.getParent();
-				switch (peek) {
-				case FUNC:
-				case IF:
-				case ELSE:
-				case TYPE:
-				case DEFAULT:
-				case SWITCH:
-					ptype = stack.pop();
+				if(!stack.isEmpty()) {
+					TokenType peek  = stack.peek();
 					currentScope = currentScope.getParent();
+					switch (peek) {
+					case FUNC:
+					case IF:
+					case ELSE:
+					case TYPE:
+					case DEFAULT:
+					case SWITCH:
+						currentScope = currentScope.getParent();
+					}
 				}
 			}
 			

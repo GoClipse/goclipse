@@ -28,7 +28,7 @@ public class PreferenceConstants {
 	
 	public static final String P_STRING = "stringPreference";
 	
-	public static final String COMPILER_PATH   = "com.googlecode.goclipse.compiler.path";
+	public static final String GO_TOOL_PATH    = "com.googlecode.goclipse.compiler.path";
 	public static final String FORMATTER_PATH  = "com.googlecode.goclipse.formatter.path";
 	public static final String DOCUMENTOR_PATH = "com.googlecode.goclipse.documentor.path";
 

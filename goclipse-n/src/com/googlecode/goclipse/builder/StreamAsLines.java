@@ -19,7 +19,7 @@ public class StreamAsLines implements ProcessIStreamFilter {
 	
 	/**
 	 * If true then successive lines indented by a tab will be combined into one line.
-	 * This is used by {@link GoCompiler}.
+	 * This is used by {@link GoToolExecutor}.
 	 * 
 	 * @param value
 	 */

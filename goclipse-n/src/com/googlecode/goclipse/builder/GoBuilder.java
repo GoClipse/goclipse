@@ -43,7 +43,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	private Map<String, String> goEnv = new HashMap<String, String>();
 	
 	private GoDependencyManager dependencyManager;
-	private GoCompiler 		    compiler;
+	private GoToolExecutor 		    compiler;
 	
 	private boolean onlyFullBuild = false;
 	
@@ -196,7 +196,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			}
 			
 			if (compiler == null){
-				compiler = new GoCompiler();
+				compiler = new GoToolExecutor();
 			}
 			
 			return true;

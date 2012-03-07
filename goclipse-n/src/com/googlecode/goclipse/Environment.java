@@ -163,7 +163,7 @@ public class Environment {
 		
 		//setup compile
 		MsgFilter mf = new MsgFilter();
-		String compilerPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.COMPILER_PATH);
+		String compilerPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GO_TOOL_PATH);
 		ExternalCommand compile = new ExternalCommand(compilerPath);
 		compile.setEnvironment(GoConstants.environment());
 		compile.setWorkingFolder(toolsPath);
