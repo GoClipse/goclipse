@@ -32,7 +32,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.perspectives.GoPerspective;
+import com.googlecode.goclipse.perspective.GoPerspective;
 
 /**
  * 

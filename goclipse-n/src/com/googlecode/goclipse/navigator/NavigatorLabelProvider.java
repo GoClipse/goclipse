@@ -60,8 +60,10 @@ public class NavigatorLabelProvider extends WorkbenchLabelProvider implements IC
 
           if ("a".equals(ext)) {
             return Activator.getImageDescriptor("icons/package_file.png");
-          } else if (ext == null && file.getResourceAttributes().isExecutable()) {
-            return Activator.getImageDescriptor("icons/binary_file.png");
+          } else if (ext == null) {
+            if (file.getResourceAttributes() != null && file.getResourceAttributes().isExecutable()) {
+              return Activator.getImageDescriptor("icons/binary_file.png");
+            }
           }
         }
       }

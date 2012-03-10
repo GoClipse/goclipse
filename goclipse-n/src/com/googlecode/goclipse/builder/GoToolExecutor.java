@@ -190,7 +190,7 @@ public class GoToolExecutor {
 			sal.process(is);
 			sal.process(es);
 			if (sal.getLines().size()>0){
-				System.out.println(sal.getLinesAsString());
+				//System.out.println(sal.getLinesAsString());
 				processCompileOutput(sal, project, pkgPath);
 			}
 			
@@ -199,51 +199,64 @@ public class GoToolExecutor {
 		}
 	}
 	
-	private void processCompileOutput(StreamAsLines output,  IProject project, String relativeTargetDir) {
-		for (String line: output.getLines()) {
-			if(line.startsWith("#")){
-				continue;
-			}
-			Activator.logInfo(line);
-	         int goPos = line.indexOf(GoConstants.GO_SOURCE_FILE_EXTENSION);
-	         
-	         if (goPos > 0) {
-	        	 
-	        	 int fileNameLength = goPos + GoConstants.GO_SOURCE_FILE_EXTENSION.length();
-	        	 
-	        	 // Strip the prefix off the error message
-	        	 String fileName = line.substring(0, fileNameLength);
-	        	 fileName = fileName.replace(project.getLocation().toOSString(), "");
-	        	 fileName = fileName.substring(fileName.indexOf(":")+1).trim();
-	        	 
-	        	 if(fileName.startsWith(File.separator)) {
-	        		 fileName = fileName.substring(1);
-	        	 } else if (fileName.startsWith("."+File.separator)){
-	        		 fileName = relativeTargetDir.substring(1)+File.separator+fileName.substring(2);
-	        	 }
-	        	 
-	        	 IResource resource = project.findMember(fileName);
-	        	 if (resource == null) {
-	        		 resource = project;
-	        	 }
-	        	 
-	        	 line = line.substring(fileNameLength + 1);
-	        	 String[] str = line.split(":", 3);
-	        	 int location = -1; //marker for trouble
-	        	 
-	        	 try {
-	        		 location = Integer.parseInt(str[0]);
-	        	 }catch(NumberFormatException nfe) {}
-	        	 
-	             if (location != -1 && str.length > 1) {
-		 			MarkerUtilities.addMarker(resource, location, str[str.length-1].trim(), IMarker.SEVERITY_ERROR);
-	             } else {
-	            	 //play safe. to show something in UI
-	            	 MarkerUtilities.addMarker(resource, 0, line, IMarker.SEVERITY_ERROR);
-		         }
-			}
-		}
-	}
+  private void processCompileOutput(StreamAsLines output, IProject project, String relativeTargetDir) {
+    for (String line : output.getLines()) {
+      if (line.startsWith("#")) {
+        continue;
+      }
+
+      // ./test.go:6: offset declared and not used
+      // test.go:56:2: no Go source files in /Users/dcarew/go/src/pkg/exp/inotify
+
+      //Activator.logInfo(line);
+      
+      int goPos = line.indexOf(GoConstants.GO_SOURCE_FILE_EXTENSION);
+
+      if (goPos > 0) {
+        int fileNameLength = goPos + GoConstants.GO_SOURCE_FILE_EXTENSION.length();
+
+        // Strip the prefix off the error message
+        String fileName = line.substring(0, fileNameLength);
+        fileName = fileName.replace(project.getLocation().toOSString(), "");
+        fileName = fileName.substring(fileName.indexOf(":") + 1).trim();
+
+        if (fileName.startsWith(File.separator)) {
+          fileName = fileName.substring(1);
+        } else if (fileName.startsWith("." + File.separator)) {
+          fileName = relativeTargetDir.substring(1) + File.separator + fileName.substring(2);
+        }
+
+        IResource resource = project.findMember(fileName);
+        if (resource == null) {
+          resource = project;
+        }
+
+        line = line.substring(fileNameLength + 1);
+        String[] str = line.split(":", 3);
+        int location = -1; //marker for trouble
+        int messageStart = line.indexOf(": ");
+        
+        try {
+          location = Integer.parseInt(str[0]);
+        } catch (NumberFormatException nfe) {
+        }
+
+        if (location != -1 && messageStart != -1) {
+          MarkerUtilities.addMarker(resource, location, line.substring(messageStart + 2), IMarker.SEVERITY_ERROR);
+        } else {
+          //play safe. to show something in UI
+          MarkerUtilities.addMarker(resource, 1, line, IMarker.SEVERITY_ERROR);
+        }
+      } else {
+        // runtime.main: undefined: main.main
+        
+        // TODO: we should improve the messaging here - "packge foo: " message?
+        MarkerUtilities.addMarker(project, 1, line, IMarker.SEVERITY_ERROR);
+        
+        Activator.logError("unable to parse: " + line);
+      }
+    }
+  }
 	
 	/**
 	 * @param project
