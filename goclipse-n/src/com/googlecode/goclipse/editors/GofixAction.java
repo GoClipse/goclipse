@@ -28,8 +28,14 @@ public class GofixAction extends TransformTextAction {
 
 	@Override
 	protected String transformText(final String text) throws CoreException {
+		String goarch = Activator.getDefault().getPreferenceStore().getString(
+				PreferenceConstants.GOARCH);
+		
+		String goos = Activator.getDefault().getPreferenceStore().getString(
+				PreferenceConstants.GOOS);
+		
 		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		String gofixPath = preferenceStore.getString(PreferenceConstants.GOROOT) + "/bin/gofix";
+		String gofixPath = preferenceStore.getString(PreferenceConstants.GOROOT) + "/pkg/tool/"+goos+"_"+goarch+"/fix";
 		
 		final ExternalCommand goFixCmd = new ExternalCommand(gofixPath);
 		goFixCmd.setEnvironment(GoConstants.environment());
