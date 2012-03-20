@@ -1,11 +1,11 @@
 package com.googlecode.goclipse.builder;
 
-import com.googlecode.goclipse.Activator;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+
+import com.googlecode.goclipse.Activator;
 
 /**
  * A utility class for dealing with Go markers.
@@ -31,7 +31,6 @@ public class MarkerUtilities {
 		
 		try {
 			IMarker marker = file.createMarker(MARKER_ID);
-			
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.SEVERITY, severity);
 			

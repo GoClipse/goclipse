@@ -1,10 +1,21 @@
 package com.googlecode.goclipse;
 
-import com.googlecode.goclipse.builder.Arch;
-import com.googlecode.goclipse.builder.ExternalCommand;
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.builder.ProcessIStreamFilter;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.InvalidPropertiesFormatException;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -28,22 +39,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.InvalidPropertiesFormatException;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import com.googlecode.goclipse.builder.Arch;
+import com.googlecode.goclipse.builder.ExternalCommand;
+import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.builder.ProcessIStreamFilter;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
  * Provides environmental utility methods for acquiring and storing a user

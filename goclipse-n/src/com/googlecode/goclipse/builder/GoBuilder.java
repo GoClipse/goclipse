@@ -39,11 +39,9 @@ import com.googlecode.goclipse.go.lang.parser.PackageParser;
 public class GoBuilder extends IncrementalProjectBuilder {
 	
 	public static final String  BUILDER_ID = "com.googlecode.goclipse.goBuilder";
-	
 	private Map<String, String> goEnv = new HashMap<String, String>();
-	
 	private GoDependencyManager dependencyManager;
-	private GoToolExecutor 		    compiler;
+	private GoCompiler 		compiler;
 	
 	private boolean onlyFullBuild = false;
 	
@@ -51,7 +49,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	 * 
 	 */
 	class CollectResourceDeltaVisitor implements IResourceDeltaVisitor {
-		List<IResource> added = new ArrayList<IResource>();
+		List<IResource> added   = new ArrayList<IResource>();
 		List<IResource> removed = new ArrayList<IResource>();
 		List<IResource> changed = new ArrayList<IResource>();
 
@@ -60,19 +58,22 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			IResource resource = delta.getResource();
 			
 			if (resource instanceof IFile && resource.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)) {
+				
 				switch (delta.getKind()) {
-				case IResourceDelta.ADDED:
-					// handle added resource
-					added.add(resource);
-					break;
-				case IResourceDelta.REMOVED:
-					// handle removed resource
-					removed.add(resource);
-					break;
-				case IResourceDelta.CHANGED:
-					// handle changed resource
-					changed.add(resource);
-					break;
+					case IResourceDelta.ADDED:
+						// handle added resource
+						added.add(resource);
+						break;
+						
+					case IResourceDelta.REMOVED:
+						// handle removed resource
+						removed.add(resource);
+						break;
+						
+					case IResourceDelta.CHANGED:
+						// handle changed resource
+						changed.add(resource);
+						break;
 				}
 			}
 			// return true to continue visiting children.
@@ -90,7 +91,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		public List<IResource> getChanged() {
 			return changed;
 		}
-
 	}
 
 	/**
@@ -136,8 +136,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	 */
 	@Override
 	@SuppressWarnings("rawtypes")
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
-			throws CoreException {
+	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
 		
 		IProject project = getProject();
 		
@@ -145,9 +144,9 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			return null;
 		}
 		
-		//if (compiler.requiresRebuild(project)) {
+		if (compiler.requiresRebuild(project)) {
 			kind = FULL_BUILD;
-		//}
+		}
 		
 		try {
 			goEnv = GoConstants.environment();
@@ -196,7 +195,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			}
 			
 			if (compiler == null){
-				compiler = new GoToolExecutor();
+				compiler = new GoCompiler();
 			}
 			
 			return true;
@@ -210,8 +209,9 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	protected void fullBuild(final IProgressMonitor pmonitor)
 			throws CoreException {
 		Activator.logInfo("fullBuild");
-		final SubMonitor monitor = SubMonitor.convert(pmonitor, 250);
-
+		System.out.println("FULL BUILD-------------------------");
+		
+		final SubMonitor monitor = SubMonitor.convert(pmonitor, 2000);
 		CollectResourceVisitor crv = new CollectResourceVisitor();
 		getProject().accept(crv);
 		monitor.worked(20);
@@ -223,6 +223,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		dependencyManager.clearState(monitor.newChild(10));
 		clean(monitor.newChild(10));
 		dependencyManager.buildDep(crv.getCollectedResources(), monitor.newChild(40));
+		
 		doBuild(toCompile, monitor);
 		Activator.logInfo("fullBuild - done");
 		getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -238,13 +239,18 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		IProject project = getProject();
 		Set<String> packages = new HashSet<String>();
 		
+		int cost = 2000/(fileList.size()+1);  // not looking for complete accuracy, just some feedback
+		
 		for(IResource filename:fileList) {
 			File file = new File(filename.getLocation().toOSString());
+			
 			if ( file.isFile() ) {
 				
 				try {
 					if ( isCommandFile(file) ){
+						System.out.println("Considering -> "+file.getAbsolutePath());
 						// if it is a command file, compile as such
+						monitor.beginTask("Compiling command file "+file.getName(), cost);
 						compiler.compileCmd(project, monitor.newChild(100), file);
 						
 					} else {
@@ -252,6 +258,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 						String pkgpath = computePackagePath(file);
 						
 						if ( !packages.contains(pkgpath) ) {
+							monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), cost);
+							System.out.println("Considering -> "+pkgpath);
 							compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
 							packages.add(pkgpath);
 						}
@@ -285,74 +293,25 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		return projectLocation.toOSString()+"/"+pkgFolder+pkgname+GoConstants.GO_LIBRARY_FILE_EXTENSION;
 	}
 
-	/**
-	 * @param nodes
-	 * @throws CoreException
-	 */
-	private void addCycleError(Set<String> nodes) throws CoreException {
-		onlyFullBuild = true;
-		StringBuilder builder = new StringBuilder(" [");
-		boolean first = true;
-		for (String node : nodes) {
-			if (!first) {
-				builder.append(", ");
-			}
-			builder.append(node);
-			first = false;
-		}
-		builder.append("]");
-
-		MarkerUtilities.addMarker(getProject(), GoConstants.CYCLE_DETECTED_MESSAGE+builder.toString());
-	}
-
-	/**
-	 * @param aTarget
-	 * @param dependencies
-	 * @return
-	 */
-	private boolean isCompile(String aTarget, String[] dependencies) {
-		if (dependencies.length == 0){
-			return false;
-		}
-		for (String dep : dependencies) {
-			if (!(dep.endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION) || dep.endsWith(GoConstants.GO_LIBRARY_FILE_EXTENSION))) {
-				return false;
-			}
-		}
-		String ext = Environment.INSTANCE.getArch().getExtension();
-		return aTarget.endsWith(ext);
-	}
-
-	/**
-	 * @param aTarget
-	 * @param dependencies
-	 * @return
-	 */
-	private boolean isLibArchive(String aTarget, String[] dependencies) {
-		if (dependencies.length == 0){
-			return false;
-		}
-		String ext = Environment.INSTANCE.getArch().getExtension();
-		for (String dep : dependencies) {
-			if (!dep.endsWith(ext)){
-				return false;
-			}
-		}
-		return aTarget.endsWith(GoConstants.GO_LIBRARY_FILE_EXTENSION);
-	}
-
-	/**
-	 * @param project
-	 * @param aTarget
-	 */
-	private void ensureFolderExists(IProject project, String aTarget) {
-		IPath file = project.getFile(aTarget).getRawLocation();
-		IPath parentFolder = file.removeLastSegments(1);
-		File parentFile = parentFolder.toFile();
-		if (!parentFile.exists()){
-			parentFile.mkdirs();
-		}
-	}
+//	/**
+//	 * @param nodes
+//	 * @throws CoreException
+//	 */
+//	private void addCycleError(Set<String> nodes) throws CoreException {
+//		onlyFullBuild = true;
+//		StringBuilder builder = new StringBuilder(" [");
+//		boolean first = true;
+//		for (String node : nodes) {
+//			if (!first) {
+//				builder.append(", ");
+//			}
+//			builder.append(node);
+//			first = false;
+//		}
+//		builder.append("]");
+//
+//		MarkerUtilities.addMarker(getProject(), GoConstants.CYCLE_DETECTED_MESSAGE + builder.toString());
+//	}
 
 	/**
 	 * @param delta

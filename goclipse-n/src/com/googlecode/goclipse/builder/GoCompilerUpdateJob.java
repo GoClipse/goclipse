@@ -32,7 +32,7 @@ public class GoCompilerUpdateJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		List<IProject> dirtyProjects = new ArrayList<IProject>();
 		
-		GoToolExecutor compiler = new GoToolExecutor();
+		GoCompiler compiler = new GoCompiler();
 		
 		if (compiler.getVersion() != null) {
 			try {
