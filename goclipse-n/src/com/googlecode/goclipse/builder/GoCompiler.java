@@ -4,11 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -27,7 +24,7 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.utils.ObjectUtils;
 
 /**
- * 
+ * GoCompiler provides the GoClipse interface to the go build tool.
  */
 public class GoCompiler {
 
@@ -38,10 +35,6 @@ public class GoCompiler {
 	private String	             version;
 	private long	             versionLastUpdated	= 0;
 	
-	// String encoded as Line+Message
-    private HashMap<IResource, Set<String>>  errorMessages =
-    		new HashMap<IResource, Set<String>>();
-
 	/**
 	 * 
 	 */
@@ -113,16 +106,17 @@ public class GoCompiler {
 		try {
 			String[] cmd = { compilerPath, GoConstants.GO_GET_COMMAND, target.getAbsolutePath() };
 
-			String goPath = buildGoPath(projectLocation);
-			String PATH = System.getenv("PATH");
+			String  goPath  = buildGoPath(projectLocation);
+			String  PATH    = System.getenv("PATH");
 			Runtime runtime = Runtime.getRuntime();
-			Process p = runtime.exec(cmd, new String[] { "GOPATH=" + goPath, "PATH="+PATH }, target.getParentFile());
+			Process p       = runtime.exec(cmd, new String[] { "GOPATH=" + goPath, "PATH="+PATH }, target.getParentFile());
 
 			try {
 				p.waitFor();
 
 			} catch (InterruptedException e) {
 				Activator.logInfo(e);
+				
 			}
 
 			InputStream is = p.getInputStream();
@@ -134,6 +128,7 @@ public class GoCompiler {
 
 		} catch (IOException e1) {
 			Activator.logInfo(e1);
+			
 		}
 	}
 
@@ -158,8 +153,6 @@ public class GoCompiler {
 	 * @param fileList
 	 */
 	public void compileCmd(final IProject project, IProgressMonitor pmonitor, java.io.File target) {
-		
-		System.out.println("Compiling ->"+project+":"+target);
 		
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
@@ -201,7 +194,7 @@ public class GoCompiler {
 			sal.process(es);
 			
 			if (sal.getLines().size() > 0) {
-				processCompileOutput(sal, project, pkgPath);
+				processCompileOutput(sal, project, pkgPath, file);
 			}
 
 		} catch (IOException e1) {
@@ -213,12 +206,6 @@ public class GoCompiler {
      * @param file
      */
     private void clearErrorMessages(final IFile file) {
-	    
-    	Set<String> msgs = errorMessages.get(file);
-    	if(msgs!=null){
-    		msgs.clear();
-    	}
-    	
 	    MarkerUtilities.deleteFileMarkers(file);
     }
 
@@ -230,7 +217,8 @@ public class GoCompiler {
      */
 	private void processCompileOutput(final StreamAsLines output,
 			                          final IProject      project,
-			                          final String        relativeTargetDir) {
+			                          final String        relativeTargetDir,
+			                          final IFile         file) {
 		
 		for (String line : output.getLines()) {
 			
@@ -248,7 +236,7 @@ public class GoCompiler {
 				fileName = fileName.replace(project.getLocation().toOSString(), "");
 				fileName = fileName.substring(fileName.indexOf(":") + 1).trim();
 
-				
+				// Determine the type of error message
 				if (fileName.startsWith(File.separator)) {
 					fileName = fileName.substring(1);
 				} else if (fileName.startsWith("." + File.separator)) {
@@ -259,11 +247,13 @@ public class GoCompiler {
 					fileName = relativeTargetDir.substring(1) + File.separator + fileName;
 				}
 				
+				// find the resource if possible
 				IResource resource = project.findMember(fileName);
 				if (resource == null) {
 					resource = project;
 				}
 
+				// Create the error message
 				String msg = line.substring(fileNameLength + 1);
 				String[] str = msg.split(":", 3);
 				int location = -1; // marker for trouble
@@ -273,56 +263,19 @@ public class GoCompiler {
 					location = Integer.parseInt(str[0]);
 				} catch (NumberFormatException nfe) {}
 				
-				// Get error messages
-				Set<String> msgs = errorMessages.get(resource);
-				if (msgs == null) {
-					msgs = new HashSet<String>();
-					errorMessages.put(resource, msgs);
-				}
-				
-				// determine how to mark the message
+				// Determine how to mark the message
 				if (location != -1 && messageStart != -1) {
 					String message = msg.substring(messageStart + 2);
-					
-					if (msgs.contains(line+message)) {
-						continue;
-					} else {
-						msgs.add(line+message);
-					}
-					
 					MarkerUtilities.addMarker(resource, location, message, IMarker.SEVERITY_ERROR);
 					
 				} else {
-					
-					if (msgs.contains(line)) {
-						continue;
-					} else {
-						msgs.add(line);
-					}
-					
 					// play safe. to show something in UI
 					MarkerUtilities.addMarker(resource, 1, line, IMarker.SEVERITY_ERROR);
 				}
 				
 			} else {
 				// runtime.main: undefined: main.main
-
-				// TODO: we should improve the messaging here - "packge foo: "
-				// message?
-				Set<String> msgs = errorMessages.get(project);
-				if (msgs == null) {
-					msgs = new HashSet<String>();
-					errorMessages.put(project, msgs);
-				}
-				
-				if (msgs.contains(line)) {
-					continue;
-				} else {
-					msgs.add(line);
-				}
-				
 				MarkerUtilities.addMarker(project, 1, line, IMarker.SEVERITY_ERROR);
-
 				Activator.logError("unable to parse: " + line);
 			}
 		}
@@ -334,8 +287,6 @@ public class GoCompiler {
 	 * @param fileList
 	 */
 	public String compilePkg(final IProject project, IProgressMonitor pmonitor, String pkgpath, java.io.File target) {
-		
-		System.out.println("Compiling ->"+project+":"+pkgpath+":"+target);
 		
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
@@ -368,7 +319,7 @@ public class GoCompiler {
 			sal.process(es);
 
 			if (sal.getLines().size() > 0) {
-				processCompileOutput(sal, project, pkgPath);
+				processCompileOutput(sal, project, pkgPath, file);
 			}
 
 		} catch (IOException e1) {
@@ -442,7 +393,7 @@ public class GoCompiler {
 		if (result != null) {
 			MarkerUtilities.addMarker(firstDependency, -1, result, IMarker.SEVERITY_ERROR);
 		}
-		processCompileOutput(output, project, "");
+		processCompileOutput(output, project, "", file);
 
 		try {
 			project.refreshLocal(IResource.DEPTH_INFINITE, monitor);

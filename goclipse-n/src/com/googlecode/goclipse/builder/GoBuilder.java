@@ -34,14 +34,15 @@ import com.googlecode.goclipse.go.lang.model.Package;
 import com.googlecode.goclipse.go.lang.parser.PackageParser;
 
 /**
- * 
+ * This class is the target called by the Eclipse environment to
+ * build the active Go projects in the workspace.
  */
 public class GoBuilder extends IncrementalProjectBuilder {
 	
 	public static final String  BUILDER_ID = "com.googlecode.goclipse.goBuilder";
-	private Map<String, String> goEnv = new HashMap<String, String>();
+	private Map<String, String> goEnv      = new HashMap<String, String>();
 	private GoDependencyManager dependencyManager;
-	private GoCompiler 		compiler;
+	private GoCompiler 		    compiler;
 	
 	private boolean onlyFullBuild = false;
 	
@@ -209,7 +210,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	protected void fullBuild(final IProgressMonitor pmonitor)
 			throws CoreException {
 		Activator.logInfo("fullBuild");
-		System.out.println("FULL BUILD-------------------------");
 		
 		final SubMonitor monitor = SubMonitor.convert(pmonitor, 2000);
 		CollectResourceVisitor crv = new CollectResourceVisitor();
@@ -247,8 +247,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			if ( file.isFile() ) {
 				
 				try {
+					
 					if ( isCommandFile(file) ){
-						System.out.println("Considering -> "+file.getAbsolutePath());
 						// if it is a command file, compile as such
 						monitor.beginTask("Compiling command file "+file.getName(), cost);
 						compiler.compileCmd(project, monitor.newChild(100), file);
@@ -259,7 +259,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 						
 						if ( !packages.contains(pkgpath) ) {
 							monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), cost);
-							System.out.println("Considering -> "+pkgpath);
 							compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
 							packages.add(pkgpath);
 						}
@@ -293,25 +292,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		return projectLocation.toOSString()+"/"+pkgFolder+pkgname+GoConstants.GO_LIBRARY_FILE_EXTENSION;
 	}
 
-//	/**
-//	 * @param nodes
-//	 * @throws CoreException
-//	 */
-//	private void addCycleError(Set<String> nodes) throws CoreException {
-//		onlyFullBuild = true;
-//		StringBuilder builder = new StringBuilder(" [");
-//		boolean first = true;
-//		for (String node : nodes) {
-//			if (!first) {
-//				builder.append(", ");
-//			}
-//			builder.append(node);
-//			first = false;
-//		}
-//		builder.append("]");
-//
-//		MarkerUtilities.addMarker(getProject(), GoConstants.CYCLE_DETECTED_MESSAGE + builder.toString());
-//	}
 
 	/**
 	 * @param delta

@@ -99,8 +99,8 @@
                class="com.googlecode.goclipse.builder.ToggleNatureAction"
                enablesFor="+"
                id="com.googlecode.goclipse.addRemoveNatureAction"
-               label="Add/Remove Go Nature"
-               menubarPath="additions">
+               label="Convert to Go Project..."
+               menubarPath="org.eclipse.ui.projectConfigure/additions">
          </action>
       </objectContribution>
    </extension>
@@ -823,6 +823,14 @@
          <part id="org.eclipse.search.SearchResultView"/>
          <part id="com.googlecode.goclipse.editors.Editor"/>
       </actionSetPartAssociation>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            class="com.googlecode.goclipse.command.GoGetContribution"
+            locationURI="menu:org.eclipse.ui.main.menu">
+      </menuContribution>
    </extension>
    
 </plugin>
