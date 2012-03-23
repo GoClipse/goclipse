@@ -183,7 +183,7 @@
                 <arg value="-categoryDefinition" />
                 <arg value="file:/${build.dir}/com.googlecode.goclipse.build_pde/category.xml" />
                 <arg value="-categoryQualifier" />
-                <!-- arg value="-compress" / -->
+                <arg value="-compress" />
                 
                 <arg value="-vmargs" />
                 <arg value="-Xms256M" />
