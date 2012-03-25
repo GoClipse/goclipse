@@ -42,8 +42,8 @@ public class GofmtActionDelegate extends TransformTextAction {
 		gofmtCmd.setInputFilter(new ProcessOStreamFilter() {
 			@Override
 			public void setStream(OutputStream outputStream) {
-				OutputStreamWriter osw = new OutputStreamWriter(outputStream);
 				try {
+	        OutputStreamWriter osw = new OutputStreamWriter(outputStream, "UTF-8");
 					osw.append(currentContent);
 					osw.flush();
 					outputStream.close();

@@ -12,76 +12,77 @@ import com.googlecode.goclipse.Activator;
  * 
  */
 public class StreamAsLines implements ProcessIStreamFilter {
-	
-	private boolean combineLines;
-	private List<String> lines = new ArrayList<String>();
-	
-	/**
-	 * 
-	 */
-	public StreamAsLines() {}
-	
-	/**
-	 * If true then successive lines indented by a tab will be combined into one line.
-	 * This is used by {@link GoCompiler}.
-	 * 
-	 * @param value
-	 */
-	public void setCombineLines(boolean value) {
-		this.combineLines = value;
-	}
-	
-	@Override
-	public void process(InputStream iStream) {
-		String line = "";
-		try {
-			InputStreamReader isr = new InputStreamReader(iStream);
-		    BufferedReader br = new BufferedReader(isr);
-		    
-	        while ((line = br.readLine()) != null) {
-	        	if (combineLines && line.startsWith("\t") && lines.size() > 0) {
-	        		int index = lines.size() - 1;
-	        		lines.set(index, lines.get(index) + " - " + line.substring(1));
-	        	} else {
-	        		lines.add(line);
-	        	}
-	        }
-		}catch(Exception e) {
-			Activator.logInfo(e);
-		}
-	}
-	
-	/**
-	 * @return
-	 */
-	public List<String> getLines() {
-		return lines;
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getLinesAsString() {
-		if (lines.size() == 0) {
-			return null;
-		}
-		
-		StringBuilder builder = new StringBuilder();
-		
-		for (int i = 0; i < lines.size(); i++) {
-			if (i > 0) {
-				builder.append("\n");
-			}
-			
-			builder.append(lines.get(i));
-		}
-		
-		return builder.toString();
-	}
 
-	@Override
-    public void clear() {
-		lines.clear();
-	}
+  private boolean combineLines;
+  private List<String> lines = new ArrayList<String>();
+
+  /**
+	 * 
+	 */
+  public StreamAsLines() {
+  }
+
+  /**
+   * If true then successive lines indented by a tab will be combined into one line. This is used by
+   * {@link GoCompiler}.
+   * 
+   * @param value
+   */
+  public void setCombineLines(boolean value) {
+    this.combineLines = value;
+  }
+
+  @Override
+  public void process(InputStream iStream) {
+    String line = "";
+    try {
+      InputStreamReader isr = new InputStreamReader(iStream, "UTF-8");
+      BufferedReader br = new BufferedReader(isr);
+
+      while ((line = br.readLine()) != null) {
+        if (combineLines && line.startsWith("\t") && lines.size() > 0) {
+          int index = lines.size() - 1;
+          lines.set(index, lines.get(index) + " - " + line.substring(1));
+        } else {
+          lines.add(line);
+        }
+      }
+    } catch (Exception e) {
+      Activator.logInfo(e);
+    }
+  }
+
+  /**
+   * @return
+   */
+  public List<String> getLines() {
+    return lines;
+  }
+
+  /**
+   * @return
+   */
+  public String getLinesAsString() {
+    if (lines.size() == 0) {
+      return null;
+    }
+
+    StringBuilder builder = new StringBuilder();
+
+    for (int i = 0; i < lines.size(); i++) {
+      if (i > 0) {
+        builder.append("\n");
+      }
+
+      builder.append(lines.get(i));
+    }
+
+    return builder.toString();
+  }
+
+  @Override
+  public void clear() {
+    lines.clear();
+  }
 
 }

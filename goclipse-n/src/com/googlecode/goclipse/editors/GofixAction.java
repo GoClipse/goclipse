@@ -43,9 +43,8 @@ public class GofixAction extends TransformTextAction {
 		goFixCmd.setInputFilter(new ProcessOStreamFilter() {
 			@Override
 			public void setStream(OutputStream outputStream) {
-				OutputStreamWriter osw = new OutputStreamWriter(
-						outputStream);
 				try {
+	        OutputStreamWriter osw = new OutputStreamWriter(outputStream, "UTF-8");
 					osw.append(text);
 					osw.flush();
 					outputStream.close();
