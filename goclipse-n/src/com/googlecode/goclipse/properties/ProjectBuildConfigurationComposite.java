@@ -192,7 +192,8 @@ public class ProjectBuildConfigurationComposite extends Composite {
       addButton.setText("Add Folder...");
       addButton.setLayoutData(gridData11);
       addButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+         @Override
+        public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             CheckedTreeSelectionDialog dialog = new CheckedTreeSelectionDialog(Environment.INSTANCE.getShell(),
                   new WorkbenchLabelProvider(), new ITreeContentProvider() {
 
@@ -285,7 +286,8 @@ public class ProjectBuildConfigurationComposite extends Composite {
       removeButton.setText("Remove Folder...");
       removeButton.setLayoutData(gridData21);
       removeButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+         @Override
+        public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             for (int i : list.getSelectionIndices()) {
                list.remove(i);
             }
@@ -298,6 +300,8 @@ public class ProjectBuildConfigurationComposite extends Composite {
     * This method initializes group1
     */
    private void createGroup1() {
+      IProject project = projectBuildConfiguration.getProject();
+     
       GridData gridData22 = new GridData();
       gridData22.horizontalAlignment = GridData.FILL;
       gridData22.grabExcessHorizontalSpace = true;
@@ -321,7 +325,6 @@ public class ProjectBuildConfigurationComposite extends Composite {
       pkgOutputText = new Text(group1, SWT.BORDER);
       pkgOutputText.setText(Environment.INSTANCE.getPkgOutputFolder().toOSString());
       pkgOutputText.addModifyListener(new ModifyListener() {
-
          @Override
          public void modifyText(ModifyEvent e) {
             validate();
@@ -332,7 +335,8 @@ public class ProjectBuildConfigurationComposite extends Composite {
       pkgOutputBrowseButton.setText("Browse...");
       pkgOutputBrowseButton.setLayoutData(gridData3);
       pkgOutputBrowseButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+         @Override
+        public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             FolderSelectionDialog dialog = new FolderSelectionDialog(Environment.INSTANCE.getShell(),
                   new WorkbenchLabelProvider(), new TreeContentProvider());
 
@@ -350,7 +354,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
                String str = folder.getProjectRelativePath().toString();
                outputFolderName.add(str);
                pkgOutputText.setText(str);
-            }            
+            }
          }
       });
       
@@ -358,9 +362,8 @@ public class ProjectBuildConfigurationComposite extends Composite {
       lblBinFolder.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
       lblBinFolder.setText("Bin Folder:");
       binOutputText = new Text(group1, SWT.BORDER);
-      binOutputText.setText(Environment.INSTANCE.getBinOutputFolder().toOSString());
+      binOutputText.setText(Environment.INSTANCE.getBinOutputFolder(project).toOSString());
       binOutputText.addModifyListener(new ModifyListener() {
-
          @Override
          public void modifyText(ModifyEvent e) {
             validate();
@@ -377,7 +380,8 @@ public class ProjectBuildConfigurationComposite extends Composite {
       gridData7.widthHint = 100;
       binOutputBrowseButton.setLayoutData(gridData7);
       binOutputBrowseButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+         @Override
+        public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             FolderSelectionDialog dialog = new FolderSelectionDialog(Environment.INSTANCE.getShell(),
                   new WorkbenchLabelProvider(), new TreeContentProvider());
 
@@ -395,7 +399,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
                String str = folder.getProjectRelativePath().toString();
                outputFolderName.add(str);
                binOutputText.setText(str);
-            }            
+            }
          }
       });
    }

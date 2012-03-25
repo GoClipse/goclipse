@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.Util;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
@@ -157,11 +158,13 @@ public class GoCompiler {
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
+		final IPath binFolder        = Environment.INSTANCE.getBinOutputFolder(project);
 		
 		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
-		
-		IPath binFolder = Environment.INSTANCE.getBinOutputFolder();
+		final String           outExtension    = (Util.isWindows() ? ".exe" : "");
+		final String           outPath         = projectLocation.toOSString() + File.separator + binFolder +
+		    File.separator + target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, outExtension);
 		
 		String PATH = System.getenv("PATH");
 
@@ -170,13 +173,14 @@ public class GoCompiler {
 			        compilerPath,
 			        GoConstants.GO_BUILD_COMMAND,
 			        GoConstants.COMPILER_OPTION_O,
-			        projectLocation.toOSString() + "/" + binFolder + File.separator
-			                + target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, ""), file.getName() };
+			        outPath, file.getName() };
 
 			String goPath = buildGoPath(projectLocation);
 
-			Runtime runtime = Runtime.getRuntime();
-			Process p = runtime.exec(cmd, new String[] { "GOPATH=" + goPath, "PATH="+PATH }, target.getParentFile());
+			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
+			builder.environment().put("GOPATH", goPath);
+			builder.environment().put("PATH", PATH);
+			Process p = builder.start();
 
 			try {
 				p.waitFor();

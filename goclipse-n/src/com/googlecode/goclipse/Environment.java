@@ -597,13 +597,6 @@ public class Environment {
 	/**
 	 * Return the output folder for the active project
 	 */
-	public IPath getBinOutputFolder() {
-		return getBinOutputFolder(getCurrentProject());
-	}
-
-	/**
-	 * Return the output folder for the active project
-	 */
 	public IPath getBinOutputFolder(IProject project) {
 		Properties properties = getProperties(project);
 		String property       = properties.getProperty(PROJECT_BIN_OUTPUT_FOLDERS);

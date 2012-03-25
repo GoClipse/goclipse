@@ -1,5 +1,6 @@
 package com.googlecode.goclipse.properties;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
@@ -28,7 +29,8 @@ public class ProjectBuildConfiguration extends PropertyPage {
 	/**
 	 * @see PreferencePage#createContents(Composite)
 	 */
-	protected Control createContents(Composite parent) {
+	@Override
+  protected Control createContents(Composite parent) {
 		composite = new ProjectBuildConfigurationComposite(parent, this,
 				SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -42,14 +44,16 @@ public class ProjectBuildConfiguration extends PropertyPage {
 	/**
 	 * 
 	 */
-	protected void performDefaults() {
+	@Override
+  protected void performDefaults() {
 		composite.setSourceFolders(new String[] {});
 	}
 
 	/**
 	 * 
 	 */
-	public boolean performOk() {
+	@Override
+  public boolean performOk() {
 		String[] sourcefolders = composite.getSourceFolders();
 		if (sourcefolders != null) {
 			Environment.INSTANCE.setSourceFolders(sourcefolders);
@@ -66,6 +70,10 @@ public class ProjectBuildConfiguration extends PropertyPage {
 		}
 		
 		return true;
+	}
+	
+	protected IProject getProject() {
+	  return (IProject)getElement();
 	}
 
 }
