@@ -1,7 +1,9 @@
 package com.googlecode.goclipse.wizards;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -11,6 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -80,15 +83,18 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		final String projectName = page.getProjectComposite().getNameField()
-				.getText().trim();
+		final String projectName = page.getProjectComposite().getProjectName();
+		final String projectPath = page.getProjectComposite().getProjectPath();
 
 		if (!(projectName.length() > 0)) {
 			return false;
 		}
+		
+		if (!new File(projectPath).exists()) {
+			return false;
+		}
 
-		CreateProjectOperation operation = new CreateProjectOperation(
-				projectName);
+		CreateProjectOperation operation = new CreateProjectOperation(projectName, projectPath);
 
 		try {
 			getContainer().run(false, false, operation);
@@ -139,11 +145,13 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 	 */
 	private static class CreateProjectOperation extends	WorkspaceModifyOperation {
 		private String projectName;
+		private String projectPath;
 		private IStatus result;
 		private IProject project;
 
-		public CreateProjectOperation(String projectName) {
+		public CreateProjectOperation(String projectName, String projectPath) {
 			this.projectName = projectName;
+			this.projectPath = projectPath;
 		}
 
 		@Override
@@ -160,13 +168,18 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 
 		void createProject(IProgressMonitor monitor) throws CoreException {
 			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-			IProject project = root.getProject(projectName);
-			project.create(new NullProgressMonitor());
+			
+			IProjectDescription description = new ProjectDescription();
+			description.setName(projectName);
+			description.setLocation(new Path(projectPath));
+			
+			IProject project = root.getProject(description.getName());
+			project.create(description, new NullProgressMonitor());
 			project.open(new NullProgressMonitor());
 
 			this.project = project;
 
-			IProjectDescription description = project.getDescription();
+			description = project.getDescription();
 			String[] natures = description.getNatureIds();
 			String[] newNatures = new String[natures.length + 1];
 			System.arraycopy(natures, 0, newNatures, 0, natures.length);

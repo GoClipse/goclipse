@@ -35,6 +35,7 @@ public class GoProjectWizardPage extends WizardPage {
 		setImageDescriptor(Activator.getImageDescriptor("icons/go-icon-wizard.png"));
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();

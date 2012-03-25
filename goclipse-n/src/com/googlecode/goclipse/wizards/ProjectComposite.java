@@ -8,15 +8,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class ProjectComposite extends Composite {
@@ -65,7 +63,6 @@ public class ProjectComposite extends Composite {
 
       contentGroup = new Group(this, SWT.SHADOW_ETCHED_IN);
       contentGroup.setText("Contents");
-      contentGroup.setEnabled(false);
       contentGroup.setLayout(gridLayout1);
       contentGroup.setLayoutData(gridData2);
 
@@ -124,44 +121,47 @@ public class ProjectComposite extends Composite {
       browseButton.setLayoutData(gridData6);
       browseButton.setEnabled(false);
       browseButton.addSelectionListener(new SelectionListener() {
-
          @Override
          public void widgetSelected(SelectionEvent e) {
-            //selectedPath = new DirectoryDialog(shell).open();
+            String selPath = new DirectoryDialog(getShell()).open();
+            
+            if (selPath != null) {
+              existingSourcePathText.setText(selPath);
+            }
          }
 
          @Override
          public void widgetDefaultSelected(SelectionEvent e) {
-            // TODO Auto-generated method stub
+           
          }
       });
    }
 
-   /**
-    * @param args
-    */
-   public static void main(String[] args) {
-      // TODO Auto-generated method stub
-      /*
-       * Before this is run, be sure to set up the launch configuration
-       * (Arguments->VM Arguments) for the correct SWT library path in order to
-       * run with the SWT dlls. The dlls are located in the SWT plugin jar. For
-       * example, on Windows the Eclipse SWT 3.1 plugin jar is:
-       * installation_directory\plugins\org.eclipse.swt.win32_3.1.0.jar
-       */
-      Display display = Display.getDefault();
-      Shell shell = new Shell(display);
-      shell.setLayout(new FillLayout());
-      shell.setSize(new Point(300, 200));
-      new ProjectComposite(shell, SWT.NONE);
-      shell.open();
-
-      while (!shell.isDisposed()) {
-         if (!display.readAndDispatch())
-            display.sleep();
-      }
-      display.dispose();
-   }
+//   /**
+//    * @param args
+//    */
+//   public static void main(String[] args) {
+//      // TODO Auto-generated method stub
+//      /*
+//       * Before this is run, be sure to set up the launch configuration
+//       * (Arguments->VM Arguments) for the correct SWT library path in order to
+//       * run with the SWT dlls. The dlls are located in the SWT plugin jar. For
+//       * example, on Windows the Eclipse SWT 3.1 plugin jar is:
+//       * installation_directory\plugins\org.eclipse.swt.win32_3.1.0.jar
+//       */
+//      Display display = Display.getDefault();
+//      Shell shell = new Shell(display);
+//      shell.setLayout(new FillLayout());
+//      shell.setSize(new Point(300, 200));
+//      new ProjectComposite(shell, SWT.NONE);
+//      shell.open();
+//
+//      while (!shell.isDisposed()) {
+//         if (!display.readAndDispatch())
+//            display.sleep();
+//      }
+//      display.dispose();
+//   }
 
    public ProjectComposite(Composite parent, int style) {
       super(parent, style);
@@ -198,8 +198,16 @@ public class ProjectComposite extends Composite {
       setSize(new Point(449, 311));
    }
 
-   public Text getNameField() {
-      return nameField;
+   public String getProjectName() {
+	   return nameField.getText().trim();
+   }
+   
+   public String getProjectPath() {
+	   if (newProjectFromSourceRadioButton.getSelection()) {
+		   return existingSourcePathText.getText().trim();
+	   }
+	   
+	   return null;
    }
 
 } // @jve:decl-index=0:visual-constraint="10,10"
