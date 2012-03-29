@@ -42,7 +42,29 @@ public class StreamAsLines implements ProcessIStreamFilter {
       while ((line = br.readLine()) != null) {
         if (combineLines && line.startsWith("\t") && lines.size() > 0) {
           int index = lines.size() - 1;
-          lines.set(index, lines.get(index) + " - " + line.substring(1));
+          
+          String prev = lines.get(index);
+          
+          // Here we start some special processing for known corner cases
+          String note = "";
+          if(prev.contains("main redeclared in this block")){
+        	  note = "this sometimes happens with missing imports";
+        	  
+        	  // schedule a go get
+          }
+          
+          if ("".equals(note)){
+        	  lines.set(index, prev + " - " + line.substring(1));
+          } else {
+        	  lines.set(index, prev + " - " + line.substring(1)+"\n\t("+note+")");
+          }
+          
+        } else if ("# command-line-arguments".equals(line)){
+        	// TODO do special process for this
+        } else if (line.startsWith("go version")){
+        	// TODO do special process for this
+        } else if(line.contains("executable file not found in $PATH")) {
+        	line+="\n\t(you are missing a required tool)";
         } else {
           lines.add(line);
         }

@@ -359,6 +359,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	}
 
 	/**
+	 * TODO this needs to be centralized into a common index...
+	 * 
 	 * @param file
 	 * @return
 	 * @throws IOException

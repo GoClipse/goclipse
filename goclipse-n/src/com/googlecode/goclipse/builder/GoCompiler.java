@@ -1,6 +1,8 @@
 package com.googlecode.goclipse.builder;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -21,6 +23,10 @@ import org.eclipse.jface.util.Util;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.go.lang.lexer.Lexer;
+import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
+import com.googlecode.goclipse.go.lang.model.Import;
+import com.googlecode.goclipse.go.lang.parser.ImportParser;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.utils.ObjectUtils;
 
@@ -93,24 +99,79 @@ public class GoCompiler {
 
 		return version;
 	}
+	
+	/**
+	 * TODO this needs to be centralized into a common index...
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private List<Import> getImports(File file) throws IOException {
+		Lexer 		  lexer        = new Lexer();
+		Tokenizer 	  tokenizer    = new Tokenizer(lexer);
+		ImportParser  importParser = new ImportParser(tokenizer);
+		
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String temp = "";
+		StringBuilder builder = new StringBuilder();
+		while( (temp = reader.readLine()) != null ) {
+			builder.append(temp);
+			builder.append("\n");
+		}
+		
+		reader.close();
+		lexer.scan(builder.toString());
+		List<Import> imports = importParser.getImports();
+		
+		return imports;
+	}
 
 	/**
 	 * @param project
 	 * @param target
 	 */
 	public void goGetDependencies(final IProject project, java.io.File target) {
-		Activator.logInfo("Dependencies ->"+project+":"+target);
-		final IPath projectLocation = project.getLocation();
+		
 		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		final String compilerPath = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
+		
+		final IPath projectLocation = project.getLocation();
+		final String compilerPath   = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
+		final String pkgPath        = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
+		final IFile  file           = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 
 		try {
-			String[] cmd = { compilerPath, GoConstants.GO_GET_COMMAND, target.getAbsolutePath() };
-
-			String  goPath  = buildGoPath(projectLocation);
-			String  PATH    = System.getenv("PATH");
-			Runtime runtime = Runtime.getRuntime();
-			Process p       = runtime.exec(cmd, new String[] { "GOPATH=" + goPath, "PATH="+PATH }, target.getParentFile());
+			
+			/**
+			 * TODO Allow the user to set the go get locations
+			 * manually.
+			 */
+			
+			List<Import> imports   = getImports(target);
+			List<String> cmd = new ArrayList<String>();
+			
+			for (Import imp: imports) {
+				if (imp.getName().startsWith("code.google.com") ||
+					imp.getName().startsWith("github.com")      ||
+					imp.getName().startsWith("bitbucket.org")   ||
+					imp.getName().startsWith("launchpad.net")   ||
+					imp.getName().contains(".git")              ||
+					imp.getName().contains(".svn")              ||
+					imp.getName().contains(".hg")               ||
+					imp.getName().contains(".bzr")              ){
+					cmd.add(imp.getName());
+				}
+			}
+			
+			//String[] cmd     = { compilerPath, GoConstants.GO_GET_COMMAND, "-u" };
+			cmd.add(0, "-u");
+			cmd.add(0, GoConstants.GO_GET_COMMAND);
+			cmd.add(0, compilerPath);
+			
+			String   goPath  = buildGoPath(projectLocation);
+			String   PATH    = System.getenv("PATH");
+			Runtime  runtime = Runtime.getRuntime();
+			Process  p       = runtime.exec(cmd.toArray(new String[]{}), new String[] { "GOPATH=" + goPath, "PATH="+PATH }, target.getParentFile());
 
 			try {
 				p.waitFor();
@@ -123,9 +184,15 @@ public class GoCompiler {
 			InputStream is = p.getInputStream();
 			InputStream es = p.getErrorStream();
 			StreamAsLines sal = new StreamAsLines();
+			sal.setCombineLines(true);
 			sal.process(is);
 			sal.process(es);
+			
 			Activator.logInfo(sal.getLinesAsString());
+			
+			if (sal.getLines().size() > 0) {
+				processCompileOutput(sal, project, pkgPath, file);
+			}
 
 		} catch (IOException e1) {
 			Activator.logInfo(e1);
@@ -158,7 +225,14 @@ public class GoCompiler {
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
-		final IPath binFolder        = Environment.INSTANCE.getBinOutputFolder(project);
+		final IPath  binFolder       = Environment.INSTANCE.getBinOutputFolder(project);
+		clearErrorMessages(file);
+		
+		/*
+		 * This isn't really a good idea here
+		 */
+		//goGetDependencies(project, target);
+		
 		
 		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
@@ -189,11 +263,16 @@ public class GoCompiler {
 				Activator.logInfo(e);
 			}
 			
-			clearErrorMessages(file);
+			try {
+	            project.refreshLocal(IResource.DEPTH_INFINITE, pmonitor);
+            } catch (CoreException e) {
+            	Activator.logInfo(e);
+            }
 
 			InputStream is = p.getInputStream();
 			InputStream es = p.getErrorStream();
 			StreamAsLines sal = new StreamAsLines();
+			sal.setCombineLines(true);
 			sal.process(is);
 			sal.process(es);
 			
@@ -279,8 +358,8 @@ public class GoCompiler {
 				
 			} else {
 				// runtime.main: undefined: main.main
-				MarkerUtilities.addMarker(project, 1, line, IMarker.SEVERITY_ERROR);
-				Activator.logError("unable to parse: " + line);
+				MarkerUtilities.addMarker(file, 1, line, IMarker.SEVERITY_ERROR);
+				
 			}
 		}
 	}
@@ -302,8 +381,8 @@ public class GoCompiler {
 		try {
 			String[] cmd = { compilerPath, GoConstants.GO_BUILD_COMMAND, GoConstants.COMPILER_OPTION_O, pkgpath, "." };
 
-			String goPath = buildGoPath(projectLocation);
-			String PATH = System.getenv("PATH");
+			String  goPath  = buildGoPath(projectLocation);
+			String  PATH    = System.getenv("PATH");
 			Runtime runtime = Runtime.getRuntime();
 			Process p = runtime.exec(cmd, new String[] { "GOPATH=" + goPath, "PATH="+PATH }, target.getParentFile());
 
@@ -313,6 +392,12 @@ public class GoCompiler {
 			} catch (InterruptedException e) {
 				Activator.logInfo(e);
 			}
+			
+			try {
+	            project.refreshLocal(IResource.DEPTH_INFINITE, pmonitor);
+            } catch (CoreException e) {
+            	Activator.logInfo(e);
+            }
 
 			clearErrorMessages(file);
 

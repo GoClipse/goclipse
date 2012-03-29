@@ -31,7 +31,7 @@ public class GoPerspective implements IPerspectiveFactory {
 	private IPageLayout factory;
 
 	public GoPerspective() {
-
+		System.out.println("ss");
 	}
 
 	@Override
