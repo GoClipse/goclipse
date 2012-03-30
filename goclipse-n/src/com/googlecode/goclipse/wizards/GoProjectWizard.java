@@ -90,7 +90,7 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			return false;
 		}
 		
-		if (!new File(projectPath).exists()) {
+		if (projectPath != null && !new File(projectPath).exists()) {
 			return false;
 		}
 
@@ -171,7 +171,9 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			
 			IProjectDescription description = new ProjectDescription();
 			description.setName(projectName);
-			description.setLocation(new Path(projectPath));
+			if (projectPath != null) {
+			  description.setLocation(new Path(projectPath));
+			}
 			
 			IProject project = root.getProject(description.getName());
 			project.create(description, new NullProgressMonitor());
