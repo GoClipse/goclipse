@@ -32,6 +32,7 @@ public class PreferenceConstants {
 	public static final String FORMATTER_PATH  = "com.googlecode.goclipse.formatter.path";
 	public static final String DOCUMENTOR_PATH = "com.googlecode.goclipse.documentor.path";
 
+	public static final String GOPATH = "com.googlecode.goclipse.gopath";
 	public static final String GOROOT = "com.googlecode.goclipse.goroot";
 	public static final String GOOS   = "com.googlecode.goclipse.goos";
 	public static final String GOARCH = "com.googlecode.goclipse.goarch";

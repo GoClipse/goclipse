@@ -53,10 +53,16 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
   @Override
   public Object[] getChildren(Object parentElement) {
     if (parentElement instanceof IProject) {
+      File goPath = getGoPathSrcFolder();
+      
       if (!isGoRootSet()) {
         return NO_CHILDREN;
       } else {
-        return new GoPathElement[] {new GoPathElement("GOROOT", getGoRootSrcFolder())};
+    	  if (goPath!=null){
+    		  return new GoPathElement[] {new GoPathElement("GOROOT", getGoRootSrcFolder()), new GoPathElement("GOPATH", goPath)};
+    	  } else {
+    		  return new GoPathElement[] {new GoPathElement("GOROOT", getGoRootSrcFolder())};
+    	  }
       }
     } else if (parentElement instanceof GoPathElement) {
       GoPathElement pathElement = (GoPathElement) parentElement;
@@ -115,7 +121,32 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
     String goRoot = Activator.getDefault().getPreferenceStore().getString(
         PreferenceConstants.GOROOT);
 
-    File srcFolder = Path.fromOSString(goRoot).append("src").toFile();
+    File srcFolder = Path.fromOSString(goRoot).append("src/pkg").toFile();
+
+    return srcFolder;
+  }
+  
+  /**
+   * @return File representing the external GOPATH
+   */
+  protected File getGoPathSrcFolder() {
+    
+	String goPath = Activator.getDefault().getPreferenceStore().getString(
+        PreferenceConstants.GOPATH);
+	
+	if (goPath==null || goPath==""){
+		goPath = System.getenv("GOPATH").split(":")[0];
+	}
+	
+	if (goPath==null || goPath==""){
+		return null;
+	}
+	
+	File srcFolder = Path.fromOSString(goPath).append("src").toFile();
+	  
+    if (!srcFolder.exists()) {
+    	srcFolder.mkdirs();
+    }
 
     return srcFolder;
   }

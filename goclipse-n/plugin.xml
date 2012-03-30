@@ -642,13 +642,13 @@
       </command>
       <command
             name="Go Format (gofmt)"
-            description="Apply gofmt to contents of current editor"
+            description="Run the &apos;go fmt&apos;command on the current file."
             categoryId="com.googlecode.goclipse.editor.source"
             id="com.googlecode.goclipse.editors.GofmtShortcut.run">
       </command>
       <command
-            name="Gofix (gofix)"
-            description="Run the gofix command"
+            name="Fix (go fix)"
+            description="Run the &apos;go fix&apos; command on the current file."
             categoryId="com.googlecode.goclipse.editor.source"
             id="com.googlecode.goclipse.editors.GofixShortcut.run">
       </command>
@@ -657,6 +657,12 @@
             description="comment/uncomment current selection"
             categoryId="com.googlecode.goclipse.editor.source"
             id="com.googlecode.goclipse.editors.ToggleComment.run">
+      </command>
+      <command
+            categoryId="com.googlecode.goclipse.editor.source"
+            description="Run the &apos;go get&apos; command on the current file."
+            id="com.googlecode.goclipse.editors.GoGetShortcut.run"
+            name="Get (go get -fix -u)">
       </command>
    </extension>
    <extension point="org.eclipse.ui.contexts">
@@ -714,7 +720,7 @@
                class="com.googlecode.goclipse.editors.GofmtActionDelegate"
                definitionId="com.googlecode.goclipse.editors.GofmtShortcut.run"
                id="com.googlecode.goclipse.gofmt"
-               label="&amp;Format (gofmt)"
+               label="&amp;Format (go fmt)"
                menubarPath="com.googlecode.goclipse.editor.sourceMenu/format">
          </action>
        
@@ -722,8 +728,16 @@
                class="com.googlecode.goclipse.editors.GofixAction"
                definitionId="com.googlecode.goclipse.editors.GofixShortcut.run"
                id="com.googlecode.goclipse.gofix"
-               label="Gofix"
+               label="Fix (go fix)"
                menubarPath="com.googlecode.goclipse.editor.sourceMenu/additions">
+         </action>
+         <action
+               class="com.googlecode.goclipse.editors.GoGetActionDelegate"
+               definitionId="com.googlecode.goclipse.editors.GoGetShortcut.run"
+               id="com.googlecode.goclipse.goget"
+               label="&amp;Get (go get -fix -u)"
+               menubarPath="com.googlecode.goclipse.editor.sourceMenu/additions"
+               tooltip="Run the &apos;go get&apos; command for the current file.">
          </action>
          
          <menu

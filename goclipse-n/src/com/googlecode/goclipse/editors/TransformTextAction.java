@@ -12,8 +12,8 @@ import com.googlecode.goclipse.SysUtils;
  * An action used to modify the contents of the current editor.
  */
 abstract class TransformTextAction implements IEditorActionDelegate {
-	private String name;
-	private GoEditor editor;
+	protected String name;
+	protected GoEditor editor;
 	
 	public TransformTextAction(String actionName) {
 		this.name = actionName;
@@ -24,7 +24,8 @@ abstract class TransformTextAction implements IEditorActionDelegate {
 		
 	}
 
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+	@Override
+    public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		if (targetEditor instanceof GoEditor) {
 			editor = (GoEditor)targetEditor;
 		} else {

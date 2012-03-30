@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.Util;
-
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
@@ -131,13 +130,12 @@ public class GoCompiler {
 	 * @param project
 	 * @param target
 	 */
-	public void goGetDependencies(final IProject project, java.io.File target) {
+	public void goGetDependencies(final IProject project, IProgressMonitor monitor, java.io.File target) {
 		
 		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		
 		final IPath projectLocation = project.getLocation();
 		final String compilerPath   = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
-		final String pkgPath        = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
 		final IFile  file           = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 
 		try {
@@ -147,8 +145,11 @@ public class GoCompiler {
 			 * manually.
 			 */
 			
-			List<Import> imports   = getImports(target);
-			List<String> cmd = new ArrayList<String>();
+			List<Import> imports    = getImports(target);
+			List<String> cmd        = new ArrayList<String>();
+			List<Import> extImports = new ArrayList<Import>();
+			
+			monitor.beginTask("Importing external libraries for "+file.getName()+":", 5);
 			
 			for (Import imp: imports) {
 				if (imp.getName().startsWith("code.google.com") ||
@@ -159,12 +160,17 @@ public class GoCompiler {
 					imp.getName().contains(".svn")              ||
 					imp.getName().contains(".hg")               ||
 					imp.getName().contains(".bzr")              ){
+					
 					cmd.add(imp.getName());
+					extImports.add(imp);
 				}
 			}
 			
+			monitor.worked(1);
+			
 			//String[] cmd     = { compilerPath, GoConstants.GO_GET_COMMAND, "-u" };
 			cmd.add(0, "-u");
+			cmd.add(0, "-fix");
 			cmd.add(0, GoConstants.GO_GET_COMMAND);
 			cmd.add(0, compilerPath);
 			
@@ -172,7 +178,9 @@ public class GoCompiler {
 			String   PATH    = System.getenv("PATH");
 			Runtime  runtime = Runtime.getRuntime();
 			Process  p       = runtime.exec(cmd.toArray(new String[]{}), new String[] { "GOPATH=" + goPath, "PATH="+PATH }, target.getParentFile());
-
+			
+			monitor.worked(3);
+			
 			try {
 				p.waitFor();
 
@@ -189,14 +197,57 @@ public class GoCompiler {
 			sal.process(es);
 			
 			Activator.logInfo(sal.getLinesAsString());
+			boolean exMsg = true;
 			
+			try {
+	            project.deleteMarkers(MarkerUtilities.MARKER_ID, false, IResource.DEPTH_ZERO);
+            } catch (CoreException e1) {
+	            Activator.logError(e1);
+            }
+			
+			clearErrorMessages(file);
 			if (sal.getLines().size() > 0) {
-				processCompileOutput(sal, project, pkgPath, file);
+				
+				for (String line : sal.getLines()) {
+					if (line.startsWith("package")) {
+						String impt = line.substring(0,line.indexOf(" -"));
+						impt = impt.replaceFirst("package ", "");
+						for (Import i:extImports) {
+							if (i.path.equals(impt)) {
+								MarkerUtilities.addMarker(file, i.getLine(), line.substring(line.indexOf(" -")+2), IMarker.SEVERITY_ERROR);
+							}
+						}
+						
+					} else if (line.contains(".go:")) {
+						try {
+							String[] split 	    = line.split(":");
+							String   path 	    = "GOPATH/"+split[0].substring(split[0].indexOf("/src/")+5);
+							IFile    extfile    = project.getFile(path);
+							int      lineNumber = Integer.parseInt(split[1]);
+							String   msg 		= split[3];
+							
+							IPath pp = extfile.getFullPath();
+							
+							if(extfile!=null && extfile.exists()){
+								MarkerUtilities.addMarker(extfile, lineNumber, msg, IMarker.SEVERITY_ERROR);
+							} else if (exMsg) {
+								exMsg = false;
+								MarkerUtilities.addMarker(file, "There are problems with the external imports in this file.\n" +
+										                        "You may want to attempt to resolve them outside of eclipse.\n" +
+										                        "Here is the GOPATH to use: \n\t"+goPath);
+							}
+							
+						} catch (Exception e){
+							Activator.logError(e);
+						}
+					}
+				}
 			}
-
+			
+			monitor.worked(1);
+			
 		} catch (IOException e1) {
 			Activator.logInfo(e1);
-			
 		}
 	}
 

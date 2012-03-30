@@ -163,42 +163,52 @@ public class CodeContext {
 		
 		File pkgdir = new File(goroot+"/src/pkg/"+packagePath);
 		
+		// TODO Get rid of the following duplication
+		
 		if(pkgdir.exists() && pkgdir.isDirectory()){
-			File[] files = pkgdir.listFiles();
-			for(File file:files){
-				if(file.canRead() && file.getName().endsWith(".go") && !file.getName().contains("test")){
-					
-					lexer.reset();
-					lexer.scan(file);
-				
-					codeContext.pkg 	   = packageParser.getPckg();
-					codeContext.methods    = functionParser.getMethods();
-					codeContext.functions  = functionParser.getFunctions();
-			//		codeContext.interfaces = interfaceParser.getFunctions();
-				}
-			}
+			processExternalPackage(codeContext, lexer, packageParser, functionParser, pkgdir);
 		}
 		else{
 			String path = Environment.INSTANCE.getAbsoluteProjectPath();
 			pkgdir = new File(path+"/src/pkg/"+packagePath);
 			if(pkgdir.exists() && pkgdir.isDirectory()){
-				File[] files = pkgdir.listFiles();
-				for(File file:files){
-					if(file.canRead() && file.getName().endsWith(".go") && !file.getName().contains("test")){
-						lexer.reset();
-						lexer.scan(file);
-					
-						codeContext.pkg 	   = packageParser.getPckg();
-						codeContext.methods    = functionParser.getMethods();
-						codeContext.functions  = functionParser.getFunctions();
-				//		codeContext.interfaces = interfaceParser.getFunctions();
-					}
-				}
+				processExternalPackage(codeContext, lexer, packageParser, functionParser, pkgdir);
+			}
+			
+			String GOPATH = System.getenv("GOPATH").split(":")[0];
+			pkgdir = new File(GOPATH+"/src/"+packagePath);
+			if(pkgdir.exists() && pkgdir.isDirectory()){
+				processExternalPackage(codeContext, lexer, packageParser, functionParser, pkgdir);
 			}
 		}
 		
 		return codeContext;
 	}
+
+	/**
+     * @param codeContext
+     * @param lexer
+     * @param packageParser
+     * @param functionParser
+     * @param pkgdir
+     * @throws IOException
+     */
+    private static void processExternalPackage(CodeContext codeContext, Lexer lexer, PackageParser packageParser,
+            FunctionParser functionParser, File pkgdir) throws IOException {
+	    File[] files = pkgdir.listFiles();
+	    for(File file:files){
+	    	if(file.canRead() && file.getName().endsWith(".go") && !file.getName().endsWith("_test.go")){
+	    		
+	    		lexer.reset();
+	    		lexer.scan(file);
+	    	
+	    		codeContext.pkg 	   = packageParser.getPckg();
+	    		codeContext.methods    = functionParser.getMethods();
+	    		codeContext.functions  = functionParser.getFunctions();
+	    //		codeContext.interfaces = interfaceParser.getFunctions();
+	    	}
+	    }
+    }
 	
 	/**
 	 * @return
