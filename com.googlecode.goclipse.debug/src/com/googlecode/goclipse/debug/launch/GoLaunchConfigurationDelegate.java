@@ -3,12 +3,12 @@ package com.googlecode.goclipse.debug.launch;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.builder.GoDependencyManager;
 import com.googlecode.goclipse.builder.GoNature;
 import com.googlecode.goclipse.debug.GoDebugPlugin;
 import com.googlecode.goclipse.debug.gdb.GdbConnection;
 import com.googlecode.goclipse.debug.model.GoDebugTarget;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.utils.LaunchUtil;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
@@ -140,8 +140,8 @@ public class GoLaunchConfigurationDelegate implements ILaunchConfigurationDelega
       if (Environment.INSTANCE.isCmdFile(src)) {
         IPath binRel = Environment.INSTANCE.getBinOutputFolder(prj);
         IPath exeBase = prj.getLocation().append(binRel);
-        String cmdName = GoDependencyManager.getCmdName(src);
-        IPath executablePath = GoDependencyManager.getExecutablePath(cmdName, prj);
+        String cmdName = LaunchUtil.getCmdName(src);
+        IPath executablePath = LaunchUtil.getExecutablePath(cmdName, prj);
         String executableName = executablePath.lastSegment();
         if (!Util.isWindows()) {
           executablePath = Path.fromOSString(".").append(executableName);
