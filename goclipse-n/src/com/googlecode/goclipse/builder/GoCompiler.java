@@ -381,17 +381,13 @@ public class GoCompiler {
 				} else if (line.startsWith("can't")) {
 					fileName = relativeTargetDir.substring(1);
 				} else {
-					if(!iswindows){
-						fileName = relativeTargetDir.substring(1) + File.separator + fileName;
-					}
+					fileName = relativeTargetDir.substring(1) + File.separator + fileName;
 				}
 				
 				// find the resource if possible
 				IResource resource = project.findMember(fileName);
 				if (resource == null && file != null) {
 					resource = file;
-					MarkerUtilities.addMarker(resource, 1, line, IMarker.SEVERITY_ERROR);
-					continue;
 				} else {
 					resource = project;
 				}
