@@ -354,6 +354,8 @@ public class GoCompiler {
 			                          final String        relativeTargetDir,
 			                          final IFile         file) {
 		
+		boolean iswindows = Util.isWindows();
+		
 		for (String line : output.getLines()) {
 			
 			if (line.startsWith("#")) {
@@ -363,12 +365,13 @@ public class GoCompiler {
 			int goPos = line.indexOf(GoConstants.GO_SOURCE_FILE_EXTENSION);
 
 			if (goPos > 0) {
+				
 				int fileNameLength = goPos + GoConstants.GO_SOURCE_FILE_EXTENSION.length();
 
 				// Strip the prefix off the error message
 				String fileName = line.substring(0, fileNameLength);
 				fileName = fileName.replace(project.getLocation().toOSString(), "");
-				fileName = fileName.substring(fileName.indexOf(":") + 1).trim();
+				fileName = iswindows?fileName:fileName.substring(fileName.indexOf(":") + 1).trim();
 
 				// Determine the type of error message
 				if (fileName.startsWith(File.separator)) {
@@ -378,12 +381,18 @@ public class GoCompiler {
 				} else if (line.startsWith("can't")) {
 					fileName = relativeTargetDir.substring(1);
 				} else {
-					fileName = relativeTargetDir.substring(1) + File.separator + fileName;
+					if(!iswindows){
+						fileName = relativeTargetDir.substring(1) + File.separator + fileName;
+					}
 				}
 				
 				// find the resource if possible
 				IResource resource = project.findMember(fileName);
-				if (resource == null) {
+				if (resource == null && file != null) {
+					resource = file;
+					MarkerUtilities.addMarker(resource, 1, line, IMarker.SEVERITY_ERROR);
+					continue;
+				} else {
 					resource = project;
 				}
 
