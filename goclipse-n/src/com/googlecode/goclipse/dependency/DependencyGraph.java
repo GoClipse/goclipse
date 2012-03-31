@@ -1,93 +1,101 @@
 package com.googlecode.goclipse.dependency;
 
-import java.io.Serializable;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import com.googlecode.goclipse.dependency.Graph.Vertex;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 
-public class DependencyGraph implements Serializable {
-
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.go.lang.lexer.Lexer;
+import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
+import com.googlecode.goclipse.go.lang.model.Import;
+import com.googlecode.goclipse.go.lang.parser.ImportParser;
+import com.googlecode.goclipse.go.lang.parser.PackageParser;
+/**
+ * DependencyGraph maintains a directed graph of all the dependencies within the
+ * project.  It will detect cycles and mark errors when they occur.
+ */
+public class DependencyGraph {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3299801451389034052L;
+	private static Map<IProject, DependencyGraph> graphs = new HashMap<IProject, DependencyGraph>();
 	
-	Graph graph = new Graph();
+	
+	private IProject project;
+	
+	private Set<UndirectedEdge> edges = new HashSet<UndirectedEdge>();
 	
 	/**
-	 * Asserts that depender depends on dependee.
-	 * 
-	 * @param depender
-	 * @param dependee
+	 * Hidden Constructor
 	 */
-	public void addDependency(String depender, String dependee) {
-		graph.addNode(depender);
-		graph.addNode(dependee);
-		graph.addEdge(depender, dependee);
+	private DependencyGraph(IProject project) {
+		this.project = project;
 	}
 	
-	public void addDependencies(String depender, String ... dependees) {
-		graph.addNode(depender);
-		for (String dependee : dependees) {
-			graph.addNode(dependee);
-			graph.addEdge(depender, dependee);
+	/**
+	 * @param project
+	 * @return
+	 */
+	public static DependencyGraph getForProject(IProject project) {
+		
+		DependencyGraph graph = graphs.get(project.getName());
+		
+		if (graph==null) {
+			graph = new DependencyGraph(project);
+			graphs.put(project, graph);
+			
+			// get the src directory
+			IFolder folder = project.getFolder("src");
+			
+			// recurse
+			try {
+	            graph.build(folder);
+            } catch (Exception e) {
+	            Activator.logError(e);
+            }
 		}
+		
+		return graph;
 	}
 	
-	public void removeItem(String item){
-		graph.removeNode(item, true, true);
-	}
-
 	
-	public List<String> getBuildSequence(Set<String> nodes) throws CycleException {
-		return graph.getDependers(nodes);
-	}
-
-	public List<String> getCompleteBuildSequence() throws CycleException {
-		return graph.topologicalSort();
-	}
-
-
-	/**
-	 * Call visitor on all nodes in the graph that are ancestors of the
-	 * given nodes, depth first
-	 * 
-	 * @param toBuild
-	 * @param visitor
-	 * @throws CycleException 
-	 */
-	public void accept(Set<String> toBuild, IDependencyVisitor visitor) throws CycleException {
-		List<String> sequence = getBuildSequence(toBuild);
-		acceptHelper(visitor, sequence);
-	}
-
-	/**
-	 * Calls visitor on all nodes in the graph, depth first.
-	 * @param visitor
-	 * @throws CycleException 
-	 */
-	public void accept(IDependencyVisitor visitor) throws CycleException {
-		List<String> sequence = getCompleteBuildSequence();
-		acceptHelper(visitor, sequence);
-	}
-
-	private void acceptHelper(IDependencyVisitor visitor, List<String> sequence) {
-		for (String aTarget : sequence) {
-			Vertex vertex = graph.vertices.get(aTarget);
-			if (vertex != null) {
-				visitor.visit(aTarget, vertex.outboundLinks.toArray(new String[0]));
+	private void build(IFolder folder) throws CoreException, IOException{
+		
+		for (IResource res:folder.members()) {
+			if(res instanceof IFolder ){
+				build((IFolder)res);
+				
+			} else if (res instanceof IFile && ".go".equals(res.getFileExtension())) {
+				
+				File file = res.getLocation().toFile();
+				
+				Lexer     	    lexer  		    = new Lexer();
+				Tokenizer 	    tokenizer 	    = new Tokenizer(lexer);
+				PackageParser   packageParser   = new PackageParser(tokenizer);
+				ImportParser    importParser    = new ImportParser(tokenizer);
+				lexer.scan(file);
+				
+				String dir = file.getParent().toString();
+				String local = dir.replaceFirst(project.getLocation().toOSString(), "");
+				
+				for (Import i:importParser.getImports()){
+					UndirectedEdge edge = UndirectedEdge.buildEdge(local, i.path);
+					edges.add(edge);
+				}
 			}
 		}
 	}
 	
-
-	public void reset() {
-		graph = new Graph();
-	}
 	
-	@Override
-	public String toString() {
-		return graph.toString();
-	}
+	
 }

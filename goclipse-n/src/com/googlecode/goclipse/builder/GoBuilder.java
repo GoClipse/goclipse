@@ -41,7 +41,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	
 	public static final String  BUILDER_ID = "com.googlecode.goclipse.goBuilder";
 	private Map<String, String> goEnv      = new HashMap<String, String>();
-	private GoDependencyManager dependencyManager;
 	private GoCompiler 		    compiler;
 	
 	private boolean onlyFullBuild = false;
@@ -50,6 +49,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	 * 
 	 */
 	class CollectResourceDeltaVisitor implements IResourceDeltaVisitor {
+		
 		List<IResource> added   = new ArrayList<IResource>();
 		List<IResource> removed = new ArrayList<IResource>();
 		List<IResource> changed = new ArrayList<IResource>();
@@ -150,9 +150,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		}
 		
 		try {
-			goEnv = GoConstants.environment();
-			dependencyManager.setEnvironment(goEnv);
-			compiler.setEnvironment(goEnv);
 			
 			if (kind == FULL_BUILD || onlyFullBuild) {
 				fullBuild(monitor);
@@ -160,16 +157,13 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			} else {
 				IResourceDelta delta = getDelta(project);
 				if (delta == null) {
-					dependencyManager.prepare(project, true);
 					fullBuild(monitor);
 				} else {
-					dependencyManager.prepare(project, false);
 					incrementalBuild(delta, monitor);
 				}
 			}
 			
 			compiler.updateVersion(project);
-			dependencyManager.save(project);
 			
 		} catch(Exception e) {
 			Activator.logError(e);
@@ -190,10 +184,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			return false;
 			
 		} else {
-			
-			if (dependencyManager == null){
-				dependencyManager = new GoDependencyManager();
-			}
 			
 			if (compiler == null){
 				compiler = new GoCompiler();
@@ -220,9 +210,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		toCompile.addAll(crv.getCollectedResources());  // full build means
 														// everything should be
 														// compiled
-		dependencyManager.clearState(monitor.newChild(10));
+		
 		clean(monitor.newChild(10));
-		dependencyManager.buildDep(crv.getCollectedResources(), monitor.newChild(40));
 		
 		doBuild(toCompile, monitor);
 		Activator.logInfo("fullBuild - done");
@@ -319,7 +308,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			List<IResource> resourcesToCompile = new ArrayList<IResource>();
 			resourcesToCompile.addAll(crdv.getAdded());
 			resourcesToCompile.addAll(crdv.getChanged());
-			dependencyManager.buildDep(resourcesToCompile, monitor.newChild(10));
 	
 			IProject project 	  = getProject();
 			Set<String> toCompile = new HashSet<String>();

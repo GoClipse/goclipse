@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -20,6 +21,7 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.Util;
+
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
@@ -454,9 +456,9 @@ public class GoCompiler {
             } catch (CoreException e) {
             	Activator.logInfo(e);
             }
-
-			clearErrorMessages(file);
-
+			
+			clearPackageErrorMessages(project, pkgPath);
+			
 			InputStream is = p.getInputStream();
 			InputStream es = p.getErrorStream();
 			StreamAsLines sal = new StreamAsLines();
@@ -475,85 +477,21 @@ public class GoCompiler {
 	}
 
 	/**
-	 * 
-	 * @param project
-	 * @param pmonitor
-	 * @param target
-	 * @param dependencies
-	 */
-	public void compile(final IProject project, IProgressMonitor pmonitor, String target, String... dependencies) {
-		final IFile file = project.getFile(new File(target).getAbsolutePath().replace(
-		        project.getLocation().toOSString(), ""));
-
-		if (!dependenciesExist(project, dependencies)) {
-			Activator.logWarning("Missing dependency for '" + target + "' not compiling");
-			return;
-		}
-
-		SubMonitor monitor = SubMonitor.convert(pmonitor, 130);
-		Activator.logInfo("compile():" + dependencies);
-
-		final IPath prjLoc = project.getLocation();
-		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		String compilerPath = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
-		// String goarch =
-		// preferenceStore.getString(PreferenceConstants.GOARCH);
-		IPath pkgPath = Environment.INSTANCE.getPkgOutputFolder(project);
-		final ExternalCommand compilePackageCmd = new ExternalCommand(compilerPath);
-		compilePackageCmd.setEnvironment(env);
-		// get the architecture
-		// Arch arch = Arch.getArch(goarch);
-		StreamAsLines output = new StreamAsLines();
-		output.setCombineLines(true);
-		compilePackageCmd.setResultsFilter(output);
-
-		Activator.logInfo("building " + target);
-		List<String> args = new ArrayList<String>();
-
-		args.clear();
-		// show all errors option
-		args.add(GoConstants.COMPILER_OPTION_E);
-		// include folder
-		args.add(GoConstants.COMPILER_OPTION_I);
-		args.add(prjLoc.append(pkgPath).toOSString());
-		// output file option
-		args.add(GoConstants.COMPILER_OPTION_O);
-		// output file
-		args.add(target);
-
-		compilePackageCmd.setWorkingFolder(prjLoc.toOSString());
-		IResource firstDependency = null;
-		//errorMessages.clear();
-		for (String dependency : dependencies) {
-			if (dependency.endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)) {
-				IResource resource = project.findMember(dependency);
-				if (firstDependency == null) {
-					firstDependency = resource;
-				}
-				MarkerUtilities.deleteFileMarkers(resource);
-				args.add(dependency);
-			}
-		}
-		String result = compilePackageCmd.execute(args);
-		if (result != null) {
-			MarkerUtilities.addMarker(firstDependency, -1, result, IMarker.SEVERITY_ERROR);
-		}
-		processCompileOutput(output, project, "", file);
-
-		try {
-			project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-		} catch (CoreException e) {
-			Activator.logInfo(e);
-		}
-	}
-
-	/**
-	 * 
-	 * @param goEnv
-	 */
-	public void setEnvironment(Map<String, String> goEnv) {
-		this.env = goEnv;
-	}
+     * @param project
+     * @param pkgPath
+     */
+    private void clearPackageErrorMessages(final IProject project, final String pkgPath) {
+	    IFolder folder = project.getFolder(pkgPath);
+	    try {
+	        for (IResource res:folder.members()){
+	        	if(res instanceof IFile){
+	        		clearErrorMessages((IFile)res);
+	        	}
+	        }
+	    } catch (CoreException e) {
+	        Activator.logError(e);
+	    }
+    }
 
 	/**
 	 * 

@@ -33,8 +33,8 @@ import org.eclipse.ui.console.MessageConsoleStream;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.builder.GoDependencyManager;
 import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.utils.LaunchUtil;
 
 /**
  * @author steel
@@ -73,7 +73,7 @@ public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate
    @Override
    public void launch(final ILaunchConfiguration configuration,final String mode, final ILaunch launch, IProgressMonitor monitor)
          throws CoreException {
-	  execute(configuration, launch, monitor);	
+	  execute(configuration, launch, monitor);
    }
    
 
@@ -120,8 +120,8 @@ public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate
 			if (Environment.INSTANCE.isCmdFile(src)) {
 				IPath binRel = Environment.INSTANCE.getBinOutputFolder(prj);
 				IPath exeBase = prj.getLocation().append(binRel);
-				String cmdName = GoDependencyManager.getCmdName(src);
-				IPath executablePath = GoDependencyManager.getExecutablePath(cmdName, prj);
+				String cmdName = LaunchUtil.getCmdName(src);
+				IPath executablePath = LaunchUtil.getExecutablePath(cmdName, prj);
 				String executableName = executablePath.lastSegment();
 				
 				if (!Util.isWindows()){
@@ -217,5 +217,6 @@ public class LaunchConfigurationDelegate implements ILaunchConfigurationDelegate
 		argList.add(arg.toString());
 		return argList.size() == 0 ? null : argList;
 	}
+
 
 }

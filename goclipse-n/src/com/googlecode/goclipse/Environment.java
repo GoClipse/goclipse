@@ -40,7 +40,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import com.googlecode.goclipse.builder.Arch;
-import com.googlecode.goclipse.builder.ExternalCommand;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.ProcessIStreamFilter;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
@@ -96,113 +95,6 @@ public class Environment {
 		return true;
 	}
 	
-	private void buildDependencyTool() {
-
-		if (!isValid()) {
-			return;
-		}
-		String goarch = Activator.getDefault().getPreferenceStore().getString(
-				PreferenceConstants.GOARCH);
-		
-		String goos = Activator.getDefault().getPreferenceStore().getString(
-				PreferenceConstants.GOOS);
-		
-		Arch arch = Arch.getArch(goarch);
-		
-		IWorkspace root = ResourcesPlugin.getWorkspace();
-		IPath base = root.getRoot().getLocation();
-		IPath versionPath = base.append(".metadata").append(".go");
-		IPath tools = versionPath.append(goos).append(goarch).append("tools");
-		String toolsPath = tools.toOSString();
-		File toolsFile = new File(toolsPath);
-		if (!toolsFile.exists()) {
-			toolsFile.mkdirs();
-		}
-		String depToolName = "dep";
-		String versionPropertiesFileName = "version.properties";
-		String depToolExe = depToolName + getExecutableExtension();
-		String depToolGo = depToolName + GoConstants.GO_SOURCE_FILE_EXTENSION;
-		String depToolObj = depToolName + arch.getExtension();
-		String aDepToolPath = toolsPath + File.separator + depToolExe;
-		File exeFile = new File(aDepToolPath);
-		Properties versionProperties = new Properties();
-		File propertiesFile = new File(versionPath.toOSString() + File.separator + versionPropertiesFileName);
-		if (propertiesFile.exists()) {
-			try {
-				versionProperties.load(new FileInputStream(propertiesFile));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			String installedVersion = versionProperties.getProperty("depToolVersion");
-			if (null != installedVersion) {
-				int version = 0;
-				try {
-					version = Integer.parseInt(installedVersion);
-				}catch(NumberFormatException nfe) {
-					
-				}
-				if (version == DEP_TOOL_VERSION && exeFile.exists()) {
-					depToolPath = aDepToolPath;
-					Activator.logInfo("exe tool is ok");
-					return; // everything in place
-				}
-			}
-		}
-		if (exeFile.exists()) {
-			exeFile.delete();
-		}
-		// will compile it from source
-		//first, save the source in .metadata
-		URL srcString = Activator.getDefault().getBundle().getEntry(
-				"/tools/src/dep/dep.go");
-		saveSource(toolsFile, srcString, toolsPath + File.separator + depToolGo);
-		
-		//setup compile
-		MsgFilter mf = new MsgFilter();
-		String compilerPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GO_TOOL_PATH);
-		ExternalCommand compile = new ExternalCommand(compilerPath);
-		compile.setEnvironment(GoConstants.environment());
-		compile.setWorkingFolder(toolsPath);
-		List<String> args = new ArrayList<String>();
-		//output file option
-		args.add(GoConstants.COMPILER_OPTION_O);
-		args.add(depToolObj);
-		args.add(depToolGo);
-		compile.setResultsFilter(mf);
-		compile.execute(args);
-		
-		if (!mf.hadError) {
-			mf.clear();
-//			//do linker
-//			String linkerPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.LINKER_PATH);
-//			compile.setCommand(linkerPath);
-//			args.clear();
-//			args.add(GoConstants.COMPILER_OPTION_O);
-//			args.add(depToolExe);
-//			args.add(depToolObj);
-//			compile.execute(args);
-			
-			if (!mf.hadError) {
-				versionProperties.setProperty("depToolVersion", String.valueOf(DEP_TOOL_VERSION));
-				try {
-					versionProperties.store(new FileOutputStream(propertiesFile), "automatically generated, do not change");
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				depToolPath = aDepToolPath;
-			}
-		}
-		//done
-	}
-	
 	class MsgFilter implements ProcessIStreamFilter {
 		public boolean hadError = false;
 		@Override
@@ -248,13 +140,6 @@ public class Environment {
 				Activator.logError(e);
 			}
 		}
-	}
-
-	public String getDependencyTool() {
-		if (depToolPath == null){
-			buildDependencyTool();
-		}
-		return depToolPath;
 	}
 
 	/**
@@ -403,10 +288,6 @@ public class Environment {
 		return (IResource) adapter;
 	}
 
-//	public void getWorkingLocation() {
-//		ISelectionService selectionService = PlatformUI.getWorkbench()
-//				.getActiveWorkbenchWindow().getSelectionService();
-//	}
 
 	/**
 	 * Returns the active editor or null if there is not one
@@ -439,40 +320,6 @@ public class Environment {
 		IWorkbenchWindow wWindow = workbench.getActiveWorkbenchWindow();
 		return wWindow.getShell();
 	}
-
-//	/**
-//	 * @author steel
-//	 */
-//	class SyncHelper implements Runnable {
-//		IResource resource;
-//
-//		@Override
-//    public void run() {
-//			IWorkbenchWindow activeWindow = PlatformUI.getWorkbench()
-//					.getActiveWorkbenchWindow();
-//
-//			if (activeWindow != null) {
-//				IStructuredSelection ssel = null;
-//				ISelection sel = activeWindow.getSelectionService()
-//						.getSelection();
-//
-//				if (sel instanceof IStructuredSelection) {
-//					ssel = (IStructuredSelection) sel;
-//
-//					IResource resource = null;
-//					Object obj = ssel.getFirstElement();
-//
-//					if (obj instanceof IResource) {
-//						resource = (IResource) obj;
-//					} else if (obj instanceof IAdaptable) {
-//						IAdaptable adaptable = (IAdaptable) obj;
-//						resource = (IResource) adaptable
-//								.getAdapter(IResource.class);
-//					}
-//				}
-//			}
-//		}
-//	}
 
 	/**
 	 * Sets the source folder properties on the currently active project
