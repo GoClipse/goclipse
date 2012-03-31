@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.Util;
 
@@ -441,8 +440,10 @@ public class GoCompiler {
 
 			String  goPath  = buildGoPath(projectLocation);
 			String  PATH    = System.getenv("PATH");
-			Runtime runtime = Runtime.getRuntime();
-			Process p = runtime.exec(cmd, new String[] { "GOPATH=" + goPath, "PATH="+PATH }, target.getParentFile());
+			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
+      builder.environment().put("GOPATH", goPath);
+      builder.environment().put("PATH", PATH);
+      Process p = builder.start();
 
 			try {
 				p.waitFor();
