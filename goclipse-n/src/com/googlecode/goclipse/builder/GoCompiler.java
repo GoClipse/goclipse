@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -377,10 +376,13 @@ public class GoCompiler {
 				// Determine the type of error message
 				if (fileName.startsWith(File.separator)) {
 					fileName = fileName.substring(1);
+					
 				} else if (fileName.startsWith("." + File.separator)) {
 					fileName = relativeTargetDir.substring(1) + File.separator + fileName.substring(2);
+					
 				} else if (line.startsWith("can't")) {
 					fileName = relativeTargetDir.substring(1);
+					
 				} else {
 					fileName = relativeTargetDir.substring(1) + File.separator + fileName;
 				}
@@ -389,7 +391,8 @@ public class GoCompiler {
 				IResource resource = project.findMember(fileName);
 				if (resource == null && file != null) {
 					resource = file;
-				} else {
+					
+				} else if (resource == null) {
 					resource = project;
 				}
 
@@ -426,7 +429,7 @@ public class GoCompiler {
 	 * @param pmonitor
 	 * @param fileList
 	 */
-	public String compilePkg(final IProject project, IProgressMonitor pmonitor, String pkgpath, java.io.File target) {
+	public void compilePkg(final IProject project, IProgressMonitor pmonitor, final String pkgpath, java.io.File target) {
 		
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
@@ -441,10 +444,10 @@ public class GoCompiler {
 			String  goPath  = buildGoPath(projectLocation);
 			String  PATH    = System.getenv("PATH");
 			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
-      builder.environment().put("GOPATH", goPath);
-      builder.environment().put("PATH", PATH);
-      Process p = builder.start();
-
+		    builder.environment().put("GOPATH", goPath);
+		    builder.environment().put("PATH", PATH);
+		    Process p = builder.start();
+			
 			try {
 				p.waitFor();
 
@@ -473,8 +476,6 @@ public class GoCompiler {
 		} catch (IOException e1) {
 			Activator.logInfo(e1);
 		}
-
-		return pkgpath;
 	}
 
 	/**

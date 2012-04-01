@@ -3,7 +3,6 @@ package com.googlecode.goclipse.dependency;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,13 +27,11 @@ public class DependencyGraph {
 	/**
 	 * 
 	 */
-	private static Map<IProject, DependencyGraph> graphs = new HashMap<IProject, DependencyGraph>();
+	private static Map<String, DependencyGraph> graphs = new HashMap<String, DependencyGraph>();
 	
 	
 	private IProject project;
-	
-	private Set<UndirectedEdge> edges = new HashSet<UndirectedEdge>();
-	
+		
 	/**
 	 * Hidden Constructor
 	 */
@@ -52,7 +49,7 @@ public class DependencyGraph {
 		
 		if (graph==null) {
 			graph = new DependencyGraph(project);
-			graphs.put(project, graph);
+			graphs.put(project.getName(), graph);
 			
 			// get the src directory
 			IFolder folder = project.getFolder("src");
@@ -60,6 +57,7 @@ public class DependencyGraph {
 			// recurse
 			try {
 	            graph.build(folder);
+	            
             } catch (Exception e) {
 	            Activator.logError(e);
             }
@@ -68,14 +66,19 @@ public class DependencyGraph {
 		return graph;
 	}
 	
-	
+	/**
+	 * @param folder
+	 * @throws CoreException
+	 * @throws IOException
+	 */
 	private void build(IFolder folder) throws CoreException, IOException{
 		
 		for (IResource res:folder.members()) {
-			if(res instanceof IFolder ){
+			
+			if (res instanceof IFolder) {
 				build((IFolder)res);
 				
-			} else if (res instanceof IFile && ".go".equals(res.getFileExtension())) {
+			} else if (res instanceof IFile && res.getName().endsWith(".go")) {
 				
 				File file = res.getLocation().toFile();
 				
@@ -88,14 +91,25 @@ public class DependencyGraph {
 				String dir = file.getParent().toString();
 				String local = dir.replaceFirst(project.getLocation().toOSString(), "");
 				
-				for (Import i:importParser.getImports()){
-					UndirectedEdge edge = UndirectedEdge.buildEdge(local, i.path);
-					edges.add(edge);
+				if ("main".equals(packageParser.getPckg().getName())){
+					local = file.getName();
+				}
+				
+				PackageVertex localpkg = PackageVertex.getPackageVertex(project, local);
+				
+				for (Import i:importParser.getImports()) {
+					System.out.println(local+" :: "+i.path);
+					localpkg.addDependency(i.path);
+					PackageVertex.getPackageVertex(project, i.path).addReverseDependency(local);
 				}
 			}
 		}
 	}
 	
-	
-	
+	/**
+	 * @param pkgname
+	 */
+	public Set<String> getReverseDependencies(String pkgname) {
+		return PackageVertex.getPackageVertex(project, pkgname).getReverseDependencies();
+    }
 }

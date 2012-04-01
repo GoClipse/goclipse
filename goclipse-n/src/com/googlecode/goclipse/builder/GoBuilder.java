@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -246,6 +245,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 						// else if not a command file, schedule to build the package
 						String pkgpath = computePackagePath(file);
 						
+
 						if ( !packages.contains(pkgpath) ) {
 							monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), cost);
 							compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
@@ -272,13 +272,14 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		
 		IPath pkgFolder = Environment.INSTANCE.getPkgOutputFolder();
 		String pkgname  = ifile.getParent().getLocation().toOSString();
-		List<IFolder> srcs = Environment.INSTANCE.getSourceFolders(project);
-		
-		for(IFolder f:srcs){
-			pkgname = pkgname.replace(f.getLocation().toOSString(), "");
+		pkgname = pkgname.replace(projectLocation.toOSString(), "");
+		String[] split = pkgname.split(File.separator);
+		String path = projectLocation.toOSString()+"/"+pkgFolder;
+		for(int i = 2; i< split.length; i++){
+			path += "/"+split[i];
 		}
 		
-		return projectLocation.toOSString()+"/"+pkgFolder+pkgname+GoConstants.GO_LIBRARY_FILE_EXTENSION;
+		return path+GoConstants.GO_LIBRARY_FILE_EXTENSION;
 	}
 
 
@@ -299,6 +300,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		monitor.worked(20);
 		// remove
 		List<IResource> toRemove = crdv.getRemoved();
+		
 		if (toRemove.size() > 0){
 			fullBuild(pmonitor);
 		} else {
@@ -324,11 +326,24 @@ public class GoBuilder extends IncrementalProjectBuilder {
 							compiler.compileCmd(project, monitor.newChild(100), file);
 							
 						} else {
-							// else if not a command file, schedule to build the package
-							String pkgpath = computePackagePath(file);
-							if ( !packages.contains(pkgpath) ) {
-								packages.add(compiler.compilePkg(project, monitor.newChild(100), pkgpath, file));
-							}
+							fullBuild(pmonitor);
+//							// else if not a command file, schedule to build the package
+//							String pkgpath = computePackagePath(file);
+//
+//							/**
+//							 * Not only do we have to compile this package, but we have
+//							 * to (afterwards) compile every package that depends on this
+//							 * one.
+//							 */
+//							Set<String> depends = DependencyGraph.getForProject(project).getReverseDependencies(pkgpath);
+//							for(String s:depends){
+//								System.out.println("> "+s);
+//							}
+//
+//							if ( !packages.contains(pkgpath) ) {
+//								compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
+//								packages.add(pkgpath);
+//							}
 						}
 						
 					} catch (IOException e) {
