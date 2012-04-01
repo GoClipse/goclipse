@@ -135,7 +135,11 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
         PreferenceConstants.GOPATH);
 	
 	if (goPath==null || goPath=="") {
-		goPath = goPath!=null&&goPath.contains(":")?System.getenv("GOPATH").split(":")[0]:goPath;
+		goPath = System.getenv("GOPATH");
+	}
+	
+	if (goPath.contains(":")) {
+		goPath = System.getenv("GOPATH").split(":")[0];
 	}
 	
 	if (goPath==null || goPath==""){
