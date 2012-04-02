@@ -24,101 +24,96 @@ import java.util.ResourceBundle;
 import com.googlecode.goclipse.Activator;
 
 public class GoEditor extends TextEditor {
-	public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
-	public final static String EDITOR_MATCHING_BRACKETS_COLOR= "matchingBracketsColor";
+  public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
+  public final static String EDITOR_MATCHING_BRACKETS_COLOR = "matchingBracketsColor";
 
   private static final String BUNDLE_ID = "com.googlecode.goclipse.editors.GoEditorMessages";
 
   private static ResourceBundle editorResourceBundle = ResourceBundle.getBundle(BUNDLE_ID);
 
-	private ColorManager colorManager;
-	private IPropertyChangeListener changeListener;
-	private DefaultCharacterPairMatcher matcher;
-	private EditorImageUpdater imageUpdater;
-	
-	private GoEditorOutlinePage outlinePage;
-	
-	public GoEditor() {
-		setSourceViewerConfiguration(new GoEditorSourceViewerConfiguration(this, getPreferenceStore()));
-		
-		setKeyBindingScopes(new String[] {"com.googlecode.goclipse.editor"});
-		
-		changeListener = new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
+  private ColorManager colorManager;
+  private IPropertyChangeListener changeListener;
+  private DefaultCharacterPairMatcher matcher;
+  private EditorImageUpdater imageUpdater;
+
+  private GoEditorOutlinePage outlinePage;
+
+  public GoEditor() {
+    setSourceViewerConfiguration(new GoEditorSourceViewerConfiguration(this, getPreferenceStore()));
+
+    setKeyBindingScopes(new String[] {"com.googlecode.goclipse.editor"});
+
+    changeListener = new IPropertyChangeListener() {
+      @Override
+      public void propertyChange(PropertyChangeEvent event) {
 //				SysUtils.debug("Preference Change Event");
 //				if (event.getProperty().equals(PreferenceConstants.FIELD_USE_HIGHLIGHTING)) {
 //					setSourceViewerConfiguration(new Configuration(colorManager));
 //					setDocumentProvider(new DocumentProvider());
 //					initializeEditor();
 //				}
-			}
-		};
-		
-		Activator.getDefault().getPreferenceStore().addPropertyChangeListener(changeListener);
-	}
-	
-	@Override
-	protected void initializeEditor() {
-		super.initializeEditor();
-		
-		setRulerContextMenuId("#GoEditorRulerContext");
-	}
+      }
+    };
 
-	@Override
+    Activator.getDefault().getPreferenceStore().addPropertyChangeListener(changeListener);
+  }
+
+  @Override
+  protected void initializeEditor() {
+    super.initializeEditor();
+
+    setRulerContextMenuId("#GoEditorRulerContext");
+  }
+
+  @Override
   protected void setTitleImage(Image image) {
-		super.setTitleImage(image);
-	}
-	
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Object getAdapter(Class required) {
-		if (IContentOutlinePage.class.equals(required)) {
-			if (outlinePage == null) {
-				outlinePage = new GoEditorOutlinePage(getDocumentProvider(), this);
-			}
-			
-			return outlinePage;
-		}
-		
-		return super.getAdapter(required);
-	}
-	
-	private IDocumentProvider createDocumentProvider(IEditorInput input) {
-        if(input instanceof IFileEditorInput){
-        	return new DocumentProvider();
-        } else {
-            return new TextDocumentProvider();
-        }
-	}
+    super.setTitleImage(image);
+  }
 
-	@Override
-	protected final void doSetInput(IEditorInput input) throws CoreException {
-	    setDocumentProvider(createDocumentProvider(input));
-	        
-	    super.doSetInput(input);
-	       
-	    if (input instanceof IFileEditorInput) {
-	       	imageUpdater = new EditorImageUpdater(this);
-	    }
-	}
-	 
-	@Override
-	protected void configureSourceViewerDecorationSupport (SourceViewerDecorationSupport support) {
-		super.configureSourceViewerDecorationSupport(support);
-	 
-		char[] matchChars = {'(', ')', '[', ']', '{', '}'}; //which brackets to match
-		matcher = new DefaultCharacterPairMatcher(matchChars ,
-				IDocumentExtension3.DEFAULT_PARTITIONING);
-		support.setCharacterPairMatcher(matcher);
-		support.setMatchingCharacterPainterPreferenceKeys(EDITOR_MATCHING_BRACKETS,EDITOR_MATCHING_BRACKETS_COLOR);
-		
-	 
-		//Enable bracket highlighting in the preference store
-		IPreferenceStore store = getPreferenceStore();
-		store.setDefault(EDITOR_MATCHING_BRACKETS, true);
-		store.setDefault(EDITOR_MATCHING_BRACKETS_COLOR, "128,128,128");
-	}
+  @SuppressWarnings("rawtypes")
+  @Override
+  public Object getAdapter(Class required) {
+    if (IContentOutlinePage.class.equals(required)) {
+      if (outlinePage == null) {
+        outlinePage = new GoEditorOutlinePage(getDocumentProvider(), this);
+      }
+
+      return outlinePage;
+    }
+
+    return super.getAdapter(required);
+  }
+
+  private IDocumentProvider createDocumentProvider(IEditorInput input) {
+    return new GoDocumentProvider();
+  }
+
+  @Override
+  protected final void doSetInput(IEditorInput input) throws CoreException {
+    setDocumentProvider(createDocumentProvider(input));
+
+    super.doSetInput(input);
+
+    if (input instanceof IFileEditorInput) {
+      imageUpdater = new EditorImageUpdater(this);
+    }
+  }
+
+  @Override
+  protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
+    super.configureSourceViewerDecorationSupport(support);
+
+    char[] matchChars = {'(', ')', '[', ']', '{', '}'}; //which brackets to match
+    matcher = new DefaultCharacterPairMatcher(matchChars, IDocumentExtension3.DEFAULT_PARTITIONING);
+    support.setCharacterPairMatcher(matcher);
+    support.setMatchingCharacterPainterPreferenceKeys(EDITOR_MATCHING_BRACKETS,
+        EDITOR_MATCHING_BRACKETS_COLOR);
+
+    //Enable bracket highlighting in the preference store
+    IPreferenceStore store = getPreferenceStore();
+    store.setDefault(EDITOR_MATCHING_BRACKETS, true);
+    store.setDefault(EDITOR_MATCHING_BRACKETS_COLOR, "128,128,128");
+  }
 
   @Override
   protected void createActions() {
@@ -132,44 +127,44 @@ public class GoEditor extends TextEditor {
     markAsStateDependentAction("ToggleComment", true);
     configureToggleCommentAction();
   }
-  
-	public DefaultCharacterPairMatcher getPairMatcher() {
-		return matcher;
-	}
 
-	public String getText() {
-		return getSourceViewer().getDocument().get();
-	}
+  public DefaultCharacterPairMatcher getPairMatcher() {
+    return matcher;
+  }
 
-	public void replaceText(String newText) {
-		ISelection sel = getSelectionProvider().getSelection();
-		int topIndex = getSourceViewer().getTopIndex();
-		
-		getSourceViewer().getDocument().set(newText);
-		
-		if (sel != null) {
-			getSelectionProvider().setSelection(sel);
-		}
-		
-		if (topIndex != -1) {
-			getSourceViewer().setTopIndex(topIndex);
-		}
-	}
-	
-	@Override
+  public String getText() {
+    return getSourceViewer().getDocument().get();
+  }
+
+  public void replaceText(String newText) {
+    ISelection sel = getSelectionProvider().getSelection();
+    int topIndex = getSourceViewer().getTopIndex();
+
+    getSourceViewer().getDocument().set(newText);
+
+    if (sel != null) {
+      getSelectionProvider().setSelection(sel);
+    }
+
+    if (topIndex != -1) {
+      getSourceViewer().setTopIndex(topIndex);
+    }
+  }
+
+  @Override
   public void dispose() {
-		Activator.getDefault().getPreferenceStore().removePropertyChangeListener(changeListener);
-		
-		if (colorManager != null) {
-			colorManager.dispose();
-		}
-		
-		if (imageUpdater != null) {
-			imageUpdater.dispose();
-		}
-		
-		super.dispose();
-	}
+    Activator.getDefault().getPreferenceStore().removePropertyChangeListener(changeListener);
+
+    if (colorManager != null) {
+      colorManager.dispose();
+    }
+
+    if (imageUpdater != null) {
+      imageUpdater.dispose();
+    }
+
+    super.dispose();
+  }
 
   private void configureToggleCommentAction() {
     IAction action = getAction("ToggleComment");
@@ -180,11 +175,11 @@ public class GoEditor extends TextEditor {
       ((ToggleCommentAction) action).configure(sourceViewer, configuration);
     }
   }
-  
-	protected void handleReconcilation(IRegion partition) {
-		if (outlinePage != null) {
-			outlinePage.handleEditorReconcilation();
-		}
-	}
+
+  protected void handleReconcilation(IRegion partition) {
+    if (outlinePage != null) {
+      outlinePage.handleEditorReconcilation();
+    }
+  }
 
 }
