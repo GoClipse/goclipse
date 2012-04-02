@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -205,7 +207,7 @@ public class GoCompiler {
 	            Activator.logError(e1);
             }
 			
-			clearErrorMessages(file);
+			MarkerUtilities.deleteFileMarkers(file);
 			if (sal.getLines().size() > 0) {
 				
 				for (String line : sal.getLines()) {
@@ -277,7 +279,7 @@ public class GoCompiler {
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
 		final IPath  binFolder       = Environment.INSTANCE.getBinOutputFolder(project);
-		clearErrorMessages(file);
+		
 		
 		/*
 		 * This isn't really a good idea here
@@ -288,18 +290,30 @@ public class GoCompiler {
 		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
 		final String           outExtension    = (Util.isWindows() ? ".exe" : "");
-		final String           outPath         = projectLocation.toOSString() + File.separator + binFolder +
-		    File.separator + target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, outExtension);
-		
-		String PATH = System.getenv("PATH");
 
 		try {
-			String[] cmd = {
+			String   PATH    = System.getenv("PATH");
+			String   outPath = null;
+			String[] cmd     = {};
+			
+			MarkerUtilities.deleteFileMarkers(file);
+			if("cmd".equals(target.getParentFile().getName()) || "src".equals(target.getParentFile().getName())){
+				outPath = projectLocation.toOSString() + File.separator + binFolder +  File.separator + target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, outExtension);
+				cmd = new String[]{
 			        compilerPath,
 			        GoConstants.GO_BUILD_COMMAND,
 			        GoConstants.COMPILER_OPTION_O,
 			        outPath, file.getName() };
-
+			} else {
+				MarkerUtilities.deleteFileMarkers(file.getParent());
+				outPath = projectLocation.toOSString() + File.separator + binFolder +  File.separator + target.getParentFile().getName() + outExtension;
+				cmd = new String[] {
+			        compilerPath,
+			        GoConstants.GO_BUILD_COMMAND,
+			        GoConstants.COMPILER_OPTION_O,
+			        outPath };
+			}
+			
 			String goPath = buildGoPath(projectLocation);
 
 			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
@@ -314,34 +328,13 @@ public class GoCompiler {
 				Activator.logInfo(e);
 			}
 			
-			try {
-	            project.refreshLocal(IResource.DEPTH_INFINITE, pmonitor);
-            } catch (CoreException e) {
-            	Activator.logInfo(e);
-            }
-
-			InputStream is = p.getInputStream();
-			InputStream es = p.getErrorStream();
-			StreamAsLines sal = new StreamAsLines();
-			sal.setCombineLines(true);
-			sal.process(is);
-			sal.process(es);
-			
-			if (sal.getLines().size() > 0) {
-				processCompileOutput(sal, project, pkgPath, file);
-			}
+			refreshProject(project, pmonitor);
+			readAndProcessOutput(project, file, pkgPath, p);
 
 		} catch (IOException e1) {
 			Activator.logInfo(e1);
 		}
 	}
-
-	/**
-     * @param file
-     */
-    private void clearErrorMessages(final IFile file) {
-	    MarkerUtilities.deleteFileMarkers(file);
-    }
 
     /**
      * 
@@ -359,6 +352,20 @@ public class GoCompiler {
 		for (String line : output.getLines()) {
 			
 			if (line.startsWith("#")) {
+				continue;
+				
+			} else if(line.startsWith("can't load package:")) {
+				/*
+				 * when building a main package mixed with a
+				 * lib package this error occurs and is not
+				 * specific to any one file.  It is related
+				 * to the organization of the project.
+				 */
+				IContainer container = file.getParent();
+				if(container instanceof IFolder){
+					IFolder folder = (IFolder)container;
+					MarkerUtilities.addMarker(folder, 0, line, IMarker.SEVERITY_ERROR);
+				}
 				continue;
 			}
 			
@@ -455,28 +462,45 @@ public class GoCompiler {
 				Activator.logInfo(e);
 			}
 			
-			try {
-	            project.refreshLocal(IResource.DEPTH_INFINITE, pmonitor);
-            } catch (CoreException e) {
-            	Activator.logInfo(e);
-            }
-			
+			refreshProject(project, pmonitor);
 			clearPackageErrorMessages(project, pkgPath);
-			
-			InputStream is = p.getInputStream();
-			InputStream es = p.getErrorStream();
-			StreamAsLines sal = new StreamAsLines();
-			sal.process(is);
-			sal.process(es);
-
-			if (sal.getLines().size() > 0) {
-				processCompileOutput(sal, project, pkgPath, file);
-			}
+			readAndProcessOutput(project, file, pkgPath, p);
 
 		} catch (IOException e1) {
 			Activator.logInfo(e1);
 		}
 	}
+
+	/**
+     * @param project
+     * @param file
+     * @param pkgPath
+     * @param p
+     */
+    private void readAndProcessOutput(final IProject project, final IFile file, final String pkgPath, Process p) {
+	    InputStream is = p.getInputStream();
+	    InputStream es = p.getErrorStream();
+	    StreamAsLines sal = new StreamAsLines();
+	    sal.setCombineLines(true);
+	    sal.process(is);
+	    sal.process(es);
+
+	    if (sal.getLines().size() > 0) {
+	    	processCompileOutput(sal, project, pkgPath, file);
+	    }
+    }
+
+	/**
+     * @param project
+     * @param pmonitor
+     */
+    private void refreshProject(final IProject project, IProgressMonitor pmonitor) {
+	    try {
+	        project.refreshLocal(IResource.DEPTH_INFINITE, pmonitor);
+	    } catch (CoreException e) {
+	    	Activator.logInfo(e);
+	    }
+    }
 
 	/**
      * @param project
@@ -487,7 +511,7 @@ public class GoCompiler {
 	    try {
 	        for (IResource res:folder.members()){
 	        	if(res instanceof IFile){
-	        		clearErrorMessages((IFile)res);
+	        		MarkerUtilities.deleteFileMarkers(res);
 	        	}
 	        }
 	    } catch (CoreException e) {
