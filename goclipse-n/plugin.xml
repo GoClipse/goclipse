@@ -523,42 +523,7 @@
          
       </page>
    </extension>
-   
-   <!-- extension
-         point="org.eclipse.debug.ui.launchGroups">
-      <launchGroup
-            bannerImage="icons/go.png"
-            id="goclipse.launchGroup1"
-            image="icons/go-icon16.png"
-            label="label"
-            mode="run"
-            public="true"
-            title="Launch Go Application">
-      </launchGroup>
-      <launchGroup
-            bannerImage="icons/go.png"
-            id="goclipse.launchGroup2"
-            image="icons/go-icon16.png"
-            label="label"
-            mode="debug"
-            public="true"
-            title="Debug Go Application">
-      </launchGroup>
-   </extension -->
-   
-   <!--extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup
-            class="com.googlecode.goclipse.debug.ui.LaunchConfigurationTabGroup"
-            id="com.googlecode.goclipse.debug.ui.LaunchConfigurationTabGroup"
-            type="com.googlecode.goclipse.debug.LaunchConfigurationDelegate">
-         <launchMode
-               mode="run"
-               perspective="com.googlecode.goclipse.perspectives.GoPerspective">
-         </launchMode>
-      </launchConfigurationTabGroup>
-   </extension -->
-   
+
    <extension point = "org.eclipse.ui.actionSets">
 	   <actionSet id="com.googlecode.goclipse.hiddenActionSet"
 		   label="Goclipse hidden actions"
@@ -701,16 +666,11 @@
       </key>
    </extension>
    
-   <!-- extension
-         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-      <launchConfigurationTypeImage
-            configTypeID="com.googlecode.goclipse.debug.LaunchConfigurationDelegate"
-            icon="icons/go-icon16.png"
-            id="com.googlecode.goclipse.debug.launchConfigurationTypeImage">
-      </launchConfigurationTypeImage>
-   </extension -->
-
-   <extension-point id="com.googlecode.goclipse.contentassistprocessor" name="Content Assist Processor" schema="schema/com.googlecode.goclipse.contentassistprocessor.exsd"/>
+   <extension-point
+      id="com.googlecode.goclipse.contentassistprocessor"
+      name="Content Assist Processor"
+      schema="schema/com.googlecode.goclipse.contentassistprocessor.exsd"/>
+   
    <extension
          point="org.eclipse.ui.editorActions">
       <editorContribution

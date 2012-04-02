@@ -26,6 +26,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 import org.eclipse.debug.core.model.IProcess;
@@ -40,13 +41,38 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: we should look at extending LaunchConfigurationDelegate instead of implementing ILaunchConfigurationDelegate2
 /**
  * @author steel
  */
 public class GoLaunchConfigurationDelegate implements ILaunchConfigurationDelegate2 {
-
   public static final String ID = "com.googlecode.goclipse.debug.launchConfig";
 
+  /**
+   * Constant to define debug.core for the status codes
+   */
+  private static final String DEBUG_CORE = "org.eclipse.debug.core"; //$NON-NLS-1$
+
+  /**
+   * Constant to define debug.ui for the status codes
+   */
+  private static final String DEBUG_UI = "org.eclipse.debug.ui"; //$NON-NLS-1$
+  
+  /**
+   * Status code for which a UI prompter is registered.
+   */
+  protected static final IStatus promptStatus = new Status(IStatus.INFO, DEBUG_UI, 200, "", null);
+  
+  /**
+   * Status code for which a prompter will ask the user to save any/all of the dirty editors which have only to do
+   * with this launch (scoping them to the current launch/build)
+   */
+  protected static final IStatus saveScopedDirtyEditors = new Status(IStatus.INFO, DEBUG_CORE, 222, "", null);
+
+  public GoLaunchConfigurationDelegate() {
+    
+  }
+  
   @Override
   public boolean buildForLaunch(ILaunchConfiguration configuration, String mode,
       IProgressMonitor monitor) throws CoreException {
@@ -74,6 +100,10 @@ public class GoLaunchConfigurationDelegate implements ILaunchConfigurationDelega
   @Override
   public boolean preLaunchCheck(ILaunchConfiguration configuration, String mode,
       IProgressMonitor monitor) throws CoreException {
+    if (!saveBeforeLaunch(configuration, mode, monitor)) {
+      return false;
+    }
+    
     return true;
   }
 
@@ -215,6 +245,56 @@ public class GoLaunchConfigurationDelegate implements ILaunchConfigurationDelega
     return myConsole;
   }
 
+  /**
+   * Performs the scoped saving of resources before launching and returns whether
+   * the launch should continue. By default, only resources contained within the projects
+   * which are part of the build scope are considered.
+   * <p>
+   * Subclasses may override this method if required.
+   * </p>
+   * 
+   * @param configuration the configuration being launched
+   * @param mode the launch mode
+   * @param monitor progress monitor
+   * @return whether the launch should continue
+   * @throws CoreException if an exception occurs during the save
+   * @since 3.2
+   */
+  protected boolean saveBeforeLaunch(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor) throws CoreException {
+    monitor.beginTask("", 1);
+    
+    try {
+      IStatusHandler prompter = DebugPlugin.getDefault().getStatusHandler(promptStatus);
+      
+      if (prompter != null) {
+        //do save here and remove saving from DebugUIPlugin to avoid it 'trumping' this save
+        IProject[] buildOrder = getBuildOrder(configuration, mode);
+        
+        if (!((Boolean)prompter.handleStatus(saveScopedDirtyEditors, new Object[]{configuration, buildOrder})).booleanValue()) {
+          return false;
+        }
+      }
+      
+      return true;
+    } finally {
+      monitor.done();
+    }
+  }
+  
+  /**
+   * Returns the projects to build before launching the given launch configuration
+   * or <code>null</code> if the entire workspace should be built incrementally.
+   * Subclasses should override as required.
+   * 
+   * @param configuration the configuration being launched
+   * @param mode launch mode
+   * @return projects to build, in build order, or <code>null</code>
+   * @throws CoreException if an exception occurs
+   */
+  protected IProject[] getBuildOrder(ILaunchConfiguration configuration, String mode) throws CoreException {
+    return null;
+  }
+  
   /**
    * builds a list of arguments to be sent to the command splits at space but not inside double
    * quotes

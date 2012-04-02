@@ -120,7 +120,8 @@ public class GoTestView extends ViewPart {
 		
 		
 
-		@Override
+		@SuppressWarnings("rawtypes")
+    @Override
 		public Object getAdapter(Class adapter) {
 			return null;
 		}
@@ -220,7 +221,8 @@ public class GoTestView extends ViewPart {
 			return getName();
 		}
 
-		@Override
+		@SuppressWarnings("rawtypes")
+    @Override
 		public Object getAdapter(Class key) {
 			return null;
 		}
@@ -251,7 +253,8 @@ public class GoTestView extends ViewPart {
 			return children.size() > 0;
 		}
 
-		@Override
+		@SuppressWarnings("rawtypes")
+    @Override
 		public Object getAdapter(Class adapter) {
 			// TODO Auto-generated method stub
 			return null;
