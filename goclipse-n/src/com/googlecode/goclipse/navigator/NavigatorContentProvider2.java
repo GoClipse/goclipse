@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Display;
 import java.io.File;
 
 // TODO: this content provider is hard-coded to show files from GOROOT; we'll probably want this
-//to have better knowledge of the GOROOT / GOPATH directories that are in use by the project.
+// to have better knowledge of the GOROOT / GOPATH directories that are in use by the project.
 
 /**
  * A CNF content provider that decorates the the standard resource content provider with a GOROOT
@@ -54,15 +54,17 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
   public Object[] getChildren(Object parentElement) {
     if (parentElement instanceof IProject) {
       File goPath = getGoPathSrcFolder();
-      
+
       if (!isGoRootSet()) {
         return NO_CHILDREN;
       } else {
-    	  if (goPath!=null){
-    		  return new GoPathElement[] {new GoPathElement("GOROOT", getGoRootSrcFolder()), new GoPathElement("GOPATH", goPath)};
-    	  } else {
-    		  return new GoPathElement[] {new GoPathElement("GOROOT", getGoRootSrcFolder())};
-    	  }
+        if (goPath != null) {
+          return new GoPathElement[] {
+              new GoPathElement("GOROOT", getGoRootSrcFolder()),
+              new GoPathElement("GOPATH", goPath)};
+        } else {
+          return new GoPathElement[] {new GoPathElement("GOROOT", getGoRootSrcFolder())};
+        }
       }
     } else if (parentElement instanceof GoPathElement) {
       GoPathElement pathElement = (GoPathElement) parentElement;
@@ -125,31 +127,30 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 
     return srcFolder;
   }
-  
+
   /**
    * @return File representing the external GOPATH
    */
   protected File getGoPathSrcFolder() {
-    
-	String goPath = Activator.getDefault().getPreferenceStore().getString(
+    String goPath = Activator.getDefault().getPreferenceStore().getString(
         PreferenceConstants.GOPATH);
-	
-	if (goPath==null || goPath=="") {
-		goPath = System.getenv("GOPATH");
-	}
-	
-	if (goPath.contains(":")) {
-		goPath = System.getenv("GOPATH").split(":")[0];
-	}
-	
-	if (goPath==null || goPath==""){
-		return null;
-	}
-	
-	File srcFolder = Path.fromOSString(goPath).append("src").toFile();
-	  
+
+    if (goPath == null || goPath == "") {
+      goPath = System.getenv("GOPATH");
+    }
+
+    if (goPath != null && goPath.contains(":")) {
+      goPath = System.getenv("GOPATH").split(":")[0];
+    }
+
+    if (goPath == null || goPath == "") {
+      return null;
+    }
+
+    File srcFolder = Path.fromOSString(goPath).append("src").toFile();
+
     if (!srcFolder.exists()) {
-    	srcFolder.mkdirs();
+      srcFolder.mkdirs();
     }
 
     return srcFolder;
