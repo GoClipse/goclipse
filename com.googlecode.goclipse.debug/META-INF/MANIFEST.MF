@@ -15,6 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.ui.console,
  org.eclipse.ui.ide,
- org.eclipse.core.variables
+ org.eclipse.core.variables,
+ org.eclipse.core.filesystem
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
