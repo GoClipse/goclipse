@@ -132,28 +132,33 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
    * @return File representing the external GOPATH
    */
   protected File getGoPathSrcFolder() {
-    String goPath = Activator.getDefault().getPreferenceStore().getString(
-        PreferenceConstants.GOPATH);
-
-    if (goPath == null || goPath == "") {
-      goPath = System.getenv("GOPATH");
-    }
-
-    if (goPath != null && goPath.contains(":")) {
-      goPath = System.getenv("GOPATH").split(":")[0];
-    }
-
-    if (goPath == null || goPath == "") {
-      return null;
-    }
-
-    File srcFolder = Path.fromOSString(goPath).append("src").toFile();
-
-    if (!srcFolder.exists()) {
-      srcFolder.mkdirs();
-    }
-
-    return srcFolder;
+	try {
+	    String goPath = Activator.getDefault().getPreferenceStore().getString(
+	        PreferenceConstants.GOPATH);
+	
+	    if (goPath == null || goPath == "") {
+	      goPath = System.getenv("GOPATH");
+	    }
+	
+	    if (goPath != null && goPath.contains(":")) {
+	      goPath = goPath.split(":")[0];
+	    }
+	
+	    if (goPath == null || goPath == "") {
+	      return null;
+	    }
+	
+	    File srcFolder = Path.fromOSString(goPath).append("src").toFile();
+	
+	    if ( !srcFolder.exists() ) {
+	      srcFolder.mkdirs();
+	    }
+	
+	    return srcFolder;
+	    	    
+	} catch (Exception e) {
+		return null;
+	}
   }
 
   private void updateViewer() {
