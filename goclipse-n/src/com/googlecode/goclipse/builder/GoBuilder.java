@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
@@ -39,7 +37,6 @@ import com.googlecode.goclipse.go.lang.parser.PackageParser;
 public class GoBuilder extends IncrementalProjectBuilder {
 	
 	public static final String  BUILDER_ID = "com.googlecode.goclipse.goBuilder";
-	private Map<String, String> goEnv      = new HashMap<String, String>();
 	private GoCompiler 		    compiler;
 	
 	private boolean onlyFullBuild = false;
@@ -273,7 +270,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		IPath pkgFolder = Environment.INSTANCE.getPkgOutputFolder();
 		String pkgname  = ifile.getParent().getLocation().toOSString();
 		pkgname = pkgname.replace(projectLocation.toOSString(), "");
-		String[] split = pkgname.split(File.separator);
+		String[] split = pkgname.split(File.separatorChar=='\\' ? "\\\\" : File.separator);
 		String path = projectLocation.toOSString()+"/"+pkgFolder;
 		for(int i = 2; i< split.length; i++){
 			path += "/"+split[i];
@@ -313,7 +310,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	
 			IProject project 	  = getProject();
 			Set<String> toCompile = new HashSet<String>();
-			Set<String> packages  = new HashSet<String>();
+			//Set<String> packages  = new HashSet<String>();
 			
 			for (IResource res : resourcesToCompile) {
 				File file = res.getLocation().toFile();

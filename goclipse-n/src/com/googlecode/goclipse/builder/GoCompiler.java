@@ -228,7 +228,7 @@ public class GoCompiler {
 							int      lineNumber = Integer.parseInt(split[1]);
 							String   msg 		= split[3];
 							
-							IPath pp = extfile.getFullPath();
+							//IPath pp = extfile.getFullPath();
 							
 							if(extfile!=null && extfile.exists()){
 								MarkerUtilities.addMarker(extfile, lineNumber, msg, IMarker.SEVERITY_ERROR);
