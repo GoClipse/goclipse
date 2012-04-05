@@ -154,6 +154,20 @@ public class ProjectBuildConfigurationComposite extends Composite {
       createTabFolder();
       this.setLayout(gridLayout1);
       setSize(new Point(464, 461));
+      
+      
+      ////////////////////////////////////////////////
+      group.setEnabled(false);
+      list.setEnabled(false);
+      removeButton.setEnabled(false);
+      addButton.setEnabled(false);
+      removeProjectButton.setEnabled(false);
+      projectsList.setEnabled(false);
+      addProjectButton.setEnabled(false);
+      addLibraryButton.setEnabled(false);
+      removeLibraryButton.setEnabled(false);
+      libraryList.setEnabled(false);
+      ////////////////////////////////////////////////
    }
 
    /**
@@ -323,7 +337,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
       lblPackageFolder.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
       lblPackageFolder.setText("Pkg Folder:");
       pkgOutputText = new Text(group1, SWT.BORDER);
-      pkgOutputText.setText(Environment.INSTANCE.getPkgOutputFolder(projectBuildConfiguration.getProject()).toOSString());
+      pkgOutputText.setText(Environment.INSTANCE.getPkgOutputFolder(project).toOSString());
       pkgOutputText.addModifyListener(new ModifyListener() {
          @Override
          public void modifyText(ModifyEvent e) {
@@ -454,6 +468,9 @@ public class ProjectBuildConfigurationComposite extends Composite {
       TabItem tabItem2 = new TabItem(tabFolder, SWT.NONE);
       tabItem2.setText("Libraries");
       tabItem2.setControl(libraryComposite);
+      
+      projectsComposite.setEnabled(false);
+      libraryComposite.setEnabled(false);
    }
 
    /**
@@ -530,6 +547,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
       removeProjectButton = new Button(projectGroup, SWT.NONE);
       removeProjectButton.setText("Remove...");
       removeProjectButton.setLayoutData(gridData9);
+     
    }
 
    /**

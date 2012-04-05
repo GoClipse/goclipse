@@ -54,6 +54,7 @@ public class ProjectBuildConfiguration extends PropertyPage {
 	 */
 	@Override
   public boolean performOk() {
+		
 		String[] sourcefolders = composite.getSourceFolders();
 		if (sourcefolders != null) {
 			Environment.INSTANCE.setSourceFolders(getProject(), sourcefolders);
