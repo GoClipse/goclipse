@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -100,14 +101,17 @@ public class Environment {
 		@Override
 		public void process(InputStream iStream) {
 			try {
+				
 				InputStreamReader isr = new InputStreamReader(iStream);
 			    BufferedReader br = new BufferedReader(isr);
 			    String line;
-		        while ((line = br.readLine()) != null) {
+		      
+			    while ((line = br.readLine()) != null) {
 		        	Activator.logInfo("error in parse connector:" + line);
 		        	hadError = true;
 		        }
-			}catch(Exception e) {
+			    
+			} catch(Exception e) {
 				Activator.logInfo(e);
 			}
 		}
@@ -121,6 +125,7 @@ public class Environment {
 
 	private void saveSource(File toolsFile, URL srcURL, String outPath) {
 		if (srcURL != null) {
+			
 			try {
 				File outFile = new File(outPath);
 				InputStream in = srcURL.openStream();
@@ -133,9 +138,11 @@ public class Environment {
 				while ((len = in.read(buf)) > 0) {
 					out.write(buf, 0, len);
 				}
+				
 				in.close();
 				out.close();
 				Activator.logInfo("File copied:" + outPath);
+				
 			} catch (IOException e) {
 				Activator.logError(e);
 			}
@@ -147,11 +154,14 @@ public class Environment {
 	 * @return
 	 */
 	private Properties getProperties(IProject project) {
+		
 		Properties properties = propertiesMap.get(project.getName());
+		
 		if (properties == null) {
 			properties = loadProperties(project);
 			propertiesMap.put(project.getName(), properties);
 		}
+		
 		return properties;
 	}
 
@@ -160,18 +170,22 @@ public class Environment {
 	 * @return
 	 */
 	private Properties loadProperties(IProject project) {
+		
 		Properties properties = new Properties();
+		
 		try {
 			properties.loadFromXML(new FileInputStream(project
 					.getWorkingLocation(Activator.PLUGIN_ID)
 					+ "/properties.xml"));
+			
 		} catch (InvalidPropertiesFormatException e) {
-			// e.printStackTrace();
+			Activator.logError(e);
 		} catch (FileNotFoundException e) {
-			// e.printStackTrace();
+			Activator.logError(e);
 		} catch (IOException e) {
-			// e.printStackTrace();
+			Activator.logError(e);
 		}
+		
 		return properties;
 	}
 
@@ -180,16 +194,25 @@ public class Environment {
 	 * @return
 	 */
 	private void saveProperties(IProject project) {
+		if(project==null){
+			Activator.logError("Null project given while atempting to save properties.");
+			return;
+		}
+		
 		Properties properties = getProperties(project);
+		IPath path = project.getWorkingLocation(Activator.PLUGIN_ID);
+		
 		try {
 			Activator.logInfo("writing to "
-					+ project.getWorkingLocation(Activator.PLUGIN_ID)
+					+ path.toOSString()
 					+ "/properties.xml");
-			properties.storeToXML(new FileOutputStream(project
-					.getWorkingLocation(Activator.PLUGIN_ID)
+			
+			properties.storeToXML(new FileOutputStream(path.toOSString()
 					+ "/properties.xml", false), " this is a comment");
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -322,15 +345,6 @@ public class Environment {
 	}
 
 	/**
-	 * Sets the source folder properties on the currently active project
-	 * 
-	 * @param sourceFolders
-	 */
-	public void setSourceFolders(String[] sourceFolders) {
-		setSourceFolders(getCurrentProject(), sourceFolders);
-	}
-
-	/**
 	 * Sets the source folder properties on the given project
 	 * 
 	 * @param sourceFolders
@@ -381,26 +395,12 @@ public class Environment {
 	}
 
 	/**
-	 * Set the output folder for the active project
-	 */
-	public void setPkgOutputFolder(IPath outputFolder) {
-		setPkgOutputFolder(getCurrentProject(), outputFolder);
-	}
-
-	/**
 	 * Set the output folder for the given project
 	 */
 	public void setPkgOutputFolder(IProject project, IPath outputFolder) {
 		Properties properties = getProperties(project);
 		properties.setProperty(PROJECT_PKG_OUTPUT_FOLDERS, outputFolder.toOSString());
 		saveProperties(project);
-	}
-
-	/**
-	 * Return the output folder for the active project
-	 */
-	public IPath getPkgOutputFolder() {
-		return getPkgOutputFolder(getCurrentProject());
 	}
 
 	/**
@@ -472,24 +472,110 @@ public class Environment {
 		return libFile.exists();
 	}
 
+	/**
+	 * @param path
+	 * @return
+	 */
 	public boolean isCmdFile(IPath path) {
 		return getDefaultCmdSourceFolder().isPrefixOf(path);
 	}
 
+	/**
+	 * @param path
+	 * @return
+	 */
 	public boolean isPkgFile(IPath path) {
 		return getDefaultPkgSourceFolder().isPrefixOf(path);
 	}
 
+	/**
+	 * @return
+	 */
 	public Arch getArch() {
 		String goarch = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);
 		return Arch.getArch(goarch);
 	}
 
+	/**
+	 * @return
+	 */
 	public String getExecutableExtension() {
 		if (PreferenceConstants.OS_WINDOWS.equals(Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS))){
 			return ".exe";
 		}
 		return "";
 	}
+	
+	/**
+	 * @param project
+	 * @param folder
+	 * @return
+	 */
+	public boolean isCmdSrcFolder(IProject project, IFolder folder){
+		
+		if (project == null || folder == null) {
+			return false;
+		}
+		
+		boolean isSrcFolder = false;
+		String path = folder.getLocation().toOSString();
+		
+		for (IFolder src:getSourceFolders(project)){
+			if (src.getLocation().toOSString().equals(path)) {
+				isSrcFolder = true;
+				break;
+			}
+		}
+		
+		if (!isSrcFolder) {
+			return false;
+		}
+		
+		if (folder.getName().equals("cmd") || folder.getName().equals("src")) {
+			return true;
+		}
+		
+		return false;
+	}
+
+	
+	/**
+	 * Determines via the file suffix if the file is a test file or not.
+	 * @param file
+	 * @return
+	 */
+	public boolean isNonTestSourceFile(IFile file){
+		
+		if (file==null) {
+			return false;
+		}
+		
+		if (file.getName().endsWith("_test.go")) {
+			return false;
+		}
+		
+		return true;
+	}
+
+	public boolean isSourceFile(IProject project, IFile file) {
+		IPath p = file.getProjectRelativePath();
+	    IResource res = project.findMember(p);
+	    if ( res==null ) {
+	    	return false;
+	    }
+	    
+	    if ( !file.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION) ) {
+	    	return false;
+	    }
+	    
+	    for (IFolder folder : getSourceFolders(project)) {
+	    	if(file.getLocation().toOSString().startsWith(folder.getLocation().toOSString())) {
+	    		return true;
+	    	}
+	    }
+	    
+	    return false;
+    }
+	
 }
 

@@ -266,17 +266,16 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		IProject project = getProject();
 		final IPath projectLocation = project.getLocation();
 		final IFile ifile = project.getFile(file.getAbsolutePath().replace(project.getLocation().toOSString(), ""));
-		
-		IPath pkgFolder = Environment.INSTANCE.getPkgOutputFolder();
-		String pkgname  = ifile.getParent().getLocation().toOSString();
-		pkgname = pkgname.replace(projectLocation.toOSString(), "");
-		String[] split = pkgname.split(File.separatorChar=='\\' ? "\\\\" : File.separator);
-		String path = projectLocation.toOSString()+"/"+pkgFolder;
-		for(int i = 2; i< split.length; i++){
-			path += "/"+split[i];
+		IPath pkgFolder = Environment.INSTANCE.getPkgOutputFolder(project);
+		String pkgname = ifile.getParent().getLocation().toOSString().replace(projectLocation.toOSString(), "");
+		String[] split = pkgname.split(File.separatorChar == '\\' ? "\\\\" : File.separator);
+		String path = projectLocation.toOSString() + File.separator + pkgFolder;
+
+		for (int i = 2; i < split.length; i++) {
+			path += File.separator + split[i];
 		}
-		
-		return path+GoConstants.GO_LIBRARY_FILE_EXTENSION;
+
+		return path + GoConstants.GO_LIBRARY_FILE_EXTENSION;
 	}
 
 
@@ -315,7 +314,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			for (IResource res : resourcesToCompile) {
 				File file = res.getLocation().toFile();
 				
-				if ( file.isFile() ) {
+				if ( file.isFile() && res instanceof IFile &&
+						Environment.INSTANCE.isSourceFile(project, (IFile)res) ) {
 					
 					try {
 						if ( isCommandFile(file) ){

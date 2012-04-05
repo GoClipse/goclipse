@@ -17,6 +17,7 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
 public class GoConstants {
 	
 	public static final String GO_SOURCE_FILE_EXTENSION  = ".go";
+	public static final String GO_TEST_FILE_EXTENSION    = "_test.go";
 	public static final String GO_LIBRARY_FILE_EXTENSION = ".a";
 
 	public static final String OBJ_FILE_DIRECTORY   = "_obj";
@@ -45,6 +46,7 @@ public class GoConstants {
 	public static final String GOROOT = "GOROOT";
 	public static final String GOARCH = "GOARCH";
 	public static final String GOOS   = "GOOS";
+	public static final String GOPATH = "GOPATH";
 
 	/**
 	 * defined in plugin.xml
@@ -75,10 +77,12 @@ public class GoConstants {
 		String goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
 		String goos   = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);
 		String goarch = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);
+		String gopath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOPATH);
 
 		goEnv.put(GoConstants.GOROOT, goroot);
 		goEnv.put(GoConstants.GOOS,   goos);
 		goEnv.put(GoConstants.GOARCH, goarch);
+		goEnv.put(GoConstants.GOPATH, gopath);
 		
 		return goEnv;
 	}

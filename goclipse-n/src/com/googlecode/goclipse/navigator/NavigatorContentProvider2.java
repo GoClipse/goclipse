@@ -1,6 +1,7 @@
 package com.googlecode.goclipse.navigator;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 import org.eclipse.core.filesystem.EFS;
@@ -60,10 +61,10 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
       } else {
         if (goPath != null) {
           return new GoPathElement[] {
-              new GoPathElement("GOROOT", getGoRootSrcFolder()),
-              new GoPathElement("GOPATH", goPath)};
+              new GoPathElement(GoConstants.GOROOT, getGoRootSrcFolder()),
+              new GoPathElement(GoConstants.GOPATH, goPath)};
         } else {
-          return new GoPathElement[] {new GoPathElement("GOROOT", getGoRootSrcFolder())};
+          return new GoPathElement[] {new GoPathElement(GoConstants.GOROOT, getGoRootSrcFolder())};
         }
       }
     } else if (parentElement instanceof GoPathElement) {
@@ -137,7 +138,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 	        PreferenceConstants.GOPATH);
 	
 	    if (goPath == null || goPath == "") {
-	      goPath = System.getenv("GOPATH");
+	      goPath = System.getenv(GoConstants.GOPATH);
 	    }
 	
 	    if (goPath != null && goPath.contains(":")) {
