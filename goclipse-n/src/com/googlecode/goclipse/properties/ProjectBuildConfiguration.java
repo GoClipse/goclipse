@@ -56,17 +56,17 @@ public class ProjectBuildConfiguration extends PropertyPage {
   public boolean performOk() {
 		String[] sourcefolders = composite.getSourceFolders();
 		if (sourcefolders != null) {
-			Environment.INSTANCE.setSourceFolders(sourcefolders);
+			Environment.INSTANCE.setSourceFolders(getProject(), sourcefolders);
 		}
 
 		String pkgOutputfolder = composite.getPkgOutputFolder();
 		if (pkgOutputfolder != null) {
-			Environment.INSTANCE.setPkgOutputFolder(Path.fromOSString(pkgOutputfolder));
+			Environment.INSTANCE.setPkgOutputFolder(getProject(), Path.fromOSString(pkgOutputfolder));
 		}
 
 		String binOutputfolder = composite.getBinOutputFolder();
 		if (binOutputfolder != null) {
-			Environment.INSTANCE.setBinOutputFolder(Path.fromOSString(binOutputfolder));
+			Environment.INSTANCE.setBinOutputFolder(getProject(), Path.fromOSString(binOutputfolder));
 		}
 		
 		return true;

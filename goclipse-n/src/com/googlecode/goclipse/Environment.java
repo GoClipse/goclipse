@@ -425,12 +425,12 @@ public class Environment {
 		return Path.fromOSString(DEFAULT_PKG_OUTPUT_FOLDER).append(goos+"_"+goarch);
 	}
 
-	/**
-	 * Set the output folder for the active project
-	 */
-	public void setBinOutputFolder(IPath outputFolder) {
-		setBinOutputFolder(getCurrentProject(), outputFolder);
-	}
+//	/**
+//	 * Set the output folder for the active project
+//	 */
+//	public void setBinOutputFolder(IPath outputFolder) {
+//		setBinOutputFolder(getCurrentProject(), outputFolder);
+//	}
 
 	/**
 	 * Set the output folder for the given project

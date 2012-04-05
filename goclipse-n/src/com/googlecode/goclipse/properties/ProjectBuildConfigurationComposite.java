@@ -323,7 +323,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
       lblPackageFolder.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
       lblPackageFolder.setText("Pkg Folder:");
       pkgOutputText = new Text(group1, SWT.BORDER);
-      pkgOutputText.setText(Environment.INSTANCE.getPkgOutputFolder().toOSString());
+      pkgOutputText.setText(Environment.INSTANCE.getPkgOutputFolder(projectBuildConfiguration.getProject()).toOSString());
       pkgOutputText.addModifyListener(new ModifyListener() {
          @Override
          public void modifyText(ModifyEvent e) {
