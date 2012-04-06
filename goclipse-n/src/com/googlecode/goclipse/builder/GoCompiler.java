@@ -178,9 +178,12 @@ public class GoCompiler {
 			
 			String   goPath  = buildGoPath(projectLocation);
 			String   PATH    = System.getenv("PATH");
-			Runtime  runtime = Runtime.getRuntime();
-			Process  p       = runtime.exec(cmd.toArray(new String[]{}), new String[] { "GOPATH=" + goPath, "PATH="+PATH }, target.getParentFile());
 			
+      ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
+      builder.environment().put(GoConstants.GOPATH, goPath);
+      builder.environment().put("PATH", PATH);
+      Process p = builder.start();
+      
 			monitor.worked(3);
 			
 			try {
@@ -259,10 +262,10 @@ public class GoCompiler {
 	 */
 	public static String buildGoPath(final IPath projectLocation) {
 		String goPath = projectLocation.toOSString();
-		final String SYSTEM_GO_PATH = System.getenv("GOPATH");
+		final String SYSTEM_GO_PATH = System.getenv(GoConstants.GOPATH);
 
 		if (SYSTEM_GO_PATH != null) {
-			goPath = SYSTEM_GO_PATH + ":" + goPath;
+			goPath = SYSTEM_GO_PATH + File.pathSeparator + goPath;
 		}
 
 		return goPath;
@@ -286,7 +289,7 @@ public class GoCompiler {
 
 		try {
 			// the path exist to find the cc
-			String   PATH    = System.getenv("PATH");
+			String   path    = System.getenv("PATH");
 			String   outPath = null;
 			String[] cmd     = {};
 			
@@ -313,7 +316,7 @@ public class GoCompiler {
 
 			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
 			builder.environment().put(GoConstants.GOPATH, goPath);
-			builder.environment().put("PATH", PATH);
+			builder.environment().put("PATH", path);
 			Process p = builder.start();
 
 			try {
@@ -446,10 +449,10 @@ public class GoCompiler {
 			String  goPath  = buildGoPath(projectLocation);
 			
 			// PATH so go can find cc
-			String PATH = System.getenv("PATH");
+			String path = System.getenv("PATH");
 			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
 		    builder.environment().put(GoConstants.GOPATH, goPath);
-		    builder.environment().put("PATH", PATH);
+		    builder.environment().put("PATH", path);
 		    Process p = builder.start();
 			
 			try {

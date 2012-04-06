@@ -280,9 +280,9 @@ public class CodeContext {
 				processExternalPackage(codeContext, lexer, packageParser, functionParser, pkgdir);
 			}
 
-			String GOPATH = System.getenv("GOPATH").split(":")[0];
+			String goPath = System.getenv(GoConstants.GOPATH).split(File.pathSeparator)[0];
 			
-			pkgdir = new File(GOPATH + "/src/" + packagePath);
+			pkgdir = new File(goPath + "/src/" + packagePath);
 			if (pkgdir.exists() && pkgdir.isDirectory()) {
 				processExternalPackage(codeContext, lexer, packageParser, functionParser, pkgdir);
 			}

@@ -141,8 +141,8 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 	      goPath = System.getenv(GoConstants.GOPATH);
 	    }
 	
-	    if (goPath != null && goPath.contains(":")) {
-	      goPath = goPath.split(":")[0];
+	    if (goPath != null && goPath.contains(File.pathSeparator)) {
+	      goPath = goPath.split(File.pathSeparator)[0];
 	    }
 	
 	    if (goPath == null || goPath == "") {
