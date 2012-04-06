@@ -226,10 +226,11 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		
 		int cost = 2000/(fileList.size()+1);  // not looking for complete accuracy, just some feedback
 		
-		for(IResource filename:fileList) {
-			File file = new File(filename.getLocation().toOSString());
+		for(IResource res:fileList) {
+			File file = new File(res.getLocation().toOSString());
 			
-			if ( file.isFile() ) {
+			if ( file.isFile() && res instanceof IFile &&
+					Environment.INSTANCE.isSourceFile(project, (IFile)res) ) {
 				
 				try {
 					
@@ -241,7 +242,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 					} else {
 						// else if not a command file, schedule to build the package
 						String pkgpath = computePackagePath(file);
-						
 
 						if ( !packages.contains(pkgpath) ) {
 							monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), cost);

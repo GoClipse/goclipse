@@ -1,6 +1,7 @@
 package com.googlecode.goclipse.navigator;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
@@ -54,15 +55,28 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
   @Override
   public Object[] getChildren(Object parentElement) {
     if (parentElement instanceof IProject) {
-      File goPath = getGoPathSrcFolder();
+      File[] goPath = getGoPathSrcFolder((IProject)parentElement);
 
       if (!isGoRootSet()) {
         return NO_CHILDREN;
+        
       } else {
-        if (goPath != null) {
-          return new GoPathElement[] {
-              new GoPathElement(GoConstants.GOROOT, getGoRootSrcFolder()),
-              new GoPathElement(GoConstants.GOPATH, goPath)};
+        if (goPath.length > 0) {
+        	
+        	// populate the go paths
+        	if (goPath.length == 1) {
+        		return new GoPathElement[] {
+        				new GoPathElement(GoConstants.GOROOT, getGoRootSrcFolder()),
+        				new GoPathElement(goPath[0].getParent(), goPath[0])};
+        
+        	} else if (goPath.length > 1) {
+        		GoPathElement[] gpe = new GoPathElement[goPath.length+1];
+        		gpe[0] = new GoPathElement(GoConstants.GOROOT, getGoRootSrcFolder());
+        		
+        		for (int i = 0; i < goPath.length; i++){
+        			gpe[i+1] = new GoPathElement(goPath[i].getParent(), goPath[i]);
+        		}
+        	}
         } else {
           return new GoPathElement[] {new GoPathElement(GoConstants.GOROOT, getGoRootSrcFolder())};
         }
@@ -132,35 +146,36 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
   /**
    * @return File representing the external GOPATH
    */
-  protected File getGoPathSrcFolder() {
-	try {
-	    String goPath = Activator.getDefault().getPreferenceStore().getString(
-	        PreferenceConstants.GOPATH);
-	
-	    if (goPath == null || goPath == "") {
-	      goPath = System.getenv(GoConstants.GOPATH);
-	    }
-	
-	    if (goPath != null && goPath.contains(File.pathSeparator)) {
-	      goPath = goPath.split(File.pathSeparator)[0];
-	    }
-	
-	    if (goPath == null || goPath == "") {
-	      return null;
-	    }
-	
-	    File srcFolder = Path.fromOSString(goPath).append("src").toFile();
-	
-	    if ( !srcFolder.exists() ) {
-	      srcFolder.mkdirs();
-	    }
-	
-	    return srcFolder;
-	    	    
-	} catch (Exception e) {
-		return null;
+	protected File[] getGoPathSrcFolder(IProject project) {
+		
+		try {
+			
+			String[] goPath = Environment.INSTANCE.getGoPath(project);
+			File[] files = new File[goPath.length];
+
+			for (int i = 0; i < goPath.length; i++) {
+				String path = goPath[i];
+				File srcFolder = Path.fromOSString(path).append("src").toFile();
+				
+				if (!srcFolder.exists()) {
+
+					try {
+						srcFolder.mkdirs();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				files[i] = srcFolder;
+
+			}
+
+			return files;
+
+		} catch (Exception e) {
+			return null;
+		}
 	}
-  }
 
   private void updateViewer() {
     Display.getDefault().asyncExec(new Runnable() {

@@ -157,10 +157,10 @@ public class ProjectBuildConfigurationComposite extends Composite {
       
       
       ////////////////////////////////////////////////
-      group.setEnabled(false);
-      list.setEnabled(false);
-      removeButton.setEnabled(false);
-      addButton.setEnabled(false);
+      //group.setEnabled(false);
+      //list.setEnabled(false);
+      //removeButton.setEnabled(false);
+      //addButton.setEnabled(false);
       removeProjectButton.setEnabled(false);
       projectsList.setEnabled(false);
       addProjectButton.setEnabled(false);

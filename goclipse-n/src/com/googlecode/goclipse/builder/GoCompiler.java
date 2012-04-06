@@ -176,7 +176,7 @@ public class GoCompiler {
 			cmd.add(0, GoConstants.GO_GET_COMMAND);
 			cmd.add(0, compilerPath);
 			
-			String   goPath  = buildGoPath(projectLocation);
+			String   goPath  = buildGoPath(project, projectLocation);
 			String   PATH    = System.getenv("PATH");
 			
       ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
@@ -230,11 +230,10 @@ public class GoCompiler {
 							IFile    extfile    = project.getFile(path);
 							int      lineNumber = Integer.parseInt(split[1]);
 							String   msg 		= split[3];
-							
-							//IPath pp = extfile.getFullPath();
-							
+														
 							if(extfile!=null && extfile.exists()){
 								MarkerUtilities.addMarker(extfile, lineNumber, msg, IMarker.SEVERITY_ERROR);
+								
 							} else if (exMsg) {
 								exMsg = false;
 								MarkerUtilities.addMarker(file, "There are problems with the external imports in this file.\n" +
@@ -260,12 +259,23 @@ public class GoCompiler {
 	 * @param projectLocation
 	 * @return
 	 */
-	public static String buildGoPath(final IPath projectLocation) {
-		String goPath = projectLocation.toOSString();
-		final String SYSTEM_GO_PATH = System.getenv(GoConstants.GOPATH);
+	public static String buildGoPath(IProject project, final IPath projectLocation) {
+		
+		String delim = ":";
+		if (Util.isWindows()){
+			delim = ";";
+		}
+		
+		String       goPath = projectLocation.toOSString();
+		String[]     path   = Environment.INSTANCE.getGoPath(project);
+		final String GOPATH = path[0];
 
-		if (SYSTEM_GO_PATH != null) {
-			goPath = SYSTEM_GO_PATH + File.pathSeparator + goPath;
+		if (GOPATH != null && GOPATH != "") {
+			goPath = GOPATH + delim + goPath;
+		}
+		
+		for(int i = 1; i < path.length; i++){
+			goPath = goPath + delim + path[i];
 		}
 
 		return goPath;
@@ -312,7 +322,7 @@ public class GoCompiler {
 			        outPath };
 			}
 			
-			String goPath = buildGoPath(projectLocation);
+ 			String goPath = buildGoPath(project, projectLocation);
 
 			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
 			builder.environment().put(GoConstants.GOPATH, goPath);
@@ -446,7 +456,7 @@ public class GoCompiler {
 		try {
 			String[] cmd = { compilerPath, GoConstants.GO_BUILD_COMMAND, GoConstants.COMPILER_OPTION_O, pkgpath, "." };
 
-			String  goPath  = buildGoPath(projectLocation);
+			String  goPath  = buildGoPath(project, projectLocation);
 			
 			// PATH so go can find cc
 			String path = System.getenv("PATH");

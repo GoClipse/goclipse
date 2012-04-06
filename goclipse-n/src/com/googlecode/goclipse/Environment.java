@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.util.Util;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
@@ -557,6 +558,12 @@ public class Environment {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param project
+	 * @param file
+	 * @return
+	 */
 	public boolean isSourceFile(IProject project, IFile file) {
 		IPath p = file.getProjectRelativePath();
 	    IResource res = project.findMember(p);
@@ -577,5 +584,47 @@ public class Environment {
 	    return false;
     }
 	
+	/**
+	 * @param project
+	 * @return
+	 */
+	public String[] getGoPath(IProject project) {
+
+		String[] path   = { "" };
+		String   goPath = null;
+		
+		// Project property takes precedence
+		if (project != null) {
+			goPath = getProperties(project).getProperty(GoConstants.GOPATH);
+		}
+		
+		// Plug-in property comes next
+		if (goPath == null || goPath == "") {
+			goPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOPATH);
+		}
+
+		// last ditch effort via a system environment variable
+		if (goPath == null || goPath == "") {
+			goPath = System.getenv(GoConstants.GOPATH);
+		}
+
+		// If null, we give up and just return the default...
+		// which is essentially an empty string
+		if (goPath == null) {
+			return path;
+		}
+		
+		if (Util.isWindows() && goPath.contains(";")){
+			path = goPath.split(";");
+		
+		} else if (goPath.contains(":")) {
+			path =  goPath.split(":");
+			
+		} else {
+			path[0] = goPath;
+		}
+
+		return path;
+	}
 }
 

@@ -513,7 +513,7 @@
       <page
             class="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
             id="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
-            name="Go Build Path">
+            name="Go Project Configuration">
             
          <enabledWhen>
             <adapt type="org.eclipse.core.resources.IProject">

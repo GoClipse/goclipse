@@ -136,7 +136,7 @@ public class CodeContext {
 
 		File packageFolder = targetContext.getParentFile();
 		
-		parseText(fileText, false, useExternalContext, codeContext);
+		parseText(project, fileText, false, useExternalContext, codeContext);
 
 		//
 		// Only look at the other files in the directory if the file
@@ -151,7 +151,7 @@ public class CodeContext {
 				        && !file.getName().endsWith(GoConstants.GO_TEST_FILE_EXTENSION)) {
 	
 					String text = readFile(file);
-					parseText(text, true, false, codeContext);
+					parseText(project, text, true, false, codeContext);
 				}
 			}
 		}
@@ -190,7 +190,7 @@ public class CodeContext {
 	 * @param codeContext
 	 * @throws IOException
 	 */
-	private static void parseText(String fileText, boolean packagePeer, boolean useExternalContext, CodeContext codeContext)
+	private static void parseText(IProject project, String fileText, boolean packagePeer, boolean useExternalContext, CodeContext codeContext)
 	        throws IOException {
 		
 		Lexer          lexer          = new Lexer();
@@ -232,7 +232,7 @@ public class CodeContext {
 			for (Import imp : codeContext.imports) {
 				CodeContext context = externalContexts.get(imp.path);
 				if (context == null) {
-					context = getExternalCodeContext(imp.path);
+					context = getExternalCodeContext(project, imp.path);
 					externalContexts.put(imp.path, context);
 				}
 
@@ -250,7 +250,7 @@ public class CodeContext {
 	 * @throws IOException
 	 * @throws RecognitionException
 	 */
-	public static CodeContext getExternalCodeContext(String packagePath) throws IOException {
+	public static CodeContext getExternalCodeContext(IProject project, String packagePath) throws IOException {
 
 		CodeContext    codeContext    = new CodeContext(packagePath);
 		Lexer          lexer          = new Lexer();
@@ -280,7 +280,7 @@ public class CodeContext {
 				processExternalPackage(codeContext, lexer, packageParser, functionParser, pkgdir);
 			}
 
-			String goPath = System.getenv(GoConstants.GOPATH).split(File.pathSeparator)[0];
+			String goPath = Environment.INSTANCE.getGoPath(project)[0];
 			
 			pkgdir = new File(goPath + "/src/" + packagePath);
 			if (pkgdir.exists() && pkgdir.isDirectory()) {
