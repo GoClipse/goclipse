@@ -117,23 +117,20 @@ public class CodeContext {
 	        throws IOException {
 		
 		boolean isCmdSrcFolder = false;
-		IFile 	res 		   = null;
-		File  	targetContext  = null;
 		
 		if (project != null) {
-			res = (IFile)project.findMember(filename);
+			IResource res = project.findMember(filename);
 			
-			if(res!=null &&	Environment.INSTANCE.isCmdSrcFolder(project, (IFolder)res.getParent())){
+			if(res!=null && res instanceof IFile &&
+					Environment.INSTANCE.isCmdSrcFolder(project, (IFolder)res.getParent())){
 				isCmdSrcFolder = true;
 			}
 		}
 		
 		CodeContext codeContext = new CodeContext(filename);
 
-		if (res!=null && res.exists()) {
-			targetContext = res.getFullPath().toFile();
-			
-		} else {
+		File targetContext = new File(filename);
+		if (!targetContext.exists()) {
 			return codeContext;
 		}
 
