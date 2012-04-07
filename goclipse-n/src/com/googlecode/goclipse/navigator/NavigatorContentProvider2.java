@@ -151,6 +151,11 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		try {
 			
 			String[] goPath = Environment.INSTANCE.getGoPath(project);
+			
+			if("".equals(goPath[0])){
+				return null;
+			}
+			
 			File[] files = new File[goPath.length];
 
 			for (int i = 0; i < goPath.length; i++) {
