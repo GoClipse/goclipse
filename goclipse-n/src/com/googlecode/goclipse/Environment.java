@@ -182,7 +182,16 @@ public class Environment {
 		} catch (InvalidPropertiesFormatException e) {
 			Activator.logError(e);
 		} catch (FileNotFoundException e) {
-			Activator.logError(e);
+			IPath path = project.getWorkingLocation(Activator.PLUGIN_ID);
+			try {
+	            properties.storeToXML(new FileOutputStream(path.toOSString()
+	            		+ "/properties.xml", false), " this is a comment");
+            } catch (FileNotFoundException e1) {
+            	Activator.logError(e);
+            } catch (IOException e1) {
+            	Activator.logError(e);
+            }
+			saveProperties(project);
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
