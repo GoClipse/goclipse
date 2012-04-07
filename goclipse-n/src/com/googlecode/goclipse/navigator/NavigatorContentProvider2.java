@@ -61,7 +61,8 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
         return NO_CHILDREN;
         
       } else {
-        if (goPath.length > 0) {
+    	  
+        if (goPath!=null && goPath.length > 0) {
         	
         	// populate the go paths
         	if (goPath.length == 1) {
