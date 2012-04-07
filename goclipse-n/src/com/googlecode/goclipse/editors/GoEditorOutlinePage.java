@@ -122,7 +122,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 				if (document != null) {
 					CodeContext codeContext = CodeContext.getCodeContext(
 							Environment.INSTANCE.getCurrentProject(),
-							((IFile)editor.getEditorInput().getAdapter(IFile.class)).getProjectRelativePath().toString(),
+							((IFile)editor.getEditorInput().getAdapter(IFile.class)).getLocation().toOSString(),
 							document.get(), false);
 					
 					if (getTreeViewer().getInput() == null) {
