@@ -259,7 +259,7 @@ public class Environment {
 					}
 				}
 				
-				extractSelection(iSelection).getProject();
+				project = extractSelection(iSelection).getProject();
 			}
 			
 		} catch (Exception e) {

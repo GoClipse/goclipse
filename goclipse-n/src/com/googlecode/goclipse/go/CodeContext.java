@@ -145,7 +145,7 @@ public class CodeContext {
 		// pollute the code completion options of another the other main
 		// source file.
 		//
-		if ( !isCmdSrcFolder ) {
+		if ( !isCmdSrcFolder && useExternalContext) {
 			for (File file : packageFolder.listFiles()) {
 				if (file.isFile() && file.canRead() && file.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)
 				        && !file.getName().endsWith(GoConstants.GO_TEST_FILE_EXTENSION)) {
