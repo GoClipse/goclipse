@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
@@ -25,6 +26,7 @@ import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
 import com.googlecode.goclipse.go.lang.model.Import;
@@ -105,7 +107,8 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 
 	private void refreshAsync() {
 		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				refresh();
 			}
 		});
@@ -117,19 +120,22 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 				IDocument document = documentProvider.getDocument(editor.getEditorInput());
 				
 				if (document != null) {
-					CodeContext codeContext = CodeContext.getCodeContext(editor.getPartName(), document.get(), false);
+					CodeContext codeContext = CodeContext.getCodeContext(
+							Environment.INSTANCE.getCurrentProject(),
+							((IFile)editor.getEditorInput().getAdapter(IFile.class)).getProjectRelativePath().toString(),
+							document.get(), false);
 					
 					if (getTreeViewer().getInput() == null) {
 						getTreeViewer().setInput(codeContext);
 					} else {
-						OutlinePageContentProvider contentProvider = 
+						OutlinePageContentProvider contentProvider =
 							(OutlinePageContentProvider)getTreeViewer().getContentProvider();
 						
 						contentProvider.setCodeContext(codeContext);
 					}
 				}
 			}
-		} 
+		}
 		catch (Throwable exception) {
 			Activator.logError(exception);
 			
