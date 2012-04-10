@@ -179,10 +179,11 @@ public class GoCompiler {
 			String   goPath  = buildGoPath(project, projectLocation);
 			String   PATH    = System.getenv("PATH");
 			
-      ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
-      builder.environment().put(GoConstants.GOPATH, goPath);
-      builder.environment().put("PATH", PATH);
-      Process p = builder.start();
+	        ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
+	        builder.environment().put(GoConstants.GOROOT, Environment.INSTANCE.getGoRoot(project));
+	        builder.environment().put(GoConstants.GOPATH, goPath);
+	        builder.environment().put("PATH", PATH);
+	        Process p = builder.start();
       
 			monitor.worked(3);
 			
@@ -191,7 +192,6 @@ public class GoCompiler {
 
 			} catch (InterruptedException e) {
 				Activator.logInfo(e);
-				
 			}
 
 			InputStream   is  = p.getInputStream();
