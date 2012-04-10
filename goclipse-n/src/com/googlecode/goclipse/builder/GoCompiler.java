@@ -324,7 +324,8 @@ public class GoCompiler {
 			
  			String goPath = buildGoPath(project, projectLocation);
 
-			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
+ 			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
+			builder.environment().put(GoConstants.GOROOT, Environment.INSTANCE.getGoRoot(project));
 			builder.environment().put(GoConstants.GOPATH, goPath);
 			builder.environment().put("PATH", path);
 			Process p = builder.start();
@@ -460,8 +461,10 @@ public class GoCompiler {
 			
 			// PATH so go can find cc
 			String path = System.getenv("PATH");
+			String goroot = Environment.INSTANCE.getGoRoot(project);
 			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
-		    builder.environment().put(GoConstants.GOPATH, goPath);
+			builder.environment().put(GoConstants.GOROOT, goroot);
+			builder.environment().put(GoConstants.GOPATH, goPath);
 		    builder.environment().put("PATH", path);
 		    Process p = builder.start();
 			

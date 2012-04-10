@@ -635,5 +635,32 @@ public class Environment {
 
 		return path;
 	}
+
+	public String getGoRoot(IProject project) {
+		String goroot = null;
+		
+		// Project property takes precedence
+		if (project != null) {
+			goroot = getProperties(project).getProperty(GoConstants.GOROOT);
+		}
+		
+		// Plug-in property comes next
+		if (goroot == null || goroot == "") {
+			goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
+		}
+
+		// last ditch effort via a system environment variable
+		if (goroot == null || goroot == "") {
+			goroot = System.getenv(GoConstants.GOROOT);
+		}
+
+		// If null, we give up and just return the default...
+		// which is essentially an empty string
+		if (goroot == null) {
+			return "";
+		}
+		
+		return goroot;
+    }
 }
 
