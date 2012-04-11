@@ -176,7 +176,7 @@ public class GoCompiler {
 			cmd.add(0, GoConstants.GO_GET_COMMAND);
 			cmd.add(0, compilerPath);
 			
-			String   goPath  = buildGoPath(project, projectLocation);
+			String   goPath  = buildGoPath(project, projectLocation, true);
 			String   PATH    = System.getenv("PATH");
 			
 	        ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
@@ -259,7 +259,7 @@ public class GoCompiler {
 	 * @param projectLocation
 	 * @return
 	 */
-	public static String buildGoPath(IProject project, final IPath projectLocation) {
+	public static String buildGoPath(IProject project, final IPath projectLocation, boolean extGoRootFavored) {
 		
 		String delim = ":";
 		if (Util.isWindows()){
@@ -271,7 +271,11 @@ public class GoCompiler {
 		final String GOPATH = path[0];
 
 		if (GOPATH != null && GOPATH != "") {
-			goPath = GOPATH + delim + goPath;
+			if (extGoRootFavored) {
+				goPath = GOPATH + delim + goPath;
+			} else {
+				goPath = goPath + delim + GOPATH;
+			}
 		}
 		
 		for(int i = 1; i < path.length; i++){
@@ -322,7 +326,7 @@ public class GoCompiler {
 			        outPath };
 			}
 			
- 			String goPath = buildGoPath(project, projectLocation);
+ 			String goPath = buildGoPath(project, projectLocation, false);
 
  			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
 			builder.environment().put(GoConstants.GOROOT, Environment.INSTANCE.getGoRoot(project));
@@ -457,7 +461,7 @@ public class GoCompiler {
 		try {
 			String[] cmd = { compilerPath, GoConstants.GO_BUILD_COMMAND, GoConstants.COMPILER_OPTION_O, pkgpath, "." };
 
-			String  goPath  = buildGoPath(project, projectLocation);
+			String  goPath  = buildGoPath(project, projectLocation, false);
 			
 			// PATH so go can find cc
 			String path = System.getenv("PATH");
@@ -567,7 +571,6 @@ public class GoCompiler {
 	}
 
 	/**
-	 * 
 	 * @param project
 	 */
 	public void updateVersion(IProject project) {
@@ -579,7 +582,6 @@ public class GoCompiler {
 	}
 
 	/**
-	 * 
 	 * @param project
 	 * @return
 	 */
