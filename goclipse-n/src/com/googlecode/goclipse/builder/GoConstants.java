@@ -42,6 +42,7 @@ public class GoConstants {
 	public static final String GO_RUN_COMMAND      = "run";
 	public static final String GO_TEST_COMMAND     = "test";
 	public static final String GO_VET_COMMAND      = "vet";
+	public static final String GO_TOOL_COMMAND     = "tool";
 
 	public static final String GOROOT = "GOROOT";
 	public static final String GOARCH = "GOARCH";
