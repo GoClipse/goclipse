@@ -40,93 +40,13 @@ public class GoCompiler {
 
 	/** environment for build */
 	private Map<String, String>  env;
-	private String	             version;
-	private long	             versionLastUpdated	= 0;
-	
+	private String	              version;
+	private long	              versionLastUpdated	= 0;
+		
 	/**
 	 * 
 	 */
 	public GoCompiler() {}
-	
-	/**
-	 * Returns the current compiler version (ex. "6g version release.r58 8787").
-	 * Returns null if we were unable to recover the compiler version. The
-	 * returned string should be treated as an opaque token.
-	 * 
-	 * @return the current compiler version
-	 */
-	public static String getCompilerVersion() {
-		
-		String version = null;
-		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		String compilerPath = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
-
-		if (compilerPath == null || compilerPath.length() == 0) {
-			return null;
-		}
-
-		try {
-			String[] cmd = { compilerPath, GoConstants.GO_VERSION_COMMAND };
-
-			Runtime runtime = Runtime.getRuntime();
-			Process p = runtime.exec(cmd);
-
-			try {
-				p.waitFor();
-
-			} catch (InterruptedException e) {
-				Activator.logInfo(e);
-			}
-
-			InputStream is = p.getInputStream();
-			InputStream es = p.getErrorStream();
-			StreamAsLines output = new StreamAsLines();
-			StreamAsLines errors = new StreamAsLines();
-			output.process(is);
-			errors.process(es);
-
-			final String GO_VERSION = "go version ";
-
-			for (String line : output.getLines()) {
-				if (line != null && line.startsWith(GO_VERSION)) {
-					version = line.substring(GO_VERSION.length());
-					break;
-				}
-			}
-
-		} catch (IOException e) {
-			Activator.logInfo(e);
-		}
-
-		return version;
-	}
-	
-	/**
-	 * TODO this needs to be centralized into a common index...
-	 * 
-	 * @param file
-	 * @return
-	 * @throws IOException
-	 */
-	private List<Import> getImports(File file) throws IOException {
-		Lexer 		  lexer        = new Lexer();
-		Tokenizer 	  tokenizer    = new Tokenizer(lexer);
-		ImportParser  importParser = new ImportParser(tokenizer);
-		
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String temp = "";
-		StringBuilder builder = new StringBuilder();
-		while( (temp = reader.readLine()) != null ) {
-			builder.append(temp);
-			builder.append("\n");
-		}
-		
-		reader.close();
-		lexer.scan(builder.toString());
-		List<Import> imports = importParser.getImports();
-		
-		return imports;
-	}
 
 	/**
 	 * @param project
@@ -135,7 +55,6 @@ public class GoCompiler {
 	public void goGetDependencies(final IProject project, IProgressMonitor monitor, java.io.File target) {
 		
 		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		
 		final IPath projectLocation = project.getLocation();
 		final String compilerPath   = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
 		final IFile  file           = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
@@ -348,102 +267,74 @@ public class GoCompiler {
 			Activator.logInfo(e1);
 		}
 	}
+	
+	/**
+	 * @param project
+	 * @param pmonitor
+	 * @param fileList
+	 */
+	public void compileAll(final IProject project, IProgressMonitor pmonitor, IFolder target) {
+		
+		final IPath  projectLocation = project.getLocation();
+		
+		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
 
-    /**
-     * 
-     * @param output
-     * @param project
-     * @param relativeTargetDir
-     */
-	private void processCompileOutput(final StreamAsLines output,
-			                          final IProject      project,
-			                          final String        relativeTargetDir,
-			                          final IFile         file) {
-		
-		boolean iswindows = Util.isWindows();
-		
-		for (String line : output.getLines()) {
+		try {
+			// the path exist to find the cc
+			String   path    = System.getenv("PATH");
+			String[] cmd     = {};
 			
-			if (line.startsWith("#")) {
-				continue;
-				
-			} else if(line.startsWith("can't load package:")) {
-				/*
-				 * when building a main package mixed with a
-				 * lib package this error occurs and is not
-				 * specific to any one file.  It is related
-				 * to the organization of the project.
-				 */
-				IContainer container = file.getParent();
-				if(container instanceof IFolder){
-					IFolder folder = (IFolder)container;
-					MarkerUtilities.addMarker(folder, 0, line, IMarker.SEVERITY_ERROR);
-				}
-				continue;
+			MarkerUtilities.deleteFileMarkers(target);
+			cmd = new String[] {
+		        compilerPath,
+		        GoConstants.GO_BUILD_COMMAND
+		    };
+			
+			String goPath = buildGoPath(project, projectLocation, false);
+
+			File file = new File(target.getLocation().toOSString());
+ 			ProcessBuilder builder = new ProcessBuilder(cmd).directory(file);
+			builder.environment().put(GoConstants.GOROOT, Environment.INSTANCE.getGoRoot(project));
+			builder.environment().put(GoConstants.GOPATH, goPath);
+			builder.environment().put("PATH", path);
+			Process p = builder.start();
+
+			try {
+				p.waitFor();
+
+			} catch (InterruptedException e) {
+				Activator.logInfo(e);
 			}
 			
-			int goPos = line.indexOf(GoConstants.GO_SOURCE_FILE_EXTENSION);
+			refreshProject(project, pmonitor);
+		    InputStream is = p.getInputStream();
+		    InputStream es = p.getErrorStream();
+		    StreamAsLines sal = new StreamAsLines();
+		    sal.setCombineLines(true);
+		    sal.process(is);
+		    sal.process(es);
+		    
+		    String currentPackage = "";
+		    for ( String line : sal.getLines()) {
+		    	System.out.println(line);
+		    	if(line.startsWith("#")) {
+		    		currentPackage = line.replace("#", "").trim();
+		    		continue;
+		    	}
+		    	String[] elements = line.split(":");
+		    	String message = line.substring(elements[0].length()+elements[1].length()+2);
+		    	path = target.getName()+File.separator+elements[0];
+		    	IResource res = project.findMember(path);
+		    	MarkerUtilities.addMarker(res, Integer.parseInt(elements[1]), message, IMarker.SEVERITY_ERROR);
+		    }
 
-			if (goPos > 0) {
-				
-				int fileNameLength = goPos + GoConstants.GO_SOURCE_FILE_EXTENSION.length();
-
-				// Strip the prefix off the error message
-				String fileName = line.substring(0, fileNameLength);
-				fileName = fileName.replace(project.getLocation().toOSString(), "");
-				fileName = iswindows?fileName:fileName.substring(fileName.indexOf(":") + 1).trim();
-
-				// Determine the type of error message
-				if (fileName.startsWith(File.separator)) {
-					fileName = fileName.substring(1);
-					
-				} else if (fileName.startsWith("." + File.separator)) {
-					fileName = relativeTargetDir.substring(1) + File.separator + fileName.substring(2);
-					
-				} else if (line.startsWith("can't")) {
-					fileName = relativeTargetDir.substring(1);
-					
-				} else {
-					fileName = relativeTargetDir.substring(1) + File.separator + fileName;
-				}
-				
-				// find the resource if possible
-				IResource resource = project.findMember(fileName);
-				if (resource == null && file != null) {
-					resource = file;
-					
-				} else if (resource == null) {
-					resource = project;
-				}
-
-				// Create the error message
-				String msg = line.substring(fileNameLength + 1);
-				String[] str = msg.split(":", 3);
-				int location = -1; // marker for trouble
-				int messageStart = msg.indexOf(": ");
-
-				try {
-					location = Integer.parseInt(str[0]);
-				} catch (NumberFormatException nfe) {}
-				
-				// Determine how to mark the message
-				if (location != -1 && messageStart != -1) {
-					String message = msg.substring(messageStart + 2);
-					MarkerUtilities.addMarker(resource, location, message, IMarker.SEVERITY_ERROR);
-					
-				} else {
-					// play safe. to show something in UI
-					MarkerUtilities.addMarker(resource, 1, line, IMarker.SEVERITY_ERROR);
-				}
-				
-			} else {
-				// runtime.main: undefined: main.main
-				MarkerUtilities.addMarker(file, 1, line, IMarker.SEVERITY_ERROR);
-				
-			}
+		} catch (IOException e1) {
+			Activator.logInfo(e1);
 		}
 	}
-
+	
+	
 	/**
 	 * @param project
 	 * @param pmonitor
@@ -451,22 +342,43 @@ public class GoCompiler {
 	 */
 	public void compilePkg(final IProject project, IProgressMonitor pmonitor, final String pkgpath, java.io.File target) {
 		
-		final IPath  projectLocation = project.getLocation();
-		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
-		final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
-
 		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
 		
+		final IPath  projectLocation = project.getLocation();
+		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
+		
+		ProcessBuilder builder    = null;
+		String         pkgPath    = null;
+		File           workingDir = null;
+		
+		if (target.isFile()) {
+			pkgPath = target.getParentFile().getAbsolutePath().replace(
+					projectLocation.toOSString(), "");
+			workingDir = target.getParentFile();
+			
+		} else {
+			pkgPath = target.getAbsolutePath().replace(
+					projectLocation.toOSString(), "");
+			workingDir = target;
+		}
+		
 		try {
-			String[] cmd = { compilerPath, GoConstants.GO_BUILD_COMMAND, GoConstants.COMPILER_OPTION_O, pkgpath, "." };
-
 			String  goPath  = buildGoPath(project, projectLocation, false);
+			
+			String[] cmd = { compilerPath,
+			         GoConstants.GO_BUILD_COMMAND,
+			         GoConstants.COMPILER_OPTION_O,
+			         pkgpath,
+			         "."
+			       };
+			
+			builder = new ProcessBuilder(cmd).directory(workingDir);
 			
 			// PATH so go can find cc
 			String path = System.getenv("PATH");
 			String goroot = Environment.INSTANCE.getGoRoot(project);
-			ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
+			
 			builder.environment().put(GoConstants.GOROOT, goroot);
 			builder.environment().put(GoConstants.GOPATH, goPath);
 		    builder.environment().put("PATH", path);
@@ -488,6 +400,50 @@ public class GoCompiler {
 		}
 	}
 
+	/**
+	 * @param project
+	 * @param pmonitor
+	 * @param fileList
+	 */
+	public void installAll(final IProject project, IProgressMonitor pmonitor) {
+		
+		final IPath  projectLocation = project.getLocation();
+		//final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
+		//final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
+
+		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
+		
+		try {
+			String[] cmd = { compilerPath, GoConstants.GO_INSTALL_COMMAND, "all" };
+
+			String  goPath  = buildGoPath(project, projectLocation, false);
+			
+			// PATH so go can find cc
+			String path = System.getenv("PATH");
+			String goroot = Environment.INSTANCE.getGoRoot(project);
+			ProcessBuilder builder = new ProcessBuilder(cmd).directory(project.getLocation().toFile());
+			builder.environment().put(GoConstants.GOROOT, goroot);
+			builder.environment().put(GoConstants.GOPATH, goPath);
+		    builder.environment().put("PATH", path);
+		    Process p = builder.start();
+			
+			try {
+				p.waitFor();
+
+			} catch (InterruptedException e) {
+				Activator.logInfo(e);
+			}
+			
+			refreshProject(project, pmonitor);
+			//clearPackageErrorMessages(project, pkgPath);
+			readAndProcessOutput(project, null, null, p);
+
+		} catch (IOException e1) {
+			Activator.logInfo(e1);
+		}
+	}
+	
 	/**
      * @param project
      * @param file
@@ -595,7 +551,7 @@ public class GoCompiler {
 		}
 
 		String currentVersion = getVersion();
-
+		
 		if (currentVersion == null) {
 			// We were not able to get the latest compiler version - don't force
 			// a rebuild.
@@ -604,5 +560,182 @@ public class GoCompiler {
 			return !ObjectUtils.objectEquals(storedVersion, currentVersion);
 		}
 	}
+	
+	/**
+     * 
+     * @param output
+     * @param project
+     * @param relativeTargetDir
+     */
+	private void processCompileOutput(final StreamAsLines output,
+			                          final IProject      project,
+			                          final String        relativeTargetDir,
+			                          final IFile         file) {
+		
+		boolean iswindows = Util.isWindows();
+		
+		for (String line : output.getLines()) {
+			
+			if (line.startsWith("#")) {
+				continue;
+				
+			} else if(line.startsWith("can't load package:")) {
+				/*
+				 * when building a main package mixed with a
+				 * lib package this error occurs and is not
+				 * specific to any one file.  It is related
+				 * to the organization of the project.
+				 */
+				IContainer container = file.getParent();
+				if(container instanceof IFolder){
+					IFolder folder = (IFolder)container;
+					MarkerUtilities.addMarker(folder, 0, line, IMarker.SEVERITY_ERROR);
+				}
+				continue;
+			}
+			
+			int goPos = line.indexOf(GoConstants.GO_SOURCE_FILE_EXTENSION);
+
+			if (goPos > 0) {
+				
+				int fileNameLength = goPos + GoConstants.GO_SOURCE_FILE_EXTENSION.length();
+
+				// Strip the prefix off the error message
+				String fileName = line.substring(0, fileNameLength);
+				fileName = fileName.replace(project.getLocation().toOSString(), "");
+				fileName = iswindows?fileName:fileName.substring(fileName.indexOf(":") + 1).trim();
+
+				// Determine the type of error message
+				if (fileName.startsWith(File.separator)) {
+					fileName = fileName.substring(1);
+					
+				} else if (fileName.startsWith("." + File.separator)) {
+					fileName = relativeTargetDir.substring(1) + File.separator + fileName.substring(2);
+					
+				} else if (line.startsWith("can't")) {
+					fileName = relativeTargetDir.substring(1);
+					
+				} else {
+					fileName = relativeTargetDir.substring(1) + File.separator + fileName;
+				}
+				
+				// find the resource if possible
+				IResource resource = project.findMember(fileName);
+				if (resource == null && file != null) {
+					resource = file;
+					
+				} else if (resource == null) {
+					resource = project;
+				}
+
+				// Create the error message
+				String msg = line.substring(fileNameLength + 1);
+				String[] str = msg.split(":", 3);
+				int location = -1; // marker for trouble
+				int messageStart = msg.indexOf(": ");
+
+				try {
+					location = Integer.parseInt(str[0]);
+				} catch (NumberFormatException nfe) {}
+				
+				// Determine how to mark the message
+				if (location != -1 && messageStart != -1) {
+					String message = msg.substring(messageStart + 2);
+					MarkerUtilities.addMarker(resource, location, message, IMarker.SEVERITY_ERROR);
+					
+				} else {
+					// play safe. to show something in UI
+					MarkerUtilities.addMarker(resource, 1, line, IMarker.SEVERITY_ERROR);
+				}
+				
+			} else {
+				// runtime.main: undefined: main.main
+				MarkerUtilities.addMarker(file, 1, line, IMarker.SEVERITY_ERROR);
+				
+			}
+		}
+	}
+
+	
+	/**
+	 * Returns the current compiler version (ex. "6g version release.r58 8787").
+	 * Returns null if we were unable to recover the compiler version. The
+	 * returned string should be treated as an opaque token.
+	 * 
+	 * @return the current compiler version
+	 */
+	public static String getCompilerVersion() {
+		
+		String version = null;
+		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+		String compilerPath = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
+
+		if (compilerPath == null || compilerPath.length() == 0) {
+			return null;
+		}
+
+		try {
+			String[] cmd = { compilerPath, GoConstants.GO_VERSION_COMMAND };
+
+			Runtime runtime = Runtime.getRuntime();
+			Process p = runtime.exec(cmd);
+
+			try {
+				p.waitFor();
+
+			} catch (InterruptedException e) {
+				Activator.logInfo(e);
+			}
+
+			InputStream is = p.getInputStream();
+			InputStream es = p.getErrorStream();
+			StreamAsLines output = new StreamAsLines();
+			StreamAsLines errors = new StreamAsLines();
+			output.process(is);
+			errors.process(es);
+
+			final String GO_VERSION = "go version ";
+
+			for (String line : output.getLines()) {
+				if (line != null && line.startsWith(GO_VERSION)) {
+					version = line.substring(GO_VERSION.length());
+					break;
+				}
+			}
+
+		} catch (IOException e) {
+			Activator.logInfo(e);
+		}
+
+		return version;
+	}
+	
+	/**
+	 * TODO this needs to be centralized into a common index...
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private List<Import> getImports(File file) throws IOException {
+		Lexer 		  lexer        = new Lexer();
+		Tokenizer 	  tokenizer    = new Tokenizer(lexer);
+		ImportParser  importParser = new ImportParser(tokenizer);
+		
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String temp = "";
+		StringBuilder builder = new StringBuilder();
+		while( (temp = reader.readLine()) != null ) {
+			builder.append(temp);
+			builder.append("\n");
+		}
+		
+		reader.close();
+		lexer.scan(builder.toString());
+		List<Import> imports = importParser.getImports();
+		
+		return imports;
+	}
+
 
 }

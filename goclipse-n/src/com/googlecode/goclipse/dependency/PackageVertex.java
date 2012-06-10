@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 
+import com.googlecode.goclipse.Environment;
+
 /**
  * 
  */
@@ -34,15 +36,15 @@ class PackageVertex {
 	/**
 	 * 
 	 */
-	private String packageName;
+	private String name;
 	
 
 	/**
 	 * 
 	 */
-	private PackageVertex(IProject project, String packageName) {
+	private PackageVertex(IProject project, String name) {
 		this.project = project;
-		this.packageName = packageName;
+		this.name = name;
 	}
 
 	/**
@@ -51,7 +53,11 @@ class PackageVertex {
 	 * @return
 	 */
 	static PackageVertex getPackageVertex(IProject project, String packageName) {
-		
+		String pkgOutPath =Environment.INSTANCE.getPkgOutputFolder(project).toOSString();
+		if (packageName.contains(pkgOutPath)) {
+			String p[] = packageName.split(pkgOutPath);
+			packageName = p[1].replace(".a", "");
+		}
 		HashMap<String, PackageVertex> map = existingVertices.get(project.getName());
 		if (map == null) {
 			map = new HashMap<String, PackageVertex>();
@@ -63,7 +69,6 @@ class PackageVertex {
 			pv = new PackageVertex(project, packageName);
 			map.put(packageName, pv);
 		}
-		
 		return pv;
 	}
 	
@@ -92,21 +97,21 @@ class PackageVertex {
 	 * @param i
 	 */
 	void addReverseDependency(String i) {
-		dependencies.add(i);
+		reverseDependencies.add(i);
 	}
 	
 	/**
 	 * @param i
 	 */
 	void removeReverseDependency(String i) {
-		dependencies.remove(i);
+		reverseDependencies.remove(i);
 	}
 	
 	/**
 	 * 
 	 */
 	void clearReverseDependencies() {
-		dependencies.clear();
+		reverseDependencies.clear();
 	}
 
 	/**

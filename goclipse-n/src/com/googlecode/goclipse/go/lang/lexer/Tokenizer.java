@@ -7,7 +7,7 @@ import java.util.List;
  * Provides more specific classification of a given token and passes it on to
  * listeners for further analysis and processing.
  * 
- * @author stanleysteel
+ * @author steel
  */
 public class Tokenizer implements LexerListener {
 
@@ -70,9 +70,17 @@ public class Tokenizer implements LexerListener {
 				type = TokenType.FLOAT32;
 			} else if (TokenType.FLOAT64.equals(value)) {
 				type = TokenType.FLOAT64;
+			} else if (TokenType.COMPLEX64.equals(value)) {
+				type = TokenType.COMPLEX64;
+			} else if (TokenType.COMPLEX128.equals(value)) {
+				type = TokenType.COMPLEX128;
 			} else if (TokenType.BYTE.equals(value)) {
 				type = TokenType.BYTE;
-			} else if (TokenType.UINT.equals(value)) {
+			} else if (TokenType.RUNE.equals(value)) {
+				type = TokenType.RUNE;
+ 			} else if (TokenType.ERROR.equals(value)) {
+				type = TokenType.ERROR;
+ 			} else if (TokenType.UINT.equals(value)) {
 				type = TokenType.UINT;
 			} else if (TokenType.INT.equals(value)) {
 				type = TokenType.INT;
@@ -110,8 +118,6 @@ public class Tokenizer implements LexerListener {
 				type = TokenType.NEW;
 			} else if (TokenType.PANIC.equals(value)) {
 				type = TokenType.NEW;
-			} else if (TokenType.PANICLN.equals(value)) {
-				type = TokenType.PANICLN;
 			} else if (TokenType.PRINT.equals(value)) {
 				type = TokenType.PRINT;
 			} else if (TokenType.PRINTLN.equals(value)) {

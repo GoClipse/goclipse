@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -25,6 +28,7 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.dependency.DependencyGraph;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Package;
@@ -37,96 +41,21 @@ import com.googlecode.goclipse.go.lang.parser.PackageParser;
 public class GoBuilder extends IncrementalProjectBuilder {
 	
 	public static final String  BUILDER_ID = "com.googlecode.goclipse.goBuilder";
-	private GoCompiler 		    compiler;
-	
+	private GoCompiler compiler;
 	private boolean onlyFullBuild = false;
+
+	/**
+	 * Track when packages are updated
+	 */
+	private Map<IProject, Map<IFolder, PackageModifationRecord>> pkgModRecords;
 	
 	/**
 	 * 
 	 */
-	class CollectResourceDeltaVisitor implements IResourceDeltaVisitor {
-		
-		List<IResource> added   = new ArrayList<IResource>();
-		List<IResource> removed = new ArrayList<IResource>();
-		List<IResource> changed = new ArrayList<IResource>();
-
-		@Override
-		public boolean visit(IResourceDelta delta) throws CoreException {
-			IResource resource = delta.getResource();
-			
-			if (resource instanceof IFile && resource.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)) {
-				
-				switch (delta.getKind()) {
-					case IResourceDelta.ADDED:
-						// handle added resource
-						added.add(resource);
-						break;
-						
-					case IResourceDelta.REMOVED:
-						// handle removed resource
-						removed.add(resource);
-						break;
-						
-					case IResourceDelta.CHANGED:
-						// handle changed resource
-						changed.add(resource);
-						break;
-				}
-			}
-			// return true to continue visiting children.
-			return true;
-		}
-
-		public List<IResource> getAdded() {
-			return added;
-		}
-
-		public List<IResource> getRemoved() {
-			return removed;
-		}
-
-		public List<IResource> getChanged() {
-			return changed;
-		}
+	public GoBuilder() {
+		pkgModRecords = Collections.synchronizedMap(
+				new HashMap<IProject, Map<IFolder, PackageModifationRecord>>());
 	}
-
-	/**
-	 * 
-	 */
-	class CollectResourceVisitor implements IResourceVisitor {
-		private List<IResource> collected = new ArrayList<IResource>();
-
-		@Override
-		public boolean visit(IResource resource) {
-			if (resource instanceof IFile && resource.getName().endsWith(".go")) {
-				collected.add(resource);
-			}
-			// return true to continue visiting children.
-			return true;
-		}
-
-		public List<IResource> getCollectedResources() {
-			return collected;
-		}
-	}
-
-	/**
-	 * Check to see if the Go compiler has been updated since the last build took place.
-	 */
-	public static void checkForCompilerUpdates(boolean delay) {
-		Job job = new GoCompilerUpdateJob();
-		
-		if (delay) {
-			job.schedule(4000);
-		} else {
-			job.schedule();
-		}
-	}
-
-	/**
-	 * 
-	 */
-	public GoBuilder() {}
 	
 	/**
 	 * 
@@ -134,7 +63,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	@Override
 	@SuppressWarnings("rawtypes")
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
-		
 		IProject project = getProject();
 		
 		if (!checkBuild()) {
@@ -155,7 +83,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				if (delta == null) {
 					fullBuild(monitor);
 				} else {
-					incrementalBuild(delta, monitor);
+					incrementalBuild(project, delta, monitor);
 				}
 			}
 			
@@ -220,25 +148,33 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	 * @throws CoreException
 	 */
 	private void doBuild(List<IResource> fileList, final SubMonitor monitor) throws CoreException {
-		
 		IProject project = getProject();
 		Set<String> packages = new HashSet<String>();
 		
 		int cost = 2000/(fileList.size()+1);  // not looking for complete accuracy, just some feedback
 		
+///////////////////////////////////////////////////////////////////////////////
+// This Works Faster, but avoids creating .a files... still too slow
+//
+//			for(IFolder folder:Environment.INSTANCE.getSourceFolders(project)) {
+//				compiler.compileAll(project, monitor.newChild(100), folder);
+//			}
+//			System.out.println("Compile Time:" + (System.currentTimeMillis()-time)/1000.0);
+	
+		long time = System.currentTimeMillis();
 		for(IResource res:fileList) {
 			File file = new File(res.getLocation().toOSString());
-			
+
 			if ( file.isFile() && res instanceof IFile &&
 					Environment.INSTANCE.isSourceFile(project, (IFile)res) ) {
-				
+
 				try {
-					
+
 					if ( isCommandFile(file) ){
 						// if it is a command file, compile as such
 						monitor.beginTask("Compiling command file "+file.getName(), cost);
 						compiler.compileCmd(project, monitor.newChild(100), file);
-						
+
 					} else {
 						// else if not a command file, schedule to build the package
 						String pkgpath = computePackagePath(file);
@@ -249,12 +185,13 @@ public class GoBuilder extends IncrementalProjectBuilder {
 							packages.add(pkgpath);
 						}
 					}
-					
+
 				} catch (IOException e) {
 					Activator.logError(e);
 				}
 			}
 		}
+		System.out.println("Compile Time:" + (System.currentTimeMillis()-time)/1000.0);
 	}
 	
 	/**
@@ -280,12 +217,15 @@ public class GoBuilder extends IncrementalProjectBuilder {
 
 
 	/**
+	 * @param project
 	 * @param delta
 	 * @param pmonitor
 	 * @throws CoreException
 	 */
-	protected void incrementalBuild(IResourceDelta delta,
+	protected void incrementalBuild(IProject project, IResourceDelta delta,
 			IProgressMonitor pmonitor) throws CoreException {
+		
+		List<IFolder> srcfolders = Environment.INSTANCE.getSourceFolders(project);
 		
 		SubMonitor monitor = SubMonitor.convert(pmonitor, 170);
 		
@@ -294,68 +234,104 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		delta.accept(crdv);
 
 		monitor.worked(20);
-		// remove
-		List<IResource> toRemove = crdv.getRemoved();
+
+		Activator.logInfo("incrementalBuild");
 		
-		if (toRemove.size() > 0){
-			fullBuild(pmonitor);
-		} else {
-			Activator.logInfo("incrementalBuild");
+		DependencyGraph graph = DependencyGraph.getForProject(project);
+		
+		// compile
+		List<IResource> resourcesToCompile = new ArrayList<IResource>();
+		resourcesToCompile.addAll(crdv.getAdded());
+		resourcesToCompile.addAll(crdv.getChanged());
+		
+		graph.reprocessResources(crdv.getAdded());
+		graph.reprocessResources(crdv.getChanged());
+		graph.reprocessResources(crdv.getRemoved());
+		
+		Set<String> toCompile = new HashSet<String>();
+		Set<String> packages  = new HashSet<String>();
+		
+		for (IResource res : resourcesToCompile) {
+			File file = res.getLocation().toFile();
 			
-			// compile
-			List<IResource> resourcesToCompile = new ArrayList<IResource>();
-			resourcesToCompile.addAll(crdv.getAdded());
-			resourcesToCompile.addAll(crdv.getChanged());
-	
-			IProject project 	  = getProject();
-			Set<String> toCompile = new HashSet<String>();
-			//Set<String> packages  = new HashSet<String>();
-			
-			for (IResource res : resourcesToCompile) {
-				File file = res.getLocation().toFile();
+			if ( file.isFile() && res instanceof IFile &&
+					Environment.INSTANCE.isSourceFile(project, (IFile)res) ) {
 				
-				if ( file.isFile() && res instanceof IFile &&
-						Environment.INSTANCE.isSourceFile(project, (IFile)res) ) {
-					
-					try {
-						if ( isCommandFile(file) ){
-							// if it is a command file, compile as such
-							compiler.compileCmd(project, monitor.newChild(100), file);
-							
-						} else {
-							fullBuild(pmonitor);
-//							// else if not a command file, schedule to build the package
-//							String pkgpath = computePackagePath(file);
-//
-//							/**
-//							 * Not only do we have to compile this package, but we have
-//							 * to (afterwards) compile every package that depends on this
-//							 * one.
-//							 */
-//							Set<String> depends = DependencyGraph.getForProject(project).getReverseDependencies(pkgpath);
-//							for(String s:depends){
-//								System.out.println("> "+s);
-//							}
-//
-//							if ( !packages.contains(pkgpath) ) {
-//								compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
-//								packages.add(pkgpath);
-//							}
+				try {
+					if ( isCommandFile(file) ){
+						// if it is a command file, compile as such
+						compiler.compileCmd(project, monitor.newChild(100), file);
+						
+					} else {
+						
+						// else if not a command file, schedule to build the package
+						String pkgpath = computePackagePath(file);
+
+						// clean the old package
+						File rm = new File(pkgpath);
+						
+						try {
+	                        rm.delete();
+                        } catch (Exception e) {
+	                        Activator.logError(e);
+                        }
+						
+						/**
+						 * Not only do we have to compile this package, but we have
+						 * to (afterwards) compile every package that depends on this
+						 * one.
+						 */
+						String pkg = res.toString();
+						String parent = res.getParent().toString();
+						for(IFolder folder : Environment.INSTANCE.getSourceFolders(project)) {
+							if (parent.startsWith(folder.toString())){
+								pkg = parent.replace(folder.toString()+File.separator, "");
+							}
 						}
 						
-					} catch (IOException e) {
-						Activator.logError(e);
+						monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
+						compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
+						packages.add(pkgpath);
+						
+						Set<String>     depends = graph.getReverseDependencies(pkg);
+						
+						for (String name:depends) {
+							if ( name.endsWith(".go") ) {
+								File cmdfile = graph.getCommandFileForName(name);
+								compiler.compileCmd(project, monitor.newChild(100), cmdfile);
+								
+							} else {
+								
+								for (IFolder srcfolder:srcfolders) {
+									String dependentPkgName = srcfolder.getProjectRelativePath().toString()+File.separator+name;
+									IResource res2 = project.findMember(dependentPkgName);
+									
+									if (res2 != null && !packages.contains(res2) ) {
+										monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
+										
+										File targetFile = new File(res2.getLocation().toOSString());
+										compiler.compilePkg(project, monitor.newChild(100), dependentPkgName, targetFile);
+										packages.add(pkgpath);
+									}
+									
+								}
+							}
+						}
 					}
 					
-				} else {
-					
-					// schedule folder for compilation of the contents
-					toCompile.add(res.getLocation().toOSString());
+				} catch (IOException e) {
+					Activator.logError(e);
 				}
+				
+			} else {
+				
+				// schedule folder for compilation of the contents
+				toCompile.add(res.getLocation().toOSString());
 			}
-			
-			Activator.logInfo("incrementalBuild - done");
 		}
+		
+		Activator.logInfo("incrementalBuild - done");
+		
 	}
 
 	/**
@@ -465,6 +441,97 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	/**
+	 * Used to track package modifications
+	 * @author steel
+	 */
+	class PackageModifationRecord {
+		long time;
+		long iter;
+	}
+	
+	/**
+	 * 
+	 */
+	class CollectResourceDeltaVisitor implements IResourceDeltaVisitor {
+		
+		List<IResource> added   = new ArrayList<IResource>();
+		List<IResource> removed = new ArrayList<IResource>();
+		List<IResource> changed = new ArrayList<IResource>();
+
+		@Override
+		public boolean visit(IResourceDelta delta) throws CoreException {
+			IResource resource = delta.getResource();
+			
+			if (resource instanceof IFile && resource.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)) {
+				
+				switch (delta.getKind()) {
+					case IResourceDelta.ADDED:
+						// handle added resource
+						added.add(resource);
+						break;
+						
+					case IResourceDelta.REMOVED:
+						// handle removed resource
+						removed.add(resource);
+						break;
+						
+					case IResourceDelta.CHANGED:
+						// handle changed resource
+						changed.add(resource);
+						break;
+				}
+			}
+			// return true to continue visiting children.
+			return true;
+		}
+
+		public List<IResource> getAdded() {
+			return added;
+		}
+
+		public List<IResource> getRemoved() {
+			return removed;
+		}
+
+		public List<IResource> getChanged() {
+			return changed;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	class CollectResourceVisitor implements IResourceVisitor {
+		private List<IResource> collected = new ArrayList<IResource>();
+
+		@Override
+		public boolean visit(IResource resource) {
+			if (resource instanceof IFile && resource.getName().endsWith(".go")) {
+				collected.add(resource);
+			}
+			// return true to continue visiting children.
+			return true;
+		}
+
+		public List<IResource> getCollectedResources() {
+			return collected;
+		}
+	}
+
+	/**
+	 * Check to see if the Go compiler has been updated since the last build took place.
+	 */
+	public static void checkForCompilerUpdates(boolean delay) {
+		Job job = new GoCompilerUpdateJob();
+		
+		if (delay) {
+			job.schedule(4000);
+		} else {
+			job.schedule();
 		}
 	}
 
