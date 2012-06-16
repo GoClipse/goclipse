@@ -36,7 +36,8 @@ public class Activator extends AbstractUIPlugin {
 		
 	}
 
-	public void start(BundleContext context) throws Exception {
+	@Override
+    public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 		
@@ -46,7 +47,8 @@ public class Activator extends AbstractUIPlugin {
 		GoBuilder.checkForCompilerUpdates(true);
 	}
 
-	public void stop(BundleContext context) throws Exception {
+	@Override
+    public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
 	}
@@ -78,18 +80,22 @@ public class Activator extends AbstractUIPlugin {
 	 * @return an image
 	 */
 	public static Image getImage(String path) {
-		Image image = getDefault().getImageRegistry().get(path);
-		
-		if (image != null) {
-			return image;
-		}
-
-		ImageDescriptor descriptor = getImageDescriptor(path);
-
-		if (descriptor != null) {
-			getDefault().getImageRegistry().put(path, descriptor);
-
-			return getDefault().getImageRegistry().get(path);
+		try {
+			Image image = getDefault().getImageRegistry().get(path);
+			
+			if (image != null) {
+				return image;
+			}
+	
+			ImageDescriptor descriptor = getImageDescriptor(path);
+	
+			if (descriptor != null) {
+				getDefault().getImageRegistry().put(path, descriptor);
+	
+				return getDefault().getImageRegistry().get(path);
+			}
+		} catch(Exception ex){
+			Activator.logError(ex);
 		}
 
 		return null;

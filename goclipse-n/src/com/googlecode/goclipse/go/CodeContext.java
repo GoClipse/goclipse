@@ -47,16 +47,16 @@ public class CodeContext {
 
 	static HashMap<String, CodeContext>	externalContexts = new HashMap<String, CodeContext>();
 
-	public String	           name;
-	public String	           filetext;
-	public Package	           pkg;
-	public TokenizedPage	   page;
-	public ArrayList<Import>   imports	   = new ArrayList<Import>();
-	public ArrayList<Method>   methods	   = new ArrayList<Method>();
+	public String	            name;
+	public String	            filetext;
+	public Package	            pkg;
+	public TokenizedPage	    page;
+	public ArrayList<Import>   imports	    = new ArrayList<Import>();
+	public ArrayList<Method>   methods	    = new ArrayList<Method>();
 	public ArrayList<Function> functions   = new ArrayList<Function>();
-	public ArrayList<Type>	   types	   = new ArrayList<Type>();
-	public ArrayList<Var>	   vars	       = new ArrayList<Var>();
-	public ArrayList<Scope>	   moduleScope = new ArrayList<Scope>();
+	public ArrayList<Type>	    types	    = new ArrayList<Type>();
+	public ArrayList<Var>	    vars	    = new ArrayList<Var>();
+	public ArrayList<Scope>	    moduleScope = new ArrayList<Scope>();
 
 	/**
 	 * @param  filename
@@ -124,6 +124,7 @@ public class CodeContext {
 			if(res!=null && res instanceof IFile &&
 					Environment.INSTANCE.isCmdSrcFolder(project, (IFolder)res.getParent())){
 				isCmdSrcFolder = true;
+				
 			}
 		}
 		
@@ -236,7 +237,14 @@ public class CodeContext {
 					externalContexts.put(imp.path, context);
 				}
 
+				for (Method method : context.methods) {
+	                method.setPackage(context.pkg);
+                }
 				codeContext.methods.addAll(context.methods);
+				
+				for (Function function : context.functions) {
+					function.setPackage(context.pkg);
+                }
 				codeContext.functions.addAll(context.functions);
 			}
 		}
@@ -253,38 +261,40 @@ public class CodeContext {
 	public static CodeContext getExternalCodeContext(IProject project, String packagePath) throws IOException {
 
 		CodeContext    codeContext    = new CodeContext(packagePath);
-		Lexer          lexer          = new Lexer();
-		Tokenizer      tokenizer      = new Tokenizer(lexer);
-		PackageParser  packageParser  = new PackageParser(tokenizer);
-		FunctionParser functionParser = new FunctionParser(true, tokenizer);
-		TypeParser     typeParser     = new TypeParser(true, tokenizer);
+		
 		// InterfaceParser interfaceParser = new InterfaceParser(tokenizer);
-
 		// find path
 		String goarch = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);
-
-		String goos = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);
-
+		String goos   = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);
 		String goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
-
-		File pkgdir = new File(goroot + "/src/pkg/" + packagePath);
+		File   pkgdir = new File(goroot + "/src/pkg/" + packagePath);
 
 		// TODO Get rid of the following duplication
 
-		if (pkgdir.exists() && pkgdir.isDirectory()) {
-			processExternalPackage(codeContext, lexer, packageParser, functionParser, pkgdir);
-		} else {
-			String path = Environment.INSTANCE.getAbsoluteProjectPath();
-			pkgdir = new File(path + "/src/pkg/" + packagePath);
-			if (pkgdir.exists() && pkgdir.isDirectory()) {
-				processExternalPackage(codeContext, lexer, packageParser, functionParser, pkgdir);
-			}
-
-			String goPath = Environment.INSTANCE.getGoPath(project)[0];
+		if ( pkgdir.exists() && pkgdir.isDirectory() ) {
+			processExternalPackage(codeContext, pkgdir);
 			
-			pkgdir = new File(goPath + "/src/" + packagePath);
-			if (pkgdir.exists() && pkgdir.isDirectory()) {
-				processExternalPackage(codeContext, lexer, packageParser, functionParser, pkgdir);
+		} else {
+			
+			for ( IFolder folder : Environment.INSTANCE.getSourceFolders(project) ) {
+			
+				String path = Environment.INSTANCE.getAbsoluteProjectPath();
+				
+				pkgdir = new File(folder.getLocation().toOSString()+File.separator+ packagePath);
+				
+				if (pkgdir.exists() && pkgdir.isDirectory()) {
+					processExternalPackage(codeContext, pkgdir);
+					
+				} else {
+					continue;
+				}
+	
+				String goPath = Environment.INSTANCE.getGoPath(project)[0];
+				
+				pkgdir = new File(goPath + "/src/" + packagePath);
+				if (pkgdir.exists() && pkgdir.isDirectory()) {
+					processExternalPackage(codeContext, pkgdir);
+				}
 			}
 		}
 
@@ -299,18 +309,55 @@ public class CodeContext {
 	 * @param pkgdir
 	 * @throws IOException
 	 */
-	private static void processExternalPackage(CodeContext codeContext, Lexer lexer, PackageParser packageParser,
-	        FunctionParser functionParser, File pkgdir) throws IOException {
+	private static void processExternalPackage(CodeContext    codeContext,
+			                                     File           pkgdir)
+			                                    		 throws IOException {
+		
 		File[] files = pkgdir.listFiles();
+		
 		for (File file : files) {
-			if (file.canRead() && file.getName().endsWith(".go") && !file.getName().endsWith("_test.go")) {
+			Lexer          lexer          = new Lexer();
+			Tokenizer      tokenizer      = new Tokenizer(lexer);
+			PackageParser  packageParser  = new PackageParser(tokenizer);
+			FunctionParser functionParser = new FunctionParser(true, tokenizer);
+			TypeParser     typeParser     = new TypeParser(true, tokenizer);
+			
+			if (file.canRead() && file.getName().endsWith(
+					".go") && !file.getName().endsWith("_test.go")) {
 
 				lexer.reset();
 				lexer.scan(file);
 
 				codeContext.pkg = packageParser.getPckg();
-				codeContext.methods = functionParser.getMethods();
-				codeContext.functions = functionParser.getFunctions();
+				codeContext.methods.addAll(functionParser.getMethods());
+				for(Method method:functionParser.getMethods()){
+					if(method.getFile()==null){
+						method.setFile(file);
+					}
+				}
+				
+				codeContext.functions.addAll(functionParser.getFunctions());
+				for(Function function:functionParser.getFunctions()){
+					if(function.getFile()==null){
+						function.setFile(file);
+					}
+				}
+				
+				codeContext.types.addAll(typeParser.getTypes());
+				for(Type type:typeParser.getTypes()){
+					if(type.getFile()==null){
+						type.setFile(file);
+					}
+				}
+				
+//				codeContext.vars = variableParser.getVars();
+//				for(Var var:variableParser.getVars()){
+//					if(var.getFile()==null){
+//						var.setFile(file);
+//					}
+//				}
+				
+
 				// codeContext.interfaces = interfaceParser.getFunctions();
 			}
 		}
@@ -321,6 +368,32 @@ public class CodeContext {
 	 */
 	public boolean isInImportStatement() {
 		return false;
+	}
+	
+	/**
+	 * @param name
+	 * @return
+	 */
+	public Import getImportForName(String name) {
+		for (Import i:imports){
+			if (i.prefix!=null && i.prefix.equals(name)) {
+				return i;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * @param name
+	 * @return
+	 */
+	public Var getVarForName(String name) {
+		for (Var v:vars){
+			if (v.getInsertionText().equals(name)) {
+				return v;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -364,8 +437,54 @@ public class CodeContext {
 				return function.getDocumentation();
 			}
 		}
+		
+		for (Type type : types) {
+			if (name.equals(type.getInsertionText())) {
+				return type.getDocumentation();
+			}
+		}
 
 		return "";
+	}
+	
+	/**
+	 * 
+	 * @param names
+	 * @return
+	 */
+	public Node getLocationForPkgAndName(final String pkg, final String name) {
+
+		String n = name + "()";
+		CodeContext cc = externalContexts.get(pkg);
+				
+		// slowest possible searches...
+		for (Method method : cc.methods) {
+			if (n.equals(method.getInsertionText())) {
+				return method;
+			}
+		}
+
+		for (Function function : cc.functions) {
+			if (n.equals(function.getInsertionText())) {
+				return function;
+			}
+		}
+		
+		for (Type type : cc.types) {
+			if (name.equals(type.getName())) {
+				//System.out.println(">>");
+				return type;
+			}
+		}
+		
+//		for (Var var : vars) {
+//			Package p = var.getPackage();
+//			if (p != null && n.equals(var.getInsertionText()) && pkg!=null && pkg.endsWith(p.getName())) {
+//				return var;
+//			}
+//		}
+
+		return null;
 	}
 
 	/**
@@ -402,33 +521,10 @@ public class CodeContext {
 		return name.equals(other.name);
 	}
 
-	public static void main(String[] args) {
-
-		final String filename = "test_go/import_test.go";
-		String str = "";
-		BufferedReader reader = null;
-
-		try {
-			reader = new BufferedReader(new FileReader(filename));
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-
-		try {
-			while ((str += reader.readLine()) != null)
-				;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			CodeContext cc = getCodeContext(filename, str);
-			cc.getCompletionsForString("    var g", "g", 9);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * @param identifier
+	 * @return
+	 */
 	public boolean isMethodName(String identifier) {
 		for (Method method : methods) {
 			if (method.getInsertionText().startsWith(identifier + "(")) {
@@ -437,15 +533,5 @@ public class CodeContext {
 		}
 		return false;
 	}
-
-	// need to use scope to determine this
-	// public boolean isPackageVariableName(String identifier){
-	// for(Var var: vars){
-	// if(var.getInsertionText().startsWith(identifier)){
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
 
 }

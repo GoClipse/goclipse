@@ -159,7 +159,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 //			for(IFolder folder:Environment.INSTANCE.getSourceFolders(project)) {
 //				compiler.compileAll(project, monitor.newChild(100), folder);
 //			}
-//			System.out.println("Compile Time:" + (System.currentTimeMillis()-time)/1000.0);
+//			//System.out.println("Compile Time:" + (System.currentTimeMillis()-time)/1000.0);
 	
 		long time = System.currentTimeMillis();
 		for(IResource res:fileList) {
@@ -191,7 +191,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				}
 			}
 		}
-		System.out.println("Compile Time:" + (System.currentTimeMillis()-time)/1000.0);
+		//System.out.println("Compile Time:" + (System.currentTimeMillis()-time)/1000.0);
 	}
 	
 	/**
@@ -250,7 +250,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		
 		Set<String> toCompile = new HashSet<String>();
 		Set<String> packages  = new HashSet<String>();
-		
+		long time = System.currentTimeMillis();
 		for (IResource res : resourcesToCompile) {
 			File file = res.getLocation().toFile();
 			
@@ -288,17 +288,19 @@ public class GoBuilder extends IncrementalProjectBuilder {
 								pkg = parent.replace(folder.toString()+File.separator, "");
 							}
 						}
+						//System.out.println("TOTAL US1:"+(System.currentTimeMillis()-time)/1000.0);
 						
 						monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
 						compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
 						packages.add(pkgpath);
-						
 						Set<String>     depends = graph.getReverseDependencies(pkg);
+						//System.out.println("TOTAL US2:"+(System.currentTimeMillis()-time)/1000.0);
 						
 						for (String name:depends) {
 							if ( name.endsWith(".go") ) {
 								File cmdfile = graph.getCommandFileForName(name);
 								compiler.compileCmd(project, monitor.newChild(100), cmdfile);
+								//System.out.println("TOTAL US3:"+(System.currentTimeMillis()-time)/1000.0);
 								
 							} else {
 								
@@ -313,6 +315,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 										compiler.compilePkg(project, monitor.newChild(100), dependentPkgName, targetFile);
 										packages.add(pkgpath);
 									}
+									//System.out.println("TOTAL US4:"+(System.currentTimeMillis()-time)/1000.0);
+									
 									
 								}
 							}
@@ -329,6 +333,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				toCompile.add(res.getLocation().toOSString());
 			}
 		}
+		//System.out.println("TOTAL US:"+(System.currentTimeMillis()-time)/1000.0);
 		
 		Activator.logInfo("incrementalBuild - done");
 		

@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Image;
 
 import com.googlecode.goclipse.Activator;
 
-public class Function extends Node{
+public class Function extends Node {
 
 	/**
 	 * 
@@ -33,7 +33,8 @@ public class Function extends Node{
 	/**
 	 * @return the image
 	 */
-	public Image getImage() {
+	@Override
+    public Image getImage() {
 		//return Activator.getImage("icons/function_co.png");
 		return Activator.getImage("icons/function_co.png");
 	}

@@ -1,5 +1,6 @@
 package com.googlecode.goclipse.go.lang.model;
 
+import java.io.File;
 import java.io.Serializable;
 
 import org.eclipse.swt.graphics.Image;
@@ -18,14 +19,30 @@ public abstract class Node implements Serializable{
 	 */
 	private static final long serialVersionUID = 480313969022613471L;
 	
+	private   Package  pkg;
+	private   File     file;
 	private   String 	name;
 	private   String 	insertionText;
-	private   Type      type;
+	private   Type     type;
 	private   int    	line;
 	private   String 	documentation;
 	
 	// This image is displayed if a subclass has not overridden getImage().
 	protected Image  	image = Activator.getImage("icons/private_co.gif");
+	
+	/**
+	 * @param Package
+	 */
+	public void setPackage(Package pkg) {
+		this.pkg = pkg;
+	}
+	
+	/**
+	 * @return Package
+	 */
+	public Package getPackage() {
+		return this.pkg;
+	}
 	
 	/**
 	 * @return the documentation
@@ -130,5 +147,13 @@ public abstract class Node implements Serializable{
 		
 		return name1 == null ? name1 == name2 : name1.equals(name2);
 	}
+
+	public File getFile() {
+    	return file;
+    }
+
+	public void setFile(File file) {
+    	this.file = file;
+    }
 
 }

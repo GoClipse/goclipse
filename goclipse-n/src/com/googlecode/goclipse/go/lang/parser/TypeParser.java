@@ -14,7 +14,7 @@ import com.googlecode.goclipse.go.lang.model.TypeClass;
 import com.googlecode.goclipse.go.lang.model.Var;
 
 /**
- * This is a state machine style parser that identifies Go 
+ * This is a state machine style parser that identifies Go
  * types from a set of token events
  * 
  * @author steel
@@ -23,16 +23,16 @@ final public class TypeParser implements TokenListener {
 
 	private enum State{START, CONSUME_NAME, DETERMINE, CONSUME_ALIAS, CONSUME_INTERFACE, CONSUME_STRUCT, FINISHED}
 
-	private State 		    state 		     = State.START;
-	private ScopeParser 	scopeParser      = null;     
+	private State 		     state 		      = State.START;
+	private ScopeParser 	 scopeParser      = null;
 	private StringBuffer    comment          = new StringBuffer();
-	private StringBuffer    text 	         = new StringBuffer();
+	private StringBuffer    text 	          = new StringBuffer();
 	private ArrayList<Type> types            = new ArrayList<Type>();
 	private int             lastCommentLine  = 0;
 	private int             tokenOnLineCount = 0;
-	private int             scope_tracker 	 = 0;
-	private boolean         exportsOnly      = true;
-	private Type            type 			 = new Type();
+	private int             scope_tracker 	  = 0;
+	private boolean        exportsOnly      = true;
+	private Type            type 			  = new Type();
 	private Var             var              = new Var();
 
 	/**
@@ -67,7 +67,8 @@ final public class TypeParser implements TokenListener {
 	 * @param start
 	 * @param end
 	 */
-	public void tokenFound(TokenType tokenType, String value,
+	@Override
+    public void tokenFound(TokenType tokenType, String value,
 			boolean inComment, int linenumber, int start, int end) {
 
 		if (inComment) {
@@ -131,6 +132,7 @@ final public class TypeParser implements TokenListener {
 				type.setInsertionText(value);
 				state = State.DETERMINE;
 				type.setLine(linenumber);
+				//System.out.println(type.getName()+" : "+type.getLine());
 			}
 			break;
 				
@@ -152,8 +154,8 @@ final public class TypeParser implements TokenListener {
 			else if(TokenType.UINT32.equals(tokenType))	{type.setTypeClass(TypeClass.UINT32);  text.append(": "+TokenType.UINT32.getText());}
 			else if(TokenType.UINT64.equals(tokenType))	{type.setTypeClass(TypeClass.UINT64);  text.append(": "+TokenType.UINT64.getText());}
 			else if(TokenType.INT.equals(tokenType))	{type.setTypeClass(TypeClass.INT);     text.append(": "+TokenType.INT.getText());}
-			else if(TokenType.INT8.equals(tokenType))	{type.setTypeClass(TypeClass.INT8);    text.append(": "+TokenType.INT8.getText());}   
-			else if(TokenType.INT16.equals(tokenType))	{type.setTypeClass(TypeClass.INT16);   text.append(": "+TokenType.INT16.getText());}   
+			else if(TokenType.INT8.equals(tokenType))	{type.setTypeClass(TypeClass.INT8);    text.append(": "+TokenType.INT8.getText());}
+			else if(TokenType.INT16.equals(tokenType))	{type.setTypeClass(TypeClass.INT16);   text.append(": "+TokenType.INT16.getText());}
 			else if(TokenType.INT32.equals(tokenType))	{type.setTypeClass(TypeClass.INT32);   text.append(": "+TokenType.INT32.getText());}
 			else if(TokenType.INT64.equals(tokenType))	{type.setTypeClass(TypeClass.INT64);   text.append(": "+TokenType.INT64.getText());}
 			else if(TokenType.FLOAT32.equals(tokenType)){type.setTypeClass(TypeClass.FLOAT32); text.append(": "+TokenType.FLOAT32.getText());}
