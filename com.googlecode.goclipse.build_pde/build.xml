@@ -130,7 +130,7 @@
 	      
 	      <!-- invoke PDE -->
         <sequential>
-            <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar" fork="true" 
+            <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" fork="true" 
                   failonerror="false" errorproperty="pde.build.error">
                 <arg value="-data" />
                 <arg value="${build.dir}/workspace" />
@@ -166,7 +166,7 @@
 	  	  
 	      <!-- use the P2 Publisher app to create a category in the update site -->
         <sequential>
-            <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar" fork="true">
+            <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" fork="true">
                 <arg value="-data" />
                 <arg value="${build.dir}/workspace" />
                 <arg value="-application" />
