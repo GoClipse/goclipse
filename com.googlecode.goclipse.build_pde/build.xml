@@ -138,7 +138,7 @@
                 <arg value="org.eclipse.ant.core.antRunner" />
                 <arg value="-quiet" />
                 <arg value="-f" />
-                <arg value="${eclipse.dir}/plugins/org.eclipse.pde.build_3.6.2.R36x_20110203/scripts/build.xml" />
+                <arg value="${eclipse.dir}/plugins/org.eclipse.pde.build_3.6.0.v20100603/scripts/build.xml" />
                 <arg value="-Dbuilder=${build.dir}/com.googlecode.goclipse.build_pde" />
                 <arg value="-Dbuild.tmp=${build.dir}/tmp" />
                 <arg value="-Dbuild.target=${eclipse.dir}" />
