@@ -101,14 +101,14 @@
         <property name="svn.revision" value="${tempsvn.Revision}"/>
         
         <!-- TODO: change this to 3.6.0 -->
-        <get src="http://ftp.osuosl.org/pub/eclipse/eclipse/downloads/drops/R-3.6.2-201102101200/eclipse-SDK-3.6.2-win32.zip"
+        <get src="http://ftp.osuosl.org/pub/eclipse//technology/epp/downloads/release/helios/SR2/eclipse-java-helios-SR2-win32.zip"
             dest="${build.dir}" 
             verbose="true"
             usetimestamp="true"/>
     
         <property name="eclipse.dir" value="${build.dir}/eclipse_36/eclipse"/>
         
-        <unzip src="${build.dir}/eclipse-SDK-3.6.2-win32.zip" dest="${eclipse.dir}/.." overwrite="false"/>    
+        <unzip src="${build.dir}/eclipse-java-helios-SR2-win32.zip" dest="${eclipse.dir}/.." overwrite="false"/>    
 
         <!-- clean repo -->
         <delete dir="${build.dir}/buildRepo"/>
