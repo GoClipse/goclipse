@@ -1,7 +1,5 @@
 package com.googlecode.goclipse.preferences;
 
-import com.googlecode.goclipse.Activator;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.BooleanFieldEditor;
@@ -13,6 +11,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import com.googlecode.goclipse.Activator;
 
 public class EditorPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {

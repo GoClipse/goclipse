@@ -1,17 +1,17 @@
 package com.googlecode.goclipse.gocode;
 
-import com.googlecode.goclipse.builder.ExternalCommand;
-import com.googlecode.goclipse.builder.ProcessIStreamFilter;
-import com.googlecode.goclipse.gocode.utils.Utils;
-
-import org.eclipse.core.runtime.IPath;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.eclipse.core.runtime.IPath;
+
+import com.googlecode.goclipse.builder.ExternalCommand;
+import com.googlecode.goclipse.builder.ProcessIStreamFilter;
+import com.googlecode.goclipse.gocode.utils.Utils;
 
 /**
  * Start up an instance of Gocode in server mode.

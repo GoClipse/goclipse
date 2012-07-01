@@ -1,14 +1,8 @@
 package com.googlecode.goclipse.debug.launch;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.gdb.GdbConnection;
-import com.googlecode.goclipse.debug.model.GoDebugTarget;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
-import com.googlecode.goclipse.utils.LaunchUtil;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
@@ -37,9 +31,15 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.debug.gdb.GdbConnection;
+import com.googlecode.goclipse.debug.model.GoDebugTarget;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.utils.LaunchUtil;
 
 // TODO: we should look at extending LaunchConfigurationDelegate instead of implementing ILaunchConfigurationDelegate2
 /**

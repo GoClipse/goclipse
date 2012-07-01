@@ -1,16 +1,16 @@
 package com.googlecode.goclipse.builder;
 
-import com.googlecode.goclipse.Activator;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+
+import com.googlecode.goclipse.Activator;
 
 /**
  * helper class to run an external process.

@@ -1,10 +1,8 @@
 package com.googlecode.goclipse.gocode;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.ExternalCommand;
-import com.googlecode.goclipse.gocode.utils.Utils;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -16,9 +14,11 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.builder.ExternalCommand;
+import com.googlecode.goclipse.gocode.utils.Utils;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
  * The activator class controls the plug-in life cycle.

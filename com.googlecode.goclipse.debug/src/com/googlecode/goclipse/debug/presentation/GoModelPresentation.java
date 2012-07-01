@@ -1,9 +1,5 @@
 package com.googlecode.goclipse.debug.presentation;
 
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.breakpoints.GoBreakpoint;
-import com.googlecode.goclipse.debug.model.GoDebugVariable;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.debug.core.model.ILineBreakpoint;
 import org.eclipse.debug.core.model.IValue;
@@ -13,6 +9,10 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.debug.breakpoints.GoBreakpoint;
+import com.googlecode.goclipse.debug.model.GoDebugVariable;
 
 /**
  * 

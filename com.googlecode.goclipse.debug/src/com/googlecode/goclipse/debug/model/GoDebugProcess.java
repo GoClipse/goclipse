@@ -1,5 +1,8 @@
 package com.googlecode.goclipse.debug.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
@@ -7,9 +10,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamsProxy;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * TODO: implement

@@ -1,8 +1,9 @@
 package com.googlecode.goclipse.gocode;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.go.CodeContext;
-import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -20,10 +21,9 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.go.CodeContext;
+import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
 /**
  * Implement an IContentAssistProcessor (and IContentAssistProcessorExt), and delegate the work

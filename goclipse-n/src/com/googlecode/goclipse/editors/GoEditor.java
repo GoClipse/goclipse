@@ -1,5 +1,9 @@
 package com.googlecode.goclipse.editors;
 
+import java.util.ResourceBundle;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -18,8 +22,6 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-
-import java.util.ResourceBundle;
 
 import com.googlecode.goclipse.Activator;
 
@@ -181,5 +183,19 @@ public class GoEditor extends TextEditor {
       outlinePage.handleEditorReconcilation();
     }
   }
+
+	public IProject getCurrentProject() {
+		if (getEditorInput() instanceof IFileEditorInput) {
+			IFileEditorInput input = (IFileEditorInput) getEditorInput();
+
+			IFile file = input.getFile();
+
+			if (file != null) {
+				return file.getProject();
+			}
+		}
+
+		return null;
+	}
 
 }

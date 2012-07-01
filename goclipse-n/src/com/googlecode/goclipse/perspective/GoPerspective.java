@@ -11,7 +11,6 @@
 package com.googlecode.goclipse.perspective;
 
 import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -28,6 +27,10 @@ public class GoPerspective implements IPerspectiveFactory {
 
 	public static final String	ID	= "com.googlecode.goclipse.perspectives.GoPerspective";
 
+	private static final String JDT_ID_PACKAGES = "org.eclipse.jdt.ui.PackageExplorer";
+	private static final String JDT_ID_ACTION_SET = "org.eclipse.jdt.ui.JavaActionSet";
+	private static final String JDT_ID_ELEMENT_CREATION_ACTION_SET = "org.eclipse.jdt.ui.JavaElementCreationActionSet";
+	
 	private IPageLayout	       factory;
 
 	public GoPerspective() {
@@ -55,7 +58,7 @@ public class GoPerspective implements IPerspectiveFactory {
 		        IPageLayout.LEFT, 0.25f, factory.getEditorArea());
 		topLeft.addView("org.eclipse.ui.navigator.ProjectExplorer"); // NON-NLS-1
 		topLeft.addPlaceholder(IPageLayout.ID_RES_NAV);
-		topLeft.addPlaceholder(JavaUI.ID_PACKAGES);
+		topLeft.addPlaceholder(JDT_ID_PACKAGES);
 
 		IFolderLayout bottom = factory.createFolder("bottomRight", // NON-NLS-1
 		        IPageLayout.BOTTOM, 0.75f, factory.getEditorArea());
@@ -81,8 +84,8 @@ public class GoPerspective implements IPerspectiveFactory {
 		factory.addActionSet("org.eclipse.team.ui.actionSet"); // NON-NLS-1
 
 		factory.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
-		factory.addActionSet(JavaUI.ID_ACTION_SET);
-		factory.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
+		factory.addActionSet(JDT_ID_ACTION_SET);
+		factory.addActionSet(JDT_ID_ELEMENT_CREATION_ACTION_SET);
 	}
 
 	private void addPerspectiveShortcuts() {

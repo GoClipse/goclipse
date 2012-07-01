@@ -1,8 +1,5 @@
 package com.googlecode.goclipse.navigator;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.builder.GoNature;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -13,6 +10,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
+
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.builder.GoNature;
 
 /**
  * A lightweight decorator for Go errors and warnings.

@@ -1,10 +1,10 @@
 package com.googlecode.goclipse.debug.breakpoints;
 
-import com.googlecode.goclipse.editors.GoEditor;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
+
+import com.googlecode.goclipse.editors.GoEditor;
 
 /**
  * 

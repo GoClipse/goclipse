@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.googlecode.goclipse.properties;
 
 import java.util.ArrayList;
@@ -9,7 +6,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.ui.wizards.buildpaths.FolderSelectionDialog;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -21,6 +17,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -30,12 +27,10 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import org.eclipse.swt.widgets.Label;
 
 /**
  * @author steel
  */
-@SuppressWarnings("restriction")
 public class ProjectBuildConfigurationComposite extends Composite {
 
    private static final class TreeContentProvider implements

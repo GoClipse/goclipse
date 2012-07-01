@@ -1,7 +1,5 @@
 package com.googlecode.goclipse.navigator;
 
-import com.googlecode.goclipse.SysUtils;
-
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -17,6 +15,8 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
+
+import com.googlecode.goclipse.SysUtils;
 
 /**
  * Handle the open action on IFileStore elements.

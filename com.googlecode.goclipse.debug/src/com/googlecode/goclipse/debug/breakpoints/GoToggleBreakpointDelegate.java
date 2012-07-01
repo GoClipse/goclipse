@@ -1,8 +1,5 @@
 package com.googlecode.goclipse.debug.breakpoints;
 
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.editors.GoEditor;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -12,6 +9,9 @@ import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchPart;
+
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.editors.GoEditor;
 
 /**
  * 

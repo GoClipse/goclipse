@@ -1,6 +1,8 @@
 package com.googlecode.goclipse.editors;
 
-import com.googlecode.goclipse.Activator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
@@ -21,9 +23,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.TextEditorAction;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import com.googlecode.goclipse.Activator;
 
 /**
  * An action which toggles comment prefixes on the selected lines.

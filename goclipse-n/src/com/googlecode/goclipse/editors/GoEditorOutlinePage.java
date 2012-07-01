@@ -26,7 +26,6 @@ import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
 import com.googlecode.goclipse.go.lang.model.Import;
@@ -121,7 +120,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 				
 				if (document != null) {
 					CodeContext codeContext = CodeContext.getCodeContext(
-							Environment.INSTANCE.getCurrentProject(),
+							editor.getCurrentProject(),
 							((IFile)editor.getEditorInput().getAdapter(IFile.class)).getLocation().toOSString(),
 							document.get(), false);
 					

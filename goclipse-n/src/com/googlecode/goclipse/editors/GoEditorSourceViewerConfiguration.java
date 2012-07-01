@@ -1,9 +1,5 @@
 package com.googlecode.goclipse.editors;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
-import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -31,6 +27,10 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
+
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
 /**
  * @author steel

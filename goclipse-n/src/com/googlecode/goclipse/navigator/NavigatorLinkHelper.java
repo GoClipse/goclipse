@@ -1,5 +1,7 @@
 package com.googlecode.goclipse.navigator;
 
+import java.net.URI;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -13,8 +15,6 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.navigator.ILinkHelper;
 import org.eclipse.ui.part.FileEditorInput;
-
-import java.net.URI;
 
 /**
  * Link IFileStore objects in editors to the selection in the Project Explorer.

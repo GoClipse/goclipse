@@ -1,8 +1,5 @@
 package com.googlecode.goclipse.debug.preferences;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -13,6 +10,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 // TODO: show the version of gdb? see if it'll work w/ Go?
 // gdb --version prints the intro text + version and quits

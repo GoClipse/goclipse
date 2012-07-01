@@ -1,12 +1,12 @@
 package com.googlecode.goclipse.search;
 
-import com.googlecode.goclipse.builder.GoNature;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.search.ui.ISearchPageScoreComputer;
+
+import com.googlecode.goclipse.builder.GoNature;
 
 class GoSearchPageScoreComputer implements ISearchPageScoreComputer {
 

@@ -1,12 +1,12 @@
 package com.googlecode.goclipse.navigator;
 
-import com.googlecode.goclipse.builder.GoNature;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+
+import com.googlecode.goclipse.builder.GoNature;
 
 /**
  * A filter to remove bin and pkg folders from the navigator view.

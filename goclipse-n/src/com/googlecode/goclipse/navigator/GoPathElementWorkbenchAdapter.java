@@ -1,9 +1,9 @@
 package com.googlecode.goclipse.navigator;
 
-import com.googlecode.goclipse.Activator;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+
+import com.googlecode.goclipse.Activator;
 
 /**
  * An IWorkbenchAdapter implementation for GoPathElement objects.

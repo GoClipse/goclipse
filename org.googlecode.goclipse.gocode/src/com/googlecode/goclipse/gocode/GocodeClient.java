@@ -1,17 +1,5 @@
 package com.googlecode.goclipse.gocode;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.ExternalCommand;
-import com.googlecode.goclipse.builder.ProcessOStreamFilter;
-import com.googlecode.goclipse.builder.StreamAsLines;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -19,6 +7,18 @@ import java.io.OutputStreamWriter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.builder.ExternalCommand;
+import com.googlecode.goclipse.builder.ProcessOStreamFilter;
+import com.googlecode.goclipse.builder.StreamAsLines;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
  * Use the configured GoCode settings to call a GoCode client, which ends up talking to a running

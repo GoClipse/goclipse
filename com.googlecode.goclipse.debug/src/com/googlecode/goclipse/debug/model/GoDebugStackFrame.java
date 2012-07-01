@@ -1,8 +1,8 @@
 package com.googlecode.goclipse.debug.model;
 
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.gdb.GdbFrame;
-import com.googlecode.goclipse.debug.gdb.GdbVariable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -12,9 +12,9 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.debug.gdb.GdbFrame;
+import com.googlecode.goclipse.debug.gdb.GdbVariable;
 
 /**
  * 

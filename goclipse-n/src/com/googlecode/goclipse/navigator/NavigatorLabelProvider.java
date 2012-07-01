@@ -1,8 +1,5 @@
 package com.googlecode.goclipse.navigator;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.builder.GoNature;
-
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -21,6 +18,9 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonLabelProvider;
 import org.eclipse.ui.navigator.IExtensionStateModel;
+
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.builder.GoNature;
 
 /**
  * The label provider for the Go CNF navigator.

@@ -1,6 +1,11 @@
 package com.googlecode.goclipse.debug.gdb;
 
-import com.googlecode.goclipse.debug.GoDebugPlugin;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.debug.core.IStreamListener;
@@ -8,12 +13,7 @@ import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
 
 // http://www.linuxfoundation.org/en/DMI_Wiki_Content
 // http://davis.lbl.gov/Manuals/GDB/gdb_24.html

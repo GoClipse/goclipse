@@ -1,7 +1,5 @@
 package com.googlecode.goclipse.search;
 
-import com.googlecode.goclipse.Activator;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.search.ui.NewSearchUI;
@@ -9,6 +7,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
+
+import com.googlecode.goclipse.Activator;
 
 /**
  * Opens the Search Dialog and brings the Go search page to front.

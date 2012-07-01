@@ -1,13 +1,13 @@
 package com.googlecode.goclipse.debug.launch.ui;
 
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.WorkingDirectoryBlock;
+
+import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
 
 public class GoWorkingDirectoryBlock extends WorkingDirectoryBlock {
 

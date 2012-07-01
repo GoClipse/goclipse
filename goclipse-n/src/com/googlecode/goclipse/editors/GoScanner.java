@@ -1,10 +1,7 @@
 package com.googlecode.goclipse.editors;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import java.util.Map;
 
-import org.eclipse.jdt.internal.ui.text.CombinedWordRule;
-import org.eclipse.jdt.internal.ui.text.CombinedWordRule.WordMatcher;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.TextAttribute;
@@ -18,9 +15,10 @@ import org.eclipse.jface.text.rules.WordRule;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
-import java.util.Map;
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.editors.CombinedWordRule.WordMatcher;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
-@SuppressWarnings("restriction")
 public class GoScanner extends RuleBasedScanner {
 
 	public GoScanner() {

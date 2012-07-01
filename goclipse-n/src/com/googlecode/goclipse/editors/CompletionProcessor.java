@@ -1,9 +1,9 @@
 package com.googlecode.goclipse.editors;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.go.CodeContext;
-import com.googlecode.goclipse.go.lang.model.Node;
-import com.googlecode.goclipse.go.lib.indexer.Keywords;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.BadLocationException;
@@ -19,10 +19,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.go.CodeContext;
+import com.googlecode.goclipse.go.lang.model.Node;
+import com.googlecode.goclipse.go.lib.indexer.Keywords;
 
 /**
  * @author steel

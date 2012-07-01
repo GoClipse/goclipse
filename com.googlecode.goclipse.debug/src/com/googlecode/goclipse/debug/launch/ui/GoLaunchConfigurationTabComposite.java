@@ -1,10 +1,7 @@
 package com.googlecode.goclipse.debug.launch.ui;
 
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.launch.BuildConfiguration;
-import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
+import java.util.ArrayList;
+import java.util.Stack;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -29,8 +26,11 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import java.util.ArrayList;
-import java.util.Stack;
+import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.debug.launch.BuildConfiguration;
+import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
 
 /**
  * @author steel

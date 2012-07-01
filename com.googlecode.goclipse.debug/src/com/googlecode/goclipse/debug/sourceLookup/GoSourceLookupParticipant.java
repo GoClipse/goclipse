@@ -1,9 +1,9 @@
 package com.googlecode.goclipse.debug.sourceLookup;
 
-import com.googlecode.goclipse.debug.model.GoDebugStackFrame;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
+
+import com.googlecode.goclipse.debug.model.GoDebugStackFrame;
 
 /**
  * 

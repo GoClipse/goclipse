@@ -1,10 +1,5 @@
 package com.googlecode.goclipse.debug.launch.ui;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.debug.launch.BuildConfiguration;
-import com.googlecode.goclipse.debug.launch.GoLaunchConfigurationDelegate;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -19,6 +14,11 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.debug.launch.BuildConfiguration;
+import com.googlecode.goclipse.debug.launch.GoLaunchConfigurationDelegate;
 
 /**
  * @author steel

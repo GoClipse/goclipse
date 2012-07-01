@@ -1,5 +1,14 @@
 package com.googlecode.goclipse.search;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -50,15 +59,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.fieldassist.ContentAssistCommandAdapter;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
 @SuppressWarnings("restriction")
 public class GoSearchPage extends DialogPage implements ISearchPage {
@@ -320,7 +320,8 @@ public class GoSearchPage extends DialogPage implements ISearchPage {
     return null;
   }
 
-  private static boolean isOldSearchView(IWorkbenchPart part) {
+  @SuppressWarnings("deprecation")
+private static boolean isOldSearchView(IWorkbenchPart part) {
     return org.eclipse.search.ui.SearchUI.SEARCH_RESULT_VIEW_ID.equals(part.getSite().getId());
   }
   

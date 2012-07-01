@@ -1,9 +1,9 @@
 package com.googlecode.goclipse.gocode.preferences;
 
-import com.googlecode.goclipse.gocode.GocodePlugin;
-
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
+
+import com.googlecode.goclipse.gocode.GocodePlugin;
 
 /**
  * Set the "auto-run gocode server" preference to true.

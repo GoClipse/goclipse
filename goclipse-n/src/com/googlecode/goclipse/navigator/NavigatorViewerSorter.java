@@ -1,11 +1,11 @@
 package com.googlecode.goclipse.navigator;
 
+import java.util.Comparator;
+
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ViewerSorter;
-
-import java.util.Comparator;
 
 /**
  * A sorter for the Go CNF viewer.

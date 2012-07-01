@@ -1,9 +1,9 @@
 package com.googlecode.goclipse.gocode.utils;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-
-import java.io.File;
 
 public class Utils {
 

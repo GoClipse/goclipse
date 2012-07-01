@@ -1,10 +1,10 @@
 package com.googlecode.goclipse.debug.gdb;
 
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.StringReader;
+
+import com.googlecode.goclipse.debug.GoDebugPlugin;
 
 // 555^done,stack=[frame={level="0",addr="0x0000000000001c29",func="main.Walk",file="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",fullname="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",line="33"},frame={level="1",addr="0x0000000000001c75",func="main.Walk",file="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",fullname="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",line="35"},frame={level="2",addr="0x0000000000001c3f",func="main.Walk",file="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",fullname="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",line="33"},frame={level="3",addr="0x0000000000001c3f",func="main.Walk",file="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",fullname="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",line="33"},frame={level="4",addr="0x000000000000236e",func="main._func_001",file="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",fullname="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",line="43"},frame={level="5",addr="0x000000f84000c7e4",func="??"},frame={level="6",addr="0x000000f8400000f8",func="??"},frame={level="7",addr="0x000000f8400000f0",func="??"},frame={level="8",addr="0x000000000000dcf9",func="runtime.initdone",file="/Users/dcarew/go/src/pkg/runtime/proc.c",fullname="/Users/dcarew/go/src/pkg/runtime/proc.c",line="174"},frame={level="9",addr="0x0000000000000000",func="??"}]
 // 1^done,bkpt={number="2",type="breakpoint",disp="keep",enabled="y",addr="0x000000000000214c",func="main.main",file="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",fullname="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go",line="93",times="0",original-location="/Users/dcarew/workspaces/workspace_37_runtime/HelloWorld/src/cmd/new_file.go:93"}

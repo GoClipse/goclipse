@@ -1,9 +1,6 @@
 package com.googlecode.goclipse.navigator;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import java.io.File;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -16,7 +13,10 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
-import java.io.File;
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 // TODO: this content provider is hard-coded to show files from GOROOT; we'll probably want this
 // to have better knowledge of the GOROOT / GOPATH directories that are in use by the project.
