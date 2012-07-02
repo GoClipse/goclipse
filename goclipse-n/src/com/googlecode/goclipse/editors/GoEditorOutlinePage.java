@@ -1,5 +1,7 @@
 package com.googlecode.goclipse.editors;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -21,6 +23,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
@@ -119,18 +124,34 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 				IDocument document = documentProvider.getDocument(editor.getEditorInput());
 				
 				if (document != null) {
-					CodeContext codeContext = CodeContext.getCodeContext(
-							editor.getCurrentProject(),
-							((IFile)editor.getEditorInput().getAdapter(IFile.class)).getLocation().toOSString(),
-							document.get(), false);
+					CodeContext codeContext = null;
 					
-					if (getTreeViewer().getInput() == null) {
-						getTreeViewer().setInput(codeContext);
-					} else {
-						OutlinePageContentProvider contentProvider =
-							(OutlinePageContentProvider)getTreeViewer().getContentProvider();
+					IEditorInput input = editor.getEditorInput();
+					
+					if (input instanceof IFileEditorInput) {
+						IFile file = ((IFileEditorInput)input).getFile();
 						
-						contentProvider.setCodeContext(codeContext);
+						codeContext = CodeContext.getCodeContext(
+								file.getProject(),
+								file.getLocation().toOSString(),
+								document.get(), false);
+						
+					} else if (input instanceof FileStoreEditorInput) {
+						URI uri = ((FileStoreEditorInput)input).getURI();
+						
+						codeContext = CodeContext.getCodeContext(
+								new File(uri).getPath(), document.get(), false);
+					}
+					
+					if (codeContext != null) {
+						if (getTreeViewer().getInput() == null) {
+							getTreeViewer().setInput(codeContext);
+						} else {
+							OutlinePageContentProvider contentProvider =
+								(OutlinePageContentProvider)getTreeViewer().getContentProvider();
+							
+							contentProvider.setCodeContext(codeContext);
+						}
 					}
 				}
 			}

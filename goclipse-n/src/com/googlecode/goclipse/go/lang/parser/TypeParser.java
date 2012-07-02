@@ -153,6 +153,7 @@ final public class TypeParser implements TokenListener {
 			else if(TokenType.UINT16.equals(tokenType))	{type.setTypeClass(TypeClass.UINT16);  text.append(": "+TokenType.UINT16.getText());}
 			else if(TokenType.UINT32.equals(tokenType))	{type.setTypeClass(TypeClass.UINT32);  text.append(": "+TokenType.UINT32.getText());}
 			else if(TokenType.UINT64.equals(tokenType))	{type.setTypeClass(TypeClass.UINT64);  text.append(": "+TokenType.UINT64.getText());}
+			else if(TokenType.RUNE.equals(tokenType))   {type.setTypeClass(TypeClass.RUNE);    text.append(": "+TokenType.RUNE.getText());}
 			else if(TokenType.INT.equals(tokenType))	{type.setTypeClass(TypeClass.INT);     text.append(": "+TokenType.INT.getText());}
 			else if(TokenType.INT8.equals(tokenType))	{type.setTypeClass(TypeClass.INT8);    text.append(": "+TokenType.INT8.getText());}
 			else if(TokenType.INT16.equals(tokenType))	{type.setTypeClass(TypeClass.INT16);   text.append(": "+TokenType.INT16.getText());}
@@ -160,6 +161,8 @@ final public class TypeParser implements TokenListener {
 			else if(TokenType.INT64.equals(tokenType))	{type.setTypeClass(TypeClass.INT64);   text.append(": "+TokenType.INT64.getText());}
 			else if(TokenType.FLOAT32.equals(tokenType)){type.setTypeClass(TypeClass.FLOAT32); text.append(": "+TokenType.FLOAT32.getText());}
 			else if(TokenType.FLOAT64.equals(tokenType)){type.setTypeClass(TypeClass.FLOAT64); text.append(": "+TokenType.FLOAT64.getText());}
+			else if(TokenType.COMPLEX64.equals(tokenType)){type.setTypeClass(TypeClass.COMPLEX64); text.append(": "+TokenType.COMPLEX64.getText());}
+			else if(TokenType.COMPLEX128.equals(tokenType)){type.setTypeClass(TypeClass.COMPLEX128); text.append(": "+TokenType.COMPLEX128.getText());}
 			else if(TokenType.BYTE.equals(tokenType))	{type.setTypeClass(TypeClass.BYTE);    text.append(": "+TokenType.BYTE.getText());}
 			else if(TokenType.UINTPTR.equals(tokenType)){type.setTypeClass(TypeClass.UINTPTR); text.append(": "+TokenType.UINTPTR.getText());}
 			else if(TokenType.STRING.equals(tokenType)) {type.setTypeClass(TypeClass.STRING);  text.append(": "+TokenType.STRING.getText());}
