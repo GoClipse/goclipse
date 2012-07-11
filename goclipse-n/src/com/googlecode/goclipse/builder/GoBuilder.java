@@ -66,7 +66,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
 		IProject project = getProject();
 		
-		if (!checkBuild()) {
+ 		if (!checkBuild()) {
 			return null;
 		}
 		
@@ -286,7 +286,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 						String parent = res.getParent().toString();
 						for(IFolder folder : Environment.INSTANCE.getSourceFolders(project)) {
 							if (parent.startsWith(folder.toString())){
-								pkg = parent.replace(folder.toString()+File.separator, "");
+								pkg = parent.replace(folder.toString()+"/", "");
 							}
 						}
 						//System.out.println("TOTAL US1:"+(System.currentTimeMillis()-time)/1000.0);
@@ -296,29 +296,39 @@ public class GoBuilder extends IncrementalProjectBuilder {
 						packages.add(pkgpath);
 						Set<String>     depends = graph.getReverseDependencies(pkg);
 						//System.out.println("TOTAL US2:"+(System.currentTimeMillis()-time)/1000.0);
+						int max_depth = 256;
+						int depth = 0;
 						
-						for (String name:depends) {
-							if ( name.endsWith(".go") ) {
-								File cmdfile = graph.getCommandFileForName(name);
-								compiler.compileCmd(project, monitor.newChild(100), cmdfile);
-								//System.out.println("TOTAL US3:"+(System.currentTimeMillis()-time)/1000.0);
-								
-							} else {
-								
-								for (IFolder srcfolder:srcfolders) {
-									String dependentPkgName = srcfolder.getProjectRelativePath().toString()+File.separator+name;
-									IResource res2 = project.findMember(dependentPkgName);
+						while(depends.size()>0 && depth<max_depth) {
+							depth++;
+							Set<String> d = depends;
+							depends = new HashSet<String>();
+							
+							for (String name:d) {
+								System.out.println("Building"+name);
+								depends.addAll(graph.getReverseDependencies(name));
+								if ( name.endsWith(".go") ) {
+									File cmdfile = graph.getCommandFileForName(name);
+									compiler.compileCmd(project, monitor.newChild(100), cmdfile);
+									//System.out.println("TOTAL US3:"+(System.currentTimeMillis()-time)/1000.0);
 									
-									if (res2 != null && !packages.contains(res2) ) {
-										monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
+								} else {
+									
+									for (IFolder srcfolder:srcfolders) {
+										String dependentPkgName = srcfolder.getProjectRelativePath().toString()+File.separator+name;
+										IResource res2 = project.findMember(dependentPkgName);
 										
-										File targetFile = new File(res2.getLocation().toOSString());
-										compiler.compilePkg(project, monitor.newChild(100), dependentPkgName, targetFile);
-										packages.add(pkgpath);
+										if (res2 != null && !packages.contains(res2) ) {
+											monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
+											
+											File targetFile = new File(res2.getLocation().toOSString());
+											compiler.compilePkg(project, monitor.newChild(100), dependentPkgName, targetFile);
+											packages.add(pkgpath);
+										}
+										//System.out.println("TOTAL US4:"+(System.currentTimeMillis()-time)/1000.0);
+										
+										
 									}
-									//System.out.println("TOTAL US4:"+(System.currentTimeMillis()-time)/1000.0);
-									
-									
 								}
 							}
 						}

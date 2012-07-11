@@ -10,8 +10,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -29,25 +29,27 @@ import com.googlecode.goclipse.go.lang.model.Node;
 /**
  * A hyperlink detector for the Go editor.
  */
-public class GoHyperlinkDetector extends AbstractHyperlinkDetector {
+public class GoHyperlinkDetector implements IHyperlinkDetector {
 
+	private GoEditor editor;
+	
 	/**
 	 * Create a new GoHyperlinkDetector.
 	 */
 	public GoHyperlinkDetector(GoEditor editor) {
-		setContext(editor);
+		this.editor = editor;
 	}
-
+	
 	/**
 	 * 
 	 */
 	@Override
 	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean showMultiple) {
 		IHyperlink[] link       = new IHyperlink[1];
-		ITextEditor  textEditor = (ITextEditor)getAdapter(ITextEditor.class);
+		//ITextEditor  textEditor = (ITextEditor)getAdapter(ITextEditor.class);
 		int          offset     = region.getOffset();
 		
-		IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+		IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 		IRegion wordRegion = findWord(document, offset);
 		try {
 			String word = document.get(wordRegion.getOffset(), wordRegion.getLength());
@@ -58,7 +60,7 @@ public class GoHyperlinkDetector extends AbstractHyperlinkDetector {
 				// get the current imports
 				CodeContext cc1 = CodeContext.getCodeContext(
 									project,
-									((FileEditorInput)textEditor.getEditorInput()).getFile().getLocation().toOSString(),
+									((FileEditorInput)editor.getEditorInput()).getFile().getLocation().toOSString(),
 									document.get());
 				
 				if (cc1 == null) {

@@ -33,9 +33,9 @@ public class DependencyGraph {
   /**
 	 * 
 	 */
-  private static Map<String, DependencyGraph> graphs = new HashMap<String, DependencyGraph>();
-  private static Map<String, File> commandFiles = new HashMap<String, File>();
-  private static Map<String, IFolder> pkgFolders = new HashMap<String, IFolder>();
+  private static Map<String, DependencyGraph> graphs 		 = new HashMap<String, DependencyGraph>();
+  private static Map<String, File> 			commandFiles = new HashMap<String, File>();
+  private static Map<String, IFolder> 			pkgFolders   = new HashMap<String, IFolder>();
 
   private IProject project;
 

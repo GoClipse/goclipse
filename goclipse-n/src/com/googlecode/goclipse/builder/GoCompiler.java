@@ -252,10 +252,7 @@ public class GoCompiler {
 			builder.environment().put(GoConstants.GOPATH, goPath);
 			builder.environment().put("PATH", path);
 			
-			long time = System.currentTimeMillis();
-		    Process p = builder.start();
-
-		    System.out.println("THEM:"+target+" "+(System.currentTimeMillis()-time)/1000.0);
+			Process p = builder.start();
 
 			try {
 				p.waitFor();
@@ -386,10 +383,9 @@ public class GoCompiler {
 			builder.environment().put(GoConstants.GOROOT, goroot);
 			builder.environment().put(GoConstants.GOPATH, goPath);
 		    builder.environment().put("PATH", path);
-		    long time = System.currentTimeMillis();
+		    
 		    Process p = builder.start();
-		    System.out.println("THEM:"+target+" "+(System.currentTimeMillis()-time)/1000.0);
-			try {
+		    try {
 				p.waitFor();
 
 			} catch (InterruptedException e) {

@@ -38,7 +38,7 @@ import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfiguration {
    private DoubleClickStrategy doubleClickStrategy;
    private GoScanner           keywordScanner;
-   private GoEditor			       editor;
+   private GoEditor			   editor;
    private MonoReconciler      reconciler;
    
    public GoEditorSourceViewerConfiguration(GoEditor editor, IPreferenceStore preferenceStore) {
