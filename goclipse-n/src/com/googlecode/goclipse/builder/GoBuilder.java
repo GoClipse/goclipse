@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -162,7 +163,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 //			}
 //			//System.out.println("Compile Time:" + (System.currentTimeMillis()-time)/1000.0);
 	
-		long time = System.currentTimeMillis();
 		for(IResource res:fileList) {
 			File file = new File(res.getLocation().toOSString());
 
@@ -192,7 +192,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				}
 			}
 		}
-		//System.out.println("Compile Time:" + (System.currentTimeMillis()-time)/1000.0);
 	}
 	
 	/**
@@ -260,7 +259,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		graph.reprocessResources(crdv.getRemoved());
 		
 		Set<String> toCompile = new HashSet<String>();
-		Set<String> packages  = new HashSet<String>();
 		long time = System.currentTimeMillis();
 		for (IResource res : resourcesToCompile) {
 			File file = res.getLocation().toFile();
@@ -302,41 +300,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 						
 						monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
 						compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
-						packages.add(pkgpath);
-						Set<String>     depends = graph.getReverseDependencies(pkg);
-						int max_depth = 256;
-						int depth = 0;
-						
-						while ( depends.size() > 0 && depth < max_depth ) {
-							depth++;
-							Set<String> d = depends;
-							depends = new HashSet<String>();
-							
-							for (String name:d) {
-								System.out.println("Building"+name);
-								depends.addAll(graph.getReverseDependencies(name));
-								if ( name.endsWith(".go") ) {
-									File cmdfile = graph.getCommandFileForName(name);
-									compiler.compileCmd(project, monitor.newChild(100), cmdfile);
-									
-								} else {
-									
-									for (IFolder srcfolder:srcfolders) {
-										String dependentPkgName = srcfolder.getProjectRelativePath().toString()+File.separator+name;
-										IResource res2 = project.findMember(dependentPkgName);
-										
-										if (res2 != null && !packages.contains(res2) ) {
-											monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
-											File file2 = res2.getLocation().toFile();
-											dependentPkgName = computePackagePath(file2);
-											File targetFile = new File(res2.getLocation().toOSString());
-											compiler.compilePkg(project, monitor.newChild(100), dependentPkgName, file2);
-											packages.add(pkgpath);
-										}
-									}
-								}
-							}
-						}
+						buildDependencies(project, srcfolders, monitor, graph, file, pkg);
 					}
 					
 				} catch (IOException e) {
@@ -349,11 +313,84 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				toCompile.add(res.getLocation().toOSString());
 			}
 		}
-		//System.out.println("TOTAL US:"+(System.currentTimeMillis()-time)/1000.0);
 		
 		Activator.logInfo("incrementalBuild - done");
 		
 	}
+
+	/**
+     * @param project
+     * @param srcfolders
+     * @param monitor
+     * @param graph
+     * @param packages
+     * @param file
+     * @param pkg
+     */
+    private void buildDependencies(IProject project, List<IFolder> srcfolders, SubMonitor monitor,
+            DependencyGraph graph, File file, String pkg) {
+
+		Set<String> built   = new HashSet<String>();
+		Set<String> depends = graph.getReverseDependencies(pkg);
+	    int max_depth = 32;
+	    int depth = 0;
+	    
+	    Comparator<String> comparator = new Comparator<String>(){
+
+			@Override
+            public int compare(String arg0, String arg1) {
+				boolean a = arg0.endsWith(".go");
+				boolean b = arg1.endsWith(".go");
+                
+				if(a && !b){
+                	return -1;
+                	
+                } else if(!a && b){
+                	return 1;
+                
+                }
+                
+                return 0;
+            }
+    	};
+    	
+	    while ( depends.size() > 0 && depth < max_depth ) {
+	    	
+	    	depth++;
+	    	List<String> sortedDependencies = new ArrayList<String>(depends);
+	    	Collections.sort(sortedDependencies, comparator);
+	    	depends = new HashSet<String>();
+	    	
+	    	for (String name:sortedDependencies) {
+	    		depends.addAll(graph.getReverseDependencies(name));
+	    		
+	    		if(built.contains(name)){
+	    			continue;
+	    		}
+	    		
+	    		if ( name.endsWith(".go")) {
+	    			File cmdfile = graph.getCommandFileForName(name);
+	    			compiler.compileCmd(project, monitor.newChild(100), cmdfile);
+	    			
+	    		} else {
+	    			
+	    			for (IFolder srcfolder:srcfolders) {
+	    				String 	  dependentPkgName  = srcfolder.getProjectRelativePath().toString()+File.separator+name;
+	    				IResource res2 				= project.findMember(dependentPkgName);
+	    				File 	  file2 			= res2.getLocation().toFile();
+	    				String 	  target 			= computePackagePath(file2);
+	    				
+	    				if (res2 != null && !built.contains(target) ) {
+	    					monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
+	    					compiler.compilePkg(project, monitor.newChild(100), target, file2);
+	    				}
+	    			}
+	    		}
+	    		
+	    		built.add(name);
+	    	}
+	    }
+    }
 
 	/**
 	 * TODO this needs to be centralized into a common index...
