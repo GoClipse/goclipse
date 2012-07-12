@@ -205,7 +205,12 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		final IPath projectLocation = project.getLocation();
 		final IFile ifile = project.getFile(file.getAbsolutePath().replace(project.getLocation().toOSString(), ""));
 		IPath pkgFolder = Environment.INSTANCE.getPkgOutputFolder(project);
+		
 		String pkgname = ifile.getParent().getLocation().toOSString().replace(projectLocation.toOSString(), "");
+		if(file.isDirectory()){
+			pkgname = ifile.getLocation().toOSString().replace(projectLocation.toOSString(), "");
+		}
+		
 		String[] split = pkgname.split(File.separatorChar == '\\' ? "\\\\" : File.separator);
 		String path = projectLocation.toOSString() + File.separator + pkgFolder;
 
@@ -218,6 +223,11 @@ public class GoBuilder extends IncrementalProjectBuilder {
 
 
 	/**
+	 * incrementalBuild builds the most recently edited package or command file.
+	 * Then, it walks the reverse dependencies backwards building packages and
+	 * command files until everything that depended on the original pkg or
+	 * command file was built.
+	 * 
 	 * @param project
 	 * @param delta
 	 * @param pmonitor
@@ -289,17 +299,15 @@ public class GoBuilder extends IncrementalProjectBuilder {
 								pkg = parent.replace(folder.toString()+"/", "");
 							}
 						}
-						//System.out.println("TOTAL US1:"+(System.currentTimeMillis()-time)/1000.0);
 						
 						monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
 						compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
 						packages.add(pkgpath);
 						Set<String>     depends = graph.getReverseDependencies(pkg);
-						//System.out.println("TOTAL US2:"+(System.currentTimeMillis()-time)/1000.0);
 						int max_depth = 256;
 						int depth = 0;
 						
-						while(depends.size()>0 && depth<max_depth) {
+						while ( depends.size() > 0 && depth < max_depth ) {
 							depth++;
 							Set<String> d = depends;
 							depends = new HashSet<String>();
@@ -310,7 +318,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 								if ( name.endsWith(".go") ) {
 									File cmdfile = graph.getCommandFileForName(name);
 									compiler.compileCmd(project, monitor.newChild(100), cmdfile);
-									//System.out.println("TOTAL US3:"+(System.currentTimeMillis()-time)/1000.0);
 									
 								} else {
 									
@@ -320,14 +327,12 @@ public class GoBuilder extends IncrementalProjectBuilder {
 										
 										if (res2 != null && !packages.contains(res2) ) {
 											monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
-											
+											File file2 = res2.getLocation().toFile();
+											dependentPkgName = computePackagePath(file2);
 											File targetFile = new File(res2.getLocation().toOSString());
-											compiler.compilePkg(project, monitor.newChild(100), dependentPkgName, targetFile);
+											compiler.compilePkg(project, monitor.newChild(100), dependentPkgName, file2);
 											packages.add(pkgpath);
 										}
-										//System.out.println("TOTAL US4:"+(System.currentTimeMillis()-time)/1000.0);
-										
-										
 									}
 								}
 							}
