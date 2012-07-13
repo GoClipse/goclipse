@@ -25,6 +25,8 @@ public class PreferenceConstants {
 	public static final String FIELD_SYNTAX_STRING_STYLE           = "syntax_highlighting_string_style";
 	public static final String FIELD_SYNTAX_MULTILINE_STRING_COLOR = "syntax_highlighting_multiline_string_color";
 	public static final String FIELD_SYNTAX_MULTILINE_STRING_STYLE = "syntax_highlighting_multiline_string_style";
+  public static final String FIELD_SYNTAX_TEXT_COLOR             = "syntax_highlighting_text_color";
+  public static final String FIELD_SYNTAX_TEXT_STYLE             = "syntax_highlighting_text_style";
 	
 	public static final String P_STRING = "stringPreference";
 	

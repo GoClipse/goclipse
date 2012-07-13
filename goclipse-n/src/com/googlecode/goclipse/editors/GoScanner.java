@@ -1,6 +1,8 @@
 package com.googlecode.goclipse.editors;
 
-import java.util.Map;
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.editors.CombinedWordRule.WordMatcher;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -11,63 +13,64 @@ import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
-import org.eclipse.jface.text.rules.WordRule;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.editors.CombinedWordRule.WordMatcher;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class GoScanner extends RuleBasedScanner {
 
 	public GoScanner() {
-	   Token text = new Token(new TextAttribute( ColorManager.INSTANCE.getColor(IColorConstants.DEFAULT), null, SWT.NONE));
-	   CombinedWordRule combinedWordRule = new CombinedWordRule(new IWordDetector() {
+    IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
+    
+    boolean useHighlighting = prefStore.getBoolean(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
+    
+    Color defaultColor;
+    
+    if (useHighlighting) {
+      defaultColor = ColorManager.INSTANCE.getColor(
+          PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_TEXT_COLOR));
+    } else {
+      defaultColor = ColorManager.INSTANCE.getColor(IColorConstants.DEFAULT);
+    }
+    
+	  Token text = new Token(new TextAttribute(defaultColor, null, SWT.NONE));
+	  
+    final WordMatcher keywordRule = new WordMatcher();
+    
+	  CombinedWordRule combinedWordRule = new CombinedWordRule(new IWordDetector() {
          @Override
         public boolean isWordStart(char c) {
-            String s =new String(new char[]{c});
+            String s = new String(new char[]{c});
             
             return s.matches("[A-Za-z_]");
          }
 
          @Override
         public boolean isWordPart(char c) {
-            String s =new String(new char[]{c});
+            String s = new String(new char[]{c});
             return s.matches("[A-Za-z0-9_]");
          }
-      }, text);
+    }, keywordRule, text);
 	   
-	    IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
-		boolean useHighlighting = prefStore.getBoolean(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
-		
-		if(useHighlighting){
+    if (useHighlighting){
 			final Color keywordColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR         ));
 			final Color valueColor           = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR           ));
 			final Color primitiveColor       = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR       ));
 			final Color builtinFunctionColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR));
-			//final Color textColor            = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_TEXT_COLOR));
-			// TODO: added to fix a compilation problem
-			final Color textColor            = ColorManager.INSTANCE.getColor(IColorConstants.DEFAULT);
+			final Color textColor            = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_TEXT_COLOR));
 			
 			final int keywordStyle         = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE         );
 			final int valueStyle           = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE           );
 			final int primitiveStyle       = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE       );
 			final int builtinFunctionStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE);
-			//final int textStyle            = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_TEXT_STYLE);
-			// TODO: added to fix a compilation problem
-			final int textStyle            = 0;
+			final int textStyle            = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_TEXT_STYLE);
 			
-			Token keyword   		= new Token(new TextAttribute(keywordColor,         null, keywordStyle        ));
-			Token value     		= new Token(new TextAttribute(valueColor,           null, valueStyle          ));
-			Token primitive 		= new Token(new TextAttribute(primitiveColor,       null, primitiveStyle      ));
-			Token builtinFunction   = new Token(new TextAttribute(builtinFunctionColor, null, builtinFunctionStyle));
-			Token textToken         = new Token(new TextAttribute(textColor,            null, textStyle));
+			Token keyword   		  = new Token(new TextAttribute(keywordColor,         null, keywordStyle        ));
+			Token value     		  = new Token(new TextAttribute(valueColor,           null, valueStyle          ));
+			Token primitive 		  = new Token(new TextAttribute(primitiveColor,       null, primitiveStyle      ));
+			Token builtinFunction = new Token(new TextAttribute(builtinFunctionColor, null, builtinFunctionStyle));
+			Token textToken       = new Token(new TextAttribute(textColor,            null, textStyle));
 			
-			final WordMatcher keywordRule = new WordMatcher();
-			combinedWordRule.addWordMatcher(keywordRule);
-			
-			this.setDefaultReturnToken(textToken);
+			setDefaultReturnToken(textToken);
 			
 			// add tokens for each reserved word
 			keywordRule.addWord("break",       keyword);
@@ -97,17 +100,17 @@ public class GoScanner extends RuleBasedScanner {
 			keywordRule.addWord("var",         keyword);
 			
 			keywordRule.addWord("append",      builtinFunction);
-			keywordRule.addWord("cap",  	   builtinFunction);
+			keywordRule.addWord("cap",  	     builtinFunction);
 			keywordRule.addWord("close" , 	   builtinFunction);
 			keywordRule.addWord("complex",     builtinFunction);
 			keywordRule.addWord("copy",        builtinFunction);
 			keywordRule.addWord("delete",      builtinFunction);
 			keywordRule.addWord("imag",        builtinFunction);
 			keywordRule.addWord("len", 	       builtinFunction);
-			keywordRule.addWord("make", 	   builtinFunction);
+			keywordRule.addWord("make", 	     builtinFunction);
 			keywordRule.addWord("new", 	       builtinFunction);
-			keywordRule.addWord("panic", 	   builtinFunction);
-			keywordRule.addWord("print", 	   builtinFunction);
+			keywordRule.addWord("panic", 	     builtinFunction);
+			keywordRule.addWord("print", 	     builtinFunction);
 			keywordRule.addWord("println",	   builtinFunction);
 			keywordRule.addWord("real",        builtinFunction);
 			keywordRule.addWord("recover",     builtinFunction);
@@ -148,66 +151,6 @@ public class GoScanner extends RuleBasedScanner {
 					 }),
 				});
 		}
-
 	}
-	
-	/**
-	 * 
-	 * @author steel
-	 * @deprecated
-	 */
-	class WordDetector implements IWordDetector{
-	   KeywordRule keywordRule;
-	   StringBuilder buffer = new StringBuilder();
-	   
-      @Override
-      public boolean isWordStart(char c) {
-         if(Character.isWhitespace(c)){
-            buffer= new StringBuilder();
-            return false;
-         }
-         else{
-            buffer.append(c);
-         }
-         String s =new String(new char[]{c});
-         return s.matches("[A-Za-z_]");
-      }
-
-      @Override
-      public boolean isWordPart(char c) {
-         if(Character.isWhitespace(c)){
-            buffer = new StringBuilder();
-            return false;
-         }
-         else{
-            buffer.append(c);
-         }
-         String buf = buffer.toString();
-         for(Object obj:keywordRule.getFWords().keySet()){
-            String word = (String)obj;
-            if(word.startsWith(buf)){
-               return true;
-            }
-         }
-         return false;
-      }
-	}
-	
-	/**
-	 * 
-	 * @author steel
-	 * @deprecated
-	 */
-	class KeywordRule extends WordRule {
-
-		public KeywordRule(IWordDetector detector) {
-			super(detector);
-		}
-
-		@SuppressWarnings("rawtypes")
-		public Map getFWords() {
-			return fWords;
-		}
-	}
-	
+		
 }
