@@ -3,6 +3,7 @@ package com.googlecode.goclipse.wizards;
 import java.util.WeakHashMap;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
@@ -123,6 +124,9 @@ public class NewSourceFileComposite extends Composite {
 			public void eval() {
 				if (btnPackageSourceFile.getSelection()) {
 					sourceFileType = SourceFileType.MAIN_DEFAULT;
+					
+					//Update the filename
+					sourceFilename.setText(getNewFileName(sourceFilename.getText(), false));
 				}
 			}
 		});
@@ -181,17 +185,21 @@ public class NewSourceFileComposite extends Composite {
 			public void eval() {
 				if (btnCommandSourceFile.getSelection()) {
 					combo.setEnabled(true);
+				
 					switch (combo.getSelectionIndex()){
 						case 0:
 							sourceFileType = SourceFileType.MAIN_DEFAULT;
-							return;
+							break;
 						case 1:
 							sourceFileType = SourceFileType.MAIN_WITH_PARAMETERS;
-							return;
+							break;
 						case 2:
 							sourceFileType = SourceFileType.MAIN_WEBSERVER;
-							return;
+							break;
 					}
+					
+					//Update the filename
+					sourceFilename.setText(getNewFileName(sourceFilename.getText(), false));
 				} else {
 					combo.setEnabled(false);
 				}
@@ -214,19 +222,34 @@ public class NewSourceFileComposite extends Composite {
 			}
 
 			public void eval() {
-				String filename = sourceFilename.getText();
 				if (btnTestSourceFile.getSelection()) {
 					sourceFileType = SourceFileType.TEST;
-					if (!filename.contains("_test.go")) {
-						sourceFilename.setText(filename.replace(".go", "_test.go"));
-					}
-				} else {
-					if (filename.contains("_test.go")) {
-						sourceFilename.setText(filename.replace("_test.go", ".go"));
-					}
+					//Update the filename
+					sourceFilename.setText(getNewFileName(sourceFilename.getText(), true));
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Adds '_test' if it should be the filename of a test file,
+	 * or removes '_test' when it shouldn't be a test file
+	 * @param currentFileName The current name of the file
+	 * @param testFile Whether it should be the name of a test file
+	 * @return Returns the changed file name
+	 */
+	public String getNewFileName(String currentFileName, boolean testFile) {
+		if(testFile) {
+			if(!currentFileName.endsWith("_test.go")) {
+				return currentFileName.replace(".go", "_test.go");
+			}
+		} else  {
+			if(currentFileName.endsWith("_test.go")) {
+				return currentFileName.replace("_test.go", ".go");
+			}
+		}
+		
+		return currentFileName;
 	}
 
 	@Override
@@ -243,7 +266,7 @@ public class NewSourceFileComposite extends Composite {
 		        getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
 		        "Select new source file location");
 
-		if (dialog.open() == ContainerSelectionDialog.OK) {
+		if (dialog.open() == Window.OK) {
 			Object[] result = dialog.getResult();
 			if (result.length == 1) {
 				sourceFolderName.setText(((Path) result[0]).toString());
