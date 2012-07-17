@@ -375,13 +375,13 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	    		} else {
 	    			
 	    			for (IFolder srcfolder:srcfolders) {
-	    				String 	  dependentPkgName  = srcfolder.getProjectRelativePath().toString()+File.separator+name;
+	    				String 	  dependentPkgName  = srcfolder.getProjectRelativePath().toString()+File.separatorChar+name;
 	    				IResource res2 				= project.findMember(dependentPkgName);
 	    				File 	  file2 			= res2.getLocation().toFile();
 	    				String 	  target 			= computePackagePath(file2);
 	    				
 	    				if (res2 != null && !built.contains(target) ) {
-	    					monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
+	    					monitor.beginTask("Compiling package  "+file.getName().replace(".go", ""), 1);
 	    					compiler.compilePkg(project, monitor.newChild(100), target, file2);
 	    				}
 	    			}

@@ -25,189 +25,201 @@ import com.googlecode.goclipse.go.lang.parser.ImportParser;
 import com.googlecode.goclipse.go.lang.parser.PackageParser;
 
 /**
- * DependencyGraph maintains a directed graph of all the dependencies within the project. It will
- * detect cycles and mark errors when they occur.
+ * DependencyGraph maintains a directed graph of all the dependencies within the
+ * project. It will detect cycles and mark errors when they occur.
  */
 public class DependencyGraph {
 
-  /**
+	/**
 	 * 
 	 */
-  private static Map<String, DependencyGraph> graphs 		 = new HashMap<String, DependencyGraph>();
-  private static Map<String, File> 			commandFiles = new HashMap<String, File>();
-  private static Map<String, IFolder> 			pkgFolders   = new HashMap<String, IFolder>();
+	private static Map<String, DependencyGraph> graphs 		 = new HashMap<String, DependencyGraph>();
+	private static Map<String, File> 			commandFiles = new HashMap<String, File>();
+	private static Map<String, IFolder> 		pkgFolders 	 = new HashMap<String, IFolder>();
 
-  private IProject project;
+	private IProject project;
 
-  /**
-   * Hidden Constructor
-   */
-  private DependencyGraph(IProject project) {
-    this.project = project;
-  }
+	/**
+	 * Hidden Constructor
+	 */
+	private DependencyGraph(IProject project) {
+		this.project = project;
+	}
 
-  /**
-   * @param project
-   * @return
-   */
-  public static DependencyGraph getForProject(IProject project) {
+	/**
+	 * @param project
+	 * @return
+	 */
+	public static DependencyGraph getForProject(IProject project) {
 
-    DependencyGraph graph = graphs.get(project.getName());
+		DependencyGraph graph = graphs.get(project.getName());
 
-    if (graph == null) {
-      graph = new DependencyGraph(project);
-      graphs.put(project.getName(), graph);
+		if (graph == null) {
+			graph = new DependencyGraph(project);
+			graphs.put(project.getName(), graph);
 
-      // get the src directories
-      List<IFolder> folders = Environment.INSTANCE.getSourceFolders(project);
+			// get the src directories
+			List<IFolder> folders = Environment.INSTANCE
+					.getSourceFolders(project);
 
-      for (IFolder srcfolder : folders) {
-        try {
-          graph.build(srcfolder, srcfolder);
-        } catch (Exception e) {
-          Activator.logError(e);
-        }
-      }
-    } else {
-      // rebuild modified portions of the graph
+			for (IFolder srcfolder : folders) {
+				try {
+					graph.build(srcfolder, srcfolder);
+				} catch (Exception e) {
+					Activator.logError(e);
+				}
+			}
+		} else {
+			// rebuild modified portions of the graph
 
-    }
+		}
 
-    return graph;
-  }
+		return graph;
+	}
 
-  /**
-   * @param folder
-   * @throws CoreException
-   * @throws IOException
-   */
-  private void build(IFolder srcfolder, IFolder folder) throws CoreException, IOException {
+	/**
+	 * @param folder
+	 * @throws CoreException
+	 * @throws IOException
+	 */
+	private void build(IFolder srcfolder, IFolder folder) throws CoreException,
+			IOException {
 
-    for (IResource res : folder.members()) {
+		for (IResource res : folder.members()) {
 
-      if (res instanceof IFolder) {
-        String local = res.getParent().toString().replace(srcfolder.toString() + File.separator, "");
-        pkgFolders.put(local, (IFolder) res);
-        build(srcfolder, (IFolder) res);
+			if (res instanceof IFolder) {
 
-      } else if (res instanceof IFile && res.getName().endsWith(".go")) {
-        processDependencies(srcfolder, res);
-      }
-    }
-  }
+				String local = res.toString().replace(srcfolder.toString() + "/", "");
+				pkgFolders.put(local, (IFolder) res);
+				build(srcfolder, (IFolder) res);
 
-  /**
-   * @param srcfolder
-   * @param res
-   * @throws IOException
-   */
-  private void processDependencies(IFolder srcfolder, IResource res) throws IOException {
-    File file = res.getLocation().toFile();
+			} else if (res instanceof IFile && res.getName().endsWith(".go")) {
+				processDependencies(srcfolder, res);
+			}
+		}
+	}
 
-    if (file.isDirectory()) {
-      return;
-    }
+	/**
+	 * @param srcfolder
+	 * @param res
+	 * @throws IOException
+	 */
+	private void processDependencies(IFolder srcfolder, IResource res)
+			throws IOException {
+		File file = res.getLocation().toFile();
 
-    Lexer lexer = new Lexer();
-    Tokenizer tokenizer = new Tokenizer(lexer);
-    PackageParser packageParser = new PackageParser(tokenizer);
-    ImportParser importParser = new ImportParser(tokenizer);
-    lexer.scan(file);
+		if (file.isDirectory()) {
+			return;
+		}
 
-    String local = res.getParent().toString().replace(srcfolder.toString() + File.separator, "");
+		Lexer lexer = new Lexer();
+		Tokenizer tokenizer = new Tokenizer(lexer);
+		PackageParser packageParser = new PackageParser(tokenizer);
+		ImportParser importParser = new ImportParser(tokenizer);
+		lexer.scan(file);
 
-    // command files have dependencies
-    if ("main".equals(packageParser.getPckg().getName())) {
-      local = file.getName();
-      commandFiles.put(local, file);
-    }
+		String local = res.getParent().toString().replace(srcfolder.toString() + "/", "");
 
-    PackageVertex localpkg = PackageVertex.getPackageVertex(project, local);
+		// command files have dependencies
+		if ("main".equals(packageParser.getPckg().getName())) {
+			local = file.getName();
+			commandFiles.put(local, file);
+		}
 
-    for (Import i : importParser.getImports()) {
-      localpkg.addDependency(i.path);
-      PackageVertex.getPackageVertex(project, i.path).addReverseDependency(local);
-    }
-  }
+		PackageVertex localpkg = PackageVertex.getPackageVertex(project, local);
 
-  /**
-   * @param pkgname
-   */
-  public Set<String> getReverseDependencies(String pkgname) {
-    return PackageVertex.getPackageVertex(project, pkgname).getReverseDependencies();
-  }
+		for (Import i : importParser.getImports()) {
+			localpkg.addDependency(i.path);
+			PackageVertex.getPackageVertex(project, i.path)
+					.addReverseDependency(local);
+		}
+	}
 
-  /**
-   * @param pkgname
-   */
-  public Set<String> getDependencies(String pkgname) {
-    PackageVertex v = PackageVertex.getPackageVertex(project, pkgname);
-    if (v != null) {
-      return v.getDependencies();
-    } else {
-      return new HashSet<String>();
-    }
-  }
+	/**
+	 * @param pkgname
+	 */
+	public Set<String> getReverseDependencies(String pkgname) {
+		return PackageVertex.getPackageVertex(project, pkgname)
+				.getReverseDependencies();
+	}
 
-  /**
-   * @param pkgname
-   */
-  public void clearDependencies(String pkgname) {
-    PackageVertex v = PackageVertex.getPackageVertex(project, pkgname);
-    if (v != null) {
-      v.clearDependencies();
-    }
+	/**
+	 * @param pkgname
+	 */
+	public Set<String> getDependencies(String pkgname) {
+		PackageVertex v = PackageVertex.getPackageVertex(project, pkgname);
+		if (v != null) {
+			return v.getDependencies();
+		} else {
+			return new HashSet<String>();
+		}
+	}
 
-    return;
-  }
+	/**
+	 * @param pkgname
+	 */
+	public void clearDependencies(String pkgname) {
+		PackageVertex v = PackageVertex.getPackageVertex(project, pkgname);
+		if (v != null) {
+			v.clearDependencies();
+		}
 
-  /**
-   * @param name
-   * @return
-   */
-  public File getCommandFileForName(String name) {
-    return commandFiles.get(name);
-  }
+		return;
+	}
 
-  /**
-   * @param modified
-   */
-  public void reprocessResources(List<IResource> modified) {
-    List<IFolder> srcFolders = Environment.INSTANCE.getSourceFolders(project);
+	/**
+	 * @param name
+	 * @return
+	 */
+	public File getCommandFileForName(String name) {
+		return commandFiles.get(name);
+	}
 
-    for (IResource resource : modified) {
-      for (IFolder srcfolder : srcFolders) {
-        String pkgname = "";
-        IFolder folder = null;
+	/**
+	 * @param modified
+	 */
+	public void reprocessResources(List<IResource> modified) {
+		List<IFolder> srcFolders = Environment.INSTANCE
+				.getSourceFolders(project);
 
-        if (resource instanceof IFolder) {
-          pkgname = resource.toString().replaceFirst(srcfolder.toString(), "");
-          folder = project.getFolder(resource.getLocation());
-          Set<String> dep = this.getDependencies(pkgname);
-          dep.clear();
-        } else if (resource instanceof IFile) {
-          folder = (IFolder) resource.getParent();
-          pkgname = resource.getParent().toString().replaceFirst(
-              srcfolder.toString() + Pattern.quote(File.separator), "");
-          Set<String> dep = this.getDependencies(pkgname);
-          dep.clear();
-        }
+		for (IResource resource : modified) {
+			for (IFolder srcfolder : srcFolders) {
+				String pkgname = "";
+				IFolder folder = null;
 
-        if (folder != null && folder.exists()) {
-          try {
-            for (IResource file : folder.members()) {
-              processDependencies(srcfolder, file);
-            }
+				if (resource instanceof IFolder) {
+					pkgname = resource.toString().replaceFirst(
+							srcfolder.toString(), "");
+					folder = project.getFolder(resource.getLocation());
+					Set<String> dep = this.getDependencies(pkgname);
+					dep.clear();
+				} else if (resource instanceof IFile) {
+					folder = (IFolder) resource.getParent();
+					pkgname = resource
+							.getParent()
+							.toString()
+							.replaceFirst(
+									srcfolder.toString() + Pattern.quote("/"),
+									"");
+					Set<String> dep = this.getDependencies(pkgname);
+					dep.clear();
+				}
 
-            Set<String> dep = this.getDependencies(pkgname);
-          } catch (IOException e) {
-            Activator.logError(e);
-          } catch (CoreException e) {
-            Activator.logError(e);
-          }
-        }
-      }
-    }
-  }
-  
+				if (folder != null && folder.exists()) {
+					try {
+						for (IResource file : folder.members()) {
+							processDependencies(srcfolder, file);
+						}
+
+						Set<String> dep = this.getDependencies(pkgname);
+					} catch (IOException e) {
+						Activator.logError(e);
+					} catch (CoreException e) {
+						Activator.logError(e);
+					}
+				}
+			}
+		}
+	}
+
 }
