@@ -43,7 +43,9 @@ public class EditorPreferencePage extends FieldEditorPreferencePage implements
 		Label splitter = new Label(fieldParent, SWT.SEPARATOR | SWT.HORIZONTAL);
     GridDataFactory.swtDefaults().grab(true, false).span(3, 1).align(SWT.FILL, SWT.TOP).applyTo(splitter);
 
+    	addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_TEXT_COLOR,             "Text:",              fieldParent));
 		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,          "Keyword:",           fieldParent));
+		//addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_OPERATOR_COLOR,         "Operators:",         fieldParent));
 		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,            "Value:",             fieldParent));
 		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,        "Primitive:",         fieldParent));
 		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR,          "Comment:",           fieldParent));
