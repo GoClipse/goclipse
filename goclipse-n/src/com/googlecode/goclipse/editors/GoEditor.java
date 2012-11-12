@@ -40,7 +40,11 @@ public class GoEditor extends TextEditor {
 
   private GoEditorOutlinePage outlinePage;
 
+  /**
+   * 
+   */
   public GoEditor() {
+	  
     setSourceViewerConfiguration(new GoEditorSourceViewerConfiguration(this, getPreferenceStore()));
 
     setKeyBindingScopes(new String[] {"com.googlecode.goclipse.editor"});

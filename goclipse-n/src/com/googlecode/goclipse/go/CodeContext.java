@@ -45,22 +45,22 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
 @SuppressWarnings("unused")
 public class CodeContext {
 
-	static HashMap<String, CodeContext>	externalContexts = new HashMap<String, CodeContext>();
+	static HashMap<String, CodeContext>	externalContexts	= new HashMap<String, CodeContext>();
 
-	public String	            name;
-	public String	            filetext;
-	public Package	            pkg;
-	public TokenizedPage	    page;
-	public ArrayList<Import>   imports	    = new ArrayList<Import>();
-	public ArrayList<Method>   methods	    = new ArrayList<Method>();
-	public ArrayList<Function> functions   = new ArrayList<Function>();
-	public ArrayList<Type>	    types	    = new ArrayList<Type>();
-	public ArrayList<Var>	    vars	    = new ArrayList<Var>();
-	public ArrayList<Scope>	    moduleScope = new ArrayList<Scope>();
+	public String	                    name;
+	public String	                    filetext;
+	public Package	                    pkg;
+	public TokenizedPage	            page;
+	public ArrayList<Import>	        imports	         = new ArrayList<Import>();
+	public ArrayList<Method>	        methods	         = new ArrayList<Method>();
+	public ArrayList<Function>	        functions	     = new ArrayList<Function>();
+	public ArrayList<Type>	            types	         = new ArrayList<Type>();
+	public ArrayList<Var>	            vars	         = new ArrayList<Var>();
+	public ArrayList<Scope>	            moduleScope	     = new ArrayList<Scope>();
 
 	/**
-	 * @param  filename
-	 * @param  fileText
+	 * @param filename
+	 * @param fileText
 	 * @throws IOException
 	 */
 	public CodeContext(String name) throws IOException {
@@ -68,8 +68,8 @@ public class CodeContext {
 	}
 
 	/**
-	 * @param  filename
-	 * @param  fileText
+	 * @param filename
+	 * @param fileText
 	 * @return
 	 * @throws IOException
 	 * @throws RecognitionException
@@ -77,23 +77,24 @@ public class CodeContext {
 	public static CodeContext getCodeContext(String filename, String fileText) throws IOException {
 		return getCodeContext(null, filename, fileText, true);
 	}
-	
+
 	/**
-	 * @param  filename
-	 * @param  fileText
+	 * @param filename
+	 * @param fileText
 	 * @param useExternalContext
 	 * @return
 	 * @throws IOException
 	 * @throws RecognitionException
 	 */
-	public static CodeContext getCodeContext(String filename, String fileText, boolean useExternalContext) throws IOException {
+	public static CodeContext getCodeContext(String filename, String fileText, boolean useExternalContext)
+	        throws IOException {
 		return getCodeContext(null, filename, fileText, useExternalContext);
 	}
-	
+
 	/**
-	 * @param  project
-	 * @param  filename
-	 * @param  fileText
+	 * @param project
+	 * @param filename
+	 * @param fileText
 	 * @return
 	 * @throws IOException
 	 * @throws RecognitionException
@@ -103,8 +104,8 @@ public class CodeContext {
 	}
 
 	/**
-	 * Static factory method that builds the code context. This is for
-	 * non-test source files;
+	 * Static factory method that builds the code context. This is for non-test
+	 * source files;
 	 * 
 	 * @param project
 	 * @param filename
@@ -113,21 +114,21 @@ public class CodeContext {
 	 * @return
 	 * @throws IOException
 	 */
-	public static CodeContext getCodeContext(IProject project, String filename, String fileText, boolean useExternalContext)
-	        throws IOException {
-		
+	public static CodeContext getCodeContext(IProject project, String filename, String fileText,
+	        boolean useExternalContext) throws IOException {
+
 		boolean isCmdSrcFolder = false;
-		
+
 		if (project != null) {
 			IResource res = project.findMember(filename);
-			
-			if(res!=null && res instanceof IFile &&
-					Environment.INSTANCE.isCmdSrcFolder(project, (IFolder)res.getParent())){
+
+			if (res != null && res instanceof IFile
+			        && Environment.INSTANCE.isCmdSrcFolder(project, (IFolder) res.getParent())) {
 				isCmdSrcFolder = true;
-				
+
 			}
 		}
-		
+
 		CodeContext codeContext = new CodeContext(filename);
 
 		File targetContext = new File(filename);
@@ -136,21 +137,21 @@ public class CodeContext {
 		}
 
 		File packageFolder = targetContext.getParentFile();
-		
+
 		parseText(project, fileText, false, useExternalContext, codeContext);
 
 		//
 		// Only look at the other files in the directory if the file
-		// itself is not a singular main function source file.  Otherwise,
+		// itself is not a singular main function source file. Otherwise,
 		// we could have the case where one main function source file could
 		// pollute the code completion options of another the other main
 		// source file.
 		//
-		if ( !isCmdSrcFolder && useExternalContext) {
+		if (!isCmdSrcFolder && useExternalContext) {
 			for (File file : packageFolder.listFiles()) {
 				if (file.isFile() && file.canRead() && file.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)
 				        && !file.getName().endsWith(GoConstants.GO_TEST_FILE_EXTENSION)) {
-	
+
 					String text = readFile(file);
 					parseText(project, text, true, false, codeContext);
 				}
@@ -161,29 +162,31 @@ public class CodeContext {
 	}
 
 	/**
-     * @param file
-     * @return
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
-    private static String readFile(File file) throws FileNotFoundException, IOException {
-    	StringBuilder sb = new StringBuilder();
-	    BufferedReader br = null;
-	    try {
-	    	br = new BufferedReader(new FileReader(file));
-	    	
-	    	int c = 0;
-	    	while ((c = br.read()) != -1) {
-	    		sb.append((char) c);
-	    	}
-	    	
-	    } finally {
-	    	if (br != null) {
-	    		br.close();
-	    	}
-	    }
-	    return sb.toString();
-    }
+	 * @param file
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private static String readFile(File file) throws FileNotFoundException, IOException {
+		
+		StringBuilder  sb = new StringBuilder();
+		BufferedReader br = null;
+		
+		try {
+			br = new BufferedReader(new FileReader(file));
+
+			int c = 0;
+			while ((c = br.read()) != -1) {
+				sb.append((char) c);
+			}
+
+		} finally {
+			if (br != null) {
+				br.close();
+			}
+		}
+		return sb.toString();
+	}
 
 	/**
 	 * @param fileText
@@ -191,19 +194,19 @@ public class CodeContext {
 	 * @param codeContext
 	 * @throws IOException
 	 */
-	private static void parseText(IProject project, String fileText, boolean packagePeer, boolean useExternalContext, CodeContext codeContext)
-	        throws IOException {
-		
-		Lexer          lexer          = new Lexer();
-		Tokenizer      tokenizer      = new Tokenizer(lexer);
-		PackageParser  packageParser  = new PackageParser(tokenizer);
-		ImportParser   importParser   = new ImportParser(tokenizer);
-		ScopeParser    scopeParser    = new ScopeParser(tokenizer);
-		
+	private static void parseText(IProject project, String fileText, boolean packagePeer, boolean useExternalContext,
+	        CodeContext codeContext) throws IOException {
+
+		Lexer lexer = new Lexer();
+		Tokenizer tokenizer = new Tokenizer(lexer);
+		PackageParser packageParser = new PackageParser(tokenizer);
+		ImportParser importParser = new ImportParser(tokenizer);
+		ScopeParser scopeParser = new ScopeParser(tokenizer);
+
 		FunctionParser functionParser = new FunctionParser(false, tokenizer);
 		functionParser.setScopeParser(scopeParser);
 
-		TypeParser     typeParser     = new TypeParser(false, tokenizer);
+		TypeParser typeParser = new TypeParser(false, tokenizer);
 		typeParser.setScopeParser(scopeParser);
 
 		VariableParser variableParser = new VariableParser(tokenizer, functionParser);
@@ -218,7 +221,7 @@ public class CodeContext {
 			codeContext.pkg = packageParser.getPckg();
 			codeContext.imports.addAll(importParser.getImports());
 		}
-		
+
 		codeContext.methods.addAll(functionParser.getMethods());
 		codeContext.functions.addAll(functionParser.getFunctions());
 		codeContext.types.addAll(typeParser.getTypes());
@@ -238,13 +241,13 @@ public class CodeContext {
 				}
 
 				for (Method method : context.methods) {
-	                method.setPackage(context.pkg);
-                }
+					method.setPackage(context.pkg);
+				}
 				codeContext.methods.addAll(context.methods);
-				
+
 				for (Function function : context.functions) {
 					function.setPackage(context.pkg);
-                }
+				}
 				codeContext.functions.addAll(context.functions);
 			}
 		}
@@ -260,37 +263,37 @@ public class CodeContext {
 	 */
 	public static CodeContext getExternalCodeContext(IProject project, String packagePath) throws IOException {
 
-		CodeContext    codeContext    = new CodeContext(packagePath);
-		
+		CodeContext codeContext = new CodeContext(packagePath);
+
 		// InterfaceParser interfaceParser = new InterfaceParser(tokenizer);
 		// find path
 		String goarch = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);
-		String goos   = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);
+		String goos = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);
 		String goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
-		File   pkgdir = new File(goroot + "/src/pkg/" + packagePath);
+		File pkgdir = new File(goroot + "/src/pkg/" + packagePath);
 
 		// TODO Get rid of the following duplication
 
-		if ( pkgdir.exists() && pkgdir.isDirectory() ) {
+		if (pkgdir.exists() && pkgdir.isDirectory()) {
 			processExternalPackage(codeContext, pkgdir);
-			
+
 		} else {
-			
-			for ( IFolder folder : Environment.INSTANCE.getSourceFolders(project) ) {
-			
+
+			for (IFolder folder : Environment.INSTANCE.getSourceFolders(project)) {
+
 				String path = Environment.INSTANCE.getAbsoluteProjectPath();
-				
-				pkgdir = new File(folder.getLocation().toOSString()+File.separator+ packagePath);
-				
+
+				pkgdir = new File(folder.getLocation().toOSString() + File.separator + packagePath);
+
 				if (pkgdir.exists() && pkgdir.isDirectory()) {
 					processExternalPackage(codeContext, pkgdir);
-					
+
 				} else {
 					continue;
 				}
-	
+
 				String goPath = Environment.INSTANCE.getGoPath(project)[0];
-				
+
 				pkgdir = new File(goPath + "/src/" + packagePath);
 				if (pkgdir.exists() && pkgdir.isDirectory()) {
 					processExternalPackage(codeContext, pkgdir);
@@ -309,54 +312,50 @@ public class CodeContext {
 	 * @param pkgdir
 	 * @throws IOException
 	 */
-	private static void processExternalPackage(CodeContext    codeContext,
-			                                     File           pkgdir)
-			                                    		 throws IOException {
-		
+	private static void processExternalPackage(CodeContext codeContext, File pkgdir) throws IOException {
+
 		File[] files = pkgdir.listFiles();
-		
+
 		for (File file : files) {
-			Lexer          lexer          = new Lexer();
-			Tokenizer      tokenizer      = new Tokenizer(lexer);
-			PackageParser  packageParser  = new PackageParser(tokenizer);
+			Lexer lexer = new Lexer();
+			Tokenizer tokenizer = new Tokenizer(lexer);
+			PackageParser packageParser = new PackageParser(tokenizer);
 			FunctionParser functionParser = new FunctionParser(true, tokenizer);
-			TypeParser     typeParser     = new TypeParser(true, tokenizer);
-			
-			if (file.canRead() && file.getName().endsWith(
-					".go") && !file.getName().endsWith("_test.go")) {
+			TypeParser typeParser = new TypeParser(true, tokenizer);
+
+			if (file.canRead() && file.getName().endsWith(".go") && !file.getName().endsWith("_test.go")) {
 
 				lexer.reset();
 				lexer.scan(file);
 
 				codeContext.pkg = packageParser.getPckg();
 				codeContext.methods.addAll(functionParser.getMethods());
-				for(Method method:functionParser.getMethods()){
-					if(method.getFile()==null){
+				for (Method method : functionParser.getMethods()) {
+					if (method.getFile() == null) {
 						method.setFile(file);
 					}
 				}
-				
+
 				codeContext.functions.addAll(functionParser.getFunctions());
-				for(Function function:functionParser.getFunctions()){
-					if(function.getFile()==null){
+				for (Function function : functionParser.getFunctions()) {
+					if (function.getFile() == null) {
 						function.setFile(file);
 					}
 				}
-				
+
 				codeContext.types.addAll(typeParser.getTypes());
-				for(Type type:typeParser.getTypes()){
-					if(type.getFile()==null){
+				for (Type type : typeParser.getTypes()) {
+					if (type.getFile() == null) {
 						type.setFile(file);
 					}
 				}
-				
-//				codeContext.vars = variableParser.getVars();
-//				for(Var var:variableParser.getVars()){
-//					if(var.getFile()==null){
-//						var.setFile(file);
-//					}
-//				}
-				
+
+				// codeContext.vars = variableParser.getVars();
+				// for(Var var:variableParser.getVars()){
+				// if(var.getFile()==null){
+				// var.setFile(file);
+				// }
+				// }
 
 				// codeContext.interfaces = interfaceParser.getFunctions();
 			}
@@ -369,26 +368,26 @@ public class CodeContext {
 	public boolean isInImportStatement() {
 		return false;
 	}
-	
+
 	/**
 	 * @param name
 	 * @return
 	 */
 	public Import getImportForName(String name) {
-		for (Import i:imports){
-			if (i.prefix!=null && i.prefix.equals(name)) {
+		for (Import i : imports) {
+			if (i.prefix != null && i.prefix.equals(name)) {
 				return i;
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param name
 	 * @return
 	 */
 	public Var getVarForName(String name) {
-		for (Var v:vars){
+		for (Var v : vars) {
 			if (v.getInsertionText().equals(name)) {
 				return v;
 			}
@@ -437,7 +436,7 @@ public class CodeContext {
 				return function.getDocumentation();
 			}
 		}
-		
+
 		for (Type type : types) {
 			if (name.equals(type.getInsertionText())) {
 				return type.getDocumentation();
@@ -446,7 +445,7 @@ public class CodeContext {
 
 		return "";
 	}
-	
+
 	/**
 	 * 
 	 * @param names
@@ -456,7 +455,7 @@ public class CodeContext {
 
 		String n = name + "()";
 		CodeContext cc = externalContexts.get(pkg);
-				
+
 		// slowest possible searches...
 		for (Method method : cc.methods) {
 			if (n.equals(method.getInsertionText())) {
@@ -469,20 +468,21 @@ public class CodeContext {
 				return function;
 			}
 		}
-		
+
 		for (Type type : cc.types) {
 			if (name.equals(type.getName())) {
-				//System.out.println(">>");
+				// System.out.println(">>");
 				return type;
 			}
 		}
-		
-//		for (Var var : vars) {
-//			Package p = var.getPackage();
-//			if (p != null && n.equals(var.getInsertionText()) && pkg!=null && pkg.endsWith(p.getName())) {
-//				return var;
-//			}
-//		}
+
+		// for (Var var : vars) {
+		// Package p = var.getPackage();
+		// if (p != null && n.equals(var.getInsertionText()) && pkg!=null &&
+		// pkg.endsWith(p.getName())) {
+		// return var;
+		// }
+		// }
 
 		return null;
 	}

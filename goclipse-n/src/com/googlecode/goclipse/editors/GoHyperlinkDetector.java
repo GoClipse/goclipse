@@ -76,8 +76,10 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 					
 					GoHyperLink h = new GoHyperLink();
 					h.node   = node;
-					h.region = region;
+					h.region = wordRegion;
 					h.text   = word;
+					h.type   = "go function";
+					
 					link[0]  = h;
 					return link;
 			
@@ -173,7 +175,7 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 
 		@Override
         public String getTypeLabel() {
-	        return null;
+	        return text;
         }
 
 		@Override
