@@ -23,13 +23,15 @@ public class ImportParser implements TokenListener {
 		MULTIPLE, SINGLE, DETERMINING, IGNORING, ERROR
 	}
 
+	private File         file          = null;
 	private State 		 state 		   = State.IGNORING;
 	private List<Import> imports       = new ArrayList<Import>();
 	private Import 		 currentImport = null;
 	private boolean 	 reading 	   = false;
 
-	public ImportParser(Tokenizer tokenizer) {
+	public ImportParser(Tokenizer tokenizer, File file) {
 		tokenizer.addTokenListener(this);
+		this.file = file;
 	}
 
 	@Override
@@ -48,21 +50,22 @@ public class ImportParser implements TokenListener {
 				if (TokenType.IMPORT.equals(type)) {
 					state = State.DETERMINING;
 					currentImport = new Import();
+					currentImport.setFile(file);
 				}
 				break;
 			case DETERMINING:
 				if (TokenType.LPAREN.equals(type)) {
 					state = State.MULTIPLE;
-				} 
+				}
 				else if (TokenType.QUOTE.equals(type)) {
 					state = State.SINGLE;
 					currentImport.prefixType = Import.PrefixType.NONE;
-				} 
+				}
 				else if (TokenType.PERIOD.equals(type)) {
 					if (currentImport != null) {
 						currentImport.prefixType = Import.PrefixType.INCLUDED;
 					}
-				} 
+				}
 				else if (TokenType.IDENTIFIER.equals(type)) {
 					if (currentImport != null) {
 						currentImport.prefixType = Import.PrefixType.ALIAS;
@@ -84,6 +87,7 @@ public class ImportParser implements TokenListener {
 			case MULTIPLE:
 				if (currentImport == null) {
 					currentImport = new Import();
+					currentImport.setFile(file);
 				}
 
 				if (TokenType.QUOTE.equals(type)) {
@@ -129,7 +133,7 @@ public class ImportParser implements TokenListener {
 					}
 				}
 			}
-		} 
+		}
 		catch (RuntimeException e) {
 			//Activator.logError(e);
 		}
@@ -151,7 +155,7 @@ public class ImportParser implements TokenListener {
 
 		Lexer lexer = new Lexer();
 		Tokenizer tokenizer = new Tokenizer(lexer);
-		ImportParser importParser = new ImportParser(tokenizer);
+		ImportParser importParser = new ImportParser(tokenizer, null);
 
 		try {
 			lexer.scan(new File("test/test_go/import_test.go"));

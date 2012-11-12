@@ -10,40 +10,41 @@ import com.googlecode.goclipse.Activator;
 /**
  * 
  * @author steel
- *
+ * 
  */
-public abstract class Node implements Serializable{
+public abstract class Node implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 480313969022613471L;
-	
-	private   Package  pkg;
-	private   File     file;
-	private   String 	name;
-	private   String 	insertionText;
-	private   Type     type;
-	private   int    	line;
-	private   String 	documentation;
-	
+	private static final long	serialVersionUID	= 480313969022613471L;
+
+	private Package	          pkg;
+	private File	          file;
+	private String	          name;
+	private String	          insertionText;
+	private Type	          type;
+	private int	              line;
+	private String	          documentation;
+	private Scope             scope;
+
 	// This image is displayed if a subclass has not overridden getImage().
-	protected Image  	image = Activator.getImage("icons/private_co.gif");
-	
+	protected Image	          image	             = Activator.getImage("icons/private_co.gif");
+
 	/**
 	 * @param Package
 	 */
 	public void setPackage(Package pkg) {
 		this.pkg = pkg;
 	}
-	
+
 	/**
 	 * @return Package
 	 */
 	public Package getPackage() {
 		return this.pkg;
 	}
-	
+
 	/**
 	 * @return the documentation
 	 */
@@ -52,7 +53,8 @@ public abstract class Node implements Serializable{
 	}
 
 	/**
-	 * @param documentation the documentation to set
+	 * @param documentation
+	 *            the documentation to set
 	 */
 	public void setDocumentation(String documentation) {
 		this.documentation = documentation;
@@ -112,7 +114,8 @@ public abstract class Node implements Serializable{
 	}
 
 	/**
-	 * @param insertionText the insertionText to set
+	 * @param insertionText
+	 *            the insertionText to set
 	 */
 	public void setInsertionText(String insertionText) {
 		this.insertionText = insertionText;
@@ -128,7 +131,7 @@ public abstract class Node implements Serializable{
 	@Override
 	public int hashCode() {
 		String name = getName();
-		
+
 		return name == null ? super.hashCode() : name.hashCode();
 	}
 
@@ -139,21 +142,41 @@ public abstract class Node implements Serializable{
 		} else if (!(this.getClass().isInstance(obj))) {
 			return false;
 		}
-		
-		Node other = (Node)obj;
-		
+
+		Node other = (Node) obj;
+
 		String name1 = getName();
 		String name2 = other.getName();
-		
+
 		return name1 == null ? name1 == name2 : name1.equals(name2);
 	}
 
+	/**
+	 * @return
+	 */
 	public File getFile() {
-    	return file;
+		return file;
+	}
+
+	/**
+	 * @param file
+	 */
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+	/**
+	 * @return
+	 */
+	public Scope getScope() {
+    	return scope;
     }
 
-	public void setFile(File file) {
-    	this.file = file;
+	/**
+	 * @param scope
+	 */
+	public void setScope(Scope scope) {
+    	this.scope = scope;
     }
 
 }

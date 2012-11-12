@@ -175,10 +175,9 @@ public class GoTestView extends ViewPart {
 		public void init() throws IOException {
 			
 			try {
-				Lexer     lexer     = new Lexer();
-				Tokenizer tokenizer = new Tokenizer(lexer);
-				FunctionParser functionParser = new FunctionParser(true,
-				        tokenizer);
+				Lexer          lexer          = new Lexer();
+				Tokenizer      tokenizer      = new Tokenizer(lexer);
+				FunctionParser functionParser = new FunctionParser(true, tokenizer, file);
 
 				BufferedReader reader = new BufferedReader(new FileReader(file));
 				String temp = "";

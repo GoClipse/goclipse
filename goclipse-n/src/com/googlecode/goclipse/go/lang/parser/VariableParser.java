@@ -19,9 +19,10 @@ import com.googlecode.goclipse.go.lang.model.Var;
 public class VariableParser implements TokenListener {
 
 	private enum State {
-		START, SIMPLE_VAR, SIMPLE_TYPE, INFERENCE, FINISHED, ERROR, 
+		START, SIMPLE_VAR, SIMPLE_TYPE, INFERENCE, FINISHED, ERROR,
 	}
 	
+	private File              file              = null;
 	private ScopeParser 	  scopeParser       = null;
 	private ArrayList<Var>    vars              = new ArrayList<Var>();
 	private State             state			    = State.START;
@@ -37,8 +38,10 @@ public class VariableParser implements TokenListener {
 	/**
 	 * @param tokenizer
 	 */
-	public VariableParser(Tokenizer tokenizer, FunctionParser functionParser) {
+	public VariableParser(Tokenizer tokenizer, File file, FunctionParser functionParser) {
 		tokenizer.addTokenListener(this);
+		this.file = file;
+		var.setFile(file);
 		this.functionParser = functionParser;
 	}
 	
@@ -61,7 +64,7 @@ public class VariableParser implements TokenListener {
 				if (linenumber > lastCommentLine
 						&& TokenType.DIVIDE.equals(type)) {
 					lastCommentLine = linenumber;
-				} 
+				}
 				else {
 					comment.append(value);
 					lastCommentLine = linenumber;
@@ -91,7 +94,7 @@ public class VariableParser implements TokenListener {
 					//System.out.println("State Changed On: "+ type +":"+ value);
 					state = State.INFERENCE;
 				}
-				break;			
+				break;
 			
 			case SIMPLE_VAR:
 				if(TokenType.IDENTIFIER.equals(type)){
@@ -136,6 +139,7 @@ public class VariableParser implements TokenListener {
 					var.setLine(linenumber);
 					scopeParser.addVariable(var);
 					var = new Var();
+					var.setFile(file);
 					comment = new StringBuffer();
 				}
 				
@@ -153,10 +157,11 @@ public class VariableParser implements TokenListener {
 					var.setLine(linenumber);
 					scopeParser.addVariable(var);
 					var = new Var();
+					var.setFile(file);
 					comment = new StringBuffer();
 				}
 				previousIdentifier.clear();
-				break;				
+				break;
 				
 			}
 			
@@ -172,7 +177,7 @@ public class VariableParser implements TokenListener {
 				  !TokenType.SPACE.equals(type)&&
 				  !TokenType.NEWLINE.equals(type)&&
 				  !TokenType.TAB.equals(type)&&
-				  !TokenType.TYPE.equals(type)){ 
+				  !TokenType.TYPE.equals(type)){
 			
 			previousIdentifier.clear();
 		}
@@ -180,7 +185,7 @@ public class VariableParser implements TokenListener {
 
 	/**
 	 * Handle the times we flush the buffer.  We do this so those
-	 * times we declare a var within a statement like a for loop, 
+	 * times we declare a var within a statement like a for loop,
 	 * the new var falls into the inner scope and not the outer.
 	 * @param type
 	 */
@@ -202,7 +207,7 @@ public class VariableParser implements TokenListener {
 					scopeParser.addVariable(var);
 				}
 				varBuffer.clear();
-			}			
+			}
 		}
 	}
 	
@@ -230,7 +235,7 @@ public class VariableParser implements TokenListener {
 
 		Lexer lexer = new Lexer();
 		Tokenizer tokenizer = new Tokenizer(lexer);
-		VariableParser fparser = new VariableParser(tokenizer, null);
+		VariableParser fparser = new VariableParser(tokenizer, null, null);
 
 		try {
 			lexer.scan(new File("test_go/import_test.go"));
@@ -241,7 +246,7 @@ public class VariableParser implements TokenListener {
 				Activator.logInfo(var.getName());
 				Activator.logInfo(var.getInsertionText());
 				Activator.logInfo("-------------------------------------------------");
-			}			
+			}
 
 		} catch (IOException e) {
 			Activator.logError(e);

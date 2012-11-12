@@ -721,7 +721,7 @@ public class GoCompiler {
 	private List<Import> getImports(File file) throws IOException {
 		Lexer 		  lexer        = new Lexer();
 		Tokenizer 	  tokenizer    = new Tokenizer(lexer);
-		ImportParser  importParser = new ImportParser(tokenizer);
+		ImportParser  importParser = new ImportParser(tokenizer, file);
 		
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String temp = "";

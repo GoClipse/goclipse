@@ -17,11 +17,18 @@ public class PackageParser implements TokenListener{
        START, CONSUME, FINISHED, ERROR
     }
 	
-	private State state = State.START;
-	private Package pckg = new Package();
+	private File    file  = null;
+	private State   state = State.START;
+	private Package pckg  = new Package();
 
-	public PackageParser(Tokenizer tokenizer) {
+	/**
+	 * @param tokenizer
+	 * @param file
+	 */
+	public PackageParser(Tokenizer tokenizer, File file) {
 		tokenizer.addTokenListener(this);
+		this.file = file;
+		pckg.setFile(file);
 	}
 	
 	@Override
@@ -68,10 +75,10 @@ public class PackageParser implements TokenListener{
 	
 	public static void main(String[] args) {
 
-		Lexer lexer = new Lexer();
-		Tokenizer tokenizer = new Tokenizer(lexer);
-		PackageParser packageParser = new PackageParser(tokenizer);
-		ImportParser importParser = new ImportParser(tokenizer);
+		Lexer         lexer         = new Lexer();
+		Tokenizer     tokenizer     = new Tokenizer(lexer);
+		PackageParser packageParser = new PackageParser(tokenizer, null);
+		ImportParser  importParser  = new ImportParser(tokenizer, null);
 
 		try {
 			lexer.scan(new File("test_go/import_test.go"));

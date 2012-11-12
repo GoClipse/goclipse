@@ -23,25 +23,28 @@ final public class TypeParser implements TokenListener {
 
 	private enum State{START, CONSUME_NAME, DETERMINE, CONSUME_ALIAS, CONSUME_INTERFACE, CONSUME_STRUCT, FINISHED}
 
-	private State 		     state 		      = State.START;
-	private ScopeParser 	 scopeParser      = null;
-	private StringBuffer    comment          = new StringBuffer();
+	private File            file              = null;
+	private State 		    state 		      = State.START;
+	private ScopeParser 	scopeParser       = null;
+	private StringBuffer    comment           = new StringBuffer();
 	private StringBuffer    text 	          = new StringBuffer();
-	private ArrayList<Type> types            = new ArrayList<Type>();
-	private int             lastCommentLine  = 0;
-	private int             tokenOnLineCount = 0;
+	private ArrayList<Type> types             = new ArrayList<Type>();
+	private int             lastCommentLine   = 0;
+	private int             tokenOnLineCount  = 0;
 	private int             scope_tracker 	  = 0;
-	private boolean        exportsOnly      = true;
+	private boolean         exportsOnly       = true;
 	private Type            type 			  = new Type();
-	private Var             var              = new Var();
+	private Var             var               = new Var();
 
 	/**
 	 * 
 	 * @param tokenizer
 	 */
-	public TypeParser(boolean parseExportsOnly, Tokenizer tokenizer) {
+	public TypeParser(boolean parseExportsOnly, Tokenizer tokenizer, File file) {
 		tokenizer.addTokenListener(this);
 		exportsOnly = parseExportsOnly;
+		this.file = file;
+		type.setFile(file);
 	}
 	
 	/**
@@ -172,6 +175,8 @@ final public class TypeParser implements TokenListener {
 			else {
 				type.setTypeClass(TypeClass.UNKNOWN);
 				type 		  = new Type();
+				type.setFile(file);
+				
 				comment 	  = new StringBuffer();
 				state 		  = State.START;
 			}
@@ -184,6 +189,8 @@ final public class TypeParser implements TokenListener {
 			
 			text          = new StringBuffer();
 			type 		  = new Type();
+			type.setFile(file);
+			
 			comment 	  = new StringBuffer();
 			state 		  = State.START;
 			break;
@@ -192,6 +199,8 @@ final public class TypeParser implements TokenListener {
 			if(TokenType.RBRACE.equals(tokenType)){
 				types.add(type);
 				type 		  = new Type();
+				type.setFile(file);
+				
 				comment 	  = new StringBuffer();
 				state 		  = State.START;
 			}
@@ -209,6 +218,8 @@ final public class TypeParser implements TokenListener {
 				scopeParser.addType(type);
 			}
 			type 		  = new Type();
+			type.setFile(file);
+			
 			comment 	  = new StringBuffer();
 			state 		  = State.START;
 			break;
@@ -226,7 +237,7 @@ final public class TypeParser implements TokenListener {
 
 		Lexer      lexer     = new Lexer();
 		Tokenizer  tokenizer = new Tokenizer(lexer);
-		TypeParser fparser   = new TypeParser(false,tokenizer);
+		TypeParser fparser   = new TypeParser(false,tokenizer, null);
 
 		try {
 			lexer.scan(new File("test_go/import_test.go"));

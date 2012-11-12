@@ -114,8 +114,8 @@ public class DependencyGraph {
 
 		Lexer lexer = new Lexer();
 		Tokenizer tokenizer = new Tokenizer(lexer);
-		PackageParser packageParser = new PackageParser(tokenizer);
-		ImportParser importParser = new ImportParser(tokenizer);
+		PackageParser packageParser = new PackageParser(tokenizer, file);
+		ImportParser importParser = new ImportParser(tokenizer,file);
 		lexer.scan(file);
 
 		String local = res.getParent().toString().replace(srcfolder.toString() + "/", "");

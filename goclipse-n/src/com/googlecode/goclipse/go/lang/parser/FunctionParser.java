@@ -23,8 +23,9 @@ public class FunctionParser implements TokenListener {
 		START, DETERMINE_TYPE, CONSUME_FUNCTION_HEADER, CONSUME_METHOD_HEADER, FINISHED, ERROR
 	}
 
+	private File                              file             = null;
 	private State 							  state 		   = State.START;
-	private ScopeParser 					  scopeParser      = null;     
+	private ScopeParser 					  scopeParser      = null;
 	private ArrayList<FunctionParserListener> funcListeners    = new ArrayList<FunctionParserListener>();
 	private ArrayList<Function>               funcs 		   = new ArrayList<Function>();
 	private ArrayList<Method>                 methods 		   = new ArrayList<Method>();
@@ -42,9 +43,12 @@ public class FunctionParser implements TokenListener {
 	 * 
 	 * @param tokenizer
 	 */
-	public FunctionParser(boolean parseExportsOnly, Tokenizer tokenizer) {
+	public FunctionParser(boolean parseExportsOnly, Tokenizer tokenizer, File file) {
 		tokenizer.addTokenListener(this);
 		exportsOnly = parseExportsOnly;
+		this.file = file;
+		func.setFile(file);
+		method.setFile(file);
 	}
 	
 	/**
@@ -146,11 +150,11 @@ public class FunctionParser implements TokenListener {
 						method.setInsertionText(value + "()");
 						afterReceiver++;
 					}
-				} 
+				}
 				else if (TokenType.RPAREN.equals(type)) {
 					text.append(value);
 					afterReceiver++;
-				} 
+				}
 				else if (TokenType.NEWLINE.equals(type)) {
 					
 					if (text.toString().lastIndexOf('{') != -1) {
@@ -171,16 +175,17 @@ public class FunctionParser implements TokenListener {
 						}
 					}
 					
-					// add it to current scope 
+					// add it to current scope
 					if (scopeParser!=null){
 						scopeParser.addMethod(method);
 					}
 
 					method = new Method();
+					method.setFile(file);
 					comment = new StringBuffer();
 					state = State.START;
 					afterReceiver = 0;
-				} 
+				}
 				else {
 					text.append(value);
 				}
@@ -195,13 +200,13 @@ public class FunctionParser implements TokenListener {
 					if (func.getInsertionText() == null) {
 						func.setInsertionText(value + "()");
 					}
-				} 
+				}
 				else if (TokenType.NEWLINE.equals(type)) {
 
 					if (text.toString().lastIndexOf('{') != -1) {
 						func.setName(text.toString().substring(0,
 								text.toString().lastIndexOf('{')));
-					} 
+					}
 					else {
 						func.setName(text.toString());
 					}
@@ -217,15 +222,16 @@ public class FunctionParser implements TokenListener {
 						}
 					}
 
-					// add it to current scope 
+					// add it to current scope
 					if (scopeParser!=null){
 						scopeParser.addFunction(func);
 					}
 					
 					func = new Function();
+					func.setFile(file);
 					comment = new StringBuffer();
 					state = State.START;
-				} 
+				}
 				else {
 					text.append(value);
 				}
@@ -236,7 +242,7 @@ public class FunctionParser implements TokenListener {
 				if (TokenType.LPAREN.equals(type)) {
 					state = State.CONSUME_METHOD_HEADER;
 					text.append(value);
-				} 
+				}
 				else if (TokenType.IDENTIFIER.equals(type)) {
 					state = State.CONSUME_FUNCTION_HEADER;
 
@@ -263,7 +269,7 @@ public class FunctionParser implements TokenListener {
 
 		Lexer lexer = new Lexer();
 		Tokenizer tokenizer = new Tokenizer(lexer);
-		FunctionParser fparser = new FunctionParser(false, tokenizer);
+		FunctionParser fparser = new FunctionParser(false, tokenizer, null);
 
 		try {
 			lexer.scan(new File("test_go/import_test.go"));

@@ -1,5 +1,6 @@
 package com.googlecode.goclipse.go.lang.parser;
 
+import java.io.File;
 import java.util.Stack;
 
 import com.googlecode.goclipse.Activator;
@@ -16,20 +17,24 @@ import com.googlecode.goclipse.go.lang.model.Var;
  * @author steel
  */
 public class ScopeParser implements TokenListener {
-
+	private File    file             = null;
 	private int     tokenOnLineCount = 0;
 	private Scope   root_scope       = null;
 	private Scope   currentScope     = null;
 	private int     linenumber       = 0;
-	private Stack<TokenType> stack   = new Stack<TokenType>();
+	//private Stack<TokenType> stack   = new Stack<TokenType>();
+	private Stack<Scope>  stack     = new Stack<Scope>();
 	
 	/**
 	 * @param tokenizer
 	 */
-	public ScopeParser(Tokenizer tokenizer) {
-		root_scope = new Scope(null, "root");
-		currentScope = root_scope;
+	public ScopeParser(Tokenizer tokenizer, File file) {
 		tokenizer.addTokenListener(this);
+		root_scope   = new Scope(null, "root");
+		this.file    = file;
+		currentScope = root_scope;
+		currentScope.setFile(file);
+		stack.push(currentScope);
 	}
 	
 	/**
@@ -44,53 +49,25 @@ public class ScopeParser implements TokenListener {
 	 */
 	@Override
 	public void tokenFound(TokenType type, String value, boolean inComment,	int linenumber, int start, int end) {
+		
 		try {
+
 			if (inComment) {
 				return;
 			}
 			
-			if(!type.isWhiteSpace()){
-				//System.out.println(value);
-			}
-			
-			if (TokenType.CASE.equals(type) || TokenType.DEFAULT.equals(type)||TokenType.RBRACE.equals(type)) {
-				if(!stack.isEmpty()) {
-					TokenType peek  = stack.peek();
-					currentScope = currentScope.getParent();
-					switch (peek) {
-					case FUNC:
-					case IF:
-					case ELSE:
-					case TYPE:
-					case DEFAULT:
-					case SWITCH:
-						currentScope = currentScope.getParent();
-					}
-				}
-			}
-			
-			switch (type) {
-			case FUNC:
-			case IF:
-			case ELSE:
-			case TYPE:
-			case CASE:
-			case DEFAULT:
-			case LBRACE:
-			case SWITCH:
-				stack.push(type);
-				Scope s = new Scope(currentScope, value+":"+linenumber);
-				currentScope = s;
+			if (TokenType.LBRACE.equals(type)){
+				stack.push(currentScope);
+				currentScope = new Scope(currentScope, value+":"+linenumber);
+				currentScope.setStart(linenumber);
+				currentScope.setFile(file);
 				return;
 			}
-
-			// guard against identifiers named 'func'
-			if (!(type.isWhiteSpace())) {
-				tokenOnLineCount++;
-			}
-
-			if (TokenType.NEWLINE.equals(type)) {
-				tokenOnLineCount = 0;
+			
+			if (TokenType.RBRACE.equals(type)){
+				currentScope.setEnd(linenumber);
+				currentScope = stack.pop();
+				return;
 			}
 			
 		} catch (RuntimeException e) {
@@ -111,6 +88,7 @@ public class ScopeParser implements TokenListener {
 	 */
 	public void addVariable(Var var){
 		currentScope.addVariable(var);
+		var.setScope(currentScope);
 	}
 	
 	/**

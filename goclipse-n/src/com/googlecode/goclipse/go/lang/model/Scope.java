@@ -6,7 +6,7 @@ import org.eclipse.swt.graphics.Image;
 
 import com.googlecode.goclipse.Activator;
 
-public class Scope extends Node{
+public class Scope extends Node {
 
 	/**
 	 * 
@@ -118,7 +118,8 @@ public class Scope extends Node{
 	/**
 	 * @return the image
 	 */
-	public Image getImage() {
+	@Override
+    public Image getImage() {
 		return Activator.getImage("icons/function_co.png");
 	}
 
@@ -170,7 +171,7 @@ public class Scope extends Node{
 		
 		for(Function func: functions){
 			System.out.println(indent+"func   > "+func.getInsertionText());
-		}		
+		}
 	}
 	
 }

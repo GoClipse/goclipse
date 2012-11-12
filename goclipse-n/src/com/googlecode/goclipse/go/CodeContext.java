@@ -138,7 +138,7 @@ public class CodeContext {
 
 		File packageFolder = targetContext.getParentFile();
 
-		parseText(project, fileText, false, useExternalContext, codeContext);
+		parseText(project, targetContext, fileText, false, useExternalContext, codeContext);
 
 		//
 		// Only look at the other files in the directory if the file
@@ -153,7 +153,7 @@ public class CodeContext {
 				        && !file.getName().endsWith(GoConstants.GO_TEST_FILE_EXTENSION)) {
 
 					String text = readFile(file);
-					parseText(project, text, true, false, codeContext);
+					parseText(project, file, text, true, false, codeContext);
 				}
 			}
 		}
@@ -194,22 +194,22 @@ public class CodeContext {
 	 * @param codeContext
 	 * @throws IOException
 	 */
-	private static void parseText(IProject project, String fileText, boolean packagePeer, boolean useExternalContext,
+	private static void parseText(IProject project, File file, String fileText, boolean packagePeer, boolean useExternalContext,
 	        CodeContext codeContext) throws IOException {
 
-		Lexer lexer = new Lexer();
-		Tokenizer tokenizer = new Tokenizer(lexer);
-		PackageParser packageParser = new PackageParser(tokenizer);
-		ImportParser importParser = new ImportParser(tokenizer);
-		ScopeParser scopeParser = new ScopeParser(tokenizer);
+		Lexer         lexer         = new Lexer();
+		Tokenizer     tokenizer     = new Tokenizer(lexer);
+		PackageParser packageParser = new PackageParser(tokenizer, file);
+		ImportParser  importParser  = new ImportParser(tokenizer, file);
+		ScopeParser   scopeParser   = new ScopeParser(tokenizer, file);
 
-		FunctionParser functionParser = new FunctionParser(false, tokenizer);
+		FunctionParser functionParser = new FunctionParser(false, tokenizer, file);
 		functionParser.setScopeParser(scopeParser);
 
-		TypeParser typeParser = new TypeParser(false, tokenizer);
+		TypeParser typeParser = new TypeParser(false, tokenizer, file);
 		typeParser.setScopeParser(scopeParser);
 
-		VariableParser variableParser = new VariableParser(tokenizer, functionParser);
+		VariableParser variableParser = new VariableParser(tokenizer, file, functionParser);
 		variableParser.setScopeParser(scopeParser);
 
 		// InterfaceParser interfaceParser = new InterfaceParser(tokenizer);
@@ -233,8 +233,11 @@ public class CodeContext {
 		// scopeParser.getRootScope().print("");
 
 		if (useExternalContext) {
+			
 			for (Import imp : codeContext.imports) {
+			
 				CodeContext context = externalContexts.get(imp.path);
+				
 				if (context == null) {
 					context = getExternalCodeContext(project, imp.path);
 					externalContexts.put(imp.path, context);
@@ -243,11 +246,13 @@ public class CodeContext {
 				for (Method method : context.methods) {
 					method.setPackage(context.pkg);
 				}
+				
 				codeContext.methods.addAll(context.methods);
 
 				for (Function function : context.functions) {
 					function.setPackage(context.pkg);
 				}
+				
 				codeContext.functions.addAll(context.functions);
 			}
 		}
@@ -262,7 +267,7 @@ public class CodeContext {
 	 * @throws RecognitionException
 	 */
 	public static CodeContext getExternalCodeContext(IProject project, String packagePath) throws IOException {
-
+		
 		CodeContext codeContext = new CodeContext(packagePath);
 
 		// InterfaceParser interfaceParser = new InterfaceParser(tokenizer);
@@ -317,11 +322,11 @@ public class CodeContext {
 		File[] files = pkgdir.listFiles();
 
 		for (File file : files) {
-			Lexer lexer = new Lexer();
-			Tokenizer tokenizer = new Tokenizer(lexer);
-			PackageParser packageParser = new PackageParser(tokenizer);
-			FunctionParser functionParser = new FunctionParser(true, tokenizer);
-			TypeParser typeParser = new TypeParser(true, tokenizer);
+			Lexer          lexer          = new Lexer();
+			Tokenizer      tokenizer      = new Tokenizer(lexer);
+			PackageParser  packageParser  = new PackageParser(tokenizer, file);
+			FunctionParser functionParser = new FunctionParser(true, tokenizer, file);
+			TypeParser     typeParser     = new TypeParser(true, tokenizer, file);
 
 			if (file.canRead() && file.getName().endsWith(".go") && !file.getName().endsWith("_test.go")) {
 
@@ -374,11 +379,36 @@ public class CodeContext {
 	 * @return
 	 */
 	public Import getImportForName(String name) {
+		
+		if (name == null || name.length()==0){
+			return null;
+		}
+		
 		for (Import i : imports) {
 			if (i.prefix != null && i.prefix.equals(name)) {
 				return i;
 			}
 		}
+		
+		return null;
+	}
+	
+	/**
+	 * @param name
+	 * @return
+	 */
+	public Function getFunctionForName(String name) {
+		
+		if (name == null || name.length()==0){
+			return null;
+		}
+		
+		for (Function f : functions) {
+			if (f.getInsertionText().equals(name)) {
+				return f;
+			}
+		}
+		
 		return null;
 	}
 
@@ -386,12 +416,20 @@ public class CodeContext {
 	 * @param name
 	 * @return
 	 */
-	public Var getVarForName(String name) {
+	public Var getVarForName(String name, int line) {
+		
+		if (name == null || name.length()==0){
+			return null;
+		}
+		
 		for (Var v : vars) {
-			if (v.getInsertionText().equals(name)) {
+			if (v.getInsertionText().equals(name) &&
+				v.getScope().getStart() <= line   &&
+				v.getScope().getEnd() >= line  ) {
 				return v;
 			}
 		}
+		
 		return null;
 	}
 

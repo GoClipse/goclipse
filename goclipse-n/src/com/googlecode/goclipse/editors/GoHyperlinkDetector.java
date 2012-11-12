@@ -23,84 +23,113 @@ import sun.text.normalizer.UTF16;
 
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.go.CodeContext;
+import com.googlecode.goclipse.go.lang.model.Function;
 import com.googlecode.goclipse.go.lang.model.Import;
 import com.googlecode.goclipse.go.lang.model.Node;
+import com.googlecode.goclipse.go.lang.model.Var;
 
 /**
  * A hyperlink detector for the Go editor.
  */
 public class GoHyperlinkDetector implements IHyperlinkDetector {
 
-	private GoEditor editor;
-	
+	private GoEditor	editor;
+
 	/**
 	 * Create a new GoHyperlinkDetector.
 	 */
 	public GoHyperlinkDetector(GoEditor editor) {
 		this.editor = editor;
 	}
-	
+
 	/**
 	 * 
 	 */
 	@Override
 	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean showMultiple) {
-		IHyperlink[] link       = new IHyperlink[1];
-		//ITextEditor  textEditor = (ITextEditor)getAdapter(ITextEditor.class);
-		int          offset     = region.getOffset();
+		IHyperlink[] link = new IHyperlink[1];
+		int offset = region.getOffset();
 		
 		IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 		IRegion wordRegion = findWord(document, offset);
+		
 		try {
 			String word = document.get(wordRegion.getOffset(), wordRegion.getLength());
+			IProject project = Environment.INSTANCE.getCurrentProject();
+
+			// get the current imports
+			CodeContext cc1 = CodeContext.getCodeContext(project, ((FileEditorInput) editor.getEditorInput()).getFile()
+			        .getLocation().toOSString(), document.get());
+
+			if (cc1 == null) {
+				return null;
+			}
+
+			GoHyperLink h = new GoHyperLink();
+
+			// imported function call or method call
 			if (word.contains(".")) {
-				IProject project = Environment.INSTANCE.getCurrentProject();
+
 				String[] parts = word.split("\\.");
-				
-				// get the current imports
-				CodeContext cc1 = CodeContext.getCodeContext(
-									project,
-									((FileEditorInput)editor.getEditorInput()).getFile().getLocation().toOSString(),
-									document.get());
-				
-				if (cc1 == null) {
-					return null;
-				}
-				
+
 				Import i = cc1.getImportForName(parts[0]);
 				if (i != null) {
 					Node node = cc1.getLocationForPkgAndName(i.path, parts[1]);
 					if (node == null) {
 						return null;
 					}
-					
-					GoHyperLink h = new GoHyperLink();
-					h.node   = node;
+
+					h.node = node;
 					h.region = wordRegion;
-					h.text   = word;
-					h.type   = "go function";
-					
-					link[0]  = h;
+					h.text = word;
+					h.type = "go function";
+
+					link[0] = h;
 					return link;
-			
 				}
+
+				// variable or local function call
+			} else {
 				
-				
-				if (true) {
+				try {
+			        int line = document.getLineOfOffset(offset);
+			        
+					// Is there a variable?
+					Var v = cc1.getVarForName(word, line+1);
+					if (v != null) {
+						h.node = v;
+						h.region = wordRegion;
+						h.text = word;
+						h.type = "go variable";
+						link[0] = h;
+						return link;
+					}
 					
-				}
-				
+					// Is there a variable?
+					Function f = cc1.getFunctionForName(word+"()");
+					if (f != null) {
+						h.node = f;
+						h.region = wordRegion;
+						h.text = word;
+						h.type = "go variable";
+						link[0] = h;
+						return link;
+					}
+		        } catch (BadLocationException e1) {
+		        	return null;
+		        }
+
 			}
-		
-		// non critical code... ignoring exceptions
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-		
+
+			// non critical code... ignoring exceptions
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		if (wordRegion == null || wordRegion.getLength() == 0) {
 			return null;
 		}
-		
+
 		return null;
 	}
 
@@ -111,41 +140,42 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 	 */
 	private static IRegion findWord(IDocument document, int offset) {
 
-		int start= -2;
-		int end= -1;
+		int start = -2;
+		int end = -1;
 
 		try {
-			int pos= offset;
+			int pos = offset;
 			char c;
 
 			while (pos >= 0) {
-				c= document.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c) && c!='.' ) {
+				c = document.getChar(pos);
+				if (!Character.isJavaIdentifierPart(c) && c != '.') {
 					// Check for surrogates
 					if (UTF16.isSurrogate(c)) {
-						
+
 					} else {
 						break;
 					}
 				}
 				--pos;
 			}
-			start= pos;
+			start = pos;
 
-			pos= offset;
-			int length= document.getLength();
+			pos = offset;
+			int length = document.getLength();
 
 			while (pos < length) {
-				c= document.getChar(pos);
-				if (!Character.isJavaIdentifierPart(c) && c!='.')
+				c = document.getChar(pos);
+				if (!Character.isJavaIdentifierPart(c) && c != '.') {
 					break;
+				}
 				++pos;
 			}
-			end= pos;
+			end = pos;
 
 		} catch (BadLocationException x) {
 		}
-		
+
 		if (start >= -1 && end > -1) {
 			if (start == offset && end == offset)
 				return new Region(offset, 0);
@@ -157,69 +187,71 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 
 		return null;
 	}
-	
+
 	/**
 	 * 
 	 */
 	class GoHyperLink implements IHyperlink {
-		
-		public Node    node;
-		public IRegion region;
-		public String  text;
-		public String  type;
+
+		public Node		node;
+		public IRegion	region;
+		public String	text;
+		public String	type;
 
 		@Override
-        public IRegion getHyperlinkRegion() {
-	        return region;
-        }
+		public IRegion getHyperlinkRegion() {
+			return region;
+		}
 
 		@Override
-        public String getTypeLabel() {
-	        return text;
-        }
+		public String getTypeLabel() {
+			return text;
+		}
 
 		@Override
-        public String getHyperlinkText() {
-	        return text;
-        }
+		public String getHyperlinkText() {
+			return text;
+		}
 
 		@Override
-        public void open() {
-			
+		public void open() {
+
 			File fileToOpen = node.getFile();
-			 
-			if (fileToOpen.exists() && fileToOpen.isFile()) {
-			    IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI());
-			    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-			 
-			    try {
-			        IEditorPart part = IDE.openEditorOnFileStore( page, fileStore );
-			        
-			        ITextEditor editor = ((ITextEditor)part);
-			        IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
-			        
-			        if (document != null) {
-			        	IRegion lineInfo = null;
-			            try {
-			              // line count internaly starts with 0, and not with 1 like in
-			              // GUI
-			              lineInfo = document.getLineInformation(node.getLine() - 1);
-			            } catch (BadLocationException e) {}
-			            
-			            if (lineInfo != null) {
-			              editor.selectAndReveal(lineInfo.getOffset(), lineInfo.getLength());
-			            }
-			        }
-			        
-			    } catch ( Exception e ) {
-			        //Put your exception handler here if you wish to
-			    }
+
+			if (fileToOpen != null && fileToOpen.exists() && fileToOpen.isFile()) {
+				IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI());
+				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+
+				try {
+					IEditorPart part = IDE.openEditorOnFileStore(page, fileStore);
+
+					ITextEditor editor = ((ITextEditor) part);
+					IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+
+					if (document != null) {
+						IRegion lineInfo = null;
+						try {
+							// line count internaly starts with 0, and not with
+							// 1 like in
+							// GUI
+							lineInfo = document.getLineInformation(node.getLine() - 1);
+						} catch (BadLocationException e) {
+						}
+
+						if (lineInfo != null) {
+							editor.selectAndReveal(lineInfo.getOffset(), lineInfo.getLength());
+						}
+					}
+
+				} catch (Exception e) {
+					// Put your exception handler here if you wish to
+				}
 			} else {
-			    //Do something if the file does not exist
+				// Do something if the file does not exist
 			}
-	        
-        }
-		
+
+		}
+
 	}
 
 }

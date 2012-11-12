@@ -402,7 +402,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	private boolean isCommandFile(File file) throws IOException {
 		Lexer 		  lexer         = new Lexer();
 		Tokenizer 	  tokenizer 	= new Tokenizer(lexer);
-		PackageParser packageParser = new PackageParser(tokenizer);
+		PackageParser packageParser = new PackageParser(tokenizer, file);
 		
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String temp = "";

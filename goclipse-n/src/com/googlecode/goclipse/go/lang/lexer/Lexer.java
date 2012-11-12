@@ -22,7 +22,6 @@ public class Lexer {
 	 * Count the line numbers
 	 */
 	private int 	lineNumber 		  = 0;
-	
 	private int     columnCount 	  = -1;
 	private boolean lineCommentState  = false;
 	private boolean blockCommentState = false;
@@ -42,8 +41,9 @@ public class Lexer {
 		addLexerListener(new LexerListener() {
 			
 			@Override
-			public void tokenFound(TokenType type, String value, boolean inComment,
+            public void tokenFound(TokenType type, String value, boolean inComment,
 					int start, int end) {
+				
 				TokenUnit unit = new TokenUnit();
 				unit.tokenType = type;
 				unit.text 	   = value;
