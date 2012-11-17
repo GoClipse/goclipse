@@ -7,7 +7,7 @@ In order to create a build of GoClipse:
   From this directory (com.googlecode.goclipse.build_pde) run ant. It'll load build.xml by default
   and run the default (desktop_build) target.
   
-  The first build will take a while as a 3.6 version of Eclipse is downloaded. Subsequent builds will
+  The first build will take a while as a 3.7 version of Eclipse is downloaded. Subsequent builds will
   be faster (< 1 minute).
   
   The build will ultimately create a zip file containing an update site for the latest version of

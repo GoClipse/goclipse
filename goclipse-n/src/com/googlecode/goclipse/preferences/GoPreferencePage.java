@@ -42,7 +42,6 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 	private FileFieldEditor	     compilerEditor;
 	private FileFieldEditor	     formatterEditor;
 	private FileFieldEditor	     documentorEditor;
-	private DirectoryFieldEditor gopathEditor;
 
 	/**
 	 * 
@@ -110,7 +109,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		GridLayoutFactory.fillDefaults().margins(10, 4).applyTo(group);
 		fieldParent = new Composite(group, SWT.NONE);
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
-		addField(gopathEditor = new DirectoryFieldEditor(PreferenceConstants.GOPATH, "GO&PATH:", fieldParent));
+		addField(new DirectoryFieldEditor(PreferenceConstants.GOPATH, "GO&PATH:", fieldParent));
 	}
 
 	@Override

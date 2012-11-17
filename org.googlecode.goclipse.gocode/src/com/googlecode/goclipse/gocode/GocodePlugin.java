@@ -259,7 +259,7 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
       KillCommand.execute(killlist);
     } catch (Exception error) {
       GocodePlugin.getPlugin().getLog().log(
-          new Status(Status.ERROR, GocodePlugin.PLUGIN_ID,
+          new Status(IStatus.ERROR, GocodePlugin.PLUGIN_ID,
               "Windows taskkill process failed.  Could not kill gocode process."));
     }
   }

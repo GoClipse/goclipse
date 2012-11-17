@@ -231,11 +231,6 @@ public class GoSearchPage extends DialogPage implements ISearchPage {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see org.eclipse.jface.dialogs.DialogPage#dispose()
-   */
   @Override
   public void dispose() {
     writeConfiguration();

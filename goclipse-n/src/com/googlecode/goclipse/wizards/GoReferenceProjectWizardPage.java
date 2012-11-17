@@ -45,7 +45,8 @@ public class GoReferenceProjectWizardPage extends WizardPage {
 		setControl(composite);
 	}
 
-	public void setVisible(boolean visible) {
+	@Override
+  public void setVisible(boolean visible) {
 		super.setVisible(visible);
 
 		updateStatus();

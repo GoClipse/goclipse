@@ -15,7 +15,8 @@ public class DocumentProvider extends FileDocumentProvider {
    /**
     * 
     */
-	protected IDocument createDocument(Object element) throws CoreException {
+	@Override
+  protected IDocument createDocument(Object element) throws CoreException {
 		IDocument document = super.createDocument(element);
 		if (document != null) {
 			IDocumentPartitioner partitioner =

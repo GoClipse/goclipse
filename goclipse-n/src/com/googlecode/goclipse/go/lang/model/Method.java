@@ -31,7 +31,8 @@ public class Method extends Function {
 	/**
 	 * @return the image
 	 */
-	public Image getImage() {
+	@Override
+  public Image getImage() {
 		return Activator.getImage("icons/public_co.gif");
 	}
 	

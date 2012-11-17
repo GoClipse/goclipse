@@ -60,7 +60,8 @@ public class EditorImageUpdater implements IDisposable {
 		}
 	}
 
-	public void dispose() {
+	@Override
+  public void dispose() {
 		if (resourceChangeListener != null) {
 			ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceChangeListener);
 			resourceChangeListener = null;
@@ -85,7 +86,8 @@ public class EditorImageUpdater implements IDisposable {
 	
 	private void updateIcon(final Image icon) {
 		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+			@Override
+      public void run() {
 				editor.setTitleImage(icon);
 			}
 		});

@@ -12,9 +12,6 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
  */
 public class ProjectPreferencePage extends FieldEditorPreferencePage {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-	 */
 	@Override
 	protected void createFieldEditors() {
 		addField(new DirectoryFieldEditor(PreferenceConstants.GOROOT,

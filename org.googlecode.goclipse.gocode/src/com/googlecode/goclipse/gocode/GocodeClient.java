@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 
@@ -104,7 +105,7 @@ public class GocodeClient {
       String out = output.getLinesAsString();
 
       Activator.getDefault().getLog().log(
-          new Status(Status.ERROR, Activator.PLUGIN_ID, out == null ? error : error + ": " + out));
+          new Status(IStatus.ERROR, Activator.PLUGIN_ID, out == null ? error : error + ": " + out));
     }
 
     return output.getLines();

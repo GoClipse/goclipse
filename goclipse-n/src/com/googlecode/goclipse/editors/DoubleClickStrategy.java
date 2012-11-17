@@ -17,7 +17,8 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 	/**
 	 * 
 	 */
-	public void doubleClicked(ITextViewer part) {
+	@Override
+  public void doubleClicked(ITextViewer part) {
 		int pos = part.getSelectedRange().x;
 
 		if (pos < 0){

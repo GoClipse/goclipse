@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -185,16 +186,16 @@ public class DependencyGraph {
 		for (IResource resource : modified) {
 			for (IFolder srcfolder : srcFolders) {
 				String pkgname = "";
-				IFolder folder = null;
+				IContainer container = null;
 
 				if (resource instanceof IFolder) {
 					pkgname = resource.toString().replaceFirst(
 							srcfolder.toString(), "");
-					folder = project.getFolder(resource.getLocation());
+					container = project.getFolder(resource.getLocation());
 					Set<String> dep = this.getDependencies(pkgname);
 					dep.clear();
 				} else if (resource instanceof IFile) {
-					folder = (IFolder) resource.getParent();
+					container = resource.getParent();
 					pkgname = resource
 							.getParent()
 							.toString()
@@ -205,9 +206,9 @@ public class DependencyGraph {
 					dep.clear();
 				}
 
-				if (folder != null && folder.exists()) {
+				if (container != null && container.exists()) {
 					try {
-						for (IResource file : folder.members()) {
+						for (IResource file : container.members()) {
 							processDependencies(srcfolder, file);
 						}
 

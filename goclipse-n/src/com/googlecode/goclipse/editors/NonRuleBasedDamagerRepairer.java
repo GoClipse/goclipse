@@ -33,7 +33,8 @@ public class NonRuleBasedDamagerRepairer
 	/**
 	 * @see IPresentationRepairer#setDocument(IDocument)
 	 */
-	public void setDocument(IDocument document) {
+	@Override
+  public void setDocument(IDocument document) {
 		fDocument = document;
 	}
 
@@ -63,7 +64,8 @@ public class NonRuleBasedDamagerRepairer
 	/**
 	 * @see IPresentationDamager#getDamageRegion(ITypedRegion, DocumentEvent, boolean)
 	 */
-	public IRegion getDamageRegion(
+	@Override
+  public IRegion getDamageRegion(
 		ITypedRegion partition,
 		DocumentEvent event,
 		boolean documentPartitioningChanged) {
@@ -103,7 +105,8 @@ public class NonRuleBasedDamagerRepairer
 	/**
 	 * @see IPresentationRepairer#createPresentation(TextPresentation, ITypedRegion)
 	 */
-	public void createPresentation(
+	@Override
+  public void createPresentation(
 		TextPresentation presentation,
 		ITypedRegion region) {
 		addRange(

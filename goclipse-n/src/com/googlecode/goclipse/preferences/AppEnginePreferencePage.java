@@ -32,19 +32,15 @@ public class AppEnginePreferencePage extends FieldEditorPreferencePage implement
 	 * GUI blocks needed to manipulate various types of preferences. Each field
 	 * editor knows how to save and restore itself.
 	 */
-	public void createFieldEditors() {
+	@Override
+  public void createFieldEditors() {
 		
 		addField(new BooleanFieldEditor(PreferenceConstants.FIELD_USE_HIGHLIGHTING,
 				"Use Highlighting", getFieldEditorParent()));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	public void init(IWorkbench workbench) {
+	@Override
+  public void init(IWorkbench workbench) {
 //		if(Environment.DEBUG){
 //			System.out.println("Prefences Inited");
 //		}

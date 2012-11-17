@@ -112,7 +112,8 @@ public class FileScope extends Node{
 	/**
 	 * @return the image
 	 */
-	public Image getImage() {
+	@Override
+  public Image getImage() {
 		return Activator.getImage("icons/function_co.png");
 	}
 

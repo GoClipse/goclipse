@@ -11,17 +11,14 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class GoNature implements IProjectNature {
 
-   /**
-    * ID of this project nature
-    */
-   public static final String NATURE_ID = "goclipse.goNature";
-   private IProject           project;
+  /**
+   * ID of this project nature
+   */
+  public static final String NATURE_ID = "goclipse.goNature";
+  private IProject           project;
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.core.resources.IProjectNature#configure()
-    */
-   public void configure() throws CoreException {
+  @Override
+  public void configure() throws CoreException {
       IProjectDescription desc = project.getDescription();
       ICommand[] commands = desc.getBuildSpec();
 
@@ -40,11 +37,8 @@ public class GoNature implements IProjectNature {
       project.setDescription(desc, null);
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-    */
-   public void deconfigure() throws CoreException {
+  @Override
+  public void deconfigure() throws CoreException {
       IProjectDescription description = getProject().getDescription();
       ICommand[] commands = description.getBuildSpec();
       for (int i = 0; i < commands.length; ++i) {
@@ -59,21 +53,13 @@ public class GoNature implements IProjectNature {
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.core.resources.IProjectNature#getProject()
-    */
-   public IProject getProject() {
+  @Override
+  public IProject getProject() {
       return project;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see
-    * org.eclipse.core.resources.IProjectNature#setProject(org.eclipse.core.
-    * resources.IProject)
-    */
-   public void setProject(IProject project) {
+  @Override
+  public void setProject(IProject project) {
       this.project = project;
    }
 

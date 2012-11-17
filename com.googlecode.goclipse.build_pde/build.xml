@@ -100,14 +100,14 @@
         <delete file="${build.dir}/svn_info.properties"/>
         <property name="svn.revision" value="${tempsvn.Revision}"/>
         
-        <get src="http://archive.eclipse.org/technology/epp/downloads/release/helios/R/eclipse-rcp-helios-win32.zip"
+        <get src="http://commondatastorage.googleapis.com/goclipse_release/build/eclipse-linux-x86_64-3.7.2.zip"
             dest="${build.dir}" 
             verbose="true"
             usetimestamp="true"/>
     
-        <property name="eclipse.dir" value="${build.dir}/eclipse_36/eclipse"/>
+        <property name="eclipse.dir" value="${build.dir}/eclipse_37/eclipse"/>
         
-        <unzip src="${build.dir}/eclipse-rcp-helios-win32.zip" dest="${eclipse.dir}/.." overwrite="false"/>    
+        <unzip src="${build.dir}/eclipse-linux-x86_64-3.7.2.zip" dest="${eclipse.dir}/.." overwrite="false"/>    
 
         <!-- clean repo -->
         <delete dir="${build.dir}/buildRepo"/>
@@ -121,7 +121,7 @@
     	
         <echo message="Building svn revision ${svn.revision}"/>
         <echo message="GoClipse version ${feature.version}"/>
-        <echo message="Building for Eclipse 3.6+"/>
+        <echo message="Building for Eclipse 3.7+"/>
     </target>
     
     <!-- pde_build -->
@@ -130,7 +130,7 @@
 	      
 	      <!-- invoke PDE -->
         <sequential>
-            <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" fork="true" 
+            <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.2.0.v20110502.jar" fork="true" 
                   failonerror="false" errorproperty="pde.build.error">
                 <arg value="-data" />
                 <arg value="${build.dir}/workspace" />
@@ -138,7 +138,7 @@
                 <arg value="org.eclipse.ant.core.antRunner" />
                 <arg value="-quiet" />
                 <arg value="-f" />
-                <arg value="${eclipse.dir}/plugins/org.eclipse.pde.build_3.6.0.v20100603/scripts/build.xml" />
+                <arg value="${eclipse.dir}/plugins/org.eclipse.pde.build_3.7.0.v20111116-2009/scripts/build.xml" />
                 <arg value="-Dbuilder=${build.dir}/com.googlecode.goclipse.build_pde" />
                 <arg value="-Dbuild.tmp=${build.dir}/tmp" />
                 <arg value="-Dbuild.target=${eclipse.dir}" />
@@ -166,7 +166,7 @@
 	  	  
 	      <!-- use the P2 Publisher app to create a category in the update site -->
         <sequential>
-            <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" fork="true">
+            <java jar="${eclipse.dir}/plugins/org.eclipse.equinox.launcher_1.2.0.v20110502.jar" fork="true">
                 <arg value="-data" />
                 <arg value="${build.dir}/workspace" />
                 <arg value="-application" />
