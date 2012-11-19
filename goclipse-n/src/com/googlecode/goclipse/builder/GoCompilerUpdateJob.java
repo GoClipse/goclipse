@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import com.googlecode.goclipse.Activator;
 
 /**
- * This job checks to see if any projects have been compiler with older versions of the go compiler.
+ * This job checks to see if any projects have been compiled with older versions of the go compiler.
  * If so, it cleans and rebuilds them.
  * 
  * @author devoncarew
