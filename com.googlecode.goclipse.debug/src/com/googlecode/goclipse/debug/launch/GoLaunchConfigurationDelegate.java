@@ -31,17 +31,22 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoNature;
 import com.googlecode.goclipse.debug.GoDebugPlugin;
 import com.googlecode.goclipse.debug.gdb.GdbConnection;
 import com.googlecode.goclipse.debug.model.GoDebugTarget;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.debug.utils.GDBUtils;
 import com.googlecode.goclipse.utils.LaunchUtil;
 
 // TODO: we should look at extending LaunchConfigurationDelegate instead of implementing ILaunchConfigurationDelegate2
+
+// TODO: on a debug launch, scrape the gdb version and display an error if gdb version < 7.1
+
+// ~"GNU gdb 6.3.50-20050815 (Apple version gdb-1822) (Sun Aug  5 03:00:42 UTC 2012)\n"
+// ~"GNU gdb 7.5 ()\n"
+
 /**
  * @author steel
  */
@@ -182,9 +187,9 @@ public class GoLaunchConfigurationDelegate implements ILaunchConfigurationDelega
         List<String> args = new ArrayList<String>();
 
         if (isDebug) {
-          String gdbPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GDB_PATH);
+          String gdbPath = GDBUtils.getGDBPath();
 
-          if (gdbPath != null && gdbPath.length() > 0) {
+          if (gdbPath != null) {
             File gdbFile = new File(gdbPath);
 
             if (gdbFile.exists()) {
@@ -192,6 +197,7 @@ public class GoLaunchConfigurationDelegate implements ILaunchConfigurationDelega
               args.add(gdbPath);
               args.add("--interpreter");
               args.add("mi");
+              args.add("--args");
             } else {
               abort("Unable to start debug session; GDB not found at '" + gdbPath
                   + "'. Please adjust the GDB setting in the Go > Debugger preference page.");

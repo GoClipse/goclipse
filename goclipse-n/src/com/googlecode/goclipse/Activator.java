@@ -6,6 +6,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -158,6 +159,10 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static void logError(Throwable t) {
 		getDefault().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, t.getMessage(), t));
+	}
+	
+	public static boolean isMac() {
+	  return Util.isMac();
 	}
 
 }

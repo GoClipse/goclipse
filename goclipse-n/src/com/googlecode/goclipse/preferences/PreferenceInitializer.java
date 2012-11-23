@@ -123,6 +123,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
   private void tryAndDiscoverGDB(IPreferenceStore store) {
     final String[] possiblePaths = {
         "/opt/local/bin/fsf-gdb",
+        "/usr/local/bin/gdb",
         "/Developer/usr/bin/gdb",
         "/usr/bin/gdb"
     };

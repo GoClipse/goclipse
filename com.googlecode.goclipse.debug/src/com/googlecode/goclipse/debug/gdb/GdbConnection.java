@@ -14,6 +14,7 @@ import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.IStreamsProxy;
 
 import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.debug.utils.GDBUtils;
 
 // http://www.linuxfoundation.org/en/DMI_Wiki_Content
 // http://davis.lbl.gov/Manuals/GDB/gdb_24.html
@@ -59,6 +60,8 @@ public class GdbConnection implements IStreamListener {
 	private Map<Integer, Callback> callbackMap = new HashMap<Integer, GdbConnection.Callback>();
 	
 	private Map<String, GdbThread> threads = new HashMap<String, GdbThread>();
+	
+	private boolean firstLine = true;
 	
 	public GdbConnection(IProcess process) {
 		this.process = process;
@@ -127,6 +130,16 @@ public class GdbConnection implements IStreamListener {
 		} else if (eventText.startsWith("~\"")) {
 			// cli output
 			
+		  if (firstLine) {
+		    firstLine = false;
+		    
+		    if (eventText.startsWith("~\"GNU gdb")) {
+		      Double gdbVersion = GDBUtils.parseGDBVersion(eventText);
+		      
+		      // TODO: parse this and verify that we're running on at least gdb 7.1.
+//		      /System.out.println("[" + gdbVersion + "]");
+		    }
+		  }
 			//System.out.println("USER  [" + removeQuotes(eventText) + "]");
 		} else if (eventText.startsWith("&\"")) {
 			// gdb debugging output
