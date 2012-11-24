@@ -36,7 +36,8 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 	
 	public static final String	 ID	= "com.googlecode.goclipse.preferences.GoPreferencePage";
 
-	private DirectoryFieldEditor gorootEditor;
+	private DirectoryFieldEditor goRootEditor;
+	private GoPathFieldEditor goPathEditor;
 	private ComboFieldEditor	 goosEditor;
 	private ComboFieldEditor	 goarchEditor;
 	private FileFieldEditor	     compilerEditor;
@@ -66,10 +67,14 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		GridLayoutFactory.fillDefaults().margins(10, 4).applyTo(group);
 
 		Composite fieldParent = new Composite(group, SWT.NONE);
-		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
+		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).hint(150, -1).applyTo(fieldParent);
 
-		addField(gorootEditor = new DirectoryFieldEditor(PreferenceConstants.GOROOT, "GO&ROOT path:", fieldParent));
+		goRootEditor = new DirectoryFieldEditor(PreferenceConstants.GOROOT, "GO&ROOT:", fieldParent);
+		addField(goRootEditor);
 
+    goPathEditor = new GoPathFieldEditor(PreferenceConstants.GOPATH, "GO&PATH:", fieldParent);
+    addField(goPathEditor);
+    
 		goosEditor = new ComboFieldEditor(PreferenceConstants.GOOS, "G&OOS:", new String[][] { { "", "" },
 		        { PreferenceConstants.OS_DARWIN, PreferenceConstants.OS_DARWIN },
 		        { PreferenceConstants.OS_LINUX, PreferenceConstants.OS_LINUX },
@@ -94,22 +99,14 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		fieldParent = new Composite(group, SWT.NONE);
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
 
-		addField(compilerEditor = new FileFieldEditor(PreferenceConstants.GO_TOOL_PATH, "Go &Tool Path (go):",
+		addField(compilerEditor = new FileFieldEditor(PreferenceConstants.GO_TOOL_PATH, "Go &tool path (go):",
 		        fieldParent));
 
 		addField(formatterEditor = new FileFieldEditor(PreferenceConstants.FORMATTER_PATH,
-		        "Go &Formatter Path (gofmt):", fieldParent));
+		        "Go &formatter (gofmt):", fieldParent));
 
 		addField(documentorEditor = new FileFieldEditor(PreferenceConstants.DOCUMENTOR_PATH,
-		        "Go &Documentor Path (godoc):", fieldParent));
-		
-		group = new Group(getFieldEditorParent(), SWT.NONE);
-		group.setText("Go Path");
-		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(group);
-		GridLayoutFactory.fillDefaults().margins(10, 4).applyTo(group);
-		fieldParent = new Composite(group, SWT.NONE);
-		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
-		addField(new DirectoryFieldEditor(PreferenceConstants.GOPATH, "GO&PATH:", fieldParent));
+		        "Go &documentor (godoc):", fieldParent));
 	}
 
 	@Override
@@ -128,9 +125,9 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 	public void propertyChange(PropertyChangeEvent event) {
 		super.propertyChange(event);
 
-		if (event.getSource() == gorootEditor && PreferenceInitializer.getDefaultCompilerName() != null) {
+		if (event.getSource() == goRootEditor && PreferenceInitializer.getDefaultCompilerName() != null) {
 
-			IPath gorootPath = new Path(gorootEditor.getStringValue());
+			IPath gorootPath = new Path(goRootEditor.getStringValue());
 			File gorootFile  = gorootPath.toFile();
 
 			if (gorootFile.exists() && gorootFile.isDirectory()) {

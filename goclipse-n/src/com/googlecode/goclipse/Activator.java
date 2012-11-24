@@ -165,4 +165,8 @@ public class Activator extends AbstractUIPlugin {
 	  return Util.isMac();
 	}
 
+	public static boolean isWindows() {
+	  return Util.isWindows();
+	}
+	
 }

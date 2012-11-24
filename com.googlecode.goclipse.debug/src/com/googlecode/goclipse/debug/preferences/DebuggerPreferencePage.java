@@ -10,7 +10,6 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -58,11 +57,11 @@ public class DebuggerPreferencePage extends FieldEditorPreferencePage implements
           infoLabel.setText("Unable to get gdb version.");
           clearMacInfo();
         } else if (version >= GDBUtils.MIN_VERSION) {
-          infoLabel.setText("The gdb version " + version);
+          infoLabel.setText("GDB version " + version);
           clearMacInfo();
         } else {
-          infoLabel.setText("The gdb version is " + version + "; Go debugging requires at least version "
-              + GDBUtils.MIN_VERSION + ".");
+          infoLabel.setText("GDB version " + version + "; Go debugging requires at least version "
+              + GDBUtils.MIN_VERSION);
           displayMacInfo();
         }
 
@@ -72,8 +71,6 @@ public class DebuggerPreferencePage extends FieldEditorPreferencePage implements
 
     addField(gdbFileFieldEditor);
 
-    ((GridData) gdbFileFieldEditor.getTextControl(fieldParent).getLayoutData()).widthHint = 150;
-    
     infoLabel = new Label(group, SWT.NONE);
     infoLabel.setText("");
     

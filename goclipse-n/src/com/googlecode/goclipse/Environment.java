@@ -8,8 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InvalidPropertiesFormatException;
@@ -29,7 +27,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.util.Util;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
@@ -120,33 +117,6 @@ public class Environment {
 		@Override
 		public void clear() {
 			hadError = false;
-		}
-		
-	}
-
-	private void saveSource(File toolsFile, URL srcURL, String outPath) {
-		if (srcURL != null) {
-			
-			try {
-				File outFile = new File(outPath);
-				InputStream in = srcURL.openStream();
-
-				// For Overwrite the file.
-				OutputStream out = new FileOutputStream(outFile);
-
-				byte[] buf = new byte[1024];
-				int len;
-				while ((len = in.read(buf)) > 0) {
-					out.write(buf, 0, len);
-				}
-				
-				in.close();
-				out.close();
-				Activator.logInfo("File copied:" + outPath);
-				
-			} catch (IOException e) {
-				Activator.logError(e);
-			}
 		}
 	}
 
@@ -598,7 +568,6 @@ public class Environment {
 	 * @return
 	 */
 	public String[] getGoPath(IProject project) {
-
 		String[] path   = { "" };
 		String   goPath = null;
 		
@@ -623,14 +592,18 @@ public class Environment {
 			return path;
 		}
 		
-		if (Util.isWindows() && goPath.contains(";")){
-			path = goPath.split(";");
-		
-		} else if (goPath.contains(":")) {
-			path =  goPath.split(":");
-			
+		if (Activator.isWindows()) {
+		  if (goPath.contains(";")) {
+		    path = goPath.split(";");
+		  } else {
+		    path[0] = goPath;
+		  }
 		} else {
-			path[0] = goPath;
+		  if (goPath.contains(":")) {
+		    path =  goPath.split(":");
+		  } else {
+        path[0] = goPath;
+		  }
 		}
 
 		return path;
@@ -661,6 +634,6 @@ public class Environment {
 		}
 		
 		return goroot;
-    }
+  }
+	
 }
-
