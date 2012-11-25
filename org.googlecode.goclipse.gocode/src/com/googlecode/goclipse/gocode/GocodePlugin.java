@@ -168,23 +168,31 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
       
       IPath toolsPath = Path.fromOSString(pluginDir.getAbsolutePath()).append("tools");
       
+      String name;
+      
       if (Utils.isWindows()) {
-        return toolsPath.append("win32").append(getExeName());
-      } else if (Utils.isMacOS() && Utils.is64Bit()) {
-        IPath exePath = toolsPath.append("osx64").append(getExeName());
-        
-        Utils.ensureExecutable(exePath);
-        
-        return exePath;
-      } else if (Utils.isLinux() && Utils.is64Bit()) {
-        IPath exePath = toolsPath.append("linux64").append(getExeName());
-        
-        Utils.ensureExecutable(exePath);
-        
-        return exePath;
+        name = "windows";
+      } else if (Utils.isMacOS()) {
+        name = "darwin";
       } else {
-        return null;
+        name = "linux";
       }
+      
+      name += "_";
+      
+      if (Utils.is64Bit()) {
+        name += "amd64";
+      } else {
+        name += "386";
+      }
+      
+      toolsPath = toolsPath.append(name).append(getExeName());
+      
+      if (!Utils.isWindows()) {
+        Utils.ensureExecutable(toolsPath);
+      }
+      
+      return toolsPath;
     } catch (IOException exception) {
       return null;
     }
