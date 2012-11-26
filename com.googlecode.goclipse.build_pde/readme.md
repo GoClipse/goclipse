@@ -1,6 +1,9 @@
 In order to create a build of GoClipse:
 -------------
 
+Consider running the com.googlecode.goclipse.gocode/create_gocode.py script to rebuild gocode
+for (windows, darwin, linux) and (386, amd64).
+
 Copy sample_build.properties and name it <username>_build.properties. Update the two properties
 in that copied file. build.dir should point to where you want the build output to go; source.dir
 should point to the directory with the GoClipse source in it.

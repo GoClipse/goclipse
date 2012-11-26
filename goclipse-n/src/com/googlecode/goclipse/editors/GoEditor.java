@@ -202,4 +202,9 @@ public class GoEditor extends TextEditor {
 		return null;
 	}
 
+  @Override
+  protected boolean isTabsToSpacesConversionEnabled() {
+    return false;
+  }
+
 }
