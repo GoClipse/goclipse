@@ -99,7 +99,7 @@ public class GocodeClient {
     parameters.add("-f=csv");
     parameters.add("autocomplete");
     parameters.add(fileName);
-    parameters.add("" + offset);
+    parameters.add("c" + offset);
     error = command.execute(parameters, true);
     if (error != null) {
       String out = output.getLinesAsString();

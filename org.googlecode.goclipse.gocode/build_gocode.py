@@ -16,7 +16,7 @@ GOROOT = realpath('goroot')
 GOCODE = realpath('gocode')
 
 def BuildGoRoot():
-  # gocode is very sensitive to the version of go its built with
+  # gocode is very sensitive to the version of go it's built with
   # go1, go1.0.1, go1.0.2, go1.0.3
   ExecCmd(["hg", "clone", "-u", "go1.0.3",
            "https://code.google.com/p/go", GOROOT])

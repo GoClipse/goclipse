@@ -660,9 +660,9 @@
       </key>
       <key
             sequence="M1+/"
-			commandId="com.googlecode.goclipse.editors.ToggleComment.run"
-			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-			contextId="com.googlecode.goclipse.editor">
+      			commandId="com.googlecode.goclipse.editors.ToggleComment.run"
+			      schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			      contextId="com.googlecode.goclipse.editor">
       </key>
    </extension>
    

@@ -183,6 +183,7 @@
          id="com.googlecode.goclipse.debug">
       </debugModelPresentation>
    </extension>
+   
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut

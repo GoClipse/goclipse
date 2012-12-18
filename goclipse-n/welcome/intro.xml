@@ -6,7 +6,7 @@
             label="Go and GoClipse Development"
             url="http://org.eclipse.ui.intro/openBrowser?url=http://code.google.com/p/goclipse/"
             id="goclipse-introLink" style-id="content-link">
-               <text>GoClipse is an Eclipse plugin that adds IDE functionality to the Eclipse platform for the Go programming language.</text>
+               <text>GoClipse is an Eclipse plugin that adds IDE functionality to the Eclipse platform for the Go programming language</text>
          </link>
       </group>
    </extensionContent>

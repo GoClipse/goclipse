@@ -158,7 +158,9 @@ public class Activator extends AbstractUIPlugin {
 	 * @param t the exception to log
 	 */
 	public static void logError(Throwable t) {
-		getDefault().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, t.getMessage(), t));
+	  if (getDefault() != null) {
+	    getDefault().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, t.getMessage(), t));
+	  }
 	}
 	
 	public static boolean isMac() {

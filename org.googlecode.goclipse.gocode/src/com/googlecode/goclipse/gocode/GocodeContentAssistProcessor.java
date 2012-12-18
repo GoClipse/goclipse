@@ -2,6 +2,7 @@ package com.googlecode.goclipse.gocode;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,22 +32,22 @@ import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
  * and is called from the GoEditorSourceViewerConfiguration class in the main GoClipse plugin.
  */
 public class GocodeContentAssistProcessor implements IContentAssistProcessorExt {
-	
+
   private GocodeClient client = new GocodeClient();
 
   private static HashMap<String, CodeContext> codeContexts = new HashMap<String, CodeContext>();
 
-  private Image defaultImage     = Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
-  private Image funcImage        = Activator.getImageDescriptor("icons/function_co.png").createImage();
+  private Image defaultImage = Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
+  private Image funcImage = Activator.getImageDescriptor("icons/function_co.png").createImage();
   private Image privateFuncImage = Activator.getImageDescriptor("icons/public_co.gif").createImage();
-  private Image interfaceImage   = Activator.getImageDescriptor("icons/interface.gif").createImage();
-  private Image structImage      = Activator.getImageDescriptor("icons/struct.png").createImage();
-  private Image importImage      = Activator.getImageDescriptor("icons/imp_obj.gif").createImage();
-  private Image privateVarImage  = Activator.getImageDescriptor("icons/field_private_obj.gif").createImage();
-  private Image publicVarImage   = Activator.getImageDescriptor("icons/field_public_obj.gif").createImage();
-  
+  private Image interfaceImage = Activator.getImageDescriptor("icons/interface.gif").createImage();
+  private Image structImage = Activator.getImageDescriptor("icons/struct.png").createImage();
+  private Image importImage = Activator.getImageDescriptor("icons/imp_obj.gif").createImage();
+  private Image privateVarImage = Activator.getImageDescriptor("icons/field_private_obj.gif").createImage();
+  private Image publicVarImage = Activator.getImageDescriptor("icons/field_public_obj.gif").createImage();
+
   @SuppressWarnings("unused")
-  private Image localVarImage    = Activator.getImageDescriptor("icons/variable_local_obj.gif").createImage();
+  private Image localVarImage = Activator.getImageDescriptor("icons/variable_local_obj.gif").createImage();
 
   private IEditorPart editor;
 
@@ -57,20 +58,15 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 
   }
 
-  /**
-   * 
-   */
   @Override
   public void setEditorContext(IEditorPart editor) {
     this.editor = editor;
   }
 
-  /**
-   * 
-   */
   @Override
   public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
     IPath path = null;
+
     try {
       IEditorInput input = editor.getEditorInput();
 
@@ -109,88 +105,83 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 
       if (path != null) {
         String fileName = path.toOSString();
-        
-        List<String> completions = client.getCompletions(getProjectFor(editor), fileName, document.get(), offset);
 
-        if (completions != null) {
-        	
-          for (String string : completions) {
-        	  
-            String prefix = "";
-            prefix = lastWord(document, offset);
-            int firstComma = string.indexOf(",,");
-            int secondComma = string.indexOf(",,", firstComma + 2);
+        List<String> completions = client.getCompletions(getProjectFor(editor), fileName,
+            document.get(), offset);
 
-            if (firstComma != -1 && secondComma != -1) {
-            	
-              String type = string.substring(0, firstComma);
-              
-              if ("PANIC".equals(type)) {
-                GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
-                continue;
-              }
-              
-              String identifier = string.substring(firstComma + 2, secondComma);
-              
-              if ("PANIC".equals(identifier)) {
-                GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
-                continue;
-              }
-              
-              String spec = string.substring(secondComma + 2);
+        if (completions == null) {
+          completions = Collections.emptyList();
+        }
 
-              String descriptiveString = identifier + " : " + spec;
-              String description = codeContext.getDescriptionForName(identifier).trim();
-              IContextInformation info = new ContextInformation(description, description);
-              //MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
+        for (String string : completions) {
+          String prefix = "";
+          prefix = lastWord(document, offset);
+          int firstComma = string.indexOf(",,");
+          int secondComma = string.indexOf(",,", firstComma + 2);
 
-              Image image = defaultImage;
-              String substr = identifier.substring(prefix.length());
-              int replacementLength = identifier.length() - prefix.length();
+          if (firstComma != -1 && secondComma != -1) {
+            String type = string.substring(0, firstComma);
 
-              if (descriptiveString != null && descriptiveString.contains(" : func")) {
-            	  
-                if (codeContext.isMethodName(identifier)) {
-                  image = privateFuncImage;
-                  
-                } else {
-                  image = funcImage;
-                }
-                
-                substr = identifier.substring(prefix.length()) + "()";
-                replacementLength++;
-                
-              } else if (descriptiveString != null && descriptiveString.contains(" : interface")) {
-                image = interfaceImage;
-                
-              } else if (descriptiveString != null && descriptiveString.contains(" : struct")) {
-                image = structImage;
-                
-              } else if ("package".equals(type)) {
-                image = importImage;
-                
-                substr = identifier.substring(prefix.length()) + ".";
-                replacementLength++;
-                
-              } else {
-            	  
-                if (substr != null && substr.length() > 0
-                    && Character.isUpperCase(substr.charAt(0))) {
-                  image = publicVarImage;
-                  
-                } else {
-                  image = privateVarImage;
-                  
-                }
-              }
-
-              // format the output
-              descriptiveString = descriptiveString.replace(" : func", " ").replace(" : interface",
-                  " ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
-
-              results.add(new CompletionProposal(substr, offset, 0, replacementLength, image,
-                  descriptiveString, info, description));
+            if ("PANIC".equals(type)) {
+              GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
+              continue;
             }
+
+            String identifier = string.substring(firstComma + 2, secondComma);
+
+            if ("PANIC".equals(identifier)) {
+              GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
+              continue;
+            }
+
+            String spec = string.substring(secondComma + 2);
+
+            String descriptiveString = identifier + " : " + spec;
+            String description = codeContext.getDescriptionForName(identifier).trim();
+            IContextInformation info = new ContextInformation(description, description);
+            //MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
+
+            Image image = defaultImage;
+            String substr = identifier.substring(prefix.length());
+            int replacementLength = identifier.length() - prefix.length();
+
+            if (descriptiveString != null && descriptiveString.contains(" : func")) {
+              if (codeContext.isMethodName(identifier)) {
+                image = privateFuncImage;
+
+              } else {
+                image = funcImage;
+              }
+
+              substr = identifier.substring(prefix.length()) + "()";
+              replacementLength++;
+
+            } else if (descriptiveString != null && descriptiveString.contains(" : interface")) {
+              image = interfaceImage;
+
+            } else if (descriptiveString != null && descriptiveString.contains(" : struct")) {
+              image = structImage;
+
+            } else if ("package".equals(type)) {
+              image = importImage;
+
+              substr = identifier.substring(prefix.length()) + ".";
+              replacementLength++;
+            } else {
+              if (substr != null && substr.length() > 0 && Character.isUpperCase(substr.charAt(0))) {
+                image = publicVarImage;
+
+              } else {
+                image = privateVarImage;
+              }
+            }
+
+            // format the output
+            descriptiveString = descriptiveString.replace(" : func", " ").replace(" : interface",
+                " ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
+
+            results.add(new CompletionProposal(identifier, offset - prefix.length(),
+                prefix.length(), identifier.length(), image, descriptiveString, info, description));
           }
         }
       }
@@ -200,18 +191,16 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
   }
 
   /**
-   * 
    * @param editor
    * @return
    */
   private IProject getProjectFor(IEditorPart editor) {
-	  
     if (editor == null) {
       return null;
     }
-    
-    IResource resource = (IResource)editor.getEditorInput().getAdapter(IResource.class);
-    
+
+    IResource resource = (IResource) editor.getEditorInput().getAdapter(IResource.class);
+
     return resource != null ? resource.getProject() : null;
   }
 
@@ -224,8 +213,10 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
     try {
       for (int n = offset - 1; n >= 0; n--) {
         char c = doc.getChar(n);
-        if (!Character.isJavaIdentifierPart(c))
+
+        if (!Character.isJavaIdentifierPart(c)) {
           return doc.get(n + 1, offset - n - 1);
+        }
       }
     } catch (BadLocationException e) {
       GocodePlugin.logError(e);
@@ -234,43 +225,29 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
     return "";
   }
 
-  /**
-   * 
-   */
   @Override
   public IContextInformation[] computeContextInformation(ITextViewer viewer, int offset) {
     return null;
   }
 
-  /**
-   * 
-   */
   @Override
   public char[] getCompletionProposalAutoActivationCharacters() {
     return new char[] {'.'};
   }
 
-  /**
-   * 
-   */
   @Override
   public char[] getContextInformationAutoActivationCharacters() {
     return null;
   }
 
-  /**
-   * 
-   */
   @Override
   public String getErrorMessage() {
     return client.getError();
   }
 
-  /**
-   * 
-   */
   @Override
   public IContextInformationValidator getContextInformationValidator() {
     return null;
   }
+
 }
