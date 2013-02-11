@@ -24,10 +24,11 @@
          priority="low">
       </content-type>
       
-      <file-association
+      <!-- this interfers with CDT detection of header files -->
+      <!-- file-association
             content-type="com.googlecode.goclipse.textContentType"
             file-extensions="c,h">
-      </file-association>
+      </file-association -->
    </extension>
    
    <extension
