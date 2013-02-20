@@ -34,6 +34,7 @@ public class VariableParser implements TokenListener {
 	private FunctionParser    functionParser    = null;
 	private ArrayList<String> previousIdentifier= new ArrayList<String>();
 	private ArrayList<Var>    varBuffer         = new ArrayList<Var>();
+	private String            type              = "";
 	
 	/**
 	 * @param tokenizer
@@ -87,8 +88,10 @@ public class VariableParser implements TokenListener {
 			switch (state) {
 			
 			case START:
+				
 				if (TokenType.VAR.equals(type)) {
 					state = State.SIMPLE_VAR;
+					
 				} else if((TokenType.INFERENCE.equals(type))){
 					// TODO this inference parsing does not work
 					//System.out.println("State Changed On: "+ type +":"+ value);
@@ -96,6 +99,7 @@ public class VariableParser implements TokenListener {
 				}
 				break;
 			
+			// var name type
 			case SIMPLE_VAR:
 				if(TokenType.IDENTIFIER.equals(type)){
 					var.setName(value);
@@ -105,8 +109,9 @@ public class VariableParser implements TokenListener {
 					state = State.SIMPLE_TYPE;
 				}
 				break;
-				
+							
 			case SIMPLE_TYPE:
+				
 				boolean found = false;
 				
 				// this isn't very clean, I'll have to come back a rethink all this
@@ -117,6 +122,7 @@ public class VariableParser implements TokenListener {
 				else if(TokenType.UINT16.equals(type))	 {var.setTypeClass(TypeClass.UINT16);  var.setName(var.getName()+" : "+type.getText()); found = true;}
 				else if(TokenType.UINT32.equals(type))	 {var.setTypeClass(TypeClass.UINT32);  var.setName(var.getName()+" : "+type.getText()); found = true;}
 				else if(TokenType.UINT64.equals(type))	 {var.setTypeClass(TypeClass.UINT64);  var.setName(var.getName()+" : "+type.getText()); found = true;}
+				else if(TokenType.RUNE.equals(type))	 {var.setTypeClass(TypeClass.RUNE);    var.setName(var.getName()+" : "+type.getText()); found = true;}
 				else if(TokenType.INT.equals(type))	     {var.setTypeClass(TypeClass.INT);     var.setName(var.getName()+" : "+type.getText()); found = true;}
 				else if(TokenType.INT8.equals(type))	 {var.setTypeClass(TypeClass.INT8);    var.setName(var.getName()+" : "+type.getText()); found = true;}
 				else if(TokenType.INT16.equals(type))	 {var.setTypeClass(TypeClass.INT16);   var.setName(var.getName()+" : "+type.getText()); found = true;}
@@ -133,11 +139,16 @@ public class VariableParser implements TokenListener {
 				else if(TokenType.LBRACKET.equals(type)) {var.setTypeClass(TypeClass.ARRAY);   var.setArray(true);found = false;}
 				else if(TokenType.MULTIPLY.equals(type)) {var.setPointer(true);                                   found = false;}
 				
-				if(found){
+				if(found) {
+					
 					state = State.START;
 					vars.add(var);
 					var.setLine(linenumber);
-					scopeParser.addVariable(var);
+					
+					if (scopeParser != null) {
+						scopeParser.addVariable(var);
+					}
+					
 					var = new Var();
 					var.setFile(file);
 					comment = new StringBuffer();
@@ -148,27 +159,31 @@ public class VariableParser implements TokenListener {
 			case INFERENCE:
 				
 				for(String s:previousIdentifier){
-					if(var.getInsertionText()==null){
+					
+					if (var.getInsertionText() == null) {
 						var.setInsertionText(s);
 					}
-				
+					
 					state = State.START;
 					vars.add(var);
 					var.setLine(linenumber);
-					scopeParser.addVariable(var);
+					
+					if (scopeParser != null) {
+						scopeParser.addVariable(var);
+					}
+					
 					var = new Var();
 					var.setFile(file);
 					comment = new StringBuffer();
 				}
+				
 				previousIdentifier.clear();
 				break;
 				
 			}
 			
 		}
-//		if(linenumber==43){
-//			//System.out.println("");
-//		}
+		
 		// keep track of the last identifier for inferenced variables
 		if (TokenType.IDENTIFIER.equals(type)){
 			previousIdentifier.add(value);
@@ -202,8 +217,8 @@ public class VariableParser implements TokenListener {
 		case GO:
 		case CASE:
 		case DEFAULT:
-			if (scopeParser!=null){
-				for(Var var:varBuffer){
+			if (scopeParser!=null) {
+				for(Var var:varBuffer) {
 					scopeParser.addVariable(var);
 				}
 				varBuffer.clear();
@@ -238,7 +253,7 @@ public class VariableParser implements TokenListener {
 		VariableParser fparser = new VariableParser(tokenizer, null, null);
 
 		try {
-			lexer.scan(new File("test_go/import_test.go"));
+			lexer.scan(new File("test/test_go/import_test.go"));
 			for (Var var : fparser.vars) {
 				Activator.logInfo("=================================================");
 				Activator.logInfo(var.getDocumentation());

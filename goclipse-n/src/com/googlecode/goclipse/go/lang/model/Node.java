@@ -23,13 +23,13 @@ public abstract class Node implements Serializable {
 	private File	          file;
 	private String	          name;
 	private String	          insertionText;
-	private Type	          type;
+	private String	          type;
 	private int	              line;
 	private String	          documentation;
 	private Scope             scope;
 
 	// This image is displayed if a subclass has not overridden getImage().
-	protected Image	          image	             = Activator.getImage("icons/private_co.gif");
+	protected Image	          image = Activator.getImage("icons/private_co.gif");
 
 	/**
 	 * @param Package
@@ -94,7 +94,7 @@ public abstract class Node implements Serializable {
 	/**
 	 * @return the type
 	 */
-	public Type getType() {
+	public String getType() {
 		return type;
 	}
 
@@ -102,7 +102,7 @@ public abstract class Node implements Serializable {
 	 * @param type
 	 *            the type to set
 	 */
-	public void setType(Type type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 

@@ -21,7 +21,7 @@ type bb int
 var a1 int
 
 type A struct{
-	
+	a, b, c := 1, 2, 3
 }
 
 func (a *A) method(){

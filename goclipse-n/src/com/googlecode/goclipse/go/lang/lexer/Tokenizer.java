@@ -6,8 +6,6 @@ import java.util.List;
 /**
  * Provides more specific classification of a given token and passes it on to
  * listeners for further analysis and processing.
- * 
- * @author steel
  */
 public class Tokenizer implements LexerListener {
 

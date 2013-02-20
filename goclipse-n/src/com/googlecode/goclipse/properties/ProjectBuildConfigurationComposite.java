@@ -27,6 +27,9 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * @author steel
@@ -109,6 +112,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
    private Button                    binOutputBrowseButton     = null;
    private Button                    removeButton              = null;
    private TabFolder                 tabFolder                 = null;
+   private TabFolder tabFolder_1;
    private Composite                 sourceComposite           = null;
    private Composite                 projectsComposite         = null;
    private Composite                 libraryComposite          = null;
@@ -123,6 +127,8 @@ public class ProjectBuildConfigurationComposite extends Composite {
    private ProjectBuildConfiguration projectBuildConfiguration = null;
 
    private boolean                   outputFoldersOk            = true;
+   private Text txtAutomaticUnitTesting;
+   private Text textUnitTestRegex;
 
    /**
     * @param parent
@@ -148,7 +154,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
       gridLayout1.verticalSpacing = 0;
       createTabFolder();
       this.setLayout(gridLayout1);
-      setSize(new Point(464, 461));
+      setSize(new Point(464, 441));
       
       
       ////////////////////////////////////////////////
@@ -444,25 +450,80 @@ public class ProjectBuildConfigurationComposite extends Composite {
     */
    private void createTabFolder() {
       GridData gridData4 = new GridData();
-      gridData4.verticalSpan = 6;
       gridData4.horizontalAlignment = GridData.FILL;
       gridData4.verticalAlignment = GridData.FILL;
       gridData4.grabExcessVerticalSpace = true;
       gridData4.grabExcessHorizontalSpace = true;
-      tabFolder = new TabFolder(this, SWT.NONE);
-      tabFolder.setLayoutData(gridData4);
+      tabFolder_1 = new TabFolder(this, SWT.NONE);
+      tabFolder_1.setLayoutData(gridData4);
       createSourceComposite();
       createProjectsComposite();
       createLibraryComposite();
-      TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
+      TabItem tabItem = new TabItem(tabFolder_1, SWT.NONE);
       tabItem.setText("Source");
       tabItem.setControl(sourceComposite);
-      TabItem tabItem1 = new TabItem(tabFolder, SWT.NONE);
+      
+      TabItem tbtmUnitTest = new TabItem(tabFolder_1, SWT.NONE);
+      tbtmUnitTest.setText("Automatic Unit Testing");
+      
+      Composite unitTestComposite = new Composite(tabFolder_1, SWT.NONE);
+      tbtmUnitTest.setControl(unitTestComposite);
+      unitTestComposite.setLayout(new GridLayout(1, false));
+      
+      Group grpAutomaticUnitTesting = new Group(unitTestComposite, SWT.NONE);
+      grpAutomaticUnitTesting.setLayout(new GridLayout(5, false));
+      GridData gd_grpAutomaticUnitTesting = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+      gd_grpAutomaticUnitTesting.widthHint = 250;
+      grpAutomaticUnitTesting.setLayoutData(gd_grpAutomaticUnitTesting);
+      grpAutomaticUnitTesting.setText("Automatic Unit Testing");
+      
+      txtAutomaticUnitTesting = new Text(grpAutomaticUnitTesting, SWT.BORDER | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+      txtAutomaticUnitTesting.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND));
+      txtAutomaticUnitTesting.setEditable(false);
+      txtAutomaticUnitTesting.setText("Automatic Unit Testing is an experimental feature and depending on its effectiveness, may be removed at some future date.  When enabled, package level unit tests matching the regular expression below will be scheduled to run when a source file is modified within the same package.   By default, only test prefixed with 'TestAuto' will be run.  You should change this regular expression to whatever is appropriate for your project.\n\nA package can only have one scheduled run in the queue at a time and each test has an allotted time slot.  The default time slot size is 5 seconds.  If a test runs over its allotted time, it will be killed and the next test in the queue will run.  \n\nCurrently, there is no notification that a test busted its time; it is assumed long running tests are either an errant test (has an infinite loop) or not suitable to be run with this feature.  Failed tests show up as errors within the project.  ");
+      txtAutomaticUnitTesting.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
+      
+      final Button btnEnableAutomaticUnit = new Button(grpAutomaticUnitTesting, SWT.CHECK);
+      btnEnableAutomaticUnit.setSelection(Environment.INSTANCE.getAutoUnitTest(Environment.INSTANCE.getCurrentProject()));
+     
+      
+      btnEnableAutomaticUnit.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
+      btnEnableAutomaticUnit.setText("Enable Automatic Unit Testing");
+      new Label(grpAutomaticUnitTesting, SWT.NONE);
+      new Label(grpAutomaticUnitTesting, SWT.NONE);
+      
+      final Label lblTestNameRegex = new Label(grpAutomaticUnitTesting, SWT.NONE);
+      lblTestNameRegex.setEnabled(btnEnableAutomaticUnit.getSelection());
+      lblTestNameRegex.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+      lblTestNameRegex.setText("Test Name Regex:");
+      new Label(grpAutomaticUnitTesting, SWT.NONE);
+      
+      textUnitTestRegex = new Text(grpAutomaticUnitTesting, SWT.BORDER);
+      textUnitTestRegex.setEnabled(btnEnableAutomaticUnit.getSelection());
+      String regex = Environment.INSTANCE.getAutoUnitTestRegex(Environment.INSTANCE.getCurrentProject());
+      if (regex==null || "".equals(regex)) {
+    	  regex = "TestAuto[A-Za-z0-9_]*";
+      }
+      textUnitTestRegex.setText(regex);
+      textUnitTestRegex.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+      new Label(grpAutomaticUnitTesting, SWT.NONE);
+      TabItem tabItem1 = new TabItem(tabFolder_1, SWT.NONE);
       tabItem1.setText("Projects");
       tabItem1.setControl(projectsComposite);
-      TabItem tabItem2 = new TabItem(tabFolder, SWT.NONE);
+      TabItem tabItem2 = new TabItem(tabFolder_1, SWT.NONE);
       tabItem2.setText("Libraries");
       tabItem2.setControl(libraryComposite);
+      
+      btnEnableAutomaticUnit.addSelectionListener(new SelectionAdapter() {
+        	@Override
+        	public void widgetSelected(SelectionEvent e) {
+        		Environment.INSTANCE.setAutoUnitTest(
+        				Environment.INSTANCE.getCurrentProject(),
+        				btnEnableAutomaticUnit.getSelection());
+        		lblTestNameRegex.setEnabled(btnEnableAutomaticUnit.getSelection());
+        		textUnitTestRegex.setEnabled(btnEnableAutomaticUnit.getSelection());
+        	}
+      });
       
       projectsComposite.setEnabled(false);
       libraryComposite.setEnabled(false);
@@ -472,7 +533,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
     * This method initializes sourceComposite
     */
    private void createSourceComposite() {
-      sourceComposite = new Composite(tabFolder, SWT.NONE);
+      sourceComposite = new Composite(tabFolder_1, SWT.NONE);
       sourceComposite.setLayout(new GridLayout());
       createGroup();
       createGroup1();
@@ -482,7 +543,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
     * This method initializes projectsComposite
     */
    private void createProjectsComposite() {
-      projectsComposite = new Composite(tabFolder, SWT.NONE);
+      projectsComposite = new Composite(tabFolder_1, SWT.NONE);
       projectsComposite.setLayout(new GridLayout());
       createProjectGroup();
    }
@@ -491,7 +552,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
     * This method initializes libraryComposite
     */
    private void createLibraryComposite() {
-      libraryComposite = new Composite(tabFolder, SWT.NONE);
+      libraryComposite = new Composite(tabFolder_1, SWT.NONE);
       libraryComposite.setLayout(new GridLayout());
       createLibrariesGroup();
    }
@@ -614,5 +675,18 @@ public class ProjectBuildConfigurationComposite extends Composite {
    public String getBinOutputFolder() {
       return binOutputText.getText();
    }
-
+   
+   /**
+    * Set the regular expression for the unit test.
+    */
+   public void setUnitTestRegEx(String regex) {
+	   textUnitTestRegex.setText(regex);
+   }
+   
+   /**
+    * @return the regular expression for the unit test.
+    */
+   public String getUnitTestRegEx() {
+	   return textUnitTestRegex.getText();
+   }
 } // @jve:decl-index=0:visual-constraint="10,10"

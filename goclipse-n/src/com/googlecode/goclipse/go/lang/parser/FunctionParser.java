@@ -145,32 +145,52 @@ public class FunctionParser implements TokenListener {
 			case CONSUME_METHOD_HEADER:
 				
 				if (TokenType.IDENTIFIER.equals(type)) {
+					
 					text.append(value);
+					
 					if (afterReceiver == 1) {
 						method.setInsertionText(value + "()");
 						afterReceiver++;
 					}
-				}
-				else if (TokenType.RPAREN.equals(type)) {
+					
+				} else if (TokenType.RPAREN.equals(type)) {
+					
 					text.append(value);
 					afterReceiver++;
-				}
-				else if (TokenType.NEWLINE.equals(type)) {
+					
+					// break apart and determine type
+					String t = text.toString().replace("(", "").replace(")", "");
+					String[] r = t.split(" ");
+					
+					if (method.getType() == null) {
+						if (r.length > 0) {
+							t = r[r.length-1].replace("*", "");
+						}
+						
+						method.setType(t);
+					}
+					
+				} else if (TokenType.NEWLINE.equals(type)) {
 					
 					if (text.toString().lastIndexOf('{') != -1) {
+					
 						method.setName(text.toString().substring(0,
 								text.toString().lastIndexOf('{')));
+						
 					} else {
+						
 						method.setName(text.toString());
+						
 					}
+					
 					method.setLine(linenumber);
 					method.setDocumentation(comment.toString());
 					text = new StringBuffer();
 
 					// sometimes we only wanted exported methods
 					if (method != null && method.getInsertionText() != null) {
-						if ((exportsOnly && Character.isUpperCase(method
-								.getInsertionText().charAt(0))) || !exportsOnly) {
+						
+						if ((exportsOnly && Character.isUpperCase(method.getInsertionText().charAt(0))) || !exportsOnly) {
 							methods.add(method);
 						}
 					}
@@ -180,11 +200,13 @@ public class FunctionParser implements TokenListener {
 						scopeParser.addMethod(method);
 					}
 
-					method = new Method();
+					method  = new Method();
 					method.setFile(file);
-					comment = new StringBuffer();
-					state = State.START;
+					
+					comment       = new StringBuffer();
+					state         = State.START;
 					afterReceiver = 0;
+					
 				}
 				else {
 					text.append(value);

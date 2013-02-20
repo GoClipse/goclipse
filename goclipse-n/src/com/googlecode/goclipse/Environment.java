@@ -47,13 +47,14 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
  * Provides environmental utility methods for acquiring and storing a user
  * session's contextual data.
  * 
- * @author steel
  */
 public class Environment {
 
-	private static final String PROJECT_SOURCE_FOLDERS = "com.googlecode.goclipse.environment.source.folders";
-	private static final String PROJECT_PKG_OUTPUT_FOLDERS = "com.googlecode.goclipse.environment.pkg.output.folders";
-	private static final String PROJECT_BIN_OUTPUT_FOLDERS = "com.googlecode.goclipse.environment.bin.output.folders";
+	private static final String PROJECT_SOURCE_FOLDERS        = "com.googlecode.goclipse.environment.source.folders";
+	private static final String PROJECT_PKG_OUTPUT_FOLDERS    = "com.googlecode.goclipse.environment.pkg.output.folders";
+	private static final String PROJECT_BIN_OUTPUT_FOLDERS    = "com.googlecode.goclipse.environment.bin.output.folders";
+	private static final String PROJECT_ENABLE_AUTO_UNIT_TEST = "com.googlecode.goclipse.environment.auto.unit.test";
+	private static final String PROJECT_AUTO_UNIT_TEST_REGEX  = "com.googlecode.goclipse.environment.auto.unit.test.regex";
 
 	public static final String DEFAULT_PKG_OUTPUT_FOLDER = "pkg";
 	public static final String DEFAULT_BIN_OUTPUT_FOLDER = "bin";
@@ -61,12 +62,14 @@ public class Environment {
 	public static final boolean DEBUG = Boolean.getBoolean("goclipse.debug");
 	
 	public static final Environment INSTANCE = new Environment();
-	private final IPreferencesService preferences;
-	private Map<String, Properties> propertiesMap = new HashMap<String, Properties>();
-	private String depToolPath;
 	
-	private static final int DEP_TOOL_VERSION = 3;
+	private final IPreferencesService preferences;
 
+	private Map<String, Properties> propertiesMap = new HashMap<String, Properties>();
+	
+	/**
+	 * 
+	 */
 	private Environment() {
 		preferences = Platform.getPreferencesService();
 	}
@@ -85,9 +88,8 @@ public class Environment {
 		String goroot = Activator.getDefault().getPreferenceStore().getString(
 				PreferenceConstants.GOROOT);
 		
-		if (goroot == null || goroot.length() == 0 || goos == null
-				|| goos.length() == 0 || goarch == null || goarch.length() == 0) {
-				//Activator.getDefault().getLog().log(new Status(Status.ERROR, Activator.PLUGIN_ID, GoConstants.INVALID_PREFERENCES_MESSAGE));
+		if (goroot == null || goroot.length() == 0 || goos == null ||
+			goos.length() == 0 || goarch == null || goarch.length() == 0) {
 			return false;
 		}
 		
@@ -145,10 +147,9 @@ public class Environment {
 		Properties properties = new Properties();
 		
 		try {
-			properties.loadFromXML(new FileInputStream(project
-					.getWorkingLocation(Activator.PLUGIN_ID)
-					+ "/properties.xml"));
-			
+			properties.loadFromXML(
+				new FileInputStream(
+					project.getWorkingLocation(Activator.PLUGIN_ID) + "/properties.xml"));
 		} catch (InvalidPropertiesFormatException e) {
 			Activator.logError(e);
 		} catch (FileNotFoundException e) {
@@ -188,7 +189,7 @@ public class Environment {
 					+ "/properties.xml");
 			
 			properties.storeToXML(new FileOutputStream(path.toOSString()
-					+ "/properties.xml", false), " this is a comment");
+					+ "/properties.xml", false), project.getName()+" properties");
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -405,13 +406,6 @@ public class Environment {
 		return Path.fromOSString(DEFAULT_PKG_OUTPUT_FOLDER).append(goos+"_"+goarch);
 	}
 
-//	/**
-//	 * Set the output folder for the active project
-//	 */
-//	public void setBinOutputFolder(IPath outputFolder) {
-//		setBinOutputFolder(getCurrentProject(), outputFolder);
-//	}
-
 	/**
 	 * Set the output folder for the given project
 	 */
@@ -577,12 +571,12 @@ public class Environment {
 		}
 		
 		// Plug-in property comes next
-		if (goPath == null || goPath == "") {
+		if (goPath == null || "".equals(goPath)) {
 			goPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOPATH);
 		}
 
 		// last ditch effort via a system environment variable
-		if (goPath == null || goPath == "") {
+		if (goPath == null || "".equals(goPath)) {
 			goPath = System.getenv(GoConstants.GOPATH);
 		}
 
@@ -618,12 +612,12 @@ public class Environment {
 		}
 		
 		// Plug-in property comes next
-		if (goroot == null || goroot == "") {
+		if (goroot == null || "".equals(goroot)) {
 			goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
 		}
 
 		// last ditch effort via a system environment variable
-		if (goroot == null || goroot == "") {
+		if (goroot == null || "".equals(goroot)) {
 			goroot = System.getenv(GoConstants.GOROOT);
 		}
 
@@ -635,5 +629,60 @@ public class Environment {
 		
 		return goroot;
   }
+
+	/**
+	 * Turns on auto unit testing for the project
+	 * @param project
+	 * @param string
+	 * @param selection
+	 */
+	public void setAutoUnitTest(IProject project, boolean selection) {
+		Properties properties = getProperties(project);
+		
+		// The boolean has to be converted to a string here, otherwise the
+		// serialization to XML in the properties.storeToXML method
+		// will not store properly.
+		properties.put( PROJECT_ENABLE_AUTO_UNIT_TEST, "" + selection );
+		saveProperties( project );
+    }
 	
+	/**
+	 * Informs if unit testing is enabled.
+	 * @param project
+	 * @return
+	 */
+	public boolean getAutoUnitTest(IProject project) {
+		Properties properties = getProperties(project);
+		Object b = properties.get(PROJECT_ENABLE_AUTO_UNIT_TEST);
+		if(b instanceof String){
+			return Boolean.parseBoolean(b.toString());
+		}
+		return false;
+    }
+	
+	/**
+	 * Defines the regex to use for the project properties.
+	 * @param project
+	 * @param string
+	 * @param selection
+	 */
+	public void setAutoUnitTestRegex(IProject project, String regex) {
+		Properties properties = getProperties(project);
+		properties.put( PROJECT_AUTO_UNIT_TEST_REGEX, regex );
+		saveProperties( project );
+    }
+	
+	/**
+	 * Returns the auto test regex from the project properties.
+	 * @param project
+	 * @return
+	 */
+	public String getAutoUnitTestRegex(IProject project) {
+		Properties properties = getProperties(project);
+		Object b = properties.get(PROJECT_AUTO_UNIT_TEST_REGEX);
+		if(b==null){
+			return "";
+		}
+		return b.toString();
+    }
 }

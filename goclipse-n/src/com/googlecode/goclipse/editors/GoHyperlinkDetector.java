@@ -29,11 +29,15 @@ import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lang.model.Var;
 
 /**
- * A hyperlink detector for the Go editor.
+ * A hyperlink detector for the Go editor.  The hyperlink detector
+ * is used for code navigation.
  */
 public class GoHyperlinkDetector implements IHyperlinkDetector {
 
-	private GoEditor	editor;
+	/**
+	 * 
+	 */
+	private GoEditor editor;
 
 	/**
 	 * Create a new GoHyperlinkDetector.
@@ -42,48 +46,70 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 		this.editor = editor;
 	}
 
-	/**
-	 * 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.text.hyperlink.IHyperlinkDetector#detectHyperlinks(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion, boolean)
 	 */
 	@Override
 	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean showMultiple) {
-		IHyperlink[] link = new IHyperlink[1];
-		int offset = region.getOffset();
 		
-		IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
-		IRegion wordRegion = findWord(document, offset);
+		IHyperlink[] link       = new IHyperlink[1];
+		int          offset     = region.getOffset();
+		IDocument    document   = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+		IRegion      wordRegion = findWord(document, offset);
 		
 		try {
-			String word = document.get(wordRegion.getOffset(), wordRegion.getLength());
+			String   word    = document.get(wordRegion.getOffset(), wordRegion.getLength());
 			IProject project = Environment.INSTANCE.getCurrentProject();
 
 			// get the current imports
-			CodeContext cc1 = CodeContext.getCodeContext(project, ((FileEditorInput) editor.getEditorInput()).getFile()
-			        .getLocation().toOSString(), document.get());
+			FileEditorInput fileEditorInput = null;
+			if(editor.getEditorInput() instanceof FileEditorInput){
+				fileEditorInput = ((FileEditorInput) editor.getEditorInput());
+			}
+			
+			if (fileEditorInput == null) {
+				return null;
+			}
+			
+			CodeContext cc1 = CodeContext.getCodeContext(project, fileEditorInput.getFile().getLocation().toOSString(),
+					document.get());
 
 			if (cc1 == null) {
 				return null;
 			}
 
-			GoHyperLink h = new GoHyperLink();
-
+			GoHyperLink h    = new GoHyperLink();
+			int         line = document.getLineOfOffset(offset);
+			
 			// imported function call or method call
 			if (word.contains(".")) {
-
+				
 				String[] parts = word.split("\\.");
-
-				Import i = cc1.getImportForName(parts[0]);
+				Import   i     = cc1.getImportForName(parts[0]);
+				
 				if (i != null) {
+				
 					Node node = cc1.getLocationForPkgAndName(i.path, parts[1]);
 					if (node == null) {
 						return null;
 					}
 
-					h.node = node;
+					h.node   = node;
+					h.region = wordRegion;
+					h.text   = word;
+					h.type   = "go function";
+					link[0]  = h;
+
+					return link;
+				}
+				
+				Var v = cc1.getVarForName(parts[0], line);
+				if (v != null) {
+					h.node = v;
 					h.region = wordRegion;
 					h.text = word;
-					h.type = "go function";
-
+					h.type = "go methods";
 					link[0] = h;
 					return link;
 				}
@@ -91,34 +117,28 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 				// variable or local function call
 			} else {
 				
-				try {
-			        int line = document.getLineOfOffset(offset);
-			        
-					// Is there a variable?
-					Var v = cc1.getVarForName(word, line+1);
-					if (v != null) {
-						h.node = v;
-						h.region = wordRegion;
-						h.text = word;
-						h.type = "go variable";
-						link[0] = h;
-						return link;
-					}
-					
-					// Is there a variable?
-					Function f = cc1.getFunctionForName(word+"()");
-					if (f != null) {
-						h.node = f;
-						h.region = wordRegion;
-						h.text = word;
-						h.type = "go variable";
-						link[0] = h;
-						return link;
-					}
-		        } catch (BadLocationException e1) {
-		        	return null;
-		        }
-
+				// Is there a variable?
+				Var v = cc1.getVarForName(word, line+1);
+				if (v != null) {
+					h.node = v;
+					h.region = wordRegion;
+					h.text = word;
+					h.type = "go variable";
+					link[0] = h;
+					return link;
+				}
+				
+				// Is there a variable?
+				Function f = cc1.getFunctionForName(word+"()");
+				if (f != null) {
+					h.node = f;
+					h.region = wordRegion;
+					h.text = word;
+					h.type = "go variable";
+					link[0] = h;
+					return link;
+				}
+		        
 			}
 
 			// non critical code... ignoring exceptions
@@ -144,6 +164,7 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 		int end = -1;
 
 		try {
+			
 			int pos = offset;
 			char c;
 
@@ -177,12 +198,16 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 		}
 
 		if (start >= -1 && end > -1) {
-			if (start == offset && end == offset)
+			
+			if (start == offset && end == offset) {
 				return new Region(offset, 0);
-			else if (start == offset)
+			
+			} else if (start == offset) {
 				return new Region(start, end - start);
-			else
+			
+			} else {
 				return new Region(start + 1, end - start - 1);
+			}
 		}
 
 		return null;
@@ -223,18 +248,17 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 
 				try {
-					IEditorPart part = IDE.openEditorOnFileStore(page, fileStore);
-
-					ITextEditor editor = ((ITextEditor) part);
-					IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+					IEditorPart part     = IDE.openEditorOnFileStore(page, fileStore);
+					ITextEditor editor   = ((ITextEditor) part);
+					IDocument   document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 
 					if (document != null) {
 						IRegion lineInfo = null;
+						
 						try {
-							// line count internaly starts with 0, and not with
-							// 1 like in
-							// GUI
+							// line count internally starts with 0, and not with 1 like in a GUI
 							lineInfo = document.getLineInformation(node.getLine() - 1);
+			
 						} catch (BadLocationException e) {
 						}
 
@@ -249,9 +273,7 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 			} else {
 				// Do something if the file does not exist
 			}
-
 		}
-
 	}
 
 }

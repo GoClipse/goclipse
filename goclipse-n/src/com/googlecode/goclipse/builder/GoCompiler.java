@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -37,11 +36,8 @@ import com.googlecode.goclipse.utils.ObjectUtils;
 public class GoCompiler {
 
 	private static final QualifiedName	COMPILER_VERSION_QN	= new QualifiedName(Activator.PLUGIN_ID, "compilerVersion");
-
-	/** environment for build */
-	private Map<String, String>  env;
-	private String	              version;
-	private long	              versionLastUpdated	= 0;
+	private String version;
+	private long versionLastUpdated	= 0;
 		
 	/**
 	 * 
@@ -189,7 +185,7 @@ public class GoCompiler {
 		String[]     path   = Environment.INSTANCE.getGoPath(project);
 		final String GOPATH = path[0];
 
-		if (GOPATH != null && GOPATH != "") {
+		if ( GOPATH != null && !"".equals(GOPATH) ) {
 			if (extGoRootFavored) {
 				goPath = GOPATH + delim + goPath;
 			} else {
@@ -229,11 +225,12 @@ public class GoCompiler {
 			MarkerUtilities.deleteFileMarkers(file);
 			if(Environment.INSTANCE.isCmdSrcFolder(project, (IFolder)file.getParent())){
 				outPath = projectLocation.toOSString() + File.separator + binFolder +  File.separator + target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, outExtension);
-				cmd = new String[]{
-			        compilerPath,
-			        GoConstants.GO_BUILD_COMMAND,
-			        GoConstants.COMPILER_OPTION_O,
-			        outPath, file.getName() };
+				cmd     = new String[]{
+						        compilerPath,
+						        GoConstants.GO_BUILD_COMMAND,
+						        GoConstants.COMPILER_OPTION_O,
+						        outPath, file.getName() }
+						  ;
 				
 			} else {
 				MarkerUtilities.deleteFileMarkers(file.getParent());
@@ -262,7 +259,11 @@ public class GoCompiler {
 			}
 			
 			refreshProject(project, pmonitor);
-			readAndProcessOutput(project, file, pkgPath, p);
+			int errorCount = 0;
+			StreamAsLines sal = StreamAsLines.buildStreamAsLines(project, file, pkgPath, p);
+			if (sal.getLines().size() > 0) {
+		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
+		    }
 
 		} catch (IOException e1) {
 			Activator.logInfo(e1);
@@ -367,14 +368,14 @@ public class GoCompiler {
 		try {
 			String  goPath  = buildGoPath(project, projectLocation, false);
 			
-			String[] cmd = { compilerPath,
+			String[] buildCmd = { compilerPath,
 			         GoConstants.GO_BUILD_COMMAND,
 			         GoConstants.COMPILER_OPTION_O,
 			         pkgpath,
 			         "."
 			       };
 			
-			builder = new ProcessBuilder(cmd).directory(workingDir);
+			builder = new ProcessBuilder(buildCmd).directory(workingDir);
 			
 			// PATH so go can find cc
 			String path = System.getenv("PATH");
@@ -391,15 +392,24 @@ public class GoCompiler {
 			} catch (InterruptedException e) {
 				Activator.logInfo(e);
 			}
-			
-			refreshProject(project, pmonitor);
+		    
+		    refreshProject(project, pmonitor);
 			clearPackageErrorMessages(project, pkgPath);
-			readAndProcessOutput(project, file, pkgPath, p);
+			int errorCount = 0;
+			StreamAsLines sal = StreamAsLines.buildStreamAsLines(project, file, pkgPath, p);
+			if (sal.getLines().size() > 0) {
+		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
+		    }
+			
+			GoTestRunner.scheduleTest(project, compilerPath, file, pkgPath,
+					workingDir, goPath, path, goroot, errorCount);
 
 		} catch (IOException e1) {
 			Activator.logInfo(e1);
 		}
 	}
+
+	
 
 	/**
 	 * @param project
@@ -438,31 +448,18 @@ public class GoCompiler {
 			
 			refreshProject(project, pmonitor);
 			//clearPackageErrorMessages(project, pkgPath);
-			readAndProcessOutput(project, null, null, p);
+			StreamAsLines sal = StreamAsLines.buildStreamAsLines(project, null, null, p);
+			int errorCount = 0;
+		    if (sal.getLines().size() > 0) {
+		    	errorCount = processCompileOutput(sal, project, null, null);
+		    }
 
 		} catch (IOException e1) {
 			Activator.logInfo(e1);
 		}
 	}
 	
-	/**
-     * @param project
-     * @param file
-     * @param pkgPath
-     * @param p
-     */
-    private void readAndProcessOutput(final IProject project, final IFile file, final String pkgPath, Process p) {
-	    InputStream is = p.getInputStream();
-	    InputStream es = p.getErrorStream();
-	    StreamAsLines sal = new StreamAsLines();
-	    sal.setCombineLines(true);
-	    sal.process(is);
-	    sal.process(es);
-
-	    if (sal.getLines().size() > 0) {
-	    	processCompileOutput(sal, project, pkgPath, file);
-	    }
-    }
+	
 
 	/**
      * @param project
@@ -568,11 +565,11 @@ public class GoCompiler {
      * @param project
      * @param relativeTargetDir
      */
-	private void processCompileOutput(final StreamAsLines output,
+	private int processCompileOutput(final StreamAsLines output,
 			                          final IProject      project,
 			                          final String        relativeTargetDir,
 			                          final IFile         file) {
-		
+		int errorCount = 0;
 		boolean iswindows = Util.isWindows();
 		
 		for (String line : output.getLines()) {
@@ -591,6 +588,7 @@ public class GoCompiler {
 				if(container instanceof IFolder){
 					IFolder folder = (IFolder)container;
 					MarkerUtilities.addMarker(folder, 0, line, IMarker.SEVERITY_ERROR);
+					errorCount++;
 				}
 				continue;
 			}
@@ -643,20 +641,23 @@ public class GoCompiler {
 				if (location != -1 && messageStart != -1) {
 					String message = msg.substring(messageStart + 2);
 					MarkerUtilities.addMarker(resource, location, message, IMarker.SEVERITY_ERROR);
+					errorCount++;
 					
 				} else {
 					// play safe. to show something in UI
 					MarkerUtilities.addMarker(resource, 1, line, IMarker.SEVERITY_ERROR);
+					errorCount++;
 				}
 				
 			} else {
 				// runtime.main: undefined: main.main
 				MarkerUtilities.addMarker(file, 1, line, IMarker.SEVERITY_ERROR);
-				
+				errorCount++;
 			}
 		}
+		
+		return errorCount;
 	}
-
 	
 	/**
 	 * Returns the current compiler version (ex. "6g version release.r58 8787").

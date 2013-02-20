@@ -4,7 +4,11 @@ import org.eclipse.swt.graphics.Image;
 
 import com.googlecode.goclipse.Activator;
 
+/**
+ * 
+ */
 public class Type extends Node {
+	
 	private static final long serialVersionUID = 1L;
 	
 	private TypeClass typeClass = TypeClass.UNKNOWN;

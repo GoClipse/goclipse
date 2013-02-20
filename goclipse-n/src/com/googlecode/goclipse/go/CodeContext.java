@@ -411,6 +411,26 @@ public class CodeContext {
 		
 		return null;
 	}
+	
+	/**
+	 * @param name
+	 * @return
+	 */
+	public Method getMethodForName(String name, String type) {
+		
+		if (name == null || name.length()==0){
+			return null;
+		}
+		
+		for (Method m : methods) {
+			if (m.getInsertionText().equals(name)) {
+				System.out.println(m.getName());
+				return m;
+			}
+		}
+		
+		return null;
+	}
 
 	/**
 	 * @param name

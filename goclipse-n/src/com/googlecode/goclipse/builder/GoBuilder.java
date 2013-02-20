@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -42,21 +41,15 @@ import com.googlecode.goclipse.go.lang.parser.PackageParser;
  */
 public class GoBuilder extends IncrementalProjectBuilder {
 	
-	public static final String  BUILDER_ID = "com.googlecode.goclipse.goBuilder";
-	private GoCompiler compiler;
+	public  static final String  BUILDER_ID = "com.googlecode.goclipse.goBuilder";
 	private boolean onlyFullBuild = false;
-
-	/**
-	 * Track when packages are updated
-	 */
-	private Map<IProject, Map<IFolder, PackageModifationRecord>> pkgModRecords;
+	private GoCompiler compiler;
 	
 	/**
 	 * 
 	 */
 	public GoBuilder() {
-		pkgModRecords = Collections.synchronizedMap(
-				new HashMap<IProject, Map<IFolder, PackageModifationRecord>>());
+		
 	}
 	
 	/**
@@ -154,14 +147,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		Set<String> packages = new HashSet<String>();
 		
 		int cost = 2000/(fileList.size()+1);  // not looking for complete accuracy, just some feedback
-		
-///////////////////////////////////////////////////////////////////////////////
-// This Works Faster, but avoids creating .a files... still too slow
-//
-//			for(IFolder folder:Environment.INSTANCE.getSourceFolders(project)) {
-//				compiler.compileAll(project, monitor.newChild(100), folder);
-//			}
-//			//System.out.println("Compile Time:" + (System.currentTimeMillis()-time)/1000.0);
 	
 		for(IResource res:fileList) {
 			File file = new File(res.getLocation().toOSString());
@@ -259,7 +244,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		graph.reprocessResources(crdv.getRemoved());
 		
 		Set<String> toCompile = new HashSet<String>();
-		long time = System.currentTimeMillis();
 		for (IResource res : resourcesToCompile) {
 			File file = res.getLocation().toFile();
 			
@@ -317,7 +301,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		Activator.logInfo("incrementalBuild - done");
 		
 	}
-
+	
+	
 	/**
      * @param project
      * @param srcfolders
@@ -375,12 +360,13 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	    		} else {
 	    			
 	    			for (IFolder srcfolder:srcfolders) {
+	    			
 	    				String 	  dependentPkgName  = srcfolder.getProjectRelativePath().toString()+File.separatorChar+name;
 	    				IResource res2 				= project.findMember(dependentPkgName);
 	    				File 	  file2 			= res2.getLocation().toFile();
 	    				String 	  target 			= computePackagePath(file2);
 	    				
-	    				if (res2 != null && !built.contains(target) ) {
+	    				if (!built.contains(target) ) {
 	    					monitor.beginTask("Compiling package  "+file.getName().replace(".go", ""), 1);
 	    					compiler.compilePkg(project, monitor.newChild(100), target, file2);
 	    				}

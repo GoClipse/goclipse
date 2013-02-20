@@ -17,7 +17,7 @@ import com.googlecode.goclipse.Environment;
  */
 public class ProjectBuildConfiguration extends PropertyPage {
 
-	private ProjectBuildConfigurationComposite composite;
+	private ProjectBuildConfigurationComposite	composite;
 
 	/**
 	 * Constructor for SamplePropertyPage.
@@ -30,9 +30,8 @@ public class ProjectBuildConfiguration extends PropertyPage {
 	 * @see PreferencePage#createContents(Composite)
 	 */
 	@Override
-  protected Control createContents(Composite parent) {
-		composite = new ProjectBuildConfigurationComposite(parent, this,
-				SWT.NONE);
+	protected Control createContents(Composite parent) {
+		composite = new ProjectBuildConfigurationComposite(parent, this, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		composite.setLayout(layout);
 		GridData data = new GridData(GridData.FILL);
@@ -45,16 +44,21 @@ public class ProjectBuildConfiguration extends PropertyPage {
 	 * 
 	 */
 	@Override
-  protected void performDefaults() {
+	protected void performDefaults() {
 		composite.setSourceFolders(new String[] {});
+	}
+
+	@Override
+	protected void performApply() {
+		performOk();
 	}
 
 	/**
 	 * 
 	 */
 	@Override
-  public boolean performOk() {
-		
+	public boolean performOk() {
+
 		String[] sourcefolders = composite.getSourceFolders();
 		if (sourcefolders != null) {
 			Environment.INSTANCE.setSourceFolders(getProject(), sourcefolders);
@@ -69,12 +73,17 @@ public class ProjectBuildConfiguration extends PropertyPage {
 		if (binOutputfolder != null) {
 			Environment.INSTANCE.setBinOutputFolder(getProject(), Path.fromOSString(binOutputfolder));
 		}
-		
+
+		String unitTestRegex = composite.getUnitTestRegEx();
+		if (unitTestRegex != null) {
+			Environment.INSTANCE.setAutoUnitTestRegex(getProject(), unitTestRegex);
+		}
+
 		return true;
 	}
-	
+
 	protected IProject getProject() {
-	  return (IProject)getElement();
+		return (IProject) getElement();
 	}
 
 }

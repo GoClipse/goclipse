@@ -133,12 +133,13 @@ public class Lexer {
 			boolean eatToken = true;
 			identifier = new StringBuilder();
 			fireNewline();
+			
 			while ((val = br.read()) != -1) {
 				columnCount++;
 	
-				behind = current;
+				behind  = current;
 				current = ahead;
-				ahead = (char) val;
+				ahead   = (char) val;
 	
 				if (eatToken) {
 					eatToken = false;
@@ -151,8 +152,8 @@ public class Lexer {
 			// process last character
 			current = ahead;
 			processCharacter(ahead, current);
-		}
-		finally{
+		
+		} finally {
 			if(br!=null){
 				br.close();
 			}
@@ -164,7 +165,8 @@ public class Lexer {
 	 * @throws IOException
 	 */
 	public void scan(String text) throws IOException {
-
+		
+		text += '\n';
 		char behind = 0, ahead = 0, current = 0;
 		int index = 0;
 
@@ -177,9 +179,9 @@ public class Lexer {
 		for (char val : text.toCharArray()) {
 			columnCount++;
 
-			behind = current;
+			behind  = current;
 			current = ahead;
-			ahead = val;
+			ahead   = val;
 
 			if (eatToken) {
 				eatToken = false;
@@ -188,8 +190,8 @@ public class Lexer {
 			
 			if(skipNextCharacter){
 				skipNextCharacter = false;
-			}
-			else{
+			
+			} else {
 				skipNextCharacter = processCharacter(ahead, current);
 			}
 		}
@@ -307,6 +309,7 @@ public class Lexer {
 			if (ahead == '=') {
 				fireTokenFound(TokenType.SUBTRACT_ASSIGN,
 						TokenType.SUBTRACT_ASSIGN.op);
+				return true;
 			} else {
 				fireTokenFound(TokenType.SUBTRACT, TokenType.SUBTRACT.op);
 			}
@@ -323,8 +326,10 @@ public class Lexer {
 		case '+':
 			if (ahead == '+') {
 				fireTokenFound(TokenType.INCREMENT, TokenType.INCREMENT.op);
+				return true;
 			} else if (ahead == '=') {
 				fireTokenFound(TokenType.ADD_ASSIGN, TokenType.ADD_ASSIGN.op);
+				return true;
 			} else {
 				fireTokenFound(TokenType.ADD, TokenType.ADD.op);
 			}
@@ -334,6 +339,7 @@ public class Lexer {
 
 			if (ahead == '=') {
 				fireTokenFound(TokenType.EQUAL, TokenType.EQUAL.op);
+				return true;
 			} else {
 				fireTokenFound(TokenType.ASSIGN, TokenType.ASSIGN.op);
 			}
@@ -356,14 +362,20 @@ public class Lexer {
 			break;
 
 		case '|':
+			
 			if (ahead == '=') {
 				fireTokenFound(TokenType.BITWISE_OR_ASSIGN,
 						TokenType.BITWISE_OR_ASSIGN.op);
+				return true;
+				
 			} else if (ahead == '|') {
 				fireTokenFound(TokenType.BITWISE_XOR, TokenType.BITWISE_XOR.op);
+				return true;
+				
 			} else {
 				fireTokenFound(TokenType.ASSIGN, TokenType.ASSIGN.op);
 			}
+			
 			break;
 
 		case '\\':
@@ -371,11 +383,15 @@ public class Lexer {
 			break;
 
 		case ':':
+			
 			if (ahead == '=') {
 				fireTokenFound(TokenType.INFERENCE, TokenType.INFERENCE.op);
+				return true;
+				
 			} else {
 				fireTokenFound(TokenType.COLON, TokenType.COLON.op);
 			}
+			
 			break;
 
 		case ';':
@@ -393,6 +409,8 @@ public class Lexer {
 		case '<':
 			if (ahead == '=') {
 				fireTokenFound(TokenType.LESS_EQ, TokenType.LESS_EQ.op);
+				return true;
+				
 			} else {
 				fireTokenFound(TokenType.LESS, TokenType.LESS.op);
 			}
@@ -405,6 +423,8 @@ public class Lexer {
 		case '>':
 			if (ahead == '=') {
 				fireTokenFound(TokenType.GREATER_EQ, TokenType.GREATER_EQ.op);
+				return true;
+				
 			} else {
 				fireTokenFound(TokenType.GREATER, TokenType.GREATER.op);
 			}
@@ -422,47 +442,30 @@ public class Lexer {
 			flush();
 			fireTokenFound(TokenType.SPACE, TokenType.SPACE.op);
 			break;
+			
 		case '\t':
 			flush();
 			fireTokenFound(TokenType.TAB, TokenType.TAB.op);
 			break;
+			
 		case '\n':
 			flush();
 			fireTokenFound(TokenType.NEWLINE, TokenType.NEWLINE.op);
 			fireNewline();
 			columnCount = 0;
-
 			break;
+			
 		case '\f':
 			flush();
-//			fireTokenFound(TokenType.FORMFEEDLINE, TokenType.FORMFEEDLINE.op);
 			break;
+			
 		case '\r':
 			flush();
-//			fireTokenFound(TokenType.RETURN, TokenType.RETURN.op);
 			break;
+			
 		case '\b':
 			flush();
-//			fireTokenFound(TokenType.BACKSPACE, TokenType.BACKSPACE.op);
 			break;
-
-		// case '1':
-		// case '2':
-		// case '3':
-		// case '4':
-		// case '5':
-		// case '6':
-		// case '7':
-		// case '8':
-		// case '9':
-		// case '0':
-		// break;
-
-		// case 'A': break;
-		// case 'a': break;
-		// case 'B': break;
-		// case 'b': break;
-		// case 'C': break;
 
 		default:
 			identifier.append(current);
