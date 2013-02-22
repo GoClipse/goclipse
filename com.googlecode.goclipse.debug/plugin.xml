@@ -109,7 +109,8 @@
       <launchConfigurationTabGroup
             class="com.googlecode.goclipse.debug.launch.ui.GoLaunchConfigurationTabGroup"
             id="com.googlecode.goclipse.debug.launch.launchConfigurationTabGroup"
-            type="com.googlecode.goclipse.debug.launchConfig">
+            type="com.googlecode.goclipse.debug.launchConfig"
+            description="Run a Go application">
       </launchConfigurationTabGroup>
    </extension>
    
