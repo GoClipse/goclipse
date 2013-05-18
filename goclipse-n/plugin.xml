@@ -807,5 +807,27 @@
             locationURI="menu:org.eclipse.ui.main.menu">
       </menuContribution>
    </extension>
+   <!--<extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="com.googlecode.goclipse.category.Go"
+            name="Go">
+      </category>
+      <view
+            allowMultiple="false"
+            category="com.googlecode.goclipse.category.Go"
+            class="com.googlecode.goclipse.views.GoTestView"
+            icon="icons/sample.gif"
+            id="com.googlecode.goclipse.views.GoTestView"
+            name="Go Tests"
+            restorable="true">
+      </view>
+   </extension>-->
    
 </plugin>

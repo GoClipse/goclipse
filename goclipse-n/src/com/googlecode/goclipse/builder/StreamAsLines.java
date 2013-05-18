@@ -40,6 +40,22 @@ public class StreamAsLines implements ProcessIStreamFilter {
 	    sal.process(es);
 	    return sal;
   }
+  
+  /**
+   * @param project
+   * @param file
+   * @param pkgPath
+   * @param p
+   */
+  public static StreamAsLines buildTestStreamAsLines(final IProject project, final IFile file, final String pkgPath, Process p) {
+	    InputStream is = p.getInputStream();
+	    InputStream es = p.getErrorStream();
+	    StreamAsLines sal = new StreamAsLines();
+	    sal.setCombineLines(true);
+	    sal.processTestStream(is);
+	    sal.processTestStream(es);
+	    return sal;
+  }
 
   /**
    * If true then successive lines indented by a tab will be combined into one line. This is used by
@@ -79,6 +95,31 @@ public class StreamAsLines implements ProcessIStreamFilter {
           }
           
         } else if ("# command-line-arguments".equals(line)){
+        	// TODO do special process for this
+        } else if (line.startsWith("go version")){
+        	// TODO do special process for this
+        } else if(line.contains("executable file not found in $PATH")) {
+        	line+="\n\t(you are missing a required tool)";
+        } else {
+          lines.add(line);
+        }
+      }
+    } catch (Exception e) {
+      Activator.logInfo(e);
+    }
+  }
+  
+  /**
+   * @param iStream
+   */
+  public void processTestStream(InputStream iStream) {
+    String line = "";
+    try {
+      InputStreamReader isr = new InputStreamReader(iStream, "UTF-8");
+      BufferedReader br = new BufferedReader(isr);
+
+      while ((line = br.readLine()) != null) {
+        if ("# command-line-arguments".equals(line)){
         	// TODO do special process for this
         } else if (line.startsWith("go version")){
         	// TODO do special process for this

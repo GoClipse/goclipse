@@ -1,8 +1,6 @@
 package com.googlecode.goclipse.builder;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
@@ -17,6 +15,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
@@ -40,6 +43,21 @@ public class GoTestRunner {
 	private Process              activeProcess = null;
 	private boolean              running       = true;
 	
+	private static MessageConsole findConsole(String name) {
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		IConsole[] existing = conMan.getConsoles();
+		for (int i = 0; i < existing.length; i++) {
+			if (name.equals(existing[i].getName())) {
+				return (MessageConsole) existing[i];
+			}
+		}
+		// no console found, so create a new one
+		MessageConsole myConsole = new MessageConsole(name, null);
+		conMan.addConsoles(new IConsole[] { myConsole });
+		return myConsole;
+	}
+	
 	/**
 	 * 
 	 */
@@ -52,7 +70,6 @@ public class GoTestRunner {
 				
 				// get test off of queue
 				if (testQueue.size() > 0) {
-					System.out.println(testQueue.size());
 					synchronized (instance.testQueue) {
 						activeTest = testQueue.remove();
 						queueGuard.remove(buildQueueGuardKey(activeTest));
@@ -67,9 +84,7 @@ public class GoTestRunner {
 				try {
 					synchronized (instance.testQueue) {
 						while (testQueue.size() == 0) {
-							System.out.println("waiting");
 							testQueue.wait();
-							System.out.println("awake");
 						}
 					}
                 } catch (InterruptedException e) {
@@ -93,7 +108,8 @@ public class GoTestRunner {
 					@Override
 					public void run() {
 						try {
-	                        Thread.sleep(5000);
+							int maxTime = Environment.INSTANCE.getAutoUnitTestMaxTime(activeTest.project);
+	                        Thread.sleep(maxTime);
 	                        Runtime rt = Runtime.getRuntime();
 	                        if(activeTest!=null) {
 		                        if (Activator.isWindows()) {
@@ -147,7 +163,9 @@ public class GoTestRunner {
          * 
          */
         private void markErrors() {
-            StreamAsLines sal = StreamAsLines.buildStreamAsLines(activeTest.project, activeTest.file, activeTest.pkgPath, activeProcess);
+            StreamAsLines sal = StreamAsLines.buildTestStreamAsLines(
+            		activeTest.project, activeTest.file,
+            		activeTest.pkgPath, activeProcess);
             
             if (sal.getLines().size() > 0) {
             	processTestOutput(sal, activeTest);
@@ -213,28 +231,22 @@ public class GoTestRunner {
      * @param file
      */
     private static void processTestOutput(StreamAsLines sal, TestConfig activeTest) {
-    	BufferedWriter bufferedWriter = null;
-    	FileWriter     fileWriter     = null;
+    	MessageConsole console = findConsole(activeTest.project.getName()+" Auto Test");
+    	console.clearConsole();
+    	console.activate();
+    	MessageConsoleStream out = console.newMessageStream();
+    	
 	    try {
 	    	boolean    success = true;
 	        IContainer parent  = activeTest.file.getParent();
 	        
-	        File file = new File(activeTest.workingDir.toString()+File.separatorChar+parent.getName()+".test.results");
-	        file.createNewFile();
-	        if (file.exists()) {
-	        	fileWriter     = new FileWriter(file);
-	        	bufferedWriter = new BufferedWriter(fileWriter);
-	        }
-	        
 	        List<String> lines = sal.getLines();
 	        for(int i = 0; i < lines.size(); i++) {
 	        	
-	        	String line = lines.get(i);
-	        	
-	        	if( bufferedWriter != null ) {
-	        		bufferedWriter.write(line);
-	        		bufferedWriter.write("\n");
-	        	}
+	        	String line = lines.get(i).trim();
+	        	out.write(line);
+	        	out.write("\n");
+	        	out.flush();
 	        	
 	        	if(line.startsWith("panic:")) {
 	        		
@@ -302,23 +314,15 @@ public class GoTestRunner {
 	        }
 	        
 	        if(success){
-	        	System.out.println(parent.getName()+" tests were successful at "+new Date());
 	        	MarkerUtilities.addMarker(parent, 1, parent.getName()+" tests were successful at "+new Date(), IMarker.SEVERITY_WARNING);
 	        }
 	        
-	        if( bufferedWriter != null ) {
-	        	bufferedWriter.flush();
-	        }
+	        out.flush();
+	        
         } catch (NumberFormatException e) {
         	Activator.logInfo(e);
         } catch (IOException e) {
         	Activator.logInfo(e);
-        } finally {
-        	try {
-        		if(bufferedWriter!=null) {
-        			bufferedWriter.close();
-        		}
-            } catch (IOException e1) {}
         }
     }
     

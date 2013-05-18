@@ -50,11 +50,12 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
  */
 public class Environment {
 
-	private static final String PROJECT_SOURCE_FOLDERS        = "com.googlecode.goclipse.environment.source.folders";
-	private static final String PROJECT_PKG_OUTPUT_FOLDERS    = "com.googlecode.goclipse.environment.pkg.output.folders";
-	private static final String PROJECT_BIN_OUTPUT_FOLDERS    = "com.googlecode.goclipse.environment.bin.output.folders";
-	private static final String PROJECT_ENABLE_AUTO_UNIT_TEST = "com.googlecode.goclipse.environment.auto.unit.test";
-	private static final String PROJECT_AUTO_UNIT_TEST_REGEX  = "com.googlecode.goclipse.environment.auto.unit.test.regex";
+	private static final String PROJECT_SOURCE_FOLDERS          = "com.googlecode.goclipse.environment.source.folders";
+	private static final String PROJECT_PKG_OUTPUT_FOLDERS      = "com.googlecode.goclipse.environment.pkg.output.folders";
+	private static final String PROJECT_BIN_OUTPUT_FOLDERS      = "com.googlecode.goclipse.environment.bin.output.folders";
+	private static final String PROJECT_ENABLE_AUTO_UNIT_TEST   = "com.googlecode.goclipse.environment.auto.unit.test";
+	private static final String PROJECT_AUTO_UNIT_TEST_REGEX    = "com.googlecode.goclipse.environment.auto.unit.test.regex";
+	private static final String PROJECT_AUTO_UNIT_TEST_MAX_TIME = "com.googlecode.goclipse.environment.auto.unit.test.max.time";
 
 	public static final String DEFAULT_PKG_OUTPUT_FOLDER = "pkg";
 	public static final String DEFAULT_BIN_OUTPUT_FOLDER = "bin";
@@ -684,5 +685,30 @@ public class Environment {
 			return "";
 		}
 		return b.toString();
+    }
+	
+	/**
+	 * Set the auto test max time from the project properties.
+	 * @param project
+	 * @param time
+	 */
+	public void setAutoUnitTestMaxTime(IProject project, int time) {
+		Properties properties = getProperties(project);
+		properties.put( PROJECT_AUTO_UNIT_TEST_MAX_TIME, time );
+		saveProperties( project );
+    }
+	
+	/**
+	 * Returns the auto test max time from the project properties.
+	 * @param project
+	 * @return
+	 */
+	public int getAutoUnitTestMaxTime(IProject project) {
+		Properties properties = getProperties(project);
+		Object b = properties.get(PROJECT_AUTO_UNIT_TEST_MAX_TIME);
+		if(b==null){
+			return 5000;
+		}
+		return Integer.parseInt(b.toString());
     }
 }

@@ -78,6 +78,9 @@ public class ProjectBuildConfiguration extends PropertyPage {
 		if (unitTestRegex != null) {
 			Environment.INSTANCE.setAutoUnitTestRegex(getProject(), unitTestRegex);
 		}
+		
+		int maxTime = composite.getUnitTestMaxTime();
+		Environment.INSTANCE.setAutoUnitTestMaxTime(getProject(), maxTime);
 
 		return true;
 	}
