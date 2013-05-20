@@ -2,6 +2,7 @@ package com.googlecode.goclipse.builder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,8 @@ import org.eclipse.ui.console.MessageConsoleStream;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.go.CodeContext;
+import com.googlecode.goclipse.go.lang.model.Function;
 
 /**
  * 
@@ -47,11 +50,13 @@ public class GoTestRunner {
 		ConsolePlugin plugin = ConsolePlugin.getDefault();
 		IConsoleManager conMan = plugin.getConsoleManager();
 		IConsole[] existing = conMan.getConsoles();
+		
 		for (int i = 0; i < existing.length; i++) {
 			if (name.equals(existing[i].getName())) {
 				return (MessageConsole) existing[i];
 			}
 		}
+		
 		// no console found, so create a new one
 		MessageConsole myConsole = new MessageConsole(name, null);
 		conMan.addConsoles(new IConsole[] { myConsole });
@@ -235,6 +240,7 @@ public class GoTestRunner {
     	console.clearConsole();
     	console.activate();
     	MessageConsoleStream out = console.newMessageStream();
+    	List<String> failedTests = new ArrayList<String>();
     	
 	    try {
 	    	boolean    success = true;
@@ -243,7 +249,7 @@ public class GoTestRunner {
 	        List<String> lines = sal.getLines();
 	        for(int i = 0; i < lines.size(); i++) {
 	        	
-	        	String line = lines.get(i).trim();
+	        	String line = lines.get(i);
 	        	out.write(line);
 	        	out.write("\n");
 	        	out.flush();
@@ -261,8 +267,7 @@ public class GoTestRunner {
 	        				String[] parts = line.split(":");
 	        				
 	        				if(parts.length > 0) {
-	        					String[] fileParts = parts[0].split("\\) -");
-	        					fileParts = fileParts[1].trim().split(File.separatorChar=='\\' ? "\\\\" : File.separator);
+	        					String[] fileParts = parts[0].trim().split(File.separatorChar=='\\' ? "\\\\" : File.separator);
 	        					String filename = fileParts[fileParts.length-1];
 	        					IResource testFile = parent.findMember(filename);
 	            				
@@ -272,8 +277,7 @@ public class GoTestRunner {
 
 	            	    		int lineNo = 1;
 	            	    		lineNo = Integer.parseInt(parts[0].trim());
-	            	    		
-	        	    			MarkerUtilities.addMarker(testFile, lineNo, "A panic occurs during this test.\n"+stackTrace, IMarker.SEVERITY_ERROR);
+	            	    		MarkerUtilities.addMarker(testFile, lineNo, "A panic occurs during this test.\n"+stackTrace, IMarker.SEVERITY_ERROR);
 	        				}
 	        			} else if (line.contains("main.main()")) {
 	        				
@@ -282,7 +286,6 @@ public class GoTestRunner {
 	        				continue;
 	        			}
 	        		}
-	        		
 	        	} else if (line.matches("(^.*_test.go:[0-9]+:[0-9]+:.*)") ) {
 	        		success = false;
 	        		String[] parts = line.split(":");
@@ -310,13 +313,31 @@ public class GoTestRunner {
 	        		lineNo = Integer.parseInt(parts[1]);
 	        		IResource testFile = parent.findMember(parts[0]);
 	        		MarkerUtilities.addMarker(testFile, lineNo, "Test: "+message, IMarker.SEVERITY_ERROR);
+	        
+	        	} else if (line.matches("(^.*--- FAIL:.*)") ) {
+	        		success = false;
+	        		failedTests.add(line.substring(0, line.indexOf('('))
+	        				.replace("--- FAIL: ", "").trim());
 	        	}
 	        }
 	        
-	        if(success){
-	        	MarkerUtilities.addMarker(parent, 1, parent.getName()+" tests were successful at "+new Date(), IMarker.SEVERITY_WARNING);
+	        if (success) {
+	        	MarkerUtilities.addMarker(parent, 1, parent.getName()
+	        			+ " tests were successful at "
+	        			+ new Date(), IMarker.SEVERITY_INFO);
+	        } else {
+	        	// parse test file and mark correctly failed tests
+	        	File        f       = parent.getLocation().toFile();
+	        	CodeContext context = CodeContext.getTestCodeContext(activeTest.project, f);
+	        	
+	        	for (String name:failedTests){
+	        		Function func = context.getFunctionForName(name+"()");
+	        		if(func != null) {
+	        			IResource res = parent.findMember(func.getFile().getName());
+	        			MarkerUtilities.addMarker(res, func.getLine(), name+" failed.", IMarker.SEVERITY_ERROR);
+	        		}
+	        	}
 	        }
-	        
 	        out.flush();
 	        
         } catch (NumberFormatException e) {

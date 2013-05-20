@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -160,6 +161,37 @@ public class CodeContext {
 
 		return codeContext;
 	}
+	
+	/**
+	 * @param filename
+	 * @return
+	 * @throws IOException
+	 */
+	public static CodeContext getTestCodeContext(IProject project, File pkg) throws IOException {
+		CodeContext context = new CodeContext(pkg.getName());
+		for(File child:pkg.listFiles()) {
+			if (child.getName().endsWith("_test.go")) {
+				parseText(project, child, readFile(child), false, false, context);
+			}
+		}
+		
+		return context;
+	}
+	
+	/**
+	 * Performing this merge operation only makes sense
+	 * within the context of a single package.
+	 * 
+	 * @param b
+	 */
+	private void mergeTestContexts(CodeContext b) {
+		this.imports.addAll(b.imports);
+		this.methods.addAll(b.methods);
+		this.functions.addAll(b.functions);
+		this.types.addAll(b.types);
+		this.vars.addAll(b.vars);
+		this.moduleScope.addAll(b.moduleScope);
+	}
 
 	/**
 	 * @param file
@@ -167,7 +199,7 @@ public class CodeContext {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	private static String readFile(File file) throws FileNotFoundException, IOException {
+	public static String readFile(File file) throws FileNotFoundException, IOException {
 		
 		StringBuilder  sb = new StringBuilder();
 		BufferedReader br = null;
@@ -226,11 +258,6 @@ public class CodeContext {
 		codeContext.functions.addAll(functionParser.getFunctions());
 		codeContext.types.addAll(typeParser.getTypes());
 		codeContext.vars.addAll(variableParser.getVars());
-		// scopeParser.print();
-		// codeContext.interfaces = interfaceParser.getFunctions();
-
-		// INFO: not for production
-		// scopeParser.getRootScope().print("");
 
 		if (useExternalContext) {
 			
