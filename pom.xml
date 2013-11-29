@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.googlecode</groupId>
+	<artifactId>goclipse-aggregator</artifactId>
+	<version>1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<tycho-version>0.19.0</tycho-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
+		<parentBaseDirRelPath>..</parentBaseDirRelPath>
+
+		<targetPlatform>com.googlecode.goclipse-build/target-platform/Goclipse</targetPlatform>
+		<qualifier_default_prefix>v</qualifier_default_prefix>
+			
+	</properties>
+
+	<modules>
+		<module>goclipse-n</module>
+		<module>org.googlecode.goclipse.gocode</module>
+		<module>com.googlecode.goclipse.debug</module>
+		<module>goclipse-feature</module>
+		<module>com.googlecode.goclipse-build/repository</module>
+	</modules>
+
+	<profiles>
+	</profiles>
+
+	<!-- Core build -->
+	
+	<build>
+		<directory>${parentBaseDirRelPath}/bin-maven/${project.artifactId}</directory>
+
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<format>'${qualifier_default_prefix}'yyyyMMddHHmm</format>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<!-- According to StackOverflow, with Hotspot JVM this actually doesn't do anything: -->
+					<optimize>true</optimize>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includes>
+						<include>**/Test*.java</include>
+						<include>**/*Test.java</include>
+						<include>**/*Tests.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<target>
+						<artifact>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>goclipse-aggregator</artifactId>
+							<version>1-SNAPSHOT</version>
+							<classifier>${targetPlatform}</classifier>
+						</artifact>
+					</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

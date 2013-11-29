@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="goclipse_feature">
+      <category name="GoClipse"/>
+   </feature>
+   <category-def name="GoClipse" label="GoClipse">
+      <description>GoClipse is an Eclipse plug-in that provides support for programming with Go.
+
+Copyright (c) 2010-2012 GoClipse Development Team</description>
+   </category-def>
+</site>

@@ -19,8 +19,6 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import sun.text.normalizer.UTF16;
-
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
@@ -172,7 +170,8 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 				c = document.getChar(pos);
 				if (!Character.isJavaIdentifierPart(c) && c != '.') {
 					// Check for surrogates
-					if (UTF16.isSurrogate(c)) {
+//					if (sun.text.normalizer.UTF16.isSurrogate(c)) {
+					if (Character.isLowSurrogate(c) || Character.isHighSurrogate(c)) {
 
 					} else {
 						break;
