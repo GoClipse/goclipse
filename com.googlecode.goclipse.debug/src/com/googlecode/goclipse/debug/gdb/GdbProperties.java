@@ -156,6 +156,8 @@ public class GdbProperties {
 				return objects.toArray();
 			} else if (ch == '{') {
 				objects.add(parsePropertiesValue(in));
+			} else if (ch == '"') {
+				objects.add(parseStringValue(in));
 			} else {
 				in.unread(ch);
 				GdbProperties props = new GdbProperties();
