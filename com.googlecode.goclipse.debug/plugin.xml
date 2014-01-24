@@ -88,7 +88,7 @@
             delegate="com.googlecode.goclipse.debug.launch.GoLaunchConfigurationDelegate"
             delegateName="Go Application Launcher"
             id="com.googlecode.goclipse.debug.launchConfig"
-            modes="run, debug"
+            modes="debug"
             name="Go Application"
             sourceLocatorId="com.googlecode.goclipse.debug.sourceLookupDirector"
             sourcePathComputerId="com.googlecode.goclipse.debug.sourcePathComputer">

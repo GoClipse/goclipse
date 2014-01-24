@@ -119,6 +119,17 @@
    </extension>
    
    <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="com.googlecode.goclipse.core.launch.GoLaunchConfigurationDelegate"
+            delegateName="Goclipse Launcher"
+            id="com.googlecode.goclipse.debug.launchConfig"
+            modes="run"
+            name="Go Application">
+      </launchConfigurationType>
+   </extension>
+
+   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             class="com.googlecode.goclipse.preferences.GoPreferencePage"
