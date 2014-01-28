@@ -2,6 +2,49 @@
 <?eclipse version="3.4"?>
 <plugin>
 
+   <!-- launch config -->
+	<extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            class="melnorme.lang.ide.debug.core.LangSourceLookupDirector"
+            id="com.googlecode.goclipse.debug.sourceLocator"
+            name="Go Source Locator">
+      </sourceLocator>
+	</extension>
+	
+   <extension
+         point="org.eclipse.debug.core.launchDelegates">
+      <launchDelegate
+            delegate="com.googlecode.goclipse.debug.core.GoDebugLaunchConfigurationDelegate"
+            id="com.googlecode.goclipse.debug.launchDelegate"
+            modes="debug"
+            sourceLocatorId="com.googlecode.goclipse.debug.sourceLocator"
+            type="com.googlecode.goclipse.launch.goLaunchType">
+      </launchDelegate>
+   </extension>
+   
+   <!-- launch config UI TODO -->
+
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="com.googlecode.goclipse.launch.goLaunchType"
+            icon="icons/go-icon16.png"
+            id="com.googlecode.goclipse.debug.launch.launchConfigurationTypeImage">
+      </launchConfigurationTypeImage>
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="com.googlecode.goclipse.debug.launch.ui.GoLaunchConfigurationTabGroup"
+            id="com.googlecode.goclipse.debug.launch.launchConfigurationTabGroup"
+            type="com.googlecode.goclipse.launch.goLaunchType"
+            description="Run a Go application">
+      </launchConfigurationTabGroup>
+   </extension>
+   
    <extension point="org.eclipse.core.contenttype.contentTypes"> 
       <content-type
          id="com.googlecode.goclipse.debug.debugTextContentType"
@@ -17,22 +60,7 @@
       </file-association>
    </extension>
    
-   <extension
-      id="breakpointMarker"
-      point="org.eclipse.core.resources.markers">
 
-      <super type="org.eclipse.debug.core.lineBreakpointMarker"/>
-      <persistent value="true"/>
-   </extension>
-
-   <extension point="org.eclipse.debug.core.breakpoints">
-      <breakpoint
-            class="com.googlecode.goclipse.debug.breakpoints.GoBreakpoint"
-            id="com.googlecode.goclipse.debug.lineBreakpoint"
-            markerType="com.googlecode.goclipse.debug.breakpointMarker"
-            name="Go breakpoint">
-      </breakpoint>
-   </extension>
 
    <extension
          point="org.eclipse.core.runtime.adapters">
@@ -80,40 +108,6 @@
       </viewerContribution>
    </extension>
 
-   <!-- launch config -->
-   
-   <extension
-         point="org.eclipse.debug.core.launchConfigurationTypes">
-      <launchConfigurationType
-            delegate="com.googlecode.goclipse.debug.launch.GoLaunchConfigurationDelegate"
-            delegateName="Go Application Launcher"
-            id="com.googlecode.goclipse.debug.launchConfig"
-            modes="debug"
-            name="Go Application"
-            sourceLocatorId="com.googlecode.goclipse.debug.sourceLookupDirector"
-            sourcePathComputerId="com.googlecode.goclipse.debug.sourcePathComputer">
-      </launchConfigurationType>
-   </extension>
-
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-      <launchConfigurationTypeImage
-            configTypeID="com.googlecode.goclipse.debug.launchConfig"
-            icon="icons/go-icon16.png"
-            id="com.googlecode.goclipse.debug.launch.launchConfigurationTypeImage">
-      </launchConfigurationTypeImage>
-   </extension>
-   
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup
-            class="com.googlecode.goclipse.debug.launch.ui.GoLaunchConfigurationTabGroup"
-            id="com.googlecode.goclipse.debug.launch.launchConfigurationTabGroup"
-            type="com.googlecode.goclipse.debug.launchConfig"
-            description="Run a Go application">
-      </launchConfigurationTabGroup>
-   </extension>
-   
    <!-- TODO: uncomment -->
    <!-- extension
          point="org.eclipse.debug.ui.launchShortcuts">
@@ -148,42 +142,10 @@
    
    <!-- debug preference page -->
    
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            category="com.googlecode.goclipse.preferences.GoPreferencePage"
-            class="com.googlecode.goclipse.debug.preferences.DebuggerPreferencePage"
-            id="com.googlecode.goclipse.debug.page1"
-            name="Debugger">
-      </page>
-   </extension>
    
    <!-- source lookup -->
    
-   <extension
-         point="org.eclipse.debug.core.sourceLocators">
-      <sourceLocator
-         name="Go Source Lookup"
-         class="com.googlecode.goclipse.debug.sourceLookup.GoSourceLookupDirector"
-         id="com.googlecode.goclipse.debug.sourceLookupDirector">
-      </sourceLocator>
-   </extension>
    
-   <extension
-         point="org.eclipse.debug.core.sourcePathComputers">
-      <sourcePathComputer
-         class="com.googlecode.goclipse.debug.sourceLookup.GoSourcePathComputerDelegate"
-         id="com.googlecode.goclipse.debug.sourcePathComputer">
-      </sourcePathComputer>
-   </extension>
-   
-   <extension
-         point="org.eclipse.debug.ui.debugModelPresentations">
-      <debugModelPresentation
-         class="com.googlecode.goclipse.debug.presentation.GoModelPresentation"
-         id="com.googlecode.goclipse.debug">
-      </debugModelPresentation>
-   </extension>
    
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
@@ -209,7 +171,7 @@
 	             </with>
 	           </enablement>
 	  		 </contextualLaunch>
-	  		 <configurationType id="com.googlecode.goclipse.debug.launchConfig">
+	  		 <configurationType id="com.googlecode.goclipse.launch.goLaunchType">
 	  		 </configurationType>  		 
       </shortcut>
    </extension>

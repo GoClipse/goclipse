@@ -123,7 +123,7 @@
       <launchConfigurationType
             delegate="com.googlecode.goclipse.core.launch.GoLaunchConfigurationDelegate"
             delegateName="Goclipse Launcher"
-            id="com.googlecode.goclipse.debug.launchConfig"
+            id="com.googlecode.goclipse.launch.goLaunchType"
             modes="run"
             name="Go Application">
       </launchConfigurationType>

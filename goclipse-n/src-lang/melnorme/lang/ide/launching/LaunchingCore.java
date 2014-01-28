@@ -14,16 +14,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-
-
 /**
- * Core class for launching functionality. 
+ * Core class for launching functionality.
  * It's similar to a plugin class, but not the same since launching code is still part of the main ide.core plugin
  */
 public class LaunchingCore {
 	
 	public static final String PLUGIN_ID = LaunchingCore_Actual.PLUGIN_ID;
-	public static final String PROCESS_TYPE = LaunchingCore_Actual.PROCESS_TYPE;
 	
 	public static final int LAUNCHING_CONFIG_ERROR = LaunchingCore_Actual.LAUNCHING_CONFIG_ERROR;
 	

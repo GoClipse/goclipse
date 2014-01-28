@@ -1,5 +1,6 @@
 package com.googlecode.goclipse.debug.launch.ui;
 
+import melnorme.lang.ide.launching.LaunchConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -18,7 +19,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.debug.launch.BuildConfiguration;
-import com.googlecode.goclipse.debug.launch.GoLaunchConfigurationDelegate;
 
 /**
  * @author steel
@@ -64,7 +64,7 @@ public class GoLaunchShortcut implements ILaunchShortcut {
     try {
       ILaunchConfiguration found = null;
       ILaunchManager lm = DebugPlugin.getDefault().getLaunchManager();
-      ILaunchConfigurationType lct = lm.getLaunchConfigurationType(GoLaunchConfigurationDelegate.ID);
+      ILaunchConfigurationType lct = lm.getLaunchConfigurationType(LaunchConstants.LAUNCH_CONFIG_ID);
       ILaunchConfiguration[] lcfgs = lm.getLaunchConfigurations(lct);
       
       for (ILaunchConfiguration lcf : lcfgs) {

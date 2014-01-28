@@ -3,7 +3,7 @@ package com.googlecode.goclipse.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import melnorme.lang.ide.launching.LangLaunchConfigConstants;
+import melnorme.lang.ide.launching.LaunchConstants;
 
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
@@ -64,11 +64,11 @@ public class GoConstants {
 	/**
 	 * used in launch configurations
 	 */
-	public static final String GO_CONF_ATTRIBUTE_PROJECT           = LangLaunchConfigConstants.ATTR_PROJECT_NAME;
-	public static final String GO_CONF_ATTRIBUTE_MAIN              = LangLaunchConfigConstants.ATTR_PROG_FILE;
-	public static final String GO_CONF_ATTRIBUTE_ARGS              = LangLaunchConfigConstants.ATTR_PROG_ARGUMENTS;
-	public static final String GO_CONF_ATTRIBUTE_WORKING_DIRECTORY = LangLaunchConfigConstants.ATTR_WORKING_DIRECTORY;
-	public static final String GO_CONF_ATTRIBUTE_BUILD_CONFIG      = LangLaunchConfigConstants.ATTR_BUILD_CONFIG;
+	public static final String GO_CONF_ATTRIBUTE_PROJECT           = LaunchConstants.ATTR_PROJECT_NAME;
+	public static final String GO_CONF_ATTRIBUTE_MAIN              = LaunchConstants.ATTR_PROG_FILE;
+	public static final String GO_CONF_ATTRIBUTE_ARGS              = LaunchConstants.ATTR_PROG_ARGUMENTS;
+	public static final String GO_CONF_ATTRIBUTE_WORKING_DIRECTORY = LaunchConstants.ATTR_WORKING_DIRECTORY;
+	public static final String GO_CONF_ATTRIBUTE_BUILD_CONFIG      = LaunchConstants.ATTR_BUILD_CONFIG;
 	
 	/**
 	 * @return

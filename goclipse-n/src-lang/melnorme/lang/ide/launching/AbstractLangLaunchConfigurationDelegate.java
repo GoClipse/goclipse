@@ -90,19 +90,19 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 	}
 	
 	protected String getProjectAttribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(LangLaunchConfigConstants.ATTR_PROJECT_NAME, (String) null);
+		return config.getAttribute(LaunchConstants.ATTR_PROJECT_NAME, (String) null);
 	}
 	
 	protected String getProcessRelativePath_Attribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(LangLaunchConfigConstants.ATTR_PROG_FILE, (String) null);
+		return config.getAttribute(LaunchConstants.ATTR_PROG_FILE, (String) null);
 	}
 	
 	protected String getProgramArguments_Attribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(LangLaunchConfigConstants.ATTR_PROG_ARGUMENTS, "");
+		return config.getAttribute(LaunchConstants.ATTR_PROG_ARGUMENTS, "");
 	}
 	
 	protected String getWorkingDirectory_Attribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(LangLaunchConfigConstants.ATTR_WORKING_DIRECTORY, (String) null);
+		return config.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, (String) null);
 	}
 	
 	protected IProject getProject(ILaunchConfiguration configuration) throws CoreException {
@@ -251,7 +251,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 				processSpawnInfo.programArguments,
 				processSpawnInfo.environment,
 				processSpawnInfo.appendEnv,
-				LaunchingCore.PROCESS_TYPE
+				LaunchConstants.PROCESS_TYPE_ID
 				);
 		
 		try {
