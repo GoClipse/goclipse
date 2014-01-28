@@ -23,8 +23,9 @@
       </launchDelegate>
    </extension>
    
-   <!-- launch config UI TODO -->
-
+   
+   <!-- launch/debug UI -->
+   
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
@@ -34,43 +35,39 @@
       </launchConfigurationTypeImage>
    </extension>
    
-   
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="com.googlecode.goclipse.debug.launch.ui.GoLaunchConfigurationTabGroup"
-            id="com.googlecode.goclipse.debug.launch.launchConfigurationTabGroup"
+            class="com.googlecode.goclipse.debug.ui.GoLaunchTabGroup"
+            id="com.googlecode.goclipse.debug.launchConfigurationTabGroup"
             type="com.googlecode.goclipse.launch.goLaunchType"
             description="Run a Go application">
       </launchConfigurationTabGroup>
    </extension>
-   
-   <extension point="org.eclipse.core.contenttype.contentTypes"> 
-      <content-type
-         id="com.googlecode.goclipse.debug.debugTextContentType"
-         name="Go debug files"
-         base-type="org.eclipse.core.runtime.text"
-         priority="low"
-         default-charset="UTF-8">
-      </content-type>
-      
-      <file-association
-            content-type="com.googlecode.goclipse.debug.debugTextContentType"
-            file-extensions="goc,s">
-      </file-association>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="com.googlecode.goclipse.debug.ui.GoDebugTabGroup"
+            description="Debug a Go application"
+            id="com.googlecode.goclipse.debug.launchConfigurationTabGroup_debug"
+            type="com.googlecode.goclipse.launch.goLaunchType">
+         <launchMode
+               mode="debug">
+         </launchMode>
+      </launchConfigurationTabGroup>
    </extension>
    
-
-
    <extension
-         point="org.eclipse.core.runtime.adapters">
-      <factory
-            adaptableType="com.googlecode.goclipse.editors.GoEditor"
-            class="com.googlecode.goclipse.debug.breakpoints.GoBreakpointAdapterFactory">
-         <adapter
-               type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
-         </adapter>
-      </factory>
+         point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
+      <toggleTargetFactory
+            class="melnorme.lang.ide.debug.ui.LangToggleBreakpointsTargetFactory"
+            id="com.googlecode.goclipse.debug.toggleTargetFactory">
+         <enablement>
+            <instanceof 
+            	value="com.googlecode.goclipse.editors.GoEditor">
+            </instanceof>
+         </enablement>
+      </toggleTargetFactory>
    </extension>
 
    <extension
@@ -88,25 +85,117 @@
    </extension>
 
    <extension
+		point="org.eclipse.ui.menus">
+	    <menuContribution
+	          locationURI="popup:#GoEditorRulerContext?after=debug">
+			<menu 
+		         id="breakpointTypes.go" 
+		    	 label="%BreakpointTypes.label">
+		       <dynamic
+		             class="org.eclipse.debug.ui.actions.BreakpointTypesContribution"
+		             id="org.eclipse.debug.ui.actions.BreakpointTypesContribution">
+		       </dynamic>
+			</menu>
+		</menuContribution>
+	</extension>
+   
+   <extension
          point="org.eclipse.ui.popupMenus">
       <viewerContribution
             targetID="#GoEditorRulerContext"
-            id="com.googlecode.goclipse.debug.CompilationUnitRulerPopupActions">
+            id="com.googlecode.goclipse.debug.GoEditorRulerDebugPopupActions">
          <action
-               label="Enable Breakpoint"
-               class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+               label="%RulerBreakpointProperties.label"
+               helpContextId="breakpoint_properties_action_context"
+               class="org.eclipse.cdt.debug.internal.ui.actions.breakpoints.CBreakpointPropertiesRulerActionDelegate"
                menubarPath="debug"
-               id="com.googlecode.goclipse.debug.breakpointActions.menuEnableDisable">
+               id="com.googlecode.goclipse.debug.ui.actions.menuEnableDisable">
          </action>
          <action
+               label="%AddBreakpointInteractive.label"
+               helpContextId="add_breakpoint_interactive_action_context"
+               class="org.eclipse.cdt.debug.internal.ui.actions.breakpoints.CAddBreakpointInteractiveRulerActionDelegate"
+               menubarPath="debug"
+               id="com.googlecode.goclipse.debug.ui.actions.RulerCreateBreakpointInteractiveAction">
+         </action>         
+         <action
+               label="%EnableBreakpoint.label"
+               helpContextId="enable_disable_breakpoint_action_context"
+               class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
+               menubarPath="debug"
+               id="com.googlecode.goclipse.debug.ui.actions.EnableDisableBreakpointRulerActionDelegate">
+         </action>
+         <action
+               label="%AddBreakpoint.label"
                class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
-               icon="icons/obj16/brkp_obj.gif"
-               id="com.googlecode.goclipse.debug.breakpointActions.menuToggle"
-               label="Toggle Breakpoint"
-               menubarPath="debug">
+               definitionId="org.eclipse.debug.ui.commands.ToggleBreakpoint"
+               menubarPath="debug"
+               id="com.googlecode.goclipse.debug.ui.actions.RulerToggleBreakpointAction">
          </action>
       </viewerContribution>
    </extension>
+   
+   <!-- Add Watch, Run to, Resume, Move to, etc. -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            targetID="#GoEditorContext"
+            id="com.googlecode.goclipse.debug.ui.actions.GoEditorDebugPopupActions">
+         <visibility>
+            <and>
+               <systemProperty
+                     value="true"
+                     name="org.eclipse.cdt.debug.ui.debuggerActive"/>
+               <objectClass name="org.eclipse.jface.text.ITextSelection"/>
+            </and>
+         </visibility>
+         <action
+               label="%AddExpressionAction.label "
+               icon="icons/etool16/watch_exp.gif"
+               helpContextId="add_expression_action_context"
+               class="org.eclipse.cdt.debug.internal.ui.actions.AddExpressionEditorActionDelegate"
+               menubarPath="additions"
+               id="org.eclipse.cdt.debug.internal.ui.actions.AddExpressionActionDelegate">
+         </action>
+         <action
+               label="%ResumeAtLineAction.label"
+               icon="icons/elcl16/resume_at_line_co.gif"
+               helpContextId="resume_at_line_action_context"
+               class="org.eclipse.cdt.debug.internal.ui.actions.ResumeAtLineActionDelegate"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.eclipse.cdt.debug.internal.ui.actions.ResumeAtLineActionDelegate">
+         </action>
+         <action
+               label="%MoveToLineAction.label"
+               icon="icons/elcl16/move_to_line_co.gif"
+               helpContextId="move_to_line_action_context"
+               class="org.eclipse.cdt.debug.internal.ui.actions.MoveToLineActionDelegate"
+               menubarPath="additions"
+               enablesFor="1" 
+               id="org.eclipse.cdt.debug.internal.ui.actions.MoveToLineActionDelegate">
+         </action>
+         <action
+               helpContextId="run_to_line_action_context"
+               label="%RunToLineAction.label"
+               definitionId="org.eclipse.debug.ui.commands.RunToLine"
+               class="org.eclipse.debug.ui.actions.RunToLineActionDelegate"
+               menubarPath="additions"
+               id="org.eclipse.cdt.debug.ui.actions.popup.RunToLine">
+         </action>
+      </viewerContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            class="org.eclipse.cdt.debug.internal.ui.actions.RetargettableActionAdapterFactory"
+            adaptableType="com.googlecode.goclipse.editors.GoEditor">
+         <adapter type="org.eclipse.debug.ui.actions.IRunToLineTarget"/>
+         <adapter type="org.eclipse.cdt.debug.internal.ui.actions.IResumeAtLineTarget"/>
+         <adapter type="org.eclipse.cdt.debug.internal.ui.actions.IMoveToLineTarget"/>
+      </factory>
+   </extension>
+
 
    <!-- TODO: uncomment -->
    <!-- extension
@@ -140,11 +229,6 @@
       </shortcut>
    </extension -->
    
-   <!-- debug preference page -->
-   
-   
-   <!-- source lookup -->
-   
    
    
    <extension
@@ -174,6 +258,21 @@
 	  		 <configurationType id="com.googlecode.goclipse.launch.goLaunchType">
 	  		 </configurationType>  		 
       </shortcut>
+   </extension>
+   
+   <extension point="org.eclipse.core.contenttype.contentTypes"> 
+      <content-type
+         id="com.googlecode.goclipse.debug.debugTextContentType"
+         name="Go debug files"
+         base-type="org.eclipse.core.runtime.text"
+         priority="low"
+         default-charset="UTF-8">
+      </content-type>
+      
+      <file-association
+            content-type="com.googlecode.goclipse.debug.debugTextContentType"
+            file-extensions="goc,s">
+      </file-association>
    </extension>
    
 </plugin>

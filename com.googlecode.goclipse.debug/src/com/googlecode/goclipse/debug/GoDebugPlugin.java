@@ -2,9 +2,6 @@ package com.googlecode.goclipse.debug;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.debug.core.DebugEvent;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -20,51 +17,24 @@ import org.osgi.framework.BundleContext;
 public class GoDebugPlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.googlecode.goclipse.debug";
-
-	// Set the system property go.debugger.verbose to true to enable verbose output.
-  public static final boolean VERBOSE = Boolean.getBoolean("go.debugger.verbose");
-  
-	// The shared instance
-	private static GoDebugPlugin plugin;
-
-	private IDebugEventSetListener debuggerEventListener = new IDebugEventSetListener() {
-		@Override
-		public void handleDebugEvents(DebugEvent[] events) {
-			for (DebugEvent event : events) {
-				trace("[" + event + "]");
-			}
-		}
-	};
 	
-	/**
-	 * The constructor
-	 */
-	public GoDebugPlugin() {
-
-	}
-
+	private static GoDebugPlugin plugin;
+	
 	@Override
-  public void start(BundleContext context) throws Exception {
+	public void start(BundleContext context) throws Exception {
 		super.start(context);
-
+		
 		plugin = this;
 		
-		if (VERBOSE) {
-		  DebugPlugin.getDefault().addDebugEventListener(debuggerEventListener);
-		}
 	}
-
+	
 	@Override
-  public void stop(BundleContext context) throws Exception {
-	  if (VERBOSE) {
-	    DebugPlugin.getDefault().removeDebugEventListener(debuggerEventListener);
-	  }
-	  
+	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-
+		
 		super.stop(context);
 	}
-
+	
 	/**
 	 * Returns the shared instance
 	 * 
@@ -73,7 +43,7 @@ public class GoDebugPlugin extends AbstractUIPlugin {
 	public static GoDebugPlugin getPlugin() {
 		return plugin;
 	}
-
+	
 	/**
 	 * Get an image given a path relative to this plugin.
 	 * 
@@ -86,15 +56,15 @@ public class GoDebugPlugin extends AbstractUIPlugin {
 		if (image != null) {
 			return image;
 		}
-
+		
 		ImageDescriptor descriptor = getImageDescriptor(path);
-
+		
 		if (descriptor != null) {
 			getPlugin().getImageRegistry().put(path, descriptor);
-
+			
 			return getPlugin().getImageRegistry().get(path);
 		}
-
+		
 		return null;
 	}
 	
@@ -108,15 +78,9 @@ public class GoDebugPlugin extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
-
+	
 	public static void logError(Throwable exception) {
 		getPlugin().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, exception.getMessage(), exception));
 	}
 	
-  public static void trace(String message) {
-    if (VERBOSE) {
-      getPlugin().getLog().log(new Status(IStatus.INFO, PLUGIN_ID, message));
-    }
-  }
-  
 }

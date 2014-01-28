@@ -30,6 +30,9 @@ public class GoEditor extends TextEditor {
   public final static String EDITOR_MATCHING_BRACKETS_COLOR = "matchingBracketsColor";
 
   private static final String BUNDLE_ID = "com.googlecode.goclipse.editors.GoEditorMessages";
+  
+	public static final String EDITOR_CONTEXT = "#GoEditorContext";
+	public static final String RULER_CONTEXT = "#GoEditorRulerContext";
 
   private static ResourceBundle editorResourceBundle = ResourceBundle.getBundle(BUNDLE_ID);
 
@@ -68,9 +71,10 @@ public class GoEditor extends TextEditor {
   protected void initializeEditor() {
     super.initializeEditor();
 
-    setRulerContextMenuId("#GoEditorRulerContext");
+	setEditorContextMenuId(EDITOR_CONTEXT);
+	setRulerContextMenuId(RULER_CONTEXT);
   }
-
+  
   @Override
   protected void setTitleImage(Image image) {
     super.setTitleImage(image);
