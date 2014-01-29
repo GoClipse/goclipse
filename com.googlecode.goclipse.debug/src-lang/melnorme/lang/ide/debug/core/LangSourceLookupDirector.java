@@ -10,6 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.ide.debug.core;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import melnorme.utilbox.misc.MiscUtil;
+
 import org.eclipse.cdt.debug.core.sourcelookup.AbsolutePathSourceContainer;
 import org.eclipse.cdt.debug.core.sourcelookup.ProgramRelativePathSourceContainer;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupDirector;
@@ -33,7 +38,7 @@ public class LangSourceLookupDirector extends DsfSourceLookupDirector {
 	
 	protected DsfSession session;
 	
-	/** This should be used only for configuring containers and saving a memento. 
+	/** This should be used only for configuring containers and saving a memento.
 	 * Otherwise, for full use,  a session must be provided. */
 	public LangSourceLookupDirector() {
 		this(null);
@@ -48,7 +53,29 @@ public class LangSourceLookupDirector extends DsfSourceLookupDirector {
 	public void initializeParticipants() {
 		// Do not use CSourceLoookupDirector
 		if(session != null) {
-			addParticipants( new ISourceLookupParticipant[]{ new DsfSourceLookupParticipant(session) } );
+			addParticipants( new ISourceLookupParticipant[]{ new DsfSourceLookupParticipantExtension(session) } );
+		}
+	}
+	
+	protected static class DsfSourceLookupParticipantExtension extends DsfSourceLookupParticipant {
+		
+		protected DsfSourceLookupParticipantExtension(DsfSession session) {
+			super(session);
+		}
+		
+		protected static final Pattern CYGDRIVE_PATTERN = Pattern.compile("/cygdrive/([a-zA-Z])/(.*)");
+		
+		@Override
+		public String getSourceName(Object object) throws CoreException {
+			String sourceName = super.getSourceName(object);
+			if(sourceName != null & MiscUtil.OS_IS_WINDOWS) {
+				// Check and fix a potential path issue when using cygwin GDB
+				Matcher matcher = CYGDRIVE_PATTERN.matcher(sourceName);
+				if(matcher.matches()) {
+					sourceName = matcher.group(1) + ":/" + matcher.group(2) ;
+				}
+			}
+			return sourceName;
 		}
 	}
 	
@@ -74,7 +101,7 @@ public class LangSourceLookupDirector extends DsfSourceLookupDirector {
 				return LangDebug.LANG_SOURCE_LOOKUP_DIRECTOR;
 			}
 		};
-	} 
+	}
 	
 	public static class LangSourcePathComputer implements ISourcePathComputerDelegate {
 		@Override

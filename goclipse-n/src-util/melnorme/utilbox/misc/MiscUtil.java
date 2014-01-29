@@ -24,6 +24,10 @@ import melnorme.utilbox.core.fntypes.Predicate;
 
 public class MiscUtil {
 	
+	public static final String OS_NAME = System.getProperty("os.name");
+	
+	public static final boolean OS_IS_WINDOWS = OS_NAME.startsWith("Windows");
+	
 	public static <T> Predicate<T> getNotNullPredicate() {
 		return new NotNullPredicate<T>();
 	}
@@ -62,8 +66,8 @@ public class MiscUtil {
 		return hashCode1 * 17 + hashCode2;
 	}
 	
-	/** Runs a shell command as a Process and waits for it to terminate. 
-	 * Assumes the process does not read input. 
+	/** Runs a shell command as a Process and waits for it to terminate.
+	 * Assumes the process does not read input.
 	 * @return exit value of the process */
 	public static int runShellCommand(String directory, String cmd, String... args) throws IOException {
 		ProcessBuilder procBuilder = new ProcessBuilder();
@@ -132,7 +136,7 @@ public class MiscUtil {
 		return iterable;
 	}
 	
-	/** Sleeps current thread for given millis amount. 
+	/** Sleeps current thread for given millis amount.
 	 * If interrupted throws an unchecked exception. */
 	public static void sleepUnchecked(long millis) {
 		try {
