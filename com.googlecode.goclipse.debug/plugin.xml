@@ -197,40 +197,6 @@
    </extension>
 
 
-   <!-- TODO: uncomment -->
-   <!-- extension
-         point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
-            class="com.googlecode.goclipse.debug.ui.LaunchShortcut"
-            icon="icons/go-icon16.png"
-            id="com.googlecode.goclipse.debug.ui.LaunchShortcut"
-            label="Go Application"
-            modes="run, debug">
-            
-            <description
-               description="executes Go Program"
-               mode="run">
-         	</description>
-	        
-	        <contextualLaunch>
-	           <enablement>
-	             <with variable="selection">
-	               <count value="1"/>
-	               <iterate>
-	                 <or>
-	                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.go"/>
-	                 </or>
-	               </iterate>
-	             </with>
-	           </enablement>
-	  		</contextualLaunch>
-	  		<configurationType id ="com.googlecode.goclipse.debug.launchConfig">
-	  		</configurationType>
-      </shortcut>
-   </extension -->
-   
-   
-   
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
