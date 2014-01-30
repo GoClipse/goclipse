@@ -132,20 +132,27 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="goclipse"
          download-size="0"
          install-size="0"
-         version="0.7.6.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="com.googlecode.goclipse.gocode"
          download-size="0"
          install-size="0"
-         version="0.7.6.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="com.googlecode.goclipse.debug"
          download-size="0"
          install-size="0"
-         version="0.8.0.qualifier"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.googlecode.goclipse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
