@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.debug.launch;
+package com.googlecode.goclipse.ui.launch;
 
 /**
  * 

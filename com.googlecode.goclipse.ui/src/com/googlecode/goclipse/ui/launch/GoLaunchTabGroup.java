@@ -8,14 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.debug.ui;
+package com.googlecode.goclipse.ui.launch;
 
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
-import com.googlecode.goclipse.debug.launch.ui.GoLaunchConfigurationTab;
+
+import com.googlecode.goclipse.ui.launch.GoLaunchConfigurationTab;
 
 public class GoLaunchTabGroup extends AbstractLaunchConfigurationTabGroup {
 	

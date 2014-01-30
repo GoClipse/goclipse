@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.debug.launch.ui;
+package com.googlecode.goclipse.ui.launch;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -28,8 +28,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.launch.BuildConfiguration;
+import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
 
 /**
@@ -112,7 +111,7 @@ public class GoLaunchConfigurationTabComposite extends Composite {
             projectField.setText(((IProject) objs[0]).getName());
           }
         } catch (CoreException e1) {
-          GoDebugPlugin.logError(e1);
+          GoUIPlugin.log(e1);
         }
         mainLaunchConfigurationTab.validate();
       }
@@ -209,7 +208,7 @@ public class GoLaunchConfigurationTabComposite extends Composite {
             mainSourceField.setText(((IResource) objs[0]).getProjectRelativePath().toString());
           }
         } catch (CoreException e1) {
-          GoDebugPlugin.logError(e1);
+          GoUIPlugin.log(e1);
         }
         mainLaunchConfigurationTab.validate();
       }

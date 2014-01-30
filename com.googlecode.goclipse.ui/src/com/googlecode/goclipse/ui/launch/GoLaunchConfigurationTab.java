@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.debug.launch.ui;
+package com.googlecode.goclipse.ui.launch;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -18,8 +18,7 @@ import org.eclipse.swt.widgets.Control;
 
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.debug.GoDebugPlugin;
-import com.googlecode.goclipse.debug.launch.BuildConfiguration;
+import com.googlecode.goclipse.ui.GoDebugPlugin;
 
 /**
  * @author steel

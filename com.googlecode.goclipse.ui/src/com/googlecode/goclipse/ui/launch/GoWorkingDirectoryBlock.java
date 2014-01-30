@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.debug.launch.ui;
+package com.googlecode.goclipse.ui.launch;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -7,7 +7,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.WorkingDirectoryBlock;
 
 import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.debug.GoDebugPlugin;
+import com.googlecode.goclipse.ui.GoDebugPlugin;
 
 public class GoWorkingDirectoryBlock extends WorkingDirectoryBlock {
 

@@ -1,6 +1,7 @@
-package com.googlecode.goclipse.debug.launch.ui;
+package com.googlecode.goclipse.ui.launch;
 
 import melnorme.lang.ide.launching.LaunchConstants;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -18,7 +19,6 @@ import org.eclipse.ui.part.FileEditorInput;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.debug.launch.BuildConfiguration;
 
 /**
  * @author steel

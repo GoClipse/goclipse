@@ -17,7 +17,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
 
-import com.googlecode.goclipse.debug.launch.ui.GoLaunchConfigurationTab;
+import com.googlecode.goclipse.ui.launch.GoLaunchConfigurationTab;
 
 public class GoDebugTabGroup extends AbstractLaunchConfigurationTabGroup {
 	
