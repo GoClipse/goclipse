@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Control;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoNature;
 import com.googlecode.goclipse.ui.GoDebugPlugin;
+import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**
  * @author steel
@@ -129,7 +130,7 @@ public class GoLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
 
   @Override
   public Image getImage() {
-    return GoDebugPlugin.getImage("icons/go-icon16.png");
+    return GoPluginImages.getImage(GoPluginImages.GO_ICON);
   }
 
   @Override

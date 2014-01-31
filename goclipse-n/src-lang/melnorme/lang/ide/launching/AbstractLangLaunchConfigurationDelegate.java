@@ -14,10 +14,10 @@ package melnorme.lang.ide.launching;
 import java.text.MessageFormat;
 import java.util.Map;
 
+import melnorme.lang.ide.core.LangCore;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -34,10 +34,6 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
 public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConfigurationDelegate {
-	
-	public static IWorkspaceRoot getWorkspaceRoot() {
-		return ResourcesPlugin.getWorkspace().getRoot();
-	}
 	
 	protected static IStringVariableManager getVariableManager() {
 		return VariablesPlugin.getDefault().getStringVariableManager();
@@ -110,7 +106,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 		if (projectName != null) {
 			projectName = projectName.trim();
 			if (projectName.length() > 0) {
-				return getWorkspaceRoot().getProject(projectName);
+				return LangCore.getWorkspaceRoot().getProject(projectName);
 			}
 		}
 		return null;

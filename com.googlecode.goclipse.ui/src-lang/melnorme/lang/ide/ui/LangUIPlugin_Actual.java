@@ -11,4 +11,7 @@ public final class LangUIPlugin_Actual extends GoUIPlugin {
 		return GoUIPlugin.getInstance();
 	}
 	
+	// ID to start the debug plugin automatically, if present
+	protected static final String DEBUG_PLUGIN_ID = "com.googlecode.goclipse.debug";
+	
 }

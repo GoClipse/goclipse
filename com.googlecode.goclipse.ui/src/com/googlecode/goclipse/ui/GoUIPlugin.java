@@ -22,13 +22,21 @@ public class GoUIPlugin extends LangUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		pluginInstance = this;
 		super.start(context);
-		startInitializeAfterLoadJob();
 	}
 	
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		pluginInstance = null;
+	}
+	
+	@Override
+	protected Class<?> start_getImagesClass() {
+		return GoPluginImages.class;
+	}
+	
+	@Override
+	protected void doCustomStart(BundleContext context) {
 	}
 	
 }

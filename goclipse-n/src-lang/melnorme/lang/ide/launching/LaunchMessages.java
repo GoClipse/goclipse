@@ -1,5 +1,7 @@
 package melnorme.lang.ide.launching;
 
+import java.text.MessageFormat;
+
 public class LaunchMessages {
 	
 	public static final String LCD_buildPrerequesite = 
@@ -24,5 +26,9 @@ public class LaunchMessages {
 			"Failed to setup process environment.";
 	public static final String errNewJavaProcessFailed = 
 			"Failed to create a child process.";
+	
+	public static String getFormattedString(String message, Object... args) {
+		return MessageFormat.format(message, args);
+	}
 	
 }
