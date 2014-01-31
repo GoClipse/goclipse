@@ -4,9 +4,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ide.IDEActionFactory;
-import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
-import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.eclipse.ui.texteditor.*;
 
 public class GoEditorActionContributor extends BasicTextEditorActionContributor {
 
@@ -41,6 +39,13 @@ public class GoEditorActionContributor extends BasicTextEditorActionContributor 
 
     IAction action = getAction(textEditor, ITextEditorActionConstants.REFRESH);
     bars.setGlobalActionHandler(ITextEditorActionConstants.REFRESH, action);
+
+    action= getAction(textEditor, ITextEditorActionConstants.NEXT);
+    bars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_NEXT_ANNOTATION, action);
+    bars.setGlobalActionHandler(ITextEditorActionConstants.NEXT, action);
+    action= getAction(textEditor, ITextEditorActionConstants.PREVIOUS);
+    bars.setGlobalActionHandler(ITextEditorActionDefinitionIds.GOTO_PREVIOUS_ANNOTATION, action);
+    bars.setGlobalActionHandler(ITextEditorActionConstants.PREVIOUS, action);
   }
 
 }
