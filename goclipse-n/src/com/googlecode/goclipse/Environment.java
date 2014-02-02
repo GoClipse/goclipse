@@ -694,7 +694,7 @@ public class Environment {
 	 */
 	public void setAutoUnitTestMaxTime(IProject project, int time) {
 		Properties properties = getProperties(project);
-		properties.put( PROJECT_AUTO_UNIT_TEST_MAX_TIME, time );
+		properties.put( PROJECT_AUTO_UNIT_TEST_MAX_TIME, "" + time );
 		saveProperties( project );
     }
 	
