@@ -1,5 +1,7 @@
 package com.googlecode.goclipse.ui.launch;
 
+import melnorme.lang.ide.ui.launch.LangWorkingDirectoryBlock;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -14,12 +16,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.ui.GoDebugPlugin;
 import com.googlecode.goclipse.ui.GoPluginImages;
+import com.googlecode.goclipse.ui.GoUIPlugin;
 
 /**
  * @author steel
@@ -31,7 +32,7 @@ public class GoLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
   private String errorMessage = null;
 
   public GoLaunchConfigurationTab() {
-    workingDirectoryBlock = new GoWorkingDirectoryBlock();
+	    workingDirectoryBlock = new LangWorkingDirectoryBlock();
   }
 
   @Override
@@ -77,7 +78,7 @@ public class GoLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
       try {
         mainfile = iProject.findMember(composite.getMainFile());
       } catch (Exception e) {
-        GoDebugPlugin.logError(e);
+        GoUIPlugin.log(e);
       }
 
       if (mainfile == null) {
@@ -87,7 +88,7 @@ public class GoLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
       }
 
     } catch (CoreException e) {
-      GoDebugPlugin.logError(e);
+      GoUIPlugin.log(e);
       
       errorMessage = "A problem has occurred while attempting to validate the fields in this configuration.";
     }
@@ -100,23 +101,10 @@ public class GoLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
   @Override
   public void createControl(Composite parent) {
     composite = new GoLaunchConfigurationTabComposite(parent, this, SWT.NULL);
+    setControl(composite);
     composite.setLaunchConfigurationDialog(getLaunchConfigurationDialog());
 
     workingDirectoryBlock.createControl(composite);
-
-    setControl(composite);
-  }
-
-  @Override
-  public void dispose() {
-    if (composite != null) {
-      composite.dispose();
-    }
-  }
-
-  @Override
-  public Control getControl() {
-    return composite;
   }
 
   @Override
@@ -127,7 +115,7 @@ public class GoLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
       return workingDirectoryBlock.getErrorMessage();
     }
   }
-
+  
   @Override
   public Image getImage() {
     return GoPluginImages.getImage(GoPluginImages.GO_ICON);
@@ -165,7 +153,7 @@ public class GoLaunchConfigurationTab extends AbstractLaunchConfigurationTab {
 
       workingDirectoryBlock.initializeFrom(configuration);
     } catch (CoreException e) {
-      GoDebugPlugin.logError(e);
+      GoUIPlugin.log(e);
     }
   }
 

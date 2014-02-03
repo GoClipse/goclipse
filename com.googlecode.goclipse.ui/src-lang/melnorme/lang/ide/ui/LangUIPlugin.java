@@ -82,12 +82,12 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		// nothing to do
 		monitor.done();
 	}
-
+	
+	/* --------  -------- */
+	
 	/** Gets the plugins preference store. */
 	public static IPreferenceStore getPrefStore() {
 		return getInstance().getPreferenceStore();
 	}
 	
-	/* --------  -------- */
-
 }
