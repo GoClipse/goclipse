@@ -11,8 +11,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTFactoryUtil;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.StringVariableSelectionDialog;
@@ -25,21 +27,15 @@ import org.eclipse.swt.widgets.Text;
 
 public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchConfigurationTab {
 	
-	protected ILaunchConfiguration launchConfig;
-	
-	protected ILaunchConfiguration getCurrentLaunchConfiguration() {
-		return launchConfig;
+	public static String getConfigAttribute(ILaunchConfiguration config, String key, String defaultValue) {
+		String projectName = "";
+		try {
+			projectName = config.getAttribute(key, defaultValue);
+		} catch (CoreException e) {
+			LangUIPlugin.log(e);
+		}
+		return projectName;
 	}
-	
-	protected void setCurrentLaunchConfiguration(ILaunchConfiguration config) {
-		launchConfig = config;
-	}
-	
-	@Override
-	public void initializeFrom(ILaunchConfiguration config) {
-		setCurrentLaunchConfiguration(config);
-	}
-	
 	
 	/**
 	 * Creates a button that allows user to insert build variables.

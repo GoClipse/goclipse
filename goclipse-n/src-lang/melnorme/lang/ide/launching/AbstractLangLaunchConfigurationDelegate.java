@@ -90,11 +90,11 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 	}
 	
 	protected String getProcessRelativePath_Attribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(LaunchConstants.ATTR_PROG_FILE, (String) null);
+		return config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH, (String) null);
 	}
 	
 	protected String getProgramArguments_Attribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(LaunchConstants.ATTR_PROG_ARGUMENTS, "");
+		return config.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "");
 	}
 	
 	protected String getWorkingDirectory_Attribute(ILaunchConfiguration config) throws CoreException {

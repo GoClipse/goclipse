@@ -12,7 +12,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
-import melnorme.lang.ide.launching.LaunchMessages;
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.util.swt.components.FieldComponent;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.accessibility.AccessibleAdapter;
@@ -28,28 +29,31 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class LangArgumentsBlock {
+public class LangArgumentsBlock extends FieldComponent<String> {
 	
 	protected Label fPrgmArgumentsLabel;
 	protected Text fPrgmArgumentsText;
 	protected Button fArgumentVariablesButton;
 	
-	protected Group createArgumentsComponent(Composite comp) {
+	@Override
+	public Group createComponent(Composite comp, Object layoutData) {
+		Group topControl = new Group(comp, SWT.NONE);
+		topControl.setLayoutData(layoutData);
 		Font font = comp.getFont();
-		Group group = new Group(comp, SWT.NONE);
-		group.setFont(font);
-		group.setLayout(new GridLayout());
-		GridData gd;
+		topControl.setFont(font);
+		topControl.setLayout(new GridLayout());
 		
-		group.setText(LaunchMessages.LangArgumentsTab_Program_Arguments);
-		fPrgmArgumentsText = new Text(group, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
+		topControl.setText(LangUIMessages.LangArgumentsTab_Program_Arguments);
+		fPrgmArgumentsText = new Text(topControl, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
 		fPrgmArgumentsText.getAccessible().addAccessibleListener(
 				new AccessibleAdapter() {
 					@Override
 					public void getName(AccessibleEvent e) {
-						e.result = LaunchMessages.LangArgumentsTab_Program_Arguments;
+						e.result = LangUIMessages.LangArgumentsTab_Program_Arguments;
 					}
 				});
+		
+		GridData gd;
 		gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 40;
 		gd.widthHint = 100;
@@ -58,21 +62,18 @@ public class LangArgumentsBlock {
 		fPrgmArgumentsText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent evt) {
-				valueChanged();
+				fieldValueChanged(getFieldValue());
 			}
 		});
 		fArgumentVariablesButton = AbstractLaunchConfigurationTabExt.
-				createVariablesButton(group, LaunchMessages.LangArgumentsTab_Variables, fPrgmArgumentsText); 
+				createVariablesButton(topControl, LangUIMessages.LangArgumentsTab_Variables, fPrgmArgumentsText); 
 		gd = new GridData(GridData.HORIZONTAL_ALIGN_END);
 		fArgumentVariablesButton.setLayoutData(gd);
 		// need to strip the mnemonic from buttons:
 		ControlAccessibleListener.addControlAccessibleListener(fArgumentVariablesButton, 
 				fArgumentVariablesButton.getText());
 		
-		return group;
-	}
-	
-	protected void valueChanged() {
+		return topControl;
 	}
 	
 	/**
@@ -90,11 +91,13 @@ public class LangArgumentsBlock {
 		return null;
 	}
 	
-	public String getValue() {
+	@Override
+	public String getFieldValue() {
 		return getAttributeValueFrom(fPrgmArgumentsText);
 	}
 	
-	public void setValue(String value) {
+	@Override
+	public void setFieldValue(String value) {
 		fPrgmArgumentsText.setText(value);
 	}
 	

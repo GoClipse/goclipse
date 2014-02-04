@@ -65,8 +65,8 @@ public class GoConstants {
 	 * used in launch configurations
 	 */
 	public static final String GO_CONF_ATTRIBUTE_PROJECT           = LaunchConstants.ATTR_PROJECT_NAME;
-	public static final String GO_CONF_ATTRIBUTE_MAIN              = LaunchConstants.ATTR_PROG_FILE;
-	public static final String GO_CONF_ATTRIBUTE_ARGS              = LaunchConstants.ATTR_PROG_ARGUMENTS;
+	public static final String GO_CONF_ATTRIBUTE_MAIN              = LaunchConstants.ATTR_PROGRAM_PATH;
+	public static final String GO_CONF_ATTRIBUTE_ARGS              = LaunchConstants.ATTR_PROGRAM_ARGUMENTS;
 	public static final String GO_CONF_ATTRIBUTE_WORKING_DIRECTORY = LaunchConstants.ATTR_WORKING_DIRECTORY;
 	public static final String GO_CONF_ATTRIBUTE_BUILD_CONFIG      = LaunchConstants.ATTR_BUILD_CONFIG;
 	

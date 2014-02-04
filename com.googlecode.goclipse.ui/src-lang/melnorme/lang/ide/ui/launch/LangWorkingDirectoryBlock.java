@@ -12,7 +12,6 @@ package melnorme.lang.ide.ui.launch;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.launching.LaunchConstants;
-import melnorme.lang.ide.ui.LangUIPlugin;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -39,11 +38,6 @@ public class LangWorkingDirectoryBlock extends WorkingDirectoryBlock {
 	
 	protected String getProjectAttribute(ILaunchConfiguration config) throws CoreException {
 		return config.getAttribute(LaunchConstants.ATTR_PROJECT_NAME, (String) null);
-	}
-	
-	@Override
-	protected void log(CoreException exception) {
-		LangUIPlugin.log(exception);
 	}
 	
 }

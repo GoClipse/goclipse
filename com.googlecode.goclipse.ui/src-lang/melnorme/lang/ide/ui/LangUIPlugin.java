@@ -41,6 +41,18 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 				LangUIMessages.LangPlugin_internal_error, e)); 
 	}
 	
+	public static void logWarning(String message) {
+		log(new Status(IStatus.WARNING, PLUGIN_ID, IStatus.ERROR, message, null));
+	}
+	
+	public static void logWarning(Throwable throwable) {
+		log(new Status(IStatus.WARNING, PLUGIN_ID, IStatus.ERROR, throwable.getMessage(), throwable));
+	}
+	
+	public static void logWarning(String message, Throwable throwable) {
+		log(new Status(IStatus.WARNING, PLUGIN_ID, IStatus.ERROR, message, throwable));
+	}
+	
 	/* -------- start/stop methods -------- */
 	
 	@Override

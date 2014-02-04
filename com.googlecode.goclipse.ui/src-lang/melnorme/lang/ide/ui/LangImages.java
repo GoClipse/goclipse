@@ -47,6 +47,7 @@ public abstract class LangImages {
 	
 	/* ---------------- Common Lang images ---------------- */
 	
-	public static String IMG_VIEW_ARGUMENTS_TAB = createManaged(T_TABS, "arguments_tab.gif");
+	public static String IMG_LAUNCHTAB_MAIN = createManaged(T_TABS, "main_launch_tab.png");
+	public static String IMG_LAUNCHTAB_ARGUMENTS = createManaged(T_TABS, "arguments_tab.gif");
 	
 }

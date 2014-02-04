@@ -13,8 +13,8 @@
 package melnorme.lang.ide.ui.launch;
 
 import melnorme.lang.ide.launching.LaunchConstants;
-import melnorme.lang.ide.launching.LaunchMessages;
 import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 
 import org.eclipse.core.runtime.CoreException;
@@ -22,12 +22,10 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 
 
 //BM: Original based on org.eclipse.cdt.launch.ui.CArgumentsTab
@@ -50,7 +48,7 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
 	protected final LangArgumentsBlock argumentsBlock = new LangArgumentsBlock() {
 		@Override
-		protected void valueChanged() {
+		protected void fieldValueChanged(String newFieldValue) {
 			updateLaunchConfigurationDialog();
 		};
 	}; 
@@ -58,22 +56,17 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
 	@Override
 	public void createControl(Composite parent) {
-		Font font = parent.getFont();
 		Composite comp = new Composite(parent, SWT.NONE);
+		setControl(comp);
 		GridLayout layout = new GridLayout(1, true);
 		comp.setLayout(layout);
-		comp.setFont(font);
+		comp.setFont(parent.getFont());
 		
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		comp.setLayoutData(gd);
-		setControl(comp);
 		setHelpContextId();
 		
-		Group group = argumentsBlock.createArgumentsComponent(comp);
-		gd = new GridData(GridData.FILL_BOTH);
-		gd.horizontalSpan = 1;
-		group.setLayoutData(gd);
-		
+		argumentsBlock.createComponent(comp, new GridData(GridData.FILL_BOTH));
 		workingDirectoryBlock.createControl(comp);
 	}
 	
@@ -91,25 +84,27 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(LaunchConstants.ATTR_PROG_ARGUMENTS, (String) null);
+		config.setAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, (String) null);
 		config.setAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, (String) null);
 	}
 	
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			argumentsBlock.setValue(configuration.getAttribute(LaunchConstants.ATTR_PROG_ARGUMENTS, ""));
+			argumentsBlock.setFieldValue(configuration.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, ""));
 			workingDirectoryBlock.initializeFrom(configuration);
 		}
 		catch (CoreException e) {
-			setErrorMessage(LaunchMessages.getFormattedString(LaunchMessages.Launch_common_Exception_occurred_reading_configuration_EXCEPTION, e.getStatus().getMessage())); //$NON-NLS-1$
+			setErrorMessage(LangUIMessages.getFormattedString(
+					LangUIMessages.Launch_common_Exception_occurred_reading_configuration_EXCEPTION, 
+					e.getStatus().getMessage()));
 			LangUIPlugin.log(e);
 		}
 	}
 	
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(LaunchConstants.ATTR_PROG_ARGUMENTS, argumentsBlock.getValue());
+		configuration.setAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, argumentsBlock.getFieldValue());
 		workingDirectoryBlock.performApply(configuration);
 	}
 	
@@ -121,7 +116,7 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
 	@Override
 	public String getName() {
-		return LaunchMessages.LangArgumentsTab_Arguments;
+		return LangUIMessages.LangArgumentsTab_Arguments;
 	}
 	
 	@Override
@@ -150,7 +145,7 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
 	@Override
 	public Image getImage() {
-		return LangImages.getImage(LangImages.IMG_VIEW_ARGUMENTS_TAB);
+		return LangImages.getImage(LangImages.IMG_LAUNCHTAB_ARGUMENTS);
 	}
 	
 	@Override
