@@ -4,6 +4,8 @@ import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
+import melnorme.lang.ide.ui.editors.BestMatchHover;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -154,12 +156,15 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 		
 		return new CompletionProcessor(editor);
 	}
-
+	
 	@Override
-	public ITextHover getTextHover(ISourceViewer sv, String contentType) {
+	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
+		if(contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
+			return new BestMatchHover(editor, stateMask);
+		}
 		return new TextHover();
 	}
-
+	
 	@Override
 	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
 		return new DefaultAnnotationHover();

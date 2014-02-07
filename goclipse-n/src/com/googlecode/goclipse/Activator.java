@@ -3,8 +3,6 @@ package com.googlecode.goclipse;
 import java.util.HashMap;
 import java.util.Map;
 
-import melnorme.lang.ide.core.EclipseUtils;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -50,11 +48,6 @@ public class Activator extends AbstractUIPlugin {
 		Environment.INSTANCE.toString();
 		
 		GoBuilder.checkForCompilerUpdates(true);
-		
-		// Start debug plugin so that action enablement in editor is correct/
-		// TODO: this is only necessary while UI code is in this plugin, but in future only UI plugin
-		// should activate debug plugin
-		EclipseUtils.startOtherPlugin("com.googlecode.goclipse.debug");
 	}
 
 	@Override

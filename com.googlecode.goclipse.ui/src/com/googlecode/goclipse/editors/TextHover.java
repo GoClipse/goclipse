@@ -1,22 +1,27 @@
 package com.googlecode.goclipse.editors;
 
 
+import melnorme.lang.ide.ui.editors.AbstractLangEditorTextHover;
+
+import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextViewer;
 
-public class TextHover implements ITextHover {
-
-	@Override
-	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
-		//Activator.logInfo("getHoverInfo");
-		return null;
-	}
-
+public class TextHover extends AbstractLangEditorTextHover<String> {
+	
 	@Override
 	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
-		//Activator.logInfo("getHoverRegion");
 		return null;
 	}
-
+	
+	@Override
+	public String getHoverInfo2_do(ITextViewer textViewer, IRegion hoverRegion) {
+		return null;
+	}
+	
+	@Override
+	public IInformationControlCreator getHoverControlCreator() {
+		return null;
+	}
+	
 }

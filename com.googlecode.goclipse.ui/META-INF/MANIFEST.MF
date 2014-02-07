@@ -23,5 +23,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.0",
 Bundle-Activator: com.googlecode.goclipse.ui.GoUIPlugin
 Export-Package: com.googlecode.goclipse.ui.launch,
  com.googlecode.goclipse.utils,
+ melnorme.lang.ide.ui,
+ melnorme.lang.ide.ui.editors,
  melnorme.util.swt,
  melnorme.util.swt.jface

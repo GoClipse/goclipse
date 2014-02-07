@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui;
+package melnorme.lang.ide.ui.utils;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ISelection;

@@ -17,7 +17,7 @@ import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.WorkbenchUtils;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
