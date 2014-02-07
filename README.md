@@ -24,3 +24,7 @@ http://goclipse.googlecode.com/svn/trunk/goclipse-update-site/
 - Environment variables set (GOPATH, GOROOT, GOARCH, GOOS)
 
 http://sesteel.github.io/goclipse/
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/sesteel/goclipse/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
