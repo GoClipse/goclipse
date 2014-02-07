@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import melnorme.lang.ide.core.EclipseUtils;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -19,10 +20,12 @@ import com.googlecode.goclipse.builder.GoBuilder;
  * 
  * @author steel
  */
+// BM: TODO: remove UI dependencies, especially all the image stuff
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "goclipse";
+	public static final String UI_PLUGIN_ID = "com.googlecode.goclipse.ui";
 
 	public static final String CONTENT_ASSIST_EXTENSION_ID = "com.googlecode.goclipse.contentassistprocessor";
 	
@@ -39,7 +42,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	@Override
-  public void start(BundleContext context) throws Exception {
+	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 		
@@ -55,7 +58,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	@Override
-  public void stop(BundleContext context) throws Exception {
+	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
 	}
@@ -77,7 +80,7 @@ public class Activator extends AbstractUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+		return imageDescriptorFromPlugin(UI_PLUGIN_ID, path);
 	}
 	
 	/**
