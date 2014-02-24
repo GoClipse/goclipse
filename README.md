@@ -28,3 +28,4 @@ http://sesteel.github.io/goclipse/
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/sesteel/goclipse/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
+<a href="http://with-eclipse.github.io/" target="_blank"><img alt="with-Eclipse logo" src="http://with-eclipse.github.io/with-eclipse-0.jpg" /></a>
