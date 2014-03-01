@@ -2,7 +2,7 @@
 <feature
       id="goclipse_feature"
       label="GoClipse"
-      version="0.7.6.qualifier"
+      version="0.7.7.qualifier"
       provider-name="The GoClipse Development Team"
       plugin="goclipse">
 
@@ -123,40 +123,36 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.navigator"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.core.variables"/>
+      <import feature="org.eclipse.platform" version="4.3.0" match="compatible"/>
+      <import feature="org.eclipse.cdt.gnu.dsf" version="4.2.0" match="compatible"/>
+      <import feature="org.eclipse.cdt.platform" version="8.2.1" match="compatible"/>
    </requires>
 
    <plugin
          id="goclipse"
          download-size="0"
          install-size="0"
-         version="0.7.6.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="com.googlecode.goclipse.gocode"
          download-size="0"
          install-size="0"
-         version="0.7.6.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="com.googlecode.goclipse.debug"
          download-size="0"
          install-size="0"
-         version="0.7.6.qualifier"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.googlecode.goclipse.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

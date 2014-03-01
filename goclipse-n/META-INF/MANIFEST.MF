@@ -7,18 +7,12 @@ Bundle-Activator: com.googlecode.goclipse.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
+ org.eclipse.core.variables;bundle-version="3.2.0",
  org.eclipse.debug.core,
- org.eclipse.debug.ui,
- org.eclipse.ui.editors,
- org.eclipse.jface.text,
- org.eclipse.ui.console,
- org.eclipse.ui.ide,
- org.eclipse.ui.navigator,
- org.eclipse.ui.views,
- org.eclipse.search,
  org.eclipse.core.filesystem,
- org.eclipse.ui.intro,
- org.eclipse.ui.intro.universal
+ org.eclipse.ui.console;bundle-version="3.5.200",
+ org.eclipse.ui.ide;bundle-version="3.9.0",
+ org.eclipse.jface.text;bundle-version="3.8.100"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: The GoClipse Development Team
@@ -41,28 +35,18 @@ Export-Package: com.googlecode.goclipse;
    org.eclipse.core.resources,
    com.googlecode.goclipse.dependency,
    org.eclipse.jface.viewers",
- com.googlecode.goclipse.editors;
-  uses:="org.eclipse.jface.text,
-   org.eclipse.ui.texteditor,
-   org.eclipse.jface.text.source,
-   org.eclipse.ui,
-   org.eclipse.jface.text.rules,
-   org.eclipse.jface.text.contentassist,
-   org.eclipse.jface.action,
-   org.eclipse.jface.text.presentation,
-   org.eclipse.jface.viewers,
-   org.eclipse.swt.graphics,
-   org.eclipse.ui.editors.text",
+ com.googlecode.goclipse.core.launch,
  com.googlecode.goclipse.go,
  com.googlecode.goclipse.go.lang.lexer,
  com.googlecode.goclipse.go.lang.model,
  com.googlecode.goclipse.go.lang.parser;uses:="com.googlecode.goclipse.model,com.googlecode.goclipse.go,com.googlecode.goclipse.go.lang.lexer",
  com.googlecode.goclipse.go.lib.indexer,
- com.googlecode.goclipse.preferences;
-  uses:="org.eclipse.jface.preference,
-   org.eclipse.ui,
-   org.eclipse.jface.util,
-   org.eclipse.core.runtime.preferences",
- com.googlecode.goclipse.ui.dialogs,
- com.googlecode.goclipse.utils
+ com.googlecode.goclipse.preferences,
+ com.googlecode.goclipse.utils,
+ melnorme.lang.ide.core,
+ melnorme.lang.ide.launching,
+ melnorme.utilbox.core,
+ melnorme.utilbox.core.fntypes,
+ melnorme.utilbox.misc,
+ melnorme.utilbox.tree
 Bundle-ClassPath: .

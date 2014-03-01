@@ -3,6 +3,8 @@ package com.googlecode.goclipse.builder;
 import java.util.HashMap;
 import java.util.Map;
 
+import melnorme.lang.ide.launching.LaunchConstants;
+
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -62,11 +64,11 @@ public class GoConstants {
 	/**
 	 * used in launch configurations
 	 */
-	public static final String GO_CONF_ATTRIBUTE_PROJECT           = "PROJECT_NAME";
-	public static final String GO_CONF_ATTRIBUTE_MAIN              = "MAIN_FILE";
-	public static final String GO_CONF_ATTRIBUTE_ARGS              = "PROGRAM_ARGS";
-	public static final String GO_CONF_ATTRIBUTE_BUILD_CONFIG      = "BUILD_CONFIG";
-	public static final String GO_CONF_ATTRIBUTE_WORKING_DIRECTORY = "WORKING_DIRECTORY";
+	public static final String GO_CONF_ATTRIBUTE_PROJECT           = LaunchConstants.ATTR_PROJECT_NAME;
+	public static final String GO_CONF_ATTRIBUTE_MAIN              = LaunchConstants.ATTR_PROGRAM_PATH;
+	public static final String GO_CONF_ATTRIBUTE_ARGS              = LaunchConstants.ATTR_PROGRAM_ARGUMENTS;
+	public static final String GO_CONF_ATTRIBUTE_WORKING_DIRECTORY = LaunchConstants.ATTR_WORKING_DIRECTORY;
+	public static final String GO_CONF_ATTRIBUTE_BUILD_CONFIG      = LaunchConstants.ATTR_BUILD_CONFIG;
 	
 	/**
 	 * @return
