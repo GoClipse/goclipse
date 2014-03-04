@@ -267,13 +267,6 @@
          <commonSorter
                class="com.googlecode.goclipse.navigator.NavigatorViewerSorter"
                id="com.googlecode.goclipse.navigator.sorter">
-            <parentExpression>
-               <or>
-                  <instanceof value="org.eclipse.core.resources.IResource"/>
-                  <instanceof value="org.eclipse.core.filesystem.IFileStore"/>
-                  <instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
-               </or>
-            </parentExpression>
          </commonSorter>
          
          <commonWizard
@@ -320,13 +313,6 @@
          <commonSorter
                class="com.googlecode.goclipse.navigator.NavigatorViewerSorter"
                id="com.googlecode.goclipse.navigator.sorter">
-            <parentExpression>
-               <or>
-                  <instanceof value="org.eclipse.core.resources.IResource"/>
-                  <instanceof value="org.eclipse.core.filesystem.IFileStore"/>
-                  <instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
-               </or>
-            </parentExpression>
          </commonSorter>
          
          <!-- actionProvider class="com.googlecode.goclipse.navigator.NavigatorActionProvider"/ -->         
