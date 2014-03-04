@@ -251,11 +251,16 @@
             </adapt>
          </triggerPoints>
 
+         <!-- Despite what the documentation currently says, possibleChildren is queried by Navigator service to find out whether 
+         to use label provider or not, regardless of trigger points. Therefore we should ensure possible children only aplies to Go projects. 
+         See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=429572
+         -->
          <possibleChildren>
             <or>
-               <instanceof value="org.eclipse.core.resources.IResource"/>
-               <instanceof value="org.eclipse.core.filesystem.IFileStore"/>
-               <instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
+               <and>
+                  <instanceof value="org.eclipse.core.resources.IResource"/>
+                  <test property="org.eclipse.core.resources.projectNature" value="goclipse.goNature"/>
+               </and>
             </or>
          </possibleChildren> 
       
@@ -307,7 +312,6 @@
 
          <possibleChildren>
             <or>
-               <instanceof value="org.eclipse.core.resources.IResource"/>
                <instanceof value="org.eclipse.core.filesystem.IFileStore"/>
                <instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
             </or>
