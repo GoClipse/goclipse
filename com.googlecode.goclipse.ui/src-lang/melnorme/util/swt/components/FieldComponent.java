@@ -10,19 +10,22 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
-import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * A more high level SWT component.
- * XXX: needs more work 
+ * XXX: needs more work @see also {@link FieldWithListeners}
  */
 public abstract class FieldComponent<T> {
 	
- 	protected final ListenerList listeners = new ListenerList(); // TODO
+ 	public final Control createComponent(Composite parent, Object layoutData) {
+ 		Control control = createComponent(parent);
+ 		control.setLayoutData(layoutData);
+ 		return control;
+ 	}
  	
- 	public abstract Control createComponent(Composite parent, Object layoutData);
+ 	public abstract Control createComponent(Composite parent);
 	
 	public abstract T getFieldValue();
 

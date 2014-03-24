@@ -26,10 +26,9 @@ public class BuildConfigField extends FieldComponent<BuildConfiguration> {
 	protected Combo buildCfgCombo;
 	
 	@Override
-	public Composite createComponent(Composite parent, Object layoutData) {
+	public Composite createComponent(Composite parent) {
 		
 		Composite topControl = new Composite(parent, SWT.NONE);
-		topControl.setLayoutData(layoutData);
 		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
 		Label label = new Label(topControl, SWT.NONE);

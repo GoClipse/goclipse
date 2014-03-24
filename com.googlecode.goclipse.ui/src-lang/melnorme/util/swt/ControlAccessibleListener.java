@@ -10,7 +10,7 @@
  *     IBM Corporation
  *     Bruno Medeiros - lang modifications
  *******************************************************************************/
-package melnorme.lang.ide.ui.launch;
+package melnorme.util.swt;
 
 import org.eclipse.swt.accessibility.AccessibleAdapter;
 import org.eclipse.swt.accessibility.AccessibleEvent;

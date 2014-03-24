@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.launch;
 
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.fields.ProgramPathField;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;

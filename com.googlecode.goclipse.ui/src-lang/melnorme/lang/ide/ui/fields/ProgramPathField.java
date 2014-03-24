@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.launch;
+package melnorme.lang.ide.ui.fields;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -35,10 +35,8 @@ public class ProgramPathField extends FieldComponent<String> {
 	protected Button fSearchButton;
 	
 	@Override
-	public Group createComponent(Composite parent, Object layoutData) {
-		
+	public Group createComponent(Composite parent) {
 		Group mainControl = new Group(parent, SWT.NONE);
-		mainControl.setLayoutData(layoutData);
 		mainControl.setText(LangUIMessages.ProgramPathField_title);
 		mainControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		

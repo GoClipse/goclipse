@@ -9,10 +9,10 @@
  * 		DLTK team -
  * 		Bruno Medeiros - lang modifications
  *******************************************************************************/
-package melnorme.lang.ide.ui.launch;
+package melnorme.lang.ide.ui.fields;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -45,9 +45,8 @@ public class ProjectField extends FieldComponent<String> {
 	protected Text fProjText;
 	
 	@Override
-	public Group createComponent(Composite parent, Object layoutData) {
+	public Group createComponent(Composite parent) {
 		Group topControl = new Group(parent, SWT.NONE);
-		topControl.setLayoutData(layoutData);
 		topControl.setText(LangUIMessages.mainTab_projectGroup);
 		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		

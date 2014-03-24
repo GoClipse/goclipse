@@ -33,11 +33,9 @@ public class InitializeAfterLoadJob extends UIJob {
 				LangUIPlugin.initializeAfterLoad(new SubProgressMonitor(monitor, 4));
 			} catch (CoreException e) {
 				LangUIPlugin.log(e);
-				LangUIPlugin.initialized = true;
 				return e.getStatus();
 			}
 			
-			LangUIPlugin.initialized = true;
 			return new Status(IStatus.OK, LangUIPlugin.PLUGIN_ID, IStatus.OK, "", null);
 		}
 		@Override
@@ -53,7 +51,6 @@ public class InitializeAfterLoadJob extends UIJob {
 	
 	@Override
 	public IStatus runInUIThread(IProgressMonitor monitor) {
-		LangUIPlugin.initialized = false;
 		Job job = new RealJob(LangUIMessages.LangPlugin_initializing_ui);
 		job.setPriority(Job.SHORT);
 		job.schedule();

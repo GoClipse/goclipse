@@ -41,6 +41,10 @@ public class PluginImagesHelper {
 		this.imageRegistry = new ImageRegistry(SWTUtil.getStandardDisplay());
 	}
 	
+	public ImageRegistry getImageRegistry() {
+		return imageRegistry;
+	}
+	
 	protected static ImageDescriptor getImageDescriptor(Bundle bundle, IPath path, 
 			boolean useMissingImageDescriptor) {
 		URL url = FileLocator.find(bundle, path, null);
@@ -71,7 +75,7 @@ public class PluginImagesHelper {
 		return createImageDescriptor(prefix, imagePath, useMissingImageDescriptor);
 	}
 	
-	protected String getKey(String prefix, String imagePath) {
+	public String getKey(String prefix, String imagePath) {
 		return new Path(prefix).append(imagePath).toString();
 	}
 	
