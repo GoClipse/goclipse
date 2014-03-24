@@ -4,7 +4,8 @@ Bundle-Name: GoClipse Core
 Bundle-SymbolicName: goclipse; singleton:=true
 Bundle-Version: 0.8.0.qualifier
 Bundle-Activator: com.googlecode.goclipse.Activator
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.core.variables;bundle-version="3.2.0",

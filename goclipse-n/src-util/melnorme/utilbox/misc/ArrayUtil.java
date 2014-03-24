@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 DSource.org and others.
+ * Copyright (c) 2007, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,18 +24,15 @@ public class ArrayUtil {
 	
 	public static final Object[] EMPTY_ARRAY = new Object[] {};
 	
-//	/** Returns true if both arrays have the same elements, ignoring order. False otherwise. */
-//	public static <T extends Comparable<? super T>> boolean arrayContainsSame(T[] arr1, T[] arr2) {
-//		List<T> list1 = Arrays.asList(arr1);
-//		List<T> list2 = Arrays.asList(arr2);
-//		return CollectionUtil.sort(list1).equals(CollectionUtil.sort(list2));
-//	}
-//	
-//	public static <T> boolean arrayContainsSame(T[] arr1, T[] arr2) {
-//		List<T> list1 = Arrays.asList(arr1);
-//		List<T> list2 = Arrays.asList(arr2);
-//		return new HashSet<T>(list1).equals(new HashSet<T>(list2));
-//	}
+	/** @return the given array if it is non-null, an empty array otherwise. */
+	public static Object[] nullToEmpty(Object[] array) {
+		return array == null ? EMPTY_ARRAY : array;
+	}
+	
+	/** @return the given array if it is non-null, an empty array otherwise with given klass as component type. */
+	public static <T> T[] nullToEmpty(T[] array, Class<T> klass) {
+		return array == null ? create(0, klass) : array;
+	}
 	
 	/** Creates a new array of given length, and same component type as given compType. */
 	public static <T> T[] create(int length, T[] compType) {
@@ -53,6 +50,17 @@ public class ArrayUtil {
 			return (T[]) Array.newInstance(cpType, 0);
 		}
 		return list.toArray((T[])Array.newInstance(cpType, list.size()));
+	}
+	
+    /** Create an array from the given element, with the given cpType as the runtime component type.
+     * If the element is null, a zero-length array is created. */
+	public static <T> T[] singletonArray(T element, Class<T> cpType) {
+		if(element == null) {
+			return (T[]) Array.newInstance(cpType, 0);
+		}
+		T[]newArray = (T[]) Array.newInstance(cpType, 1);
+		newArray[0] = element;
+		return newArray;
 	}
 	
     /** Create an array from the given list, with the given cpType as the run-time component type.

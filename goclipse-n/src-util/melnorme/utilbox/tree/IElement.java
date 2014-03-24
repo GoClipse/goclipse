@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 DSource.org and others.
+ * Copyright (c) 2007, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package melnorme.utilbox.tree;
  * Interface for tree elements.
  */
 public interface IElement {
+	
 	// Empty array for optimization
 	IElement[] NO_ELEMENTS = new IElement[0];
 	
@@ -30,6 +31,4 @@ public interface IElement {
 	/** Returns the node's children. */
 	IElement[] getChildren();
 
-	/** Returns this element's kind encoded as an integer. */
-	int getElementType();
 }

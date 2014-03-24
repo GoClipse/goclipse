@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import melnorme.utilbox.core.fntypes.Predicate;
@@ -24,19 +25,66 @@ import melnorme.utilbox.core.fntypes.Predicate;
  */
 public class CollectionUtil {
 	
-	/** @return given coll if it's not null, or an immutable empty collection otherwise. */
-	public static <U> Collection<U> nullToEmpty(Collection<U> coll) {
-		return coll == null ? Collections.EMPTY_LIST : coll;
-	}
-	
-	/** Creates a {@link ArrayList} from given collection (collection can be null). */
-	public static <T> Collection<T> createArrayList(Collection<? extends T> collection) {
+	/** @return a new {@link ArrayList} from given collection 
+	 * (a null collection is considered as if it's an empty one). */
+	public static <T> ArrayList<T> createArrayList(Collection<? extends T> collection) {
 		return new ArrayList<T>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
+	/** @return a new {@link ArrayList} from given array (a null array is considered like it's an empty one). */
+	@SafeVarargs
+	public static <T> ArrayList<T> createArrayList(T... array) {
+		ArrayList<T> newCollection = new ArrayList<T>();
+		if(array != null) {
+			Collections.addAll(newCollection, array);
+		}
+		return newCollection;
+	}
 	
-	/** Creates a {@link HashSet} from given collection (collection can be null). */
-	public static <T> HashSet<T> createHashSet(Collection<T> collection) {
+	/** @return a new {@link LinkedList} from given collection 
+	 * (a null collection is considered as if it's an empty one). */
+	public static <T> LinkedList<T> createLinkedList(Collection<? extends T> collection) {
+		return new LinkedList<T>(collection == null ? Collections.EMPTY_LIST : collection);
+	}
+	/** @return a new {@link LinkedList} from given array (a null array is considered like it's an empty one). */
+	@SafeVarargs
+	public static <T> LinkedList<T> createLinkedList(T... array) {
+		LinkedList<T> newCollection = new LinkedList<T>();
+		if(array != null) {
+			Collections.addAll(newCollection, array);
+		}
+		return newCollection;
+	}
+	
+	/** @return a new {@link HashSet} from given collection 
+	 * (a null collection is considered as if it's an empty one). */
+	public static <T> HashSet<T> createHashSet(Collection<? extends T> collection) {
 		return new HashSet<T>(collection == null ? Collections.EMPTY_LIST : collection);
+	}
+	/** @return a new {@link HashSet} from given array (a null array is considered like it's an empty one). */
+	@SafeVarargs
+	public static <T> HashSet<T> createHashSet(T... array) {
+		HashSet<T> newCollection = new HashSet<T>();
+		if(array != null) {
+			Collections.addAll(newCollection, array);
+		}
+		return newCollection;
+	}
+	
+	/** @return a new unmodifiable {@link Collection} from given array 
+	 * (a null array is considered like it's an empty one). */
+	@SafeVarargs
+	public static <T> Collection<T> createCollection(T... array) {
+		ArrayList<T> newCollection = new ArrayList<T>();
+		if(array != null) {
+			Collections.addAll(newCollection, array);
+		}
+		return Collections.unmodifiableCollection(newCollection);
+	}
+	
+	/** @return given coll if it's non-null, an empty collection otherwise.
+	 * The returned collection cannot be modified. */
+	public static <T> Collection<T> nullToEmpty(Collection<T> coll) {
+		return coll == null ? Collections.EMPTY_LIST : coll;
 	}
 	
 	/** Creates a List copy of orig, with all elements except elements equal to excludedElem. */

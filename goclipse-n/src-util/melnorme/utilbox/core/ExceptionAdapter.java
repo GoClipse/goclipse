@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 DSource.org and others.
+ * Copyright (c) 2007, 2010 The original authors/Contributors listed below.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,20 +91,20 @@ public class ExceptionAdapter extends RuntimeException {
 	
 	/** Creates an unchecked Throwable, if not unchecked already. */
 	public static final RuntimeException unchecked(Throwable e) {
-		if(e instanceof RuntimeException)
+		if(e instanceof RuntimeException) {
 			throw (RuntimeException) e;
-		else if(e instanceof Exception)
-			throw new ExceptionAdapter((Exception)e);
-		if(e instanceof Error)
+		} else if(e instanceof Exception) {
+			throw new ExceptionAdapter((Exception) e);
+		} else if(e instanceof Error) {
 			throw (Error) e;
-		else {
+		} else {
 			assertFail("uncheck: Unsupported Throwable: " + e);
 			return null;
 		}
 	}
 	
-	/** Same as unchecked() but stands for TODO code. 
-	 * Uses the Deprecated annotation solely to cause a warning in IDEs. */
+	/** Same as {@link #unchecked(Throwable)} but used during development for temporary code only. 
+	 * Uses the Deprecated annotation to cause a warning in IDEs, to warn that code should be reviewed. */
 	@Deprecated 
 	public static RuntimeException uncheckedTODO(Throwable e) {
 		return unchecked(e);
