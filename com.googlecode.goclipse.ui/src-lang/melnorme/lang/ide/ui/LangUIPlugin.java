@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-import melnorme.lang.ide.core.EclipseUtils;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
