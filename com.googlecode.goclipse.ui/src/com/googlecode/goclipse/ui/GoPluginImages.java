@@ -16,4 +16,6 @@ public class GoPluginImages extends LangImages {
 	
 	public static final String GO_ICON = createManaged("", "go-icon16.png");
 	
+	public static final String GO_CONSOLE_ICON = createManaged("", "go-icon16.png");
+	
 }

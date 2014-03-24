@@ -31,10 +31,10 @@ public class RunExternalProcessTask implements ICallable<ExternalProcessOutputHe
 	protected final ProcessBuilder pb;
 	protected final IProject project;
 	protected final IProgressMonitor cancelMonitor;
-	protected final ListenerListHelper<IExternalProcessListener> listenersHelper;
+	protected final ListenerListHelper<? extends IExternalProcessListener> listenersHelper;
 	
-	public RunExternalProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor, 
-			ListenerListHelper<IExternalProcessListener> listenersHelper) {
+	public RunExternalProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor,
+			ListenerListHelper<? extends IExternalProcessListener> listenersHelper) {
 		this.pb = assertNotNull(pb);
 		this.project = project; // can be null
 		this.cancelMonitor = assertNotNull(cancelMonitor);
@@ -47,18 +47,18 @@ public class RunExternalProcessTask implements ICallable<ExternalProcessOutputHe
 	}
 	
 	public void notifyProcessStarted(ExternalProcessOutputHelper processHelper) {
-		for (IExternalProcessListener dubProcessListener : listenersHelper.getListeners()) {
-			dubProcessListener.handleProcessStarted(pb, project, processHelper);
+		for (IExternalProcessListener processListener : listenersHelper.getListeners()) {
+			processListener.handleProcessStarted(pb, project, processHelper);
 		}
 	}
 	
 	public void notifyProcessFailedToStart(IOException e) {
-		for (IExternalProcessListener dubProcessListener : listenersHelper.getListeners()) {
-			dubProcessListener.handleProcessStartFailure(pb, project, e);
+		for (IExternalProcessListener processListener : listenersHelper.getListeners()) {
+			processListener.handleProcessStartFailure(pb, project, e);
 		}
 	}
 	
-	protected ExternalProcessEclipseHelper startProcessAndAwait() throws CoreException {
+	public ExternalProcessEclipseHelper startProcessAndAwait() throws CoreException {
 		ExternalProcessEclipseHelper processHelper;
 		try {
 			processHelper = new ExternalProcessEclipseHelper(pb, false, cancelMonitor);
@@ -67,7 +67,7 @@ public class RunExternalProcessTask implements ICallable<ExternalProcessOutputHe
 			throw createProcessException(LangCoreMessages.ExternalProcess_CouldNotStart,  e);
 		}
 		
-		notifyProcessStarted(processHelper);		
+		notifyProcessStarted(processHelper);
 		processHelper.startReaderThreads();
 		
 		try {

@@ -1,12 +1,18 @@
 package com.googlecode.goclipse.builder;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
+import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -17,6 +23,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.Util;
@@ -249,18 +256,29 @@ public class GoCompiler {
 			builder.environment().put(GoConstants.GOPATH, goPath);
 			builder.environment().put("PATH", path);
 			
-			Process p = builder.start();
-
+			
+			RunExternalProcessTask processTask = new RunExternalProcessTask(builder, project, pmonitor,
+				GoBuildManager.getDefault().processListenersHelper);
+			
+			ExternalProcessOutputHelper processHelper = null;
 			try {
-				p.waitFor();
-
-			} catch (InterruptedException e) {
-				Activator.logInfo(e);
+				processHelper = processTask.startProcessAndAwait();
+				
+			} catch (CoreException ce) {
+				if(ce.getCause() instanceof TimeoutException && pmonitor.isCanceled()) {
+					throw new OperationCanceledException();
+				}
+				LangCore.logStatus(ce.getStatus());
 			}
 			
 			refreshProject(project, pmonitor);
 			int errorCount = 0;
-			StreamAsLines sal = StreamAsLines.buildStreamAsLines(project, file, pkgPath, p);
+			
+			StreamAsLines sal = new StreamAsLines();
+			sal.setCombineLines(true);
+			sal.process(new ByteArrayInputStream(processHelper.getStdOutBytes().toByteArray()));
+			sal.process(new ByteArrayInputStream(processHelper.getStdErrBytes().toByteArray()));
+			
 			if (sal.getLines().size() > 0) {
 		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
 		    }

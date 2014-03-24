@@ -68,6 +68,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			kind = FULL_BUILD;
 		}
 		
+		GoBuildManager.getDefault().notifyBuildStarting(project);
+		
 		try {
 			
 			if (kind == FULL_BUILD || onlyFullBuild) {
@@ -87,6 +89,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		} catch(Exception e) {
 			Activator.logError(e);
 		}
+		
+		GoBuildManager.getDefault().notifyBuildTerminated(project);
 		
 		// no project dependencies (yet)
 		return null;
