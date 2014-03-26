@@ -20,14 +20,14 @@ import melnorme.lang.ide.ui.editors.ILangEditorTextHover;
  */
 public class LangEditorTextHoversRegistry {
 	
-	private static List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications = new ArrayList<Class<? extends ILangEditorTextHover<?>>>();
+	private static List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications = new ArrayList<>();
 	
 	static {
 		LangUIPlugin_Actual.initTextHovers(textHoverSpecifications);
 	}
 	
 	public synchronized static List<Class<? extends ILangEditorTextHover<?>>> getTextHoversSpecifications() {
-		return new ArrayList<Class<? extends ILangEditorTextHover<?>>>(textHoverSpecifications);
+		return new ArrayList<>(textHoverSpecifications);
 	}
 	
 	public synchronized static void addTextHoverSpecToBeggining(Class<? extends ILangEditorTextHover<?>> hoverKlass) {

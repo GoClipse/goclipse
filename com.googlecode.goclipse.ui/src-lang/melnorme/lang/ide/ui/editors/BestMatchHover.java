@@ -47,7 +47,7 @@ public class BestMatchHover extends AbstractLangEditorTextHover<Object> {
 		
 		List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecs = 
 				LangEditorTextHoversRegistry.getTextHoversSpecifications();
-		fInstantiatedTextHovers = new ArrayList<ILangEditorTextHover<?>>(textHoverSpecs.size());
+		fInstantiatedTextHovers = new ArrayList<>(textHoverSpecs.size());
 		
 		for (int i= 0; i < textHoverSpecs.size(); i++) {
 			Class<? extends ILangEditorTextHover<?>> klass = textHoverSpecs.get(i);

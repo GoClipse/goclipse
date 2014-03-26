@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 DSource.org and others.
+ * Copyright (c) 2007, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,14 @@
  *******************************************************************************/
 package melnorme.utilbox.misc;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 
 /**
  * Miscellaneous file utilities. 
@@ -23,8 +25,8 @@ import java.io.OutputStreamWriter;
 public final class FileUtil extends StreamUtil {
 	
 	/** Read all bytes of the given file. 
-	 * @return the bytes that where read. */
-	public static byte[] readBytesFromFile(File file) throws IOException, FileNotFoundException {
+	 * @return the bytes that where read in a {@link ByteArrayOutputStream}. */
+	public static IByteSequence readBytesFromFile(File file) throws IOException, FileNotFoundException {
 		long fileLength = file.length();
 		/*
 		 * You cannot create an array using a long type. It needs to be an
@@ -34,14 +36,19 @@ public final class FileUtil extends StreamUtil {
 		if (fileLength > Integer.MAX_VALUE) 
 			throw new IOException("File is too large, size is bigger than " + Integer.MAX_VALUE);
 		
-		FileInputStream fis = new FileInputStream(file);
-		return readBytesFromStream(fis, (int) fileLength);
+		return readAllBytesFromStream(new FileInputStream(file), (int) fileLength);
 	}
 	
-	/** Read all bytes of the given file.
-	 * @return a String created from given bytes, with given charsetName. */
+	/** Read all bytes from the given file.
+	 * @return a String created from those bytes, with given charsetName. */
 	public static String readStringFromFile(File file, String charsetName) throws IOException, FileNotFoundException {
-		return new String(readBytesFromFile(file), charsetName);
+		return readBytesFromFile(file).toString(Charset.forName(charsetName));
+	}
+	
+	/** Read all bytes from the given file.
+	 * @return a String created from those bytes, with given charset. */
+	public static String readStringFromFile(File file, Charset charset) throws IOException, FileNotFoundException {
+		return readBytesFromFile(file).toString(charset);
 	}
 	
 	

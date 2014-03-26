@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 DSource.org and others.
+ * Copyright (c) 2007, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,12 @@ package melnorme.utilbox.core;
 
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.CollectionUtil;
 
 /**
  * Utils for miscellaneous Java core language functionality. 
@@ -26,7 +32,7 @@ public class CoreUtil /* extends Assert */ {
 	/** @return whether the two given arrays are the same (including null) or equal 
 	 * according to {@link Arrays#equals(Object[], Object[])}. */
 	public static boolean areEqualArrays(Object[] a1, Object[] a2) {
-		return (a1 == a2) || (a1 != null && a2 != null && Arrays.equals(a1, a2));
+		return Arrays.equals(a1, a2);
 	}
 	
 	/** Casts given object to a supertype as typed by given klass (actual value not used). This cast is safe. */
@@ -101,6 +107,23 @@ public class CoreUtil /* extends Assert */ {
 	/** @return an array of double's. */
 	public static double[] arrayD(double... elems) {
 		return elems;
+	}
+	
+	/** @return given coll if it's not null, or an immutable empty collection otherwise. */
+	public static <U> Collection<U> nullToEmpty(Collection<U> coll) {
+		return coll == null ? Collections.EMPTY_LIST : coll;
+	}
+	
+	/** Create an array from the given list, with the given cpType as the run-time component type.
+	 * If the list is null, a zero-length array is created. */
+	public static <T> T[] arrayFrom(Collection<? extends T> list, Class<T> cpType) {
+		return ArrayUtil.createFrom(list, cpType);
+	}
+	
+	/** @return a new read-only {@link List} from given array (a null array is considered like an empty one). */
+	@SafeVarargs
+	public static <T> List<T> listFrom(T... array) {
+		return Collections.unmodifiableList(CollectionUtil.createArrayList(array));
 	}
 	
 }

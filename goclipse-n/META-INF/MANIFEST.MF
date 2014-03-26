@@ -2,9 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GoClipse Core
 Bundle-SymbolicName: goclipse; singleton:=true
-Bundle-Version: 0.7.6.qualifier
+Bundle-Version: 0.8.0.qualifier
 Bundle-Activator: com.googlecode.goclipse.Activator
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.core.variables;bundle-version="3.2.0",
@@ -14,7 +15,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide;bundle-version="3.9.0",
  org.eclipse.jface.text;bundle-version="3.8.100"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: The GoClipse Development Team
 Export-Package: com.googlecode.goclipse;
   uses:="org.eclipse.core.runtime,
@@ -44,7 +45,10 @@ Export-Package: com.googlecode.goclipse;
  com.googlecode.goclipse.preferences,
  com.googlecode.goclipse.utils,
  melnorme.lang.ide.core,
+ melnorme.lang.ide.core.utils,
+ melnorme.lang.ide.core.utils.process,
  melnorme.lang.ide.launching,
+ melnorme.utilbox.concurrency,
  melnorme.utilbox.core,
  melnorme.utilbox.core.fntypes,
  melnorme.utilbox.misc,

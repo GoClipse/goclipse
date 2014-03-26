@@ -13,6 +13,7 @@
 package melnorme.lang.ide.ui.launch;
 
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.util.swt.ControlAccessibleListener;
 import melnorme.util.swt.components.FieldComponent;
 
 import org.eclipse.swt.SWT;
@@ -36,9 +37,8 @@ public class LangArgumentsBlock extends FieldComponent<String> {
 	protected Button fArgumentVariablesButton;
 	
 	@Override
-	public Group createComponent(Composite comp, Object layoutData) {
+	public Group createComponent(Composite comp) {
 		Group topControl = new Group(comp, SWT.NONE);
-		topControl.setLayoutData(layoutData);
 		Font font = comp.getFont();
 		topControl.setFont(font);
 		topControl.setLayout(new GridLayout());

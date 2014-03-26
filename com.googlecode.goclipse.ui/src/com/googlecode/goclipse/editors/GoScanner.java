@@ -1,5 +1,7 @@
 package com.googlecode.goclipse.editors;
 
+import melnorme.util.swt.jface.ColorManager;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.TextAttribute;

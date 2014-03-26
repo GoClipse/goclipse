@@ -7,9 +7,9 @@ import org.eclipse.jface.viewers.Viewer;
 
 
 /**
- * A default content provider for IElement's
+ * A simple content provider for IElement's
  */
-public abstract class ElementContentProvider implements ITreeContentProvider {
+public class ElementContentProvider implements ITreeContentProvider {
 	
 	@Override
 	public void dispose() {

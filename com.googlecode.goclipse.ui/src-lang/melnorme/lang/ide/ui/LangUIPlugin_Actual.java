@@ -8,18 +8,16 @@ import com.googlecode.goclipse.editors.TextHover;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 /**
- * Alias for the actual running plugin, used by Lang code. 
+ * Actual/concrete IDE constants and other bindings, for Lang UI code. 
  */
-public final class LangUIPlugin_Actual extends GoUIPlugin {
+public final class LangUIPlugin_Actual {
 	
-	protected static GoUIPlugin __getInstance() {
-		return GoUIPlugin.getInstance();
-	}
+	public static final String PLUGIN_ID = GoUIPlugin.PLUGIN_ID;
 	
 	// ID to start the debug plugin automatically, if present
 	protected static final String DEBUG_PLUGIN_ID = "com.googlecode.goclipse.debug";
 	
-	public static void initTextHovers(List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
+	protected static void initTextHovers(List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
 		textHoverSpecifications.add(TextHover.class);
 	}
 	

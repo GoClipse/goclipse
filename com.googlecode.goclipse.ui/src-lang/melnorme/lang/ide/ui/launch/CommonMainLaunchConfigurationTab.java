@@ -11,12 +11,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
-import melnorme.lang.ide.core.EclipseUtils;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.fields.ProjectField;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 
 import org.eclipse.core.resources.IProject;

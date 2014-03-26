@@ -36,7 +36,6 @@ public class GoEditor extends TextEditor {
 
   private static ResourceBundle editorResourceBundle = ResourceBundle.getBundle(BUNDLE_ID);
 
-  private ColorManager colorManager;
   private IPropertyChangeListener changeListener;
   private DefaultCharacterPairMatcher matcher;
   private EditorImageUpdater imageUpdater;
@@ -164,10 +163,6 @@ public class GoEditor extends TextEditor {
   @Override
   public void dispose() {
     Activator.getDefault().getPreferenceStore().removePropertyChangeListener(changeListener);
-
-    if (colorManager != null) {
-      colorManager.dispose();
-    }
 
     if (imageUpdater != null) {
       imageUpdater.dispose();
