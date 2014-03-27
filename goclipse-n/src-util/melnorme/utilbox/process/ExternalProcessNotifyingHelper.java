@@ -8,17 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.concurrency;
+package melnorme.utilbox.process;
 
 import melnorme.utilbox.misc.ListenerListHelper;
 
 /**
- * Extends {@link ExternalProcessOutputReader} to allow optional listeners to be notified
+ * Extends {@link ExternalProcessHelper} to allow optional listeners to be notified
  * of output read from the external process, as well as process termination events.
  */
-public class ExternalProcessOutputHelper extends ExternalProcessOutputReader {
+public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
-	public ExternalProcessOutputHelper(Process process, boolean readStdErr, boolean startReaders) {
+	public ExternalProcessNotifyingHelper(Process process, boolean readStdErr, boolean startReaders) {
 		super(process, readStdErr, startReaders);
 	}
 	

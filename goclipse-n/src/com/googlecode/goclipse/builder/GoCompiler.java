@@ -12,7 +12,7 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
-import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -260,7 +260,7 @@ public class GoCompiler {
 			RunExternalProcessTask processTask = new RunExternalProcessTask(builder, project, pmonitor,
 				GoBuildManager.getDefault().processListenersHelper);
 			
-			ExternalProcessOutputHelper processHelper = null;
+			ExternalProcessNotifyingHelper processHelper = null;
 			try {
 				processHelper = processTask.startProcessAndAwait();
 				

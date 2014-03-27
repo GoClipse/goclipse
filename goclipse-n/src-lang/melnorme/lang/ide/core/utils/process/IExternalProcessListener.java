@@ -14,13 +14,13 @@ import java.io.IOException;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 
 
 public interface IExternalProcessListener {
 	
-	void handleProcessStarted(ProcessBuilder pb, IProject project, ExternalProcessOutputHelper processHelper);
+	void handleProcessStarted(ProcessBuilder pb, IProject project, ExternalProcessNotifyingHelper processHelper);
 	
 	void handleProcessStartFailure(ProcessBuilder pb, IProject project, IOException e);
 	

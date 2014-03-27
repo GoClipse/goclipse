@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.concurrency;
+package melnorme.utilbox.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -16,22 +16,26 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
+import melnorme.utilbox.misc.ExceptionTrackingRunnable;
 import melnorme.utilbox.misc.IByteSequence;
 import melnorme.utilbox.misc.StreamUtil;
 
 /**
- * External Process Helper that reads all process output into a byte array (and another for stderr)
+ * Helper for running external processes.
+ * Reads all stdout and stderr output into a byte array (using worker threads)
+ * 
+ * @see AbstractExternalProcessHelper
  */
-public class ExternalProcessOutputReader extends ExternalProcessHelper {
+public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	
 	protected ReadAllBytesTask mainReader;
 	protected ReadAllBytesTask stderrReader;
 	
-	public ExternalProcessOutputReader(ProcessBuilder pb) throws IOException {
+	public ExternalProcessHelper(ProcessBuilder pb) throws IOException {
 		super(pb);
 	}
 	
-	public ExternalProcessOutputReader(Process process, boolean readStdErr, boolean startReaders) {
+	public ExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders) {
 		super(process, readStdErr, startReaders);
 	}
 	

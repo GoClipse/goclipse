@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.concurrency;
+package melnorme.utilbox.misc;
 
 
 /**

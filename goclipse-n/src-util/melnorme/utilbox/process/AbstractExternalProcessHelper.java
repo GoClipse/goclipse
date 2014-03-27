@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.concurrency;
+package melnorme.utilbox.process;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
@@ -16,11 +16,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Helper to start an external process and read its output concurrently,
+ * Abstract helper class to start an external process and read its output concurrently,
  * using one or two reader threads (for stdout and stderr).
- * It also supports waiting for process termination with timeouts. 
+ * It also supports waiting for process termination with timeouts.
+ * 
+ * Subclasses must specify Runnable's for the worker threads reading the process stdout and stderr streams. 
  */
-public abstract class ExternalProcessHelper {
+public abstract class AbstractExternalProcessHelper {
 	
 	public static final int NO_TIMEOUT = -1;
 	
@@ -34,11 +36,11 @@ public abstract class ExternalProcessHelper {
 	protected final Thread mainReaderThread;
 	protected final Thread stderrReaderThread; // Can be null
 	
-	public ExternalProcessHelper(ProcessBuilder pb) throws IOException {
+	public AbstractExternalProcessHelper(ProcessBuilder pb) throws IOException {
 		this(pb.start(), pb.redirectErrorStream() == false, true);
 	}
 	
-	public ExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders) {
+	public AbstractExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders) {
 		this.process = process;
 		this.readStdErr = readStdErr;
 		
@@ -80,11 +82,14 @@ public abstract class ExternalProcessHelper {
 	
 	protected abstract Runnable createStdErrReaderTask();
 	
+	protected String getBaseNameForWorkerThreads() {
+		return getClass().getSimpleName();
+	}
 	
 	protected class ProcessHelperMainThread extends Thread {
 		
 		public ProcessHelperMainThread(Runnable runnable) {
-			super(runnable);
+			super(runnable, getBaseNameForWorkerThreads() + ".MainWorker");
 			setDaemon(true);
 		}
 		
@@ -120,7 +125,7 @@ public abstract class ExternalProcessHelper {
 	protected class ProcessHelperStdErrThread extends Thread {
 		
 		public ProcessHelperStdErrThread(Runnable runnable) {
-			super(runnable);
+			super(runnable, getBaseNameForWorkerThreads() + ".StdErrWorker");
 			setDaemon(true);
 		}
 		
