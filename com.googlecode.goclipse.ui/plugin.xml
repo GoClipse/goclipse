@@ -642,6 +642,7 @@
    </extension>
    
    <!-- This is possibly not needed (and has a dependency on the JDT), but is nice to have -->
+<!--
    <extension
          point="org.eclipse.jdt.ui.javaElementFilters">
       <filter
@@ -651,6 +652,7 @@
           targetId="org.eclipse.jdt.ui.PackageExplorer"
           pattern="_obj"/>
    </extension>
+-->
    
    <!-- Search -->
    
