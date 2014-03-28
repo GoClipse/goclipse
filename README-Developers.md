@@ -17,7 +17,13 @@ Using Maven (and Tycho), it is possible to automatically build Goclipse, create 
  * Also, running `mvn package -P build-ide-product` will build a pre-packaged Eclipse installation with Goclipse already installed. This is not released to the public, but can potentially be of some use internally.
 
 #### Deploying a new release:
- * TODO 
+ * TODO goclipse version info
+ * Consider running the com.googlecode.goclipse.gocode/create_gocode.py script to rebuild gocode
+for (windows, darwin, linux) and (386, amd64).
+ * Run `mvn integration-test` as described above.
+ * TODO update site upload
+ * We have a FOOS account at cloudbees.com - a continuous build service. The status of builds can be
+seen at https://devoncarew.ci.cloudbees.com/job/GoClipse/ . TODO: update cloudbees to Maven build.
 
 
 ## Project design info and notes
