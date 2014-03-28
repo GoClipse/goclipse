@@ -124,8 +124,8 @@ This Agreement is governed by the laws of the State of New York and the intellec
 
    <requires>
       <import feature="org.eclipse.platform" version="4.3.0" match="compatible"/>
-      <import feature="org.eclipse.cdt.gnu.dsf" version="4.2.0" match="compatible"/>
-      <import feature="org.eclipse.cdt.platform" version="8.2.1" match="compatible"/>
+      <import feature="org.eclipse.cdt.gnu.dsf" version="8.3.0" match="compatible"/>
+      <import feature="org.eclipse.cdt.platform" version="8.3.0" match="compatible"/>
    </requires>
 
    <plugin
