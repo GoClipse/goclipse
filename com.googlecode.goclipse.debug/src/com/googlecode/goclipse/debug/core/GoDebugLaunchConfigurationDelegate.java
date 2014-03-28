@@ -35,7 +35,6 @@ public class GoDebugLaunchConfigurationDelegate extends GoLaunchConfigurationDel
 	@Override
 	public ILaunch getLaunchForDebugMode(ILaunchConfiguration configuration, String mode) throws CoreException {
 		
-		// Remove some DLTK attributes that affect how our launch runs
 		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
 		
 		// Setup CDT config parameters

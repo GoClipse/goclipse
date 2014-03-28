@@ -1,7 +1,6 @@
 package melnorme.lang.ide.debug.core;
 
-import melnorme.utilbox.core.DevelopmentCodeMarkers;
-
+import org.eclipse.cdt.dsf.debug.service.IDsfDebugServicesFactory;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupDirector;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupParticipant;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunchDelegate;
@@ -39,9 +38,7 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 		// Finally, make sure the program is a proper binary.
 		
 		// BM: this code is disabled because without a project the binary verifier defaults to ELF on any platform
-		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
-			LaunchUtils.verifyBinary(config, exePath);
-		}
+		//LaunchUtils.verifyBinary(config, exePath);
 		return exePath;
 	}
 	
@@ -50,9 +47,14 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 			throws CoreException {
 		DsfSourceLookupDirector sourceLookupDirector = new LangSourceLookupDirector(session);
 		
-		sourceLookupDirector.addParticipants( 
+		sourceLookupDirector.addParticipants(
 				new ISourceLookupParticipant[]{ new DsfSourceLookupParticipant(session) } );
 		return sourceLookupDirector;
+	}
+	
+	@Override
+	protected IDsfDebugServicesFactory newServiceFactory(ILaunchConfiguration config, String version) {
+		return super.newServiceFactory(config, version);
 	}
 	
 }
