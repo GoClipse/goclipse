@@ -12,6 +12,7 @@ package melnorme.utilbox.misc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.StreamUtil.readAllBytesFromStream;
 
 import java.io.File;
 import java.io.IOException;
@@ -183,6 +184,10 @@ public class MiscUtil {
 	/** @return true if given throwable is a Java unchecked throwable, false otherwise. */
 	public static boolean isUncheckedException(Throwable throwable) {
 		return throwable instanceof RuntimeException || throwable instanceof Error;
+	}
+	
+	public static String getClassResourceAsString(Class<?> klass, String resourceName) throws IOException {
+		return readAllBytesFromStream(klass.getResourceAsStream(resourceName)).toString(StringUtil.UTF8);
 	}
 	
 }
