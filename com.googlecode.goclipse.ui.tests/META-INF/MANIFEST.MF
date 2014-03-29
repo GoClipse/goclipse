@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: UI Tests
+Bundle-SymbolicName: com.googlecode.goclipse.ui.tests;singleton:=true
+Bundle-Version: 0.8.0.qualifier
+Fragment-Host: com.googlecode.goclipse.ui;bundle-version="0.8.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit;bundle-version="4.10.0"

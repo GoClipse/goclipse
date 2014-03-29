@@ -53,5 +53,6 @@ Export-Package: com.googlecode.goclipse;
  melnorme.utilbox.core.fntypes,
  melnorme.utilbox.misc,
  melnorme.utilbox.process,
+ melnorme.utilbox.tests,
  melnorme.utilbox.tree
 Bundle-ClassPath: .
