@@ -10,7 +10,7 @@
  *     Anton Leherbauer (Wind River Systems)
  *     Ericsson             - Fix improper hover order (Bug 294812)
  *******************************************************************************/
-package melnorme.lang.ide.ui.editors;
+package melnorme.lang.ide.ui.editor;
 
 import java.util.ArrayList;
 import java.util.List;

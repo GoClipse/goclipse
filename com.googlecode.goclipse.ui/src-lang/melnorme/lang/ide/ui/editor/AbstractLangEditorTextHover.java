@@ -11,7 +11,7 @@
  *     Anton Leherbauer (Wind River Systems)
  *     Bruno Medeiros - lang modifications
  *******************************************************************************/
-package melnorme.lang.ide.ui.editors;
+package melnorme.lang.ide.ui.editor;
 
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;

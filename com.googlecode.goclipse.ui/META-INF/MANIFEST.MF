@@ -24,6 +24,6 @@ Bundle-Activator: com.googlecode.goclipse.ui.GoUIPlugin
 Export-Package: com.googlecode.goclipse.ui.launch,
  com.googlecode.goclipse.utils,
  melnorme.lang.ide.ui,
- melnorme.lang.ide.ui.editors,
+ melnorme.lang.ide.ui.editor,
  melnorme.util.swt,
  melnorme.util.swt.jface

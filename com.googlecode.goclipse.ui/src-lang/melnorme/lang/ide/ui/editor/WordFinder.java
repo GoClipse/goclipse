@@ -9,7 +9,7 @@
  *     QNX Software Systems - Initial API and implementation
  *     Sergey Prigogin (Google)
  *******************************************************************************/
-package melnorme.lang.ide.ui.editors;
+package melnorme.lang.ide.ui.editor;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;

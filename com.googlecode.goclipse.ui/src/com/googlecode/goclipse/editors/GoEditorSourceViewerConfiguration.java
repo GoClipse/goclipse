@@ -4,7 +4,7 @@ import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
-import melnorme.lang.ide.ui.editors.BestMatchHover;
+import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.util.swt.jface.ColorManager;
 
 import org.eclipse.core.runtime.CoreException;

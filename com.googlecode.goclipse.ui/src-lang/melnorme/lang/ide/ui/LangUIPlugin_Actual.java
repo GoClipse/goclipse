@@ -2,7 +2,7 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
-import melnorme.lang.ide.ui.editors.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
 
 import com.googlecode.goclipse.editors.TextHover;
 import com.googlecode.goclipse.ui.GoUIPlugin;

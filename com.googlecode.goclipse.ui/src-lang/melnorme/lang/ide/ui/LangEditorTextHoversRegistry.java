@@ -13,7 +13,7 @@ package melnorme.lang.ide.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.ide.ui.editors.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
 
 /**
  * Registry for text hovers.
