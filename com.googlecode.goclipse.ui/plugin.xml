@@ -2,6 +2,11 @@
 <?eclipse version="3.4"?>
 <plugin>
 
+   <extension point="org.eclipse.core.runtime.preferences">
+      <initializer class="com.googlecode.goclipse.ui.GoUIPreferencesInitializer"/>
+   </extension>
+
+
    <extension
          point="org.eclipse.ui.editors">
       <editor
