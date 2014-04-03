@@ -19,7 +19,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
@@ -79,7 +78,6 @@ public class GoEditor extends TextEditor {
     super.setTitleImage(image);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public Object getAdapter(Class required) {
     if (IContentOutlinePage.class.equals(required)) {
@@ -93,14 +91,8 @@ public class GoEditor extends TextEditor {
     return super.getAdapter(required);
   }
 
-  private IDocumentProvider createDocumentProvider(IEditorInput input) {
-    return new GoDocumentProvider();
-  }
-
   @Override
   protected final void doSetInput(IEditorInput input) throws CoreException {
-    setDocumentProvider(createDocumentProvider(input));
-
     super.doSetInput(input);
 
     if (input instanceof IFileEditorInput) {

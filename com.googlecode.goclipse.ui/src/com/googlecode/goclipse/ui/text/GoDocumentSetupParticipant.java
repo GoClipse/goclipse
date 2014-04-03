@@ -8,19 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.ui.editor.text;
+package com.googlecode.goclipse.ui.text;
 
-import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyExt;
+import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.ITextViewer;
-
-import com.googlecode.goclipse.ui.text.GoPartitions;
-
-public class GoAutoEditStrategy extends LangAutoEditStrategyExt {
-	
-	public GoAutoEditStrategy(IPreferenceStore store, String contentType, ITextViewer viewer) {
-		super(store, GoPartitions.PARTITIONING_ID, contentType, viewer);
-	}
+public class GoDocumentSetupParticipant extends LangDocumentPartitionerSetup {
 	
 }

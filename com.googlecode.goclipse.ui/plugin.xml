@@ -5,7 +5,16 @@
    <extension point="org.eclipse.core.runtime.preferences">
       <initializer class="com.googlecode.goclipse.ui.GoUIPreferencesInitializer"/>
    </extension>
-
+	
+   <extension
+         id="GoDocumentSetupParticipant"
+         name="Go Document Setup Participant"
+         point="org.eclipse.core.filebuffers.documentSetup">
+      <participant
+            class="com.googlecode.goclipse.ui.text.GoDocumentSetupParticipant"
+            contentTypeId="com.googlecode.goclipse.gosourcefile">
+      </participant>
+   </extension>
 
    <extension
          point="org.eclipse.ui.editors">

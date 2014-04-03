@@ -7,10 +7,9 @@ import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 
-public class PartitionScanner extends RuleBasedPartitionScanner {
-  public final static String COMMENT = "__comment";
-  public final static String STRING = "__string";
-  public final static String MULTILINE_STRING = "__multiline_string";
+import com.googlecode.goclipse.ui.text.GoPartitions;
+
+public class PartitionScanner extends RuleBasedPartitionScanner implements GoPartitions {
 
   public PartitionScanner() {
     IToken comment = new Token(COMMENT);
