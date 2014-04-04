@@ -17,7 +17,7 @@ import melnorme.lang.ide.ui.text.util.TabStyle;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-// Originally was RubyPreferencesInterpreter
+// Originally was RubyPreferencesInterpreter from DLTK
 public class LangAutoEditsPreferencesAdapter {
 	
 	protected final IPreferenceStore store;
