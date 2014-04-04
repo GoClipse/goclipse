@@ -24,9 +24,9 @@ public class GoUIPreferencesInitializer extends AbstractPreferenceInitializer {
 		IPreferenceStore store = LangUIPlugin.getInstance().getPreferenceStore();
 		
 		// Formatter and auto-indent
-		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_CHAR, CodeFormatterConstants.TAB);
-		store.setDefault(CodeFormatterConstants.FORMATTER_INDENTATION_SIZE, 4);
+		store.setDefault(CodeFormatterConstants.FORMATTER_INDENT_MODE, CodeFormatterConstants.TAB);
 		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_SIZE, 4);
+		store.setDefault(CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE, 4);
 		
 		
 		store.setDefault(LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, true);

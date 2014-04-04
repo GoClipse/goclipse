@@ -1,0 +1,1 @@
+copied from JDT.UI 3.9.2 

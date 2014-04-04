@@ -15,11 +15,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.IOException;
 
 import melnorme.lang.ide.ui.CodeFormatterConstants;
+import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
 import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.ui.text.SamplePartitionScanner;
 import melnorme.lang.ide.ui.text.Scanner_BaseTest;
 import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
-import melnorme.lang.ide.ui.text.util.TabStyle;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.jface.preference.PreferenceStore;
@@ -73,7 +73,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		prefStore.setValue(LangAutoEditPreferenceConstants.AE_SMART_PASTE, true);
 		
 		prefStore.setValue(CodeFormatterConstants.FORMATTER_TAB_SIZE, 4);
-		prefStore.setValue(CodeFormatterConstants.FORMATTER_TAB_CHAR, TabStyle.TAB.getName());
+		prefStore.setValue(CodeFormatterConstants.FORMATTER_INDENT_MODE, IndentMode.TAB.getPrefValue());
 		return prefStore;
 	}
 	
