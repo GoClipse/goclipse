@@ -11,10 +11,16 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.utils.DialogPageUtils;
 
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
@@ -23,25 +29,22 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Abstract preference page which is used to wrap a
- * {@link melnorme.lang.ide.ui.preferences.IPreferenceConfigurationBlock2}.
- *
- * @since 3.0
+ * {@link melnorme.lang.ide.ui.preferences.IPreferencesComponent}.
  */
-public abstract class AbstractConfigurationBlockPreferencePage2 extends PreferencePage 
+public abstract class AbstractPreferencesComponentPrefPage extends PreferencePage 
 		implements IWorkbenchPreferencePage {
 	
-	private IPreferenceConfigurationBlock2 fConfigurationBlock;
+	private IPreferencesComponent fConfigurationBlock;
 	
-	public AbstractConfigurationBlockPreferencePage2() {
+	public AbstractPreferencesComponentPrefPage(IPreferenceStore store) {
 		setDescription();
-		setPreferenceStore();
-		fConfigurationBlock = createConfigurationBlock();
+		setPreferenceStore(store);
+		fConfigurationBlock = createPreferencesComponent();
 	}
 	
-	protected abstract void setPreferenceStore();
-	protected abstract IPreferenceConfigurationBlock2 createConfigurationBlock();
-	protected abstract String getHelpId();
 	protected abstract void setDescription();
+	protected abstract String getHelpId();
+	protected abstract IPreferencesComponent createPreferencesComponent();
 	
 	@Override
 	public void init(IWorkbench workbench) {
@@ -55,31 +58,38 @@ public abstract class AbstractConfigurationBlockPreferencePage2 extends Preferen
 	
 	@Override
 	protected Control createContents(Composite parent) {
-		Control content = fConfigurationBlock.createControl(parent);
+		Composite body = new Composite(parent, SWT.NONE);
+		body.setLayout(new GridLayout());
 		
-		Dialog.applyDialogFont(content);
-		return content;
+		fConfigurationBlock.createComponent(body);
+		Dialog.applyDialogFont(body);
+		
+		fConfigurationBlock.loadFromStore(getPreferenceStore());
+		return body;
 	}
 	
 	@Override
 	public boolean performOk() {
-		fConfigurationBlock.performOk();
+		fConfigurationBlock.saveToStore(getPreferenceStore());
 		LangUIPlugin.flushInstanceScope();
 		
 		return true;
 	}
 	
+	protected static final Status NO_STATUS = LangCore.createOkStatus(null);
+	
 	@Override
 	public void performDefaults() {
-		fConfigurationBlock.performDefaults();
+		DialogPageUtils.applyStatusToPreferencePage(NO_STATUS, this);
+		
+		fConfigurationBlock.resetToDefaults(getPreferenceStore());
 		
 		super.performDefaults();
 	}
 	
 	@Override
 	public void dispose() {
-		fConfigurationBlock.dispose();
-		
 		super.dispose();
 	}
+	
 }

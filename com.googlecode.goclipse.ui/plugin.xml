@@ -67,21 +67,27 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            id="com.googlecode.goclipse.ui.preferences.Go"
+            id="com.googlecode.goclipse.ui.PreferencePage"
             class="com.googlecode.goclipse.ui.preferences.GoPreferencePage"
             name="Go">
       </page>
       <page
-      		category="com.googlecode.goclipse.ui.preferences.Go"
-            id="com.googlecode.goclipse.ui.preferences.Go.Editor"
+      		category="com.googlecode.goclipse.ui.PreferencePage"
+            id="com.googlecode.goclipse.ui.PreferencePage.Editor"
             class="com.googlecode.goclipse.ui.preferences.GoEditorPreferencePage"
             name="Editor">
       </page>
       <page
-            category="com.googlecode.goclipse.ui.preferences.Go.Editor"
-            id="com.googlecode.goclipse.ui.preferences.Go.Editor.Highlighting"
+            category="com.googlecode.goclipse.ui.PreferencePage.Editor"
+            id="com.googlecode.goclipse.ui.PreferencePage.Editor.Highlighting"
             class="com.googlecode.goclipse.ui.preferences.GoSyntaxHighlightingPreferencePage"
             name="Syntax Highlighting">
+      </page>
+      <page
+            category="com.googlecode.goclipse.ui.PreferencePage.Editor"
+            id="com.googlecode.goclipse.ui.PreferencePage.Editor.Typing"
+            class="com.googlecode.goclipse.ui.preferences.GoEditorSmartTypingPreferencePage"
+            name="Typing">
       </page>
    </extension>
 

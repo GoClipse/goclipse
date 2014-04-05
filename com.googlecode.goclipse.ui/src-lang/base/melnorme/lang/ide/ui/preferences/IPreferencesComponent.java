@@ -11,8 +11,11 @@
 package melnorme.lang.ide.ui.preferences;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Composite;
 
-public interface IConfigComponent {
+public interface IPreferencesComponent {
+	
+	public void createComponent(Composite parent);
 	
 	public void loadFromStore(IPreferenceStore store);
 	

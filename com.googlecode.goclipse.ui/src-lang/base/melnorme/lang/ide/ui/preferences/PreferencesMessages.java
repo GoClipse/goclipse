@@ -28,4 +28,25 @@ public interface PreferencesMessages {
 	public static String EditorPreferencePage_systemDefault = 
 			"&System Default";
 	
+	
+	
+	public static final String LangSmartTypingConfigurationBlock_autoclose_title = 
+		"Automatically close:";
+	public static final String LangSmartTypingConfigurationBlock_closeBrackets =
+		"(Parentheses),[square] brackets";
+	public static final String LangSmartTypingConfigurationBlock_closeBraces =
+		"{Braces}";
+	public static final String LangSmartTypingConfigurationBlock_closeStrings =
+		"\"Strings\"";
+	
+	
+	public static final String EditorPreferencePage_AutoEdits = 
+		"Auto Indent";
+	public static final String EditorPreferencePage_smartIndent = 
+		"Smart indent on newline";
+	public static final String EditorPreferencePage_smartDeIndent= 
+		"Smart indent deletion (delete full indent)";
+	public static final String EditorPreferencePage_considerParenthesesAsBlocks = 
+		"Consider (parentheses) the same as {braces} for block smart indent";
+	
 }

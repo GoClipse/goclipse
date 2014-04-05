@@ -29,11 +29,11 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
 
-public class EditorAppearanceColorsComponent implements IConfigComponent {
+//originally from DLTK version 5.0.0
+public class EditorAppearanceColorsComponent implements IPreferencesComponent {
 	
 	public static class EditorColorItem {
 		public final String label;
@@ -120,9 +120,11 @@ public class EditorAppearanceColorsComponent implements IConfigComponent {
 		for (EditorColorItem editorColorItem : editorColorItems) {
 			editorColorItem.resetToDefaults(store);
 		}
+		loadFromStore(store);
 	}
 	
-	protected Control createComponent(Composite parent) {
+	@Override
+	public void createComponent(Composite parent) {
 		PixelConverter pc = new PixelConverter(parent);
 		
 		GridData gd;
@@ -154,8 +156,6 @@ public class EditorAppearanceColorsComponent implements IConfigComponent {
 		createItemEditWidgets(editorComposite);
 		
 		colorList.select(0);
-		
-		return parent;
 	}
 	
 	protected final EditorColorItem NULL_ELEMENT = new EditorColorItem("", "");

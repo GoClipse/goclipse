@@ -14,11 +14,12 @@ package com.googlecode.goclipse.ui.preferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
 import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
+import melnorme.lang.ide.ui.preferences.LangEditorSmartTypingConfigurationBlock;
 
 
-public class GoEditorPreferencePage extends AbstractPreferencesComponentPrefPage {
+public class GoEditorSmartTypingPreferencePage extends AbstractPreferencesComponentPrefPage {
 	
-	public GoEditorPreferencePage() {
+	public GoEditorSmartTypingPreferencePage() {
 		super(LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
@@ -29,7 +30,7 @@ public class GoEditorPreferencePage extends AbstractPreferencesComponentPrefPage
 	
 	@Override
 	protected IPreferencesComponent createPreferencesComponent() {
-		return new GoEditorConfigurationBlock(this);
+		return new LangEditorSmartTypingConfigurationBlock(this);
 	}
 	
 	@Override

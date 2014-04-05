@@ -14,8 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.ArrayList;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.preferences.fields.AbstractConfigField;
+import melnorme.lang.ide.ui.preferences.fields.CheckBoxConfigField;
 import melnorme.lang.ide.ui.preferences.fields.NumberConfigField;
 import melnorme.lang.ide.ui.preferences.fields.TextConfigField;
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
@@ -23,45 +23,39 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.IDisposable;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
-public abstract class AbstractPreferencesConfigComponent implements IDisposable, 
-	IPreferenceConfigurationBlock2 {
+public abstract class AbstractPreferencesConfigComponent implements IDisposable, IPreferencesComponent {
 	
-	protected static final Status NO_STATUS = LangCore.createOkStatus(null);
-	
-	protected final ArrayList<IConfigComponent> configFields = new ArrayList<>();
-	protected final IPreferenceStore store;
+	protected final ArrayList<IPreferencesComponent> configFields = new ArrayList<>();
 	protected final PreferencePage prefPage;
 	
-	public AbstractPreferencesConfigComponent(IPreferenceStore store, PreferencePage prefPage) {
-		this.store = assertNotNull(store);
+	public AbstractPreferencesConfigComponent(PreferencePage prefPage) {
 		this.prefPage = assertNotNull(prefPage);
 	}
 	
-	protected final IPreferenceStore getPreferenceStore() {
-		return store;
+	@Override
+	public void loadFromStore(IPreferenceStore store) {
+		for(IPreferencesComponent configField : configFields) {
+			configField.loadFromStore(store);
+		}	
 	}
 	
 	@Override
-	public void performOk() {
-		for(IConfigComponent configField : configFields) {
+	public void saveToStore(IPreferenceStore store) {
+		for(IPreferencesComponent configField : configFields) {
 			configField.saveToStore(store);
 		}
 	}
 	
 	@Override
-	public void performDefaults() {
-		updateStatus(NO_STATUS);
-		
-		for(IConfigComponent configField : configFields) {
+	public void resetToDefaults(IPreferenceStore store) {
+		for(IPreferencesComponent configField : configFields) {
 			configField.resetToDefaults(store);
-			configField.loadFromStore(store);
 		}
 	}
 	
@@ -73,6 +67,10 @@ public abstract class AbstractPreferencesConfigComponent implements IDisposable,
 		DialogPageUtils.applyStatusToPreferencePage(status, prefPage);
 	}
 	
+	protected <T extends AbstractConfigField<?>> T addConfigComponent(Composite parent, T configControl) {
+		return addConfigComponent(parent, 0, configControl);
+	}
+	
 	protected <T extends AbstractConfigField<?>> T addConfigComponent(Composite parent, int indentation, 
 			T configControl) {
 		configControl.createControl(parent, indentation);
@@ -80,8 +78,7 @@ public abstract class AbstractPreferencesConfigComponent implements IDisposable,
 		return configControl;
 	}
 	
-	protected void addConfigComponent(IConfigComponent configComponent) {
-		configComponent.loadFromStore(store);
+	protected void addConfigComponent(IPreferencesComponent configComponent) {
 		configFields.add(configComponent);
 	}
 	
@@ -90,6 +87,10 @@ public abstract class AbstractPreferencesConfigComponent implements IDisposable,
 	protected Composite createSubsection(Composite parent, String label) {
 		return SWTFactoryUtil.createGroup(parent, label, 
 			new GridData(SWT.FILL, SWT.CENTER, true, false));
+	}
+	
+	protected CheckBoxConfigField addCheckBox(Composite parent, String label, String prefKey, int indentation) {
+		return addConfigComponent(parent, indentation, new CheckBoxConfigField(label, prefKey));
 	}
 	
 	protected TextConfigField createNumberField(String label, String key, int textLimit) {
