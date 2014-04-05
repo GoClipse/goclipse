@@ -15,10 +15,10 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
-public class EditorPreferencePage extends FieldEditorPreferencePage implements
+public class GoSyntaxHighlightingPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
-	public EditorPreferencePage() {
+	public GoSyntaxHighlightingPreferencePage() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 	}

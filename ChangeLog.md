@@ -9,4 +9,5 @@
  * Implemented #46: Eclipse console for Go builder.
  * Implemented #23: Auto indent when Enter pressed. Closing braces are automatically added as well.
    * Also, auto-deindent is performed when backspace pressed at line indent.
+   * Added preference page to customize Auto-indent behavior
  
