@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.preferences;
+package com.googlecode.goclipse.ui.preferences;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -13,6 +13,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 public class EditorPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {

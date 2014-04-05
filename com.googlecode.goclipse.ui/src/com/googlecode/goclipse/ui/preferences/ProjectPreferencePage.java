@@ -1,10 +1,12 @@
 /**
  * 
  */
-package com.googlecode.goclipse.preferences;
+package com.googlecode.goclipse.ui.preferences;
 
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
  * @author steel

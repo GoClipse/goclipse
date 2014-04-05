@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.preferences;
+package com.googlecode.goclipse.ui.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -6,6 +6,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
  * This class represents a preference page that is contributed to the

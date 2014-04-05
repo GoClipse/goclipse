@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.preferences;
+package com.googlecode.goclipse.ui.preferences;
 
 import java.io.File;
 

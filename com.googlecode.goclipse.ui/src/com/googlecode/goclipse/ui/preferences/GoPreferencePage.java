@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.preferences;
+package com.googlecode.goclipse.ui.preferences;
 
 import java.io.File;
 import java.util.List;
@@ -21,6 +21,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.framework.Version;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.preferences.PreferenceInitializer;
 
 /**
  * This class represents a preference page that is contributed to the
