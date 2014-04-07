@@ -8,7 +8,7 @@ See project page ( https://code.google.com/p/goclipse/ ) for user information.
  * Setup the target platform: Open the target platform file: `com.googlecode.goclipse-build\target-platform\Goclipse.target` and set it as your target platform.
  
 #### Running the tests in Eclipse:
- * TODO (there are currently no automated tests in Goclipse) 
+ * In `com.googlecode.goclipse-build/launches` there is one or several Eclipse launch files for running the tests, so if this project is added to your Eclipse workspace, the launches will show up automatically in `Run Configurations...`, as "JUnit Plug-in Tests". 
 
 #### Automated Building and Testing:
 Using Maven (and Tycho), it is possible to automatically build Goclipse, create an update site, and run all the tests. Download [Maven](http://maven.apache.org/) (minimum version 3.0), and run the following commands on the root folder of the repository:
@@ -22,8 +22,8 @@ Using Maven (and Tycho), it is possible to automatically build Goclipse, create 
 for (windows, darwin, linux) and (386, amd64).
  * Run `mvn integration-test` as described above.
  * TODO update site upload
- * We have a FOOS account at cloudbees.com - a continuous build service. The status of builds can be
-seen at https://devoncarew.ci.cloudbees.com/job/GoClipse/ . TODO: update cloudbees to Maven build.
+ * There is a CloudBees account with continous integrations jobs for Goclipse:
+  * https://bruno-medeiros.ci.cloudbees.com/  
 
 
 ## Project design info and notes
