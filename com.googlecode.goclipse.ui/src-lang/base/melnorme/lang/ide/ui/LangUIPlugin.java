@@ -47,26 +47,29 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		pluginInstance = this;
 		super.start(context);
 		
-		MiscUtil.loadClass(doCustomStart_getImagesClass()); // Fail fast if resources not found
-		doCustomStart(context);
-		
+		doCustomStart_initialStage(context);
+		doCustomStart_startTwinPlugins();
+		doCustomStart_finalStage();
+	}
+	
+	/** Do initial stage of plugin start: load static resources, etc.. 
+	 * This is usually initialization that does not require disposing. */
+	@SuppressWarnings("unused")
+	protected void doCustomStart_initialStage(BundleContext context) {
+		// Load immediately and fail fast if resources not found
+		MiscUtil.loadClass(LangUIPlugin_Actual.PLUGIN_IMAGES_CLASS); 
+	}
+	
+	/** Start twined plugins after initial stage. */
+	protected void doCustomStart_startTwinPlugins() {
 		// Force start of debug plugin, if present, so that UI contributions will be fully active.
 		// ATM, some UI contributions that dynamically manipulate enablement and state don't work correctly
 		// unless underlying plugin is started.
-		startDebugPlugin();
-		
-		startInitializeAfterLoadJob();
-	}
-	
-	protected abstract Class<?> doCustomStart_getImagesClass();
-	
-	protected abstract void doCustomStart(BundleContext context);
-	
-	protected static void startDebugPlugin() {
 		EclipseUtils.startOtherPlugin(LangUIPlugin_Actual.DEBUG_PLUGIN_ID);
 	}
 	
-	protected void startInitializeAfterLoadJob() {
+	/** Do final stage of plugin start: activate services, listeners, etc. */
+	protected void doCustomStart_finalStage() {
 		(new InitializeAfterLoadJob()).schedule();
 	}
 	

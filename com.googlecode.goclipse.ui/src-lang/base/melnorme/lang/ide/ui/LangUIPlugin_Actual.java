@@ -9,6 +9,7 @@ import org.eclipse.jface.text.IDocument;
 
 import com.googlecode.goclipse.editors.PartitionScanner;
 import com.googlecode.goclipse.editors.TextHover;
+import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.text.GoPartitions;
 
@@ -21,6 +22,8 @@ public final class LangUIPlugin_Actual {
 	
 	// ID to start the debug plugin automatically, if present
 	protected static final String DEBUG_PLUGIN_ID = "com.googlecode.goclipse.debug";
+	
+	protected static final Class<?> PLUGIN_IMAGES_CLASS = GoPluginImages.class;
 	
 	protected static void initTextHovers(List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
 		textHoverSpecifications.add(TextHover.class);
