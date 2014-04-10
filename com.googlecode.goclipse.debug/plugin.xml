@@ -177,6 +177,17 @@
          <adapter type="org.eclipse.cdt.debug.internal.ui.actions.IMoveToLineTarget"/>
       </factory>
    </extension>
+   
+   <extension point="org.eclipse.core.runtime.adapters">
+      <factory 
+        	class="com.googlecode.goclipse.debug.ui.GoGdbAdapterFactory" 
+	        adaptableType="com.googlecode.goclipse.debug.core.GoGdbLaunch">
+         <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider"/>
+         <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxyFactory"/>
+         <adapter type="org.eclipse.debug.ui.contexts.ISuspendTrigger"/>
+         <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IColumnPresentationFactory"/>
+	  </factory>         
+   </extension>	
 
    
    <extension point="org.eclipse.core.contenttype.contentTypes"> 

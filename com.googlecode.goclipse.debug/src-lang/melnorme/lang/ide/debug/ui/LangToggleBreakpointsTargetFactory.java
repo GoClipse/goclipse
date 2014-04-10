@@ -28,18 +28,18 @@ public class LangToggleBreakpointsTargetFactory implements IToggleBreakpointsTar
 	
 	@Override
 	public Set<?> getToggleTargets(IWorkbenchPart part, ISelection selection) {
-		return new HashSet<String>(Arrays.asList(array(DebugUI.LANG_BREAKPOINT_FACTORY_ID)));
+		return new HashSet<String>(Arrays.asList(array(DebugUI_Actual.LANG_BREAKPOINT_FACTORY_ID)));
 	}
 	
 	@Override
 	public String getDefaultToggleTarget(IWorkbenchPart part, ISelection selection) {
-		return DebugUI.LANG_BREAKPOINT_FACTORY_ID;
+		return DebugUI_Actual.LANG_BREAKPOINT_FACTORY_ID;
 	}
 	
 	@Override
 	public IToggleBreakpointsTarget createToggleTarget(String targetID) {
-		if(targetID.equals(DebugUI.LANG_BREAKPOINT_FACTORY_ID)) {
-			return DebugUI.createToggleBreakPointAdapter();
+		if(targetID.equals(DebugUI_Actual.LANG_BREAKPOINT_FACTORY_ID)) {
+			return DebugUI_Actual.createToggleBreakPointAdapter();
 		}
 		return null;
 	}

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import melnorme.utilbox.core.fntypes.Function;
 
@@ -55,17 +56,32 @@ public final class StringUtil {
 //		java.util.Collection<?> coll = this;
 		java.lang.StringBuilder sb = new java.lang.StringBuilder();
 		boolean first = true;
-		for(Object item : coll){
+		for(Object element : coll){
 			if(!first)
 				sb.append("\n");
 			first = false;
 			
-			String itemStr = item.toString();
-			int firstLine = itemStr.indexOf("\n");
-			if(firstLine != -1) {
-				itemStr = itemStr.substring(0, firstLine); 
-			}
-			sb.append(itemStr);
+			String elementString = element == null ? "null" : element.toString();
+			sb.append(elementString.replace("\n", "¶"));
+		}
+		return sb.toString();
+	}
+	
+	@SuppressWarnings({ "unused", "rawtypes" })
+	private static String debug_mapToString(Map<?, ?> map) {
+//		java.util.Map<?, ?> map = this;
+		java.lang.StringBuilder sb = new java.lang.StringBuilder();
+		boolean first = true;
+		for(java.util.Map.Entry entry : map.entrySet()){
+			if(!first)
+				sb.append("\n");
+			first = false;
+			
+			sb.append(entry.getKey());
+			sb.append("►");
+			Object element = entry.getValue();
+			String elementString = element == null ? "null" : element.toString();
+			sb.append(elementString.replace("\n", "¶"));
 		}
 		return sb.toString();
 	}
