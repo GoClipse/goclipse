@@ -27,12 +27,12 @@ public class GoDebugServicesExtensions extends DebugServicesExtensions {
 			DsfServicesTracker servicesTracker) {
 		return new MIVariableManager_LangExtension(session, servicesTracker) {
 			@Override
-			protected GDBType correctGdbType(String newTypeName, GDBType gdbType) {
+			protected GDBType getCorrectedGdbType(String newTypeName, GDBType gdbType) {
 				if(gdbType.getType() == GDBType.POINTER && gdbType instanceof GDBDerivedType) {
 					GDBDerivedType gdbDerivedType = (GDBDerivedType) gdbType;
 					return gdbTypeParser.new GDBDerivedType(gdbDerivedType.getChild(), GDBType.REFERENCE);
 				}
-				return super.correctGdbType(newTypeName, gdbType);
+				return super.getCorrectedGdbType(newTypeName, gdbType);
 			}
 			
 			@Override

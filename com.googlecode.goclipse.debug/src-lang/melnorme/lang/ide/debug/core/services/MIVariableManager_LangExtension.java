@@ -35,7 +35,7 @@ public class MIVariableManager_LangExtension extends MIVariableManager {
 		@Override
 		public void setType(String newTypeName) {
 			super.setType(newTypeName);
-			corrected_gdbType = correctGdbType(newTypeName, super.getGDBType());
+			corrected_gdbType = getCorrectedGdbType(newTypeName, super.getGDBType());
 		}
 		
 		@Override
@@ -63,7 +63,7 @@ public class MIVariableManager_LangExtension extends MIVariableManager {
 		@Override
 		public void setType(String newTypeName) {
 			super.setType(newTypeName);
-			corrected_gdbType = correctGdbType(newTypeName, super.getGDBType());
+			corrected_gdbType = getCorrectedGdbType(newTypeName, super.getGDBType());
 		}
 		
 		@Override
@@ -83,7 +83,7 @@ public class MIVariableManager_LangExtension extends MIVariableManager {
 	protected final GDBTypeParser gdbTypeParser = new GDBTypeParser();
 
 	@SuppressWarnings("unused")
-	protected GDBType correctGdbType(String newTypeName, GDBType gdbType) {
+	protected GDBType getCorrectedGdbType(String newTypeName, GDBType gdbType) {
 		if(gdbType.getType() == GDBType.ARRAY && gdbType instanceof GDBDerivedType) {
 			GDBDerivedType gdbDerivedType = (GDBDerivedType) gdbType;
 			if(gdbDerivedType.getDimension() == 0) {

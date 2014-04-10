@@ -113,10 +113,8 @@ public final class StringUtil {
 	}
 
 	/** @return str with the given range (repOffset and repLen) substituted for repStr. */
-	public static String replaceStr(String str, int repOffset, int repLen,
-			String repStr) {
-		return str.substring(0, repOffset) + repStr
-				+ str.substring(repOffset + repLen, str.length());
+	public static String replaceStr(String str, int repOffset, int repLen, String repStr) {
+		return str.substring(0, repOffset) + repStr + str.substring(repOffset + repLen, str.length());
 	}
 
 	/** Replace str with strRep in the given strb StringBuilder, if str occurs.
@@ -189,7 +187,6 @@ public final class StringUtil {
 		int index = string.lastIndexOf(match);
 		return (index == -1) ? string : string.substring(index + match.length());
 	}
-	
 	/** @return a substring of given string starting from the end of the last occurrence of given match, 
 	 * or null if no match is found. */
 	public static String segmentAfterLastMatch(String string, String match) {
@@ -197,6 +194,18 @@ public final class StringUtil {
 		return (index == -1) ? null   : string.substring(index + match.length());
 	}
 	
+	/** @return A substring of given string starting from the first occurrence of given match. 
+	 * Empty string if no match is found. */
+	public static String substringFromMatch(char match, String string) {
+		int indexOf = string.indexOf(match);
+		return indexOf == -1 ? "" : string.substring(indexOf);
+	}
+	/** @return A substring of given string starting from the first occurrence of given match. 
+	 * Empty string if no match is found. */
+	public static String substringFromMatch(String match, String string) {
+		int indexOf = string.indexOf(match);
+		return indexOf == -1 ? "" : string.substring(indexOf);
+	}
 	
 	/** Trim given endMatch String from given string if there is a match. 
 	 * @return the result. */
@@ -207,17 +216,7 @@ public final class StringUtil {
 		return string;
 	}
 	
-	/** Trim all leading characters from given string until given ch is found. 
-	 * @return the result. Empty string if no match is found. */
-	public static String trimUntil(char ch, String string) {
-		int indexOf = string.indexOf(ch);
-		if(indexOf != -1) {
-			return string.substring(indexOf);
-		}
-		return "";
-	}
-	
-	/** @return a copy of given string without leading spaces. */
+	/** @return a substring of given string without leading spaces. */
 	public static String trimLeadingSpaces(String string) {
 		int pos = 0;
 		while(pos < string.length() && string.charAt(pos) == ' ')

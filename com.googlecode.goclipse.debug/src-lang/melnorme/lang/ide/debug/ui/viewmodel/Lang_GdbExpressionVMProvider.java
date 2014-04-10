@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.TreePath;
 
 @SuppressWarnings("restriction")
 public class Lang_GdbExpressionVMProvider extends GdbExpressionVMProvider_Override
-		implements IElementFormatProvider{
+		implements IElementFormatProvider {
 	
 	public Lang_GdbExpressionVMProvider(AbstractVMAdapter adapter, IPresentationContext context, DsfSession session) {
 		super(adapter, context, session);
