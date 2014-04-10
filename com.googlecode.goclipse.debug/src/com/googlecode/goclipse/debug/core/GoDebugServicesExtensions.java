@@ -13,6 +13,7 @@ package com.googlecode.goclipse.debug.core;
 import org.eclipse.cdt.dsf.gdb.GDBTypeParser.GDBDerivedType;
 import org.eclipse.cdt.dsf.gdb.GDBTypeParser.GDBType;
 import org.eclipse.cdt.dsf.mi.service.MIVariableManager;
+import org.eclipse.cdt.dsf.mi.service.command.output.MIVar;
 import org.eclipse.cdt.dsf.service.DsfServicesTracker;
 import org.eclipse.cdt.dsf.service.DsfSession;
 
@@ -32,6 +33,11 @@ public class GoDebugServicesExtensions extends DebugServicesExtensions {
 					return gdbTypeParser.new GDBDerivedType(gdbDerivedType.getChild(), GDBType.REFERENCE);
 				}
 				return super.correctGdbType(newTypeName, gdbType);
+			}
+			
+			@Override
+			public String createChild_getChildFullExpression(String childFullExpression, MIVar childData) {
+				return childFullExpression.replace(")->", ").");
 			}
 		};
 	}

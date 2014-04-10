@@ -11,8 +11,6 @@
 package melnorme.lang.ide.debug.core.services;
 
 import org.eclipse.cdt.dsf.debug.service.IExpressions;
-import org.eclipse.cdt.dsf.debug.service.command.ICommand;
-import org.eclipse.cdt.dsf.debug.service.command.ICommandControlService.ICommandControlDMContext;
 import org.eclipse.cdt.dsf.gdb.service.GDBPatternMatchingExpressions;
 import org.eclipse.cdt.dsf.gdb.service.command.CommandFactory_6_8;
 import org.eclipse.cdt.dsf.gdb.service.macos.MacOSCommandFactory;
@@ -20,8 +18,6 @@ import org.eclipse.cdt.dsf.mi.service.IMIExpressions;
 import org.eclipse.cdt.dsf.mi.service.MIExpressions;
 import org.eclipse.cdt.dsf.mi.service.MIVariableManager;
 import org.eclipse.cdt.dsf.mi.service.command.CommandFactory;
-import org.eclipse.cdt.dsf.mi.service.command.commands.MIVarInfoPathExpression;
-import org.eclipse.cdt.dsf.mi.service.command.output.MIVarInfoPathExpressionInfo;
 import org.eclipse.cdt.dsf.service.DsfServicesTracker;
 import org.eclipse.cdt.dsf.service.DsfSession;
 
@@ -44,38 +40,15 @@ public class DebugServicesExtensions {
 	}
 	
 	public CommandFactory_6_8 createCommandFactory_6_8() {
-		return new CommandFactory_6_8() {
-			@Override
-			public ICommand<MIVarInfoPathExpressionInfo> createMIVarInfoPathExpression(ICommandControlDMContext dmc,
-					String name) {
-				return commandFactory_createMIVarInfoPathExpression(dmc, name);
-			}
-		};
+		return new CommandFactory_6_8();
 	}
 	
 	public CommandFactory createCommandFactory() {
-		return new CommandFactory() {
-			@Override
-			public ICommand<MIVarInfoPathExpressionInfo> createMIVarInfoPathExpression(ICommandControlDMContext dmc,
-					String name) {
-				return commandFactory_createMIVarInfoPathExpression(dmc, name);
-			}
-		};
+		return new CommandFactory();
 	}
 	
 	public CommandFactory createMacOSCommandFactory() {
-		return new MacOSCommandFactory() {
-			@Override
-			public ICommand<MIVarInfoPathExpressionInfo> createMIVarInfoPathExpression(ICommandControlDMContext dmc,
-					String name) {
-				return commandFactory_createMIVarInfoPathExpression(dmc, name);
-			}
-		};
-	}
-	
-	public ICommand<MIVarInfoPathExpressionInfo> commandFactory_createMIVarInfoPathExpression(
-			ICommandControlDMContext dmc, String name) {
-		return new MIVarInfoPathExpression(dmc, name);
+		return new MacOSCommandFactory();
 	}
 	
 }

@@ -4,6 +4,7 @@ import org.eclipse.cdt.dsf.gdb.GDBTypeParser;
 import org.eclipse.cdt.dsf.gdb.GDBTypeParser.GDBDerivedType;
 import org.eclipse.cdt.dsf.gdb.GDBTypeParser.GDBType;
 import org.eclipse.cdt.dsf.mi.service.MIVariableManager;
+import org.eclipse.cdt.dsf.mi.service.command.output.MIVar;
 import org.eclipse.cdt.dsf.service.DsfServicesTracker;
 import org.eclipse.cdt.dsf.service.DsfSession;
 
@@ -42,6 +43,13 @@ public class MIVariableManager_LangExtension extends MIVariableManager {
 			return corrected_gdbType;
 		}
 		
+		@Override
+		protected MIVariableObject createChild(VariableObjectId childId, String childFullExpression, int indexInParent,
+				MIVar childData) {
+			childFullExpression = createChild_getChildFullExpression(childFullExpression, childData);
+			return super.createChild(childId, childFullExpression, indexInParent, childData);
+		}
+		
 	}
 
 	protected class MIVariableObject_Extension extends MIVariableObject {
@@ -63,6 +71,13 @@ public class MIVariableManager_LangExtension extends MIVariableManager {
 			return corrected_gdbType;
 		}
 		
+		@Override
+		protected MIVariableObject createChild(VariableObjectId childId, String childFullExpression, int indexInParent,
+				MIVar childData) {
+			childFullExpression = createChild_getChildFullExpression(childFullExpression, childData);
+			return super.createChild(childId, childFullExpression, indexInParent, childData);
+		}
+		
 	}
 	
 	protected final GDBTypeParser gdbTypeParser = new GDBTypeParser();
@@ -79,6 +94,11 @@ public class MIVariableManager_LangExtension extends MIVariableManager {
 			}
 		}
 		return gdbType;
+	}
+	
+	@SuppressWarnings("unused")
+	public String createChild_getChildFullExpression(String childFullExpression, MIVar childData) {
+		return childFullExpression;
 	}
 	
 }
