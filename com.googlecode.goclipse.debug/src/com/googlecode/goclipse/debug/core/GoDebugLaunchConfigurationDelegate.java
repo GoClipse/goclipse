@@ -12,6 +12,7 @@ package com.googlecode.goclipse.debug.core;
 
 
 import melnorme.lang.ide.debug.core.GdbLaunchDelegateExtension;
+import melnorme.lang.ide.debug.core.services.DebugServicesExtensions;
 import melnorme.lang.ide.launching.ProcessSpawnInfo;
 
 import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
@@ -33,6 +34,11 @@ public class GoDebugLaunchConfigurationDelegate extends GoLaunchConfigurationDel
 				throws CoreException {
 			return new GoGdbLaunch(configuration, mode, locator);
 		}
+		
+		@Override
+		protected DebugServicesExtensions createServicesExtensions() {
+			return new GoDebugServicesExtensions();
+		};
 	};
 	
 	@Override
