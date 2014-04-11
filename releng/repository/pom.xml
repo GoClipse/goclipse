@@ -15,7 +15,7 @@
 		<parentBaseDirRelPath>../..</parentBaseDirRelPath>
 	</properties>
 
-	<artifactId>goclipse-repository</artifactId>
+	<artifactId>features.repository</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>eclipse-repository</packaging>
 

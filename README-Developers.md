@@ -5,14 +5,14 @@ See project page ( https://code.google.com/p/goclipse/ ) for user information.
 #### Setting up the development environment:
  * Clone the Git repository.
  * In Eclipse, use the import existing projects wizard, navigate to the Git repository, and add all the  Eclipse projects that are present in the root of the Git repo. Java Compiler settings should automatically be configured, since each project has project-specific settings stored in source control.
- * Setup the target platform: Open the target platform file: `com.googlecode.goclipse-build\target-platform\Goclipse.target` and set it as your target platform.
+ * Setup the target platform: Open the target platform file: `releng/target-platform/Goclipse.target` and set it as your target platform.
  
 #### Running the tests in Eclipse:
- * In `com.googlecode.goclipse-build/launches` there is one or several Eclipse launch files for running the tests, so if this project is added to your Eclipse workspace, the launches will show up automatically in `Run Configurations...`, as "JUnit Plug-in Tests". 
+ * In `releng/launches` there is one or several Eclipse launch files for running the tests, so if this project is added to your Eclipse workspace, the launches will show up automatically in `Run Configurations...`, as "JUnit Plug-in Tests". 
 
 #### Automated Building and Testing:
 Using Maven (and Tycho), it is possible to automatically build Goclipse, create an update site, and run all the tests. Download [Maven](http://maven.apache.org/) (minimum version 3.0), and run the following commands on the root folder of the repository:
- * Run `mvn package` to build the IDE feature into a p2 repository (which is a local update site).  It will be placed at `bin-maven/goclipse-repository/repository`
+ * Run `mvn package` to build the IDE feature into a p2 repository (which is a local update site).  It will be placed at `bin-maven/features.repository/repository`
  * Run `mvn integration-test` to build the IDE as above and also run the test suites. 
  * Also, running `mvn package -P build-ide-product` will build a pre-packaged Eclipse installation with Goclipse already installed. This is not released to the public, but can potentially be of some use internally.
 

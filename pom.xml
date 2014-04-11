@@ -16,7 +16,7 @@
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
 
-		<targetPlatform>com.googlecode.goclipse-build/target-platform/Goclipse</targetPlatform>
+		<targetPlatform>releng/target-platform/Goclipse</targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
 			
 	</properties>
@@ -28,7 +28,7 @@
 		<module>com.googlecode.goclipse.ui.tests</module>
 		<module>com.googlecode.goclipse.debug</module>
 		<module>goclipse-feature</module>
-		<module>com.googlecode.goclipse-build/repository</module>
+		<module>releng/repository</module>
 	</modules>
 
 	<profiles>
