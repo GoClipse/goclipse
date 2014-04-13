@@ -64,8 +64,12 @@ public abstract class LangCore extends Plugin {
 		return ResourcesPlugin.getWorkspace();
 	}
 	
-	/** Creates an OK status with given message. */
 	public static Status createStatus(String message) {
+		return createOkStatus(message);
+	}
+	
+	/** Creates an OK status with given message. */
+	public static Status createOkStatus(String message) {
 		return new Status(IStatus.OK, LangCore.PLUGIN_ID, message);
 	}
 	

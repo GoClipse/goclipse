@@ -2,6 +2,20 @@
 <?eclipse version="3.4"?>
 <plugin>
 
+   <extension point="org.eclipse.core.runtime.preferences">
+      <initializer class="com.googlecode.goclipse.ui.GoUIPreferencesInitializer"/>
+   </extension>
+	
+   <extension
+         id="GoDocumentSetupParticipant"
+         name="Go Document Setup Participant"
+         point="org.eclipse.core.filebuffers.documentSetup">
+      <participant
+            class="com.googlecode.goclipse.ui.text.GoDocumentSetupParticipant"
+            contentTypeId="com.googlecode.goclipse.gosourcefile">
+      </participant>
+   </extension>
+
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -53,15 +67,27 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="com.googlecode.goclipse.preferences.GoPreferencePage"
-            id="com.googlecode.goclipse.preferences.GoPreferencePage"
+            id="com.googlecode.goclipse.ui.PreferencePage"
+            class="com.googlecode.goclipse.ui.preferences.GoPreferencePage"
             name="Go">
       </page>
       <page
-            category="com.googlecode.goclipse.preferences.GoPreferencePage"
-            class="com.googlecode.goclipse.preferences.EditorPreferencePage"
-            id="goclipse.editor.config"
+      		category="com.googlecode.goclipse.ui.PreferencePage"
+            id="com.googlecode.goclipse.ui.PreferencePage.Editor"
+            class="com.googlecode.goclipse.ui.preferences.GoEditorPreferencePage"
             name="Editor">
+      </page>
+      <page
+            category="com.googlecode.goclipse.ui.PreferencePage.Editor"
+            id="com.googlecode.goclipse.ui.PreferencePage.Editor.Highlighting"
+            class="com.googlecode.goclipse.ui.preferences.GoSyntaxHighlightingPreferencePage"
+            name="Syntax Highlighting">
+      </page>
+      <page
+            category="com.googlecode.goclipse.ui.PreferencePage.Editor"
+            id="com.googlecode.goclipse.ui.PreferencePage.Editor.Typing"
+            class="com.googlecode.goclipse.ui.preferences.GoEditorSmartTypingPreferencePage"
+            name="Typing">
       </page>
    </extension>
 
@@ -642,6 +668,7 @@
    </extension>
    
    <!-- This is possibly not needed (and has a dependency on the JDT), but is nice to have -->
+<!--
    <extension
          point="org.eclipse.jdt.ui.javaElementFilters">
       <filter
@@ -651,6 +678,7 @@
           targetId="org.eclipse.jdt.ui.PackageExplorer"
           pattern="_obj"/>
    </extension>
+-->
    
    <!-- Search -->
    

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
 
-import melnorme.util.swt.components.FieldComponent;
+import melnorme.util.swt.components.WidgetFieldComponent;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class BuildConfigField extends FieldComponent<BuildConfiguration> {
+public class BuildConfigField extends WidgetFieldComponent<BuildConfiguration> {
 	
 	protected Combo buildCfgCombo;
 	
@@ -39,7 +39,7 @@ public class BuildConfigField extends FieldComponent<BuildConfiguration> {
 		buildCfgCombo.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				fieldValueChanged(getFieldValue());
+				fireFieldValueChanged();
 			}
 		});
 		

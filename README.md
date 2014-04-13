@@ -19,7 +19,8 @@ http://goclipse.googlecode.com/svn/trunk/goclipse-update-site/
 - GOPATH integration
 
 ###Requirements
-- Eclipse 3.7
+- Eclipse 4.3
+- Java VM 7
 - Go
 - Environment variables set (GOPATH, GOROOT, GOARCH, GOOS)
 

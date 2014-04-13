@@ -42,13 +42,13 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
 	protected final BuildConfigField buildConfigField = new BuildConfigField() {
 		@Override
-		protected void fieldValueChanged(BuildConfiguration newFieldValue) {
+		protected void fieldValueChanged() {
 			updateLaunchConfigurationDialog();
 		};		
 	};
 	protected final LangArgumentsBlock argumentsBlock = new LangArgumentsBlock() {
 		@Override
-		protected void fieldValueChanged(String newFieldValue) {
+		protected void fieldValueChanged() {
 			updateLaunchConfigurationDialog();
 		};
 	};

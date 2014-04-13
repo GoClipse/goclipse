@@ -1,6 +1,6 @@
 package melnorme.lang.ide.debug.ui;
 
-import melnorme.lang.ide.ui.editors.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
 
 import org.eclipse.cdt.ui.text.c.hover.ICEditorTextHover;
 import org.eclipse.core.runtime.IAdaptable;

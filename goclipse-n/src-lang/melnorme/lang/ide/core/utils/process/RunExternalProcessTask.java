@@ -18,15 +18,15 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
-import melnorme.utilbox.concurrency.ExternalProcessOutputHelper;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class RunExternalProcessTask implements ICallable<ExternalProcessOutputHelper, CoreException> {
+public class RunExternalProcessTask implements ICallable<ExternalProcessNotifyingHelper, CoreException> {
 	
 	protected final ProcessBuilder pb;
 	protected final IProject project;
@@ -42,11 +42,11 @@ public class RunExternalProcessTask implements ICallable<ExternalProcessOutputHe
 	}
 	
 	@Override
-	public ExternalProcessOutputHelper call() throws CoreException {
+	public ExternalProcessNotifyingHelper call() throws CoreException {
 		return startProcessAndAwait();
 	}
 	
-	public void notifyProcessStarted(ExternalProcessOutputHelper processHelper) {
+	public void notifyProcessStarted(ExternalProcessNotifyingHelper processHelper) {
 		for (IExternalProcessListener processListener : listenersHelper.getListeners()) {
 			processListener.handleProcessStarted(pb, project, processHelper);
 		}
@@ -86,7 +86,7 @@ public class RunExternalProcessTask implements ICallable<ExternalProcessOutputHe
 		return new CoreException(LangCore.createErrorStatus(message, e));
 	}
 	
-	public static class ExternalProcessEclipseHelper extends ExternalProcessOutputHelper {
+	public static class ExternalProcessEclipseHelper extends ExternalProcessNotifyingHelper {
 		
 		protected final IProgressMonitor monitor;
 		

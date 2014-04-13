@@ -12,20 +12,34 @@ package com.googlecode.goclipse.debug.core;
 
 
 import melnorme.lang.ide.debug.core.GdbLaunchDelegateExtension;
+import melnorme.lang.ide.debug.core.services.DebugServicesExtensions;
 import melnorme.lang.ide.launching.ProcessSpawnInfo;
 
 import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
+import org.eclipse.cdt.dsf.gdb.launching.GdbLaunch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.model.ISourceLocator;
 
 import com.googlecode.goclipse.core.launch.GoLaunchConfigurationDelegate;
 
 public class GoDebugLaunchConfigurationDelegate extends GoLaunchConfigurationDelegate {
 	
-	protected final GdbLaunchDelegateExtension gdbLaunchDelegate = new GdbLaunchDelegateExtension();
+	protected final GdbLaunchDelegateExtension gdbLaunchDelegate = new GdbLaunchDelegateExtension() {
+		@Override
+		protected GdbLaunch createGdbLaunch(ILaunchConfiguration configuration, String mode, ISourceLocator locator)
+				throws CoreException {
+			return new GoGdbLaunch(configuration, mode, locator);
+		}
+		
+		@Override
+		protected DebugServicesExtensions createServicesExtensions() {
+			return new GoDebugServicesExtensions();
+		};
+	};
 	
 	@Override
 	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
@@ -35,7 +49,6 @@ public class GoDebugLaunchConfigurationDelegate extends GoLaunchConfigurationDel
 	@Override
 	public ILaunch getLaunchForDebugMode(ILaunchConfiguration configuration, String mode) throws CoreException {
 		
-		// Remove some DLTK attributes that affect how our launch runs
 		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
 		
 		// Setup CDT config parameters

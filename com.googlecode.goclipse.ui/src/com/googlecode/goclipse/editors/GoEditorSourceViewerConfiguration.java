@@ -1,10 +1,8 @@
 package com.googlecode.goclipse.editors;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
-import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
-
-import melnorme.lang.ide.ui.editors.BestMatchHover;
+import static melnorme.utilbox.core.CoreUtil.array;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.util.swt.jface.ColorManager;
 
 import org.eclipse.core.runtime.CoreException;
@@ -12,6 +10,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
@@ -34,6 +33,12 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
+import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
+import com.googlecode.goclipse.ui.text.GoPartitions;
+import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
+
 /**
  * @author steel
  */
@@ -52,10 +57,9 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 
 	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		return new String[] { IDocument.DEFAULT_CONTENT_TYPE, PartitionScanner.COMMENT, PartitionScanner.STRING,
-		        PartitionScanner.MULTILINE_STRING };
+		return GoPartitions.PARTITION_TYPES;
 	}
-
+	
 	@Override
 	public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
 		if (doubleClickStrategy == null)
@@ -211,5 +215,14 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 		
 		return fPreferenceStore.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 	}
-
+	
+	@Override
+	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
+		if(IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)) {
+			return array(new GoAutoEditStrategy(LangUIPlugin.getPrefStore(), contentType, sourceViewer));
+		} else {
+			return super.getAutoEditStrategies(sourceViewer, contentType);
+		}
+	}
+	
 }
