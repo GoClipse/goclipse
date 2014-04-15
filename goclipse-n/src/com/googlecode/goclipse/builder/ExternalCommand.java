@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import melnorme.utilbox.process.ExternalProcessHelper;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
@@ -15,7 +17,9 @@ import com.googlecode.goclipse.Activator;
 /**
  * helper class to run an external process.
  *
+ *{@link Deprecated} use {@link ExternalProcessHelper} instead
  */
+@Deprecated
 public class ExternalCommand {
 	private String command;
 	private ProcessBuilder pBuilder;
