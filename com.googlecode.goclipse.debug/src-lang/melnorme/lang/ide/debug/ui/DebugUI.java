@@ -40,7 +40,12 @@ public class DebugUI extends Plugin {
 	 * Dispose adapter sets for all launches.
 	 */
 	private void disposeAdapterSets() {
-	    for (ILaunch launch : DebugPlugin.getDefault().getLaunchManager().getLaunches()) {
+	    DebugPlugin debugPlugin = DebugPlugin.getDefault();
+	    // This can happen in certain cases where this DebugUI plugin was activated programatically,
+	    // but Eclipse's DebugPlugin was never activated because it was never used.
+	    if(debugPlugin == null) return;
+	    
+		for (ILaunch launch : debugPlugin.getLaunchManager().getLaunches()) {
 	        if (launch instanceof GdbLaunch) {
 	            GdbAdapterFactory.disposeAdapterSet(launch);
 	        }
