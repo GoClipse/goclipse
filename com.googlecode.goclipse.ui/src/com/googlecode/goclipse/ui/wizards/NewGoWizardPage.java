@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.wizards;
+package com.googlecode.goclipse.ui.wizards;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.ui.navigator.GoPackage;
 import com.googlecode.goclipse.ui.navigator.GoSourceFolder;
-import com.googlecode.goclipse.wizards.NewSourceFileComposite.SourceFileType;
+import com.googlecode.goclipse.ui.wizards.NewSourceFileComposite.SourceFileType;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well

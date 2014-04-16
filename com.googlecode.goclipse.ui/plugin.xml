@@ -409,7 +409,7 @@
       <wizard
             canFinishEarly="false"
             category="com.googlecode.goclipse.wizards.projects"
-            class="com.googlecode.goclipse.wizards.GoProjectWizard"
+            class="com.googlecode.goclipse.ui.wizards.GoProjectWizard"
             finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
             icon="icons/newprj_obj.png"
             id="com.googlecode.goclipse.wizards.project.mainwiz"
@@ -436,7 +436,7 @@
       
       <wizard
             category="com.googlecode.goclipse.wizards.projects"
-            class="com.googlecode.goclipse.wizards.NewGoFileWizard"
+            class="com.googlecode.goclipse.ui.wizards.NewGoFileWizard"
             finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
             icon="icons/gopage.png"
             id="com.googlecode.goclipse.wizards.NewGoFileWizard"

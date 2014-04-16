@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.googlecode.goclipse.wizards;
+package com.googlecode.goclipse.ui.wizards;
 
 /**
  * @author steel

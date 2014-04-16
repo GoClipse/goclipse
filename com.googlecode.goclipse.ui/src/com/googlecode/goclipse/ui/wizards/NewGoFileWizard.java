@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.wizards;
+package com.googlecode.goclipse.ui.wizards;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -28,7 +28,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.wizards.NewSourceFileComposite.SourceFileType;
+import com.googlecode.goclipse.ui.wizards.NewSourceFileComposite.SourceFileType;
 
 /**
  * This is a sample new wizard. Its role is to create a new file

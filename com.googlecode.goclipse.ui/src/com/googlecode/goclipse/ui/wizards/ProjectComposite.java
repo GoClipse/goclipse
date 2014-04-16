@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.wizards;
+package com.googlecode.goclipse.ui.wizards;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;

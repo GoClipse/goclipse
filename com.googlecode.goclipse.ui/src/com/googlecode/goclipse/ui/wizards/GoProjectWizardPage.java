@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.wizards;
+package com.googlecode.goclipse.ui.wizards;
 
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.viewers.ISelection;
