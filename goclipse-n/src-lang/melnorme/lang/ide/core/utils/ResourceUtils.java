@@ -45,7 +45,7 @@ public class ResourceUtils {
 		}
 	}
 	
-	public static void createFolder(IFolder folder, boolean force, boolean local, IProgressMonitor monitor)
+	public static void createFolder(IFolder folder, boolean force, boolean local, IProgressMonitor monitor) 
 			throws CoreException {
 		if (folder.exists()) {
 			return;

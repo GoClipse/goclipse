@@ -23,7 +23,7 @@ public abstract class LangCore extends Plugin {
 	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
 	protected static LangCore pluginInstance;
-
+	
 	/** Returns the singleton for this plugin instance. */
 	public static LangCore getInstance() {
 		return pluginInstance;
