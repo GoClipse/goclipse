@@ -27,10 +27,6 @@ public class GoPerspective implements IPerspectiveFactory {
 
 	public static final String	ID	= "com.googlecode.goclipse.perspectives.GoPerspective";
 
-	private static final String JDT_ID_PACKAGES = "org.eclipse.jdt.ui.PackageExplorer";
-	private static final String JDT_ID_ACTION_SET = "org.eclipse.jdt.ui.JavaActionSet";
-	private static final String JDT_ID_ELEMENT_CREATION_ACTION_SET = "org.eclipse.jdt.ui.JavaElementCreationActionSet";
-	
 	private IPageLayout	       factory;
 
 	public GoPerspective() {
@@ -52,13 +48,10 @@ public class GoPerspective implements IPerspectiveFactory {
 	/**
 	 * Creates the overall folder layout.
 	 */
-	@SuppressWarnings("deprecation")
 	private void addViews() {
 		IFolderLayout topLeft = factory.createFolder("topLeft", // NON-NLS-1
 		        IPageLayout.LEFT, 0.25f, factory.getEditorArea());
-		topLeft.addView("org.eclipse.ui.navigator.ProjectExplorer"); // NON-NLS-1
-		topLeft.addPlaceholder(IPageLayout.ID_RES_NAV);
-		topLeft.addPlaceholder(JDT_ID_PACKAGES);
+		topLeft.addView(IPageLayout.ID_PROJECT_EXPLORER);
 
 		IFolderLayout bottom = factory.createFolder("bottomRight", // NON-NLS-1
 		        IPageLayout.BOTTOM, 0.75f, factory.getEditorArea());
@@ -84,8 +77,6 @@ public class GoPerspective implements IPerspectiveFactory {
 		factory.addActionSet("org.eclipse.team.ui.actionSet"); // NON-NLS-1
 
 		factory.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
-		factory.addActionSet(JDT_ID_ACTION_SET);
-		factory.addActionSet(JDT_ID_ELEMENT_CREATION_ACTION_SET);
 	}
 
 	private void addPerspectiveShortcuts() {
@@ -102,12 +93,10 @@ public class GoPerspective implements IPerspectiveFactory {
 		factory.addNewWizardShortcut("com.googlecode.goclipse.wizards.NewGoFileWizard"); // NON-NLS-1
 	}
 
-	@SuppressWarnings("deprecation")
 	private void addViewShortcuts() {
 		factory.addShowViewShortcut("org.eclipse.team.ui.GenericHistoryView"); // NON-NLS-1
 		factory.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
 		factory.addShowViewShortcut(IPageLayout.ID_PROJECT_EXPLORER);
-		factory.addShowViewShortcut(IPageLayout.ID_RES_NAV);
 		factory.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
 		factory.addShowViewShortcut(IPageLayout.ID_OUTLINE);
 		factory.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
