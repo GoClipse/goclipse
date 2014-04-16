@@ -20,6 +20,8 @@ import melnorme.utilbox.tests.CommonTest;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.Job;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -66,6 +68,8 @@ public abstract class CommonCoreTest extends CommonTest {
 	
 	public static void setupLangProject(IProject project) throws CoreException {
 		assertTrue(project.exists());
+		ISchedulingRule currentRule = Job.getJobManager().currentRule();
+		assertTrue(currentRule != null && currentRule.contains(project));
 		EclipseUtils.addNature(project, LangNature.NATURE_ID);
 	}
 	

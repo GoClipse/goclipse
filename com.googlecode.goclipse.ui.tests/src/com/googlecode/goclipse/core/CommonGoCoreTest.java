@@ -11,14 +11,22 @@
 package com.googlecode.goclipse.core;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 
 public class CommonGoCoreTest extends CommonCoreTest {
 	
-	protected static void setupGoProject(IProject project) throws CoreException {
-		setupLangProject(project);
+	protected static void setupGoProject(final IProject project) throws CoreException {
+		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+			@Override
+			public void run(IProgressMonitor monitor) throws CoreException {
+				setupLangProject(project);
+			}
+		}, null);
 	}
 	
 }

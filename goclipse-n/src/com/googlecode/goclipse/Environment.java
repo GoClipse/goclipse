@@ -155,9 +155,8 @@ public class Environment {
 			Activator.logError(e);
 		} catch (FileNotFoundException e) {
 			IPath path = project.getWorkingLocation(Activator.PLUGIN_ID);
-			try {
-	            properties.storeToXML(new FileOutputStream(path.toOSString()
-	            		+ "/properties.xml", false), " this is a comment");
+			try(FileOutputStream fos = new FileOutputStream(path.toOSString() + "/properties.xml", false)) {
+				properties.storeToXML(fos, " this is a comment");
             } catch (FileNotFoundException e1) {
             	Activator.logError(e);
             } catch (IOException e1) {
@@ -189,8 +188,10 @@ public class Environment {
 					+ path.toOSString()
 					+ "/properties.xml");
 			
-			properties.storeToXML(new FileOutputStream(path.toOSString()
-					+ "/properties.xml", false), project.getName()+" properties");
+			
+			try(FileOutputStream fos = new FileOutputStream(path.toOSString() + "/properties.xml", false)) {
+				properties.storeToXML(fos, project.getName()+" properties");
+			}
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
