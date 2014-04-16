@@ -22,20 +22,16 @@ public abstract class LangCore extends Plugin {
 	public static final String PLUGIN_ID = LangCore_Actual.PLUGIN_ID;
 	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
-	public static Plugin getInstance() {
-		return LangCore_Actual.getInstance();
+	protected static LangCore pluginInstance;
+
+	/** Returns the singleton for this plugin instance. */
+	public static LangCore getInstance() {
+		return pluginInstance;
 	}
-	
-//	protected static LangCore pluginInstance;
-//
-//	/** Returns the singleton for this plugin instance. */
-//	public static LangCore getInstance() {
-//		return pluginInstance;
-//	}
 	
 	@Override
 	public final void start(BundleContext context) throws Exception {
-//		pluginInstance = this;
+		pluginInstance = this;
 		super.start(context);
 		doCustomStart(context);
 	}
@@ -46,7 +42,7 @@ public abstract class LangCore extends Plugin {
 	public final void stop(BundleContext context) throws Exception {
 		doCustomStop(context);
 		super.stop(context);
-//		pluginInstance = null;
+		pluginInstance = null;
 	}
 	
 	protected abstract void doCustomStop(BundleContext context);

@@ -61,7 +61,7 @@ public class EclipseUtils extends ResourceUtils {
 		return ArrayUtil.createFrom(result, IProject.class);
 	}
 	
-	/** Adds a nature to the given project if it doesn't exist already.*/
+	/** Adds a nature to the given project if it doesn't exist already. */
 	public static void addNature(IProject project, String natureID) throws CoreException {
 		IProjectDescription description = project.getDescription();
 		String[] natures = description.getNatureIds();
@@ -70,7 +70,7 @@ public class EclipseUtils extends ResourceUtils {
 		
 		String[] newNatures = ArrayUtil.append(natures, natureID);
 		description.setNatureIds(newNatures);
-		project.setDescription(description, null); 
+		project.setDescription(description, null);
 	}
 	
 }

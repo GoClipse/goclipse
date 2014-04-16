@@ -17,12 +17,13 @@ import java.io.InputStream;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public class ResourceUtils {
-
+	
 	public static void writeToFile(IFile file, InputStream is) throws CoreException {
 		if(file.exists()) {
 			file.setContents(is, false, false, null);
@@ -30,7 +31,7 @@ public class ResourceUtils {
 			file.create(is, false, null);
 		}
 	}
-
+	
 	public static void createFolder(IFolder folder, boolean force, boolean local, IProgressMonitor monitor) 
 			throws CoreException {
 		if (folder.exists()) {
@@ -69,6 +70,30 @@ public class ResourceUtils {
 		case IResourceDelta.REMOVED_PHANTOM: return "%-%";
 		default:
 			throw assertFail();
+		}
+	}
+	
+	public static IProject createAndOpenProject(String name, boolean overwrite) throws CoreException {
+		return createAndOpenProject(name, overwrite, null);
+	}
+	
+	public static IProject createAndOpenProject(String name, boolean overwrite, IProgressMonitor pm)
+			throws CoreException {
+		IProject project = EclipseUtils.getWorkspaceRoot().getProject(name);
+		if(overwrite && project.exists()) {
+			project.delete(true, pm);
+		}
+		project.create(pm);
+		project.open(pm);
+		return project;
+	}
+	
+	public static void deleteProject_unchecked(String projectName) {
+		IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
+		try {
+			project.delete(true, null);
+		} catch (CoreException e) {
+			// Ignore
 		}
 	}
 	

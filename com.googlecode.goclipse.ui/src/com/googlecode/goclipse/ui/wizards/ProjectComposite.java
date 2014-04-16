@@ -209,5 +209,9 @@ public class ProjectComposite extends Composite {
 	   
 	   return null;
    }
+   
+	protected Text getNameField() {
+		return nameField;
+	}
 
 } // @jve:decl-index=0:visual-constraint="10,10"

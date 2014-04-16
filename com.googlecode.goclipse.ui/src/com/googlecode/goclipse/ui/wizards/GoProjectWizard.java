@@ -44,9 +44,9 @@ import com.googlecode.goclipse.perspective.GoPerspective;
 @SuppressWarnings("restriction")
 public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 
-	private IWorkbench 			workbench;
-	private GoProjectWizardPage page;
-	private ISelection 			selection;
+	protected IWorkbench 			workbench;
+	protected GoProjectWizardPage page;
+	protected ISelection 			selection;
 
 	/**
 	 * Constructor for NewGoFileWizard.

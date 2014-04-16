@@ -8,17 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.core;
+package com.googlecode.goclipse.ui;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
+import melnorme.lang.ide.ui.tests.CommonUITest;
 
-import melnorme.lang.ide.core.tests.CommonCoreTest;
-
-public class CommonGoCoreTest extends CommonCoreTest {
-	
-	protected static void setupGoProject(IProject project) throws CoreException {
-		setupLangProject(project);
-	}
+public class CommonGoUITest extends CommonUITest {
 	
 }
