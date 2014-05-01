@@ -8,20 +8,19 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.process;
+package melnorme.utilbox.misc;
 
-import java.io.IOException;
-
-import org.eclipse.core.resources.IProject;
-
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import java.util.List;
 
 
+public interface IListenerList<LISTENER> {
 
-public interface IExternalProcessListener {
-	
-	void handleProcessStarted(ProcessBuilder pb, IProject project, ExternalProcessNotifyingHelper processHelper);
-	
-	void handleProcessStartFailure(ProcessBuilder pb, IProject project, IOException processStartException);
+	public List<LISTENER> getListeners();
+
+	public void removeListener(LISTENER listener);
+
+	public void addListener(LISTENER listener);
+
+	public IListenerList<LISTENER> createCopy();
 	
 }
