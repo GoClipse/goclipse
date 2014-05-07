@@ -1,9 +1,8 @@
 ## Installation
 
 #### Requirements: 
-You will need: 
- * Eclipse 4.3 (Kepler) or later (http://www.eclipse.org/)
- * A **1.7** Java VM or later (http://www.java.com/)
+ * Eclipse 4.3 (Kepler) or later (http://www.eclipse.org/).
+ * A **1.7** Java VM or later (http://www.java.com/). Otherwise GoClipse will silently fail to start.
  * Go development tools and libraries installed on target machine (http://golang.org/doc/install.html). Currently, only the plan 9 style compilers are supported. GCCGO may be supported in the future
 
 #### Instructions:
@@ -18,5 +17,4 @@ You will need:
   
 
 #### Updating:
-If you followed the installation steps above, you can update DDT to the latest release by clicking
-`Help -> Check for Updates...` on the Eclipse IDE.
+If you already have GoClipse installed, and want to update it to a newer release, click `Help -> Check for Updates...`.
