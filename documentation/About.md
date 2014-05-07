@@ -8,4 +8,4 @@ GoClipse is an Eclipse IDE for the Go programming language. The purpose of GoCli
    * Info for the [latest release](https://github.com/sesteel/goclipse/releases/latest).
  * See [User Guide](UserGuide.md#user-guide) for user documentation.
 
-For GoClipse questions, discussion, help, etc., see the [GoClipse user group](http://groups.google.com/group/goclipse).
+For discussion and help with GoClipse see the [GoClipse user group](http://groups.google.com/group/goclipse).
