@@ -3,7 +3,7 @@ package com.googlecode.goclipse.navigator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
-import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**
  * An IWorkbenchAdapter implementation for GoPathElement objects.
@@ -18,7 +18,7 @@ class GoPathElementWorkbenchAdapter implements IWorkbenchAdapter {
 
   @Override
   public ImageDescriptor getImageDescriptor(Object object) {
-    return Activator.getImageDescriptor("icons/jar_l_obj-1.gif");
+    return GoPluginImages.NAVIGATOR_GO_PATH_ELEMENT.getDescriptor();
   }
 
   @Override

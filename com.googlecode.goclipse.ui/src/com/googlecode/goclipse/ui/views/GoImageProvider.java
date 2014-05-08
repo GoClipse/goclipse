@@ -41,9 +41,9 @@ public class GoImageProvider {
 		TypeClass typeClass = type.getTypeClass();
 		
 		if(typeClass == TypeClass.STRUCT) {
-			return GoPluginImages.NODE_TYPE_STRUCT.getImage();
+			return GoPluginImages.NODE_STRUCT.getImage();
 		} else if(typeClass == TypeClass.INTERFACE) {
-			return GoPluginImages.NODE_TYPE_INTERFACE.getImage();
+			return GoPluginImages.NODE_INTERFACE.getImage();
 		} else {
 			return GoPluginImages.NODE_TYPE.getImage();
 		}

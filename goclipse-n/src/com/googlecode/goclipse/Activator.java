@@ -2,7 +2,7 @@ package com.googlecode.goclipse;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.Util;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -50,6 +50,11 @@ public class Activator extends AbstractUIPlugin {
 		super.stop(context);
 	}
 
+	@Override
+	public IPreferenceStore getPreferenceStore() {
+		return super.getPreferenceStore();
+	}
+
 	/**
 	 * Returns the shared instance
 	 *
@@ -59,17 +64,6 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(UI_PLUGIN_ID, path);
-	}
-	
 	/**
 	 * Log the given info message to the Eclipse log.
 	 */

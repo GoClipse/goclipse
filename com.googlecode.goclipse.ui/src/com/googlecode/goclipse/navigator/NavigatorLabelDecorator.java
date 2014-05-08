@@ -11,8 +11,8 @@ import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**
  * A lightweight decorator for Go errors and warnings.
@@ -80,9 +80,9 @@ public class NavigatorLabelDecorator implements ILightweightLabelDecorator {
           IResource.DEPTH_INFINITE);
 
       if (severity == IMarker.SEVERITY_ERROR) {
-        return Activator.getImageDescriptor("icons/error_co.gif");
+        return GoPluginImages.OVERLAYS_ERROR;
       } else if (severity == IMarker.SEVERITY_ERROR) {
-        return Activator.getImageDescriptor("icons/warning_co.gif");
+    	  return GoPluginImages.OVERLAYS_WARNING;
       } else {
         return null;
       }

@@ -19,8 +19,8 @@ import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonLabelProvider;
 import org.eclipse.ui.navigator.IExtensionStateModel;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**
  * The label provider for the Go CNF navigator.
@@ -45,24 +45,24 @@ public class NavigatorLabelProvider extends WorkbenchLabelProvider implements IC
           
           if (resource.getParent() instanceof IProject) {
             if ("src".equals(resource.getName())) {
-              return Activator.getImageDescriptor("icons/src-folder.png");
+              return GoPluginImages.NAVIGATOR_SRC_FOLDER.getDescriptor();
             } else if ("pkg".equals(resource.getName())) {
-              return Activator.getImageDescriptor("icons/open_artifact_obj.gif");
+              return GoPluginImages.NAVIGATOR_PKG_FOLDER.getDescriptor();
             } else if ("bin".equals(resource.getName())) {
-              return Activator.getImageDescriptor("icons/cf_obj.gif");
+              return GoPluginImages.NAVIGATOR_BIN_FOLDER.getDescriptor();
             }
           } else if (containsGoSource(folder)) {
-            return Activator.getImageDescriptor("icons/source-folder.gif");
+            return GoPluginImages.NAVIGATOR_SOURCE_CONTAINER.getDescriptor();
           }
         } else if (resource instanceof IFile) {
           IFile file = (IFile) resource;
           String ext = file.getFileExtension();
 
           if ("a".equals(ext)) {
-            return Activator.getImageDescriptor("icons/package_file.png");
+            return GoPluginImages.NAVIGATOR_GO_PACKAGE_FILE.getDescriptor();
           } else if (ext == null) {
             if (file.getResourceAttributes() != null && file.getResourceAttributes().isExecutable()) {
-              return Activator.getImageDescriptor("icons/binary_file.png");
+              return GoPluginImages.NAVIGATOR_BINARY_FILE.getDescriptor();
             }
           }
         }

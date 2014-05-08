@@ -17,7 +17,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.navigator.GoPackage;
 import com.googlecode.goclipse.ui.navigator.GoSourceFolder;
 import com.googlecode.goclipse.ui.wizards.NewSourceFileComposite.SourceFileType;
@@ -70,7 +70,7 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 	 */
 
 	private void initialize() {
-		setImageDescriptor(Activator.getImageDescriptor("icons/sourceicon.png"));
+		setImageDescriptor(GoPluginImages.WIZARD_SOURCE_ICON.getDescriptor());
 		String path = null;
 		IPath prjPath = null;
 		if (selection != null && selection.isEmpty() == false

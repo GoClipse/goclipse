@@ -22,8 +22,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.CodeContext;
+import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
 /**
@@ -37,17 +37,17 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 
   private static HashMap<String, CodeContext> codeContexts = new HashMap<String, CodeContext>();
 
-  private Image defaultImage = Activator.getImageDescriptor("icons/orange_cube16.png").createImage();
-  private Image funcImage = Activator.getImageDescriptor("icons/function_co.png").createImage();
-  private Image privateFuncImage = Activator.getImageDescriptor("icons/public_co.gif").createImage();
-  private Image interfaceImage = Activator.getImageDescriptor("icons/interface.gif").createImage();
-  private Image structImage = Activator.getImageDescriptor("icons/struct.png").createImage();
-  private Image importImage = Activator.getImageDescriptor("icons/imp_obj.gif").createImage();
-  private Image privateVarImage = Activator.getImageDescriptor("icons/field_private_obj.gif").createImage();
-  private Image publicVarImage = Activator.getImageDescriptor("icons/field_public_obj.gif").createImage();
+  private Image defaultImage = GoPluginImages.SOURCE_OTHER.getImage();
+  private Image funcImage = GoPluginImages.SOURCE_FUNCTION.getImage();
+  private Image privateFuncImage = GoPluginImages.SOURCE_PRIVATE_FUNCTION.getImage();
+  private Image interfaceImage = GoPluginImages.SOURCE_INTERFACE.getImage();
+  private Image structImage = GoPluginImages.SOURCE_STRUCT.getImage();
+  private Image importImage = GoPluginImages.SOURCE_IMPORT.getImage();
+  private Image privateVarImage = GoPluginImages.SOURCE_PRIVATE_VAR.getImage();
+  private Image publicVarImage = GoPluginImages.SOURCE_PUBLIC_VAR.getImage();
 
   @SuppressWarnings("unused")
-  private Image localVarImage = Activator.getImageDescriptor("icons/variable_local_obj.gif").createImage();
+  private Image localVarImage = GoPluginImages.SOURCE_LOCAL_VAR.getImage();
 
   private IEditorPart editor;
 

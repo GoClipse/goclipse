@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Label;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**
  * The wizard page for the Go Reference project wizard.
@@ -28,7 +29,7 @@ public class GoReferenceProjectWizardPage extends WizardPage {
 
 		setTitle("Create a Go Reference Project");
 		setDescription("Create a new project containing a link to GOROOT/src; this is useful for browsing the source for the Go libraries");
-		setImageDescriptor(Activator.getImageDescriptor("icons/go-icon-wizard.png"));
+		setImageDescriptor(GoPluginImages.WIZARD_ICON.getDescriptor());
 	}
 
 	@Override

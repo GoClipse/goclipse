@@ -14,6 +14,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**
  * The "New" wizard page allows setting the container for the new file as well
@@ -32,7 +33,7 @@ public class GoProjectWizardPage extends WizardPage {
 
 		setTitle("Create a Go Project");
 		setDescription("This wizard creates a new Go project.");
-		setImageDescriptor(Activator.getImageDescriptor("icons/go-icon-wizard.png"));
+		setImageDescriptor(GoPluginImages.WIZARD_ICON.getDescriptor());
 	}
 
 	@Override
