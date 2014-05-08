@@ -1,6 +1,7 @@
 package com.googlecode.goclipse.properties;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
@@ -24,6 +25,14 @@ public class ProjectBuildConfiguration extends PropertyPage {
 	 */
 	public ProjectBuildConfiguration() {
 		super();
+	}
+	
+	protected IProject getProject() {
+		IAdaptable adaptable= getElement();
+		if(adaptable instanceof IProject) {
+			return (IProject) adaptable;
+		}
+		return (IProject) adaptable.getAdapter(IProject.class);
 	}
 
 	/**
@@ -83,10 +92,6 @@ public class ProjectBuildConfiguration extends PropertyPage {
 		Environment.INSTANCE.setAutoUnitTestMaxTime(getProject(), maxTime);
 
 		return true;
-	}
-
-	protected IProject getProject() {
-		return (IProject) getElement();
 	}
 
 }

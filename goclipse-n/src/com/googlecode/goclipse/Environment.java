@@ -19,25 +19,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-
 import com.googlecode.goclipse.builder.Arch;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.ProcessIStreamFilter;
@@ -206,125 +191,6 @@ public class Environment {
 	 */
 	public IPreferencesService getPreferences() {
 		return preferences;
-	}
-
-	/**
-	 * Determines the current project of the active context; if possible. else
-	 * return null.
-	 * 
-	 * @return IProject | null
-	 */
-	public IProject getCurrentProject() {
-		IProject project = null;
-
-		try {
-			IWorkbench iWorkbench 			  = PlatformUI.getWorkbench();
-			IWorkbenchWindow iWorkbenchWindow = iWorkbench.getActiveWorkbenchWindow();
-			if (iWorkbenchWindow != null) {
-				IWorkbenchPage iWorkbenchPage 	  = iWorkbenchWindow.getActivePage();
-				ISelection iSelection 			  = iWorkbenchPage.getSelection();
-				iSelection 						  = iWorkbenchPage.getSelection();
-				
-				if(iSelection instanceof TextSelection){
-					IEditorInput editorInput = iWorkbenchWindow.getActivePage().getActiveEditor().getEditorInput();
-					if(editorInput instanceof IFileEditorInput){
-						return ((IFileEditorInput)editorInput).getFile().getProject();
-					}
-				}
-				
-				project = extractSelection(iSelection).getProject();
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		if (project == null) {
-			IWorkspace root = ResourcesPlugin.getWorkspace();
-			IProject[] projects = root.getRoot().getProjects();
-
-			for (int i = 0; i < projects.length - 1; i++) {
-				for (int j = i + 1; j < projects.length; j++) {
-					if (projects[i].getName().compareToIgnoreCase(
-							projects[j].getName()) > 0) { // ascending
-						// sort
-						IProject temp = projects[i];
-						projects[i] = projects[j]; // swapping
-						projects[j] = temp;
-
-					}
-				}
-			}
-
-			if (projects.length > 0) {
-				return projects[0];
-			}
-		}
-		
-		return project;
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public String getAbsoluteProjectPath(){
-		IProject project = getCurrentProject();
-		IPath path = ResourcesPlugin.getWorkspace().getRoot().getRawLocation();
-		return path.toOSString()+"/"+project.getName();
-	}
-
-	/**
-	 * Returns the selected resource
-	 * 
-	 * @param sel
-	 * @return
-	 */
-	public IResource extractSelection(ISelection sel) {
-		if (!(sel instanceof IStructuredSelection))
-			return null;
-		IStructuredSelection ss = (IStructuredSelection) sel;
-		Object element = ss.getFirstElement();
-		if (element instanceof IResource)
-			return (IResource) element;
-		if (!(element instanceof IAdaptable))
-			return null;
-		IAdaptable adaptable = (IAdaptable) element;
-		Object adapter = adaptable.getAdapter(IResource.class);
-		return (IResource) adapter;
-	}
-
-
-	/**
-	 * Returns the active editor or null if there is not one
-	 * 
-	 * @return
-	 */
-	public IEditorPart getActiveEditor() {
-		IWorkbench iworkbench = PlatformUI.getWorkbench();
-		if (iworkbench != null) {
-			IWorkbenchWindow iworkbenchwindow = iworkbench
-					.getActiveWorkbenchWindow();
-			if (iworkbenchwindow != null) {
-				IWorkbenchPage iworkbenchpage = iworkbenchwindow
-						.getActivePage();
-				if (iworkbenchpage != null) {
-					return iworkbenchpage.getActiveEditor();
-				}
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Get the shell of the Active Workbench Window
-	 * 
-	 * @return
-	 */
-	public Shell getShell() {
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		IWorkbenchWindow wWindow = workbench.getActiveWorkbenchWindow();
-		return wWindow.getShell();
 	}
 
 	/**

@@ -27,6 +27,8 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.ui.EclipseEnviromentUtils;
+
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -201,7 +203,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
       group.setText("Source Folders on Build Path");
       list = new List(group, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 
-      list.setItems(Environment.INSTANCE.getSourceFoldersAsStringArray(Environment.INSTANCE.getCurrentProject()));
+      list.setItems(Environment.INSTANCE.getSourceFoldersAsStringArray(EclipseEnviromentUtils.getCurrentProject()));
       list.setLayoutData(gridData1);
       addButton = new Button(group, SWT.NONE);
       addButton.setText("Add Folder...");
@@ -209,7 +211,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
       addButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
          @Override
         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-            CheckedTreeSelectionDialog dialog = new CheckedTreeSelectionDialog(Environment.INSTANCE.getShell(),
+            CheckedTreeSelectionDialog dialog = new CheckedTreeSelectionDialog(EclipseEnviromentUtils.getActiveShell(),
                   new WorkbenchLabelProvider(), new ITreeContentProvider() {
 
                      @Override
@@ -279,7 +281,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
             dialog.setTitle("Source Folder Selection");
             dialog.setMessage("Select the source folders from the tree:");
 
-            dialog.setInput(Environment.INSTANCE.getCurrentProject());
+            dialog.setInput(EclipseEnviromentUtils.getCurrentProject());
             dialog.open();
             Object[] results = dialog.getResult();
             
@@ -352,13 +354,13 @@ public class ProjectBuildConfigurationComposite extends Composite {
       pkgOutputBrowseButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
          @Override
         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-            FolderSelectionDialog dialog = new FolderSelectionDialog(Environment.INSTANCE.getShell(),
+            FolderSelectionDialog dialog = new FolderSelectionDialog(EclipseEnviromentUtils.getActiveShell(),
                   new WorkbenchLabelProvider(), new TreeContentProvider());
 
             dialog.setTitle("Output Folder Selection");
             dialog.setMessage("Select the output folders from the tree:");
 
-            dialog.setInput(Environment.INSTANCE.getCurrentProject());
+            dialog.setInput(EclipseEnviromentUtils.getCurrentProject());
             dialog.open();
             Object[] results = dialog.getResult();
 
@@ -397,13 +399,13 @@ public class ProjectBuildConfigurationComposite extends Composite {
       binOutputBrowseButton.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
          @Override
         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-            FolderSelectionDialog dialog = new FolderSelectionDialog(Environment.INSTANCE.getShell(),
+            FolderSelectionDialog dialog = new FolderSelectionDialog(EclipseEnviromentUtils.getActiveShell(),
                   new WorkbenchLabelProvider(), new TreeContentProvider());
 
             dialog.setTitle("Output Folder Selection");
             dialog.setMessage("Select the output folders from the tree:");
 
-            dialog.setInput(Environment.INSTANCE.getCurrentProject());
+            dialog.setInput(EclipseEnviromentUtils.getCurrentProject());
             dialog.open();
             Object[] results = dialog.getResult();
 
@@ -423,8 +425,8 @@ public class ProjectBuildConfigurationComposite extends Composite {
     * Check the data and set the dialog state correctly
     */
    private void validate() {
-      IResource pkgResource = Environment.INSTANCE.getCurrentProject().findMember(pkgOutputText.getText());
-      IResource binResource = Environment.INSTANCE.getCurrentProject().findMember(binOutputText.getText());
+      IResource pkgResource = EclipseEnviromentUtils.getCurrentProject().findMember(pkgOutputText.getText());
+      IResource binResource = EclipseEnviromentUtils.getCurrentProject().findMember(binOutputText.getText());
       if (pkgResource == null) {
     	  projectBuildConfiguration.setErrorMessage(pkgOutputText.getText() + " is not a valid path...");
     	  outputFoldersOk = false;
@@ -484,7 +486,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
       txtAutomaticUnitTesting.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 6, 1));
       
       final Button btnEnableAutomaticUnit = new Button(grpAutomaticUnitTesting, SWT.CHECK);
-      btnEnableAutomaticUnit.setSelection(Environment.INSTANCE.getAutoUnitTest(Environment.INSTANCE.getCurrentProject()));
+      btnEnableAutomaticUnit.setSelection(Environment.INSTANCE.getAutoUnitTest(EclipseEnviromentUtils.getCurrentProject()));
      
       
       btnEnableAutomaticUnit.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 4, 1));
@@ -502,7 +504,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
       textUnitTestRegex.setEnabled(btnEnableAutomaticUnit.getSelection());
       
       textUnitTestRegex.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 4, 1));
-      String regex = Environment.INSTANCE.getAutoUnitTestRegex(Environment.INSTANCE.getCurrentProject());
+      String regex = Environment.INSTANCE.getAutoUnitTestRegex(EclipseEnviromentUtils.getCurrentProject());
       if (regex==null || "".equals(regex)) {
     	  regex = "TestAuto[A-Za-z0-9_]*";
       }
@@ -517,7 +519,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
       maxTimeSpinner.setIncrement(10);
       maxTimeSpinner.setEnabled(btnEnableAutomaticUnit.getSelection());
       
-      int time = Environment.INSTANCE.getAutoUnitTestMaxTime(Environment.INSTANCE.getCurrentProject());
+      int time = Environment.INSTANCE.getAutoUnitTestMaxTime(EclipseEnviromentUtils.getCurrentProject());
       maxTimeSpinner.setMaximum(360000);
       maxTimeSpinner.setMinimum(100);
       maxTimeSpinner.setSelection(time);
@@ -538,7 +540,7 @@ public class ProjectBuildConfigurationComposite extends Composite {
         	@Override
         	public void widgetSelected(SelectionEvent e) {
         		Environment.INSTANCE.setAutoUnitTest(
-        				Environment.INSTANCE.getCurrentProject(),
+        				EclipseEnviromentUtils.getCurrentProject(),
         				btnEnableAutomaticUnit.getSelection());
         		lblTestNameRegex.setEnabled(btnEnableAutomaticUnit.getSelection());
         		textUnitTestRegex.setEnabled(btnEnableAutomaticUnit.getSelection());

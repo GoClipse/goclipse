@@ -19,12 +19,12 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
 import com.googlecode.goclipse.go.lang.model.Import;
 import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lang.model.Var;
+import com.googlecode.goclipse.ui.EclipseEnviromentUtils;
 
 /**
  * A hyperlink detector for the Go editor.  The hyperlink detector
@@ -58,7 +58,7 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 		
 		try {
 			String   word    = document.get(wordRegion.getOffset(), wordRegion.getLength());
-			IProject project = Environment.INSTANCE.getCurrentProject();
+			IProject project = EclipseEnviromentUtils.getCurrentProject();
 
 			// get the current imports
 			FileEditorInput fileEditorInput = null;

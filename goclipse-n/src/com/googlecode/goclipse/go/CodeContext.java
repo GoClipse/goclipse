@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -43,7 +42,6 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
  * 
  * @author steel
  */
-@SuppressWarnings("unused")
 public class CodeContext {
 
 	static HashMap<String, CodeContext>	externalContexts	= new HashMap<String, CodeContext>();
@@ -313,7 +311,7 @@ public class CodeContext {
 
 			for (IFolder folder : Environment.INSTANCE.getSourceFolders(project)) {
 
-				String path = Environment.INSTANCE.getAbsoluteProjectPath();
+//				String path = Environment.INSTANCE.getAbsoluteProjectPath();
 
 				pkgdir = new File(folder.getLocation().toOSString() + File.separator + packagePath);
 

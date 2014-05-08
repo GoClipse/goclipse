@@ -1,10 +1,12 @@
 package com.googlecode.goclipse;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.Util;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.builder.GoBuilder;
@@ -14,12 +16,10 @@ import com.googlecode.goclipse.builder.GoBuilder;
  * 
  * @author steel
  */
-// BM: TODO: remove UI dependencies, especially all the image stuff
-public class Activator extends AbstractUIPlugin {
+public class Activator extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "goclipse";
-	public static final String UI_PLUGIN_ID = "com.googlecode.goclipse.ui";
 
 	public static final String CONTENT_ASSIST_EXTENSION_ID = "com.googlecode.goclipse.contentassistprocessor";
 	
@@ -49,10 +49,16 @@ public class Activator extends AbstractUIPlugin {
 		plugin = null;
 		super.stop(context);
 	}
+	
+	private ScopedPreferenceStore preferenceStore;
 
-	@Override
 	public IPreferenceStore getPreferenceStore() {
-		return super.getPreferenceStore();
+        // Create the preference store lazily.
+        if (preferenceStore == null) {
+            preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, getBundle().getSymbolicName());
+
+        }
+        return preferenceStore;
 	}
 
 	/**
