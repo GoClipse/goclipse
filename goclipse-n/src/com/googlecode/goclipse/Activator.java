@@ -1,13 +1,9 @@
 package com.googlecode.goclipse;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.Util;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -29,8 +25,6 @@ public class Activator extends AbstractUIPlugin {
 	
 	// The shared instance
 	private static Activator plugin;
-	
-	private static Map<ImageDescriptor, Image> imageCache = new HashMap<ImageDescriptor, Image>();
 	
 	/**
 	 * The constructor
@@ -74,24 +68,6 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(UI_PLUGIN_ID, path);
-	}
-	
-	/**
-	 * Create or return the cached image for the given image descriptor.
-	 * 
-	 * @param imageDescriptor
-	 * @return the image for the given image descriptor
-	 */
-	public static Image getImage(ImageDescriptor imageDescriptor) {
-		Image image = imageCache.get(imageDescriptor);
-		
-		if (image == null) {
-			image = imageDescriptor.createImage();
-			
-			imageCache.put(imageDescriptor, image);
-		}
-		
-		return image;
 	}
 	
 	/**

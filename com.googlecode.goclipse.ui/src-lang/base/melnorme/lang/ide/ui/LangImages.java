@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import melnorme.lang.ide.ui.utils.ImageDescriptorRegistry;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper;
 
 import org.eclipse.core.runtime.IPath;
@@ -58,6 +59,15 @@ public abstract class LangImages {
 	public static ImageDescriptor getDescriptor(String key) {
 		return helper.getImageDescriptor(key);
 	}
+	
+	/* ----------------- Image cache indexed by ImageDescriptor ----------------- */
+	
+	protected static final ImageDescriptorRegistry imageCache = new ImageDescriptorRegistry();
+	
+	public static Image getCachedImage(ImageDescriptor imageDescriptor) {
+		return imageCache.getImage(imageDescriptor);
+	}
+	
 	
 	/* ---------------- Common Lang images ---------------- */
 	

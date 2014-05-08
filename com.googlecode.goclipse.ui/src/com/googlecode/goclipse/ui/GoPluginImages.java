@@ -12,6 +12,8 @@ package com.googlecode.goclipse.ui;
 
 import melnorme.lang.ide.ui.LangImages;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+
 public class GoPluginImages extends LangImages {
 	
 	public static final String GO_ICON = createManaged("", "go-icon16.png");
@@ -37,5 +39,9 @@ public class GoPluginImages extends LangImages {
 	
 	public static final String NODE_SCOPE = createManaged("", "function_co.png");
 	public static final String NODE_FILESCOPE = createManaged("", "function_co.png");
+	
+	
+	public static final ImageDescriptor OVERLAYS_WARNING = createUnmanaged("", "warning_co.gif");
+	public static final ImageDescriptor OVERLAYS_ERROR = createUnmanaged("", "error_co.gif");
 	
 }

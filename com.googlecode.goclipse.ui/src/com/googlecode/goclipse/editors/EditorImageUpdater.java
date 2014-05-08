@@ -15,6 +15,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.services.IDisposable;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**
  * This class listens for marker changes to the editor's underlying IFile, and
@@ -39,10 +40,10 @@ public class EditorImageUpdater implements IDisposable {
 		
 		defaultImage = editor.getTitleImage();
 		
-		warningImage = Activator.getImage(new DecorationOverlayIcon(defaultImage, 
-			Activator.getImageDescriptor("icons/warning_co.gif"), IDecoration.BOTTOM_LEFT));
-		errorImage = Activator.getImage(new DecorationOverlayIcon(defaultImage, 
-				Activator.getImageDescriptor("icons/error_co.gif"), IDecoration.BOTTOM_LEFT));
+		warningImage = GoPluginImages.getCachedImage(new DecorationOverlayIcon(defaultImage,
+			GoPluginImages.OVERLAYS_WARNING, IDecoration.BOTTOM_LEFT));
+		errorImage = GoPluginImages.getCachedImage(new DecorationOverlayIcon(defaultImage, 
+			GoPluginImages.OVERLAYS_ERROR, IDecoration.BOTTOM_LEFT));
 		
 		installResourceChangeListener(editor);
 	}
