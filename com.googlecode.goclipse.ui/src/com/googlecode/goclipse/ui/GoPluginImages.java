@@ -18,6 +18,9 @@ public class GoPluginImages extends LangImages {
 	
 	public static final String GO_CONSOLE_ICON = createManaged("", "go-icon16.png");
 	
+	public static final String ELEMENT_IMPORT_CONTAINER = createManaged("", "impc_obj.gif");
+	public static final String ELEMENT_SOURCE_FOLDER = createManaged("", "source-folder.gif");
+	public static final String ELEMENT_PACKAGE = createManaged("", "package.gif");
 	
 	public static final String NODE_PACKAGE = createManaged("", "package.gif");
 	public static final String NODE_IMPORT = createManaged("", "imp_obj.gif");

@@ -37,6 +37,7 @@ import com.googlecode.goclipse.go.lang.model.Import;
 import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lang.model.Type;
 import com.googlecode.goclipse.go.lang.model.TypeClass;
+import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.views.GoImageProvider;
 import com.googlecode.goclipse.utils.ObjectUtils;
 
@@ -206,7 +207,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 				Node node = (Node)element;
 				return GoImageProvider.getImage(node);
 			} else if (element == IMPORT_CONTAINER) {
-				return Activator.getImage("icons/impc_obj.gif");
+				return GoPluginImages.getImage(GoPluginImages.ELEMENT_IMPORT_CONTAINER);
 			} else {
 				return null;
 			}

@@ -77,34 +77,6 @@ public class Activator extends AbstractUIPlugin {
 	}
 	
 	/**
-	 * Get an image given a path relative to this plugin.
-	 * 
-	 * @param path
-	 * @return an image
-	 */
-	public static Image getImage(String path) {
-		try {
-			Image image = getDefault().getImageRegistry().get(path);
-			
-			if (image != null) {
-				return image;
-			}
-	
-			ImageDescriptor descriptor = getImageDescriptor(path);
-	
-			if (descriptor != null) {
-				getDefault().getImageRegistry().put(path, descriptor);
-	
-				return getDefault().getImageRegistry().get(path);
-			}
-		} catch(Exception ex){
-			Activator.logError(ex);
-		}
-
-		return null;
-	}
-
-	/**
 	 * Create or return the cached image for the given image descriptor.
 	 * 
 	 * @param imageDescriptor
