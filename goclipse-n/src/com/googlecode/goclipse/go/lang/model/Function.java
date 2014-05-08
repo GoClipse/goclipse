@@ -2,19 +2,17 @@ package com.googlecode.goclipse.go.lang.model;
 
 import java.util.ArrayList;
 
-import org.eclipse.swt.graphics.Image;
-
-import com.googlecode.goclipse.Activator;
-
 public class Function extends Node {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private ArrayList<Var> parameters = new ArrayList<Var>();
 
+	@Override
+	public ENodeKind getNodeKind() {
+		return ENodeKind.FUNCTION;
+	}
+	
 	/**
 	 * @return the parameters
 	 */
@@ -28,15 +26,6 @@ public class Function extends Node {
 	 */
 	public void setParameters(ArrayList<Var> parameters) {
 		this.parameters = parameters;
-	}
-	
-	/**
-	 * @return the image
-	 */
-	@Override
-    public Image getImage() {
-		//return Activator.getImage("icons/function_co.png");
-		return Activator.getImage("icons/function_co.png");
 	}
 	
 }

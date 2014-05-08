@@ -3,10 +3,6 @@ package com.googlecode.goclipse.go.lang.model;
 import java.io.File;
 import java.io.Serializable;
 
-import org.eclipse.swt.graphics.Image;
-
-import com.googlecode.goclipse.Activator;
-
 /**
  * 
  * @author steel
@@ -28,9 +24,8 @@ public abstract class Node implements Serializable {
 	private String	          documentation;
 	private Scope             scope;
 
-	// This image is displayed if a subclass has not overridden getImage().
-	protected Image	          image = Activator.getImage("icons/private_co.gif");
-
+	public abstract ENodeKind getNodeKind();
+	
 	/**
 	 * @param Package
 	 */
@@ -119,13 +114,6 @@ public abstract class Node implements Serializable {
 	 */
 	public void setInsertionText(String insertionText) {
 		this.insertionText = insertionText;
-	}
-
-	/**
-	 * @return the image
-	 */
-	public Image getImage() {
-		return image;
 	}
 
 	@Override

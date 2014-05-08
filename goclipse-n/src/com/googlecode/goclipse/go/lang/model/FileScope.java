@@ -2,18 +2,11 @@ package com.googlecode.goclipse.go.lang.model;
 
 import java.util.ArrayList;
 
-import org.eclipse.swt.graphics.Image;
-
-import com.googlecode.goclipse.Activator;
-
 /**
  * @author steel
  */
 public class FileScope extends Node{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private ArrayList<Import>   imports   = new ArrayList<Import>();
@@ -29,6 +22,11 @@ public class FileScope extends Node{
 	 * @param parent
 	 */
 	public FileScope(){}
+	
+	@Override
+	public ENodeKind getNodeKind() {
+		return ENodeKind.FILESCOPE;
+	}
 	
 	/**
 	 * @return the imports
@@ -78,7 +76,7 @@ public class FileScope extends Node{
 	 * @param imp
 	 */
 	public void addImport(Import imp) {
-		this.imports.add(imp);		
+		this.imports.add(imp);
 	}
 	
 	/**
@@ -109,14 +107,6 @@ public class FileScope extends Node{
 		types.add(type);
 	}
 	
-	/**
-	 * @return the image
-	 */
-	@Override
-  public Image getImage() {
-		return Activator.getImage("icons/function_co.png");
-	}
-
 	/**
 	 * @return the start
 	 */

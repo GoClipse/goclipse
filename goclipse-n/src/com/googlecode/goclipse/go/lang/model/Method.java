@@ -1,19 +1,17 @@
 package com.googlecode.goclipse.go.lang.model;
 
-import org.eclipse.swt.graphics.Image;
-
-import com.googlecode.goclipse.Activator;
-
 
 public class Method extends Function {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private Var receiver = new Var();
-
+	
+	@Override
+	public ENodeKind getNodeKind() {
+		return ENodeKind.METHOD;
+	}
+	
 	/**
 	 * @return the receiver
 	 */
@@ -28,12 +26,4 @@ public class Method extends Function {
 		this.receiver = receiver;
 	}
 
-	/**
-	 * @return the image
-	 */
-	@Override
-  public Image getImage() {
-		return Activator.getImage("icons/public_co.gif");
-	}
-	
 }

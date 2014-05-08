@@ -1,9 +1,5 @@
 package com.googlecode.goclipse.go.lang.model;
 
-import org.eclipse.swt.graphics.Image;
-
-import com.googlecode.goclipse.Activator;
-
 /**
  * 
  */
@@ -14,6 +10,11 @@ public class Type extends Node {
 	private TypeClass typeClass = TypeClass.UNKNOWN;
 	
 
+	@Override
+	public ENodeKind getNodeKind() {
+		return ENodeKind.TYPE;
+	}
+	
 	/**
 	 * @return the typeClass
 	 */
@@ -29,21 +30,4 @@ public class Type extends Node {
 		this.typeClass = typeClass;
 	}
 
-	/**
-	 * @return the image
-	 */
-	@Override
-	public Image getImage() {
-		
-		if (typeClass == TypeClass.STRUCT) {
-			return Activator.getImage("icons/struct.png");
-		}
-		else if (typeClass == TypeClass.INTERFACE) {
-			return Activator.getImage("icons/interface.gif");
-		}
-		else{
-			return Activator.getImage("icons/type.png");
-		}
-
-	}
 }

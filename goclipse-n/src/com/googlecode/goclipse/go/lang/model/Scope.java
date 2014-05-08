@@ -2,15 +2,8 @@ package com.googlecode.goclipse.go.lang.model;
 
 import java.util.ArrayList;
 
-import org.eclipse.swt.graphics.Image;
-
-import com.googlecode.goclipse.Activator;
-
 public class Scope extends Node {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private Scope parent;
@@ -24,6 +17,10 @@ public class Scope extends Node {
 	private String textStartedOn = "none";
 	
 	
+	@Override
+	public ENodeKind getNodeKind() {
+		return ENodeKind.SCOPE;
+	}
 
 	/**
 	 * Sets parent and adds itself as a child to the parent
@@ -115,14 +112,6 @@ public class Scope extends Node {
 		types.add(type);
 	}
 	
-	/**
-	 * @return the image
-	 */
-	@Override
-    public Image getImage() {
-		return Activator.getImage("icons/function_co.png");
-	}
-
 	public Scope getParent() {
 		return parent;
 	}

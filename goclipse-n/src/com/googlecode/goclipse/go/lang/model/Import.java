@@ -1,9 +1,5 @@
 package com.googlecode.goclipse.go.lang.model;
 
-import org.eclipse.swt.graphics.Image;
-
-import com.googlecode.goclipse.Activator;
-
 /**
  * <pre>
  * 
@@ -24,9 +20,6 @@ public class Import extends Node {
       NONE, ALIAS, INCLUDED, UNKNOWN
     }
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public PrefixType prefixType = PrefixType.UNKNOWN;
@@ -34,13 +27,13 @@ public class Import extends Node {
 	public String path = "";
 	
 	@Override
+	public ENodeKind getNodeKind() {
+		return ENodeKind.IMPORT;
+	}
+	
+	@Override
 	public String getName() {
 		return path;
-	}
-
-	@Override
-	public Image getImage() {
-		return Activator.getImage("icons/imp_obj.gif");
 	}
 
 }

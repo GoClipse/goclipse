@@ -23,6 +23,7 @@ import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lib.indexer.Keywords;
+import com.googlecode.goclipse.ui.views.GoImageProvider;
 
 /**
  * @author steel
@@ -99,7 +100,7 @@ public class CompletionProcessor implements IContentAssistProcessor {
             int len = unit.getInsertionText().length();
             if (len > 0) {
               results.add(new CompletionProposal(unit.getInsertionText(), offset, 0,
-                  unit.getInsertionText().length() - 1, unit.getImage(), unit.getName(), info,
+                  unit.getInsertionText().length() - 1, getImage(unit), unit.getName(), info,
                   unit.getDocumentation()));
             }
           }
@@ -125,6 +126,10 @@ public class CompletionProcessor implements IContentAssistProcessor {
     
     return null;
   }
+
+	protected Image getImage(Node unit) {
+		return GoImageProvider.getImage(unit);
+	}
 
   /**
    * @param doc

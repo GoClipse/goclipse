@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class Var extends Node implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private boolean isArray   = false;
@@ -15,6 +12,10 @@ public class Var extends Node implements Serializable {
 	private boolean isPointer = false;
 	private TypeClass typeClass;
 
+	@Override
+	public ENodeKind getNodeKind() {
+		return ENodeKind.VAR;
+	}
 
 	/**
 	 * @return the typeClass
