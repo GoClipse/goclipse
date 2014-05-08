@@ -10,42 +10,47 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.views;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import org.eclipse.swt.graphics.Image;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lang.model.Type;
 import com.googlecode.goclipse.go.lang.model.TypeClass;
+import com.googlecode.goclipse.ui.GoPluginImages;
 
 public class GoImageProvider {
-
+	
 	public static Image getImage(Node node) {
 		switch (node.getNodeKind()) {
-		case VAR: return Activator.getImage("icons/private_co.gif");
-		case MEMBER: return Activator.getImage("icons/private_co.gif");
-		case PACKAGE: return Activator.getImage("icons/package.gif");
-		case FUNCTION: return Activator.getImage("icons/function_co.png");
-		case METHOD: return Activator.getImage("icons/public_co.gif");
-		case TYPE: return getImage((Type) node);
-		case IMPORT: return Activator.getImage("icons/imp_obj.gif");
-		case SCOPE: return Activator.getImage("icons/function_co.png");
-		case FILESCOPE: return Activator.getImage("icons/function_co.png");
+		case VAR: return getManagedImage(GoPluginImages.NODE_VAR);
+		case MEMBER: return getManagedImage(GoPluginImages.NODE_MEMBER);
+		case PACKAGE: return getManagedImage(GoPluginImages.NODE_PACKAGE);
+		case FUNCTION: return getManagedImage(GoPluginImages.NODE_FUNCTION);
+		case METHOD: return getManagedImage(GoPluginImages.NODE_METHOD);
+		case TYPE: return getTypeImage((Type) node);
+		case IMPORT: return getManagedImage(GoPluginImages.NODE_IMPORT);
+		case SCOPE: return getManagedImage(GoPluginImages.NODE_SCOPE);
+		case FILESCOPE: return getManagedImage(GoPluginImages.NODE_FILESCOPE);
 			
 		}
-		
-		return Activator.getImage("icons/private_co.gif");
+		throw assertFail();
 	}
 	
-	public static Image getImage(Type type) {
+	public static Image getTypeImage(Type type) {
 		TypeClass typeClass = type.getTypeClass();
 		
 		if(typeClass == TypeClass.STRUCT) {
-			return Activator.getImage("icons/struct.png");
+			return getManagedImage(GoPluginImages.NODE_TYPE_STRUCT);
 		} else if(typeClass == TypeClass.INTERFACE) {
-			return Activator.getImage("icons/interface.gif");
+			return getManagedImage(GoPluginImages.NODE_TYPE_INTERFACE);
 		} else {
-			return Activator.getImage("icons/type.png");
+			return getManagedImage(GoPluginImages.NODE_TYPE);
 		}
+	}
+	
+	protected static Image getManagedImage(String key) {
+		return GoPluginImages.getImage(key);
 	}
 	
 }

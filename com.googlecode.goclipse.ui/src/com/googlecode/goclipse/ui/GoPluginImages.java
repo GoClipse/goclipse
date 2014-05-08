@@ -18,4 +18,21 @@ public class GoPluginImages extends LangImages {
 	
 	public static final String GO_CONSOLE_ICON = createManaged("", "go-icon16.png");
 	
+	
+	public static final String NODE_PACKAGE = createManaged("", "package.gif");
+	public static final String NODE_IMPORT = createManaged("", "imp_obj.gif");
+	
+	public static final String NODE_TYPE = createManaged("", "type.png");
+	public static final String NODE_TYPE_STRUCT = createManaged("", "struct.png");
+	public static final String NODE_TYPE_INTERFACE = createManaged("", "interface.gif");
+	
+	public static final String NODE_VAR = createManaged("", "private_co.gif");
+	public static final String NODE_MEMBER = createManaged("", "private_co.gif");
+	
+	public static final String NODE_FUNCTION = createManaged("", "function_co.png");
+	public static final String NODE_METHOD = createManaged("", "public_co.gif");
+	
+	public static final String NODE_SCOPE = createManaged("", "function_co.png");
+	public static final String NODE_FILESCOPE = createManaged("", "function_co.png");
+	
 }
