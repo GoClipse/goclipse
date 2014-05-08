@@ -414,7 +414,7 @@ public class GoCompiler {
 		    refreshProject(project, pmonitor);
 			clearPackageErrorMessages(project, pkgPath);
 			int errorCount = 0;
-			StreamAsLines sal = StreamAsLines.buildStreamAsLines(project, file, pkgPath, p);
+			StreamAsLines sal = StreamAsLines.buildStreamAsLines(p);
 			if (sal.getLines().size() > 0) {
 		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
 		    }
@@ -466,7 +466,7 @@ public class GoCompiler {
 			
 			refreshProject(project, pmonitor);
 			//clearPackageErrorMessages(project, pkgPath);
-			StreamAsLines sal = StreamAsLines.buildStreamAsLines(project, null, null, p);
+			StreamAsLines sal = StreamAsLines.buildStreamAsLines(p);
 			int errorCount = 0;
 		    if (sal.getLines().size() > 0) {
 		    	errorCount = processCompileOutput(sal, project, null, null);

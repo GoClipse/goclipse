@@ -6,9 +6,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-
 import com.googlecode.goclipse.Activator;
 
 /**
@@ -25,13 +22,7 @@ public class StreamAsLines implements ProcessIStreamFilter {
   public StreamAsLines() {
   }
   
-  /**
-   * @param project
-   * @param file
-   * @param pkgPath
-   * @param p
-   */
-  public static StreamAsLines buildStreamAsLines(final IProject project, final IFile file, final String pkgPath, Process p) {
+  public static StreamAsLines buildStreamAsLines(Process p) {
 	    InputStream is = p.getInputStream();
 	    InputStream es = p.getErrorStream();
 	    StreamAsLines sal = new StreamAsLines();
@@ -41,13 +32,7 @@ public class StreamAsLines implements ProcessIStreamFilter {
 	    return sal;
   }
   
-  /**
-   * @param project
-   * @param file
-   * @param pkgPath
-   * @param p
-   */
-  public static StreamAsLines buildTestStreamAsLines(final IProject project, final IFile file, final String pkgPath, Process p) {
+  public static StreamAsLines buildTestStreamAsLines(Process p) {
 	    InputStream is = p.getInputStream();
 	    InputStream es = p.getErrorStream();
 	    StreamAsLines sal = new StreamAsLines();

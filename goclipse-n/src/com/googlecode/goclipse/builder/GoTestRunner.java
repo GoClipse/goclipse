@@ -168,12 +168,10 @@ public class GoTestRunner {
          * 
          */
         private void markErrors() {
-            StreamAsLines sal = StreamAsLines.buildTestStreamAsLines(
-            		activeTest.project, activeTest.file,
-            		activeTest.pkgPath, activeProcess);
+            StreamAsLines sal = StreamAsLines.buildTestStreamAsLines(activeProcess);
             
             if (sal.getLines().size() > 0) {
-            	processTestOutput(sal, activeTest);
+            	processTestOutput(sal.getLines(), activeTest);
             }
         }
 		
@@ -229,13 +227,8 @@ public class GoTestRunner {
     	}
     }
     
-    /**
-     * @param sal
-     * @param project
-     * @param pkgPath
-     * @param file
-     */
-    private static void processTestOutput(StreamAsLines sal, TestConfig activeTest) {
+    private static void processTestOutput(List<String> lines, TestConfig activeTest) {
+        
     	MessageConsole console = findConsole(activeTest.project.getName()+" Auto Test");
     	console.clearConsole();
     	console.activate();
@@ -246,7 +239,6 @@ public class GoTestRunner {
 	    	boolean    success = true;
 	        IContainer parent  = activeTest.file.getParent();
 	        
-	        List<String> lines = sal.getLines();
 	        for(int i = 0; i < lines.size(); i++) {
 	        	
 	        	String line = lines.get(i);
