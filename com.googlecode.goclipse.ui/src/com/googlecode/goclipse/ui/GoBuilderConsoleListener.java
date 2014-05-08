@@ -72,7 +72,7 @@ public class GoBuilderConsoleListener implements GoBuildListener {
 		protected final IOConsoleOutputStream stdErr;
 		
 		public GoBuildConsole(String name) {
-			super(name, GoPluginImages.getDescriptor(GoPluginImages.GO_CONSOLE_ICON));
+			super(name, GoPluginImages.GO_CONSOLE_ICON.getDescriptor());
 			
 			metaOut = newOutputStream();
 			

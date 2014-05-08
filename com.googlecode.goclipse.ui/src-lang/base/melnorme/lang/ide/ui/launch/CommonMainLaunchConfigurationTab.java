@@ -52,7 +52,7 @@ public class CommonMainLaunchConfigurationTab extends AbstractLaunchConfiguratio
 	
 	@Override
 	public Image getImage() {
-		return LangImages.getImage(LangImages.IMG_LAUNCHTAB_MAIN);
+		return LangImages.IMG_LAUNCHTAB_MAIN.getImage();
 	}
 	
 	public CommonMainLaunchConfigurationTab() {

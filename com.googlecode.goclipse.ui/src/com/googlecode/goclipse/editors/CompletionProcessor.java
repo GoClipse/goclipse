@@ -23,6 +23,7 @@ import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lib.indexer.Keywords;
+import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.views.GoImageProvider;
 
 /**
@@ -32,7 +33,8 @@ public class CompletionProcessor implements IContentAssistProcessor {
 
   private static HashMap<String, CodeContext> codeContexts = new HashMap<String, CodeContext>();
 
-  private Image go = com.googlecode.goclipse.Activator.getImageDescriptor("icons/go.png").createImage();
+  private Image go = GoPluginImages.COMPLETION_GO.getImage();
+  
 
   private GoEditor editor;
 

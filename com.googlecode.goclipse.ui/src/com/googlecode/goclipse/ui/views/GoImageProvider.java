@@ -23,15 +23,15 @@ public class GoImageProvider {
 	
 	public static Image getImage(Node node) {
 		switch (node.getNodeKind()) {
-		case VAR: return getManagedImage(GoPluginImages.NODE_VAR);
-		case MEMBER: return getManagedImage(GoPluginImages.NODE_MEMBER);
-		case PACKAGE: return getManagedImage(GoPluginImages.NODE_PACKAGE);
-		case FUNCTION: return getManagedImage(GoPluginImages.NODE_FUNCTION);
-		case METHOD: return getManagedImage(GoPluginImages.NODE_METHOD);
+		case VAR: return GoPluginImages.NODE_VAR.getImage();
+		case MEMBER: return GoPluginImages.NODE_MEMBER.getImage();
+		case PACKAGE: return GoPluginImages.NODE_PACKAGE.getImage();
+		case FUNCTION: return GoPluginImages.NODE_FUNCTION.getImage();
+		case METHOD: return GoPluginImages.NODE_METHOD.getImage();
 		case TYPE: return getTypeImage((Type) node);
-		case IMPORT: return getManagedImage(GoPluginImages.NODE_IMPORT);
-		case SCOPE: return getManagedImage(GoPluginImages.NODE_SCOPE);
-		case FILESCOPE: return getManagedImage(GoPluginImages.NODE_FILESCOPE);
+		case IMPORT: return GoPluginImages.NODE_IMPORT.getImage();
+		case SCOPE: return GoPluginImages.NODE_SCOPE.getImage();
+		case FILESCOPE: return GoPluginImages.NODE_FILESCOPE.getImage();
 			
 		}
 		throw assertFail();
@@ -41,16 +41,12 @@ public class GoImageProvider {
 		TypeClass typeClass = type.getTypeClass();
 		
 		if(typeClass == TypeClass.STRUCT) {
-			return getManagedImage(GoPluginImages.NODE_TYPE_STRUCT);
+			return GoPluginImages.NODE_TYPE_STRUCT.getImage();
 		} else if(typeClass == TypeClass.INTERFACE) {
-			return getManagedImage(GoPluginImages.NODE_TYPE_INTERFACE);
+			return GoPluginImages.NODE_TYPE_INTERFACE.getImage();
 		} else {
-			return getManagedImage(GoPluginImages.NODE_TYPE);
+			return GoPluginImages.NODE_TYPE.getImage();
 		}
-	}
-	
-	protected static Image getManagedImage(String key) {
-		return GoPluginImages.getImage(key);
 	}
 	
 }

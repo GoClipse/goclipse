@@ -69,11 +69,11 @@ public class PluginImagesHelper {
 		return imageDescriptor;
 	}
 	
-	public String createManaged(String imagePath) {
+	public ImageHandle createManaged(String imagePath) {
 		ImageDescriptor result = createImageDescriptor(imagePath, false);
 		assertNotNull(result);
 		imageRegistry.put(imagePath, result);
-		return imagePath;
+		return new ImageHandle(imagePath);
 	}
 	
 	/** 
@@ -89,6 +89,30 @@ public class PluginImagesHelper {
 	 */
 	public ImageDescriptor getImageDescriptor(String key) {
 		return imageRegistry.getDescriptor(key);
+	}
+	
+	/** 
+	 * A handle to an image in an image registry. 
+	 */
+	public class ImageHandle {
+		
+		protected String imageKey;
+		
+		public ImageHandle(String imageKey) {
+			this.imageKey = imageKey;
+		}
+		
+		public String getKey() {
+			return imageKey;
+		}
+		
+		public Image getImage() {
+			return imageRegistry.get(imageKey);
+		}
+		
+		public ImageDescriptor getDescriptor() {
+			return imageRegistry.getDescriptor(imageKey);
+		}
 	}
 	
 }

@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.ui.utils.ImageDescriptorRegistry;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper;
+import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -35,7 +36,7 @@ public abstract class LangImages {
 		return prefix + "/" + name;
 	}
 	
-	protected static String createManaged(String prefix, String name) {
+	protected static ImageHandle createManaged(String prefix, String name) {
 		return helper.createManaged(getKey(prefix, name));
 	}
 	
@@ -50,16 +51,6 @@ public abstract class LangImages {
 		return helper.createImageDescriptor(getKey(prefix, name), false);
 	}
 	
-	/** Gets the managed {@link Image} associated with the given key. */
-	public static Image getImage(String key) {
-		return helper.getImage(key);
-	}
-	
-	/** Gets the managed {@link ImageDescriptor} associated with the given key. */
-	public static ImageDescriptor getDescriptor(String key) {
-		return helper.getImageDescriptor(key);
-	}
-	
 	/* ----------------- Image cache indexed by ImageDescriptor ----------------- */
 	
 	protected static final ImageDescriptorRegistry imageCache = new ImageDescriptorRegistry();
@@ -71,7 +62,7 @@ public abstract class LangImages {
 	
 	/* ---------------- Common Lang images ---------------- */
 	
-	public static String IMG_LAUNCHTAB_MAIN = createManaged(T_TABS, "main_launch_tab.png");
-	public static String IMG_LAUNCHTAB_ARGUMENTS = createManaged(T_TABS, "arguments_tab.gif");
+	public static ImageHandle IMG_LAUNCHTAB_MAIN = createManaged(T_TABS, "main_launch_tab.png");
+	public static ImageHandle IMG_LAUNCHTAB_ARGUMENTS = createManaged(T_TABS, "arguments_tab.gif");
 	
 }

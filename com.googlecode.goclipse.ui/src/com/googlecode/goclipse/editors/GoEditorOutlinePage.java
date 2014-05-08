@@ -207,7 +207,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 				Node node = (Node)element;
 				return GoImageProvider.getImage(node);
 			} else if (element == IMPORT_CONTAINER) {
-				return GoPluginImages.getImage(GoPluginImages.ELEMENT_IMPORT_CONTAINER);
+				return GoPluginImages.ELEMENT_IMPORT_CONTAINER.getImage();
 			} else {
 				return null;
 			}

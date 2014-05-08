@@ -137,7 +137,7 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
 	@Override
 	public Image getImage() {
-		return LangImages.getImage(LangImages.IMG_LAUNCHTAB_ARGUMENTS);
+		return LangImages.IMG_LAUNCHTAB_ARGUMENTS.getImage();
 	}
 	
 	@Override

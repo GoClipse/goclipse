@@ -21,9 +21,9 @@ public class GoNavigatorLabelProvider extends LabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		if (element instanceof GoSourceFolder) {
-			return GoPluginImages.getImage(GoPluginImages.ELEMENT_SOURCE_FOLDER);
+			return GoPluginImages.ELEMENT_SOURCE_FOLDER.getImage();
 		} else if (element instanceof GoPackage) {
-			return GoPluginImages.getImage(GoPluginImages.ELEMENT_PACKAGE);
+			return GoPluginImages.ELEMENT_PACKAGE.getImage();
 		}
 		
 		return null;
