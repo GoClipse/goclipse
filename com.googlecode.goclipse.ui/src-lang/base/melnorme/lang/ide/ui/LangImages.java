@@ -30,19 +30,23 @@ public abstract class LangImages {
 	protected static final String T_OVR = "ovr16";
 	protected static final String T_TABS = "view16/";
 	
+	protected static String getKey(String prefix, String name) {
+		return prefix + "/" + name;
+	}
+	
 	protected static String createManaged(String prefix, String name) {
-		return helper.createManaged(prefix, name);
+		return helper.createManaged(getKey(prefix, name));
 	}
 	
 	protected static String createFromPlatformSharedImage(String prefix, String name, String sharedImageName) {
 		ImageDescriptor descriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(sharedImageName);
-		String key = helper.getKey(prefix, name);
+		String key = getKey(prefix, name);
 		helper.getImageRegistry().put(key, descriptor);
 		return key;
 	}
 	
 	protected static ImageDescriptor createUnmanaged(String prefix, String name) {
-		return helper.createUnmanaged(prefix, name);
+		return helper.createImageDescriptor(getKey(prefix, name), false);
 	}
 	
 	/** Gets the managed {@link Image} associated with the given key. */

@@ -1,11 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+ * Contributors:
+ * 		IBM - initial implementation?
+ * 		DLTK team - initial implementation?
+ * 		Bruno Medeiros - modifications. 
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
@@ -15,13 +18,16 @@ import java.util.Collections;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.utils.EditorUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -115,7 +121,27 @@ public abstract class AbstractLaunchShortcut implements ILaunchShortcut {
 		}
 	}
 	
-	protected abstract IResource[] findLaunchablesDo(Object[] objects, IProgressMonitor pm);
+	protected IResource[] findLaunchablesDo(Object[] objects, @SuppressWarnings("unused") IProgressMonitor pm) {
+		List<IResource> list = new ArrayList<>(objects.length);
+		
+		for (Object object : objects) {
+			if(object instanceof IFile) {
+				IFile f = (IFile) object;
+				if(!f.getName().startsWith(".")) {
+					list.add(f);
+				}
+			} else if(object instanceof IProject) {
+				IProject proj = (IProject) object;
+				list.add(proj);
+			} else {
+				IProject project = EclipseUtils.getAdapter(object, IProject.class);
+				if(project != null) {
+					list.add(project);
+				}
+			}
+		}
+		return ArrayUtil.createFrom(list, IResource.class);
+	}
 	
 	protected IResource chooseLaunchable(IResource[] scripts) {
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), new WorkbenchLabelProvider());

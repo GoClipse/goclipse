@@ -26,8 +26,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+/**
+ * {@link ICallable} task that runs an external process and waits for it to terminate. 
+ */
 public abstract class AbstractRunExternalProcessTask implements
-		ICallable<ExternalProcessNotifyingHelper, CoreException> {
+		ICallable<ExternalProcessEclipseHelper, CoreException> {
 	
 	protected final ProcessBuilder pb;
 	protected final IProject project;
@@ -40,7 +43,7 @@ public abstract class AbstractRunExternalProcessTask implements
 	}
 	
 	@Override
-	public ExternalProcessNotifyingHelper call() throws CoreException {
+	public ExternalProcessEclipseHelper call() throws CoreException {
 		return startProcessAndAwait();
 	}
 	
@@ -84,28 +87,6 @@ public abstract class AbstractRunExternalProcessTask implements
 	
 	protected CoreException createProcessException(String message, IOException e) {
 		return new CoreException(LangCore.createErrorStatus(message, e));
-	}
-	
-	public static class ExternalProcessEclipseHelper extends ExternalProcessNotifyingHelper {
-		
-		protected final IProgressMonitor monitor;
-		
-		public ExternalProcessEclipseHelper(ProcessBuilder pb, boolean startReaders, IProgressMonitor monitor)
-				throws IOException {
-			super(pb.start(), true, startReaders);
-			this.monitor = assertNotNull(monitor);
-		}
-		
-		@Override
-		protected boolean isCanceled() {
-			return monitor.isCanceled();
-		}
-		
-		@Override
-		protected void handleListenerException(RuntimeException e) {
-			LangCore.logError("Internal error notifying listener", e);
-		}
-		
 	}
 	
 }
