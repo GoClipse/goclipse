@@ -68,7 +68,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			kind = FULL_BUILD;
 		}
 		
-		GoBuildManager.getDefault().notifyBuildStarting(project);
+		GoToolManager.getDefault().notifyBuildStarting(project);
 		
 		try {
 			
@@ -90,7 +90,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			Activator.logError(e);
 		}
 		
-		GoBuildManager.getDefault().notifyBuildTerminated(project);
+		GoToolManager.getDefault().notifyBuildTerminated(project);
 		
 		// no project dependencies (yet)
 		return null;

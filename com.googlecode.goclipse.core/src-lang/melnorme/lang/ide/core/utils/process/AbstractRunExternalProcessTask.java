@@ -11,14 +11,10 @@
 package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
@@ -27,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * {@link ICallable} task that runs an external process and waits for it to terminate. 
+ * {@link ICallable} task that runs an external process and waits for it to terminate.
  */
 public abstract class AbstractRunExternalProcessTask implements
 		ICallable<ExternalProcessEclipseHelper, CoreException> {
@@ -62,31 +58,32 @@ public abstract class AbstractRunExternalProcessTask implements
 	protected abstract List<? extends IExternalProcessListener> getListeners();
 	
 	public ExternalProcessEclipseHelper startProcessAndAwait() throws CoreException {
+		ExternalProcessEclipseHelper processHelper = startProcess();
+		processHelper.awaitTermination_CoreException();
+		return processHelper;
+	}
+	
+	public ExternalProcessEclipseHelper startProcess() throws CoreException {
 		ExternalProcessEclipseHelper processHelper;
 		try {
 			processHelper = new ExternalProcessEclipseHelper(pb, false, cancelMonitor);
-		} catch (IOException e) {
-			notifyProcessFailedToStart(e);
-			throw createProcessException(LangCoreMessages.ExternalProcess_CouldNotStart,  e);
+		} catch (CoreException ce) {
+			IOException ioException = (IOException) ce.getStatus().getException();
+			notifyProcessFailedToStart(ioException);
+			throw ce;
 		}
 		
 		notifyProcessStarted(processHelper);
 		processHelper.startReaderThreads();
 		
-		try {
-			processHelper.awaitTerminationStrict_destroyOnException();
-		} catch (InterruptedException e) {
-			throw createProcessException(LangCoreMessages.ExternalProcess_InterruptedAwaitingTermination, null);
-		} catch (TimeoutException e) {
-			assertTrue(cancelMonitor.isCanceled());
-			throw createProcessException(LangCoreMessages.ExternalProcess_TaskCancelledProcessTerminated, null);
-		}
-		
 		return processHelper;
 	}
 	
-	protected CoreException createProcessException(String message, IOException e) {
-		return new CoreException(LangCore.createErrorStatus(message, e));
+	public ExternalProcessEclipseHelper startProcessAndAwait(String input) throws CoreException {
+		ExternalProcessEclipseHelper processHelper = startProcess();
+		processHelper.writeInput(input);
+		processHelper.awaitTermination_CoreException();
+		return processHelper;
 	}
 	
 }

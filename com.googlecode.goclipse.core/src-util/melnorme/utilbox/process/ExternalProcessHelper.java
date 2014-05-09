@@ -17,7 +17,6 @@ import java.io.InputStream;
 
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.ExceptionTrackingRunnable;
-import melnorme.utilbox.misc.IByteSequence;
 import melnorme.utilbox.misc.StreamUtil;
 
 /**
@@ -54,7 +53,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		return false;
 	}
 	
-	protected static class ReadAllBytesTask extends ExceptionTrackingRunnable<IByteSequence, IOException> {
+	protected static class ReadAllBytesTask extends ExceptionTrackingRunnable<ByteArrayOutputStreamExt, IOException> {
 		
 		protected final InputStream is;
 		
@@ -63,7 +62,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		}
 		
 		@Override
-		public IByteSequence doRun() throws IOException {
+		public ByteArrayOutputStreamExt doRun() throws IOException {
 			try {
 				final int BUFFER_SIZE = 1024;
 				byte[] buffer = new byte[BUFFER_SIZE];
@@ -87,12 +86,12 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 	}
 	
-	public IByteSequence getStdOutBytes() throws IOException {
+	public ByteArrayOutputStreamExt getStdOutBytes() throws IOException {
 		assertTrue(isFullyTerminated());
 		return mainReader.getResult();
 	}
 	
-	public IByteSequence getStdErrBytes() throws IOException {
+	public ByteArrayOutputStreamExt getStdErrBytes() throws IOException {
 		assertTrue(isFullyTerminated());
 		assertTrue(readStdErr);
 		return stderrReader.getResult();

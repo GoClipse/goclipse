@@ -103,4 +103,9 @@ public abstract class LangCore extends Plugin {
 		getInstance().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, null));
 	}
 	
+	/** @return a preferences accessor for this plugin. */
+	public static CorePreferencesLookup getPreferences() {
+		return new CorePreferencesLookup();
+	}
+	
 }

@@ -1,20 +1,14 @@
 package com.googlecode.goclipse.editors;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
+import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.builder.ExternalCommand;
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.builder.ProcessOStreamFilter;
-import com.googlecode.goclipse.builder.StreamAsString;
+import com.googlecode.goclipse.builder.GoToolManager;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -28,47 +22,24 @@ public class GofixAction extends TransformTextAction {
 
 	@Override
 	protected String transformText(final String text) throws CoreException {
-		String goarch = Activator.getDefault().getPreferenceStore().getString(
-				PreferenceConstants.GOARCH);
+		String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
+		String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
+		String goRoot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
+		String gofixPath = goRoot + "/pkg/tool/"+goos+"_"+goarch+"/fix";
 		
-		String goos = Activator.getDefault().getPreferenceStore().getString(
-				PreferenceConstants.GOOS);
 		
-		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		String gofixPath = preferenceStore.getString(PreferenceConstants.GOROOT) + "/pkg/tool/"+goos+"_"+goarch+"/fix";
+		IProject project = null; // TODO
+		IProgressMonitor pm = new NullProgressMonitor(); // TODO
 		
-		final ExternalCommand goFixCmd = new ExternalCommand(gofixPath);
-		goFixCmd.setEnvironment(GoConstants.environment());
-
-		goFixCmd.setInputFilter(new ProcessOStreamFilter() {
-			@Override
-			public void setStream(OutputStream outputStream) {
-				try {
-	        OutputStreamWriter osw = new OutputStreamWriter(outputStream, "UTF-8");
-					osw.append(text);
-					osw.flush();
-					outputStream.close();
-				} catch (IOException e) {
-					// do nothing
-				}
-			}
-		});
-
-		StreamAsString output = new StreamAsString();
-		goFixCmd.setResultsFilter(output);
-
-		String result = goFixCmd.execute(new ArrayList<String>(), true);
+		ExternalProcessEclipseHelper processHelper = GoToolManager.getDefault().
+				runGoTool(gofixPath, project, pm, text);
 		
-		if (result != null) {
-			throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, result));
+		String transformedText = processHelper.getStdOutBytes_CoreException().toString();
+		
+		if (transformedText.length() > 0 && !transformedText.equals(text)) {
+			return transformedText;
 		} else {
-			String transformedText = output.getString();
-			
-			if (transformedText.length() > 0 && !transformedText.equals(text)) {
-				return transformedText;
-			} else {
-				return null;
-			}
+			return null;
 		}
 	}
 

@@ -16,8 +16,10 @@ import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
 /**
  * Miscellaneous stream utilities. 
@@ -148,6 +150,16 @@ public class StreamUtil {
 		}
 	}
 	
+	/** Writes given string to given stream, using given charset */
+	public static void writeStringToStream(String string, OutputStream stream, Charset charset) throws IOException {
+		OutputStreamWriter osw = new OutputStreamWriter(stream, charset);
+		try {
+			osw.append(string);
+			osw.flush();
+		} finally {
+			osw.close();
+		}
+	}
 	
 	/** Copies given length amount of bytes from given inputStream to given outputStream. 
 	 * Alternatively, if length == -1, copy all bytes in inputStream until EOF.

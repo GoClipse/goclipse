@@ -49,8 +49,14 @@ public class ExternalCommand {
 		pBuilder = new ProcessBuilder(args);
 		
 		if (command != null && command.length() > 0) {
-		  String workingFolder = Path.fromOSString(command).removeLastSegments(1).toOSString();
-		  setWorkingFolder(workingFolder);
+		  setWorkingFolder(pBuilder, command);
+		}
+	}
+	
+	public static void setWorkingFolder(ProcessBuilder pBuilder, String command) {
+		String workingFolder = Path.fromOSString(command).removeLastSegments(1).toOSString();
+		if (workingFolder != null && workingFolder.length() > 0) {
+			pBuilder.directory(new File(workingFolder));
 		}
 	}
 
@@ -60,10 +66,8 @@ public class ExternalCommand {
 		}
 	}
 	
-	public void setWorkingFolder(String folder) {
-	  if (folder != null && folder.length() > 0) {
-	    pBuilder.directory(new File(folder));
-	  }
+	public ProcessBuilder getProcessBuilder() {
+		return pBuilder;
 	}
 	
 	public void setTimeout(long milliseconds){
@@ -82,20 +86,6 @@ public class ExternalCommand {
 		this.inputFilter = inputFilter;
 	}
 
-	public void setCommand(String command) {
-		this.command = command;
-	}
-
-	public boolean commandExists() {
-	  if (command == null || command.length() == 0) {
-	    return false;
-	  } else {
-  		File file = new File(command);
-  		
-  		return file.exists();
-	  }
-	}
-	
 	public void destroy(){
 		if (p!=null){
 			p.destroy();
@@ -196,10 +186,6 @@ public class ExternalCommand {
 	public Map<String, String> environment() {
 		// TODO Auto-generated method stub
 		return pBuilder.environment();
-	}
-	
-	public String getCommand() {
-		return command;
 	}
 
 }

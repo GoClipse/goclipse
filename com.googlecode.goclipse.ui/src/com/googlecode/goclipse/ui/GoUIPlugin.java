@@ -4,7 +4,7 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 
 import org.osgi.framework.BundleContext;
 
-import com.googlecode.goclipse.builder.GoBuildManager;
+import com.googlecode.goclipse.builder.GoToolManager;
 
 public class GoUIPlugin extends LangUIPlugin {
 	
@@ -15,14 +15,14 @@ public class GoUIPlugin extends LangUIPlugin {
 	@Override
 	protected void doCustomStart_finalStage() {
 		toolchainProcessListener = new GoBuilderConsoleListener();
-		GoBuildManager.getDefault().addBuildProcessListener(toolchainProcessListener);
+		GoToolManager.getDefault().addBuildProcessListener(toolchainProcessListener);
 		
 		super.doCustomStart_finalStage();
 	}
 	
 	@Override
 	protected void doCustomStop(BundleContext context) {
-		GoBuildManager.getDefault().removeBuildProcessListener(toolchainProcessListener);
+		GoToolManager.getDefault().removeBuildProcessListener(toolchainProcessListener);
 	}
 	
 }

@@ -1,12 +1,6 @@
 package com.googlecode.goclipse.builder;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import melnorme.lang.ide.launching.LaunchConstants;
-
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
  * 
@@ -64,25 +58,5 @@ public class GoConstants {
 	public static final String GO_CONF_ATTRIBUTE_ARGS              = LaunchConstants.ATTR_PROGRAM_ARGUMENTS;
 	public static final String GO_CONF_ATTRIBUTE_WORKING_DIRECTORY = LaunchConstants.ATTR_WORKING_DIRECTORY;
 	public static final String GO_CONF_ATTRIBUTE_BUILD_CONFIG      = LaunchConstants.ATTR_BUILD_CONFIG;
-	
-	/**
-	 * @return
-	 */
-	public static Map<String, String> environment() {
-		
-		Map<String, String> goEnv = new HashMap<String, String>();
-		
-		String goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
-		String goos   = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);
-		String goarch = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);
-		String gopath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOPATH);
-
-		goEnv.put(GoConstants.GOROOT, goroot);
-		goEnv.put(GoConstants.GOOS,   goos);
-		goEnv.put(GoConstants.GOARCH, goarch);
-		goEnv.put(GoConstants.GOPATH, gopath);
-		
-		return goEnv;
-	}
 	
 }

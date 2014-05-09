@@ -28,7 +28,7 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.console.MessageConsole;
 
-import com.googlecode.goclipse.builder.GoBuildManager.GoBuildListener;
+import com.googlecode.goclipse.builder.GoToolManager.GoBuildListener;
 
 public class GoBuilderConsoleListener implements GoBuildListener {
 	

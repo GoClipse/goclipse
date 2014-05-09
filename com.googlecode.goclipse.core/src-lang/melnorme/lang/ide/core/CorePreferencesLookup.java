@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.utils.PreferencesLookupHelper;
+
 import org.eclipse.core.resources.IProject;
 
 public class CorePreferencesLookup extends PreferencesLookupHelper {
@@ -21,6 +22,10 @@ public class CorePreferencesLookup extends PreferencesLookupHelper {
 	
 	public CorePreferencesLookup(IProject project) {
 		super(LangCore.PLUGIN_ID, project);
+	}
+	
+	public String getString(String key) {
+		return getString(key, "");
 	}
 	
 }
