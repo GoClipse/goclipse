@@ -22,10 +22,10 @@
 	</properties>
 
 	<modules>
-		<module>goclipse-n</module>
-		<module>org.googlecode.goclipse.gocode</module>
+		<module>com.googlecode.goclipse.core</module>
 		<module>com.googlecode.goclipse.ui</module>
 		<module>com.googlecode.goclipse.ui.tests</module>
+		<module>com.googlecode.goclipse.gocode</module>
 		<module>com.googlecode.goclipse.debug</module>
 		<module>goclipse-feature</module>
 		<module>releng/repository</module>

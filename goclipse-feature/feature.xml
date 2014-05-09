@@ -4,7 +4,7 @@
       label="GoClipse"
       version="0.8.0.qualifier"
       provider-name="The GoClipse Development Team"
-      plugin="goclipse">
+      plugin="com.googlecode.goclipse.core">
 
    <description url="http://code.google.com/p/goclipse/">
       This is the development version of the GoClipse Plug-In. 
@@ -129,7 +129,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </requires>
 
    <plugin
-         id="goclipse"
+         id="com.googlecode.goclipse.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
