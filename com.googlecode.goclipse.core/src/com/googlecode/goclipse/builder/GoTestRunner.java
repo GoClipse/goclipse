@@ -2,6 +2,7 @@ package com.googlecode.goclipse.builder;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -10,6 +11,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.TimeoutException;
+
+import melnorme.utilbox.process.ExternalProcessHelper;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -44,7 +48,6 @@ public class GoTestRunner {
 	private Map<String, String>  queueGuard    = Collections.synchronizedMap(new HashMap<String, String>());
 	private Thread               testRunner    = new Thread("Go Test Runner");
 	private TestConfig           activeTest    = null;
-	private Process              activeProcess = null;
 	private boolean              running       = true;
 	
 	private static MessageConsole findConsole(String name) {
@@ -106,7 +109,7 @@ public class GoTestRunner {
             
         	try {
             	final ProcessBuilder testProcessBuilder = configureProcess();
-                activeProcess = testProcessBuilder.start();
+            	Process activeProcess = testProcessBuilder.start();
                 
                 // kill process
                 new Thread(new Runnable() {
@@ -135,14 +138,33 @@ public class GoTestRunner {
 					}
 				}).start();
                 
+                ExternalProcessHelper ph = new ExternalProcessHelper(activeProcess, true, true);
+                String stdout = "";
+                String stderr = "";
                 try {
-                	activeProcess.waitFor();
-            		
-            	} catch (InterruptedException e) {
+                    ph.awaitTerminationStrict_destroyOnException();
+                	stdout = ph.getStdOutBytes().toString();
+                	stderr = ph.getStdErrBytes().toString();
+
+            	} catch (TimeoutException | InterruptedException e) {
             		Activator.logInfo(e);
             	}
                 
-                markErrors();
+		    	MessageConsole console = findConsole(activeTest.project.getName()+" Auto Test");
+		    	console.clearConsole();
+		    	console.activate();
+		    	MessageConsoleStream out = console.newMessageStream();
+		    	
+	        	try {
+			    	out.write(stdout);
+			    	out.flush();
+			    	out.write(stderr);
+					out.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                
+                markErrors(stdout, stderr);
                 
             } catch (IOException e1) {
                 Activator.logInfo("IOException caught during testing of "+activeTest.pkgPath);
@@ -165,14 +187,11 @@ public class GoTestRunner {
             return testProcessBuilder;
         }
         
-		/**
-         * 
-         */
-        private void markErrors() {
-            StreamAsLines sal = StreamAsLines.buildTestStreamAsLines(activeProcess);
-            
-            if (sal.getLines().size() > 0) {
-            	processTestOutput(sal.getLines(), activeTest);
+        private void markErrors(String stdout, String stderr) {
+            List<String> lines = StreamAsLines.buildTestStreamAsLines(
+            	new StringReader(stdout), new StringReader(stderr));
+			if (lines.size() > 0) {
+				processTestOutput(lines, activeTest);
             }
         }
 		
@@ -230,10 +249,6 @@ public class GoTestRunner {
     
     private static void processTestOutput(List<String> lines, TestConfig activeTest) {
         
-    	MessageConsole console = findConsole(activeTest.project.getName()+" Auto Test");
-    	console.clearConsole();
-    	console.activate();
-    	MessageConsoleStream out = console.newMessageStream();
     	List<String> failedTests = new ArrayList<String>();
     	
 	    try {
@@ -243,9 +258,6 @@ public class GoTestRunner {
 	        for(int i = 0; i < lines.size(); i++) {
 	        	
 	        	String line = lines.get(i);
-	        	out.write(line);
-	        	out.write("\n");
-	        	out.flush();
 	        	
 	        	if(line.startsWith("panic:")) {
 	        		
@@ -290,7 +302,7 @@ public class GoTestRunner {
 	        		
 	        		int lineNo = 1;
 	        		lineNo = Integer.parseInt(parts[1]);
-	        		IResource testFile = parent.findMember(parts[0]);
+	        		IResource testFile = parent.findMember(parts[0].trim());
 	        		MarkerUtilities.addMarker(testFile, lineNo, message, IMarker.SEVERITY_ERROR);
 	        		
 	        	} else if (line.matches("(^.*_test.go:[0-9]+:.*)") ) {
@@ -304,7 +316,7 @@ public class GoTestRunner {
 	        		
 	        		int lineNo = 1;
 	        		lineNo = Integer.parseInt(parts[1]);
-	        		IResource testFile = parent.findMember(parts[0]);
+	        		IResource testFile = parent.findMember(parts[0].trim());
 	        		MarkerUtilities.addMarker(testFile, lineNo, "Test: "+message, IMarker.SEVERITY_ERROR);
 	        
 	        	} else if (line.matches("(^.*--- FAIL:.*)") ) {
@@ -331,7 +343,6 @@ public class GoTestRunner {
 	        		}
 	        	}
 	        }
-	        out.flush();
 	        
         } catch (NumberFormatException e) {
         	Activator.logInfo(e);

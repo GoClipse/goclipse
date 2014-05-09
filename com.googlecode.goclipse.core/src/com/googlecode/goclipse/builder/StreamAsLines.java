@@ -3,6 +3,7 @@ package com.googlecode.goclipse.builder;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +33,12 @@ public class StreamAsLines {
 	    return sal;
   }
   
-  public static StreamAsLines buildTestStreamAsLines(Process p) {
-	    InputStream is = p.getInputStream();
-	    InputStream es = p.getErrorStream();
-	    StreamAsLines sal = new StreamAsLines();
-	    sal.setCombineLines(true);
-	    sal.processTestStream(is);
-	    sal.processTestStream(es);
-	    return sal;
+  public static List<String> buildTestStreamAsLines(Reader stdoutReader, Reader stderrReader) {
+	  StreamAsLines sal = new StreamAsLines();
+	  sal.setCombineLines(true);
+	  sal.processTestStream(stdoutReader);
+	  sal.processTestStream(stderrReader);
+	  return sal.getLines();
   }
 
   /**
@@ -93,13 +92,9 @@ public class StreamAsLines {
     }
   }
   
-  /**
-   * @param iStream
-   */
-  public void processTestStream(InputStream iStream) {
+  public void processTestStream(Reader isr) {
     String line = "";
     try {
-      InputStreamReader isr = new InputStreamReader(iStream, "UTF-8");
       BufferedReader br = new BufferedReader(isr);
 
       while ((line = br.readLine()) != null) {
