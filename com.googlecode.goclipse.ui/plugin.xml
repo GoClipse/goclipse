@@ -196,7 +196,7 @@
                      type="org.eclipse.core.resources.IProject">
                   <test
                         property="org.eclipse.core.resources.projectNature"
-                        value="goclipse.goNature">
+                        value="com.googlecode.goclipse.core.goNature">
                   </test>
                </adapt>
             </or>
@@ -273,7 +273,7 @@
          
          <triggerPoints>
             <adapt type="org.eclipse.core.resources.IProject">
-               <test property="org.eclipse.core.resources.projectNature" value="goclipse.goNature"/>
+               <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
             </adapt>
          </triggerPoints>
 
@@ -285,7 +285,7 @@
             <or>
                <and>
                   <instanceof value="org.eclipse.core.resources.IResource"/>
-                  <test property="org.eclipse.core.resources.projectNature" value="goclipse.goNature"/>
+                  <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
                </and>
             </or>
          </possibleChildren> 
@@ -325,7 +325,7 @@
          
          <triggerPoints>
             <adapt type="org.eclipse.core.resources.IProject">
-               <test property="org.eclipse.core.resources.projectNature" value="goclipse.goNature"/>
+               <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
             </adapt>
          </triggerPoints>
 
@@ -376,7 +376,7 @@
          <selectionEnablement>
             <or>
                <adapt type="org.eclipse.core.resources.IProject" >
-                  <test property="org.eclipse.core.resources.projectNature" value="goclipse.goNature"/>
+                  <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
                </adapt>
                <instanceof value="org.eclipse.core.resources.IResource" />
                <instanceof value="org.eclipse.core.filesystem.IFileStore" />
@@ -457,7 +457,7 @@
             
          <enabledWhen>
             <adapt type="org.eclipse.core.resources.IProject">
-			  <test property="org.eclipse.core.resources.projectNature" value="goclipse.goNature"/>
+			  <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
 			</adapt>         			
          </enabledWhen>
          
