@@ -6,6 +6,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.core.GoCore;
 
 /**
  * A utility class for dealing with Go markers.
@@ -13,7 +14,8 @@ import com.googlecode.goclipse.Activator;
  * @author devoncarew
  */
 public class MarkerUtilities {
-	public static final String	MARKER_ID	= "goclipse.goProblem";
+	
+	public static final String MARKER_ID = GoCore.PLUGIN_ID + ".goProblem";
 
 	public static void addMarker(IResource res, String message) {
 		addMarker(res, -1, message, IMarker.SEVERITY_ERROR);
