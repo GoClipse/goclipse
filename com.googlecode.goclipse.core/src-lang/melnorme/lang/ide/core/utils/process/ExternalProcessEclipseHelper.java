@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.TimeoutException;
@@ -24,8 +25,6 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-
-import com.googlecode.goclipse.core.GoCore;
 
 /**
  * An extension to {@link ExternalProcessNotifyingHelper} that is customized to run in Eclipse. In particular:
@@ -105,7 +104,7 @@ public class ExternalProcessEclipseHelper extends ExternalProcessNotifyingHelper
 		try {
 			StreamUtil.writeStringToStream(input, processInputStream, StringUtil.UTF8);
 		} catch (IOException e) {
-			throw GoCore.createCoreException(LangCoreMessages.ExternalProcess_ErrorWritingInput , e);
+			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_ErrorWritingInput , e);
 		}
 	}
 	

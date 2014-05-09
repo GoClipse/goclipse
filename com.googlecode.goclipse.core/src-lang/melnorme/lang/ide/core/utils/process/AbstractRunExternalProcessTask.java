@@ -68,8 +68,8 @@ public abstract class AbstractRunExternalProcessTask implements
 		try {
 			processHelper = new ExternalProcessEclipseHelper(pb, false, cancelMonitor);
 		} catch (CoreException ce) {
-			IOException ioException = (IOException) ce.getStatus().getException();
-			notifyProcessFailedToStart(ioException);
+			IOException ioe = (IOException) ce.getStatus().getException();
+			notifyProcessFailedToStart(ioe);
 			throw ce;
 		}
 		

@@ -228,20 +228,27 @@ public class ArrayUtil {
 		return newArray;
 	}
 	
-	/* ====================== search ====================== */
+	/* ====================== search/index ====================== */
 	
-	/** Return the same as {@link List#indexOf(Object)}, using given array as a collection. */
+	/** @return the last element of given array, or null if array is empty. */
+	public static <T> T getLastElement(T[] array) {
+		if(array.length == 0) {
+			return null;
+		}
+		return array[array.length-1];
+	}
+	
+	/** @return the same as {@link List#indexOf(Object)}, using given array as a collection. */
 	public static <T> int indexOf(T[] array, T elem) {
 		return Arrays.asList(array).indexOf(elem);
 	}
 	
-	/** Return true if array contains an element equal to obj. */
+	/** @return true if array contains an element equal to obj. */
 	public static <T> boolean contains(T[] array, T obj) {
 		return indexOf(array, obj) != -1;
 	}
 	
-	/** Returns the index in given array of the first occurrence of given elem, 
-	 * or -1 if none is found. */
+	/** @return the index in given array of the first occurrence of given elem, or -1 if none is found. */
 	public static int indexOf(byte[] array, byte elem) {
 		for (int i = 0; i < array.length; i++) {
 			if(array[i] == elem)
@@ -250,7 +257,7 @@ public class ArrayUtil {
 		return -1;
 	}
 	
-	/** Returns the index in given array of the first element that is the same as given elem, 
+	/** @return the index in given array of the first element that is the same as given elem, 
 	 * or -1 if none is found. */
 	public static <T> int indexOfIdentity(T[] array, T elem) {
 		for (int i = 0; i < array.length; i++) {
@@ -260,7 +267,7 @@ public class ArrayUtil {
 		return -1;
 	}
 	
-	/** Return true if array contains an element that matched given predicate */
+	/** @return true if array contains an element that matched given predicate. */
 	public static <T> boolean search(T[] array, Predicate<T> predicate) {
 		for(T elem: array) {
 			if(predicate.evaluate(elem))
