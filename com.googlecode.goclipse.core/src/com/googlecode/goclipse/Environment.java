@@ -1,13 +1,10 @@
 package com.googlecode.goclipse;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InvalidPropertiesFormatException;
@@ -27,7 +24,6 @@ import org.eclipse.jface.util.Util;
 
 import com.googlecode.goclipse.builder.Arch;
 import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.builder.ProcessIStreamFilter;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -84,31 +80,6 @@ public class Environment {
 		return true;
 	}
 	
-	class MsgFilter implements ProcessIStreamFilter {
-		public boolean hadError = false;
-		@Override
-		public void process(InputStream iStream) {
-			try {
-				
-				InputStreamReader isr = new InputStreamReader(iStream);
-			    BufferedReader br = new BufferedReader(isr);
-			    String line;
-		      
-			    while ((line = br.readLine()) != null) {
-		        	Activator.logInfo("error in parse connector:" + line);
-		        	hadError = true;
-		        }
-			    
-			} catch(Exception e) {
-				Activator.logInfo(e);
-			}
-		}
-
-		@Override
-		public void clear() {
-			hadError = false;
-		}
-	}
 
 	/**
 	 * @param project

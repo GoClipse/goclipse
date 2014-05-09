@@ -11,8 +11,6 @@
 package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.TimeoutException;
@@ -82,17 +80,27 @@ public class ExternalProcessEclipseHelper extends ExternalProcessNotifyingHelper
 	}
 	
 	public void awaitTermination_CoreException() throws CoreException {
+		awaitTermination_CoreException(NO_TIMEOUT);
+	}
+	
+	public void awaitTermination_CoreException(int timeout) throws CoreException {
 		try {
-			awaitTerminationStrict_destroyOnException();
+			awaitTerminationStrict_destroyOnException(timeout);
 		} catch (InterruptedException e) {
 			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_InterruptedAwaitingTermination, e);
 		} catch (TimeoutException e) {
-			assertTrue(monitor.isCanceled());
-			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_TaskCancelledProcessTerminated, null);
+			if(monitor.isCanceled()) {
+				throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_TaskCancelled, null);
+			} else {
+				throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_ProcessTimeout, null);
+			}
 		}
 	}
 	
 	public void writeInput(String input) throws CoreException {
+		if(input == null)
+			return;
+		
 		OutputStream processInputStream = getProcess().getOutputStream();
 		try {
 			StreamUtil.writeStringToStream(input, processInputStream, StringUtil.UTF8);

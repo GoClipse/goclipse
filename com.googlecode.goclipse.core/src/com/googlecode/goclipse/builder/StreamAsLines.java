@@ -11,7 +11,7 @@ import com.googlecode.goclipse.Activator;
 /**
  * 
  */
-public class StreamAsLines implements ProcessIStreamFilter {
+public class StreamAsLines {
 
   private boolean combineLines;
   private List<String> lines = new ArrayList<String>();
@@ -52,7 +52,6 @@ public class StreamAsLines implements ProcessIStreamFilter {
     this.combineLines = value;
   }
 
-  @Override
   public void process(InputStream iStream) {
     String line = "";
     try {
@@ -147,9 +146,5 @@ public class StreamAsLines implements ProcessIStreamFilter {
     return builder.toString();
   }
 
-  @Override
-  public void clear() {
-    lines.clear();
-  }
 
 }

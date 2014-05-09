@@ -1,24 +1,24 @@
 package com.googlecode.goclipse.gocode;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
+import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.ExternalCommand;
-import com.googlecode.goclipse.builder.ProcessOStreamFilter;
+import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.builder.StreamAsLines;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -32,13 +32,16 @@ public class GocodeClient {
     
   }
 
-  /**
-   * @param fileName
-   * @param bufferText
-   * @param offset
-   * @return
-   */
   public List<String> getCompletions(IProject project, String fileName, final String bufferText, int offset) {
+	  try {
+		return getCompletionsDo(project, fileName, bufferText, offset);
+	} catch (CoreException e) {
+		return Collections.emptyList();
+	}
+  }
+  
+  public List<String> getCompletionsDo(IProject project, String fileName, final String bufferText, int offset)
+		  throws CoreException {
     error = null;
     
     String goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
@@ -46,13 +49,13 @@ public class GocodeClient {
     String goarch = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);
     String goos = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);
     
-    ExternalCommand goCodeCommand = buildGoCodeCommand();
     
-    if (goCodeCommand == null) {
+    IPath gocodePath = GocodePlugin.getPlugin().getBestGocodeInstance();
+    if (gocodePath == null) {
       return Collections.emptyList();
     }
-
-    goCodeCommand.setTimeout(100);
+      
+    String gocodePathStr = gocodePath.toOSString();
 
     // set the package path for the current project
     List<String> parameters = new LinkedList<String>();
@@ -71,26 +74,10 @@ public class GocodeClient {
 
       parameters.add(rootPath.toOSString() + File.pathSeparatorChar + projectPath.toOSString());
     }
-        
-    goCodeCommand.execute(parameters);
-
-    ExternalCommand command = buildGoCodeCommand();
-
-    StreamAsLines output = new StreamAsLines();
-    command.setResultsFilter(output);
-    command.setInputFilter(new ProcessOStreamFilter() {
-      @Override
-      public void setStream(OutputStream outputStream) {
-        OutputStreamWriter osw = new OutputStreamWriter(outputStream);
-        try {
-          osw.append(bufferText);
-          osw.flush();
-          outputStream.close();
-        } catch (IOException e) {
-          // do nothing
-        }
-      }
-    });
+    
+	ExternalProcessEclipseHelper processHelperLibPath = GoToolManager.getDefault().
+		runPrivateGoTool(gocodePathStr, parameters, null);
+	processHelperLibPath.awaitTermination_CoreException(100);
 
     parameters = new LinkedList<String>();
     if (GocodePlugin.USE_TCP) {
@@ -100,29 +87,27 @@ public class GocodeClient {
     parameters.add("autocomplete");
     parameters.add(fileName);
     parameters.add("c" + offset);
-    error = command.execute(parameters, true);
-    if (error != null) {
-      String out = output.getLinesAsString();
-
-      Activator.getDefault().getLog().log(
-          new Status(IStatus.ERROR, Activator.PLUGIN_ID, out == null ? error : error + ": " + out));
+    
+	ExternalProcessEclipseHelper processHelper = GoToolManager.getDefault().
+		runPrivateGoTool(gocodePathStr, parameters, bufferText);
+	processHelper.awaitTermination_CoreException();
+    
+	ByteArrayOutputStreamExt stdout = processHelper.getStdOutBytes_CoreException();
+    
+    if(processHelper.getProcess().exitValue() != 0) {
+      error = "Error running gocode: " + stdout.toString();
+      GoCore.logError(error);
+    } else {
+    	error = null;
     }
-
+    
+    StreamAsLines output = new StreamAsLines();
+    output.process(new ByteArrayInputStream(stdout.toByteArray()));
     return output.getLines();
   }
 
   protected String getError() {
     return error;
-  }
-
-  private ExternalCommand buildGoCodeCommand() {
-    IPath gocodePath = GocodePlugin.getPlugin().getBestGocodeInstance();
-    
-    if (gocodePath == null) {
-      return null;
-    } else {
-      return new ExternalCommand(gocodePath, true);
-    }
   }
 
 }

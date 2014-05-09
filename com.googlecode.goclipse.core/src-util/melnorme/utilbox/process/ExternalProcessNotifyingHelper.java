@@ -35,7 +35,7 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	protected final ListenerListHelper<IProcessOutputListener> outputListeners = new ListenerListHelper<>();
 	
-	public ListenerListHelper<IProcessOutputListener> getOutputListeningHelper() {
+	public ListenerListHelper<IProcessOutputListener> getOutputListenersHelper() {
 		return outputListeners;
 	}
 	

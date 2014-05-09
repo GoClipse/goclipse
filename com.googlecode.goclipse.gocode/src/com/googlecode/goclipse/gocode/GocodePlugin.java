@@ -2,7 +2,8 @@ package com.googlecode.goclipse.gocode;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+
+import melnorme.utilbox.process.ExternalProcessHelper;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -16,7 +17,6 @@ import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.ExternalCommand;
 import com.googlecode.goclipse.gocode.utils.Utils;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
@@ -259,12 +259,10 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
     // shutdown previous gocode instances with command:
     //    TASKKILL /F /IM "gocode.exe"
     try {
-      ExternalCommand KillCommand = new ExternalCommand("TASKKILL");
-      ArrayList<String> killlist = new ArrayList<String>();
-      killlist.add("/F");
-      killlist.add("/IM");
-      killlist.add("\"gocode.exe\"");
-      KillCommand.execute(killlist);
+      ExternalProcessHelper ph = new ExternalProcessHelper(
+    	  new ProcessBuilder("TASKKILL", "/F", "/IM", "\"gocode.exe\""));
+      ph.awaitTerminationStrict_destroyOnException();
+      
     } catch (Exception error) {
       GocodePlugin.getPlugin().getLog().log(
           new Status(IStatus.ERROR, GocodePlugin.PLUGIN_ID,

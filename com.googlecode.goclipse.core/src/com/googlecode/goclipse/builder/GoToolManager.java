@@ -10,13 +10,20 @@
  *******************************************************************************/
 package com.googlecode.goclipse.builder;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.listFrom;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 import melnorme.lang.ide.core.LangCore;
@@ -96,14 +103,40 @@ public class GoToolManager {
 		pb.environment().putAll(GoToolManager.getGoToolEnvironment());
 		return new RunExternalProcessTask(pb, project, pmonitor, processListenersHelper);
 	}
+	
+	public ProcessBuilder prepareBuilder(List<String> commandLine) {
+		assertTrue(commandLine.size() > 0);
+		String goCommand = commandLine.get(0);
+		ProcessBuilder pb = new ProcessBuilder(commandLine);
+		GoToolManager.setWorkingFolder(pb, goCommand);
+		pb.environment().putAll(GoToolManager.getGoToolEnvironment());
+		return pb;
+	}
+	
+	public static void setWorkingFolder(ProcessBuilder pBuilder, String command) {
+		String workingFolder = Path.fromOSString(command).removeLastSegments(1).toOSString();
+		if (workingFolder != null && workingFolder.length() > 0) {
+			pBuilder.directory(new File(workingFolder));
+		}
+	}
 
 	public ExternalProcessEclipseHelper runGoTool(String goCommand, IProject project, IProgressMonitor pm,
 			String processInput) throws CoreException {
-		ProcessBuilder pb = new ProcessBuilder(goCommand);
-		ExternalCommand.setWorkingFolder(pb, goCommand);
-		pb.environment().putAll(GoToolManager.getGoToolEnvironment());
+		ProcessBuilder pb = prepareBuilder(listFrom(goCommand));
 		RunExternalProcessTask runTask = new RunExternalProcessTask(pb, project, pm, processListenersHelper);
 		return runTask.startProcessAndAwait(processInput);
+	}
+	
+	public ExternalProcessEclipseHelper runPrivateGoTool(String goCommand, List<String> args, String processInput)
+			throws CoreException {
+		ArrayList<String> commandLine = new ArrayList<>(args);
+		commandLine.add(0, goCommand);
+		ProcessBuilder pb = prepareBuilder(commandLine);
+		
+		NullProgressMonitor pm = new NullProgressMonitor();
+		ExternalProcessEclipseHelper eclipseHelper = new ExternalProcessEclipseHelper(pb, true, pm);
+		eclipseHelper.writeInput(processInput);
+		return eclipseHelper;
 	}
 	
 }

@@ -129,7 +129,7 @@ public class GoBuilderConsoleListener implements GoBuildListener {
 		try {
 			writeProcessStartPrefix(pb, console);
 			
-			processHelper.getOutputListeningHelper().addListener(new ProcessOutputToConsoleListener(console));
+			processHelper.getOutputListenersHelper().addListener(new ProcessOutputToConsoleListener(console));
 		} catch (IOException e) {
 			return;
 		}
