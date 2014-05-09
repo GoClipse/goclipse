@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GoClipse Core
-Bundle-SymbolicName: goclipse; singleton:=true
+Bundle-SymbolicName: com.googlecode.goclipse.core;singleton:=true
 Bundle-Version: 0.8.0.qualifier
 Bundle-Activator: com.googlecode.goclipse.Activator
 Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,

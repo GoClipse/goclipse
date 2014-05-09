@@ -19,7 +19,7 @@ import com.googlecode.goclipse.builder.GoBuilder;
 public class Activator extends Plugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "goclipse";
+	public static final String PLUGIN_ID = "com.googlecode.goclipse.core";
 
 	public static final String CONTENT_ASSIST_EXTENSION_ID = "com.googlecode.goclipse.contentassistprocessor";
 	

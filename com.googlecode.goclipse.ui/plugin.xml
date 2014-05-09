@@ -36,7 +36,7 @@
       <image
             icon="icons/go-nature.png"
             id="com.googlecode.goclipse.goNature.image1"
-            natureId="goclipse.goNature">
+            natureId="com.googlecode.goclipse.core.goNature">
       </image>
    </extension>
 
