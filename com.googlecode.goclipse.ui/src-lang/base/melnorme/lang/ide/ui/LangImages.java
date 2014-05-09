@@ -40,11 +40,10 @@ public abstract class LangImages {
 		return helper.createManaged(getKey(prefix, name));
 	}
 	
-	protected static String createFromPlatformSharedImage(String prefix, String name, String sharedImageName) {
+	protected static ImageHandle createFromPlatformSharedImage(String prefix, String name, String sharedImageName) {
 		ImageDescriptor descriptor = PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(sharedImageName);
 		String key = getKey(prefix, name);
-		helper.getImageRegistry().put(key, descriptor);
-		return key;
+		return helper.putManaged(key, descriptor);
 	}
 	
 	protected static ImageDescriptor createUnmanaged(String prefix, String name) {
@@ -58,7 +57,6 @@ public abstract class LangImages {
 	public static Image getCachedImage(ImageDescriptor imageDescriptor) {
 		return imageCache.getImage(imageDescriptor);
 	}
-	
 	
 	/* ---------------- Common Lang images ---------------- */
 	

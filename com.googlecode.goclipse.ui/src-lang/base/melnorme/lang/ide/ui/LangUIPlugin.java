@@ -11,7 +11,6 @@
 package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCore.ILangConstants;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -98,12 +97,12 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	/** Logs the given throwable, wrapping it in a Status. */
 	public static void log(Throwable throwable) {
-		log(createErrorStatus(LangUIMessages.LangPlugin_internal_error, throwable));
+		log(createErrorStatus(LangUIMessages.LangPlugin_error, throwable));
 	}
 	
 	/** Creates a status describing an error in this plugin, with given message and given throwable. */
 	public static Status createErrorStatus(String message, Throwable throwable) {
-		return new Status(IStatus.ERROR, PLUGIN_ID, ILangConstants.ERROR_CODE, message, throwable); 
+		return new Status(IStatus.ERROR, PLUGIN_ID, message, throwable); 
 	}
 	
 	/** Logs an error status with given message. */

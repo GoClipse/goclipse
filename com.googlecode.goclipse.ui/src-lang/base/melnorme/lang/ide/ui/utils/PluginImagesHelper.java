@@ -72,8 +72,12 @@ public class PluginImagesHelper {
 	public ImageHandle createManaged(String imagePath) {
 		ImageDescriptor result = createImageDescriptor(imagePath, false);
 		assertNotNull(result);
-		imageRegistry.put(imagePath, result);
-		return new ImageHandle(imagePath);
+		return putManaged(imagePath, result);
+	}
+	
+	public ImageHandle putManaged(String imageKey, ImageDescriptor imageDescriptor) {
+		imageRegistry.put(imageKey, imageDescriptor);
+		return new ImageHandle(imageKey);
 	}
 	
 	/** 

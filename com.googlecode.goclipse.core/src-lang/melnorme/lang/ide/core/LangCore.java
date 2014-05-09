@@ -13,12 +13,6 @@ import org.osgi.framework.BundleContext;
 
 public abstract class LangCore extends Plugin {
 	
-	public static class ILangConstants {
-		
-		public static int ERROR_CODE = 1;
-		
-	}
-	
 	public static final String PLUGIN_ID = LangCore_Actual.PLUGIN_ID;
 	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
@@ -76,7 +70,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Creates a status describing an error in this plugin, with given message and given throwable. */
 	public static Status createErrorStatus(String message, Throwable throwable) {
-		return new Status(IStatus.ERROR, PLUGIN_ID, ILangConstants.ERROR_CODE, message, throwable);
+		return new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */
@@ -84,7 +78,7 @@ public abstract class LangCore extends Plugin {
 		return new CoreException(createErrorStatus(message, throwable));
 	}
 	
-	/** Logs given error status. */
+	/** Logs given status. */
 	public static void logStatus(IStatus status) {
 		getInstance().getLog().log(status);
 	}
@@ -101,17 +95,12 @@ public abstract class LangCore extends Plugin {
 	
 	/** Logs an error status with given exception. */
 	public static void logError(Throwable throwable) {
-		getInstance().getLog().log(createErrorStatus(LangCoreMessages.LangCore_internal_error, throwable));
+		getInstance().getLog().log(createErrorStatus(LangCoreMessages.LangCore_error, throwable));
 	}
 	
 	/** Logs the given message, creating a new warning status for this plugin. */
 	public static void logWarning(String message) {
 		getInstance().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, null));
-	}
-	
-	@Deprecated
-	public static void log(Exception e) {
-		logError(e);
 	}
 	
 }
