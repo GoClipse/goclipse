@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.ui,
  com.googlecode.goclipse.core,
  org.eclipse.jface.text,
  org.eclipse.core.resources,
- com.googlecode.goclipse.ui
+ com.googlecode.goclipse.ui,
+ org.eclipse.ui.console
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

@@ -2,17 +2,20 @@ package com.googlecode.goclipse.gocode;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
+import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
@@ -58,47 +61,59 @@ public class GocodeClient {
     String gocodePathStr = gocodePath.toOSString();
 
     // set the package path for the current project
-    List<String> parameters = new LinkedList<String>();
+    List<String> arguments = new LinkedList<String>();
     if (GocodePlugin.USE_TCP) {
-      parameters.add("-sock=tcp");
+      arguments.add("-sock=tcp");
     }
-    parameters.add("set");
-    parameters.add("lib-path");
+    arguments.add("set");
+    arguments.add("lib-path");
 
     IPath rootPath = new Path(goroot).append("pkg").append(goos + "_" + goarch);
 
     if (project == null) {
-      parameters.add(rootPath.toOSString());
+      arguments.add(rootPath.toOSString());
     } else {
       IPath projectPath = project.getLocation().append(Environment.INSTANCE.getPkgOutputFolder(project));
 
-      parameters.add(rootPath.toOSString() + File.pathSeparatorChar + projectPath.toOSString());
+      arguments.add(rootPath.toOSString() + File.pathSeparatorChar + projectPath.toOSString());
     }
     
 	ExternalProcessEclipseHelper processHelperLibPath = GoToolManager.getDefault().
-		runPrivateGoTool(gocodePathStr, parameters, null);
+		runPrivateGoTool(gocodePathStr, arguments, null);
 	processHelperLibPath.awaitTermination_CoreException(100);
 
-    parameters = new LinkedList<String>();
+    arguments = new LinkedList<String>();
     if (GocodePlugin.USE_TCP) {
-      parameters.add("-sock=tcp");
+      arguments.add("-sock=tcp");
     }
-    parameters.add("-f=csv");
-    parameters.add("autocomplete");
-    parameters.add(fileName);
-    parameters.add("c" + offset);
+    arguments.add("-f=csv");
+    arguments.add("autocomplete");
+    arguments.add(fileName);
+    arguments.add("c" + offset);
     
 	ExternalProcessEclipseHelper processHelper = GoToolManager.getDefault().
-		runPrivateGoTool(gocodePathStr, parameters, bufferText);
+		runPrivateGoTool(gocodePathStr, arguments, bufferText);
 	processHelper.awaitTermination_CoreException();
     
 	ByteArrayOutputStreamExt stdout = processHelper.getStdOutBytes_CoreException();
+	ByteArrayOutputStreamExt stderr = processHelper.getStdErrBytes_CoreException();
     
     if(processHelper.getProcess().exitValue() != 0) {
       error = "Error running gocode: " + stdout.toString();
       GoCore.logError(error);
     } else {
     	error = null;
+    }
+    
+    if(Platform.inDebugMode()) {
+        GocodeMessageConsole gocodeConsole = GocodeMessageConsole.getConsole();
+        try {
+        	gocodeConsole.clientResponse.write(">> gocodePathStr " + StringUtil.collToString(arguments, " "));
+    		gocodeConsole.clientResponse.write(stdout.toString());
+    		gocodeConsole.clientResponseErr.write(stderr.toString());
+    	} catch (IOException e) {
+    		// ignore
+    	}
     }
     
     StreamAsLines output = new StreamAsLines();

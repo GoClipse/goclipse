@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
 import org.eclipse.core.runtime.IPath;
 
@@ -62,23 +60,6 @@ public class GocodeServer {
 
   public IPath getPath() {
     return path;
-  }
-  
-  private final class GocodeServerListener implements IProcessOutputListener {
-	  @Override
-	  public void notifyStdOutListeners(byte[] buffer, int offset, int readCount) {
-	  }
-	  
-	  @Override
-	  public void notifyStdErrListeners(byte[] buffer, int offset, int readCount) {
-		  // XXX: this implementation is buggy if the chunk ends in the middle of a multi-byte unicode character
-		  String string = new String(buffer, offset, readCount, StringUtil.UTF8);
-		  GocodePlugin.logWarning("gocode:\n" + string.trim());
-	  }
-	  
-	  @Override
-	  public void notifyProcessTerminatedAndRead(int exitCode) {
-	  }
   }
 
 }
