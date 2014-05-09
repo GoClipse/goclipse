@@ -103,7 +103,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	/** Creates a status describing an error in this plugin, with given message and given throwable. */
 	public static Status createErrorStatus(String message, Throwable throwable) {
-		return new Status(IStatus.ERROR, PLUGIN_ID, ILangConstants.INTERNAL_ERROR, message, throwable); 
+		return new Status(IStatus.ERROR, PLUGIN_ID, ILangConstants.ERROR_CODE, message, throwable); 
 	}
 	
 	/** Logs an error status with given message. */

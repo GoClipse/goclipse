@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.jface.util.Util;
+
 import com.googlecode.goclipse.builder.Arch;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.builder.ProcessIStreamFilter;
@@ -454,7 +456,7 @@ public class Environment {
 			return path;
 		}
 		
-		if (Activator.isWindows()) {
+		if (Util.isWindows()) {
 		  if (goPath.contains(";")) {
 		    path = goPath.split(";");
 		  } else {

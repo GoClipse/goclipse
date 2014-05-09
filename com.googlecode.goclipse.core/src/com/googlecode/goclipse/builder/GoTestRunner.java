@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.util.Util;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -117,9 +118,9 @@ public class GoTestRunner {
 	                        Thread.sleep(maxTime);
 	                        Runtime rt = Runtime.getRuntime();
 	                        if(activeTest!=null) {
-		                        if (Activator.isWindows()) {
+		                        if (Util.isWindows()) {
 		                	        rt.exec("taskkill /F /IM " + activeTest.workingDir.getName()+ ".test.exe");
-		                		} else if (Activator.isMac()) {
+		                		} else if (Util.isMac()) {
 		                			rt.exec("killall -c " + activeTest.workingDir.getName() + ".test");
 		                		} else {
 		                			rt.exec("pkill " + activeTest.workingDir.getName() + ".test");

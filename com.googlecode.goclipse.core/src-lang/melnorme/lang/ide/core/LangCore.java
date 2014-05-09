@@ -15,7 +15,7 @@ public abstract class LangCore extends Plugin {
 	
 	public static class ILangConstants {
 		
-		public static int INTERNAL_ERROR = 1;
+		public static int ERROR_CODE = 1;
 		
 	}
 	
@@ -76,7 +76,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Creates a status describing an error in this plugin, with given message and given throwable. */
 	public static Status createErrorStatus(String message, Throwable throwable) {
-		return new Status(IStatus.ERROR, PLUGIN_ID, ILangConstants.INTERNAL_ERROR, message, throwable);
+		return new Status(IStatus.ERROR, PLUGIN_ID, ILangConstants.ERROR_CODE, message, throwable);
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */
@@ -106,8 +106,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Logs the given message, creating a new warning status for this plugin. */
 	public static void logWarning(String message) {
-		getInstance().getLog().log(
-				new Status(IStatus.WARNING, PLUGIN_ID, ILangConstants.INTERNAL_ERROR, message, null));
+		getInstance().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, null));
 	}
 	
 	@Deprecated
