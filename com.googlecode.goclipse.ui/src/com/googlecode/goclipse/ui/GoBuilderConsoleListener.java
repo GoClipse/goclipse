@@ -15,22 +15,19 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.io.IOException;
 
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.util.swt.jface.ColorManager;
+import melnorme.lang.ide.ui.utils.ProcessMessageConsole;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
-import org.eclipse.ui.console.MessageConsole;
 
-import com.googlecode.goclipse.builder.GoToolManager.GoBuildListener;
+import com.googlecode.goclipse.builder.IGoBuildListener;
 
-public class GoBuilderConsoleListener implements GoBuildListener {
+public class GoBuilderConsoleListener implements IGoBuildListener {
 	
 	public static GoBuildConsole recreateMessageConsole(String name, boolean recreateConsole) {
 		GoBuildConsole console = ConsoleUtils.findConsole(name, GoBuildConsole.class);
@@ -65,35 +62,20 @@ public class GoBuilderConsoleListener implements GoBuildListener {
 		return "["+ project.getName() +"]";
 	}
 	
-	public static class GoBuildConsole extends MessageConsole {
+	public static class GoBuildConsole extends ProcessMessageConsole {
 		
 		protected final IOConsoleOutputStream metaOut;
-		protected final IOConsoleOutputStream stdOut;
-		protected final IOConsoleOutputStream stdErr;
 		
 		public GoBuildConsole(String name) {
 			super(name, GoPluginImages.GO_CONSOLE_ICON.getDescriptor());
 			
 			metaOut = newOutputStream();
-			
-			stdOut = newOutputStream();
-			stdErr = newOutputStream();
-			stdErr.setActivateOnWrite(true);
-			
-			// BM: it's not clear to me if a Color can be created outside UI thread, so do asyncExec
-			// I would think one cant, but some Platform code (ProcessConsole) does freely create Color instances
-			// on the UI thread, so maybe the asyncExec is not necessary.
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					metaOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
-					stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
-				}
-			});
 		}
 		
-		protected ISharedTextColors getColorManager() {
-			return ColorManager.getDefault();
+		@Override
+		protected void initOuputStreamColors() {
+			metaOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
+			stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 		}
 		
 	}

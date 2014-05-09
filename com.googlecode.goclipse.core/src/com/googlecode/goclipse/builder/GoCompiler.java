@@ -258,7 +258,7 @@ public class GoCompiler {
 			
 			
 			RunExternalProcessTask processTask = GoToolManager.getDefault().
-					getRunGoToolTask(project, pmonitor, pb);
+					createRunProcessTask(pb, project, pmonitor);
 			
 			ExternalProcessNotifyingHelper processHelper = null;
 			try {
