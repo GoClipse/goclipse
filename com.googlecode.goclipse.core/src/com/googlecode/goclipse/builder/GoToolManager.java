@@ -21,6 +21,8 @@ import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
+import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -53,6 +55,18 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 		}
 	}
 	
+	/* ----------------- ----------------- */
+	
+	public RunGoToolTask createRunProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor monitor) {
+		return new RunGoToolTask(pb, project, monitor);
+	}
+	
+	public class RunGoToolTask extends RunExternalProcessTask<IGoBuildListener> {
+		public RunGoToolTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor) {
+			super(pb, project, cancelMonitor, processListenersHelper);
+		}
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public static Map<String, String> getGoToolEnvironment() {
@@ -71,9 +85,9 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 		return goEnv;
 	}
 	
-	public RunManagedProcessTask newRunGoToolTask_defaultEnv(IProject project, IProgressMonitor pmonitor, ProcessBuilder pb) {
+	public RunGoToolTask newRunGoToolTask_defaultEnv(IProject project, IProgressMonitor pmonitor, ProcessBuilder pb) {
 		pb.environment().putAll(GoToolManager.getGoToolEnvironment());
-		return new RunManagedProcessTask(pb, project, pmonitor);
+		return new RunGoToolTask(pb, project, pmonitor);
 	}
 	
 	public ProcessBuilder prepareBuilder(List<String> commandLine) {
@@ -95,7 +109,7 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 	public EclipseExternalProcessHelper runGoTool(String goCommand, IProject project, IProgressMonitor pm,
 			String processInput) throws CoreException {
 		ProcessBuilder pb = prepareBuilder(listFrom(goCommand));
-		RunManagedProcessTask runTask = new RunManagedProcessTask(pb, project, pm);
+		RunGoToolTask runTask = new RunGoToolTask(pb, project, pm);
 		EclipseExternalProcessHelper processHelper = runTask.startProcess();
 		processHelper.writeInput(processInput);
 		processHelper.strictAwaitTermination();

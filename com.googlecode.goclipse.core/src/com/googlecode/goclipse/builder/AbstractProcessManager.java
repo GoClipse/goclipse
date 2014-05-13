@@ -10,11 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.builder;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
-import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.misc.ListenerListHelper;
 
 /**
@@ -31,18 +27,6 @@ public class AbstractProcessManager<T extends IExternalProcessListener> {
 	
 	public void removeBuildProcessListener(T processListener) {
 		processListenersHelper.removeListener(processListener);
-	}
-	
-	/* ----------------- ----------------- */
-	
-	public RunManagedProcessTask createRunProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor monitor) {
-		return new RunManagedProcessTask(pb, project, monitor);
-	}
-	
-	public class RunManagedProcessTask extends RunExternalProcessTask<T> {
-		public RunManagedProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor) {
-			super(pb, project, cancelMonitor, processListenersHelper);
-		}
 	}
 	
 }

@@ -12,7 +12,6 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
-import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -29,6 +28,7 @@ import org.eclipse.jface.util.Util;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Import;
@@ -255,8 +255,7 @@ public class GoCompiler {
 			pb.environment().put("PATH", path);
 			
 			
-			RunExternalProcessTask processTask = GoToolManager.getDefault().
-					createRunProcessTask(pb, project, pmonitor);
+			RunGoToolTask processTask = GoToolManager.getDefault().createRunProcessTask(pb, project, pmonitor);
 			
 			EclipseExternalProcessHelper processHelper = null;
 			try {

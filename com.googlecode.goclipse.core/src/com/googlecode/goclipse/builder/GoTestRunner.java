@@ -11,24 +11,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.TimeoutException;
 
-import melnorme.utilbox.process.ExternalProcessHelper;
+import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.util.Util;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
-import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
@@ -50,23 +47,6 @@ public class GoTestRunner {
 	private Thread               testRunner    = new Thread("Go Test Runner");
 	private TestConfig           activeTest    = null;
 	private boolean              running       = true;
-	
-	private static MessageConsole findConsole(String name) {
-		ConsolePlugin plugin = ConsolePlugin.getDefault();
-		IConsoleManager conMan = plugin.getConsoleManager();
-		IConsole[] existing = conMan.getConsoles();
-		
-		for (int i = 0; i < existing.length; i++) {
-			if (name.equals(existing[i].getName())) {
-				return (MessageConsole) existing[i];
-			}
-		}
-		
-		// no console found, so create a new one
-		MessageConsole myConsole = new MessageConsole(name, null);
-		conMan.addConsoles(new IConsole[] { myConsole });
-		return myConsole;
-	}
 	
 	/**
 	 * 
@@ -108,11 +88,9 @@ public class GoTestRunner {
          */
         private void runTest() {
             
-        	try {
             	final ProcessBuilder testProcessBuilder = configureProcess();
-            	Process activeProcess = testProcessBuilder.start();
-                
-                // kill process
+            	
+                // timeout kill process
                 new Thread(new Runnable() {
 					
 					@Override
@@ -139,37 +117,21 @@ public class GoTestRunner {
 					}
 				}).start();
                 
-                ExternalProcessHelper ph = new ExternalProcessHelper(activeProcess, true, true);
-                String stdout = "";
-                String stderr = "";
-                try {
-                    ph.strictAwaitTermination();
-                	stdout = ph.getStdOutBytes().toString();
-                	stderr = ph.getStdErrBytes().toString();
-
-            	} catch (TimeoutException | InterruptedException e) {
-            		Activator.logInfo(e);
-            	}
+            try {
+            	RunGoToolTask runTestsTask = GoToolManager.getDefault().
+            			createRunProcessTask(testProcessBuilder, null, new NullProgressMonitor());
                 
-		    	MessageConsole console = findConsole(activeTest.project.getName()+" Auto Test");
-		    	console.clearConsole();
-		    	console.activate();
-		    	MessageConsoleStream out = console.newMessageStream();
-		    	
-	        	try {
-			    	out.write(stdout);
-			    	out.flush();
-			    	out.write(stderr);
-					out.flush();
-				} catch (IOException e) {
-					GoCore.logWarning("error writing to Eclipse console", e);
-				}
+                EclipseExternalProcessHelper ph = runTestsTask.startProcess();
+                
+                ph.strictAwaitTermination();
+                String stdout = ph.getStdOutBytes().toString();
+                String stderr = ph.getStdErrBytes().toString();
                 
                 markErrors(stdout, stderr);
                 
-            } catch (IOException e1) {
-                Activator.logInfo("IOException caught during testing of "+activeTest.pkgPath);
-            }
+            } catch (CoreException e) {
+            	GoCore.logError("Error executing tests runner for " + activeTest.pkgPath, e);
+			}
         }
         
         /**
