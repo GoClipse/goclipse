@@ -83,7 +83,7 @@ public abstract class LangCore extends Plugin {
 		getInstance().getLog().log(status);
 	}
 	
-	/** Logs an error status with given exception and given message. */
+	/** Logs an error status with given message and given throwable. */
 	public static void logError(String message, Throwable throwable) {
 		getInstance().getLog().log(createErrorStatus(message, throwable));
 	}
@@ -98,9 +98,14 @@ public abstract class LangCore extends Plugin {
 		getInstance().getLog().log(createErrorStatus(LangCoreMessages.LangCore_error, throwable));
 	}
 	
-	/** Logs the given message, creating a new warning status for this plugin. */
+	/** Logs a warning status with given message */
 	public static void logWarning(String message) {
 		getInstance().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, null));
+	}
+	
+	/** Logs a warning status with given message and given throwable */
+	public static void logWarning(String message, Throwable throwable) {
+		getInstance().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, throwable));
 	}
 	
 	/** @return a preferences accessor for this plugin. */

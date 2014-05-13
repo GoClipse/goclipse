@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
+import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -78,9 +78,9 @@ public class GocodeClient {
       arguments.add(rootPath.toOSString() + File.pathSeparatorChar + projectPath.toOSString());
     }
     
-	ExternalProcessEclipseHelper processHelperLibPath = GoToolManager.getDefault().
+	EclipseExternalProcessHelper processHelperLibPath = GoToolManager.getDefault().
 		runPrivateGoTool(gocodePathStr, arguments, null);
-	processHelperLibPath.awaitTermination_CoreException(100);
+	processHelperLibPath.strictAwaitTermination(100);
 
     arguments = new LinkedList<String>();
     if (GocodePlugin.USE_TCP) {
@@ -91,12 +91,12 @@ public class GocodeClient {
     arguments.add(fileName);
     arguments.add("c" + offset);
     
-	ExternalProcessEclipseHelper processHelper = GoToolManager.getDefault().
+	EclipseExternalProcessHelper processHelper = GoToolManager.getDefault().
 		runPrivateGoTool(gocodePathStr, arguments, bufferText);
-	processHelper.awaitTermination_CoreException();
+	processHelper.strictAwaitTermination();
     
-	ByteArrayOutputStreamExt stdout = processHelper.getStdOutBytes_CoreException();
-	ByteArrayOutputStreamExt stderr = processHelper.getStdErrBytes_CoreException();
+	ByteArrayOutputStreamExt stdout = processHelper.getStdOutBytes();
+	ByteArrayOutputStreamExt stderr = processHelper.getStdErrBytes();
     
     if(processHelper.getProcess().exitValue() != 0) {
       error = "Error running gocode: " + stdout.toString();

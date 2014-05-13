@@ -261,7 +261,7 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
     try {
       ExternalProcessHelper ph = new ExternalProcessHelper(
     	  new ProcessBuilder("TASKKILL", "/F", "/IM", "\"gocode.exe\""));
-      ph.awaitTerminationStrict_destroyOnException();
+      ph.strictAwaitTermination();
       
     } catch (Exception error) {
       GocodePlugin.getPlugin().getLog().log(

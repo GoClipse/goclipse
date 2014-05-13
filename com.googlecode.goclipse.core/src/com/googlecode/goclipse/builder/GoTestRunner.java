@@ -29,6 +29,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
 
@@ -142,7 +143,7 @@ public class GoTestRunner {
                 String stdout = "";
                 String stderr = "";
                 try {
-                    ph.awaitTerminationStrict_destroyOnException();
+                    ph.strictAwaitTermination();
                 	stdout = ph.getStdOutBytes().toString();
                 	stderr = ph.getStdErrBytes().toString();
 
@@ -161,7 +162,7 @@ public class GoTestRunner {
 			    	out.write(stderr);
 					out.flush();
 				} catch (IOException e) {
-					e.printStackTrace();
+					GoCore.logWarning("error writing to Eclipse console", e);
 				}
                 
                 markErrors(stdout, stderr);

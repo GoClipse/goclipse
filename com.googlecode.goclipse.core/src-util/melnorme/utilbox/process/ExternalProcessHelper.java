@@ -14,6 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.ExceptionTrackingRunnable;
@@ -56,6 +59,7 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	protected static class ReadAllBytesTask extends ExceptionTrackingRunnable<ByteArrayOutputStreamExt, IOException> {
 		
 		protected final InputStream is;
+		protected final ByteArrayOutputStreamExt byteArray = new ByteArrayOutputStreamExt(32);
 		
 		public ReadAllBytesTask(InputStream is) {
 			this.is = is;
@@ -67,7 +71,6 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 			try {
 				final int BUFFER_SIZE = 1024;
 				byte[] buffer = new byte[BUFFER_SIZE];
-				ByteArrayOutputStreamExt byteArray = new ByteArrayOutputStreamExt(32);
 				
 				int read;
 				while((read = is.read(buffer)) != StreamUtil.EOF) {
@@ -87,15 +90,53 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 	}
 	
-	public ByteArrayOutputStreamExt getStdOutBytes() throws IOException {
+	public ByteArrayOutputStreamExt getStdOutBytes() {
 		assertTrue(isFullyTerminated());
-		return mainReader.getResult();
+		return mainReader.byteArray;
 	}
 	
-	public ByteArrayOutputStreamExt getStdErrBytes() throws IOException {
+	public ByteArrayOutputStreamExt getStdErrBytes() {
 		assertTrue(isFullyTerminated());
 		assertTrue(readStdErr);
-		return stderrReader.getResult();
+		return stderrReader.byteArray;
+	}
+	
+	public void tryStrictAwaitTermination(int timeoutMs) throws InterruptedException, TimeoutException, IOException {
+		awaitTermination(timeoutMs);
+		mainReader.getResult();
+		stderrReader.getResult();
+	}
+	
+	/** 
+	 * Awaits for successful process termination, as well as successful termination of reader threads,
+	 * throws an exception otherwise (and destroys the process).
+	 * @return process exit code. 
+	 * @throws InterruptedException if interrupted
+	 * @throws TimeoutException if timeout occurs, or cancel requested.
+	 * @throws IOException if an IO error occured in the reader threads.
+	 */
+	public int strictAwaitTermination(int timeoutMs) throws InterruptedException, TimeoutException, IOException {
+		try {
+			tryStrictAwaitTermination(timeoutMs);
+		} catch (Exception e) {
+			process.destroy();
+			throw e;
+		}
+		return process.exitValue();
+	}
+	
+	public int strictAwaitTermination() throws InterruptedException, TimeoutException, IOException {
+		return strictAwaitTermination(NO_TIMEOUT);
+	}
+	
+	/* ----------------- writing helpers ----------------- */
+	
+	public void writeInput(String input, Charset charset) throws IOException {
+		if(input == null)
+			return;
+		
+		OutputStream processInputStream = getProcess().getOutputStream();
+		StreamUtil.writeStringToStream(input, processInputStream, charset);
 	}
 	
 }

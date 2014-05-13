@@ -1,6 +1,6 @@
 package com.googlecode.goclipse.editors;
 
-import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
+import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -31,10 +31,10 @@ public class GofixAction extends TransformTextAction {
 		IProject project = null; // TODO
 		IProgressMonitor pm = new NullProgressMonitor(); // TODO
 		
-		ExternalProcessEclipseHelper processHelper = GoToolManager.getDefault().
+		EclipseExternalProcessHelper processHelper = GoToolManager.getDefault().
 				runGoTool(gofixPath, project, pm, text);
 		
-		String transformedText = processHelper.getStdOutBytes_CoreException().toString();
+		String transformedText = processHelper.getStdOutBytes().toString();
 		
 		if (transformedText.length() > 0 && !transformedText.equals(text)) {
 			return transformedText;

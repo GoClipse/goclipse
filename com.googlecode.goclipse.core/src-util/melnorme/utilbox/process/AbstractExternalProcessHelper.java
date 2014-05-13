@@ -20,7 +20,7 @@ import java.util.concurrent.TimeoutException;
  * using one or two reader threads (for stdout and stderr).
  * It also supports waiting for process termination with timeouts.
  * 
- * Subclasses must specify Runnable's for the worker threads reading the process stdout and stderr streams. 
+ * Subclasses must specify Runnable's for the worker threads reading the process stdout and stderr streams.
  */
 public abstract class AbstractExternalProcessHelper {
 	
@@ -148,7 +148,7 @@ public abstract class AbstractExternalProcessHelper {
 	 * @return true if termination reached, false if timeout reached, or cancel requested.
 	 * @throws InterruptedException if interrupted.
 	 */
-	protected boolean awaitTermination(int timeoutMs) throws InterruptedException {
+	protected boolean tryAwaitTermination(int timeoutMs) throws InterruptedException {
 		int waitedTime = 0;
 		
 		while(true) {
@@ -174,32 +174,15 @@ public abstract class AbstractExternalProcessHelper {
 	protected abstract boolean isCanceled();
 	
 	/** 
-	 * Same as {@link #awaitTermination(int))} but: 
-	 * throws exception on any outcome other than successful awaitTermination.
-	 * Note that even with no timeout provided (value -1), a TimeoutException can be thrown if cancel is requested.
+	 * Same as {@link #tryAwaitTermination(int)} but throws TimeoutException if timeout occurs, or cancel is requested.
 	 * @return The process exit value.
 	 */
-	public int awaitTerminationStrict(int timeoutMs) throws InterruptedException, TimeoutException {
-		boolean success = awaitTermination(timeoutMs);
+	public int awaitTermination(int timeoutMs) throws InterruptedException, TimeoutException {
+		boolean success = tryAwaitTermination(timeoutMs);
 		if(!success) {
 			throw new TimeoutException();
 		}
 		return process.exitValue();
-	}
-	
-	
-	public int awaitTerminationStrict_destroyOnException(int timeoutMs) 
-			throws InterruptedException, TimeoutException {
-		try {
-			return awaitTerminationStrict(timeoutMs);
-		} catch (Exception e) {
-			process.destroy();
-			throw e;
-		}
-	}
-	
-	public int awaitTerminationStrict_destroyOnException() throws InterruptedException, TimeoutException {
-		return awaitTerminationStrict_destroyOnException(NO_TIMEOUT);
 	}
 	
 }

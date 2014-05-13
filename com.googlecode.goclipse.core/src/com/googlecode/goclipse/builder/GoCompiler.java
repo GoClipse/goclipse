@@ -11,9 +11,8 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -223,7 +222,6 @@ public class GoCompiler {
 		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
 		final String           outExtension    = (Util.isWindows() ? ".exe" : "");
 
-		try {
 			// the path exist to find the cc
 			String   path    = System.getenv("PATH");
 			String   outPath = null;
@@ -249,9 +247,9 @@ public class GoCompiler {
 			        outPath };
 			}
 			
- 			String goPath = buildGoPath(project, projectLocation, false);
-
- 			ProcessBuilder pb = new ProcessBuilder(cmd).directory(target.getParentFile());
+			String goPath = buildGoPath(project, projectLocation, false);
+			
+			ProcessBuilder pb = new ProcessBuilder(cmd).directory(target.getParentFile());
 			pb.environment().put(GoConstants.GOROOT, Environment.INSTANCE.getGoRoot(project));
 			pb.environment().put(GoConstants.GOPATH, goPath);
 			pb.environment().put("PATH", path);
@@ -260,10 +258,10 @@ public class GoCompiler {
 			RunExternalProcessTask processTask = GoToolManager.getDefault().
 					createRunProcessTask(pb, project, pmonitor);
 			
-			ExternalProcessNotifyingHelper processHelper = null;
+			EclipseExternalProcessHelper processHelper = null;
 			try {
-				processHelper = processTask.startProcessAndAwait();
-				
+				processHelper = processTask.startProcess();
+				processHelper.strictAwaitTermination();
 			} catch (CoreException ce) {
 				if(ce.getCause() instanceof TimeoutException && pmonitor.isCanceled()) {
 					throw new OperationCanceledException();
@@ -283,9 +281,6 @@ public class GoCompiler {
 		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
 		    }
 
-		} catch (IOException e1) {
-			Activator.logInfo(e1);
-		}
 	}
 
 	/**

@@ -35,8 +35,14 @@ public class AbstractProcessManager<T extends IExternalProcessListener> {
 	
 	/* ----------------- ----------------- */
 	
-	public RunExternalProcessTask createRunProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor monitor) {
-		return new RunExternalProcessTask(pb, project, monitor, processListenersHelper);
+	public RunManagedProcessTask createRunProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor monitor) {
+		return new RunManagedProcessTask(pb, project, monitor);
+	}
+	
+	public class RunManagedProcessTask extends RunExternalProcessTask<T> {
+		public RunManagedProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor) {
+			super(pb, project, cancelMonitor, processListenersHelper);
+		}
 	}
 	
 }

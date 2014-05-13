@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.process.ExternalProcessEclipseHelper;
-import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
-
+import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -73,10 +71,9 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 		return goEnv;
 	}
 	
-	public RunExternalProcessTask newRunGoToolTask_defaultEnv(IProject project, IProgressMonitor pmonitor,
-			ProcessBuilder pb) {
+	public RunManagedProcessTask newRunGoToolTask_defaultEnv(IProject project, IProgressMonitor pmonitor, ProcessBuilder pb) {
 		pb.environment().putAll(GoToolManager.getGoToolEnvironment());
-		return new RunExternalProcessTask(pb, project, pmonitor, processListenersHelper);
+		return new RunManagedProcessTask(pb, project, pmonitor);
 	}
 	
 	public ProcessBuilder prepareBuilder(List<String> commandLine) {
@@ -95,23 +92,26 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 		}
 	}
 
-	public ExternalProcessEclipseHelper runGoTool(String goCommand, IProject project, IProgressMonitor pm,
+	public EclipseExternalProcessHelper runGoTool(String goCommand, IProject project, IProgressMonitor pm,
 			String processInput) throws CoreException {
 		ProcessBuilder pb = prepareBuilder(listFrom(goCommand));
-		RunExternalProcessTask runTask = new RunExternalProcessTask(pb, project, pm, processListenersHelper);
-		return runTask.startProcessAndAwait(processInput);
+		RunManagedProcessTask runTask = new RunManagedProcessTask(pb, project, pm);
+		EclipseExternalProcessHelper processHelper = runTask.startProcess();
+		processHelper.writeInput(processInput);
+		processHelper.strictAwaitTermination();
+		return processHelper;
 	}
 	
-	public ExternalProcessEclipseHelper runPrivateGoTool(String goCommand, List<String> args, String processInput)
+	public EclipseExternalProcessHelper runPrivateGoTool(String goCommand, List<String> args, String processInput)
 			throws CoreException {
 		ArrayList<String> commandLine = new ArrayList<>(args);
 		commandLine.add(0, goCommand);
 		ProcessBuilder pb = prepareBuilder(commandLine);
 		
 		NullProgressMonitor pm = new NullProgressMonitor();
-		ExternalProcessEclipseHelper eclipseHelper = new ExternalProcessEclipseHelper(pb, true, pm);
-		eclipseHelper.writeInput(processInput);
-		return eclipseHelper;
+		EclipseExternalProcessHelper processHelper = new EclipseExternalProcessHelper(pb, true, pm);
+		processHelper.writeInput(processInput);
+		return processHelper;
 	}
 	
 }

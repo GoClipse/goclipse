@@ -13,36 +13,25 @@ package melnorme.lang.ide.core.utils.process;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
-import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * An extension to {@link ExternalProcessNotifyingHelper} that is customized to run in Eclipse. In particular:
+ * An adapter to {@link ExternalProcessNotifyingHelper} that is customized to run in Eclipse. In particular:
  * Allows using an {@link IProgressMonitor} as a cancel monitor.
- * Converts IOExceptions for most operations into CoreException
+ * Converts IOExceptions and other exceptions into CoreException.
  * Log errors in Eclipse log.
- * 
- * TODO: perhaps this should not be a subclass, but use composition instead
  */
-public class ExternalProcessEclipseHelper extends ExternalProcessNotifyingHelper {
-	
-	protected final IProgressMonitor monitor;
-	
-	public ExternalProcessEclipseHelper(ProcessBuilder pb, boolean startReaders, IProgressMonitor monitor)
-			throws CoreException {
-		super(startProcess(pb), true, startReaders);
-		this.monitor = assertNotNull(monitor);
-	}
+public class EclipseExternalProcessHelper {
 	
 	protected static Process startProcess(ProcessBuilder pb) throws CoreException {
 		try {
@@ -52,41 +41,57 @@ public class ExternalProcessEclipseHelper extends ExternalProcessNotifyingHelper
 		}
 	}
 	
-	@Override
-	protected boolean isCanceled() {
-		return monitor.isCanceled();
+	protected final ExternalProcessNotifyingHelper ph;
+	protected final IProgressMonitor monitor;
+	
+	public EclipseExternalProcessHelper(ProcessBuilder pb, boolean startReaders, IProgressMonitor monitor)
+			throws CoreException {
+		this(startProcess(pb), startReaders, monitor);
 	}
 	
-	@Override
-	protected void handleListenerException(RuntimeException e) {
-		LangCore.logError("Internal error notifying listener", e);
+	public EclipseExternalProcessHelper(Process process, boolean startReaders, final IProgressMonitor monitor)
+			throws CoreException {
+		this.monitor = assertNotNull(monitor);
+		this.ph = new ExternalProcessNotifyingHelper(process, true, startReaders) {
+			@Override
+			protected boolean isCanceled() {
+				return monitor.isCanceled();
+			}
+			
+			@Override
+			protected void handleListenerException(RuntimeException e) {
+				LangCore.logError("Internal error notifying listener", e);
+			}
+		};
 	}
 	
-	public ByteArrayOutputStreamExt getStdOutBytes_CoreException() throws CoreException {
+	public ExternalProcessNotifyingHelper getNotifyingProcessHelper() {
+		return ph;
+	}
+	
+	public Process getProcess() {
+		return ph.getProcess();
+	}
+	
+	public ByteArrayOutputStreamExt getStdOutBytes() {
+		return ph.getStdOutBytes();
+	}
+	
+	public ByteArrayOutputStreamExt getStdErrBytes() {
+		return ph.getStdErrBytes();
+	}
+	
+	public void strictAwaitTermination() throws CoreException {
+		strictAwaitTermination(ExternalProcessHelper.NO_TIMEOUT);
+	}
+	
+	public void strictAwaitTermination(int timeout) throws CoreException {
 		try {
-			return super.getStdOutBytes();
-		} catch (IOException e) {
-			throw LangCore.createCoreException("IO Error reading process stdout stream.", e);
-		}
-	}
-	
-	public ByteArrayOutputStreamExt getStdErrBytes_CoreException() throws CoreException {
-		try {
-			return super.getStdErrBytes();
-		} catch (IOException e) {
-			throw LangCore.createCoreException("IO Error reading process stderr stream.", e);
-		}
-	}
-	
-	public void awaitTermination_CoreException() throws CoreException {
-		awaitTermination_CoreException(NO_TIMEOUT);
-	}
-	
-	public void awaitTermination_CoreException(int timeout) throws CoreException {
-		try {
-			awaitTerminationStrict_destroyOnException(timeout);
+			ph.strictAwaitTermination(timeout);
 		} catch (InterruptedException e) {
 			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_InterruptedAwaitingTermination, e);
+		} catch (IOException e) {
+			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_ErrorStreamReaderIOException, e);
 		} catch (TimeoutException e) {
 			if(monitor.isCanceled()) {
 				throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_TaskCancelled, null);
@@ -97,12 +102,8 @@ public class ExternalProcessEclipseHelper extends ExternalProcessNotifyingHelper
 	}
 	
 	public void writeInput(String input) throws CoreException {
-		if(input == null)
-			return;
-		
-		OutputStream processInputStream = getProcess().getOutputStream();
 		try {
-			StreamUtil.writeStringToStream(input, processInputStream, StringUtil.UTF8);
+			ph.writeInput(input, StringUtil.UTF8);
 		} catch (IOException e) {
 			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_ErrorWritingInput , e);
 		}

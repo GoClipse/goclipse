@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,25 +12,71 @@ package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.io.IOException;
 import java.util.List;
 
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class RunExternalProcessTask extends AbstractRunExternalProcessTask {
+/**
+ * A task that runs an external process and notifies listeners of process lifecycle events.
+ */
+public class RunExternalProcessTask<LISTENER extends IExternalProcessListener> implements IStartProcessTask {
 	
-	protected final ListenerListHelper<? extends IExternalProcessListener> listenersList;
+	protected final ProcessBuilder pb;
+	protected final IProject project;
+	protected final IProgressMonitor cancelMonitor;
+	
+	protected final ListenerListHelper<LISTENER> listenersList;
 	
 	public RunExternalProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor,
-			ListenerListHelper<? extends IExternalProcessListener> listenersList) {
-		super(pb, project, cancelMonitor);
+			ListenerListHelper<LISTENER> listenersList) {
+		this.pb = assertNotNull(pb);
+		this.project = project; // can be null
+		this.cancelMonitor = assertNotNull(cancelMonitor);
 		this.listenersList = assertNotNull(listenersList);
 	}
 	
-	@Override
+	protected void notifyProcessStarted(ExternalProcessNotifyingHelper processHelper) {
+		for(IExternalProcessListener processListener : getListeners()) {
+			processListener.handleProcessStarted(pb, project, processHelper);
+		}
+	}
+	
+	protected void notifyProcessFailedToStart(IOException e) {
+		for(IExternalProcessListener processListener : getListeners()) {
+			processListener.handleProcessStartFailure(pb, project, e);
+		}
+	}
+	
 	protected List<? extends IExternalProcessListener> getListeners() {
 		return listenersList.getListeners();
+	}
+	
+	@Override
+	public EclipseExternalProcessHelper call() throws CoreException {
+		return startProcess();
+	}
+	
+	public EclipseExternalProcessHelper startProcess() throws CoreException {
+		EclipseExternalProcessHelper eclipseProcessHelper;
+		try {
+			eclipseProcessHelper = new EclipseExternalProcessHelper(pb, false, cancelMonitor);
+		} catch (CoreException ce) {
+			IOException ioe = (IOException) ce.getStatus().getException();
+			notifyProcessFailedToStart(ioe);
+			throw ce;
+		}
+		
+		ExternalProcessNotifyingHelper processHelper = eclipseProcessHelper.getNotifyingProcessHelper();
+		notifyProcessStarted(processHelper);
+		processHelper.startReaderThreads();
+		
+		return eclipseProcessHelper;
 	}
 	
 }
