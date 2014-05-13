@@ -18,30 +18,40 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.console.MessageConsole;
 
-public class ProcessMessageConsole extends MessageConsole {
+public abstract class AbstractProcessMessageConsole extends MessageConsole {
+	
+	public static class ProcessMessageConsole extends AbstractProcessMessageConsole {
+		protected ProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {
+			super(name, imageDescriptor);
+			post_initOutputStreamColors();
+		}
+	}
 	
 	public final IOConsoleOutputStream stdOut;
 	public final IOConsoleOutputStream stdErr;
 	
-	public ProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {
+	protected AbstractProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
 		
 		stdOut = newOutputStream();
 		stdErr = newOutputStream();
 		stdErr.setActivateOnWrite(true);
-		
+	}
+	
+	protected void post_initOutputStreamColors() {
 		// BM: it's not clear to me if a Color can be created outside UI thread, so do asyncExec
 		// I would think one cant, but some Platform code (ProcessConsole) does freely create Color instances
 		// on the UI thread, so maybe the asyncExec is not necessary.
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				initOuputStreamColors();
+				ui_initOutputStreamColors();
 			}
 		});
 	}
 	
-	protected void initOuputStreamColors() {
+	// Note: if overriden, make sure this method is called after all subclass members are initialized
+	protected void ui_initOutputStreamColors() {
 	}
 	
 	protected ISharedTextColors getColorManager() {

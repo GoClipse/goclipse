@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.io.IOException;
 
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.lang.ide.ui.utils.ProcessMessageConsole;
+import melnorme.lang.ide.ui.utils.AbstractProcessMessageConsole;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
@@ -62,7 +62,7 @@ public class GoBuilderConsoleListener implements IGoBuildListener {
 		return "["+ project.getName() +"]";
 	}
 	
-	public static class GoBuildConsole extends ProcessMessageConsole {
+	public static class GoBuildConsole extends AbstractProcessMessageConsole {
 		
 		protected final IOConsoleOutputStream metaOut;
 		
@@ -70,10 +70,11 @@ public class GoBuilderConsoleListener implements IGoBuildListener {
 			super(name, GoPluginImages.GO_CONSOLE_ICON.getDescriptor());
 			
 			metaOut = newOutputStream();
+			post_initOutputStreamColors();
 		}
 		
 		@Override
-		protected void initOuputStreamColors() {
+		protected void ui_initOutputStreamColors() {
 			metaOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
 			stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 		}

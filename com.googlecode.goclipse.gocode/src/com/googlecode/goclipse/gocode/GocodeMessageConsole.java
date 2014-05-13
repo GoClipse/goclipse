@@ -12,13 +12,13 @@ package com.googlecode.goclipse.gocode;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.lang.ide.ui.utils.ProcessMessageConsole;
+import melnorme.lang.ide.ui.utils.AbstractProcessMessageConsole;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
-class GocodeMessageConsole extends ProcessMessageConsole {
+public class GocodeMessageConsole extends AbstractProcessMessageConsole {
 	
 	public final IOConsoleOutputStream clientResponse;
 	public final IOConsoleOutputStream clientResponseErr;
@@ -29,10 +29,12 @@ class GocodeMessageConsole extends ProcessMessageConsole {
 		clientResponse = newOutputStream();
 		clientResponseErr = newOutputStream();
 		stdErr.setActivateOnWrite(false);
+		
+		post_initOutputStreamColors();
 	}
 	
 	@Override
-	protected void initOuputStreamColors() {
+	protected void ui_initOutputStreamColors() {
 		stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 		clientResponse.setColor(getColorManager().getColor(new RGB(100, 0, 150)));
 		clientResponseErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
