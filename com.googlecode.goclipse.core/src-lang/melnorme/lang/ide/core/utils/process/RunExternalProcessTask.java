@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
@@ -25,7 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * A task that runs an external process and notifies listeners of process lifecycle events.
  */
-public class RunExternalProcessTask<LISTENER extends IExternalProcessListener> implements IStartProcessTask {
+public class RunExternalProcessTask<LISTENER extends IExternalProcessListener> implements IRunProcessTask {
 	
 	protected final ProcessBuilder pb;
 	protected final IProject project;
@@ -53,13 +54,17 @@ public class RunExternalProcessTask<LISTENER extends IExternalProcessListener> i
 		}
 	}
 	
-	protected List<? extends IExternalProcessListener> getListeners() {
+	protected List<LISTENER> getListeners() {
 		return listenersList.getListeners();
 	}
 	
 	@Override
-	public EclipseExternalProcessHelper call() throws CoreException {
-		return startProcess();
+	public ExternalProcessResult call() throws CoreException {
+		return startProcessAndAwait();
+	}
+	
+	public ExternalProcessResult startProcessAndAwait() throws CoreException {
+		return startProcess().strictAwaitTermination();
 	}
 	
 	public EclipseExternalProcessHelper startProcess() throws CoreException {

@@ -90,12 +90,12 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 	}
 	
-	public ByteArrayOutputStreamExt getStdOutBytes() {
+	protected ByteArrayOutputStreamExt getStdOutBytes() {
 		assertTrue(isFullyTerminated());
 		return mainReader.byteArray;
 	}
 	
-	public ByteArrayOutputStreamExt getStdErrBytes() {
+	protected ByteArrayOutputStreamExt getStdErrBytes() {
 		assertTrue(isFullyTerminated());
 		assertTrue(readStdErr);
 		return stderrReader.byteArray;
@@ -110,23 +110,46 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	/** 
 	 * Awaits for successful process termination, as well as successful termination of reader threads,
 	 * throws an exception otherwise (and destroys the process).
-	 * @return process exit code. 
+	 * @return the process result encapsulated in data class {@link ExternalProcessResult}. 
 	 * @throws InterruptedException if interrupted
 	 * @throws TimeoutException if timeout occurs, or cancel requested.
 	 * @throws IOException if an IO error occured in the reader threads.
 	 */
-	public int strictAwaitTermination(int timeoutMs) throws InterruptedException, TimeoutException, IOException {
+	public ExternalProcessResult strictAwaitTermination(int timeoutMs) 
+			throws InterruptedException, TimeoutException, IOException {
 		try {
 			tryStrictAwaitTermination(timeoutMs);
 		} catch (Exception e) {
 			process.destroy();
 			throw e;
 		}
-		return process.exitValue();
+		return new ExternalProcessResult(process.exitValue(), getStdOutBytes(), getStdErrBytes());
 	}
 	
-	public int strictAwaitTermination() throws InterruptedException, TimeoutException, IOException {
+	public ExternalProcessResult strictAwaitTermination() throws InterruptedException, TimeoutException, IOException {
 		return strictAwaitTermination(NO_TIMEOUT);
+	}
+	
+	public class ExternalProcessResult {
+		
+		public final int exitValue;
+		public final ByteArrayOutputStreamExt stdout;
+		public final ByteArrayOutputStreamExt stderr;
+		
+		public ExternalProcessResult(int exitValue, ByteArrayOutputStreamExt stdout, ByteArrayOutputStreamExt stderr) {
+			this.exitValue = exitValue;
+			this.stdout = stdout;
+			this.stderr = stderr;
+		}
+		
+		public ByteArrayOutputStreamExt getStdOutBytes() {
+			return stdout;
+		}
+		
+		public ByteArrayOutputStreamExt getStdErrBytes() {
+			return stderr;
+		}
+		
 	}
 	
 	/* ----------------- writing helpers ----------------- */

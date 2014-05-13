@@ -17,9 +17,9 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
-import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.CoreException;
@@ -73,21 +73,13 @@ public class EclipseExternalProcessHelper {
 		return ph.getProcess();
 	}
 	
-	public ByteArrayOutputStreamExt getStdOutBytes() {
-		return ph.getStdOutBytes();
+	public ExternalProcessResult strictAwaitTermination() throws CoreException {
+		return strictAwaitTermination(ExternalProcessHelper.NO_TIMEOUT);
 	}
 	
-	public ByteArrayOutputStreamExt getStdErrBytes() {
-		return ph.getStdErrBytes();
-	}
-	
-	public void strictAwaitTermination() throws CoreException {
-		strictAwaitTermination(ExternalProcessHelper.NO_TIMEOUT);
-	}
-	
-	public void strictAwaitTermination(int timeout) throws CoreException {
+	public ExternalProcessResult strictAwaitTermination(int timeout) throws CoreException {
 		try {
-			ph.strictAwaitTermination(timeout);
+			return ph.strictAwaitTermination(timeout);
 		} catch (InterruptedException e) {
 			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_InterruptedAwaitingTermination, e);
 		} catch (IOException e) {

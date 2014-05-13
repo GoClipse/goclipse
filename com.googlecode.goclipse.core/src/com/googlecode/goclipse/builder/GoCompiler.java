@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -257,15 +258,15 @@ public class GoCompiler {
 			
 			RunGoToolTask processTask = GoToolManager.getDefault().createRunProcessTask(pb, project, pmonitor);
 			
-			EclipseExternalProcessHelper processHelper = null;
+			ExternalProcessResult processResult = null;
 			try {
-				processHelper = processTask.startProcess();
-				processHelper.strictAwaitTermination();
+				processResult = processTask.startProcess().strictAwaitTermination();
 			} catch (CoreException ce) {
 				if(ce.getCause() instanceof TimeoutException && pmonitor.isCanceled()) {
 					throw new OperationCanceledException();
 				}
 				LangCore.logStatus(ce.getStatus());
+				return;
 			}
 			
 			refreshProject(project, pmonitor);
@@ -273,13 +274,13 @@ public class GoCompiler {
 			
 			StreamAsLines sal = new StreamAsLines();
 			sal.setCombineLines(true);
-			sal.process(new ByteArrayInputStream(processHelper.getStdOutBytes().toByteArray()));
-			sal.process(new ByteArrayInputStream(processHelper.getStdErrBytes().toByteArray()));
+			sal.process(new ByteArrayInputStream(processResult.getStdOutBytes().toByteArray()));
+			sal.process(new ByteArrayInputStream(processResult.getStdErrBytes().toByteArray()));
 			
 			if (sal.getLines().size() > 0) {
 		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
 		    }
-
+		
 	}
 
 	/**

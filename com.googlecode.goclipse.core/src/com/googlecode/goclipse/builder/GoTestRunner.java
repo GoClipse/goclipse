@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -121,11 +121,10 @@ public class GoTestRunner {
             	RunGoToolTask runTestsTask = GoToolManager.getDefault().
             			createRunProcessTask(testProcessBuilder, null, new NullProgressMonitor());
                 
-                EclipseExternalProcessHelper ph = runTestsTask.startProcess();
+                ExternalProcessResult processResult = runTestsTask.startProcessAndAwait();
                 
-                ph.strictAwaitTermination();
-                String stdout = ph.getStdOutBytes().toString();
-                String stderr = ph.getStdErrBytes().toString();
+                String stdout = processResult.getStdOutBytes().toString();
+                String stderr = processResult.getStdErrBytes().toString();
                 
                 markErrors(stdout, stderr);
                 
