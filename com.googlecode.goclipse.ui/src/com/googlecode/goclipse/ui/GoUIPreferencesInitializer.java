@@ -21,7 +21,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
 
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.editors.IColorDefaults;
 
 public class GoUIPreferencesInitializer extends AbstractPreferenceInitializer {
@@ -45,7 +44,7 @@ public class GoUIPreferencesInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, true);
 		
 		
-		IEclipsePreferences coreDefaults = DefaultScope.INSTANCE.getNode(GoCore.PLUGIN_ID);
+		IEclipsePreferences coreDefaults = DefaultScope.INSTANCE.getNode(GoUIPlugin.PLUGIN_ID);
 		
 		coreDefaults.putBoolean(GoUIPreferenceConstants.FIELD_USE_HIGHLIGHTING, true);
 		coreDefaults.put(GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR, StringConverter.asString(IColorDefaults.KEYWORD));
