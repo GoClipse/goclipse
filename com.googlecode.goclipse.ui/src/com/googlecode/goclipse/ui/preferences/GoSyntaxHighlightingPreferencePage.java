@@ -20,7 +20,7 @@ public class GoSyntaxHighlightingPreferencePage extends FieldEditorPreferencePag
 
 	public GoSyntaxHighlightingPreferencePage() {
 		super(GRID);
-		setPreferenceStore(GoUIPlugin.getUIPrefStoreTODO());
+		setPreferenceStore(GoUIPlugin.getPrefStore());
 	}
 
 	/**

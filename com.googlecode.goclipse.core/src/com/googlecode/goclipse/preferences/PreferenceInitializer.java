@@ -7,12 +7,9 @@ import java.util.List;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.util.Util;
-import org.eclipse.swt.SWT;
 
 import com.googlecode.goclipse.core.GoCore;
-import com.googlecode.goclipse.editors.IColorConstants;
 
 
 /**
@@ -27,22 +24,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		
 		IEclipsePreferences coreDefaults = DefaultScope.INSTANCE.getNode(GoCore.PLUGIN_ID);
 		
-		coreDefaults.putBoolean(PreferenceConstants.FIELD_USE_HIGHLIGHTING, true);
-		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR, StringConverter.asString(IColorConstants.KEYWORD));
-		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR, StringConverter.asString(IColorConstants.VALUE));
-		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR, StringConverter.asString(IColorConstants.PRIMITIVE));
-		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR, StringConverter.asString(IColorConstants.COMMENT));
-		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, StringConverter.asString(IColorConstants.BUILTIN_FUNCTION));
-		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_STRING_COLOR, StringConverter.asString(IColorConstants.STRING));
-		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, StringConverter.asString(IColorConstants.MULTILINE_STRING));
-		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE,          SWT.BOLD           );
-		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE,            SWT.BOLD|SWT.ITALIC);
-		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE,        SWT.ITALIC         );
-		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE,          SWT.NORMAL         );
-		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE, SWT.BOLD           );
-		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_STRING_STYLE,           SWT.NORMAL         );
-		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE, SWT.NORMAL         );
-
 		if (Util.isWindows()){
 			coreDefaults.put(PreferenceConstants.GOOS, PreferenceConstants.OS_WINDOWS);
 		} else if (Util.isLinux()) {

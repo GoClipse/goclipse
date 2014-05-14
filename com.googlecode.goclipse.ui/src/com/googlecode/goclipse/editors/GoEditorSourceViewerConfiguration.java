@@ -34,7 +34,6 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
@@ -88,7 +87,7 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
-		IPreferenceStore prefStore = GoUIPlugin.getUIPrefStoreTODO();
+		IPreferenceStore prefStore = GoUIPlugin.getPrefStore();
 		boolean useHighlighting = prefStore.getBoolean(GoUIPreferenceConstants.FIELD_USE_HIGHLIGHTING);
 
 		if (useHighlighting) {

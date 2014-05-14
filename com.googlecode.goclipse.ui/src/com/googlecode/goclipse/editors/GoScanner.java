@@ -16,20 +16,18 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
 
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.editors.CombinedWordRule.WordMatcher;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 
 public class GoScanner extends RuleBasedScanner {
 
 	public GoScanner() {
-		IPreferenceStore prefStore = GoUIPlugin.getUIPrefStoreTODO();
+		IPreferenceStore prefStore = GoUIPlugin.getPrefStore();
 
-		boolean useHighlighting = GoCore.getPreferences().getBoolean(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
+		boolean useHighlighting = GoUIPlugin.getPrefStore().getBoolean(GoUIPreferenceConstants.FIELD_USE_HIGHLIGHTING);
 
-		final Color textColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_TEXT_COLOR));
+		final Color textColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_COLOR));
 		
 		final Token       text        = new Token(new TextAttribute(textColor, null, SWT.NONE));
 		final WordMatcher keywordRule = new WordMatcher();

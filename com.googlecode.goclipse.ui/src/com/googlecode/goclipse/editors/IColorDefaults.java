@@ -3,7 +3,7 @@ package com.googlecode.goclipse.editors;
 
 import org.eclipse.swt.graphics.RGB;
 
-public interface IColorConstants {
+public interface IColorDefaults {
 	RGB COMMENT    		 = new RGB( 63, 127,  95);
 	RGB PROC_INSTR 		 = new RGB(128, 128, 128);
 	RGB STRING     		 = new RGB(  0,  75, 200);

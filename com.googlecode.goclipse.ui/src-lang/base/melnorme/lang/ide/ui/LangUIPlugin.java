@@ -133,10 +133,6 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		return getInstance().getCorePreferenceStore();
 	}
 	
-	public static IPreferenceStore getUIPrefStoreTODO() {
-		return getPrefStore();
-	}
-
 	private IPreferenceStore corePreferenceStore;
 	
     public IPreferenceStore getCorePreferenceStore() {
