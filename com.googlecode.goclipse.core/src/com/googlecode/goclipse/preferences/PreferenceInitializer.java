@@ -1,6 +1,5 @@
 package com.googlecode.goclipse.preferences;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 			coreDefaults.put(PreferenceConstants.GOARCH, PreferenceConstants.ARCH_386);
 		}
 		
-		tryAndDiscoverGDB(coreDefaults);
 	}
 	
   private static boolean isAMD64() {
@@ -100,24 +98,5 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public static String getDefaultGofmtName() {
 		return "gofmt" +(Util.isWindows()?".exe":"");
 	}
-
-  private void tryAndDiscoverGDB(IEclipsePreferences coreDefault) {
-    final String[] possiblePaths = {
-        "/opt/local/bin/fsf-gdb",
-        "/usr/local/bin/gdb",
-        "/Developer/usr/bin/gdb",
-        "/usr/bin/gdb"
-    };
-    
-    for (String path : possiblePaths) {
-      File file = new File(path);
-      
-      if (file.exists() && file.canExecute()) {
-        coreDefault.put(PreferenceConstants.GDB_PATH, path);
-        
-        return;
-      }
-    }
-  }
 
 }
