@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.ui.GoPluginImages;
 
@@ -81,8 +82,7 @@ public class GoReferenceProjectWizardPage extends WizardPage {
 	}
 
 	protected File getGoRootSrcFolder() {
-		String goRoot = Activator.getDefault().getPreferenceStore()
-			.getString(PreferenceConstants.GOROOT);
+		String goRoot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
 
 		File srcFolder = Path.fromOSString(goRoot).append("src").toFile();
 
@@ -90,8 +90,7 @@ public class GoReferenceProjectWizardPage extends WizardPage {
 	}
 
 	private boolean isGoRootSet() {
-		String goRoot = Activator.getDefault().getPreferenceStore()
-			.getString(PreferenceConstants.GOROOT);
+		String goRoot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
 
 		return !"".equals(goRoot);
 	}

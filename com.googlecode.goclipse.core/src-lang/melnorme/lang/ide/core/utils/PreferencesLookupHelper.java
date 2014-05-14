@@ -47,7 +47,7 @@ public class PreferencesLookupHelper {
 		return preferences().getInt(qualifier, key, defaultValue, contexts);
 	}
 	
-	boolean getBoolean(String key, boolean defaultValue) {
+	public boolean getBoolean(String key, boolean defaultValue) {
 		return preferences().getBoolean(qualifier, key, defaultValue, contexts);
 	}
 	

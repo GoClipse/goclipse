@@ -16,7 +16,9 @@ import org.eclipse.swt.widgets.Display;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.ui.GoUIPlugin;
 
 // TODO: this content provider is hard-coded to show files from GOROOT; we'll probably want this
 // to have better knowledge of the GOROOT / GOPATH directories that are in use by the project.
@@ -34,12 +36,14 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 
   public NavigatorContentProvider2() {
     // TODO: we really want to listen for changes to the root directories referenced by the project.
-    Activator.getDefault().getPreferenceStore().addPropertyChangeListener(this);
+    GoUIPlugin.getPrefStore().addPropertyChangeListener(this);
+    GoUIPlugin.getCorePrefStore().addPropertyChangeListener(this);
   }
 
   @Override
   public void dispose() {
-    Activator.getDefault().getPreferenceStore().removePropertyChangeListener(this);
+	GoUIPlugin.getPrefStore().removePropertyChangeListener(this);
+	GoUIPlugin.getCorePrefStore().removePropertyChangeListener(this);
   }
 
   @Override
@@ -129,15 +133,13 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
   }
 
   private boolean isGoRootSet() {
-    String goRoot = Activator.getDefault().getPreferenceStore().getString(
-        PreferenceConstants.GOROOT);
+    String goRoot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
 
     return !"".equals(goRoot);
   }
 
   protected File getGoRootSrcFolder() {
-    String goRoot = Activator.getDefault().getPreferenceStore().getString(
-        PreferenceConstants.GOROOT);
+    String goRoot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
 
     File srcFolder = Path.fromOSString(goRoot).append("src/pkg").toFile();
 

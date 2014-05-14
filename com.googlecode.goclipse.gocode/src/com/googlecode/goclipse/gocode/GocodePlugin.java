@@ -15,8 +15,8 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.gocode.utils.Utils;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
@@ -153,7 +153,7 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
   }
   
   protected IPath getGocodeGoRootPath() {
-    String goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
+    String goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
 
     if (goroot != null && goroot.length() > 0) {
       return new Path(goroot).append("bin").append(getExeName());

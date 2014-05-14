@@ -12,15 +12,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.ui.GoUIPlugin;
+import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 
 public class GoSyntaxHighlightingPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
 	public GoSyntaxHighlightingPreferencePage() {
 		super(GRID);
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
+		setPreferenceStore(GoUIPlugin.getUIPrefStoreTODO());
 	}
 
 	/**
@@ -38,21 +38,21 @@ public class GoSyntaxHighlightingPreferencePage extends FieldEditorPreferencePag
     Composite fieldParent = new Composite(group, SWT.NONE);
     GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
 
-		addField(new BooleanFieldEditor(PreferenceConstants.FIELD_USE_HIGHLIGHTING,
+		addField(new BooleanFieldEditor(GoUIPreferenceConstants.FIELD_USE_HIGHLIGHTING,
 				"Use highlighting", fieldParent));
 
 		Label splitter = new Label(fieldParent, SWT.SEPARATOR | SWT.HORIZONTAL);
     GridDataFactory.swtDefaults().grab(true, false).span(3, 1).align(SWT.FILL, SWT.TOP).applyTo(splitter);
 
-    	addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_TEXT_COLOR,             "Text:",              fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,          "Keyword:",           fieldParent));
-		//addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_OPERATOR_COLOR,         "Operators:",         fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,            "Value:",             fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,        "Primitive:",         fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR,          "Comment:",           fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, "Built-in function:", fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_STRING_COLOR,           "String:",            fieldParent));
-		addField(new ColorFieldEditor(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, "Multi-line string:", fieldParent));
+    	addField(new ColorFieldEditor(GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_COLOR,             "Text:",              fieldParent));
+		addField(new ColorFieldEditor(GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,          "Keyword:",           fieldParent));
+		//addField(new ColorFieldEditor(GoUIPreferenceConstants.FIELD_SYNTAX_OPERATOR_COLOR,         "Operators:",         fieldParent));
+		addField(new ColorFieldEditor(GoUIPreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,            "Value:",             fieldParent));
+		addField(new ColorFieldEditor(GoUIPreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,        "Primitive:",         fieldParent));
+		addField(new ColorFieldEditor(GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR,          "Comment:",           fieldParent));
+		addField(new ColorFieldEditor(GoUIPreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, "Built-in function:", fieldParent));
+		addField(new ColorFieldEditor(GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR,           "String:",            fieldParent));
+		addField(new ColorFieldEditor(GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, "Multi-line string:", fieldParent));
 	}
 
 	@Override

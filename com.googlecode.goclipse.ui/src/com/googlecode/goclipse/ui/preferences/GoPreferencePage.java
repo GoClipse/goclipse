@@ -23,6 +23,7 @@ import org.osgi.framework.Version;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.preferences.PreferenceInitializer;
+import com.googlecode.goclipse.ui.GoUIPlugin;
 
 /**
  * This class represents a preference page that is contributed to the
@@ -52,7 +53,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 	public GoPreferencePage() {
 		super(GRID);
 
-		setPreferenceStore(Activator.getDefault().getPreferenceStore());
+		setPreferenceStore(GoUIPlugin.getCorePrefStore());
 		setDescription("GoClipse v" + getVersionText());
 	}
 

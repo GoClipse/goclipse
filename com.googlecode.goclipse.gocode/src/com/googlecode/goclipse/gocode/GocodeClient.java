@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.builder.StreamAsLines;
@@ -48,10 +47,9 @@ public class GocodeClient {
 		  throws CoreException {
     error = null;
     
-    String goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
-    
-    String goarch = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);
-    String goos = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS);
+    String goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
+    String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
+    String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
     
     
     IPath gocodePath = GocodePlugin.getPlugin().getBestGocodeInstance();

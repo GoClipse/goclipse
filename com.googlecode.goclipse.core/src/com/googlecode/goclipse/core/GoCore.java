@@ -11,15 +11,12 @@
 package com.googlecode.goclipse.core;
 
 
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import melnorme.lang.ide.core.LangCore;
+
 import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoBuilder;
-
-import melnorme.lang.ide.core.LangCore;
 
 public class GoCore extends LangCore {
 	
@@ -42,17 +39,6 @@ public class GoCore extends LangCore {
 	
 	public static GoCore getDefault() {
 		return (GoCore) getInstance();
-	}
-	
-	private ScopedPreferenceStore preferenceStore;
-	
-	public IPreferenceStore getPreferenceStore() {
-		// Create the preference store lazily.
-		if (preferenceStore == null) {
-			preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, getBundle().getSymbolicName());
-			
-		}
-		return preferenceStore;
 	}
 	
 }

@@ -10,6 +10,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.builder.GoToolManager;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -27,8 +28,7 @@ public class GofmtActionDelegate extends TransformTextAction {
 	protected String transformText(final String text) throws CoreException {
 		final String currentContent = text;
 		
-		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		String gofmtPath = preferenceStore.getString(PreferenceConstants.FORMATTER_PATH);
+		String gofmtPath = GoCore.getPreferences().getString(PreferenceConstants.FORMATTER_PATH);
 		
 		IProject project = null; // TODO
 		IProgressMonitor pm = new NullProgressMonitor(); // TODO

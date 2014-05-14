@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 
-import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.editors.IColorConstants;
 
 
@@ -23,39 +24,40 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	@Override
   public void initializeDefaultPreferences() {
-		//SysUtils.debug("Loading Go Plug-in Preferences...");
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.FIELD_USE_HIGHLIGHTING, true);
-		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,          IColorConstants.KEYWORD         );
-		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,            IColorConstants.VALUE           );
-		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,        IColorConstants.PRIMITIVE       );
-		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR,          IColorConstants.COMMENT         );
-		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, IColorConstants.BUILTIN_FUNCTION);
-		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_STRING_COLOR,           IColorConstants.STRING          );
-		PreferenceConverter.setDefault(store, PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, IColorConstants.MULTILINE_STRING);
-		store.setDefault(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE,          SWT.BOLD           );
-		store.setDefault(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE,            SWT.BOLD|SWT.ITALIC);
-		store.setDefault(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE,        SWT.ITALIC         );
-		store.setDefault(PreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE,          SWT.NORMAL         );
-		store.setDefault(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE, SWT.BOLD           );
-		store.setDefault(PreferenceConstants.FIELD_SYNTAX_STRING_STYLE,           SWT.NORMAL         );
-		store.setDefault(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE, SWT.NORMAL         );
+		
+		IEclipsePreferences coreDefaults = DefaultScope.INSTANCE.getNode(GoCore.PLUGIN_ID);
+		
+		coreDefaults.putBoolean(PreferenceConstants.FIELD_USE_HIGHLIGHTING, true);
+		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR, StringConverter.asString(IColorConstants.KEYWORD));
+		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR, StringConverter.asString(IColorConstants.VALUE));
+		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR, StringConverter.asString(IColorConstants.PRIMITIVE));
+		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR, StringConverter.asString(IColorConstants.COMMENT));
+		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, StringConverter.asString(IColorConstants.BUILTIN_FUNCTION));
+		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_STRING_COLOR, StringConverter.asString(IColorConstants.STRING));
+		coreDefaults.put(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, StringConverter.asString(IColorConstants.MULTILINE_STRING));
+		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE,          SWT.BOLD           );
+		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE,            SWT.BOLD|SWT.ITALIC);
+		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE,        SWT.ITALIC         );
+		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE,          SWT.NORMAL         );
+		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE, SWT.BOLD           );
+		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_STRING_STYLE,           SWT.NORMAL         );
+		coreDefaults.putInt(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE, SWT.NORMAL         );
 
 		if (Util.isWindows()){
-			store.setDefault(PreferenceConstants.GOOS, PreferenceConstants.OS_WINDOWS);
+			coreDefaults.put(PreferenceConstants.GOOS, PreferenceConstants.OS_WINDOWS);
 		} else if (Util.isLinux()) {
-			store.setDefault(PreferenceConstants.GOOS, PreferenceConstants.OS_LINUX);
+			coreDefaults.put(PreferenceConstants.GOOS, PreferenceConstants.OS_LINUX);
 		} else if (Util.isMac()) {
-			store.setDefault(PreferenceConstants.GOOS, PreferenceConstants.OS_DARWIN);
+			coreDefaults.put(PreferenceConstants.GOOS, PreferenceConstants.OS_DARWIN);
 		}
 
 		if (isAMD64()){
-			store.setDefault(PreferenceConstants.GOARCH, PreferenceConstants.ARCH_AMD64);
+			coreDefaults.put(PreferenceConstants.GOARCH, PreferenceConstants.ARCH_AMD64);
 		} else if (is386()){
-			store.setDefault(PreferenceConstants.GOARCH, PreferenceConstants.ARCH_386);
+			coreDefaults.put(PreferenceConstants.GOARCH, PreferenceConstants.ARCH_386);
 		}
 		
-		tryAndDiscoverGDB(store);
+		tryAndDiscoverGDB(coreDefaults);
 	}
 	
   private static boolean isAMD64() {
@@ -118,7 +120,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		return "gofmt" +(Util.isWindows()?".exe":"");
 	}
 
-  private void tryAndDiscoverGDB(IPreferenceStore store) {
+  private void tryAndDiscoverGDB(IEclipsePreferences coreDefault) {
     final String[] possiblePaths = {
         "/opt/local/bin/fsf-gdb",
         "/usr/local/bin/gdb",
@@ -130,7 +132,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
       File file = new File(path);
       
       if (file.exists() && file.canExecute()) {
-        store.setDefault(PreferenceConstants.GDB_PATH, path);
+        coreDefault.put(PreferenceConstants.GDB_PATH, path);
         
         return;
       }

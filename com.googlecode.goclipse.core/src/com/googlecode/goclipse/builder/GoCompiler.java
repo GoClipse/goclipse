@@ -24,12 +24,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.Util;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Import;
@@ -57,9 +57,8 @@ public class GoCompiler {
 	 */
 	public void goGetDependencies(final IProject project, IProgressMonitor monitor, java.io.File target) {
 		
-		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 		final IPath projectLocation = project.getLocation();
-		final String compilerPath   = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
+		final String compilerPath   = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
 		final IFile  file           = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 
 		try {
@@ -219,9 +218,8 @@ public class GoCompiler {
 		final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
 		final IPath  binFolder       = Environment.INSTANCE.getBinOutputFolder(project);
 		
-		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
-		final String           outExtension    = (Util.isWindows() ? ".exe" : "");
+		final String compilerPath = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
+		final String outExtension = (Util.isWindows() ? ".exe" : "");
 
 			// the path exist to find the cc
 			String   path    = System.getenv("PATH");
@@ -292,8 +290,7 @@ public class GoCompiler {
 		
 		final IPath  projectLocation = project.getLocation();
 		
-		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
+		final String compilerPath = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
 
 		try {
 			// the path exist to find the cc
@@ -357,8 +354,7 @@ public class GoCompiler {
 	 */
 	public void compilePkg(final IProject project, IProgressMonitor pmonitor, final String pkgpath, java.io.File target) {
 		
-		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
+		final String           compilerPath    = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
 		
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
@@ -435,8 +431,7 @@ public class GoCompiler {
 		//final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		//final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
 
-		final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		final String           compilerPath    = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
+		final String           compilerPath    = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
 		
 		try {
 			String[] cmd = { compilerPath, GoConstants.GO_INSTALL_COMMAND, "all" };
@@ -682,8 +677,7 @@ public class GoCompiler {
 	public static String getCompilerVersion() {
 		
 		String version = null;
-		IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-		String compilerPath = preferenceStore.getString(PreferenceConstants.GO_TOOL_PATH);
+		String compilerPath = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
 
 		if (compilerPath == null || compilerPath.length() == 0) {
 			return null;

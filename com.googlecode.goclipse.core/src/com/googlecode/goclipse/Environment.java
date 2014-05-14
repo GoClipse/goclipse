@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.util.Util;
 
 import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -62,14 +63,9 @@ public class Environment {
 	 * @return true if the preferences have been set for all values
 	 */
 	public boolean isValid() {
-		String goarch = Activator.getDefault().getPreferenceStore().getString(
-				PreferenceConstants.GOARCH);
-		
-		String goos = Activator.getDefault().getPreferenceStore().getString(
-				PreferenceConstants.GOOS);
-		
-		String goroot = Activator.getDefault().getPreferenceStore().getString(
-				PreferenceConstants.GOROOT);
+		String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
+		String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
+		String goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
 		
 		if (goroot == null || goroot.length() == 0 || goos == null ||
 			goos.length() == 0 || goarch == null || goarch.length() == 0) {
@@ -239,10 +235,8 @@ public class Environment {
 	}
 
 	private IPath getDefaultPkgOutputFolder() {
-		String goarch = Activator.getDefault().getPreferenceStore()
-		.getString(PreferenceConstants.GOARCH);
-		String goos = Activator.getDefault().getPreferenceStore()
-		.getString(PreferenceConstants.GOOS);
+		String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
+		String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
 		return Path.fromOSString(DEFAULT_PKG_OUTPUT_FOLDER).append(goos+"_"+goarch);
 	}
 
@@ -280,7 +274,7 @@ public class Environment {
 	public boolean isStandardLibrary(IProject project, String packagePath) {
 		
 		String libraryName = packagePath + GoConstants.GO_LIBRARY_FILE_EXTENSION;
-		String goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
+		String goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
 		
 		File libFile = Path.fromOSString(goroot).append(getDefaultPkgOutputFolder()).append(libraryName).toFile();
 		return libFile.exists();
@@ -306,7 +300,7 @@ public class Environment {
 	 * @return
 	 */
 	public String getExecutableExtension() {
-		if (PreferenceConstants.OS_WINDOWS.equals(Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOOS))){
+		if (PreferenceConstants.OS_WINDOWS.equals(GoCore.getPreferences().getString(PreferenceConstants.GOOS))){
 			return ".exe";
 		}
 		return "";
@@ -404,7 +398,7 @@ public class Environment {
 		
 		// Plug-in property comes next
 		if (goPath == null || "".equals(goPath)) {
-			goPath = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOPATH);
+			goPath = GoCore.getPreferences().getString(PreferenceConstants.GOPATH);
 		}
 
 		// last ditch effort via a system environment variable
@@ -445,7 +439,7 @@ public class Environment {
 		
 		// Plug-in property comes next
 		if (goroot == null || "".equals(goroot)) {
-			goroot = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOROOT);
+			goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
 		}
 
 		// last ditch effort via a system environment variable

@@ -16,16 +16,18 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
 
-import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.editors.CombinedWordRule.WordMatcher;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.ui.GoUIPlugin;
+import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 
 public class GoScanner extends RuleBasedScanner {
 
 	public GoScanner() {
-		IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
+		IPreferenceStore prefStore = GoUIPlugin.getUIPrefStoreTODO();
 
-		boolean useHighlighting = prefStore.getBoolean(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
+		boolean useHighlighting = GoCore.getPreferences().getBoolean(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
 
 		final Color textColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_TEXT_COLOR));
 		
@@ -47,19 +49,19 @@ public class GoScanner extends RuleBasedScanner {
 		}, keywordRule, text);
 		
 		if (useHighlighting) {
-			final Color keywordColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR));
-			final Color valueColor           = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_VALUE_COLOR));
-			final Color primitiveColor       = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR));
-			final Color builtinFunctionColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR));
-			final Color operatorColor        = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, PreferenceConstants.FIELD_SYNTAX_OPERATOR_COLOR));
+			final Color keywordColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR));
+			final Color valueColor           = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_VALUE_COLOR));
+			final Color primitiveColor       = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR));
+			final Color builtinFunctionColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR));
+			final Color operatorColor        = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_OPERATOR_COLOR));
 			
 
-			final int keywordStyle         = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE);
-			final int valueStyle           = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_VALUE_STYLE);
-			final int primitiveStyle       = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE);
-			final int builtinFunctionStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE);
-			final int operatorStyle        = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_OPERATOR_STYLE);
-			final int textStyle            = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_TEXT_STYLE);
+			final int keywordStyle         = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE);
+			final int valueStyle           = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_VALUE_STYLE);
+			final int primitiveStyle       = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE);
+			final int builtinFunctionStyle = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE);
+			final int operatorStyle        = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_OPERATOR_STYLE);
+			final int textStyle            = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_STYLE);
 
 			final Token keyword         = new Token(new TextAttribute(keywordColor,         null, keywordStyle));
 			final Token value           = new Token(new TextAttribute(valueColor,           null, valueStyle));

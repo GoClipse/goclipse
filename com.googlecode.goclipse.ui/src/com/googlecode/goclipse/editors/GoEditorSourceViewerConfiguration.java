@@ -35,6 +35,8 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.ui.GoUIPlugin;
+import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 import com.googlecode.goclipse.ui.text.GoPartitions;
 import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
@@ -86,20 +88,20 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
-		IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
-		boolean useHighlighting = prefStore.getBoolean(PreferenceConstants.FIELD_USE_HIGHLIGHTING);
+		IPreferenceStore prefStore = GoUIPlugin.getUIPrefStoreTODO();
+		boolean useHighlighting = prefStore.getBoolean(GoUIPreferenceConstants.FIELD_USE_HIGHLIGHTING);
 
 		if (useHighlighting) {
 			Color commentColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore,
-			        PreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR));
+				GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR));
 			Color stringColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore,
-			        PreferenceConstants.FIELD_SYNTAX_STRING_COLOR));
+				GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR));
 			Color multilineStringColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore,
-			        PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR));
+				GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR));
 
-			int commentStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE);
-			int stringStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_STRING_STYLE);
-			int multilineStringStyle = prefStore.getInt(PreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE);
+			int commentStyle = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE);
+			int stringStyle = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_STRING_STYLE);
+			int multilineStringStyle = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE);
 
 			NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(new TextAttribute(commentColor, null,
 			        commentStyle));

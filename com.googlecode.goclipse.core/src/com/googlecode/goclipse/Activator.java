@@ -31,28 +31,4 @@ public class Activator extends GoCore {
 		}
 	}
 	
-	/**
-	 * Log the given warning message to the Eclipse log.
-	 */
-	public static void logWarning(String message) {
-		GoCore.logWarning(message);
-	}
-	
-	/**
-	 * Log the given error message to the Eclipse log.
-	 */
-	public static void logError(String message) {
-		GoCore.logError(message);
-	}
-	
-	/**
-	 * Log the given exception to the Eclipse log.
-	 * 
-	 * @param t
-	 *            the exception to log
-	 */
-	public static void logError(Throwable t) {
-		GoCore.logError(t);
-	}
-	
 }

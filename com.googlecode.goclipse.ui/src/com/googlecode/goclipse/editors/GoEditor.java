@@ -22,7 +22,7 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.ui.GoUIPlugin;
 
 public class GoEditor extends TextEditor {
   public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
@@ -61,8 +61,10 @@ public class GoEditor extends TextEditor {
 //				}
       }
     };
-
-    Activator.getDefault().getPreferenceStore().addPropertyChangeListener(changeListener);
+    
+    // TODO: Listen to specific property events only
+    GoUIPlugin.getPrefStore().addPropertyChangeListener(changeListener);
+    GoUIPlugin.getCorePrefStore().addPropertyChangeListener(changeListener);
   }
 
   @Override
@@ -154,7 +156,8 @@ public class GoEditor extends TextEditor {
 
   @Override
   public void dispose() {
-    Activator.getDefault().getPreferenceStore().removePropertyChangeListener(changeListener);
+	GoUIPlugin.getPrefStore().removePropertyChangeListener(changeListener);
+	GoUIPlugin.getCorePrefStore().removePropertyChangeListener(changeListener);
 
     if (imageUpdater != null) {
       imageUpdater.dispose();
