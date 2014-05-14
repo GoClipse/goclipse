@@ -14,7 +14,6 @@ import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
-import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
@@ -34,10 +33,10 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 import com.googlecode.goclipse.ui.text.GoPartitions;
+import com.googlecode.goclipse.ui.util.SingleTokenScanner;
 import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
 /**
@@ -89,39 +88,36 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
-		IPreferenceStore prefStore = GoUIPlugin.getPrefStore();
-		boolean useHighlighting = prefStore.getBoolean(GoUIPreferenceConstants.FIELD_USE_HIGHLIGHTING);
-
+		boolean useHighlighting = fPreferenceStore.getBoolean(GoUIPreferenceConstants.FIELD_USE_HIGHLIGHTING);
+		
 		if (useHighlighting) {
-			Color commentColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore,
-				GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR));
-			Color stringColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore,
-				GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR));
-			Color multilineStringColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore,
-				GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR));
+			
+			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.COMMENT, 
+				GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR, 
+				GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE);
 
-			int commentStyle = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE);
-			int stringStyle = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_STRING_STYLE);
-			int multilineStringStyle = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE);
-
-			NonRuleBasedDamagerRepairer ndr = new NonRuleBasedDamagerRepairer(new TextAttribute(commentColor, null,
-			        commentStyle));
-			reconciler.setDamager(ndr, PartitionScanner.COMMENT);
-			reconciler.setRepairer(ndr, PartitionScanner.COMMENT);
-
-			NonRuleBasedDamagerRepairer nonRuleBasedDamagerRepairer = new NonRuleBasedDamagerRepairer(
-			        new TextAttribute(stringColor, null, stringStyle));
-			reconciler.setDamager(nonRuleBasedDamagerRepairer, PartitionScanner.STRING);
-			reconciler.setRepairer(nonRuleBasedDamagerRepairer, PartitionScanner.STRING);
-
-			NonRuleBasedDamagerRepairer nonRuleBasedDamagerRepairer2 = new NonRuleBasedDamagerRepairer(
-			        new TextAttribute(multilineStringColor, null, multilineStringStyle));
-			reconciler.setDamager(nonRuleBasedDamagerRepairer2, PartitionScanner.MULTILINE_STRING);
-			reconciler.setRepairer(nonRuleBasedDamagerRepairer2, PartitionScanner.MULTILINE_STRING);
+			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.STRING, 
+				GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR, 
+				GoUIPreferenceConstants.FIELD_SYNTAX_STRING_STYLE);
+			
+			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.MULTILINE_STRING, 
+				GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, 
+				GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE);
+			
 		}
 		return reconciler;
 	}
-
+	
+	protected void setupSingleTokenDamagerRepairer(PresentationReconciler reconciler, String contentType, 
+			String colorKey, String styleKey) {
+		Color commentColor = ColorManager.INSTANCE.getColor(
+			PreferenceConverter.getColor(fPreferenceStore, colorKey));
+		int commentStyle = fPreferenceStore.getInt(styleKey);
+		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(new SingleTokenScanner(commentColor, commentStyle));
+		reconciler.setDamager(dr, contentType);
+		reconciler.setRepairer(dr, contentType);
+	}
+	
 	@Override
 	public IContentAssistant getContentAssistant(ISourceViewer sv) {
 		final ContentAssistant ca = new ContentAssistant();
