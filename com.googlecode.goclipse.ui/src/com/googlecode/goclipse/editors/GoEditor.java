@@ -2,32 +2,34 @@ package com.googlecode.goclipse.editors;
 
 import java.util.ResourceBundle;
 
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-import com.googlecode.goclipse.ui.GoUIPlugin;
+import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 
-public class GoEditor extends TextEditor {
-  public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
-  public final static String EDITOR_MATCHING_BRACKETS_COLOR = "matchingBracketsColor";
+public class GoEditor extends AbstractLangEditor {
 
+  public static final String EDITOR_ID = "com.googlecode.goclipse.editors.Editor";
+
+  // the org.eclipse.ui.contexts ID:
+  private static final String EDITOR_CONTEXT_ID = "com.googlecode.goclipse.editor";
+  
   private static final String BUNDLE_ID = "com.googlecode.goclipse.editors.GoEditorMessages";
   
 	public static final String EDITOR_CONTEXT = "#GoEditorContext";
@@ -35,7 +37,6 @@ public class GoEditor extends TextEditor {
 
   private static ResourceBundle editorResourceBundle = ResourceBundle.getBundle(BUNDLE_ID);
 
-  private IPropertyChangeListener changeListener;
   private DefaultCharacterPairMatcher matcher;
   private EditorImageUpdater imageUpdater;
 
@@ -46,34 +47,23 @@ public class GoEditor extends TextEditor {
    */
   public GoEditor() {
 	  
-    setSourceViewerConfiguration(new GoEditorSourceViewerConfiguration(this, getPreferenceStore()));
+    setKeyBindingScopes(new String[] {EDITOR_CONTEXT_ID});
 
-    setKeyBindingScopes(new String[] {"com.googlecode.goclipse.editor"});
-
-    changeListener = new IPropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent event) {
-//				SysUtils.debug("Preference Change Event");
-//				if (event.getProperty().equals(PreferenceConstants.FIELD_USE_HIGHLIGHTING)) {
-//					setSourceViewerConfiguration(new Configuration(colorManager));
-//					setDocumentProvider(new DocumentProvider());
-//					initializeEditor();
-//				}
-      }
-    };
-    
-    // TODO: Listen to specific property events only
-    GoUIPlugin.getPrefStore().addPropertyChangeListener(changeListener);
-    GoUIPlugin.getCorePrefStore().addPropertyChangeListener(changeListener);
   }
 
   @Override
   protected void initializeEditor() {
     super.initializeEditor();
-
+    
 	setEditorContextMenuId(EDITOR_CONTEXT);
 	setRulerContextMenuId(RULER_CONTEXT);
   }
+  
+	@Override
+	protected TextSourceViewerConfiguration createSourceViewerConfiguration() {
+		return new GoEditorSourceViewerConfiguration(this, getPreferenceStore());
+	}
+
   
   @Override
   protected void setTitleImage(Image image) {
@@ -109,13 +99,9 @@ public class GoEditor extends TextEditor {
     char[] matchChars = {'(', ')', '[', ']', '{', '}'}; //which brackets to match
     matcher = new DefaultCharacterPairMatcher(matchChars, IDocumentExtension3.DEFAULT_PARTITIONING);
     support.setCharacterPairMatcher(matcher);
-    support.setMatchingCharacterPainterPreferenceKeys(EDITOR_MATCHING_BRACKETS,
-        EDITOR_MATCHING_BRACKETS_COLOR);
-
-    //Enable bracket highlighting in the preference store
-    IPreferenceStore store = getPreferenceStore();
-    store.setDefault(EDITOR_MATCHING_BRACKETS, true);
-    store.setDefault(EDITOR_MATCHING_BRACKETS_COLOR, "128,128,128");
+    support.setMatchingCharacterPainterPreferenceKeys(
+    	GoUIPreferenceConstants.EDITOR_MATCHING_BRACKETS,
+    	GoUIPreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR);
   }
 
   @Override
@@ -156,8 +142,6 @@ public class GoEditor extends TextEditor {
 
   @Override
   public void dispose() {
-	GoUIPlugin.getPrefStore().removePropertyChangeListener(changeListener);
-	GoUIPlugin.getCorePrefStore().removePropertyChangeListener(changeListener);
 
     if (imageUpdater != null) {
       imageUpdater.dispose();

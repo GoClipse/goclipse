@@ -24,4 +24,7 @@ public interface GoUIPreferenceConstants {
     public static final String FIELD_SYNTAX_TEXT_COLOR             = "syntax_highlighting_text_color";
     public static final String FIELD_SYNTAX_TEXT_STYLE             = "syntax_highlighting_text_style";
     
+    public static final String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
+    public static final String EDITOR_MATCHING_BRACKETS_COLOR = "matchingBracketsColor";
+    
 }
