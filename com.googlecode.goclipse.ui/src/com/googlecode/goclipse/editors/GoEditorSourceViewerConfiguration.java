@@ -68,21 +68,23 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 		return doubleClickStrategy;
 	}
 
-	/**
-	 * @return
-	 */
 	protected GoScanner getKeywordScanner() {
 		if (keywordScanner == null) {
 			keywordScanner = new GoScanner();
 		}
-
 		return keywordScanner;
 	}
-
+	
+	@Override
+	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
+		return GoPartitions.PARTITIONING_ID;
+	}
+	
 	@Override
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
-		PresentationReconciler reconciler = new PresentationReconciler();
-
+		PresentationReconciler reconciler= new PresentationReconciler();
+		reconciler.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
+		
 		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getKeywordScanner());
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
