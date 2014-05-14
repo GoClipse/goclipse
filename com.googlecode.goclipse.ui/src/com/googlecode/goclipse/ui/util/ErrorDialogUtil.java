@@ -1,4 +1,4 @@
-package com.googlecode.goclipse;
+package com.googlecode.goclipse.ui.util;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -6,12 +6,14 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import com.googlecode.goclipse.Activator;
+
 /**
  * 
  * @author steel
  * 
  */
-public class SysUtils {
+public class ErrorDialogUtil {
 
 	public static void displayError(String title, String message) {
 		displayError(null, title, message);

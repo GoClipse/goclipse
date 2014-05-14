@@ -28,9 +28,11 @@ import melnorme.utilbox.core.fntypes.Predicate;
 
 public class MiscUtil {
 	
-	public static final String OS_NAME = System.getProperty("os.name");
+	public static final String OS_NAME = StringUtil.nullAsEmpty(System.getProperty("os.name"));
 	
 	public static final boolean OS_IS_WINDOWS = OS_NAME.startsWith("Windows");
+	public static final boolean OS_IS_LINUX = OS_NAME.startsWith("Linux") || OS_NAME.startsWith("LINUX");
+	public static final boolean OS_IS_MAC = OS_NAME.startsWith("Mac");
 	
 	public static <T> Predicate<T> getNotNullPredicate() {
 		return new NotNullPredicate<T>();
@@ -189,5 +191,5 @@ public class MiscUtil {
 	public static String getClassResourceAsString(Class<?> klass, String resourceName) throws IOException {
 		return readAllBytesFromStream(klass.getResourceAsStream(resourceName)).toString(StringUtil.UTF8);
 	}
-	
+
 }

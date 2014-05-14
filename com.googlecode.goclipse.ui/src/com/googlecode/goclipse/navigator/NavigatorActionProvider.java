@@ -16,7 +16,7 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.ui.util.ErrorDialogUtil;
 
 /**
  * Handle the open action on IFileStore elements.
@@ -56,7 +56,7 @@ public class NavigatorActionProvider extends CommonActionProvider {
         try {
           IDE.openEditorOnFileStore(page, selectedFile);
         } catch (PartInitException exception) {
-          SysUtils.displayError("Error Opening File", exception);
+          ErrorDialogUtil.displayError("Error Opening File", exception);
         }
       }
     }

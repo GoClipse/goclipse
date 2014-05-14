@@ -3,11 +3,11 @@ package com.googlecode.goclipse.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.misc.MiscUtil;
+
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.jface.util.Util;
-
 import com.googlecode.goclipse.core.GoCore;
 
 
@@ -23,11 +23,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		
 		IEclipsePreferences coreDefaults = DefaultScope.INSTANCE.getNode(GoCore.PLUGIN_ID);
 		
-		if (Util.isWindows()){
+		if (MiscUtil.OS_IS_WINDOWS){
 			coreDefaults.put(PreferenceConstants.GOOS, PreferenceConstants.OS_WINDOWS);
-		} else if (Util.isLinux()) {
+		} else if (MiscUtil.OS_IS_LINUX) {
 			coreDefaults.put(PreferenceConstants.GOOS, PreferenceConstants.OS_LINUX);
-		} else if (Util.isMac()) {
+		} else if (MiscUtil.OS_IS_MAC) {
 			coreDefaults.put(PreferenceConstants.GOOS, PreferenceConstants.OS_DARWIN);
 		}
 
@@ -63,12 +63,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		if (platformChar == null){
 			return null;
 		}
-		return "go"+(Util.isWindows()?".exe":"");
+		return "go"+(MiscUtil.OS_IS_WINDOWS?".exe":"");
 	}
 	
 	// TODO refactor this out
 	protected static String get32bitCompilerName() {
-		return "go"+(Util.isWindows()?".exe":"");
+		return "go"+(MiscUtil.OS_IS_WINDOWS?".exe":"");
 	}
 	
 	public static List<String> getSupportedCompilerNames() {
@@ -92,11 +92,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	}
 	
 	public static String getDefaultGodocName() {
-		return "godoc" +(Util.isWindows()?".exe":"");
+		return "godoc" +(MiscUtil.OS_IS_WINDOWS?".exe":"");
 	}
 
 	public static String getDefaultGofmtName() {
-		return "gofmt" +(Util.isWindows()?".exe":"");
+		return "gofmt" +(MiscUtil.OS_IS_WINDOWS?".exe":"");
 	}
 
 }

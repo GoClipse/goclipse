@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import melnorme.utilbox.misc.MiscUtil;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -20,8 +22,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.jface.util.Util;
-
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
@@ -412,7 +412,7 @@ public class Environment {
 			return path;
 		}
 		
-		if (Util.isWindows()) {
+		if (MiscUtil.OS_IS_WINDOWS) {
 		  if (goPath.contains(";")) {
 		    path = goPath.split(";");
 		  } else {

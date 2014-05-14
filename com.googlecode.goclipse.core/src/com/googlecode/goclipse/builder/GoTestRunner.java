@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IContainer;
@@ -21,8 +22,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.util.Util;
-
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
@@ -100,9 +99,9 @@ public class GoTestRunner {
 	                        Thread.sleep(maxTime);
 	                        Runtime rt = Runtime.getRuntime();
 	                        if(activeTest!=null) {
-		                        if (Util.isWindows()) {
+		                        if (MiscUtil.OS_IS_WINDOWS) {
 		                	        rt.exec("taskkill /F /IM " + activeTest.workingDir.getName()+ ".test.exe");
-		                		} else if (Util.isMac()) {
+		                		} else if (MiscUtil.OS_IS_MAC) {
 		                			rt.exec("killall -c " + activeTest.workingDir.getName() + ".test");
 		                		} else {
 		                			rt.exec("pkill " + activeTest.workingDir.getName() + ".test");

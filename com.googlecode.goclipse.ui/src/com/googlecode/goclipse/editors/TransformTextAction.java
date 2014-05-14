@@ -6,7 +6,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 
-import com.googlecode.goclipse.SysUtils;
+import com.googlecode.goclipse.ui.util.ErrorDialogUtil;
 
 /**
  * An action used to modify the contents of the current editor.
@@ -47,7 +47,7 @@ abstract class TransformTextAction implements IEditorActionDelegate {
 					editor.replaceText(newText);
 				}
 			} catch (CoreException ce) {
-				SysUtils.displayError(editor.getSite().getShell(), "Error Running " + name, ce.getMessage());
+				ErrorDialogUtil.displayError(editor.getSite().getShell(), "Error Running " + name, ce.getMessage());
 			}
 		}
 	}

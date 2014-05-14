@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IContainer;
@@ -24,8 +25,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.jface.util.Util;
-
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
@@ -183,7 +182,7 @@ public class GoCompiler {
 	public static String buildGoPath(IProject project, final IPath projectLocation, boolean extGoRootFavored) {
 		
 		String delim = ":";
-		if (Util.isWindows()){
+		if (MiscUtil.OS_IS_WINDOWS){
 			delim = ";";
 		}
 		
@@ -219,7 +218,7 @@ public class GoCompiler {
 		final IPath  binFolder       = Environment.INSTANCE.getBinOutputFolder(project);
 		
 		final String compilerPath = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
-		final String outExtension = (Util.isWindows() ? ".exe" : "");
+		final String outExtension = (MiscUtil.OS_IS_WINDOWS ? ".exe" : "");
 
 			// the path exist to find the cc
 			String   path    = System.getenv("PATH");
@@ -578,7 +577,7 @@ public class GoCompiler {
 			                          final String        relativeTargetDir,
 			                          final IFile         file) {
 		int errorCount = 0;
-		boolean iswindows = Util.isWindows();
+		boolean iswindows = MiscUtil.OS_IS_WINDOWS;
 		
 		for (String line : output.getLines()) {
 			

@@ -12,6 +12,7 @@ package com.googlecode.goclipse.core.launch;
 
 
 import melnorme.lang.ide.launching.AbstractLangLaunchConfigurationDelegate;
+import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -20,7 +21,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.Launch;
-import org.eclipse.jface.util.Util;
 
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.utils.LaunchUtil;
@@ -53,7 +53,7 @@ public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurati
 			String executableName = executablePath.lastSegment();
 			
 			//BM: I don't know what difference it makes these two alternatives:
-			if (!Util.isWindows()) {
+			if (!MiscUtil.OS_IS_WINDOWS) {
 				executablePath = Path.fromOSString(".").append(executableName);
 			} else {
 				executablePath = Path.fromOSString(executableName);
