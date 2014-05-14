@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.util.Util;
 
-import com.googlecode.goclipse.builder.Arch;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
@@ -301,14 +300,6 @@ public class Environment {
 	 */
 	public boolean isPkgFile(IPath path) {
 		return getDefaultPkgSourceFolder().isPrefixOf(path);
-	}
-
-	/**
-	 * @return
-	 */
-	public Arch getArch() {
-		String goarch = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.GOARCH);
-		return Arch.getArch(goarch);
 	}
 
 	/**

@@ -5,10 +5,6 @@ package com.googlecode.goclipse.preferences;
  */
 public class PreferenceConstants {
 
-	public static final String P_PATH = "pathPreference";
-
-	public static final String P_BOOLEAN = "booleanPreference";
-
 	public static final String FIELD_USE_HIGHLIGHTING   = "use_highlighting";
 
 	public static final String FIELD_SYNTAX_KEYWORD_COLOR          = "syntax_highlighting_keyword_color";
@@ -30,7 +26,6 @@ public class PreferenceConstants {
     public static final String FIELD_SYNTAX_TEXT_COLOR             = "syntax_highlighting_text_color";
     public static final String FIELD_SYNTAX_TEXT_STYLE             = "syntax_highlighting_text_style";
 	
-	public static final String P_STRING = "stringPreference";
 	
 	public static final String GO_TOOL_PATH    = "com.googlecode.goclipse.compiler.path";
 	public static final String FORMATTER_PATH  = "com.googlecode.goclipse.formatter.path";
