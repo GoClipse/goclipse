@@ -10,15 +10,39 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import melnorme.utilbox.misc.ListenerListHelper;
+
 
 /**
  * Common class for a field that supports explicit setting and getting of the field value.
  * Provides some helper/foundation methods.
  */
-public abstract class CommonFieldComponent<VALUE> extends FieldValueNotifier implements IFieldComponent<VALUE> {
+public abstract class CommonFieldComponent<VALUE> extends AbstractComponent implements IFieldComponent<VALUE> {
 	
 	public CommonFieldComponent() {
 		super();
+	}
+	
+	protected final ListenerListHelper<IFieldValueListener> listeners = new ListenerListHelper<>();
+	
+	public void addValueChangedListener(IFieldValueListener listener) {
+		listeners.addListener(listener);
+	}
+	
+	public void removeValueChangedListener(IFieldValueListener listener) {
+		listeners.removeListener(listener);
+	}
+	
+	protected final void fireFieldValueChanged() {
+		fieldValueChanged();
+		for (IFieldValueListener listener : listeners.getListeners()) {
+			listener.fieldValueChanged();
+		}
+	}
+	
+	// this methos allows listening by means of overriding this class
+	protected void fieldValueChanged() {
+		// Default: do nothing
 	}
 	
 	@Override

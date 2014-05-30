@@ -48,6 +48,12 @@ public class ProjectField extends WidgetFieldComponent<String> {
 		topControl.setText(LangUIMessages.mainTab_projectGroup);
 		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
+		createContents(topControl);
+		return topControl;
+	}
+	
+	@Override
+	protected void createContents(Composite topControl) {
 		projectText = createFieldText(topControl, SWT.SINGLE | SWT.BORDER);
 		projectText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
@@ -59,7 +65,6 @@ public class ProjectField extends WidgetFieldComponent<String> {
 				handleProjectButtonSelected();
 			}
 		});
-		return topControl;
 	}
 	
 	@Override

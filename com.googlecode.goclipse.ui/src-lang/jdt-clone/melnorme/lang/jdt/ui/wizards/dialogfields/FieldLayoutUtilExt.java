@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.jdt.ui.wizards.dialogfields;
 
-import melnorme.util.swt.GridComposite;
-
 import org.eclipse.swt.widgets.Composite;
 
 public class FieldLayoutUtilExt extends LayoutUtil {
@@ -22,16 +20,4 @@ public class FieldLayoutUtilExt extends LayoutUtil {
 		doDefaultLayout(parent, fields, labelOnTop);
 	}
 
-	/** Does {@link #doDefaultLayout(Composite, DialogField[], boolean, int, int)} . */
-	public static void doDefaultLayout2(Composite parent, boolean labelOnTop,
-			int marginWidth, int marginHeight, DialogField... fields) {
-		doDefaultLayout(parent, fields, labelOnTop, marginWidth, marginHeight);
-	}
-
-	/** Creates a Composite and fills in the given fields. */
-	public static Composite createCompose(Composite parent, boolean labelOnTop, DialogField field) {
-		Composite content = new GridComposite(parent, field.getNumberOfControls());
-		FieldLayoutUtilExt.doDefaultLayout2(content, labelOnTop, field);
-		return content;
-	}
 }

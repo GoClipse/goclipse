@@ -26,11 +26,12 @@ public class BuildConfigField extends WidgetFieldComponent<BuildConfiguration> {
 	protected Combo buildCfgCombo;
 	
 	@Override
-	public Composite createComponent(Composite parent) {
-		
-		Composite topControl = new Composite(parent, SWT.NONE);
+	protected void createTopLevelControlLayout(Composite topControl) {
 		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
-		
+	}
+	
+	@Override
+	protected void createContents(Composite topControl) {
 		Label label = new Label(topControl, SWT.NONE);
 		label.setText("Build configuration:");
 		label.setLayoutData(GridDataFactory.fillDefaults().grab(false, false).create());
@@ -49,7 +50,6 @@ public class BuildConfigField extends WidgetFieldComponent<BuildConfiguration> {
 		buildCfgCombo.select(0);
 		
 		buildCfgCombo.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).create());
-		return topControl;
 	}
 	
 	@Override

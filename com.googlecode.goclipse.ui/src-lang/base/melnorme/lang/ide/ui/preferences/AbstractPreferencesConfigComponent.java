@@ -20,6 +20,7 @@ import melnorme.lang.ide.ui.preferences.fields.NumberConfigField;
 import melnorme.lang.ide.ui.preferences.fields.TextConfigField;
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.IDisposable;
 
 import org.eclipse.core.runtime.IStatus;
@@ -29,7 +30,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
-public abstract class AbstractPreferencesConfigComponent implements IDisposable, IPreferencesComponent {
+public abstract class AbstractPreferencesConfigComponent extends AbstractComponent 
+	implements IDisposable, IPreferencesComponent {
 	
 	protected final ArrayList<IPreferencesComponent> configFields = new ArrayList<>();
 	protected final PreferencePage prefPage;

@@ -14,7 +14,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -30,11 +29,9 @@ public abstract class WidgetFieldComponent<VALUE> extends CommonFieldComponent<V
  		return control;
  	}
  	
-	public abstract Control createComponent(Composite parent);
-	
 	/* ----------------- helper methods ----------------- */
 	
-	protected Text createFieldText(Group parent, int style) {
+	protected Text createFieldText(Composite parent, int style) {
 		Text fieldText = new Text(parent, style);
 		addFieldTextModifyListener(fieldText);
 		return fieldText;

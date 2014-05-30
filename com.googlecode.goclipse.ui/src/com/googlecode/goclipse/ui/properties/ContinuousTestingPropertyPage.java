@@ -11,9 +11,11 @@
 package com.googlecode.goclipse.ui.properties;
 
 import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
+import melnorme.util.swt.components.AbstractCompositeComponent;
+import melnorme.util.swt.components.fields.SpinnerComponent;
+import melnorme.util.swt.components.fields.TextComponent;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -37,67 +39,65 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 		return ctoBlock.createComponent(parent);
 	}
 	
-	public static class ContinuousTestingOptionsBlock {
+	public static class ContinuousTestingOptionsBlock extends AbstractCompositeComponent {
 		
 		protected IProject input;
 		
 		protected Button ctEnableButton;
-		protected TextField testFilesRegex;
-		protected SpinnerField testTimeout;
+		protected TextComponent testFilesRegex;
+		protected SpinnerComponent testTimeout;
 		
 		public ContinuousTestingOptionsBlock(IProject input) {
 			this.input = input;
 		}
 		
-		public Composite createComponent(Composite parent) {
-			
-			Composite composite = new Composite(parent, SWT.NONE);
-			composite.setLayout(new GridLayout(2, false));
+		@Override
+		protected void createTopLevelControlLayout(Composite topControl) {
+			topControl.setLayout(new GridLayout(2, false));
+		}
+		
+		@Override
+		protected void createContents(Composite topControl) {
 			
 			Text ctWarning;
-			ctWarning = new Text(composite, SWT.READ_ONLY | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
+			ctWarning = new Text(topControl, SWT.READ_ONLY | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
 			ctWarning.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND));
 			ctWarning.setEditable(false);
 			ctWarning.setText(GoUIMessages.AUTOMATIC_UNIT_TESTING_WARNING);
-			ctWarning.setLayoutData(
-				GridDataFactory.fillDefaults().grab(true, false).hint(500, 200).span(2, 1).create());
+			ctWarning.setLayoutData(gdFillDefaults().grab(true, false).hint(500, 200).span(2, 1).create());
 			
 			
-			ctEnableButton = new Button(composite, SWT.CHECK);
+			ctEnableButton = new Button(topControl, SWT.CHECK);
 			ctEnableButton.setText("Enable Continuous Testing");
-			ctEnableButton.setLayoutData(
-				GridDataFactory.fillDefaults().grab(true, false).span(2, 1).create());
+			ctEnableButton.setLayoutData(gdFillDefaults().grab(true, false).span(2, 1).create());
 			
-			testFilesRegex = new TextField("Test Name Regex:");
-			testFilesRegex.createControls(composite, 2);
+			testFilesRegex = new TextComponent("Test Name Regex:");
+			testFilesRegex.createComponentInlined(topControl);
 			
-			testTimeout = new SpinnerField("Test Max Time (ms):");
-			testTimeout.createComponent(composite, 2);
+			testTimeout = new SpinnerComponent("Test Max Time (ms):");
+			testTimeout.createComponentInlined(topControl);
 			testTimeout.setValueMinimum(100).setValueMaximum(360000).setValueIncrement(10);
 			
 			ctEnableButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					enableButtonUpdateControlFromInput();
+					updateComponentForEnableButtonChange();
 				}
 			});
-			
-			updateControlFromInput();
-			
-			return composite;
 		}
 		
-		protected void enableButtonUpdateControlFromInput() {
+		@Override
+		protected void updateComponentFromInput() {
+			ctEnableButton.setSelection(Environment.INSTANCE.getAutoUnitTest(input));
+			updateComponentForEnableButtonChange();
+			testFilesRegex.setValue(Environment.INSTANCE.getAutoUnitTestRegex2(input));
+			testTimeout.setValue(Environment.INSTANCE.getAutoUnitTestMaxTime(input));
+		}
+		
+		protected void updateComponentForEnableButtonChange() {
 			boolean ctEnabled = ctEnableButton.getSelection();
 			testFilesRegex.setEnabled(ctEnabled);
 			testTimeout.setEnabled(ctEnabled);
-		}
-		
-		public void updateControlFromInput() {
-			ctEnableButton.setSelection(Environment.INSTANCE.getAutoUnitTest(input));
-			enableButtonUpdateControlFromInput();
-			testFilesRegex.setValue(Environment.INSTANCE.getAutoUnitTestRegex2(input));
-			testTimeout.setValue(Environment.INSTANCE.getAutoUnitTestMaxTime(input));
 		}
 		
 		public void updateControlFromDefaults() {

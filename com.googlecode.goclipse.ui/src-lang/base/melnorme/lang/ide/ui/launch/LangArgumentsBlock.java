@@ -35,11 +35,17 @@ public class LangArgumentsBlock extends WidgetFieldComponent<String> {
 	protected Button fArgumentVariablesButton;
 	
 	@Override
-	public Group createComponent(Composite comp) {
-		Group topControl = new Group(comp, SWT.NONE);
+	public Group createComponent(Composite parent) {
+		Group topControl = new Group(parent, SWT.NONE);
+		topControl.setText(LangUIMessages.LangArgumentsTab_Program_Arguments);
 		topControl.setLayout(new GridLayout());
 		
-		topControl.setText(LangUIMessages.LangArgumentsTab_Program_Arguments);
+		createContents(topControl);
+		return topControl;
+	}
+	
+	@Override
+	protected void createContents(Composite topControl) {
 		fPrgmArgumentsText = createFieldText(topControl, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
 		fPrgmArgumentsText.getAccessible().addAccessibleListener(
 			new AccessibleAdapter() {
@@ -56,8 +62,6 @@ public class LangArgumentsBlock extends WidgetFieldComponent<String> {
 		// need to strip the mnemonic from buttons:
 		ControlAccessibleListener.addControlAccessibleListener(fArgumentVariablesButton, 
 				fArgumentVariablesButton.getText());
-		
-		return topControl;
 	}
 	
 	/**

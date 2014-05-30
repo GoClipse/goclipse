@@ -38,10 +38,16 @@ public class ProgramPathField extends WidgetFieldComponent<String> {
 		mainControl.setText(LangUIMessages.ProgramPathField_title);
 		mainControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
-		fProgramText = createFieldText(mainControl, SWT.SINGLE | SWT.BORDER);
+		createContents(mainControl);
+		return mainControl;
+	}
+	
+	@Override
+	protected void createContents(Composite topControl) {
+		fProgramText = createFieldText(topControl, SWT.SINGLE | SWT.BORDER);
 		fProgramText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-		fSearchButton = SWTFactoryUtil.createPushButton(mainControl, 
+		fSearchButton = SWTFactoryUtil.createPushButton(topControl, 
 				LangUIMessages.ProgramPathField__searchButton, null);
 		fSearchButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -49,7 +55,6 @@ public class ProgramPathField extends WidgetFieldComponent<String> {
 				handleSearchButtonSelected();
 			}
 		});
-		return mainControl;
 	}
 	
 	@Override

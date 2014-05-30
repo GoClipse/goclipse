@@ -28,6 +28,7 @@ public class ComboBoxConfigField extends AbstractConfigField<String> {
 	protected final String[] labels;
 	protected final String[] values;
 	
+	protected Label labelControl;
 	protected Combo combo;
 	
 	public ComboBoxConfigField(String label, final String prefKey,
@@ -39,14 +40,14 @@ public class ComboBoxConfigField extends AbstractConfigField<String> {
 	}
 	
 	@Override
-	public Label doCreateControls(Composite parent) {
-		Label labelControl = new Label(parent, SWT.NONE);
+	protected void createContents(Composite topControl) {
+		labelControl = new Label(topControl, SWT.NONE);
 		labelControl.setText(label);
 		labelControl.setLayoutData(GridDataFactory.swtDefaults().create());
-
-		combo = new Combo(parent, SWT.SINGLE | SWT.READ_ONLY);
+		
+		combo = new Combo(topControl, SWT.SINGLE | SWT.READ_ONLY);
 		combo.setLayoutData(new GridData());
-		combo.setFont(parent.getFont());
+		combo.setFont(topControl.getFont());
 		combo.setItems(labels);
 		combo.setData(prefKey);
 		combo.addSelectionListener(new SelectionAdapter() {
@@ -60,13 +61,16 @@ public class ComboBoxConfigField extends AbstractConfigField<String> {
 				}
 			}
 		});
-		
-		return labelControl;
 	}
 	
 	@Override
 	public Control getFieldControl() {
 		return combo;
+	}
+	
+	@Override
+	public Control getLeftMostControl() {
+		return labelControl;
 	}
 	
 	@Override

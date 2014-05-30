@@ -30,14 +30,13 @@ public abstract class AbstractConfigField<VALUE> extends AbstractField<VALUE> im
 	
 	/** @return the leftmost control */
 	public void createControl(Composite parent, int indentation) {
-		Control leftMostControl = createControl(parent);
+		createControls(parent);
+		Control leftMostControl = getLeftMostControl();
+		
 		((GridData) leftMostControl.getLayoutData()).horizontalIndent = indentation;
 	}
 	
-	@Override
-	public void createComponent(Composite parent) {
-		createControl(parent);
-	}
+	public abstract Control getLeftMostControl();
 	
 	@Override
 	public void resetToDefaults(IPreferenceStore store) {

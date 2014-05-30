@@ -14,6 +14,7 @@ package melnorme.lang.ide.ui.preferences;
 
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
+import melnorme.util.swt.components.AbstractComponent;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -33,7 +34,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
 
 //originally from DLTK version 5.0.0
-public class EditorAppearanceColorsComponent implements IPreferencesComponent {
+public class EditorAppearanceColorsComponent extends AbstractComponent implements IPreferencesComponent {
 	
 	public static class EditorColorItem {
 		public final String label;
@@ -124,18 +125,18 @@ public class EditorAppearanceColorsComponent implements IPreferencesComponent {
 	}
 	
 	@Override
-	public void createComponent(Composite parent) {
-		PixelConverter pc = new PixelConverter(parent);
+	public void createContents(Composite topControl) {
+		PixelConverter pc = new PixelConverter(topControl);
 		
 		GridData gd;
 		gd = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).span(2, 1).create();
 		gd.heightHint = pc.convertHeightInCharsToPixels(1) / 2;
-		SWTFactoryUtil.createLabel(parent, SWT.LEFT, "", gd);
+		SWTFactoryUtil.createLabel(topControl, SWT.LEFT, "", gd);
 		
-		SWTFactoryUtil.createLabel(parent, SWT.LEFT, PreferencesMessages.EditorPreferencePage_title1, 
+		SWTFactoryUtil.createLabel(topControl, SWT.LEFT, PreferencesMessages.EditorPreferencePage_title1, 
 			GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).span(2, 1).create());
 		
-		Composite editorComposite = new Composite(parent, SWT.NONE);
+		Composite editorComposite = new Composite(topControl, SWT.NONE);
 		editorComposite.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
 		editorComposite.setLayoutData(GridDataFactory.fillDefaults().grab(false, true).span(2, 1).create());
 		

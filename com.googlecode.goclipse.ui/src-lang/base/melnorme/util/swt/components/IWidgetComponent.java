@@ -8,18 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.util.swt.components;
 
-import melnorme.util.swt.components.IWidgetComponent;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 
-public interface IPreferencesComponent extends IWidgetComponent {
+public interface IWidgetComponent {
 	
-	public void loadFromStore(IPreferenceStore store);
+	/**
+	 * Create the component controls under a single top-level Control. 
+	 */
+	public Control createComponent(Composite parent);
 	
-	public void saveToStore(IPreferenceStore store);
-	
-	public void resetToDefaults(IPreferenceStore store);
+	/**
+	 * Create the component controls directly on given parent.
+	 * This places restriction on parent: it must have a GridLayout, 
+	 * with a minimum number of columns that can accomodate the children. 
+	 */
+	public void createComponentInlined(Composite parent);
 	
 }

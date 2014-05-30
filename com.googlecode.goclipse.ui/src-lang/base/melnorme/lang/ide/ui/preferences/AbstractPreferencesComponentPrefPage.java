@@ -19,8 +19,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
@@ -58,10 +56,7 @@ public abstract class AbstractPreferencesComponentPrefPage extends PreferencePag
 	
 	@Override
 	protected Control createContents(Composite parent) {
-		Composite body = new Composite(parent, SWT.NONE);
-		body.setLayout(new GridLayout());
-		
-		fConfigurationBlock.createComponent(body);
+		Control body = fConfigurationBlock.createComponent(parent);
 		Dialog.applyDialogFont(body);
 		
 		fConfigurationBlock.loadFromStore(getPreferenceStore());

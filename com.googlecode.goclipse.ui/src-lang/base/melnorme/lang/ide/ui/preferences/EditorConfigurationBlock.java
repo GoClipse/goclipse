@@ -25,8 +25,8 @@ public class EditorConfigurationBlock extends AbstractPreferencesConfigComponent
 	}
 	
 	@Override
-	public void createComponent(Composite parent) {
-		createAppearanceGroup(parent);
+	protected void createContents(Composite topControl) {
+		createAppearanceGroup(topControl);
 	}
 	
 	protected void createAppearanceGroup(Composite parent) {
@@ -39,7 +39,7 @@ public class EditorConfigurationBlock extends AbstractPreferencesConfigComponent
 			return;
 		}
 		EditorAppearanceColorsComponent appearanceItemsCp = new EditorAppearanceColorsComponent(editorColorItems);
-		appearanceItemsCp.createComponent(parent);
+		appearanceItemsCp.createComponentInlined(parent);
 		addConfigComponent(appearanceItemsCp);
 	}
 	

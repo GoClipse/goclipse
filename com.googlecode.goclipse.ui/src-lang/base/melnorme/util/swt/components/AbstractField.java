@@ -49,13 +49,13 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		fireFieldValueChanged();
 	}
 	
-	public Control createControl(Composite parent) {
-		Control control = doCreateControls(parent);
+	public void createControls(Composite topControl) {
+		createContents(topControl);
 		doUpdateControls();
-		return control;
 	}
 	
-	public abstract Control doCreateControls(Composite parent);
+	@Override
+	protected abstract void createContents(Composite topControl);
 	
 	public abstract Control getFieldControl();
 	

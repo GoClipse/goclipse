@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Text;
 public class TextConfigField extends AbstractConfigField<String> {
 	
 	protected final int textLimit;
+	protected Label labelControl;
 	protected Text textControl;
 	
 	public TextConfigField(String label, String prefKey, int textLimit) {
@@ -34,12 +35,12 @@ public class TextConfigField extends AbstractConfigField<String> {
 	}
 	
 	@Override
-	public Control doCreateControls(Composite parent) {
-		PixelConverter pixelConverter = new PixelConverter(parent);
+	protected void createContents(Composite topControl) {
+		PixelConverter pixelConverter = new PixelConverter(topControl);
 		
-		Label labelControl = SWTFactoryUtil.createLabel(parent, SWT.NONE, label, new GridData()); 
+		labelControl = SWTFactoryUtil.createLabel(topControl, SWT.NONE, label, new GridData()); 
 		
-		textControl = new Text(parent, SWT.BORDER | SWT.SINGLE);
+		textControl = new Text(topControl, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData();
 		gd.widthHint = pixelConverter.convertWidthInCharsToPixels(textLimit + 1);
 		textControl.setLayoutData(gd);
@@ -50,13 +51,16 @@ public class TextConfigField extends AbstractConfigField<String> {
 				updateFieldValue(textControl.getText());
 			}
 		});
-		
-		return labelControl;
 	}
 	
 	@Override
 	public Control getFieldControl() {
 		return textControl;
+	}
+	
+	@Override
+	public Control getLeftMostControl() {
+		return labelControl;
 	}
 	
 	@Override

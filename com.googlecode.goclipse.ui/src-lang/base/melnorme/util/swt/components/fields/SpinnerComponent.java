@@ -8,29 +8,37 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.ui.properties;
+package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractComponent;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-public class SpinnerField {
+public class SpinnerComponent extends AbstractComponent {
 	
 	protected String labelText;
 	
 	protected Label label;
 	protected Spinner spinner;
 	
-	public SpinnerField(String labelText) {
+	public SpinnerComponent(String labelText) {
 		this.labelText = labelText;
 	}
 	
-	public void createComponent(Composite parent, int numColumns) {
+	@Override
+	protected void createContents(Composite topControl) {
+		GridLayout layoutData = (GridLayout) topControl.getLayout();
+		createContents(topControl, layoutData.numColumns);
+	}
+	
+	public void createContents(Composite parent, int numColumns) {
 		createLabel(parent);
 		createSpinner(parent);
 		
@@ -64,17 +72,17 @@ public class SpinnerField {
 		return spinner.getDigits();
 	}
 	
-	public SpinnerField setValueMinimum(int minimum) {
+	public SpinnerComponent setValueMinimum(int minimum) {
 		spinner.setMinimum(minimum);
 		return this;
 	}
 	
-	public SpinnerField setValueMaximum(int maximum) {
+	public SpinnerComponent setValueMaximum(int maximum) {
 		spinner.setMaximum(maximum);
 		return this;
 	}
 	
-	public SpinnerField setValueIncrement(int increment) {
+	public SpinnerComponent setValueIncrement(int increment) {
 		spinner.setIncrement(increment);
 		return this;
 	}

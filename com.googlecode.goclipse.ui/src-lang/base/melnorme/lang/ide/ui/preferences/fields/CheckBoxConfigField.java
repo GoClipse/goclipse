@@ -35,10 +35,10 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	}
 	
 	@Override
-	public Button doCreateControls(Composite parent) {
-		checkBox = new Button(parent, SWT.CHECK);
+	protected void createContents(Composite topControl) {
+		checkBox = new Button(topControl, SWT.CHECK);
 		checkBox.setText(label);
-
+		
 		checkBox.setLayoutData(GridDataFactory.swtDefaults().span(2, 1).create());
 		checkBox.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -46,12 +46,15 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 				updateFieldValue(checkBox.getSelection());
 			}
 		});
-		
-		return checkBox;
 	}
 	
 	@Override
 	public Control getFieldControl() {
+		return checkBox;
+	}
+	
+	@Override
+	public Control getLeftMostControl() {
 		return checkBox;
 	}
 	

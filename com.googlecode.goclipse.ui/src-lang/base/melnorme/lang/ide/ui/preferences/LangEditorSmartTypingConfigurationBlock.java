@@ -30,10 +30,10 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 	}
 	
 	@Override
-	public void createComponent(Composite parent) {
-		createAutoClosingGroup(parent);
-		createAutoEditGroup(parent);
-		createIndentationGroup(parent);
+	protected void createContents(Composite topControl) {
+		createAutoClosingGroup(topControl);
+		createAutoEditGroup(topControl);
+		createIndentationGroup(topControl);
 	}
 	
 	protected void createAutoClosingGroup(Composite parent) {
