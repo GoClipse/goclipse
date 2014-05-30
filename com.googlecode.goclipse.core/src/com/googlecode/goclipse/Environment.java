@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
@@ -33,9 +34,6 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
  */
 public class Environment {
 
-	private static final String PROJECT_SOURCE_FOLDERS          = "com.googlecode.goclipse.environment.source.folders";
-	private static final String PROJECT_PKG_OUTPUT_FOLDERS      = "com.googlecode.goclipse.environment.pkg.output.folders";
-	private static final String PROJECT_BIN_OUTPUT_FOLDERS      = "com.googlecode.goclipse.environment.bin.output.folders";
 	private static final String PROJECT_ENABLE_AUTO_UNIT_TEST   = "com.googlecode.goclipse.environment.auto.unit.test";
 	private static final String PROJECT_AUTO_UNIT_TEST_REGEX    = "com.googlecode.goclipse.environment.auto.unit.test.regex";
 	private static final String PROJECT_AUTO_UNIT_TEST_MAX_TIME = "com.googlecode.goclipse.environment.auto.unit.test.max.time";
@@ -160,35 +158,9 @@ public class Environment {
 	public IPreferencesService getPreferences() {
 		return preferences;
 	}
-
-	/**
-	 * Sets the source folder properties on the given project
-	 * 
-	 * @param sourceFolders
-	 */
-	public void setSourceFolders(IProject project, String[] sourceFolders) {
-		Properties properties = getProperties(project);
-		String sourceFolderStr = "";
-		for (String folder : sourceFolders) {
-			sourceFolderStr = sourceFolderStr + folder + ";";
-		}
-		properties.put(PROJECT_SOURCE_FOLDERS, sourceFolderStr);
-		saveProperties(project);
-	}
-
-	/**
-	 * Return a list of source folders for the currently active project.
-	 * 
-	 * @return
-	 */
+	
 	public String[] getSourceFoldersAsStringArray(IProject project) {
-		Properties properties = getProperties(project);
-		String str = properties.getProperty(PROJECT_SOURCE_FOLDERS);
-		if (str != null) {
-			return str.split(";");
-		} else {
-			return new String[] {};
-		}
+		return new String[] {"src"};
 	}
 
 	/**
@@ -212,26 +184,10 @@ public class Environment {
 	}
 
 	/**
-	 * Set the output folder for the given project
-	 */
-	public void setPkgOutputFolder(IProject project, IPath outputFolder) {
-		Properties properties = getProperties(project);
-		properties.setProperty(PROJECT_PKG_OUTPUT_FOLDERS, outputFolder.toOSString());
-		saveProperties(project);
-	}
-
-	/**
 	 * Return the output folder for the active project
 	 */
 	public IPath getPkgOutputFolder(IProject project) {
-		Properties properties = getProperties(project);
-		String property = properties.getProperty(PROJECT_PKG_OUTPUT_FOLDERS);
-		if (property == null) {
-			return getDefaultPkgOutputFolder();
-		} else {
-			IPath path = Path.fromOSString(property);
-			return path;
-		}
+		return getDefaultPkgOutputFolder();
 	}
 
 	private IPath getDefaultPkgOutputFolder() {
@@ -240,27 +196,12 @@ public class Environment {
 		return Path.fromOSString(DEFAULT_PKG_OUTPUT_FOLDER).append(goos+"_"+goarch);
 	}
 
-	/**
-	 * Set the output folder for the given project
-	 */
-	public void setBinOutputFolder(IProject project, IPath outputFolder) {
-		Properties properties = getProperties(project);
-		properties.setProperty(PROJECT_BIN_OUTPUT_FOLDERS, outputFolder.toOSString());
-		saveProperties(project);
-	}
 
 	/**
 	 * Return the output folder for the active project
 	 */
 	public IPath getBinOutputFolder(IProject project) {
-		Properties properties = getProperties(project);
-		String property       = properties.getProperty(PROJECT_BIN_OUTPUT_FOLDERS);
-		if (property == null) {
-			return Path.fromOSString(DEFAULT_BIN_OUTPUT_FOLDER);
-		} else {
-			IPath path = Path.fromOSString(property);
-			return path;
-		}
+		return Path.fromOSString(DEFAULT_BIN_OUTPUT_FOLDER);
 	}
 
 	public IPath getDefaultCmdSourceFolder() {

@@ -2,7 +2,6 @@ package com.googlecode.goclipse.properties;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -13,9 +12,6 @@ import org.eclipse.ui.dialogs.PropertyPage;
 
 import com.googlecode.goclipse.Environment;
 
-/**
- * 
- */
 public class ProjectBuildConfiguration extends PropertyPage {
 
 	private ProjectBuildConfigurationComposite	composite;
@@ -40,7 +36,7 @@ public class ProjectBuildConfiguration extends PropertyPage {
 	 */
 	@Override
 	protected Control createContents(Composite parent) {
-		composite = new ProjectBuildConfigurationComposite(parent, this, SWT.NONE);
+		composite = new ProjectBuildConfigurationComposite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		composite.setLayout(layout);
 		GridData data = new GridData(GridData.FILL);
@@ -48,41 +44,19 @@ public class ProjectBuildConfiguration extends PropertyPage {
 		composite.setLayoutData(data);
 		return composite;
 	}
-
-	/**
-	 * 
-	 */
+	
 	@Override
 	protected void performDefaults() {
-		composite.setSourceFolders(new String[] {});
 	}
-
+	
 	@Override
 	protected void performApply() {
 		performOk();
 	}
-
-	/**
-	 * 
-	 */
+	
 	@Override
 	public boolean performOk() {
-
-		String[] sourcefolders = composite.getSourceFolders();
-		if (sourcefolders != null) {
-			Environment.INSTANCE.setSourceFolders(getProject(), sourcefolders);
-		}
-
-		String pkgOutputfolder = composite.getPkgOutputFolder();
-		if (pkgOutputfolder != null) {
-			Environment.INSTANCE.setPkgOutputFolder(getProject(), Path.fromOSString(pkgOutputfolder));
-		}
-
-		String binOutputfolder = composite.getBinOutputFolder();
-		if (binOutputfolder != null) {
-			Environment.INSTANCE.setBinOutputFolder(getProject(), Path.fromOSString(binOutputfolder));
-		}
-
+		
 		String unitTestRegex = composite.getUnitTestRegEx();
 		if (unitTestRegex != null) {
 			Environment.INSTANCE.setAutoUnitTestRegex(getProject(), unitTestRegex);

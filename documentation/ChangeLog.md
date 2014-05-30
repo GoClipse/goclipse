@@ -12,3 +12,4 @@
    * Added preference page to customize Auto-Indent behavior (under Editor/Typing)
  * Changed internal id for Go projects, so old Go projects are no longer recognized, they will need to be recreated.
  * Fixed potential bug reading output of go test tool, for auto test feature.
+ * Removed deprecated options in Go project build options property page.

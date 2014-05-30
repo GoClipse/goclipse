@@ -192,16 +192,11 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			IFolder srcFolder = project.getFolder("src");
 			createFolder(srcFolder);
 
-			Environment.INSTANCE.setSourceFolders(project, new String[] {"src"});
-
 			IFolder binFolder = project.getFolder(Environment.INSTANCE.getBinOutputFolder(project));
 			createFolder(binFolder);
 
 			IFolder pkgFolder = project.getFolder(Environment.INSTANCE.getPkgOutputFolder(project));
 			createFolder(pkgFolder);
-
-			Environment.INSTANCE.setBinOutputFolder(project, binFolder.getProjectRelativePath());
-			Environment.INSTANCE.setPkgOutputFolder(project, pkgFolder.getProjectRelativePath());
 		}
 
 		private void createFolder(IFolder folder) throws CoreException {
