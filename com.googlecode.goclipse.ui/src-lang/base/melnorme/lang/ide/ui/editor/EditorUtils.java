@@ -10,23 +10,45 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 
 public class EditorUtils {
-
-	public static IProject getProject(IEditorInput input) {
+	
+	public static IProject getAssociatedProject(IEditorInput input) {
+		IResource resource = getAssociatedResource(input);
+		if(resource != null) {
+			return resource.getProject();
+		}
+		return null;
+	}
+	
+	public static IResource getAssociatedResource(IEditorInput input) {
 		if(input instanceof IFileEditorInput) {
-			return ((IFileEditorInput) input).getFile().getProject();
+			return ((IFileEditorInput) input).getFile();
 		}
 		
 		IResource resource = (IResource) input.getAdapter(IResource.class);
 		if(resource != null) {
-			return resource.getProject();
+			return resource;
 		}
-		
-		return null;
+		return (IProject) input.getAdapter(IProject.class);
 	}
+	
+	public static IFile getAssociatedFile(IEditorInput editorInput) {
+		if (editorInput instanceof IFileEditorInput) {
+			return ((IFileEditorInput) editorInput).getFile();
+		}
+		return (IFile) editorInput.getAdapter(IFile.class);
+	}
+	
+	/** Get a resource related to the input of this editor, or null if none. */
+	public static IFile findFileOfEditor(IEditorPart editor) {
+		return getAssociatedFile(editor.getEditorInput());
+	}
+	
 }

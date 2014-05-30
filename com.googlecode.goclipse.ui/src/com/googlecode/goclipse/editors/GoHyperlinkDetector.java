@@ -2,6 +2,8 @@ package com.googlecode.goclipse.editors;
 
 import java.io.File;
 
+import melnorme.lang.ide.ui.editor.EditorUtils;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IProject;
@@ -10,8 +12,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -24,24 +26,14 @@ import com.googlecode.goclipse.go.lang.model.Function;
 import com.googlecode.goclipse.go.lang.model.Import;
 import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lang.model.Var;
-import com.googlecode.goclipse.ui.EclipseEnviromentUtils;
 
 /**
  * A hyperlink detector for the Go editor.  The hyperlink detector
  * is used for code navigation.
  */
-public class GoHyperlinkDetector implements IHyperlinkDetector {
+public class GoHyperlinkDetector extends AbstractHyperlinkDetector {
 
-	/**
-	 * 
-	 */
-	private GoEditor editor;
-
-	/**
-	 * Create a new GoHyperlinkDetector.
-	 */
-	public GoHyperlinkDetector(GoEditor editor) {
-		this.editor = editor;
+	public GoHyperlinkDetector() {
 	}
 
 	/*
@@ -50,6 +42,11 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 	 */
 	@Override
 	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean showMultiple) {
+		ITextEditor textEditor = (ITextEditor) getAdapter(ITextEditor.class);
+		if (region == null || !(textEditor instanceof GoEditor))
+			return null;
+		
+		GoEditor editor = (GoEditor) textEditor;
 		
 		IHyperlink[] link       = new IHyperlink[1];
 		int          offset     = region.getOffset();
@@ -58,7 +55,8 @@ public class GoHyperlinkDetector implements IHyperlinkDetector {
 		
 		try {
 			String   word    = document.get(wordRegion.getOffset(), wordRegion.getLength());
-			IProject project = EclipseEnviromentUtils.getCurrentProject();
+			
+			IProject project = EditorUtils.getAssociatedProject(editor.getEditorInput());
 
 			// get the current imports
 			FileEditorInput fileEditorInput = null;

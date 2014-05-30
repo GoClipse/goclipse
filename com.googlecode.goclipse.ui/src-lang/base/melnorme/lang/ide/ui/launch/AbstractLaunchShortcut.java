@@ -22,7 +22,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.utils.EditorUtils;
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.ArrayUtil;
 

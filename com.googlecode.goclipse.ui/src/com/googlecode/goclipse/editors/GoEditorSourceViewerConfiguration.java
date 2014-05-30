@@ -181,7 +181,7 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 			return null;
 		}
 
-		return new IHyperlinkDetector[] { new URLHyperlinkDetector(), new GoHyperlinkDetector(editor) };
+		return new IHyperlinkDetector[] { new URLHyperlinkDetector(), new GoHyperlinkDetector() };
 	}
 
 	@Override
