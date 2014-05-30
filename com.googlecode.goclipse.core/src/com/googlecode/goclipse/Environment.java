@@ -453,6 +453,19 @@ public class Environment {
 		return b.toString();
     }
 	
+	public String getAutoUnitTestRegex2(IProject project) {
+		Properties properties = getProperties(project);
+		Object b = properties.get(PROJECT_AUTO_UNIT_TEST_REGEX);
+		if(b==null || b.equals("")){
+			return getAutoUnitTestRegexDefault();
+		}
+		return b.toString();
+    }
+	
+	public String getAutoUnitTestRegexDefault() {
+		return "TestAuto[A-Za-z0-9_]*";
+	}
+	
 	/**
 	 * Set the auto test max time from the project properties.
 	 * @param project
@@ -473,8 +486,13 @@ public class Environment {
 		Properties properties = getProperties(project);
 		Object b = properties.get(PROJECT_AUTO_UNIT_TEST_MAX_TIME);
 		if(b==null){
-			return 5000;
+			return getAutoUnitTestMaxTimeDefault();
 		}
 		return Integer.parseInt(b.toString());
     }
+	
+	public int getAutoUnitTestMaxTimeDefault() {
+		return 5000;
+	}
+	
 }

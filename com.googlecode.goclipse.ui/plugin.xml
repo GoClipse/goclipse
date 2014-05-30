@@ -448,19 +448,22 @@
       </wizard>
    </extension>
    
-   <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            class="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
+   <extension point="org.eclipse.ui.propertyPages">
+      <page class="com.googlecode.goclipse.ui.properties.GoProjectBuildOptionsPage"
             id="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
             name="Go Project Configuration">
             
          <enabledWhen>
-            <adapt type="org.eclipse.core.resources.IProject">
-			  <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
-			</adapt>         			
+            <reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
          </enabledWhen>
-         
+      </page>
+      <page
+            class="com.googlecode.goclipse.ui.properties.ContinuousTestingPropertyPage"
+            id="com.googlecode.goclipse.ui.properties.ContinuousTestingPropertyPage"
+            name="Go Continous Testing Options">
+         <enabledWhen>
+            <reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
+         </enabledWhen>
       </page>
    </extension>
 
