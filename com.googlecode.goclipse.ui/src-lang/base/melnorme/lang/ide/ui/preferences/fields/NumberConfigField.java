@@ -10,9 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences.fields;
 
+import java.text.MessageFormat;
+
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.preferences.FieldMessages;
-import melnorme.lang.jdt.corext.util.Messages;
 
 import org.eclipse.core.runtime.IStatus;
 
@@ -48,7 +49,7 @@ public class NumberConfigField extends TextConfigField {
 		} catch (NumberFormatException e) {
 		}
 		return LangCore.createErrorStatus(
-			Messages.format(FieldMessages.JavaEditorPreferencePage_invalid_input, number));
+			MessageFormat.format(FieldMessages.JavaEditorPreferencePage_invalid_input, number));
 	}
 	
 }

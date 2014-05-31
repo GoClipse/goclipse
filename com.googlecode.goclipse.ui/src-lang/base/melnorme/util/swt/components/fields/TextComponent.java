@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
+import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponent;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -60,6 +61,10 @@ public class TextComponent extends AbstractComponent {
 	
 	public Text getTextControl() {
 		return text;
+	}
+	
+	public boolean isCreated() {
+		return SWTUtil.isOkToUse(text);
 	}
 	
 	public void setValue(String value) {
