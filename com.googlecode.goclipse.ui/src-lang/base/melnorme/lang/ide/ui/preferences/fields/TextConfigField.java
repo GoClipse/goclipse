@@ -15,8 +15,6 @@ import melnorme.util.swt.SWTFactoryUtil;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -39,18 +37,11 @@ public class TextConfigField extends AbstractConfigField<String> {
 		PixelConverter pixelConverter = new PixelConverter(topControl);
 		
 		labelControl = SWTFactoryUtil.createLabel(topControl, SWT.NONE, label, new GridData()); 
-		
-		textControl = new Text(topControl, SWT.BORDER | SWT.SINGLE);
+		textControl = createFieldTextControl(this, topControl, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData();
 		gd.widthHint = pixelConverter.convertWidthInCharsToPixels(textLimit + 1);
 		textControl.setLayoutData(gd);
 		textControl.setTextLimit(textLimit);
-		textControl.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				updateFieldValue(textControl.getText());
-			}
-		});
 	}
 	
 	@Override
@@ -64,7 +55,7 @@ public class TextConfigField extends AbstractConfigField<String> {
 	}
 	
 	@Override
-	public void doUpdateControls() {
+	protected void doUpdateComponentFromValue() {
 		if(getFieldValue() != null) {
 			textControl.setText(getFieldValue());
 		}

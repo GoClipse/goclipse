@@ -30,7 +30,7 @@ public abstract class AbstractConfigField<VALUE> extends AbstractField<VALUE> im
 	
 	/** @return the leftmost control */
 	public void createControl(Composite parent, int indentation) {
-		createControls(parent);
+		createComponentInlined(parent);
 		Control leftMostControl = getLeftMostControl();
 		
 		((GridData) leftMostControl.getLayoutData()).horizontalIndent = indentation;

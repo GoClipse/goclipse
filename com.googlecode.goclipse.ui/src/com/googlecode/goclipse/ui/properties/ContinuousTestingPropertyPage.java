@@ -11,7 +11,7 @@
 package com.googlecode.goclipse.ui.properties;
 
 import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
-import melnorme.util.swt.components.AbstractCompositeComponent;
+import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.fields.SpinnerComponent;
 import melnorme.util.swt.components.fields.TextComponent;
 
@@ -39,7 +39,7 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 		return ctoBlock.createComponent(parent);
 	}
 	
-	public static class ContinuousTestingOptionsBlock extends AbstractCompositeComponent {
+	public static class ContinuousTestingOptionsBlock extends AbstractComponentExt {
 		
 		protected IProject input;
 		
@@ -87,7 +87,7 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 		}
 		
 		@Override
-		protected void updateComponentFromInput() {
+		public void updateComponentFromInput() {
 			ctEnableButton.setSelection(Environment.INSTANCE.getAutoUnitTest(input));
 			updateComponentForEnableButtonChange();
 			testFilesRegex.setValue(Environment.INSTANCE.getAutoUnitTestRegex2(input));

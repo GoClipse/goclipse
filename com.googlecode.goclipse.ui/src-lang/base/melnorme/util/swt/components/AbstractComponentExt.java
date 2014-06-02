@@ -13,16 +13,29 @@ package melnorme.util.swt.components;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.widgets.Composite;
 
-public abstract class AbstractCompositeComponent extends AbstractComponent {
+/**
+ * Same as AbstractComponent, but with a few more helpers and functionality.
+ */
+public abstract class AbstractComponentExt extends AbstractComponent {
 	
 	@Override
 	public Composite createComponent(Composite parent) {
-		Composite composite = super.doCreateComponent(parent);
+		Composite composite = super.createComponent(parent);
 		updateComponentFromInput();
 		return composite;
 	}
 	
-	protected abstract void updateComponentFromInput();
+	@Override
+	public void createComponentInlined(Composite parent) {
+		super.createComponentInlined(parent);
+		updateComponentFromInput();
+	}
+	
+	/** 
+	 * Update the components controls from some intrinsic notion of a configured input.
+	 * Can do nothing if there is not configured input. 
+	 */
+	public abstract void updateComponentFromInput();
 	
 	/* ----------------- util ----------------- */
 	

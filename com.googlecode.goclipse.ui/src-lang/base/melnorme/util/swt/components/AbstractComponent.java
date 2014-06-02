@@ -13,24 +13,22 @@ package melnorme.util.swt.components;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
+/**
+ * Simple abstract class for a {@link IWidgetComponent}.
+ */
 public abstract class AbstractComponent implements IWidgetComponent {
 	
 	@Override
-	public Control createComponent(Composite parent) {
-		return doCreateComponent(parent);
+	public Composite createComponent(Composite parent) {
+		Composite topControl = createTopLevelControl(parent);
+		createContents(topControl);
+		return topControl;
 	}
 	
 	@Override
 	public void createComponentInlined(Composite parent) {
 		createContents(parent);
-	}
-	
-	protected Composite doCreateComponent(Composite parent) {
-		Composite topControl = createTopLevelControl(parent);
-		createContents(topControl);
-		return topControl;
 	}
 	
 	protected Composite createTopLevelControl(Composite parent) {
@@ -44,5 +42,14 @@ public abstract class AbstractComponent implements IWidgetComponent {
 	}
 	
 	protected abstract void createContents(Composite topControl);
+	
+	/* ----------------- util ----------------- */
+	
+	/** Do {@link #createComponent(Composite)}, and also set the layou Data of created Control.  */
+ 	public final Composite createComponent(Composite parent, Object layoutData) {
+ 		Composite control = createComponent(parent);
+ 		control.setLayoutData(layoutData);
+ 		return control;
+ 	}
 	
 }

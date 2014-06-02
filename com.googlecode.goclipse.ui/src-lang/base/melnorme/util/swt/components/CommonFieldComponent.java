@@ -14,13 +14,13 @@ import melnorme.utilbox.misc.ListenerListHelper;
 
 
 /**
- * Common class for a field that supports explicit setting and getting of the field value.
- * Provides some helper/foundation methods.
+ * Base class for a field component. A field component has a value that can be retrieved and set.
+ * 
+ * Unless otherwise specified, the field value can only be get/set after the component has been created.
  */
-public abstract class CommonFieldComponent<VALUE> extends AbstractComponent implements IFieldComponent<VALUE> {
+public abstract class CommonFieldComponent<VALUE> extends AbstractComponentExt implements IFieldComponent<VALUE> {
 	
 	public CommonFieldComponent() {
-		super();
 	}
 	
 	protected final ListenerListHelper<IFieldValueListener> listeners = new ListenerListHelper<>();

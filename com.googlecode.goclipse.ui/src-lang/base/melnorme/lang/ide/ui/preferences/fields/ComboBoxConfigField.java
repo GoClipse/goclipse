@@ -74,7 +74,7 @@ public class ComboBoxConfigField extends AbstractConfigField<String> {
 	}
 	
 	@Override
-	public void doUpdateControls() {
+	public void doUpdateComponentFromValue() {
 		for (int i = 0; i < values.length; i++) {
 			if(values[i].equals(getFieldValue())) {
 				combo.setText(labels[i]);

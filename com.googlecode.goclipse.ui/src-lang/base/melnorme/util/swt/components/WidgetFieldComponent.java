@@ -13,7 +13,6 @@ package melnorme.util.swt.components;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -23,27 +22,22 @@ import org.eclipse.swt.widgets.Text;
  */
 public abstract class WidgetFieldComponent<VALUE> extends CommonFieldComponent<VALUE> {
 	
- 	public final Control createComponent(Composite parent, Object layoutData) {
- 		Control control = createComponent(parent);
- 		control.setLayoutData(layoutData);
- 		return control;
- 	}
- 	
+	@Override
+	public void updateComponentFromInput() {
+		// Do nothing, by default, no notion of input
+	}
+	
 	/* ----------------- helper methods ----------------- */
 	
 	protected Text createFieldText(Composite parent, int style) {
 		Text fieldText = new Text(parent, style);
-		addFieldTextModifyListener(fieldText);
-		return fieldText;
-	}
-	
-	protected void addFieldTextModifyListener(Text text) {
-		text.addModifyListener(new ModifyListener() {
+		fieldText.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent evt) {
 				fireFieldValueChanged();
 			}
 		});
+		return fieldText;
 	}
-
+	
 }

@@ -13,8 +13,6 @@ package melnorme.lang.ide.ui.preferences.fields;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -36,16 +34,9 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	
 	@Override
 	protected void createContents(Composite topControl) {
-		checkBox = new Button(topControl, SWT.CHECK);
+		checkBox = createFieldButton(this, topControl, SWT.NONE);
 		checkBox.setText(label);
-		
 		checkBox.setLayoutData(GridDataFactory.swtDefaults().span(2, 1).create());
-		checkBox.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				updateFieldValue(checkBox.getSelection());
-			}
-		});
 	}
 	
 	@Override
@@ -59,7 +50,7 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	}
 	
 	@Override
-	public void doUpdateControls() {
+	public void doUpdateComponentFromValue() {
 		checkBox.setSelection(getBooleanFieldValue());
 	}
 	
