@@ -12,8 +12,8 @@ package com.googlecode.goclipse.ui.properties;
 
 import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
 import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.fields.SpinnerComponent;
-import melnorme.util.swt.components.fields.TextComponent;
+import melnorme.util.swt.components.fields.SpinnerNumberField;
+import melnorme.util.swt.components.fields.TextField;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
@@ -44,8 +44,8 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 		protected IProject input;
 		
 		protected Button ctEnableButton;
-		protected TextComponent testFilesRegex;
-		protected SpinnerComponent testTimeout;
+		protected TextField testFilesRegex;
+		protected SpinnerNumberField testTimeout;
 		
 		public ContinuousTestingOptionsBlock(IProject input) {
 			this.input = input;
@@ -71,10 +71,10 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 			ctEnableButton.setText("Enable Continuous Testing");
 			ctEnableButton.setLayoutData(gdFillDefaults().grab(true, false).span(2, 1).create());
 			
-			testFilesRegex = new TextComponent("Test Name Regex:");
+			testFilesRegex = new TextField("Test Name Regex:");
 			testFilesRegex.createComponentInlined(topControl);
 			
-			testTimeout = new SpinnerComponent("Test Max Time (ms):");
+			testTimeout = new SpinnerNumberField("Test Max Time (ms):");
 			testTimeout.createComponentInlined(topControl);
 			testTimeout.setValueMinimum(100).setValueMaximum(360000).setValueIncrement(10);
 			
@@ -90,8 +90,8 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 		public void updateComponentFromInput() {
 			ctEnableButton.setSelection(Environment.INSTANCE.getAutoUnitTest(input));
 			updateComponentForEnableButtonChange();
-			testFilesRegex.setValue(Environment.INSTANCE.getAutoUnitTestRegex2(input));
-			testTimeout.setValue(Environment.INSTANCE.getAutoUnitTestMaxTime(input));
+			testFilesRegex.setFieldValue(Environment.INSTANCE.getAutoUnitTestRegex2(input));
+			testTimeout.setFieldValue(Environment.INSTANCE.getAutoUnitTestMaxTime(input));
 		}
 		
 		protected void updateComponentForEnableButtonChange() {
@@ -102,18 +102,18 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 		
 		public void updateControlFromDefaults() {
 			ctEnableButton.setSelection(false);
-			testFilesRegex.setValue(Environment.INSTANCE.getAutoUnitTestRegexDefault());
-			testTimeout.setValue(Environment.INSTANCE.getAutoUnitTestMaxTimeDefault());
+			testFilesRegex.setFieldValue(Environment.INSTANCE.getAutoUnitTestRegexDefault());
+			testTimeout.setFieldValue(Environment.INSTANCE.getAutoUnitTestMaxTimeDefault());
 		}
 		
 		public void saveConfig() {
 			boolean ctEnabled = ctEnableButton.getSelection();
 			Environment.INSTANCE.setAutoUnitTest(input, ctEnabled);
 			
-			String unitTestRegex = testFilesRegex.getValue();
+			String unitTestRegex = testFilesRegex.getFieldValue();
 			Environment.INSTANCE.setAutoUnitTestRegex(input, unitTestRegex);
 			
-			int maxTime = testTimeout.getValue();
+			int maxTime = testTimeout.getFieldValue();
 			Environment.INSTANCE.setAutoUnitTestMaxTime(input, maxTime);
 		}
 		

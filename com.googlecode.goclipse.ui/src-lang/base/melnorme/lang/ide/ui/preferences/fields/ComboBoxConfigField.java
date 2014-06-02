@@ -15,15 +15,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
-public class ComboBoxConfigField extends AbstractConfigField<String> {
+
+public class ComboBoxConfigField extends AbstractConfigField<Integer> {
 	
 	protected final String[] labels;
 	protected final String[] values;
@@ -37,6 +36,12 @@ public class ComboBoxConfigField extends AbstractConfigField<String> {
 		this.labels = labels;
 		this.values = values;
 		assertTrue(labels != null && values != null && labels.length == values.length);
+		assertTrue(labels.length > 0);
+	}
+	
+	@Override
+	public Integer getDefaultFieldValue() {
+		return 0;
 	}
 	
 	@Override
@@ -45,26 +50,15 @@ public class ComboBoxConfigField extends AbstractConfigField<String> {
 		labelControl.setText(label);
 		labelControl.setLayoutData(GridDataFactory.swtDefaults().create());
 		
-		combo = new Combo(topControl, SWT.SINGLE | SWT.READ_ONLY);
+		combo = createFieldCombo(this, topControl, SWT.SINGLE | SWT.READ_ONLY);
 		combo.setLayoutData(new GridData());
 		combo.setFont(topControl.getFont());
 		combo.setItems(labels);
 		combo.setData(prefKey);
-		combo.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				String comboText = combo.getText();
-				for (int i = 0; i < labels.length; i++) {
-					if(labels[i].equals(comboText)) {
-						updateFieldValue(values[i]);
-					}
-				}
-			}
-		});
 	}
 	
 	@Override
-	public Control getFieldControl() {
+	public Combo getFieldControl() {
 		return combo;
 	}
 	
@@ -74,22 +68,40 @@ public class ComboBoxConfigField extends AbstractConfigField<String> {
 	}
 	
 	@Override
-	public void doUpdateComponentFromValue() {
-		for (int i = 0; i < values.length; i++) {
-			if(values[i].equals(getFieldValue())) {
-				combo.setText(labels[i]);
-			}
-		}
+	protected void doUpdateComponentFromValue() {
+		String label = labels[getFieldValue()];
+		combo.setText(label);
+		assertTrue(combo.getSelectionIndex() == getFieldValue());
 	}
 	
 	@Override
 	public void loadFromStore(IPreferenceStore store) {
-		setFieldValue(store.getString(prefKey));
+		String prefValue = store.getString(prefKey);
+		setFieldValue(findIndexForPrefValue(prefValue));
 	}
 	
 	@Override
 	public void saveToStore(IPreferenceStore store) {
-		store.setValue(prefKey, getFieldValue());
+		String value = getPrefValueFromIndex(getFieldValue());
+		store.setValue(prefKey, value);
+	}
+	
+	protected int findIndexForPrefValue(String prefValue) {
+		int index;
+		for (index = 0; index < values.length; index++) {
+			if(values[index].equals(prefValue)) {
+				return index;
+			}
+		}
+		return -1;
+	}
+	
+	protected String getPrefValueFromIndex(int index) {
+		String value = "";
+		if(index != -1) {
+			value = values[index];
+		}
+		return value;
 	}
 	
 }

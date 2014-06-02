@@ -10,26 +10,30 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.AbstractField;
+import melnorme.util.swt.components.LayoutUtils;
 
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-public class SpinnerComponent extends AbstractComponent {
+public class SpinnerNumberField extends AbstractField<Integer> {
 	
 	protected String labelText;
 	
 	protected Label label;
 	protected Spinner spinner;
 	
-	public SpinnerComponent(String labelText) {
+	public SpinnerNumberField(String labelText) {
 		this.labelText = labelText;
+	}
+	
+	@Override
+	public Integer getDefaultFieldValue() {
+		return 0;
 	}
 	
 	@Override
@@ -42,9 +46,7 @@ public class SpinnerComponent extends AbstractComponent {
 		createLabel(parent);
 		createSpinner(parent);
 		
-		assertTrue(numColumns >= 2);
-		label.setLayoutData(GridDataFactory.swtDefaults().create());
-		spinner.setLayoutData(GridDataFactory.swtDefaults().span(numColumns - 1, 1).create());
+		LayoutUtils.layout2Controls(numColumns, label, spinner);
 	}
 	
 	protected void createLabel(Composite parent) {
@@ -52,39 +54,41 @@ public class SpinnerComponent extends AbstractComponent {
 	}
 	
 	protected void createSpinner(Composite parent) {
-		spinner = new Spinner(parent, SWT.BORDER);
+		spinner = createFieldSpinner(this, parent, SWT.BORDER);
 	}
 	
 	public Spinner getSpinner() {
 		return spinner;
 	}
 	
-	public void setValue(int value) {
-		spinner.setSelection(value);
+	@Override
+	protected Spinner getFieldControl() {
+		return spinner;
+	}
+	
+	@Override
+	protected void doUpdateComponentFromValue() {
+		spinner.setDigits(getFieldValue());
+	}
+	
+	public SpinnerNumberField setValueMinimum(int minimum) {
+		spinner.setMinimum(minimum);
+		return this;
+	}
+	
+	public SpinnerNumberField setValueMaximum(int maximum) {
+		spinner.setMaximum(maximum);
+		return this;
+	}
+	
+	public SpinnerNumberField setValueIncrement(int increment) {
+		spinner.setIncrement(increment);
+		return this;
 	}
 	
 	public void setEnabled(boolean enabled) {
 		label.setEnabled(enabled);
 		spinner.setEnabled(enabled);
-	}
-	
-	public int getValue() {
-		return spinner.getDigits();
-	}
-	
-	public SpinnerComponent setValueMinimum(int minimum) {
-		spinner.setMinimum(minimum);
-		return this;
-	}
-	
-	public SpinnerComponent setValueMaximum(int maximum) {
-		spinner.setMaximum(maximum);
-		return this;
-	}
-	
-	public SpinnerComponent setValueIncrement(int increment) {
-		spinner.setIncrement(increment);
-		return this;
 	}
 	
 }

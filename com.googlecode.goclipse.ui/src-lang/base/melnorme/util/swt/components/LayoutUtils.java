@@ -10,15 +10,19 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.swt.widgets.Control;
 
-public interface IFieldComponent<VALUE> extends IWidgetComponent {
-	
-	VALUE getFieldValue();
-	
-	void setFieldValue(VALUE projectName);
-	
-	void addValueChangedListener(IFieldValueListener listener);
-	
-	void removeValueChangedListener(IFieldValueListener listener);
+public class LayoutUtils {
+
+	// TODO: generalize this
+	public static void layout2Controls(int numColumns, Control control1, Control expandingControl) {
+		control1.setLayoutData(GridDataFactory.swtDefaults().create());
+		numColumns--;
+		if(numColumns == 0) {
+			numColumns = 1;
+		}
+		expandingControl.setLayoutData(GridDataFactory.fillDefaults().span(numColumns, 1).create());
+	}
 	
 }

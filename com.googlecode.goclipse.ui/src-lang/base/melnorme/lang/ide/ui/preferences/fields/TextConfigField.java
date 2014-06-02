@@ -33,11 +33,16 @@ public class TextConfigField extends AbstractConfigField<String> {
 	}
 	
 	@Override
+	public String getDefaultFieldValue() {
+		return "";
+	}
+	
+	@Override
 	protected void createContents(Composite topControl) {
 		PixelConverter pixelConverter = new PixelConverter(topControl);
 		
 		labelControl = SWTFactoryUtil.createLabel(topControl, SWT.NONE, label, new GridData()); 
-		textControl = createFieldTextControl(this, topControl, SWT.BORDER | SWT.SINGLE);
+		textControl = createFieldText(this, topControl, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData();
 		gd.widthHint = pixelConverter.convertWidthInCharsToPixels(textLimit + 1);
 		textControl.setLayoutData(gd);
@@ -45,7 +50,7 @@ public class TextConfigField extends AbstractConfigField<String> {
 	}
 	
 	@Override
-	public Control getFieldControl() {
+	public Text getFieldControl() {
 		return textControl;
 	}
 	
@@ -56,9 +61,12 @@ public class TextConfigField extends AbstractConfigField<String> {
 	
 	@Override
 	protected void doUpdateComponentFromValue() {
-		if(getFieldValue() != null) {
-			textControl.setText(getFieldValue());
-		}
+		textControl.setText(getFieldValue());
+	}
+	
+	public void setEnabled(boolean enabled) {
+		labelControl.setEnabled(enabled);
+		textControl.setEnabled(enabled);
 	}
 	
 	@Override

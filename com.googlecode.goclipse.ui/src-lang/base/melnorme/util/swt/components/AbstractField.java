@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.ide.ui.preferences.fields.AbstractConfigField;
@@ -21,8 +22,10 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -34,13 +37,22 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 	private VALUE value; // private to prevent direct modifications.
 	protected boolean runningUpdateControls;
 	
+	public AbstractField() {
+		this.value = assertNotNull(getDefaultFieldValue());
+	}
+	
+	public abstract VALUE getDefaultFieldValue();
+	
 	@Override
 	public VALUE getFieldValue() {
-		return value;
+		return assertNotNull(value);
 	}
 	
 	@Override
 	public void setFieldValue(VALUE value) {
+		if(value == null) {
+			value = getDefaultFieldValue();
+		}
 		setFieldValue(value, true);
 	}
 	
@@ -74,6 +86,8 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		}
 	}
 	
+	/** do Update component controls for given value.
+	 * Precondition: component is created.*/
 	protected abstract void doUpdateComponentFromValue();
 	
 	@Override
@@ -87,19 +101,10 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		return SWTUtil.isOkToUse(getFieldControl());
 	}
 	
-	public void setEnabled(boolean enabled) {
-		// default implementation, classes might need to override
-		getFieldControl().setEnabled(enabled);
-	}
-	
-	public boolean isEnabled() {
-		return getFieldControl().isEnabled();
-	}
-	
 	/* ----------------- create helpers ----------------- */
 	
-	protected static Text createFieldTextControl(final AbstractField<String> field, Composite topControl, int style) {
-		final Text text = new Text(topControl, style);
+	protected static Text createFieldText(final AbstractField<String> field, Composite parent, int style) {
+		final Text text = new Text(parent, style);
 		text.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
@@ -109,9 +114,9 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		return text;
 	}
 	
-	protected static Button createFieldButton(final AbstractConfigField<Boolean> field, Composite topControl, 
+	protected static Button createFieldButton(final AbstractConfigField<Boolean> field, Composite parent, 
 			int style) {
-		final Button checkBox = new Button(topControl, SWT.CHECK | style);
+		final Button checkBox = new Button(parent, SWT.CHECK | style);
 		checkBox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -119,6 +124,30 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 			}
 		});
 		return checkBox;
+	}
+	
+	protected static Spinner createFieldSpinner(final AbstractField<Integer> field, Composite parent, 
+			int style) {
+		final Spinner spinner = new Spinner(parent, style);
+		spinner.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				field.updateFieldValue(spinner.getDigits());
+			}
+		});
+		return spinner;
+	}
+	
+	protected static Combo createFieldCombo(final AbstractField<Integer> field, Composite topControl, int style) {
+		final Combo combo = new Combo(topControl, style);
+		combo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int selectionIndex = combo.getSelectionIndex();
+				field.updateFieldValue(selectionIndex);
+			}
+		});
+		return combo;
 	}
 	
 }

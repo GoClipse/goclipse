@@ -25,11 +25,9 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 		super(prefKey, label);
 	}
 	
-	protected boolean getBooleanFieldValue() {
-		if(getFieldValue() == null) {
-			return false;
-		}
-		return getFieldValue();
+	@Override
+	public Boolean getDefaultFieldValue() {
+		return false;
 	}
 	
 	@Override
@@ -40,7 +38,7 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	}
 	
 	@Override
-	public Control getFieldControl() {
+	public Button getFieldControl() {
 		return checkBox;
 	}
 	
@@ -50,8 +48,8 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	}
 	
 	@Override
-	public void doUpdateComponentFromValue() {
-		checkBox.setSelection(getBooleanFieldValue());
+	protected void doUpdateComponentFromValue() {
+		checkBox.setSelection(getFieldValue());
 	}
 	
 	@Override
@@ -61,7 +59,7 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	
 	@Override
 	public void saveToStore(IPreferenceStore store) {
-		store.setValue(prefKey, getBooleanFieldValue());
+		store.setValue(prefKey, getFieldValue());
 	}
 	
 }

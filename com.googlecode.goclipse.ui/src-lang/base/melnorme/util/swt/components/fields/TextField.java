@@ -10,25 +10,29 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.AbstractField;
+import melnorme.util.swt.components.LayoutUtils;
 
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class TextComponent extends AbstractComponent {
+public class TextField extends AbstractField<String> {
 	
 	protected String labelText;
 	
 	protected Label label;
 	protected Text text;
 	
-	public TextComponent(String labelText) {
+	public TextField(String labelText) {
 		this.labelText = labelText;
+	}
+	
+	@Override
+	public String getDefaultFieldValue() {
+		return "";
 	}
 	
 	@Override
@@ -41,12 +45,7 @@ public class TextComponent extends AbstractComponent {
 		label = createLabel(parent);
 		text = createText(parent);
 		
-		label.setLayoutData(GridDataFactory.swtDefaults().create());
-		numColumns--;
-		if(numColumns == 0) {
-			numColumns = 1;
-		}
-		text.setLayoutData(GridDataFactory.fillDefaults().span(numColumns, 1).create());
+		LayoutUtils.layout2Controls(numColumns, label, text);
 	}
 	
 	protected Label createLabel(Composite parent) {
@@ -56,23 +55,17 @@ public class TextComponent extends AbstractComponent {
 	}
 	
 	protected Text createText(Composite parent) {
-		return new Text(parent, SWT.BORDER);
+		return createFieldText(this, parent, SWT.BORDER);
 	}
 	
-	public Text getTextControl() {
+	@Override
+	public Text getFieldControl() {
 		return text;
 	}
 	
-	public boolean isCreated() {
-		return SWTUtil.isOkToUse(text);
-	}
-	
-	public void setValue(String value) {
-		getTextControl().setText(value);
-	}
-	
-	public String getValue() {
-		return getTextControl().getText();
+	@Override
+	protected void doUpdateComponentFromValue() {
+		text.setText(getFieldValue());
 	}
 	
 	public void setEnabled(boolean enabled) {
