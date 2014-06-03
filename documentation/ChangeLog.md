@@ -2,7 +2,6 @@
 
 ### Goclipse 0.8.0
  * Added debugging support using CDT's integration with GDB.
-   * Some problems have been noted when examining variable contents.
  * Goclipse now requires a JVM of version 7. 
  * Changed internal id for Go projects, so old Go projects are no longer recognized, they will need to be recreated.
  * Implemented #46: Eclipse console for Go builder.
