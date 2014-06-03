@@ -447,15 +447,6 @@ public class Environment {
 	public String getAutoUnitTestRegex(IProject project) {
 		Properties properties = getProperties(project);
 		Object b = properties.get(PROJECT_AUTO_UNIT_TEST_REGEX);
-		if(b==null){
-			return "";
-		}
-		return b.toString();
-    }
-	
-	public String getAutoUnitTestRegex2(IProject project) {
-		Properties properties = getProperties(project);
-		Object b = properties.get(PROJECT_AUTO_UNIT_TEST_REGEX);
 		if(b==null || b.equals("")){
 			return getAutoUnitTestRegexDefault();
 		}

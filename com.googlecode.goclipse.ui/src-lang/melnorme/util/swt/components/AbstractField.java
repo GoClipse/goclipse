@@ -124,7 +124,7 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		spinner.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				field.setFieldValueFromControl(spinner.getDigits());
+				field.setFieldValueFromControl(spinner.getSelection());
 			}
 		});
 		return spinner;

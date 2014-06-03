@@ -62,7 +62,7 @@ public class SpinnerNumberField extends AbstractFieldExt<Integer> {
 	
 	@Override
 	protected void doUpdateComponentFromValue() {
-		spinner.setDigits(getFieldValue());
+		spinner.setSelection(getFieldValue());
 	}
 	
 	public SpinnerNumberField setValueMinimum(int minimum) {

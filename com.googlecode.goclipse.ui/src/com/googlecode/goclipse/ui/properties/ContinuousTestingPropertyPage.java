@@ -12,15 +12,14 @@ package com.googlecode.goclipse.ui.properties;
 
 import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
 import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.IFieldValueListener;
+import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.SpinnerNumberField;
 import melnorme.util.swt.components.fields.TextField;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -43,7 +42,7 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 		
 		protected IProject input;
 		
-		protected Button ctEnableButton;
+		protected CheckBoxField ctEnablement;
 		protected TextField testFilesRegex;
 		protected SpinnerNumberField testTimeout;
 		
@@ -67,9 +66,8 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 			ctWarning.setLayoutData(gdFillDefaults().grab(true, false).hint(500, 200).span(2, 1).create());
 			
 			
-			ctEnableButton = new Button(topControl, SWT.CHECK);
-			ctEnableButton.setText("Enable Continuous Testing");
-			ctEnableButton.setLayoutData(gdFillDefaults().grab(true, false).span(2, 1).create());
+			ctEnablement = new CheckBoxField("Enable Continuous Testing");
+			ctEnablement.createComponentInlined(topControl);
 			
 			testFilesRegex = new TextField("Test Name Regex:");
 			testFilesRegex.createComponentInlined(topControl);
@@ -78,9 +76,9 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 			testTimeout.createComponentInlined(topControl);
 			testTimeout.setValueMinimum(100).setValueMaximum(360000).setValueIncrement(10);
 			
-			ctEnableButton.addSelectionListener(new SelectionAdapter() {
+			ctEnablement.addValueChangedListener(new IFieldValueListener() {
 				@Override
-				public void widgetSelected(SelectionEvent e) {
+				public void fieldValueChanged() {
 					updateComponentForEnableButtonChange();
 				}
 			});
@@ -88,26 +86,25 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 		
 		@Override
 		public void updateComponentFromInput() {
-			ctEnableButton.setSelection(Environment.INSTANCE.getAutoUnitTest(input));
-			updateComponentForEnableButtonChange();
-			testFilesRegex.setFieldValue(Environment.INSTANCE.getAutoUnitTestRegex2(input));
+			ctEnablement.setFieldValue(Environment.INSTANCE.getAutoUnitTest(input));
+			testFilesRegex.setFieldValue(Environment.INSTANCE.getAutoUnitTestRegex(input));
 			testTimeout.setFieldValue(Environment.INSTANCE.getAutoUnitTestMaxTime(input));
 		}
 		
 		protected void updateComponentForEnableButtonChange() {
-			boolean ctEnabled = ctEnableButton.getSelection();
+			boolean ctEnabled = ctEnablement.getFieldValue();
 			testFilesRegex.setEnabled(ctEnabled);
 			testTimeout.setEnabled(ctEnabled);
 		}
 		
 		public void updateControlFromDefaults() {
-			ctEnableButton.setSelection(false);
+			ctEnablement.setFieldValue(false);
 			testFilesRegex.setFieldValue(Environment.INSTANCE.getAutoUnitTestRegexDefault());
 			testTimeout.setFieldValue(Environment.INSTANCE.getAutoUnitTestMaxTimeDefault());
 		}
 		
 		public void saveConfig() {
-			boolean ctEnabled = ctEnableButton.getSelection();
+			boolean ctEnabled = ctEnablement.getFieldValue();
 			Environment.INSTANCE.setAutoUnitTest(input, ctEnabled);
 			
 			String unitTestRegex = testFilesRegex.getFieldValue();
