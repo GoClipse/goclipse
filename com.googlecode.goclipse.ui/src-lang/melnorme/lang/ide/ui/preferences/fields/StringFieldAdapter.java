@@ -27,6 +27,11 @@ public class StringFieldAdapter extends AbstractFieldAdapter<String> implements 
 	}
 	
 	@Override
+	public void loadStoreDefaults(IPreferenceStore store) {
+		field.setFieldValue(store.getDefaultString(prefKey));
+	}
+	
+	@Override
 	public void saveToStore(IPreferenceStore store) {
 		store.setValue(prefKey, field.getFieldValue());
 	}

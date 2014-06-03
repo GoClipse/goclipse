@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation (JDT)
  *     DLTK team ? - DLTK modifications 
- *     Bruno Medeiros - Lang modifications
+ *     Bruno Medeiros - Lang rewrite
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
@@ -56,12 +56,26 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 			this.systemColor = systemColor;
 		}
 		
-		public void loadFromStore(IPreferenceStore store) {
-			color = StringConverter.asRGB(store.getString(colorKey), PreferenceConverter.COLOR_DEFAULT_DEFAULT);
+		public void setValues(String colorPrefValue, boolean useSystemDefaultPrefValue) {
+			color = StringConverter.asRGB(colorPrefValue, PreferenceConverter.COLOR_DEFAULT_DEFAULT);
 			useSystemDefault = false;
 			if(useSystemDefaultKey != null) {
-				useSystemDefault = store.getBoolean(useSystemDefaultKey);
+				useSystemDefault = useSystemDefaultPrefValue;
 			}
+		}
+		
+		public void loadFromStore(IPreferenceStore store) {
+			String colorPrefValue = store.getString(colorKey);
+			boolean useSystemDefaultPrefValue = useSystemDefaultKey == null ? false : 
+				store.getBoolean(useSystemDefaultKey);
+			setValues(colorPrefValue, useSystemDefaultPrefValue);
+		}
+		
+		public void loadStoreDefaults(IPreferenceStore store) {
+			String colorPrefValue = store.getDefaultString(colorKey);
+			boolean useSystemDefaultPrefValue = useSystemDefaultKey == null ? false :
+				store.getDefaultBoolean(useSystemDefaultKey);
+			setValues(colorPrefValue, useSystemDefaultPrefValue);
 		}
 		
 		public void saveToStore(IPreferenceStore store) {
@@ -76,13 +90,6 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 				return display.getSystemColor(systemColor).getRGB(); 
 			} else {
 				return color;
-			}
-		}
-		
-		public void resetToDefaults(IPreferenceStore store) {
-			store.setToDefault(colorKey);
-			if(useSystemDefaultKey != null) {
-				store.setToDefault(useSystemDefaultKey);
 			}
 		}
 		
@@ -104,9 +111,15 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 			editorColorItem.loadFromStore(store);
 		}
 		
-		if(SWTUtil.isOkToUse(colorList)) {
-			handleAppearanceColorListSelectionChanged();
+		handleAppearanceColorListSelectionChanged();
+	}
+	
+	@Override
+	public void loadStoreDefaults(IPreferenceStore store) {
+		for (EditorColorItem editorColorItem : editorColorItems) {
+			editorColorItem.loadStoreDefaults(store);
 		}
+		handleAppearanceColorListSelectionChanged();
 	}
 	
 	@Override
@@ -116,13 +129,6 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 		}
 	}
 	
-	@Override
-	public void resetToDefaults(IPreferenceStore store) {
-		for (EditorColorItem editorColorItem : editorColorItems) {
-			editorColorItem.resetToDefaults(store);
-		}
-		loadFromStore(store);
-	}
 	
 	@Override
 	public void createContents(Composite topControl) {
@@ -170,6 +176,10 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 	}
 	
 	protected void handleAppearanceColorListSelectionChanged() {
+		if(!SWTUtil.isOkToUse(colorList)) {
+			return;
+		}
+		
 		EditorColorItem selectedItem = getSelectedItem();
 		if(selectedItem != null && selectedItem != NULL_ELEMENT) {
 			colorEditor.setColorValue(selectedItem.getEffectiveColor(colorList.getDisplay()));
@@ -182,7 +192,8 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 		itemEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 		itemEditorComposite.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
 		
-		SWTFactoryUtil.createLabel(itemEditorComposite, SWT.LEFT, PreferencesMessages.EditorPreferencePage_color, new GridData());
+		SWTFactoryUtil.createLabel(itemEditorComposite, SWT.LEFT, 
+			PreferencesMessages.EditorPreferencePage_color, new GridData());
 		
 		colorEditor = new ColorSelector(itemEditorComposite);
 		Button colorEditorButton = colorEditor.getButton();

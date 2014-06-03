@@ -62,9 +62,9 @@ public abstract class AbstractPreferencesConfigComponent extends AbstractCompone
 	}
 	
 	@Override
-	public void resetToDefaults(IPreferenceStore store) {
+	public void loadStoreDefaults(IPreferenceStore store) {
 		for(IPreferencesComponent configField : configFields) {
-			configField.resetToDefaults(store);
+			configField.loadStoreDefaults(store);
 		}
 	}
 	

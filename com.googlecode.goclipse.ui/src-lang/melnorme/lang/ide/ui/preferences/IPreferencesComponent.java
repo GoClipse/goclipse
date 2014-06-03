@@ -20,6 +20,6 @@ public interface IPreferencesComponent extends IWidgetComponent {
 	
 	public void saveToStore(IPreferenceStore store);
 	
-	public void resetToDefaults(IPreferenceStore store);
+	public void loadStoreDefaults(IPreferenceStore store);
 	
 }

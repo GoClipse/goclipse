@@ -32,6 +32,11 @@ public class BooleanFieldAdapter extends AbstractFieldAdapter<Boolean> implement
 	}
 	
 	@Override
+	public void loadStoreDefaults(IPreferenceStore store) {
+		field.setFieldValue(store.getDefaultBoolean(prefKey));
+	}
+	
+	@Override
 	public void saveToStore(IPreferenceStore store) {
 		store.setValue(prefKey, field.getFieldValue());
 	}

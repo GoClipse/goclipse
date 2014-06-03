@@ -77,7 +77,7 @@ public abstract class AbstractPreferencesComponentPrefPage extends PreferencePag
 	public void performDefaults() {
 		DialogPageUtils.applyStatusToPreferencePage(NO_STATUS, this);
 		
-		fConfigurationBlock.resetToDefaults(getPreferenceStore());
+		fConfigurationBlock.loadStoreDefaults(getPreferenceStore());
 		
 		super.performDefaults();
 	}

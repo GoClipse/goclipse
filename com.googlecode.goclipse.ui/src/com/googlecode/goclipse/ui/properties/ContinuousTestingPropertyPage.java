@@ -63,7 +63,7 @@ public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 			ctWarning.setBackground(SWTResourceManager.getColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND));
 			ctWarning.setEditable(false);
 			ctWarning.setText(GoUIMessages.AUTOMATIC_UNIT_TESTING_WARNING);
-			ctWarning.setLayoutData(gdFillDefaults().grab(true, false).hint(500, 200).span(2, 1).create());
+			ctWarning.setLayoutData(gdFillDefaults().grab(true, false).hint(400, 200).span(2, 1).create());
 			
 			
 			ctEnablement = new CheckBoxField("Enable Continuous Testing");

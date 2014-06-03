@@ -24,7 +24,7 @@ public interface PreferencesMessages {
 	public static String EditorPreferencePage_sourceHoverBackgroundColor = 
 			"Source hover background";
 	public static String EditorPreferencePage_color = 
-			"C&olor";
+			"C&olor:";
 	public static String EditorPreferencePage_systemDefault = 
 			"&System Default";
 	

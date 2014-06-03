@@ -14,7 +14,6 @@ import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
 import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.AbstractField;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Composite;
 
 public abstract class AbstractFieldAdapter<VALUE> extends AbstractComponent implements IPreferencesComponent {
@@ -30,12 +29,6 @@ public abstract class AbstractFieldAdapter<VALUE> extends AbstractComponent impl
 	@Override
 	protected final void createContents(Composite topControl) {
 		field.createComponentInlined(topControl);
-	}
-	
-	@Override
-	public void resetToDefaults(IPreferenceStore store) {
-		store.setToDefault(prefKey);
-		loadFromStore(store);
 	}
 	
 	public AbstractField<VALUE> getField() {

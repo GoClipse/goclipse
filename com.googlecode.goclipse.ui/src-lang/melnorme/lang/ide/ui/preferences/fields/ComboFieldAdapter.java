@@ -31,6 +31,11 @@ public class ComboFieldAdapter extends AbstractFieldAdapter<Integer> implements 
 	}
 	
 	@Override
+	public void loadStoreDefaults(IPreferenceStore store) {
+		field.setFieldStringValue(store.getDefaultString(prefKey));
+	}
+	
+	@Override
 	public void saveToStore(IPreferenceStore store) {
 		String value = field.getFieldStringValue();
 		store.setValue(prefKey, value);
