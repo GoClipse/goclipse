@@ -13,6 +13,7 @@ ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https:/
 	<property name="localUpdateSiteDir" location="bin-maven/updateSite/" />
 	<property name="repoSrc" location="bin-maven/features.repository/repository" />
 	<property name="repoSrc.subdir" location="local-repo" />
+	<property name="commitMessage" location="new Release" />
 	<property name="updateSiteSkeleton.Dir" location="releng/UpdateSite-skeleton" />
 
 	<property name="gitLocation" value="git" />
@@ -73,7 +74,7 @@ ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https:/
 		</exec>
 		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
 			<arg line="commit -m"/>
-			<arg value="update site"/>
+			<arg value="${commitMessage}"/>
 		</exec>
 		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
 			<arg line="status"/>
