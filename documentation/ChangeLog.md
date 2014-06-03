@@ -12,6 +12,6 @@
  * Fixed issue with Project Explorer `Go Elements` content.
  * Fixed potential bug reading output of go test tool, for auto test feature.
  * Removed deprecated options in Go project build options property page.
-  * Moved Continuous/Automatic Unit Testing tab to separate property page.
+ * Moved Continuous/Automatic Unit Testing tab to separate property page.
   * Fixed bug: Continuous Unit Testing property page saving its options without OK pressed.
   * Fixed bug: Continuous Unit Testing property page restore-defaults not working.
