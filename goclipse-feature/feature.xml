@@ -4,7 +4,7 @@
       label="GoClipse"
       version="0.8.0.qualifier"
       provider-name="The GoClipse Development Team"
-      plugin="com.googlecode.goclipse.core">
+      plugin="com.googlecode.goclipse.ui">
 
    <description url="http://code.google.com/p/goclipse/">
       This is the development version of the GoClipse Plug-In. 
