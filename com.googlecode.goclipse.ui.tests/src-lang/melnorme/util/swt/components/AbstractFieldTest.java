@@ -28,7 +28,7 @@ public abstract class AbstractFieldTest extends CommonTest {
 	
 	@Test
 	public void runTest() throws Exception {
-		doRunTest();
+		runTest_______();
 	}
 	
 	protected int controlsUpdateCount;
@@ -42,11 +42,9 @@ public abstract class AbstractFieldTest extends CommonTest {
 		assertTrue(controlsUpdateCount == controlsUpdateCount_expected);
 	}
 	
-	public void doRunTest() throws Exception {
-		controlsUpdateCount = 0;
-		controlsUpdateCount_expected = 0;
-		valueChangeCount = 0;
-		valueChangeCount_expected = 0;
+	public void runTest_______() throws Exception {
+		controlsUpdateCount_expected = controlsUpdateCount = 0;
+		valueChangeCount_expected = valueChangeCount = 0;
 		
 		field = createField();
 		assertTrue(field.isCreated() == false);
@@ -60,26 +58,35 @@ public abstract class AbstractFieldTest extends CommonTest {
 		});
 		__checkUpdatesInvariant();
 		
+		Shell shell = new Shell(Display.getDefault());
+		try {
+
+		doRunTest(shell);
+		
+		} finally {
+			shell.dispose();
+			assertTrue(field.isCreated() == false);
+		}	
+	}
+	
+	protected void doRunTest(Shell shell) {
 		setFirstFieldValue(); 
 		valueChangeCount_expected++;
 		__checkUpdatesInvariant();
 		
-		Shell shell = new Shell(Display.getDefault());
-		try {
-			field.createComponent(shell);
-			runTestWithCreatedComponent();
-		} finally {
-			shell.dispose();
-		}
-		
-		assertTrue(field.isCreated() == false);
+		field.createComponent(shell);
+		assertTrue(field.getFieldControl() != null);
+		assertTrue(field.isCreated() == true);
+		assertTrue(controlsUpdateCount <= controlsUpdateCount_expected + 1);
+		assertTrue(valueChangeCount <= valueChangeCount_expected + 1);
+		controlsUpdateCount_expected = controlsUpdateCount;
+		valueChangeCount_expected = valueChangeCount; 
+//		valueChangeCount_expected++; // This could change in the future
+		__checkUpdatesInvariant();
+		runTestWithCreatedComponent();
 	}
 	
 	protected void runTestWithCreatedComponent() {
-		assertTrue(field.getFieldControl() != null);
-		assertTrue(field.isCreated() == true);
-		controlsUpdateCount_expected++;
-		__checkUpdatesInvariant();
 		
 		setSecondFieldValue();
 		assertEquals(field.getFieldValue(), getValueFromControl());

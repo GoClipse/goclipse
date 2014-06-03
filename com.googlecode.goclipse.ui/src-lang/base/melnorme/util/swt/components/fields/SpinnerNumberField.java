@@ -11,24 +11,20 @@
 package melnorme.util.swt.components.fields;
 
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractField;
-import melnorme.util.swt.components.LayoutUtils;
+import melnorme.util.swt.components.AbstractFieldExt;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-public class SpinnerNumberField extends AbstractField<Integer> {
-	
-	protected String labelText;
+public class SpinnerNumberField extends AbstractFieldExt<Integer> {
 	
 	protected Label label;
 	protected Spinner spinner;
 	
 	public SpinnerNumberField(String labelText) {
-		this.labelText = labelText;
+		super(labelText);
 	}
 	
 	@Override
@@ -37,16 +33,9 @@ public class SpinnerNumberField extends AbstractField<Integer> {
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
-		GridLayout layoutData = (GridLayout) topControl.getLayout();
-		createContents(topControl, layoutData.numColumns);
-	}
-	
-	public void createContents(Composite parent, int numColumns) {
-		createLabel(parent);
-		createSpinner(parent);
-		
-		LayoutUtils.layout2Controls(numColumns, label, spinner);
+	protected void createContents_do(Composite topControl) {
+		createLabel(topControl);
+		createSpinner(topControl);
 	}
 	
 	protected void createLabel(Composite parent) {
@@ -55,6 +44,11 @@ public class SpinnerNumberField extends AbstractField<Integer> {
 	
 	protected void createSpinner(Composite parent) {
 		spinner = createFieldSpinner(this, parent, SWT.BORDER);
+	}
+	
+	@Override
+	protected void createContents_layout() {
+		layout2Controls(label, spinner, false);
 	}
 	
 	public Spinner getSpinner() {

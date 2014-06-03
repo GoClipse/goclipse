@@ -8,26 +8,25 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences.fields;
+package melnorme.util.swt.components.fields;
 
 import java.text.MessageFormat;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.preferences.FieldMessages;
 
 import org.eclipse.core.runtime.IStatus;
 
-public class NumberConfigField extends TextConfigField {
+public class NumberField extends TextField2 {
 	
-	public NumberConfigField(String label, String prefKey, int textLimit) {
-		super(label, prefKey, textLimit);
+	public NumberField(String label, int textLimit) {
+		super(label, textLimit);
 	}
 	
 	@Override
-	protected void updateFieldValue(String numberText) {
-		IStatus status = validatePositiveNumber(numberText);
+	protected void doSetFieldValue(String newValue, boolean needsUpdateControls) {
+		IStatus status = validatePositiveNumber(newValue);
 		if(status.isOK()) {
-			super.updateFieldValue(numberText);
+			super.doSetFieldValue(newValue, needsUpdateControls);
 		}
 		statusChanged(status);
 	}
@@ -38,7 +37,7 @@ public class NumberConfigField extends TextConfigField {
 	
 	protected IStatus validatePositiveNumber(String number) {
 		if (number.length() == 0) {
-			return LangCore.createErrorStatus(FieldMessages.JavaEditorPreferencePage_empty_input);
+			return LangCore.createErrorStatus(FieldMessages.NumberField_empty_input);
 		}
 		
 		try {
@@ -49,7 +48,7 @@ public class NumberConfigField extends TextConfigField {
 		} catch (NumberFormatException e) {
 		}
 		return LangCore.createErrorStatus(
-			MessageFormat.format(FieldMessages.JavaEditorPreferencePage_invalid_input, number));
+			MessageFormat.format(FieldMessages.NumberField_invalid_input, number));
 	}
 	
 }

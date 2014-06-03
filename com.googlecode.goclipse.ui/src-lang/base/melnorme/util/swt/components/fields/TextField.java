@@ -10,24 +10,27 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import melnorme.util.swt.components.AbstractField;
-import melnorme.util.swt.components.LayoutUtils;
+import melnorme.util.swt.SWTFactory;
+import melnorme.util.swt.components.AbstractFieldExt;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class TextField extends AbstractField<String> {
-	
-	protected String labelText;
+public class TextField extends AbstractFieldExt<String> {
 	
 	protected Label label;
 	protected Text text;
+	protected int textStyle;
 	
 	public TextField(String labelText) {
-		this.labelText = labelText;
+		this(labelText, SWT.BORDER);
+	}
+	
+	public TextField(String labelText, int textStyle) {
+		super(labelText);
+		this.textStyle = textStyle;
 	}
 	
 	@Override
@@ -36,26 +39,22 @@ public class TextField extends AbstractField<String> {
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
-		GridLayout layoutData = (GridLayout) topControl.getLayout();
-		createControls(topControl, layoutData.numColumns);
+	protected void createContents_do(Composite topControl) {
+		createLabel(topControl);
+		createText(topControl);
 	}
 	
-	public void createControls(Composite parent, int numColumns) {
-		label = createLabel(parent);
-		text = createText(parent);
-		
-		LayoutUtils.layout2Controls(numColumns, label, text);
+	protected void createLabel(Composite parent) {
+		label = SWTFactory.createLabel(parent, SWT.NONE, labelText);
 	}
 	
-	protected Label createLabel(Composite parent) {
-		Label label = new Label(parent, SWT.NONE);
-		label.setText(labelText);
-		return label;
+	protected void createText(Composite parent) {
+		text = createFieldText(this, parent, textStyle);
 	}
 	
-	protected Text createText(Composite parent) {
-		return createFieldText(this, parent, SWT.BORDER);
+	@Override
+	protected void createContents_layout() {
+		layout2Controls(label, text, true);
 	}
 	
 	@Override

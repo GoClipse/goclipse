@@ -11,37 +11,35 @@
 package melnorme.lang.ide.ui.preferences.fields;
 
 import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
+import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.AbstractField;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
-public abstract class AbstractConfigField<VALUE> extends AbstractField<VALUE> implements IPreferencesComponent {
+public abstract class AbstractFieldAdapter<VALUE> extends AbstractComponent implements IPreferencesComponent {
 	
 	protected final String prefKey;
-	protected final String label;
+	protected final AbstractField<VALUE> field;
 	
-	public AbstractConfigField(String prefKey, String label) {
+	public AbstractFieldAdapter(String prefKey, AbstractField<VALUE> field) {
 		this.prefKey = prefKey;
-		this.label = label;
+		this.field = field;
 	}
 	
-	/** @return the leftmost control */
-	public void createControl(Composite parent, int indentation) {
-		createComponentInlined(parent);
-		Control leftMostControl = getLeftMostControl();
-		
-		((GridData) leftMostControl.getLayoutData()).horizontalIndent = indentation;
+	@Override
+	protected final void createContents(Composite topControl) {
+		field.createComponentInlined(topControl);
 	}
-	
-	public abstract Control getLeftMostControl();
 	
 	@Override
 	public void resetToDefaults(IPreferenceStore store) {
 		store.setToDefault(prefKey);
 		loadFromStore(store);
+	}
+	
+	public AbstractField<VALUE> getField() {
+		return field;
 	}
 	
 }

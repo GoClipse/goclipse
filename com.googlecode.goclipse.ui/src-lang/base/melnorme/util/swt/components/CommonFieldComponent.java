@@ -35,7 +35,7 @@ public abstract class CommonFieldComponent<VALUE> extends AbstractComponentExt i
 		listeners.removeListener(listener);
 	}
 	
-	protected final void fireFieldValueChanged() {
+	protected void fireFieldValueChanged() {
 		fieldValueChanged();
 		for (IFieldValueListener listener : listeners.getListeners()) {
 			listener.fieldValueChanged();

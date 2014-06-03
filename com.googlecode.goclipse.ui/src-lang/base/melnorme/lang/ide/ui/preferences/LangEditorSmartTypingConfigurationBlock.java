@@ -14,9 +14,10 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
-import melnorme.lang.ide.ui.preferences.fields.ComboBoxConfigField;
-import melnorme.lang.ide.ui.preferences.fields.TextConfigField;
 import melnorme.util.swt.components.IFieldValueListener;
+import melnorme.util.swt.components.fields.CheckBoxField;
+import melnorme.util.swt.components.fields.ComboBoxField;
+import melnorme.util.swt.components.fields.NumberField;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -43,18 +44,18 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
 		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
-		addCheckBox(group,
-				PreferencesMessages.LangSmartTypingConfigurationBlock_closeStrings,
-				LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, 0);
+		createBooleanField(group, 
+			LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, 
+			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeStrings));
 		
-		addCheckBox(group,
-				PreferencesMessages.LangSmartTypingConfigurationBlock_closeBrackets,
-				LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS, 0);
+		createBooleanField(group, 
+			LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS,
+			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeBrackets));
 		}
 		
-		addCheckBox(group,
-				PreferencesMessages.LangSmartTypingConfigurationBlock_closeBraces,
-				LangAutoEditPreferenceConstants.AE_CLOSE_BRACES, 0);
+		createBooleanField(group, 
+			LangAutoEditPreferenceConstants.AE_CLOSE_BRACES,
+			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeBraces));
 		
 	}
 	
@@ -64,17 +65,17 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 		
 		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
-		addCheckBox(group,
-				PreferencesMessages.EditorPreferencePage_smartIndent,
-				LangAutoEditPreferenceConstants.AE_SMART_INDENT, 2);
+		createBooleanField(group, 
+			LangAutoEditPreferenceConstants.AE_SMART_INDENT, 
+			new CheckBoxField(PreferencesMessages.EditorPreferencePage_smartIndent));
 		
-		addCheckBox(group,
-				PreferencesMessages.EditorPreferencePage_smartDeIndent,
-				LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, 2);
+		createBooleanField(group, 
+			LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, 
+			new CheckBoxField(PreferencesMessages.EditorPreferencePage_smartDeIndent));
 		
-		addCheckBox(group,
-				PreferencesMessages.EditorPreferencePage_considerParenthesesAsBlocks,
-				LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, 2);
+		createBooleanField(group, 
+			LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS,
+			new CheckBoxField(PreferencesMessages.EditorPreferencePage_considerParenthesesAsBlocks));
 		
 		return group;
 	}
@@ -93,26 +94,26 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 			CodeFormatterConstants.SPACES 
 		);
 		
-		final ComboBoxConfigField indentModeField = 
-		addConfigComponent(generalGroup, 0, new ComboBoxConfigField(
+		final ComboBoxField indentModeField = new ComboBoxField(
 			FormatterMessages.IndentationGroup_tab_policy, 
-			CodeFormatterConstants.FORMATTER_INDENT_MODE, 
 			INDENT_MODE__LABELS, 
-			INDENT_MODE__VALUES
-		));
+			INDENT_MODE__VALUES);
+		createCheckboxField(generalGroup, 
+			CodeFormatterConstants.FORMATTER_INDENT_MODE,
+			indentModeField
+		);
 		
-		addConfigComponent(generalGroup, 1, createNumberField(
-			FormatterMessages.IndentationGroup_tab_size, 
-			CodeFormatterConstants.FORMATTER_TAB_SIZE, 
-			2
-		));
+		createStringField(generalGroup, 
+			CodeFormatterConstants.FORMATTER_TAB_SIZE,
+			createNumberField(FormatterMessages.IndentationGroup_tab_size, 2)
+		);
 		
-		final TextConfigField indentationSizeField = 
-		addConfigComponent(generalGroup, 1, createNumberField(
-			FormatterMessages.IndentationGroup_indent_size, 
+		final NumberField indentationSizeField = createNumberField(
+			FormatterMessages.IndentationGroup_indent_size, 2);
+		createStringField(generalGroup,
 			CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE, 
-			2
-		));
+			indentationSizeField
+		);
 		IFieldValueListener indentModeValueListener = new IFieldValueListener() {
 			@Override
 			public void fieldValueChanged() {

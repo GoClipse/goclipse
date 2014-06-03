@@ -8,21 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences.fields;
+package melnorme.util.swt.components.fields;
 
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.preference.IPreferenceStore;
+import melnorme.util.swt.components.AbstractFieldExt;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
-public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
+public class CheckBoxField extends AbstractFieldExt<Boolean> {
 	
 	protected Button checkBox;
 	
-	public CheckBoxConfigField(String label, String prefKey) {
-		super(prefKey, label);
+	public CheckBoxField(String labelText) {
+		super(labelText);
 	}
 	
 	@Override
@@ -31,10 +30,14 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
-		checkBox = createFieldButton(this, topControl, SWT.NONE);
-		checkBox.setText(label);
-		checkBox.setLayoutData(GridDataFactory.swtDefaults().span(2, 1).create());
+	protected void createContents_do(Composite topControl) {
+		checkBox = createFieldCheckbox(this, topControl, SWT.NONE);
+		checkBox.setText(labelText);
+	}
+	
+	@Override
+	protected void createContents_layout() {
+		layout1Control(checkBox);
 	}
 	
 	@Override
@@ -43,23 +46,8 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	}
 	
 	@Override
-	public Control getLeftMostControl() {
-		return checkBox;
-	}
-	
-	@Override
 	protected void doUpdateComponentFromValue() {
 		checkBox.setSelection(getFieldValue());
-	}
-	
-	@Override
-	public void loadFromStore(IPreferenceStore store) {
-		setFieldValue(store.getBoolean(prefKey));
-	}
-	
-	@Override
-	public void saveToStore(IPreferenceStore store) {
-		store.setValue(prefKey, getFieldValue());
 	}
 	
 }

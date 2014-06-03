@@ -8,21 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.components;
+package melnorme.util.swt.components.fields;
 
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.swt.widgets.Control;
 
-public class LayoutUtils {
-
-	// TODO: generalize this
-	public static void layout2Controls(int numColumns, Control control1, Control expandingControl) {
-		control1.setLayoutData(GridDataFactory.swtDefaults().create());
-		numColumns--;
-		if(numColumns == 0) {
-			numColumns = 1;
-		}
-		expandingControl.setLayoutData(GridDataFactory.fillDefaults().span(numColumns, 1).create());
-	}
+public interface FieldMessages {
+	
+	String NumberField_empty_input =
+			"Empty input";
+	String NumberField_invalid_input =
+		"''{0}'' is not a valid input.";
 	
 }

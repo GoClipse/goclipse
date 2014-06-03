@@ -18,10 +18,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 
-public class SWTFactoryUtil {
+public class SWTFactoryUtil extends SWTFactory {
 	
 	/**
 	 * Creates and returns a new push button with the given
@@ -72,20 +70,6 @@ public class SWTFactoryUtil {
 		PixelConverter converter= new PixelConverter(button);
 		int widthHint= converter.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		return Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
-	}
-	
-	public static Composite createGroup(Composite parent, String label, GridData layoutData) {
-		Group group = new Group(parent, SWT.SHADOW_NONE);
-		group.setText(label);
-		group.setLayoutData(layoutData);
-		return group;
-	}
-	
-	public static Label createLabel(Composite parent, int style, String labelText, GridData layoutData) {
-		Label label = new Label(parent, style);
-		label.setText(labelText);
-		label.setLayoutData(layoutData);
-		return label;
 	}
 	
 }

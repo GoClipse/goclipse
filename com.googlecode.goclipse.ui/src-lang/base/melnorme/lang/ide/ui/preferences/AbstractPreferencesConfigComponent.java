@@ -14,14 +14,16 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.ArrayList;
 
-import melnorme.lang.ide.ui.preferences.fields.AbstractConfigField;
-import melnorme.lang.ide.ui.preferences.fields.CheckBoxConfigField;
-import melnorme.lang.ide.ui.preferences.fields.NumberConfigField;
-import melnorme.lang.ide.ui.preferences.fields.TextConfigField;
+import melnorme.lang.ide.ui.preferences.fields.BooleanFieldAdapter;
+import melnorme.lang.ide.ui.preferences.fields.ComboFieldAdapter;
+import melnorme.lang.ide.ui.preferences.fields.StringFieldAdapter;
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.AbstractField;
 import melnorme.util.swt.components.IDisposable;
+import melnorme.util.swt.components.fields.ComboBoxField;
+import melnorme.util.swt.components.fields.NumberField;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -74,15 +76,22 @@ public abstract class AbstractPreferencesConfigComponent extends AbstractCompone
 		DialogPageUtils.applyStatusToPreferencePage(status, prefPage);
 	}
 	
-	protected <T extends AbstractConfigField<?>> T addConfigComponent(Composite parent, T configControl) {
-		return addConfigComponent(parent, 0, configControl);
-	}
-	
-	protected <T extends AbstractConfigField<?>> T addConfigComponent(Composite parent, int indentation, 
-			T configControl) {
-		configControl.createControl(parent, indentation);
+	protected <T extends IPreferencesComponent> T addConfigComponent(Composite parent, T configControl) {
+		configControl.createComponentInlined(parent);
 		addConfigComponent(configControl);
 		return configControl;
+	}
+	
+	protected StringFieldAdapter createStringField(Composite parent, String prefKey, AbstractField<String> field) {
+		return addConfigComponent(parent, new StringFieldAdapter(prefKey, field));
+	}
+	
+	protected BooleanFieldAdapter createBooleanField(Composite parent, String prefKey, AbstractField<Boolean> field) {
+		return addConfigComponent(parent, new BooleanFieldAdapter(prefKey, field));
+	}
+	
+	protected ComboFieldAdapter createCheckboxField(Composite parent, String prefKey, ComboBoxField field) {
+		return addConfigComponent(parent, new ComboFieldAdapter(prefKey, field));
 	}
 	
 	protected void addConfigComponent(IPreferencesComponent configComponent) {
@@ -96,12 +105,8 @@ public abstract class AbstractPreferencesConfigComponent extends AbstractCompone
 			new GridData(SWT.FILL, SWT.CENTER, true, false));
 	}
 	
-	protected CheckBoxConfigField addCheckBox(Composite parent, String label, String prefKey, int indentation) {
-		return addConfigComponent(parent, indentation, new CheckBoxConfigField(label, prefKey));
-	}
-	
-	protected TextConfigField createNumberField(String label, String key, int textLimit) {
-		return new NumberConfigField(label, key, textLimit) {
+	protected NumberField createNumberField(String label, int textLimit) {
+		return new NumberField(label, textLimit) {
 			@Override
 			protected void statusChanged(IStatus status) {
 				updateStatus(status);
