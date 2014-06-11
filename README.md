@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/GoClipse/goclipse.png?branch=master)](https://travis-ci.org/GoClipse/goclipse)
+
 See [About](documentation/About.md) for user information.
 
 ## Developers Guide
