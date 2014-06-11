@@ -1,6 +1,5 @@
 ## release ChangeLog
 
-
 ### Goclipse 0.8.0
  * Added debugging support using CDT's integration with GDB.
  * Goclipse now requires a JVM of version 7. 
