@@ -71,10 +71,11 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
+					<excludes />
+					<!-- Empty so that no class is excluded, otherwise the default excludes inner classes. -->
+					</excludes>
 					<includes>
-						<include>**/Test*.java</include>
-						<include>**/*Test.java</include>
-						<include>**/*Tests.java</include>
+						<include>**/*.java</include>
 					</includes>
 				</configuration>
 			</plugin>
