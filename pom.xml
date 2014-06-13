@@ -71,7 +71,7 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<excludes />
+					<excludes>
 					<!-- Empty so that no class is excluded, otherwise the default excludes inner classes. -->
 					</excludes>
 					<includes>
