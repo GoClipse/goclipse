@@ -1,4 +1,6 @@
-See [About](documentation/About.md) for user information.
+See the [About](documentation/About.md) page for user information.
+
+[![Build Status](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/badge/icon)](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/)
 
 ## Developers Guide
 
