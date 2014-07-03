@@ -1,5 +1,7 @@
 ## release ChangeLog
 
+### Goclipse 0.8.x
+ * Fix "go fmt" clearing file source if Go source was invalid (#60)
 
 ### Goclipse 0.8.0
  * Added debugging support using CDT's integration with GDB.

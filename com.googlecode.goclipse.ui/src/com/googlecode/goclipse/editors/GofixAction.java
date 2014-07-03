@@ -32,10 +32,14 @@ public class GofixAction extends TransformTextAction {
 		IProgressMonitor pm = new NullProgressMonitor(); // TODO
 		
 		ExternalProcessResult processResult = GoToolManager.getDefault().runGoTool(gofixPath, project, pm, text);
+		if (processResult.exitValue != 0) {
+			throw GoCore.createCoreException(
+				gofixPath + " completed with non-zero exit value (" + processResult.exitValue + ")", null);
+		}
 		
 		String transformedText = processResult.getStdOutBytes().toString();
 		
-		if (transformedText.length() > 0 && !transformedText.equals(text)) {
+		if (!transformedText.equals(text)) {
 			return transformedText;
 		} else {
 			return null;

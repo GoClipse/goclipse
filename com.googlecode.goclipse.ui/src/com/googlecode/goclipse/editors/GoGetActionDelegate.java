@@ -23,39 +23,38 @@ import com.googlecode.goclipse.builder.GoCompiler;
  * 
  */
 final public class GoGetActionDelegate implements IEditorActionDelegate {
-
+	
 	protected String	name;
 	protected GoEditor	editor;
-
+	
 	@Override
 	public final void selectionChanged(IAction action, ISelection selection) {
-
+		
 	}
-
+	
 	@Override
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-
+		
 		if (targetEditor instanceof GoEditor) {
 			editor = (GoEditor) targetEditor;
-
 		} else {
 			editor = null;
 		}
-
+		
 		action.setEnabled(editor != null);
 	}
-
+	
 	@Override
 	public final void run(IAction action) {
 		if (editor != null) {
-
+			
 			IWorkbench wb = PlatformUI.getWorkbench();
 			IProgressService ps = wb.getProgressService();
-
+			
 			try {
 				ps.busyCursorWhile(new IRunnableWithProgress() {
 					@Override
-                    public void run(IProgressMonitor pm) {
+					public void run(IProgressMonitor pm) {
 						GoCompiler compiler = new GoCompiler();
 						final IEditorInput input = editor.getEditorInput();
 						IFile file = ((IFileEditorInput) input).getFile();
@@ -63,7 +62,7 @@ final public class GoGetActionDelegate implements IEditorActionDelegate {
 						compiler.goGetDependencies(project, pm, file.getLocation().toFile());
 					}
 				});
-
+				
 			} catch (InvocationTargetException e) {
 				Activator.logError(e);
 			} catch (InterruptedException e) {
