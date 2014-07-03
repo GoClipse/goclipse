@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <category-def name="ide.category" label="MMRNMHRM Project"/>
+   <feature id="MMRNMHRM_ID">
+      <category name="ide.category"/>
+   </feature>
+</site>

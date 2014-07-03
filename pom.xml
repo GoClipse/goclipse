@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.dsource</groupId>
+	<artifactId>ide-aggregator</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<tycho-version>0.20.0</tycho-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
+		<parentBaseDirRelPath>..</parentBaseDirRelPath>
+		<rootBuildDirectory>${project.parent.basedir}/bin-maven</rootBuildDirectory>
+
+		<ide.targetPlatform>releng/target-platform/IDE</ide.targetPlatform>
+		<qualifier_default_prefix>v</qualifier_default_prefix>
+			
+		<dtool.testdataDir>${parentBaseDir}/org.dsource.ddt.dtool/testdata</dtool.testdataDir>
+	</properties>
+
+	<modules>
+		<module>plugin_tooling</module>
+		<module>plugin_ide.core</module>
+		<module>plugin_ide.core.tests</module>
+		<module>plugin_ide.ui</module>
+		<module>plugin_ide.ui.tests</module>
+		<module>plugin_ide.debug</module>
+		<module>feature</module>
+		<module>releng/repository</module>
+	</modules>
+
+	<profiles>
+
+	</profiles>
+
+	<!-- Core build -->
+	
+	<build>
+		<directory>${parentBaseDirRelPath}/bin-maven/${project.artifactId}</directory>
+		
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<format>'${qualifier_default_prefix}'yyyyMMddHHmm</format>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<excludes>
+					<!-- Empty so that no class is excluded, otherwise the default excludes inner classes. -->
+					</excludes>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<target>
+						<artifact>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>ide-aggregator</artifactId>
+							<version>0.0.1-SNAPSHOT</version>
+							<classifier>${ide.targetPlatform}</classifier>
+						</artifact>
+					</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+====================================================================== 
+Ant script for automated release and deploy of the update site. Sample usage:
+First, run the Maven build script:
+mvn clean integration-test
+// upload a new release to the update site:
+ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=MMRNMHRM_UPDATE_SITE
+====================================================================== 
+-->
+<project name="project" >
+
+	<property name="localUpdateSiteDir" location="bin-maven/updateSite/" />
+	<property name="repoSrc" location="bin-maven/features.repository/repository" />
+	<property name="repoSrc.subdir" location="local-repo" />
+	<property name="updateSiteSkeleton.Dir" location="releng/UpdateSite-skeleton" />
+
+	<property name="gitLocation" value="git" />
+	
+	<target name="clean">
+		<delete dir="${localUpdateSiteDir}" failonerror="true"/>
+	</target>
+	
+	<target name="CopyBuiltRepoToLocalUpdateSite">
+		<property name="repoDest" location="${localUpdateSiteDir}/${repoSrc.subdir}" />
+		<copy verbose="true" todir="${repoDest}">
+			<fileset dir="${repoSrc}"/>
+		</copy>
+	</target>
+	
+	<target name="CreateLocalUpdateSite" depends="">
+		<copy todir="${localUpdateSiteDir}" overwrite="true" verbose="true">
+			<fileset dir="${updateSiteSkeleton.Dir}"/>
+		</copy>
+		
+		<antcall target="CopyBuiltRepoToLocalUpdateSite"/>
+	</target>
+	
+	<!-- ================================= -->
+	
+	<target name="CreateUpdateSiteFromScratch" depends="clean">
+		<antcall target="CreateLocalUpdateSite"/>
+	</target>
+	
+	<target name="UploadUpdateSite" depends="CreateUpdateSiteFromScratch">
+		<fail unless="UpdateSiteUploadURL"/>
+	
+		<exec dir="." executable="mvn" failonerror="true">
+			<arg line="-f upload-helper.pom.xml wagon:upload -Dwagon.url=${UpdateSiteUploadURL}"/>
+		</exec>
+	</target>
+	
+	<!-- ================================= -->
+	
+	<target name="CreateUpdateSiteFromGit" depends="clean">
+		<fail unless="updateSiteGitURL"/>
+		<exec dir="." executable="${gitLocation}" failonerror="true">
+			<arg line="clone ${updateSiteGitURL} ${localUpdateSiteDir}"/>
+		</exec>
+		
+		<!-- Delete previous plugins. -->
+		<delete verbose="true">
+			<fileset dir="${localUpdateSiteDir}" erroronmissingdir="true" includes="**/*.jar"/>
+		</delete>
+		
+		<antcall target="CreateLocalUpdateSite"/>
+		<antcall target="_commitGitChanges"/>
+	</target>
+
+	<target name="_commitGitChanges">
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
+			<arg line="add -A"/>
+		</exec>
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
+			<arg line="commit -m"/>
+			<arg value="update site"/>
+		</exec>
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
+			<arg line="status"/>
+		</exec>
+	</target>
+	
+	<target name="UploadUpdateSite.ToGit" depends="CreateUpdateSiteFromGit">
+		
+		<fail unless="updateSiteGitURL"/>
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
+			<arg line="push ${updateSiteGitURL} "/>
+		</exec>
+	</target>
+	
+	<target name="UploadUpdateSite.ToGit_Reset" depends="CreateUpdateSiteFromScratch">
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
+			<arg line="init"/>
+		</exec>
+		<antcall target="_commitGitChanges"/>
+		
+		<fail unless="updateSiteGitURL"/>
+		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
+			<arg line="push ${updateSiteGitURL} --force"/>
+		</exec>
+	</target>
+	
+</project>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="nature"
+         name="Dee nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run class="MMRNMHRM_ID.ide.core.Nature"/>
+      </runtime>
+   </extension>
+   
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            default-charset="UTF-8"
+            file-extensions="d, di, dh"
+            id="MMRNMHRM_ID.ide.core.content.dsource"
+            name="D Source"
+            priority="high">
+      </content-type>
+   </extension>
+   
+   <extension point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="MMRNMHRM_ID.ide.core.expressions.isLangProject">
+         <adapt
+               type="org.eclipse.core.resources.IProject">
+            <test
+                  property="org.eclipse.core.resources.projectNature"
+                  value="MMRNMHRM_ID.ide.core.nature">
+            </test>
+         </adapt>
+      </definition>
+      <definition
+            id="MMRNMHRM_ID.ide.core.expressions.isLangNatureContainer">
+         <adapt
+               type="org.eclipse.core.resources.IContainer">
+            <test
+                  property="org.eclipse.core.resources.projectNature"
+                  value="MMRNMHRM_ID.ide.core.nature">
+            </test>
+         </adapt>
+      </definition>
+      <definition
+            id="MMRNMHRM_ID.ide.core.expressions.isResourceInLangProject">
+         <and>
+            <instanceof
+                  value="org.eclipse.core.resources.IResource">
+            </instanceof>
+            <test
+                  property="org.eclipse.core.resources.projectNature"
+                  value="MMRNMHRM_ID.ide.core.nature">
+            </test>
+         </and>
+      </definition>
+   </extension>
+
+</plugin>
