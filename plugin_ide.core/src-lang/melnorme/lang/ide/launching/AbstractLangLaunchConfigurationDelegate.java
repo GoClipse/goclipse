@@ -14,7 +14,7 @@ package melnorme.lang.ide.launching;
 import java.text.MessageFormat;
 import java.util.Map;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -106,7 +106,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 		if (projectName != null) {
 			projectName = projectName.trim();
 			if (projectName.length() > 0) {
-				return LangCore.getWorkspaceRoot().getProject(projectName);
+				return EclipseUtils.getWorkspaceRoot().getProject(projectName);
 			}
 		}
 		return null;

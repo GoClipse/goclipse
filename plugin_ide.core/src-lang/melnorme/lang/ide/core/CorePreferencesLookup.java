@@ -28,4 +28,8 @@ public class CorePreferencesLookup extends PreferencesLookupHelper {
 		return getString(key, "");
 	}
 	
+	public boolean getBoolean(String key) {
+		return getBoolean(key, false);
+	}
+	
 }

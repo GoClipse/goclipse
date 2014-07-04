@@ -2,8 +2,6 @@ package melnorme.lang.ide.core;
 
 public class LangCoreMessages {
 
-	public static final String Internal_Error = "Internal Error";
-	
 	public static final String LangCore_error = "Core Error";
 	
 	public static final String ExternalProcess_CouldNotStart =

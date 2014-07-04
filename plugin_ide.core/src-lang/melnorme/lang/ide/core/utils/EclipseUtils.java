@@ -51,7 +51,7 @@ public class EclipseUtils extends ResourceUtils {
 	public static IProject[] getOpenedProjects(String natureId) throws CoreException {
 		final List<IProject> result = new ArrayList<IProject>();
 		
-		final IProject[] projects = LangCore.getWorkspaceRoot().getProjects();
+		final IProject[] projects = getWorkspaceRoot().getProjects();
 		for (IProject project : projects) {
 			if (project.exists() && project.isOpen() && (natureId == null || project.hasNature(natureId))) {
 				result.add(project);

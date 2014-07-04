@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.launching.LaunchConstants;
 
 import org.eclipse.core.resources.IProject;
@@ -30,7 +30,7 @@ public class LangWorkingDirectoryBlock extends WorkingDirectoryBlock {
 		if (projectName != null) {
 			projectName = projectName.trim();
 			if (projectName.length() > 0) {
-				return LangCore.getWorkspaceRoot().getProject(projectName);
+				return EclipseUtils.getWorkspaceRoot().getProject(projectName);
 			}
 		}
 		return null;
