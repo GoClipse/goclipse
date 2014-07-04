@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.googlecode</groupId>
-	<artifactId>goclipse-aggregator</artifactId>
+	<artifactId>goclipse.aggregator</artifactId>
 	<version>1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -22,7 +22,9 @@
 	</properties>
 
 	<modules>
+		<module>plugin_tooling</module>
 		<module>plugin_ide.core</module>
+		<module>plugin_ide.core.tests</module>
 		<module>plugin_ide.ui</module>
 		<module>plugin_ide.ui.tests</module>
 		<module>plugin_ide.gocode</module>
@@ -88,7 +90,7 @@
 					<target>
 						<artifact>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>goclipse-aggregator</artifactId>
+							<artifactId>goclipse.aggregator</artifactId>
 							<version>1-SNAPSHOT</version>
 							<classifier>${targetPlatform}</classifier>
 						</artifact>

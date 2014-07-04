@@ -6,7 +6,7 @@
 
 	<parent>
 		<groupId>com.googlecode</groupId>
-		<artifactId>goclipse-aggregator</artifactId>
+		<artifactId>goclipse.aggregator</artifactId>
 		<version>1-SNAPSHOT</version>
 	</parent>
 
@@ -16,7 +16,23 @@
 	
 	<build>
 		<plugins>
-
+			
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<dependency-resolution>
+						<extraRequirements>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>com.googlecode.goclipse.core.tests</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+						</extraRequirements>
+					</dependency-resolution>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
@@ -24,13 +40,11 @@
 				<configuration>
 					<useUIHarness>true</useUIHarness>
 					<dependencies>
-<!--
 						<dependency>
 							<type>eclipse-plugin</type>
-							<artifactId>org.dsource.ddt.ide.core.tests</artifactId>
+							<artifactId>com.googlecode.goclipse.core.tests</artifactId>
 							<version>0.0.0</version>
 						</dependency>
--->
 					</dependencies>
 				</configuration>
 			</plugin>
