@@ -63,7 +63,7 @@ public class ArrayUtil {
 	}
 	
 	/** Create an array from the given list, with the given componentType.
-     * If the list is null, a zero-length array is created. */
+     * If given list is null, a zero-length array is created. */
 	public static <T> T[] createFrom(Collection<? extends T> list, Class<T> componentType) {
 		if(list == null) {
 			return create(componentType, 0);
@@ -71,9 +71,10 @@ public class ArrayUtil {
 		return list.toArray(create(componentType, list.size()));
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static <T> T[] createFrom(Collection<? extends T> list) {
-		return createFrom(list, (Class<T>) Object.class);
+	/** Create an array from the given list, with Object.class as the component type.
+     * If given list is null, a zero-length array is created. */
+	public static Object[] createFrom(Collection<?> list) {
+		return createFrom(list, Object.class);
 	}
 	
     /** Create an array from the given list, with the given cpType as the run-time component type.

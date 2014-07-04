@@ -10,12 +10,15 @@
  *******************************************************************************/
 package melnorme.util.swt.jface;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 
 public interface IStructuredContentProvider0<T> extends IStructuredContentProvider {
 	
-	// Note, result must not be modified
 	@Override
-	public T[] getElements(Object inputElement);
+	public Object[] getElements(Object inputElement);
+	
+	public List<T> getElements0(Object inputElement);
 	
 }

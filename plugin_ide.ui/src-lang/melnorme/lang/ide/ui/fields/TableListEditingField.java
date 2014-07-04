@@ -210,9 +210,15 @@ public abstract class TableListEditingField<E> extends CommonTableBasedField {
 	
 	protected class TableContentProvider extends AbstractContentProvider implements IStructuredContentProvider0<E> {
 		@Override
-		public E[] getElements(Object input) {
-			return ArrayUtil.createFrom(elements);
+		public Object[] getElements(Object input) {
+			return ArrayUtil.createFrom(getElements0(input));
 		}
+		
+		@Override
+		public List<E> getElements0(Object input) {
+			return Collections.unmodifiableList(elements);
+		}
+		
 	}
 	
 	protected abstract ITableLabelProvider0<E> createLabelProvider();
