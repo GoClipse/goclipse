@@ -27,13 +27,13 @@ public class CollectionUtil {
 	
 	/** @return a new {@link ArrayList} from given collection 
 	 * (a null collection is considered as if it's an empty one). */
-	public static <T> ArrayList<T> createArrayList(Collection<? extends T> collection) {
-		return new ArrayList<T>(collection == null ? Collections.EMPTY_LIST : collection);
+	public static <E> ArrayList<E> createArrayList(Collection<? extends E> collection) {
+		return new ArrayList<E>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
 	/** @return a new {@link ArrayList} from given array (a null array is considered like it's an empty one). */
 	@SafeVarargs
-	public static <T> ArrayList<T> createArrayList(T... array) {
-		ArrayList<T> newCollection = new ArrayList<T>();
+	public static <E> ArrayList<E> createArrayList(E... array) {
+		ArrayList<E> newCollection = new ArrayList<E>();
 		if(array != null) {
 			Collections.addAll(newCollection, array);
 		}
@@ -42,13 +42,13 @@ public class CollectionUtil {
 	
 	/** @return a new {@link LinkedList} from given collection 
 	 * (a null collection is considered as if it's an empty one). */
-	public static <T> LinkedList<T> createLinkedList(Collection<? extends T> collection) {
-		return new LinkedList<T>(collection == null ? Collections.EMPTY_LIST : collection);
+	public static <E> LinkedList<E> createLinkedList(Collection<? extends E> collection) {
+		return new LinkedList<E>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
 	/** @return a new {@link LinkedList} from given array (a null array is considered like it's an empty one). */
 	@SafeVarargs
-	public static <T> LinkedList<T> createLinkedList(T... array) {
-		LinkedList<T> newCollection = new LinkedList<T>();
+	public static <E> LinkedList<E> createLinkedList(E... array) {
+		LinkedList<E> newCollection = new LinkedList<E>();
 		if(array != null) {
 			Collections.addAll(newCollection, array);
 		}
@@ -57,39 +57,34 @@ public class CollectionUtil {
 	
 	/** @return a new {@link HashSet} from given collection 
 	 * (a null collection is considered as if it's an empty one). */
-	public static <T> HashSet<T> createHashSet(Collection<? extends T> collection) {
-		return new HashSet<T>(collection == null ? Collections.EMPTY_LIST : collection);
+	public static <E> HashSet<E> createHashSet(Collection<? extends E> collection) {
+		return new HashSet<E>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
 	/** @return a new {@link HashSet} from given array (a null array is considered like it's an empty one). */
 	@SafeVarargs
-	public static <T> HashSet<T> createHashSet(T... array) {
-		HashSet<T> newCollection = new HashSet<T>();
+	public static <E> HashSet<E> createHashSet(E... array) {
+		HashSet<E> newCollection = new HashSet<E>();
 		if(array != null) {
 			Collections.addAll(newCollection, array);
 		}
 		return newCollection;
 	}
 	
-	/** @return a new unmodifiable {@link Collection} from given array 
-	 * (a null array is considered like it's an empty one). */
-	@SafeVarargs
-	public static <T> Collection<T> createCollection(T... array) {
-		ArrayList<T> newCollection = new ArrayList<T>();
-		if(array != null) {
-			Collections.addAll(newCollection, array);
-		}
-		return Collections.unmodifiableCollection(newCollection);
-	}
-	
 	/** @return given coll if it's non-null, an empty collection otherwise.
 	 * The returned collection cannot be modified. */
-	public static <T> Collection<T> nullToEmpty(Collection<T> coll) {
+	public static <E> Collection<E> nullToEmpty(Collection<E> coll) {
 		return coll == null ? Collections.EMPTY_LIST : coll;
 	}
 	
+	/** @return given list if it's non-null, an empty List otherwise.
+	 * The returned list cannot be modified. */
+	public static <E> List<E> nullToEmpty(List<E> list) {
+		return list == null ? Collections.EMPTY_LIST : list;
+	}
+	
 	/** Creates a List copy of orig, with all elements except elements equal to excludedElem. */
-	public static <T> List<T> copyExcept(T[] orig, T excludedElem) {
-		List<T> rejectedElements = new ArrayList<T>(orig.length);
+	public static <E> List<E> copyExcept(E[] orig, E excludedElem) {
+		List<E> rejectedElements = new ArrayList<E>(orig.length);
 		
 		for (int i= 0; i < orig.length; i++) {
 			if (!orig[i].equals(excludedElem)) {
@@ -99,37 +94,42 @@ public class CollectionUtil {
 		return rejectedElements;
 	}
 	
-	/** @return a new collection with all elements that match given predicate removed. */
-	public static <T> List<T> filter(Collection<? extends T> coll, Predicate<T> predicate) {
-		ArrayList<T> newColl = new ArrayList<T>();
-		for (T elem : coll) {
-			if(!predicate.evaluate(elem)) {
-				newColl.add(elem);
-			}
-		}
-		return newColl;
-	}
-	
-	/** Removes from given list the first element that matches given predicate. */
-	public static <T> void removeElement(List<? extends T> list, Predicate<T> predicate) {
-		for (Iterator<? extends T> iter = list.iterator(); iter.hasNext(); ) {
-			T obj = iter.next();
+	/** Remove from given list all elements that match given predicate. */
+	public static <E, L extends List<E>> L filter(L list, Predicate<E> predicate) {
+		for (Iterator<? extends E> iter = list.iterator(); iter.hasNext(); ) {
+			E obj = iter.next();
 			if(predicate.evaluate(obj)) {
 				iter.remove();
 			}
 		}
+		return list;
+	}
+	
+	/** Removes from given list the first element that matches given predicate. 
+	 * @return true if an element was removed, false otherwise. */
+	public static <E> boolean removeElement(List<? extends E> list, Predicate<E> predicate) {
+		for (Iterator<? extends E> iter = list.iterator(); iter.hasNext(); ) {
+			E obj = iter.next();
+			if(predicate.evaluate(obj)) {
+				iter.remove();
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/** Sorts given list and returns it. */
-	public static <T extends Comparable<? super T>> List<T> sort(List<T> list) {
+	public static <E extends Comparable<? super E>, L extends List<E>> L sort(L list) {
 		Collections.sort(list);
 		return list;
 	}
 	
 	@SuppressWarnings("unused")
-	private static void testCompile_sort_generics() {
-		List<? extends Integer> list = null;
-		sort(list);
+	private static void sort__genericsTestCompile() {
+		List<? extends Integer> list1 = null;
+		ArrayList<? extends Integer> list2 = null;
+		list1 = sort(list1);
+		list2 = sort(list2);
 	}
 	
 }

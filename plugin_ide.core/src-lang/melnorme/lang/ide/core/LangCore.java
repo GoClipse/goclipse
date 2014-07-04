@@ -1,10 +1,5 @@
 package melnorme.lang.ide.core;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
-
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
@@ -43,16 +38,6 @@ public abstract class LangCore extends Plugin {
 	
 	
 	/* ----------------- ----------------- */
-	
-	/** Convenience method to get the WorkspaceRoot. */
-	public static IWorkspaceRoot getWorkspaceRoot() {
-		return EclipseUtils.getWorkspaceRoot();
-	}
-	
-	/** Convenience method to get the Workspace. */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
 	
 	public static Status createStatus(String message) {
 		return createOkStatus(message);

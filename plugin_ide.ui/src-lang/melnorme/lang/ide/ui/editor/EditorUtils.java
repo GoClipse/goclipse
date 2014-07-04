@@ -10,12 +10,22 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor;
 
+import java.net.URI;
+import java.nio.file.Path;
+
+import melnorme.lang.ide.core.utils.ResourceUtils;
+
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.ide.FileStoreEditorInput;
+import org.eclipse.ui.part.FileEditorInput;
 
 public class EditorUtils {
 	
@@ -49,6 +59,23 @@ public class EditorUtils {
 	/** Get a resource related to the input of this editor, or null if none. */
 	public static IFile findFileOfEditor(IEditorPart editor) {
 		return getAssociatedFile(editor.getEditorInput());
+	}
+	
+	public static IEditorInput getBestEditorInputForPath(Path filePath) {
+		return getBestEditorInputForUri(filePath.toUri());
+	}
+	
+	public static IEditorInput getBestEditorInputForUri(URI uri) {
+		IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(uri, IWorkspaceRoot.INCLUDE_HIDDEN);
+		if(files.length != 0) {
+			// As an improvement we could try to see which file is more relevant if there is more than one
+			IFile file = files[0]; 
+			return new FileEditorInput(file);
+		} else {
+			//file not in workspace
+			IFileStore fileOnLocalDisk = EFS.getLocalFileSystem().getStore(uri);
+			return new FileStoreEditorInput(fileOnLocalDisk);
+		}
 	}
 	
 }

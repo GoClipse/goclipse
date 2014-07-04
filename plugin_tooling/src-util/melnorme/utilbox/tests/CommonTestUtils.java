@@ -12,22 +12,20 @@ package melnorme.utilbox.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.CollectionUtil.createHashSet;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 /**
@@ -105,7 +103,18 @@ public class CommonTestUtils {
 		}
 	}
 	
-	/* -------------------------- */
+	/* ---- */
+	
+	public static <T> HashSet<T> removeAllCopy(Set<T> set, Collection<?> removeColl) {
+		return removeAll(createHashSet(set), removeColl);
+	}
+	
+	public static <E, T extends Set<E>> T removeAll(T set, Collection<?> removeColl) {
+		set.removeAll(removeColl);
+		return set;
+	}
+	
+	/* ----------------- util constructors ----------------- */
 	
 	@SafeVarargs
 	public static <T> T[] array(T... elems) {
@@ -134,109 +143,18 @@ public class CommonTestUtils {
 		return Collections.unmodifiableCollection(set);
 	}
 	
-	/** ---- **/
-	
-	
-	public static <T> HashSet<T> retainAllCopy(Set<T> set, Collection<?> retainColl) {
-		HashSet<T> setCopy = CollectionUtil.createHashSet(set);
-		setCopy.retainAll(retainColl);
-		return setCopy;
-	}
-	
-	public static <T> HashSet<T> removeAllCopy(Set<T> set, Collection<?> removeColl) {
-		HashSet<T> setCopy = CollectionUtil.createHashSet(set);
-		setCopy.removeAll(removeColl);
-		return setCopy;
-	}
-	
-	public static <T> String[] strmap(Collection<T> coll, Function<? super T, String> evalFunction) {
-		return ArrayUtil.map(coll, evalFunction, String.class);
-	}
-	
-	public static <T, RE, C extends Collection<RE>> C mapOut(
-		Collection<T> coll, Function<? super T, ? extends RE> evalFunction, C outColl
-	) {
-		for(T elem : coll) {
-			outColl.add(evalFunction.evaluate(elem));
-		}
-		return outColl;
-	}
-	
-	public static <T> T[] removeLast(T[] array, int count) {
-		return ArrayUtil.removeLast(array, count);
-	}
-	
-	/* -------- misc -------- */
-	
-	public static <T extends Exception> void throwIf(boolean condition, String message) throws RuntimeException {
-		if(condition) {
-			throw new RuntimeException(message);
-		}
+	public static Path path(String pathString) {
+		return MiscUtil.createPathOrNull(pathString);
 	}
 	
 	public static String safeToString(Object obj) {
 		return obj == null ? null : obj.toString();
 	}
 	
-	/* -------- iteration -------- */
+	/* -----------------  ----------------- */
 	
-	public static interface Visitor<T> {
-		void visit(T obj);
-	}
-	
-	@SafeVarargs
-	public static <T, PRED extends Visitor<T>> void visitContainer(Collection<T> coll, PRED... predicates) {
-		Iterator<T> iterator = coll.iterator();
-		assertTrue(coll.size() == predicates.length);
-		for (int i = 0; iterator.hasNext(); i++) {
-			T next = iterator.next();
-			predicates[i].visit(next);
-		}
-	}
-	
-	@SafeVarargs
-	public static <T, PRED extends Visitor<T>> void visitContainer(T[] coll, PRED... predicates) {
-		assertTrue(coll.length == predicates.length);
-		for (int i = 0; i < coll.length; i++) {
-			T next = coll[i];
-			predicates[i].visit(next);
-		}
-	}
-	
-	public static final Path IGNORE_PATH = Paths.get("###NO_CHECK###");
-	public static final String IGNORE_STR = "###NO_CHECK###";
-	public static final Object[] IGNORE_ARR = new Object[0];
-	public static final String[] IGNORE_ARR_STR = new String[0];
-	
-	public interface Checker<T> {
-		
-		void check(T obj);
-		
-	}
-	
-	/** Helper class to check result values against expected ones. */
-	public static abstract class CommonChecker {
-		
-		public void checkAreEqual(Object obj, Object expected) {
-			if(expected == IGNORE_PATH || expected == IGNORE_STR)
-				return;
-			assertTrue(CoreUtil.areEqual(obj, expected));
-		}
-		
-		public void checkAreEqualArray(Object[] obj, Object[] expected) {
-			if(isIgnoreArray(expected))
-				return;
-			assertTrue(CoreUtil.areEqualArrays(obj, expected));
-		}
-		
-		protected boolean isIgnoreArray(Object[] expected){
-			return expected == IGNORE_ARR || expected == IGNORE_ARR_STR;
-		}
-		
-		protected Object[] ignoreIfNull(Object[] expected) {
-			return expected == null ? IGNORE_ARR : expected;
-		}
-		
+	public static Path workingDirPath(String relativePath) {
+		return TestsWorkingDir.getWorkingDirPath(relativePath);
 	}
 	
 }

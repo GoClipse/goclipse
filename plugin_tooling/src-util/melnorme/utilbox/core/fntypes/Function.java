@@ -1,7 +1,7 @@
 package melnorme.utilbox.core.fntypes;
 
-public interface Function<T, R> {
+public interface Function<PARAM, RESULT> {
 	
-	R evaluate(T obj);
+	RESULT evaluate(PARAM obj);
 	
 }

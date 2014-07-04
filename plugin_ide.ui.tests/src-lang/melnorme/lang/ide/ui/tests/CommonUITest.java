@@ -12,18 +12,16 @@ package melnorme.lang.ide.ui.tests;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.core.tests.CommonCoreTest_ActualClass;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import melnorme.util.swt.SWTTestUtils;
 
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.intro.IIntroPart;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-
-import melnorme.lang.ide.core.tests.CommonCoreTest_ActualClass;
-import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import melnorme.util.swt.SWTTestUtils;
 
 public abstract class CommonUITest extends CommonCoreTest_ActualClass {
 	
@@ -51,15 +49,10 @@ public abstract class CommonUITest extends CommonCoreTest_ActualClass {
 		assertTrue(PlatformUI.getWorkbench().getIntroManager().getIntro() == null);
 	}
 	
-	@After
-	public void after_clearEventQueue() throws Throwable {
-		SWTTestUtils.clearEventQueue();
-	}
-	
 	@Override
-	public void checkLogErrorListener() throws Throwable {
+	public void checkLogErrors() throws Throwable {
 		SWTTestUtils.clearEventQueue();
-		super.checkLogErrorListener();
+		super.checkLogErrors();
 	}
 	
 }

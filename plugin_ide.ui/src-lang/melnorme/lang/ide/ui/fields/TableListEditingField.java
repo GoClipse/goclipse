@@ -154,7 +154,9 @@ public abstract class TableListEditingField<E> extends CommonTableBasedField {
 			@Override
 			public void checkStateChanged(CheckStateChangedEvent event) {
 				// Ensure only one element checked
-				setCheckedElement(event.getChecked() ? (E) event.getElement() : null);
+				@SuppressWarnings("unchecked")
+				E changedElement = (E) event.getElement();
+				setCheckedElement(event.getChecked() ? changedElement : null);
 			}
 		});
 		
@@ -206,12 +208,17 @@ public abstract class TableListEditingField<E> extends CommonTableBasedField {
 		return elementsTableViewer.getTable();
 	}
 	
-	protected class TableContentProvider extends AbstractContentProvider 
-			implements IStructuredContentProvider0<E> {
+	protected class TableContentProvider extends AbstractContentProvider implements IStructuredContentProvider0<E> {
 		@Override
-		public E[] getElements(Object input) {
-			return (E[]) arrayFrom(elements, Object.class);
+		public Object[] getElements(Object input) {
+			return ArrayUtil.createFrom(getElements0(input));
 		}
+		
+		@Override
+		public List<E> getElements0(Object input) {
+			return Collections.unmodifiableList(elements);
+		}
+		
 	}
 	
 	protected abstract ITableLabelProvider0<E> createLabelProvider();

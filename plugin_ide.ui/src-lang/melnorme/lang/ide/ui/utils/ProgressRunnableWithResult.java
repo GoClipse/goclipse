@@ -8,17 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.jface;
+package melnorme.lang.ide.ui.utils;
 
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 
-public interface IStructuredContentProvider0<T> extends IStructuredContentProvider {
+public abstract class ProgressRunnableWithResult<R> implements IRunnableWithProgress {
 	
+	public volatile R result;
+
 	@Override
-	public Object[] getElements(Object inputElement);
+	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		result = doCall(monitor);
+	}
 	
-	public List<T> getElements0(Object inputElement);
+	public abstract R doCall(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException;
 	
 }

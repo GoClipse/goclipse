@@ -31,21 +31,26 @@ public final class StringUtil {
 	
 	/** @return a String produced from the given coll with the given separator String, 
 	 * using the elements's toString() method. */
-	public static String collToString(Collection<?> coll, String sep) {
-		return collToString(coll, sep, null);
+	public static String collToString(Collection<?> coll, String separator) {
+		return iterToString(coll, separator, null);
 	}
 	
-	/** @return a String produced from the given coll with the given separator String, 
-	 * using give strFunction to produce a string from each element. */
-	public static <T> String collToString(Collection<T> coll, String sep, Function<T, String> strFunction) {
+	public static <T> String iterToString(Iterable<T> sequence, String separator, 
+			Function<? super T, String> toStringFn) {
+		return iteratorToString(sequence.iterator(), separator, toStringFn);
+	}
+	
+	private static <T> String iteratorToString(Iterator<T> iter, String sep, Function<? super T, String> toStringFn) {
 		StringBuilder sb = new StringBuilder();
-		boolean first = true;
-		for(T item : coll){
-			if(!first)
-				sb.append(sep);
-			first = false;
+		
+		while(iter.hasNext()) {
+			T element = iter.next();
 			
-			sb.append(strFunction == null ? item.toString() : strFunction.evaluate(item));
+			sb.append(toStringFn == null ? element.toString() : toStringFn.evaluate(element));
+			
+			if(iter.hasNext()) {
+				sb.append(sep);
+			}
 		}
 		return sb.toString();
 	}
@@ -111,6 +116,22 @@ public final class StringUtil {
 		}
 		return strs;
 	}
+	
+	/* ----------------- queries ----------------- */
+	
+	/** @return the number of ocurrences of given character in given string */
+	public static int occurrenceCount(String string, char character) {
+		int count = 0;
+		
+		for(int fromIndex = 0; true ; count++, fromIndex++ ) {
+			fromIndex = string.indexOf(character, fromIndex);
+			if(fromIndex == -1) {
+				return count;
+			}
+		}
+	}
+	
+	/* ----------------- modifications ----------------- */
 
 	/** @return str with the given range (repOffset and repLen) substituted for repStr. */
 	public static String replaceStr(String str, int repOffset, int repLen, String repStr) {
@@ -243,6 +264,24 @@ public final class StringUtil {
 			sb = sb.append(str);
 		
 		return sb.toString();
+	}
+	
+	/** Splits given string acording to given delimiter.
+	 * @return an array with all the segments from the split string. */
+	public static String[] splitString(String string, char delimiter) {
+		final int count = occurrenceCount(string, delimiter);
+		String[] segments = new String[count + 1];
+		
+		int startIx = 0;
+		
+		for (int i = 0; i < count; i++) {
+			int endIx = string.indexOf(delimiter, startIx);
+			segments[i] = string.substring(startIx, endIx);
+			startIx = endIx + 1;
+		}
+		
+		segments[count] = string.substring(startIx);
+		return segments;
 	}
 	
 }

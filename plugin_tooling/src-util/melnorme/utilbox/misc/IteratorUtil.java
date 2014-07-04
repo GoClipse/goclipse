@@ -20,30 +20,47 @@ public class IteratorUtil {
 	
 	/** @return an empty iterator */
 	@SuppressWarnings("unchecked")
-	public static <T> Iterator<T> emptyIterator() {
-		return (Iterator<T>) EMPTY_ITERATOR;
+	public static <E> Iterator<E> emptyIterator() {
+		return (Iterator<E>) EMPTY_ITERATOR;
 	}
 	
 	/** Recasts the type parameter of given iterator to a more specific type.
 	 * Safe to do if the returned iterator is used in a read only way with regards to the underlying collection.
 	 * @return the recasted iterator. */
 	@SuppressWarnings("unchecked")
-	public static <T> Iterator<T> recast(Iterator<? extends T> iterator) {
-		return ((Iterator<T>) iterator);
+	public static <E> Iterator<E> recast(Iterator<? extends E> iterator) {
+		return ((Iterator<E>) iterator);
 	}
 	
-	public static <T> Iterator<T> singletonIterator(T obj) {
+	public static <E> Iterator<E> singletonIterator(E obj) {
 		return Collections.singletonList(obj).iterator();
 	}
 	
 	/** @return the iterator for given iterable, or an empty {@link Iterator} if iterable is null */
-	public static <T> Iterator<T> nonNullIterator(Iterable<T> iterable) {
-		return iterable == null ? Collections.<T>emptyIterator() : iterable.iterator();
+	public static <E> Iterator<E> nonNullIterator(Iterable<E> iterable) {
+		return iterable == null ? Collections.<E>emptyIterator() : iterable.iterator();
 	}
 	
 	/** @return the given iterable, or an empty {@link Iterable} if given iterable is null */
-	public static <T> Iterable<T> nonNullIterable(Iterable<T> iterable) {
-		return iterable == null ? Collections.<T>emptyList() : iterable;
+	public static <E> Iterable<E> nonNullIterable(Iterable<E> iterable) {
+		return iterable == null ? Collections.<E>emptyList() : iterable;
+	}
+	
+//	/** @return an {@link Iterable} for given array. A null array is treated as if it's an empty one. */
+//	@SafeVarargs
+//	public static <E> Iterable<E> iterable(E... array) {
+//		if(array == null) {
+//			return Collections.EMPTY_LIST;
+//		}
+//		return new ArrayView<>(array);
+//	}
+	
+	/** @return the given iterable if non-null, an empty iterable otherwise. */
+	public static <E> Iterable<E> iterable(Iterable<E> iterable) {
+		if(iterable == null) {
+			return Collections.EMPTY_LIST;
+		}
+		return iterable;
 	}
 	
 }

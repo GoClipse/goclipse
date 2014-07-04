@@ -78,6 +78,7 @@ public abstract class AbstractLangEditor extends TextEditor {
 		List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(4);
 		
 		// TODO: add project pref scope 
+		@SuppressWarnings("unused")
 		IProject project = EditorUtils.getAssociatedProject(input);
 		
 		stores.add(LangUIPlugin.getInstance().getPreferenceStore());

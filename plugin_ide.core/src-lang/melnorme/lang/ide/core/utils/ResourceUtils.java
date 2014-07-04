@@ -37,6 +37,10 @@ public class ResourceUtils {
 		return ResourcesPlugin.getWorkspace();
 	}
 	
+	public static IProject getProject(String name) {
+		return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
+	}
+	
 	public static void writeToFile(IFile file, InputStream is) throws CoreException {
 		if(file.exists()) {
 			file.setContents(is, false, false, null);

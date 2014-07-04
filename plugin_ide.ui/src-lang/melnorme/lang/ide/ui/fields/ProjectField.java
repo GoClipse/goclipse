@@ -11,7 +11,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.fields;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -82,7 +81,7 @@ public class ProjectField extends WidgetFieldComponent<String> {
 		if (projectName == null || projectName.isEmpty()) {
 			return null;
 		}
-		return LangCore.getWorkspaceRoot().getProject(projectName);
+		return EclipseUtils.getWorkspaceRoot().getProject(projectName);
 	}
 	
 	/**

@@ -33,7 +33,7 @@ public class EclipseUtils extends ResourceUtils {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
 	
-	public static Path getPath(java.nio.file.Path path) {
+	public static Path path(java.nio.file.Path path) {
 		return new Path(path.toString());
 	}
 	
@@ -51,7 +51,7 @@ public class EclipseUtils extends ResourceUtils {
 	public static IProject[] getOpenedProjects(String natureId) throws CoreException {
 		final List<IProject> result = new ArrayList<IProject>();
 		
-		final IProject[] projects = LangCore.getWorkspaceRoot().getProjects();
+		final IProject[] projects = getWorkspaceRoot().getProjects();
 		for (IProject project : projects) {
 			if (project.exists() && project.isOpen() && (natureId == null || project.hasNature(natureId))) {
 				result.add(project);
@@ -73,6 +73,7 @@ public class EclipseUtils extends ResourceUtils {
 		project.setDescription(description, null);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <T> T getAdapter(Object adaptable, Class<T> adapterType) {
 		return (T) Platform.getAdapterManager().getAdapter(adaptable, adapterType);
 	}

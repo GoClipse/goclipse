@@ -66,7 +66,9 @@ public class ReflectionUtils {
 	/** Same as {@link Method#invoke(Object, Object...)} but unchecks the exceptions. */
 	public static <T> T uncheckedInvoke(Object obj, Method method, Object... args) {
 		try {
-			return (T) method.invoke(obj, args);
+			@SuppressWarnings("unchecked")
+			T result = (T) method.invoke(obj, args);
+			return result;
 		} catch (IllegalArgumentException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		} catch (IllegalAccessException e) {
@@ -84,7 +86,9 @@ public class ReflectionUtils {
 				paramTypes[i] = args[i].getClass();
 			}
 			Method method = getAvailableMethod(obj.getClass(), methodName, paramTypes);
-			return (T) method.invoke(obj, args);
+			@SuppressWarnings("unchecked")
+			T result = (T) method.invoke(obj, args);
+			return result;
 		} catch (IllegalArgumentException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		} catch (IllegalAccessException e) {

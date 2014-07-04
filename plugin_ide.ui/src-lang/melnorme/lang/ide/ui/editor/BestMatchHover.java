@@ -71,6 +71,10 @@ public class BestMatchHover extends AbstractLangEditorTextHover<Object> {
 	
 	@Override
 	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
+		return doGetHoverRegion(textViewer, offset);
+	}
+	
+	public static IRegion doGetHoverRegion(ITextViewer textViewer, int offset) {
 		return WordFinder.findWord(textViewer.getDocument(), offset);
 	}
 	

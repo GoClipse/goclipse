@@ -108,6 +108,7 @@ public class CheckboxTableViewerExt<ELEMENTS> extends CheckboxTableViewer {
 			super(elements);
 		}
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		public ELEMENTS getFirstElement() {
 			return (ELEMENTS) super.getFirstElement();

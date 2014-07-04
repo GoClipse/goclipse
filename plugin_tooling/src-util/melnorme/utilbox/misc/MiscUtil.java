@@ -156,7 +156,9 @@ public class MiscUtil {
 		return object == null ? altValue : object;
 	}
 	
-	public static Path createValidPath(String pathString) {
+	/** @return a valid path, 
+	 * or null if a valid path could not be created from given pathString. */
+	public static Path createPathOrNull(String pathString) {
 		try {
 			return Paths.get(pathString);
 		} catch (InvalidPathException ipe) {
@@ -164,6 +166,17 @@ public class MiscUtil {
 		}
 	}
 	
+	/** @return a valid path. Given pathString must represent a valid path. */
+	public static Path createValidPath(String pathString) {
+		try {
+			return Paths.get(pathString);
+		} catch (InvalidPathException ipe) {
+			throw assertFail();
+		}
+	}
+	
+	/** @return a valid path, 
+	 * or throws a checked exception if a valid path could not be created from given pathString. */
 	public static Path createPath(String pathString) throws InvalidPathExceptionX {
 		try {
 			return Paths.get(pathString);
@@ -172,7 +185,7 @@ public class MiscUtil {
 		}
 	}
 	
-	/** Checked wrapper for {@link InvalidPathException} */
+	/** Checked analogue/wrapper for {@link InvalidPathException} */
 	public static class InvalidPathExceptionX extends Exception {
 		
 		private static final long serialVersionUID = 1L;
@@ -191,5 +204,5 @@ public class MiscUtil {
 	public static String getClassResourceAsString(Class<?> klass, String resourceName) throws IOException {
 		return readAllBytesFromStream(klass.getResourceAsStream(resourceName)).toString(StringUtil.UTF8);
 	}
-
+	
 }
