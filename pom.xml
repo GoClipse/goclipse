@@ -22,12 +22,12 @@
 	</properties>
 
 	<modules>
-		<module>com.googlecode.goclipse.core</module>
-		<module>com.googlecode.goclipse.ui</module>
-		<module>com.googlecode.goclipse.ui.tests</module>
-		<module>com.googlecode.goclipse.gocode</module>
-		<module>com.googlecode.goclipse.debug</module>
-		<module>goclipse-feature</module>
+		<module>plugin_ide.core</module>
+		<module>plugin_ide.ui</module>
+		<module>plugin_ide.ui.tests</module>
+		<module>plugin_ide.gocode</module>
+		<module>plugin_ide.debug</module>
+		<module>feature</module>
 		<module>releng/repository</module>
 	</modules>
 
