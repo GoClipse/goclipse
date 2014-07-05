@@ -26,26 +26,24 @@ import com.googlecode.goclipse.preferences.PreferenceInitializer;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 /**
- * This class represents a preference page that is contributed to the
- * Preferences dialog. By subclassing <samp>FieldEditorPreferencePage</samp>, we
- * can use the field support built into JFace that allows us to create a page
+ * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
+ * <samp>FieldEditorPreferencePage</samp>, we can use the field support built into JFace that allows us to create a page
  * that is small and knows how to save, restore and apply itself.
  * <p>
- * This page is used to modify preferences only. They are stored in the
- * preference store that belongs to the main plug-in class. That way,
- * preferences can be accessed directly via the preference store.
+ * This page is used to modify preferences only. They are stored in the preference store that belongs to the main
+ * plug-in class. That way, preferences can be accessed directly via the preference store.
  */
 public class GoPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-	
-	public static final String	 ID	= "com.googlecode.goclipse.preferences.GoPreferencePage";
+
+	public static final String ID = "com.googlecode.goclipse.preferences.GoPreferencePage";
 
 	private DirectoryFieldEditor goRootEditor;
 	private GoPathFieldEditor goPathEditor;
-	private ComboFieldEditor	 goosEditor;
-	private ComboFieldEditor	 goarchEditor;
-	private FileFieldEditor	     compilerEditor;
-	private FileFieldEditor	     formatterEditor;
-	private FileFieldEditor	     documentorEditor;
+	private ComboFieldEditor goosEditor;
+	private ComboFieldEditor goarchEditor;
+	private FileFieldEditor compilerEditor;
+	private FileFieldEditor formatterEditor;
+	private FileFieldEditor documentorEditor;
 
 	/**
 	 * 
@@ -58,9 +56,8 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 	}
 
 	/**
-	 * Creates the field editors. Field editors are abstractions of the common
-	 * GUI blocks needed to manipulate various types of preferences. Each field
-	 * editor knows how to save and restore itself.
+	 * Creates the field editors. Field editors are abstractions of the common GUI blocks needed to manipulate various
+	 * types of preferences. Each field editor knows how to save and restore itself.
 	 */
 	@Override
 	public void createFieldEditors() {
@@ -75,21 +72,21 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		goRootEditor = new DirectoryFieldEditor(PreferenceConstants.GOROOT, "GO&ROOT:", fieldParent);
 		addField(goRootEditor);
 
-    goPathEditor = new GoPathFieldEditor(PreferenceConstants.GOPATH, "GO&PATH:", fieldParent);
-    addField(goPathEditor);
-    
+		goPathEditor = new GoPathFieldEditor(PreferenceConstants.GOPATH, "GO&PATH:", fieldParent);
+		addField(goPathEditor);
+
 		goosEditor = new ComboFieldEditor(PreferenceConstants.GOOS, "G&OOS:", new String[][] { { "", "" },
-		        { PreferenceConstants.OS_DARWIN, PreferenceConstants.OS_DARWIN },
-		        { PreferenceConstants.OS_LINUX, PreferenceConstants.OS_LINUX },
-		        { PreferenceConstants.OS_FREEBSD, PreferenceConstants.OS_FREEBSD },
-		        { PreferenceConstants.OS_NACL, PreferenceConstants.OS_NACL },
-		        { PreferenceConstants.OS_WINDOWS, PreferenceConstants.OS_WINDOWS } }, fieldParent);
+				{ PreferenceConstants.OS_DARWIN, PreferenceConstants.OS_DARWIN },
+				{ PreferenceConstants.OS_LINUX, PreferenceConstants.OS_LINUX },
+				{ PreferenceConstants.OS_FREEBSD, PreferenceConstants.OS_FREEBSD },
+				{ PreferenceConstants.OS_NACL, PreferenceConstants.OS_NACL },
+				{ PreferenceConstants.OS_WINDOWS, PreferenceConstants.OS_WINDOWS } }, fieldParent);
 		addField(goosEditor);
 
 		goarchEditor = new ComboFieldEditor(PreferenceConstants.GOARCH, "GO&ARCH:", new String[][] { { "", "" },
-		        { PreferenceConstants.ARCH_AMD64, PreferenceConstants.ARCH_AMD64 },
-		        { PreferenceConstants.ARCH_386, PreferenceConstants.ARCH_386 },
-		        { PreferenceConstants.ARCH_ARM, PreferenceConstants.ARCH_ARM } }, fieldParent);
+				{ PreferenceConstants.ARCH_AMD64, PreferenceConstants.ARCH_AMD64 },
+				{ PreferenceConstants.ARCH_386, PreferenceConstants.ARCH_386 },
+				{ PreferenceConstants.ARCH_ARM, PreferenceConstants.ARCH_ARM } }, fieldParent);
 		addField(goarchEditor);
 
 		((GridLayout) fieldParent.getLayout()).numColumns = 3;
@@ -103,13 +100,13 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
 
 		addField(compilerEditor = new FileFieldEditor(PreferenceConstants.GO_TOOL_PATH, "Go &tool path (go):",
-		        fieldParent));
+				fieldParent));
 
-		addField(formatterEditor = new FileFieldEditor(PreferenceConstants.FORMATTER_PATH,
-		        "Go &formatter (gofmt):", fieldParent));
+		addField(formatterEditor = new FileFieldEditor(PreferenceConstants.FORMATTER_PATH, "Go &formatter (gofmt):",
+				fieldParent));
 
-		addField(documentorEditor = new FileFieldEditor(PreferenceConstants.DOCUMENTOR_PATH,
-		        "Go &documentor (godoc):", fieldParent));
+		addField(documentorEditor = new FileFieldEditor(PreferenceConstants.DOCUMENTOR_PATH, "Go &documentor (godoc):",
+				fieldParent));
 	}
 
 	@Override
@@ -131,7 +128,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		if (event.getSource() == goRootEditor && PreferenceInitializer.getDefaultCompilerName() != null) {
 
 			IPath gorootPath = new Path(goRootEditor.getStringValue());
-			File gorootFile  = gorootPath.toFile();
+			File gorootFile = gorootPath.toFile();
 
 			if (gorootFile.exists() && gorootFile.isDirectory()) {
 				IPath binPath = gorootPath.append("bin");
