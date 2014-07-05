@@ -180,6 +180,14 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
             descriptiveString = descriptiveString.replace(" : func", " ").replace(" : interface",
                 " ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
 
+            int leftbracket = descriptiveString.indexOf("(");
+            int rightbracket = descriptiveString.indexOf(")");
+            if(rightbracket>0 && leftbracket>0){
+            	String paras = descriptiveString.substring(leftbracket-1, rightbracket+1);
+            	if(paras!=null){
+            		identifier = identifier+paras.trim();
+            	}
+            }
             results.add(new CompletionProposal(identifier, offset - prefix.length(),
                 prefix.length(), identifier.length(), image, descriptiveString, info, description));
           }
