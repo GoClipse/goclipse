@@ -69,13 +69,16 @@ public class GocodeClient {
 
     IPath rootPath = new Path(goroot).append("pkg").append(goos + "_" + goarch);
 
-    if (project == null) {
-      arguments.add(rootPath.toOSString());
-    } else {
-      IPath projectPath = project.getLocation().append(Environment.INSTANCE.getPkgOutputFolder(project));
-
-      arguments.add(rootPath.toOSString() + File.pathSeparatorChar + projectPath.toOSString());
-    }
+		if (project == null) {
+			arguments.add(rootPath.toOSString());
+		} else {
+			
+			IPath projectPath = project.getLocation().append(Environment.INSTANCE.getPkgOutputFolder(project));
+			StringBuilder pathBuilder = new StringBuilder(projectPath.toOSString());
+			appendDependencyGoPath(pathBuilder, project, goarch, goos);
+			
+			arguments.add(rootPath.toOSString() + File.pathSeparatorChar + pathBuilder.toString());
+		}
     
 	GoToolManager.getDefault().startPrivateGoTool(gocodePathStr, arguments, null).strictAwaitTermination(100);
 
@@ -118,7 +121,34 @@ public class GocodeClient {
     return output.getLines();
   }
 
-  protected String getError() {
+	/**
+	 * 
+	 * @param pathBuilder
+	 * @param project
+	 * @param goarch
+	 * @param goos
+	 */
+	private void appendDependencyGoPath(StringBuilder pathBuilder, IProject project, String goarch, String goos) {
+		String[] paths=Environment.INSTANCE.getPrefGoPath(project);
+		IPath pathT;
+		if (paths != null && paths.length > 0) {
+			for (String path : paths) {
+				pathT = new Path(path).append("pkg").append(goos + "_" + goarch);
+				pathBuilder.append(File.pathSeparatorChar).append(pathT.toOSString());
+			}
+		}
+		
+		try {
+			List<IProject> projects = Environment.INSTANCE.getProjectDependencies(project);
+			for (IProject _project : projects) {
+				pathT = _project.getLocation().append(Environment.INSTANCE.getPkgOutputFolder(_project));
+				pathBuilder.append(File.pathSeparatorChar).append(pathT.toOSString());
+			}
+		} catch (Exception e) {
+		}
+	}
+
+protected String getError() {
     return error;
   }
 

@@ -27,7 +27,7 @@ import org.eclipse.debug.core.model.RuntimeProcess;
  */
 public class RuntimeProcessExtension extends RuntimeProcess {
 
-	public RuntimeProcessExtension(ILaunch launch, Process process, String name, Map<?, ?> attributes) {
+	public RuntimeProcessExtension(ILaunch launch, Process process, String name, Map<String, String> attributes) {
 		super(launch, process, name, attributes);
 	}
 	

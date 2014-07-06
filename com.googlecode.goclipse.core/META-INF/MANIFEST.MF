@@ -35,6 +35,7 @@ Export-Package: com.googlecode.goclipse;
  com.googlecode.goclipse.core,
  com.googlecode.goclipse.core.launch,
  com.googlecode.goclipse.go,
+ com.googlecode.goclipse.go.lang,
  com.googlecode.goclipse.go.lang.lexer,
  com.googlecode.goclipse.go.lang.model,
  com.googlecode.goclipse.go.lang.parser;uses:="com.googlecode.goclipse.model,com.googlecode.goclipse.go,com.googlecode.goclipse.go.lang.lexer",

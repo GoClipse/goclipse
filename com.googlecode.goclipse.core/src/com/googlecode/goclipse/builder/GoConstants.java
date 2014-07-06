@@ -59,4 +59,10 @@ public class GoConstants {
 	public static final String GO_CONF_ATTRIBUTE_WORKING_DIRECTORY = LaunchConstants.ATTR_WORKING_DIRECTORY;
 	public static final String GO_CONF_ATTRIBUTE_BUILD_CONFIG      = LaunchConstants.ATTR_BUILD_CONFIG;
 	
+	/**
+	 * used in build configurations
+	 */
+	public static final String CurrentBuildType = "CurrentBuildType";
+	public static final String ProjectDependencyKey = "ProjectDependencyKey";
+	
 }
