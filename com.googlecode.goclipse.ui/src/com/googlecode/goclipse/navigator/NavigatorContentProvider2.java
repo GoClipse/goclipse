@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.core.GoCore;
@@ -35,7 +34,7 @@ import com.googlecode.goclipse.ui.GoUIPlugin;
  * 
  * @author devoncarew
  */
-public class NavigatorContentProvider2 implements ITreeContentProvider, IPropertyChangeListener {
+public class NavigatorContentProvider2 implements ITreeContentProvider, IPropertyChangeListener, IResourceChangeListener {
 	private final Object[] NO_CHILDREN = new Object[0];
 
 	private Viewer viewer;
@@ -44,12 +43,14 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		// TODO: we really want to listen for changes to the root directories referenced by the project.
 		GoUIPlugin.getPrefStore().addPropertyChangeListener(this);
 		GoUIPlugin.getCorePrefStore().addPropertyChangeListener(this);
+		GoCore.getWorkspace().addResourceChangeListener(this);
 	}
 
 	@Override
 	public void dispose() {
 		GoUIPlugin.getPrefStore().removePropertyChangeListener(this);
 		GoUIPlugin.getCorePrefStore().removePropertyChangeListener(this);
+		GoCore.getWorkspace().removeResourceChangeListener(this);
 	}
 
 	@Override
@@ -243,6 +244,13 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 				}
 			}
 		});
+	}
+
+	@Override
+	public void resourceChanged(IResourceChangeEvent event) {
+		if(IResourceChangeEvent.POST_CHANGE == event.getType()){
+			updateViewer();
+		}
 	}
 
 

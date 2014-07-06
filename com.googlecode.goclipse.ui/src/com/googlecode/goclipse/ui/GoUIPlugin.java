@@ -59,10 +59,11 @@ public class GoUIPlugin extends LangUIPlugin {
 		if(project.getWorkspace() instanceof Workspace){
 			Workspace workspace = (Workspace) project.getWorkspace();
 			try {
+				//Strange, the below refresh calling would not refresh the given project in projectexplorer view
 				workspace.getRefreshManager().refresh(project);
 				workspace.broadcastBuildEvent(project, IResourceChangeEvent.POST_CHANGE, IncrementalProjectBuilder.FULL_BUILD);
 			} catch (Exception e) {
-				getInstance().log(e);
+				log(e);
 			}
 		}
 	}

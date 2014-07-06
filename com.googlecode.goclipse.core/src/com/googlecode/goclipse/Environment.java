@@ -139,7 +139,6 @@ public class Environment {
 					try {
 						if (fos != null)
 							fos.close();
-						System.out.println("After save go project properties");
 					} catch (IOException e) {
 						Activator.logError(e);
 					}
