@@ -16,7 +16,7 @@
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
 
-		<targetPlatform>releng/target-platform/Goclipse</targetPlatform>
+		<targetPlatform>releng/target-platform/IDE</targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
 			
 	</properties>
