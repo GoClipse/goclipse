@@ -5,7 +5,7 @@ Ant script for automated release and deploy of the update site. Sample usage:
 First, run the Maven build script:
 mvn clean integration-test
 // upload a new release to the update site:
-ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https://code.google.com/p/ddt.updates/
+ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https://github.com/GoClipse/releases/raw/master/
 ====================================================================== 
 -->
 <project name="project" >

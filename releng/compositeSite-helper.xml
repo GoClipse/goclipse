@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" >
+
+	<property name="repo.name" value="MMRNMHRM Software Site" />
+	<property name="repo.dir" value="UpdateSite-skeleton" />
+
+<!-- 
+======================================================================
+Ant task to (re)create a composite site.
+This task must be run from within eclipse, example:
+eclipse -application org.eclipse.ant.core.antRunner -consolelog createCompositeRepo 
+====================================================================== 
+-->
+	<target name="createCompositeRepo">
+		<p2.composite.repository>
+			<repository location="${repo.dir}" name="${repo.name}" compressed="false" failOnExists="true"/>
+			<add>
+				<repository location="http://download.eclipse.org/releases/kepler" />
+				<repository location="local-repo" />
+			</add>
+		</p2.composite.repository>
+	</target>
+	
+</project>
