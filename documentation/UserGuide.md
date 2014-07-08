@@ -57,7 +57,7 @@ Whenever a launch is requested, a build will be performed beforehand. This behav
 You can debug a Go program by running a launch in debug mode. You will need a GDB debugger. To configure debug options (in particular, the path to the debugger to use), open the launch under 'Run' / 'Debug Configurations...', and then navigate to the 'Debugger' tab in the desired launch configuration:
 
 <div align="center">
-<a><img src="screenshots/UserGuide_DebuggerLaunchConfiguration.png" /><a/> 
+<a href="screenshots/UserGuide_DebuggerLaunchConfiguration.png?raw=true"><img src="screenshots/UserGuide_DebuggerLaunchConfiguration.png" /><a/> 
 </div>
 
 GDB debugger integration is achieved by using the CDT plugins. To configure global debugger options, go the 'C/C++'/'Debug'/'GDB' preference page.
