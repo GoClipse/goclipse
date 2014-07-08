@@ -8,6 +8,5 @@
 - GOPATH integration
 
 ### Screenshot:
-<div align="center">
-<a><img src="screenshots/main_screenshot-2012.png" /><a/> 
-</div>
+
+![sample_basic](screenshots/main_screenshot-2012.png?raw=true)
