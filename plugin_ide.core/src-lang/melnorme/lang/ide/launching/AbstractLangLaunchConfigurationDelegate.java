@@ -177,7 +177,7 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 		boolean appendEnv =
 				configuration.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true);
 		Map<String, String> configEnv =
-				configuration.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<?, ?>) null);
+				configuration.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null);
 		
 		return new ProcessSpawnInfo(processFullPath, processArgs, workingDirectory, configEnv, appendEnv);
 	}
