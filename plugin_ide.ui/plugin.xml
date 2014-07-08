@@ -795,7 +795,7 @@
             class="com.googlecode.goclipse.ui.launch.GoLaunchShortcut"
             icon="icons/go-icon16.png"
             id="com.googlecode.goclipse.debug.launch.ui.GoLaunchShortcut"
-            label="Run Go Application"
+            label="Go Application"
             modes="run, debug">
             <description
                description="executes Go Program"
