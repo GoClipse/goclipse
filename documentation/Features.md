@@ -1,3 +1,7 @@
+### Screenshot:
+
+![sample_basic](screenshots/main_screenshot-2012.png?raw=true)
+
 ### Features
 - Configurable syntax highlighting
 - Autocompletion via Gocode
@@ -12,9 +16,5 @@ Fully featured GDB debugger support (reusing Eclipse CDT's GDB integration)
   * Stack variables inspection view. Expression watch and view. Disassembly view.
   * Non-stop mode (for supported GBDs). Reverse debugging (for supported GDB targets).
 
-| [![sample_debug](screenshots/sample_debug.thumbs.png)](screenshots/sample_debug.png?raw=true)<br/>`Execution stopped on a breakpoint` |
+| [![sample_debug](screenshots/sample_debug.thumb.png)](screenshots/sample_debug.png?raw=true)<br/>`Execution stopped on a breakpoint` |
 |----|
-
-### Screenshot:
-
-![sample_basic](screenshots/main_screenshot-2012.png?raw=true)
