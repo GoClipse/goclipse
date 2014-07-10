@@ -5,6 +5,8 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 
+import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
+
 /**
  * This IReconcilingStrategy notifies the editor that a reconcile is occuring.
  * 

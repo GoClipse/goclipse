@@ -22,6 +22,7 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
+import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
 
 public class GoEditor extends AbstractLangEditor {
 

@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.editors;
+package com.googlecode.goclipse.ui.editor;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -33,6 +33,14 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.editors.CompletionProcessor;
+import com.googlecode.goclipse.editors.DoubleClickStrategy;
+import com.googlecode.goclipse.editors.GoEditor;
+import com.googlecode.goclipse.editors.GoEditorReconcilingStrategy;
+import com.googlecode.goclipse.editors.GoHyperlinkDetector;
+import com.googlecode.goclipse.editors.GoScanner;
+import com.googlecode.goclipse.editors.PartitionScanner;
+import com.googlecode.goclipse.editors.TextHover;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 import com.googlecode.goclipse.ui.text.GoPartitions;
