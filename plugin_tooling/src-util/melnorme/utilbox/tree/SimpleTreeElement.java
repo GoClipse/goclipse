@@ -8,25 +8,32 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.jface;
-
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import org.eclipse.jface.viewers.ITreeContentProvider;
+package melnorme.utilbox.tree;
 
 
-public abstract class AbstractTreeContentProvider extends AbstractContentProvider implements ITreeContentProvider {
+public class SimpleTreeElement implements IElement {
 	
-	@Override
-	public Object[] getElements(Object inputElement) {
-		assertTrue(input == inputElement);
-		return getChildren(inputElement);
+	protected final IElement[] children; // Can be null
+	protected final IElement parent;  // Can be null
+	
+	public SimpleTreeElement(IElement parent, IElement[] children) {
+		this.parent = parent;
+		this.children = children;
 	}
 	
 	@Override
-	public abstract Object[] getChildren(Object parentElement);
+	public boolean hasChildren() {
+		return children != null && children.length > 0;
+	}
 	
 	@Override
-	public abstract boolean hasChildren(Object parentElement);
+	public IElement[] getChildren() {
+		return children == null ? NO_ELEMENTS : children;
+	}
+	
+	@Override
+	public IElement getParent() {
+		return parent;
+	}
 	
 }

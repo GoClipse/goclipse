@@ -11,7 +11,7 @@
 package melnorme.utilbox.tree;
 
 
-public class TreeDepthRecon extends TreeWalker {
+public class TreeDepthFinder extends TreeVisitor {
 	
 	public int depth = 0;
 	public int maxdepth = 0;
@@ -21,13 +21,13 @@ public class TreeDepthRecon extends TreeWalker {
 	
 	
 	public static int findMaxDepth(IElement elem) {
-		TreeDepthRecon tdr = new TreeDepthRecon();
+		TreeDepthFinder tdr = new TreeDepthFinder();
 		tdr.traverse(elem);
 		return tdr.maxdepth;
 	}
 
 	public static int findMinLeafDepth(IElement elem) {
-		TreeDepthRecon tdr = new TreeDepthRecon();
+		TreeDepthFinder tdr = new TreeDepthFinder();
 		tdr.traverse(elem);
 		return tdr.maxdepth;
 	}
@@ -41,7 +41,7 @@ public class TreeDepthRecon extends TreeWalker {
 	}
 
 	public static boolean isLeaf(IElement elem) {
-		TreeDepthRecon tdr = new TreeDepthRecon();
+		TreeDepthFinder tdr = new TreeDepthFinder();
 		tdr.breakOnChildren = true;
 		tdr.traverse(elem);
 		return tdr.maxdepth == 1;
@@ -72,4 +72,3 @@ public class TreeDepthRecon extends TreeWalker {
 	}
 
 }
-

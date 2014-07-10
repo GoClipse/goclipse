@@ -13,7 +13,7 @@ package melnorme.utilbox.tree;
 /**
  * Generic tree walker that can walk any TreeNode. Uses TreeNode.getChildren();
  */
-public abstract class TreeWalker {
+public abstract class TreeVisitor {
 
 	/** Traverses the node. */
 	public final void traverse(IElement node) {
@@ -23,14 +23,16 @@ public abstract class TreeWalker {
 		leaveNode(node);
 	}
 	
-	private final void traverseChildren(IElement node) {
-		for(IElement child : node.getChildren())
+	protected final void traverseChildren(IElement node) {
+		for(IElement child : node.getChildren()) {
 			traverse(child);
+		}
 	}
-
+	
 	/** Performs the specific work on this node, on entry. */
 	protected abstract boolean enterNode(IElement node);
-
+	
 	/** Performs the specific work on this node, on exit. */
 	protected abstract void leaveNode(IElement node);
+	
 }

@@ -32,7 +32,7 @@ import org.eclipse.ui.PlatformUI;
 public abstract class AbstractPreferencesComponentPrefPage extends PreferencePage 
 		implements IWorkbenchPreferencePage {
 	
-	private IPreferencesComponent fConfigurationBlock;
+	private IPreferencesBlock fConfigurationBlock;
 	
 	public AbstractPreferencesComponentPrefPage(IPreferenceStore store) {
 		setDescription();
@@ -42,7 +42,7 @@ public abstract class AbstractPreferencesComponentPrefPage extends PreferencePag
 	
 	protected abstract void setDescription();
 	protected abstract String getHelpId();
-	protected abstract IPreferencesComponent createPreferencesComponent();
+	protected abstract IPreferencesBlock createPreferencesComponent();
 	
 	@Override
 	public void init(IWorkbench workbench) {
@@ -57,15 +57,15 @@ public abstract class AbstractPreferencesComponentPrefPage extends PreferencePag
 	@Override
 	protected Control createContents(Composite parent) {
 		Control body = fConfigurationBlock.createComponent(parent);
-		Dialog.applyDialogFont(body);
+		Dialog.applyDialogFont(body); /*BUG here with pixel converter usage. */
 		
-		fConfigurationBlock.loadFromStore(getPreferenceStore());
+		fConfigurationBlock.loadFromStore();
 		return body;
 	}
 	
 	@Override
 	public boolean performOk() {
-		fConfigurationBlock.saveToStore(getPreferenceStore());
+		fConfigurationBlock.saveToStore();
 		LangUIPlugin.flushInstanceScope();
 		
 		return true;
@@ -77,13 +77,14 @@ public abstract class AbstractPreferencesComponentPrefPage extends PreferencePag
 	public void performDefaults() {
 		DialogPageUtils.applyStatusToPreferencePage(NO_STATUS, this);
 		
-		fConfigurationBlock.loadStoreDefaults(getPreferenceStore());
+		fConfigurationBlock.loadStoreDefaults();
 		
 		super.performDefaults();
 	}
 	
 	@Override
 	public void dispose() {
+		fConfigurationBlock.dispose();
 		super.dispose();
 	}
 	

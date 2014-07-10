@@ -10,8 +10,16 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import melnorme.util.swt.SWTFactoryUtil;
+
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.PixelConverter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 
 /**
  * Same as AbstractComponent, but with a few more helpers and functionality.
@@ -45,6 +53,32 @@ public abstract class AbstractComponentExt extends AbstractComponent {
 	
 	protected static GridDataFactory gdFillDefaults() {
 		return GridDataFactory.fillDefaults();
+	}
+	
+	
+	/* ----------------- helpers ----------------- */
+	
+	protected void createHorizontalSpacer(final Composite topControl, int charHeight, PixelConverter pc) {
+		SWTFactoryUtil.createLabel(topControl, SWT.LEFT, "", 
+			gdFillDefaults().hint(pc.convertHeightInCharsToPixels(charHeight), SWT.DEFAULT).create());
+	}
+	
+	public static Composite createComposite(final Composite topControl) {
+		Composite editorComposite = new Composite(topControl, SWT.NONE);
+		editorComposite.setLayoutData(gdFillDefaults().grab(false, true).create());
+		return editorComposite;
+	}
+	
+	public static Link createOpenPreferencesDialogLink(final Composite topControl, String linkText) {
+		Link link = new Link(topControl, SWT.NONE);
+		link.setText(linkText);
+		link.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				PreferencesUtil.createPreferenceDialogOn(topControl.getShell(), e.text, null, null);
+			}
+		});
+		return link;
 	}
 	
 }

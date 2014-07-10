@@ -3,7 +3,7 @@ package com.googlecode.goclipse.editors;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
-import melnorme.util.swt.jface.ColorManager;
+import melnorme.util.swt.jface.text.ColorManager;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;

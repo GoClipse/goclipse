@@ -8,25 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.jface;
-
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import org.eclipse.jface.viewers.ITreeContentProvider;
+package melnorme.lang.ide.ui;
 
 
-public abstract class AbstractTreeContentProvider extends AbstractContentProvider implements ITreeContentProvider {
+
+public interface PreferenceConstants_Actual {
 	
-	@Override
-	public Object[] getElements(Object inputElement) {
-		assertTrue(input == inputElement);
-		return getChildren(inputElement);
-	}
+	public static final String EDITOR_BOLD_SUFFIX = "_bold";
+	public static final String EDITOR_ITALIC_SUFFIX = "_italic";
+	public static final String EDITOR_STRIKETHROUGH_SUFFIX = "_strikethrough";
+	public static final String EDITOR_UNDERLINE_SUFFIX = "_underline";
 	
-	@Override
-	public abstract Object[] getChildren(Object parentElement);
-	
-	@Override
-	public abstract boolean hasChildren(Object parentElement);
+	public static final String EDITOR_SEMANTIC_HIGHLIGHTING_ENABLED_SUFFIX = "_enabled";
 	
 }

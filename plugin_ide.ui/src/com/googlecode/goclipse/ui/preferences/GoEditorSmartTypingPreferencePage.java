@@ -13,7 +13,7 @@ package com.googlecode.goclipse.ui.preferences;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
-import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
+import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.LangEditorSmartTypingConfigurationBlock;
 
 
@@ -29,7 +29,7 @@ public class GoEditorSmartTypingPreferencePage extends AbstractPreferencesCompon
 	}
 	
 	@Override
-	protected IPreferencesComponent createPreferencesComponent() {
+	protected IPreferencesBlock createPreferencesComponent() {
 		return new LangEditorSmartTypingConfigurationBlock(this);
 	}
 	

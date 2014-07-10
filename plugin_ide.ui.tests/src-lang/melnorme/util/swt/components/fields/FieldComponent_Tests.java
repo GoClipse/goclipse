@@ -15,6 +15,7 @@ import melnorme.util.swt.components.AbstractFieldTest;
 import melnorme.utilbox.tests.CommonTest;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 
 public abstract class FieldComponent_Tests extends CommonTest {
@@ -285,6 +286,43 @@ public abstract class FieldComponent_Tests extends CommonTest {
 			field.setFieldValue(-1);
 			assertEquals(field.getFieldValue(), -1);
 			assertEquals(field.getFieldStringValue(), "");
+		}
+		
+	}
+	
+	public static class ColorFieldTest extends AbstractFieldTest {
+		
+		protected ColorField field;
+		
+		@Override
+		public AbstractField<?> createField() {
+			return field = new ColorField("blah") {
+				@Override
+				protected void doUpdateComponentFromValue() {
+					controlsUpdateCount++;
+					super.doUpdateComponentFromValue();
+				}
+			};
+		}
+		
+		@Override
+		protected Object getValueFromControl() {
+			return field.getColorSelector().getColorValue();
+		}
+		
+		@Override
+		public void setFirstFieldValue() {
+			field.setFieldValue(new RGB(1, 1, 1));
+		}
+		
+		@Override
+		public void setSecondFieldValue() {
+			field.setFieldValue(new RGB(2, 2, 2));
+		}
+		
+		@Override
+		public void doChangeFromControl() {
+			field.getColorSelector().setColorValue(new RGB(3, 3, 3));
 		}
 		
 	}
