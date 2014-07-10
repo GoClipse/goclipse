@@ -14,6 +14,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.MiscUtil;
 
+import org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -142,6 +143,14 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
         }
         return corePreferenceStore;
     }
+    
+    /* ----------------- other singletons ----------------- */
+	
+	protected CColorManager fColorManager = new CColorManager(true);
+	
+	public org.eclipse.cdt.ui.text.IColorManager getColorManager() {
+		return fColorManager;
+	}
     
 	/* -------- JDT copied stuff -------- */
 	

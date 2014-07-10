@@ -8,25 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.jface;
+package melnorme.lang.ide.ui.preferences;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.util.swt.components.IDisposable;
+import melnorme.util.swt.components.IWidgetComponent;
 
-import org.eclipse.jface.viewers.ITreeContentProvider;
-
-
-public abstract class AbstractTreeContentProvider extends AbstractContentProvider implements ITreeContentProvider {
+public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
 	
-	@Override
-	public Object[] getElements(Object inputElement) {
-		assertTrue(input == inputElement);
-		return getChildren(inputElement);
-	}
+	public void loadFromStore();
 	
-	@Override
-	public abstract Object[] getChildren(Object parentElement);
+	public void saveToStore();
 	
-	@Override
-	public abstract boolean hasChildren(Object parentElement);
+	public void loadStoreDefaults();
 	
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.jface;
+package melnorme.util.swt.jface.text;
 
 import java.util.HashMap;
 import java.util.Map;

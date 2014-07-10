@@ -27,7 +27,20 @@ public interface PreferencesMessages {
 			"C&olor:";
 	public static String EditorPreferencePage_systemDefault = 
 			"&System Default";
+
+
+	public static String DLTKEditorColoringConfigurationBlock_link = "Default colors and font can be configured on "
+			+ "the <a href=\"org.eclipse.ui.preferencePages.GeneralTextEditor\">Text Editors</a> and on "
+			+ "the <a href=\"org.eclipse.ui.preferencePages.ColorsAndFonts\">Colors and Fonts</a> preference page.";
 	
+	public static String DLTKEditorPreferencePage_coloring_element = "Source coloring element:";
+	public static String DLTKEditorPreferencePage_enable = "Enable";
+	public static String DLTKEditorPreferencePage_color = "Color:";
+	public static String DLTKEditorPreferencePage_bold = "Bold";
+	public static String DLTKEditorPreferencePage_italic = "Italic";
+	public static String DLTKEditorPreferencePage_strikethrough = "Strikethrough";
+	public static String DLTKEditorPreferencePage_underline = "Underline";
+	public static String DLTKEditorPreferencePage_preview = "Preview:";
 	
 	
 	public static final String LangSmartTypingConfigurationBlock_autoclose_title = 

@@ -10,23 +10,33 @@
  *******************************************************************************/
 package melnorme.util.swt.jface;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Tree;
 
-import org.eclipse.jface.viewers.ITreeContentProvider;
+public class TreeViewerExt extends TreeViewer {
 
+	public TreeViewerExt(Composite parent, int style) {
+		super(parent, style);
+	}
 
-public abstract class AbstractTreeContentProvider extends AbstractContentProvider implements ITreeContentProvider {
-	
-	@Override
-	public Object[] getElements(Object inputElement) {
-		assertTrue(input == inputElement);
-		return getChildren(inputElement);
+	public TreeViewerExt(Composite parent) {
+		super(parent);
+	}
+
+	public TreeViewerExt(Tree tree) {
+		super(tree);
 	}
 	
-	@Override
-	public abstract Object[] getChildren(Object parentElement);
 	
 	@Override
-	public abstract boolean hasChildren(Object parentElement);
+	public ITreeSelection getSelection() {
+		return (ITreeSelection) super.getSelection();
+	}
+	
+	public Object getSelectionFirstElement() {
+		return getSelection().getFirstElement();
+	}
 	
 }

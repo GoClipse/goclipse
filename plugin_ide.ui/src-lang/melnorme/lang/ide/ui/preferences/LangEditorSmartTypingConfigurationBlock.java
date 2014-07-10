@@ -24,7 +24,7 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 
-public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferencesConfigComponent {
+public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferencesConfigBlock {
 	
 	public LangEditorSmartTypingConfigurationBlock(PreferencePage prefPage) {
 		super(prefPage);

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -38,14 +38,14 @@ public abstract class AbstractComponent implements IWidgetComponent {
 	}
 	
 	protected void createTopLevelControlLayout(Composite topControl) {
-		topControl.setLayout(new GridLayout());
+		topControl.setLayout(GridLayoutFactory.fillDefaults().spacing(0, 0).create());
 	}
 	
 	protected abstract void createContents(Composite topControl);
 	
 	/* ----------------- util ----------------- */
 	
-	/** Do {@link #createComponent(Composite)}, and also set the layou Data of created Control.  */
+	/** Do {@link #createComponent(Composite)}, and also set the layout data of created Control.  */
  	public final Composite createComponent(Composite parent, Object layoutData) {
  		Composite control = createComponent(parent);
  		control.setLayoutData(layoutData);

@@ -29,6 +29,10 @@ public class CheckBoxField extends AbstractFieldExt<Boolean> {
 		return false;
 	}
 	
+	public boolean getBooleanFieldValue() {
+		return getFieldValue();
+	}
+	
 	@Override
 	protected void createContents_do(Composite topControl) {
 		checkBox = createFieldCheckbox(this, topControl, SWT.NONE);
@@ -48,6 +52,10 @@ public class CheckBoxField extends AbstractFieldExt<Boolean> {
 	@Override
 	protected void doUpdateComponentFromValue() {
 		checkBox.setSelection(getFieldValue());
+	}
+	
+	public void setEnabled(boolean enabled) {
+		checkBox.setEnabled(enabled);
 	}
 	
 }

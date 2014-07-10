@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.utils;
 
-import melnorme.util.swt.jface.ColorManager;
+import melnorme.util.swt.jface.text.ColorManager;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.source.ISharedTextColors;

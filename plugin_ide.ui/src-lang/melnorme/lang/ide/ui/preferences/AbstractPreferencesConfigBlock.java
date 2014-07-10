@@ -32,39 +32,41 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
-public abstract class AbstractPreferencesConfigComponent extends AbstractComponentExt 
-	implements IDisposable, IPreferencesComponent {
+public abstract class AbstractPreferencesConfigBlock extends AbstractComponentExt 
+	implements IDisposable, IPreferencesBlock {
 	
 	protected final ArrayList<IPreferencesComponent> configFields = new ArrayList<>();
 	protected final PreferencePage prefPage;
+	protected final IPreferenceStore preferenceStore;
 	
-	public AbstractPreferencesConfigComponent(PreferencePage prefPage) {
+	public AbstractPreferencesConfigBlock(PreferencePage prefPage) {
 		this.prefPage = assertNotNull(prefPage);
+		this.preferenceStore = prefPage.getPreferenceStore();
 	}
 	
 	@Override
 	public void updateComponentFromInput() {
-		loadFromStore(prefPage.getPreferenceStore());
+		loadFromStore();
 	}
 	
 	@Override
-	public void loadFromStore(IPreferenceStore store) {
+	public void loadFromStore() {
 		for(IPreferencesComponent configField : configFields) {
-			configField.loadFromStore(store);
+			configField.loadFromStore(preferenceStore);
 		}	
 	}
 	
 	@Override
-	public void saveToStore(IPreferenceStore store) {
+	public void saveToStore() {
 		for(IPreferencesComponent configField : configFields) {
-			configField.saveToStore(store);
+			configField.saveToStore(preferenceStore);
 		}
 	}
 	
 	@Override
-	public void loadStoreDefaults(IPreferenceStore store) {
+	public void loadStoreDefaults() {
 		for(IPreferencesComponent configField : configFields) {
-			configField.loadStoreDefaults(store);
+			configField.loadStoreDefaults(preferenceStore);
 		}
 	}
 	
