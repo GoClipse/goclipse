@@ -20,8 +20,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
-import com.googlecode.goclipse.editors.IColorDefaults;
-
 public class GoUIPreferencesInitializer extends AbstractPreferenceInitializer 
 	implements GoUIPreferenceConstants {
 
@@ -48,16 +46,15 @@ public class GoUIPreferencesInitializer extends AbstractPreferenceInitializer
 		
 		new LangColoringPreferencesHelper() {
 			public void initialize() {
-		setColoringStyle(store, FIELD_SYNTAX_KEYWORD_COLOR, IColorDefaults.KEYWORD, true, false, false);
-		setColoringStyle(store, FIELD_SYNTAX_VALUE_COLOR, IColorDefaults.VALUE, true, true, false);
-		setColoringStyle(store, FIELD_SYNTAX_PRIMITIVE_COLOR, IColorDefaults.PRIMITIVE, false, true, false);
-		setColoringStyle(store, FIELD_SYNTAX_COMMENT_COLOR, IColorDefaults.COMMENT, false, false, false);
-		setColoringStyle(store, FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, IColorDefaults.BUILTIN_FUNCTION, true, false, false);
-		setColoringStyle(store, FIELD_SYNTAX_STRING_COLOR, IColorDefaults.STRING, false, false, false);
-		setColoringStyle(store, FIELD_SYNTAX_MULTILINE_STRING_COLOR, IColorDefaults.MULTILINE_STRING, false, false, false);
-		
+				setColoringStyle(store, SYNTAX_COLORING__TEXT, new RGB(0, 0, 0), false, false, false);
+				setColoringStyle(store, SYNTAX_COLORING__KEYWORD, new RGB(127, 0, 85), true, false, false);
+				setColoringStyle(store, SYNTAX_COLORING__VALUE, new RGB(127, 0, 85), true, true, false);
+				setColoringStyle(store, SYNTAX_COLORING__PRIMITIVE, new RGB(127, 0, 85), false, true, false);
+				setColoringStyle(store, SYNTAX_COLORING__COMMENT, new RGB(63, 127, 95), false, false, false);
+				setColoringStyle(store, SYNTAX_COLORING__BUILTIN_FUNCTION, new RGB(0, 0, 0), true, false, false);
+				setColoringStyle(store, SYNTAX_COLORING__STRING, new RGB(0, 75, 200), false, false, false);
+				setColoringStyle(store, SYNTAX_COLORING__MULTILINE_STRING, new RGB(230, 75, 0), false, false, false);
 			}
-			
 		}.initialize();
 		
 		

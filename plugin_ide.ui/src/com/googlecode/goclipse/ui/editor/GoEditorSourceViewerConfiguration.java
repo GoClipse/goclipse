@@ -90,13 +90,13 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 		if (useHighlighting) {
 			
 			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.COMMENT, 
-				GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR);
+				GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT);
 
 			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.STRING, 
-				GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR);
+				GoUIPreferenceConstants.SYNTAX_COLORING__STRING);
 			
 			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.MULTILINE_STRING, 
-				GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR);
+				GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING);
 			
 			
 		}

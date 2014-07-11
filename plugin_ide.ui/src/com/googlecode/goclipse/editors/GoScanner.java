@@ -15,19 +15,19 @@ import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 public class GoScanner extends AbstractLangScanner {
 	
 	private static String tokenPrefProperties[] = new String[] {
-		GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,
-		GoUIPreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,
-		GoUIPreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,
-		GoUIPreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR,
-		GoUIPreferenceConstants.FIELD_SYNTAX_OPERATOR_COLOR,
-		GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_COLOR,
-		GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR,
+		GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD,
+		GoUIPreferenceConstants.SYNTAX_COLORING__VALUE,
+		GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE,
+		GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION,
+		GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR,
+		GoUIPreferenceConstants.SYNTAX_COLORING__TEXT,
+		GoUIPreferenceConstants.SYNTAX_COLORING__STRING,
 	};
 	
 	public GoScanner(ITokenStoreFactory tokenStoreFactory) {
 		super(tokenStoreFactory.createTokenStore(tokenPrefProperties));
 		
-		final IToken text = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_COLOR);
+		final IToken text = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__TEXT);
 		
 		final WordMatcher keywordRule = new WordMatcher();
 		CombinedWordRule combinedWordRule = new CombinedWordRule(new IWordDetector() {
@@ -46,13 +46,13 @@ public class GoScanner extends AbstractLangScanner {
 		}, keywordRule, text);
 		
 
-			final IToken keyword         = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR);
-			final IToken value           = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_VALUE_COLOR);
-			final IToken primitive       = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR);
-			final IToken builtinFunction = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR);
-			final IToken operator        = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_OPERATOR_COLOR);
-			final IToken textToken       = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_COLOR);
-			final IToken stringDelimeter = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR); 
+			final IToken keyword         = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD);
+			final IToken value           = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__VALUE);
+			final IToken primitive       = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE);
+			final IToken builtinFunction = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION);
+			final IToken operator        = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR);
+			final IToken textToken       = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__TEXT);
+			final IToken stringDelimeter = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__STRING); 
 			setDefaultReturnToken(textToken);
 			
 			// add tokens for each reserved word

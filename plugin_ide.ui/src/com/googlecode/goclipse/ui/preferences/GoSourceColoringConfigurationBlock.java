@@ -22,14 +22,14 @@ public class GoSourceColoringConfigurationBlock extends EditorSourceColoringConf
 	
 	protected static final LabeledTreeElement[] treeElements = array(
 		new SourceColoringCategory("Source", array(
-			new SourceColoringElement("Text", GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_COLOR),
-			new SourceColoringElement("Keyword", GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR),
-			new SourceColoringElement("Value:", GoUIPreferenceConstants.FIELD_SYNTAX_VALUE_COLOR),
-			new SourceColoringElement("Primitive:", GoUIPreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR),
-			new SourceColoringElement("Comment:", GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR),
-			new SourceColoringElement("Built-in function:", GoUIPreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR),
-			new SourceColoringElement("String:", GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR),
-			new SourceColoringElement("Multi-line string:", GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR)
+			new SourceColoringElement("Text", GoUIPreferenceConstants.SYNTAX_COLORING__TEXT),
+			new SourceColoringElement("Keyword", GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD),
+			new SourceColoringElement("Keyword - Literal", GoUIPreferenceConstants.SYNTAX_COLORING__VALUE),
+			new SourceColoringElement("Primitive", GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE),
+			new SourceColoringElement("Comment", GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT),
+			new SourceColoringElement("Built-in function", GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION),
+			new SourceColoringElement("String", GoUIPreferenceConstants.SYNTAX_COLORING__STRING),
+			new SourceColoringElement("Multi-line string", GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING)
 		))
 	);
 	
