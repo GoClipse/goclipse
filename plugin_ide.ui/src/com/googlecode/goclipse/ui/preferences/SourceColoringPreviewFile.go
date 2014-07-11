@@ -12,8 +12,7 @@ func fib() func() int {
 	}
 }
 
-func main() {
-	f := fib()
-	// Function calls are evaluated left-to-right.
-	fmt.Println(f(), f(), f(), f(), f())
-}
+var x = true;
+var str = `line 1
+line 2
+line 3`

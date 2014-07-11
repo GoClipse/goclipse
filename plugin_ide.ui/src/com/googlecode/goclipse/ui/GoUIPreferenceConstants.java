@@ -3,8 +3,6 @@ package com.googlecode.goclipse.ui;
 
 public interface GoUIPreferenceConstants {
 	
-	public static final String FIELD_USE_HIGHLIGHTING   = "use_highlighting";
-	
     public static final String SYNTAX_COLORING__TEXT             = "syntax_highlighting_text";
 	public static final String SYNTAX_COLORING__KEYWORD          = "syntax_highlighting_keyword";
 	public static final String SYNTAX_COLORING__VALUE            = "syntax_highlighting_value";

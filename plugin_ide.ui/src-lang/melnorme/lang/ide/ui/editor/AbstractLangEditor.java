@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.resources.IProject;
@@ -22,10 +23,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextEditor;
-import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 public abstract class AbstractLangEditor extends TextEditor {
@@ -72,7 +73,11 @@ public abstract class AbstractLangEditor extends TextEditor {
 	protected void internalDoSetInput(IEditorInput input) {
 	}
 	
-	protected abstract TextSourceViewerConfiguration createSourceViewerConfiguration();
+	protected abstract AbstractLangSourceViewerConfiguration createSourceViewerConfiguration();
+	
+	protected AbstractLangSourceViewerConfiguration getSourceViewerConfiguration2() {
+		return (AbstractLangSourceViewerConfiguration) getSourceViewerConfiguration(); 
+	}
 	
 	protected IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
 		List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(4);
@@ -86,6 +91,19 @@ public abstract class AbstractLangEditor extends TextEditor {
 		stores.add(EditorsUI.getPreferenceStore());
 		
 		return new ChainedPreferenceStore(ArrayUtil.createFrom(stores, IPreferenceStore.class));
+	}
+	
+	@Override
+	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
+		getSourceViewerConfiguration2().handlePropertyChangeEvent(event);
+		
+		super.handlePreferenceStoreChanged(event);
+	}
+	
+	@Override
+	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
+		return getSourceViewerConfiguration2().affectsTextPresentation(event)
+				|| super.affectsTextPresentation(event);
 	}
 	
 }

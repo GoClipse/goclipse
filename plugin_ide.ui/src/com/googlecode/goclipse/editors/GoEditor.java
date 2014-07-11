@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
@@ -62,7 +61,7 @@ public class GoEditor extends AbstractLangEditor {
   }
   
 	@Override
-	protected TextSourceViewerConfiguration createSourceViewerConfiguration() {
+	protected GoEditorSourceViewerConfiguration createSourceViewerConfiguration() {
 		return new GoEditorSourceViewerConfiguration(getPreferenceStore(), 
 			LangUIPlugin.getInstance().getColorManager(), this);
 	}

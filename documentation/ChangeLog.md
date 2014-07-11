@@ -1,7 +1,8 @@
 ## release ChangeLog
 
 ### Goclipse 0.8.x
- * Fix "go fmt" clearing file source if Go source was invalid (#60)
+ * Fix "go fmt" clearing entire file source if Go source was invalid (#60)
+ * Improved syntax highlighting preferences. Can now customize bold, italic, underline, etc. for each syntax element.
 
 ### Goclipse 0.8.0
  * Added debugging support using CDT's integration with GDB.

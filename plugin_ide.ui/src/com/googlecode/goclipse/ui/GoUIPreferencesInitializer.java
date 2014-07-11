@@ -42,8 +42,6 @@ public class GoUIPreferencesInitializer extends AbstractPreferenceInitializer
 		store.setDefault(LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, true);
 		
 		
-		store.setDefault(FIELD_USE_HIGHLIGHTING, true);
-		
 		new LangColoringPreferencesHelper() {
 			public void initialize() {
 				setColoringStyle(store, SYNTAX_COLORING__TEXT, new RGB(0, 0, 0), false, false, false);

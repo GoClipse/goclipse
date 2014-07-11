@@ -10,6 +10,7 @@ import melnorme.util.swt.jface.LabeledTreeElement;
 import org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
 
@@ -63,6 +64,7 @@ public class GoSourceColoringConfigurationBlock extends EditorSourceColoringConf
 			showAnnotationsOverview, styles);
 		GoSimpleSourceViewerConfiguration configuration = createSimpleSourceViewerConfiguration(store);
 		sourceViewer.configure(configuration);
+		sourceViewer.getTextWidget().setFont(JFaceResources.getFont(JFaceResources.TEXT_FONT));
 		configuration.setupViewerForTextPresentationPrefChanges(sourceViewer);
 		return sourceViewer;
 	}

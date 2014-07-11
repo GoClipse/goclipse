@@ -19,11 +19,8 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.URLHyperlinkDetector;
-import org.eclipse.jface.text.presentation.IPresentationReconciler;
-import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.MonoReconciler;
-import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.DefaultAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -59,8 +56,25 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	}
 	
 	@Override
+	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
+		return GoPartitions.PARTITIONING_ID;
+	}
+	
+	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return GoPartitions.PARTITION_TYPES;
+	}
+	
+	@Override
+	protected void createScanners() {
+		addScanner(new GoScanner(getTokenStoreFactory()), IDocument.DEFAULT_CONTENT_TYPE);
+	
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT), 
+			GoPartitionScanner.COMMENT);
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__STRING), 
+			GoPartitionScanner.STRING);
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING), 
+			GoPartitionScanner.MULTILINE_STRING);
 	}
 	
 	@Override
@@ -71,45 +85,6 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	}
 	
 	@Override
-	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
-		return GoPartitions.PARTITIONING_ID;
-	}
-	
-	@Override
-	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
-		PresentationReconciler reconciler= new PresentationReconciler();
-		reconciler.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-		
-		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(new GoScanner(getTokenStoreFactory()));
-		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
-
-		boolean useHighlighting = fPreferenceStore.getBoolean(GoUIPreferenceConstants.FIELD_USE_HIGHLIGHTING);
-		
-		if (useHighlighting) {
-			
-			setupSingleTokenDamagerRepairer(reconciler, GoPartitionScanner.COMMENT, 
-				GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT);
-
-			setupSingleTokenDamagerRepairer(reconciler, GoPartitionScanner.STRING, 
-				GoUIPreferenceConstants.SYNTAX_COLORING__STRING);
-			
-			setupSingleTokenDamagerRepairer(reconciler, GoPartitionScanner.MULTILINE_STRING, 
-				GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING);
-			
-			
-		}
-		return reconciler;
-	}
-	
-	protected void setupSingleTokenDamagerRepairer(PresentationReconciler reconciler, String contentType, 
-			String colorKey) {
-		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(createSingleTokenScanner(colorKey));
-		reconciler.setDamager(dr, contentType);
-		reconciler.setRepairer(dr, contentType);
-	}
-	
-	@Override
 	public IContentAssistant getContentAssistant(ISourceViewer sv) {
 		final ContentAssistant ca = new ContentAssistant();
 		ca.enableAutoActivation(true);
@@ -117,7 +92,7 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 
 		ca.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
 		ca.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-		ca.setContextInformationPopupBackground(fColorManager.getColor(new RGB(150, 150, 0)));
+		ca.setContextInformationPopupBackground(colorManager.getColor(new RGB(150, 150, 0)));
 		ca.setInformationControlCreator(getInformationControlCreator(sv));
 
 		IContentAssistProcessor cap = getCompletionProcessor();
