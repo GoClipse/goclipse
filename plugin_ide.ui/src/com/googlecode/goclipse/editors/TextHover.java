@@ -7,6 +7,7 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 
+// TODO: this does nothing at the moment...
 public class TextHover extends AbstractLangEditorTextHover<String> {
 	
 	@Override

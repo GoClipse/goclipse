@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.editors;
+package com.googlecode.goclipse.ui.text;
 
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 
@@ -9,8 +9,8 @@ import org.eclipse.jface.text.rules.IWhitespaceDetector;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 
-import com.googlecode.goclipse.editors.CombinedWordRule.WordMatcher;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
+import com.googlecode.goclipse.ui.text.CombinedWordRule.WordMatcher;
 
 public class GoScanner extends AbstractLangScanner {
 	

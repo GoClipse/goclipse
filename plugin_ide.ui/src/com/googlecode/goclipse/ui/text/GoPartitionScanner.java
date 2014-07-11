@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.editors;
+package com.googlecode.goclipse.ui.text;
 
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -7,11 +7,9 @@ import org.eclipse.jface.text.rules.RuleBasedPartitionScanner;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 
-import com.googlecode.goclipse.ui.text.GoPartitions;
+public class GoPartitionScanner extends RuleBasedPartitionScanner implements GoPartitions {
 
-public class PartitionScanner extends RuleBasedPartitionScanner implements GoPartitions {
-
-  public PartitionScanner() {
+  public GoPartitionScanner() {
     IToken comment = new Token(COMMENT);
     IToken string = new Token(STRING);
     IToken mstring = new Token(MULTILINE_STRING);

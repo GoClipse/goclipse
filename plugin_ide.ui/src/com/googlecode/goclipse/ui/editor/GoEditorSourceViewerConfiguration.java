@@ -36,12 +36,11 @@ import com.googlecode.goclipse.editors.DoubleClickStrategy;
 import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.editors.GoEditorReconcilingStrategy;
 import com.googlecode.goclipse.editors.GoHyperlinkDetector;
-import com.googlecode.goclipse.editors.GoScanner;
-import com.googlecode.goclipse.editors.PartitionScanner;
-import com.googlecode.goclipse.editors.TextHover;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
+import com.googlecode.goclipse.ui.text.GoPartitionScanner;
 import com.googlecode.goclipse.ui.text.GoPartitions;
+import com.googlecode.goclipse.ui.text.GoScanner;
 import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
 /**
@@ -89,13 +88,13 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 		
 		if (useHighlighting) {
 			
-			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.COMMENT, 
+			setupSingleTokenDamagerRepairer(reconciler, GoPartitionScanner.COMMENT, 
 				GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT);
 
-			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.STRING, 
+			setupSingleTokenDamagerRepairer(reconciler, GoPartitionScanner.STRING, 
 				GoUIPreferenceConstants.SYNTAX_COLORING__STRING);
 			
-			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.MULTILINE_STRING, 
+			setupSingleTokenDamagerRepairer(reconciler, GoPartitionScanner.MULTILINE_STRING, 
 				GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING);
 			
 			
@@ -158,7 +157,7 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 		if(contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
 			return new BestMatchHover(editor, stateMask);
 		}
-		return new TextHover();
+		return null;
 	}
 	
 	@Override

@@ -7,11 +7,11 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.jface.text.IDocument;
 
-import com.googlecode.goclipse.editors.PartitionScanner;
 import com.googlecode.goclipse.editors.TextHover;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.text.GoPartitions;
+import com.googlecode.goclipse.ui.text.GoPartitionScanner;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
@@ -33,8 +33,8 @@ public final class LangUIPlugin_Actual {
 	public static final String[] LEGAL_CONTENT_TYPES = 
 			ArrayUtil.remove(GoPartitions.PARTITION_TYPES, IDocument.DEFAULT_CONTENT_TYPE);
 	
-	public static PartitionScanner createPartitionScanner() {
-		return new PartitionScanner();
+	public static GoPartitionScanner createPartitionScanner() {
+		return new GoPartitionScanner();
 	}
 	
 }

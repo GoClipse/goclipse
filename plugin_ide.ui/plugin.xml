@@ -94,7 +94,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="com.googlecode.goclipse.perspective.GoPerspective"
+            class="com.googlecode.goclipse.ui.GoPerspective"
             icon="icons/go-icon16.png"
             id="com.googlecode.goclipse.perspectives.GoPerspective"
             name="Go">

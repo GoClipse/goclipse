@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.editors;
+package com.googlecode.goclipse.ui.text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
