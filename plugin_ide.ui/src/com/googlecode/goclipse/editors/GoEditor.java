@@ -2,6 +2,7 @@ package com.googlecode.goclipse.editors;
 
 import java.util.ResourceBundle;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 
 import org.eclipse.core.resources.IFile;
@@ -62,7 +63,8 @@ public class GoEditor extends AbstractLangEditor {
   
 	@Override
 	protected TextSourceViewerConfiguration createSourceViewerConfiguration() {
-		return new GoEditorSourceViewerConfiguration(this, getPreferenceStore());
+		return new GoEditorSourceViewerConfiguration(getPreferenceStore(), 
+			LangUIPlugin.getInstance().getColorManager(), this);
 	}
 
   

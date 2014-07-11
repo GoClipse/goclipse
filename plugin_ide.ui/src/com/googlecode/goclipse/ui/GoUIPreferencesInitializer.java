@@ -13,11 +13,11 @@ package com.googlecode.goclipse.ui;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
+import melnorme.lang.ide.ui.text.coloring.LangColoringPreferencesHelper;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 
 import com.googlecode.goclipse.editors.IColorDefaults;
@@ -27,7 +27,7 @@ public class GoUIPreferencesInitializer extends AbstractPreferenceInitializer
 
 	@Override
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = LangUIPlugin.getInstance().getPreferenceStore();
+		final IPreferenceStore store = LangUIPlugin.getInstance().getPreferenceStore();
 		
 		// Formatter and auto-indent
 		store.setDefault(CodeFormatterConstants.FORMATTER_INDENT_MODE, CodeFormatterConstants.TAB);
@@ -45,20 +45,21 @@ public class GoUIPreferencesInitializer extends AbstractPreferenceInitializer
 		
 		
 		store.setDefault(FIELD_USE_HIGHLIGHTING, true);
-		store.setDefault(FIELD_SYNTAX_KEYWORD_COLOR, StringConverter.asString(IColorDefaults.KEYWORD));
-		store.setDefault(FIELD_SYNTAX_VALUE_COLOR, StringConverter.asString(IColorDefaults.VALUE));
-		store.setDefault(FIELD_SYNTAX_PRIMITIVE_COLOR, StringConverter.asString(IColorDefaults.PRIMITIVE));
-		store.setDefault(FIELD_SYNTAX_COMMENT_COLOR, StringConverter.asString(IColorDefaults.COMMENT));
-		store.setDefault(FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, StringConverter.asString(IColorDefaults.BUILTIN_FUNCTION));
-		store.setDefault(FIELD_SYNTAX_STRING_COLOR, StringConverter.asString(IColorDefaults.STRING));
-		store.setDefault(FIELD_SYNTAX_MULTILINE_STRING_COLOR, StringConverter.asString(IColorDefaults.MULTILINE_STRING));
-		store.setDefault(FIELD_SYNTAX_KEYWORD_STYLE,          SWT.BOLD           );
-		store.setDefault(FIELD_SYNTAX_VALUE_STYLE,            SWT.BOLD|SWT.ITALIC);
-		store.setDefault(FIELD_SYNTAX_PRIMITIVE_STYLE,        SWT.ITALIC         );
-		store.setDefault(FIELD_SYNTAX_COMMENT_STYLE,          SWT.NORMAL         );
-		store.setDefault(FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE, SWT.BOLD           );
-		store.setDefault(FIELD_SYNTAX_STRING_STYLE,           SWT.NORMAL         );
-		store.setDefault(FIELD_SYNTAX_MULTILINE_STRING_STYLE, SWT.NORMAL         );
+		
+		new LangColoringPreferencesHelper() {
+			public void initialize() {
+		setColoringStyle(store, FIELD_SYNTAX_KEYWORD_COLOR, IColorDefaults.KEYWORD, true, false, false);
+		setColoringStyle(store, FIELD_SYNTAX_VALUE_COLOR, IColorDefaults.VALUE, true, true, false);
+		setColoringStyle(store, FIELD_SYNTAX_PRIMITIVE_COLOR, IColorDefaults.PRIMITIVE, false, true, false);
+		setColoringStyle(store, FIELD_SYNTAX_COMMENT_COLOR, IColorDefaults.COMMENT, false, false, false);
+		setColoringStyle(store, FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR, IColorDefaults.BUILTIN_FUNCTION, true, false, false);
+		setColoringStyle(store, FIELD_SYNTAX_STRING_COLOR, IColorDefaults.STRING, false, false, false);
+		setColoringStyle(store, FIELD_SYNTAX_MULTILINE_STRING_COLOR, IColorDefaults.MULTILINE_STRING, false, false, false);
+		
+			}
+			
+		}.initialize();
+		
 		
 	    store.setDefault(EDITOR_MATCHING_BRACKETS, true);
 	    store.setDefault(EDITOR_MATCHING_BRACKETS_COLOR, StringConverter.asString(new RGB(128, 128, 128)));

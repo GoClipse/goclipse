@@ -38,24 +38,39 @@ public class LangColoringPreferencesHelper {
 		return key + PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
 	}
 	
-	public static boolean getIsEnabled(IPreferenceStore store, String key) {
-		return store.getBoolean(getEnabledKey(key));
+	protected static void setColoringStyle(IPreferenceStore store, String key, RGB color, boolean bold, 
+			boolean italic, boolean underline) {
+		setColoringStyle(store, key, true, color, bold, italic, underline);
 	}
 	
-	public static RGB getColor(IPreferenceStore store, String key) {
-		return PreferenceConverter.getColor(store, getColorKey(key));
+	public static void setColoringStyle(IPreferenceStore store, String key, boolean enabled, 
+			RGB color, boolean bold, boolean italic, boolean underline) {
+		setIsEnabled(store, key, enabled);
+		setColor(store, key, color);
+		setIsBold(store, key, bold);
+		setIsItalic(store, key, italic);
+		setIsUnderline(store, key, underline);
 	}
 	
-	public static boolean getIsBold(IPreferenceStore store, String key) {
-		return store.getBoolean(getBoldKey(key));
+	
+	public static void setIsEnabled(IPreferenceStore store, String key, boolean enabled) {
+		store.setDefault(LangColoringPreferencesHelper.getEnabledKey(key), enabled);
 	}
 	
-	public static boolean getIsItalic(IPreferenceStore store, String key) {
-		return store.getBoolean(getItalicKey(key));
+	public static void setColor(IPreferenceStore store, String key, RGB rgb) {
+		PreferenceConverter.setDefault(store, LangColoringPreferencesHelper.getColorKey(key), rgb);
 	}
 	
-	public static boolean getIsUnderline(IPreferenceStore store, String key) {
-		return store.getBoolean(getUnderlineKey(key));
+	public static void setIsBold(IPreferenceStore store, String key, boolean bold) {
+		store.setDefault(LangColoringPreferencesHelper.getBoldKey(key), bold);
+	}
+	
+	public static void setIsItalic(IPreferenceStore store, String key, boolean italic) {
+		store.setDefault(LangColoringPreferencesHelper.getItalicKey(key), italic);
+	}
+	
+	public static void setIsUnderline(IPreferenceStore store, String key, boolean underline) {
+		store.setDefault(LangColoringPreferencesHelper.getUnderlineKey(key), underline);
 	}
 	
 }

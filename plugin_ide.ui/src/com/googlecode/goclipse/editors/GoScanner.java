@@ -1,35 +1,34 @@
 package com.googlecode.goclipse.editors;
 
-import melnorme.util.swt.jface.text.ColorManager;
+import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.text.TextAttribute;
+import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.text.rules.IRule;
+import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 import org.eclipse.jface.text.rules.IWordDetector;
-import org.eclipse.jface.text.rules.RuleBasedScanner;
-import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.PlatformUI;
 
 import com.googlecode.goclipse.editors.CombinedWordRule.WordMatcher;
-import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 
-public class GoScanner extends RuleBasedScanner {
-
-	public GoScanner() {
-		IPreferenceStore prefStore = GoUIPlugin.getPrefStore();
-
-		boolean useHighlighting = GoUIPlugin.getPrefStore().getBoolean(GoUIPreferenceConstants.FIELD_USE_HIGHLIGHTING);
-
-		final Color textColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_COLOR));
+public class GoScanner extends AbstractLangScanner {
+	
+	private static String tokenPrefProperties[] = new String[] {
+		GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR,
+		GoUIPreferenceConstants.FIELD_SYNTAX_VALUE_COLOR,
+		GoUIPreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR,
+		GoUIPreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR,
+		GoUIPreferenceConstants.FIELD_SYNTAX_OPERATOR_COLOR,
+		GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_COLOR,
+		GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR,
+	};
+	
+	public GoScanner(ITokenStoreFactory tokenStoreFactory) {
+		super(tokenStoreFactory.createTokenStore(tokenPrefProperties));
 		
-		final Token       text        = new Token(new TextAttribute(textColor, null, SWT.NONE));
+		final IToken text = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_COLOR);
+		
 		final WordMatcher keywordRule = new WordMatcher();
 		CombinedWordRule combinedWordRule = new CombinedWordRule(new IWordDetector() {
 			@Override
@@ -46,30 +45,16 @@ public class GoScanner extends RuleBasedScanner {
 			}
 		}, keywordRule, text);
 		
-		if (useHighlighting) {
-			final Color keywordColor         = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR));
-			final Color valueColor           = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_VALUE_COLOR));
-			final Color primitiveColor       = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR));
-			final Color builtinFunctionColor = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR));
-			final Color operatorColor        = ColorManager.INSTANCE.getColor(PreferenceConverter.getColor(prefStore, GoUIPreferenceConstants.FIELD_SYNTAX_OPERATOR_COLOR));
-			
 
-			final int keywordStyle         = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_STYLE);
-			final int valueStyle           = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_VALUE_STYLE);
-			final int primitiveStyle       = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_PRIMITIVE_STYLE);
-			final int builtinFunctionStyle = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_STYLE);
-			final int operatorStyle        = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_OPERATOR_STYLE);
-			final int textStyle            = prefStore.getInt(GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_STYLE);
-
-			final Token keyword         = new Token(new TextAttribute(keywordColor,         null, keywordStyle));
-			final Token value           = new Token(new TextAttribute(valueColor,           null, valueStyle));
-			final Token primitive       = new Token(new TextAttribute(primitiveColor,       null, primitiveStyle));
-			final Token builtinFunction = new Token(new TextAttribute(builtinFunctionColor, null, builtinFunctionStyle));
-			final Token operator        = new Token(new TextAttribute(operatorColor,        null, operatorStyle));
-			final Token textToken       = new Token(new TextAttribute(textColor,            null, textStyle));
-			final Token stringDelimeter = new Token(new TextAttribute(new Color(PlatformUI.getWorkbench().getDisplay(), new RGB(255, 0, 0))));
+			final IToken keyword         = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_KEYWORD_COLOR);
+			final IToken value           = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_VALUE_COLOR);
+			final IToken primitive       = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_PRIMITIVE_COLOR);
+			final IToken builtinFunction = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_BUILTIN_FUNCTION_COLOR);
+			final IToken operator        = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_OPERATOR_COLOR);
+			final IToken textToken       = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_TEXT_COLOR);
+			final IToken stringDelimeter = getToken(GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR); 
 			setDefaultReturnToken(textToken);
-
+			
 			// add tokens for each reserved word
 			keywordRule.addWord("break",       keyword);
 			keywordRule.addWord("default",     keyword);
@@ -220,7 +205,7 @@ public class GoScanner extends RuleBasedScanner {
 					return Character.isWhitespace(c);
 				}
 			}) });
-		}
+		
 	}
-
+	
 }

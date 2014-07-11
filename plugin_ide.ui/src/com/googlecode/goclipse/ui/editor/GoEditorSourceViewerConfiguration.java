@@ -3,13 +3,13 @@ package com.googlecode.goclipse.ui.editor;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
-import melnorme.util.swt.jface.text.ColorManager;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
+import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
@@ -27,9 +27,7 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.DefaultAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import com.googlecode.goclipse.Activator;
@@ -44,25 +42,23 @@ import com.googlecode.goclipse.editors.TextHover;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 import com.googlecode.goclipse.ui.text.GoPartitions;
-import com.googlecode.goclipse.ui.util.SingleTokenScanner;
 import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
 /**
  * @author steel
  */
-public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfiguration {
+public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
+	protected final GoEditor	        editor;
 	private DoubleClickStrategy	doubleClickStrategy;
-	private GoScanner	        keywordScanner;
-	private GoEditor	        editor;
 	private MonoReconciler	    reconciler;
 
-	public GoEditorSourceViewerConfiguration(GoEditor editor, IPreferenceStore preferenceStore) {
-		super(preferenceStore);
-
+	public GoEditorSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager, 
+			GoEditor editor) {
+		super(preferenceStore, colorManager);
 		this.editor = editor;
 	}
-
+	
 	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return GoPartitions.PARTITION_TYPES;
@@ -73,13 +69,6 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 		if (doubleClickStrategy == null)
 			doubleClickStrategy = new DoubleClickStrategy();
 		return doubleClickStrategy;
-	}
-
-	protected GoScanner getKeywordScanner() {
-		if (keywordScanner == null) {
-			keywordScanner = new GoScanner();
-		}
-		return keywordScanner;
 	}
 	
 	@Override
@@ -92,7 +81,7 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 		PresentationReconciler reconciler= new PresentationReconciler();
 		reconciler.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 		
-		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getKeywordScanner());
+		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(new GoScanner(getTokenStoreFactory()));
 		reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
@@ -101,27 +90,22 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 		if (useHighlighting) {
 			
 			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.COMMENT, 
-				GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR, 
-				GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_STYLE);
+				GoUIPreferenceConstants.FIELD_SYNTAX_COMMENT_COLOR);
 
 			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.STRING, 
-				GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR, 
-				GoUIPreferenceConstants.FIELD_SYNTAX_STRING_STYLE);
+				GoUIPreferenceConstants.FIELD_SYNTAX_STRING_COLOR);
 			
 			setupSingleTokenDamagerRepairer(reconciler, PartitionScanner.MULTILINE_STRING, 
-				GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR, 
-				GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_STYLE);
+				GoUIPreferenceConstants.FIELD_SYNTAX_MULTILINE_STRING_COLOR);
+			
 			
 		}
 		return reconciler;
 	}
 	
 	protected void setupSingleTokenDamagerRepairer(PresentationReconciler reconciler, String contentType, 
-			String colorKey, String styleKey) {
-		Color commentColor = ColorManager.INSTANCE.getColor(
-			PreferenceConverter.getColor(fPreferenceStore, colorKey));
-		int commentStyle = fPreferenceStore.getInt(styleKey);
-		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(new SingleTokenScanner(commentColor, commentStyle));
+			String colorKey) {
+		DefaultDamagerRepairer dr = new DefaultDamagerRepairer(createSingleTokenScanner(colorKey));
 		reconciler.setDamager(dr, contentType);
 		reconciler.setRepairer(dr, contentType);
 	}
@@ -134,7 +118,7 @@ public class GoEditorSourceViewerConfiguration extends TextSourceViewerConfigura
 
 		ca.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
 		ca.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-		ca.setContextInformationPopupBackground(ColorManager.INSTANCE.getColor(new RGB(150, 150, 0)));
+		ca.setContextInformationPopupBackground(fColorManager.getColor(new RGB(150, 150, 0)));
 		ca.setInformationControlCreator(getInformationControlCreator(sv));
 
 		IContentAssistProcessor cap = getCompletionProcessor();
