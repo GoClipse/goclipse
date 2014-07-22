@@ -19,8 +19,8 @@
    </license>
 
    <requires>
-      <import feature="org.eclipse.cdt.gnu.dsf" version="8.3.0" match="compatible"/>
-      <import feature="org.eclipse.cdt.platform" version="8.3.0" match="compatible"/>
+      <import feature="org.eclipse.cdt.gnu.dsf" version="8.4.0" match="compatible"/>
+      <import feature="org.eclipse.cdt.platform" version="8.4.0" match="compatible"/>
       <import feature="org.eclipse.platform" version="4.3.0" match="compatible"/>
    </requires>
 
