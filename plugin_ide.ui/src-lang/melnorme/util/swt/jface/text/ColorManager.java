@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Display;
 public class ColorManager implements ISharedTextColors {
 	
 	private static final ColorManager defaultInstance = new ColorManager();
-	public static final ColorManager INSTANCE = defaultInstance; // Alias for goclipse code
 	
 	public static ColorManager getDefault() {
 		return defaultInstance;

@@ -33,13 +33,13 @@ import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvide
 import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.preference.OverlayPreferenceStore;
 import melnorme.util.swt.jface.preference.OverlayPreferenceStore.OverlayKey;
-import melnorme.util.swt.jface.text.ColorManager;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.SimpleTreeElement;
 import melnorme.utilbox.tree.TreeVisitor;
 
+import org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -63,7 +63,7 @@ public abstract class EditorSourceColoringConfigurationBlock extends AbstractCom
 	implements IPreferencesBlock, IDisposable {
 		
 	protected final SourceColoringListRoot coloringOptionsList;
-	protected final ColorManager colorManager = new ColorManager();
+	protected final CColorManager colorManager = new CColorManager();
 	
 	protected TreeViewerExt treeViewer;
 	
