@@ -1,4 +1,4 @@
-package melnorme.lang.ide.launching;
+package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.LangCore;
 
