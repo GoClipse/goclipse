@@ -53,7 +53,6 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		super(assertNotNull(preferenceStore));
 		this.colorManager = colorManager;
 		this.preferenceStore = preferenceStore;
-
 		
 		scannersByContentType = new HashMap<>();
 		createScanners();
