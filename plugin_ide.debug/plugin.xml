@@ -102,6 +102,13 @@
                menubarPath="debug"
                id="MMRNMHRM_ID.debug.ui.actions.EnableDisableBreakpointRulerActionDelegate">
          </action>
+          <action
+               label="%AddDynamicPrintfInteractive.label"
+               helpContextId="add_breakpoint_interactive_action_context"
+               class="org.eclipse.cdt.debug.internal.ui.actions.breakpoints.CAddDynamicPrintfInteractiveRulerActionDelegate"
+               menubarPath="debug"
+               id="org.eclipse.cdt.debug.ui.actions.RulerCreateDynamicPrintfInteractiveAction">
+         </action>
          <action
                label="%AddBreakpoint.label"
                class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
