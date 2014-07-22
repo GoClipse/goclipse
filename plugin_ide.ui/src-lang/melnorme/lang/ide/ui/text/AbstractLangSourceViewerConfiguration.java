@@ -83,7 +83,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		return new ITokenStoreFactory() {
 			@Override
 			public ITokenStore createTokenStore(String[] propertyColorNames) {
-				return new TokenStore(getColorManager2(), fPreferenceStore, propertyColorNames);
+				return new TokenStore(getColorManager2(), getPreferenceStore(), propertyColorNames);
 			}
 		};
 	}
