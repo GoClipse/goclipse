@@ -1,5 +1,7 @@
 package melnorme.lang.ide.debug.ui;
 
+import org.eclipse.cdt.debug.internal.ui.actions.breakpoints.ToggleDynamicPrintfAdapter;
+
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.debug.ui.GoToggleBreakpointAdapter;
 
@@ -9,6 +11,10 @@ public class DebugUI_Actual {
 	
 	public static GoToggleBreakpointAdapter createToggleBreakPointAdapter() {
 		return new GoToggleBreakpointAdapter();
+	}
+	
+	public static ToggleDynamicPrintfAdapter createDynamicPrintfBreakpoint() {
+		return new ToggleDynamicPrintfAdapter();
 	}
 	
 }

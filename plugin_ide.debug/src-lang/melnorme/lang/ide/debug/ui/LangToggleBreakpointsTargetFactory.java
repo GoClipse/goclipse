@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
+
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTargetFactory;
 import org.eclipse.jface.viewers.ISelection;
@@ -23,12 +25,17 @@ import org.eclipse.ui.IWorkbenchPart;
 
 public class LangToggleBreakpointsTargetFactory implements IToggleBreakpointsTargetFactory {
 	
+	public static final String DYNAMIC_PRINTF_FACTORY_ID = LangUIPlugin.PLUGIN_ID + "DynamicPrintfBreakpointFactory";
+	
 	public LangToggleBreakpointsTargetFactory() {
 	}
 	
 	@Override
 	public Set<String> getToggleTargets(IWorkbenchPart part, ISelection selection) {
-		return new HashSet<String>(Arrays.asList(array(DebugUI_Actual.LANG_BREAKPOINT_FACTORY_ID)));
+		return new HashSet<>(Arrays.asList(array(
+			DebugUI_Actual.LANG_BREAKPOINT_FACTORY_ID,
+			DYNAMIC_PRINTF_FACTORY_ID
+		)));
 	}
 	
 	@Override
@@ -41,17 +48,32 @@ public class LangToggleBreakpointsTargetFactory implements IToggleBreakpointsTar
 		if(targetID.equals(DebugUI_Actual.LANG_BREAKPOINT_FACTORY_ID)) {
 			return DebugUI_Actual.createToggleBreakPointAdapter();
 		}
+		if(targetID.equals(DYNAMIC_PRINTF_FACTORY_ID)) {
+			return DebugUI_Actual.createDynamicPrintfBreakpoint();
+		}
 		return null;
 	}
 	
 	@Override
 	public String getToggleTargetName(String targetID) {
-		return DebugMessages.LANG_BREAKPOINT_TARGET_NAME;
+		if(targetID.equals(DebugUI_Actual.LANG_BREAKPOINT_FACTORY_ID)) {
+			return DebugMessages.LANG_BREAKPOINT_TARGET_NAME;
+		}
+		if(targetID.equals(DYNAMIC_PRINTF_FACTORY_ID)) {
+			return DebugMessages.LANG_DYNAMIC_PRINTF_BREAKPOINT_TARGET_NAME;
+		}
+		return "";
 	}
 	
 	@Override
 	public String getToggleTargetDescription(String targetID) {
-		return DebugMessages.LANG_BREAKPOINT_TARGET_DESCRIPTION;
+		if(targetID.equals(DebugUI_Actual.LANG_BREAKPOINT_FACTORY_ID)) {
+			return DebugMessages.LANG_BREAKPOINT_TARGET_DESCRIPTION;
+		}
+		if(targetID.equals(DYNAMIC_PRINTF_FACTORY_ID)) {
+			return DebugMessages.LANG_DYNAMIC_PRINTF_BREAKPOINT_TARGET_DESCRIPTION;
+		}
+		return "";
 	}
 	
 }

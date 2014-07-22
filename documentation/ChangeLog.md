@@ -3,6 +3,12 @@
 ### Goclipse 0.8.x
  * Fix "go fmt" clearing entire file source if Go source was invalid (#60)
  * Improved syntax highlighting preferences. Can now customize bold, italic, underline, etc. for each syntax element.
+ * More lenient with CDT versions. GoClipse can now be installed with any CDT 8.x.x.
+  * However, there is a small change using GoClipse with a version other than the recommned/tested one will break things. Each GoClipse release will list a recommented/tested CDT version.
+ * Updated/tested GoClipse to CDT 4.4. 
+  * Added Dynamic printf ruler action to source editor.
+  * For more info on these new CDT 4.4 debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug 
+ 
 
 ### Goclipse 0.8.0
  * Added debugging support using CDT's integration with GDB.
