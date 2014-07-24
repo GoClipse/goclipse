@@ -1,4 +1,9 @@
 language: java
 
-install: ""
-script: mvn clean package
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+
+install: ""		# Prevent Travis's default of: mvn install -DskipTests=true
+
+script: mvn clean integration-test
