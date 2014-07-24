@@ -17,7 +17,8 @@ Using Maven (and Tycho), it is possible to automatically build Goclipse, create 
  * Run `mvn package` to build the IDE feature into a p2 repository (which is a local update site).  It will be placed at `bin-maven/features.repository/repository`
  * Run `mvn integration-test` to build the IDE as above and also run the test suites. 
  * Also, running `mvn package -P build-ide-product` will build a pre-packaged Eclipse installation with Goclipse already installed. This is not released to the public, but can potentially be of some use internally.
- * There is a CloudBees account with continous integrations jobs for Goclipse:
+ * There is a CloudBees account with Jenkins continous integrations for Goclipse:
+
 [![PoweredByCloudBees](http://www.cloudbees.com/sites/default/files/Button-Powered-by-CB.png)](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/)
 
 #### Deploying a new release:
