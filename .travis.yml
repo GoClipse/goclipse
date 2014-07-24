@@ -1,3 +1,4 @@
 language: java
 
+install: ""
 script: mvn clean package
