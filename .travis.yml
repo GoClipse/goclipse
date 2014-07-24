@@ -4,6 +4,7 @@ before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 
-install: ""		# Prevent Travis's default of: mvn install -DskipTests=true
+# Prevent Travis's default of: mvn install -DskipTests=true
+install: ""
 
 script: mvn clean integration-test
