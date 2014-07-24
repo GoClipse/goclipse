@@ -1,8 +1,8 @@
 See the [About](documentation/About.md) page for user information.
 
-[![Build Status](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/badge/icon)](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/)
-
 ## Developers Guide
+
+[![Build Status](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/badge/icon)](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/)
 
 #### Setting up the development environment:
  * Clone the Git repository.
@@ -17,6 +17,8 @@ Using Maven (and Tycho), it is possible to automatically build Goclipse, create 
  * Run `mvn package` to build the IDE feature into a p2 repository (which is a local update site).  It will be placed at `bin-maven/features.repository/repository`
  * Run `mvn integration-test` to build the IDE as above and also run the test suites. 
  * Also, running `mvn package -P build-ide-product` will build a pre-packaged Eclipse installation with Goclipse already installed. This is not released to the public, but can potentially be of some use internally.
+ * There is a CloudBees account with continous integrations jobs for Goclipse:
+[![PoweredByCloudBees](http://www.cloudbees.com/sites/default/files/Button-Powered-by-CB.png)](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/)
 
 #### Deploying a new release:
  * TODO goclipse version info
@@ -24,8 +26,6 @@ Using Maven (and Tycho), it is possible to automatically build Goclipse, create 
 for (windows, darwin, linux) and (386, amd64).
  * Run `mvn integration-test` as described above.
  * TODO update site upload
- * There is a CloudBees account with continous integrations jobs for Goclipse:
-  * https://bruno-medeiros.ci.cloudbees.com/  
 
 
 ## Project design info and notes
