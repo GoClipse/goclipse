@@ -7,9 +7,12 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.feature.group" version="4.3.0.v20130605-2000"/>
-<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.3.0.201402142303"/>
-<unit id="org.eclipse.cdt.platform.feature.group" version="8.3.0.201402142303"/>
 <repository location="http://download.eclipse.org/releases/kepler/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.cdt.platform.feature.group" version="8.4.0.201406111759"/>
+<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.4.0.201406111759"/>
+<repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 </locations>
 </target>
