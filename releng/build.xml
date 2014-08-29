@@ -1,104 +1,126 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-====================================================================== 
-Ant script for automated release and deploy of the update site. Sample usage:
-First, run the Maven build script:
-mvn clean integration-test
-// upload a new release to the update site:
-ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https://github.com/GoClipse/releases/raw/master/
-====================================================================== 
 -->
-<project name="project" >
-
-	<property name="localUpdateSiteDir" location="bin-maven/updateSite/" />
-	<property name="repoSrc" location="bin-maven/features.repository/repository" />
-	<property name="repoSrc.subdir" location="local-repo" />
-	<property name="commitMessage" location="new Release" />
-	<property name="updateSiteSkeleton.Dir" location="releng/UpdateSite-skeleton" />
-
+<project name="releng_script" default="help">
+	
+    <target name="help">
+        <echo><![CDATA[
+====================================================================== 
+Ant script for automated creation and publishing of the "Project Site".
+The Project Site is whatever we publish to the public, usually a website and releases (like a p2 repo).
+Sample usage:
+First, run the Maven build script from the project root directory:
+  mvn clean integration-test
+To create the Project Site:
+  ant -f releng/ CreateProjectSite
+To create and publish the Project Site:  
+  ant -f releng/ PublishProjectSite -DprojectSiteGitURL=<aGitRepositoryURL> [-DresetGitHistory=true]
+[resetGitHistory] is an optional flag to publish the newly created Project Site in a new branch,
+overwriting the previous one. (This removes history from the git repo it is pushed to)            
+====================================================================== 
+]]></echo>
+    </target>
+    
+	<!-- __________________________________ -->
+    
+	<macrodef name="ensureDirExists">
+		<attribute name="dir"/>
+		<sequential>
+			<fail message="@{dir} doesn't exist."> 
+				<condition>
+					<not><available file="@{dir}" type="dir"/></not>
+				</condition>
+			</fail>
+		</sequential>
+	</macrodef>
+	
+	<!-- __________________________________ -->
+	
+	<property name="_temporaryDir" location="../bin-maven/" /> 
+	<ensureDirExists dir="${_temporaryDir}"/>
+	
+	<property name="updateSiteSkeleton_Dir" location="ProjectSite-skeleton" /> 
+	<ensureDirExists dir="${updateSiteSkeleton_Dir}"/>
+	<property name="_projectSiteDir" location="${_temporaryDir}/projectSite/" />
+	
+	<property name="p2repo_sourceDir" location="${_temporaryDir}/features.repository/repository" /> 
+	<ensureDirExists dir="${p2repo_sourceDir}"/>
+    
+    <loadproperties srcFile="releng-build.properties"/>
+    
+	<property name="p2repo_ProjectSiteDestDir" value="local-repo" />
+	<property name="commitMessage" value="New release." />
 	<property name="gitLocation" value="git" />
 	
+	
 	<target name="clean">
-		<delete dir="${localUpdateSiteDir}" failonerror="true"/>
-	</target>
-	
-	<target name="CopyBuiltRepoToLocalUpdateSite">
-		<property name="repoDest" location="${localUpdateSiteDir}/${repoSrc.subdir}" />
-		<copy verbose="true" todir="${repoDest}">
-			<fileset dir="${repoSrc}"/>
-		</copy>
-	</target>
-	
-	<target name="CreateLocalUpdateSite" depends="">
-		<copy todir="${localUpdateSiteDir}" overwrite="true" verbose="true">
-			<fileset dir="${updateSiteSkeleton.Dir}"/>
-		</copy>
-		
-		<antcall target="CopyBuiltRepoToLocalUpdateSite"/>
-	</target>
-	
-	<!-- ================================= -->
-	
-	<target name="CreateUpdateSiteFromScratch" depends="clean">
-		<antcall target="CreateLocalUpdateSite"/>
-	</target>
-	
-	<target name="UploadUpdateSite" depends="CreateUpdateSiteFromScratch">
-		<fail unless="UpdateSiteUploadURL"/>
-	
-		<exec dir="." executable="mvn" failonerror="true">
-			<arg line="-f upload-helper.pom.xml wagon:upload -Dwagon.url=${UpdateSiteUploadURL}"/>
-		</exec>
-	</target>
-	
-	<!-- ================================= -->
-	
-	<target name="CreateUpdateSiteFromGit" depends="clean">
-		<fail unless="updateSiteGitURL"/>
-		<exec dir="." executable="${gitLocation}" failonerror="true">
-			<arg line="clone ${updateSiteGitURL} ${localUpdateSiteDir}"/>
-		</exec>
-		
-		<!-- Delete previous plugins. -->
-		<delete verbose="true">
-			<fileset dir="${localUpdateSiteDir}" erroronmissingdir="true" includes="**/*.jar"/>
+	    <mkdir dir="${_projectSiteDir}"/> <!-- do this so that delete doesn't fail if dir doesn't exist -->
+		<delete includeEmptyDirs="true" failonerror="true">
+			<fileset dir="${_projectSiteDir}" includes="**/*" defaultexcludes="no"/>
 		</delete>
-		
-		<antcall target="CreateLocalUpdateSite"/>
-		<antcall target="_commitGitChanges"/>
-	</target>
-
-	<target name="_commitGitChanges">
-		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
-			<arg line="add -A"/>
-		</exec>
-		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
-			<arg line="commit -m"/>
-			<arg value="${commitMessage}"/>
-		</exec>
-		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
-			<arg line="status"/>
-		</exec>
 	</target>
 	
-	<target name="UploadUpdateSite.ToGit" depends="CreateUpdateSiteFromGit">
-		
-		<fail unless="updateSiteGitURL"/>
-		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
-			<arg line="push ${updateSiteGitURL} "/>
-		</exec>
+	<target name="prepareProjectSite.makeDir">
 	</target>
 	
-	<target name="UploadUpdateSite.ToGit_Reset" depends="CreateUpdateSiteFromScratch">
-		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
-			<arg line="init"/>
-		</exec>
-		<antcall target="_commitGitChanges"/>
+	<target name="prepareProjectSite" depends="prepareProjectSite.initGit">
+	</target>
+	
+	<target name="copyProjectSiteSkeleton">
+		<copy todir="${_projectSiteDir}" overwrite="false" verbose="true">
+			<fileset dir="${updateSiteSkeleton_Dir}"/>
+		</copy>
+	</target>
+	
+	<target name="copyBuiltRepoToProjectSite">
+		<property name="repoDest" location="${_projectSiteDir}/${p2repo_ProjectSiteDestDir}" />
+		<copy verbose="true" todir="${repoDest}">
+			<fileset dir="${p2repo_sourceDir}"/>
+		</copy>
+	</target>
+	
+	<target name="CreateProjectSite" 
+		depends="clean, prepareProjectSite, copyProjectSiteSkeleton, copyBuiltRepoToProjectSite">
+	</target>
+	
+	<!-- ================================= -->
+	
+	<macrodef name="runGit">
+		<attribute name="dir"/>
+		<attribute name="argLine"/>
+	    <element name="runGit-elements" implicit="yes" optional="true"/>
+		<sequential>
+			<exec dir="@{dir}" executable="${gitLocation}" failonerror="true">
+				<arg line="@{argLine}"/>
+			    <runGit-elements/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	
+	<target name="prepareProjectSite.initGit" if="projectSiteGitURL">
+		<condition property="prepareProjectSite.initGit._gitArg" 
+			value="init" 
+			else="clone -n ${projectSiteGitURL} ${_projectSiteDir}">
+			<istrue value="${resetGitHistory}"/>
+		</condition>
+		<runGit dir="${_projectSiteDir}" argLine="${prepareProjectSite.initGit._gitArg}" />
+	</target>
+	
+	<target name="_commitProjectSiteGitChanges">
+		<runGit dir="${_projectSiteDir}" argLine="add -A" />
+		<runGit dir="${_projectSiteDir}" argLine="commit --allow-empty -m"><arg value="${commitMessage}"/></runGit>
+		<runGit dir="${_projectSiteDir}" argLine="status" />
+	</target>
+	
+	<target name="PublishProjectSite" depends="CreateProjectSite, _commitProjectSiteGitChanges">
+		<fail unless="projectSiteGitURL"/>
 		
-		<fail unless="updateSiteGitURL"/>
-		<exec dir="${localUpdateSiteDir}" executable="${gitLocation}" failonerror="true">
-			<arg line="push ${updateSiteGitURL} --force"/>
-		</exec>
+		<condition property="PublishProjectSite._gitArg" value="--force" else="">
+		    <istrue value="${resetGitHistory}"/>
+		</condition>
+		
+		<runGit dir="${_projectSiteDir}" argLine="push ${projectSiteGitURL} ${PublishProjectSite._gitArg}" />
 	</target>
 	
 </project>
