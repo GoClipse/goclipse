@@ -21,13 +21,17 @@ Using Maven (and Tycho), it is possible to automatically build Goclipse, create 
 
 [![PoweredByCloudBees](http://www.cloudbees.com/sites/default/files/Button-Powered-by-CB.png)](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/)
 
-#### Deploying a new release:
- * TODO goclipse version info
- * Consider running the com.googlecode.goclipse.gocode/create_gocode.py script to rebuild gocode
-for (windows, darwin, linux) and (386, amd64).
- * Run `mvn integration-test` as described above.
- * TODO update site upload
+#### Creating and deploying a new release:
+A release is a web site with an Eclipse p2 update site. The website may contain no web pages at all, rather it can be just the p2 site. To create and deploy a new release:
 
+ 1. Ensure the version numbers of all plugins/features/etc. are properly updated, if they haven't been already.
+ 1. Run `mvn clean integration-test` to perform the Tycho build (see section above). Ensure all tests pass.
+ 1. Create and push a new release tag for the current release commit. 
+ 1. Go to the Github releases page and edit the newly present release. Add the corresponding ([ChangeLog.md](documentation/ChangeLog.md)) entries to the release notes. 
+ 1. Locally, run `ant -f releng/ CreateProjectSite`. This last step will prepare the project web site under `bin-maven/ProjectSite`.
+ 1. To actually publish the project site, run `ant -f releng/ PublishProjectSite -DprojectSiteGitURL=https://github.com/GoClipse/goclipse.github.io.git`. What happens here is that the whole project site will be pushed into a Git repository, to then be served in some way (for example Github Pages).
+   * For more info on the Release Engineering script, run `ant -f releng/`, this will print the help.
+ 1. A branch or tag named `latest` should also be created in Github, pointing to the latest release commit. The previous `latest` tag can be deleted/overwritten. The documentation pages use this tag/branch in their links.
 
 ## Project design info and notes
 
