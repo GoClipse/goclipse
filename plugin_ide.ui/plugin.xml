@@ -458,9 +458,9 @@
          </enabledWhen>
       </page>
       <page
-            class="com.googlecode.goclipse.ui.properties.ContinuousTestingPropertyPage"
+            class="com.googlecode.goclipse.ui.properties.GoContinuousTestingPropertyPage"
             id="com.googlecode.goclipse.ui.properties.ContinuousTestingPropertyPage"
-            name="Go Continous Testing Options">
+            name="Go Continuous Testing">
          <enabledWhen>
             <reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
          </enabledWhen>

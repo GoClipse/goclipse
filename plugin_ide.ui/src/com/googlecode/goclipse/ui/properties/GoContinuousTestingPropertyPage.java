@@ -28,7 +28,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.ui.GoUIMessages;
 
-public class ContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
+public class GoContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
 	
 	protected ContinuousTestingOptionsBlock ctoBlock; // Can be null
 	
