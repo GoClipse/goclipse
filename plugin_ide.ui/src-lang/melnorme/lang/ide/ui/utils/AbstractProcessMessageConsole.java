@@ -23,7 +23,7 @@ public abstract class AbstractProcessMessageConsole extends MessageConsole {
 	public static class ProcessMessageConsole extends AbstractProcessMessageConsole {
 		protected ProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {
 			super(name, imageDescriptor);
-			post_initOutputStreamColors();
+			postToUI_initOutputStreamColors();
 		}
 	}
 	
@@ -38,7 +38,7 @@ public abstract class AbstractProcessMessageConsole extends MessageConsole {
 		stdErr.setActivateOnWrite(true);
 	}
 	
-	protected void post_initOutputStreamColors() {
+	protected void postToUI_initOutputStreamColors() {
 		// BM: it's not clear to me if a Color can be created outside UI thread, so do asyncExec
 		// I would think one cant, but some Platform code (ProcessConsole) does freely create Color instances
 		// on the UI thread, so maybe the asyncExec is not necessary.

@@ -32,6 +32,7 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IElementLabelProv
 
 @SuppressWarnings("restriction")
 public class GdbVariableVMNode_Override extends GdbVariableVMNode {
+	
 	GdbVariableVMNode_Override(AbstractDMVMProvider provider, DsfSession session,
 			SyncVariableDataAccess syncVariableDataAccess) {
 		super(provider, session, syncVariableDataAccess);

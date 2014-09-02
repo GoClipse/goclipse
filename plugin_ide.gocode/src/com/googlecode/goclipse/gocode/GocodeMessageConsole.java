@@ -30,7 +30,7 @@ public class GocodeMessageConsole extends AbstractProcessMessageConsole {
 		clientResponseErr = newOutputStream();
 		stdErr.setActivateOnWrite(false);
 		
-		post_initOutputStreamColors();
+		postToUI_initOutputStreamColors();
 	}
 	
 	@Override

@@ -10,67 +10,29 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
-import static melnorme.utilbox.core.CoreUtil.array;
-
 import java.io.IOException;
 
-import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.lang.ide.ui.utils.AbstractProcessMessageConsole;
+import melnorme.lang.ide.ui.build.LangOperationConsole;
+import melnorme.lang.ide.ui.build.LangOperationConsoleListener;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import com.googlecode.goclipse.builder.IGoBuildListener;
 
-public class GoBuilderConsoleListener implements IGoBuildListener {
+public class GoBuilderConsoleListener extends LangOperationConsoleListener implements IGoBuildListener {
 	
-	public static GoBuildConsole recreateMessageConsole(String name, boolean recreateConsole) {
-		GoBuildConsole console = ConsoleUtils.findConsole(name, GoBuildConsole.class);
-		if(console != null) {
-			if(!recreateConsole) {
-				return console;
-			}
-			
-			ConsolePlugin.getDefault().getConsoleManager().removeConsoles(array(console));
-		}
-		// create a new one
-		console = new GoBuildConsole(name);
-		ConsolePlugin.getDefault().getConsoleManager().addConsoles(array(console));
-		return console;
+	@Override
+	protected String getOperationConsoleName(IProject project) {
+		return "Go build " + getProjectNameSuffix(project);
 	}
 	
-	protected GoBuildConsole getBuildConsole(IProject project, boolean clearConsole) {
-		String consoleQualifier = getConsoleQualifier(project); 
-		// We recreate a message console to have a clear console. 
-		// console.clearConsole() is not used because of poor concurrency behavior: if more than one cleanConsole
-		// is requested per a console lifetime, these aditional clears may appear out of order with regards
-		// to input written to the console output streams.
-		// since org.eclipse.ui.console_3.5.200.v20130514-0954
-		boolean recreateConsole = clearConsole;
-		return recreateMessageConsole("Go build " + consoleQualifier, recreateConsole);
-	}
-	
-	protected String getConsoleQualifier(IProject project) {
-		if(project == null) {
-			return "(Global)";
-		}
-		return "["+ project.getName() +"]";
-	}
-	
-	public static class GoBuildConsole extends AbstractProcessMessageConsole {
-		
-		protected final IOConsoleOutputStream metaOut;
+	public static class GoBuildConsole extends LangOperationConsole {
 		
 		public GoBuildConsole(String name) {
 			super(name, GoPluginImages.GO_CONSOLE_ICON.getDescriptor());
-			
-			metaOut = newOutputStream();
-			post_initOutputStreamColors();
 		}
 		
 		@Override
@@ -83,31 +45,21 @@ public class GoBuilderConsoleListener implements IGoBuildListener {
 	
 	@Override
 	public void handleBuildStarted(IProject project) {
-		GoBuildConsole console = getBuildConsole(project, true);
-		
-		try {
-			String projName = project.getName();
-			console.metaOut.write("************  Running Go build for project: " + projName + "  ************\n");
-		} catch (IOException e) {
-			return;
-		}
+		String projName = project.getName();
+		getOperationConsole(project, true).writeOperationInfo(
+			"************  Running Go build for project: " + projName + "  ************\n");
 	}
 	
 	@Override
 	public void handleBuildTerminated(IProject project) {
-		GoBuildConsole console = getBuildConsole(project, false);
-		
-		try {
-			console.metaOut.write("************  Build terminated.  ************\n");
-		} catch (IOException e) {
-			return;
-		}
+		getOperationConsole(project, false).writeOperationInfo(
+			"************  Build terminated.  ************\n");
 	}
 	
 	@Override
 	public void handleProcessStarted(ProcessBuilder pb, IProject project, 
 			ExternalProcessNotifyingHelper processHelper) {
-		GoBuildConsole console = getBuildConsole(project, false);
+		GoBuildConsole console = getOperationConsole(project, false);
 		
 		try {
 			writeProcessStartPrefix(pb, console);
@@ -118,14 +70,13 @@ public class GoBuilderConsoleListener implements IGoBuildListener {
 		}
 	}
 	
-	
 	protected void writeProcessStartPrefix(ProcessBuilder pb, GoBuildConsole console) throws IOException {
 		console.metaOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
 	}
 	
 	@Override
 	public void handleProcessStartFailure(ProcessBuilder pb, IProject project, IOException processStartException) {
-		GoBuildConsole console = getBuildConsole(project, false);
+		GoBuildConsole console = getOperationConsole(project, false);
 		
 		try {
 			writeProcessStartPrefix(pb, console);
@@ -134,46 +85,6 @@ public class GoBuilderConsoleListener implements IGoBuildListener {
 		} catch (IOException consoleIOE) {
 			return;
 		}
-	}
-	
-	public static class ProcessOutputToConsoleListener implements IProcessOutputListener {
-		
-		private final GoBuildConsole console;
-		
-		public ProcessOutputToConsoleListener(GoBuildConsole console) {
-			this.console = console;
-		}
-		
-		@Override
-		public void notifyStdOutListeners(byte[] buffer, int offset, int readCount) {
-			try {
-				console.stdOut.write(buffer, offset, readCount);
-			} catch (IOException e) {
-				// Ignore, it could simply mean the console page has been closed
-			}
-		}
-		
-		@Override
-		public void notifyStdErrListeners(byte[] buffer, int offset, int readCount) {
-			try {
-				console.stdErr.write(buffer, offset, readCount);
-			} catch (IOException e) {
-				// Ignore, it could simply mean the console page has been closed
-			}		
-		}
-		
-		@Override
-		public void notifyProcessTerminatedAndRead(int exitCode) {
-			try {
-				console.stdOut.flush();
-				console.stdErr.flush();
-				console.metaOut.write("--------  Terminated, exit code: " + exitCode +  "  --------\n");
-				console.metaOut.flush();
-			} catch (IOException e) {
-				// Ignore
-			}
-		}
-		
 	}
 	
 }
