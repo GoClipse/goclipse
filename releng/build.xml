@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+-->
+<project name="releng_script" default="help">
+	
+    <target name="help">
+        <echo><![CDATA[
+====================================================================== 
+Ant script for automated creation and publishing of the "Project Site".
+The Project Site is whatever we publish to the public, usually a website and releases (like a p2 repo).
+Sample usage:
+First, run the Maven build script from the project root directory:
+  mvn clean integration-test
+To create the Project Site:
+  ant -f releng/ CreateProjectSite
+To create and publish the Project Site:  
+  ant -f releng/ PublishProjectSite -DprojectSiteGitURL=<aGitRepositoryURL> [-DresetGitHistory=true]
+[resetGitHistory] is an optional flag to publish the newly created Project Site in a new branch,
+overwriting the previous one. (This removes history from the git repo it is pushed to)            
+====================================================================== 
+]]></echo>
+    </target>
+    
+	<!-- __________________________________ -->
+    
+	<macrodef name="ensureDirExists">
+		<attribute name="dir"/>
+		<sequential>
+			<fail message="@{dir} doesn't exist."> 
+				<condition>
+					<not><available file="@{dir}" type="dir"/></not>
+				</condition>
+			</fail>
+		</sequential>
+	</macrodef>
+	
+	<!-- __________________________________ -->
+	
+	<property name="_temporaryDir" location="../bin-maven/" /> 
+	<ensureDirExists dir="${_temporaryDir}"/>
+	
+	<property name="updateSiteSkeleton_Dir" location="ProjectSite-skeleton" /> 
+	<ensureDirExists dir="${updateSiteSkeleton_Dir}"/>
+	<property name="_projectSiteDir" location="${_temporaryDir}/projectSite/" />
+	
+	<property name="p2repo_sourceDir" location="${_temporaryDir}/features.repository/repository" /> 
+	<ensureDirExists dir="${p2repo_sourceDir}"/>
+    
+    <loadproperties srcFile="releng-build.properties"/>
+    
+	<property name="p2repo_ProjectSiteDestDir" value="local-repo" />
+	<property name="commitMessage" value="New release." />
+	<property name="gitLocation" value="git" />
+	
+	
+	<target name="clean">
+	    <mkdir dir="${_projectSiteDir}"/> <!-- do this so that delete doesn't fail if dir doesn't exist -->
+		<delete includeEmptyDirs="true" failonerror="true">
+			<fileset dir="${_projectSiteDir}" includes="**/*" defaultexcludes="no"/>
+		</delete>
+	</target>
+	
+	<target name="prepareProjectSite.makeDir">
+	</target>
+	
+	<target name="prepareProjectSite" depends="prepareProjectSite.initGit">
+	</target>
+	
+	<target name="copyProjectSiteSkeleton">
+		<copy todir="${_projectSiteDir}" overwrite="false" verbose="true">
+			<fileset dir="${updateSiteSkeleton_Dir}"/>
+		</copy>
+	</target>
+	
+	<target name="copyBuiltRepoToProjectSite">
+		<property name="repoDest" location="${_projectSiteDir}/${p2repo_ProjectSiteDestDir}" />
+		<copy verbose="true" todir="${repoDest}">
+			<fileset dir="${p2repo_sourceDir}"/>
+		</copy>
+	</target>
+	
+	<target name="CreateProjectSite" 
+		depends="clean, prepareProjectSite, copyProjectSiteSkeleton, copyBuiltRepoToProjectSite">
+	</target>
+	
+	<!-- ================================= -->
+	
+	<macrodef name="runGit">
+		<attribute name="dir"/>
+		<attribute name="argLine"/>
+	    <element name="runGit-elements" implicit="yes" optional="true"/>
+		<sequential>
+			<exec dir="@{dir}" executable="${gitLocation}" failonerror="true">
+				<arg line="@{argLine}"/>
+			    <runGit-elements/>
+			</exec>
+		</sequential>
+	</macrodef>
+	
+	
+	<target name="prepareProjectSite.initGit" if="projectSiteGitURL">
+		<condition property="prepareProjectSite.initGit._gitArg" 
+			value="init" 
+			else="clone -n ${projectSiteGitURL} ${_projectSiteDir}">
+			<istrue value="${resetGitHistory}"/>
+		</condition>
+		<runGit dir="${_projectSiteDir}" argLine="${prepareProjectSite.initGit._gitArg}" />
+	</target>
+	
+	<target name="_commitProjectSiteGitChanges">
+		<runGit dir="${_projectSiteDir}" argLine="add -A" />
+		<runGit dir="${_projectSiteDir}" argLine="commit --allow-empty -m"><arg value="${commitMessage}"/></runGit>
+		<runGit dir="${_projectSiteDir}" argLine="status" />
+	</target>
+	
+	<target name="PublishProjectSite" depends="CreateProjectSite, _commitProjectSiteGitChanges">
+		<fail unless="projectSiteGitURL"/>
+		
+		<condition property="PublishProjectSite._gitArg" value="--force" else="">
+		    <istrue value="${resetGitHistory}"/>
+		</condition>
+		
+		<runGit dir="${_projectSiteDir}" argLine="push ${projectSiteGitURL} ${PublishProjectSite._gitArg}" />
+	</target>
+	
+</project>

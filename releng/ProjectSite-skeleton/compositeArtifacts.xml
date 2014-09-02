@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?compositeArtifactRepository version='1.0.0'?>
+<repository name='MMRNMHRM Software Site' type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1'>
+  <properties size='2'>
+    <property name='p2.timestamp' value='1409258763028'/>
+    <property name='p2.atomic.composite.loading' value='true'/>
+  </properties>
+  <children size='2'>
+    <child location='http://download.eclipse.org/releases/luna'/>
+    <child location='local-repo'/>
+  </children>
+</repository>

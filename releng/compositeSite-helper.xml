@@ -8,14 +8,14 @@
 ======================================================================
 Ant task to (re)create a composite site.
 This task must be run from within eclipse, example:
-eclipse -application org.eclipse.ant.core.antRunner -consolelog createCompositeRepo 
+eclipse -application org.eclipse.ant.core.antRunner -consolelog createCompositeRepo -file compositeSite-helper.xml
 ====================================================================== 
 -->
 	<target name="createCompositeRepo">
-		<p2.composite.repository>
-			<repository location="${repo.dir}" name="${repo.name}" compressed="false" failOnExists="true"/>
+		<p2.composite.repository failOnExists="true">
+			<repository location="${repo.dir}" name="${repo.name}" compressed="false" />
 			<add>
-				<repository location="http://download.eclipse.org/releases/kepler" />
+				<repository location="http://download.eclipse.org/releases/luna" />
 				<repository location="local-repo" />
 			</add>
 		</p2.composite.repository>
