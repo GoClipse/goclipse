@@ -13,7 +13,7 @@ eclipse -application org.eclipse.ant.core.antRunner -consolelog createCompositeR
 -->
 	<target name="createCompositeRepo">
 		<p2.composite.repository failOnExists="true">
-			<repository location="${repo.dir}" name="${repo.name}" compressed="false"/>
+			<repository location="${repo.dir}" name="${repo.name}" compressed="false" />
 			<add>
 				<repository location="http://download.eclipse.org/releases/luna" />
 				<repository location="local-repo" />

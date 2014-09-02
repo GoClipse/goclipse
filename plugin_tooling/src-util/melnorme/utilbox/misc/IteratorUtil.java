@@ -14,6 +14,7 @@ package melnorme.utilbox.misc;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 public class IteratorUtil { 
 	
@@ -62,6 +63,12 @@ public class IteratorUtil {
 			return Collections.EMPTY_LIST;
 		}
 		return iterable;
+	}
+	
+	/** @return the element the given listIterator currently refers to. (uses #previous and #next) */
+	public static <E> E getCurrentElement(ListIterator<E> listIterator) {
+		listIterator.previous();
+		return listIterator.next();
 	}
 	
 }

@@ -11,6 +11,8 @@
 package melnorme.utilbox.core;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -69,6 +71,22 @@ public class CoreUtil /* extends Assert */ {
 			return null;
 		}
 	}
+	
+	/** Asserts that given object is null or an instance of given klass. Returns casted object. */
+	@SuppressWarnings("unchecked")
+	public static <T> T assertCast(Object object, Class<T> klass) {
+		assertTrue(object == null || klass.isInstance(object));
+		return (T) object;
+	}
+	
+	/** Asserts that given object an instance of given klass. Returns casted object. */
+	@SuppressWarnings("unchecked")
+	public static <T> T assertInstance(Object object, Class<T> klass) {
+		assertTrue(klass.isInstance(object));
+		return (T) object;
+	}
+	
+	/* ----------------- Array and collection core utils ----------------- */
 	
 	/** Shortcut for creating an array of T. */
 	@SafeVarargs

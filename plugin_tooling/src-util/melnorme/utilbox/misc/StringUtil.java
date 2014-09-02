@@ -228,13 +228,26 @@ public final class StringUtil {
 		return indexOf == -1 ? "" : string.substring(indexOf);
 	}
 	
-	/** Trim given endMatch String from given string if there is a match. 
+	/** If given string starts with given startMatch, trim that from string. 
 	 * @return the result. */
-	public static String trimEnding(String string, String endMatch) {
+	public static String trimStart(String string, String startMatch) {
+		if(string.startsWith(startMatch)) {
+			return string.substring(startMatch.length());
+		}
+		return string;
+	}
+	
+	/** If given string ends with given endMatch, trim that from string. 
+	 * @return the result. */
+	public static String trimEnd(String string, String endMatch) {
 		if(string.endsWith(endMatch)) {
 			return string.substring(0, string.length() - endMatch.length());
 		}
 		return string;
+	}
+	@Deprecated
+	public static String trimEnding(String string, String endMatch) {
+		return trimEnd(string, endMatch);
 	}
 	
 	/** @return a substring of given string without leading spaces. */

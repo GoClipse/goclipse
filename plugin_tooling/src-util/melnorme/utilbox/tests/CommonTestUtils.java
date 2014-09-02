@@ -103,6 +103,10 @@ public class CommonTestUtils {
 		}
 	}
 	
+	public static <T> void assertStringContains(String string, CharSequence expectedContains) {
+		assertTrue(string != null && string.contains(expectedContains));
+	}
+	
 	/* ---- */
 	
 	public static <T> HashSet<T> removeAllCopy(Set<T> set, Collection<?> removeColl) {
