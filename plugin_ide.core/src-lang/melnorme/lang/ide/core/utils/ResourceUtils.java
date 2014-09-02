@@ -12,7 +12,11 @@ package melnorme.lang.ide.core.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+
+import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -47,6 +51,14 @@ public class ResourceUtils {
 		} else {
 			file.create(is, false, null);
 		}
+	}
+	
+	public static void writeStringToFile(IFile file, String contents) throws CoreException {
+		writeStringToFile(file, contents, StringUtil.UTF8);
+	}
+	
+	public static void writeStringToFile(IFile file, String contents, Charset charset) throws CoreException {
+		writeToFile(file, new ByteArrayInputStream(contents.getBytes(charset)));
 	}
 	
 	public static void createFolder(IFolder folder, boolean force, boolean local, IProgressMonitor monitor) 

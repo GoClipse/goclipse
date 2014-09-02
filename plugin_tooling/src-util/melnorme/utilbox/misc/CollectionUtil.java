@@ -82,6 +82,19 @@ public class CollectionUtil {
 		return list == null ? Collections.EMPTY_LIST : list;
 	}
 	
+	/* ----------------- retrieval ----------------- */
+	
+	/**
+	 * @return the first element of given coll, if collection is non-null and non-empty. Otherwise null. 
+	 */
+	public static <T> T getFirstElementOrNull(Collection<T> coll) {
+		if(coll == null || coll.isEmpty())
+			return null;
+		return coll.iterator().next();
+	}
+	
+	/* ----------------- modifications ----------------- */
+	
 	/** Creates a List copy of orig, with all elements except elements equal to excludedElem. */
 	public static <E> List<E> copyExcept(E[] orig, E excludedElem) {
 		List<E> rejectedElements = new ArrayList<E>(orig.length);
@@ -130,6 +143,10 @@ public class CollectionUtil {
 		ArrayList<? extends Integer> list2 = null;
 		list1 = sort(list1);
 		list2 = sort(list2);
+	}
+	public static <E, T extends List<? super E>> T addAll(T coll, Collection<E> other) {
+		coll.addAll(other);
+		return coll;
 	}
 	
 }

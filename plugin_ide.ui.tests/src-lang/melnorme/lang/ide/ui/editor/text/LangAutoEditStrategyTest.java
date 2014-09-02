@@ -11,9 +11,6 @@
 package melnorme.lang.ide.ui.editor.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.io.IOException;
-
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
 import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
@@ -36,11 +33,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	public static final String NEUTRAL_SRCX; 
 	
 	static {
-		try {
-			NEUTRAL_SRCX = MiscUtil.getClassResourceAsString(LangAutoEditStrategyTest.class, "sample_block_code");
-		} catch (IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+		NEUTRAL_SRCX = MiscUtil.getClassResourceAsString(LangAutoEditStrategyTest.class, "sample_block_code");
 	}
 	
 	public static final String PENDING_WS1 = "  "; 

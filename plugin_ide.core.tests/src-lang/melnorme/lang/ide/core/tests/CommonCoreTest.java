@@ -14,7 +14,6 @@ package melnorme.lang.ide.core.tests;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -145,11 +144,7 @@ public abstract class CommonCoreTest extends CommonTest {
 	public static void writeStringToFile(IProject project, String filePath, String contents) 
 			throws CoreException {
 		IFile file = project.getFile(filePath);
-		writeStringToFile(file, contents);
-	}
-	
-	public static void writeStringToFile(IFile file, String contents) throws CoreException {
-		ResourceUtils.writeToFile(file, new ByteArrayInputStream(contents.getBytes(StringUtil.UTF8)));
+		ResourceUtils.writeStringToFile(file, contents);
 	}
 	
 }
