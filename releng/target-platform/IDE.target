@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="MMRNMHRM Target" sequenceNumber="30">
+<?pde version="3.8"?><target name="MMRNMHRM Target" sequenceNumber="32">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.junit" version="4.11.0.v201303080030"/>
@@ -7,10 +7,13 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.feature.group" version="4.3.0.v20130605-2000"/>
-<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.3.0.201402142303"/>
-<unit id="org.eclipse.cdt.platform.feature.group" version="8.3.0.201402142303"/>
 <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.0.v20130521-0416"/>
 <repository location="http://download.eclipse.org/releases/kepler/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.cdt.platform.feature.group" version="8.4.0.201406111759"/>
+<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.4.0.201406111759"/>
+<repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 </locations>
 </target>
