@@ -12,8 +12,8 @@ package com.googlecode.goclipse.ui;
 
 import java.io.IOException;
 
-import melnorme.lang.ide.ui.engine.console.LangOperationConsole;
-import melnorme.lang.ide.ui.engine.console.LangOperationConsoleListener;
+import melnorme.lang.ide.ui.engine.console.LangEngineConsole;
+import melnorme.lang.ide.ui.engine.console.LangEngineConsoleListener;
 import melnorme.lang.ide.ui.engine.console.ProcessOutputToConsoleListener;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
@@ -22,14 +22,14 @@ import org.eclipse.core.resources.IProject;
 
 import com.googlecode.goclipse.builder.IGoBuildListener;
 
-public class GoBuilderConsoleListener extends LangOperationConsoleListener implements IGoBuildListener {
+public class GoBuilderConsoleListener extends LangEngineConsoleListener implements IGoBuildListener {
 	
 	@Override
 	protected String getOperationConsoleName(IProject project) {
 		return "Go build " + getProjectNameSuffix(project);
 	}
 	
-	public static class GoBuildConsole extends LangOperationConsole {
+	public static class GoBuildConsole extends LangEngineConsole {
 		
 		public GoBuildConsole(String name) {
 			super(name, GoPluginImages.GO_CONSOLE_ICON.getDescriptor());
@@ -65,7 +65,7 @@ public class GoBuilderConsoleListener extends LangOperationConsoleListener imple
 	}
 	
 	protected void writeProcessStartPrefix(ProcessBuilder pb, GoBuildConsole console) throws IOException {
-		console.metaOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
+		console.infoOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
 	}
 	
 	@Override
@@ -74,8 +74,8 @@ public class GoBuilderConsoleListener extends LangOperationConsoleListener imple
 		
 		try {
 			writeProcessStartPrefix(pb, console);
-			console.metaOut.write(">>>  Failed to start process: \n");
-			console.metaOut.write(processStartException.getMessage());
+			console.infoOut.write(">>>  Failed to start process: \n");
+			console.infoOut.write(processStartException.getMessage());
 		} catch (IOException consoleIOE) {
 			return;
 		}

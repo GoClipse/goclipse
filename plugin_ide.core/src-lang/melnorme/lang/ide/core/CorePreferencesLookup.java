@@ -10,10 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import melnorme.lang.ide.core.utils.PreferencesLookupHelper;
+import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
+import melnorme.lang.ide.core.utils.prefs.PreferencesLookupHelper;
 
 import org.eclipse.core.resources.IProject;
 
+/**
+ * Use {@link PreferenceHelper} instances 
+ * */
+@Deprecated
 public class CorePreferencesLookup extends PreferencesLookupHelper {
 
 	public CorePreferencesLookup() {

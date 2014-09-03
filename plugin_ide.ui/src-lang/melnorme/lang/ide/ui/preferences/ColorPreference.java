@@ -11,61 +11,42 @@
 package melnorme.lang.ide.ui.preferences;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.HashMap;
-
-import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.util.swt.jface.text.ColorManager;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-
-class PreferenceHelper {
-	
-	protected static final HashMap<String, PreferenceHelper> instances = new HashMap<>();
-	
-	protected final String key;
-	
-	public PreferenceHelper(String key) {
-		this.key = key;
-		
-		synchronized (instances) {
-			// Allow only one instance of a preference helper per key.
-			assertTrue(instances.containsKey(key) == false);
-			instances.put(key, this);
-		}
-		
-	}
-	
-	protected UIPreferencesLookupHelper uiPrefs() {
-		return LangUIPlugin.getPreferencesLookup();
-	}
-	
-}
 
 /**
  * Helper to work with a color preference.
  */
-public class ColorPreference extends PreferenceHelper {
-	
-	protected final RGB defaultValue;
+public class ColorPreference extends PreferenceHelper<RGB> {
 	
 	public ColorPreference(String key, RGB defaultValue) {
-		super(key);
-		this.defaultValue = assertNotNull(defaultValue);
+		super(key, defaultValue);
 	}
 	
+	@Override
 	public RGB get() {
-		return uiPrefs().getRGB(key, defaultValue);
+		String stringValue = prefs().getString(key, null);
+		return stringValue == null ? defaultValue : StringConverter.asRGB(stringValue);
 	}
 	
 	public void set(RGB value) {
-		uiPrefs().setRGB(key, value);
+		assertNotNull(value);
+		String stringValue = StringConverter.asString(value);
+		InstanceScope.INSTANCE.getNode(getQualifier()).put(key, stringValue);
 	}
 	
 	public Color getManagedColor() {
 		return ColorManager.getDefault().getColor(get());
+	}
+	
+	@Override
+	protected void initializeDefaultValueInDefaultScope() {
+		getDefaultPreferences().put(key, StringConverter.asString(defaultValue));
 	}
 	
 }

@@ -19,33 +19,33 @@ import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.part.IPageBookViewPage;
 
-public class LangOperationConsole extends AbstractProcessMessageConsole {
+public class LangEngineConsole extends AbstractProcessMessageConsole {
 	
-	public final IOConsoleOutputStream metaOut;
+	public final IOConsoleOutputStream infoOut;
 	
-	public LangOperationConsole(String name, ImageDescriptor imageDescriptor) {
+	public LangEngineConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
 		
-		metaOut = newOutputStream();
+		infoOut = newOutputStream();
 		postToUI_initOutputStreamColors();
 	}
 	
 	@Override
-	protected void ui_initOutputStreamColors() {
-		metaOut.setColor(OperationsConsolePrefs.INFO_COLOR.getManagedColor());
-		stdErr.setColor(OperationsConsolePrefs.STDERR_COLOR.getManagedColor());
-		stdOut.setColor(OperationsConsolePrefs.STDOUT_COLOR.getManagedColor());
-		setBackground(OperationsConsolePrefs.BACKGROUND_COLOR.getManagedColor());
+	protected void ui_initStreamColors() {
+		infoOut.setColor(EngineConsolePrefs.INFO_COLOR.getManagedColor());
+		stdErr.setColor(EngineConsolePrefs.STDERR_COLOR.getManagedColor());
+		stdOut.setColor(EngineConsolePrefs.STDOUT_COLOR.getManagedColor());
+		setBackground(EngineConsolePrefs.BACKGROUND_COLOR.getManagedColor());
 	}
 	
 	@Override
 	public IPageBookViewPage createPage(IConsoleView view) {
-		return new OperationsConsolePage(this, view);
+		return new EngineConsolePage(this, view);
 	}
 	
 	public void writeOperationInfo(String string) {
 		try {
-			metaOut.write(string);
+			infoOut.write(string);
 		} catch (IOException e) {
 			// Do nothing
 		}

@@ -8,17 +8,30 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.core.utils.prefs;
 
-import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.misc.IDisposable;
 
-public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
+/**
+ * Helper to work with a boolean preference.
+ */
+public class BooleanPreference extends PreferenceHelper<Boolean> {
 	
-	public void loadFromStore();
+	public BooleanPreference(String key, boolean defaultValue) {
+		super(key, defaultValue);
+	}
 	
-	public void saveToStore();
+	@Override
+	public Boolean get() {
+		return prefs().getBoolean(key, defaultValue);
+	}
 	
-	public void loadStoreDefaults();
+	public void set(boolean value) {
+		prefs().setBoolean(key, value);
+	}
+	
+	@Override
+	protected void initializeDefaultValueInDefaultScope() {
+		getDefaultPreferences().putBoolean(key, defaultValue);
+	}
 	
 }

@@ -8,17 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.utilbox.misc;
 
-import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.misc.IDisposable;
-
-public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
+/**
+ * General interface for an object that can (and should) be disposed.
+ * 
+ * Unless otherwise specified, {@link #dispose()} can only be called once, and after
+ * that the underlying object will be in a dispose state, where most functionality is no longer available.
+ */
+public interface IDisposable {
 	
-	public void loadFromStore();
-	
-	public void saveToStore();
-	
-	public void loadStoreDefaults();
+	void dispose();
 	
 }

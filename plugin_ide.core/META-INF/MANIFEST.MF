@@ -45,6 +45,7 @@ Export-Package: com.googlecode.goclipse;
  com.googlecode.goclipse.utils,
  melnorme.lang.ide.core,
  melnorme.lang.ide.core.utils,
+ melnorme.lang.ide.core.utils.prefs,
  melnorme.lang.ide.core.utils.process,
  melnorme.lang.ide.launching
 Eclipse-ExtensibleAPI: true

@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
 
 
-public abstract class LangOperationConsoleListener {
+public abstract class LangEngineConsoleListener {
 	
 	public static LangOperationConsole_Actual recreateMessageConsole(String name, boolean recreateConsole) {
 		LangOperationConsole_Actual console = ConsoleUtils.findConsole(name, LangOperationConsole_Actual.class);
@@ -35,7 +35,7 @@ public abstract class LangOperationConsoleListener {
 		return console;
 	}
 	
-	public LangOperationConsoleListener() {
+	public LangEngineConsoleListener() {
 		super();
 	}
 	

@@ -30,6 +30,10 @@ public abstract class AbstractProcessMessageConsole extends IOConsole {
 	public final IOConsoleOutputStream stdOut;
 	public final IOConsoleOutputStream stdErr;
 	
+	/**
+	 * Note: subclasse must call {@link #postToUI_initOutputStreamColors()} after all members
+	 * have been initialized.
+	 */
 	protected AbstractProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
 		
@@ -45,13 +49,13 @@ public abstract class AbstractProcessMessageConsole extends IOConsole {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				ui_initOutputStreamColors();
+				ui_initStreamColors();
 			}
 		});
 	}
 	
-	// Note: if overriden, make sure this method is called after all subclass members are initialized
-	protected void ui_initOutputStreamColors() {
+	/** Initialize stream colors. This method is only called in the UI thread. */
+	protected void ui_initStreamColors() {
 	}
 	
 	protected ISharedTextColors getColorManager() {

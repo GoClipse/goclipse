@@ -8,17 +8,29 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.core.utils.prefs;
 
-import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.misc.IDisposable;
-
-public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
+/**
+ * Helper to work with a color preference.
+ */
+public class StringPreference extends PreferenceHelper<String> {
 	
-	public void loadFromStore();
+	public StringPreference(String key, String defaultValue) {
+		super(key, defaultValue);
+	}
 	
-	public void saveToStore();
+	@Override
+	public String get() {
+		return prefs().getString(key, defaultValue);
+	}
 	
-	public void loadStoreDefaults();
+	public void set(String value) {
+		prefs().setString(key, value);
+	}
+	
+	@Override
+	protected void initializeDefaultValueInDefaultScope() {
+		getDefaultPreferences().put(key, defaultValue);
+	}
 	
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils;
+package melnorme.lang.ide.core.utils.prefs;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 
 public class PreferencesLookupHelper {
 	
-	protected final String qualifier;
+	public final String qualifier;
 	protected final IScopeContext[] contexts;
 	
 	public PreferencesLookupHelper(String qualifier) {
@@ -39,10 +39,6 @@ public class PreferencesLookupHelper {
 		}
 	}
 	
-	public String getQualifier() {
-		return qualifier;
-	}
-	
 	protected IPreferencesService preferences() {
 		return Platform.getPreferencesService();
 	}
@@ -51,12 +47,24 @@ public class PreferencesLookupHelper {
 		return preferences().getString(qualifier, key, defaultValue, contexts);
 	}
 	
+	public void setString(String key, String value) {
+		InstanceScope.INSTANCE.getNode(qualifier).put(key, value);
+	}
+	
 	public int getInt(String key, int defaultValue) {
 		return preferences().getInt(qualifier, key, defaultValue, contexts);
 	}
 	
+	public void setInt(String key, int value) {
+		InstanceScope.INSTANCE.getNode(qualifier).putInt(key, value);
+	}
+	
 	public boolean getBoolean(String key, boolean defaultValue) {
 		return preferences().getBoolean(qualifier, key, defaultValue, contexts);
+	}
+	
+	public void setBoolean(String key, boolean value) {
+		InstanceScope.INSTANCE.getNode(qualifier).putBoolean(key, value);
 	}
 	
 }

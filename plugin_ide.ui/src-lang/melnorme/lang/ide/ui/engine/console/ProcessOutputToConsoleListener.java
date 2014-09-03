@@ -16,9 +16,9 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputLis
 
 public class ProcessOutputToConsoleListener implements IProcessOutputListener {
 	
-	private final LangOperationConsole console;
+	private final LangEngineConsole console;
 	
-	public ProcessOutputToConsoleListener(LangOperationConsole console) {
+	public ProcessOutputToConsoleListener(LangEngineConsole console) {
 		this.console = console;
 	}
 	
@@ -45,8 +45,8 @@ public class ProcessOutputToConsoleListener implements IProcessOutputListener {
 		try {
 			console.stdOut.flush();
 			console.stdErr.flush();
-			console.metaOut.write("--------  Terminated, exit code: " + exitCode +  "  --------\n");
-			console.metaOut.flush();
+			console.infoOut.write("--------  Terminated, exit code: " + exitCode +  "  --------\n");
+			console.infoOut.flush();
 		} catch (IOException e) {
 			// Ignore
 		}

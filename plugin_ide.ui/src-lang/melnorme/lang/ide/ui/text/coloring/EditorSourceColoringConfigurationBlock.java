@@ -23,7 +23,6 @@ import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.IDisposable;
 import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ColorField;
@@ -33,6 +32,7 @@ import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvide
 import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.preference.OverlayPreferenceStore;
 import melnorme.util.swt.jface.preference.OverlayPreferenceStore.OverlayKey;
+import melnorme.utilbox.misc.IDisposable;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tree.IElement;

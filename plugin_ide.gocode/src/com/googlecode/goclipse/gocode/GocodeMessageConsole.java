@@ -34,7 +34,7 @@ public class GocodeMessageConsole extends AbstractProcessMessageConsole {
 	}
 	
 	@Override
-	protected void ui_initOutputStreamColors() {
+	protected void ui_initStreamColors() {
 		stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 		clientResponse.setColor(getColorManager().getColor(new RGB(100, 0, 150)));
 		clientResponseErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));

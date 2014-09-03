@@ -10,10 +10,14 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.engine.console;
 
+import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
 import melnorme.lang.ide.ui.OperationsConsolePrefDefaults_Actual;
 import melnorme.lang.ide.ui.preferences.ColorPreference;
 
-public interface OperationsConsolePrefs extends OperationsConsolePrefDefaults_Actual{
+public interface EngineConsolePrefs extends OperationsConsolePrefDefaults_Actual {
+	
+	BooleanPreference ACTIVATE_ON_NEW_MESSAGES = 
+			new BooleanPreference("console.do_activate", true); 
 	
 	ColorPreference INFO_COLOR = 
 			new ColorPreference("console.info_color", INFO_COLOR_DEFAULT); 

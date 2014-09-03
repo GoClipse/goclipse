@@ -12,7 +12,6 @@ package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.ui.preferences.UIPreferencesLookupHelper;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.cdt.internal.ui.text.util.CColorManager;
@@ -130,11 +129,6 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	public static IPreferenceStore getPrefStore() {
 		return getInstance().getPreferenceStore();
 	}
-	
-	public static UIPreferencesLookupHelper getPreferencesLookup() {
-		return new UIPreferencesLookupHelper(PLUGIN_ID);
-	}
-	
 	
 	public static IPreferenceStore getCorePrefStore() {
 		return getInstance().getCorePreferenceStore();

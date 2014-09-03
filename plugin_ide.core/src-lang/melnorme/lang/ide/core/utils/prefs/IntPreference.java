@@ -8,17 +8,30 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.core.utils.prefs;
 
-import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.misc.IDisposable;
 
-public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
+/**
+ * Helper to work with an int preference.
+ */
+public class IntPreference extends PreferenceHelper<Integer> {
 	
-	public void loadFromStore();
+	public IntPreference(String key, int defaultValue) {
+		super(key, defaultValue);
+	}
 	
-	public void saveToStore();
+	@Override
+	public Integer get() {
+		return prefs().getInt(key, defaultValue);
+	}
 	
-	public void loadStoreDefaults();
+	public void set(int value) {
+		prefs().setInt(key, value);
+	}
+	
+	@Override
+	protected void initializeDefaultValueInDefaultScope() {
+		getDefaultPreferences().putInt(key, defaultValue);
+	}
 	
 }

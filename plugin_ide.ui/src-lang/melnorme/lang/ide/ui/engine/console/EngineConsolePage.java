@@ -25,11 +25,11 @@ import org.eclipse.ui.console.TextConsoleViewer;
  * A page for an OperationsConsolePage. Originally based on {@link IOConsole}
  * Console is read only.
  */
-public class OperationsConsolePage extends TextConsolePage {
+public class EngineConsolePage extends TextConsolePage {
 	
 	protected ScrollLockAction fScrollLockAction;
 	
-	public OperationsConsolePage(TextConsole console, IConsoleView view) {
+	public EngineConsolePage(TextConsole console, IConsoleView view) {
 		super(console, view);
 		
 		setReadOnly();
