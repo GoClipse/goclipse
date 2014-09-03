@@ -1,40 +1,33 @@
 package com.googlecode.goclipse.ui.navigator;
 
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ui.IContributorResourceAdapter;
 
 /**
  * 
  * @author Mihailo Vasiljevic
  * 
  */
-public class GoSourceFolder implements IGoSourceFolder, IAdaptable,
-		IContributorResourceAdapter {
-
-	private IFolder folder;
+public class GoSourceFolder extends GoSourceContainer implements IGoSourceFolder {
 
 	public GoSourceFolder(IFolder folder) {
-		this.folder = folder;
+		super(folder);
 	}
 
 	@Override
-	public IProject getProject() {
-		return folder.getProject();
+	public Object getParent() {
+		return getFolder().getProject();
 	}
 
 	@Override
-	public IFolder getFolder() {
-		return folder;
+	protected Object createChild(IFolder childFolder) {
+		return new GoPackage(this, null, "", childFolder);
 	}
 
 	@Override
 	public String getName() {
-		return folder.getName();
+		return getFolder().getName();
 	}
-
+	
 	@Override
 	public boolean equals(Object otherObject) {
 		if (otherObject instanceof GoSourceFolder) {
@@ -42,37 +35,9 @@ public class GoSourceFolder implements IGoSourceFolder, IAdaptable,
 				return true;
 			}
 			GoSourceFolder other = (GoSourceFolder) otherObject;
-			return folder.equals(other.getFolder());
+			return getFolder().equals(other.getFolder());
 		}
 		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return folder.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return getName();
-	}
-	
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Object getAdapter(Class adapter) {
-		if (adapter == IResource.class) {
-			return folder;
-		}
-		if (adapter == IContributorResourceAdapter.class) {
-			return this;
-		}
-		Object result = folder.getAdapter(adapter);
-		return result;
-	}
-
-	@Override
-	public IResource getAdaptedResource(IAdaptable adaptable) {
-		return folder;
 	}
 
 }
