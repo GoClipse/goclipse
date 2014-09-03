@@ -12,7 +12,9 @@ package melnorme.lang.ide.ui.engine.console;
 
 import java.io.IOException;
 
+import melnorme.lang.ide.core.utils.prefs.IPrefChangeListener;
 import melnorme.lang.ide.ui.utils.AbstractProcessMessageConsole;
+import melnorme.utilbox.ownership.OwnedObjects;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.console.IConsoleView;
@@ -22,6 +24,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
 public class LangEngineConsole extends AbstractProcessMessageConsole {
 	
 	public final IOConsoleOutputStream infoOut;
+	protected final OwnedObjects owned = new OwnedObjects();
 	
 	public LangEngineConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
@@ -31,11 +34,51 @@ public class LangEngineConsole extends AbstractProcessMessageConsole {
 	}
 	
 	@Override
+	protected void dispose() {
+		owned.dispose();
+		super.dispose();
+	}
+	
+	@Override
 	protected void ui_initStreamColors() {
-		infoOut.setColor(EngineConsolePrefs.INFO_COLOR.getManagedColor());
-		stdErr.setColor(EngineConsolePrefs.STDERR_COLOR.getManagedColor());
-		stdOut.setColor(EngineConsolePrefs.STDOUT_COLOR.getManagedColor());
-		setBackground(EngineConsolePrefs.BACKGROUND_COLOR.getManagedColor());
+		IPrefChangeListener listener;
+		
+		listener = new IPrefChangeListener() {
+			@Override
+			public void handleChange() {
+				infoOut.setColor(EngineConsolePrefs.INFO_COLOR.getManagedColor());
+			}
+		};
+		owned.add(EngineConsolePrefs.INFO_COLOR.addPrefChangeListener(listener));
+		listener.handleChange();
+		
+		listener = new IPrefChangeListener() {
+			@Override
+			public void handleChange() {
+				stdErr.setColor(EngineConsolePrefs.STDERR_COLOR.getManagedColor());
+			}
+		};
+		owned.add(EngineConsolePrefs.STDERR_COLOR.addPrefChangeListener(listener));
+		listener.handleChange();
+		
+		listener = new IPrefChangeListener() {
+			@Override
+			public void handleChange() {
+				stdOut.setColor(EngineConsolePrefs.STDOUT_COLOR.getManagedColor());
+			}
+		};
+		owned.add(EngineConsolePrefs.STDOUT_COLOR.addPrefChangeListener(listener));
+		listener.handleChange();
+		
+		listener = new IPrefChangeListener() {
+			@Override
+			public void handleChange() {
+				setBackground(EngineConsolePrefs.BACKGROUND_COLOR.getManagedColor());
+			}
+		};
+		owned.add(EngineConsolePrefs.BACKGROUND_COLOR.addPrefChangeListener(listener));
+		listener.handleChange();
+		
 	}
 	
 	@Override

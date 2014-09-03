@@ -11,7 +11,7 @@
 package melnorme.lang.ide.ui.preferences;
 
 import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.misc.IDisposable;
+import melnorme.utilbox.ownership.IDisposable;
 
 public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
 	

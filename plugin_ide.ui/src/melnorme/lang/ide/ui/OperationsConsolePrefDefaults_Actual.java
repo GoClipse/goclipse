@@ -14,9 +14,9 @@ import org.eclipse.swt.graphics.RGB;
 
 public interface OperationsConsolePrefDefaults_Actual {
 	
-	RGB BACKGROUND_COLOR_DEFAULT = new RGB(255, 255, 255);
+	RGB INFO_COLOR_DEFAULT = new RGB(0, 0, 200);
+	RGB STDERR_COLOR_DEFAULT = new RGB(255, 0, 0);
 	RGB STDOUT_COLOR_DEFAULT = new RGB(0, 0, 0);
-	RGB STDERR_COLOR_DEFAULT = new RGB(200, 0, 0);
-	RGB INFO_COLOR_DEFAULT = new RGB(0, 0, 180);
+	RGB BACKGROUND_COLOR_DEFAULT = new RGB(242, 252, 252);
 	
 }

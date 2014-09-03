@@ -32,9 +32,9 @@ import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvide
 import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.preference.OverlayPreferenceStore;
 import melnorme.util.swt.jface.preference.OverlayPreferenceStore.OverlayKey;
-import melnorme.utilbox.misc.IDisposable;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.SimpleTreeElement;
 import melnorme.utilbox.tree.TreeVisitor;

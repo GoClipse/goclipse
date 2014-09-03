@@ -15,9 +15,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.HashMap;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.ownership.IDisposable;
 
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 
 public abstract class PreferenceHelper<T> {
 	
@@ -61,30 +65,28 @@ public abstract class PreferenceHelper<T> {
 		return DefaultScope.INSTANCE.getNode(getQualifier());
 	}
 	
-//	public IPreferenceChangeListener_Ext addPrefChangeListener(final IPrefChangeListener listener) {
-//		final IEclipsePreferences node = InstanceScope.INSTANCE.getNode(getQualifier());
-//		IPreferenceChangeListener_Ext prefListener = new IPreferenceChangeListener_Ext() {
-//			
-//			@Override
-//			public void preferenceChange(PreferenceChangeEvent event) {
-//				if(event.getKey().equals(key)) {
-//					assertTrue(event.getNewValue().equals(get()));
-//					
-//					listener.handleChange();
-//				}
-//			}
-//			
-//			@Override
-//			public void dispose() {
-//				node.removePreferenceChangeListener(this);
-//			}
-//		};
-//		node.addPreferenceChangeListener(prefListener);
-//		return prefListener;
-//	}
-//	
-//	public static interface IPreferenceChangeListener_Ext extends IPreferenceChangeListener, IDisposable {
-//		
-//	}
+	public IPreferenceChangeListener_Ext addPrefChangeListener(final IPrefChangeListener listener) {
+		final IEclipsePreferences node = InstanceScope.INSTANCE.getNode(getQualifier());
+		IPreferenceChangeListener_Ext prefListener = new IPreferenceChangeListener_Ext() {
+			
+			@Override
+			public void preferenceChange(PreferenceChangeEvent event) {
+				if(event.getKey().equals(key)) {
+					listener.handleChange();
+				}
+			}
+			
+			@Override
+			public void dispose() {
+				node.removePreferenceChangeListener(this);
+			}
+		};
+		node.addPreferenceChangeListener(prefListener);
+		return prefListener;
+	}
+	
+	public static interface IPreferenceChangeListener_Ext extends IPreferenceChangeListener, IDisposable {
+		
+	}
 	
 }

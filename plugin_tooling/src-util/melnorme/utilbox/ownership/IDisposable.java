@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.misc;
+package melnorme.utilbox.ownership;
 
 /**
  * General interface for an object that can (and should) be disposed.
