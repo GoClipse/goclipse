@@ -13,7 +13,6 @@ import com.googlecode.goclipse.Environment;
  */
 public class GoModelResourceAdapter implements IAdapterFactory {
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (adaptableObject instanceof IFolder) {
@@ -29,7 +28,6 @@ public class GoModelResourceAdapter implements IAdapterFactory {
 		return null;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Class[] getAdapterList() {
 		return new Class[] { IResource.class };

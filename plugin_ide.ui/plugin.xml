@@ -125,6 +125,7 @@
 			   <adapter type="org.eclipse.core.resources.IFile"/>
 			   <adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
 			   <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
+         <adapter type="org.eclipse.core.filesystem.IFileStore"/>
       </factory>
       <factory
                adaptableType="org.eclipse.core.resources.IResource"
@@ -148,19 +149,9 @@
             class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
          <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
       </factory>
-      <factory
-            adaptableType="com.googlecode.goclipse.navigator.GoPathElement"
-            class="com.googlecode.goclipse.navigator.GoWorkbenchAdapterFactory">
-         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-      </factory>
-      <factory
-            adaptableType="org.eclipse.core.filesystem.IFileStore"
-            class="com.googlecode.goclipse.navigator.GoWorkbenchAdapterFactory">
-         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-      </factory>
    </extension>
     
-   <!-- extension
+   <extension
          point="org.eclipse.ui.navigator.viewer">
       <viewerContentBinding
             viewerId="org.eclipse.ui.navigator.ProjectExplorer">
@@ -180,6 +171,7 @@
          </includes>
       </viewerContentBinding>
    </extension>
+   
    <extension
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
@@ -206,6 +198,8 @@
 					<instanceof	value="org.eclipse.core.resources.IResource" />
                     <instanceof value="org.eclipse.core.resources.IFolder"/>
                     <instanceof value="com.googlecode.goclipse.ui.navigator.IGoElement"/>
+                    <instanceof value="org.eclipse.core.filesystem.IFileStore">
+                    </instanceof>
 				</or>
 		 </possibleChildren>
          <commonSorter
@@ -240,124 +234,6 @@
             class="com.googlecode.goclipse.ui.navigator.HideSrcFolderFilter"
             id="goclipse.filters.HideSrcFolder"
             name="Hide Go src Folder">
-      </commonFilter>
-   </extension -->
-   
-   <extension point="org.eclipse.ui.decorators">
-      <decorator
-         class="com.googlecode.goclipse.navigator.NavigatorLabelDecorator"
-         id="com.googlecode.goclipse.ui.navigator.lightweightDecorator"
-         label="Go"
-         lightweight="true"
-         location="TOP_LEFT"
-         state="true">
-         
-         <enablement>
-            <objectClass
-               name="org.eclipse.core.resources.IResource">
-            </objectClass>
-         </enablement>
-      </decorator>
-   </extension>
-
-   <extension
-      point="org.eclipse.ui.navigator.navigatorContent">
-      <navigatorContent
-         activeByDefault="true"
-         icon="icons/go-icon16.png"
-         id="com.googlecode.goclipse.navigator.content"
-         labelProvider="com.googlecode.goclipse.navigator.NavigatorLabelProvider"
-         contentProvider="com.googlecode.goclipse.navigator.NavigatorContentProvider"
-         priority="highest"
-         name="Go Elements">
-         
-         <triggerPoints>
-            <adapt type="org.eclipse.core.resources.IProject">
-               <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
-            </adapt>
-         </triggerPoints>
-
-         <!-- Despite what the documentation currently says, possibleChildren is queried by Navigator service to find out whether 
-         to use label provider or not, regardless of trigger points. Therefore we should ensure possible children only aplies to Go projects. 
-         See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=429572
-         -->
-         <possibleChildren>
-            <or>
-               <and>
-                  <instanceof value="org.eclipse.core.resources.IResource"/>
-                  <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
-               </and>
-            </or>
-         </possibleChildren> 
-      
-         <commonSorter
-               class="com.googlecode.goclipse.navigator.NavigatorViewerSorter"
-               id="com.googlecode.goclipse.navigator.sorter">
-         </commonSorter>
-         
-         <commonWizard
-            menuGroupId="com.googlecode.goclipse.wizards.projects"
-            type="new"
-            wizardId="com.googlecode.goclipse.wizards.NewGoFileWizard">
-            <enablement>
-            </enablement>
-         </commonWizard>
-       
-         <commonWizard
-            menuGroupId="com.googlecode.goclipse.wizards.projects"
-            type="new"
-            wizardId="com.googlecode.goclipse.wizards.project.mainwiz">
-            <enablement>
-            </enablement>
-         </commonWizard>
-         
-         <actionProvider class="com.googlecode.goclipse.navigator.NavigatorActionProvider"/>         
-      </navigatorContent>
-      
-      <navigatorContent
-         activeByDefault="true"
-         icon="icons/go-icon16.png"
-         id="com.googlecode.goclipse.navigator.content2"
-         labelProvider="com.googlecode.goclipse.navigator.NavigatorLabelProvider"
-         contentProvider="com.googlecode.goclipse.navigator.NavigatorContentProvider2"
-         priority="low"
-         name="Go Root Elements">
-         
-         <triggerPoints>
-            <adapt type="org.eclipse.core.resources.IProject">
-               <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
-            </adapt>
-         </triggerPoints>
-
-         <possibleChildren>
-            <or>
-               <instanceof value="org.eclipse.core.filesystem.IFileStore"/>
-               <instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
-            </or>
-         </possibleChildren> 
-      
-         <commonSorter
-               class="com.googlecode.goclipse.navigator.NavigatorViewerSorter"
-               id="com.googlecode.goclipse.navigator.sorter">
-         </commonSorter>
-         
-         <!-- actionProvider class="com.googlecode.goclipse.navigator.NavigatorActionProvider"/ -->         
-      </navigatorContent>
-      
-      <commonFilter
-            activeByDefault="true"
-            class="com.googlecode.goclipse.navigator.NavigatorObjViewerFilter"
-            id="com.googlecode.goclipse.navigator.objFilter"
-            visibleInUI="true"
-            name="Go _obj folders">
-      </commonFilter>
-      
-      <commonFilter
-            activeByDefault="false"
-            class="com.googlecode.goclipse.navigator.NavigatorPackageViewerFilter"
-            id="com.googlecode.goclipse.navigator.packageFilter"
-            visibleInUI="true"
-            name="Go bin, pkg folders">
       </commonFilter>
    </extension>
    
@@ -420,20 +296,6 @@
             </description>
       </wizard>
       
-      <!-- wizard
-            canFinishEarly="false"
-            category="com.googlecode.goclipse.wizards.projects"
-            class="com.googlecode.goclipse.wizards.GoReferenceProjectWizard"
-            finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
-            icon="icons/newprj_obj.png"
-            id="com.googlecode.goclipse.wizards.referenceProjectWizard"
-            name="Go Reference Project"
-            project="true">
-            <description>
-               Create a new project containing a link to GOROOT/src; this is useful for browsing the source for the Go libraries
-            </description>
-      </wizard -->
-      
       <wizard
             category="com.googlecode.goclipse.wizards.projects"
             class="com.googlecode.goclipse.ui.wizards.NewGoFileWizard"
@@ -458,9 +320,9 @@
          </enabledWhen>
       </page>
       <page
-            class="com.googlecode.goclipse.ui.properties.GoContinuousTestingPropertyPage"
+            class="com.googlecode.goclipse.ui.properties.ContinuousTestingPropertyPage"
             id="com.googlecode.goclipse.ui.properties.ContinuousTestingPropertyPage"
-            name="Go Continuous Testing">
+            name="Go Continous Testing Options">
          <enabledWhen>
             <reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
          </enabledWhen>

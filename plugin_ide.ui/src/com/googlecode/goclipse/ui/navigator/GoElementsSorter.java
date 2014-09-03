@@ -23,14 +23,14 @@ public class GoElementsSorter extends ViewerSorter {
 
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
-		GoPackage pkg1 = null;
-		GoPackage pkg2 = null;
+		IGoPackage pkg1 = null;
+		IGoPackage pkg2 = null;
 
-		if (e1 instanceof GoPackage) {
-			pkg1 = (GoPackage) e1;
+		if (e1 instanceof IGoPackage) {
+			pkg1 = (IGoPackage) e1;
 		}
-		if (e2 instanceof GoPackage) {
-			pkg2 = (GoPackage) e2;
+		if (e2 instanceof IGoPackage) {
+			pkg2 = (IGoPackage) e2;
 		}
 
 		if (pkg1 != null && pkg2 != null) {

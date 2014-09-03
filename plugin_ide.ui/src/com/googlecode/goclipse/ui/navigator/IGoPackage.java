@@ -7,4 +7,6 @@ package com.googlecode.goclipse.ui.navigator;
  */
 public interface IGoPackage extends IGoElement, IGoSourceContainer {
 
+	IGoSourceFolder getGoSource();
+
 }
