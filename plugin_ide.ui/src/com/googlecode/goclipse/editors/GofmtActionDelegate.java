@@ -26,7 +26,7 @@ public class GofmtActionDelegate extends TransformTextAction {
 	protected String transformText(final String text) throws CoreException {
 		final String currentContent = text;
 		
-		String gofmtPath = GoCore.getPreferences().getString(PreferenceConstants.FORMATTER_PATH);
+		String gofmtPath = PreferenceConstants.FORMATTER_PATH.get();
 		
 		IProject project = null; // TODO
 		IProgressMonitor pm = new NullProgressMonitor(); // TODO

@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.QualifiedName;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Import;
@@ -57,7 +56,7 @@ public class GoCompiler {
 	public void goGetDependencies(final IProject project, IProgressMonitor monitor, java.io.File target) {
 		
 		final IPath projectLocation = project.getLocation();
-		final String compilerPath   = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
+		final String compilerPath   = PreferenceConstants.COMPILER_PATH.get();
 		final IFile  file           = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 
 		try {
@@ -217,7 +216,7 @@ public class GoCompiler {
 		final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
 		final IPath  binFolder       = Environment.INSTANCE.getBinOutputFolder(project);
 		
-		final String compilerPath = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
+		final String compilerPath = PreferenceConstants.COMPILER_PATH.get();
 		final String outExtension = (MiscUtil.OS_IS_WINDOWS ? ".exe" : "");
 
 			// the path exist to find the cc
@@ -289,7 +288,7 @@ public class GoCompiler {
 		
 		final IPath  projectLocation = project.getLocation();
 		
-		final String compilerPath = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
+		final String compilerPath = PreferenceConstants.COMPILER_PATH.get();
 
 		try {
 			// the path exist to find the cc
@@ -353,7 +352,7 @@ public class GoCompiler {
 	 */
 	public void compilePkg(final IProject project, IProgressMonitor pmonitor, final String pkgpath, java.io.File target) {
 		
-		final String           compilerPath    = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
+		final String           compilerPath    = PreferenceConstants.COMPILER_PATH.get();
 		
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
@@ -430,7 +429,7 @@ public class GoCompiler {
 		//final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		//final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
 
-		final String           compilerPath    = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
+		final String           compilerPath    = PreferenceConstants.COMPILER_PATH.get();
 		
 		try {
 			String[] cmd = { compilerPath, GoConstants.GO_INSTALL_COMMAND, "all" };
@@ -676,7 +675,7 @@ public class GoCompiler {
 	public static String getCompilerVersion() {
 		
 		String version = null;
-		String compilerPath = GoCore.getPreferences().getString(PreferenceConstants.GO_TOOL_PATH);
+		String compilerPath = PreferenceConstants.COMPILER_PATH.get();
 
 		if (compilerPath == null || compilerPath.length() == 0) {
 			return null;

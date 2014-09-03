@@ -7,7 +7,7 @@ import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 
-import com.googlecode.goclipse.GoEnvironmentPrefs;
+import com.googlecode.goclipse.GoEnvironmentPrefUtils;
 
 
 /**
@@ -20,9 +20,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	}
 	
 	public static String getDefaultPlatformChar() {
-		if (GoEnvironmentPrefs.isAMD64()){
+		if (GoEnvironmentPrefUtils.isAMD64()){
 			return "6";
-		} else if (GoEnvironmentPrefs.is386()) {
+		} else if (GoEnvironmentPrefUtils.is386()) {
 			return "8";
 		}
 		return null;
@@ -50,7 +50,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	    names.add(defaultCompiler);
 	  }
 	  
-	  if (GoEnvironmentPrefs.isAMD64()) {
+	  if (GoEnvironmentPrefUtils.isAMD64()) {
 	    String altCompiler = get32bitCompilerName();
 	    
 	    if (altCompiler != null) {

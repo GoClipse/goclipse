@@ -10,42 +10,19 @@
  *******************************************************************************/
 package com.googlecode.goclipse;
 
-import melnorme.utilbox.misc.MiscUtil;
+import static com.googlecode.goclipse.GoEnvironmentPrefUtils.getGO_OS_Default;
+import static com.googlecode.goclipse.GoEnvironmentPrefUtils.get_GO_ARCH_Default;
+import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
-import com.googlecode.goclipse.preferences.PreferenceConstants;
-
-public class GoEnvironmentPrefs {
-
-	public static String get_GO_ARCH_Default() {
-		if (isAMD64()){
-			return PreferenceConstants.ARCH_AMD64;
-		} else if (is386()){
-			return PreferenceConstants.ARCH_386;
-		} else {
-			return "";
-		}
-	}
+public interface GoEnvironmentPrefs {
 	
-	public static boolean isAMD64() {
-		String osProp = System.getProperty("os.arch");
-		return "x86_64".equals(osProp) || "amd64".equals(osProp);
-	}
-
-	public static boolean is386() {
-		String osProp = System.getProperty("os.arch");
-		return "i386".equals(osProp) || "x86".equals(osProp) || "i686".equals(osProp);
-	}
+	static StringPreference GO_PATH = new StringPreference("com.googlecode.goclipse.gopath", "");
+	static StringPreference GO_ROOT = new StringPreference("com.googlecode.goclipse.goroot", "");
+	static StringPreference GO_OS = new StringPreference("com.googlecode.goclipse.goos", getGO_OS_Default());
+	static StringPreference GO_ARCH = new StringPreference("com.googlecode.goclipse.goarch", get_GO_ARCH_Default());
 	
-	public static String getGO_OS_Default() {
-		if (MiscUtil.OS_IS_WINDOWS){
-			return PreferenceConstants.OS_WINDOWS;
-		} else if (MiscUtil.OS_IS_LINUX) {
-			return PreferenceConstants.OS_LINUX;
-		} else if (MiscUtil.OS_IS_MAC) {
-			return PreferenceConstants.OS_DARWIN;
-		} else {
-			return "";
-		}
-	}
+	static StringPreference COMPILER_PATH = new StringPreference("com.googlecode.goclipse.compiler.path", "");
+	static StringPreference FORMATTER_PATH = new StringPreference("com.googlecode.goclipse.formatter.path", "");
+	static StringPreference DOCUMENTOR_PATH = new StringPreference("com.googlecode.goclipse.documentor.path", "");
 	
 }
