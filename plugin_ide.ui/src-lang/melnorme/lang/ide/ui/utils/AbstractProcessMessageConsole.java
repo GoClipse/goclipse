@@ -15,10 +15,10 @@ import melnorme.util.swt.jface.text.ColorManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
-import org.eclipse.ui.console.MessageConsole;
 
-public abstract class AbstractProcessMessageConsole extends MessageConsole {
+public abstract class AbstractProcessMessageConsole extends IOConsole {
 	
 	public static class ProcessMessageConsole extends AbstractProcessMessageConsole {
 		protected ProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {

@@ -28,10 +28,6 @@ public abstract class LangImages {
 	protected static final PluginImagesHelper helper = new PluginImagesHelper(
 			LangUIPlugin.getInstance().getBundle(), IMAGES_PATH, true); 
 	
-	protected static final String T_OBJ = "obj16";
-	protected static final String T_OVR = "ovr16";
-	protected static final String T_TABS = "view16/";
-	
 	protected static String getKey(String prefix, String name) {
 		return prefix + "/" + name;
 	}
@@ -58,9 +54,19 @@ public abstract class LangImages {
 		return imageCache.getImage(imageDescriptor);
 	}
 	
+	protected static final String T_OBJ = "obj16";
+	protected static final String T_OVR = "ovr16";
+	protected static final String T_TABS = "view16";
+	
+	protected static final String LANG_ACTIONS = "icons-lang/actions/";
+	
 	/* ---------------- Common Lang images ---------------- */
 	
 	public static ImageHandle IMG_LAUNCHTAB_MAIN = createManaged(T_TABS, "main_launch_tab.png");
 	public static ImageHandle IMG_LAUNCHTAB_ARGUMENTS = createManaged(T_TABS, "arguments_tab.gif");
+	
+	public static ImageHandle IMG_SCROLL_LOCK = createManaged(LANG_ACTIONS, "lock_co.png");
+	public static ImageHandle IMG_CLEAR_CONSOLE = createManaged(LANG_ACTIONS, "clear_co.png");
+	public static ImageHandle IMG_PIN_CONSOLE = createManaged(LANG_ACTIONS, "pin.png");
 	
 }

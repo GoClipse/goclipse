@@ -12,13 +12,13 @@ package com.googlecode.goclipse.ui;
 
 import java.io.IOException;
 
-import melnorme.lang.ide.ui.build.LangOperationConsole;
-import melnorme.lang.ide.ui.build.LangOperationConsoleListener;
+import melnorme.lang.ide.ui.engine.console.LangOperationConsole;
+import melnorme.lang.ide.ui.engine.console.LangOperationConsoleListener;
+import melnorme.lang.ide.ui.engine.console.ProcessOutputToConsoleListener;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.graphics.RGB;
 
 import com.googlecode.goclipse.builder.IGoBuildListener;
 
@@ -33,12 +33,6 @@ public class GoBuilderConsoleListener extends LangOperationConsoleListener imple
 		
 		public GoBuildConsole(String name) {
 			super(name, GoPluginImages.GO_CONSOLE_ICON.getDescriptor());
-		}
-		
-		@Override
-		protected void ui_initOutputStreamColors() {
-			metaOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
-			stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 		}
 		
 	}

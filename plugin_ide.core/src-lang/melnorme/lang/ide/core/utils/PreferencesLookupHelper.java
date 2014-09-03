@@ -25,6 +25,10 @@ public class PreferencesLookupHelper {
 	protected final String qualifier;
 	protected final IScopeContext[] contexts;
 	
+	public PreferencesLookupHelper(String qualifier) {
+		this(qualifier, null);
+	}
+	
 	public PreferencesLookupHelper(String qualifier, IProject project) {
 		this.qualifier = qualifier;
 		
@@ -33,6 +37,10 @@ public class PreferencesLookupHelper {
 		} else {
 			contexts = array(InstanceScope.INSTANCE, DefaultScope.INSTANCE);
 		}
+	}
+	
+	public String getQualifier() {
+		return qualifier;
 	}
 	
 	protected IPreferencesService preferences() {

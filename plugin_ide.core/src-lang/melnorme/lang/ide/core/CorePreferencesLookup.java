@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IProject;
 public class CorePreferencesLookup extends PreferencesLookupHelper {
 
 	public CorePreferencesLookup() {
-		this(null);
+		super(LangCore.PLUGIN_ID);
 	}
 	
 	public CorePreferencesLookup(IProject project) {
