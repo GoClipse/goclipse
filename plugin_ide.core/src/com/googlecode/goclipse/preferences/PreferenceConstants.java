@@ -1,27 +1,31 @@
 package com.googlecode.goclipse.preferences;
 
+import static com.googlecode.goclipse.GoEnvironmentPrefs.getGO_OS_Default;
+import static com.googlecode.goclipse.GoEnvironmentPrefs.get_GO_ARCH_Default;
+import melnorme.lang.ide.core.utils.prefs.StringPreference;
+
 /**
  * Constant definitions for plug-in preferences
  */
-public class PreferenceConstants {
+public interface PreferenceConstants {
 
-	public static final String GO_TOOL_PATH    = "com.googlecode.goclipse.compiler.path";
-	public static final String FORMATTER_PATH  = "com.googlecode.goclipse.formatter.path";
-	public static final String DOCUMENTOR_PATH = "com.googlecode.goclipse.documentor.path";
-
-	public static final String GOPATH = "com.googlecode.goclipse.gopath";
-	public static final String GOROOT = "com.googlecode.goclipse.goroot";
-	public static final String GOOS   = "com.googlecode.goclipse.goos";
-	public static final String GOARCH = "com.googlecode.goclipse.goarch";
+	static StringPreference GO_PATH = new StringPreference("com.googlecode.goclipse.gopath", "");
+	static StringPreference GO_ROOT = new StringPreference("com.googlecode.goclipse.goroot", "");
+	static StringPreference GO_OS = new StringPreference("com.googlecode.goclipse.goos", getGO_OS_Default());
+	static StringPreference GO_ARCH = new StringPreference("com.googlecode.goclipse.goarch", get_GO_ARCH_Default());
 	
-	public static final String OS_WINDOWS = "windows";
-	public static final String OS_NACL    = "nacl";
-	public static final String OS_FREEBSD = "freebsd";
-	public static final String OS_LINUX   = "linux";
-	public static final String OS_DARWIN  = "darwin";
+	static String GO_TOOL_PATH    = "com.googlecode.goclipse.compiler.path";
+	static String FORMATTER_PATH  = "com.googlecode.goclipse.formatter.path";
+	static String DOCUMENTOR_PATH = "com.googlecode.goclipse.documentor.path";
+	
+	static String OS_WINDOWS = "windows";
+	static String OS_NACL    = "nacl";
+	static String OS_FREEBSD = "freebsd";
+	static String OS_LINUX   = "linux";
+	static String OS_DARWIN  = "darwin";
 
-	public static final String ARCH_ARM   = "arm";
-	public static final String ARCH_386   = "386";
-	public static final String ARCH_AMD64 = "amd64";
+	static String ARCH_ARM   = "arm";
+	static String ARCH_386   = "386";
+	static String ARCH_AMD64 = "amd64";
 
 }

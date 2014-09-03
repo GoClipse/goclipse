@@ -133,13 +133,13 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
   }
 
   private boolean isGoRootSet() {
-    String goRoot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
+    String goRoot = PreferenceConstants.GO_ROOT.get();
 
     return !"".equals(goRoot);
   }
 
   protected File getGoRootSrcFolder() {
-    String goRoot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
+    String goRoot = PreferenceConstants.GO_ROOT.get();
 
     File srcFolder = Path.fromOSString(goRoot).append("src/pkg").toFile();
 

@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IResource;
 
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenUnit;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
@@ -297,9 +296,9 @@ public class CodeContext {
 
 		// InterfaceParser interfaceParser = new InterfaceParser(tokenizer);
 		// find path
-		String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
-		String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
-		String goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
+		String goarch = PreferenceConstants.GO_ARCH.get();
+		String goos = PreferenceConstants.GO_OS.get();
+		String goroot = PreferenceConstants.GO_ROOT.get();
 		File pkgdir = new File(goroot + "/src/pkg/" + packagePath);
 
 		// TODO Get rid of the following duplication

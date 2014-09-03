@@ -16,7 +16,7 @@ public class ProjectPreferencePage extends FieldEditorPreferencePage {
 
 	@Override
 	protected void createFieldEditors() {
-		addField(new DirectoryFieldEditor(PreferenceConstants.GOROOT,
+		addField(new DirectoryFieldEditor(PreferenceConstants.GO_ROOT.key,
 				"GO&ROOT path:", getFieldEditorParent()));
 	}
 

@@ -22,9 +22,9 @@ public class GofixAction extends TransformTextAction {
 
 	@Override
 	protected String transformText(final String text) throws CoreException {
-		String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
-		String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
-		String goRoot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
+		String goarch = PreferenceConstants.GO_ARCH.get();
+		String goos = PreferenceConstants.GO_OS.get();
+		String goRoot = PreferenceConstants.GO_ROOT.get();
 		String gofixPath = goRoot + "/pkg/tool/"+goos+"_"+goarch+"/fix";
 		
 		

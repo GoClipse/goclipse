@@ -17,8 +17,7 @@ import org.eclipse.core.resources.IProject;
 
 /**
  * Use {@link PreferenceHelper} instances 
- * */
-@Deprecated
+ */
 public class CorePreferencesLookup extends PreferencesLookupHelper {
 
 	public CorePreferencesLookup() {
@@ -29,12 +28,9 @@ public class CorePreferencesLookup extends PreferencesLookupHelper {
 		super(LangCore.PLUGIN_ID, project);
 	}
 	
+	@Deprecated
 	public String getString(String key) {
 		return getString(key, "");
-	}
-	
-	public boolean getBoolean(String key) {
-		return getBoolean(key, false);
 	}
 	
 }

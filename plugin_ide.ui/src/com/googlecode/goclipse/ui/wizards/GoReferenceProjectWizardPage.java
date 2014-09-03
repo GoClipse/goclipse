@@ -82,7 +82,7 @@ public class GoReferenceProjectWizardPage extends WizardPage {
 	}
 
 	protected File getGoRootSrcFolder() {
-		String goRoot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
+		String goRoot = PreferenceConstants.GO_ROOT.get();
 
 		File srcFolder = Path.fromOSString(goRoot).append("src").toFile();
 
@@ -90,8 +90,8 @@ public class GoReferenceProjectWizardPage extends WizardPage {
 	}
 
 	private boolean isGoRootSet() {
-		String goRoot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
-
+		String goRoot = PreferenceConstants.GO_ROOT.get();
+		
 		return !"".equals(goRoot);
 	}
 

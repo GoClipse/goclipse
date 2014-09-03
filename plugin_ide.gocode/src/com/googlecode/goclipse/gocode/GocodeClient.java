@@ -47,9 +47,9 @@ public class GocodeClient {
 		  throws CoreException {
     error = null;
     
-    String goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
-    String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
-    String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
+    String goroot = PreferenceConstants.GO_ROOT.get();
+    String goarch = PreferenceConstants.GO_ARCH.get();
+    String goos = PreferenceConstants.GO_OS.get();
     
     
     IPath gocodePath = GocodePlugin.getPlugin().getBestGocodeInstance();

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public abstract class PreferenceHelper<T> {
 	public PreferenceHelper(String pluginId, String key, T defaultValue) {
 		this.pluginId = pluginId;
 		this.key = key;
-		this.defaultValue = defaultValue;
+		this.defaultValue = assertNotNull(defaultValue);
 		
 		initializeDefaultValueInDefaultScope();
 		

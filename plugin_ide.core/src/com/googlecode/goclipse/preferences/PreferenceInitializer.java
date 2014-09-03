@@ -6,53 +6,23 @@ import java.util.List;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import com.googlecode.goclipse.core.GoCore;
+
+import com.googlecode.goclipse.GoEnvironmentPrefs;
 
 
 /**
  * Class used to initialize default preference values.
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
-
-	private static final String OS_ARCH = "os.arch";
-
-	@Override
-  public void initializeDefaultPreferences() {
-		
-		IEclipsePreferences coreDefaults = DefaultScope.INSTANCE.getNode(GoCore.PLUGIN_ID);
-		
-		if (MiscUtil.OS_IS_WINDOWS){
-			coreDefaults.put(PreferenceConstants.GOOS, PreferenceConstants.OS_WINDOWS);
-		} else if (MiscUtil.OS_IS_LINUX) {
-			coreDefaults.put(PreferenceConstants.GOOS, PreferenceConstants.OS_LINUX);
-		} else if (MiscUtil.OS_IS_MAC) {
-			coreDefaults.put(PreferenceConstants.GOOS, PreferenceConstants.OS_DARWIN);
-		}
-
-		if (isAMD64()){
-			coreDefaults.put(PreferenceConstants.GOARCH, PreferenceConstants.ARCH_AMD64);
-		} else if (is386()){
-			coreDefaults.put(PreferenceConstants.GOARCH, PreferenceConstants.ARCH_386);
-		}
-		
-	}
 	
-  private static boolean isAMD64() {
-		String osProp = System.getProperty(OS_ARCH);
-		return "x86_64".equals(osProp) || "amd64".equals(osProp);
-	}
-
-	private static boolean is386() {
-		String osProp = System.getProperty(OS_ARCH);
-		return "i386".equals(osProp) || "x86".equals(osProp) || "i686".equals(osProp);
+	@Override
+	public void initializeDefaultPreferences() {
 	}
 	
 	public static String getDefaultPlatformChar() {
-		if (isAMD64()){
+		if (GoEnvironmentPrefs.isAMD64()){
 			return "6";
-		} else if (is386()) {
+		} else if (GoEnvironmentPrefs.is386()) {
 			return "8";
 		}
 		return null;
@@ -80,7 +50,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	    names.add(defaultCompiler);
 	  }
 	  
-	  if (isAMD64()) {
+	  if (GoEnvironmentPrefs.isAMD64()) {
 	    String altCompiler = get32bitCompilerName();
 	    
 	    if (altCompiler != null) {

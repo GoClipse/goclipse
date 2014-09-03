@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -73,10 +72,10 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 	public static Map<String, String> getGoToolEnvironment() {
 		Map<String, String> goEnv = new HashMap<String, String>();
 		
-		String goroot = LangCore.getPreferences().getString(PreferenceConstants.GOROOT);
-		String goos   = LangCore.getPreferences().getString(PreferenceConstants.GOOS);
-		String goarch = LangCore.getPreferences().getString(PreferenceConstants.GOARCH);
-		String gopath = LangCore.getPreferences().getString(PreferenceConstants.GOPATH);
+		String goroot = PreferenceConstants.GO_ROOT.get();
+		String goos   = PreferenceConstants.GO_OS.get();
+		String goarch = PreferenceConstants.GO_ARCH.get();
+		String gopath = PreferenceConstants.GO_PATH.get();
 		
 		goEnv.put(GoConstants.GOROOT, goroot);
 		goEnv.put(GoConstants.GOOS,   goos);

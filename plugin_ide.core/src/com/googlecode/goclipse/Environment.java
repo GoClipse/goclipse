@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -61,9 +60,9 @@ public class Environment {
 	 * @return true if the preferences have been set for all values
 	 */
 	public boolean isValid() {
-		String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
-		String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
-		String goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
+		String goarch = PreferenceConstants.GO_ARCH.get();
+		String goos = PreferenceConstants.GO_OS.get();
+		String goroot = PreferenceConstants.GO_ROOT.get();
 		
 		if (goroot == null || goroot.length() == 0 || goos == null ||
 			goos.length() == 0 || goarch == null || goarch.length() == 0) {
@@ -191,8 +190,8 @@ public class Environment {
 	}
 
 	private IPath getDefaultPkgOutputFolder() {
-		String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
-		String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
+		String goarch = PreferenceConstants.GO_ARCH.get();
+		String goos = PreferenceConstants.GO_OS.get();
 		return Path.fromOSString(DEFAULT_PKG_OUTPUT_FOLDER).append(goos+"_"+goarch);
 	}
 
@@ -215,7 +214,7 @@ public class Environment {
 	public boolean isStandardLibrary(IProject project, String packagePath) {
 		
 		String libraryName = packagePath + GoConstants.GO_LIBRARY_FILE_EXTENSION;
-		String goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
+		String goroot = PreferenceConstants.GO_ROOT.get();
 		
 		File libFile = Path.fromOSString(goroot).append(getDefaultPkgOutputFolder()).append(libraryName).toFile();
 		return libFile.exists();
@@ -241,7 +240,7 @@ public class Environment {
 	 * @return
 	 */
 	public String getExecutableExtension() {
-		if (PreferenceConstants.OS_WINDOWS.equals(GoCore.getPreferences().getString(PreferenceConstants.GOOS))){
+		if (PreferenceConstants.OS_WINDOWS.equals(PreferenceConstants.GO_OS.get())){
 			return ".exe";
 		}
 		return "";
@@ -339,7 +338,7 @@ public class Environment {
 		
 		// Plug-in property comes next
 		if (goPath == null || "".equals(goPath)) {
-			goPath = GoCore.getPreferences().getString(PreferenceConstants.GOPATH);
+			goPath = PreferenceConstants.GO_PATH.get();
 		}
 
 		// last ditch effort via a system environment variable
@@ -380,7 +379,7 @@ public class Environment {
 		
 		// Plug-in property comes next
 		if (goroot == null || "".equals(goroot)) {
-			goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
+			goroot = PreferenceConstants.GO_ROOT.get();
 		}
 
 		// last ditch effort via a system environment variable
