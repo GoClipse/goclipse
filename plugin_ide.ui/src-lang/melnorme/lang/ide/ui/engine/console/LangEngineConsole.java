@@ -30,6 +30,16 @@ public class LangEngineConsole extends AbstractProcessMessageConsole {
 		super(name, imageDescriptor);
 		
 		infoOut = newOutputStream();
+		
+		owned.add(EngineConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.addPrefChangeListener(true, 
+			new IPrefChangeListener() {
+				@Override
+				public void handleChange() {
+					stdErr.setActivateOnWrite(EngineConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get());
+				}
+			}
+		));
+		
 		postToUI_initOutputStreamColors();
 	}
 	
@@ -41,43 +51,31 @@ public class LangEngineConsole extends AbstractProcessMessageConsole {
 	
 	@Override
 	protected void ui_initStreamColors() {
-		IPrefChangeListener listener;
 		
-		listener = new IPrefChangeListener() {
+		owned.add(EngineConsolePrefs.INFO_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
 			@Override
 			public void handleChange() {
 				infoOut.setColor(EngineConsolePrefs.INFO_COLOR.getManagedColor());
 			}
-		};
-		owned.add(EngineConsolePrefs.INFO_COLOR.addPrefChangeListener(listener));
-		listener.handleChange();
-		
-		listener = new IPrefChangeListener() {
+		}));
+		owned.add(EngineConsolePrefs.STDERR_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
 			@Override
 			public void handleChange() {
 				stdErr.setColor(EngineConsolePrefs.STDERR_COLOR.getManagedColor());
 			}
-		};
-		owned.add(EngineConsolePrefs.STDERR_COLOR.addPrefChangeListener(listener));
-		listener.handleChange();
-		
-		listener = new IPrefChangeListener() {
+		}));
+		owned.add(EngineConsolePrefs.STDOUT_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
 			@Override
 			public void handleChange() {
 				stdOut.setColor(EngineConsolePrefs.STDOUT_COLOR.getManagedColor());
 			}
-		};
-		owned.add(EngineConsolePrefs.STDOUT_COLOR.addPrefChangeListener(listener));
-		listener.handleChange();
-		
-		listener = new IPrefChangeListener() {
+		}));
+		owned.add(EngineConsolePrefs.BACKGROUND_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
 			@Override
 			public void handleChange() {
 				setBackground(EngineConsolePrefs.BACKGROUND_COLOR.getManagedColor());
 			}
-		};
-		owned.add(EngineConsolePrefs.BACKGROUND_COLOR.addPrefChangeListener(listener));
-		listener.handleChange();
+		}));
 		
 	}
 	

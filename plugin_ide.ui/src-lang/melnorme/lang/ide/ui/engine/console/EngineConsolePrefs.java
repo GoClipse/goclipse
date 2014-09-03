@@ -16,8 +16,8 @@ import melnorme.lang.ide.ui.preferences.ColorPreference;
 
 public interface EngineConsolePrefs extends OperationsConsolePrefDefaults_Actual {
 	
-	BooleanPreference ACTIVATE_ON_NEW_MESSAGES = 
-			new BooleanPreference("console.do_activate", true); 
+	BooleanPreference ACTIVATE_ON_ERROR_MESSAGES = 
+			new BooleanPreference("console.do_activate", false); 
 	
 	ColorPreference INFO_COLOR = 
 			new ColorPreference("console.info_color", INFO_COLOR_DEFAULT); 

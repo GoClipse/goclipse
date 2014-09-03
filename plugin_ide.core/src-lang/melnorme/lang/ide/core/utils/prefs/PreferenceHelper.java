@@ -65,7 +65,8 @@ public abstract class PreferenceHelper<T> {
 		return DefaultScope.INSTANCE.getNode(getQualifier());
 	}
 	
-	public IPreferenceChangeListener_Ext addPrefChangeListener(final IPrefChangeListener listener) {
+	public IPreferenceChangeListener_Ext addPrefChangeListener(boolean initializeChange, 
+			final IPrefChangeListener listener) {
 		final IEclipsePreferences node = InstanceScope.INSTANCE.getNode(getQualifier());
 		IPreferenceChangeListener_Ext prefListener = new IPreferenceChangeListener_Ext() {
 			
@@ -82,6 +83,11 @@ public abstract class PreferenceHelper<T> {
 			}
 		};
 		node.addPreferenceChangeListener(prefListener);
+		
+		if(initializeChange) {
+			listener.handleChange();
+		}
+		
 		return prefListener;
 	}
 	

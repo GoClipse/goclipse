@@ -38,11 +38,8 @@ public abstract class LangEngineConsolePrefPage extends FieldEditorPreferencePag
 	protected void createFieldEditors() {
 		Composite parent = getFieldEditorParent();
 		
-		if(false) {
-			// TODO
-			addField(new BooleanFieldEditor(ACTIVATE_ON_NEW_MESSAGES.key, 
-				"Activate on new messages", parent));
-		}
+		addField(new BooleanFieldEditor(ACTIVATE_ON_ERROR_MESSAGES.key, 
+			"Activate console on error messages", parent));
 		
 		SWTFactoryUtil.createLabel(parent, SWT.LEFT, "Console color settings:", 
 			GridDataFactory.fillDefaults().span(2, 1).create());

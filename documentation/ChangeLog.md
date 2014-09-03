@@ -8,7 +8,9 @@
  * Updated/tested GoClipse to CDT 4.4. 
   * Added Dynamic printf ruler action to source editor.
   * For more info on these new CDT 4.4 debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug
- * Added build console preference page. Can now customize build console text colors. 
+ * Added build console preference page. 
+  * Can now customize build console text colors.
+  * Activate console on error message option.
 
 
 ### Goclipse 0.8.0
