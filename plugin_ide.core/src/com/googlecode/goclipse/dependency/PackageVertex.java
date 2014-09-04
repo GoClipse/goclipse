@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 
-import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.core.GoCore;
+import com.googlecode.goclipse.core.GoWorkspace;
 
 /**
  * 
@@ -53,7 +55,13 @@ class PackageVertex {
 	 * @return
 	 */
 	static PackageVertex getPackageVertex(IProject project, String packageName) {
-		String pkgOutPath =Environment.INSTANCE.getPkgOutputFolder(project).toOSString();
+		String pkgOutPath;
+		try {
+			pkgOutPath = new GoWorkspace(project).getPkgFolderRelativePath().toOSString();
+		} catch (CoreException e) {
+			GoCore.logError(e);
+			pkgOutPath = "pkg";
+		}
 		if (packageName.contains(pkgOutPath)) {
 			String p[] = packageName.split(pkgOutPath);
 			packageName = p[1].replace(".a", "");

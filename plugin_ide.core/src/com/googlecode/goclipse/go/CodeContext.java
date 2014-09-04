@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IResource;
 
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenUnit;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
@@ -34,7 +35,6 @@ import com.googlecode.goclipse.go.lang.parser.ScopeParser;
 import com.googlecode.goclipse.go.lang.parser.TokenizedPage;
 import com.googlecode.goclipse.go.lang.parser.TypeParser;
 import com.googlecode.goclipse.go.lang.parser.VariableParser;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
  * Used to provide code completions and navigation through the code base
@@ -296,11 +296,9 @@ public class CodeContext {
 
 		// InterfaceParser interfaceParser = new InterfaceParser(tokenizer);
 		// find path
-		String goarch = PreferenceConstants.GO_ARCH.get();
-		String goos = PreferenceConstants.GO_OS.get();
-		String goroot = PreferenceConstants.GO_ROOT.get();
+		String goroot = GoEnvironmentPrefs.getGoRoot().getLocation();
 		File pkgdir = new File(goroot + "/src/pkg/" + packagePath);
-
+		
 		// TODO Get rid of the following duplication
 
 		if (pkgdir.exists() && pkgdir.isDirectory()) {

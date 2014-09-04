@@ -1,6 +1,5 @@
 package com.googlecode.goclipse;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -37,9 +36,6 @@ public class Environment {
 	private static final String PROJECT_AUTO_UNIT_TEST_REGEX    = "com.googlecode.goclipse.environment.auto.unit.test.regex";
 	private static final String PROJECT_AUTO_UNIT_TEST_MAX_TIME = "com.googlecode.goclipse.environment.auto.unit.test.max.time";
 
-	public static final String DEFAULT_PKG_OUTPUT_FOLDER = "pkg";
-	public static final String DEFAULT_BIN_OUTPUT_FOLDER = "bin";
-
 	public static final boolean DEBUG = Boolean.getBoolean("goclipse.debug");
 	
 	public static final Environment INSTANCE = new Environment();
@@ -54,24 +50,6 @@ public class Environment {
 	private Environment() {
 		preferences = Platform.getPreferencesService();
 	}
-
-	/**
-	 * 
-	 * @return true if the preferences have been set for all values
-	 */
-	public boolean isValid() {
-		String goarch = PreferenceConstants.GO_ARCH.get();
-		String goos = PreferenceConstants.GO_OS.get();
-		String goroot = PreferenceConstants.GO_ROOT.get();
-		
-		if (goroot == null || goroot.length() == 0 || goos == null ||
-			goos.length() == 0 || goarch == null || goarch.length() == 0) {
-			return false;
-		}
-		
-		return true;
-	}
-	
 
 	/**
 	 * @param project
@@ -182,42 +160,12 @@ public class Environment {
 		return result;
 	}
 
-	/**
-	 * Return the output folder for the active project
-	 */
-	public IPath getPkgOutputFolder(IProject project) {
-		return getDefaultPkgOutputFolder();
-	}
-
-	private IPath getDefaultPkgOutputFolder() {
-		String goarch = PreferenceConstants.GO_ARCH.get();
-		String goos = PreferenceConstants.GO_OS.get();
-		return Path.fromOSString(DEFAULT_PKG_OUTPUT_FOLDER).append(goos+"_"+goarch);
-	}
-
-
-	/**
-	 * Return the output folder for the active project
-	 */
-	public IPath getBinOutputFolder(IProject project) {
-		return Path.fromOSString(DEFAULT_BIN_OUTPUT_FOLDER);
-	}
-
 	public IPath getDefaultCmdSourceFolder() {
 		return Path.fromOSString("src");
 	}
 
 	public IPath getDefaultPkgSourceFolder() {
 		return Path.fromOSString("src");
-	}
-
-	public boolean isStandardLibrary(IProject project, String packagePath) {
-		
-		String libraryName = packagePath + GoConstants.GO_LIBRARY_FILE_EXTENSION;
-		String goroot = PreferenceConstants.GO_ROOT.get();
-		
-		File libFile = Path.fromOSString(goroot).append(getDefaultPkgOutputFolder()).append(libraryName).toFile();
-		return libFile.exists();
 	}
 
 	/**
@@ -236,14 +184,8 @@ public class Environment {
 		return getDefaultPkgSourceFolder().isPrefixOf(path);
 	}
 
-	/**
-	 * @return
-	 */
-	public String getExecutableExtension() {
-		if (PreferenceConstants.OS_WINDOWS.equals(PreferenceConstants.GO_OS.get())){
-			return ".exe";
-		}
-		return "";
+	public static String getExecutableExtension() {
+		return MiscUtil.OS_IS_WINDOWS ? ".exe" : "";
 	}
 	
 	/**

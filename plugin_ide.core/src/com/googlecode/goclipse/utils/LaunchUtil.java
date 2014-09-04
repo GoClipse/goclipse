@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.core.GoWorkspace;
 
 public class LaunchUtil {
 	
@@ -30,9 +31,7 @@ public class LaunchUtil {
 	 * @return
 	 */
 	public static IPath getExecutablePath(String cmdName, IProject project) {
-		Environment instance = Environment.INSTANCE;
-		IPath binOutputFolder = instance.getBinOutputFolder(project);
-		IPath executablePath = binOutputFolder.append(cmdName + instance.getExecutableExtension());
-		return executablePath;
+		IPath binOutputFolder = GoWorkspace.getBinOutputFolder(project);
+		return binOutputFolder.append(cmdName + Environment.getExecutableExtension());
 	}
 }

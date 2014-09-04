@@ -23,6 +23,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.Launch;
 
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.utils.LaunchUtil;
 
 public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurationDelegate {
@@ -46,8 +47,7 @@ public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurati
 		IProject prj = getProject(configuration);
 		
 		if (Environment.INSTANCE.isCmdFile(programRelativePath)) {
-			IPath binRel = Environment.INSTANCE.getBinOutputFolder(prj);
-			IPath exeBase = binRel;
+			IPath exeBase = new GoWorkspace(prj).getBinFolderRelativePath();
 			String cmdName = LaunchUtil.getCmdName(programRelativePath);
 			IPath executablePath = LaunchUtil.getExecutablePath(cmdName, prj);
 			String executableName = executablePath.lastSegment();

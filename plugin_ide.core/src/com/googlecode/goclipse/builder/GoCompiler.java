@@ -25,9 +25,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.QualifiedName;
+
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
+import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Import;
@@ -214,7 +216,7 @@ public class GoCompiler {
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
-		final IPath  binFolder       = Environment.INSTANCE.getBinOutputFolder(project);
+		final IPath  binFolder       = GoWorkspace.getBinOutputFolder(project);
 		
 		final String compilerPath = PreferenceConstants.COMPILER_PATH.get();
 		final String outExtension = (MiscUtil.OS_IS_WINDOWS ? ".exe" : "");
@@ -226,7 +228,7 @@ public class GoCompiler {
 			
 			MarkerUtilities.deleteFileMarkers(file);
 			if(Environment.INSTANCE.isCmdSrcFolder(project, (IFolder)file.getParent())){
-				outPath = projectLocation.toOSString() + File.separator + binFolder +  File.separator + target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, outExtension);
+				outPath = projectLocation.append(binFolder).toOSString() + File.separator + target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, outExtension);
 				cmd     = new String[]{
 						        compilerPath,
 						        GoConstants.GO_BUILD_COMMAND,
@@ -236,7 +238,7 @@ public class GoCompiler {
 				
 			} else {
 				MarkerUtilities.deleteFileMarkers(file.getParent());
-				outPath = projectLocation.toOSString() + File.separator + binFolder +  File.separator + target.getParentFile().getName() + outExtension;
+				outPath = projectLocation.append(binFolder).toOSString() + File.separator + target.getParentFile().getName() + outExtension;
 				cmd = new String[] {
 			        compilerPath,
 			        GoConstants.GO_BUILD_COMMAND,

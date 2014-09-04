@@ -15,14 +15,14 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
-import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.builder.StreamAsLines;
 import com.googlecode.goclipse.core.GoCore;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
+import com.googlecode.goclipse.core.GoEnvironmentPrefs.GoRoot;
+import com.googlecode.goclipse.core.GoWorkspace;
 
 /**
  * Use the configured GoCode settings to call a GoCode client, which ends up talking to a running
@@ -47,9 +47,7 @@ public class GocodeClient {
 		  throws CoreException {
     error = null;
     
-    String goroot = PreferenceConstants.GO_ROOT.get();
-    String goarch = PreferenceConstants.GO_ARCH.get();
-    String goos = PreferenceConstants.GO_OS.get();
+    GoRoot goRoot = GoEnvironmentPrefs.getGoRoot();
     
     
     IPath gocodePath = GocodePlugin.getPlugin().getBestGocodeInstance();
@@ -67,14 +65,12 @@ public class GocodeClient {
     arguments.add("set");
     arguments.add("lib-path");
 
-    IPath rootPath = new Path(goroot).append("pkg").append(goos + "_" + goarch);
-
     if (project == null) {
-      arguments.add(rootPath.toOSString());
+      arguments.add(goRoot.getGoPackagesLocation().toString());
     } else {
-      IPath projectPath = project.getLocation().append(Environment.INSTANCE.getPkgOutputFolder(project));
-
-      arguments.add(rootPath.toOSString() + File.pathSeparatorChar + projectPath.toOSString());
+      IPath projectPath = new GoWorkspace(project).getPkgFolderLocation();
+      
+      arguments.add(goRoot.getGoPackagesLocation().toString() + File.pathSeparatorChar + projectPath.toOSString());
     }
     
 	GoToolManager.getDefault().startPrivateGoTool(gocodePathStr, arguments, null).strictAwaitTermination(100);

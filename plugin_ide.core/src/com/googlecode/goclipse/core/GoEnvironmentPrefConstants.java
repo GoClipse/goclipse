@@ -16,8 +16,8 @@ import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface GoEnvironmentPrefConstants {
 	
-	static StringPreference GO_PATH = new StringPreference("com.googlecode.goclipse.gopath", "");
 	static StringPreference GO_ROOT = new StringPreference("com.googlecode.goclipse.goroot", "");
+	static StringPreference GO_PATH = new StringPreference("com.googlecode.goclipse.gopath", "");
 	static StringPreference GO_OS = new StringPreference("com.googlecode.goclipse.goos", getGO_OS_Default());
 	static StringPreference GO_ARCH = new StringPreference("com.googlecode.goclipse.goarch", get_GO_ARCH_Default());
 	

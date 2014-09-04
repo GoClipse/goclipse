@@ -7,8 +7,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.core.GoWorkspace;
 
 /**
  * 
@@ -31,10 +31,11 @@ public class HideBinFolderFilter extends ViewerFilter {
 
 				if (project.hasNature(GoNature.NATURE_ID)) {
 					if (folder.getParent().equals(project)) {
-						Environment env = Environment.INSTANCE;
-						IPath pkgOut = env.getPkgOutputFolder(project);
-						IPath cmdOut = env.getBinOutputFolder(project);
-						return !(folder.getProjectRelativePath().isPrefixOf(pkgOut) || folder.getProjectRelativePath().isPrefixOf(cmdOut));
+						GoWorkspace goWorkspace = new GoWorkspace(project);
+						IPath pkgOut = goWorkspace.getPkgFolderRelativePath();
+						IPath cmdOut = goWorkspace.getBinFolderRelativePath();
+						return !(folder.getProjectRelativePath().isPrefixOf(pkgOut) ||
+								folder.getProjectRelativePath().isPrefixOf(cmdOut));
 					}
 				}
 			}

@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.core.GoCore;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 
 /**
  * An action to run the gofix command.
@@ -22,19 +22,15 @@ public class GofixAction extends TransformTextAction {
 
 	@Override
 	protected String transformText(final String text) throws CoreException {
-		String goarch = PreferenceConstants.GO_ARCH.get();
-		String goos = PreferenceConstants.GO_OS.get();
-		String goRoot = PreferenceConstants.GO_ROOT.get();
-		String gofixPath = goRoot + "/pkg/tool/"+goos+"_"+goarch+"/fix";
-		
+		String goFixPath = GoEnvironmentPrefs.getGoRoot().getToolsLocation() + "/fix";
 		
 		IProject project = null; // TODO
 		IProgressMonitor pm = new NullProgressMonitor(); // TODO
 		
-		ExternalProcessResult processResult = GoToolManager.getDefault().runGoTool(gofixPath, project, pm, text);
+		ExternalProcessResult processResult = GoToolManager.getDefault().runGoTool(goFixPath, project, pm, text);
 		if (processResult.exitValue != 0) {
 			throw GoCore.createCoreException(
-				gofixPath + " completed with non-zero exit value (" + processResult.exitValue + ")", null);
+				goFixPath + " completed with non-zero exit value (" + processResult.exitValue + ")", null);
 		}
 		
 		String transformedText = processResult.getStdOutBytes().toString();

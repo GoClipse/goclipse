@@ -33,8 +33,8 @@ import org.eclipse.ui.internal.registry.PerspectiveDescriptor;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.ui.GoPerspective;
 
 /**
@@ -192,11 +192,9 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			IFolder srcFolder = project.getFolder("src");
 			createFolder(srcFolder);
 
-			IFolder binFolder = project.getFolder(Environment.INSTANCE.getBinOutputFolder(project));
-			createFolder(binFolder);
-
-			IFolder pkgFolder = project.getFolder(Environment.INSTANCE.getPkgOutputFolder(project));
-			createFolder(pkgFolder);
+			GoWorkspace goWorkspace = new GoWorkspace(project);
+			createFolder(project.getFolder(goWorkspace.getBinFolderRelativePath()));
+			createFolder(project.getFolder(goWorkspace.getPkgFolderRelativePath()));
 		}
 
 		private void createFolder(IFolder folder) throws CoreException {

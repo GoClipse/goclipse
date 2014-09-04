@@ -29,6 +29,8 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
+import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.dependency.DependencyGraph;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
@@ -102,7 +104,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	 */
 	private boolean checkBuild() throws CoreException {
 		
-		if (!Environment.INSTANCE.isValid()){
+		if (!GoEnvironmentPrefs.isValid()){
 			MarkerUtilities.addMarker(getProject(), GoConstants.INVALID_PREFERENCES_MESSAGE);
 			return false;
 			
@@ -183,16 +185,10 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param file
-	 * @return
-	 */
-	public final String computePackagePath(File file) {
+	public final String computePackagePath(File file) throws CoreException {
 		IProject project = getProject();
 		final IPath projectLocation = project.getLocation();
 		final IFile ifile = project.getFile(file.getAbsolutePath().replace(project.getLocation().toOSString(), ""));
-		IPath pkgFolder = Environment.INSTANCE.getPkgOutputFolder(project);
 		
 		String pkgname = ifile.getParent().getLocation().toOSString().replace(projectLocation.toOSString(), "");
 		if(file.isDirectory()){
@@ -200,8 +196,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		}
 		
 		String[] split = pkgname.split(File.separatorChar == '\\' ? "\\\\" : File.separator);
-		String path = projectLocation.toOSString() + File.separator + pkgFolder;
-
+		
+		String path = new GoWorkspace(project).getPkgFolderLocation().toOSString();
 		for (int i = 2; i < split.length; i++) {
 			path += File.separator + split[i];
 		}
@@ -219,7 +215,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	 * @param project
 	 * @param delta
 	 * @param pmonitor
-	 * @throws CoreException
 	 */
 	protected void incrementalBuild(IProject project, IResourceDelta delta,
 			IProgressMonitor pmonitor) throws CoreException {
@@ -307,17 +302,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	}
 	
 	
-	/**
-     * @param project
-     * @param srcfolders
-     * @param monitor
-     * @param graph
-     * @param packages
-     * @param file
-     * @param pkg
-     */
     private void buildDependencies(IProject project, List<IFolder> srcfolders, SubMonitor monitor,
-            DependencyGraph graph, File file, String pkg) {
+            DependencyGraph graph, File file, String pkg) throws CoreException {
 
 		Set<String> built   = new HashSet<String>();
 		Set<String> depends = graph.getReverseDependencies(pkg);
@@ -418,16 +404,13 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		
 		MarkerUtilities.deleteAllMarkers(project);
 		
-		IPath binPath = Environment.INSTANCE.getBinOutputFolder(project);
-		File binFolder = new File(project.getLocation().append(binPath).toOSString());
+		File binFolder = new File(new GoWorkspace(project).getBinFolderLocation().toOSString());
 		
 		if (binFolder.exists()) {
 			deleteFolder(binFolder, true);
 		}
 		
-		IPath pkgPath = Environment.INSTANCE.getPkgOutputFolder(project);
-		
-		File pkgFolder = new File(project.getLocation().append(pkgPath).toOSString());
+		File pkgFolder = new GoWorkspace(project).getGoPackagesLocation().toFile();
 		
 		if (pkgFolder.exists()) {
 			deleteFolder(pkgFolder, true);
