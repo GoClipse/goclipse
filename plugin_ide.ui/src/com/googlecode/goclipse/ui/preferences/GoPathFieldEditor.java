@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 /**
  * A field editor for multiple directory paths preference. A standard directory
  * dialog appears when the user presses the change button.
+ * @deprecated
  */
 public class GoPathFieldEditor extends DirectoryFieldEditor {
 	private String delim;

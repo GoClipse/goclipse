@@ -17,7 +17,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.builder.GoCompiler;
+import com.googlecode.goclipse.builder.GoGet;
 
 /**
  * 
@@ -55,11 +55,10 @@ final public class GoGetActionDelegate implements IEditorActionDelegate {
 				ps.busyCursorWhile(new IRunnableWithProgress() {
 					@Override
 					public void run(IProgressMonitor pm) {
-						GoCompiler compiler = new GoCompiler();
 						final IEditorInput input = editor.getEditorInput();
 						IFile file = ((IFileEditorInput) input).getFile();
 						IProject project = file.getProject();
-						compiler.goGetDependencies(project, pm, file.getLocation().toFile());
+						GoGet.goGetDependencies(project, pm, file.getLocation().toFile());
 					}
 				});
 				

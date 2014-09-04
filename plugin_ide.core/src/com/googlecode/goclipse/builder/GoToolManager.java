@@ -22,6 +22,7 @@ import java.util.Map;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
+import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -36,12 +37,24 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
  * Manager for running various go tools, usually for build.
  * Note that running such tools under this class will notify Eclipse console listeners.
  */
-public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
+public class GoToolManager {
 	
-	protected static GoToolManager instance = new GoToolManager();
+	private static GoToolManager instance = new GoToolManager();
+	private final ListenerListHelper<IGoBuildListener> processListenersHelper = new ListenerListHelper<>();
+	
+	private GoToolManager() {
+	}
 	
 	public static GoToolManager getDefault() {
 		return instance;
+	}
+	
+	public void addBuildProcessListener(IGoBuildListener processListener) {
+		processListenersHelper.addListener(processListener);
+	}
+	
+	public void removeBuildProcessListener(IGoBuildListener processListener) {
+		processListenersHelper.removeListener(processListener);
 	}
 	
 	protected void notifyBuildStarting(IProject project) {

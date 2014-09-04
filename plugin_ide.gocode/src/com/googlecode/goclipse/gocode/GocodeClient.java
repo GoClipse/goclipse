@@ -72,7 +72,7 @@ public class GocodeClient {
     if (project == null) {
       arguments.add(rootPath.toOSString());
     } else {
-      IPath projectPath = project.getLocation().append(Environment.INSTANCE.getPkgOutputFolder(project));
+      IPath projectPath = project.getLocation().append(Environment.INSTANCE.getPkgOutputFolder());
 
       arguments.add(rootPath.toOSString() + File.pathSeparatorChar + projectPath.toOSString());
     }

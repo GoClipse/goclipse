@@ -1,7 +1,6 @@
 package com.googlecode.goclipse.ui.navigator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -47,27 +46,17 @@ public class GoNavigatorContentProvider implements ITreeContentProvider,
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof IProject) {
 			IProject project = (IProject) parentElement;
-			List<Object> result = new ArrayList<Object>();
+			Object[] result = new Object[2];
 
 			IFolder srcFolder = project.getFolder("src");
-			result.add(new GoSourceFolder(srcFolder));
+			result[0] = new GoSourceFolder(srcFolder);
 			
 			Environment env = Environment.INSTANCE;
 
 			String goRoot = env.getGoRoot(project);
-			GoExternalFolder goRootFolder = createLibrary(project, goRoot, "src/pkg");
-			if (goRootFolder != null) {
-				result.add(goRootFolder);
-			}
+			result[1] = createLibrary(project, goRoot, "src/pkg");
 			
-			String[] goPaths = env.getGoPath(project);
-			for(String goPath: goPaths) {
-				GoExternalFolder goPathFolder = createLibrary(project, goPath, "src");
-				if (goPathFolder != null) {
-					result.add(goPathFolder);
-				}
-			}
-			return result.toArray();
+			return result;
 		} else if (parentElement instanceof IGoSourceContainer) {
 			IGoSourceContainer srcCont = (IGoSourceContainer) parentElement;
 			return srcCont.getChildren();

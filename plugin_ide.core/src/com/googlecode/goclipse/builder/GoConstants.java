@@ -6,14 +6,13 @@ import melnorme.lang.ide.launching.LaunchConstants;
  * 
  */
 public class GoConstants {
-	
-	public static final String GO_SOURCE_FILE_EXTENSION  = ".go";
+
 	public static final String GO_TEST_FILE_EXTENSION    = "_test.go";
 	public static final String GO_LIBRARY_FILE_EXTENSION = ".a";
 
 	public static final String OBJ_FILE_DIRECTORY   = "_obj";
 	public static final String TEST_FILE_DIRECTORY  = "_test";
-	public static final String GO_TEST_MAIN 		= "_testmain" + GO_SOURCE_FILE_EXTENSION;
+	public static final String GO_TEST_MAIN 		= "_testmain.go";
 	public static final String EXE_FILE_DIRECTORY   = "out";
 	public static final String COMPILER_OPTION_I 	= "-I";
 	public static final String COMPILER_OPTION_L 	= "-L";

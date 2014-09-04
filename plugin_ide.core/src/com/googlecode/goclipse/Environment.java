@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import melnorme.utilbox.misc.MiscUtil;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -159,7 +157,7 @@ public class Environment {
 		return preferences;
 	}
 	
-	public String[] getSourceFoldersAsStringArray(IProject project) {
+	public String[] getSourceFoldersAsStringArray() {
 		return new String[] {"src"};
 	}
 
@@ -171,7 +169,7 @@ public class Environment {
 	public List<IFolder> getSourceFolders(IProject project) {
 		List<IFolder> result = new ArrayList<IFolder>();
 		
-		for (String path : getSourceFoldersAsStringArray(project)) {
+		for (String path : getSourceFoldersAsStringArray()) {
 			IResource resource = project.findMember(path);
 			
 			if (resource instanceof IFolder) {
@@ -186,7 +184,7 @@ public class Environment {
 	/**
 	 * Return the output folder for the active project
 	 */
-	public IPath getPkgOutputFolder(IProject project) {
+	public IPath getPkgOutputFolder() {
 		return getDefaultPkgOutputFolder();
 	}
 
@@ -200,7 +198,7 @@ public class Environment {
 	/**
 	 * Return the output folder for the active project
 	 */
-	public IPath getBinOutputFolder(IProject project) {
+	public IPath getBinOutputFolder() {
 		return Path.fromOSString(DEFAULT_BIN_OUTPUT_FOLDER);
 	}
 
@@ -212,7 +210,7 @@ public class Environment {
 		return Path.fromOSString("src");
 	}
 
-	public boolean isStandardLibrary(IProject project, String packagePath) {
+	public boolean isStandardLibrary(String packagePath) {
 		
 		String libraryName = packagePath + GoConstants.GO_LIBRARY_FILE_EXTENSION;
 		String goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
@@ -296,78 +294,6 @@ public class Environment {
 		}
 		
 		return true;
-	}
-
-	/**
-	 * 
-	 * @param project
-	 * @param file
-	 * @return
-	 */
-	public boolean isSourceFile(IProject project, IFile file) {
-		IPath p = file.getProjectRelativePath();
-	    IResource res = project.findMember(p);
-	    if ( res==null ) {
-	    	return false;
-	    }
-	    
-	    if ( !file.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION) ) {
-	    	return false;
-	    }
-	    
-	    for (IFolder folder : getSourceFolders(project)) {
-	    	if(file.getLocation().toOSString().startsWith(folder.getLocation().toOSString())) {
-	    		return true;
-	    	}
-	    }
-	    
-	    return false;
-    }
-	
-	/**
-	 * @param project
-	 * @return
-	 */
-	public String[] getGoPath(IProject project) {
-		String[] path   = { "" };
-		String   goPath = null;
-		
-		// Project property takes precedence
-		if (project != null) {
-			goPath = getProperties(project).getProperty(GoConstants.GOPATH);
-		}
-		
-		// Plug-in property comes next
-		if (goPath == null || "".equals(goPath)) {
-			goPath = GoCore.getPreferences().getString(PreferenceConstants.GOPATH);
-		}
-
-		// last ditch effort via a system environment variable
-		if (goPath == null || "".equals(goPath)) {
-			goPath = System.getenv(GoConstants.GOPATH);
-		}
-
-		// If null, we give up and just return the default...
-		// which is essentially an empty string
-		if (goPath == null) {
-			return path;
-		}
-		
-		if (MiscUtil.OS_IS_WINDOWS) {
-		  if (goPath.contains(";")) {
-		    path = goPath.split(";");
-		  } else {
-		    path[0] = goPath;
-		  }
-		} else {
-		  if (goPath.contains(":")) {
-		    path =  goPath.split(":");
-		  } else {
-        path[0] = goPath;
-		  }
-		}
-
-		return path;
 	}
 
 	public String getGoRoot(IProject project) {
