@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+
 
 /**
  * Helper to work with a boolean preference.
@@ -21,17 +23,13 @@ public class BooleanPreference extends PreferenceHelper<Boolean> {
 	}
 	
 	@Override
-	public Boolean get() {
-		return prefs().getBoolean(key, defaultValue);
-	}
-	
-	public void set(boolean value) {
-		prefs().setBoolean(key, value);
+	protected Boolean doGet(PreferencesLookupHelper combinedPrefs) {
+		return combinedPrefs.getBoolean(key);
 	}
 	
 	@Override
-	protected void initializeDefaultValueInDefaultScope() {
-		getDefaultPreferences().putBoolean(key, defaultValue);
+	protected void doSet(IEclipsePreferences projectPreferences, Boolean value) {
+		projectPreferences.putBoolean(key, value);
 	}
 	
 }

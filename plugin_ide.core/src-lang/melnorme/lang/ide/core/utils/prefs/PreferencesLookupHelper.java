@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.eclipse.core.resources.IProject;
@@ -39,32 +40,39 @@ public class PreferencesLookupHelper {
 		}
 	}
 	
-	protected IPreferencesService preferences() {
+	protected static IPreferencesService preferences() {
 		return Platform.getPreferencesService();
+	}
+	
+	protected String assertKeyHasDefault(String key) {
+		return assertNotNull(DefaultScope.INSTANCE.getNode(qualifier).get(key, null));
+	}
+	
+	public String getString(String key) {
+		assertKeyHasDefault(key);
+		return getString(key, "");
 	}
 	
 	public String getString(String key, String defaultValue) {
 		return preferences().getString(qualifier, key, defaultValue, contexts);
 	}
 	
-	public void setString(String key, String value) {
-		InstanceScope.INSTANCE.getNode(qualifier).put(key, value);
+	public int getInt(String key) {
+		assertKeyHasDefault(key);
+		return getInt(key, 0);
 	}
 	
 	public int getInt(String key, int defaultValue) {
 		return preferences().getInt(qualifier, key, defaultValue, contexts);
 	}
 	
-	public void setInt(String key, int value) {
-		InstanceScope.INSTANCE.getNode(qualifier).putInt(key, value);
+	public boolean getBoolean(String key) {
+		assertKeyHasDefault(key);
+		return getBoolean(key, false);
 	}
 	
 	public boolean getBoolean(String key, boolean defaultValue) {
 		return preferences().getBoolean(qualifier, key, defaultValue, contexts);
-	}
-	
-	public void setBoolean(String key, boolean value) {
-		InstanceScope.INSTANCE.getNode(qualifier).putBoolean(key, value);
 	}
 	
 }

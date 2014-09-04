@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+
 
 /**
  * Helper to work with an int preference.
@@ -21,17 +23,13 @@ public class IntPreference extends PreferenceHelper<Integer> {
 	}
 	
 	@Override
-	public Integer get() {
-		return prefs().getInt(key, defaultValue);
-	}
-	
-	public void set(int value) {
-		prefs().setInt(key, value);
+	protected Integer doGet(PreferencesLookupHelper combinedPrefs) {
+		return combinedPrefs.getInt(key);
 	}
 	
 	@Override
-	protected void initializeDefaultValueInDefaultScope() {
-		getDefaultPreferences().putInt(key, defaultValue);
+	protected void doSet(IEclipsePreferences projectPreferences, Integer value) {
+		projectPreferences.putInt(key, value);
 	}
 	
 }

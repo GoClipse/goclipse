@@ -18,11 +18,14 @@ import java.util.HashMap;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.ownership.IDisposable;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.osgi.service.prefs.BackingStoreException;
 
 public abstract class PreferenceHelper<T> {
 	
@@ -54,17 +57,53 @@ public abstract class PreferenceHelper<T> {
 		return pluginId;
 	}
 	
-	protected PreferencesLookupHelper prefs() {
-		return new PreferencesLookupHelper(pluginId);
+	public T getDefault() {
+		return defaultValue;
 	}
 	
-	public abstract T get();
+	protected PreferencesLookupHelper combinedScopes() {
+		return new PreferencesLookupHelper(getQualifier());
+	}
 	
-	protected abstract void initializeDefaultValueInDefaultScope();
+	protected PreferencesLookupHelper combinedScopes(IProject project) {
+		return new PreferencesLookupHelper(getQualifier(), project);
+	}
 	
-	protected IEclipsePreferences getDefaultPreferences() {
+	protected void initializeDefaultValueInDefaultScope() {
+		doSet(getDefaultNode(), defaultValue);
+	}
+	
+	protected IEclipsePreferences getDefaultNode() {
 		return DefaultScope.INSTANCE.getNode(getQualifier());
 	}
+	
+	protected abstract void doSet(IEclipsePreferences projectPreferences, T value);
+	
+	public final T get() {
+		return assertNotNull(doGet(combinedScopes()));
+	}
+	
+	public final T get(IProject project) {
+		return assertNotNull(doGet(combinedScopes(project)));
+	}
+	
+	protected abstract T doGet(PreferencesLookupHelper combinedPrefs);
+	
+	public final void set(T value) {
+		doSet(InstanceScope.INSTANCE.getNode(getQualifier()), value);
+	}
+	
+	public final void set(IProject project, T value) throws BackingStoreException {
+		IEclipsePreferences projectPreferences = getProjectNode(project);
+		doSet(projectPreferences, value);
+		projectPreferences.flush();
+	}
+	
+	public IEclipsePreferences getProjectNode(IProject project) {
+		return new ProjectScope(project).getNode(getQualifier());
+	}
+	
+	/* ----------------- listeners ----------------- */
 	
 	public IPreferenceChangeListener_Ext addPrefChangeListener(boolean initializeChange, 
 			final IPrefChangeListener listener) {

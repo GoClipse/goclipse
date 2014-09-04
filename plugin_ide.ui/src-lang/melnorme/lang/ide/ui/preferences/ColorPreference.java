@@ -10,11 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
+import melnorme.lang.ide.core.utils.prefs.PreferencesLookupHelper;
 import melnorme.util.swt.jface.text.ColorManager;
 
-import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -29,24 +29,19 @@ public class ColorPreference extends PreferenceHelper<RGB> {
 	}
 	
 	@Override
-	public RGB get() {
-		String stringValue = prefs().getString(key, null);
-		return stringValue == null ? defaultValue : StringConverter.asRGB(stringValue);
+	protected RGB doGet(PreferencesLookupHelper combinedPrefs) {
+		String stringValue = combinedPrefs.getString(key);
+		return stringValue == null ? null : StringConverter.asRGB(stringValue);
 	}
 	
-	public void set(RGB value) {
-		assertNotNull(value);
+	@Override
+	protected void doSet(IEclipsePreferences projectPreferences, RGB value) {
 		String stringValue = StringConverter.asString(value);
-		InstanceScope.INSTANCE.getNode(getQualifier()).put(key, stringValue);
+		projectPreferences.put(key, stringValue);
 	}
 	
 	public Color getManagedColor() {
 		return ColorManager.getDefault().getColor(get());
-	}
-	
-	@Override
-	protected void initializeDefaultValueInDefaultScope() {
-		getDefaultPreferences().put(key, StringConverter.asString(defaultValue));
 	}
 	
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+
 /**
  * Helper to work with a color preference.
  */
@@ -20,17 +22,13 @@ public class StringPreference extends PreferenceHelper<String> {
 	}
 	
 	@Override
-	public String get() {
-		return prefs().getString(key, defaultValue);
-	}
-	
-	public void set(String value) {
-		prefs().setString(key, value);
+	protected String doGet(PreferencesLookupHelper combinedPrefs) {
+		return combinedPrefs.getString(key);
 	}
 	
 	@Override
-	protected void initializeDefaultValueInDefaultScope() {
-		getDefaultPreferences().put(key, defaultValue);
+	protected void doSet(IEclipsePreferences projectPreferences, String value) {
+		projectPreferences.put(key, value);
 	}
 	
 }
