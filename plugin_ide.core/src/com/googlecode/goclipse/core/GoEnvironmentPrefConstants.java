@@ -8,13 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse;
+package com.googlecode.goclipse.core;
 
-import static com.googlecode.goclipse.GoEnvironmentPrefUtils.getGO_OS_Default;
-import static com.googlecode.goclipse.GoEnvironmentPrefUtils.get_GO_ARCH_Default;
+import static com.googlecode.goclipse.core.GoEnvironmentPrefUtils.getGO_OS_Default;
+import static com.googlecode.goclipse.core.GoEnvironmentPrefUtils.get_GO_ARCH_Default;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
-public interface GoEnvironmentPrefs {
+public interface GoEnvironmentPrefConstants {
 	
 	static StringPreference GO_PATH = new StringPreference("com.googlecode.goclipse.gopath", "");
 	static StringPreference GO_ROOT = new StringPreference("com.googlecode.goclipse.goroot", "");

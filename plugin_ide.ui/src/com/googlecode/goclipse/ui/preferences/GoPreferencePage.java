@@ -78,7 +78,8 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
     goPathEditor = new GoPathFieldEditor(PreferenceConstants.GO_PATH.key, "GO&PATH:", fieldParent);
     addField(goPathEditor);
     
-		goosEditor = new ComboFieldEditor(PreferenceConstants.GO_OS.key, "G&OOS:", new String[][] { { "", "" },
+		goosEditor = new ComboFieldEditor(PreferenceConstants.GO_OS.key, "G&OOS:", new String[][] { 
+				{ "", "" },
 		        { PreferenceConstants.OS_DARWIN, PreferenceConstants.OS_DARWIN },
 		        { PreferenceConstants.OS_LINUX, PreferenceConstants.OS_LINUX },
 		        { PreferenceConstants.OS_FREEBSD, PreferenceConstants.OS_FREEBSD },
@@ -86,7 +87,8 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		        { PreferenceConstants.OS_WINDOWS, PreferenceConstants.OS_WINDOWS } }, fieldParent);
 		addField(goosEditor);
 
-		goarchEditor = new ComboFieldEditor(PreferenceConstants.GO_ARCH.key, "GO&ARCH:", new String[][] { { "", "" },
+		goarchEditor = new ComboFieldEditor(PreferenceConstants.GO_ARCH.key, "GO&ARCH:", new String[][] { 
+				{ "", "" },
 		        { PreferenceConstants.ARCH_AMD64, PreferenceConstants.ARCH_AMD64 },
 		        { PreferenceConstants.ARCH_386, PreferenceConstants.ARCH_386 },
 		        { PreferenceConstants.ARCH_ARM, PreferenceConstants.ARCH_ARM } }, fieldParent);

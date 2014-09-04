@@ -7,7 +7,7 @@ import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 
-import com.googlecode.goclipse.GoEnvironmentPrefUtils;
+import com.googlecode.goclipse.core.GoEnvironmentPrefUtils;
 
 
 /**

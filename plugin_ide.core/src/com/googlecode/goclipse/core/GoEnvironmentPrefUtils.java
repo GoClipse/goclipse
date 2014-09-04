@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse;
+package com.googlecode.goclipse.core;
 
 import melnorme.utilbox.misc.MiscUtil;
 

@@ -1,11 +1,11 @@
 package com.googlecode.goclipse.preferences;
 
-import com.googlecode.goclipse.GoEnvironmentPrefs;
+import com.googlecode.goclipse.core.GoEnvironmentPrefConstants;
 
 /**
  * Constant definitions for plug-in preferences
  */
-public interface PreferenceConstants extends GoEnvironmentPrefs {
+public interface PreferenceConstants extends GoEnvironmentPrefConstants {
 
 	static String OS_WINDOWS = "windows";
 	static String OS_NACL    = "nacl";
