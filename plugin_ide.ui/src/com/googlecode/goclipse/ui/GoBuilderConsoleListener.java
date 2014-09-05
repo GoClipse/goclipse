@@ -12,9 +12,9 @@ package com.googlecode.goclipse.ui;
 
 import java.io.IOException;
 
-import melnorme.lang.ide.ui.engine.console.LangEngineConsole;
-import melnorme.lang.ide.ui.engine.console.LangEngineConsoleListener;
-import melnorme.lang.ide.ui.engine.console.ProcessOutputToConsoleListener;
+import melnorme.lang.ide.ui.tools.console.ToolsConsole;
+import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
+import melnorme.lang.ide.ui.tools.console.ProcessOutputToConsoleListener;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
@@ -22,14 +22,14 @@ import org.eclipse.core.resources.IProject;
 
 import com.googlecode.goclipse.builder.IGoBuildListener;
 
-public class GoBuilderConsoleListener extends LangEngineConsoleListener implements IGoBuildListener {
+public class GoBuilderConsoleListener extends AbstractToolsConsoleListener implements IGoBuildListener {
 	
 	@Override
 	protected String getOperationConsoleName(IProject project) {
 		return "Go build " + getProjectNameSuffix(project);
 	}
 	
-	public static class GoBuildConsole extends LangEngineConsole {
+	public static class GoBuildConsole extends ToolsConsole {
 		
 		public GoBuildConsole(String name) {
 			super(name, GoPluginImages.GO_CONSOLE_ICON.getDescriptor());

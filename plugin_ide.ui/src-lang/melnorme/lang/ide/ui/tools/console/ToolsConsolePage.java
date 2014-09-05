@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Bruno Medeiros - LangIDE adaptation.
  *******************************************************************************/
-package melnorme.lang.ide.ui.engine.console;
+package melnorme.lang.ide.ui.tools.console;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -25,11 +25,11 @@ import org.eclipse.ui.console.TextConsoleViewer;
  * A page for an OperationsConsolePage. Originally based on {@link IOConsole}
  * Console is read only.
  */
-public class EngineConsolePage extends TextConsolePage {
+public class ToolsConsolePage extends TextConsolePage {
 	
 	protected ScrollLockAction fScrollLockAction;
 	
-	public EngineConsolePage(TextConsole console, IConsoleView view) {
+	public ToolsConsolePage(TextConsole console, IConsoleView view) {
 		super(console, view);
 		
 		setReadOnly();

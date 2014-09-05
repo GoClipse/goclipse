@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Bruno Medeiros - LangIDE adaptation.
  *******************************************************************************/
-package melnorme.lang.ide.ui.engine.console;
+package melnorme.lang.ide.ui.tools.console;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;

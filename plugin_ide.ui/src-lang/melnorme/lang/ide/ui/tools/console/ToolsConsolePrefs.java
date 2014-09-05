@@ -8,13 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.engine.console;
+package melnorme.lang.ide.ui.tools.console;
 
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
 import melnorme.lang.ide.ui.OperationsConsolePrefDefaults_Actual;
 import melnorme.lang.ide.ui.preferences.ColorPreference;
 
-public interface EngineConsolePrefs extends OperationsConsolePrefDefaults_Actual {
+public interface ToolsConsolePrefs extends OperationsConsolePrefDefaults_Actual {
 	
 	BooleanPreference ACTIVATE_ON_ERROR_MESSAGES = 
 			new BooleanPreference("console.do_activate", false); 

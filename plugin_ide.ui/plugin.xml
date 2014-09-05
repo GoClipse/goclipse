@@ -93,7 +93,7 @@
       		category="com.googlecode.goclipse.ui.PreferencePage"
             id="com.googlecode.goclipse.ui.preferences.GoOperationsConsolePrefPage"
             class="com.googlecode.goclipse.ui.preferences.GoOperationsConsolePrefPage"
-            name="Build/Engine Console">
+            name="Build Console">
       </page>
    </extension>
 

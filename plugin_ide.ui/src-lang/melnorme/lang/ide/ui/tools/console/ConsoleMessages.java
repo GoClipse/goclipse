@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.engine.console;
+package melnorme.lang.ide.ui.tools.console;
 
 
 public class ConsoleMessages {

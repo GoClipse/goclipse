@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.engine.console;
+package melnorme.lang.ide.ui.tools.console;
 
 import java.io.IOException;
 
@@ -21,21 +21,21 @@ import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.part.IPageBookViewPage;
 
-public class LangEngineConsole extends AbstractProcessMessageConsole {
+public class ToolsConsole extends AbstractProcessMessageConsole {
 	
 	public final IOConsoleOutputStream infoOut;
 	protected final OwnedObjects owned = new OwnedObjects();
 	
-	public LangEngineConsole(String name, ImageDescriptor imageDescriptor) {
+	public ToolsConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
 		
 		infoOut = newOutputStream();
 		
-		owned.add(EngineConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.addPrefChangeListener(true, 
+		owned.add(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.addPrefChangeListener(true, 
 			new IPrefChangeListener() {
 				@Override
 				public void handleChange() {
-					stdErr.setActivateOnWrite(EngineConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get());
+					stdErr.setActivateOnWrite(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get());
 				}
 			}
 		));
@@ -52,28 +52,28 @@ public class LangEngineConsole extends AbstractProcessMessageConsole {
 	@Override
 	protected void ui_initStreamColors() {
 		
-		owned.add(EngineConsolePrefs.INFO_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
+		owned.add(ToolsConsolePrefs.INFO_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
 			@Override
 			public void handleChange() {
-				infoOut.setColor(EngineConsolePrefs.INFO_COLOR.getManagedColor());
+				infoOut.setColor(ToolsConsolePrefs.INFO_COLOR.getManagedColor());
 			}
 		}));
-		owned.add(EngineConsolePrefs.STDERR_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
+		owned.add(ToolsConsolePrefs.STDERR_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
 			@Override
 			public void handleChange() {
-				stdErr.setColor(EngineConsolePrefs.STDERR_COLOR.getManagedColor());
+				stdErr.setColor(ToolsConsolePrefs.STDERR_COLOR.getManagedColor());
 			}
 		}));
-		owned.add(EngineConsolePrefs.STDOUT_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
+		owned.add(ToolsConsolePrefs.STDOUT_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
 			@Override
 			public void handleChange() {
-				stdOut.setColor(EngineConsolePrefs.STDOUT_COLOR.getManagedColor());
+				stdOut.setColor(ToolsConsolePrefs.STDOUT_COLOR.getManagedColor());
 			}
 		}));
-		owned.add(EngineConsolePrefs.BACKGROUND_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
+		owned.add(ToolsConsolePrefs.BACKGROUND_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
 			@Override
 			public void handleChange() {
-				setBackground(EngineConsolePrefs.BACKGROUND_COLOR.getManagedColor());
+				setBackground(ToolsConsolePrefs.BACKGROUND_COLOR.getManagedColor());
 			}
 		}));
 		
@@ -81,7 +81,7 @@ public class LangEngineConsole extends AbstractProcessMessageConsole {
 	
 	@Override
 	public IPageBookViewPage createPage(IConsoleView view) {
-		return new EngineConsolePage(this, view);
+		return new ToolsConsolePage(this, view);
 	}
 	
 	public void writeOperationInfo(String string) {

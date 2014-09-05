@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.engine.console;
+package melnorme.lang.ide.ui.tools.console;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.LangOperationConsole_Actual;
@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
 
 
-public abstract class LangEngineConsoleListener {
+public abstract class AbstractToolsConsoleListener {
 	
 	public static LangOperationConsole_Actual recreateMessageConsole(String name, boolean recreateConsole) {
 		LangOperationConsole_Actual console = ConsoleUtils.findConsole(name, LangOperationConsole_Actual.class);
@@ -35,7 +35,7 @@ public abstract class LangEngineConsoleListener {
 		return console;
 	}
 	
-	public LangEngineConsoleListener() {
+	public AbstractToolsConsoleListener() {
 		super();
 	}
 	

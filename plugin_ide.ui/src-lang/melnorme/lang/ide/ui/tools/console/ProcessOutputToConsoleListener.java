@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.engine.console;
+package melnorme.lang.ide.ui.tools.console;
 
 import java.io.IOException;
 
@@ -16,9 +16,9 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputLis
 
 public class ProcessOutputToConsoleListener implements IProcessOutputListener {
 	
-	private final LangEngineConsole console;
+	private final ToolsConsole console;
 	
-	public ProcessOutputToConsoleListener(LangEngineConsole console) {
+	public ProcessOutputToConsoleListener(ToolsConsole console) {
 		this.console = console;
 	}
 	

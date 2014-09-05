@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.engine.console;
+package melnorme.lang.ide.ui.tools.console;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -22,10 +22,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-public abstract class LangEngineConsolePrefPage extends FieldEditorPreferencePage 
-		implements EngineConsolePrefs, IWorkbenchPreferencePage {
+public abstract class ToolsConsolePrefPage extends FieldEditorPreferencePage 
+		implements ToolsConsolePrefs, IWorkbenchPreferencePage {
 	
-	public LangEngineConsolePrefPage() {
+	public ToolsConsolePrefPage() {
 		super(GRID);
 		setPreferenceStore(LangUIPlugin.getCorePrefStore());
 	}
