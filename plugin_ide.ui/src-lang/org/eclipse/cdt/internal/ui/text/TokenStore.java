@@ -40,8 +40,8 @@ import org.eclipse.cdt.ui.text.ITokenStore;
  */
 
 public class TokenStore implements ITokenStore {
-	private IColorManager fColorManager;
-	private IPreferenceStore fPreferenceStore;
+	private final IColorManager fColorManager;
+	private final IPreferenceStore fPreferenceStore;
 
 	private Map<String, IToken> fTokenMap= new HashMap<String, IToken>();
 	private String[] fPropertyNamesColor;

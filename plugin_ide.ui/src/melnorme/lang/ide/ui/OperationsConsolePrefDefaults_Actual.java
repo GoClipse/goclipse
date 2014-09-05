@@ -8,17 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.ui;
 
-import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.ownership.IDisposable;
+import org.eclipse.swt.graphics.RGB;
 
-public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
+public interface OperationsConsolePrefDefaults_Actual {
 	
-	public void loadFromStore();
-	
-	public void saveToStore();
-	
-	public void loadStoreDefaults();
+	static RGB INFO_COLOR_DEFAULT = new RGB(0, 0, 200);
+	static RGB STDERR_COLOR_DEFAULT = new RGB(255, 0, 0);
+	static RGB STDOUT_COLOR_DEFAULT = new RGB(0, 0, 0);
+	static RGB BACKGROUND_COLOR_DEFAULT = new RGB(124, 232, 52); // Change this: LANGUAGE_
 	
 }

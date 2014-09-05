@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package mmrnmhrm.ui;
 
-import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.ownership.IDisposable;
+import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 
-public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
+public class LANGUAGE_BuildConsole extends ToolsConsole {
 	
-	public void loadFromStore();
-	
-	public void saveToStore();
-	
-	public void loadStoreDefaults();
+	public LANGUAGE_BuildConsole(String name) {
+		super(name, LANGUAGE_Images.TOOLS_CONSOLE.getDescriptor());
+	}
 	
 }

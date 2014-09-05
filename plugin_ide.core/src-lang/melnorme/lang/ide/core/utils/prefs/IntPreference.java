@@ -8,17 +8,28 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.core.utils.prefs;
 
-import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.ownership.IDisposable;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
-public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
+
+/**
+ * Helper to work with an int preference.
+ */
+public class IntPreference extends PreferenceHelper<Integer> {
 	
-	public void loadFromStore();
+	public IntPreference(String key, int defaultValue) {
+		super(key, defaultValue);
+	}
 	
-	public void saveToStore();
+	@Override
+	protected Integer doGet(PreferencesLookupHelper combinedPrefs) {
+		return combinedPrefs.getInt(key);
+	}
 	
-	public void loadStoreDefaults();
+	@Override
+	protected void doSet(IEclipsePreferences projectPreferences, Integer value) {
+		projectPreferences.putInt(key, value);
+	}
 	
 }

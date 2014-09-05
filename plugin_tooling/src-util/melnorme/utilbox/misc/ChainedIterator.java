@@ -12,43 +12,12 @@ package melnorme.utilbox.misc;
 
 import java.util.Iterator;
 
-/**
- */
-public class ChainedIterator<T> implements Iterator<T> {
-
-    Iterator<? extends T> firstIter;
-    Iterator<? extends T> secondIter;
-    //Iterator<T> currentIter;
-    
-	public static <U> Iterator<? extends U> create(
-			Iterator<? extends U> firstIter,
-			Iterator<? extends U> secondIter) {
-		return new ChainedIterator<U>(firstIter, secondIter);
+@Deprecated
+public class ChainedIterator<T> extends melnorme.utilbox.collections.ChainedIterator<T> {
+	
+	public ChainedIterator(Iterator<? extends T> firstIter, Iterator<? extends T> secondIter) {
+		super(firstIter, secondIter);
 	}
-    
-    public ChainedIterator(Iterator<? extends T> firstIter, Iterator<? extends T> secondIter) {
-    	this.firstIter = firstIter;
-    	this.secondIter = secondIter;
-    	//currentIter = firstIter;
-    }
-
-    @Override
-	public boolean hasNext() {
-    	return firstIter.hasNext() || secondIter.hasNext();
-
-    }
-
-    @Override
-	public T next() {
-    	if(firstIter.hasNext())
-    		return firstIter.next();
-    	return secondIter.next();
-
-    }
-    @Override
-	public void remove() {
-        throw new UnsupportedOperationException();
-    }
 
 }
 

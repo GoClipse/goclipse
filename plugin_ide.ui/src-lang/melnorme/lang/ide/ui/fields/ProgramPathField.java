@@ -33,13 +33,11 @@ public class ProgramPathField extends WidgetFieldComponent<String> {
 	protected Button fSearchButton;
 	
 	@Override
-	public Group createComponent(Composite parent) {
-		Group mainControl = new Group(parent, SWT.NONE);
-		mainControl.setText(LangUIMessages.ProgramPathField_title);
-		mainControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
-		
-		createContents(mainControl);
-		return mainControl;
+	protected Composite createTopLevelControl(Composite parent) {
+		Group topControl = new Group(parent, SWT.NONE);
+		topControl.setText(LangUIMessages.ProgramPathField_title);
+		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
+		return topControl;
 	}
 	
 	@Override

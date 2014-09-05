@@ -19,6 +19,7 @@ Require-Bundle: MMRNMHRM_ID.tooling;visibility:=reexport,
 Bundle-ClassPath: .
 Export-Package: melnorme.lang.ide.core,
  melnorme.lang.ide.core.utils,
+ melnorme.lang.ide.core.utils.prefs,
  melnorme.lang.ide.core.utils.process,
  melnorme.lang.ide.launching
 Eclipse-ExtensibleAPI: true

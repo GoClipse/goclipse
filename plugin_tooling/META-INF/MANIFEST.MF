@@ -9,10 +9,12 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional
 Bundle-ClassPath: .
-Export-Package: melnorme.utilbox.concurrency,
+Export-Package: melnorme.utilbox.collections,
+ melnorme.utilbox.concurrency,
  melnorme.utilbox.core,
  melnorme.utilbox.core.fntypes,
  melnorme.utilbox.misc,
+ melnorme.utilbox.ownership,
  melnorme.utilbox.process,
  melnorme.utilbox.tests,
  melnorme.utilbox.tree

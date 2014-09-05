@@ -8,17 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+ package melnorme.lang.ide.ui;
 
-import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.ownership.IDisposable;
+import mmrnmhrm.ui.LANGUAGE_BuildConsole;
 
-public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
+
+public class LangOperationConsole_Actual extends LANGUAGE_BuildConsole {
 	
-	public void loadFromStore();
-	
-	public void saveToStore();
-	
-	public void loadStoreDefaults();
+	public LangOperationConsole_Actual(String name) {
+		super(name);
+	}
 	
 }

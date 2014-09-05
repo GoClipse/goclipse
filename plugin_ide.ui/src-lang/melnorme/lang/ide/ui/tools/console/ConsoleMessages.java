@@ -8,10 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.components;
+package melnorme.lang.ide.ui.tools.console;
 
-public interface IDisposable {
+
+public class ConsoleMessages {
 	
-	void dispose();
+	public static String ScrollLockAction_Name = "&Scroll Lock";
+	public static String ScrollLockAction_Tooltip = "Scroll Lock";
 	
 }

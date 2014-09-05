@@ -8,7 +8,7 @@
  * Contributors:
  *     QNX Software Systems - Initial API and implementation
  *     IBM Corporation
- *     Bruno Medeiros - lang modifications
+ *     Bruno Medeiros - Lang modifications
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
@@ -25,22 +25,18 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class LangArgumentsBlock extends WidgetFieldComponent<String> {
 	
-	protected Label fPrgmArgumentsLabel;
 	protected Text fPrgmArgumentsText;
 	protected Button fArgumentVariablesButton;
 	
 	@Override
-	public Group createComponent(Composite parent) {
+	protected Composite createTopLevelControl(Composite parent) {
 		Group topControl = new Group(parent, SWT.NONE);
 		topControl.setText(LangUIMessages.LangArgumentsTab_Program_Arguments);
 		topControl.setLayout(new GridLayout());
-		
-		createContents(topControl);
 		return topControl;
 	}
 	

@@ -15,21 +15,25 @@ import melnorme.util.swt.jface.text.ColorManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
-import org.eclipse.ui.console.MessageConsole;
 
-public abstract class AbstractProcessMessageConsole extends MessageConsole {
+public abstract class AbstractProcessMessageConsole extends IOConsole {
 	
 	public static class ProcessMessageConsole extends AbstractProcessMessageConsole {
 		protected ProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {
 			super(name, imageDescriptor);
-			post_initOutputStreamColors();
+			postToUI_initOutputStreamColors();
 		}
 	}
 	
 	public final IOConsoleOutputStream stdOut;
 	public final IOConsoleOutputStream stdErr;
 	
+	/**
+	 * Note: subclasse must call {@link #postToUI_initOutputStreamColors()} after all members
+	 * have been initialized.
+	 */
 	protected AbstractProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
 		
@@ -38,20 +42,20 @@ public abstract class AbstractProcessMessageConsole extends MessageConsole {
 		stdErr.setActivateOnWrite(true);
 	}
 	
-	protected void post_initOutputStreamColors() {
+	protected void postToUI_initOutputStreamColors() {
 		// BM: it's not clear to me if a Color can be created outside UI thread, so do asyncExec
 		// I would think one cant, but some Platform code (ProcessConsole) does freely create Color instances
 		// on the UI thread, so maybe the asyncExec is not necessary.
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				ui_initOutputStreamColors();
+				ui_initStreamColors();
 			}
 		});
 	}
 	
-	// Note: if overriden, make sure this method is called after all subclass members are initialized
-	protected void ui_initOutputStreamColors() {
+	/** Initialize stream colors. This method is only called in the UI thread. */
+	protected void ui_initStreamColors() {
 	}
 	
 	protected ISharedTextColors getColorManager() {
