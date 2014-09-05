@@ -11,32 +11,29 @@
 package com.googlecode.goclipse.ui.properties;
 
 import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
-import melnorme.util.swt.SWTFactoryUtil;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 public class GoProjectBuildOptionsPage extends AbstractProjectPropertyPage {
 	
-	public GoProjectBuildOptionsPage() {
-	}
+	protected final GoProjectOptionsBlock prjBuildOptionsBlock = new GoProjectOptionsBlock();
 	
 	@Override
 	protected Control createContents(Composite parent, IProject project) {
-		noDefaultAndApplyButton();
-		
-		return SWTFactoryUtil.createLabel(parent, SWT.LEFT, "No options at the moment", null);
-	}
-	
-	@Override
-	protected void performDefaults() {
+		prjBuildOptionsBlock.initializeFrom(getProject());
+		return prjBuildOptionsBlock.createComponent(parent);
 	}
 	
 	@Override
 	public boolean performOk() {
-		return true;
+		return prjBuildOptionsBlock.performOk();
+	}
+	
+	@Override
+	protected void performDefaults() {
+		prjBuildOptionsBlock.restoreDefaults();
 	}
 	
 }

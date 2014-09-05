@@ -6,11 +6,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.collections.ArrayList;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.QualifiedName;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
+import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
@@ -224,26 +225,33 @@ public class GoCompiler {
 			// the path exist to find the cc
 			String   path    = System.getenv("PATH");
 			String   outPath = null;
-			String[] cmd     = {};
+			ArrayList<String> cmd = new ArrayList<>();
 			
 			MarkerUtilities.deleteFileMarkers(file);
 			if(Environment.INSTANCE.isCmdSrcFolder(project, (IFolder)file.getParent())){
 				outPath = projectLocation.append(binFolder).toOSString() + File.separator + target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, outExtension);
-				cmd     = new String[]{
-						        compilerPath,
-						        GoConstants.GO_BUILD_COMMAND,
-						        GoConstants.COMPILER_OPTION_O,
-						        outPath, file.getName() }
-						  ;
-				
+				cmd.addElements(
+					compilerPath,
+					GoConstants.GO_BUILD_COMMAND
+				).addElements(
+					GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS_Helper.getExtraCommands(project)
+				).addElements(
+					GoConstants.COMPILER_OPTION_O,
+					outPath, 
+					file.getName() 					
+				);
 			} else {
 				MarkerUtilities.deleteFileMarkers(file.getParent());
 				outPath = projectLocation.append(binFolder).toOSString() + File.separator + target.getParentFile().getName() + outExtension;
-				cmd = new String[] {
-			        compilerPath,
-			        GoConstants.GO_BUILD_COMMAND,
-			        GoConstants.COMPILER_OPTION_O,
-			        outPath };
+				cmd.addElements(
+					compilerPath,
+					GoConstants.GO_BUILD_COMMAND
+				).addElements(
+					GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS_Helper.getExtraCommands(project)
+				).addElements(
+					GoConstants.COMPILER_OPTION_O,
+					outPath 
+				);
 			}
 			
 			String goPath = buildGoPath(project, projectLocation, false);
@@ -295,13 +303,15 @@ public class GoCompiler {
 		try {
 			// the path exist to find the cc
 			String   path    = System.getenv("PATH");
-			String[] cmd     = {};
+			ArrayList<String> cmd = new ArrayList<>();
 			
 			MarkerUtilities.deleteFileMarkers(target);
-			cmd = new String[] {
-		        compilerPath,
-		        GoConstants.GO_BUILD_COMMAND
-		    };
+			cmd.addElements(
+				compilerPath,
+				GoConstants.GO_BUILD_COMMAND
+			).addElements(
+				GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS_Helper.getExtraCommands(project)
+			);
 			
 			String goPath = buildGoPath(project, projectLocation, false);
 
