@@ -26,6 +26,7 @@ final public class GoGetActionDelegate implements IEditorActionDelegate {
 	
 	protected String	name;
 	protected GoEditor	editor;
+	private GoGet goGet;
 	
 	@Override
 	public final void selectionChanged(IAction action, ISelection selection) {
@@ -52,13 +53,16 @@ final public class GoGetActionDelegate implements IEditorActionDelegate {
 			IProgressService ps = wb.getProgressService();
 			
 			try {
+				if(goGet == null) {
+					goGet = new GoGet();
+				}
 				ps.busyCursorWhile(new IRunnableWithProgress() {
 					@Override
 					public void run(IProgressMonitor pm) {
 						final IEditorInput input = editor.getEditorInput();
 						IFile file = ((IFileEditorInput) input).getFile();
 						IProject project = file.getProject();
-						GoGet.goGetDependencies(project, pm, file.getLocation().toFile());
+						goGet.goGetDependencies(project, pm, file.getLocation().toFile());
 					}
 				});
 				

@@ -26,7 +26,6 @@ public class GoConstants {
 	public static final String GO_DOC_COMMAND      = "doc";
 	public static final String GO_FIX_COMMAND      = "fix";
 	public static final String GO_FMT_COMMAND      = "fmt";
-	public static final String GO_GET_COMMAND      = "get";
 	public static final String GO_INSTALL_COMMAND  = "install";
 	public static final String GO_LIST_COMMAND     = "list";
 	public static final String GO_RUN_COMMAND      = "run";

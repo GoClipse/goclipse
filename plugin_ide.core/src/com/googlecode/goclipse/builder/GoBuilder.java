@@ -40,6 +40,7 @@ import com.googlecode.goclipse.go.lang.parser.PackageParser;
 public class GoBuilder extends IncrementalProjectBuilder {
 	
 	private GoCompiler compiler;
+	private GoGet goGet;
 	
 	/**
 	 * Entry point of this builder, everything start from this method.
@@ -54,6 +55,10 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		
 		if (compiler == null){
 			compiler = new GoCompiler();
+		}
+		
+		if (goGet == null) {
+			goGet = new GoGet();
 		}
 		
 		if (compiler.requiresRebuild(getProject())) {

@@ -99,12 +99,7 @@ public class GoToolManager {
 		return goEnv;
 	}
 	
-	public RunGoToolTask newRunGoToolTask_defaultEnv(IProject project, IProgressMonitor pmonitor, ProcessBuilder pb) {
-		pb.environment().putAll(GoToolManager.getGoToolEnvironment());
-		return new RunGoToolTask(pb, project, pmonitor);
-	}
-	
-	public ProcessBuilder prepareBuilder(List<String> commandLine) {
+	private ProcessBuilder prepareBuilder(List<String> commandLine) {
 		assertTrue(commandLine.size() > 0);
 		String goCommand = commandLine.get(0);
 		ProcessBuilder pb = new ProcessBuilder(commandLine);
@@ -113,7 +108,7 @@ public class GoToolManager {
 		return pb;
 	}
 	
-	public static void setWorkingFolder(ProcessBuilder pBuilder, String command) {
+	private static void setWorkingFolder(ProcessBuilder pBuilder, String command) {
 		String workingFolder = Path.fromOSString(command).removeLastSegments(1).toOSString();
 		if (workingFolder != null && workingFolder.length() > 0) {
 			pBuilder.directory(new File(workingFolder));
