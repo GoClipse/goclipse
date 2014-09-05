@@ -27,10 +27,11 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 public abstract class AbstractComponentExt extends AbstractComponent {
 	
 	@Override
-	public Composite createComponent(Composite parent) {
-		Composite composite = super.createComponent(parent);
+	public final Composite createComponent(Composite parent) {
+		Composite topControl = createTopLevelControl(parent);
+		createContents(topControl);
 		updateComponentFromInput();
-		return composite;
+		return topControl;
 	}
 	
 	@Override

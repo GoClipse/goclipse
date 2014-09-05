@@ -42,12 +42,10 @@ public class ProjectField extends WidgetFieldComponent<String> {
 	protected Button projectSelectionButton;
 	
 	@Override
-	public Group createComponent(Composite parent) {
+	protected Composite createTopLevelControl(Composite parent) {
 		Group topControl = new Group(parent, SWT.NONE);
 		topControl.setText(LangUIMessages.mainTab_projectGroup);
 		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
-		
-		createContents(topControl);
 		return topControl;
 	}
 	

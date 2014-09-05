@@ -39,10 +39,8 @@ public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchCo
 	
 	/**
 	 * Creates a button that allows user to insert build variables.
-	 * 
-	 * @since 7.1
 	 */
-	protected static Button createVariablesButton(Composite parent, String label, final Text textField) {
+	public static Button createVariablesButton(Composite parent, String label, final Text textField) {
 		Button variablesButton = SWTFactoryUtil.createPushButton(parent, label, null);
 		variablesButton.addSelectionListener(new SelectionAdapter() {
 			@Override

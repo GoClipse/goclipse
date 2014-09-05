@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
-	protected final LangArgumentsBlock argumentsBlock = new LangArgumentsBlock() {
+	protected final LangArgumentsBlock2 argumentsBlock = new LangArgumentsBlock2() {
 		@Override
 		protected void fieldValueChanged() {
 			updateLaunchConfigurationDialog();
