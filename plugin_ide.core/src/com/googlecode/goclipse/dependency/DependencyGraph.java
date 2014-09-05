@@ -179,11 +179,10 @@ public class DependencyGraph {
 	/**
 	 * @param modified
 	 */
-	public void reprocessResources(List<IResource> modified) {
-		List<IFolder> srcFolders = Environment.INSTANCE
-				.getSourceFolders(project);
+	public void reprocessResources(List<IFile> modified) {
+		List<IFolder> srcFolders = Environment.INSTANCE.getSourceFolders(project);
 
-		for (IResource resource : modified) {
+		for (IFile resource : modified) {
 			for (IFolder srcfolder : srcFolders) {
 				String pkgname = "";
 				IContainer container = null;

@@ -46,7 +46,7 @@ public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurati
 		IProject prj = getProject(configuration);
 		
 		if (Environment.INSTANCE.isCmdFile(programRelativePath)) {
-			IPath binRel = Environment.INSTANCE.getBinOutputFolder(prj);
+			IPath binRel = Environment.INSTANCE.getBinOutputFolder();
 			IPath exeBase = binRel;
 			String cmdName = LaunchUtil.getCmdName(programRelativePath);
 			IPath executablePath = LaunchUtil.getExecutablePath(cmdName, prj);

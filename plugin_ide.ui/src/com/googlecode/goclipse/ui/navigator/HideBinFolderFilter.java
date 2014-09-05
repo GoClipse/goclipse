@@ -32,8 +32,8 @@ public class HideBinFolderFilter extends ViewerFilter {
 				if (project.hasNature(GoNature.NATURE_ID)) {
 					if (folder.getParent().equals(project)) {
 						Environment env = Environment.INSTANCE;
-						IPath pkgOut = env.getPkgOutputFolder(project);
-						IPath cmdOut = env.getBinOutputFolder(project);
+						IPath pkgOut = env.getPkgOutputFolder();
+						IPath cmdOut = env.getBinOutputFolder();
 						return !(folder.getProjectRelativePath().isPrefixOf(pkgOut) || folder.getProjectRelativePath().isPrefixOf(cmdOut));
 					}
 				}

@@ -40,7 +40,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 	public static final String	 ID	= "com.googlecode.goclipse.preferences.GoPreferencePage";
 
 	private DirectoryFieldEditor goRootEditor;
-	private GoPathFieldEditor goPathEditor;
+//	private GoPathFieldEditor goPathEditor;
 	private ComboFieldEditor	 goosEditor;
 	private ComboFieldEditor	 goarchEditor;
 	private FileFieldEditor	     compilerEditor;
@@ -75,8 +75,8 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		goRootEditor = new DirectoryFieldEditor(PreferenceConstants.GOROOT, "GO&ROOT:", fieldParent);
 		addField(goRootEditor);
 
-    goPathEditor = new GoPathFieldEditor(PreferenceConstants.GOPATH, "GO&PATH:", fieldParent);
-    addField(goPathEditor);
+//    goPathEditor = new GoPathFieldEditor(PreferenceConstants.GOPATH, "GO&PATH:", fieldParent);
+//    addField(goPathEditor);
     
 		goosEditor = new ComboFieldEditor(PreferenceConstants.GOOS, "G&OOS:", new String[][] { { "", "" },
 		        { PreferenceConstants.OS_DARWIN, PreferenceConstants.OS_DARWIN },
