@@ -22,10 +22,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
 import com.googlecode.goclipse.core.GoCore;
+import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
 
@@ -95,7 +96,7 @@ public class GoTestRunner {
 					@Override
 					public void run() {
 						try {
-							int maxTime = Environment.INSTANCE.getAutoUnitTestMaxTime(activeTest.project);
+							int maxTime = GoProjectPrefConstants.AUTO_UNIT_TEST_MAX_TIME.get(activeTest.project);
 	                        Thread.sleep(maxTime);
 	                        Runtime rt = Runtime.getRuntime();
 	                        if(activeTest!=null) {
@@ -138,7 +139,7 @@ public class GoTestRunner {
         private ProcessBuilder configureProcess() {
             String[] testCmd = { activeTest.compilerPath,
                                  GoConstants.GO_TEST_COMMAND,
-                                 "-test.run="+Environment.INSTANCE.getAutoUnitTestRegex(activeTest.project)
+                                 "-test.run="+GoProjectPrefConstants.AUTO_UNIT_TEST_REGEX.get(activeTest.project)
                                };
             
             final ProcessBuilder testProcessBuilder = new ProcessBuilder(testCmd).directory(activeTest.workingDir);
@@ -193,7 +194,7 @@ public class GoTestRunner {
                                     final String   path,       final String goroot,
                                     final int      errorCount) throws IOException {
     	
-    	if ( errorCount == 0 && Environment.INSTANCE.getAutoUnitTest(project)) {
+    	if ( errorCount == 0 && GoProjectPrefConstants.ENABLE_AUTO_UNIT_TEST.get(project)) {
     	
     		TestConfig t = instance.new TestConfig(project, compilerPath, file, pkgPath, workingDir, goPath, path, goroot);
     		

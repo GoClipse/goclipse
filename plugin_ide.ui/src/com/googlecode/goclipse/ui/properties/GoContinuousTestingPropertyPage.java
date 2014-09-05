@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.ui.GoUIMessages;
 
 public class GoContinuousTestingPropertyPage extends AbstractProjectPropertyPage {
@@ -88,9 +88,9 @@ public class GoContinuousTestingPropertyPage extends AbstractProjectPropertyPage
 		
 		@Override
 		public void updateComponentFromInput() {
-			ctEnablement.setFieldValue(Environment.INSTANCE.getAutoUnitTest(input));
-			testFilesRegex.setFieldValue(Environment.INSTANCE.getAutoUnitTestRegex(input));
-			testTimeout.setFieldValue(Environment.INSTANCE.getAutoUnitTestMaxTime(input));
+			ctEnablement.setFieldValue(GoProjectPrefConstants.ENABLE_AUTO_UNIT_TEST.get(input));
+			testFilesRegex.setFieldValue(GoProjectPrefConstants.AUTO_UNIT_TEST_REGEX.get(input));
+			testTimeout.setFieldValue(GoProjectPrefConstants.AUTO_UNIT_TEST_MAX_TIME.get(input));
 		}
 		
 		protected void updateComponentForEnableButtonChange() {
@@ -100,21 +100,16 @@ public class GoContinuousTestingPropertyPage extends AbstractProjectPropertyPage
 		}
 		
 		public void updateControlFromDefaults() {
-			ctEnablement.setFieldValue(false);
-			testFilesRegex.setFieldValue(Environment.getAutoUnitTestRegexDefault());
-			testTimeout.setFieldValue(Environment.getAutoUnitTestMaxTimeDefault());
+			ctEnablement.setFieldValue(GoProjectPrefConstants.ENABLE_AUTO_UNIT_TEST.getDefault());
+			testFilesRegex.setFieldValue(GoProjectPrefConstants.AUTO_UNIT_TEST_REGEX.getDefault());
+			testTimeout.setFieldValue(GoProjectPrefConstants.AUTO_UNIT_TEST_MAX_TIME.getDefault());
 		}
 		
 		public void saveConfig() {
 			try {
-				boolean ctEnabled = ctEnablement.getFieldValue();
-				Environment.INSTANCE.setAutoUnitTest(input, ctEnabled);
-				
-				String unitTestRegex = testFilesRegex.getFieldValue();
-				Environment.INSTANCE.setAutoUnitTestRegex(input, unitTestRegex);
-				
-				int maxTime = testTimeout.getFieldValue();
-				Environment.INSTANCE.setAutoUnitTestMaxTime(input, maxTime);
+				GoProjectPrefConstants.ENABLE_AUTO_UNIT_TEST.set(input, ctEnablement.getFieldValue());
+				GoProjectPrefConstants.AUTO_UNIT_TEST_REGEX.set(input, testFilesRegex.getFieldValue());
+				GoProjectPrefConstants.AUTO_UNIT_TEST_MAX_TIME.set(input, testTimeout.getFieldValue());
 			} catch (BackingStoreException e) {
 				UIOperationExceptionHandler.handleException(e, "Error saving project preferences");
 			}
