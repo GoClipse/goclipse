@@ -13,10 +13,11 @@ package com.googlecode.goclipse.core;
 
 import melnorme.lang.ide.core.LangCore;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.GoBuilder;
+import com.googlecode.goclipse.builder.GoCompilerUpdateJob;
 
 public class GoCore extends LangCore {
 	
@@ -30,7 +31,9 @@ public class GoCore extends LangCore {
 		// Force construction of singleton
 		Environment.INSTANCE.toString();
 		
-		GoBuilder.checkForCompilerUpdates(true);
+		//Check to see if the Go compiler has been updated since the last build took place.
+		Job job = new GoCompilerUpdateJob();		
+		job.schedule(4000);
 	}
 	
 	@Override

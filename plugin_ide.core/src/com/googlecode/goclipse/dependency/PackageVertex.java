@@ -53,7 +53,7 @@ class PackageVertex {
 	 * @return
 	 */
 	static PackageVertex getPackageVertex(IProject project, String packageName) {
-		String pkgOutPath =Environment.INSTANCE.getPkgOutputFolder(project).toOSString();
+		String pkgOutPath =Environment.INSTANCE.getPkgOutputFolder().toOSString();
 		if (packageName.contains(pkgOutPath)) {
 			String p[] = packageName.split(pkgOutPath);
 			packageName = p[1].replace(".a", "");

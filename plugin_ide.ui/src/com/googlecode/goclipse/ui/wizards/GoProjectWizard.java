@@ -192,10 +192,10 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			IFolder srcFolder = project.getFolder("src");
 			createFolder(srcFolder);
 
-			IFolder binFolder = project.getFolder(Environment.INSTANCE.getBinOutputFolder(project));
+			IFolder binFolder = project.getFolder(Environment.INSTANCE.getBinOutputFolder());
 			createFolder(binFolder);
 
-			IFolder pkgFolder = project.getFolder(Environment.INSTANCE.getPkgOutputFolder(project));
+			IFolder pkgFolder = project.getFolder(Environment.INSTANCE.getPkgOutputFolder());
 			createFolder(pkgFolder);
 		}
 

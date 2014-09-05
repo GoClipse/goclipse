@@ -148,7 +148,7 @@ public class CodeContext {
 		//
 		if (!isCmdSrcFolder && useExternalContext) {
 			for (File file : packageFolder.listFiles()) {
-				if (file.isFile() && file.canRead() && file.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)
+				if (file.isFile() && file.canRead() && file.getName().endsWith(".go")
 				        && !file.getName().endsWith(GoConstants.GO_TEST_FILE_EXTENSION)) {
 
 					String text = readFile(file);
@@ -297,8 +297,8 @@ public class CodeContext {
 
 		// InterfaceParser interfaceParser = new InterfaceParser(tokenizer);
 		// find path
-		String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
-		String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
+//		String goarch = GoCore.getPreferences().getString(PreferenceConstants.GOARCH);
+//		String goos = GoCore.getPreferences().getString(PreferenceConstants.GOOS);
 		String goroot = GoCore.getPreferences().getString(PreferenceConstants.GOROOT);
 		File pkgdir = new File(goroot + "/src/pkg/" + packagePath);
 
@@ -322,12 +322,12 @@ public class CodeContext {
 					continue;
 				}
 
-				String goPath = Environment.INSTANCE.getGoPath(project)[0];
-
-				pkgdir = new File(goPath + "/src/" + packagePath);
-				if (pkgdir.exists() && pkgdir.isDirectory()) {
-					processExternalPackage(codeContext, pkgdir);
-				}
+//				String goPath = Environment.INSTANCE.getGoPath(project)[0];
+//
+//				pkgdir = new File(goPath + "/src/" + packagePath);
+//				if (pkgdir.exists() && pkgdir.isDirectory()) {
+//					processExternalPackage(codeContext, pkgdir);
+//				}
 			}
 		}
 
