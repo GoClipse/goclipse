@@ -1,5 +1,6 @@
 package com.googlecode.goclipse.ui.navigator;
 
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -19,16 +20,15 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  */
 public class GoModelAdapter implements IAdapterFactory {
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
-		if (adapterType == IResource.class) {
-			if (adaptableObject instanceof IGoSourceContainer) {
-				IFolder folderAdapter = ((IGoSourceContainer) adaptableObject).getFolder();
-				
-				return folderAdapter;
-			}
-		}
+//		if (adapterType == IResource.class) {
+//			if (adaptableObject instanceof GoSourceContainer) {
+//				IFolder folderAdapter = ((GoSourceContainer) adaptableObject).getFolder();
+//				
+//				return folderAdapter;
+//			}
+//		}
 
 		if (adaptableObject instanceof IAdaptable) {
 			IAdaptable adaptable = (IAdaptable) adaptableObject;
@@ -40,14 +40,15 @@ public class GoModelAdapter implements IAdapterFactory {
 		return null;
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Class[] getAdapterList() {
 		// this is overwritten by the adapter factory extension
 		return new Class[] { IFolder.class, IFile.class, IContainer.class,
 				IContributorResourceAdapter.class, IProject.class,
 				ILaunchable.class, IPersistableElement.class,
-				IContributorResourceAdapter.class, IWorkbenchAdapter.class };
+				IContributorResourceAdapter.class, IWorkbenchAdapter.class,
+				IResource.class, IFileStore.class
+		};
 	}
 
 }

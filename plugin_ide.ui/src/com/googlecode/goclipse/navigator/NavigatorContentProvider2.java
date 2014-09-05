@@ -153,7 +153,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		
 		try {
 			
-			String[] goPath = Environment.INSTANCE.getGoPath(project);
+			String[] goPath = {};//Environment.INSTANCE.getGoPath(project);
 			
 			if("".equals(goPath[0])){
 				return null;

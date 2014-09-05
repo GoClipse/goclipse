@@ -10,7 +10,6 @@ import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.builder.GoNature;
 import com.googlecode.goclipse.ui.GoPluginImages;
 
@@ -44,16 +43,22 @@ public class GoLightweightDecorator implements ILightweightLabelDecorator {
 			IFile file = (IFile)element;
 			
 			if ("go".equals(file.getFileExtension()) && isGoProject(file.getProject())) {
-				ImageDescriptor overlayImageDescriptor = getDecorationForResource(file);
+				try {
+				int severity = file.findMaxProblemSeverity(
+						IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+				ImageDescriptor overlayImageDescriptor = getDecorationForResource(severity);
 				
 				if (overlayImageDescriptor != null) {
 					decoration.addOverlay(overlayImageDescriptor, IDecoration.BOTTOM_LEFT);
+				}
+				} catch (CoreException e) {
+					//ignore
 				}
 			}
 		} else if (element instanceof IGoSourceContainer) {
 			IGoSourceContainer sourceContainer = (IGoSourceContainer)element;
 			
-			ImageDescriptor overlayImageDescriptor = getDecorationForResource(sourceContainer.getFolder());
+			ImageDescriptor overlayImageDescriptor = getDecorationForResource(sourceContainer.findMaxProblemSeverity());
 			
 			if (overlayImageDescriptor != null) {
 				decoration.addOverlay(overlayImageDescriptor, IDecoration.BOTTOM_LEFT);
@@ -74,21 +79,12 @@ public class GoLightweightDecorator implements ILightweightLabelDecorator {
 		}
 	}
 
-	private ImageDescriptor getDecorationForResource(IResource resource) {
-		try {
-			int severity = resource.findMaxProblemSeverity(
-				IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-
-			if (severity == IMarker.SEVERITY_ERROR) {
-				return GoPluginImages.OVERLAYS_ERROR;
-			} else if (severity == IMarker.SEVERITY_ERROR) {
-				return GoPluginImages.OVERLAYS_WARNING;
-			} else {
-				return null;
-			}
-		} catch (CoreException ce) {
-			// ignore
-
+	private ImageDescriptor getDecorationForResource(int severity) {
+		if (severity == IMarker.SEVERITY_ERROR) {
+			return GoPluginImages.OVERLAYS_ERROR;
+		} else if (severity == IMarker.SEVERITY_ERROR) {
+			return GoPluginImages.OVERLAYS_WARNING;
+		} else {
 			return null;
 		}
 	}

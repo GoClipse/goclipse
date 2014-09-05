@@ -127,7 +127,7 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	@Override
 	protected void openProgramPathDialog(IProject project) {
 		try {
-			String[] pathRoots = Environment.INSTANCE.getSourceFoldersAsStringArray(project);
+			String[] pathRoots = Environment.INSTANCE.getSourceFoldersAsStringArray();
 			
 			ArrayList<IResource> resources = new ArrayList<IResource>();
 			

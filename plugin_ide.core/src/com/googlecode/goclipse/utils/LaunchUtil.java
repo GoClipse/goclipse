@@ -31,7 +31,7 @@ public class LaunchUtil {
 	 */
 	public static IPath getExecutablePath(String cmdName, IProject project) {
 		Environment instance = Environment.INSTANCE;
-		IPath binOutputFolder = instance.getBinOutputFolder(project);
+		IPath binOutputFolder = instance.getBinOutputFolder();
 		IPath executablePath = binOutputFolder.append(cmdName + instance.getExecutableExtension());
 		return executablePath;
 	}
