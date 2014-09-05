@@ -59,7 +59,7 @@
          name="Go Project Builder"
          point="org.eclipse.core.resources.builders">
       <builder
-            callOnEmptyDelta="true"
+            callOnEmptyDelta="false"
             hasNature="true"
             isConfigurable="true">
          <run

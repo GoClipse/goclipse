@@ -47,28 +47,26 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	private boolean onlyFullBuild = false;
 	private GoCompiler compiler;
 	
-	/**
-	 * 
-	 */
 	public GoBuilder() {
-		
 	}
 	
-	/**
-	 * 
-	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
+	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		IProject project = getProject();
 		
  		if (!checkBuild()) {
 			return null;
 		}
-		
+ 		
 		if (compiler.requiresRebuild(project)) {
 			kind = FULL_BUILD;
 		}
+		
+		// Note: delta == null means that unspecified changes have occurred
+		IResourceDelta delta = getDelta(project);
+		if(kind != FULL_BUILD && delta != null && delta.getAffectedChildren().length == 0) {
+ 			return null; // Don't even start the build
+ 		}
 		
 		GoToolManager.getDefault().notifyBuildStarting(project);
 		
@@ -78,7 +76,6 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				fullBuild(monitor);
 				onlyFullBuild = false;
 			} else {
-				IResourceDelta delta = getDelta(project);
 				if (delta == null) {
 					fullBuild(monitor);
 				} else {
@@ -90,6 +87,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			
 		} catch(Exception e) {
 			Activator.logError(e);
+		} finally {
+			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		}
 		
 		GoToolManager.getDefault().notifyBuildTerminated(project);

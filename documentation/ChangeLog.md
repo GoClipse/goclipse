@@ -12,6 +12,7 @@
   * Can now customize build console text colors.
   * Activate console on error message option.
  * Added #45 - Allow specifying extra options to 'go build' (available in project properties). They default to `-gcflags "-N -l"`
+ * Fixed: Redundant build messages are no longer displayed, if no changes occurred in a project since last build.
 
 
 ### Goclipse 0.8.0
