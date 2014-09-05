@@ -11,6 +11,7 @@
 package com.googlecode.goclipse.ui.properties;
 
 import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.util.swt.components.fields.CheckBoxField;
@@ -24,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.ui.GoUIMessages;
@@ -99,19 +101,23 @@ public class GoContinuousTestingPropertyPage extends AbstractProjectPropertyPage
 		
 		public void updateControlFromDefaults() {
 			ctEnablement.setFieldValue(false);
-			testFilesRegex.setFieldValue(Environment.INSTANCE.getAutoUnitTestRegexDefault());
-			testTimeout.setFieldValue(Environment.INSTANCE.getAutoUnitTestMaxTimeDefault());
+			testFilesRegex.setFieldValue(Environment.getAutoUnitTestRegexDefault());
+			testTimeout.setFieldValue(Environment.getAutoUnitTestMaxTimeDefault());
 		}
 		
 		public void saveConfig() {
-			boolean ctEnabled = ctEnablement.getFieldValue();
-			Environment.INSTANCE.setAutoUnitTest(input, ctEnabled);
-			
-			String unitTestRegex = testFilesRegex.getFieldValue();
-			Environment.INSTANCE.setAutoUnitTestRegex(input, unitTestRegex);
-			
-			int maxTime = testTimeout.getFieldValue();
-			Environment.INSTANCE.setAutoUnitTestMaxTime(input, maxTime);
+			try {
+				boolean ctEnabled = ctEnablement.getFieldValue();
+				Environment.INSTANCE.setAutoUnitTest(input, ctEnabled);
+				
+				String unitTestRegex = testFilesRegex.getFieldValue();
+				Environment.INSTANCE.setAutoUnitTestRegex(input, unitTestRegex);
+				
+				int maxTime = testTimeout.getFieldValue();
+				Environment.INSTANCE.setAutoUnitTestMaxTime(input, maxTime);
+			} catch (BackingStoreException e) {
+				UIOperationExceptionHandler.handleException(e, "Error saving project preferences");
+			}
 		}
 		
 	}

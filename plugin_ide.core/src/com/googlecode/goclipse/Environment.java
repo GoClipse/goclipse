@@ -1,15 +1,7 @@
 package com.googlecode.goclipse;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -19,10 +11,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -32,110 +24,13 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
  */
 public class Environment {
 
-	private static final String PROJECT_ENABLE_AUTO_UNIT_TEST   = "com.googlecode.goclipse.environment.auto.unit.test";
-	private static final String PROJECT_AUTO_UNIT_TEST_REGEX    = "com.googlecode.goclipse.environment.auto.unit.test.regex";
-	private static final String PROJECT_AUTO_UNIT_TEST_MAX_TIME = "com.googlecode.goclipse.environment.auto.unit.test.max.time";
-
 	public static final boolean DEBUG = Boolean.getBoolean("goclipse.debug");
 	
 	public static final Environment INSTANCE = new Environment();
 	
-	private final IPreferencesService preferences;
-
-	private Map<String, Properties> propertiesMap = new HashMap<String, Properties>();
-	
-	/**
-	 * 
-	 */
 	private Environment() {
-		preferences = Platform.getPreferencesService();
 	}
 
-	/**
-	 * @param project
-	 * @return
-	 */
-	private Properties getProperties(IProject project) {
-		
-		Properties properties = propertiesMap.get(project.getName());
-		
-		if (properties == null) {
-			properties = loadProperties(project);
-			propertiesMap.put(project.getName(), properties);
-		}
-		
-		return properties;
-	}
-
-	/**
-	 * @param project
-	 * @return
-	 */
-	private Properties loadProperties(IProject project) {
-		
-		Properties properties = new Properties();
-		
-		try {
-			properties.loadFromXML(
-				new FileInputStream(
-					project.getWorkingLocation(Activator.PLUGIN_ID) + "/properties.xml"));
-		} catch (InvalidPropertiesFormatException e) {
-			Activator.logError(e);
-		} catch (FileNotFoundException e) {
-			IPath path = project.getWorkingLocation(Activator.PLUGIN_ID);
-			try(FileOutputStream fos = new FileOutputStream(path.toOSString() + "/properties.xml", false)) {
-				properties.storeToXML(fos, " this is a comment");
-            } catch (FileNotFoundException e1) {
-            	Activator.logError(e);
-            } catch (IOException e1) {
-            	Activator.logError(e);
-            }
-			saveProperties(project);
-		} catch (IOException e) {
-			Activator.logError(e);
-		}
-		
-		return properties;
-	}
-
-	/**
-	 * @param project
-	 * @return
-	 */
-	private void saveProperties(IProject project) {
-		if(project==null){
-			Activator.logError("Null project given while atempting to save properties.");
-			return;
-		}
-		
-		Properties properties = getProperties(project);
-		IPath path = project.getWorkingLocation(Activator.PLUGIN_ID);
-		
-		try {
-			Activator.logInfo("writing to "
-					+ path.toOSString()
-					+ "/properties.xml");
-			
-			
-			try(FileOutputStream fos = new FileOutputStream(path.toOSString() + "/properties.xml", false)) {
-				properties.storeToXML(fos, project.getName()+" properties");
-			}
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * @return the preferences
-	 */
-	public IPreferencesService getPreferences() {
-		return preferences;
-	}
-	
 	public String[] getSourceFoldersAsStringArray(IProject project) {
 		return new String[] {"src"};
 	}
@@ -273,14 +168,9 @@ public class Environment {
 		String[] path   = { "" };
 		String   goPath = null;
 		
-		// Project property takes precedence
-		if (project != null) {
-			goPath = getProperties(project).getProperty(GoConstants.GOPATH);
-		}
-		
 		// Plug-in property comes next
 		if (goPath == null || "".equals(goPath)) {
-			goPath = PreferenceConstants.GO_PATH.get();
+			goPath = PreferenceConstants.GO_PATH.get(project);
 		}
 
 		// last ditch effort via a system environment variable
@@ -314,14 +204,9 @@ public class Environment {
 	public String getGoRoot(IProject project) {
 		String goroot = null;
 		
-		// Project property takes precedence
-		if (project != null) {
-			goroot = getProperties(project).getProperty(GoConstants.GOROOT);
-		}
-		
 		// Plug-in property comes next
 		if (goroot == null || "".equals(goroot)) {
-			goroot = PreferenceConstants.GO_ROOT.get();
+			goroot = PreferenceConstants.GO_ROOT.get(project);
 		}
 
 		// last ditch effort via a system environment variable
@@ -344,14 +229,8 @@ public class Environment {
 	 * @param string
 	 * @param selection
 	 */
-	public void setAutoUnitTest(IProject project, boolean selection) {
-		Properties properties = getProperties(project);
-		
-		// The boolean has to be converted to a string here, otherwise the
-		// serialization to XML in the properties.storeToXML method
-		// will not store properly.
-		properties.put( PROJECT_ENABLE_AUTO_UNIT_TEST, "" + selection );
-		saveProperties( project );
+	public void setAutoUnitTest(IProject project, boolean selection) throws BackingStoreException {
+		GoProjectPrefConstants.PROJECT_ENABLE_AUTO_UNIT_TEST.set(project, selection);
     }
 	
 	/**
@@ -360,12 +239,7 @@ public class Environment {
 	 * @return
 	 */
 	public boolean getAutoUnitTest(IProject project) {
-		Properties properties = getProperties(project);
-		Object b = properties.get(PROJECT_ENABLE_AUTO_UNIT_TEST);
-		if(b instanceof String){
-			return Boolean.parseBoolean(b.toString());
-		}
-		return false;
+		return GoProjectPrefConstants.PROJECT_ENABLE_AUTO_UNIT_TEST.get(project);
     }
 	
 	/**
@@ -374,10 +248,8 @@ public class Environment {
 	 * @param string
 	 * @param selection
 	 */
-	public void setAutoUnitTestRegex(IProject project, String regex) {
-		Properties properties = getProperties(project);
-		properties.put( PROJECT_AUTO_UNIT_TEST_REGEX, regex );
-		saveProperties( project );
+	public void setAutoUnitTestRegex(IProject project, String regex) throws BackingStoreException {
+		GoProjectPrefConstants.PROJECT_AUTO_UNIT_TEST_REGEX.set(project, regex);
     }
 	
 	/**
@@ -386,15 +258,10 @@ public class Environment {
 	 * @return
 	 */
 	public String getAutoUnitTestRegex(IProject project) {
-		Properties properties = getProperties(project);
-		Object b = properties.get(PROJECT_AUTO_UNIT_TEST_REGEX);
-		if(b==null || b.equals("")){
-			return getAutoUnitTestRegexDefault();
-		}
-		return b.toString();
+		return GoProjectPrefConstants.PROJECT_AUTO_UNIT_TEST_REGEX.get(project);
     }
 	
-	public String getAutoUnitTestRegexDefault() {
+	public static String getAutoUnitTestRegexDefault() {
 		return "TestAuto[A-Za-z0-9_]*";
 	}
 	
@@ -403,10 +270,8 @@ public class Environment {
 	 * @param project
 	 * @param time
 	 */
-	public void setAutoUnitTestMaxTime(IProject project, int time) {
-		Properties properties = getProperties(project);
-		properties.put( PROJECT_AUTO_UNIT_TEST_MAX_TIME, "" + time );
-		saveProperties( project );
+	public void setAutoUnitTestMaxTime(IProject project, int time) throws BackingStoreException {
+		GoProjectPrefConstants.PROJECT_AUTO_UNIT_TEST_MAX_TIME.set(project, time);
     }
 	
 	/**
@@ -415,15 +280,10 @@ public class Environment {
 	 * @return
 	 */
 	public int getAutoUnitTestMaxTime(IProject project) {
-		Properties properties = getProperties(project);
-		Object b = properties.get(PROJECT_AUTO_UNIT_TEST_MAX_TIME);
-		if(b==null){
-			return getAutoUnitTestMaxTimeDefault();
-		}
-		return Integer.parseInt(b.toString());
+		return GoProjectPrefConstants.PROJECT_AUTO_UNIT_TEST_MAX_TIME.get(project);
     }
 	
-	public int getAutoUnitTestMaxTimeDefault() {
+	public static int getAutoUnitTestMaxTimeDefault() {
 		return 5000;
 	}
 	
