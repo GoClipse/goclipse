@@ -65,7 +65,7 @@ public class GoBuilderConsoleListener extends AbstractToolsConsoleListener imple
 	}
 	
 	protected void writeProcessStartPrefix(ProcessBuilder pb, GoBuildConsole console) throws IOException {
-		console.infoOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
+		console.infoOut.write(StringUtil.collToString(pb.command(), "\n") + "\n");
 	}
 	
 	@Override
