@@ -118,27 +118,6 @@
    </extension>
    
    <extension point="org.eclipse.core.runtime.adapters">
-      <factory class="com.googlecode.goclipse.ui.navigator.GoModelAdapter" adaptableType="com.googlecode.goclipse.ui.navigator.IGoElement">
-         <adapter type="org.eclipse.ui.IPersistableElement"/>
-         <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
-         <adapter type="org.eclipse.ui.ide.IContributorResourceAdapter2"/>
-         <adapter type="org.eclipse.ui.IContainmentAdapter"/>
-         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-         <adapter type="org.eclipse.core.resources.IResource"/>
-			   <adapter type="org.eclipse.core.resources.IFolder"/>
-			   <adapter type="org.eclipse.core.resources.IProject"/>
-			   <adapter type="org.eclipse.core.resources.IContainer"/>
-			   <adapter type="org.eclipse.core.resources.IFile"/>
-			   <adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
-			   <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
-      </factory>
-      <factory
-               adaptableType="org.eclipse.core.resources.IResource"
-               class="com.googlecode.goclipse.ui.navigator.GoModelResourceAdapter">
-            <adapter
-                  type="com.googlecode.goclipse.ui.navigator.GoPackage">
-            </adapter>
-      </factory>
       <factory
             adaptableType="org.eclipse.ui.IEditorInput"
             class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
@@ -166,89 +145,6 @@
       </factory>
    </extension>
     
-   <!-- extension
-         point="org.eclipse.ui.navigator.viewer">
-      <viewerContentBinding
-            viewerId="org.eclipse.ui.navigator.ProjectExplorer">
-         <includes>
-            <contentExtension
-                  pattern="goclipse.goContent">
-            </contentExtension>
-            <contentExtension
-                  pattern="goclipse.filters.HideBinFolder">
-            </contentExtension>
-            <contentExtension
-                  pattern="goclipse.filters.HideSrcFolder">
-            </contentExtension>
-            <contentExtension
-                  pattern="org.eclipse.ui.navigator.resources.filters.*">
-            </contentExtension>
-         </includes>
-      </viewerContentBinding>
-   </extension>
-   <extension
-         point="org.eclipse.ui.navigator.navigatorContent">
-      <navigatorContent
-            activeByDefault="true"
-            contentProvider="com.googlecode.goclipse.ui.navigator.GoNavigatorContentProvider"
-            id="goclipse.goContent"
-            labelProvider="com.googlecode.goclipse.ui.navigator.GoNavigatorLabelProvider"
-            name="Go Elements"
-            priority="high"
-            icon="icons/go-icon16.png">
-         <triggerPoints>
-            <or>
-               <adapt
-                     type="org.eclipse.core.resources.IProject">
-                  <test
-                        property="org.eclipse.core.resources.projectNature"
-                        value="com.googlecode.goclipse.core.goNature">
-                  </test>
-               </adapt>
-            </or>
-         </triggerPoints>
-         <possibleChildren>
-         		<or>
-					<instanceof	value="org.eclipse.core.resources.IResource" />
-                    <instanceof value="org.eclipse.core.resources.IFolder"/>
-                    <instanceof value="com.googlecode.goclipse.ui.navigator.IGoElement"/>
-				</or>
-		 </possibleChildren>
-         <commonSorter
-               class="com.googlecode.goclipse.ui.navigator.GoElementsSorter">
-         </commonSorter>
-         <commonWizard
-               type="new"
-               menuGroupId="com.googlecode.goclipse"
-               wizardId="com.googlecode.goclipse.wizards.NewGoFileWizard">
-            <enablement>
-            </enablement>
-         </commonWizard>
-         <commonWizard
-               type="new"
-               menuGroupId="com.googlecode.goclipse"
-               wizardId="com.googlecode.goclipse.wizards.project.mainwiz">
-            <enablement>
-            </enablement>
-         </commonWizard>
-         <actionProvider
-               class="com.googlecode.goclipse.ui.navigator.GoNavigatorActionProvider">
-         </actionProvider>
-      </navigatorContent>
-      <commonFilter
-            activeByDefault="true"
-            class="com.googlecode.goclipse.ui.navigator.HideBinFolderFilter"
-            id="goclipse.filters.HideBinFolder"
-            name="Hide Go bin Folder">
-      </commonFilter>
-      <commonFilter
-            activeByDefault="true"
-            class="com.googlecode.goclipse.ui.navigator.HideSrcFolderFilter"
-            id="goclipse.filters.HideSrcFolder"
-            name="Hide Go src Folder">
-      </commonFilter>
-   </extension -->
-   
    <extension point="org.eclipse.ui.decorators">
       <decorator
          class="com.googlecode.goclipse.navigator.NavigatorLabelDecorator"

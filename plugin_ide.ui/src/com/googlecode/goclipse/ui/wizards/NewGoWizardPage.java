@@ -18,8 +18,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import com.googlecode.goclipse.ui.GoPluginImages;
-import com.googlecode.goclipse.ui.navigator.GoPackage;
-import com.googlecode.goclipse.ui.navigator.GoSourceFolder;
 import com.googlecode.goclipse.ui.wizards.NewSourceFileComposite.SourceFileType;
 
 /**
@@ -87,12 +85,6 @@ public class NewGoWizardPage extends WizardPage implements DialogChangeListener{
 					container = ((IResource) obj).getParent();
 				path = container.getFullPath().toString();
 				prjPath = ((IResource) obj).getProject().getLocation();
-			} else if (obj instanceof GoSourceFolder) {
-				path = ((GoSourceFolder) obj).getFolder().getFullPath().toString();
-				prjPath = ((GoSourceFolder) obj).getProject().getLocation();
-			} else if (obj instanceof GoPackage) {
-				path = ((GoPackage) obj).getFolder().getFullPath().toString();
-				prjPath = ((GoPackage) obj).getProject().getLocation();
 			}
 			if (path != null) {
 				sourceFileComposite.getSourceFolderName().setText(path);
