@@ -2,12 +2,27 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <extension point="org.eclipse.ui.ide.projectNatureImages">
+	<extension point="org.eclipse.ui.ide.projectNatureImages">
       <image
             icon="icons/project-nature.png"
             id="MMRNMHRM_ID.ide.ui.NatureImage"
             natureId="MMRNMHRM_ID.ide.core.nature">
       </image>
-   </extension>
+	</extension>
+   
+   
+	<extension point="org.eclipse.ui.preferencePages">
+      <page
+            class="mmrnmhrm.ui.preferences.LANGRootPreferencePage"
+            id="mmrnmhrm.ui.preferences.LANGRootPreferencePage"
+            name="%LangRootPreferencePage.name"/>
+      <page
+             category="mmrnmhrm.ui.preferences.LANGRootPreferencePage"
+             class="mmrnmhrm.ui.preferences.LANGToolsConsolePrefPage"
+             id="mmrnmhrm.ui.preferences.LANGToolsConsolePrefPage"
+             name="%LangToolsConsolePage.name"/>
+	</extension>
+   
+   
    
 </plugin>

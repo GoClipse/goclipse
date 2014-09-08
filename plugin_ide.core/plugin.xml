@@ -4,7 +4,6 @@
 
    <extension
          id="nature"
-         name="Dee nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run class="MMRNMHRM_ID.ide.core.Nature"/>
@@ -16,7 +15,7 @@
       <content-type
             base-type="org.eclipse.core.runtime.text"
             default-charset="UTF-8"
-            file-extensions="d, di, dh"
+            file-extensions="%editor_FileExtensions_actual"
             id="MMRNMHRM_ID.ide.core.content.dsource"
             name="D Source"
             priority="high">
