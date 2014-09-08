@@ -56,5 +56,19 @@
          </and>
       </definition>
    </extension>
-
+	
+	
+	
+	<!-- ============ Launch configuration type ============= -->
+	
+	<extension
+		 point="org.eclipse.debug.core.launchConfigurationTypes">
+		<launchConfigurationType
+			 delegate="MELNORME_ID.ide.core.launch.LANGUAGE_LaunchConfigDelegate"
+			 id="MELNORME_ID.ide.core.LaunchConfigurationType"
+			 modes="run"
+			name="%localApplication">
+		</launchConfigurationType>
+	</extension>
+	
 </plugin>
