@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.preferences;
+package MELNORME_ID.ide.ui.preferences;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 
@@ -23,9 +23,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 /**
  * The root preference page for DDT 
  */
-public class LANGRootPreferencePage extends PreferencePage implements IWorkbenchPreferencePage{
+public class LANGUAGE_RootPreferencePage extends PreferencePage implements IWorkbenchPreferencePage{
 	
-	public LANGRootPreferencePage() {
+	public LANGUAGE_RootPreferencePage() {
 		setPreferenceStore(LangUIPlugin.getPrefStore());
 	}
 	

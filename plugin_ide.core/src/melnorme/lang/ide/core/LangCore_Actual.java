@@ -1,6 +1,6 @@
 package melnorme.lang.ide.core;
 
-import MMRNMHRM_ID.ide.core.Core;
+import MELNORME_ID.ide.core.Core;
 
 public class LangCore_Actual {
 	

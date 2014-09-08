@@ -1,4 +1,4 @@
-package mmrnmhrm.ui;
+package MELNORME_ID.ide.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 

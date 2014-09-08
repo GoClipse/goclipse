@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: MMRNMHRM_ID.ide.core.tests;singleton:=true
+Bundle-SymbolicName: MELNORME_ID.ide.core.tests;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Bundle-Name: MMRNMHRM_ID.ide.core Tests
-Fragment-Host: MMRNMHRM_ID.ide.core
+Bundle-Name: LANGUAGE IDE Core Tests
+Fragment-Host: MELNORME_ID.ide.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.0"
 Bundle-ClassPath: .
-Export-Package: melnorme.lang.ide.core.tests;x-friends:="MMRNMHRM_ID.ide.ui",
- melnorme.lang.ide.core.tests.utils;x-friends:="MMRNMHRM_ID.ide.ui"
+Export-Package: melnorme.lang.ide.core.tests;x-friends:="MELNORME_ID.ide.ui",
+ melnorme.lang.ide.core.tests.utils;x-friends:="MELNORME_ID.ide.ui"

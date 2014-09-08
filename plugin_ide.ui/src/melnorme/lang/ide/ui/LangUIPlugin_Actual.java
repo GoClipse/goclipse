@@ -4,11 +4,12 @@ import java.util.List;
 
 import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.ui.LANGUAGE_Images;
-import mmrnmhrm.ui.text.LANGUAGE_PartitionScanner;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
+
+import MELNORME_ID.ide.ui.LANGUAGE_Images;
+import MELNORME_ID.ide.ui.text.LANGUAGE_PartitionScanner;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 

@@ -1,4 +1,4 @@
-package mmrnmhrm.ui;
+package MELNORME_ID.ide.ui;
 
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;

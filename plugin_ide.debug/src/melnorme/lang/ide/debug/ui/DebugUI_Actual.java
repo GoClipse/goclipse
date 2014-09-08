@@ -3,7 +3,7 @@ package melnorme.lang.ide.debug.ui;
 import org.eclipse.cdt.debug.internal.ui.actions.breakpoints.ToggleDynamicPrintfAdapter;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import MMRNMHRM_ID.debug.ui.ToggleBreakpointAdapter;
+import MELNORME_ID.ide.debug.ui.ToggleBreakpointAdapter;
 
 public class DebugUI_Actual {
 	

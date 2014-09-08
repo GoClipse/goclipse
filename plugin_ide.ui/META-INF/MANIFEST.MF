@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
-Bundle-SymbolicName: MMRNMHRM_ID.ide.ui;singleton:=true
+Bundle-SymbolicName: MELNORME_ID.ide.ui;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Bundle-Activator: mmrnmhrm.ui.LANGUAGE_UI
+Bundle-Activator: MELNORME_ID.ide.ui.LANGUAGE_UI
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: MMRNMHRM_ID.ide.core,
+Require-Bundle: MELNORME_ID.ide.core,
  org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.jface.text;bundle-version="3.6.0",
  org.eclipse.ui;bundle-version="3.6.0",
@@ -21,6 +21,6 @@ Require-Bundle: MMRNMHRM_ID.ide.core,
  org.eclipse.search;bundle-version="3.6.0",
  org.eclipse.debug.ui;bundle-version="[3.9.0,4.0.0)";visibility:=reexport,
  org.eclipse.core.filesystem;bundle-version="1.4.0"
-Export-Package: melnorme.lang.ide.ui;x-friends:="MMRNMHRM_ID.ide.debug",
- melnorme.lang.ide.ui.editor;x-friends:="MMRNMHRM_ID.ide.debug"
+Export-Package: melnorme.lang.ide.ui;x-friends:="MELNORME_ID.ide.debug",
+ melnorme.lang.ide.ui.editor;x-friends:="MELNORME_ID.ide.debug"
 Bundle-ClassPath: .

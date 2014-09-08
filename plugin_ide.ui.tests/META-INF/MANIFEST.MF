@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: MMRNMHRM Tests
-Bundle-SymbolicName: MMRNMHRM_ID.ide.ui.tests;singleton:=true
+Bundle-Name: LANGUAGE IDE UI Tests
+Bundle-SymbolicName: MELNORME_ID.ide.ui.tests;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Fragment-Host: MMRNMHRM_ID.ide.ui
+Fragment-Host: MELNORME_ID.ide.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.0"
 Bundle-ClassPath: .

@@ -1,14 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: MMRNMHRM_ID.ide.core;singleton:=true
+Bundle-SymbolicName: MELNORME_ID.ide.core;singleton:=true
 Bundle-Version: 0.0.1.qualifier
 Bundle-Vendor: %pluginProvider
-Bundle-Activator: MMRNMHRM_ID.ide.core.Core
+Bundle-Activator: MELNORME_ID.ide.core.Core
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: MMRNMHRM_ID.tooling;visibility:=reexport,
+Require-Bundle: MELNORME_ID.tooling;visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="[3.9.0,4.0.0)";visibility:=reexport,
  org.eclipse.core.resources;bundle-version="[3.8.0,4.0.0)";visibility:=reexport,
  org.eclipse.core.filebuffers;bundle-version="3.5.0",

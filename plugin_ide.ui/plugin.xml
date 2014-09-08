@@ -5,21 +5,21 @@
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
       <image
             icon="icons/project-nature.png"
-            id="MMRNMHRM_ID.ide.ui.NatureImage"
-            natureId="MMRNMHRM_ID.ide.core.nature">
+            id="MELNORME_ID.ide.ui.NatureImage"
+            natureId="MELNORME_ID.ide.core.nature">
       </image>
 	</extension>
    
    
 	<extension point="org.eclipse.ui.preferencePages">
       <page
-            class="mmrnmhrm.ui.preferences.LANGRootPreferencePage"
-            id="mmrnmhrm.ui.preferences.LANGRootPreferencePage"
+            class="MELNORME_ID.ide.ui.preferences.LANGUAGE_RootPreferencePage"
+            id="MELNORME_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
             name="%LangRootPreferencePage.name"/>
       <page
-             category="mmrnmhrm.ui.preferences.LANGRootPreferencePage"
-             class="mmrnmhrm.ui.preferences.LANGToolsConsolePrefPage"
-             id="mmrnmhrm.ui.preferences.LANGToolsConsolePrefPage"
+             category="MELNORME_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+             class="MELNORME_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
+             id="MELNORME_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
              name="%LangToolsConsolePage.name"/>
 	</extension>
    

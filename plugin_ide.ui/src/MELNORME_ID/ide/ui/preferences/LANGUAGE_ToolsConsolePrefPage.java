@@ -8,14 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui;
+package MELNORME_ID.ide.ui.preferences;
 
-import melnorme.lang.ide.ui.tools.console.ToolsConsole;
+import melnorme.lang.ide.ui.tools.console.ToolsConsolePrefPage;
 
-public class LANGUAGE_BuildConsole extends ToolsConsole {
-	
-	public LANGUAGE_BuildConsole(String name) {
-		super(name, LANGUAGE_Images.TOOLS_CONSOLE.getDescriptor());
-	}
+public class LANGUAGE_ToolsConsolePrefPage extends ToolsConsolePrefPage {
 	
 }

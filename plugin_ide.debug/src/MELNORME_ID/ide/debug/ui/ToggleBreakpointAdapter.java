@@ -1,4 +1,4 @@
-package MMRNMHRM_ID.debug.ui;
+package MELNORME_ID.ide.debug.ui;
 
 import melnorme.lang.ide.debug.ui.LangToggleBreakpointAdapter;
 

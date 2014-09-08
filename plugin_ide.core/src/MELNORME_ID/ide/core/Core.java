@@ -1,4 +1,4 @@
-package MMRNMHRM_ID.ide.core;
+package MELNORME_ID.ide.core;
 
 import org.eclipse.core.runtime.Plugin;
 

@@ -5,17 +5,17 @@
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
             class="melnorme.lang.ide.debug.core.LangSourceLookupDirector"
-            id="MMRNMHRM_ID.ide.debug.sourceLocator"
-            name="D Source Locator">
+            id="MELNORME_ID.ide.debug.sourceLocator"
+            name="Source Locator">
       </sourceLocator>
    </extension>
    <extension
          point="org.eclipse.debug.core.launchDelegates">
       <launchDelegate
             delegate="MMRNMHRM_ID.debug.core.DeeDebugLaunchConfigurationDelegate"
-            id="MMRNMHRM_ID.ide.debug.launchDelegate"
+            id="MELNORME_ID.ide.debug.launchDelegate"
             modes="debug"
-            sourceLocatorId="MMRNMHRM_ID.ide.debug.sourceLocator"
+            sourceLocatorId="MELNORME_ID.ide.debug.sourceLocator"
             type="MMRNMHRM_ID.ide.core.deeLaunchConfigurationType">
       </launchDelegate>
    </extension>

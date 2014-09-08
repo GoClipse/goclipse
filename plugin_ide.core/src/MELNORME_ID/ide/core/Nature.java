@@ -1,4 +1,4 @@
-package MMRNMHRM_ID.ide.core;
+package MELNORME_ID.ide.core;
 
 import melnorme.lang.ide.core.LangNature;
 
