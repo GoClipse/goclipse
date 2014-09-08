@@ -10,27 +10,17 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.debug.core.DebugPlugin;
-
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
+import melnorme.lang.ide.core.utils.prefs.ProgramArgumentsPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 
 public interface GoProjectPrefConstants {
 	
-	StringPreference GO_BUILD_EXTRA_OPTIONS = 
-			new StringPreference("projectPrefs.build_extra_options", "-gcflags \"-N -l\"");
+	ProgramArgumentsPreference GO_BUILD_EXTRA_OPTIONS = 
+			new ProgramArgumentsPreference("projectPrefs.build_extra_options", "-gcflags \"-N -l\"");
 	
-	public static class GO_BUILD_EXTRA_OPTIONS_Helper {
-		
-		public static String[] getExtraCommands(IProject project) {
-			String extraOptionsString = GO_BUILD_EXTRA_OPTIONS.get(project);
-			return DebugPlugin.parseArguments(extraOptionsString);
-		}
-		
-	}
 	
 	BooleanPreference ENABLE_AUTO_UNIT_TEST = 
 		new BooleanPreference("projectPrefs.auto_unit_test.enable" , false);

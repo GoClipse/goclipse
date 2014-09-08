@@ -212,7 +212,8 @@ public class GoCompiler {
 	 * @param pmonitor
 	 * @param fileList
 	 */
-	public void compileCmd(final IProject project, IProgressMonitor pmonitor, java.io.File target) {
+	public void compileCmd(final IProject project, IProgressMonitor pmonitor, java.io.File target) 
+			throws CoreException {
 		
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
@@ -234,7 +235,7 @@ public class GoCompiler {
 					compilerPath,
 					GoConstants.GO_BUILD_COMMAND
 				).addElements(
-					GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS_Helper.getExtraCommands(project)
+					GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project)
 				).addElements(
 					GoConstants.COMPILER_OPTION_O,
 					outPath, 
@@ -247,7 +248,7 @@ public class GoCompiler {
 					compilerPath,
 					GoConstants.GO_BUILD_COMMAND
 				).addElements(
-					GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS_Helper.getExtraCommands(project)
+					GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project)
 				).addElements(
 					GoConstants.COMPILER_OPTION_O,
 					outPath 
@@ -294,7 +295,7 @@ public class GoCompiler {
 	 * @param pmonitor
 	 * @param fileList
 	 */
-	public void compileAll(final IProject project, IProgressMonitor pmonitor, IFolder target) {
+	public void compileAll(final IProject project, IProgressMonitor pmonitor, IFolder target) throws CoreException {
 		
 		final IPath  projectLocation = project.getLocation();
 		
@@ -310,7 +311,7 @@ public class GoCompiler {
 				compilerPath,
 				GoConstants.GO_BUILD_COMMAND
 			).addElements(
-				GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS_Helper.getExtraCommands(project)
+				GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project)
 			);
 			
 			String goPath = buildGoPath(project, projectLocation, false);
