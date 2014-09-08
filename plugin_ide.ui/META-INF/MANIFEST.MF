@@ -4,7 +4,7 @@ Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
 Bundle-SymbolicName: MELNORME_ID.ide.ui;singleton:=true
 Bundle-Version: 0.0.1.qualifier
-Bundle-Activator: MELNORME_ID.ide.ui.LANGUAGE_UI
+Bundle-Activator: MELNORME_ID.ide.ui.LANGUAGE_UIPlugin
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

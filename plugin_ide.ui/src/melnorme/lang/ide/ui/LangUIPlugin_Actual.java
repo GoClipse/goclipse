@@ -31,7 +31,7 @@ public final class LangUIPlugin_Actual {
 		IDocument.DEFAULT_CONTENT_TYPE, 
 	};
 	
-	public static final String LANG_PARTITIONING = "__Mmrnmhrm_PARTITIONING_ID";
+	public static final String LANG_PARTITIONING = "MELNORME_ID.Partitioning";
 	public static final String[] LEGAL_CONTENT_TYPES = 
 			ArrayUtil.remove(PARTITION_TYPES, IDocument.DEFAULT_CONTENT_TYPE);
 	

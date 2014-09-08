@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
+	
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
       <image
             icon="icons/project-nature.png"
@@ -9,20 +9,45 @@
             natureId="MELNORME_ID.ide.core.nature">
       </image>
 	</extension>
-   
-   
-	<extension point="org.eclipse.ui.preferencePages">
-      <page
-            class="MELNORME_ID.ide.ui.preferences.LANGUAGE_RootPreferencePage"
-            id="MELNORME_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
-            name="%LangRootPreferencePage.name"/>
-      <page
-             category="MELNORME_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
-             class="MELNORME_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
-             id="MELNORME_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
-             name="%LangToolsConsolePage.name"/>
+	
+	
+	<!-- ============ EDITOR ============= -->
+		
+	<extension
+		 id="MELNORME_ID.DocumentSetupParticipant"
+		 name="LANGUAGE Document Setup Participant"
+		 point="org.eclipse.core.filebuffers.documentSetup">
+		<participant
+			class="MELNORME_ID.ide.ui.text.LANGUAGE_DocumentSetupParticipant"
+			contentTypeId="MELNORME_ID.ide.core.content.source">
+		</participant>
 	</extension>
-   
-   
-   
+	
+	
+	<extension point="org.eclipse.ui.editors">
+		<editor
+		 class="MELNORME_ID.ide.ui.editor.LANGUAGE_Editor"
+		 contributorClass="MELNORME_ID.ide.ui.editor.LANGUAGE_EditorActionContributor"
+		 default="true"
+		 icon="icons/obj/editor_file.png"
+		 id="MELNORME_ID.ide.ui.editor.LANGUAGE_Editor"
+		 name="%LangEditor.name">
+			<contentTypeBinding contentTypeId="MELNORME_ID.ide.core.content.source" />
+		</editor>
+	</extension>
+	
+	<!-- ============ Preference pages ============= -->
+	
+	<extension point="org.eclipse.ui.preferencePages">
+		<page
+			 class="MELNORME_ID.ide.ui.preferences.LANGUAGE_RootPreferencePage"
+			 id="MELNORME_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			 name="%LangRootPreferencePage.name"/>
+		<page
+			 category="MELNORME_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			 class="MELNORME_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
+			 id="MELNORME_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
+			 name="%LangToolsConsolePage.name"/>
+	</extension>
+	
 </plugin>
