@@ -26,6 +26,7 @@ public class LangArgumentsBlock2 extends ArgumentsGroupField {
 	
 	@Override
 	protected void createContents_do(Composite topControl) {
+		super.createContents_do(topControl);
 		text.getAccessible().addAccessibleListener(new AccessibleAdapter() {
 			@Override
 			public void getName(AccessibleEvent e) {
@@ -43,10 +44,7 @@ public class LangArgumentsBlock2 extends ArgumentsGroupField {
 	protected static String getAttributeValueFrom(String content) {
 		// Bug #131513 - eliminate Windows \r line delimiter
 		content = content.replaceAll("\r\n", "\n");  //$NON-NLS-1$//$NON-NLS-2$
-		if (content.length() > 0) {
-			return content;
-		}
-		return null;
+		return content;
 	}
 	
 	@Override
