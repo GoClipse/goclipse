@@ -39,4 +39,6 @@ public final class LangUIPlugin_Actual {
 		return new LANGUAGE_PartitionScanner();
 	}
 	
+	public static final String LANG_Name = "LANGUAGE_";
+	
 }

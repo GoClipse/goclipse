@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.resources.IProject;
@@ -30,6 +31,9 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 public abstract class AbstractLangEditor extends TextEditor {
 	
+	protected static final String RULER_CONTEXT = "#"+LangUIPlugin_Actual.LANG_Name+"RulerContext";
+	protected static final String EDITOR_CONTEXT = "#"+LangUIPlugin_Actual.LANG_Name+"EditorContext";
+	
 	public AbstractLangEditor() {
 		super();
 	}
@@ -37,6 +41,12 @@ public abstract class AbstractLangEditor extends TextEditor {
 	@Override
 	protected void initializeEditor() {
 		super.initializeEditor();
+		setContextMenuIds();
+	}
+	
+	protected void setContextMenuIds() {
+		setEditorContextMenuId(EDITOR_CONTEXT);
+		setRulerContextMenuId(RULER_CONTEXT);
 	}
 	
 	@Override

@@ -12,61 +12,55 @@
    <extension
          point="org.eclipse.debug.core.launchDelegates">
       <launchDelegate
-            delegate="MMRNMHRM_ID.debug.core.DeeDebugLaunchConfigurationDelegate"
+            delegate="MELNORME_ID.ide.debug.ui.LANGUAGE_DebugLaunchConfigurationDelegate"
             id="MELNORME_ID.ide.debug.launchDelegate"
             modes="debug"
             sourceLocatorId="MELNORME_ID.ide.debug.sourceLocator"
-            type="MMRNMHRM_ID.ide.core.deeLaunchConfigurationType">
+            type="MELNORME_ID.ide.core.LaunchConfigurationType">
       </launchDelegate>
    </extension>
 
 
    <!-- launch UI -->
 
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+   <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="MMRNMHRM_ID.debug.ui.DeeDebugTabGroup"
-            description="Debug a D application"
-            id="MMRNMHRM_ID.debug.ui.launchConfigurationTabGroup_debug"
-            type="MMRNMHRM_ID.ide.core.deeLaunchConfigurationType">
-         <launchMode
-               mode="debug">
-         </launchMode>
+            class="MELNORME_ID.ide.debug.ui.LANGUAGE_DebugTabGroup"
+            description="%DebugTabGroup.description"
+            id="MELNORME_ID.ide.debug.ui.LANGUAGE_DebugTabGroup"
+            type="MELNORME_ID.ide.core.LaunchConfigurationType">
+         <launchMode mode="debug" />
       </launchConfigurationTabGroup>
    </extension>
 
-   <extension
-         point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
+   <extension point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
       <toggleTargetFactory
             class="melnorme.lang.ide.debug.ui.LangToggleBreakpointsTargetFactory"
-            id="MMRNMHRM_ID.ide.debug.toggleTargetFactory">
+            id="MELNORME_ID.ide.debug.toggleTargetFactory">
          <enablement>
-            <instanceof
-                  value="mmrnmhrm.ui.editor.DeeEditor">
-            </instanceof>
+            <instanceof value="MELNORME_ID.ide.ui.editor.LANGUAGE_Editor" />
          </enablement>
       </toggleTargetFactory>
    </extension>
 
    <extension point="org.eclipse.ui.editorActions">
       <editorContribution
-         targetID="MMRNMHRM_ID.ide.ui.editors.DeeEditor"
-         id="MMRNMHRM_ID.ide.ui.editor.DeeEditor.BreakpointRulerActions">
+         targetID="MELNORME_ID.ide.ui.editor.LANGUAGE_Editor"
+         id="MELNORME_ID.ide.debug.ui.EditorBreakpointRulerActions">
 
          <action label="%dummyLabel"
             class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
             actionID="RulerDoubleClick"
-            id="DeeEditor.rulerDoubleClickAction" />
+            id="Editor.rulerDoubleClickAction" />
       </editorContribution>
    </extension>
 
    <extension
       point="org.eclipse.ui.menus">
       <menuContribution
-             locationURI="popup:#DeeRulerContext?after=debug">
+             locationURI="popup:#LANGUAGE_RulerContext?after=debug">
          <menu 
-              id="breakpointTypes.MMRNMHRM_ID" 
+              id="breakpointTypes.MELNORME_ID" 
               label="%BreakpointTypes.label">
             <dynamic
                    class="org.eclipse.debug.ui.actions.BreakpointTypesContribution"
@@ -79,28 +73,28 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <viewerContribution
-            targetID="#DeeRulerContext"
-            id="MMRNMHRM_ID.debug.ui.DeeEditorRulerDebugPopupActions">
+            targetID="#LANGUAGE_RulerContext"
+            id="MELNORME_ID.ide.debug.ui.EditorRulerDebugPopupActions">
          <action
                label="%RulerBreakpointProperties.label"
                helpContextId="breakpoint_properties_action_context"
                class="org.eclipse.cdt.debug.internal.ui.actions.breakpoints.CBreakpointPropertiesRulerActionDelegate"
                menubarPath="debug"
-               id="MMRNMHRM_ID.debug.internal.ui.actions.CBreakpointPropertiesRulerActionDelegate">
+               id="MELNORME_ID.debug.internal.ui.actions.CBreakpointPropertiesRulerActionDelegate">
          </action>
          <action
                label="%AddBreakpointInteractive.label"
                helpContextId="add_breakpoint_interactive_action_context"
                class="org.eclipse.cdt.debug.internal.ui.actions.breakpoints.CAddBreakpointInteractiveRulerActionDelegate"
                menubarPath="debug"
-               id="MMRNMHRM_ID.debug.ui.actions.RulerCreateBreakpointInteractiveAction">
+               id="MELNORME_ID.debug.ui.actions.RulerCreateBreakpointInteractiveAction">
          </action>
          <action
                label="%EnableBreakpoint.label"
                helpContextId="enable_disable_breakpoint_action_context"
                class="org.eclipse.debug.ui.actions.RulerEnableDisableBreakpointActionDelegate"
                menubarPath="debug"
-               id="MMRNMHRM_ID.debug.ui.actions.EnableDisableBreakpointRulerActionDelegate">
+               id="MELNORME_ID.debug.ui.actions.EnableDisableBreakpointRulerActionDelegate">
          </action>
           <action
                label="%AddDynamicPrintfInteractive.label"
@@ -114,17 +108,17 @@
                class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
                definitionId="org.eclipse.debug.ui.commands.ToggleBreakpoint"
                menubarPath="debug"
-               id="MMRNMHRM_ID.debug.ui.actions.RulerToggleBreakpointAction">
+               id="MELNORME_ID.ide.debug.ui.actions.RulerToggleBreakpointAction">
          </action>
       </viewerContribution>
    </extension>
 
    <!-- Add Watch, Run to, Resume, Move to, etc. -->
-   <extension
-         point="org.eclipse.ui.popupMenus">
+   
+   <extension point="org.eclipse.ui.popupMenus">
       <viewerContribution
-            targetID="#DeeEditorContext"
-            id="MMRNMHRM_ID.debug.ui.DeeEditorDebugPopupActions">
+            targetID="#LANGUAGE_EditorContext"
+            id="MELNORME_ID.ide.debug.ui.EditorDebugPopupActions">
          <visibility>
             <and>
                <systemProperty
@@ -169,11 +163,11 @@
          </action>
       </viewerContribution>
    </extension>
-   <extension
-         point="org.eclipse.core.runtime.adapters">
+   
+   <extension point="org.eclipse.core.runtime.adapters">
       <factory
             class="org.eclipse.cdt.debug.internal.ui.actions.RetargettableActionAdapterFactory"
-            adaptableType="mmrnmhrm.ui.editor.DeeEditor">
+            adaptableType="MELNORME_ID.ide.ui.editor.LANGUAGE_Editor">
          <adapter type="org.eclipse.debug.ui.actions.IRunToLineTarget"/>
          <adapter type="org.eclipse.cdt.debug.internal.ui.actions.IResumeAtLineTarget"/>
          <adapter type="org.eclipse.cdt.debug.internal.ui.actions.IMoveToLineTarget"/>
@@ -182,8 +176,8 @@
    
    <extension point="org.eclipse.core.runtime.adapters">
       <factory 
-        	class="MMRNMHRM_ID.debug.ui.DeeGdbAdapterFactory" 
-	        adaptableType="MMRNMHRM_ID.debug.core.DeeGdbLaunch">
+        	class="MELNORME_ID.ide.debug.ui.LANGUAGE_GdbAdapterFactory" 
+	        adaptableType="MELNORME_IDE.ide.debug.core.DeeGdbLaunch">
          <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider"/>
          <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxyFactory"/>
          <adapter type="org.eclipse.debug.ui.contexts.ISuspendTrigger"/>

@@ -50,4 +50,24 @@
 			 name="%LangToolsConsolePage.name"/>
 	</extension>
 	
+		
+	<!-- ============ Launch ============= -->
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+		<launchConfigurationTypeImage
+			configTypeID="MELNORME_ID.ide.core.LaunchConfigurationType"
+			icon="icons/actions/application_launch.png"
+			id="MELNORME_ID.ide.core.LaunchConfigurationType_Image">
+		</launchConfigurationTypeImage>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+		<launchConfigurationTabGroup
+			class="MELNORME_ID.ide.ui.launch.LANGUAGE_TabGroup"
+			description="%LangTabGroup.description"
+			id="MELNORME_ID.ide.ui.LANGUAGE_LaunchTabGroup"
+			type="MELNORME_ID.ide.core.LaunchConfigurationType">
+		</launchConfigurationTabGroup>
+	</extension>
+	
 </plugin>
