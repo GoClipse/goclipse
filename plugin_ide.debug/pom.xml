@@ -10,7 +10,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>MMRNMHRM_ID.ide.debug</artifactId>
+	<artifactId>MELNORME_ID.ide.debug</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
 </project>

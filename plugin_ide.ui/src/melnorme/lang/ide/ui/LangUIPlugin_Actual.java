@@ -16,10 +16,10 @@ import MELNORME_ID.ide.ui.text.LANGUAGE_PartitionScanner;
  */
 public final class LangUIPlugin_Actual {
 	
-	public static final String PLUGIN_ID = "MMRNMHRM_ID.ide.ui";
+	public static final String PLUGIN_ID = "MELNORME_ID.ide.ui";
 	
 	// ID to start the debug plugin automatically, if present
-	protected static final String DEBUG_PLUGIN_ID = "MMRNMHRM_ID.ide.debug";
+	protected static final String DEBUG_PLUGIN_ID = "MELNORME_ID.ide.debug";
 	
 	protected static final Class<?> PLUGIN_IMAGES_CLASS = LANGUAGE_Images.class;
 	
