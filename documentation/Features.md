@@ -1,4 +1,4 @@
-## MMRNMHRM :
+## LANG_IDE_NAME :
 [![sample_basic](screenshots/sample_basic.png)](:)
 
-## MMRNMHRM features:
+## LANG_IDE_NAME Features:

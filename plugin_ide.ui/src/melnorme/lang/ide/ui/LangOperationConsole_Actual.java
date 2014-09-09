@@ -10,7 +10,7 @@
  *******************************************************************************/
  package melnorme.lang.ide.ui;
 
-import MELNORME_ID.ide.ui.LANGUAGE_BuildConsole;
+import LANG_PROJECT_ID.ide.ui.LANGUAGE_BuildConsole;
 
 
 public class LangOperationConsole_Actual extends LANGUAGE_BuildConsole {

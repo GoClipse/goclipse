@@ -6,7 +6,7 @@
          id="nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
-         <run class="MELNORME_ID.ide.core.Nature"/>
+         <run class="LANG_PROJECT_ID.ide.core.Nature"/>
       </runtime>
    </extension>
    
@@ -16,7 +16,7 @@
             base-type="org.eclipse.core.runtime.text"
             default-charset="UTF-8"
             file-extensions="%contentType_FileExtensions_actual"
-            id="MELNORME_ID.ide.core.content.source"
+            id="LANG_PROJECT_ID.ide.core.content.source"
             name="%contentType_Name_actual"
             priority="high">
       </content-type>
@@ -24,34 +24,34 @@
    
    <extension point="org.eclipse.core.expressions.definitions">
       <definition
-            id="MELNORME_ID.ide.core.expressions.isLangProject">
+            id="LANG_PROJECT_ID.ide.core.expressions.isLangProject">
          <adapt
                type="org.eclipse.core.resources.IProject">
             <test
                   property="org.eclipse.core.resources.projectNature"
-                  value="MELNORME_ID.ide.core.nature">
+                  value="LANG_PROJECT_ID.ide.core.nature">
             </test>
          </adapt>
       </definition>
       <definition
-            id="MELNORME_ID.ide.core.expressions.isLangNatureContainer">
+            id="LANG_PROJECT_ID.ide.core.expressions.isLangNatureContainer">
          <adapt
                type="org.eclipse.core.resources.IContainer">
             <test
                   property="org.eclipse.core.resources.projectNature"
-                  value="MELNORME_ID.ide.core.nature">
+                  value="LANG_PROJECT_ID.ide.core.nature">
             </test>
          </adapt>
       </definition>
       <definition
-            id="MELNORME_ID.ide.core.expressions.isResourceInLangProject">
+            id="LANG_PROJECT_ID.ide.core.expressions.isResourceInLangProject">
          <and>
             <instanceof
                   value="org.eclipse.core.resources.IResource">
             </instanceof>
             <test
                   property="org.eclipse.core.resources.projectNature"
-                  value="MELNORME_ID.ide.core.nature">
+                  value="LANG_PROJECT_ID.ide.core.nature">
             </test>
          </and>
       </definition>
@@ -64,8 +64,8 @@
 	<extension
 		 point="org.eclipse.debug.core.launchConfigurationTypes">
 		<launchConfigurationType
-			 delegate="MELNORME_ID.ide.core.launch.LANGUAGE_LaunchConfigDelegate"
-			 id="MELNORME_ID.ide.core.LaunchConfigurationType"
+			 delegate="LANG_PROJECT_ID.ide.core.launch.LANGUAGE_LaunchConfigDelegate"
+			 id="LANG_PROJECT_ID.ide.core.LaunchConfigurationType"
 			 modes="run"
 			name="%localApplication">
 		</launchConfigurationType>

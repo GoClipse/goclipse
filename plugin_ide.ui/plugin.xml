@@ -5,8 +5,8 @@
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
       <image
             icon="icons/project-nature.png"
-            id="MELNORME_ID.ide.ui.NatureImage"
-            natureId="MELNORME_ID.ide.core.nature">
+            id="LANG_PROJECT_ID.ide.ui.NatureImage"
+            natureId="LANG_PROJECT_ID.ide.core.nature">
       </image>
 	</extension>
 	
@@ -14,25 +14,25 @@
 	<!-- ============ EDITOR ============= -->
 		
 	<extension
-		 id="MELNORME_ID.DocumentSetupParticipant"
+		 id="LANG_PROJECT_ID.DocumentSetupParticipant"
 		 name="LANGUAGE Document Setup Participant"
 		 point="org.eclipse.core.filebuffers.documentSetup">
 		<participant
-			class="MELNORME_ID.ide.ui.text.LANGUAGE_DocumentSetupParticipant"
-			contentTypeId="MELNORME_ID.ide.core.content.source">
+			class="LANG_PROJECT_ID.ide.ui.text.LANGUAGE_DocumentSetupParticipant"
+			contentTypeId="LANG_PROJECT_ID.ide.core.content.source">
 		</participant>
 	</extension>
 	
 	
 	<extension point="org.eclipse.ui.editors">
 		<editor
-		 class="MELNORME_ID.ide.ui.editor.LANGUAGE_Editor"
-		 contributorClass="MELNORME_ID.ide.ui.editor.LANGUAGE_EditorActionContributor"
+		 class="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor"
+		 contributorClass="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_EditorActionContributor"
 		 default="true"
 		 icon="icons/obj/editor_file.png"
-		 id="MELNORME_ID.ide.ui.editor.LANGUAGE_Editor"
+		 id="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor"
 		 name="%LangEditor.name">
-			<contentTypeBinding contentTypeId="MELNORME_ID.ide.core.content.source" />
+			<contentTypeBinding contentTypeId="LANG_PROJECT_ID.ide.core.content.source" />
 		</editor>
 	</extension>
 	
@@ -40,13 +40,13 @@
 	
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			 class="MELNORME_ID.ide.ui.preferences.LANGUAGE_RootPreferencePage"
-			 id="MELNORME_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			 class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_RootPreferencePage"
+			 id="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
 			 name="%LangRootPreferencePage.name"/>
 		<page
-			 category="MELNORME_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
-			 class="MELNORME_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
-			 id="MELNORME_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
+			 category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			 class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
+			 id="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
 			 name="%LangToolsConsolePage.name"/>
 	</extension>
 	
@@ -55,18 +55,18 @@
 	
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
 		<launchConfigurationTypeImage
-			configTypeID="MELNORME_ID.ide.core.LaunchConfigurationType"
+			configTypeID="LANG_PROJECT_ID.ide.core.LaunchConfigurationType"
 			icon="icons/actions/application_launch.png"
-			id="MELNORME_ID.ide.core.LaunchConfigurationType_Image">
+			id="LANG_PROJECT_ID.ide.core.LaunchConfigurationType_Image">
 		</launchConfigurationTypeImage>
 	</extension>
 	
 	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
 		<launchConfigurationTabGroup
-			class="MELNORME_ID.ide.ui.launch.LANGUAGE_TabGroup"
+			class="LANG_PROJECT_ID.ide.ui.launch.LANGUAGE_TabGroup"
 			description="%LangTabGroup.description"
-			id="MELNORME_ID.ide.ui.LANGUAGE_LaunchTabGroup"
-			type="MELNORME_ID.ide.core.LaunchConfigurationType">
+			id="LANG_PROJECT_ID.ide.ui.LANGUAGE_LaunchTabGroup"
+			type="LANG_PROJECT_ID.ide.core.LaunchConfigurationType">
 		</launchConfigurationTabGroup>
 	</extension>
 	

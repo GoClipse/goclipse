@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-import MELNORME_ID.ide.ui.launch.LANGUAGE_ProgramArgumentsTab;
+import LANG_PROJECT_ID.ide.ui.launch.LANGUAGE_ProgramArgumentsTab;
 
 public final class LangProgramArgumentsTab_Actual extends LANGUAGE_ProgramArgumentsTab {
 }

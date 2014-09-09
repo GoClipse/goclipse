@@ -8,18 +8,18 @@ import melnorme.utilbox.misc.ArrayUtil;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
-import MELNORME_ID.ide.ui.LANGUAGE_Images;
-import MELNORME_ID.ide.ui.text.LANGUAGE_PartitionScanner;
+import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
+import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_PartitionScanner;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
  */
 public final class LangUIPlugin_Actual {
 	
-	public static final String PLUGIN_ID = "MELNORME_ID.ide.ui";
+	public static final String PLUGIN_ID = "LANG_PROJECT_ID.ide.ui";
 	
 	// ID to start the debug plugin automatically, if present
-	protected static final String DEBUG_PLUGIN_ID = "MELNORME_ID.ide.debug";
+	protected static final String DEBUG_PLUGIN_ID = "LANG_PROJECT_ID.ide.debug";
 	
 	protected static final Class<?> PLUGIN_IMAGES_CLASS = LANGUAGE_Images.class;
 	
@@ -31,7 +31,7 @@ public final class LangUIPlugin_Actual {
 		IDocument.DEFAULT_CONTENT_TYPE, 
 	};
 	
-	public static final String LANG_PARTITIONING = "MELNORME_ID.Partitioning";
+	public static final String LANG_PARTITIONING = "LANG_PROJECT_ID.Partitioning";
 	public static final String[] LEGAL_CONTENT_TYPES = 
 			ArrayUtil.remove(PARTITION_TYPES, IDocument.DEFAULT_CONTENT_TYPE);
 	

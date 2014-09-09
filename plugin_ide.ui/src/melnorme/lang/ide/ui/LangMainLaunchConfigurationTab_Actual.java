@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-import MELNORME_ID.ide.ui.launch.LANGUAGE_MainLaunchConfigurationTab;
+import LANG_PROJECT_ID.ide.ui.launch.LANGUAGE_MainLaunchConfigurationTab;
 
 public final class LangMainLaunchConfigurationTab_Actual extends LANGUAGE_MainLaunchConfigurationTab {
 }

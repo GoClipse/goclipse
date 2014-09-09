@@ -10,7 +10,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>MELNORME_ID</artifactId>
+	<artifactId>LANG_PROJECT_ID</artifactId>
 	<packaging>eclipse-feature</packaging>
 
 </project>

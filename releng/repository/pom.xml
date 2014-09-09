@@ -26,7 +26,7 @@
 				<artifactId>tycho-p2-repository-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<repositoryName>MMRNMHRM Site</repositoryName>
+					<repositoryName>LANG_IDE_NAME Site</repositoryName>
 				</configuration>
 			</plugin>
 		</plugins>
