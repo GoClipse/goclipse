@@ -17,10 +17,10 @@ import org.eclipse.jface.text.rules.WordRule;
 public class LANGUAGE_CodeScanner extends AbstractLangScanner {
 	
 	private static String tokenPrefProperties[] = new String[] {
-		LANGUAGE_ColorPreferences.CODE_DEFAULT.key,
-		LANGUAGE_ColorPreferences.CODE_KEYWORDS.key,
-		LANGUAGE_ColorPreferences.CODE_KEYWORDS_VALUES.key,
-		LANGUAGE_ColorPreferences.CODE_OPERATORS.key
+		LANGUAGE_ColorPreferences.DEFAULT.key,
+		LANGUAGE_ColorPreferences.KEYWORDS.key,
+		LANGUAGE_ColorPreferences.KEYWORDS_VALUES.key,
+		LANGUAGE_ColorPreferences.OPERATORS.key
 	};
 	
 	public LANGUAGE_CodeScanner(ITokenStoreFactory factory) {
@@ -31,10 +31,10 @@ public class LANGUAGE_CodeScanner extends AbstractLangScanner {
 	protected List<IRule> createRules() {
 		List<IRule> rules = new ArrayList<IRule>();
 		
-		IToken tkOther = getToken(LANGUAGE_ColorPreferences.CODE_DEFAULT.key);
-		IToken tkKeywords = getToken(LANGUAGE_ColorPreferences.CODE_KEYWORDS.key);
-		IToken tkKeywordValues = getToken(LANGUAGE_ColorPreferences.CODE_KEYWORDS_VALUES.key);
-		IToken tkOperators = getToken(LANGUAGE_ColorPreferences.CODE_OPERATORS.key);
+		IToken tkOther = getToken(LANGUAGE_ColorPreferences.DEFAULT.key);
+		IToken tkKeywords = getToken(LANGUAGE_ColorPreferences.KEYWORDS.key);
+		IToken tkKeywordValues = getToken(LANGUAGE_ColorPreferences.KEYWORDS_VALUES.key);
+		IToken tkOperators = getToken(LANGUAGE_ColorPreferences.OPERATORS.key);
 		
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));

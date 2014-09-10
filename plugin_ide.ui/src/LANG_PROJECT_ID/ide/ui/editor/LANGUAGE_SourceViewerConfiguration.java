@@ -33,10 +33,10 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 	protected void createScanners() {
 		addScanner(new LANGUAGE_CodeScanner(getTokenStoreFactory()), IDocument.DEFAULT_CONTENT_TYPE);
 		
-		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.COMMENT.key), 
+		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.COMMENTS.key), 
 			LangPartitionTypes.COMMENT);
 		
-		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.STRING.key), 
+		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.STRINGS.key), 
 			LangPartitionTypes.STRING);
 	}
 	

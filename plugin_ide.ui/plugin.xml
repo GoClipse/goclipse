@@ -40,14 +40,34 @@
 	
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			 class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_RootPreferencePage"
-			 id="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
-			 name="%LangRootPreferencePage.name"/>
+			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			id=   "LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			name="%LangRootPreferencePage.name">
+		</page>
 		<page
-			 category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
-			 class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
-			 id="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
-			 name="%LangToolsConsolePage.name"/>
+			category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			class="LANG_PROJECT_ID.ide.ui.preferences.ToolsConsolePrefPage"
+			id=   "LANG_PROJECT_ID.ide.ui.preferences.ToolsConsolePrefPage"
+			name="%LangToolsConsolePage.name">
+		</page>
+		<page
+			category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			class="LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
+			id=   "LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
+			name="%LangEditorPreferencePage.name">
+		</page>
+		<page
+			category="LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
+			class="LANG_PROJECT_ID.ide.ui.preferences.EditorSmartTypingPreferencePage"
+			id=   "LANG_PROJECT_ID.ide.ui.preferences.EditorSmartTypingPreferencePage"
+			name="%LangEditorTypingPreferencePage.name">
+		</page>
+		<page
+			category="LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
+			class="LANG_PROJECT_ID.ide.ui.preferences.SourceColoringPreferencePage"
+			id=   "LANG_PROJECT_ID.ide.ui.preferences.SourceColoringPreferencePage"
+			name="%LangEditorSyntaxColoringPreferencePage.name">
+		</page>
 	</extension>
 	
 		

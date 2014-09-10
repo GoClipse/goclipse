@@ -22,10 +22,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-public abstract class ToolsConsolePrefPage extends FieldEditorPreferencePage 
+public abstract class AbstractToolsConsolePrefPage extends FieldEditorPreferencePage 
 		implements ToolsConsolePrefs, IWorkbenchPreferencePage {
 	
-	public ToolsConsolePrefPage() {
+	public AbstractToolsConsolePrefPage() {
 		super(GRID);
 		setPreferenceStore(LangUIPlugin.getCorePrefStore());
 	}

@@ -13,12 +13,10 @@ package LANG_PROJECT_ID.ide.ui.editor;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 
-import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
-
 public class LANGUAGE_Editor extends AbstractLangEditor {
 	
 	@Override
-	protected TextSourceViewerConfiguration createSourceViewerConfiguration() {
+	protected LANGUAGE_SourceViewerConfiguration createSourceViewerConfiguration() {
 		return new LANGUAGE_SourceViewerConfiguration(getPreferenceStore(),
 			LangUIPlugin.getInstance().getColorManager());
 	}

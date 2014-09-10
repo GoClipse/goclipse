@@ -10,8 +10,9 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.preferences;
 
-import melnorme.lang.ide.ui.tools.console.ToolsConsolePrefPage;
+import melnorme.lang.ide.ui.tools.console.AbstractToolsConsolePrefPage;
 
-public class LANGUAGE_ToolsConsolePrefPage extends ToolsConsolePrefPage {
+
+public class ToolsConsolePrefPage extends AbstractToolsConsolePrefPage {
 	
 }
