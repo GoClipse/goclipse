@@ -44,12 +44,14 @@
 			id=   "LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
 			name="%LangRootPreferencePage.name">
 		</page>
+		
 		<page
 			category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
-			class="LANG_PROJECT_ID.ide.ui.preferences.ToolsConsolePrefPage"
-			id=   "LANG_PROJECT_ID.ide.ui.preferences.ToolsConsolePrefPage"
-			name="%LangToolsConsolePage.name">
+			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
+			id=   "LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
+			name="%LangToolsConsolePrefPage.name">
 		</page>
+		
 		<page
 			category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
 			class="LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
@@ -68,6 +70,7 @@
 			id=   "LANG_PROJECT_ID.ide.ui.preferences.SourceColoringPreferencePage"
 			name="%LangEditorSyntaxColoringPreferencePage.name">
 		</page>
+		
 	</extension>
 	
 		

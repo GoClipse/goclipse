@@ -13,6 +13,6 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsolePrefPage;
 
 
-public class ToolsConsolePrefPage extends AbstractToolsConsolePrefPage {
+public class LANGUAGE_ToolsConsolePrefPage extends AbstractToolsConsolePrefPage {
 	
 }
