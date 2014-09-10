@@ -11,6 +11,7 @@
 package LANG_PROJECT_ID.ide.ui.editor;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
@@ -52,7 +53,7 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		if(IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)) {
-			return array(new LANGUAGE_AutoEditStrategy(contentType, sourceViewer));
+			return array(LangUIPlugin_Actual.createAutoEditStrategy(sourceViewer, contentType));
 		} else {
 			return super.getAutoEditStrategies(sourceViewer, contentType);
 		}

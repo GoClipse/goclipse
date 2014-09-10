@@ -27,14 +27,20 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 	public AbstractLangDebugLaunchConfigurationDelegate() {
 	}
 	
-	protected final GdbLaunchDelegateExtension gdbLaunchDelegate = new GdbLaunchDelegateExtension() {
-		@Override
-		protected GdbLaunch createGdbLaunch(ILaunchConfiguration configuration, String mode, ISourceLocator locator)
-				throws CoreException {
-			return doCreateGdbLaunch(configuration, mode, locator);
-		}
-
-	};
+	protected final GdbLaunchDelegateExtension gdbLaunchDelegate = createGdbLaunchDelegate();
+	
+	protected GdbLaunchDelegateExtension createGdbLaunchDelegate() {
+		return new GdbLaunchDelegateExtension() {
+			@Override
+			protected GdbLaunch createGdbLaunch(ILaunchConfiguration configuration, String mode,
+					ISourceLocator locator) throws CoreException {
+				return doCreateGdbLaunch(configuration, mode, locator);
+			}
+		};
+	}
+	
+	protected abstract GdbLaunch doCreateGdbLaunch(ILaunchConfiguration configuration, String mode,
+			ISourceLocator locator);
 	
 	@Override
 	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
@@ -43,7 +49,7 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 	
 	@Override
 	public ILaunch getLaunchForDebugMode(ILaunchConfiguration configuration, String mode) throws CoreException {
-
+		
 		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
 		
 		setAttributes(configuration, workingCopy);
@@ -75,8 +81,5 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 		String mode = launch.getLaunchMode();
 		gdbLaunchDelegate.launch(configuration, mode, launch, monitor);
 	}
-	
-	protected abstract GdbLaunch doCreateGdbLaunch(ILaunchConfiguration configuration, String mode, 
-			ISourceLocator locator);
 	
 }

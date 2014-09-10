@@ -11,9 +11,6 @@
 package melnorme.lang.ide.ui.launch;
 
 
-import melnorme.lang.ide.ui.LangMainLaunchConfigurationTab_Actual;
-import melnorme.lang.ide.ui.LangProgramArgumentsTab_Actual;
-
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
@@ -25,11 +22,13 @@ public abstract class AbstractLangTabGroup extends AbstractLaunchConfigurationTa
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		setTabs(new ILaunchConfigurationTab[] {
-			new LangMainLaunchConfigurationTab_Actual(),
-			new LangProgramArgumentsTab_Actual(),
+			createMainLaunchConfigTab(),
+			new LangArgumentsTab(),
 			new EnvironmentTab(),
 			new CommonTab()
 		});
 	}
+	
+	protected abstract ILaunchConfigurationTab createMainLaunchConfigTab();
 	
 }

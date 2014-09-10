@@ -10,35 +10,27 @@
  *******************************************************************************/
 package melnorme.lang.ide.debug.ui;
 
+import melnorme.lang.ide.ui.launch.AbstractLangTabGroup;
+import melnorme.lang.ide.ui.launch.LangArgumentsTab;
 
-import melnorme.lang.ide.ui.LangMainLaunchConfigurationTab_Actual;
-import melnorme.lang.ide.ui.LangProgramArgumentsTab_Actual;
-
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
 
-public abstract class AbstractLangDebugTabGroup extends AbstractLaunchConfigurationTabGroup {
-	
-	public AbstractLangDebugTabGroup() {
-		super();
-	}
+public abstract class AbstractLangDebugTabGroup extends AbstractLangTabGroup {
 	
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-				new LangMainLaunchConfigurationTab_Actual(),
-				new LangProgramArgumentsTab_Actual(),
+		setTabs(new ILaunchConfigurationTab[] {
+				createMainLaunchConfigTab(),
+				new LangArgumentsTab(),
 				new EnvironmentTab(),
 				new org.eclipse.cdt.dsf.gdb.internal.ui.launching.LocalApplicationCDebuggerTab(),
 				new SourceLookupTab(),
 				new CommonTab(),
-		};
-		
-		setTabs(tabs);
+		});
 	}
 	
 }

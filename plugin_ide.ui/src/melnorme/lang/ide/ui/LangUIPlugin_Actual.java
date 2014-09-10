@@ -2,8 +2,11 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
+import org.eclipse.jface.text.source.ISourceViewer;
+
 import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
+import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_AutoEditStrategy;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
@@ -22,6 +25,10 @@ public final class LangUIPlugin_Actual {
 	
 	@SuppressWarnings("unused")
 	protected static void initTextHovers( List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
+	}
+	
+	public static LANGUAGE_AutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {
+		return new LANGUAGE_AutoEditStrategy(contentType, sourceViewer);
 	}
 	
 }

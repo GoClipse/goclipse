@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
@@ -29,6 +31,8 @@ import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.cdt.ui.text.ITokenStore;
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.IAutoEditStrategy;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
@@ -170,6 +174,17 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		});
 		
 		preferenceStore.addPropertyChangeListener(propertyChangeListener);
+	}
+	
+	/* ----------------- Modification operations ----------------- */
+	
+	@Override
+	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
+		if(IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)) {
+			return array(LangUIPlugin_Actual.createAutoEditStrategy(sourceViewer, contentType));
+		} else {
+			return super.getAutoEditStrategies(sourceViewer, contentType);
+		}
 	}
 	
 }

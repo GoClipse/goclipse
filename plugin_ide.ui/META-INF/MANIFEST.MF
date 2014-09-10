@@ -23,5 +23,6 @@ Require-Bundle: LANG_PROJECT_ID.ide.core,
  org.eclipse.core.filesystem;bundle-version="1.4.0"
 Export-Package: LANG_PROJECT_ID.ide.ui.launch,
  melnorme.lang.ide.ui;x-friends:="LANG_PROJECT_ID.ide.debug",
- melnorme.lang.ide.ui.editor;x-friends:="LANG_PROJECT_ID.ide.debug"
+ melnorme.lang.ide.ui.editor;x-friends:="LANG_PROJECT_ID.ide.debug",
+ melnorme.lang.ide.ui.launch
 Bundle-ClassPath: .

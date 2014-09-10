@@ -11,6 +11,9 @@
 package LANG_PROJECT_ID.ide.ui.preferences;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+
+import java.io.InputStream;
+
 import melnorme.lang.ide.ui.text.coloring.AbstractSourceColoringConfigurationBlock;
 import melnorme.util.swt.jface.LabeledTreeElement;
 
@@ -39,6 +42,13 @@ public class SourceColoringConfigurationBlock extends AbstractSourceColoringConf
 	@Override
 	protected LabeledTreeElement[] getTreeElements() {
 		return treeElements;
+	}
+	
+	private static final String PREVIEW_FILE_NAME = "SourceColoringPreviewFile.lang";
+	
+	@Override
+	protected InputStream getPreviewContentAsStream() {
+		return getClass().getResourceAsStream(PREVIEW_FILE_NAME);
 	}
 	
 }

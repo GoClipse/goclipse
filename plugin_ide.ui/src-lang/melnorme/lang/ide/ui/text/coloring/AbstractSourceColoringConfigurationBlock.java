@@ -59,8 +59,6 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
-import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SimpleSourceViewerConfiguration;
-
 /**
  * A configuration component for syntax (and possibly semantic) source highlighting options.
  */
@@ -380,11 +378,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		}
 	}
 	
-	private static final String PREVIEW_FILE_NAME = "SourceColoringPreviewFile.d";
-	
-	protected InputStream getPreviewContentAsStream() {
-		return getClass().getResourceAsStream(PREVIEW_FILE_NAME);
-	}
+	protected abstract InputStream getPreviewContentAsStream();
 	
 	protected ProjectionViewer createPreviewViewer(Composite parent, boolean showAnnotationsOverview,
 			int styles, IPreferenceStore store) {
@@ -397,7 +391,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		return sourceViewer;
 	}
 	
-	protected LANGUAGE_SimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration( 
+	protected AbstractLangSourceViewerConfiguration createSimpleSourceViewerConfiguration( 
 			IPreferenceStore preferenceStore) {
 		return TextSettings_Actual.createSimpleSourceViewerConfiguration(preferenceStore, colorManager);
 	}
