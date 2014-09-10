@@ -1,0 +1,6 @@
+LANGUAGE 	- Name of language - for UI, (example: Java)
+LANGUAGE_ 	- Name of language - for class names, (example: Java)
+LANG_IDE_ID 	- base ID of plugins (example: org.eclipse.jdt)
+LANG_IDE_NAME 	- Name of IDE (example: Java Development Tools)
+LANG_IDE_UPDATE_SITE - URL of Update site of the project
+LANG_IDE_WEBSITE_GIT_REPO - URL of Git repository of *project website*

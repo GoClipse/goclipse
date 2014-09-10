@@ -10,7 +10,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>MMRNMHRM_ID.ide.ui.tests</artifactId>
+	<artifactId>LANG_PROJECT_ID.ide.ui.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
 	<build>
@@ -24,7 +24,7 @@
 						<extraRequirements>
 							<requirement>
 								<type>eclipse-plugin</type>
-								<id>MMRNMHRM_ID.ide.core.tests</id>
+								<id>LANG_PROJECT_ID.ide.core.tests</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 						</extraRequirements>
@@ -41,7 +41,7 @@
 					<dependencies>
 						<dependency>
 							<type>eclipse-plugin</type>
-							<artifactId>MMRNMHRM_ID.ide.core.tests</artifactId>
+							<artifactId>LANG_PROJECT_ID.ide.core.tests</artifactId>
 							<version>0.0.0</version>
 						</dependency>
 					</dependencies>
