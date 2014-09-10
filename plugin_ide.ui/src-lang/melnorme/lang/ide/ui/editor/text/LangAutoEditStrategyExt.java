@@ -16,7 +16,6 @@ import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
 import melnorme.utilbox.misc.ArrayUtil;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
@@ -28,16 +27,15 @@ public class LangAutoEditStrategyExt extends LangAutoEditStrategy {
 	protected final String contentType;
 	protected boolean parenthesesAsBlocks;
 	
-	public LangAutoEditStrategyExt(IPreferenceStore store, String partitioning, String contentType, 
-			ITextViewer viewer) {
-		super(store, viewer);
+	public LangAutoEditStrategyExt(String partitioning, String contentType, ITextViewer viewer) {
+		super(viewer);
 		this.partitioning = partitioning;
 		this.contentType = contentType;
 	}
 	
 	@Override
 	public void customizeDocumentCommand(IDocument doc, DocumentCommand cmd) {
-		parenthesesAsBlocks = store.getBoolean(LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS);
+		parenthesesAsBlocks = LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS.get();
 		
 		super.customizeDocumentCommand(doc, cmd);
 	}

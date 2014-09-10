@@ -11,19 +11,17 @@
 package LANG_PROJECT_ID.ide.ui.editor;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+import melnorme.lang.ide.ui.TextSettings_Actual.LangPartitionTypes;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_Scanner;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.editor.BestMatchHover;
-import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_CodeScanner;
+import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
 
 public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
@@ -32,18 +30,14 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 	}
 	
 	@Override
-	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
-		return LangUIPlugin_Actual.LANG_PARTITIONING;
-	}
-	
-	@Override
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		return LangUIPlugin_Actual.PARTITION_TYPES;
-	}
-	
-	@Override
 	protected void createScanners() {
-		addScanner(new LANGUAGE_Scanner(getTokenStoreFactory()), IDocument.DEFAULT_CONTENT_TYPE);
+		addScanner(new LANGUAGE_CodeScanner(getTokenStoreFactory()), IDocument.DEFAULT_CONTENT_TYPE);
+		
+		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.COMMENT.key), 
+			LangPartitionTypes.COMMENT);
+		
+		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.STRING.key), 
+			LangPartitionTypes.STRING);
 	}
 	
 	// TODO:
@@ -58,7 +52,7 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		if(IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)) {
-			return array(new LANGUAGE_AutoEditStrategy(LangUIPlugin.getPrefStore(), contentType, sourceViewer));
+			return array(new LANGUAGE_AutoEditStrategy(contentType, sourceViewer));
 		} else {
 			return super.getAutoEditStrategies(sourceViewer, contentType);
 		}

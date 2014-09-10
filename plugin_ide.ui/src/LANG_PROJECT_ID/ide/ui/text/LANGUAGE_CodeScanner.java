@@ -8,24 +8,22 @@ import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.IWhitespaceDetector;
-import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
 /**
  * Sample LANGUAGE code scanner
  */
-public class LANGUAGE_Scanner extends AbstractLangScanner {
+public class LANGUAGE_CodeScanner extends AbstractLangScanner {
 	
 	private static String tokenPrefProperties[] = new String[] {
-		LANGUAGE_ColorConstants.CODE__DEFAULT,
-		LANGUAGE_ColorConstants.CODE__KEYWORDS,
-		LANGUAGE_ColorConstants.CODE__KEYWORD_VALUES,
-		LANGUAGE_ColorConstants.CODE__OPERATORS
+		LANGUAGE_ColorPreferences.CODE_DEFAULT.key,
+		LANGUAGE_ColorPreferences.CODE_KEYWORDS.key,
+		LANGUAGE_ColorPreferences.CODE_KEYWORDS_VALUES.key,
+		LANGUAGE_ColorPreferences.CODE_OPERATORS.key
 	};
 	
-	public LANGUAGE_Scanner(ITokenStoreFactory factory) {
+	public LANGUAGE_CodeScanner(ITokenStoreFactory factory) {
 		super(factory.createTokenStore(tokenPrefProperties));
 		setRules(createRules());
 	}
@@ -33,10 +31,10 @@ public class LANGUAGE_Scanner extends AbstractLangScanner {
 	protected List<IRule> createRules() {
 		List<IRule> rules = new ArrayList<IRule>();
 		
-		IToken tkOther = getToken(LANGUAGE_ColorConstants.CODE__DEFAULT);
-		IToken tkKeywords = getToken(LANGUAGE_ColorConstants.CODE__KEYWORDS);
-		IToken tkKeywordValues = getToken(LANGUAGE_ColorConstants.CODE__KEYWORD_VALUES);
-		IToken tkOperators = getToken(LANGUAGE_ColorConstants.CODE__OPERATORS);
+		IToken tkOther = getToken(LANGUAGE_ColorPreferences.CODE_DEFAULT.key);
+		IToken tkKeywords = getToken(LANGUAGE_ColorPreferences.CODE_KEYWORDS.key);
+		IToken tkKeywordValues = getToken(LANGUAGE_ColorPreferences.CODE_KEYWORDS_VALUES.key);
+		IToken tkOperators = getToken(LANGUAGE_ColorPreferences.CODE_OPERATORS.key);
 		
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
@@ -57,26 +55,6 @@ public class LANGUAGE_Scanner extends AbstractLangScanner {
 		
 		setDefaultReturnToken(tkOther);
 		return rules;
-	}
-	
-	public static class LangWhitespaceDetector implements IWhitespaceDetector {
-		@Override
-		public boolean isWhitespace(char character) {
-			return Character.isWhitespace(character);
-		}
-	}
-	
-	public static class JavaWordDetector implements IWordDetector {
-		
-		@Override
-		public boolean isWordPart(char character) {
-			return Character.isJavaIdentifierPart(character);
-		}
-		
-		@Override
-		public boolean isWordStart(char character) {
-			return Character.isJavaIdentifierPart(character);
-		}
 	}
 	
 }

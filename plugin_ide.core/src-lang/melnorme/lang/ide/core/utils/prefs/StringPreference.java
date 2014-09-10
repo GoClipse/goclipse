@@ -21,6 +21,11 @@ public class StringPreference extends PreferenceHelper<String> {
 		super(key, defaultValue);
 	}
 	
+	public StringPreference(String qualifier, String key, String defaultValue) {
+		super(qualifier, key, defaultValue);
+	}
+	
+	
 	@Override
 	protected String doGet(PreferencesLookupHelper combinedPrefs) {
 		return combinedPrefs.getString(key);

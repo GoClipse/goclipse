@@ -10,16 +10,15 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyExt;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextViewer;
 
 public class LANGUAGE_AutoEditStrategy extends LangAutoEditStrategyExt {
 	
-	public LANGUAGE_AutoEditStrategy(IPreferenceStore store, String contentType, ITextViewer viewer) {
-		super(store, LangUIPlugin_Actual.LANG_PARTITIONING, contentType, viewer);
+	public LANGUAGE_AutoEditStrategy(String contentType, ITextViewer viewer) {
+		super(TextSettings_Actual.PARTITIONING_ID, contentType, viewer);
 	}
 	
 }

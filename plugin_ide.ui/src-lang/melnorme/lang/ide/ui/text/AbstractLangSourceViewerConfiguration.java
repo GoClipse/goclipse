@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.text;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
 
@@ -56,6 +58,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		
 		scannersByContentType = new HashMap<>();
 		createScanners();
+		assertTrue(scannersByContentType.size() == getConfiguredContentTypes(null).length);
 		scannersByContentType = Collections.unmodifiableMap(scannersByContentType);
 	}
 	
@@ -67,9 +70,20 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		return preferenceStore;
 	}
 	
+	@Override
+	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
+		return TextSettings_Actual.PARTITIONING_ID;
+	}
+	
+	@Override
+	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+		return TextSettings_Actual.PARTITION_TYPES;
+	}
+	
 	protected abstract void createScanners();
 	
 	protected void addScanner(AbstractLangScanner scanner, String... contentTypes) {
+		assertNotNull(scanner);
 		for (String contentType : contentTypes) {
 			scannersByContentType.put(contentType, scanner);
 		}

@@ -19,7 +19,6 @@ import melnorme.lang.ide.ui.text.Scanner_BaseTest;
 import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
 import melnorme.utilbox.misc.MiscUtil;
 
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentCommand;
@@ -44,8 +43,8 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
-			PreferenceStore prefStore = createPreferenceStore();
-			autoEditStrategy = new LangAutoEditStrategy(prefStore, null) {
+			setPreferences();
+			autoEditStrategy = new LangAutoEditStrategy(null) {
 				@Override
 				protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
 					return Scanner_BaseTest.createBlockHeuristicScannerWithSamplePartitioning(doc);
@@ -55,19 +54,17 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		return autoEditStrategy;
 	}
 	
-	protected PreferenceStore createPreferenceStore() {
-		PreferenceStore prefStore = new PreferenceStore();
-		prefStore.setValue(LangAutoEditPreferenceConstants.AE_SMART_INDENT, true);
-		prefStore.setValue(LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, true);
-		prefStore.setValue(LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, true);
-		prefStore.setValue(LangAutoEditPreferenceConstants.AE_CLOSE_BRACES, true);
-		prefStore.setValue(LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS, true);
-		prefStore.setValue(LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, true);
-		prefStore.setValue(LangAutoEditPreferenceConstants.AE_SMART_PASTE, true);
+	protected void setPreferences() {
+		LangAutoEditPreferenceConstants.AE_SMART_INDENT.set(true);
+		LangAutoEditPreferenceConstants.AE_SMART_DEINDENT.set(true);
+		LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS.set(true);
+		LangAutoEditPreferenceConstants.AE_CLOSE_BRACES.set(true);
+		LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS.set(true);
+		LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS.set(true);
+		LangAutoEditPreferenceConstants.AE_SMART_PASTE.set(true);
 		
-		prefStore.setValue(CodeFormatterConstants.FORMATTER_TAB_SIZE, 4);
-		prefStore.setValue(CodeFormatterConstants.FORMATTER_INDENT_MODE, IndentMode.TAB.getPrefValue());
-		return prefStore;
+		CodeFormatterConstants.FORMATTER_TAB_SIZE.set(4);
+		CodeFormatterConstants.FORMATTER_INDENT_MODE.set(IndentMode.TAB.getPrefValue());
 	}
 	
 	protected DocumentCommand createDocumentCommand(int start, int length, String text) {

@@ -31,9 +31,6 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 public abstract class AbstractLangEditor extends TextEditor {
 	
-	protected static final String RULER_CONTEXT = "#"+LangUIPlugin_Actual.LANG_Name+"RulerContext";
-	protected static final String EDITOR_CONTEXT = "#"+LangUIPlugin_Actual.LANG_Name+"EditorContext";
-	
 	public AbstractLangEditor() {
 		super();
 	}
@@ -41,12 +38,12 @@ public abstract class AbstractLangEditor extends TextEditor {
 	@Override
 	protected void initializeEditor() {
 		super.initializeEditor();
-		setContextMenuIds();
+		initialize_setContextMenuIds();
 	}
 	
-	protected void setContextMenuIds() {
-		setEditorContextMenuId(EDITOR_CONTEXT);
-		setRulerContextMenuId(RULER_CONTEXT);
+	protected void initialize_setContextMenuIds() {
+		setEditorContextMenuId(LangUIPlugin_Actual.EDITOR_CONTEXT);
+		setRulerContextMenuId(LangUIPlugin_Actual.RULER_CONTEXT);
 	}
 	
 	@Override
