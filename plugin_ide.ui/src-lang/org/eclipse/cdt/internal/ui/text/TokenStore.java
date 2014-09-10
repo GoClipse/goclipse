@@ -40,6 +40,7 @@ import org.eclipse.cdt.ui.text.ITokenStore;
  */
 
 public class TokenStore implements ITokenStore {
+	
 	private final IColorManager fColorManager;
 	private final IPreferenceStore fPreferenceStore;
 
@@ -96,13 +97,13 @@ public class TokenStore implements ITokenStore {
 	private void addToken(String colorKey) {
 		assertNotNull(colorKey);
 		//if (fColorManager.getColor(colorKey) == null) {
-		// Makse sure color manager is updated
+		// Make sure color manager is updated
 		if (true) {
 			RGB rgb= PreferenceConverter.getColor(fPreferenceStore, colorKey);
 			fColorManager.unbindColor(colorKey);
 			fColorManager.bindColor(colorKey, rgb);
 		}
-
+		
 		if (!fNeedsLazyColorLoading)
 			fTokenMap.put(colorKey, new Token(createTextAttribute(colorKey, false)));
 		else {

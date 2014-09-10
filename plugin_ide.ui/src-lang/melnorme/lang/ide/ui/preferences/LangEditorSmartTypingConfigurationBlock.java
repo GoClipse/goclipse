@@ -45,16 +45,16 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 		
 		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, 
+			LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS.key, 
 			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeStrings));
 		
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS,
+			LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS.key,
 			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeBrackets));
 		}
 		
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_CLOSE_BRACES,
+			LangAutoEditPreferenceConstants.AE_CLOSE_BRACES.key,
 			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeBraces));
 		
 	}
@@ -66,15 +66,15 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_SMART_INDENT, 
+			LangAutoEditPreferenceConstants.AE_SMART_INDENT.key, 
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_smartIndent));
 		
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, 
+			LangAutoEditPreferenceConstants.AE_SMART_DEINDENT.key, 
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_smartDeIndent));
 		
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS,
+			LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS.key,
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_considerParenthesesAsBlocks));
 		
 		return group;
@@ -99,19 +99,19 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 			INDENT_MODE__LABELS, 
 			INDENT_MODE__VALUES);
 		createCheckboxField(generalGroup, 
-			CodeFormatterConstants.FORMATTER_INDENT_MODE,
+			CodeFormatterConstants.FORMATTER_INDENT_MODE.key,
 			indentModeField
 		);
 		
 		createStringField(generalGroup, 
-			CodeFormatterConstants.FORMATTER_TAB_SIZE,
+			CodeFormatterConstants.FORMATTER_TAB_SIZE.key,
 			createNumberField(FormatterMessages.IndentationGroup_tab_size, 2)
 		);
 		
 		final NumberField indentationSizeField = createNumberField(
 			FormatterMessages.IndentationGroup_indent_size, 2);
 		createStringField(generalGroup,
-			CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE, 
+			CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.key, 
 			indentationSizeField
 		);
 		IFieldValueListener indentModeValueListener = new IFieldValueListener() {

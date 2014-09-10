@@ -33,9 +33,6 @@ public class GoEditor extends AbstractLangEditor {
   
   private static final String BUNDLE_ID = "com.googlecode.goclipse.editors.GoEditorMessages";
   
-	public static final String EDITOR_CONTEXT = "#GoEditorContext";
-	public static final String RULER_CONTEXT = "#GoEditorRulerContext";
-
   private static ResourceBundle editorResourceBundle = ResourceBundle.getBundle(BUNDLE_ID);
 
   private DefaultCharacterPairMatcher matcher;
@@ -52,14 +49,6 @@ public class GoEditor extends AbstractLangEditor {
 
   }
 
-  @Override
-  protected void initializeEditor() {
-    super.initializeEditor();
-    
-	setEditorContextMenuId(EDITOR_CONTEXT);
-	setRulerContextMenuId(RULER_CONTEXT);
-  }
-  
 	@Override
 	protected GoEditorSourceViewerConfiguration createSourceViewerConfiguration() {
 		return new GoEditorSourceViewerConfiguration(getPreferenceStore(), 

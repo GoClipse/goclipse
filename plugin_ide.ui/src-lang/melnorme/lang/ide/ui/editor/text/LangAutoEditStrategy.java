@@ -19,7 +19,6 @@ import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
 import melnorme.lang.ide.ui.text.util.AutoEditUtils;
 import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.DocumentCommand;
@@ -46,7 +45,6 @@ import org.eclipse.swt.widgets.Event;
  */
 public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
-	protected final IPreferenceStore store;
 	protected final LangAutoEditsPreferencesAdapter fPreferences;
 
 	protected boolean fIsSmartMode;
@@ -54,9 +52,8 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
 	protected Event lastKeyEvent;
 	
-	public LangAutoEditStrategy(IPreferenceStore store, ITextViewer viewer) {
-		this.store = store;
-		this.fPreferences = new LangAutoEditsPreferencesAdapter(store);
+	public LangAutoEditStrategy(ITextViewer viewer) {
+		this.fPreferences = new LangAutoEditsPreferencesAdapter();
 		
 		lastKeyEvent = new Event();
 		if (viewer instanceof ITextViewerExtension) {

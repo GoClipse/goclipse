@@ -11,10 +11,6 @@
 package melnorme.lang.ide.core.utils.prefs;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.HashMap;
-
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.ownership.IDisposable;
 
@@ -27,34 +23,25 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChange
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
 
-public abstract class PreferenceHelper<T> {
+public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 	
-	protected static final HashMap<String, PreferenceHelper<?>> instances = new HashMap<>();
-	
-	public final String pluginId;
-	public final String key;
+	public final String qualifier;
 	protected final T defaultValue;
 	
 	public PreferenceHelper(String key, T defaultValue) {
 		this(LangCore.PLUGIN_ID, key, defaultValue);
 	}
 	
-	public PreferenceHelper(String pluginId, String key, T defaultValue) {
-		this.pluginId = pluginId;
-		this.key = key;
+	public PreferenceHelper(String qualifier, String key, T defaultValue) {
+		super(key);
+		this.qualifier = qualifier;
 		this.defaultValue = assertNotNull(defaultValue);
 		
 		initializeDefaultValueInDefaultScope();
-		
-		synchronized (instances) {
-			// Allow only one instance of a preference helper per key.
-			assertTrue(instances.containsKey(key) == false);
-			instances.put(key, this);
-		}
 	}
 	
 	public final String getQualifier() {
-		return pluginId;
+		return qualifier;
 	}
 	
 	public T getDefault() {

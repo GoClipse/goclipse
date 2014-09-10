@@ -18,9 +18,9 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 
 //originally from DLTK version 5.0.0
-public class EditorConfigurationBlock extends AbstractPreferencesConfigBlock {
+public class LangEditorConfigurationBlock extends AbstractPreferencesConfigBlock {
 	
-	public EditorConfigurationBlock(PreferencePage mainPreferencePage) {
+	public LangEditorConfigurationBlock(PreferencePage mainPreferencePage) {
 		super(mainPreferencePage);
 	}
 	

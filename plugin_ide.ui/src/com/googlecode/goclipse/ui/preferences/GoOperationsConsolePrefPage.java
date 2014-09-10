@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.preferences;
 
-import melnorme.lang.ide.ui.tools.console.ToolsConsolePrefPage;
+import melnorme.lang.ide.ui.tools.console.AbstractToolsConsolePrefPage;
 
-public class GoOperationsConsolePrefPage extends ToolsConsolePrefPage {
+public class GoOperationsConsolePrefPage extends AbstractToolsConsolePrefPage {
 	
 }

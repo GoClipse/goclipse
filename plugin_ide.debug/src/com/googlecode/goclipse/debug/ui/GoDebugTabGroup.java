@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.debug.ui;
 
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
+import melnorme.lang.ide.debug.ui.AbstractLangDebugTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
@@ -19,19 +19,23 @@ import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
 
 import com.googlecode.goclipse.ui.launch.GoLaunchConfigurationTab;
 
-public class GoDebugTabGroup extends AbstractLaunchConfigurationTabGroup {
+public class GoDebugTabGroup extends AbstractLangDebugTabGroup {
 	
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-				new GoLaunchConfigurationTab(),
+		setTabs(new ILaunchConfigurationTab[] {
+				createMainLaunchConfigTab(),
+				//new LangArgumentsTab(),
 				new EnvironmentTab(),
 				new org.eclipse.cdt.dsf.gdb.internal.ui.launching.LocalApplicationCDebuggerTab(),
 				new SourceLookupTab(),
 				new CommonTab(),
-		};
-		
-		setTabs(tabs);
+		});
+	}
+	
+	@Override
+	protected ILaunchConfigurationTab createMainLaunchConfigTab() {
+		return new GoLaunchConfigurationTab();
 	}
 	
 }

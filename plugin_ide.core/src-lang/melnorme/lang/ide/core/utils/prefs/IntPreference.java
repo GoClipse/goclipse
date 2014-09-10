@@ -22,6 +22,10 @@ public class IntPreference extends PreferenceHelper<Integer> {
 		super(key, defaultValue);
 	}
 	
+	public IntPreference(String qualifier, String key, int defaultValue) {
+		super(qualifier, key, defaultValue);
+	}
+	
 	@Override
 	protected Integer doGet(PreferencesLookupHelper combinedPrefs) {
 		return combinedPrefs.getInt(key);

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import melnorme.lang.ide.launching.LaunchConstants;
-import melnorme.lang.ide.ui.launch.LangArgumentsBlock;
+import melnorme.lang.ide.ui.launch.LangArgumentsBlock2;
 import melnorme.lang.ide.ui.launch.LangWorkingDirectoryBlock;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 
@@ -46,7 +46,7 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			updateLaunchConfigurationDialog();
 		};		
 	};
-	protected final LangArgumentsBlock argumentsBlock = new LangArgumentsBlock() {
+	protected final LangArgumentsBlock2 argumentsBlock = new LangArgumentsBlock2() {
 		@Override
 		protected void fieldValueChanged() {
 			updateLaunchConfigurationDialog();

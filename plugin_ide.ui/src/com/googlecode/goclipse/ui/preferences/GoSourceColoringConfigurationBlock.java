@@ -4,47 +4,35 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.InputStream;
 
-import melnorme.lang.ide.ui.text.coloring.EditorSourceColoringConfigurationBlock;
+import melnorme.lang.ide.ui.text.coloring.AbstractSourceColoringConfigurationBlock;
 import melnorme.util.swt.jface.LabeledTreeElement;
 
-import org.eclipse.cdt.internal.ui.text.util.CColorManager;
-import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.source.projection.ProjectionViewer;
-import org.eclipse.swt.widgets.Composite;
 
-import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
-import com.googlecode.goclipse.ui.editor.GoSimpleSourceViewerConfiguration;
+import com.googlecode.goclipse.ui.text.GoColorPreferences;
 
-public class GoSourceColoringConfigurationBlock extends EditorSourceColoringConfigurationBlock {
+public class GoSourceColoringConfigurationBlock extends AbstractSourceColoringConfigurationBlock {
 	
 	private static final String PREVIEW_FILE_NAME = "SourceColoringPreviewFile.go";
 	
 	protected static final LabeledTreeElement[] treeElements = array(
 		new SourceColoringCategory("Source", array(
-			new SourceColoringElement("Text", GoUIPreferenceConstants.SYNTAX_COLORING__TEXT),
-			new SourceColoringElement("Keyword", GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD),
-			new SourceColoringElement("Keyword - Literal", GoUIPreferenceConstants.SYNTAX_COLORING__VALUE),
-			new SourceColoringElement("Primitive", GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE),
-			new SourceColoringElement("Comment", GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT),
-			new SourceColoringElement("Built-in function", GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION),
-			new SourceColoringElement("String", GoUIPreferenceConstants.SYNTAX_COLORING__STRING),
-			new SourceColoringElement("Multi-line string", GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING)
+			new SourceColoringElement("Comment", GoColorPreferences.SYNTAX_COLORING__COMMENT.key),
+			
+			new SourceColoringElement("Text", GoColorPreferences.SYNTAX_COLORING__TEXT.key),
+			new SourceColoringElement("Keyword", GoColorPreferences.SYNTAX_COLORING__KEYWORD.key),
+			new SourceColoringElement("Keyword - Literal", GoColorPreferences.SYNTAX_COLORING__VALUE.key),
+			new SourceColoringElement("Primitive", GoColorPreferences.SYNTAX_COLORING__PRIMITIVE.key),
+			new SourceColoringElement("Built-in function", GoColorPreferences.SYNTAX_COLORING__BUILTIN_FUNCTION.key),
+			new SourceColoringElement("Operator", GoColorPreferences.SYNTAX_COLORING__OPERATOR.key),
+			new SourceColoringElement("String", GoColorPreferences.SYNTAX_COLORING__STRING.key),
+			new SourceColoringElement("Multi-line string", GoColorPreferences.SYNTAX_COLORING__MULTILINE_STRING.key)
+
 		))
 	);
 	
-	public static class DLTKColorManager_Adapter extends CColorManager implements IColorManager {
-		
-	}
-	
 	public GoSourceColoringConfigurationBlock(IPreferenceStore store) {
 		super(store);
-	}
-	
-	@Override
-	public void dispose() {
-		super.dispose();
 	}
 	
 	@Override
@@ -55,23 +43,6 @@ public class GoSourceColoringConfigurationBlock extends EditorSourceColoringConf
 	@Override
 	protected InputStream getPreviewContentAsStream() {
 		return getClass().getResourceAsStream(PREVIEW_FILE_NAME);
-	}
-	
-	@Override
-	protected ProjectionViewer createPreviewViewer(Composite parent, boolean showAnnotationsOverview,
-			int styles, IPreferenceStore store) {
-		ProjectionViewer sourceViewer = new ProjectionViewer(parent, null, null,
-			showAnnotationsOverview, styles);
-		GoSimpleSourceViewerConfiguration configuration = createSimpleSourceViewerConfiguration(store);
-		sourceViewer.configure(configuration);
-		sourceViewer.getTextWidget().setFont(JFaceResources.getFont(JFaceResources.TEXT_FONT));
-		configuration.setupViewerForTextPresentationPrefChanges(sourceViewer);
-		return sourceViewer;
-	}
-	
-	protected GoSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration( 
-			IPreferenceStore preferenceStore) {
-		return new GoSimpleSourceViewerConfiguration(preferenceStore, colorManager, null);
 	}
 	
 }

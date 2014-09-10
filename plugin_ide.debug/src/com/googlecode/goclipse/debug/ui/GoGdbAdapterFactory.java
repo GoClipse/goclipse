@@ -10,39 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.debug.ui;
 
-import melnorme.lang.ide.debug.ui.GdbAdapterFactory;
-import melnorme.lang.ide.debug.ui.viewmodel.GdbViewModelAdapter;
-import melnorme.lang.ide.debug.ui.viewmodel.Lang_GdbExpressionVMProvider;
-import melnorme.lang.ide.debug.ui.viewmodel.Lang_GdbVariableVMProvider;
+import melnorme.lang.ide.debug.ui.AbstractLangGdbAdapterFactory;
 
-import org.eclipse.cdt.dsf.debug.ui.viewmodel.SteppingController;
-import org.eclipse.cdt.dsf.gdb.internal.ui.viewmodel.GdbExpressionVMProvider;
-import org.eclipse.cdt.dsf.gdb.internal.ui.viewmodel.GdbVariableVMProvider;
-import org.eclipse.cdt.dsf.service.DsfSession;
-import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
-
-@SuppressWarnings("restriction")
-public class GoGdbAdapterFactory extends GdbAdapterFactory {
-	
-	@Override
-	protected GdbViewModelAdapter createGdbViewModelAdapter(DsfSession session, SteppingController steppingController) {
-		return new GdbViewModelAdapter(session, steppingController) {
-			@Override
-			protected GdbVariableVMProvider createGdbVariableProvider(IPresentationContext context) {
-				return new Lang_GdbVariableVMProvider(this, context, getSession());
-			}
-			
-			@Override
-			protected GdbExpressionVMProvider createGdbExpressionProvider(IPresentationContext context) {
-				return new Lang_GdbExpressionVMProvider(this, context, getSession());
-			}
-			
-			@Override
-			protected GdbExpressionVMProvider createGdbExpressionHoverProvider(IPresentationContext context) {
-				return new Lang_GdbExpressionVMProvider(this, context, getSession());
-			}
-			
-		};
-	}
+public class GoGdbAdapterFactory extends AbstractLangGdbAdapterFactory {
 	
 }

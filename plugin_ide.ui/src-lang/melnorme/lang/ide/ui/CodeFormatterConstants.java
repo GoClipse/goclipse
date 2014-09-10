@@ -2,8 +2,6 @@ package melnorme.lang.ide.ui;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-
 public interface CodeFormatterConstants extends CodeFormatterConstants_Actual {
 	
 	public final String[] FORMATTER_TAB_CHAR__VALUES = array(
@@ -27,8 +25,8 @@ public interface CodeFormatterConstants extends CodeFormatterConstants_Actual {
 			return prefValue;
 		}
 		
-		public static IndentMode fromPrefStore(IPreferenceStore store) {
-			String indentModePrefValue = store.getString(CodeFormatterConstants.FORMATTER_INDENT_MODE);
+		public static IndentMode fromPrefStore() {
+			String indentModePrefValue = CodeFormatterConstants.FORMATTER_INDENT_MODE.get();
 			for (IndentMode mode : values()) {
 				if(mode.getPrefValue().equals(indentModePrefValue)){
 					return mode;

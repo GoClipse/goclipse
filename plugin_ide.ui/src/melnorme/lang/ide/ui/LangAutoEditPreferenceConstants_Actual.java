@@ -10,11 +10,30 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+
+
 
 public interface LangAutoEditPreferenceConstants_Actual {
 	
-	String AE_CLOSE_STRINGS = "EDITOR_CLOSE_STRINGS";
-	String AE_CLOSE_BRACKETS = "EDITOR_CLOSE_BRACKETS";
-	String AE_CLOSE_BRACES = "EDITOR_CLOSE_BRACES";
+	public static final String QUALIFIER = LangUIPlugin.PLUGIN_ID;
+	
+	BooleanPreference AE_CLOSE_STRINGS = 
+			new BooleanPreference(QUALIFIER, "EDITOR_CLOSE_STRINGS", true);
+	BooleanPreference AE_CLOSE_BRACKETS = 
+			new BooleanPreference(QUALIFIER, "EDITOR_CLOSE_BRACKETS", true);
+	BooleanPreference AE_CLOSE_BRACES = 
+			new BooleanPreference(QUALIFIER, "EDITOR_CLOSE_BRACES", true);
+	
+	BooleanPreference AE_SMART_INDENT = 
+			new BooleanPreference(QUALIFIER, "autoedit.editorSmartIndent", true);
+	BooleanPreference AE_SMART_DEINDENT = 
+			new BooleanPreference(QUALIFIER, "autoedit.smart_deindent", true);
+	BooleanPreference AE_PARENTHESES_AS_BLOCKS = 
+			new BooleanPreference(QUALIFIER, "autoedit.parentheses_as_blocks", true);
+	
+	// Not used currently?
+	BooleanPreference AE_SMART_PASTE = 
+			new BooleanPreference(QUALIFIER, "autoedit.smartPaste", true);
 	
 }

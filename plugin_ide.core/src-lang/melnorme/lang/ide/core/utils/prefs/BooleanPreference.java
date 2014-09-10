@@ -22,6 +22,10 @@ public class BooleanPreference extends PreferenceHelper<Boolean> {
 		super(key, defaultValue);
 	}
 	
+	public BooleanPreference(String qualifier, String key, boolean defaultValue) {
+		super(qualifier, key, defaultValue);
+	}
+	
 	@Override
 	protected Boolean doGet(PreferencesLookupHelper combinedPrefs) {
 		return combinedPrefs.getBoolean(key);

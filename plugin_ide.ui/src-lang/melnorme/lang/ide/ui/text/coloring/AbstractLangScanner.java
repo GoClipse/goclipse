@@ -20,6 +20,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.rules.BufferedRuleBasedScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.IWhitespaceDetector;
+import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.cdt.ui.IPropertyChangeParticipant;
 import org.eclipse.cdt.ui.text.ITokenStore;
@@ -107,4 +109,27 @@ public abstract class AbstractLangScanner extends BufferedRuleBasedScanner imple
 		}
 		return result;
 	}
+	
+	/* ----------------- Helpers ----------------- */
+	
+	public static class LangWhitespaceDetector implements IWhitespaceDetector {
+		@Override
+		public boolean isWhitespace(char character) {
+			return Character.isWhitespace(character);
+		}
+	}
+	
+	public static class JavaWordDetector implements IWordDetector {
+		
+		@Override
+		public boolean isWordPart(char character) {
+			return Character.isJavaIdentifierPart(character);
+		}
+		
+		@Override
+		public boolean isWordStart(char character) {
+			return Character.isJavaIdentifierPart(character);
+		}
+	}
+	
 }

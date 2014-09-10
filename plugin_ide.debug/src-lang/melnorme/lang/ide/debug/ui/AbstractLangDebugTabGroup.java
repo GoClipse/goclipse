@@ -8,30 +8,29 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.ui.launch;
+package melnorme.lang.ide.debug.ui;
 
 import melnorme.lang.ide.ui.launch.AbstractLangTabGroup;
+import melnorme.lang.ide.ui.launch.LangArgumentsTab;
 
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
+import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
 
-public class GoLaunchTabGroup extends AbstractLangTabGroup {
+public abstract class AbstractLangDebugTabGroup extends AbstractLangTabGroup {
 	
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		setTabs(new ILaunchConfigurationTab[] {
-			createMainLaunchConfigTab(),
-//			new LangArgumentsTab(),
-			new EnvironmentTab(),
-			new CommonTab()
+				createMainLaunchConfigTab(),
+				new LangArgumentsTab(),
+				new EnvironmentTab(),
+				new org.eclipse.cdt.dsf.gdb.internal.ui.launching.LocalApplicationCDebuggerTab(),
+				new SourceLookupTab(),
+				new CommonTab(),
 		});
-	}
-	
-	@Override
-	protected ILaunchConfigurationTab createMainLaunchConfigTab() {
-		return new GoLaunchConfigurationTab();
 	}
 	
 }

@@ -18,8 +18,10 @@ import java.util.ArrayList;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.PreferenceConstants;
+import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
@@ -44,6 +46,7 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
@@ -59,7 +62,7 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 /**
  * A configuration component for syntax (and possibly semantic) source highlighting options.
  */
-public abstract class EditorSourceColoringConfigurationBlock extends AbstractComponentExt 
+public abstract class AbstractSourceColoringConfigurationBlock extends AbstractComponentExt 
 	implements IPreferencesBlock, IDisposable {
 		
 	protected final SourceColoringListRoot coloringOptionsList;
@@ -76,7 +79,7 @@ public abstract class EditorSourceColoringConfigurationBlock extends AbstractCom
 
 	protected OverlayPreferenceStore overlayPreferenceStore;
 	
-	public EditorSourceColoringConfigurationBlock(IPreferenceStore store) {
+	public AbstractSourceColoringConfigurationBlock(IPreferenceStore store) {
 		this.coloringOptionsList = new SourceColoringListRoot();
 		
 		final ArrayList<OverlayKey> prefKeys = new ArrayList<>();	
@@ -347,6 +350,8 @@ public abstract class EditorSourceColoringConfigurationBlock extends AbstractCom
 		underlineCheckboxField.setEnabled(enabled);
 	}
 	
+	/* ----------------- Preview viewer ----------------- */
+	
 	protected Control createPreviewViewer(Composite topControl) {
 		IPreferenceStore store = new ChainedPreferenceStore(array(
 			getOverlayPrefStore(),
@@ -375,7 +380,20 @@ public abstract class EditorSourceColoringConfigurationBlock extends AbstractCom
 	
 	protected abstract InputStream getPreviewContentAsStream();
 	
-	protected abstract ProjectionViewer createPreviewViewer(Composite parent, boolean showAnnotationsOverview, 
-			int styles, IPreferenceStore store);
+	protected ProjectionViewer createPreviewViewer(Composite parent, boolean showAnnotationsOverview,
+			int styles, IPreferenceStore store) {
+		ProjectionViewer sourceViewer = new ProjectionViewer(parent, null, null,
+			showAnnotationsOverview, styles);
+		AbstractLangSourceViewerConfiguration configuration = createSimpleSourceViewerConfiguration(store);
+		sourceViewer.configure(configuration);
+		sourceViewer.getTextWidget().setFont(JFaceResources.getFont(JFaceResources.TEXT_FONT));
+		configuration.setupViewerForTextPresentationPrefChanges(sourceViewer);
+		return sourceViewer;
+	}
+	
+	protected AbstractLangSourceViewerConfiguration createSimpleSourceViewerConfiguration( 
+			IPreferenceStore preferenceStore) {
+		return TextSettings_Actual.createSimpleSourceViewerConfiguration(preferenceStore, colorManager);
+	}
 	
 }

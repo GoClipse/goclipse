@@ -40,7 +40,7 @@ public class EclipseUtils extends ResourceUtils {
 	public static void startOtherPlugin(String pluginId) {
 		try {
 			Bundle debugPlugin = Platform.getBundle(pluginId);
-			if(debugPlugin != null) {
+			if(debugPlugin != null && debugPlugin.getState() != Bundle.STARTING) {
 				debugPlugin.start(Bundle.START_TRANSIENT);
 			}
 		} catch (BundleException e) {

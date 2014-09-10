@@ -15,10 +15,5 @@ import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants_Actual;
 
 public interface LangAutoEditPreferenceConstants extends LangAutoEditPreferenceConstants_Actual {
 	
-	String AE_SMART_INDENT = "autoedit.editorSmartIndent";
-	String AE_SMART_DEINDENT = "autoedit.smart_deindent";
-	String AE_PARENTHESES_AS_BLOCKS = "autoedit.parentheses_as_blocks";
-	
-	String AE_SMART_PASTE = "autoedit.smartPaste";
 	
 }

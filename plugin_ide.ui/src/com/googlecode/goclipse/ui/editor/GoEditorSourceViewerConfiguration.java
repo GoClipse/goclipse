@@ -1,7 +1,5 @@
 package com.googlecode.goclipse.ui.editor;
 
-import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
@@ -10,7 +8,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
@@ -34,9 +31,7 @@ import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.editors.GoEditorReconcilingStrategy;
 import com.googlecode.goclipse.editors.GoHyperlinkDetector;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
-import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 import com.googlecode.goclipse.ui.text.GoPartitionScanner;
-import com.googlecode.goclipse.ui.text.GoPartitions;
 import com.googlecode.goclipse.ui.text.GoScanner;
 import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
@@ -56,24 +51,14 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	}
 	
 	@Override
-	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
-		return GoPartitions.PARTITIONING_ID;
-	}
-	
-	@Override
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		return GoPartitions.PARTITION_TYPES;
-	}
-	
-	@Override
 	protected void createScanners() {
 		addScanner(new GoScanner(getTokenStoreFactory()), IDocument.DEFAULT_CONTENT_TYPE);
 	
-		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT), 
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT.key), 
 			GoPartitionScanner.COMMENT);
-		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__STRING), 
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__STRING.key), 
 			GoPartitionScanner.STRING);
-		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING), 
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING.key), 
 			GoPartitionScanner.MULTILINE_STRING);
 	}
 	
@@ -179,15 +164,6 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 		}
 		
 		return fPreferenceStore.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
-	}
-	
-	@Override
-	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
-		if(IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)) {
-			return array(new GoAutoEditStrategy(LangUIPlugin.getPrefStore(), contentType, sourceViewer));
-		} else {
-			return super.getAutoEditStrategies(sourceViewer, contentType);
-		}
 	}
 	
 }

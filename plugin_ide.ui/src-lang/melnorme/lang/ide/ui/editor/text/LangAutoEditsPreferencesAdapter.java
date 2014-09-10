@@ -15,23 +15,18 @@ import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
 import melnorme.lang.ide.ui.text.util.AutoEditUtils;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-
 // Originally was RubyPreferencesInterpreter from DLTK
 public class LangAutoEditsPreferencesAdapter {
 	
-	protected final IPreferenceStore store;
-	
-	public LangAutoEditsPreferencesAdapter(IPreferenceStore store) {
-		this.store = store;
+	public LangAutoEditsPreferencesAdapter() {
 	}
 	
 	public boolean isSmartMode() {
-		return store.getBoolean(LangAutoEditPreferenceConstants.AE_SMART_INDENT);
+		return LangAutoEditPreferenceConstants.AE_SMART_INDENT.get();
 	}
 	
 	public boolean isSmartDeIndent() {
-		return store.getBoolean(LangAutoEditPreferenceConstants.AE_SMART_DEINDENT);
+		return LangAutoEditPreferenceConstants.AE_SMART_DEINDENT.get();
 	}
 	
 	public boolean closeBlocks() {
@@ -39,16 +34,16 @@ public class LangAutoEditsPreferencesAdapter {
 	}
 
 	public boolean closeBraces() {
-		return store.getBoolean(LangAutoEditPreferenceConstants.AE_CLOSE_BRACES);
+		return LangAutoEditPreferenceConstants.AE_CLOSE_BRACES.get();
 	}
 	
 	public boolean isSmartPaste() {
-		return store.getBoolean(LangAutoEditPreferenceConstants.AE_SMART_PASTE);
+		return LangAutoEditPreferenceConstants.AE_SMART_PASTE.get();
 	}
 	
 
 	public IndentMode getTabStyle() {
-		return IndentMode.fromPrefStore(store);
+		return IndentMode.fromPrefStore();
 	}
 	
 	public String getIndent() {
@@ -60,7 +55,7 @@ public class LangAutoEditsPreferencesAdapter {
 	}
 	
 	public int getIndentSize() {
-		return store.getInt(CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE);
+		return CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.get();
 	}
 	
 }

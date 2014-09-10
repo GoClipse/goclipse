@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.utilbox.misc.ArrayUtil;
 
@@ -38,6 +39,12 @@ public abstract class AbstractLangEditor extends TextEditor {
 	@Override
 	protected void initializeEditor() {
 		super.initializeEditor();
+		initialize_setContextMenuIds();
+	}
+	
+	protected void initialize_setContextMenuIds() {
+		setEditorContextMenuId(LangUIPlugin_Actual.EDITOR_CONTEXT);
+		setRulerContextMenuId(LangUIPlugin_Actual.RULER_CONTEXT);
 	}
 	
 	@Override
@@ -47,14 +54,14 @@ public abstract class AbstractLangEditor extends TextEditor {
 		ISourceViewer sourceViewer = getSourceViewer();
 		
 		if (!(sourceViewer instanceof ISourceViewerExtension2)) {
-			setPreferenceStore(createCombinedPreferenceStore(input));
+			changePreferenceStore(createCombinedPreferenceStore(input));
 		} else {
 			ISourceViewerExtension2 sourceViewerExt2 = (ISourceViewerExtension2) sourceViewer;
 			
 			getSourceViewerDecorationSupport(sourceViewer).uninstall();
 			sourceViewerExt2.unconfigure();
 
-			setPreferenceStore(createCombinedPreferenceStore(input));
+			changePreferenceStore(createCombinedPreferenceStore(input));
 			
 			sourceViewer.configure(getSourceViewerConfiguration());
 			getSourceViewerDecorationSupport(sourceViewer).install(getPreferenceStore());
@@ -63,8 +70,7 @@ public abstract class AbstractLangEditor extends TextEditor {
 		internalDoSetInput(input);
 	}
 	
-	@Override
-	protected void setPreferenceStore(IPreferenceStore store) {
+	protected void changePreferenceStore(IPreferenceStore store) {
 		super.setPreferenceStore(store);
 		setSourceViewerConfiguration(createSourceViewerConfiguration());
 	}

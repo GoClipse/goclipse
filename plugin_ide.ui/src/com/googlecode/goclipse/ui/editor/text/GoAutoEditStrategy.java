@@ -12,15 +12,14 @@ package com.googlecode.goclipse.ui.editor.text;
 
 import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyExt;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextViewer;
 
 import com.googlecode.goclipse.ui.text.GoPartitions;
 
 public class GoAutoEditStrategy extends LangAutoEditStrategyExt {
 	
-	public GoAutoEditStrategy(IPreferenceStore store, String contentType, ITextViewer viewer) {
-		super(store, GoPartitions.PARTITIONING_ID, contentType, viewer);
+	public GoAutoEditStrategy(String contentType, ITextViewer viewer) {
+		super(GoPartitions.PARTITIONING_ID, contentType, viewer);
 	}
 	
 }

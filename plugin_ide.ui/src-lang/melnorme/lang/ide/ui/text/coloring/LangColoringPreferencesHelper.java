@@ -12,8 +12,8 @@ package melnorme.lang.ide.ui.text.coloring;
 
 import melnorme.lang.ide.ui.PreferenceConstants;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
 public class LangColoringPreferencesHelper {
@@ -38,12 +38,12 @@ public class LangColoringPreferencesHelper {
 		return key + PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
 	}
 	
-	protected static void setColoringStyle(IPreferenceStore store, String key, RGB color, boolean bold, 
+	protected static void setColoringStyle(IEclipsePreferences node, String key, RGB color, boolean bold, 
 			boolean italic, boolean underline) {
-		setColoringStyle(store, key, true, color, bold, italic, underline);
+		setStyleDefault(node, key, true, color, bold, italic, underline);
 	}
 	
-	public static void setColoringStyle(IPreferenceStore store, String key, boolean enabled, 
+	public static void setStyleDefault(IEclipsePreferences store, String key, boolean enabled, 
 			RGB color, boolean bold, boolean italic, boolean underline) {
 		setIsEnabled(store, key, enabled);
 		setColor(store, key, color);
@@ -52,25 +52,24 @@ public class LangColoringPreferencesHelper {
 		setIsUnderline(store, key, underline);
 	}
 	
-	
-	public static void setIsEnabled(IPreferenceStore store, String key, boolean enabled) {
-		store.setDefault(LangColoringPreferencesHelper.getEnabledKey(key), enabled);
+	public static void setIsEnabled(IEclipsePreferences store, String key, boolean enabled) {
+		store.putBoolean(LangColoringPreferencesHelper.getEnabledKey(key), enabled);
 	}
 	
-	public static void setColor(IPreferenceStore store, String key, RGB rgb) {
-		PreferenceConverter.setDefault(store, LangColoringPreferencesHelper.getColorKey(key), rgb);
+	public static void setColor(IEclipsePreferences store, String key, RGB rgb) {
+		store.put(LangColoringPreferencesHelper.getColorKey(key), StringConverter.asString(rgb));
 	}
 	
-	public static void setIsBold(IPreferenceStore store, String key, boolean bold) {
-		store.setDefault(LangColoringPreferencesHelper.getBoldKey(key), bold);
+	public static void setIsBold(IEclipsePreferences store, String key, boolean bold) {
+		store.putBoolean(LangColoringPreferencesHelper.getBoldKey(key), bold);
 	}
 	
-	public static void setIsItalic(IPreferenceStore store, String key, boolean italic) {
-		store.setDefault(LangColoringPreferencesHelper.getItalicKey(key), italic);
+	public static void setIsItalic(IEclipsePreferences store, String key, boolean italic) {
+		store.putBoolean(LangColoringPreferencesHelper.getItalicKey(key), italic);
 	}
 	
-	public static void setIsUnderline(IPreferenceStore store, String key, boolean underline) {
-		store.setDefault(LangColoringPreferencesHelper.getUnderlineKey(key), underline);
+	public static void setIsUnderline(IEclipsePreferences store, String key, boolean underline) {
+		store.putBoolean(LangColoringPreferencesHelper.getUnderlineKey(key), underline);
 	}
 	
 }
