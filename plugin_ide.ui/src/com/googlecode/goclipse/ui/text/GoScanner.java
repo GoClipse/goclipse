@@ -21,7 +21,7 @@ public class GoScanner extends AbstractLangScanner {
 		GoUIPreferenceConstants.SYNTAX_COLORING__VALUE.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION.key,
-		GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key,
+//		GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__STRING.key,
 	};
 	
@@ -115,56 +115,56 @@ public class GoScanner extends AbstractLangScanner {
 		wordRule.addWord("bool",   primitive);
 		wordRule.addWord("error",  primitive);
 		
-		// Note: operator matching is not actually working
+		// Note: operator matching is not actually working, WordRule cant be used for this
 		
-		final IToken operator        = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key);
-
-		wordRule.addWord("+",   operator);
-		wordRule.addWord("&",   operator);
-		wordRule.addWord("+=",  operator);
-		wordRule.addWord("&=",  operator);
-		wordRule.addWord("&&",  operator);
-		wordRule.addWord("==",  operator);
-		wordRule.addWord("!=",  operator);
-		wordRule.addWord("(",   operator);
-		wordRule.addWord(")",   operator);
-		wordRule.addWord("-",   operator);
-		wordRule.addWord("|",   operator);
-		wordRule.addWord("-=",  operator);
-		wordRule.addWord("|=",  operator);
-		wordRule.addWord("||",  operator);
-		wordRule.addWord("<",   operator);
-		wordRule.addWord("<=",  operator);
-		wordRule.addWord("[",   operator);
-		wordRule.addWord("]",   operator);
-		wordRule.addWord("*",   operator);
-		wordRule.addWord("^",   operator);
-		wordRule.addWord("*=",  operator);
-		wordRule.addWord("^=",  operator);
-		wordRule.addWord("<-",  operator);
-		wordRule.addWord(">",   operator);
-		wordRule.addWord(">=",  operator);
-		wordRule.addWord("{",   operator);
-		wordRule.addWord("}",   operator);
-		wordRule.addWord("/",   operator);
-		wordRule.addWord("<<",  operator);
-		wordRule.addWord("/=",  operator);
-		wordRule.addWord("<<=", operator);
-		wordRule.addWord("++",  operator);
-		wordRule.addWord("=",   operator);
-		wordRule.addWord(":=",  operator);
-		wordRule.addWord(",",   operator);
-		wordRule.addWord(";",   operator);
-		wordRule.addWord("%",   operator);
-		wordRule.addWord(">>",  operator);
-		wordRule.addWord("%=",  operator);
-		wordRule.addWord(">>=", operator);
-		wordRule.addWord("--",  operator);
-		wordRule.addWord("!",   operator);
-		wordRule.addWord("...", operator);
-		wordRule.addWord(":",   operator);
-		wordRule.addWord("&^",  operator);
-		wordRule.addWord("&^=", operator);
+//		final IToken operator        = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key);
+//
+//		wordRule.addWord("+",   operator);
+//		wordRule.addWord("&",   operator);
+//		wordRule.addWord("+=",  operator);
+//		wordRule.addWord("&=",  operator);
+//		wordRule.addWord("&&",  operator);
+//		wordRule.addWord("==",  operator);
+//		wordRule.addWord("!=",  operator);
+//		wordRule.addWord("(",   operator);
+//		wordRule.addWord(")",   operator);
+//		wordRule.addWord("-",   operator);
+//		wordRule.addWord("|",   operator);
+//		wordRule.addWord("-=",  operator);
+//		wordRule.addWord("|=",  operator);
+//		wordRule.addWord("||",  operator);
+//		wordRule.addWord("<",   operator);
+//		wordRule.addWord("<=",  operator);
+//		wordRule.addWord("[",   operator);
+//		wordRule.addWord("]",   operator);
+//		wordRule.addWord("*",   operator);
+//		wordRule.addWord("^",   operator);
+//		wordRule.addWord("*=",  operator);
+//		wordRule.addWord("^=",  operator);
+//		wordRule.addWord("<-",  operator);
+//		wordRule.addWord(">",   operator);
+//		wordRule.addWord(">=",  operator);
+//		wordRule.addWord("{",   operator);
+//		wordRule.addWord("}",   operator);
+//		wordRule.addWord("/",   operator);
+//		wordRule.addWord("<<",  operator);
+//		wordRule.addWord("/=",  operator);
+//		wordRule.addWord("<<=", operator);
+//		wordRule.addWord("++",  operator);
+//		wordRule.addWord("=",   operator);
+//		wordRule.addWord(":=",  operator);
+//		wordRule.addWord(",",   operator);
+//		wordRule.addWord(";",   operator);
+//		wordRule.addWord("%",   operator);
+//		wordRule.addWord(">>",  operator);
+//		wordRule.addWord("%=",  operator);
+//		wordRule.addWord(">>=", operator);
+//		wordRule.addWord("--",  operator);
+//		wordRule.addWord("!",   operator);
+//		wordRule.addWord("...", operator);
+//		wordRule.addWord(":",   operator);
+//		wordRule.addWord("&^",  operator);
+//		wordRule.addWord("&^=", operator);
 		
 		rules.add(wordRule);
 		
