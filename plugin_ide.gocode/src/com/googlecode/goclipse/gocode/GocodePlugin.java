@@ -3,6 +3,7 @@ package com.googlecode.goclipse.gocode;
 import java.io.File;
 import java.io.IOException;
 
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -16,6 +17,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.gocode.preferences.GocodePreferences;
 import com.googlecode.goclipse.gocode.utils.Utils;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
@@ -26,11 +28,6 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
   // The plug-in ID
   public static final String PLUGIN_ID = "com.googlecode.goclipse.gocode"; //$NON-NLS-1$
 
-  public static final String RUN_SERVER_PREF = "com.googlecode.goclipse.gocode.server";
-  public static final String GOCODE_PATH_PREF = "com.googlecode.goclipse.gocode.path";
-  
-  public static final boolean USE_TCP = true;
-  
   // The shared instance
   private static GocodePlugin plugin;
 
@@ -49,7 +46,7 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
     
     plugin = this;
     
-    if (getRunServer()) {
+    if (GocodePreferences.RUN_SERVER_PREF.get()) {
       IPath path = getBestGocodeInstance();
       
       if (path != null) {
@@ -125,14 +122,14 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
    * @return "gocode" or "gocode.exe"
    */
   protected String getExeName() {
-    return Utils.isWindows() ? "gocode.exe" : "gocode";
+    return MiscUtil.OS_IS_WINDOWS ? "gocode.exe" : "gocode";
   }
   
   /**
    * @return the user specified path to Gocode, or null if nothing has been specified
    */
   protected IPath getGocodePrefPath() {
-    String pref = getPreferenceStore().getString(GOCODE_PATH_PREF);
+    String pref = GocodePreferences.GOCODE_PATH_PREF.get();
     
     if (pref == null || pref.length() == 0) {
       return null;
@@ -169,9 +166,9 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
       
       String name;
       
-      if (Utils.isWindows()) {
+      if (MiscUtil.OS_IS_WINDOWS) {
         name = "windows";
-      } else if (Utils.isMacOS()) {
+      } else if (MiscUtil.OS_IS_MAC) {
         name = "darwin";
       } else {
         name = "linux";
@@ -187,7 +184,7 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
       
       toolsPath = toolsPath.append(name).append(getExeName());
       
-      if (!Utils.isWindows()) {
+      if (!MiscUtil.OS_IS_WINDOWS) {
         Utils.ensureExecutable(toolsPath);
       }
       
@@ -226,12 +223,8 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
     return null;
   }
   
-  private boolean getRunServer() {
-    return getPreferenceStore().getBoolean(RUN_SERVER_PREF);
-  }
-  
   void updateGocodeServer() {
-    boolean wantsRun = getRunServer();
+    boolean wantsRun = GocodePreferences.RUN_SERVER_PREF.get();
     IPath path = getBestGocodeInstance();
     
     boolean shouldRun = wantsRun && Utils.pathExists(path);

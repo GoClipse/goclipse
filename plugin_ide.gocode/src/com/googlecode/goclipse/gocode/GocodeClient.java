@@ -23,6 +23,7 @@ import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs.GoRoot;
 import com.googlecode.goclipse.core.GoWorkspace;
+import com.googlecode.goclipse.gocode.preferences.GocodePreferences;
 
 /**
  * Use the configured GoCode settings to call a GoCode client, which ends up talking to a running
@@ -59,7 +60,7 @@ public class GocodeClient {
 
     // set the package path for the current project
     List<String> arguments = new LinkedList<String>();
-    if (GocodePlugin.USE_TCP) {
+    if (GocodePreferences.USE_TCP) {
       arguments.add("-sock=tcp");
     }
     arguments.add("set");
@@ -76,7 +77,7 @@ public class GocodeClient {
 	GoToolManager.getDefault().startPrivateGoTool(gocodePathStr, arguments, null).strictAwaitTermination(100);
 
     arguments = new LinkedList<String>();
-    if (GocodePlugin.USE_TCP) {
+    if (GocodePreferences.USE_TCP) {
       arguments.add("-sock=tcp");
     }
     arguments.add("-f=csv");

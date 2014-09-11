@@ -9,13 +9,6 @@
    </extension>
    
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="com.googlecode.goclipse.gocode.preferences.GocodePreferenceInitializer">
-      </initializer>
-   </extension>
-   
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="com.googlecode.goclipse.ui.PreferencePage"

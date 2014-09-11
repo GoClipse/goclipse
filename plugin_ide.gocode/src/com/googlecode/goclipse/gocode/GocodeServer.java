@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.IPath;
 
-import com.googlecode.goclipse.gocode.utils.Utils;
+import com.googlecode.goclipse.gocode.preferences.GocodePreferences;
 
 /**
  * Start up an instance of Gocode in server mode.
@@ -23,7 +24,7 @@ public class GocodeServer {
   }
   
   public void startServer() {
-    if (Utils.isWindows()) {
+    if (MiscUtil.OS_IS_WINDOWS) {
       GocodePlugin.winGocodeKill();
     }
     
@@ -32,7 +33,7 @@ public class GocodeServer {
     List<String> args = new ArrayList<String>();
     args.add("-s");
     
-    if (GocodePlugin.USE_TCP) {
+    if (GocodePreferences.USE_TCP) {
       args.add("-sock=tcp");
     }
     
