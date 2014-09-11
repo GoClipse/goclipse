@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-// Just a temporary alias
-public interface PreferenceConstants2 extends PreferenceConstants {
+public class EditorSettings_Actual {
+	
+	public static final String EDITOR_CODE_TARGET = "LANG_PROJECT_ID.ide.ui.Editor.HyperlinkCodeTarget";
 	
 }

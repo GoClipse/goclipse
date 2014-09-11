@@ -26,8 +26,9 @@ import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
 
 public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
-	public LANGUAGE_SourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager) {
-		super(preferenceStore, colorManager);
+	public LANGUAGE_SourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager,
+			LANGUAGE_Editor editor) {
+		super(preferenceStore, colorManager, editor);
 	}
 	
 	@Override

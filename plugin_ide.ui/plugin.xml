@@ -36,6 +36,35 @@
 		</editor>
 	</extension>
 	
+	<extension point="org.eclipse.ui.contexts">
+		<context
+			name="%LangEditContext.name"
+			description="%LangEditContext.description"
+			parentId="org.eclipse.ui.textEditorScope"
+			id="LANG_PROJECT_ID.ide.ui.Contexts.Editor">
+		</context>
+	</extension>
+	
+	
+	
+	
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+		<target 
+			id="LANG_PROJECT_ID.ide.ui.Editor.HyperlinkCodeTarget"
+			name="%hyperlinkDetector.target.name">
+		<context type="org.eclipse.ui.texteditor.ITextEditor" />
+		</target>
+	</extension>
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+		<hyperlinkDetector
+			class="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_HyperlinkDetector"
+			id="LANG_PROJECT_ID.ide.ui.Editor.HyperlinkDetector"
+			name="%hyperlinkDetector.name"
+			targetId="LANG_PROJECT_ID.ide.ui.Editor.HyperlinkCodeTarget">
+		</hyperlinkDetector>
+	</extension>
+	
+	
 	<!-- ============ Preference pages ============= -->
 	
 	<extension point="org.eclipse.ui.preferencePages">

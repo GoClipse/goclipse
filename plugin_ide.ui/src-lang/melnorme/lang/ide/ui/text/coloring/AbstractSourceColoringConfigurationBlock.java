@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.PreferenceConstants;
 import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
@@ -158,23 +157,23 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		}
 		
 		public String getEnableKey() {
-			return prefKey + PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_ENABLED_SUFFIX;
+			return prefKey + TextColoringConstants.EDITOR_SEMANTIC_HIGHLIGHTING_ENABLED_SUFFIX;
 		}
 		
 		public String getBoldKey() {
-			return prefKey + PreferenceConstants.EDITOR_BOLD_SUFFIX;
+			return prefKey + TextColoringConstants.EDITOR_BOLD_SUFFIX;
 		}
 		
 		public String getItalicKey() {
-			return prefKey + PreferenceConstants.EDITOR_ITALIC_SUFFIX;
+			return prefKey + TextColoringConstants.EDITOR_ITALIC_SUFFIX;
 		}
 		
 		public String getStrikethroughKey() {
-			return prefKey + PreferenceConstants.EDITOR_STRIKETHROUGH_SUFFIX;
+			return prefKey + TextColoringConstants.EDITOR_STRIKETHROUGH_SUFFIX;
 		}
 		
 		public String getUnderlineKey() {
-			return prefKey + PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
+			return prefKey + TextColoringConstants.EDITOR_UNDERLINE_SUFFIX;
 		}
 		
 	}

@@ -8,11 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui;
+package melnorme.lang.ide.ui.text.coloring;
 
 
-
-public interface PreferenceConstants_Actual {
+public interface TextColoringConstants {
 	
 	public static final String EDITOR_BOLD_SUFFIX = "_bold";
 	public static final String EDITOR_ITALIC_SUFFIX = "_italic";

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
@@ -43,6 +44,8 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * Abstract SourceViewConfiguration
@@ -52,13 +55,16 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 	
 	protected final IColorManager colorManager;
 	protected final IPreferenceStore preferenceStore;
+	protected final AbstractDecoratedTextEditor editor;
 	protected Map<String, AbstractLangScanner> scannersByContentType;
 	
 	
-	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager) {
+	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager, 
+			AbstractDecoratedTextEditor editor) {
 		super(assertNotNull(preferenceStore));
 		this.colorManager = colorManager;
 		this.preferenceStore = preferenceStore;
+		this.editor = editor;
 		
 		scannersByContentType = new HashMap<>();
 		createScanners();
@@ -174,6 +180,15 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		});
 		
 		preferenceStore.addPropertyChangeListener(propertyChangeListener);
+	}
+	
+	/* ----------------- Navigation operations ----------------- */
+	
+	@Override 
+	protected Map<String, ITextEditor> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
+		Map<String, ITextEditor> targets = super.getHyperlinkDetectorTargets(sourceViewer);
+		targets.put(EditorSettings_Actual.EDITOR_CODE_TARGET, editor); 
+		return targets;
 	}
 	
 	/* ----------------- Modification operations ----------------- */
