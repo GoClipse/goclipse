@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.coloring;
 
-import melnorme.lang.ide.ui.PreferenceConstants;
-
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
@@ -23,19 +21,19 @@ public class LangColoringPreferencesHelper {
 	}
 	
 	public static String getEnabledKey(String key) {
-		return key + PreferenceConstants.EDITOR_SEMANTIC_HIGHLIGHTING_ENABLED_SUFFIX;
+		return key + TextColoringConstants.EDITOR_SEMANTIC_HIGHLIGHTING_ENABLED_SUFFIX;
 	}
 	
 	public static String getBoldKey(String key) {
-		return key + PreferenceConstants.EDITOR_BOLD_SUFFIX;
+		return key + TextColoringConstants.EDITOR_BOLD_SUFFIX;
 	}
 	
 	public static String getItalicKey(String key) {
-		return key + PreferenceConstants.EDITOR_ITALIC_SUFFIX;
+		return key + TextColoringConstants.EDITOR_ITALIC_SUFFIX;
 	}
 	
 	public static String getUnderlineKey(String key) {
-		return key + PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
+		return key + TextColoringConstants.EDITOR_UNDERLINE_SUFFIX;
 	}
 	
 	protected static void setColoringStyle(IEclipsePreferences node, String key, RGB color, boolean bold, 
