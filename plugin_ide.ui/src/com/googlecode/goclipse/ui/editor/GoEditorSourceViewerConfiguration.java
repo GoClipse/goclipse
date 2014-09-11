@@ -14,8 +14,6 @@ import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
-import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.eclipse.jface.text.hyperlink.URLHyperlinkDetector;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.source.DefaultAnnotationHover;
@@ -29,7 +27,6 @@ import com.googlecode.goclipse.editors.CompletionProcessor;
 import com.googlecode.goclipse.editors.DoubleClickStrategy;
 import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.editors.GoEditorReconcilingStrategy;
-import com.googlecode.goclipse.editors.GoHyperlinkDetector;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.text.GoPartitionScanner;
 import com.googlecode.goclipse.ui.text.GoScanner;
@@ -46,7 +43,7 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 
 	public GoEditorSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager, 
 			GoEditor editor) {
-		super(preferenceStore, colorManager);
+		super(preferenceStore, colorManager, editor);
 		this.editor = editor;
 	}
 	
@@ -124,17 +121,7 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
 		return new DefaultAnnotationHover();
 	}
-
-	@Override
-	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
-		
-		if (sourceViewer == null) {
-			return null;
-		}
-
-		return new IHyperlinkDetector[] { new URLHyperlinkDetector(), new GoHyperlinkDetector() };
-	}
-
+	
 	@Override
 	public IReconciler getReconciler(ISourceViewer sourceViewer) {
 		

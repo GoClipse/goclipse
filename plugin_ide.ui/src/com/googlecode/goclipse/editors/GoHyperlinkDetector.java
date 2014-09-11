@@ -32,10 +32,10 @@ import com.googlecode.goclipse.go.lang.model.Var;
  * is used for code navigation.
  */
 public class GoHyperlinkDetector extends AbstractHyperlinkDetector {
-
+	
 	public GoHyperlinkDetector() {
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.jface.text.hyperlink.IHyperlinkDetector#detectHyperlinks(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion, boolean)

@@ -555,7 +555,7 @@
 
    <extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
       <target
-         id="goclipse.hyperlinkDetectorTarget"
+         id="com.googlecode.goclipse.ui.Editor.CodeTarget"
       	 name="GoEditorHyperlinkDetectorTarget">
 
          <context type="org.eclipse.ui.texteditor.ITextEditor"/>
@@ -568,7 +568,7 @@
             class="com.googlecode.goclipse.editors.GoHyperlinkDetector"
             id="com.googlecode.goclipse.editors.GoHyperlinkDetector"
             name="GoEditorHyperlinkDetector"
-            targetId="goclipse.hyperlinkDetectorTarget">
+            targetId="com.googlecode.goclipse.ui.Editor.CodeTarget">
       </hyperlinkDetector>
    </extension>
    
