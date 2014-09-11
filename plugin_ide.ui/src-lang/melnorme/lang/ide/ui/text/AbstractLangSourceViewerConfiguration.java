@@ -56,7 +56,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 	protected final IColorManager colorManager;
 	protected final IPreferenceStore preferenceStore;
 	protected final AbstractDecoratedTextEditor editor;
-	protected final Map<String, AbstractLangScanner> scannersByContentType;
+	protected Map<String, AbstractLangScanner> scannersByContentType;
 	
 	
 	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager, 
@@ -66,10 +66,10 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		this.preferenceStore = preferenceStore;
 		this.editor = editor;
 		
-		Map<String, AbstractLangScanner> _scannersByContentType = new HashMap<>();
+		scannersByContentType = new HashMap<>();
 		createScanners();
-		assertTrue(_scannersByContentType.size() == getConfiguredContentTypes(null).length);
-		scannersByContentType = Collections.unmodifiableMap(_scannersByContentType);
+		assertTrue(scannersByContentType.size() == getConfiguredContentTypes(null).length);
+		scannersByContentType = Collections.unmodifiableMap(scannersByContentType);
 	}
 	
 	protected IColorManager getColorManager2() {
