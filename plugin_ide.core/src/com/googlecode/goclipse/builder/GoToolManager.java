@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -29,6 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
+import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -126,6 +126,27 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 		EclipseExternalProcessHelper processHelper = new EclipseExternalProcessHelper(pb, true, pm);
 		processHelper.writeInput(processInput);
 		return processHelper;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static ExternalProcessResult runBuildTool(final IProject project, IProgressMonitor pmonitor, 
+			File workingDir, List<String> cmd, String goPath) throws CoreException {
+		
+		ProcessBuilder pb = new ProcessBuilder(cmd).directory(workingDir);
+		
+		pb.environment().put(GoConstants.GOROOT, Environment.INSTANCE.getGoRoot(project));
+		pb.environment().put(GoConstants.GOPATH, goPath);
+		
+		return runBuildTool(project, pmonitor, pb);
+	}
+	
+	public static ExternalProcessResult runBuildTool(final IProject project, IProgressMonitor pmonitor,
+			ProcessBuilder pb) throws CoreException {
+		// Note: project can be null
+		RunGoToolTask processTask = getDefault().createRunProcessTask(pb, project, pmonitor);
+		
+		return processTask.startProcess().strictAwaitTermination();
 	}
 	
 }

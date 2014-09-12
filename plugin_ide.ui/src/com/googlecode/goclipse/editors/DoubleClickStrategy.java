@@ -81,7 +81,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 			fText.setSelectedRange(offset, len);
 			return true;
 		} catch (BadLocationException x) {
-			Activator.logInfo(x);
+			Activator.logError("Error in double click strategy", x);
 		}
 
 		return false;
@@ -126,7 +126,7 @@ public class DoubleClickStrategy implements ITextDoubleClickStrategy {
 			return true;
 
 		} catch (BadLocationException x) {
-			Activator.logInfo(x);
+			Activator.logError("Error in double click strategy", x);
 		}
 
 		return false;

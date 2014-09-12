@@ -1,16 +1,13 @@
 package com.googlecode.goclipse.builder;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.collections.ArrayList;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -23,12 +20,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
@@ -40,6 +37,9 @@ import com.googlecode.goclipse.utils.ObjectUtils;
 
 /**
  * GoCompiler provides the GoClipse interface to the go build tool.
+ * 
+ * @author ??? - Original author?
+ * @author Bruno - cleanup refactoring of external tool calling
  */
 public class GoCompiler {
 
@@ -56,20 +56,23 @@ public class GoCompiler {
 	 * @param project
 	 * @param target
 	 */
-	public void goGetDependencies(final IProject project, IProgressMonitor monitor, java.io.File target) {
+	public void goGetDependencies(final IProject project, IProgressMonitor monitor, java.io.File target) throws CoreException {
 		
 		final IPath projectLocation = project.getLocation();
 		final String compilerPath   = PreferenceConstants.COMPILER_PATH.get();
 		final IFile  file           = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
-
-		try {
 			
 			/**
 			 * TODO Allow the user to set the go get locations
 			 * manually.
 			 */
 			
-			List<Import> imports    = getImports(target);
+			List<Import> imports;
+			try {
+				imports = getImports(target);
+			} catch (IOException ioe) {
+				throw GoCore.createCoreException("Error during getImports", ioe);
+			}
 			List<String> cmd        = new ArrayList<String>();
 			List<Import> extImports = new ArrayList<Import>();
 			
@@ -99,31 +102,14 @@ public class GoCompiler {
 			cmd.add(0, compilerPath);
 			
 			String   goPath  = buildGoPath(project, projectLocation, true);
-			String   PATH    = System.getenv("PATH");
 			
-	        ProcessBuilder builder = new ProcessBuilder(cmd).directory(target.getParentFile());
-	        builder.environment().put(GoConstants.GOROOT, Environment.INSTANCE.getGoRoot(project));
-	        builder.environment().put(GoConstants.GOPATH, goPath);
-	        builder.environment().put("PATH", PATH);
-	        Process p = builder.start();
-      
 			monitor.worked(3);
 			
-			try {
-				p.waitFor();
-
-			} catch (InterruptedException e) {
-				Activator.logInfo(e);
-			}
-
-			InputStream   is  = p.getInputStream();
-			InputStream   es  = p.getErrorStream();
-			StreamAsLines sal = new StreamAsLines();
-			sal.setCombineLines(true);
-			sal.process(is);
-			sal.process(es);
+			ExternalProcessResult processResult = GoToolManager.runBuildTool(project, monitor, 
+				target.getParentFile(), cmd, goPath);
 			
-			Activator.logInfo(sal.getLinesAsString());
+			StreamAsLines sal = new StreamAsLines(processResult);
+			
 			boolean exMsg = true;
 			
 			try {
@@ -172,9 +158,6 @@ public class GoCompiler {
 			
 			monitor.worked(1);
 			
-		} catch (IOException e1) {
-			Activator.logInfo(e1);
-		}
 	}
 
 	/**
@@ -187,6 +170,7 @@ public class GoCompiler {
 		if (MiscUtil.OS_IS_WINDOWS){
 			delim = ";";
 		}
+		
 		
 		String       goPath = projectLocation.toOSString();
 		String[]     path   = Environment.INSTANCE.getGoPath(project);
@@ -224,7 +208,6 @@ public class GoCompiler {
 		final String outExtension = (MiscUtil.OS_IS_WINDOWS ? ".exe" : "");
 
 			// the path exist to find the cc
-			String   path    = System.getenv("PATH");
 			String   outPath = null;
 			ArrayList<String> cmd = new ArrayList<>();
 			
@@ -257,32 +240,13 @@ public class GoCompiler {
 			
 			String goPath = buildGoPath(project, projectLocation, false);
 			
-			ProcessBuilder pb = new ProcessBuilder(cmd).directory(target.getParentFile());
-			pb.environment().put(GoConstants.GOROOT, Environment.INSTANCE.getGoRoot(project));
-			pb.environment().put(GoConstants.GOPATH, goPath);
-			pb.environment().put("PATH", path);
-			
-			
-			RunGoToolTask processTask = GoToolManager.getDefault().createRunProcessTask(pb, project, pmonitor);
-			
-			ExternalProcessResult processResult = null;
-			try {
-				processResult = processTask.startProcess().strictAwaitTermination();
-			} catch (CoreException ce) {
-				if(ce.getCause() instanceof TimeoutException && pmonitor.isCanceled()) {
-					throw new OperationCanceledException();
-				}
-				LangCore.logStatus(ce.getStatus());
-				return;
-			}
+			ExternalProcessResult processResult = GoToolManager.runBuildTool(project, pmonitor, 
+				target.getParentFile(), cmd, goPath);
 			
 			refreshProject(project, pmonitor);
 			int errorCount = 0;
 			
-			StreamAsLines sal = new StreamAsLines();
-			sal.setCombineLines(true);
-			sal.process(new ByteArrayInputStream(processResult.getStdOutBytes().toByteArray()));
-			sal.process(new ByteArrayInputStream(processResult.getStdErrBytes().toByteArray()));
+			StreamAsLines sal = new StreamAsLines(processResult);
 			
 			if (sal.getLines().size() > 0) {
 		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
@@ -301,9 +265,6 @@ public class GoCompiler {
 		
 		final String compilerPath = PreferenceConstants.COMPILER_PATH.get();
 
-		try {
-			// the path exist to find the cc
-			String   path    = System.getenv("PATH");
 			ArrayList<String> cmd = new ArrayList<>();
 			
 			MarkerUtilities.deleteFileMarkers(target);
@@ -317,26 +278,13 @@ public class GoCompiler {
 			String goPath = buildGoPath(project, projectLocation, false);
 
 			File file = new File(target.getLocation().toOSString());
- 			ProcessBuilder builder = new ProcessBuilder(cmd).directory(file);
-			builder.environment().put(GoConstants.GOROOT, Environment.INSTANCE.getGoRoot(project));
-			builder.environment().put(GoConstants.GOPATH, goPath);
-			builder.environment().put("PATH", path);
-			Process p = builder.start();
-
-			try {
-				p.waitFor();
-
-			} catch (InterruptedException e) {
-				Activator.logInfo(e);
-			}
 			
+			ExternalProcessResult processResult = GoToolManager.runBuildTool(project, pmonitor, 
+				file, cmd, goPath);
+
+
 			refreshProject(project, pmonitor);
-		    InputStream is = p.getInputStream();
-		    InputStream es = p.getErrorStream();
-		    StreamAsLines sal = new StreamAsLines();
-		    sal.setCombineLines(true);
-		    sal.process(is);
-		    sal.process(es);
+		    StreamAsLines sal = new StreamAsLines(processResult);
 		    
 		    String currentPackage = "";
 		    for ( String line : sal.getLines()) {
@@ -347,14 +295,11 @@ public class GoCompiler {
 		    	}
 		    	String[] elements = line.split(":");
 		    	String message = line.substring(elements[0].length()+elements[1].length()+2);
-		    	path = target.getName()+File.separator+elements[0];
+		    	String path = target.getName()+File.separator+elements[0];
 		    	IResource res = project.findMember(path);
 		    	MarkerUtilities.addMarker(res, Integer.parseInt(elements[1]), message, IMarker.SEVERITY_ERROR);
 		    }
 
-		} catch (IOException e1) {
-			Activator.logInfo(e1);
-		}
 	}
 	
 	
@@ -363,14 +308,13 @@ public class GoCompiler {
 	 * @param pmonitor
 	 * @param fileList
 	 */
-	public void compilePkg(final IProject project, IProgressMonitor pmonitor, final String pkgpath, java.io.File target) {
+	public void compilePkg(final IProject project, IProgressMonitor pmonitor, final String pkgpath, java.io.File target) throws CoreException {
 		
 		final String           compilerPath    = PreferenceConstants.COMPILER_PATH.get();
 		
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		
-		ProcessBuilder builder    = null;
 		String         pkgPath    = null;
 		File           workingDir = null;
 		
@@ -385,48 +329,33 @@ public class GoCompiler {
 			workingDir = target;
 		}
 		
-		try {
 			String  goPath  = buildGoPath(project, projectLocation, false);
 			
-			String[] buildCmd = { compilerPath,
-			         GoConstants.GO_BUILD_COMMAND,
-			         GoConstants.COMPILER_OPTION_O,
-			         pkgpath,
-			         "."
-			       };
+			ArrayList2<String> cmd = new ArrayList<String>(
+				compilerPath,
+				GoConstants.GO_BUILD_COMMAND,
+				GoConstants.COMPILER_OPTION_O,
+				pkgpath,
+				"."
+			);
 			
-			builder = new ProcessBuilder(buildCmd).directory(workingDir);
-			
-			// PATH so go can find cc
-			String path = System.getenv("PATH");
 			String goroot = Environment.INSTANCE.getGoRoot(project);
 			
-			builder.environment().put(GoConstants.GOROOT, goroot);
-			builder.environment().put(GoConstants.GOPATH, goPath);
-		    builder.environment().put("PATH", path);
-		    
-		    Process p = builder.start();
-		    try {
-				p.waitFor();
+			ExternalProcessResult processResult = GoToolManager.runBuildTool(project, pmonitor, 
+				workingDir, cmd, goPath);
 
-			} catch (InterruptedException e) {
-				Activator.logInfo(e);
-			}
-		    
 		    refreshProject(project, pmonitor);
 			clearPackageErrorMessages(project, pkgPath);
 			int errorCount = 0;
-			StreamAsLines sal = StreamAsLines.buildStreamAsLines(p);
+			StreamAsLines sal = new StreamAsLines(processResult);
+			
 			if (sal.getLines().size() > 0) {
 		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
 		    }
 			
 			GoTestRunner.scheduleTest(project, compilerPath, file, pkgPath,
-					workingDir, goPath, path, goroot, errorCount);
+					workingDir, goPath, goroot, errorCount);
 
-		} catch (IOException e1) {
-			Activator.logInfo(e1);
-		}
 	}
 
 	
@@ -436,7 +365,7 @@ public class GoCompiler {
 	 * @param pmonitor
 	 * @param fileList
 	 */
-	public void installAll(final IProject project, IProgressMonitor pmonitor) {
+	public void installAll(final IProject project, IProgressMonitor pmonitor) throws CoreException {
 		
 		final IPath  projectLocation = project.getLocation();
 		//final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
@@ -444,52 +373,29 @@ public class GoCompiler {
 
 		final String           compilerPath    = PreferenceConstants.COMPILER_PATH.get();
 		
-		try {
-			String[] cmd = { compilerPath, GoConstants.GO_INSTALL_COMMAND, "all" };
+			ArrayList2<String> cmd = new ArrayList2<>(compilerPath, GoConstants.GO_INSTALL_COMMAND, "all");
 
 			String  goPath  = buildGoPath(project, projectLocation, false);
 			
-			// PATH so go can find cc
-			String path = System.getenv("PATH");
-			String goroot = Environment.INSTANCE.getGoRoot(project);
-			ProcessBuilder builder = new ProcessBuilder(cmd).directory(project.getLocation().toFile());
-			builder.environment().put(GoConstants.GOROOT, goroot);
-			builder.environment().put(GoConstants.GOPATH, goPath);
-		    builder.environment().put("PATH", path);
-		    Process p = builder.start();
-			
-			try {
-				p.waitFor();
-
-			} catch (InterruptedException e) {
-				Activator.logInfo(e);
-			}
+			ExternalProcessResult processResult = GoToolManager.runBuildTool(project, pmonitor, 
+				project.getLocation().toFile(), cmd, goPath);
 			
 			refreshProject(project, pmonitor);
+			
+			StreamAsLines sal = new StreamAsLines(processResult);
+			
 			//clearPackageErrorMessages(project, pkgPath);
-			StreamAsLines sal = StreamAsLines.buildStreamAsLines(p);
 			int errorCount = 0;
 		    if (sal.getLines().size() > 0) {
 		    	errorCount = processCompileOutput(sal, project, null, null);
 		    }
 
-		} catch (IOException e1) {
-			Activator.logInfo(e1);
-		}
 	}
 	
 	
 
-	/**
-     * @param project
-     * @param pmonitor
-     */
-    private void refreshProject(final IProject project, IProgressMonitor pmonitor) {
-	    try {
-	        project.refreshLocal(IResource.DEPTH_INFINITE, pmonitor);
-	    } catch (CoreException e) {
-	    	Activator.logInfo(e);
-	    }
+    private void refreshProject(final IProject project, IProgressMonitor pmonitor) throws CoreException {
+        project.refreshLocal(IResource.DEPTH_INFINITE, pmonitor);
     }
 
 	/**
@@ -509,11 +415,7 @@ public class GoCompiler {
 	    }
     }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public String getVersion() {
+	public String getVersion() throws CoreException {
 		// The getCompilerVersion() call takes about ~30 msec to compute.
 		// Because it's expensive,
 		// we cache the value for a short time.
@@ -558,7 +460,7 @@ public class GoCompiler {
 	 * @param project
 	 * @return
 	 */
-	public boolean requiresRebuild(IProject project) {
+	public boolean requiresRebuild(IProject project) throws CoreException {
 		String storedVersion;
 
 		try {
@@ -685,7 +587,7 @@ public class GoCompiler {
 	 * 
 	 * @return the current compiler version
 	 */
-	public static String getCompilerVersion() {
+	public static String getCompilerVersion() throws CoreException {
 		
 		String version = null;
 		String compilerPath = PreferenceConstants.COMPILER_PATH.get();
@@ -694,25 +596,13 @@ public class GoCompiler {
 			return null;
 		}
 
-		try {
-			String[] cmd = { compilerPath, GoConstants.GO_VERSION_COMMAND };
+			ArrayList2<String> cmd = new ArrayList2<String>(compilerPath, GoConstants.GO_VERSION_COMMAND);
 
-			Runtime runtime = Runtime.getRuntime();
-			Process p = runtime.exec(cmd);
-
-			try {
-				p.waitFor();
-
-			} catch (InterruptedException e) {
-				Activator.logInfo(e);
-			}
-
-			InputStream is = p.getInputStream();
-			InputStream es = p.getErrorStream();
-			StreamAsLines output = new StreamAsLines();
-			StreamAsLines errors = new StreamAsLines();
-			output.process(is);
-			errors.process(es);
+			ProcessBuilder pb = new ProcessBuilder(cmd).directory(null);
+			
+			ExternalProcessResult processResult = GoToolManager.runBuildTool(null, new NullProgressMonitor(), pb);
+			
+			StreamAsLines output = new StreamAsLines(processResult);
 
 			final String GO_VERSION = "go version ";
 
@@ -722,10 +612,6 @@ public class GoCompiler {
 					break;
 				}
 			}
-
-		} catch (IOException e) {
-			Activator.logInfo(e);
-		}
 
 		return version;
 	}

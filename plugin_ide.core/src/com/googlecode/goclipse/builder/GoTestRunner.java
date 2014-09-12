@@ -176,23 +176,12 @@ public class GoTestRunner {
 		return config.project.getName()+":"+config.pkgPath;
 	}
 	
-	/**
-     * @param project
-     * @param compilerPath
-     * @param file
-     * @param pkgPath
-     * @param workingDir
-     * @param goPath
-     * @param path
-     * @param goroot
-     * @param errorCount
-     * @throws IOException
-     */
     public static void scheduleTest(final IProject project,    final String compilerPath,
     		                        final IFile    file,       final String pkgPath,
                                     final File     workingDir, final String goPath,
-                                    final String   path,       final String goroot,
-                                    final int      errorCount) throws IOException {
+                                    final String goroot,
+                                    final int      errorCount) {
+		String path = System.getenv("PATH");
     	
     	if ( errorCount == 0 && GoProjectPrefConstants.ENABLE_AUTO_UNIT_TEST.get(project)) {
     	
@@ -307,9 +296,9 @@ public class GoTestRunner {
 	        }
 	        
         } catch (NumberFormatException e) {
-        	Activator.logInfo(e);
+        	Activator.logError(e);
         } catch (IOException e) {
-        	Activator.logInfo(e);
+        	Activator.logError(e);
         }
     }
     

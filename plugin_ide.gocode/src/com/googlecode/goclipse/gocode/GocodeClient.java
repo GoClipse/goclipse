@@ -15,8 +15,6 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
-
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.builder.StreamAsLines;
 import com.googlecode.goclipse.core.GoCore;
@@ -99,7 +97,7 @@ public class GocodeClient {
     	error = null;
     }
     
-    if(Platform.inDebugMode()) {
+    if(GocodePreferences.GOCODE_CONSOLE.get()) {
         GocodeMessageConsole gocodeConsole = GocodeMessageConsole.getConsole();
         try {
         	gocodeConsole.clientResponse.write(">> gocodePathStr " + StringUtil.collToString(arguments, " "));

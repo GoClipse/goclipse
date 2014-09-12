@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
 import com.googlecode.goclipse.gocode.preferences.GocodePreferences;
 
@@ -25,7 +28,7 @@ public class GocodeServer {
   
   public void startServer() {
     if (MiscUtil.OS_IS_WINDOWS) {
-      GocodePlugin.winGocodeKill();
+      GocodeServer.winGocodeKill();
     }
     
     GocodePlugin.logInfo("starting gocode server [" + path + "]");
@@ -61,6 +64,21 @@ public class GocodeServer {
 
   public IPath getPath() {
     return path;
+  }
+
+  public static void winGocodeKill() {
+    // shutdown previous gocode instances with command:
+    //    TASKKILL /F /IM "gocode.exe"
+    try {
+      ExternalProcessHelper ph = new ExternalProcessHelper(
+    	  new ProcessBuilder("TASKKILL", "/F", "/IM", "\"gocode.exe\""));
+      ph.strictAwaitTermination();
+      
+    } catch (Exception error) {
+      GocodePlugin.getPlugin().getLog().log(
+          new Status(IStatus.ERROR, GocodePlugin.PLUGIN_ID,
+              "Windows taskkill process failed.  Could not kill gocode process."));
+    }
   }
 
 }

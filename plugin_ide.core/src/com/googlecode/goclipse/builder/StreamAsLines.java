@@ -1,11 +1,15 @@
 package com.googlecode.goclipse.builder;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import com.googlecode.goclipse.Activator;
 
@@ -23,17 +27,13 @@ public class StreamAsLines {
   public StreamAsLines() {
   }
   
-  public static StreamAsLines buildStreamAsLines(Process p) {
-	    InputStream is = p.getInputStream();
-	    InputStream es = p.getErrorStream();
-	    StreamAsLines sal = new StreamAsLines();
-	    sal.setCombineLines(true);
-	    sal.process(is);
-	    sal.process(es);
-	    return sal;
+  public StreamAsLines(ExternalProcessResult processResult) {
+	setCombineLines(true);
+	process(new ByteArrayInputStream(processResult.getStdOutBytes().toByteArray()));
+	process(new ByteArrayInputStream(processResult.getStdErrBytes().toByteArray()));
   }
-  
-  public static List<String> buildTestStreamAsLines(Reader stdoutReader, Reader stderrReader) {
+
+public static List<String> buildTestStreamAsLines(Reader stdoutReader, Reader stderrReader) {
 	  StreamAsLines sal = new StreamAsLines();
 	  sal.setCombineLines(true);
 	  sal.processTestStream(stdoutReader);
@@ -87,8 +87,8 @@ public class StreamAsLines {
           lines.add(line);
         }
       }
-    } catch (Exception e) {
-      Activator.logInfo(e);
+    } catch (IOException e) {
+      Activator.logError(e);
     }
   }
   
@@ -108,8 +108,8 @@ public class StreamAsLines {
           lines.add(line);
         }
       }
-    } catch (Exception e) {
-      Activator.logInfo(e);
+    } catch (IOException e) {
+      Activator.logError(e);
     }
   }
 

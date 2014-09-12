@@ -22,13 +22,4 @@ public class Activator extends GoCore {
 		}
 	}
 	
-	/**
-	 * Log the given info message to the Eclipse log.
-	 */
-	public static void logInfo(Throwable t) {
-		if (Environment.DEBUG) {
-			GoCore.logStatus(new Status(IStatus.INFO, PLUGIN_ID, t.getMessage(), t));
-		}
-	}
-	
 }

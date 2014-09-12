@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -54,12 +55,16 @@ final public class GoGetActionDelegate implements IEditorActionDelegate {
 			try {
 				ps.busyCursorWhile(new IRunnableWithProgress() {
 					@Override
-					public void run(IProgressMonitor pm) {
+					public void run(IProgressMonitor pm) throws InvocationTargetException {
 						GoCompiler compiler = new GoCompiler();
 						final IEditorInput input = editor.getEditorInput();
 						IFile file = ((IFileEditorInput) input).getFile();
 						IProject project = file.getProject();
-						compiler.goGetDependencies(project, pm, file.getLocation().toFile());
+						try {
+							compiler.goGetDependencies(project, pm, file.getLocation().toFile());
+						} catch (CoreException ce) {
+							throw new InvocationTargetException(ce);
+						}
 					}
 				});
 				

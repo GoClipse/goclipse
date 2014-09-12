@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
+
+import melnorme.lang.ide.core.LangCore;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -24,6 +27,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 
@@ -85,13 +89,20 @@ public class GoBuilder extends IncrementalProjectBuilder {
 			
 			compiler.updateVersion(project);
 			
-		} catch(Exception e) {
-			Activator.logError(e);
-		} finally {
+		} 
+		catch (CoreException ce) {
+			if(ce.getCause() instanceof TimeoutException && monitor.isCanceled()) {
+				throw new OperationCanceledException();
+			}
+			
+			LangCore.logStatus(ce.getStatus());
+			throw ce;
+		} 
+		finally {
 			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+			
+			GoToolManager.getDefault().notifyBuildTerminated(project);
 		}
-		
-		GoToolManager.getDefault().notifyBuildTerminated(project);
 		
 		// no project dependencies (yet)
 		return null;

@@ -14,6 +14,7 @@
  * Added #45 - Allow specifying extra options to 'go build' (available in project properties). They default to `-gcflags "-N -l"`
  * Fixed: Redundant build messages are no longer displayed, if no changes occurred in a project since last build.
  * Fixed #68: Ctrl-click hyperlink to open symbol defintion no longer working.
+ * Fixed bug: No build commands are printed in the build console when building non-main packages.
 
 
 ### Goclipse 0.8.0

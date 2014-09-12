@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.process.ExternalProcessHelper;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -46,7 +45,7 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
     
     plugin = this;
     
-    if (GocodePreferences.RUN_SERVER_PREF.get()) {
+    if (GocodePreferences.AUTO_START_SERVER.get()) {
       IPath path = getBestGocodeInstance();
       
       if (path != null) {
@@ -129,7 +128,7 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
    * @return the user specified path to Gocode, or null if nothing has been specified
    */
   protected IPath getGocodePrefPath() {
-    String pref = GocodePreferences.GOCODE_PATH_PREF.get();
+    String pref = GocodePreferences.GOCODE_PATH.get();
     
     if (pref == null || pref.length() == 0) {
       return null;
@@ -224,7 +223,7 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
   }
   
   void updateGocodeServer() {
-    boolean wantsRun = GocodePreferences.RUN_SERVER_PREF.get();
+    boolean wantsRun = GocodePreferences.AUTO_START_SERVER.get();
     IPath path = getBestGocodeInstance();
     
     boolean shouldRun = wantsRun && Utils.pathExists(path);
@@ -244,21 +243,6 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
         gocodeServer = new GocodeServer(path);
         gocodeServer.startServer();
       }
-    }
-  }
-  
-  static void winGocodeKill() {
-    // shutdown previous gocode instances with command:
-    //    TASKKILL /F /IM "gocode.exe"
-    try {
-      ExternalProcessHelper ph = new ExternalProcessHelper(
-    	  new ProcessBuilder("TASKKILL", "/F", "/IM", "\"gocode.exe\""));
-      ph.strictAwaitTermination();
-      
-    } catch (Exception error) {
-      GocodePlugin.getPlugin().getLog().log(
-          new Status(IStatus.ERROR, GocodePlugin.PLUGIN_ID,
-              "Windows taskkill process failed.  Could not kill gocode process."));
     }
   }
 

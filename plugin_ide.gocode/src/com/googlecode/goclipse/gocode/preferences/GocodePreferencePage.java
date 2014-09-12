@@ -33,21 +33,24 @@ public class GocodePreferencePage extends FieldEditorPreferencePage implements
 	
 	@Override
 	protected void createFieldEditors() {
-		Group group = SWTFactoryUtil.createGroup(getFieldEditorParent(), 
+		Group group = SWTFactoryUtil.createGroup(getFieldEditorParent(),
 			"Gocode",
 			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
 		
 		addField(new BooleanFieldEditor(
-			GocodePreferences.RUN_SERVER_PREF.key, "Start Gocode server automatically", group));
+			GocodePreferences.GOCODE_CONSOLE.key, "Enable Gocode diagnostics console", group));
+		
+		addField(new BooleanFieldEditor(
+			GocodePreferences.AUTO_START_SERVER.key, "Start Gocode server automatically", group));
 		
 		SWTFactoryUtil.createLabel(group, SWT.NONE,
 			"(to start manually: gocode -s" + (GocodePreferences.USE_TCP ? " -sock=tcp" : "") + ")",
 			GridDataFactory.swtDefaults().span(3, 1).indent(18, 0).create());
 				
 		addField(new FileFieldEditor(
-			GocodePreferences.GOCODE_PATH_PREF.key, "Gocode path:", group));
+			GocodePreferences.GOCODE_PATH.key, "Gocode path:", group));
 		
-		GridLayoutFactory.fillDefaults().margins(10, 4).numColumns(3).applyTo(group);
+		GridLayoutFactory.fillDefaults().margins(6, 4).numColumns(3).applyTo(group);
 	}
 	
 }

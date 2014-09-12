@@ -78,6 +78,7 @@ public class EclipseExternalProcessHelper {
 	}
 	
 	public ExternalProcessResult strictAwaitTermination(int timeout) throws CoreException {
+		// TODO: need to review this code, for the TimeoutException case.
 		try {
 			return ph.strictAwaitTermination(timeout);
 		} catch (InterruptedException e) {

@@ -34,8 +34,8 @@ public class GoCompilerUpdateJob extends Job {
 		
 		GoCompiler compiler = new GoCompiler();
 		
-		if (compiler.getVersion() != null) {
-			try {
+		try {
+			if (compiler.getVersion() != null) {
 				for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 					if (!project.isOpen()) {
 						continue;
@@ -47,9 +47,9 @@ public class GoCompilerUpdateJob extends Job {
 						}
 					}
 				}
-			} catch (CoreException ce) {
-				Activator.logError(ce);
 			}
+		} catch (CoreException ce) {
+			Activator.logError(ce);
 		}
 		
 		if (dirtyProjects.size() > 0) {

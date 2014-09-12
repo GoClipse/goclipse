@@ -78,7 +78,7 @@ public class MarkerUtilities {
 				resource.deleteMarkers(MARKER_ID, false, IResource.DEPTH_ZERO);
 			}
 		} catch (CoreException ce) {
-			Activator.logInfo(ce);
+			Activator.logError(ce);
 		}
 	}
 
@@ -88,7 +88,7 @@ public class MarkerUtilities {
 				project.deleteMarkers(MARKER_ID, true, IResource.DEPTH_INFINITE);
 			}
 		} catch (CoreException ce) {
-			Activator.logInfo(ce);
+			Activator.logError(ce);
 		}
 	}
 
