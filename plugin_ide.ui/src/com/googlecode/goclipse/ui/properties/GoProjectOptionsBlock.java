@@ -58,7 +58,7 @@ public class GoProjectOptionsBlock extends AbstractComponentExt {
 		try {
 			GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.set(project, buildExtraOptionsField.getFieldValue());
 		} catch (BackingStoreException e) {
-			UIOperationExceptionHandler.handleException(e, "Error saving preferences.");
+			UIOperationExceptionHandler.handleException("Error saving preferences.", e);
 		}
 		return true;
 	}

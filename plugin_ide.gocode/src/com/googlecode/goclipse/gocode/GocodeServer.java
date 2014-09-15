@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
@@ -12,7 +13,6 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-
 import com.googlecode.goclipse.gocode.preferences.GocodePreferences;
 
 /**
@@ -44,9 +44,8 @@ public class GocodeServer {
     Process process;
     try {
     	process = new ProcessBuilder(path.toOSString()).start();
-	} catch (IOException e) {
-		// BM TODO: perhaps report this to user in UI
-		GocodePlugin.logError("Could not start gocode:\n");
+	} catch (IOException ioe) {
+		UIOperationExceptionHandler.handleError("Could not start gocode:", ioe);
 		return;
 	}
     

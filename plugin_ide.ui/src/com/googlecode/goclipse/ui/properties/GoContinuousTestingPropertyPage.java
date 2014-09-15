@@ -111,7 +111,7 @@ public class GoContinuousTestingPropertyPage extends AbstractProjectPropertyPage
 				GoProjectPrefConstants.AUTO_UNIT_TEST_REGEX.set(input, testFilesRegex.getFieldValue());
 				GoProjectPrefConstants.AUTO_UNIT_TEST_MAX_TIME.set(input, testTimeout.getFieldValue());
 			} catch (BackingStoreException e) {
-				UIOperationExceptionHandler.handleException(e, "Error saving project preferences");
+				UIOperationExceptionHandler.handleException("Error saving project preferences", e);
 			}
 		}
 		

@@ -15,6 +15,7 @@
  * Fixed: Redundant build messages are no longer displayed, if no changes occurred in a project since last build.
  * Fixed #68: Ctrl-click hyperlink to open symbol defintion no longer working.
  * Fixed bug: No build commands are printed in the build console when building non-main packages.
+ * Added: error message if gocode server could not be started.
 
 
 ### Goclipse 0.8.0
