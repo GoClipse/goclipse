@@ -1,10 +1,9 @@
 package com.googlecode.goclipse.gocode;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
@@ -13,6 +12,7 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+
 import com.googlecode.goclipse.gocode.preferences.GocodePreferences;
 
 /**
@@ -34,16 +34,18 @@ public class GocodeServer {
     
     GocodePlugin.logInfo("starting gocode server [" + path + "]");
     
-    List<String> args = new ArrayList<String>();
-    args.add("-s");
+    ArrayList2<String> commandLine = new ArrayList2<String>();
+    commandLine.add(path.toOSString());
     
+    commandLine.add("-s");
+
     if (GocodePreferences.USE_TCP) {
-      args.add("-sock=tcp");
+      commandLine.add("-sock=tcp");
     }
     
     Process process;
     try {
-    	process = new ProcessBuilder(path.toOSString()).start();
+    	process = new ProcessBuilder(commandLine).start();
 	} catch (IOException ioe) {
 		UIOperationExceptionHandler.handleError("Could not start gocode:", ioe);
 		return;
@@ -53,8 +55,8 @@ public class GocodeServer {
 	
 	if(GocodePreferences.GOCODE_CONSOLE_ENABLE.get()) {
 		GocodeServerListener.getConsole().writeOperationInfo(">>> Starting gocode server:\n");
-		GocodeServerListener.getConsole().writeOperationInfo("   " + path.toOSString() + " "
-    			+ StringUtil.collToString(args, " ") + "\n");
+		GocodeServerListener.getConsole().writeOperationInfo("   " +
+				StringUtil.collToString(commandLine, " ") + "\n");
 		gocodeProcess.getOutputListenersHelper().addListener(new GocodeServerListener());
 	}
 	
