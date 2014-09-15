@@ -85,24 +85,30 @@ public class GocodeClient {
     
 	EclipseExternalProcessHelper processHelper = GoToolManager.getDefault().
 		startPrivateGoTool(gocodePathStr, arguments, bufferText);
+	
+    if(GocodePreferences.GOCODE_CONSOLE_ENABLE.get()) {
+        GocodeMessageConsole gocodeConsole = GocodeMessageConsole.getConsole();
+    	gocodeConsole.writeOperationInfo(">> Running: " + gocodePathStr + " "
+    			+ StringUtil.collToString(arguments, " ") + "\n");
+    }
+	
 	ExternalProcessResult processResult = processHelper.strictAwaitTermination();
     
 	ByteArrayOutputStreamExt stdout = processResult.getStdOutBytes();
 	ByteArrayOutputStreamExt stderr = processResult.getStdErrBytes();
+	
+	if(processHelper.getProcess().exitValue() != 0) {
+		error = "Error running gocode: " + stdout.toString();
+		GoCore.logError(error);
+	} else {
+		error = null;
+	}
     
-    if(processHelper.getProcess().exitValue() != 0) {
-      error = "Error running gocode: " + stdout.toString();
-      GoCore.logError(error);
-    } else {
-    	error = null;
-    }
-    
-    if(GocodePreferences.GOCODE_CONSOLE.get()) {
+    if(GocodePreferences.GOCODE_CONSOLE_ENABLE.get()) {
         GocodeMessageConsole gocodeConsole = GocodeMessageConsole.getConsole();
         try {
-        	gocodeConsole.clientResponse.write(">> gocodePathStr " + StringUtil.collToString(arguments, " "));
-    		gocodeConsole.clientResponse.write(stdout.toString());
-    		gocodeConsole.clientResponseErr.write(stderr.toString());
+    		gocodeConsole.stdOut.write(stdout.toString());
+    		gocodeConsole.stdErr.write(stderr.toString());
     	} catch (IOException e) {
     		// ignore
     	}

@@ -31,7 +31,7 @@ public class LaunchUtil {
 	 * @return
 	 */
 	public static IPath getExecutablePath(String cmdName, IProject project) {
-		IPath binOutputFolder = GoWorkspace.getBinOutputFolder(project);
+		IPath binOutputFolder = new GoWorkspace(project).getBinFolderRelativePath();
 		return binOutputFolder.append(cmdName + Environment.getExecutableExtension());
 	}
 }

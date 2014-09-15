@@ -201,8 +201,7 @@ public class GoCompiler {
 		
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
-		final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
-		final IPath  binFolder       = GoWorkspace.getBinOutputFolder(project);
+		final IPath  binFolder       = new GoWorkspace(project).getBinFolderRelativePath();
 		
 		final String compilerPath = PreferenceConstants.COMPILER_PATH.get();
 		final String outExtension = (MiscUtil.OS_IS_WINDOWS ? ".exe" : "");
@@ -248,6 +247,7 @@ public class GoCompiler {
 			
 			StreamAsLines sal = new StreamAsLines(processResult);
 			
+			final String pkgPath = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
 			if (sal.getLines().size() > 0) {
 		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
 		    }

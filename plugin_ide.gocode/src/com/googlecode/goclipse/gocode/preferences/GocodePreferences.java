@@ -17,12 +17,12 @@ import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface GocodePreferences {
 
-	public static final BooleanPreference GOCODE_CONSOLE =
-			new BooleanPreference(GocodePlugin.PLUGIN_ID, "gocode_console_enable", true);
 	public static final BooleanPreference AUTO_START_SERVER =
 			new BooleanPreference(GocodePlugin.PLUGIN_ID, "auto_start_server", true);
 	public static final StringPreference GOCODE_PATH =
 			new StringPreference(GocodePlugin.PLUGIN_ID, "gocode_path", "");
+	public static final BooleanPreference GOCODE_CONSOLE_ENABLE =
+			new BooleanPreference(GocodePlugin.PLUGIN_ID, "gocode_console_enable", true);
 			
 	public static final boolean USE_TCP = true;
 	

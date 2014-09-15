@@ -38,9 +38,6 @@ public class GocodePreferencePage extends FieldEditorPreferencePage implements
 			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
 		
 		addField(new BooleanFieldEditor(
-			GocodePreferences.GOCODE_CONSOLE.key, "Enable Gocode diagnostics console", group));
-		
-		addField(new BooleanFieldEditor(
 			GocodePreferences.AUTO_START_SERVER.key, "Start Gocode server automatically", group));
 		
 		SWTFactoryUtil.createLabel(group, SWT.NONE,
@@ -49,6 +46,10 @@ public class GocodePreferencePage extends FieldEditorPreferencePage implements
 				
 		addField(new FileFieldEditor(
 			GocodePreferences.GOCODE_PATH.key, "Gocode path:", group));
+		
+		addField(new BooleanFieldEditor(
+			GocodePreferences.GOCODE_CONSOLE_ENABLE.key,
+			"Enable Gocode log console (requires restart)", group));
 		
 		GridLayoutFactory.fillDefaults().margins(6, 4).numColumns(3).applyTo(group);
 	}

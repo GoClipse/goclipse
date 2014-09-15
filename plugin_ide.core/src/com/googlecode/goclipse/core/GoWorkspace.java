@@ -43,9 +43,4 @@ public class GoWorkspace extends CommonGoLocation {
 		return project.getFolder(getPkgFolderRelativePath()).getLocation();
 	}
 	
-	@Deprecated
-	public static IPath getBinOutputFolder(IProject project) {
-		return new GoWorkspace(project).getBinFolderRelativePath();
-	}
-	
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
@@ -40,16 +41,25 @@ public class GocodeServer {
       args.add("-sock=tcp");
     }
     
+    Process process;
     try {
-    	Process process = new ProcessBuilder(path.toOSString()).start();
-   		gocodeProcess = new ExternalProcessNotifyingHelper(process, true, false);
-   		gocodeProcess.getOutputListenersHelper().addListener(new GocodeServerListener());
-   		gocodeProcess.startReaderThreads();
+    	process = new ProcessBuilder(path.toOSString()).start();
 	} catch (IOException e) {
 		// BM TODO: perhaps report this to user in UI
 		GocodePlugin.logError("Could not start gocode:\n");
 		return;
 	}
+    
+	gocodeProcess = new ExternalProcessNotifyingHelper(process, true, false);
+	
+	if(GocodePreferences.GOCODE_CONSOLE_ENABLE.get()) {
+		GocodeServerListener.getConsole().writeOperationInfo(">>> Starting gocode server:\n");
+		GocodeServerListener.getConsole().writeOperationInfo("   " + path.toOSString() + " "
+    			+ StringUtil.collToString(args, " ") + "\n");
+		gocodeProcess.getOutputListenersHelper().addListener(new GocodeServerListener());
+	}
+	
+	gocodeProcess.startReaderThreads();
     
   }
   

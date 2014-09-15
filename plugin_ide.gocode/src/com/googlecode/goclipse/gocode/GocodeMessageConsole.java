@@ -11,33 +11,41 @@
 package com.googlecode.goclipse.gocode;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.lang.ide.ui.utils.AbstractProcessMessageConsole;
+
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
-public class GocodeMessageConsole extends AbstractProcessMessageConsole {
+public class GocodeMessageConsole extends ToolsConsole {
 	
-	public final IOConsoleOutputStream clientResponse;
-	public final IOConsoleOutputStream clientResponseErr;
-		
+	public final IOConsoleOutputStream serverStdOut;
+	public final IOConsoleOutputStream serverStdErr;
+	
 	public GocodeMessageConsole(String name, ImageDescriptor imageDescriptor) {
-		super(name, imageDescriptor);
+		super(name, imageDescriptor, false);
 
-		clientResponse = newOutputStream();
-		clientResponseErr = newOutputStream();
-		stdErr.setActivateOnWrite(false);
+		serverStdOut = newOutputStream();
+		serverStdErr = newOutputStream();
 		
 		postToUI_initOutputStreamColors();
 	}
 	
 	@Override
+	protected void initialize_ActivateOnErrorMessages() {
+		stdErr.setActivateOnWrite(false);
+	}
+	
+	@Override
 	protected void ui_initStreamColors() {
-		stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
-		clientResponse.setColor(getColorManager().getColor(new RGB(100, 0, 150)));
-		clientResponseErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
+		super.ui_initStreamColors();
+		
+		serverStdOut.setColor(getColorManager().getColor(new RGB(128, 0, 128)));
+		serverStdErr.setColor(getColorManager().getColor(new RGB(255, 0, 200)));
+		serverStdErr.setFontStyle(SWT.BOLD);
 	}
 	
 	public static GocodeMessageConsole getConsole() {

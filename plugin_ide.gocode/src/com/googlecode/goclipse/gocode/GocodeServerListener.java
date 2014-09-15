@@ -12,25 +12,18 @@ package com.googlecode.goclipse.gocode;
 
 import java.io.IOException;
 
-import org.eclipse.core.runtime.Platform;
-
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
 public class GocodeServerListener implements IProcessOutputListener {
 	
-	protected GocodeMessageConsole getConsole() {
+	public static GocodeMessageConsole getConsole() {
 		return GocodeMessageConsole.getConsole();
 	}
 	
 	@Override
 	public void notifyStdOutListeners(byte[] buffer, int offset, int readCount) {
-		if(!Platform.inDebugMode()) {
-			return;
-		}
-				
 		try {
-			getConsole().stdOut.write(buffer, offset, readCount);
+			getConsole().serverStdOut.write(buffer, offset, readCount);
 		} catch (IOException e) {
 			// Ignore, it could simply mean the console page has been closed
 		}
@@ -38,16 +31,8 @@ public class GocodeServerListener implements IProcessOutputListener {
 	
 	@Override
 	public void notifyStdErrListeners(byte[] buffer, int offset, int readCount) {
-		// XXX: this implementation is buggy if the chunk ends in the middle of a multi-byte unicode character
-		String string = new String(buffer, offset, readCount, StringUtil.UTF8);
-		GocodePlugin.logWarning("gocode error:\n" + string);
-		
-		if(!Platform.inDebugMode()) {
-			return;
-		}
-		
 		try {
-			getConsole().stdErr.write(buffer, offset, readCount);
+			getConsole().serverStdErr.write(buffer, offset, readCount);
 		} catch (IOException e) {
 			// Ignore, it could simply mean the console page has been closed
 		}
