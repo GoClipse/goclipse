@@ -52,7 +52,7 @@ public class EclipseAsynchJobAdapter extends Job {
 			job.setThread(Thread.currentThread());
 			runnable.runUnderEclipseJob(job.monitor);
 		} finally {
-			job.done(LangCore.createStatus(null));
+			job.done(LangCore.createOkStatus(null));
 		}
 	}
 	
