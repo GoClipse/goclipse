@@ -33,11 +33,6 @@ public class ListenerListHelper<LISTENER> implements IListenerList<LISTENER> {
 	}
 	
 	@Override
-	public ListenerListHelper<LISTENER> createCopy() {
-		return new ListenerListHelper<LISTENER>(listeners);
-	}
-	
-	@Override
 	public void addListener(LISTENER listener) {
 		ArrayList<LISTENER> newListeners = new ArrayList<>(listeners);
 		newListeners.add(listener);

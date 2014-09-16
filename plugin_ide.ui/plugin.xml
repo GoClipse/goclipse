@@ -76,6 +76,12 @@
 		
 		<page
 			category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_DaemonPreferencePage"
+			id=   "LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_DaemonPreferencePage"
+			name="%LangDaemonToolPrefPage.name">
+		</page>
+		<page
+			category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
 			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
 			id=   "LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
 			name="%LangToolsConsolePrefPage.name">

@@ -39,13 +39,14 @@ public abstract class LangCore extends Plugin {
 	
 	/* ----------------- ----------------- */
 	
-	public static Status createStatus(String message) {
-		return createOkStatus(message);
-	}
-	
 	/** Creates an OK status with given message. */
 	public static Status createOkStatus(String message) {
-		return new Status(IStatus.OK, LangCore.PLUGIN_ID, message);
+		return createStatus(IStatus.OK, message, null);
+	}
+	
+	/** Creates a Status with given status code and message. */
+	public static Status createStatus(int statusCode, String message, Throwable throwable) {
+		return new Status(statusCode, LangCore.PLUGIN_ID, message, throwable);
 	}
 	
 	/** Creates a status describing an error in this plugin, with given message. */
@@ -55,7 +56,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Creates a status describing an error in this plugin, with given message and given throwable. */
 	public static Status createErrorStatus(String message, Throwable throwable) {
-		return new Status(IStatus.ERROR, PLUGIN_ID, message, throwable);
+		return createStatus(IStatus.ERROR, message, throwable);
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */

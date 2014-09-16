@@ -24,27 +24,27 @@ import org.eclipse.swt.widgets.Shell;
 public class UIOperationExceptionHandler {
 	
 	public static void handle(CoreException e, String title, String message) {
-		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		LangCore.logError(e);
+		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		ErrorDialog.openError(shell, title, message, e.getStatus());
-	}
-	
-	public static void handle(RuntimeException e, String title, String message) {
-		doHandleException(title, message, e);
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public static void handleException(Exception e, String errorMessage) {
-		handleException(null, errorMessage, e);
+	public static void handleError(String errorMessage, Throwable exception) {
+		handleException(null, errorMessage, exception);
 	}
 	
-	public static void handleException(String operation, String errorMessage, Exception exception) {
+	public static void handleException(String errorMessage, Throwable exception) {
+		handleException(null, errorMessage, exception);
+	}
+	
+	public static void handleException(String operation, String errorMessage, Throwable exception) {
 		String title = (operation == null) ? "Error" : "Error during " + operation; 
 		doHandleException(title, errorMessage, exception);
 	}
 	
-	public static void doHandleException(String title, String errorMessage, Exception exception) {
+	public static void doHandleException(String title, String errorMessage, Throwable exception) {
 		LangCore.logError(errorMessage, exception);
 		
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();

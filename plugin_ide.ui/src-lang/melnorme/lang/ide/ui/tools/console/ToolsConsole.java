@@ -27,10 +27,22 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 	protected final OwnedObjects owned = new OwnedObjects();
 	
 	public ToolsConsole(String name, ImageDescriptor imageDescriptor) {
+		this(name, imageDescriptor, true);
+	}
+	
+	protected ToolsConsole(String name, ImageDescriptor imageDescriptor, boolean initializeColors) {
 		super(name, imageDescriptor);
 		
 		infoOut = newOutputStream();
 		
+		initialize_ActivateOnErrorMessages();
+		
+		if(initializeColors) {
+			postToUI_initOutputStreamColors();
+		}
+	}
+	
+	protected void initialize_ActivateOnErrorMessages() {
 		owned.add(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.addPrefChangeListener(true, 
 			new IPrefChangeListener() {
 				@Override
@@ -39,8 +51,6 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 				}
 			}
 		));
-		
-		postToUI_initOutputStreamColors();
 	}
 	
 	@Override
