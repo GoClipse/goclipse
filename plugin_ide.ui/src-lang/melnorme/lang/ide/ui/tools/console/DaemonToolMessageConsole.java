@@ -8,10 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.gocode;
+package melnorme.lang.ide.ui.tools.console;
 
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.lang.ide.ui.tools.console.ToolsConsole;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -20,12 +20,12 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
-public class GocodeMessageConsole extends ToolsConsole {
+public class DaemonToolMessageConsole extends ToolsConsole {
 	
 	public final IOConsoleOutputStream serverStdOut;
 	public final IOConsoleOutputStream serverStdErr;
 	
-	public GocodeMessageConsole(String name, ImageDescriptor imageDescriptor) {
+	public DaemonToolMessageConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor, false);
 
 		serverStdOut = newOutputStream();
@@ -48,13 +48,15 @@ public class GocodeMessageConsole extends ToolsConsole {
 		serverStdErr.setFontStyle(SWT.BOLD);
 	}
 	
-	public static GocodeMessageConsole getConsole() {
-		GocodeMessageConsole console = ConsoleUtils.findConsole("gocode log", GocodeMessageConsole.class);
+	public static DaemonToolMessageConsole getConsole() {
+		DaemonToolMessageConsole console = ConsoleUtils.findConsole(
+			LangUIPlugin_Actual.DAEMON_TOOL_ConsoleName, DaemonToolMessageConsole.class);
 		if(console != null) {
 			return console;
 		}
 		// no console, so create a new one
-		GocodeMessageConsole msgConsole = new GocodeMessageConsole("gocode log", null);
+		DaemonToolMessageConsole msgConsole = new DaemonToolMessageConsole(
+			LangUIPlugin_Actual.DAEMON_TOOL_ConsoleName, null);
 		ConsolePlugin.getDefault().getConsoleManager().addConsoles(array(msgConsole));
 		return msgConsole;
 	}

@@ -33,7 +33,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class EclipseExternalProcessHelper {
 	
-	protected static Process startProcess(ProcessBuilder pb) throws CoreException {
+	public static Process startProcess(ProcessBuilder pb) throws CoreException {
 		try {
 			return pb.start();
 		} catch (IOException e) {

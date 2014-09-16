@@ -8,17 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.misc;
+package melnorme.lang.ide.core.operations;
 
-import java.util.List;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
+import org.eclipse.core.runtime.CoreException;
 
-public interface IListenerList<LISTENER> {
-
-	public List<LISTENER> getListeners();
-
-	public void removeListener(LISTENER listener);
-
-	public void addListener(LISTENER listener);
+public interface ILangOperationsListener {
+	
+	void engineDaemonStarted(ProcessBuilder pb, ExternalProcessNotifyingHelper processHelper);
+	
+	void engineDaemonFailedToStart(CoreException ce);
 	
 }

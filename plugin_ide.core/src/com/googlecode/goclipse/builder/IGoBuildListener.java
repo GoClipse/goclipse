@@ -10,11 +10,12 @@
  *******************************************************************************/
 package com.googlecode.goclipse.builder;
 
+import melnorme.lang.ide.core.operations.ILangOperationsListener;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 
 import org.eclipse.core.resources.IProject;
 
-public interface IGoBuildListener extends IExternalProcessListener {
+public interface IGoBuildListener extends IExternalProcessListener, ILangOperationsListener {
 	
 	public void handleBuildStarted(IProject project);
 	

@@ -15,14 +15,14 @@ public class GoUIPlugin extends LangUIPlugin {
 	@Override
 	protected void doCustomStart_finalStage() {
 		toolchainProcessListener = new GoBuilderConsoleListener();
-		GoToolManager.getDefault().addBuildProcessListener(toolchainProcessListener);
+		GoToolManager.getDefault().addListener(toolchainProcessListener);
 		
 		super.doCustomStart_finalStage();
 	}
 	
 	@Override
 	protected void doCustomStop(BundleContext context) {
-		GoToolManager.getDefault().removeBuildProcessListener(toolchainProcessListener);
+		GoToolManager.getDefault().removeListener(toolchainProcessListener);
 	}
 	
 }

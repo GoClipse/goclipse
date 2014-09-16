@@ -8,33 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.builder;
+package melnorme.lang.ide.core.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.util.List;
 
-import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.utilbox.misc.ListenerListHelper;
 
 /**
- * {@link AbstractProcessManager} is basically a factory to create external process tasks
- * that are bound to notify the process listeneners that this manager manages.
+ * Abstract class for running external tools and notifying interested listeners (normally the UI only).
  */
-public abstract class AbstractProcessManager<T extends IExternalProcessListener> {
-	
-	protected final ListenerListHelper<T> processListenersHelper = new ListenerListHelper<>();
-	
-	public void addBuildProcessListener(T processListener) {
-		processListenersHelper.addListener(processListener);
-	}
-	
-	public void removeBuildProcessListener(T processListener) {
-		processListenersHelper.removeListener(processListener);
-	}
-	
-	/* -----------------  ----------------- */
+public abstract class AbstractToolsManager<LISTENER extends ILangOperationsListener> 
+		extends ListenerListHelper<LISTENER> {
 	
 	public ProcessBuilder createDefaultProcessBuilder(List<String> commandLine) {
 		return createDefaultProcessBuilder(commandLine, (File) null);
@@ -50,6 +37,8 @@ public abstract class AbstractProcessManager<T extends IExternalProcessListener>
 		return pb;
 	}
 	
-	protected abstract void setupDefaultEnvironment(ProcessBuilder pb);
-	
+	@SuppressWarnings("unused")
+	protected void setupDefaultEnvironment(ProcessBuilder pb) {
+	}
+
 }

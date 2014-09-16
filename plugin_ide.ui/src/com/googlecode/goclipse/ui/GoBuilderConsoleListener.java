@@ -11,14 +11,19 @@
 package com.googlecode.goclipse.ui;
 
 import java.io.IOException;
+import java.util.List;
 
-import melnorme.lang.ide.ui.tools.console.ToolsConsole;
+import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
+import melnorme.lang.ide.ui.tools.console.DaemonTool_ConsoleListener;
 import melnorme.lang.ide.ui.tools.console.ProcessOutputToConsoleListener;
+import melnorme.lang.ide.ui.tools.console.ToolsConsole;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 
 import com.googlecode.goclipse.builder.IGoBuildListener;
 
@@ -79,6 +84,23 @@ public class GoBuilderConsoleListener extends AbstractToolsConsoleListener imple
 		} catch (IOException consoleIOE) {
 			return;
 		}
+	}
+	
+	@Override
+	public void engineDaemonStarted(ProcessBuilder pb, ExternalProcessNotifyingHelper processHelper) {
+		if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get()) {
+			List<String> commandLine = pb.command();
+			
+			DaemonTool_ConsoleListener.getConsole().writeOperationInfo(">>> Starting gocode server:\n");
+			DaemonTool_ConsoleListener.getConsole().writeOperationInfo("   " +
+					StringUtil.collToString(commandLine, " ") + "\n");
+			processHelper.getOutputListenersHelper().addListener(new DaemonTool_ConsoleListener());
+		}
+	}
+	
+	@Override
+	public void engineDaemonFailedToStart(CoreException ce) {
+		UIOperationExceptionHandler.handleError("Could not start gocode server:", ce.getCause());
 	}
 	
 }

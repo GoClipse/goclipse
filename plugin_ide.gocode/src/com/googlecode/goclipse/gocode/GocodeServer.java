@@ -1,18 +1,18 @@
 package com.googlecode.goclipse.gocode;
 
-import java.io.IOException;
-
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.StartEngineDaemonOperation;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
+import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.gocode.preferences.GocodePreferences;
 
 /**
@@ -43,24 +43,14 @@ public class GocodeServer {
       commandLine.add("-sock=tcp");
     }
     
-    Process process;
+	ProcessBuilder pb = new ProcessBuilder(commandLine);
+    
     try {
-    	process = new ProcessBuilder(commandLine).start();
-	} catch (IOException ioe) {
-		UIOperationExceptionHandler.handleError("Could not start gocode:", ioe);
+    	new StartEngineDaemonOperation(GoToolManager.getDefault(), pb).call();
+	} catch (CoreException ce) {
+		LangCore.logStatus(ce.getStatus());
 		return;
 	}
-    
-	gocodeProcess = new ExternalProcessNotifyingHelper(process, true, false);
-	
-	if(GocodePreferences.GOCODE_CONSOLE_ENABLE.get()) {
-		GocodeServerListener.getConsole().writeOperationInfo(">>> Starting gocode server:\n");
-		GocodeServerListener.getConsole().writeOperationInfo("   " +
-				StringUtil.collToString(commandLine, " ") + "\n");
-		gocodeProcess.getOutputListenersHelper().addListener(new GocodeServerListener());
-	}
-	
-	gocodeProcess.startReaderThreads();
     
   }
   

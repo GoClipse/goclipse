@@ -8,17 +8,18 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.misc;
+package melnorme.lang.ide.core.operations;
 
-import java.util.List;
+import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
+public interface DaemonEnginePreferences {
 
-public interface IListenerList<LISTENER> {
-
-	public List<LISTENER> getListeners();
-
-	public void removeListener(LISTENER listener);
-
-	public void addListener(LISTENER listener);
-	
+	public static final BooleanPreference AUTO_START_SERVER =
+			new BooleanPreference("auto_start_daemon", true);
+	public static final StringPreference DAEMON_PATH =
+			new StringPreference("daemon_path", "");
+	public static final BooleanPreference DAEMON_CONSOLE_ENABLE =
+			new BooleanPreference("daemon_console_enable", true);
+			
 }

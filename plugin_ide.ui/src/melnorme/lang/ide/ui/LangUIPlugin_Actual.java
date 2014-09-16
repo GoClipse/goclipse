@@ -34,4 +34,6 @@ public final class LangUIPlugin_Actual {
 		return new GoAutoEditStrategy(contentType, sourceViewer);
 	}
 	
+	public static final String DAEMON_TOOL_ConsoleName = "gocode log";
+	
 }

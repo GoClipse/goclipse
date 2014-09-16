@@ -10,20 +10,16 @@
  *******************************************************************************/
 package com.googlecode.goclipse.gocode.preferences;
 
-import com.googlecode.goclipse.gocode.GocodePlugin;
-
+import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
-public interface GocodePreferences {
+public interface GocodePreferences extends DaemonEnginePreferences {
 
-	public static final BooleanPreference AUTO_START_SERVER =
-			new BooleanPreference(GocodePlugin.PLUGIN_ID, "auto_start_server", true);
-	public static final StringPreference GOCODE_PATH =
-			new StringPreference(GocodePlugin.PLUGIN_ID, "gocode_path", "");
-	public static final BooleanPreference GOCODE_CONSOLE_ENABLE =
-			new BooleanPreference(GocodePlugin.PLUGIN_ID, "gocode_console_enable", true);
-			
+	public static final BooleanPreference AUTO_START_SERVER = DaemonEnginePreferences.AUTO_START_SERVER;
+	public static final StringPreference GOCODE_PATH = DaemonEnginePreferences.DAEMON_PATH;
+	public static final BooleanPreference GOCODE_CONSOLE_ENABLE = DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE;
+	
 	public static final boolean USE_TCP = true;
 	
 }

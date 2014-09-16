@@ -19,7 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import melnorme.lang.ide.core.operations.AbstractToolsManager;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
+import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -34,7 +36,7 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
  * Manager for running various go tools, usually for build.
  * Note that running such tools under this class will notify Eclipse console listeners.
  */
-public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
+public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 	
 	protected static GoToolManager instance = new GoToolManager();
 	
@@ -43,13 +45,13 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 	}
 	
 	protected void notifyBuildStarting(IProject project) {
-		for (IGoBuildListener processListener : processListenersHelper.getListeners()) {
+		for (IGoBuildListener processListener : getListeners()) {
 			processListener.handleBuildStarted(project);
 		}
 	}
 	
 	protected void notifyBuildTerminated(IProject project) {
-		for (IGoBuildListener processListener : processListenersHelper.getListeners()) {
+		for (IGoBuildListener processListener : getListeners()) {
 			processListener.handleBuildTerminated(project);
 		}
 	}
@@ -60,9 +62,9 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 		return new RunGoToolTask(pb, project, pm);
 	}
 	
-	public class RunGoToolTask extends RunExternalProcessTask<IGoBuildListener> {
+	public class RunGoToolTask extends RunExternalProcessTask<IExternalProcessListener> {
 		public RunGoToolTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor) {
-			super(pb, project, cancelMonitor, processListenersHelper);
+			super(pb, project, cancelMonitor, GoToolManager.this);
 		}
 	}
 	

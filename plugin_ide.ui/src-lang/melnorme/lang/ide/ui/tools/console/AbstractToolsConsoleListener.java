@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.tools.console;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+import melnorme.lang.ide.core.operations.ILangOperationsListener;
 import melnorme.lang.ide.ui.LangOperationConsole_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 
@@ -18,7 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
 
 
-public abstract class AbstractToolsConsoleListener {
+public abstract class AbstractToolsConsoleListener implements ILangOperationsListener {
 	
 	public static LangOperationConsole_Actual recreateMessageConsole(String name, boolean recreateConsole) {
 		LangOperationConsole_Actual console = ConsoleUtils.findConsole(name, LangOperationConsole_Actual.class);

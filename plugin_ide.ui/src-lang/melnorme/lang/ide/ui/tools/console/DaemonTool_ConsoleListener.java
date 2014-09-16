@@ -8,16 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.gocode;
+package melnorme.lang.ide.ui.tools.console;
 
 import java.io.IOException;
 
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
-public class GocodeServerListener implements IProcessOutputListener {
+public class DaemonTool_ConsoleListener implements IProcessOutputListener {
 	
-	public static GocodeMessageConsole getConsole() {
-		return GocodeMessageConsole.getConsole();
+	public static DaemonToolMessageConsole getConsole() {
+		return DaemonToolMessageConsole.getConsole();
 	}
 	
 	@Override
