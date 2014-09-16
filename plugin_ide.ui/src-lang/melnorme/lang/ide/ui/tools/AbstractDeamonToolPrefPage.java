@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.tools;
 
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTFactoryUtil;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -21,15 +22,13 @@ import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Group;
 
-import com.googlecode.goclipse.ui.GoUIPlugin;
-
 public abstract class AbstractDeamonToolPrefPage extends FieldEditorPreferencePage {
 	
 	public AbstractDeamonToolPrefPage() {
 		super(GRID);
 		
 		// Note: we must use the Core preference store, as that's the scope where the preferences are stored.
-		setPreferenceStore(GoUIPlugin.getCorePrefStore());
+		setPreferenceStore(LangUIPlugin.getCorePrefStore());
 	}
 	
 	@Override

@@ -24,6 +24,7 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 
 /**
  * An adapter to {@link ExternalProcessNotifyingHelper} that is customized to run in Eclipse. In particular:
@@ -78,19 +79,17 @@ public class EclipseExternalProcessHelper {
 	}
 	
 	public ExternalProcessResult strictAwaitTermination(int timeout) throws CoreException {
-		// TODO: need to review this code, for the TimeoutException case.
 		try {
 			return ph.strictAwaitTermination(timeout);
 		} catch (InterruptedException e) {
 			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_InterruptedAwaitingTermination, e);
 		} catch (IOException e) {
 			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_ErrorStreamReaderIOException, e);
-		} catch (TimeoutException e) {
-			if(monitor.isCanceled()) {
-				throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_TaskCancelled, null);
-			} else {
-				throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_ProcessTimeout, null);
-			}
+		} catch (TimeoutException te) {
+			String message = monitor.isCanceled() ? 
+					LangCoreMessages.ExternalProcess_TaskCancelled : 
+					LangCoreMessages.ExternalProcess_ProcessTimeout;
+			throw new CoreException(LangCore.createStatus(IStatus.INFO, message, te));
 		}
 	}
 	
