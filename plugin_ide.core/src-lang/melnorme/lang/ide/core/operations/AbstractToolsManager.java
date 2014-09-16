@@ -40,5 +40,5 @@ public abstract class AbstractToolsManager<LISTENER extends ILangOperationsListe
 	@SuppressWarnings("unused")
 	protected void setupDefaultEnvironment(ProcessBuilder pb) {
 	}
-
+	
 }

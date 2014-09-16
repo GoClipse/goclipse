@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,6 @@
  *******************************************************************************/
 package melnorme.utilbox.misc;
 
-import java.util.List;
-
-
-public interface IListenerList<LISTENER> {
-	
-	public List<LISTENER> getListeners();
-	
-	public void removeListener(LISTENER listener);
-	
-	public void addListener(LISTENER listener);
+public class ListenersHelper<LISTENER> extends ListenerListHelper<LISTENER> {
 	
 }
