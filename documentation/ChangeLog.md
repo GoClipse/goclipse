@@ -1,22 +1,21 @@
 ## release ChangeLog
 
-### Goclipse 0.8.x
- * Fix "go fmt" clearing entire file source if Go source was invalid (#60)
+### Goclipse 0.8.1
+ * Updated minimum required CDT version to 8.4. 
+  * For more info on new CDT debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug 
+  * Added Dynamic printf action to Go editor ruler.
+ * Changed Goclipse to be more lenient with CDT versions: it can now be installed with any CDT version except with major version changes. However each DDT release will still have a preferred CDT "major.minor" version, that has been tested against Goclipse. **Using a version other than the recommended one is not guaranteed to work correctly**.
+  * Current recommended CDT version is 8.4.
  * Improved syntax highlighting preferences. Can now customize bold, italic, underline, etc. for each syntax element.
- * More lenient with CDT versions. GoClipse can now be installed with any CDT 8.x.x.
-  * However, there is a small change using GoClipse with a version other than the recommned/tested one will break things. Each GoClipse release will list a recommented/tested CDT version.
- * Updated/tested GoClipse to CDT 4.4. 
-  * Added Dynamic printf ruler action to source editor.
-  * For more info on these new CDT 4.4 debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug
  * Added build console preference page. 
-  * Can now customize build console text colors.
-  * Activate console on error message option.
- * Added #45 - Allow specifying extra options to 'go build' (available in project properties). They default to `-gcflags "-N -l"`
- * Fixed: Redundant build messages are no longer displayed, if no changes occurred in a project since last build.
+  * Can now customize build console text colors, and "Activate console on error messages" option.
+ * Added #45: Allow specifying extra options to 'go build' (available in project properties). They default to `-gcflags "-N -l"`
+ * Added: error message if `gocode` server could not be started.
+ * Fixed #60: "go fmt" clearing entire file source if Go source was invalid.
  * Fixed #68: Ctrl-click hyperlink to open symbol defintion no longer working.
- * Fixed bug: No build commands are printed in the build console when building non-main packages.
- * Added: error message if gocode server could not be started.
-
+ * Fixed: Redundant build messages being displayed, even if no changes occurred in a project since last build.
+ * Fixed: No build commands are printed in the build console when building non-main packages.
+ 
 
 ### Goclipse 0.8.0
  * Added debugging support using CDT's integration with GDB.
