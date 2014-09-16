@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### Goclipse 0.8.1
+ * Changed the Eclipse update site URL to: http://goclipse.github.io/releases/
  * Updated minimum required CDT version to 8.4. 
   * For more info on new CDT debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug 
   * Added Dynamic printf action to Go editor ruler.
