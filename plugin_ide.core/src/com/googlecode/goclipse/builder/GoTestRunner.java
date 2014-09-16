@@ -119,7 +119,7 @@ public class GoTestRunner {
                 
             try {
             	RunGoToolTask runTestsTask = GoToolManager.getDefault().
-            			createRunProcessTask(testProcessBuilder, null, new NullProgressMonitor());
+            			createRunToolTask(testProcessBuilder, null, new NullProgressMonitor());
                 
                 ExternalProcessResult processResult = runTestsTask.startProcessAndAwait();
                 

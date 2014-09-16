@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.builder;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.lang.ide.core.utils.ResourceUtils.getLocation;
 import static melnorme.utilbox.core.CoreUtil.listFrom;
 
 import java.io.File;
@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -26,9 +27,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 
-import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -57,8 +56,8 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 	
 	/* ----------------- ----------------- */
 	
-	public RunGoToolTask createRunProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor monitor) {
-		return new RunGoToolTask(pb, project, monitor);
+	public RunGoToolTask createRunToolTask(ProcessBuilder pb, IProject project, IProgressMonitor pm) {
+		return new RunGoToolTask(pb, project, pm);
 	}
 	
 	public class RunGoToolTask extends RunExternalProcessTask<IGoBuildListener> {
@@ -72,47 +71,48 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 	public static Map<String, String> getGoToolEnvironment() {
 		Map<String, String> goEnv = new HashMap<String, String>();
 		
-		String goroot = PreferenceConstants.GO_ROOT.get();
-		String goos   = PreferenceConstants.GO_OS.get();
-		String goarch = PreferenceConstants.GO_ARCH.get();
-		String gopath = PreferenceConstants.GO_PATH.get();
-		
-		goEnv.put(GoConstants.GOROOT, goroot);
-		goEnv.put(GoConstants.GOOS,   goos);
-		goEnv.put(GoConstants.GOARCH, goarch);
-		goEnv.put(GoConstants.GOPATH, gopath);
+		goEnv.put(GoConstants.GOROOT, PreferenceConstants.GO_ROOT.get());
+		goEnv.put(GoConstants.GOOS,   PreferenceConstants.GO_OS.get());
+		goEnv.put(GoConstants.GOARCH, PreferenceConstants.GO_ARCH.get());
+		goEnv.put(GoConstants.GOPATH, PreferenceConstants.GO_PATH.get());
 		
 		return goEnv;
 	}
 	
-	public RunGoToolTask newRunGoToolTask_defaultEnv(IProject project, IProgressMonitor pmonitor, ProcessBuilder pb) {
+	@Override
+	protected void setupDefaultEnvironment(ProcessBuilder pb) {
 		pb.environment().putAll(GoToolManager.getGoToolEnvironment());
-		return new RunGoToolTask(pb, project, pmonitor);
 	}
 	
-	public ProcessBuilder prepareBuilder(List<String> commandLine) {
-		assertTrue(commandLine.size() > 0);
-		String goCommand = commandLine.get(0);
-		ProcessBuilder pb = new ProcessBuilder(commandLine);
-		GoToolManager.setWorkingFolder(pb, goCommand);
-		pb.environment().putAll(GoToolManager.getGoToolEnvironment());
-		return pb;
-	}
-	
-	public static void setWorkingFolder(ProcessBuilder pBuilder, String command) {
-		String workingFolder = Path.fromOSString(command).removeLastSegments(1).toOSString();
-		if (workingFolder != null && workingFolder.length() > 0) {
-			pBuilder.directory(new File(workingFolder));
-		}
-	}
+	/* -----------------  ----------------- */
 
 	public ExternalProcessResult runGoTool(String goCommand, IProject project, IProgressMonitor pm,
 			String processInput) throws CoreException {
-		ProcessBuilder pb = prepareBuilder(listFrom(goCommand));
+		ProcessBuilder pb = createDefaultProcessBuilder(listFrom(goCommand), getLocation(project));
 		RunGoToolTask runTask = new RunGoToolTask(pb, project, pm);
 		EclipseExternalProcessHelper processHelper = runTask.startProcess();
 		processHelper.writeInput(processInput);
 		return processHelper.strictAwaitTermination();
+	}
+	
+	public ExternalProcessResult runBuildTool(IProject project, IProgressMonitor pm, 
+			File workingDir, List<String> commandLine, String goPath) throws CoreException {
+		
+		ProcessBuilder pb = createDefaultProcessBuilder(commandLine, workingDir); 
+		
+		if(goPath != null) {
+			pb.environment().put(GoConstants.GOPATH, goPath);
+		}
+		
+		return runBuildTool(project, pm, pb);
+	}
+	
+	public ExternalProcessResult runBuildTool(final IProject project, IProgressMonitor pm,
+			ProcessBuilder pb) throws CoreException {
+		// Note: project can be null
+		RunGoToolTask processTask = createRunToolTask(pb, project, pm);
+		
+		return processTask.startProcess().strictAwaitTermination();
 	}
 	
 	/** Starts an external go command without notifying any listeners. */
@@ -120,33 +120,12 @@ public class GoToolManager extends AbstractProcessManager<IGoBuildListener> {
 			throws CoreException {
 		ArrayList<String> commandLine = new ArrayList<>(args);
 		commandLine.add(0, goCommand);
-		ProcessBuilder pb = prepareBuilder(commandLine);
+		ProcessBuilder pb = createDefaultProcessBuilder(commandLine);
 		
 		NullProgressMonitor pm = new NullProgressMonitor();
 		EclipseExternalProcessHelper processHelper = new EclipseExternalProcessHelper(pb, true, pm);
 		processHelper.writeInput(processInput);
 		return processHelper;
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static ExternalProcessResult runBuildTool(final IProject project, IProgressMonitor pmonitor, 
-			File workingDir, List<String> cmd, String goPath) throws CoreException {
-		
-		ProcessBuilder pb = new ProcessBuilder(cmd).directory(workingDir);
-		
-		pb.environment().put(GoConstants.GOROOT, Environment.INSTANCE.getGoRoot(project));
-		pb.environment().put(GoConstants.GOPATH, goPath);
-		
-		return runBuildTool(project, pmonitor, pb);
-	}
-	
-	public static ExternalProcessResult runBuildTool(final IProject project, IProgressMonitor pmonitor,
-			ProcessBuilder pb) throws CoreException {
-		// Note: project can be null
-		RunGoToolTask processTask = getDefault().createRunProcessTask(pb, project, pmonitor);
-		
-		return processTask.startProcess().strictAwaitTermination();
 	}
 	
 }

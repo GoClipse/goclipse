@@ -13,6 +13,7 @@ package melnorme.lang.ide.core.utils;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
@@ -27,6 +28,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public class ResourceUtils {
@@ -124,6 +126,15 @@ public class ResourceUtils {
 		} catch (CoreException e) {
 			// Ignore
 		}
+	}
+	
+	public static File getLocation(IProject project) {
+		if(project == null)
+			return null;
+		IPath location = project.getLocation();
+		if(location == null)
+			return null;
+		return location.toFile();
 	}
 	
 }

@@ -105,7 +105,7 @@ public class GoCompiler {
 			
 			monitor.worked(3);
 			
-			ExternalProcessResult processResult = GoToolManager.runBuildTool(project, monitor, 
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, monitor, 
 				target.getParentFile(), cmd, goPath);
 			
 			StreamAsLines sal = new StreamAsLines(processResult);
@@ -239,7 +239,7 @@ public class GoCompiler {
 			
 			String goPath = buildGoPath(project, projectLocation, false);
 			
-			ExternalProcessResult processResult = GoToolManager.runBuildTool(project, pmonitor, 
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, pmonitor, 
 				target.getParentFile(), cmd, goPath);
 			
 			refreshProject(project, pmonitor);
@@ -279,7 +279,7 @@ public class GoCompiler {
 
 			File file = new File(target.getLocation().toOSString());
 			
-			ExternalProcessResult processResult = GoToolManager.runBuildTool(project, pmonitor, 
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, pmonitor, 
 				file, cmd, goPath);
 
 
@@ -341,7 +341,7 @@ public class GoCompiler {
 			
 			String goroot = Environment.INSTANCE.getGoRoot(project);
 			
-			ExternalProcessResult processResult = GoToolManager.runBuildTool(project, pmonitor, 
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, pmonitor, 
 				workingDir, cmd, goPath);
 
 		    refreshProject(project, pmonitor);
@@ -377,7 +377,7 @@ public class GoCompiler {
 
 			String  goPath  = buildGoPath(project, projectLocation, false);
 			
-			ExternalProcessResult processResult = GoToolManager.runBuildTool(project, pmonitor, 
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, pmonitor, 
 				project.getLocation().toFile(), cmd, goPath);
 			
 			refreshProject(project, pmonitor);
@@ -600,7 +600,8 @@ public class GoCompiler {
 
 			ProcessBuilder pb = new ProcessBuilder(cmd).directory(null);
 			
-			ExternalProcessResult processResult = GoToolManager.runBuildTool(null, new NullProgressMonitor(), pb);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(
+				null, new NullProgressMonitor(), pb);
 			
 			StreamAsLines output = new StreamAsLines(processResult);
 
