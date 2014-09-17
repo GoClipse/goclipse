@@ -10,7 +10,7 @@
  *******************************************************************************/
  package melnorme.lang.ide.ui;
 
-import com.googlecode.goclipse.ui.GoBuilderConsoleListener.GoBuildConsole;
+import com.googlecode.goclipse.ui.GoOperationsConsoleListener.GoBuildConsole;
 
 
 public class LangOperationConsole_Actual extends GoBuildConsole {

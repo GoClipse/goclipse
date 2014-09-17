@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.googlecode.goclipse.builder.IGoBuildListener;
 
-public class GoBuilderConsoleListener extends AbstractToolsConsoleListener implements IGoBuildListener {
+public class GoOperationsConsoleListener extends AbstractToolsConsoleListener implements IGoBuildListener {
 	
 	@Override
 	protected String getOperationConsoleName(IProject project) {

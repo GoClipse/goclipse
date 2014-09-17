@@ -10,19 +10,19 @@ public class GoUIPlugin extends LangUIPlugin {
 	
 	public static final String PLUGIN_ID = "com.googlecode.goclipse.ui";
 	
-	private GoBuilderConsoleListener toolchainProcessListener;
+	private GoOperationsConsoleListener operationsListener;
 	
 	@Override
 	protected void doCustomStart_finalStage() {
-		toolchainProcessListener = new GoBuilderConsoleListener();
-		GoToolManager.getDefault().addListener(toolchainProcessListener);
+		operationsListener = new GoOperationsConsoleListener();
+		GoToolManager.getDefault().addListener(operationsListener);
 		
 		super.doCustomStart_finalStage();
 	}
 	
 	@Override
 	protected void doCustomStop(BundleContext context) {
-		GoToolManager.getDefault().removeListener(toolchainProcessListener);
+		GoToolManager.getDefault().removeListener(operationsListener);
 	}
 	
 }
