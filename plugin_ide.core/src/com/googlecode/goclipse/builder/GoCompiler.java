@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-import melnorme.utilbox.collections.ArrayList;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -73,8 +72,8 @@ public class GoCompiler {
 			} catch (IOException ioe) {
 				throw GoCore.createCoreException("Error during getImports", ioe);
 			}
-			List<String> cmd        = new ArrayList<String>();
-			List<Import> extImports = new ArrayList<Import>();
+			List<String> cmd        = new ArrayList2<String>();
+			List<Import> extImports = new ArrayList2<Import>();
 			
 			monitor.beginTask("Importing external libraries for "+file.getName()+":", 5);
 			
@@ -208,7 +207,7 @@ public class GoCompiler {
 
 			// the path exist to find the cc
 			String   outPath = null;
-			ArrayList<String> cmd = new ArrayList<>();
+			ArrayList2<String> cmd = new ArrayList2<>();
 			
 			MarkerUtilities.deleteFileMarkers(file);
 			if(Environment.INSTANCE.isCmdSrcFolder(project, (IFolder)file.getParent())){
@@ -265,7 +264,7 @@ public class GoCompiler {
 		
 		final String compilerPath = PreferenceConstants.COMPILER_PATH.get();
 
-			ArrayList<String> cmd = new ArrayList<>();
+			ArrayList2<String> cmd = new ArrayList2<>();
 			
 			MarkerUtilities.deleteFileMarkers(target);
 			cmd.addElements(
@@ -331,7 +330,7 @@ public class GoCompiler {
 		
 			String  goPath  = buildGoPath(project, projectLocation, false);
 			
-			ArrayList2<String> cmd = new ArrayList<String>(
+			ArrayList2<String> cmd = new ArrayList2<String>(
 				compilerPath,
 				GoConstants.GO_BUILD_COMMAND,
 				GoConstants.COMPILER_OPTION_O,
@@ -436,7 +435,7 @@ public class GoCompiler {
 	 * @return
 	 */
 	private boolean dependenciesExist(IProject project, String[] dependencies) {
-		ArrayList<String> sourceDependencies = new ArrayList<String>();
+		ArrayList2<String> sourceDependencies = new ArrayList2<String>();
 		for (String dependency : dependencies) {
 			if (dependency.endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)) {
 				sourceDependencies.add(dependency);

@@ -40,8 +40,17 @@ public class ArrayList2<E> extends ArrayList<E> {
 		addElements(elements);
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@SafeVarargs
 	public final ArrayList2<E> addElements(E... elements) {
+		for (E element : elements) {
+			add(element);
+		}
+		return this;
+	}
+	
+	public final ArrayList2<E> addElements(Collection<? extends E> elements) {
 		for (E element : elements) {
 			add(element);
 		}

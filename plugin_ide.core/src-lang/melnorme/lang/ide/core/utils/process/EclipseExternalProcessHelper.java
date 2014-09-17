@@ -50,8 +50,7 @@ public class EclipseExternalProcessHelper {
 		this(startProcess(pb), startReaders, monitor);
 	}
 	
-	public EclipseExternalProcessHelper(Process process, boolean startReaders, final IProgressMonitor monitor)
-			throws CoreException {
+	public EclipseExternalProcessHelper(Process process, boolean startReaders, final IProgressMonitor monitor) {
 		this.monitor = assertNotNull(monitor);
 		this.ph = new ExternalProcessNotifyingHelper(process, true, startReaders) {
 			@Override
@@ -67,6 +66,10 @@ public class EclipseExternalProcessHelper {
 	}
 	
 	public ExternalProcessNotifyingHelper getNotifyingProcessHelper() {
+		return ph;
+	}
+	
+	public ExternalProcessNotifyingHelper getProcessHelper() {
 		return ph;
 	}
 	

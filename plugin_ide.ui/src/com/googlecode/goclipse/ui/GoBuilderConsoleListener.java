@@ -15,10 +15,10 @@ import java.util.List;
 
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
-import melnorme.lang.ide.ui.tools.console.DaemonTool_ConsoleListener;
+import melnorme.lang.ide.ui.tools.console.ConsoleOuputProcessListener;
+import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
 import melnorme.lang.ide.ui.tools.console.ProcessOutputToConsoleListener;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
@@ -87,20 +87,50 @@ public class GoBuilderConsoleListener extends AbstractToolsConsoleListener imple
 	}
 	
 	@Override
-	public void engineDaemonStarted(ProcessBuilder pb, ExternalProcessNotifyingHelper processHelper) {
-		if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get()) {
+	public void engineDaemonStart(ProcessBuilder pb, CoreException ce, 
+			ExternalProcessNotifyingHelper processHelper) {
+		
+		DaemonToolMessageConsole console = DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() ? 
+				DaemonToolMessageConsole.getConsole() : null;
+				
+		if(console != null) {
 			List<String> commandLine = pb.command();
-			
-			DaemonTool_ConsoleListener.getConsole().writeOperationInfo(">>> Starting gocode server:\n");
-			DaemonTool_ConsoleListener.getConsole().writeOperationInfo("   " +
-					StringUtil.collToString(commandLine, " ") + "\n");
-			processHelper.getOutputListenersHelper().addListener(new DaemonTool_ConsoleListener());
+			console.writeOperationInfo("##########  Starting gocode server:  ##########\n");
+			console.writeOperationInfo("   " + StringUtil.collToString(commandLine, " ") + "\n");
+		}
+		
+		if(ce != null) {
+			handleError("Could not start gocode server.", ce);
+			return;
+		} 
+		
+		if(console != null) {
+			processHelper.getOutputListenersHelper().addListener(
+				new ConsoleOuputProcessListener(console.serverStdOut, console.serverStdErr));
 		}
 	}
 	
 	@Override
-	public void engineDaemonFailedToStart(CoreException ce) {
-		UIOperationExceptionHandler.handleError("Could not start gocode server:", ce.getCause());
+	public void engineClientToolStart(ProcessBuilder pb, CoreException ce,
+			ExternalProcessNotifyingHelper processHelper) {
+		
+		DaemonToolMessageConsole console = DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() ?
+				DaemonToolMessageConsole.getConsole() : null;
+				
+		if(console != null) {
+			List<String> commandLine = pb.command();
+			console.writeOperationInfo(">> Running: " + StringUtil.collToString(commandLine, " ") + "\n");
+		}
+		
+		if(ce != null) {
+			handleError("Could not start gocode client.", ce);
+			return;
+		}
+		
+		if(console != null) {
+			processHelper.getOutputListenersHelper().addListener(
+				new ConsoleOuputProcessListener(console.stdOut, console.serverStdErr));
+		}
 	}
 	
 }

@@ -21,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.ExceptionTrackingRunnable;
 import melnorme.utilbox.misc.StreamUtil;
+import melnorme.utilbox.misc.StringUtil;
 
 /**
  * Helper for running external processes.
@@ -153,6 +154,10 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	}
 	
 	/* ----------------- writing helpers ----------------- */
+	
+	public void writeInput(String input) throws IOException {
+		writeInput(input, StringUtil.UTF8);
+	}
 	
 	public void writeInput(String input, Charset charset) throws IOException {
 		if(input == null)

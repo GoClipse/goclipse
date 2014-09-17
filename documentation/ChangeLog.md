@@ -1,5 +1,8 @@
 ## release ChangeLog
 
+### Goclipse 0.8.x
+ * Added gocode process argument information to gocode log console.
+
 ### Goclipse 0.8.1
  * Changed the Eclipse update site URL to: http://goclipse.github.io/releases/
  * Updated minimum required CDT version to 8.4. 

@@ -35,17 +35,34 @@ public class UIOperationExceptionHandler {
 		handleException(null, errorMessage, exception);
 	}
 	
+	@Deprecated
 	public static void handleException(String errorMessage, Throwable exception) {
 		handleException(null, errorMessage, exception);
 	}
 	
+	@Deprecated
 	public static void handleException(String operation, String errorMessage, Throwable exception) {
 		String title = (operation == null) ? "Error" : "Error during " + operation; 
 		doHandleException(title, errorMessage, exception);
 	}
 	
+	@Deprecated
 	public static void doHandleException(String title, String errorMessage, Throwable exception) {
-		LangCore.logError(errorMessage, exception);
+		handleError(true, title, errorMessage, exception);
+	}
+	
+	public static void doHandleError(String title, String errorMessage, Throwable exception) {
+		handleError(true, title, errorMessage, exception);
+	}
+	
+	public static void handleError(boolean logError, String errorMessage, Throwable exception) {
+		handleError(logError, "Error: " + errorMessage, null, exception);
+	}
+	
+	public static void handleError(boolean logError, String title, String dialogMessage, Throwable exception) {
+		if(logError) {
+			LangCore.logError(dialogMessage, exception);
+		}
 		
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		
@@ -53,8 +70,9 @@ public class UIOperationExceptionHandler {
 		if(reasonMessage == null) {
 			reasonMessage = exception.getClass().getSimpleName();
 		}
+		
 		Status status = LangCore.createErrorStatus(reasonMessage, exception);
-		ErrorDialog.openError(shell, title, errorMessage, status);
+		ErrorDialog.openError(shell, title, dialogMessage, status);
 	}
 	
 }

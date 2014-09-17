@@ -14,7 +14,6 @@ import static melnorme.lang.ide.core.utils.ResourceUtils.getLocation;
 import static melnorme.utilbox.core.CoreUtil.listFrom;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,6 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
@@ -115,19 +113,6 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 		RunGoToolTask processTask = createRunToolTask(pb, project, pm);
 		
 		return processTask.startProcess().strictAwaitTermination();
-	}
-	
-	/** Starts an external go command without notifying any listeners. */
-	public EclipseExternalProcessHelper startPrivateGoTool(String goCommand, List<String> args, String processInput)
-			throws CoreException {
-		ArrayList<String> commandLine = new ArrayList<>(args);
-		commandLine.add(0, goCommand);
-		ProcessBuilder pb = createDefaultProcessBuilder(commandLine);
-		
-		NullProgressMonitor pm = new NullProgressMonitor();
-		EclipseExternalProcessHelper processHelper = new EclipseExternalProcessHelper(pb, true, pm);
-		processHelper.writeInput(processInput);
-		return processHelper;
 	}
 	
 }

@@ -14,8 +14,11 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.core.operations.ILangOperationsListener;
 import melnorme.lang.ide.ui.LangOperationConsole_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.util.swt.SWTUtil;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.console.ConsolePlugin;
 
 
@@ -61,6 +64,15 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 	
 	protected static LangOperationConsole_Actual createConsole(String name) {
 		return new LangOperationConsole_Actual(name);
+	}
+	
+	protected void handleError(final String errorMessage, final CoreException ce) {
+		SWTUtil.runInSWTThread(new Runnable() {
+			@Override
+			public void run() {
+				UIOperationExceptionHandler.handleError(true, errorMessage, ce.getCause());
+			}
+		}); 
 	}
 	
 }

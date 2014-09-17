@@ -12,18 +12,24 @@ package melnorme.lang.ide.ui.tools.console;
 
 import java.io.IOException;
 
+import org.eclipse.ui.console.IOConsoleOutputStream;
+
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
-public class DaemonTool_ConsoleListener implements IProcessOutputListener {
+public class ConsoleOuputProcessListener implements IProcessOutputListener {
 	
-	public static DaemonToolMessageConsole getConsole() {
-		return DaemonToolMessageConsole.getConsole();
+	protected final IOConsoleOutputStream processStdOut;
+	protected final IOConsoleOutputStream processStdErr;
+	
+	public ConsoleOuputProcessListener(IOConsoleOutputStream processStdOut, IOConsoleOutputStream processStdErr) {
+		this.processStdOut = processStdOut;
+		this.processStdErr = processStdErr;
 	}
 	
 	@Override
 	public void notifyStdOutListeners(byte[] buffer, int offset, int readCount) {
 		try {
-			getConsole().serverStdOut.write(buffer, offset, readCount);
+			processStdOut.write(buffer, offset, readCount);
 		} catch (IOException e) {
 			// Ignore, it could simply mean the console page has been closed
 		}
@@ -32,7 +38,7 @@ public class DaemonTool_ConsoleListener implements IProcessOutputListener {
 	@Override
 	public void notifyStdErrListeners(byte[] buffer, int offset, int readCount) {
 		try {
-			getConsole().serverStdErr.write(buffer, offset, readCount);
+			processStdErr.write(buffer, offset, readCount);
 		} catch (IOException e) {
 			// Ignore, it could simply mean the console page has been closed
 		}

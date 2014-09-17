@@ -2,20 +2,18 @@ package com.googlecode.goclipse.gocode;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
-import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
-import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.builder.StreamAsLines;
@@ -59,7 +57,7 @@ public class GocodeClient {
     String gocodePathStr = gocodePath.toOSString();
 
     // set the package path for the current project
-    List<String> arguments = new LinkedList<String>();
+    ArrayList2<String> arguments = new ArrayList2<>();
     if (GocodePreferences.USE_TCP) {
       arguments.add("-sock=tcp");
     }
@@ -74,9 +72,11 @@ public class GocodeClient {
       arguments.add(goRoot.getGoPackagesLocation().toString() + File.pathSeparatorChar + projectPath.toOSString());
     }
     
-	GoToolManager.getDefault().startPrivateGoTool(gocodePathStr, arguments, null).strictAwaitTermination(100);
+    // TODO: we should run this outside the UI thread, with an actual monitor to allow cancelling!
+    IProgressMonitor pm = new NullProgressMonitor();
+	GoToolManager.getDefault().runEngineClientTool(gocodePathStr, arguments, null, pm);
 
-    arguments = new LinkedList<String>();
+    arguments = new ArrayList2<String>();
     if (GocodePreferences.USE_TCP) {
       arguments.add("-sock=tcp");
     }
@@ -85,36 +85,17 @@ public class GocodeClient {
     arguments.add(fileName);
     arguments.add("c" + offset);
     
-	EclipseExternalProcessHelper processHelper = GoToolManager.getDefault().
-		startPrivateGoTool(gocodePathStr, arguments, bufferText);
-	
-    if(GocodePreferences.GOCODE_CONSOLE_ENABLE.get()) {
-        DaemonToolMessageConsole gocodeConsole = DaemonToolMessageConsole.getConsole();
-    	gocodeConsole.writeOperationInfo(">> Running: " + gocodePathStr + " "
-    			+ StringUtil.collToString(arguments, " ") + "\n");
-    }
-	
-	ExternalProcessResult processResult = processHelper.strictAwaitTermination();
+	ExternalProcessResult processResult = GoToolManager.getDefault().runEngineClientTool(
+		gocodePathStr, arguments, bufferText, pm);
     
 	ByteArrayOutputStreamExt stdout = processResult.getStdOutBytes();
-	ByteArrayOutputStreamExt stderr = processResult.getStdErrBytes();
 	
-	if(processHelper.getProcess().exitValue() != 0) {
+	if(processResult.exitValue != 0) {
 		error = "Error running gocode: " + stdout.toString();
 		GoCore.logError(error);
 	} else {
 		error = null;
 	}
-    
-    if(GocodePreferences.GOCODE_CONSOLE_ENABLE.get()) {
-        DaemonToolMessageConsole gocodeConsole = DaemonToolMessageConsole.getConsole();
-        try {
-    		gocodeConsole.stdOut.write(stdout.toString());
-    		gocodeConsole.stdErr.write(stderr.toString());
-    	} catch (IOException e) {
-    		// ignore
-    	}
-    }
     
     StreamAsLines output = new StreamAsLines();
     output.process(new ByteArrayInputStream(stdout.toByteArray()));
