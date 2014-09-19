@@ -44,7 +44,16 @@ public class WorkbenchUtils {
 			return null;
 		return window.getActivePage();
 	}
-
+	
+	/** @return the active editor for the active workbench window, if any. */
+	public static IEditorPart getActiveEditor() {
+		IWorkbenchPage page = getActivePage();
+		if (page != null) {
+			return page.getActiveEditor();
+		}
+		return null;
+	}
+	
 	/**
 	 * Attempts to guess the most relevant resource for the current workbench state
 	 */
