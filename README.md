@@ -29,7 +29,7 @@ A release is a web site with an Eclipse p2 update site. The website may contain 
  1. Create and push a new release tag for the current release commit. 
  1. Go to the Github releases page and edit the newly present release. Add the corresponding ([ChangeLog.md](documentation/ChangeLog.md)) entries to the release notes. 
  1. Locally, run `ant -f releng/ CreateProjectSite`. This last step will prepare the project web site under `bin-maven/ProjectSite`.
- 1. To actually publish the project site, run `ant -f releng/ PublishProjectSite -DprojectSiteGitURL=https://github.com/GoClipse/goclipse.github.io.git`. What happens here is that the whole project site will be pushed into a Git repository, to then be served in some way (for example Github Pages).
+ 1. To actually publish the project site, run `ant -f releng/ PublishProjectSite -DprojectSiteGitURL=<some git URL>`. What happens here is that the whole project site will be pushed into a Git repository, to then be served in some way (for example Github Pages). If `projectSiteGitURL` is not specified, the default value in releng-build.properties will be used.
    * For more info on the Release Engineering script, run `ant -f releng/`, this will print the help.
  1. A branch or tag named `latest` should also be created in Github, pointing to the latest release commit. The previous `latest` tag can be deleted/overwritten. The documentation pages use this tag/branch in their links.
 

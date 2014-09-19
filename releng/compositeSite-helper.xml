@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="project" >
 
-	<property name="repo.name" value="MMRNMHRM Software Site" />
+	<property name="repo.name" value="Goclipse Site" />
 	<property name="repo.dir" value="UpdateSite-skeleton" />
 
 <!-- 
