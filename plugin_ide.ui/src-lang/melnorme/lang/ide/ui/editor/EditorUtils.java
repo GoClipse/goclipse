@@ -10,10 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor;
 
+import static melnorme.utilbox.core.CoreUtil.tryCast;
+
 import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.ast.SourceRange;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -21,13 +26,35 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IReusableEditor;
+import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.IURIEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class EditorUtils {
+	
+	public static TextSelection getSelection(ITextEditor editor) {
+		return (TextSelection) editor.getSelectionProvider().getSelection();
+	}
+	
+	public static void setEditorSelection(ITextEditor textEditor, SourceRange sourceRange) {
+		EditorUtils.setEditorSelection(textEditor, sourceRange.getOffset(), sourceRange.getLength()); 
+	}
+	
+	public static void setEditorSelection(ITextEditor textEditor, int offset, int length) {
+		textEditor.getSelectionProvider().setSelection(new TextSelection(offset, length)); 
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public static IProject getAssociatedProject(IEditorInput input) {
 		IResource resource = getAssociatedResource(input);
@@ -78,4 +105,66 @@ public class EditorUtils {
 		}
 	}
 	
+	public static Path getFilePathFromEditorInput(IEditorInput editorInput) {
+		IURIEditorInput uriEditorInput;
+		if(editorInput instanceof IURIEditorInput) {
+			uriEditorInput = (IURIEditorInput) editorInput;
+		} else {
+			uriEditorInput = (IURIEditorInput) editorInput.getAdapter(IURIEditorInput.class);
+		}
+		if(uriEditorInput != null) {
+			try {
+				return Paths.get(uriEditorInput.getURI());
+			} catch (Exception e) {
+			}
+		}
+		if(editorInput instanceof IStorageEditorInput) {
+			IStorageEditorInput storageEditorInput = (IStorageEditorInput) editorInput;
+			try {
+				IPath fullPath = storageEditorInput.getStorage().getFullPath();
+				if(fullPath != null) {
+					return fullPath.toFile().toPath();
+				}
+			} catch (CoreException e) {
+				LangCore.logError(e);
+			}
+		}
+		
+		return null;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING_EDITORS, NEVER }
+
+	public static void openEditor(ITextEditor currentEditor, String editorId, 
+			IEditorInput newInput, SourceRange sourceRange, OpenNewEditorMode openNewEditor) throws CoreException {
+		if(sourceRange == null) {
+			return;
+		}
+		
+		IWorkbenchPage page = currentEditor.getEditorSite().getWorkbenchWindow().getActivePage();
+		
+		if(openNewEditor == OpenNewEditorMode.NEVER) {
+			if(currentEditor.getEditorInput().equals(newInput)) {
+				setEditorSelection(currentEditor, sourceRange);
+			} else if(currentEditor instanceof IReusableEditor) {
+				IReusableEditor reusableEditor = (IReusableEditor) currentEditor;
+				reusableEditor.setInput(newInput);
+				setEditorSelection(currentEditor, sourceRange);
+			} else {
+				openEditor(currentEditor, editorId, newInput, sourceRange, OpenNewEditorMode.ALWAYS);
+			}
+		} else {
+			int matchFlags = openNewEditor == OpenNewEditorMode.ALWAYS ? 
+				IWorkbenchPage.MATCH_NONE : IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID;
+			IEditorPart editor = page.openEditor(newInput, editorId, true, matchFlags);
+			ITextEditor targetEditor = tryCast(editor, ITextEditor.class);
+			if(targetEditor == null) {
+				throw LangCore.createCoreException("Not a text editor", null);
+			}
+			setEditorSelection(targetEditor, sourceRange);
+		}
+	}
+
 }
