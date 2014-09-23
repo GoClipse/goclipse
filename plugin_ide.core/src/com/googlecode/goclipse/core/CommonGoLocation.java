@@ -33,6 +33,7 @@ public abstract class CommonGoLocation {
 		this.go_arch = go_arch;
 	}
 	
+	@Deprecated
 	public String getLocation() {
 		return location;
 	}

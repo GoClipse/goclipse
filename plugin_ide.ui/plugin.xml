@@ -570,6 +570,12 @@
             name="GoEditorHyperlinkDetector"
             targetId="com.googlecode.goclipse.ui.Editor.CodeTarget">
       </hyperlinkDetector>
+      <hyperlinkDetector
+            class="com.googlecode.goclipse.ui.editor.text.GoHyperlinkDetector2"
+            id="com.googlecode.goclipse.ui.editor.text.GoHyperlinkDetector2"
+            name="GoEditorHyperlinkDetector2"
+            targetId="com.googlecode.goclipse.ui.Editor.CodeTarget">
+      </hyperlinkDetector>
    </extension>
    
    <!-- This is possibly not needed (and has a dependency on the JDT), but is nice to have -->

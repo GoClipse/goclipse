@@ -26,6 +26,10 @@ public class GoWorkspace extends CommonGoLocation {
 		this.project = project;
 	}
 	
+	public String getGoPathWorkspaceString() {
+		return location; // TODO: multiple locations.
+	}
+	
 	public IPath getBinFolderRelativePath() {
 		// This is not a preference ATM, it constant.
 		return Path.fromOSString(DEFAULT_BIN_OUTPUT_FOLDER); 

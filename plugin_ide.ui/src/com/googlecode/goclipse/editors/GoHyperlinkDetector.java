@@ -3,6 +3,7 @@ package com.googlecode.goclipse.editors;
 import java.io.File;
 
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.text.util.LangWordFinder;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -227,14 +228,14 @@ public class GoHyperlinkDetector extends AbstractHyperlinkDetector {
 
 		@Override
 		public String getTypeLabel() {
-			return text;
+			return getHyperlinkText();
 		}
 
 		@Override
 		public String getHyperlinkText() {
-			return text;
+			return "Open definition";
 		}
-
+		
 		@Override
 		public void open() {
 

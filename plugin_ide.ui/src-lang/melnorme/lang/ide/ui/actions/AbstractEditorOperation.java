@@ -37,24 +37,15 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 		this.window = editor.getSite().getWorkbenchWindow();
 		this.editorInput = editor.getEditorInput();
 		this.inputPath = EditorUtils.getFilePathFromEditorInput(editorInput);
-		if(inputPath == null) {
-			LangCore.logError("Could not determine filesystem path from editor input");
-		}
 		this.doc = assertNotNull(editor.getDocumentProvider().getDocument(editor.getEditorInput()));
 	}
 	
 	@Override
-	public void executeOperation() throws CoreException {
+	protected void prepareOperation() throws CoreException {
 		if(inputPath == null) {
 			throw LangCore.createCoreException("Could not determine filesystem path from editor input", null); 
 		}
-		
-		super.executeOperation();
-		
-		performOperation_handleResult();
 	}
-	
-	protected abstract void performOperation_handleResult() throws CoreException;
 	
 	protected void dialogError(String msg) {
 		UIUserInteractionsHelper.openError(window.getShell(), operationName, msg);

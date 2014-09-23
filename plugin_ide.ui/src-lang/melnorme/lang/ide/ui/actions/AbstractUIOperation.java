@@ -18,6 +18,7 @@ import java.text.MessageFormat;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -42,7 +43,7 @@ public abstract class AbstractUIOperation {
 		this.operationName = operationName;
 	}
 	
-	public void executeHandled() {
+	public void executeAndHandle() {
 		assertTrue(Display.getCurrent() != null);
 		
 		try {
@@ -51,20 +52,27 @@ public abstract class AbstractUIOperation {
 			UIOperationExceptionHandler.handle(ce, operationName, 
 				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName));
 		} catch (RuntimeException re) {
-			UIOperationExceptionHandler.doHandleException(operationName, 
+			UIOperationExceptionHandler.handleError(true, operationName, 
 				MessageFormat.format(MSG_INTERNAL_ERROR_EXECUTING_OPERATION, operationName), re);
 		}
 	}
 	
-	public void executeOperation() throws CoreException {
+	public final void executeOperation() throws CoreException {
+		prepareOperation();
+		
 		try {
 			performLongRunningComputation();
+			
+			performOperation_handleResult();
 		} catch (InterruptedException e) {
 			return;
 		}
 	}
 	
-	protected void performLongRunningComputation() throws InterruptedException, CoreException {
+	protected void prepareOperation() throws CoreException {
+	}
+	
+	protected final void performLongRunningComputation() throws InterruptedException, CoreException {
 		if(Display.getCurrent() == null) {
 			// Perform computation directly in this thread.
 			performLongRunningComputation_do();
@@ -74,24 +82,31 @@ public abstract class AbstractUIOperation {
 		try {
 			ps.busyCursorWhile(new IRunnableWithProgress() {
 				@Override
-				public void run(IProgressMonitor monitor) throws InterruptedException {
+				public void run(IProgressMonitor monitor) throws InterruptedException, InvocationTargetException {
 					monitor.setTaskName(MessageFormat.format(MSG_EXECUTING_OPERATION, operationName));
 					
-					// TODO: need to performLongRunningOp in executor, so that we can check monitor.
-					performLongRunningComputation_do();
+					// TODO: need to add monitor to performLongRunningComputation_do.
+					try {
+						performLongRunningComputation_do();
+					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
+					}
 					if(monitor.isCanceled()) {
 						throw new InterruptedException();
 					}
 				}
 			});
 		} catch (InvocationTargetException e) {
+			if(e.getCause() instanceof CoreException) {
+				throw (CoreException) e.getCause();
+			}
 			throw new CoreException(LangUIPlugin.createErrorStatus(
 				LangCoreMessages.LangCore_error, e.getTargetException()));
 		}
 	}
 	
-	protected void performLongRunningComputation_do() {
-		
-	}
+	protected abstract void performLongRunningComputation_do() throws CoreException;
+	
+	protected abstract void performOperation_handleResult() throws CoreException;
 	
 }

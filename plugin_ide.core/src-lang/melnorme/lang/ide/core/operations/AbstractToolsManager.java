@@ -51,9 +51,9 @@ public abstract class AbstractToolsManager<LISTENER extends ILangOperationsListe
 		return runEngineClientTool(new ArrayList2<>(clientPath).addElements(arguments), clientInput, pm);
 	}
 	
-	public ExternalProcessResult runEngineClientTool(List<String> comandLine, String clientInput,
+	public ExternalProcessResult runEngineClientTool(List<String> commandLine, String clientInput,
 			IProgressMonitor pm) throws CoreException {
-		ProcessBuilder pb = createDefaultProcessBuilder(comandLine);
+		ProcessBuilder pb = createDefaultProcessBuilder(commandLine);
 		return new RunEngineClientOperation(this, pb).runProcess(clientInput, pm);
 	}
 	

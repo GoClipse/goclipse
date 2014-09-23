@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
+import melnorme.lang.ide.core.operations.RunEngineClientOperation;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
@@ -28,6 +29,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
 /**
@@ -113,6 +115,20 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 		RunGoToolTask processTask = createRunToolTask(pb, project, pm);
 		
 		return processTask.startProcess().strictAwaitTermination();
+	}
+	
+	/* ----------------- ----------------- */
+	
+	public ExternalProcessResult runEngineClientTool(List<String> commandLine, String clientInput,
+			IProject project, IProgressMonitor pm) throws CoreException {
+		ProcessBuilder pb = createDefaultProcessBuilder(commandLine);
+		
+		if(project != null) {
+			GoWorkspace goWorkspace = new GoWorkspace(project);
+			pb.environment().put(GoConstants.GOPATH, goWorkspace.getGoPathWorkspaceString());
+		}
+		
+		return new RunEngineClientOperation(this, pb).runProcess(clientInput, pm);
 	}
 	
 }

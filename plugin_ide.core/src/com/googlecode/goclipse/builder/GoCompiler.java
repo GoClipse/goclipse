@@ -165,10 +165,7 @@ public class GoCompiler {
 	 */
 	public static String buildGoPath(IProject project, final IPath projectLocation, boolean extGoRootFavored) {
 		
-		String delim = ":";
-		if (MiscUtil.OS_IS_WINDOWS){
-			delim = ";";
-		}
+		String delim = File.pathSeparator;
 		
 		
 		String       goPath = projectLocation.toOSString();
