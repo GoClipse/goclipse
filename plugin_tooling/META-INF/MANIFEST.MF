@@ -7,9 +7,12 @@ Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional
+Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
+ org.json;bundle-version="1.0.0";visibility:=reexport
 Bundle-ClassPath: .
-Export-Package: melnorme.lang.tooling.ast,
+Export-Package: com.googlecode.goclipse.tooling,
+ com.googlecode.goclipse.tooling.oracle,
+ melnorme.lang.tooling.ast,
  melnorme.utilbox.collections,
  melnorme.utilbox.concurrency,
  melnorme.utilbox.core,

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.editor.text;
 
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.editor.LangHyperlinkDetector;
 import melnorme.lang.tooling.ast.SourceRange;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -41,7 +43,8 @@ public class GoHyperlinkDetector2 extends LangHyperlinkDetector {
 			textEditor.doSave(new NullProgressMonitor());
 			
 			SourceRange sr = new SourceRange(region.getOffset(), region.getLength());
-			new GoOracleOpenDefinitionOperation(textEditor, sr).executeAndHandle();
+			new GoOracleOpenDefinitionOperation(textEditor, sr, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS)
+				.executeAndHandle();
 		}
 		
 	}

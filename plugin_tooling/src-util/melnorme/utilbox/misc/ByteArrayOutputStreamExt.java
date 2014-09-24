@@ -45,6 +45,11 @@ public class ByteArrayOutputStreamExt extends ByteArrayOutputStream implements I
 	}
 	
 	@Override
+	public synchronized String toString() {
+		return toString(StringUtil.UTF8);
+	}
+	
+	@Override
 	public synchronized String toString(Charset charset) {
 		return new String(buf, 0, count, charset);
 	}

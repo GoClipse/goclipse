@@ -59,9 +59,4 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 		UIUserInteractionsHelper.openInfo(window.getShell(), operationName, msg);
 	}
 	
-	protected void handleSystemError(String msg) {
-		LangCore.logError(msg);
-		dialogError(msg);
-	}
-	
 }

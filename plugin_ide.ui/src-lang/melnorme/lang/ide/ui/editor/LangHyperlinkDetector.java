@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.ui.editor.text;
+package melnorme.lang.ide.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
@@ -19,7 +19,6 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public abstract class LangHyperlinkDetector extends AbstractHyperlinkDetector {
@@ -30,8 +29,7 @@ public abstract class LangHyperlinkDetector extends AbstractHyperlinkDetector {
 			return null;
 		ITextEditor textEditor = (ITextEditor) getAdapter(ITextEditor.class);
 		
-		IEditorInput editorInput = textEditor.getEditorInput();
-		IDocument document = textEditor.getDocumentProvider().getDocument(editorInput);
+		IDocument document = EditorUtils.getEditorDocument(textEditor);
 		
 		IRegion elemRegion = JavaWordFinder.findWord(document, region.getOffset());
 		

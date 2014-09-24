@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -44,6 +45,10 @@ public class EditorUtils {
 	
 	public static TextSelection getSelection(ITextEditor editor) {
 		return (TextSelection) editor.getSelectionProvider().getSelection();
+	}
+	
+	public static IDocument getEditorDocument(ITextEditor textEditor) {
+		return textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
 	}
 	
 	public static void setEditorSelection(ITextEditor textEditor, SourceRange sourceRange) {
@@ -137,23 +142,22 @@ public class EditorUtils {
 	
 	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING_EDITORS, NEVER }
 
-	public static void openEditor(ITextEditor currentEditor, String editorId, 
+	public static ITextEditor openEditor(ITextEditor currentEditor, String editorId, 
 			IEditorInput newInput, SourceRange sourceRange, OpenNewEditorMode openNewEditor) throws CoreException {
-		if(sourceRange == null) {
-			return;
-		}
 		
 		IWorkbenchPage page = currentEditor.getEditorSite().getWorkbenchWindow().getActivePage();
 		
 		if(openNewEditor == OpenNewEditorMode.NEVER) {
 			if(currentEditor.getEditorInput().equals(newInput)) {
 				setEditorSelection(currentEditor, sourceRange);
+				return currentEditor;
 			} else if(currentEditor instanceof IReusableEditor) {
 				IReusableEditor reusableEditor = (IReusableEditor) currentEditor;
 				reusableEditor.setInput(newInput);
 				setEditorSelection(currentEditor, sourceRange);
+				return currentEditor;
 			} else {
-				openEditor(currentEditor, editorId, newInput, sourceRange, OpenNewEditorMode.ALWAYS);
+				return openEditor(currentEditor, editorId, newInput, sourceRange, OpenNewEditorMode.ALWAYS);
 			}
 		} else {
 			int matchFlags = openNewEditor == OpenNewEditorMode.ALWAYS ? 
@@ -164,7 +168,8 @@ public class EditorUtils {
 				throw LangCore.createCoreException("Not a text editor", null);
 			}
 			setEditorSelection(targetEditor, sourceRange);
+			return targetEditor;
 		}
 	}
-
+	
 }
