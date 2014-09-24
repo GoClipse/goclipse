@@ -73,21 +73,20 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		
 		JSONObject value = describe.getJSONObject("value");
 		
-		String pathAndRange = value.getString("objpos");
-		String pathStr = StringUtil.substringUntilMatch(pathAndRange, ":");
+		String pathStr = value.getString("objpos");
+		// We will need to parse objpos from the end, because on Windows the filePath can contain the ':' char
 		
-		String rangeStr = StringUtil.segmentAfterMatch(pathAndRange, ":");
-		if(rangeStr == null) {
-			throw new StatusException("No source position given for selection.", null);
+		String columnStr = StringUtil.segmentAfterLastMatch(pathStr, ":");
+		pathStr = StringUtil.substringUntilLastMatch(pathStr, ":");
+
+		String lineStr = StringUtil.segmentAfterLastMatch(pathStr, ":");
+		pathStr = StringUtil.substringUntilLastMatch(pathStr, ":");
+		
+		
+		if(columnStr == null || lineStr == null) {
+			throw new StatusException("No line or column position given.", null);
 		}
-		
-		String lineStr = StringUtil.substringUntilMatch(rangeStr, ":");
 		int line = parseInt(lineStr, "Invalid number for line: " + lineStr);
-		
-		String columnStr = StringUtil.segmentAfterMatch(rangeStr, ":");
-		if(columnStr == null) {
-			throw new StatusException("No column position given.", null);
-		}
 		int column = parseInt(columnStr, "Invalid number for column: " + columnStr);
 		
 		Path path = parsePath(pathStr);
