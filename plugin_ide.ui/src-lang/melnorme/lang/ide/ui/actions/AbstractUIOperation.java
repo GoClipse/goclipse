@@ -21,6 +21,7 @@ import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -74,10 +75,19 @@ public abstract class AbstractUIOperation {
 	
 	protected final void performLongRunningComputation() throws InterruptedException, CoreException {
 		if(Display.getCurrent() == null) {
-			// Perform computation directly in this thread.
-			performLongRunningComputation_do();
+			performLongRunningComputation_inCurrentThread();
 			return;
 		}
+		performLongRunningComputation_inUIThread();
+	}
+	
+	protected void performLongRunningComputation_inCurrentThread() throws CoreException {
+		// Perform computation directly in this thread, cancellation won't be possible.
+		NullProgressMonitor monitor = new NullProgressMonitor();
+		performLongRunningComputation_do(monitor);
+	}
+	
+	protected void performLongRunningComputation_inUIThread() throws InterruptedException, CoreException {
 		IProgressService ps = PlatformUI.getWorkbench().getProgressService();
 		try {
 			ps.busyCursorWhile(new IRunnableWithProgress() {
@@ -85,9 +95,8 @@ public abstract class AbstractUIOperation {
 				public void run(IProgressMonitor monitor) throws InterruptedException, InvocationTargetException {
 					monitor.setTaskName(MessageFormat.format(MSG_EXECUTING_OPERATION, operationName));
 					
-					// TODO: need to add monitor to performLongRunningComputation_do.
 					try {
-						performLongRunningComputation_do();
+						performLongRunningComputation_do(monitor);
 					} catch (CoreException e) {
 						throw new InvocationTargetException(e);
 					}
@@ -105,7 +114,7 @@ public abstract class AbstractUIOperation {
 		}
 	}
 	
-	protected abstract void performLongRunningComputation_do() throws CoreException;
+	protected abstract void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException;
 	
 	protected abstract void performOperation_handleResult() throws CoreException;
 	

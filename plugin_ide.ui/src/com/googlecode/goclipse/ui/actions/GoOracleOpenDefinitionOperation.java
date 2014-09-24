@@ -10,12 +10,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.RunEngineClientOperation;
 import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
@@ -25,6 +22,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
@@ -63,7 +61,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	}
 	
 	@Override
-	protected void performLongRunningComputation_do() throws CoreException {
+	protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
 		String goOraclePath = GoToolPreferences.GO_ORACLE_Path.get();
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
