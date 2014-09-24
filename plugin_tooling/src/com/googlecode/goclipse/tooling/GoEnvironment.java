@@ -40,6 +40,22 @@ public class GoEnvironment {
 		this(goRoot, goOs, goArch, new GoPath(goPath));
 	}
 	
+	public String getGoRoot() {
+		return goRoot;
+	}
+	
+	public String getGoArch() {
+		return goArch;
+	}
+	
+	public String getGoOs() {
+		return goOs;
+	}
+	
+	public GoPath getGoPath() {
+		return goPath;
+	}
+	
 	public List<String> getGoPathElements() {
 		return goPath.getGoPathElements();
 	}

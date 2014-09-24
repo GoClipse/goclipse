@@ -66,7 +66,6 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	protected void performLongRunningComputation_do() throws CoreException {
 		String goOraclePath = GoToolPreferences.GO_ORACLE_Path.get();
 		
-		assertNotNull(project); /*BUG here*/
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
 		try {

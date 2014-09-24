@@ -8,18 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.core;
+package com.googlecode.goclipse.tooling;
 
 import java.io.File;
 import java.nio.file.Path;
 
+import melnorme.utilbox.tests.CommonTest;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.junit.Test;
 
-import com.googlecode.goclipse.tooling.GoPath;
-
-public class GoEnvironmentTest extends CommonGoCoreTest {
+public class GoEnvironmentTest extends CommonTest {
 	
 	protected static final Path BASEDIR = TestsWorkingDir.getWorkingDirPath();
 	private static final Path WS_BAR = BASEDIR.resolve("WorkspaceBar");

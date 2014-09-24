@@ -35,6 +35,10 @@ public class GoProjectEnvironment {
 	
 	public static String getEffectiveGoPath(IProject project) {
 		String goPathPref = getPrefValue(GoEnvironmentPrefConstants.GO_PATH, project, GoEnvironmentConstants.GOPATH);
+		if(project == null) {
+			return goPathPref;
+		}
+		
 		// Implicitly add project location to GOPATH
 		return project.getLocation().toOSString() + File.pathSeparator + goPathPref;
 	}
@@ -47,6 +51,9 @@ public class GoProjectEnvironment {
 		return prefValue;
 	}
 	
+	/**
+	 * @param project - can be null.
+	 */
 	public static GoEnvironment getGoEnvironment(IProject project) {
 		String goRoot = getEffectiveGoRoot(project);
 		String goArch = getEffectiveGoArch(project);
