@@ -17,7 +17,7 @@ import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 
 import org.eclipse.core.runtime.CoreException;
 
-
+@Deprecated
 public abstract class CommonGoLocation {
 	
 	public static final String DEFAULT_BIN_OUTPUT_FOLDER = "bin";

@@ -14,32 +14,57 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.nio.file.Path;
 
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.googlecode.goclipse.tooling.GoEnvironment;
 import com.googlecode.goclipse.tooling.JsonDeserializeHelper;
 import com.googlecode.goclipse.tooling.StatusException;
 
 public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 	
-	public GoOracleFindDefinitionResult parseJsonResult(ExternalProcessResult result) 
-			throws JSONException, StatusException {
+	protected final String goOraclePath;
+	
+	public GoOracleFindDefinitionOperation(String goOraclePath) {
+		this.goOraclePath = goOraclePath;
+	}
+	
+	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Path filePath, int offset) {
+		Path goPackage = goEnv.getGoPackageFromGoModule(filePath);
+		
+		ArrayList2<String> commandLine = new ArrayList2<>(
+			goOraclePath,
+			"-pos=" + filePath.toString() + ":#" + offset + ",#" + offset,
+			"-format=json",
+			"describe",
+			goPackage.toString()
+		);
+		
+		return goEnv.createProcessBuilder(commandLine);
+	}
+	
+	public GoOracleFindDefinitionResult parseJsonResult(ExternalProcessResult result) throws StatusException {
 		if(result.exitValue != 0) {
 			throw new StatusException("Program exited with non-zero status: " + result.exitValue, null);
 		}
 		
 		String output = result.getStdOutBytes().toString();
 		
-		return parseJsonResult(output);
+		try {
+			return parseJsonResult(output);
+		} catch (JSONException e) {
+			throw new StatusException("Error parsing JSON output: ", e);
+		}
 	}
 	
 	protected GoOracleFindDefinitionResult parseJsonResult(String output) throws JSONException, StatusException {
 		JSONObject jsonResult = new JSONObject(output);
 		
-		JSONObject describe = jsonResult.getJSONObject("describezzz");
+		JSONObject describe = jsonResult.getJSONObject("describe");
 		
 		String desc = describe.getString("desc");
 		if(!areEqual(desc, "identifier")) {

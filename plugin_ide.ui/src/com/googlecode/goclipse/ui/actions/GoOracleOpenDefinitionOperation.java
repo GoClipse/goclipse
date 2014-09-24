@@ -10,14 +10,16 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.RunEngineClientOperation;
 import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IFile;
@@ -27,12 +29,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.json.JSONException;
 
 import com.googlecode.goclipse.builder.GoToolManager;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoToolPreferences;
-import com.googlecode.goclipse.core.GoWorkspace2;
 import com.googlecode.goclipse.editors.GoEditor;
+import com.googlecode.goclipse.tooling.GoEnvironment;
 import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation;
 import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation.GoOracleFindDefinitionResult;
@@ -62,25 +64,20 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	
 	@Override
 	protected void performLongRunningComputation_do() throws CoreException {
-		GoWorkspace2 goWorkspace = new GoWorkspace2(project);
-		Path goPackage = goWorkspace.getGoPackageFromGoModule(getFilePath());
+		String goOraclePath = GoToolPreferences.GO_ORACLE_Path.get();
 		
-		ArrayList2<String> commandLine = new ArrayList2<>(
-			GoToolPreferences.GO_ORACLE_Path.get(),
-			"-pos=" + getFilePath().toString() + ":#" + range.getOffset() + ",#" + range.getEndPos(),
-			"-format=json",
-			"describe",
-			goPackage.toString()
-		);
-		
-		NullProgressMonitor pm = new NullProgressMonitor();
-		ExternalProcessResult result = GoToolManager.getDefault().runEngineClientTool(
-			commandLine, null, project, pm);
+		assertNotNull(project); /*BUG here*/
+		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
 		try {
-			oracleResult = new GoOracleFindDefinitionOperation().parseJsonResult(result);
-		} catch (JSONException e) {
-			throw LangCore.createCoreException("Error parsing output. ", e);
+			GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation(goOraclePath);
+			ProcessBuilder pb = op.createProcessBuilder(goEnv, getFilePath(), range.getOffset());
+			
+			// TODO: proper monitor
+			NullProgressMonitor pm = new NullProgressMonitor();
+			ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, pm);
+			
+			oracleResult = op.parseJsonResult(result);
 		} catch (StatusException se) {
 			throw LangCore.createCoreException(se.getMessage(), se.getCause());
 		}

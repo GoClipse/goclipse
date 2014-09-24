@@ -31,9 +31,9 @@ public abstract class AbstractStartProcessTask {
 		return startProcess();
 	}
 	
-	public ExternalProcessResult runProcess(String bufferText, IProgressMonitor pm) throws CoreException {
+	public ExternalProcessResult runProcess(String inputText, IProgressMonitor pm) throws CoreException {
 		EclipseExternalProcessHelper processHelper = startProcess(pm);
-		processHelper.writeInput(bufferText);
+		processHelper.writeInput(inputText);
 		return processHelper.strictAwaitTermination();
 	}
 	

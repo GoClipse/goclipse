@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
+@Deprecated
 public class GoWorkspace extends CommonGoLocation {
 	
 	protected final IProject project;

@@ -8,20 +8,23 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.core;
+package melnorme.lang.tooling;
 
-import org.eclipse.core.resources.IProject;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-public class GoEnvironmentPrefs2 {
-	
-	protected static final String GOPATH_EnvName = "GOPATH";
-	
-	protected static String getEffectiveGoPath(IProject project) {
-		String goPathPref = GoEnvironmentPrefConstants.GO_PATH.get(project);
-		if(goPathPref.isEmpty()) {
-			return System.getenv(GOPATH_EnvName);
+import java.io.File;
+import java.util.List;
+
+public class ProcessUtils {
+
+	public static ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {
+		assertTrue(commandLine.size() > 0);
+		
+		ProcessBuilder pb = new ProcessBuilder(commandLine);
+		if(workingDir != null) {
+			pb.directory(workingDir);
 		}
-		return goPathPref;
+		return pb;
 	}
 	
 }

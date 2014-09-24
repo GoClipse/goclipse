@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.core;
+package com.googlecode.goclipse.tooling;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -20,25 +20,14 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 
-import org.eclipse.core.resources.IProject;
-
 /**
- * Helper class to work with a project's GOPATH entry list.
- * (new API intended to replace {@link GoWorkspace} 
+ * Helper class to work with a GOPATH entry list.
  */
-public class GoWorkspace2 {
+public class GoPath {
 	
 	protected final List<String> goPathElements;
 	
-	public GoWorkspace2(IProject project) {
-		this(project, GoEnvironmentPrefs2.getEffectiveGoPath(project));
-	}
-	
-	public GoWorkspace2(IProject project, String defaultGoPathString) {
-		this(project.getLocation().toOSString() + File.pathSeparator + defaultGoPathString);
-	}
-	
-	public GoWorkspace2(String goPathString) {
+	public GoPath(String goPathString) {
 		this.goPathElements = unmodifiableList(new ArrayList2<>(goPathString.split(File.pathSeparator)));
 	}
 	
@@ -50,7 +39,6 @@ public class GoWorkspace2 {
 		return StringUtil.collToString(goPathElements, File.pathSeparator);
 	}
 	
-
 	public Path getGoWorkspacePathEntry(Path path) {
 		if(path == null) {
 			return null;

@@ -19,6 +19,7 @@ import com.googlecode.goclipse.preferences.PreferenceConstants;
  * session's contextual data.
  * 
  */
+@Deprecated
 public class Environment {
 	
 	public static final boolean DEBUG = Boolean.getBoolean("goclipse.debug");

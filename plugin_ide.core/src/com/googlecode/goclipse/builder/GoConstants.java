@@ -1,11 +1,14 @@
 package com.googlecode.goclipse.builder;
 
+import com.googlecode.goclipse.tooling.GoEnvironmentConstants;
+
 import melnorme.lang.ide.launching.LaunchConstants;
 
 /**
  * 
  */
-public class GoConstants {
+@Deprecated
+public class GoConstants implements GoEnvironmentConstants {
 	
 	public static final String GO_SOURCE_FILE_EXTENSION  = ".go";
 	public static final String GO_TEST_FILE_EXTENSION    = "_test.go";
@@ -34,11 +37,6 @@ public class GoConstants {
 	public static final String GO_TEST_COMMAND     = "test";
 	public static final String GO_VET_COMMAND      = "vet";
 	public static final String GO_TOOL_COMMAND     = "tool";
-
-	public static final String GOROOT = "GOROOT";
-	public static final String GOARCH = "GOARCH";
-	public static final String GOOS   = "GOOS";
-	public static final String GOPATH = "GOPATH";
 
 	/**
 	 * defined in plugin.xml

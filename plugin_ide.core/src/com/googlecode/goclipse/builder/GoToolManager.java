@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
-import melnorme.lang.ide.core.operations.RunEngineClientOperation;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
@@ -29,8 +28,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.tooling.GoEnvironmentConstants;
 
 /**
  * Manager for running various go tools, usually for build.
@@ -73,10 +72,10 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 	public static Map<String, String> getGoToolEnvironment() {
 		Map<String, String> goEnv = new HashMap<String, String>();
 		
-		goEnv.put(GoConstants.GOROOT, PreferenceConstants.GO_ROOT.get());
-		goEnv.put(GoConstants.GOOS,   PreferenceConstants.GO_OS.get());
-		goEnv.put(GoConstants.GOARCH, PreferenceConstants.GO_ARCH.get());
-		goEnv.put(GoConstants.GOPATH, PreferenceConstants.GO_PATH.get());
+		goEnv.put(GoEnvironmentConstants.GOROOT, PreferenceConstants.GO_ROOT.get());
+		goEnv.put(GoEnvironmentConstants.GOOS,   PreferenceConstants.GO_OS.get());
+		goEnv.put(GoEnvironmentConstants.GOARCH, PreferenceConstants.GO_ARCH.get());
+		goEnv.put(GoEnvironmentConstants.GOPATH, PreferenceConstants.GO_PATH.get());
 		
 		return goEnv;
 	}
@@ -103,13 +102,13 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 		ProcessBuilder pb = createDefaultProcessBuilder(commandLine, workingDir); 
 		
 		if(goPath != null) {
-			pb.environment().put(GoConstants.GOPATH, goPath);
+			pb.environment().put(GoEnvironmentConstants.GOPATH, goPath);
 		}
 		
 		return runBuildTool(project, pm, pb);
 	}
 	
-	public ExternalProcessResult runBuildTool(final IProject project, IProgressMonitor pm,
+	public ExternalProcessResult runBuildTool(IProject project, IProgressMonitor pm,
 			ProcessBuilder pb) throws CoreException {
 		// Note: project can be null
 		RunGoToolTask processTask = createRunToolTask(pb, project, pm);
@@ -118,17 +117,5 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 	}
 	
 	/* ----------------- ----------------- */
-	
-	public ExternalProcessResult runEngineClientTool(List<String> commandLine, String clientInput,
-			IProject project, IProgressMonitor pm) throws CoreException {
-		ProcessBuilder pb = createDefaultProcessBuilder(commandLine);
-		
-		if(project != null) {
-			GoWorkspace goWorkspace = new GoWorkspace(project);
-			pb.environment().put(GoConstants.GOPATH, goWorkspace.getGoPathWorkspaceString());
-		}
-		
-		return new RunEngineClientOperation(this, pb).runProcess(clientInput, pm);
-	}
 	
 }

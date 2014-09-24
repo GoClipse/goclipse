@@ -31,6 +31,8 @@ import com.googlecode.goclipse.ui.GoUIPlugin;
  */
 public class NavigatorContentProvider2 implements ITreeContentProvider, IPropertyChangeListener {
   private final Object[] NO_CHILDREN = new Object[0];
+  
+  protected static final String GOROOT_Name = "GOROOT";
 
   private Viewer viewer;
 
@@ -71,19 +73,19 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
         	// populate the go paths
         	if (goPath.length == 1) {
         		return new GoPathElement[] {
-        				new GoPathElement(GoConstants.GOROOT, getGoRootSrcFolder()),
+        				new GoPathElement(GOROOT_Name, getGoRootSrcFolder()),
         				new GoPathElement(goPath[0].getParent(), goPath[0])};
         
         	} else if (goPath.length > 1) {
         		GoPathElement[] gpe = new GoPathElement[goPath.length+1];
-        		gpe[0] = new GoPathElement(GoConstants.GOROOT, getGoRootSrcFolder());
+        		gpe[0] = new GoPathElement(GOROOT_Name, getGoRootSrcFolder());
         		
         		for (int i = 0; i < goPath.length; i++){
         			gpe[i+1] = new GoPathElement(goPath[i].getParent(), goPath[i]);
         		}
         	}
         } else {
-          return new GoPathElement[] {new GoPathElement(GoConstants.GOROOT, getGoRootSrcFolder())};
+          return new GoPathElement[] {new GoPathElement(GOROOT_Name, getGoRootSrcFolder())};
         }
       }
     } else if (parentElement instanceof GoPathElement) {
