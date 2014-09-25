@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui;
+package melnorme.lang.ide.ui.editor;
 
-public class EditorSettings_Actual {
+
+import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
+
+public class AbstractLangEditorActionContributor extends BasicTextEditorActionContributor {
 	
-	public static final String EDITOR_CODE_TARGET = "com.googlecode.goclipse.ui.Editor.CodeTarget";
-	
-	/* ----------------- actions ----------------- */
-	
-	public static final String COMMAND_ID = "com.googlecode.goclipse.ui.commands.openDefinition";
+	public AbstractLangEditorActionContributor() {
+	}
 	
 }

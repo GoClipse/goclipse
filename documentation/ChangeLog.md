@@ -4,6 +4,7 @@
  * Added gocode process argument information to gocode log console.
  * Added Ctrl-click open definition functionality using `go oracle`.
    * Path to `oracle` command can be configured in the Go preference page.
+   * Go oracle Open Definition can now also be invoked under an editor with F3 key.
 
 ### Goclipse 0.8.1
  * Changed the Eclipse update site URL to: http://goclipse.github.io/releases/

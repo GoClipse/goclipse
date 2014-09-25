@@ -21,6 +21,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
@@ -40,11 +41,6 @@ public abstract class AbstractLangEditor extends TextEditor {
 	protected void initializeEditor() {
 		super.initializeEditor();
 		initialize_setContextMenuIds();
-	}
-	
-	protected void initialize_setContextMenuIds() {
-		setEditorContextMenuId(LangUIPlugin_Actual.EDITOR_CONTEXT);
-		setRulerContextMenuId(LangUIPlugin_Actual.RULER_CONTEXT);
 	}
 	
 	@Override
@@ -110,6 +106,23 @@ public abstract class AbstractLangEditor extends TextEditor {
 	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
 		return getSourceViewerConfiguration2().affectsTextPresentation(event)
 				|| super.affectsTextPresentation(event);
+	}
+	
+	/* ----------------- actions ----------------- */
+	
+	protected void initialize_setContextMenuIds() {
+		setEditorContextMenuId(LangUIPlugin_Actual.EDITOR_CONTEXT);
+		setRulerContextMenuId(LangUIPlugin_Actual.RULER_CONTEXT);
+	}
+	
+	@Override
+	protected void editorContextMenuAboutToShow(IMenuManager menu) {
+		super.editorContextMenuAboutToShow(menu);
+		editorContextMenuAboutToShow_extend(menu);
+	}
+	
+	protected void editorContextMenuAboutToShow_extend(IMenuManager menu) {
+		new AbstractLangEditorMenuContributor(this).editorContextMenuAboutToShow(menu);
 	}
 	
 }

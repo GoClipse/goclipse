@@ -35,6 +35,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 	
 	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Path filePath, int offset) {
 		Path goPackage = goEnv.getGoPackageFromGoModule(filePath);
+		/*BUG here goPackage == null*/
 		
 		ArrayList2<String> commandLine = new ArrayList2<>(
 			goOraclePath,

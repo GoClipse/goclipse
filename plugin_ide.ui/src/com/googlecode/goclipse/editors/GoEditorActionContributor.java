@@ -1,12 +1,14 @@
 package com.googlecode.goclipse.editors;
 
+import melnorme.lang.ide.ui.editor.AbstractLangEditorActionContributor;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.texteditor.*;
 
-public class GoEditorActionContributor extends BasicTextEditorActionContributor {
+public class GoEditorActionContributor extends AbstractLangEditorActionContributor {
 
   public GoEditorActionContributor() {
 

@@ -422,17 +422,32 @@
       </actionSetPartAssociation>
    </extension>
    
-   <extension point="org.eclipse.ui.commands">
-   	  <category
-            name="Navigation"
-            description="Goclipse Navigation"
-            id="com.googlecode.goclipse.editor.navigation">
-      </category>
-   	  <category
-            name="Source"
-            description="Goclipse Source"
-            id="com.googlecode.goclipse.editor.source">
-      </category>
+	<extension point="org.eclipse.ui.commands">
+		<category
+			name="Navigation"
+			description="Goclipse Navigation"
+			id="com.googlecode.goclipse.editor.navigation">
+		</category>
+		<category
+			name="Source"
+			description="Goclipse Source"
+			id="com.googlecode.goclipse.editor.source">
+		</category>
+		
+		<category
+			name="Editor"
+			description="Editor commands"
+			id="com.googlecode.goclipse.ui.commands.editor">
+		</category>
+		
+		<command
+	        categoryId="com.googlecode.goclipse.ui.commands.editor"
+	        defaultHandler="com.googlecode.goclipse.ui.actions.GoOpenDefinitionHandler"
+	        description="%OpenDefinitionAction.tooltip"
+	        id="com.googlecode.goclipse.ui.commands.openDefinition"
+	        name="%OpenDefinitionAction.name">
+		</command>
+		
       <category
             name="Launch"
             description="Goclipse Editor"
@@ -481,10 +496,18 @@
            parentId="org.eclipse.ui.textEditorScope"
            id="com.googlecode.goclipse.editor" />
    </extension>
-   <extension
-         point="org.eclipse.ui.bindings">
-      <!--  win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
-            carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
+   
+	<extension point="org.eclipse.ui.bindings">
+		<!-- win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
+		     carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
+		
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.openDefinition"
+			contextId="com.googlecode.goclipse.editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="F3">
+		</key>
+		
       <key
             commandId="com.googlecode.goclipse.debug.ui.LaunchShortcut.run"
             contextId="org.eclipse.ui.contexts.window"
