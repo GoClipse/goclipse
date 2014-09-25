@@ -8,12 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.core;
+package melnorme.util.swt.jface.preference;
 
-import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.swt.widgets.Composite;
 
-public interface GoToolPreferences {
+public class FileFieldEditorExt extends FileFieldEditor {
 	
-	StringPreference GO_ORACLE_Path = new StringPreference("GoToolPreferences.GO_ORACLE_Path", "oracle");
+	public FileFieldEditorExt(String name, String labelText, Composite parent) {
+		super(name, labelText, false, VALIDATE_ON_KEY_STROKE, parent);
+	}
+	
+	@Override
+	protected boolean checkState() {
+		return true;
+	}
 	
 }

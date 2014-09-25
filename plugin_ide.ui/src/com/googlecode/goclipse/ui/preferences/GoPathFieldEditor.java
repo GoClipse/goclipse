@@ -2,7 +2,8 @@ package com.googlecode.goclipse.ui.preferences;
 
 import java.io.File;
 
-import org.eclipse.jface.preference.DirectoryFieldEditor;
+import melnorme.util.swt.jface.preference.DirectoryFieldEditorExt;
+
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -12,7 +13,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
  * A field editor for multiple directory paths preference. A standard directory
  * dialog appears when the user presses the change button.
  */
-public class GoPathFieldEditor extends DirectoryFieldEditor {
+public class GoPathFieldEditor extends DirectoryFieldEditorExt {
 	private String delim;
 
 	/**
@@ -27,7 +28,7 @@ public class GoPathFieldEditor extends DirectoryFieldEditor {
 	 */
 	public GoPathFieldEditor(String name, String labelText, Composite parent) {
 		super(name, labelText, parent);
-
+		
 		this.setChangeButtonText("Add Folder");
 
 		delim = ":";

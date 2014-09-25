@@ -3,6 +3,10 @@ package com.googlecode.goclipse.ui.preferences;
 import java.io.File;
 import java.util.List;
 
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.jface.preference.DirectoryFieldEditorExt;
+import melnorme.util.swt.jface.preference.FileFieldEditorExt;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -21,6 +25,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.framework.Version;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.preferences.PreferenceInitializer;
 import com.googlecode.goclipse.ui.GoUIPlugin;
@@ -72,11 +77,11 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		Composite fieldParent = new Composite(group, SWT.NONE);
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).hint(150, -1).applyTo(fieldParent);
 
-		goRootEditor = new DirectoryFieldEditor(PreferenceConstants.GO_ROOT.key, "GO&ROOT:", fieldParent);
+		goRootEditor = new DirectoryFieldEditorExt(PreferenceConstants.GO_ROOT.key, "GO&ROOT:", fieldParent);
 		addField(goRootEditor);
 
-    goPathEditor = new GoPathFieldEditor(PreferenceConstants.GO_PATH.key, "GO&PATH:", fieldParent);
-    addField(goPathEditor);
+	    goPathEditor = new GoPathFieldEditor(PreferenceConstants.GO_PATH.key, "GO&PATH:", fieldParent);
+	    addField(goPathEditor);
     
 		goosEditor = new ComboFieldEditor(PreferenceConstants.GO_OS.key, "G&OOS:", new String[][] { 
 				{ "", "" },
@@ -112,6 +117,15 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 
 		addField(documentorEditor = new FileFieldEditor(PreferenceConstants.DOCUMENTOR_PATH.key,
 		        "Go &documentor (godoc):", fieldParent));
+		
+		
+		group = SWTFactoryUtil.createGroup(getFieldEditorParent(),
+			"Go oracle",
+			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
+		
+		addField(new FileFieldEditorExt(GoToolPreferences.GO_ORACLE_Path.key, "Go oracle path:", group));
+		
+		GridLayoutFactory.fillDefaults().numColumns(3).applyTo(group);
 	}
 
 	@Override
@@ -130,8 +144,8 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 	public void propertyChange(PropertyChangeEvent event) {
 		super.propertyChange(event);
 
-		if (event.getSource() == goRootEditor && PreferenceInitializer.getDefaultCompilerName() != null) {
-
+		if (event.getSource() == goRootEditor) {
+			
 			IPath gorootPath = new Path(goRootEditor.getStringValue());
 			File gorootFile  = gorootPath.toFile();
 

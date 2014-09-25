@@ -8,12 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.core;
+package melnorme.util.swt.jface.preference;
 
-import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.swt.widgets.Composite;
 
-public interface GoToolPreferences {
+public class DirectoryFieldEditorExt extends DirectoryFieldEditor {
 	
-	StringPreference GO_ORACLE_Path = new StringPreference("GoToolPreferences.GO_ORACLE_Path", "oracle");
+	public DirectoryFieldEditorExt(String name, String labelText, Composite parent) {
+		super(name, labelText, parent);
+	}
+	
+	@Override
+	public void setValidateStrategy(int value) {
+		super.setValidateStrategy(DirectoryFieldEditor.VALIDATE_ON_KEY_STROKE);
+	}
 	
 }
