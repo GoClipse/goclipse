@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -70,9 +69,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 			GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation(goOraclePath);
 			ProcessBuilder pb = op.createProcessBuilder(goEnv, getFilePath(), range.getOffset());
 			
-			// TODO: proper monitor
-			NullProgressMonitor pm = new NullProgressMonitor();
-			ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, pm);
+			ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, monitor);
 			
 			oracleResult = op.parseJsonResult(result);
 		} catch (StatusException se) {
