@@ -81,7 +81,9 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 		}
 	}
 	
-	protected ICompletionProposal[] computeCompletionProposals_do(ITextViewer viewer, int offset) throws CoreException {
+	protected ICompletionProposal[] computeCompletionProposals_do(ITextViewer viewer, final int offset)
+			throws CoreException {
+		
 		if(editor == null) {
 			throw LangCore.createCoreException("Error, no editor provided:", null);
 		}
@@ -92,9 +94,7 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 			throw LangCore.createCoreException("Error: Could not determine file path for editor.", null);
 		}
 		
-		ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
-		
-		IDocument document = viewer.getDocument();
+		final IDocument document = viewer.getDocument();
 		CodeContext codeContext = codeContexts.get(filePath);
 		
 		if (codeContext == null) {
@@ -114,6 +114,8 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 		
 		List<String> completions;
 		
+		ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
+		
 		try {
 			GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(getProjectFor(editor));
 			
@@ -127,79 +129,84 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 			throw LangCore.createCoreException(e.getMessage(), e.getCause());
 		}
 		
-		for (String string : completions) {
-			String prefix = "";
-			prefix = lastWord(document, offset);
-			int firstComma = string.indexOf(",,");
-			int secondComma = string.indexOf(",,", firstComma + 2);
-			
-			if (firstComma != -1 && secondComma != -1) {
-				String type = string.substring(0, firstComma);
-				
-				if ("PANIC".equals(type)) {
-					GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
-					continue;
-				}
-				
-				String identifier = string.substring(firstComma + 2, secondComma);
-				
-				if ("PANIC".equals(identifier)) {
-					GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
-					continue;
-				}
-				
-				String spec = string.substring(secondComma + 2);
-				
-				String descriptiveString = identifier + " : " + spec;
-				String description = codeContext.getDescriptionForName(identifier).trim();
-				IContextInformation info = new ContextInformation(description, description);
-				//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
-				
-				Image image = defaultImage;
-				String substr = identifier.substring(prefix.length());
-				int replacementLength = identifier.length() - prefix.length();
-				
-				if (descriptiveString != null && descriptiveString.contains(" : func")) {
-					if (codeContext.isMethodName(identifier)) {
-						image = privateFuncImage;
-						
-					} else {
-						image = funcImage;
-					}
-					
-					substr = identifier.substring(prefix.length()) + "()";
-					replacementLength++;
-					
-				} else if (descriptiveString != null && descriptiveString.contains(" : interface")) {
-					image = interfaceImage;
-					
-				} else if (descriptiveString != null && descriptiveString.contains(" : struct")) {
-					image = structImage;
-					
-				} else if ("package".equals(type)) {
-					image = importImage;
-					
-					substr = identifier.substring(prefix.length()) + ".";
-					replacementLength++;
-				} else {
-					if (substr != null && substr.length() > 0 && Character.isUpperCase(substr.charAt(0))) {
-						image = publicVarImage;
-						
-					} else {
-						image = privateVarImage;
-					}
-				}
-				
-				// format the output
-				descriptiveString = descriptiveString.replace(" : func", " ").replace(" : interface",
-						" ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
-				
-				results.add(new CompletionProposal(identifier, offset - prefix.length(),
-					prefix.length(), identifier.length(), image, descriptiveString, info, description));
-			}
+		String prefix = lastWord(document, offset);
+		
+		for (String completionEntry : completions) {
+			handleResult(offset, codeContext, results, prefix, completionEntry);
 		}
 		
 		return results.toArray(new ICompletionProposal[] {});
+	}
+	
+	protected void handleResult(final int offset, CodeContext codeContext, ArrayList<ICompletionProposal> results,
+			String prefix, String completionEntry) {
+		int firstComma = completionEntry.indexOf(",,");
+		int secondComma = completionEntry.indexOf(",,", firstComma + 2);
+		
+		if (firstComma != -1 && secondComma != -1) {
+			String type = completionEntry.substring(0, firstComma);
+			
+			if ("PANIC".equals(type)) {
+				GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
+				return;
+			}
+			
+			String identifier = completionEntry.substring(firstComma + 2, secondComma);
+			
+			if ("PANIC".equals(identifier)) {
+				GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
+				return;
+			}
+			
+			String spec = completionEntry.substring(secondComma + 2);
+			
+			String descriptiveString = identifier + " : " + spec;
+			String description = codeContext.getDescriptionForName(identifier).trim();
+			IContextInformation info = new ContextInformation(description, description);
+			//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
+			
+			Image image = defaultImage;
+			String substr = identifier.substring(prefix.length());
+			int replacementLength = identifier.length() - prefix.length();
+			
+			if (descriptiveString != null && descriptiveString.contains(" : func")) {
+				if (codeContext.isMethodName(identifier)) {
+					image = privateFuncImage;
+					
+				} else {
+					image = funcImage;
+				}
+				
+				substr = identifier.substring(prefix.length()) + "()";
+				replacementLength++;
+				
+			} else if (descriptiveString != null && descriptiveString.contains(" : interface")) {
+				image = interfaceImage;
+				
+			} else if (descriptiveString != null && descriptiveString.contains(" : struct")) {
+				image = structImage;
+				
+			} else if ("package".equals(type)) {
+				image = importImage;
+				
+				substr = identifier.substring(prefix.length()) + ".";
+				replacementLength++;
+			} else {
+				if (substr != null && substr.length() > 0 && Character.isUpperCase(substr.charAt(0))) {
+					image = publicVarImage;
+					
+				} else {
+					image = privateVarImage;
+				}
+			}
+			
+			// format the output
+			descriptiveString = descriptiveString.replace(" : func", " ").replace(" : interface",
+					" ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
+			
+			results.add(new CompletionProposal(identifier, offset - prefix.length(),
+				prefix.length(), identifier.length(), image, descriptiveString, info, description));
+		}
 	}
 	
 	/**
