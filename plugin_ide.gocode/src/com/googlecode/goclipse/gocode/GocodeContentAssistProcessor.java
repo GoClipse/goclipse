@@ -1,5 +1,7 @@
 package com.googlecode.goclipse.gocode;
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,9 +80,12 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 			
 		}
 		
+		if (path == null) {
+			return array();
+		}
+		
 		ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
 		
-		if (path != null) {
 			String filename = path.toOSString();
 			IDocument document = viewer.getDocument();
 			CodeContext codeContext = codeContexts.get(filename);
@@ -103,11 +108,19 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 				}
 			}
 			
-			if (path != null) {
 				String fileName = path.toOSString();
 				
-				List<String> completions = client.getCompletions(getProjectFor(editor), fileName,
-					document.get(), offset);
+				IPath gocodePath = GocodePlugin.getPlugin().getBestGocodeInstance();
+				
+				List<String> completions = null;
+				
+				if (gocodePath != null) {
+					String gocodePathStr = gocodePath.toOSString();
+					
+					completions = client.getCompletions(gocodePathStr, getProjectFor(editor),
+						fileName, document.get(), offset);
+				}
+				
 				
 				if (completions == null) {
 					completions = Collections.emptyList();
@@ -183,9 +196,7 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 						results.add(new CompletionProposal(identifier, offset - prefix.length(),
 							prefix.length(), identifier.length(), image, descriptiveString, info, description));
 					}
-				}
 			}
-		}
 		
 		return results.toArray(new ICompletionProposal[] {});
 	}

@@ -22,19 +22,25 @@ import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs.GoRoot;
 import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.gocode.preferences.GocodePreferences;
+import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 /**
  * Use the configured GoCode settings to call a GoCode client, which ends up talking to a running
  * GoCode server. This class is called from GoCodeContentAssistProcessor.
  */
-public class GocodeClient {
+public class GocodeClient extends GocodeCompletionOperation {
+	
 	private String error;
 	
 	public GocodeClient() {
-		
+		super();
 	}
 	
-	public List<String> getCompletions(IProject project, String fileName, final String bufferText, int offset) {
+	public List<String> getCompletions(String gocodePath, IProject project, String fileName, final String bufferText,
+		int offset) {
+		
+		this.gocodePath = gocodePath;
+		
 		try {
 			return getCompletionsDo(project, fileName, bufferText, offset);
 		} catch (CoreException e) {
@@ -48,13 +54,6 @@ public class GocodeClient {
 		
 		GoRoot goRoot = GoEnvironmentPrefs.getGoRoot();
 		
-		
-		IPath gocodePath = GocodePlugin.getPlugin().getBestGocodeInstance();
-		if (gocodePath == null) {
-			return Collections.emptyList();
-		}
-		
-		String gocodePathStr = gocodePath.toOSString();
 		
 		// set the package path for the current project
 		ArrayList2<String> arguments = new ArrayList2<>();
@@ -74,7 +73,7 @@ public class GocodeClient {
 		
 		// TODO: we should run this outside the UI thread, with an actual monitor to allow cancelling!
 		IProgressMonitor pm = new NullProgressMonitor();
-		GoToolManager.getDefault().runEngineClientTool(gocodePathStr, arguments, null, pm);
+		GoToolManager.getDefault().runEngineClientTool(gocodePath, arguments, null, pm);
 		
 		arguments = new ArrayList2<String>();
 		if (GocodePreferences.USE_TCP) {
@@ -86,7 +85,7 @@ public class GocodeClient {
 		arguments.add("c" + offset);
 		
 		ExternalProcessResult processResult = GoToolManager.getDefault().runEngineClientTool(
-			gocodePathStr, arguments, bufferText, pm);
+			gocodePath, arguments, bufferText, pm);
 		
 		ByteArrayOutputStreamExt stdout = processResult.getStdOutBytes();
 		
