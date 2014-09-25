@@ -13,16 +13,12 @@ package com.googlecode.goclipse.tooling;
 import java.io.File;
 import java.nio.file.Path;
 
-import melnorme.utilbox.tests.CommonTest;
-import melnorme.utilbox.tests.TestsWorkingDir;
-
 import org.junit.Test;
 
-public class GoEnvironmentTest extends CommonTest {
+public class GoEnvironmentTest extends CommonGoToolingTest {
 	
-	protected static final Path BASEDIR = TestsWorkingDir.getWorkingDirPath();
-	private static final Path WS_BAR = BASEDIR.resolve("WorkspaceBar");
-	private static final Path WS_FOO = BASEDIR.resolve("WorkspaceFoo");
+	private static final Path WS_BAR = TESTS_DIR.resolve("WorkspaceBar");
+	private static final Path WS_FOO = TESTS_DIR.resolve("WorkspaceFoo");
 	
 	@Test
 	public void test_GoPath() throws Exception { test_GoPath$(); }
@@ -31,7 +27,7 @@ public class GoEnvironmentTest extends CommonTest {
 		 
 		assertAreEqual(goPath.getGoWorkspacePathEntry(WS_FOO.resolve("xxx")), WS_FOO);
 		assertAreEqual(goPath.getGoWorkspacePathEntry(WS_BAR.resolve("xxx")), WS_BAR);
-		assertAreEqual(goPath.getGoWorkspacePathEntry(BASEDIR.resolve("xxx")), null);
+		assertAreEqual(goPath.getGoWorkspacePathEntry(TESTS_DIR.resolve("xxx")), null);
 		
 		assertAreEqual(goPath.getGoPackageFromGoModule(WS_FOO.resolve("xxx/m.go")), null);
 		assertAreEqual(goPath.getGoPackageFromGoModule(WS_FOO.resolve("src/xxx/m.go")), path("xxx"));
@@ -39,7 +35,7 @@ public class GoEnvironmentTest extends CommonTest {
 		assertAreEqual(goPath.getGoPackageFromGoModule(WS_FOO.resolve("src/m.go")), null);
 		assertAreEqual(goPath.getGoPackageFromGoModule(WS_BAR.resolve("src/xxx/m.go")), path("xxx"));
 		assertAreEqual(goPath.getGoPackageFromGoModule(WS_BAR.resolve("src/src/src/m.go")), path("src/src"));
-		assertAreEqual(goPath.getGoPackageFromGoModule(BASEDIR.resolve("src/xxx/m.go")), null);
+		assertAreEqual(goPath.getGoPackageFromGoModule(TESTS_DIR.resolve("src/xxx/m.go")), null);
 	}
 	
 }

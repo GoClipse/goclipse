@@ -12,15 +12,14 @@ package com.googlecode.goclipse.core;
 
 import java.nio.file.Path;
 
-import melnorme.utilbox.tests.TestsWorkingDir;
-
 import org.junit.Test;
 
+import com.googlecode.goclipse.tooling.CommonGoToolingTest;
 import com.googlecode.goclipse.tooling.GoEnvironment;
 
 public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	
-	public static final Path WORKING_DIR = TestsWorkingDir.getWorkingDirPath();
+	public static final Path WORKING_DIR = CommonGoToolingTest.TESTS_DIR;
 	public static final Path SAMPLE_GO_ROOT = WORKING_DIR.resolve("root");
 	public static final Path SAMLPE_GO_PATH = WORKING_DIR.resolve("goPath");
 	

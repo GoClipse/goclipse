@@ -10,8 +10,22 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
+import java.nio.file.Path;
+
 import melnorme.utilbox.tests.CommonTestExt;
+import melnorme.utilbox.tests.TestsWorkingDir;
 
 public class CommonGoToolingTest extends CommonTestExt {
+	
+	public static final Path TESTS_DIR = TestsWorkingDir.getWorkingDirPath();
+	
+	public static final Path SAMPLE_GO_ROOT = TESTS_DIR.resolve("root");
+	public static final Path SAMPLE_GO_PATH = TESTS_DIR.resolve("goPath");
+	
+	protected static final GoEnvironment SAMPLE_GOEnv_1 = new GoEnvironment(
+		SAMPLE_GO_ROOT.toString(), 
+		"386", "windows", 
+		SAMPLE_GO_PATH.toString()
+	);
 	
 }

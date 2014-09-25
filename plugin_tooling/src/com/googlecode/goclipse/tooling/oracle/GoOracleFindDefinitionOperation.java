@@ -13,6 +13,7 @@ package com.googlecode.goclipse.tooling.oracle;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.nio.file.Path;
+import java.text.MessageFormat;
 
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.StringUtil;
@@ -33,9 +34,13 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		this.goOraclePath = goOraclePath;
 	}
 	
-	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Path filePath, int offset) {
+	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Path filePath, int offset) throws StatusException {
 		Path goPackage = goEnv.getGoPackageFromGoModule(filePath);
-		/*BUG here goPackage == null*/
+		if(goPackage == null) {
+			throw new StatusException(MessageFormat.format(
+				"Could not determine Go package for Go file ({0}), file not in the Go environment.", filePath), 
+				null);
+		}
 		
 		ArrayList2<String> commandLine = new ArrayList2<>(
 			goOraclePath,
