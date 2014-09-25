@@ -12,11 +12,16 @@ package com.googlecode.goclipse.tooling;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
 import melnorme.lang.tooling.ProcessUtils;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 
 /**
  * Immutable description of a Go environment, under which Go operations and semantic analysis can be run.
@@ -42,6 +47,10 @@ public class GoEnvironment {
 	
 	public String getGoRoot() {
 		return goRoot;
+	}
+	
+	public Path getGoRoot_Path() throws StatusException {
+		return createPath(goRoot);
 	}
 	
 	public String getGoArch() {
@@ -85,6 +94,46 @@ public class GoEnvironment {
 		if(value != null) {
 			env.put(key, value);
 		}
+	}
+	
+	/* ----------------- helpers ----------------- */
+	
+	protected static Path createPath(String pathString) throws StatusException {
+		try {
+			return MiscUtil.createPath(pathString);
+		} catch (InvalidPathExceptionX e) {
+			throw new StatusException("Invalid path: " + e.getCause().getMessage(), null);
+		}
+	}
+	
+	/* -----------------  ----------------- */
+	// The following methods, I'm not sure they are really necessary.
+	// with some refactoring, we might be able to remove their uses
+	
+	protected String getGoOS_GoArch_segment() {
+		return getGoOs() + "_" + getGoArch();
+	}
+	
+	public Path getGoRootPackageObjectsLocation() throws StatusException {
+		return getPackageObjectsFolder(getGoRoot_Path());
+	}
+	
+	public Path getPackageObjectsFolder(Path rootPath) throws StatusException {
+		return rootPath.resolve("pkg").resolve(getGoOS_GoArch_segment());
+	}
+	
+	public String getPkgFolderLocations() throws StatusException {
+		
+		ArrayList2<String> pkgFolders = new ArrayList2<>();
+		
+		pkgFolders.add(getGoRootPackageObjectsLocation().toString());
+		
+		for (String goPathElement : getGoPathElements()) {
+			Path pkgFolder = getPackageObjectsFolder(createPath(goPathElement));
+			pkgFolders.add(pkgFolder.toString());
+		}
+		
+		return StringUtil.collToString(pkgFolders, File.pathSeparator);
 	}
 	
 }

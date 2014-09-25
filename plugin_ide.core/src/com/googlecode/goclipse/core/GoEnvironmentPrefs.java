@@ -23,6 +23,7 @@ public class GoEnvironmentPrefs implements GoEnvironmentPrefConstants {
 		return new GoRoot(GO_ROOT.get(), GO_OS.get(), GO_ARCH.get());
 	}
 	
+	@Deprecated
 	public static class GoRoot extends CommonGoLocation {
 		
 		public GoRoot(String location, String go_os, String go_arch) {

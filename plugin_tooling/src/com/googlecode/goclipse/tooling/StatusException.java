@@ -10,6 +10,10 @@ public class StatusException extends Exception {
 	
 	private static final long serialVersionUID = -7324639626503261646L;
 	
+	public StatusException(String message) {
+		this(assertNotNull(message), null);
+	}
+	
 	public StatusException(String message, Throwable cause) {
 		super(assertNotNull(message), cause);
 	}

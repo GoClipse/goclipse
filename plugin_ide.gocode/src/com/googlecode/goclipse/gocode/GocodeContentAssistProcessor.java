@@ -4,12 +4,18 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -20,11 +26,12 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IPathEditorInput;
 
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.go.CodeContext;
+import com.googlecode.goclipse.tooling.GoEnvironment;
+import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
@@ -34,8 +41,6 @@ import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
  * and is called from the GoEditorSourceViewerConfiguration class in the main GoClipse plugin.
  */
 public class GocodeContentAssistProcessor implements IContentAssistProcessorExt {
-	
-	private GocodeClient client = new GocodeClient();
 	
 	private static HashMap<String, CodeContext> codeContexts = new HashMap<String, CodeContext>();
 	
@@ -53,12 +58,11 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 	
 	private IEditorPart editor;
 	
-	/**
-	 * 
-	 */
 	public GocodeContentAssistProcessor() {
 		
 	}
+	
+	protected String errorMessage;
 	
 	@Override
 	public void setEditorContext(IEditorPart editor) {
@@ -67,136 +71,133 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 	
 	@Override
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
-		IPath path = null;
-		
+		errorMessage = null;
 		try {
-			IEditorInput input = editor.getEditorInput();
-			
-			if (input instanceof IPathEditorInput) {
-				IPathEditorInput pathInput = (IPathEditorInput) input;
-				path = pathInput.getPath();
-			}
-		} catch (NullPointerException npe) {
-			
+			return computeCompletionProposals_do(viewer, offset);
+		} catch (CoreException e) {
+			GocodePlugin.logError(e);
+			errorMessage = e.getMessage();
+			return array();
+		}
+	}
+	
+	protected ICompletionProposal[] computeCompletionProposals_do(ITextViewer viewer, int offset) throws CoreException {
+		if(editor == null) {
+			throw LangCore.createCoreException("Error, no editor provided:", null);
 		}
 		
-		if (path == null) {
-			return array();
+		String filePath = EditorUtils.getFilePathFromEditorInput(editor.getEditorInput()).toString();
+		
+		if (filePath == null) {
+			throw LangCore.createCoreException("Error: Could not determine file path for editor.", null);
 		}
 		
 		ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
 		
-			String filename = path.toOSString();
-			IDocument document = viewer.getDocument();
-			CodeContext codeContext = codeContexts.get(filename);
-			
-			@SuppressWarnings("unused")
-			int linenumber = 0;
-			
+		IDocument document = viewer.getDocument();
+		CodeContext codeContext = codeContexts.get(filePath);
+		
+		if (codeContext == null) {
 			try {
-				// the following starts on line 0?, so we add 1 to the result
-				linenumber = document.getLineOfOffset(offset) + 1;
-			} catch (BadLocationException e1) {
-				GocodePlugin.logError(e1);
+				codeContext = CodeContext.getCodeContext(getProjectFor(editor), filePath, document.get());
+			} catch (IOException e) {
+				throw LangCore.createCoreException("Error during code Context:", e);
 			}
+		}
+		
+		IPath gocodePath = GocodePlugin.getPlugin().getBestGocodeInstance();
+		
+		if (gocodePath == null) {
+			throw LangCore.createCoreException("Error: gocode path not provided.", null);
+		}
+		String gocodePathStr = gocodePath.toOSString();
+		
+		List<String> completions;
+		
+		try {
+			GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(getProjectFor(editor));
 			
-			if (codeContext == null) {
-				try {
-					codeContext = CodeContext.getCodeContext(getProjectFor(editor), filename, document.get());
-				} catch (IOException e) {
-					GocodePlugin.logError(e);
-				}
-			}
+			GocodeClient client = new GocodeClient(gocodePathStr);
 			
-				String fileName = path.toOSString();
+			ExternalProcessResult processResult = client.execute(goEnvironment, filePath, document.get(), offset);
+			String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
+			completions = new ArrayList2<>(GocodeClient.LINE_SPLITTER.split(stdout));
+			
+		} catch (StatusException e) {
+			throw LangCore.createCoreException(e.getMessage(), e.getCause());
+		}
+		
+		for (String string : completions) {
+			String prefix = "";
+			prefix = lastWord(document, offset);
+			int firstComma = string.indexOf(",,");
+			int secondComma = string.indexOf(",,", firstComma + 2);
+			
+			if (firstComma != -1 && secondComma != -1) {
+				String type = string.substring(0, firstComma);
 				
-				IPath gocodePath = GocodePlugin.getPlugin().getBestGocodeInstance();
-				
-				List<String> completions = null;
-				
-				if (gocodePath != null) {
-					String gocodePathStr = gocodePath.toOSString();
-					
-					completions = client.getCompletions(gocodePathStr, getProjectFor(editor),
-						fileName, document.get(), offset);
+				if ("PANIC".equals(type)) {
+					GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
+					continue;
 				}
 				
+				String identifier = string.substring(firstComma + 2, secondComma);
 				
-				if (completions == null) {
-					completions = Collections.emptyList();
+				if ("PANIC".equals(identifier)) {
+					GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
+					continue;
 				}
 				
-				for (String string : completions) {
-					String prefix = "";
-					prefix = lastWord(document, offset);
-					int firstComma = string.indexOf(",,");
-					int secondComma = string.indexOf(",,", firstComma + 2);
-					
-					if (firstComma != -1 && secondComma != -1) {
-						String type = string.substring(0, firstComma);
+				String spec = string.substring(secondComma + 2);
+				
+				String descriptiveString = identifier + " : " + spec;
+				String description = codeContext.getDescriptionForName(identifier).trim();
+				IContextInformation info = new ContextInformation(description, description);
+				//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
+				
+				Image image = defaultImage;
+				String substr = identifier.substring(prefix.length());
+				int replacementLength = identifier.length() - prefix.length();
+				
+				if (descriptiveString != null && descriptiveString.contains(" : func")) {
+					if (codeContext.isMethodName(identifier)) {
+						image = privateFuncImage;
 						
-						if ("PANIC".equals(type)) {
-							GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
-							continue;
-						}
-						
-						String identifier = string.substring(firstComma + 2, secondComma);
-						
-						if ("PANIC".equals(identifier)) {
-							GocodePlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
-							continue;
-						}
-						
-						String spec = string.substring(secondComma + 2);
-						
-						String descriptiveString = identifier + " : " + spec;
-						String description = codeContext.getDescriptionForName(identifier).trim();
-						IContextInformation info = new ContextInformation(description, description);
-						//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
-						
-						Image image = defaultImage;
-						String substr = identifier.substring(prefix.length());
-						int replacementLength = identifier.length() - prefix.length();
-						
-						if (descriptiveString != null && descriptiveString.contains(" : func")) {
-							if (codeContext.isMethodName(identifier)) {
-								image = privateFuncImage;
-								
-							} else {
-								image = funcImage;
-							}
-							
-							substr = identifier.substring(prefix.length()) + "()";
-							replacementLength++;
-							
-						} else if (descriptiveString != null && descriptiveString.contains(" : interface")) {
-							image = interfaceImage;
-							
-						} else if (descriptiveString != null && descriptiveString.contains(" : struct")) {
-							image = structImage;
-							
-						} else if ("package".equals(type)) {
-							image = importImage;
-							
-							substr = identifier.substring(prefix.length()) + ".";
-							replacementLength++;
-						} else {
-							if (substr != null && substr.length() > 0 && Character.isUpperCase(substr.charAt(0))) {
-								image = publicVarImage;
-								
-							} else {
-								image = privateVarImage;
-							}
-						}
-						
-						// format the output
-						descriptiveString = descriptiveString.replace(" : func", " ").replace(" : interface",
-								" ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
-						
-						results.add(new CompletionProposal(identifier, offset - prefix.length(),
-							prefix.length(), identifier.length(), image, descriptiveString, info, description));
+					} else {
+						image = funcImage;
 					}
+					
+					substr = identifier.substring(prefix.length()) + "()";
+					replacementLength++;
+					
+				} else if (descriptiveString != null && descriptiveString.contains(" : interface")) {
+					image = interfaceImage;
+					
+				} else if (descriptiveString != null && descriptiveString.contains(" : struct")) {
+					image = structImage;
+					
+				} else if ("package".equals(type)) {
+					image = importImage;
+					
+					substr = identifier.substring(prefix.length()) + ".";
+					replacementLength++;
+				} else {
+					if (substr != null && substr.length() > 0 && Character.isUpperCase(substr.charAt(0))) {
+						image = publicVarImage;
+						
+					} else {
+						image = privateVarImage;
+					}
+				}
+				
+				// format the output
+				descriptiveString = descriptiveString.replace(" : func", " ").replace(" : interface",
+						" ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
+				
+				results.add(new CompletionProposal(identifier, offset - prefix.length(),
+					prefix.length(), identifier.length(), image, descriptiveString, info, description));
 			}
+		}
 		
 		return results.toArray(new ICompletionProposal[] {});
 	}
@@ -253,7 +254,7 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessorExt 
 	
 	@Override
 	public String getErrorMessage() {
-		return client.getError();
+		return errorMessage;
 	}
 	
 	@Override

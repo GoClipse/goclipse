@@ -20,6 +20,4 @@ public interface GocodePreferences extends DaemonEnginePreferences {
 	public static final StringPreference GOCODE_PATH = DaemonEnginePreferences.DAEMON_PATH;
 	public static final BooleanPreference GOCODE_CONSOLE_ENABLE = DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE;
 	
-	public static final boolean USE_TCP = true;
-	
 }

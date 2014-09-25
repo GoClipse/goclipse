@@ -13,7 +13,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 import com.googlecode.goclipse.builder.GoToolManager;
-import com.googlecode.goclipse.gocode.preferences.GocodePreferences;
+import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 /**
  * Start up an instance of Gocode in server mode.
@@ -39,7 +39,7 @@ public class GocodeServer {
 		
 		commandLine.add("-s");
 		
-		if (GocodePreferences.USE_TCP) {
+		if (GocodeCompletionOperation.USE_TCP) {
 			commandLine.add("-sock=tcp");
 		}
 		

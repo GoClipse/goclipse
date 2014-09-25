@@ -10,16 +10,64 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.gocode;
 
-public class GocodeCompletionOperation {
+import java.util.List;
+import java.util.regex.Pattern;
+
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+
+import com.googlecode.goclipse.tooling.GoEnvironment;
+import com.googlecode.goclipse.tooling.StatusException;
+
+
+public abstract class GocodeCompletionOperation<EXC extends Exception> {
 	
-	protected String gocodePath;
+	public static final boolean USE_TCP = true;
+	
+	public String gocodePath;
 	
 	public GocodeCompletionOperation(String gocodePath) {
 		this.gocodePath = gocodePath;
 	}
 	
-	@Deprecated
-	public GocodeCompletionOperation() {
+	public ExternalProcessResult execute(GoEnvironment goEnvironment, String filePath, String bufferText, 
+			int offset) throws StatusException, EXC {
+		
+		setLibPathForEnvironment(goEnvironment);
+		
+		ArrayList2<String> arguments = new ArrayList2<String>();
+		if (USE_TCP) {
+			arguments.add("-sock=tcp");
+		}
+		arguments.add("-f=csv");
+		arguments.add("autocomplete");
+		arguments.add(filePath);
+		arguments.add("c" + offset);
+		
+		ExternalProcessResult processResult = runGocode(arguments, bufferText);
+
+		if(processResult.exitValue != 0) {
+			throw new StatusException("Error, gocode returned non-zero status: " + processResult.exitValue);
+		}
+		
+		return processResult;
 	}
+	
+	protected void setLibPathForEnvironment(GoEnvironment goEnvironment) throws StatusException, EXC {
+		ArrayList2<String> arguments = new ArrayList2<>();
+		
+		if (USE_TCP) {
+			arguments.add("-sock=tcp");
+		}
+		arguments.add("set");
+		arguments.add("lib-path");
+		arguments.add(goEnvironment.getPkgFolderLocations());
+		
+		runGocode(arguments, null);
+	}
+	
+	protected abstract ExternalProcessResult runGocode(List<String> arguments, String input) throws EXC;
+	
+	public static final Pattern LINE_SPLITTER = Pattern.compile("\n|(\r\n)|\r");
 	
 }
