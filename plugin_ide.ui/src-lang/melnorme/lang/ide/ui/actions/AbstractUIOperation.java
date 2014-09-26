@@ -35,7 +35,7 @@ public abstract class AbstractUIOperation {
 	protected static final String MSG_ERROR_EXECUTING_OPERATION 
 		= "Error executing {0}.";
 	protected static final String MSG_INTERNAL_ERROR_EXECUTING_OPERATION 
-		= "Internal Error executing {0}.";
+		= "Internal error executing {0}.";
 	
 	
 	protected final String operationName;
@@ -50,10 +50,10 @@ public abstract class AbstractUIOperation {
 		try {
 			executeOperation();
 		} catch (CoreException ce) {
-			UIOperationExceptionHandler.handle(ce, operationName, 
-				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName));
+			UIOperationExceptionHandler.handleOperationStatus(
+				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName), ce);
 		} catch (RuntimeException re) {
-			UIOperationExceptionHandler.handleError(true, operationName, 
+			UIOperationExceptionHandler.handleError(
 				MessageFormat.format(MSG_INTERNAL_ERROR_EXECUTING_OPERATION, operationName), re);
 		}
 	}

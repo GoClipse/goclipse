@@ -14,11 +14,11 @@ import java.util.List;
 
 
 public interface IListenerList<LISTENER> {
-
+	
 	public List<LISTENER> getListeners();
-
+	
 	public void removeListener(LISTENER listener);
-
+	
 	public void addListener(LISTENER listener);
 	
 }

@@ -11,13 +11,15 @@
 package melnorme.lang.ide.ui.utils;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.LangCore;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -25,74 +27,12 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class UIOperationExceptionHandler {
 	
-	public static void handle(CoreException ce, String title, String message) {
-		LangCore.logStatus(ce);
-		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
-		ErrorDialog.openError(shell, title, message, ce.getStatus());
+	public static void handleError(String message, Throwable exception) {
+		handleError(true, message, exception);
 	}
 	
-	public static void handleOperationStatus(CoreException ce) {
-		handleOperationStatus(ce, "Error");
-	}
-	
-	public static void handleOperationStatus(CoreException ce, String dialogTitle) {
-		IStatus status = ce.getStatus();
-		if(status.isOK() || status.matches(IStatus.CANCEL)) {
-			return;
-		}
-		
-		boolean logError = status.matches(IStatus.ERROR);
-		
-		handleError2(logError, dialogTitle, ce.getMessage(), ce.getCause());
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static void handleError(String errorMessage, Throwable exception) {
-		handleException(null, errorMessage, exception);
-	}
-	
-	@Deprecated
-	public static void handleException(String errorMessage, Throwable exception) {
-		handleException(null, errorMessage, exception);
-	}
-	
-	@Deprecated
-	public static void handleException(String operation, String errorMessage, Throwable exception) {
-		String title = (operation == null) ? "Error" : "Error during " + operation; 
-		doHandleException(title, errorMessage, exception);
-	}
-	
-	@Deprecated
-	public static void doHandleException(String title, String errorMessage, Throwable exception) {
-		handleError(true, title, errorMessage, exception);
-	}
-	
-	public static void doHandleError(String title, String errorMessage, Throwable exception) {
-		handleError(true, title, errorMessage, exception);
-	}
-	
-	public static void handleError(boolean logError, String errorMessage, Throwable exception) {
-		handleError(logError, "Error: " + errorMessage, null, exception);
-	}
-	
-	public static void handleError(boolean logError, String title, String dialogMessage, Throwable exception) {
-		if(logError) {
-			LangCore.logError(dialogMessage, exception);
-		}
-		
-		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
-		
-		String reasonMessage = exception.getMessage();
-		if(reasonMessage == null) {
-			reasonMessage = exception.getClass().getSimpleName();
-		}
-		Status status = LangCore.createErrorStatus(reasonMessage, exception);
-		ErrorDialog.openError(shell, title, dialogMessage, status);
-	}
-	
-	public static void handleError2(boolean logError, String title, String message, Throwable exception) {
-		assertTrue(message != null || exception != null);
+	public static void handleError(boolean logError, String message, Throwable exception) {
+		assertNotNull(message);
 		
 		if(logError) {
 			LangCore.logError(message, exception);
@@ -100,13 +40,48 @@ public class UIOperationExceptionHandler {
 		
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		
-		if(message == null) {
-			message = exception.getClass().getSimpleName();
+		if(exception == null) {
+			MessageDialog.open(SWT.ERROR, shell, "Error: ", message, SWT.SHEET);
+		} else {
+			String exceptionText = getExceptionText(exception);
+			MessageDialog.open(SWT.ERROR, shell, "Error: " + message, exceptionText, SWT.SHEET);
+		}
+	}
+	
+	protected static String getExceptionText(Throwable exception) {
+		String exceptionText = exception.getClass().getName();
+		if(exception.getMessage() != null) {
+			exceptionText += ": " + exception.getMessage();
+		}
+		return exceptionText;
+	}
+	
+	public static void handleWithErrorDialog(boolean logError, String title, String message, Throwable exception) {
+		if(logError) {
+			LangCore.logError(message, exception);
 		}
 		
-		String dialogMessage = null;
-		Status status = LangCore.createErrorStatus(message, exception);
-		ErrorDialog.openError(shell, title, dialogMessage, status);
+		if(message == null) {
+			message = "Error";
+		}
+		
+		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
+		
+		Status status = LangCore.createErrorStatus(getExceptionText(exception), exception);
+		ErrorDialog.openError(shell, title, message, status);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static void handleOperationStatus(String dialogTitle, CoreException ce) {
+		IStatus status = ce.getStatus();
+		if(status.isOK() || status.matches(IStatus.CANCEL)) {
+			return;
+		}
+		
+		boolean logError = status.matches(IStatus.ERROR);
+		
+		handleWithErrorDialog(logError, dialogTitle, ce.getMessage(), ce.getCause());
 	}
 	
 }

@@ -47,8 +47,8 @@ public class GoUIPlugin extends LangUIPlugin {
 		assertTrue(Display.getCurrent() != null); // This must run from UI thread
 		try {
 			gocodeServerManager.prepareGocodeServer();
-		} catch (CoreException e) {
-			UIOperationExceptionHandler.handleOperationStatus(e, "Error starting gocode server.");
+		} catch (CoreException ce) {
+			UIOperationExceptionHandler.handleOperationStatus("Error starting gocode server.", ce);
 		}
 		return gocodeServerManager;
 	}
