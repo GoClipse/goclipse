@@ -23,10 +23,10 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class UIOperationExceptionHandler {
 	
-	public static void handle(CoreException e, String title, String message) {
-		LangCore.logError(e);
+	public static void handle(CoreException ce, String title, String message) {
+		LangCore.logStatus(ce);
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
-		ErrorDialog.openError(shell, title, message, e.getStatus());
+		ErrorDialog.openError(shell, title, message, ce.getStatus());
 	}
 	
 	/* -----------------  ----------------- */

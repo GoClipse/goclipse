@@ -54,9 +54,9 @@ public class BestMatchHover extends AbstractLangEditorTextHover<Object> {
 			try {
 				fInstantiatedTextHovers.add(klass.newInstance());
 			} catch (InstantiationException e) {
-				LangUIPlugin.log(e);
+				LangUIPlugin.logInternalError(e);
 			} catch (IllegalAccessException e) {
-				LangUIPlugin.log(e);
+				LangUIPlugin.logInternalError(e);
 			}
 		}
 	}

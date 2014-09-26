@@ -60,23 +60,42 @@ public abstract class LangCore extends Plugin {
 	/* ----------------- ----------------- */
 	
 	/** Creates an OK status with given message. */
-	public static Status createOkStatus(String message) {
+	public static StatusExt createOkStatus(String message) {
 		return createStatus(IStatus.OK, message, null);
 	}
 	
-	/** Creates a Status with given status code and message. */
-	public static Status createStatus(int statusCode, String message, Throwable throwable) {
-		return new Status(statusCode, LangCore.PLUGIN_ID, message, throwable);
+	/** Creates an Info status with given message. */
+	public static StatusExt createInfoStatus(String message) {
+		return createStatus(IStatus.INFO, message, null);
 	}
 	
 	/** Creates a status describing an error in this plugin, with given message. */
-	public static IStatus createErrorStatus(String message) {
+	public static StatusExt createErrorStatus(String message) {
 		return createErrorStatus(message, null);
 	}
 	
 	/** Creates a status describing an error in this plugin, with given message and given throwable. */
-	public static Status createErrorStatus(String message, Throwable throwable) {
+	public static StatusExt createErrorStatus(String message, Throwable throwable) {
 		return createStatus(IStatus.ERROR, message, throwable);
+	}
+	
+	/** Creates a Status with given status code and message. */
+	public static StatusExt createStatus(int statusCode, String message, Throwable throwable) {
+		return new StatusExt(statusCode, LangCore.getInstance(), message, throwable);
+	}
+	
+	public static final class StatusExt extends Status {
+		
+		protected final Plugin plugin;
+		
+		public StatusExt(int severity, Plugin plugin, String message, Throwable exception) {
+			super(severity, plugin.getBundle().getSymbolicName(), message, exception);
+			this.plugin = plugin;
+		}
+		
+		public void logInPlugin() {
+			plugin.getLog().log(this);
+		}
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */
@@ -84,14 +103,16 @@ public abstract class LangCore extends Plugin {
 		return new CoreException(createErrorStatus(message, throwable));
 	}
 	
+	/* ----------------- Logging ----------------- */
+	
 	/** Logs given status. */
 	public static void logStatus(IStatus status) {
 		getInstance().getLog().log(status);
 	}
 	
-	/** Logs an error status with given message and given throwable. */
-	public static void logError(String message, Throwable throwable) {
-		getInstance().getLog().log(createErrorStatus(message, throwable));
+	/** Logs status of given CoreException. */
+	public static void logStatus(CoreException ce) {
+		getInstance().getLog().log(ce.getStatus());
 	}
 	
 	/** Logs an error status with given message. */
@@ -99,9 +120,9 @@ public abstract class LangCore extends Plugin {
 		getInstance().getLog().log(createErrorStatus(message, null));
 	}
 	
-	/** Logs an error status with given exception. */
-	public static void logError(Throwable throwable) {
-		getInstance().getLog().log(createErrorStatus(LangCoreMessages.LangCore_error, throwable));
+	/** Logs an error status with given message and given throwable. */
+	public static void logError(String message, Throwable throwable) {
+		getInstance().getLog().log(createErrorStatus(message, throwable));
 	}
 	
 	/** Logs a warning status with given message */
@@ -112,6 +133,10 @@ public abstract class LangCore extends Plugin {
 	/** Logs a warning status with given message and given throwable */
 	public static void logWarning(String message, Throwable throwable) {
 		getInstance().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, throwable));
+	}
+	
+	public static void logInternalError(Throwable throwable) {
+		logError("Internal Error!", throwable);
 	}
 	
 }

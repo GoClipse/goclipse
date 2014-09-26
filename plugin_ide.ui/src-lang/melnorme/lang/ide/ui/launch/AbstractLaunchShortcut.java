@@ -189,8 +189,8 @@ public abstract class AbstractLaunchShortcut implements ILaunchShortcut {
 					candidateConfigs.add(config);
 				}
 			}
-		} catch (CoreException e) {
-			LangUIPlugin.log(e);
+		} catch (CoreException ce) {
+			LangUIPlugin.logStatus(ce);
 		}
 		
 		int candidateCount = candidateConfigs.size();
@@ -225,8 +225,8 @@ public abstract class AbstractLaunchShortcut implements ILaunchShortcut {
 			
 			wc.setMappedResources(new IResource[] { launchable });
 			config = wc.doSave();
-		} catch (CoreException exception) {
-			LangCore.logError(exception);
+		} catch (CoreException ce) {
+			LangCore.logStatus(ce);
 		}
 		return config;
 	}
