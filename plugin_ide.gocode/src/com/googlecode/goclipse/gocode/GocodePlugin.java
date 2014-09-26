@@ -9,7 +9,7 @@ import melnorme.utilbox.misc.MiscUtil;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.core.GoEnvironmentPrefUtils;
@@ -18,7 +18,7 @@ import com.googlecode.goclipse.core.tools.GocodeServer;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class GocodePlugin extends AbstractUIPlugin {
+public class GocodePlugin extends Plugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.googlecode.goclipse.gocode"; //$NON-NLS-1$
 	
@@ -27,11 +27,7 @@ public class GocodePlugin extends AbstractUIPlugin {
 	
 	private GocodeServer gocodeServer;
 	
-	/**
-	 * The constructor
-	 */
 	public GocodePlugin() {
-		
 	}
 	
 	@Override
@@ -52,30 +48,21 @@ public class GocodePlugin extends AbstractUIPlugin {
 	
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		
 		if (gocodeServer != null) {
 			gocodeServer.stopServer();
 			gocodeServer = null;
 		}
 		
-		plugin = null;
-		
 		super.stop(context);
+		
+		plugin = null;
 	}
 	
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
 	public static GocodePlugin getPlugin() {
 		return plugin;
 	}
 	
 	
-	/**
-	 * @return "gocode" or "gocode.exe"
-	 */
 	protected String getExeName() {
 		return MiscUtil.OS_IS_WINDOWS ? "gocode.exe" : "gocode";
 	}
@@ -113,11 +100,7 @@ public class GocodePlugin extends AbstractUIPlugin {
 		
 		IPath toolsPath = Path.fromOSString(pluginDir.getAbsolutePath()).append("tools");
 		
-		String name = "";
-		
-		name += GoEnvironmentPrefUtils.getGO_OS_Default();
-		
-		name += "_" + GoEnvironmentPrefUtils.get_GO_ARCH_Default();
+		String name = GoEnvironmentPrefUtils.getGO_OS_Default() + "_" + GoEnvironmentPrefUtils.get_GO_ARCH_Default();
 		
 		toolsPath = toolsPath.append(name).append(getExeName());
 		
