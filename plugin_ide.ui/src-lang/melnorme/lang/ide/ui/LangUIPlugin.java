@@ -70,6 +70,8 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	/** Do final stage of plugin start: activate services, listeners, etc. */
 	protected void doCustomStart_finalStage() {
+		LangCore.getInstance().initializeAfterUIStart();
+		
 		(new InitializeAfterLoadJob()).schedule();
 	}
 	
