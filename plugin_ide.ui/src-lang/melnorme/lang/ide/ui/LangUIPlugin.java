@@ -82,8 +82,8 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		
 		try {
 			doInitializeAfterLoad(monitor);
-		} catch (CoreException e) {
-			UIOperationExceptionHandler.handleOperationStatus(e, "Error during UI initialization.");
+		} catch (CoreException ce) {
+			UIOperationExceptionHandler.handleOperationStatus("Error during UI initialization.", ce);
 		}
 	}
 	
