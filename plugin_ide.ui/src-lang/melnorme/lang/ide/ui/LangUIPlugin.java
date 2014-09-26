@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore.StatusExt;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.cdt.internal.ui.text.util.CColorManager;
@@ -73,7 +74,21 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	protected void doCustomStart_finalStage() {
 		LangCore.getInstance().initializeAfterUIStart();
 		
-		(new InitializeAfterLoadJob()).schedule();
+		new InitializeAfterLoadJob(this).schedule();
+	}
+	
+	public final void initializeAfterUILoad(IProgressMonitor monitor) {
+		LangCore.getInstance().initializeAfterUIStart();
+		
+		try {
+			doInitializeAfterLoad(monitor);
+		} catch (CoreException e) {
+			UIOperationExceptionHandler.handleOperationStatus(e, "Error during UI initialization.");
+		}
+	}
+	
+	@SuppressWarnings("unused")
+	protected void doInitializeAfterLoad(IProgressMonitor monitor) throws CoreException {
 	}
 	
 	@Override
@@ -84,13 +99,6 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	}
 	
 	protected abstract void doCustomStop(BundleContext context);
-	
-	/* --------  -------- */
-	
-	public static void initializeAfterLoad(IProgressMonitor monitor) throws CoreException {
-		// nothing to do
-		monitor.done();
-	}
 	
 	/* ----------------- logging helpers ----------------- */
 	
