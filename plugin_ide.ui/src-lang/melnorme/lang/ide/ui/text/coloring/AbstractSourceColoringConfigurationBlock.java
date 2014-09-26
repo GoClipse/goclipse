@@ -372,7 +372,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		try {
 			return StreamUtil.readAllBytesFromStream(is).toString(StringUtil.UTF8);
 		} catch (IOException e) {
-			LangUIPlugin.log(e);
+			LangUIPlugin.logInternalError(e);
 			return "<INTERNAL ERROR: COULD NOT READ PREVIEW FILE";
 		}
 	}

@@ -44,7 +44,7 @@ public class EclipseUtils extends ResourceUtils {
 				debugPlugin.start(Bundle.START_TRANSIENT);
 			}
 		} catch (BundleException e) {
-			LangCore.logError(e);
+			LangCore.logError("Error trying to start plugin: " + pluginId, e);
 		}
 	}
 	

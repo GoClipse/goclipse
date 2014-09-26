@@ -132,8 +132,8 @@ public class CommonMainLaunchConfigurationTab extends AbstractLaunchConfiguratio
 		doPerformApply(config);
 		try {
 			mapResources(config);
-		} catch (CoreException e) {
-			LangUIPlugin.logWarning(e);
+		} catch (CoreException ce) {
+			LangUIPlugin.logStatus(ce);
 		}
 	}
 	
@@ -192,8 +192,8 @@ public class CommonMainLaunchConfigurationTab extends AbstractLaunchConfiguratio
 		if (project != null && project.exists()) {
 			try {
 				return project.hasNature(getNatureID());
-			} catch (CoreException e) {
-				LangUIPlugin.log(e);
+			} catch (CoreException ce) {
+				LangUIPlugin.logStatus(ce);
 			}
 		}
 		return false;

@@ -31,8 +31,8 @@ public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchCo
 		String projectName = "";
 		try {
 			projectName = config.getAttribute(key, defaultValue);
-		} catch (CoreException e) {
-			LangUIPlugin.log(e);
+		} catch (CoreException ce) {
+			LangUIPlugin.logStatus(ce);
 		}
 		return projectName;
 	}

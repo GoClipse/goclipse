@@ -68,8 +68,8 @@ public class RuntimeProcessExtension extends RuntimeProcess {
 					buffer.append(type);
 					buffer.append("] ");
 				}
-			} catch (CoreException e) {
-				LangCore.logError(e);
+			} catch (CoreException ce) {
+				LangCore.logStatus(ce);
 			}
 		}
 		buffer.append(process.getLabel());

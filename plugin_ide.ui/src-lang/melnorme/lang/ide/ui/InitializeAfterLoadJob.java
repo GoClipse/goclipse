@@ -31,9 +31,9 @@ public class InitializeAfterLoadJob extends UIJob {
 			
 			try {
 				LangUIPlugin.initializeAfterLoad(new SubProgressMonitor(monitor, 4));
-			} catch (CoreException e) {
-				LangUIPlugin.log(e);
-				return e.getStatus();
+			} catch (CoreException ce) {
+				LangUIPlugin.logStatus(ce);
+				return ce.getStatus();
 			}
 			
 			return new Status(IStatus.OK, LangUIPlugin.PLUGIN_ID, IStatus.OK, "", null);

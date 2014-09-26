@@ -105,8 +105,8 @@ public class ProjectField extends WidgetFieldComponent<String> {
 		try {
 			final IProject[] projects = getDialogChooseElements(); 
 			dialog.setElements(projects);
-		} catch (CoreException e) {
-			LangUIPlugin.log(e);
+		} catch (CoreException ce) {
+			LangUIPlugin.logStatus(ce);
 		}
 		
 		final IProject project = getProject();
