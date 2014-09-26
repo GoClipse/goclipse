@@ -64,6 +64,32 @@
 		</hyperlinkDetector>
 	</extension>
 	
+	<!-- ============ Actions/Commands ============= -->
+	
+	<extension point="org.eclipse.ui.commands">
+		<category
+			name="%CommandsCategory.name"
+			description="%CommandsCategory.description"
+			id="LANG_PROJECT_ID.ide.ui.commands.Category">
+		</category>
+		
+		<command
+	        categoryId="LANG_PROJECT_ID.ide.ui.commands.Category"
+	        defaultHandler="LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OpenDefinitionHandler"
+	        description="%OpenDefinitionAction.tooltip"
+	        id="LANG_PROJECT_ID.ide.ui.commands.openDefinition"
+	        name="%OpenDefinitionAction.name">
+		</command>
+	</extension>
+	
+	<extension point="org.eclipse.ui.bindings">
+		<key
+			commandId="LANG_PROJECT_ID.ide.ui.commands.openDefinition"
+			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="F3">
+		</key>
+	</extension>
 	
 	<!-- ============ Preference pages ============= -->
 	

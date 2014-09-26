@@ -25,6 +25,7 @@ import java.util.Set;
 
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -70,6 +71,10 @@ public class CommonTestExt extends CommonTest {
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
+	}
+	
+	public static String getClassResourceAsString(Class<?> klass, String resourceName) {
+		return MiscUtil.getClassResourceAsString(klass, resourceName);
 	}
 	
 	/* -------- iteration/checkers -------- */

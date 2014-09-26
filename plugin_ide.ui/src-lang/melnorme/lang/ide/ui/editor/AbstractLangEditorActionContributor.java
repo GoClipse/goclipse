@@ -8,16 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations;
+package melnorme.lang.ide.ui.editor;
 
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
 
-public interface ILangOperationsListener {
+public class AbstractLangEditorActionContributor extends BasicTextEditorActionContributor {
 	
-	void engineDaemonStart(ProcessBuilder pb, CoreException ce, ExternalProcessNotifyingHelper processHelper);
-	
-	void engineClientToolStart(ProcessBuilder pb, CoreException ce, ExternalProcessNotifyingHelper processHelper);
+	public AbstractLangEditorActionContributor() {
+	}
 	
 }

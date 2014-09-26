@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.utils;
+package melnorme.lang.ide.ui.tools.console;
 
 import melnorme.util.swt.jface.text.ColorManager;
 

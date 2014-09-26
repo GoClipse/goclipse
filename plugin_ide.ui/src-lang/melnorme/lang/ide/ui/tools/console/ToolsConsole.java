@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui.tools.console;
 import java.io.IOException;
 
 import melnorme.lang.ide.core.utils.prefs.IPrefChangeListener;
-import melnorme.lang.ide.ui.utils.AbstractProcessMessageConsole;
 import melnorme.utilbox.ownership.OwnedObjects;
 
 import org.eclipse.jface.resource.ImageDescriptor;

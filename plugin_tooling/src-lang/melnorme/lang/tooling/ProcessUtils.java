@@ -8,16 +8,23 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations;
+package melnorme.lang.tooling;
 
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
+import java.io.File;
+import java.util.List;
 
-public interface ILangOperationsListener {
-	
-	void engineDaemonStart(ProcessBuilder pb, CoreException ce, ExternalProcessNotifyingHelper processHelper);
-	
-	void engineClientToolStart(ProcessBuilder pb, CoreException ce, ExternalProcessNotifyingHelper processHelper);
+public class ProcessUtils {
+
+	public static ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {
+		assertTrue(commandLine.size() > 0);
+		
+		ProcessBuilder pb = new ProcessBuilder(commandLine);
+		if(workingDir != null) {
+			pb.directory(workingDir);
+		}
+		return pb;
+	}
 	
 }

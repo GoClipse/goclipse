@@ -4,7 +4,7 @@ Bundle-Name: %pluginName
 Bundle-SymbolicName: LANG_PROJECT_ID.ide.core;singleton:=true
 Bundle-Version: 0.0.1.qualifier
 Bundle-Vendor: %pluginProvider
-Bundle-Activator: LANG_PROJECT_ID.ide.core.Core
+Bundle-Activator: LANG_PROJECT_ID.ide.core.LANGUAGE_Core
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

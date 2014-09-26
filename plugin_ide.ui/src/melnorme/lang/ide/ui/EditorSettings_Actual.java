@@ -12,6 +12,13 @@ package melnorme.lang.ide.ui;
 
 public class EditorSettings_Actual {
 	
+	public static final String EDITOR_ID = "LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor";
+	public static final String EDITOR_CONTEXT_ID = "LANG_PROJECT_ID.ide.ui.Contexts.Editor";
+	
 	public static final String EDITOR_CODE_TARGET = "LANG_PROJECT_ID.ide.ui.Editor.HyperlinkCodeTarget";
+	
+	/* ----------------- actions ----------------- */
+	
+	public static final String COMMAND_OpenDef_ID = "LANG_PROJECT_ID.ide.ui.commands.openDefinition";
 	
 }

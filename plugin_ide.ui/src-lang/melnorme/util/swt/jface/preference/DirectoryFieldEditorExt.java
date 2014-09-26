@@ -8,16 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations;
+package melnorme.util.swt.jface.preference;
 
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.swt.widgets.Composite;
 
-import org.eclipse.core.runtime.CoreException;
-
-public interface ILangOperationsListener {
+public class DirectoryFieldEditorExt extends DirectoryFieldEditor {
 	
-	void engineDaemonStart(ProcessBuilder pb, CoreException ce, ExternalProcessNotifyingHelper processHelper);
+	public DirectoryFieldEditorExt(String name, String labelText, Composite parent) {
+		super(name, labelText, parent);
+	}
 	
-	void engineClientToolStart(ProcessBuilder pb, CoreException ce, ExternalProcessNotifyingHelper processHelper);
+	@Override
+	public void setValidateStrategy(int value) {
+		super.setValidateStrategy(DirectoryFieldEditor.VALIDATE_ON_KEY_STROKE);
+	}
 	
 }

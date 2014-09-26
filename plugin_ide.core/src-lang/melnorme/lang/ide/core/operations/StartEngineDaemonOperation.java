@@ -12,40 +12,22 @@ package melnorme.lang.ide.core.operations;
 
 import org.eclipse.core.runtime.CoreException;
 
-import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
-public class StartEngineDaemonOperation {
+public class StartEngineDaemonOperation extends AbstractStartProcessTask {
 	
 	protected final AbstractToolsManager<?> abstractToolsManager;
-	protected final ProcessBuilder pb;
 	
 	public StartEngineDaemonOperation(AbstractToolsManager<?> abstractToolsManager, ProcessBuilder pb) {
+		super(pb);
 		this.abstractToolsManager = abstractToolsManager;
-		this.pb = pb;
 	}
 	
-	public ExternalProcessNotifyingHelper call() throws CoreException {
-		
-		Process process;
-		try {
-			process = EclipseExternalProcessHelper.startProcess(pb);
-		} catch (CoreException ce) {
-			for (ILangOperationsListener listener : abstractToolsManager.getListeners()) {
-				listener.engineDaemonFailedToStart(ce);
-			}
-			throw ce;
-		}
-		
-		ExternalProcessNotifyingHelper processHelper = new ExternalProcessNotifyingHelper(process, true, false);
-		
+	@Override
+	protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CoreException ce) {
 		for (ILangOperationsListener listener : abstractToolsManager.getListeners()) {
-			listener.engineDaemonStarted(pb, processHelper);
+			listener.engineDaemonStart(pb, ce, processHelper);
 		}
-		
-		processHelper.startReaderThreads();
-		
-		return processHelper;
 	}
 	
 }

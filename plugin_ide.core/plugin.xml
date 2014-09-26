@@ -6,7 +6,7 @@
          id="nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
-         <run class="LANG_PROJECT_ID.ide.core.Nature"/>
+         <run class="LANG_PROJECT_ID.ide.core.LANGUAGE_Nature"/>
       </runtime>
    </extension>
    

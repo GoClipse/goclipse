@@ -11,12 +11,19 @@
 package melnorme.lang.ide.ui.tools.console;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+
+import java.io.IOException;
+import java.util.List;
+
 import melnorme.lang.ide.core.operations.ILangOperationsListener;
 import melnorme.lang.ide.ui.LangOperationConsole_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
+import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IOConsoleOutputStream;
 
 
 public abstract class AbstractToolsConsoleListener implements ILangOperationsListener {
@@ -61,6 +68,26 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 	
 	protected static LangOperationConsole_Actual createConsole(String name) {
 		return new LangOperationConsole_Actual(name);
+	}
+	
+	protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
+			CoreException ce) {
+		List<String> commandLine = pb.command();
+		String text = prefix + StringUtil.collToString(commandLine, " ") + "\n";
+		
+		if(ce != null) {
+			text += "  FAILED: " + ce.getMessage();
+			Throwable cause = ce.getCause();
+			if(cause != null) {
+				text += "   Reason: " + cause.getMessage() + "\n";
+			}
+		}
+		
+		try {
+			outStream.write(text);
+		} catch (IOException e) {
+			// Do nothing
+		}
 	}
 	
 }
