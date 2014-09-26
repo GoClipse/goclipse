@@ -15,7 +15,6 @@ import melnorme.lang.ide.core.LangCore;
 
 import org.osgi.framework.BundleContext;
 
-import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.builder.GoBuilder;
 
 public class GoCore extends LangCore {
@@ -23,13 +22,9 @@ public class GoCore extends LangCore {
 	public static final String PLUGIN_ID = "com.googlecode.goclipse.core";
 	
 	public static final String CONTENT_ASSIST_EXTENSION_ID = "com.googlecode.goclipse.contentassistprocessor";
-
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {
-		// Force construction of singleton
-		Environment.INSTANCE.toString();
-		
 		GoBuilder.checkForCompilerUpdates(true);
 	}
 	

@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.gocode;
+package com.googlecode.goclipse.ui.actions;
 
 import java.util.List;
 

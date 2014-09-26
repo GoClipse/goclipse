@@ -4,9 +4,6 @@ import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
 import org.eclipse.cdt.ui.text.IColorManager;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
@@ -22,7 +19,6 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.editors.CompletionProcessor;
 import com.googlecode.goclipse.editors.DoubleClickStrategy;
 import com.googlecode.goclipse.editors.GoEditor;
@@ -30,7 +26,6 @@ import com.googlecode.goclipse.editors.GoEditorReconcilingStrategy;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.text.GoPartitionScanner;
 import com.googlecode.goclipse.ui.text.GoScanner;
-import com.googlecode.goclipse.utils.IContentAssistProcessorExt;
 
 /**
  * @author steel
@@ -82,30 +77,12 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 		// ca.setInformationControlCreator(getInformationControlCreator(sv));
 		return ca;
 	}
-
-	/**
-	 * @return
-	 */
-	private IContentAssistProcessor getCompletionProcessor() {
-		
-		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
-		        Activator.CONTENT_ASSIST_EXTENSION_ID);
-		try {
-			for (IConfigurationElement e : config) {
-				final Object extension = e.createExecutableExtension("class");
-
-				if (extension instanceof IContentAssistProcessorExt) {
-					((IContentAssistProcessorExt) extension).setEditorContext(editor);
-				}
-
-				if (extension instanceof IContentAssistProcessor) {
-					return (IContentAssistProcessor) extension;
-				}
-			}
-		} catch (CoreException ex) {
-			// do nothing
+	
+	protected IContentAssistProcessor getCompletionProcessor() {
+		if(true) {
+			return new GocodeContentAssistProcessor(editor);
 		}
-		
+		// TODO: BM investigate this obsolete completion processor, see if it has any use, remove otherwise.
 		return new CompletionProcessor(editor);
 	}
 	
