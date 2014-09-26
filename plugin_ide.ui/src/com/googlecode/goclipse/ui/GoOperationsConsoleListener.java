@@ -11,7 +11,6 @@
 package com.googlecode.goclipse.ui;
 
 import java.io.IOException;
-import java.util.List;
 
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
@@ -94,13 +93,12 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 				DaemonToolMessageConsole.getConsole() : null;
 				
 		if(console != null) {
-			List<String> commandLine = pb.command();
-			console.writeOperationInfo("##########  Starting gocode server:  ##########\n");
-			console.writeOperationInfo("   " + StringUtil.collToString(commandLine, " ") + "\n");
+			printProcessStartResult(console.infoOut, 
+				"##########  Starting gocode server:  ##########\n"
+				+ "   ", pb, ce);
 		}
 		
-		if(ce != null) {
-			handleError("Could not start gocode server.", ce);
+		if(processHelper == null) {
 			return;
 		} 
 		
@@ -118,12 +116,10 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 				DaemonToolMessageConsole.getConsole() : null;
 				
 		if(console != null) {
-			List<String> commandLine = pb.command();
-			console.writeOperationInfo(">> Running: " + StringUtil.collToString(commandLine, " ") + "\n");
+			printProcessStartResult(console.infoOut, ">> Running: ", pb, ce);
 		}
 		
-		if(ce != null) {
-			handleError("Could not start gocode client.", ce);
+		if(processHelper == null) {
 			return;
 		}
 		
