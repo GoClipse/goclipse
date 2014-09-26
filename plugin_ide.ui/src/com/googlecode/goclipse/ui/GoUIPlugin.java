@@ -10,12 +10,14 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.builder.GoToolManager;
@@ -25,8 +27,9 @@ public class GoUIPlugin extends LangUIPlugin {
 	
 	public static final String PLUGIN_ID = "com.googlecode.goclipse.ui";
 	
+	protected static GocodeServerManager gocodeServerManager = new GocodeServerManager();
+	
 	protected GoOperationsConsoleListener operationsListener;
-	protected GocodeServerManager gocodeServerManager;
 	
 	@Override
 	protected void doCustomStart_finalStage() {
@@ -38,11 +41,16 @@ public class GoUIPlugin extends LangUIPlugin {
 	
 	@Override
 	protected void doInitializeAfterLoad(IProgressMonitor monitor) throws CoreException {
+	}
+	
+	public static GocodeServerManager prepareGocodeManager_inUI() {
+		assertTrue(Display.getCurrent() != null); // This must run from UI thread
 		try {
-			gocodeServerManager = GocodeServerManager.startGocodeServer(GocodeServerManager.getBestGocodePath());
+			gocodeServerManager.prepareGocodeServer();
 		} catch (CoreException e) {
 			UIOperationExceptionHandler.handleOperationStatus(e, "Error starting gocode server.");
 		}
+		return gocodeServerManager;
 	}
 	
 	@Override

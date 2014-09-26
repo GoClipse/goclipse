@@ -22,32 +22,51 @@ import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
  */
 public class GocodeServerManager implements IDisposable {
 	
-	public static GocodeServerManager startGocodeServer(IPath path) throws CoreException {
+	protected ExternalProcessNotifyingHelper gocodeProcess;
+	
+	public GocodeServerManager() {
+	}
+	
+	public IPath getBestGocodePath() {
+		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
+			GoCore.CONTENT_ASSIST_EXTENSION_ID);
+		
+		try {
+			for (IConfigurationElement e : config) {
+				final Object extension = e.createExecutableExtension("class");
+				
+				if (extension instanceof IGocodePathProvider) {
+					return ((IGocodePathProvider) extension).getBestGocodePath();
+				}
+			}
+		} catch (CoreException ex) {
+			// do nothing
+		}
+		return null;
+	}
+	
+	public void prepareGocodeServer() throws CoreException {
 		if (DaemonEnginePreferences.AUTO_START_SERVER.get() == false)
-			return null;
-			
+			return;
+		
+		IPath path = getBestGocodePath();
 		if(path == null || path.isEmpty()) {
 			throw LangCore.createCoreException("No gocode path provided.", null);
 		}
 		
-		GocodeServerManager gocodeServer = new GocodeServerManager(path);
-		gocodeServer.startServer();
-		return gocodeServer;
+		if(gocodeProcess != null) {
+			// TODO: check path hasn't changed
+		} else {
+			startServer(path);
+		}
 	}
 	
-	protected final String gocodePath;
-	protected ExternalProcessNotifyingHelper gocodeProcess;
-	
-	public GocodeServerManager(IPath gocodePath) {
-		this.gocodePath = gocodePath.toOSString();
-	}
-	
-	public void startServer() throws CoreException {
+	public void startServer(IPath gocodePath) throws CoreException {
 		
 		GoCore.logInfo("starting gocode server [" + gocodePath + "]");
 		
 		ArrayList2<String> commandLine = new ArrayList2<String>();
-		commandLine.add(gocodePath);
+		commandLine.add(gocodePath.toOSString());
 		commandLine.add("-s");
 		if (GocodeCompletionOperation.USE_TCP) {
 			commandLine.add("-sock=tcp");
@@ -73,22 +92,4 @@ public class GocodeServerManager implements IDisposable {
 		stopServer();
 	}
 	
-	public static IPath getBestGocodePath() {
-		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
-			GoCore.CONTENT_ASSIST_EXTENSION_ID);
-		
-		try {
-			for (IConfigurationElement e : config) {
-				final Object extension = e.createExecutableExtension("class");
-				
-				if (extension instanceof IGocodePathProvider) {
-					return ((IGocodePathProvider) extension).getBestGocodePath();
-				}
-			}
-		} catch (CoreException ex) {
-			// do nothing
-		}
-		return null;
-	}
-
 }

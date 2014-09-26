@@ -93,7 +93,7 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessor {
 			}
 		}
 		
-		IPath gocodePath = GocodeServerManager.getBestGocodePath();
+		IPath gocodePath = GoUIPlugin.prepareGocodeManager_inUI().getBestGocodePath();
 		
 		if (gocodePath == null) {
 			throw LangCore.createCoreException("Error: gocode path not provided.", null);
