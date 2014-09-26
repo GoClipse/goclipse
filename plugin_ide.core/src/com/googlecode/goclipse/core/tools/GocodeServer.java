@@ -2,6 +2,7 @@ package com.googlecode.goclipse.core.tools;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.StartEngineDaemonOperation;
+import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
@@ -40,7 +41,8 @@ public class GocodeServer {
 		ProcessBuilder pb = new ProcessBuilder(commandLine);
 		
 		try {
-			new StartEngineDaemonOperation(GoToolManager.getDefault(), pb).call();
+			EclipseExternalProcessHelper eph = new StartEngineDaemonOperation(GoToolManager.getDefault(), pb).call();
+			gocodeProcess = eph.getNotifyingProcessHelper();
 		} catch (CoreException ce) {
 			LangCore.logStatus(ce.getStatus());
 			return;
