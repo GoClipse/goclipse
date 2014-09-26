@@ -26,11 +26,6 @@ import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
 
 public class GoEditor extends AbstractLangEditor {
 
-  public static final String EDITOR_ID = "com.googlecode.goclipse.editors.Editor";
-
-  // the org.eclipse.ui.contexts ID:
-  private static final String EDITOR_CONTEXT_ID = "com.googlecode.goclipse.editor";
-  
   private static final String BUNDLE_ID = "com.googlecode.goclipse.editors.GoEditorMessages";
   
   private static ResourceBundle editorResourceBundle = ResourceBundle.getBundle(BUNDLE_ID);
@@ -44,9 +39,7 @@ public class GoEditor extends AbstractLangEditor {
    * 
    */
   public GoEditor() {
-	  
-    setKeyBindingScopes(new String[] {EDITOR_CONTEXT_ID});
-
+	  super();
   }
 
 	@Override

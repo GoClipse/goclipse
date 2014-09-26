@@ -13,6 +13,7 @@ package com.googlecode.goclipse.ui.actions;
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
@@ -30,7 +31,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoToolPreferences;
-import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.tooling.GoEnvironment;
 import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation;
@@ -83,7 +83,8 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 		IEditorInput newInput = getNewEditorInput(oracleResult.path);
 		
 		SourceRange sr = new SourceRange(0, 0);
-		ITextEditor newEditor = EditorUtils.openEditor(editor, GoEditor.EDITOR_ID, newInput, sr, openEditorMode);
+		ITextEditor newEditor = EditorUtils.openEditor(editor, EditorSettings_Actual.EDITOR_ID, 
+			newInput, sr, openEditorMode);
 		
 		IDocument doc = EditorUtils.getEditorDocument(newEditor);
 		int selectionOffset = getOffsetFrom(doc, oracleResult.line, oracleResult.column);

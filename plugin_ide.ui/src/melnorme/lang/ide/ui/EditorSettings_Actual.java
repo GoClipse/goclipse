@@ -12,10 +12,13 @@ package melnorme.lang.ide.ui;
 
 public class EditorSettings_Actual {
 	
+	public static final String EDITOR_ID = "com.googlecode.goclipse.editors.Editor";
+	public static final String EDITOR_CONTEXT_ID = "com.googlecode.goclipse.editor";
+	
 	public static final String EDITOR_CODE_TARGET = "com.googlecode.goclipse.ui.Editor.CodeTarget";
 	
 	/* ----------------- actions ----------------- */
 	
-	public static final String COMMAND_ID = "com.googlecode.goclipse.ui.commands.openDefinition";
+	public static final String COMMAND_OpenDef_ID = "com.googlecode.goclipse.ui.commands.openDefinition";
 	
 }

@@ -32,7 +32,7 @@ public class AbstractLangEditorMenuContributor {
 		menu.prependToGroup(ICommonMenuConstants.GROUP_OPEN, new CommandContributionItem(
 			new CommandContributionItemParameter(window, 
 				null, 
-				EditorSettings_Actual.COMMAND_ID,
+				EditorSettings_Actual.COMMAND_OpenDef_ID,
 				CommandContributionItem.STYLE_PUSH
 			)
 		));

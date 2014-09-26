@@ -49,6 +49,9 @@ public class UIOperationExceptionHandler {
 	}
 	
 	protected static String getExceptionText(Throwable exception) {
+		if(exception == null)
+			return null;
+		
 		String exceptionText = exception.getClass().getName();
 		if(exception.getMessage() != null) {
 			exceptionText += ": " + exception.getMessage();

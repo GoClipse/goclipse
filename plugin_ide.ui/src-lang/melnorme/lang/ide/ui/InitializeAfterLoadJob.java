@@ -19,7 +19,7 @@ import org.eclipse.ui.progress.UIJob;
 public class InitializeAfterLoadJob extends UIJob {
 
 	protected final LangUIPlugin langUIPlugin;
-
+	
 	public InitializeAfterLoadJob(LangUIPlugin langUIPlugin) {
 		super(LangUIMessages.InitializeAfterLoadJob_starter_job_name);
 		this.langUIPlugin = langUIPlugin;

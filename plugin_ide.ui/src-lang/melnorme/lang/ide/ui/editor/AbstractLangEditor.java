@@ -11,9 +11,12 @@
 package melnorme.lang.ide.ui.editor;
 
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
@@ -35,6 +38,8 @@ public abstract class AbstractLangEditor extends TextEditor {
 	
 	public AbstractLangEditor() {
 		super();
+		
+	    setKeyBindingScopes(array(EditorSettings_Actual.EDITOR_CONTEXT_ID));
 	}
 	
 	@Override

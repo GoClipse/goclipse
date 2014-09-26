@@ -76,10 +76,10 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 		String text = prefix + StringUtil.collToString(commandLine, " ") + "\n";
 		
 		if(ce != null) {
-			text += "   [FAILED: " + ce.getMessage() + "]" + ce.getCause().getMessage();
+			text += "  FAILED: " + ce.getMessage();
 			Throwable cause = ce.getCause();
 			if(cause != null) {
-				text += " Reason: " + cause.getMessage() + "\n";
+				text += "   Reason: " + cause.getMessage() + "\n";
 			}
 		}
 		
