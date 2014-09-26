@@ -3,27 +3,22 @@ package com.googlecode.goclipse.gocode;
 import java.io.File;
 import java.io.IOException;
 
+import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.gocode.preferences.GocodePreferences;
-import com.googlecode.goclipse.gocode.utils.Utils;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.core.GoEnvironmentPrefUtils;
+import com.googlecode.goclipse.core.tools.GocodeServer;
 
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeListener {
+public class GocodePlugin extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.googlecode.goclipse.gocode"; //$NON-NLS-1$
 	
@@ -45,7 +40,7 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
 		
 		plugin = this;
 		
-		if (GocodePreferences.AUTO_START_SERVER.get()) {
+		if (DaemonEnginePreferences.AUTO_START_SERVER.get()) {
 			IPath path = getBestGocodeInstance();
 			
 			if (path != null) {
@@ -53,13 +48,10 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
 				gocodeServer.startServer();
 			}
 		}
-		
-		getPreferenceStore().addPropertyChangeListener(this);
 	}
 	
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		getPreferenceStore().removePropertyChangeListener(this);
 		
 		if (gocodeServer != null) {
 			gocodeServer.stopServer();
@@ -80,42 +72,6 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
 		return plugin;
 	}
 	
-	/**
-	 * Log the given error message to the Eclipse log.
-	 */
-	public static void logError(String message) {
-		getPlugin().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, message));
-	}
-	
-	/**
-	 * Log the given exception to the Eclipse log.
-	 * 
-	 * @param t the exception to log
-	 */
-	public static void logError(Throwable t) {
-		getPlugin().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, t.getMessage(), t));
-	}
-	
-	/**
-	 * Log the given warning message to the Eclipse log.
-	 */
-	public static void logWarning(String message) {
-		getPlugin().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message));
-	}
-	
-	/**
-	 * Log the given info message to the Eclipse log.
-	 */
-	public static void logInfo(String message) {
-		if (Environment.DEBUG) {
-			getPlugin().getLog().log(new Status(IStatus.INFO, PLUGIN_ID, message));
-		}
-	}
-	
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		updateGocodeServer();
-	}
 	
 	/**
 	 * @return "gocode" or "gocode.exe"
@@ -128,7 +84,7 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
 	 * @return the user specified path to Gocode, or null if nothing has been specified
 	 */
 	protected IPath getGocodePrefPath() {
-		String pref = GocodePreferences.GOCODE_PATH.get();
+		String pref = DaemonEnginePreferences.DAEMON_PATH.get();
 		
 		if (pref == null || pref.length() == 0) {
 			return null;
@@ -147,50 +103,33 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
 		}
 	}
 	
-	protected IPath getGocodeGoRootPath() {
-		String goroot = PreferenceConstants.GO_ROOT.get();
-		
-		if (goroot != null && goroot.length() > 0) {
-			return new Path(goroot).append("bin").append(getExeName());
-		} else {
-			return null;
-		}
-	}
-	
 	protected IPath getGocodeBundledPath() {
+		File pluginDir;
 		try {
-			File pluginDir = FileLocator.getBundleFile(getPlugin().getBundle());
-			
-			IPath toolsPath = Path.fromOSString(pluginDir.getAbsolutePath()).append("tools");
-			
-			String name;
-			
-			if (MiscUtil.OS_IS_WINDOWS) {
-				name = "windows";
-			} else if (MiscUtil.OS_IS_MAC) {
-				name = "darwin";
-			} else {
-				name = "linux";
-			}
-			
-			name += "_";
-			
-			if (Utils.is64Bit()) {
-				name += "amd64";
-			} else {
-				name += "386";
-			}
-			
-			toolsPath = toolsPath.append(name).append(getExeName());
-			
-			if (!MiscUtil.OS_IS_WINDOWS) {
-				Utils.ensureExecutable(toolsPath);
-			}
-			
-			return toolsPath;
+			pluginDir = FileLocator.getBundleFile(getPlugin().getBundle());
 		} catch (IOException exception) {
 			return null;
 		}
+		
+		IPath toolsPath = Path.fromOSString(pluginDir.getAbsolutePath()).append("tools");
+		
+		String name = "";
+		
+		name += GoEnvironmentPrefUtils.getGO_OS_Default();
+		
+		name += "_" + GoEnvironmentPrefUtils.get_GO_ARCH_Default();
+		
+		toolsPath = toolsPath.append(name).append(getExeName());
+		
+		if(!toolsPath.toFile().exists()) {
+			return null;
+		}
+		
+		if (!MiscUtil.OS_IS_WINDOWS) {
+			Utils.doEnsureExecutable(toolsPath);
+		}
+		
+		return toolsPath;
 	}
 	
 	public IPath getBestGocodeInstance() {
@@ -206,12 +145,6 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
 			return path;
 		}
 		
-		path = getGocodeGoRootPath();
-		
-		if (Utils.pathExists(path)) {
-			return path;
-		}
-		
 		path = getGocodeBundledPath();
 		
 		if (Utils.pathExists(path)) {
@@ -219,30 +152,26 @@ public class GocodePlugin extends AbstractUIPlugin implements IPropertyChangeLis
 		}
 		
 		// :(
-				return null;
+		return null;
 	}
 	
-	void updateGocodeServer() {
-		boolean wantsRun = GocodePreferences.AUTO_START_SERVER.get();
-		IPath path = getBestGocodeInstance();
+}
+
+class Utils {
+	
+	public static boolean pathExists(IPath path) {
+		if (path == null || path.isEmpty()) {
+			return false;
+		}
 		
-		boolean shouldRun = wantsRun && Utils.pathExists(path);
+		return path.toFile().exists();
+	}
+	
+	public static void doEnsureExecutable(IPath path) {
+		File file = path.toFile();
 		
-		if (!shouldRun && gocodeServer != null) {
-			gocodeServer.stopServer();
-			gocodeServer = null;
-		} else if (shouldRun && gocodeServer == null) {
-			gocodeServer = new GocodeServer(path);
-			gocodeServer.startServer();
-		} else if (wantsRun && gocodeServer != null) {
-			// Check if the path to gocode changed.
-			if (!path.equals(gocodeServer.getPath())) {
-				gocodeServer.stopServer();
-				gocodeServer = null;
-				
-				gocodeServer = new GocodeServer(path);
-				gocodeServer.startServer();
-			}
+		if (!file.canExecute()) {
+			file.setExecutable(true);
 		}
 	}
 	

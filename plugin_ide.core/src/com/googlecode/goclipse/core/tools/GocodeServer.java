@@ -1,18 +1,15 @@
-package com.googlecode.goclipse.gocode;
+package com.googlecode.goclipse.core.tools;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.StartEngineDaemonOperation;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 
 import com.googlecode.goclipse.builder.GoToolManager;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 /**
@@ -28,11 +25,8 @@ public class GocodeServer {
 	}
 	
 	public void startServer() {
-		if (MiscUtil.OS_IS_WINDOWS) {
-			GocodeServer.winGocodeKill();
-		}
 		
-		GocodePlugin.logInfo("starting gocode server [" + path + "]");
+		GoCore.logInfo("starting gocode server [" + path + "]");
 		
 		ArrayList2<String> commandLine = new ArrayList2<String>();
 		commandLine.add(path.toOSString());
@@ -56,29 +50,10 @@ public class GocodeServer {
 	
 	public void stopServer() {
 		if (gocodeProcess != null) {
-			GocodePlugin.logInfo("stopping gocode server");
+			GoCore.logInfo("stopping gocode server");
 			
 			gocodeProcess.getProcess().destroy();
 			gocodeProcess = null;
-		}
-	}
-	
-	public IPath getPath() {
-		return path;
-	}
-	
-	public static void winGocodeKill() {
-		// shutdown previous gocode instances with command:
-		//    TASKKILL /F /IM "gocode.exe"
-		try {
-			ExternalProcessHelper ph = new ExternalProcessHelper(
-				new ProcessBuilder("TASKKILL", "/F", "/IM", "\"gocode.exe\""));
-			ph.strictAwaitTermination();
-			
-		} catch (Exception error) {
-			GocodePlugin.getPlugin().getLog().log(
-				new Status(IStatus.ERROR, GocodePlugin.PLUGIN_ID,
-					"Windows taskkill process failed.  Could not kill gocode process."));
 		}
 	}
 	

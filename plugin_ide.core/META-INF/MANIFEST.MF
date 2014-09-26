@@ -36,6 +36,7 @@ Export-Package: com.googlecode.goclipse;
    org.eclipse.jface.viewers",
  com.googlecode.goclipse.core,
  com.googlecode.goclipse.core.launch,
+ com.googlecode.goclipse.core.tools,
  com.googlecode.goclipse.go,
  com.googlecode.goclipse.go.lang.lexer,
  com.googlecode.goclipse.go.lang.model,

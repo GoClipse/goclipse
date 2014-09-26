@@ -7,15 +7,4 @@
             class="com.googlecode.goclipse.gocode.GocodePathProvider">
       </content_assist_processor>
    </extension>
-   
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            category="com.googlecode.goclipse.ui.PreferencePage"
-            class="com.googlecode.goclipse.gocode.preferences.GocodePreferencePage"
-            id="com.googlecode.goclipse.gocode.page"
-            name="Gocode">
-      </page>
-   </extension>
-
 </plugin>

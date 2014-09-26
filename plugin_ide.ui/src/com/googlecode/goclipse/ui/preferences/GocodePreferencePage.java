@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.gocode.preferences;
+package com.googlecode.goclipse.ui.preferences;
 
 import melnorme.lang.ide.ui.tools.AbstractDeamonToolPrefPage;
 

@@ -94,4 +94,9 @@ public abstract class LangCore extends Plugin {
 		getInstance().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, throwable));
 	}
 	
+	/** Logs an info status with given message. */
+	public static void logInfo(String message) {
+		getInstance().getLog().log(new Status(IStatus.INFO, PLUGIN_ID, message, null));
+	}
+	
 }

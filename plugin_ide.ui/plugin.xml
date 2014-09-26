@@ -64,8 +64,8 @@
          </action>
       </objectContribution>
    </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
+	
+	<extension point="org.eclipse.ui.preferencePages">
       <page
             id="com.googlecode.goclipse.ui.PreferencePage"
             class="com.googlecode.goclipse.ui.preferences.GoPreferencePage"
@@ -89,12 +89,20 @@
             class="com.googlecode.goclipse.ui.preferences.GoEditorSmartTypingPreferencePage"
             name="Typing">
       </page>
-      <page
-      		category="com.googlecode.goclipse.ui.PreferencePage"
-            id="com.googlecode.goclipse.ui.preferences.GoOperationsConsolePrefPage"
-            class="com.googlecode.goclipse.ui.preferences.GoOperationsConsolePrefPage"
-            name="Build Console">
-      </page>
+		<page
+			category="com.googlecode.goclipse.ui.PreferencePage"
+			id="com.googlecode.goclipse.ui.preferences.GoOperationsConsolePrefPage"
+			class="com.googlecode.goclipse.ui.preferences.GoOperationsConsolePrefPage"
+			name="Build Console">
+		</page>
+		
+		<page
+			category="com.googlecode.goclipse.ui.PreferencePage"
+			class="com.googlecode.goclipse.ui.preferences.GocodePreferencePage"
+			id="com.googlecode.goclipse.ui.preferences.GocodePreferencePag"
+			name="Gocode">
+		</page>
+		
    </extension>
 
    <extension
