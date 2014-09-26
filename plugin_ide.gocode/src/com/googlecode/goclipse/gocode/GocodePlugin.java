@@ -135,7 +135,7 @@ public class GocodePlugin extends AbstractUIPlugin {
 	public IPath getBestGocodeInstance() {
 		IPath path = getGocodePrefPath();
 		
-		if (Utils.pathExists(path)) {
+		if (path != null && !path.isEmpty()) {
 			return path;
 		}
 		
