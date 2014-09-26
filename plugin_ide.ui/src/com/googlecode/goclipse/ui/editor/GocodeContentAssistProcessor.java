@@ -62,9 +62,9 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessor {
 		errorMessage = null;
 		try {
 			return computeCompletionProposals_do(viewer, offset);
-		} catch (CoreException e) {
-			GoCore.logError(e);
-			errorMessage = e.getMessage();
+		} catch (CoreException ce) {
+			GoCore.logStatus(ce);
+			errorMessage = ce.getMessage();
 			return array();
 		}
 	}
@@ -226,7 +226,7 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessor {
 				}
 			}
 		} catch (BadLocationException e) {
-			GoCore.logError(e);
+			GoCore.logInternalError(e);
 		}
 		
 		return "";

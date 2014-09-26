@@ -86,11 +86,11 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 			argumentsBlock.setFieldValue(configuration.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, ""));
 			workingDirectoryBlock.initializeFrom(configuration);
 		}
-		catch (CoreException e) {
+		catch (CoreException ce) {
 			setErrorMessage(LangUIMessages.getFormattedString(
 					LangUIMessages.Launch_common_Exception_occurred_reading_configuration_EXCEPTION, 
-					e.getStatus().getMessage()));
-			LangUIPlugin.log(e);
+					ce.getStatus().getMessage()));
+			LangUIPlugin.logStatus(ce);
 		}
 	}
 	

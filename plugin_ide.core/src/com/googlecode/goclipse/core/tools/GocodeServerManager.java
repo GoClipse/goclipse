@@ -63,7 +63,7 @@ public class GocodeServerManager implements IDisposable {
 	
 	public void startServer(IPath gocodePath) throws CoreException {
 		
-		GoCore.logInfo("starting gocode server [" + gocodePath + "]");
+		GoCore.createInfoStatus("starting gocode server [" + gocodePath + "]").logInPlugin();
 		
 		ArrayList2<String> commandLine = new ArrayList2<String>();
 		commandLine.add(gocodePath.toOSString());
@@ -80,7 +80,7 @@ public class GocodeServerManager implements IDisposable {
 	
 	public void stopServer() {
 		if (gocodeProcess != null) {
-			GoCore.logInfo("stopping gocode server");
+			GoCore.createInfoStatus("stopping gocode server").logInPlugin();
 			
 			gocodeProcess.getProcess().destroy();
 			gocodeProcess = null;

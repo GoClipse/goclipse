@@ -22,4 +22,10 @@ public class Activator extends GoCore {
 		}
 	}
 	
+	// Add a custom message
+	@Deprecated
+	public static void logError(Throwable exception) {
+		logError(exception.getMessage(), exception);
+	}
+	
 }

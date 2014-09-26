@@ -59,7 +59,7 @@ class PackageVertex {
 		try {
 			pkgOutPath = new GoWorkspace(project).getPkgFolderRelativePath().toOSString();
 		} catch (CoreException e) {
-			GoCore.logError(e);
+			GoCore.logStatus(e);
 			pkgOutPath = "pkg";
 		}
 		if (packageName.contains(pkgOutPath)) {

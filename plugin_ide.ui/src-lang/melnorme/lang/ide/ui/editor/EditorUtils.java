@@ -130,8 +130,8 @@ public class EditorUtils {
 				if(fullPath != null) {
 					return fullPath.toFile().toPath();
 				}
-			} catch (CoreException e) {
-				LangCore.logError(e);
+			} catch (CoreException ce) {
+				LangCore.logStatus(ce);
 			}
 		}
 		

@@ -165,7 +165,7 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 				programPathField.setFieldValue(programPath);
 			}
 		} catch (CoreException e) {
-			GoUIPlugin.log(e);
+			GoUIPlugin.logStatus(e);
 		}
 	}
 	
