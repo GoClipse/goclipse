@@ -25,6 +25,10 @@ public class GoCore extends LangCore {
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {
+	}
+	
+	@Override
+	public void doInitializeAfterUIStart() {
 		GoBuilder.checkForCompilerUpdates(true);
 	}
 	

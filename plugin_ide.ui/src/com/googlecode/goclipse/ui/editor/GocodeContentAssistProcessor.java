@@ -16,9 +16,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
@@ -31,9 +29,9 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.tooling.GoEnvironment;
@@ -71,24 +69,6 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessor {
 		}
 	}
 	
-	protected IPath getBestGocodePath() {
-		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
-			Activator.CONTENT_ASSIST_EXTENSION_ID);
-		
-		try {
-			for (IConfigurationElement e : config) {
-				final Object extension = e.createExecutableExtension("class");
-				
-				if (extension instanceof IGocodePathProvider) {
-					return ((IGocodePathProvider) extension).getBestGocodePath();
-				}
-			}
-		} catch (CoreException ex) {
-			// do nothing
-		}
-		return null;
-	}
-	
 	protected ICompletionProposal[] computeCompletionProposals_do(ITextViewer viewer, final int offset)
 			throws CoreException {
 		
@@ -113,7 +93,7 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessor {
 			}
 		}
 		
-		IPath gocodePath = getBestGocodePath();
+		IPath gocodePath = GocodeServerManager.getBestGocodePath();
 		
 		if (gocodePath == null) {
 			throw LangCore.createCoreException("Error: gocode path not provided.", null);

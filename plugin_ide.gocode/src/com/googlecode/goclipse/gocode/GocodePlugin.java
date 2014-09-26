@@ -13,7 +13,6 @@ import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.core.GoEnvironmentPrefUtils;
-import com.googlecode.goclipse.core.tools.GocodeServer;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -25,34 +24,18 @@ public class GocodePlugin extends Plugin {
 	// The shared instance
 	private static GocodePlugin plugin;
 	
-	private GocodeServer gocodeServer;
-	
 	public GocodePlugin() {
 	}
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		
 		plugin = this;
 		
-		if (DaemonEnginePreferences.AUTO_START_SERVER.get()) {
-			IPath path = getBestGocodeInstance();
-			
-			if (path != null) {
-				gocodeServer = new GocodeServer(path);
-				gocodeServer.startServer();
-			}
-		}
 	}
 	
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		if (gocodeServer != null) {
-			gocodeServer.stopServer();
-			gocodeServer = null;
-		}
-		
 		super.stop(context);
 		
 		plugin = null;

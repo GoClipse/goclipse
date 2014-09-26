@@ -13,6 +13,8 @@ public abstract class LangCore extends Plugin {
 	
 	protected static LangCore pluginInstance;
 	
+	protected boolean initializedAfterUI = false;
+	
 	/** Returns the singleton for this plugin instance. */
 	public static LangCore getInstance() {
 		return pluginInstance;
@@ -26,7 +28,25 @@ public abstract class LangCore extends Plugin {
 	}
 	
 	protected abstract void doCustomStart(BundleContext context);
-
+	
+	/** 
+	 * Initialize services that should only be started after the UI plugin 
+	 * (or other application plugin such as test runner) has started.
+	 * This is because the UI plugin might register listeners into core services, 
+	 * and this ensures that the UI plugin gets all updates, because they will only start after this. 
+	 */
+	public final void initializeAfterUIStart() {
+		if(initializedAfterUI == true) {
+			LangCore.logError("Atempted initializeAfterUIStart more than once.");
+		} else {
+			initializedAfterUI = true;
+			doInitializeAfterUIStart();
+		}
+	}
+	
+	public void doInitializeAfterUIStart() {
+	}
+	
 	@Override
 	public final void stop(BundleContext context) throws Exception {
 		doCustomStop(context);

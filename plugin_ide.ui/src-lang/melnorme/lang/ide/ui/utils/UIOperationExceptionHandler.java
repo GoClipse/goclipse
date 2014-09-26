@@ -11,9 +11,11 @@
 package melnorme.lang.ide.ui.utils;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.core.LangCore;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -27,6 +29,21 @@ public class UIOperationExceptionHandler {
 		LangCore.logError(e);
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		ErrorDialog.openError(shell, title, message, e.getStatus());
+	}
+	
+	public static void handleOperationStatus(CoreException ce) {
+		handleOperationStatus(ce, "Error");
+	}
+	
+	public static void handleOperationStatus(CoreException ce, String dialogTitle) {
+		IStatus status = ce.getStatus();
+		if(status.isOK() || status.matches(IStatus.CANCEL)) {
+			return;
+		}
+		
+		boolean logError = status.matches(IStatus.ERROR);
+		
+		handleError2(logError, dialogTitle, ce.getMessage(), ce.getCause());
 	}
 	
 	/* -----------------  ----------------- */
@@ -70,8 +87,25 @@ public class UIOperationExceptionHandler {
 		if(reasonMessage == null) {
 			reasonMessage = exception.getClass().getSimpleName();
 		}
-		
 		Status status = LangCore.createErrorStatus(reasonMessage, exception);
+		ErrorDialog.openError(shell, title, dialogMessage, status);
+	}
+	
+	public static void handleError2(boolean logError, String title, String message, Throwable exception) {
+		assertTrue(message != null || exception != null);
+		
+		if(logError) {
+			LangCore.logError(message, exception);
+		}
+		
+		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
+		
+		if(message == null) {
+			message = exception.getClass().getSimpleName();
+		}
+		
+		String dialogMessage = null;
+		Status status = LangCore.createErrorStatus(message, exception);
 		ErrorDialog.openError(shell, title, dialogMessage, status);
 	}
 	

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.core.fntypes.Predicate;
+import melnorme.utilbox.ownership.IDisposable;
 
 public class MiscUtil {
 	
@@ -169,6 +170,12 @@ public class MiscUtil {
 			return readAllBytesFromStream(resourceStream).toString(charset);
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	public static void dispose(IDisposable disposable) {
+		if (disposable != null) {
+			disposable.dispose();
 		}
 	}
 	
