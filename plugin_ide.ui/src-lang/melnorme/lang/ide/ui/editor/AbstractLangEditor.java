@@ -39,7 +39,7 @@ public abstract class AbstractLangEditor extends TextEditor {
 	public AbstractLangEditor() {
 		super();
 		
-	    setKeyBindingScopes(array(EditorSettings_Actual.EDITOR_CONTEXT_ID));
+		setKeyBindingScopes(array(EditorSettings_Actual.EDITOR_CONTEXT_ID));
 	}
 	
 	@Override
