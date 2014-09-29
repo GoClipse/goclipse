@@ -17,7 +17,11 @@ import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.tooling.ast.SourceRange;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -26,8 +30,21 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public abstract class AbstractOpenElementOperation extends AbstractEditorOperation {
 	
-	public AbstractOpenElementOperation(String operationName, ITextEditor editor) {
+	public static final String OPEN_DEFINITION_OpName = "Open Definition";
+	
+	protected final SourceRange range; // range of element to open. Usually only offset matters
+	protected final OpenNewEditorMode openEditorMode;
+	protected final IProject project;
+	
+	public AbstractOpenElementOperation(String operationName, ITextEditor editor, SourceRange range,
+			OpenNewEditorMode openEditorMode) {
 		super(operationName, editor);
+		
+		this.range = range;
+		this.openEditorMode = openEditorMode;
+		
+		IFile file = EditorUtils.findFileOfEditor(editor);
+		this.project = file == null ? null : file.getProject();
 	}
 	
 	protected IEditorInput getNewEditorInput(Path newEditorFilePath) throws CoreException {

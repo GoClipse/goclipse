@@ -20,8 +20,6 @@ import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
@@ -40,19 +38,10 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	
 	public static final String OPEN_DEFINITION_OpName = "Open definition (go oracle)";
 	
-	protected final SourceRange range;
-	protected final IProject project;
-	protected final OpenNewEditorMode openEditorMode;
-	
 	protected GoOracleFindDefinitionResult oracleResult;
 	
 	public GoOracleOpenDefinitionOperation(ITextEditor editor, SourceRange range, OpenNewEditorMode openEditorMode) {
-		super(OPEN_DEFINITION_OpName, editor);
-		this.range = range;
-		this.openEditorMode = openEditorMode;
-		
-		IFile file = EditorUtils.findFileOfEditor(editor);
-		this.project = file == null ? null : file.getProject();
+		super(OPEN_DEFINITION_OpName, editor, range, openEditorMode);
 	}
 	
 	protected Path getFilePath() {

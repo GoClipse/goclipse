@@ -3,7 +3,6 @@ package com.googlecode.goclipse.editors;
 import java.io.File;
 
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.text.util.LangWordFinder;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;

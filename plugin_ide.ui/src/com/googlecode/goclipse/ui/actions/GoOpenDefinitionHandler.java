@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
+import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.actions.AbstractOpenDefinitionHandler;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
@@ -19,8 +20,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class GoOpenDefinitionHandler extends AbstractOpenDefinitionHandler  {
 	
 	@Override
-	public GoOracleOpenDefinitionOperation createOperation(ITextEditor editor, SourceRange range) {
-		return new GoOracleOpenDefinitionOperation(editor, range, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
+	public AbstractEditorOperation createOperation(ITextEditor editor, SourceRange range,
+			OpenNewEditorMode newEditorMode) {
+		return new GoOracleOpenDefinitionOperation(editor, range, newEditorMode);
 	}
 	
 }

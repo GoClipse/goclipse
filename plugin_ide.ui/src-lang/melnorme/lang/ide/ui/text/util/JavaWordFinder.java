@@ -17,6 +17,8 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 
+//BM: Originally based on org.eclipse.jdt.internal.ui.text.JavaWordFinder
+
 public class JavaWordFinder {
 
 	public static IRegion findWord(IDocument document, final int offset) {
