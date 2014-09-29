@@ -43,7 +43,7 @@ public abstract class LangHyperlinkDetector extends AbstractHyperlinkDetector {
 
 		protected final IRegion region;
 		protected final ITextEditor textEditor;
-		protected int offset;
+		protected final int offset;
 
 		public AbstractLangElementHyperlink(int offset, IRegion region, ITextEditor textEditor) {
 			this.offset = offset;
