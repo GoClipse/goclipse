@@ -100,7 +100,8 @@ public class EditorUtils {
 	public static IEditorInput getBestEditorInputForUri(URI uri) {
 		IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(uri, IWorkspaceRoot.INCLUDE_HIDDEN);
 		if(files.length != 0) {
-			// As an improvement we could try to see which file is more relevant if there is more than one
+			// As an improvement, if there is more than one file, we could try to see which one is more relevant
+			// instead of just using the first one.
 			IFile file = files[0]; 
 			return new FileEditorInput(file);
 		} else {

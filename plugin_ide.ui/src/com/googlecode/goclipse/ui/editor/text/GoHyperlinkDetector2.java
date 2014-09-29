@@ -23,14 +23,15 @@ import com.googlecode.goclipse.ui.actions.GoOracleOpenDefinitionOperation;
 public class GoHyperlinkDetector2 extends LangHyperlinkDetector {
 	
 	@Override
-	protected AbstractLangElementHyperlink createHyperlink(IRegion region, ITextEditor textEditor, IRegion elemRegion) {
-		return new GoElementHyperlink(region.getOffset(), elemRegion, textEditor);
+	protected AbstractLangElementHyperlink createHyperlink(IRegion requestedRegion, ITextEditor textEditor,
+			IRegion wordRegion) {
+		return new GoElementHyperlink(wordRegion, textEditor);
 	}
 	
 	public class GoElementHyperlink extends AbstractLangElementHyperlink {
 		
-		public GoElementHyperlink(int offset, IRegion region, ITextEditor textEditor) {
-			super(offset, region, textEditor);
+		public GoElementHyperlink(IRegion region, ITextEditor textEditor) {
+			super(region, textEditor);
 		}
 		
 		@Override
