@@ -54,6 +54,8 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 			"************  Build terminated.  ************\n");
 	}
 	
+	/* FIXME: refactor IGoBuildListener usage. */
+	
 	@Override
 	public void handleProcessStarted(ProcessBuilder pb, IProject project, 
 			ExternalProcessNotifyingHelper processHelper) {

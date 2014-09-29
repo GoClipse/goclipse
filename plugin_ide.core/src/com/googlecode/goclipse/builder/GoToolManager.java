@@ -69,6 +69,8 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 	
 	/* -----------------  ----------------- */
 	
+	/* FIXME: Use GoEnvironment instead to create process */
+	@Deprecated
 	public static Map<String, String> getGoToolEnvironment() {
 		Map<String, String> goEnv = new HashMap<String, String>();
 		

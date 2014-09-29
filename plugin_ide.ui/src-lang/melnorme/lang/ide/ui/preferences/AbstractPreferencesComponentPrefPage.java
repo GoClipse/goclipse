@@ -57,7 +57,7 @@ public abstract class AbstractPreferencesComponentPrefPage extends PreferencePag
 	@Override
 	protected Control createContents(Composite parent) {
 		Control body = fConfigurationBlock.createComponent(parent);
-		Dialog.applyDialogFont(body); /*BUG here with pixel converter usage. */
+		Dialog.applyDialogFont(body); /*FIXME: BUG here with pixel converter usage. */
 		
 		fConfigurationBlock.loadFromStore();
 		return body;

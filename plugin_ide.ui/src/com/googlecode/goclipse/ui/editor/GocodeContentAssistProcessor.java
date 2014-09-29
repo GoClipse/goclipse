@@ -63,6 +63,7 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessor {
 		try {
 			return computeCompletionProposals_do(viewer, offset);
 		} catch (CoreException ce) {
+			/* FIXME: show errors to user */
 			GoCore.logStatus(ce);
 			errorMessage = ce.getMessage();
 			return array();

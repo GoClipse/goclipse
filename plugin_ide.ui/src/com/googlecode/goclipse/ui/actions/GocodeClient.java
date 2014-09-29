@@ -13,7 +13,7 @@ import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 public class GocodeClient extends GocodeCompletionOperation<CoreException> {
 	
-	// TODO: we should run this outside the UI thread, with an actual monitor to allow cancelling!
+	// FIXME: we should run this outside the UI thread, with an actual monitor to allow cancelling!
 	IProgressMonitor pm = new NullProgressMonitor();
 	
 	public GocodeClient(String gocodePath) {

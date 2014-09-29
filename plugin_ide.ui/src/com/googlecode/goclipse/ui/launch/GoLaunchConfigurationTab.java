@@ -35,6 +35,7 @@ import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
 
+/* FIXME: remove deprecated uses */
 public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
 	public GoLaunchConfigurationTab() {
