@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A task that runs an external process and notifies listeners of process lifecycle events.
+ * 
+ * TODO: remove EclipseExternalProcessHelper dependencies, use common Exception
  */
 public abstract class AbstractRunExternalProcessTask<LISTENER extends IExternalProcessListener> 
 		implements IRunProcessTask {

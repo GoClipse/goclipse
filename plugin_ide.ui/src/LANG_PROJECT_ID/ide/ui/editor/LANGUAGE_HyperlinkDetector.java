@@ -10,25 +10,38 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
+import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.editor.LangHyperlinkDetector;
+
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
-import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class LANGUAGE_HyperlinkDetector extends AbstractHyperlinkDetector {
+import LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OpenDefinitionHandler;
+
+public class LANGUAGE_HyperlinkDetector extends LangHyperlinkDetector {
 	
 	@Override
-	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean canShowMultipleHyperlinks) {
-		if (region == null)
-			return null;
+	protected AbstractLangElementHyperlink createHyperlink(IRegion requestedRegion, ITextEditor textEditor,
+			IRegion wordRegion) {
+		return new LANGUAGE_ElementHyperlink(wordRegion, textEditor);
+	}
+	
+	public class LANGUAGE_ElementHyperlink extends AbstractLangElementHyperlink {
 		
-		@SuppressWarnings("unused")
-		ITextEditor textEditor= (ITextEditor) getAdapter(ITextEditor.class);
-//		Path filePath = EditorUtil.getFilePathFromEditorInput(textEditor.getEditorInput());
+		public LANGUAGE_ElementHyperlink(IRegion region, ITextEditor textEditor) {
+			super(region, textEditor);
+		}
 		
-		// TODO
-		return new IHyperlink[] {  };
+		@Override
+		public void open() {
+			textEditor.doSave(new NullProgressMonitor());
+			
+			new LANGUAGE_OpenDefinitionHandler().createOperation(textEditor,
+				getElementRange(), OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS).executeAndHandle();
+		}
+		
 	}
 	
 }

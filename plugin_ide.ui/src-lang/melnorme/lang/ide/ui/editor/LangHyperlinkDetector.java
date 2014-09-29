@@ -12,7 +12,9 @@ package melnorme.lang.ide.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
+import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.text.util.JavaWordFinder;
+import melnorme.lang.tooling.ast.SourceRange;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -24,31 +26,38 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public abstract class LangHyperlinkDetector extends AbstractHyperlinkDetector {
 	
 	@Override
-	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean canShowMultipleHyperlinks) {
-		if (region == null)
+	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion requestedRegion,
+			boolean canShowMultipleHyperlinks) {
+		if (requestedRegion == null)
 			return null;
 		ITextEditor textEditor = (ITextEditor) getAdapter(ITextEditor.class);
 		
 		IDocument document = EditorUtils.getEditorDocument(textEditor);
 		
-		IRegion elemRegion = JavaWordFinder.findWord(document, region.getOffset());
+		IRegion wordRegion = JavaWordFinder.findWord(document, requestedRegion.getOffset());
 		
-		return array(createHyperlink(region, textEditor, elemRegion));
+		return array(createHyperlink(requestedRegion, textEditor, wordRegion));
 	}
 	
-	protected abstract AbstractLangElementHyperlink createHyperlink(IRegion region, ITextEditor textEditor,
-			IRegion elemRegion);
+	protected abstract AbstractLangElementHyperlink createHyperlink(IRegion requestedRegion, ITextEditor textEditor,
+			IRegion wordRegion);
 	
 	public abstract class AbstractLangElementHyperlink implements IHyperlink {
-
+		
 		protected final IRegion region;
 		protected final ITextEditor textEditor;
-		protected final int offset;
-
-		public AbstractLangElementHyperlink(int offset, IRegion region, ITextEditor textEditor) {
-			this.offset = offset;
+		
+		public AbstractLangElementHyperlink(IRegion region, ITextEditor textEditor) {
 			this.region = assertNotNull(region);
 			this.textEditor = assertNotNull(textEditor);
+		}
+		
+		public int getOffset() {
+			return region.getOffset();
+		}
+		
+		protected SourceRange getElementRange() {
+			return new SourceRange(region.getOffset(), region.getLength());
 		}
 		
 		@Override
@@ -59,6 +68,11 @@ public abstract class LangHyperlinkDetector extends AbstractHyperlinkDetector {
 		@Override
 		public String getTypeLabel() {
 			return getHyperlinkText();
+		}
+		
+		@Override
+		public String getHyperlinkText() {
+			return AbstractOpenElementOperation.OPEN_DEFINITION_OpName;
 		}
 		
 	}
