@@ -70,6 +70,12 @@ public class UIOperationExceptionHandler {
 		
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		
+		if(exception == null) {
+			// No point in using ErrorDialog, use simpler dialog
+			MessageDialog.open(SWT.ERROR, shell, title, message, SWT.SHEET);
+			return;
+		}
+		
 		Status status = LangCore.createErrorStatus(getExceptionText(exception), exception);
 		ErrorDialog.openError(shell, title, message, status);
 	}
