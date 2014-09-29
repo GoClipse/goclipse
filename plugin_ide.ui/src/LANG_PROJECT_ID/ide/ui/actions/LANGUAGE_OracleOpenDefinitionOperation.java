@@ -18,8 +18,6 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -28,19 +26,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class LANGUAGE_OracleOpenDefinitionOperation extends AbstractOpenElementOperation {
 	
-	public static final String OPEN_DEFINITION_OpName = "Open Definition";
-	
-	protected final SourceRange range;
-	protected final IProject project;
-	protected final OpenNewEditorMode openEditorMode;
-	
-	public LANGUAGE_OracleOpenDefinitionOperation(ITextEditor editor, SourceRange range, OpenNewEditorMode openEditorMode) {
-		super(OPEN_DEFINITION_OpName, editor);
-		this.range = range;
-		this.openEditorMode = openEditorMode;
-		
-		IFile file = EditorUtils.findFileOfEditor(editor);
-		this.project = file == null ? null : file.getProject();
+	public LANGUAGE_OracleOpenDefinitionOperation(ITextEditor editor, SourceRange range, 
+			OpenNewEditorMode openEditorMode) {
+		super(OPEN_DEFINITION_OpName, editor, range, openEditorMode);
 	}
 	
 	protected Path getFilePath() {

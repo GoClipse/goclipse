@@ -11,7 +11,9 @@
 package melnorme.lang.ide.ui.actions;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -29,15 +31,23 @@ public abstract class AbstractOpenDefinitionHandler extends AbstractHandler {
 		if(editor == null) {
 			throw new ExecutionException("Internal error: No editor for action");
 		}
-		
-		TextSelection sel = EditorUtils.getSelection(editor);
-		SourceRange range = new SourceRange(sel.getOffset(), sel.getLength());
-		
-		createOperation(editor, range).executeAndHandle();
+		runOperation(editor);
 		
 		return null;
 	}
 	
-	public abstract AbstractOpenElementOperation createOperation(ITextEditor editor, SourceRange range);
+	public void runOperation(ITextEditor editor) {
+		assertNotNull(editor);
+		createOperation(editor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS).executeAndHandle();
+	}
+	
+	public AbstractEditorOperation createOperation(ITextEditor editor, OpenNewEditorMode newEditorMode) {
+		TextSelection sel = EditorUtils.getSelection(editor);
+		SourceRange range = new SourceRange(sel.getOffset(), sel.getLength());
+		return createOperation(editor, range, newEditorMode);
+	}
+	
+	public abstract AbstractEditorOperation createOperation(ITextEditor editor, SourceRange range, 
+			OpenNewEditorMode newEditorMode);
 	
 }

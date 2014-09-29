@@ -19,8 +19,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class LANGUAGE_OpenDefinitionHandler extends AbstractOpenDefinitionHandler  {
 	
 	@Override
-	public LANGUAGE_OracleOpenDefinitionOperation createOperation(ITextEditor editor, SourceRange range) {
-		return new LANGUAGE_OracleOpenDefinitionOperation(editor, range, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
+	public LANGUAGE_OracleOpenDefinitionOperation createOperation(ITextEditor editor, SourceRange range,
+			OpenNewEditorMode newEditorMode) {
+		return new LANGUAGE_OracleOpenDefinitionOperation(editor, range, newEditorMode);
 	}
 	
 }
