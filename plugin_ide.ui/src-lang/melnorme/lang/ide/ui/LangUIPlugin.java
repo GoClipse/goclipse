@@ -78,8 +78,6 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	}
 	
 	public final void initializeAfterUILoad(IProgressMonitor monitor) {
-		LangCore.getInstance().initializeAfterUIStart();
-		
 		try {
 			doInitializeAfterLoad(monitor);
 		} catch (CoreException ce) {
