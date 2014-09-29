@@ -10,7 +10,6 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.LangHyperlinkDetector;
 

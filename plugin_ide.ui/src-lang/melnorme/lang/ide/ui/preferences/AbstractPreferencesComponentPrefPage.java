@@ -16,7 +16,6 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
 
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
@@ -57,7 +56,6 @@ public abstract class AbstractPreferencesComponentPrefPage extends PreferencePag
 	@Override
 	protected Control createContents(Composite parent) {
 		Control body = fConfigurationBlock.createComponent(parent);
-		Dialog.applyDialogFont(body); /*BUG here with pixel converter usage. */
 		
 		fConfigurationBlock.loadFromStore();
 		return body;
