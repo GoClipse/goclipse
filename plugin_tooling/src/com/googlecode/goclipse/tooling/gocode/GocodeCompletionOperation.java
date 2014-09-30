@@ -61,7 +61,7 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 		}
 		arguments.add("set");
 		arguments.add("lib-path");
-		arguments.add(goEnvironment.getPkgFolderLocations());
+		arguments.add(goEnvironment.getPackageObjectsPathString());
 		
 		runGocode(arguments, null);
 	}

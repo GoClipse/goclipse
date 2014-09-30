@@ -117,37 +117,39 @@ public class GoEnvironment {
 	}
 	
 	/* -----------------  ----------------- */
-	// The following methods, I'm not sure they are really necessary.
-	// with some refactoring, we might be able to remove their uses
 	
 	protected String getGoOS_GoArch_segment() {
 		return getGoOs().asString() + "_" + getGoArch().asString();
 	}
 	
-	public Path getGoRootPackageObjectsLocation() throws StatusException {
-		return getPackageObjectsFolder(getGoRoot_Path());
+	public Path getGoRootPackageObjectsDir() throws StatusException {
+		return getPackageObjectsDir(getGoRoot_Path());
 	}
 	
-	public Path getPackageObjectsFolder(Path rootPath) throws StatusException {
-		return rootPath.resolve("pkg").resolve(getGoOS_GoArch_segment());
+	public Path getPackageObjectsDir(Path basePath) throws StatusException {
+		return basePath.resolve("pkg").resolve(getGoOS_GoArch_segment());
 	}
 	
-	public String getPkgFolderLocations() throws StatusException {
+	public Path getGoRootToolsDir() throws StatusException {
+		return goRoot.asPath().resolve("pkg/tool/").resolve(getGoOS_GoArch_segment());
+	}
+	
+	
+	// The following methods, I'm not sure they are really necessary.
+	// with some refactoring, we might be able to remove their uses
+	
+	public String getPackageObjectsPathString() throws StatusException {
 		
 		ArrayList2<String> pkgFolders = new ArrayList2<>();
 		
-		pkgFolders.add(getGoRootPackageObjectsLocation().toString());
+		pkgFolders.add(getGoRootPackageObjectsDir().toString());
 		
 		for (String goPathElement : getGoPathElements()) {
-			Path pkgFolder = getPackageObjectsFolder(createPath(goPathElement));
+			Path pkgFolder = getPackageObjectsDir(createPath(goPathElement));
 			pkgFolders.add(pkgFolder.toString());
 		}
 		
 		return StringUtil.collToString(pkgFolders, File.pathSeparator);
-	}
-	
-	public Path getGoRootToolsLocation() throws StatusException {
-		return goRoot.asPath().resolve("pkg/tool/").resolve(getGoOS_GoArch_segment());
 	}
 	
 }

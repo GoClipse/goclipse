@@ -9,7 +9,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.core.GoCore;
-import com.googlecode.goclipse.core.GoEnvironmentPrefs;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.tooling.GoEnvironment;
+import com.googlecode.goclipse.tooling.StatusException;
 
 /**
  * An action to run the gofix command.
@@ -22,8 +24,13 @@ public class GofixAction extends TransformTextAction {
 
 	@Override
 	protected String transformText(final String text) throws CoreException {
-		String goFixPath = GoEnvironmentPrefs.getGoRoot().getToolsLocation() + "/fix";
-		
+		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(null);
+		String goFixPath;
+		try {
+			goFixPath = goEnv.getGoRootToolsDir().resolve("fix").toString();
+		} catch (StatusException se) {
+			throw GoCore.createCoreException(se.getMessage(), se.getCause());
+		}
 		IProject project = null; // TODO
 		IProgressMonitor pm = new NullProgressMonitor(); // TODO
 		
