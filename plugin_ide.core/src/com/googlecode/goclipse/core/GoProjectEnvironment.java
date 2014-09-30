@@ -20,11 +20,15 @@ import com.googlecode.goclipse.tooling.GoArch;
 import com.googlecode.goclipse.tooling.GoEnvironment;
 import com.googlecode.goclipse.tooling.GoEnvironmentConstants;
 import com.googlecode.goclipse.tooling.GoOs;
+import com.googlecode.goclipse.tooling.GoRoot;
 
 public class GoProjectEnvironment {
 	
-	public static String getEffectiveGoRoot(IProject project) {
-		return getPrefValue(GoEnvironmentPrefConstants.GO_ROOT, project, GoEnvironmentConstants.GOROOT);
+	public static GoRoot getEffectiveGoRoot(IProject project) {
+		String prefValue = getPrefValue(GoEnvironmentPrefConstants.GO_ROOT, project, GoEnvironmentConstants.GOROOT);
+		if(prefValue == null) 
+			return null;
+		return new GoRoot(prefValue);
 	}
 	
 	public static GoArch getEffectiveGoArch(IProject project) {
@@ -63,7 +67,7 @@ public class GoProjectEnvironment {
 	 * @param project - can be null.
 	 */
 	public static GoEnvironment getGoEnvironment(IProject project) {
-		String goRoot = getEffectiveGoRoot(project);
+		GoRoot goRoot = getEffectiveGoRoot(project);
 		GoArch goArch = getEffectiveGoArch(project);
 		GoOs goOs = getEffectiveGoOs(project);
 		String goPath = getEffectiveGoPath(project);

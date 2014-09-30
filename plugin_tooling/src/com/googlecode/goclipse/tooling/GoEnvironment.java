@@ -29,28 +29,28 @@ import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
  */
 public class GoEnvironment {
 	
-	protected final String goRoot;
+	protected final GoRoot goRoot;
 	protected final GoArch goArch;
 	protected final GoOs goOs;
 	protected final GoPath goPath;
 	
-	public GoEnvironment(String goRoot, GoArch goArch, GoOs goOs, GoPath goPath) {
+	public GoEnvironment(GoRoot goRoot, GoArch goArch, GoOs goOs, GoPath goPath) {
 		this.goRoot = assertNotNull(goRoot);
 		this.goArch = goArch;
 		this.goOs = goOs;
 		this.goPath = assertNotNull(goPath);
 	}
 	
-	public GoEnvironment(String goRoot, GoArch goArch, GoOs goOs, String goPath) {
+	public GoEnvironment(GoRoot goRoot, GoArch goArch, GoOs goOs, String goPath) {
 		this(goRoot, goArch, goOs, new GoPath(goPath));
 	}
 	
-	public String getGoRoot() {
+	public GoRoot getGoRoot() {
 		return goRoot;
 	}
 	
 	public Path getGoRoot_Path() throws StatusException {
-		return createPath(goRoot);
+		return goRoot.asPath();
 	}
 	
 	public GoArch getGoArch() {
@@ -73,8 +73,13 @@ public class GoEnvironment {
 		return goPath.getGoPathWorkspaceString();
 	}
 	
-	public Path getGoPackageFromGoModule(Path goModulePath) {
-		return goPath.getGoPackageFromGoModule(goModulePath);
+	public Path getGoPackageFromSourceModule(Path goModulePath) throws StatusException {
+		Path goPackage = goRoot.getGoPackageFromSourceModule(goModulePath);
+		if(goPackage != null) {
+			return goPackage;
+		}
+		
+		return goPath.getGoPackageFromSourceModule(goModulePath);
 	}
 	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine) {
@@ -82,7 +87,7 @@ public class GoEnvironment {
 		
 		Map<String, String> env = pb.environment();
 		
-		putMapEntry(env, GoEnvironmentConstants.GOROOT, goRoot);
+		putMapEntry(env, GoEnvironmentConstants.GOROOT, goRoot.asString());
 		putMapEntry(env, GoEnvironmentConstants.GOPATH, getGoPathString());
 		
 		if(goArch != null) {

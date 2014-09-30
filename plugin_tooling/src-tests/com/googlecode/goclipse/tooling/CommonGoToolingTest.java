@@ -17,15 +17,17 @@ import melnorme.utilbox.tests.TestsWorkingDir;
 
 public class CommonGoToolingTest extends CommonTestExt {
 	
-	public static final Path TESTS_DIR = TestsWorkingDir.getWorkingDirPath();
+	public static final Path TESTS_WORKDIR = TestsWorkingDir.getWorkingDirPath();
 	
-	public static final Path SAMPLE_GO_ROOT = TESTS_DIR.resolve("root");
-	public static final Path SAMPLE_GO_PATH = TESTS_DIR.resolve("goPath");
+	public static final GoRoot SAMPLE_GO_ROOT = new GoRoot(TESTS_WORKDIR.resolve("goRoot").toString());
+	
+	public static final Path SAMPLE_GOPATH_Entry = TESTS_WORKDIR.resolve("goPath");
+	public static final GoPath SAMPLE_GO_PATH = new GoPath(SAMPLE_GOPATH_Entry.toString());
 	
 	protected static final GoEnvironment SAMPLE_GOEnv_1 = new GoEnvironment(
-		SAMPLE_GO_ROOT.toString(), 
+		SAMPLE_GO_ROOT, 
 		new GoArch("386"), new GoOs("windows"), 
-		SAMPLE_GO_PATH.toString()
+		SAMPLE_GO_PATH
 	);
 	
 }

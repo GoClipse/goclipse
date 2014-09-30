@@ -27,11 +27,11 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 		GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation("gopath");
 		
 		ProcessBuilder pb;
-		pb = op.createProcessBuilder(SAMPLE_GOEnv_1, SAMPLE_GO_PATH.resolve("src/foobar/file.go"), 0);
+		pb = op.createProcessBuilder(SAMPLE_GOEnv_1, SAMPLE_GOPATH_Entry.resolve("src/foobar/file.go"), 0);
 		assertEquals(pb.command().get(4), "foobar");
 		
 		try {
-			op.createProcessBuilder(SAMPLE_GOEnv_1, SAMPLE_GO_PATH.resolve("not_on_src/foobar/file.go"), 0);
+			op.createProcessBuilder(SAMPLE_GOEnv_1, SAMPLE_GOPATH_Entry.resolve("not_on_src/foobar/file.go"), 0);
 			assertFail();
 		} catch (StatusException se) {
 			assertTrue(se.getMessage().contains("file not in the Go environment"));

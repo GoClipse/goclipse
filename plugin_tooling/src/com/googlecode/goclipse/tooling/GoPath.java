@@ -35,6 +35,10 @@ public class GoPath {
 		return goPathElements;
 	}
 	
+	public String asString() {
+		return getGoPathWorkspaceString(); 
+	}
+	
 	public String getGoPathWorkspaceString() {
 		return StringUtil.collToString(goPathElements, File.pathSeparator);
 	}
@@ -51,19 +55,14 @@ public class GoPath {
 		return null;
 	}
 	
-	public Path getGoPackageFromGoModule(Path goModulePath) {
+	public Path getGoPackageFromSourceModule(Path goModulePath) {
 		Path goWorkspaceEntry = getGoWorkspacePathEntry(goModulePath);
 		if(goWorkspaceEntry == null) {
 			return null;
 		}
 		
-		Path relPath = goWorkspaceEntry.relativize(goModulePath);
-		if(!relPath.startsWith("src")) {
-			return null;
-		} 
-		relPath = relPath.subpath(1, relPath.getNameCount());
-		
-		return relPath.getParent();
+		Path sourceRoot = goWorkspaceEntry.resolve("src");
+		return GoRoot.getGoPackageFromSourceModule(goModulePath, sourceRoot);
 	}
 	
 }
