@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 
+import melnorme.lang.tooling.ops.SourceLineColumnLocation;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -53,7 +54,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		return goEnv.createProcessBuilder(commandLine);
 	}
 	
-	public GoOracleFindDefinitionResult parseJsonResult(ExternalProcessResult result) throws StatusException {
+	public FindDefinitionResult parseJsonResult(ExternalProcessResult result) throws StatusException {
 		if(result.exitValue != 0) {
 			throw new StatusException("Program exited with non-zero status: " + result.exitValue, null);
 		}
@@ -67,7 +68,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		}
 	}
 	
-	protected GoOracleFindDefinitionResult parseJsonResult(String output) throws JSONException, StatusException {
+	protected FindDefinitionResult parseJsonResult(String output) throws JSONException, StatusException {
 		JSONObject jsonResult = new JSONObject(output);
 		
 		JSONObject describe = jsonResult.getJSONObject("describe");
@@ -97,29 +98,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		
 		Path path = parsePath(pathStr);
 		
-		return new GoOracleFindDefinitionResult(path, line, column);
-	}
-	
-	public class GoOracleFindDefinitionResult {
-		
-		public final Path path;
-		public final int line; // 1-based index
-		public final int column; // 1-based index
-		
-		public GoOracleFindDefinitionResult(Path path, int line, int column) {
-			this.path = path;
-			this.line = line;
-			this.column = column;
-		}
-		
-		public int getLineIndex() {
-			return line - 1;
-		}
-		
-		public int getColumnIndex() {
-			return column - 1;
-		}
-		
+		return new FindDefinitionResult(null, new SourceLineColumnLocation(path, line, column));
 	}
 	
 }

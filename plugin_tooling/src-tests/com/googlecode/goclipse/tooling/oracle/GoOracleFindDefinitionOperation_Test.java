@@ -12,12 +12,12 @@ package com.googlecode.goclipse.tooling.oracle;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ops.SourceLineColumnLocation;
 
 import org.junit.Test;
 
 import com.googlecode.goclipse.tooling.CommonGoToolingTest;
 import com.googlecode.goclipse.tooling.StatusException;
-import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation.GoOracleFindDefinitionResult;
 
 public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 	
@@ -44,12 +44,13 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 		
 		GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation("gopath");
 		
-		GoOracleFindDefinitionResult result = op.parseJsonResult(
+		FindDefinitionResult result = op.parseJsonResult(
 			getClassResourceAsString(GoOracleFindDefinitionOperation_Test.class, "result1.json"));
 		
-		assertEquals(result.path, path("D:\\devel\\tools.Go\\go-workspace\\src\\github.com\\user\\newmath\\sqrt.go"));
-		assertEquals(result.line, 5);
-		assertEquals(result.column, 6);
+		SourceLineColumnLocation loc = result.location;
+		
+		assertEquals(loc, new SourceLineColumnLocation(
+			path("D:\\devel\\tools.Go\\go-workspace\\src\\github.com\\user\\newmath\\sqrt.go"), 5, 6));
 	}
 	
 }
