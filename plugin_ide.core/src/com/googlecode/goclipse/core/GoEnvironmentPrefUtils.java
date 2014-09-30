@@ -12,15 +12,16 @@ package com.googlecode.goclipse.core;
 
 import melnorme.utilbox.misc.MiscUtil;
 
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.tooling.GoArch;
+import com.googlecode.goclipse.tooling.GoOs;
 
 public class GoEnvironmentPrefUtils {
 
 	public static String get_GO_ARCH_Default() {
 		if (isAMD64()){
-			return PreferenceConstants.ARCH_AMD64;
+			return GoArch.ARCH_AMD64;
 		} else if (is386()){
-			return PreferenceConstants.ARCH_386;
+			return GoArch.ARCH_386;
 		} else {
 			return "";
 		}
@@ -38,11 +39,11 @@ public class GoEnvironmentPrefUtils {
 	
 	public static String getGO_OS_Default() {
 		if (MiscUtil.OS_IS_WINDOWS){
-			return PreferenceConstants.OS_WINDOWS;
+			return GoOs.OS_WINDOWS;
 		} else if (MiscUtil.OS_IS_LINUX) {
-			return PreferenceConstants.OS_LINUX;
+			return GoOs.OS_LINUX;
 		} else if (MiscUtil.OS_IS_MAC) {
-			return PreferenceConstants.OS_DARWIN;
+			return GoOs.OS_DARWIN;
 		} else {
 			return "";
 		}

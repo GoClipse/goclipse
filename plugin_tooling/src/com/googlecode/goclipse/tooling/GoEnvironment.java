@@ -30,18 +30,18 @@ import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 public class GoEnvironment {
 	
 	protected final String goRoot;
-	protected final String goArch;
-	protected final String goOs;
+	protected final GoArch goArch;
+	protected final GoOs goOs;
 	protected final GoPath goPath;
 	
-	public GoEnvironment(String goRoot, String goArch, String goOs, GoPath goPath) {
+	public GoEnvironment(String goRoot, GoArch goArch, GoOs goOs, GoPath goPath) {
 		this.goRoot = assertNotNull(goRoot);
 		this.goArch = goArch;
 		this.goOs = goOs;
 		this.goPath = assertNotNull(goPath);
 	}
 	
-	public GoEnvironment(String goRoot, String goArch, String goOs, String goPath) {
+	public GoEnvironment(String goRoot, GoArch goArch, GoOs goOs, String goPath) {
 		this(goRoot, goArch, goOs, new GoPath(goPath));
 	}
 	
@@ -53,11 +53,11 @@ public class GoEnvironment {
 		return createPath(goRoot);
 	}
 	
-	public String getGoArch() {
+	public GoArch getGoArch() {
 		return goArch;
 	}
 	
-	public String getGoOs() {
+	public GoOs getGoOs() {
 		return goOs;
 	}
 	
@@ -83,9 +83,14 @@ public class GoEnvironment {
 		Map<String, String> env = pb.environment();
 		
 		putMapEntry(env, GoEnvironmentConstants.GOROOT, goRoot);
-		putMapEntry(env, GoEnvironmentConstants.GOARCH, goArch);
-		putMapEntry(env, GoEnvironmentConstants.GOOS, goOs);
 		putMapEntry(env, GoEnvironmentConstants.GOPATH, getGoPathString());
+		
+		if(goArch != null) {
+			putMapEntry(env, GoEnvironmentConstants.GOARCH, goArch.asString());
+		}
+		if(goOs != null) {
+			putMapEntry(env, GoEnvironmentConstants.GOOS, goOs.asString());
+		}
 		
 		return pb;
 	}

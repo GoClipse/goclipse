@@ -25,9 +25,11 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.framework.Version;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.core.GoEnvironmentPrefConstants;
 import com.googlecode.goclipse.core.GoToolPreferences;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.preferences.PreferenceInitializer;
+import com.googlecode.goclipse.tooling.GoArch;
+import com.googlecode.goclipse.tooling.GoOs;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 /**
@@ -77,26 +79,26 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		Composite fieldParent = new Composite(group, SWT.NONE);
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).hint(150, -1).applyTo(fieldParent);
 
-		goRootEditor = new DirectoryFieldEditorExt(PreferenceConstants.GO_ROOT.key, "GO&ROOT:", fieldParent);
+		goRootEditor = new DirectoryFieldEditorExt(GoEnvironmentPrefConstants.GO_ROOT.key, "GO&ROOT:", fieldParent);
 		addField(goRootEditor);
 
-	    goPathEditor = new GoPathFieldEditor(PreferenceConstants.GO_PATH.key, "GO&PATH:", fieldParent);
+	    goPathEditor = new GoPathFieldEditor(GoEnvironmentPrefConstants.GO_PATH.key, "GO&PATH:", fieldParent);
 	    addField(goPathEditor);
     
-		goosEditor = new ComboFieldEditor(PreferenceConstants.GO_OS.key, "G&OOS:", new String[][] { 
+		goosEditor = new ComboFieldEditor(GoEnvironmentPrefConstants.GO_OS.key, "G&OOS:", new String[][] { 
 				{ "", "" },
-		        { PreferenceConstants.OS_DARWIN, PreferenceConstants.OS_DARWIN },
-		        { PreferenceConstants.OS_LINUX, PreferenceConstants.OS_LINUX },
-		        { PreferenceConstants.OS_FREEBSD, PreferenceConstants.OS_FREEBSD },
-		        { PreferenceConstants.OS_NACL, PreferenceConstants.OS_NACL },
-		        { PreferenceConstants.OS_WINDOWS, PreferenceConstants.OS_WINDOWS } }, fieldParent);
+		        { GoOs.OS_DARWIN, GoOs.OS_DARWIN },
+		        { GoOs.OS_LINUX, GoOs.OS_LINUX },
+		        { GoOs.OS_FREEBSD, GoOs.OS_FREEBSD },
+		        { GoOs.OS_NACL, GoOs.OS_NACL },
+		        { GoOs.OS_WINDOWS, GoOs.OS_WINDOWS } }, fieldParent);
 		addField(goosEditor);
 
-		goarchEditor = new ComboFieldEditor(PreferenceConstants.GO_ARCH.key, "GO&ARCH:", new String[][] { 
+		goarchEditor = new ComboFieldEditor(GoEnvironmentPrefConstants.GO_ARCH.key, "GO&ARCH:", new String[][] { 
 				{ "", "" },
-		        { PreferenceConstants.ARCH_AMD64, PreferenceConstants.ARCH_AMD64 },
-		        { PreferenceConstants.ARCH_386, PreferenceConstants.ARCH_386 },
-		        { PreferenceConstants.ARCH_ARM, PreferenceConstants.ARCH_ARM } }, fieldParent);
+		        { GoArch.ARCH_AMD64, GoArch.ARCH_AMD64 },
+		        { GoArch.ARCH_386, GoArch.ARCH_386 },
+		        { GoArch.ARCH_ARM, GoArch.ARCH_ARM } }, fieldParent);
 		addField(goarchEditor);
 
 		((GridLayout) fieldParent.getLayout()).numColumns = 3;
@@ -109,14 +111,14 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		fieldParent = new Composite(group, SWT.NONE);
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
 
-		addField(compilerEditor = new FileFieldEditor(PreferenceConstants.COMPILER_PATH.key, "Go &tool path (go):",
-		        fieldParent));
+		addField(compilerEditor = new FileFieldEditor(GoEnvironmentPrefConstants.COMPILER_PATH.key, 
+			"Go &tool path (go):", fieldParent));
 
-		addField(formatterEditor = new FileFieldEditor(PreferenceConstants.FORMATTER_PATH.key,
-		        "Go &formatter (gofmt):", fieldParent));
+		addField(formatterEditor = new FileFieldEditor(GoEnvironmentPrefConstants.FORMATTER_PATH.key,
+		    "Go &formatter (gofmt):", fieldParent));
 
-		addField(documentorEditor = new FileFieldEditor(PreferenceConstants.DOCUMENTOR_PATH.key,
-		        "Go &documentor (godoc):", fieldParent));
+		addField(documentorEditor = new FileFieldEditor(GoEnvironmentPrefConstants.DOCUMENTOR_PATH.key,
+		    "Go &documentor (godoc):", fieldParent));
 		
 		
 		group = SWTFactoryUtil.createGroup(getFieldEditorParent(),

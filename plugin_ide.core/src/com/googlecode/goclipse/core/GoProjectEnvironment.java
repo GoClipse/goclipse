@@ -16,8 +16,10 @@ import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 import org.eclipse.core.resources.IProject;
 
+import com.googlecode.goclipse.tooling.GoArch;
 import com.googlecode.goclipse.tooling.GoEnvironment;
 import com.googlecode.goclipse.tooling.GoEnvironmentConstants;
+import com.googlecode.goclipse.tooling.GoOs;
 
 public class GoProjectEnvironment {
 	
@@ -25,12 +27,18 @@ public class GoProjectEnvironment {
 		return getPrefValue(GoEnvironmentPrefConstants.GO_ROOT, project, GoEnvironmentConstants.GOROOT);
 	}
 	
-	public static String getEffectiveGoArch(IProject project) {
-		return getPrefValue(GoEnvironmentPrefConstants.GO_ARCH, project, GoEnvironmentConstants.GOARCH);
+	public static GoArch getEffectiveGoArch(IProject project) {
+		String prefValue = getPrefValue(GoEnvironmentPrefConstants.GO_ARCH, project, GoEnvironmentConstants.GOARCH);
+		if(prefValue == null) 
+			return null;
+		return new GoArch(prefValue);
 	}
 	
-	public static String getEffectiveGoOs(IProject project) {
-		return getPrefValue(GoEnvironmentPrefConstants.GO_OS, project, GoEnvironmentConstants.GOOS);
+	public static GoOs getEffectiveGoOs(IProject project) {
+		String prefValue = getPrefValue(GoEnvironmentPrefConstants.GO_OS, project, GoEnvironmentConstants.GOOS);
+		if(prefValue == null) 
+			return null;
+		return new GoOs(prefValue);
 	}
 	
 	public static String getEffectiveGoPath(IProject project) {
@@ -56,8 +64,8 @@ public class GoProjectEnvironment {
 	 */
 	public static GoEnvironment getGoEnvironment(IProject project) {
 		String goRoot = getEffectiveGoRoot(project);
-		String goArch = getEffectiveGoArch(project);
-		String goOs = getEffectiveGoOs(project);
+		GoArch goArch = getEffectiveGoArch(project);
+		GoOs goOs = getEffectiveGoOs(project);
 		String goPath = getEffectiveGoPath(project);
 		return new GoEnvironment(goRoot, goArch, goOs, goPath);
 	}
