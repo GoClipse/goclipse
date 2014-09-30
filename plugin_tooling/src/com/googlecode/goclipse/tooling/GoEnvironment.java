@@ -42,7 +42,7 @@ public class GoEnvironment {
 	}
 	
 	public GoEnvironment(String goRoot, String goArch, String goOs, String goPath) {
-		this(goRoot, goOs, goArch, new GoPath(goPath));
+		this(goRoot, goArch, goOs, new GoPath(goPath));
 	}
 	
 	public String getGoRoot() {
