@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -90,8 +91,10 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		}
 		
 		SourceLineColumnLocation location = findResult.getLocation();
-		if(location == null) 
+		if(location == null) {
+			Display.getCurrent().beep();
 			return;
+		}
 		
 		openEditorForLocation(location);
 	}

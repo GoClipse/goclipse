@@ -74,9 +74,15 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		JSONObject describe = jsonResult.getJSONObject("describe");
 		
 		String desc = describe.getString("desc");
-		if(!areEqual(desc, "identifier")) {
-			throw new StatusException("Selection is not an identifier", null);
+		
+		if(areEqual(desc, "source file")) {
+			return new FindDefinitionResult(null, null);
 		}
+		if(!areEqual(desc, "identifier")) {
+			return new FindDefinitionResult(
+				"Selected name does not refer to a source element, rather it's a:\n" + desc, null);
+		}
+		
 		
 		JSONObject value = describe.getJSONObject("value");
 		
