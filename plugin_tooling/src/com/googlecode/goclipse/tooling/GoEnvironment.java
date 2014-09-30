@@ -121,7 +121,7 @@ public class GoEnvironment {
 	// with some refactoring, we might be able to remove their uses
 	
 	protected String getGoOS_GoArch_segment() {
-		return getGoOs() + "_" + getGoArch();
+		return getGoOs().asString() + "_" + getGoArch().asString();
 	}
 	
 	public Path getGoRootPackageObjectsLocation() throws StatusException {
@@ -144,6 +144,10 @@ public class GoEnvironment {
 		}
 		
 		return StringUtil.collToString(pkgFolders, File.pathSeparator);
+	}
+	
+	public Path getGoRootToolsLocation() throws StatusException {
+		return goRoot.asPath().resolve("pkg/tool/").resolve(getGoOS_GoArch_segment());
 	}
 	
 }
