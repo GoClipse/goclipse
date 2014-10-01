@@ -1,10 +1,6 @@
 package com.googlecode.goclipse.builder;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
 
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.MiscUtil;
@@ -24,14 +20,9 @@ import org.eclipse.core.runtime.QualifiedName;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.core.GoWorkspace;
-import com.googlecode.goclipse.go.lang.lexer.Lexer;
-import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
-import com.googlecode.goclipse.go.lang.model.Import;
-import com.googlecode.goclipse.go.lang.parser.ImportParser;
 import com.googlecode.goclipse.tooling.GoCommandConstants;
 import com.googlecode.goclipse.tooling.GoFileNaming;
 import com.googlecode.goclipse.utils.ObjectUtils;
@@ -45,132 +36,29 @@ import com.googlecode.goclipse.utils.ObjectUtils;
 public class GoCompiler {
 
 	private static final QualifiedName	COMPILER_VERSION_QN	= new QualifiedName(Activator.PLUGIN_ID, "compilerVersion");
+	
+	protected final IProject project;
+	
 	private String version;
 	private long versionLastUpdated	= 0;
 		
-	/**
-	 * 
-	 */
-	public GoCompiler() {}
-
-	/**
-	 * @param project
-	 * @param target
-	 */
-	public void goGetDependencies(final IProject project, IProgressMonitor monitor, java.io.File target) throws CoreException {
-		
-		final IPath projectLocation = project.getLocation();
-		final String compilerPath   = GoEnvironmentPrefs.COMPILER_PATH.get();
-		final IFile  file           = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
-			
-			/**
-			 * TODO Allow the user to set the go get locations
-			 * manually.
-			 */
-			
-			List<Import> imports;
-			try {
-				imports = getImports(target);
-			} catch (IOException ioe) {
-				throw GoCore.createCoreException("Error during getImports", ioe);
-			}
-			List<String> cmd        = new ArrayList2<String>();
-			List<Import> extImports = new ArrayList2<Import>();
-			
-			monitor.beginTask("Importing external libraries for "+file.getName()+":", 5);
-			
-			for (Import imp: imports) {
-				if (imp.getName().startsWith("code.google.com") ||
-					imp.getName().startsWith("github.com")      ||
-					imp.getName().startsWith("bitbucket.org")   ||
-					imp.getName().startsWith("launchpad.net")   ||
-					imp.getName().contains(".git")              ||
-					imp.getName().contains(".svn")              ||
-					imp.getName().contains(".hg")               ||
-					imp.getName().contains(".bzr")              ){
-					
-					cmd.add(imp.getName());
-					extImports.add(imp);
-				}
-			}
-			
-			monitor.worked(1);
-			
-			//String[] cmd     = { compilerPath, GoConstants.GO_GET_COMMAND, "-u" };
-			cmd.add(0, "-u");
-			cmd.add(0, "-fix");
-			cmd.add(0, GoCommandConstants.GO_GET_COMMAND);
-			cmd.add(0, compilerPath);
-			
-			String   goPath  = buildGoPath(project, projectLocation, true);
-			
-			monitor.worked(3);
-			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, monitor, 
-				target.getParentFile(), cmd, goPath);
-			
-			StreamAsLines sal = new StreamAsLines(processResult);
-			
-			boolean exMsg = true;
-			
-			try {
-	            project.deleteMarkers(MarkerUtilities.MARKER_ID, false, IResource.DEPTH_ZERO);
-            } catch (CoreException e1) {
-	            Activator.logError(e1);
-            }
-			
-			MarkerUtilities.deleteFileMarkers(file);
-			if (sal.getLines().size() > 0) {
-				
-				for (String line : sal.getLines()) {
-					if (line.startsWith("package")) {
-						String impt = line.substring(0,line.indexOf(" -"));
-						impt = impt.replaceFirst("package ", "");
-						for (Import i:extImports) {
-							if (i.path.equals(impt)) {
-								MarkerUtilities.addMarker(file, i.getLine(), line.substring(line.indexOf(" -")+2), IMarker.SEVERITY_ERROR);
-							}
-						}
-						
-					} else if (line.contains(".go:")) {
-						try {
-							String[] split 	    = line.split(":");
-							String   path 	    = "GOPATH/"+split[0].substring(split[0].indexOf("/src/")+5);
-							IFile    extfile    = project.getFile(path);
-							int      lineNumber = Integer.parseInt(split[1]);
-							String   msg 		= split[3];
-														
-							if(extfile!=null && extfile.exists()){
-								MarkerUtilities.addMarker(extfile, lineNumber, msg, IMarker.SEVERITY_ERROR);
-								
-							} else if (exMsg) {
-								exMsg = false;
-								MarkerUtilities.addMarker(file, "There are problems with the external imports in this file.\n" +
-										                        "You may want to attempt to resolve them outside of eclipse.\n" +
-										                        "Here is the GOPATH to use: \n\t"+goPath);
-							}
-							
-						} catch (Exception e){
-							Activator.logError(e);
-						}
-					}
-				}
-			}
-			
-			monitor.worked(1);
-			
+	public GoCompiler(IProject project) {
+		this.project = project;
 	}
-
+	
+	public IProject getProject() {
+		return project;
+	}
+	
 	/**
 	 * @param projectLocation
 	 * @return
 	 */
-	public static String buildGoPath(IProject project, final IPath projectLocation, boolean extGoRootFavored) {
+	public static String buildGoPath(IProject project, boolean extGoRootFavored) {
 		
 		String delim = File.pathSeparator;
 		
-		
-		String       goPath = projectLocation.toOSString();
+		String       goPath = project.getLocation().toOSString();
 		String[]     path   = Environment.INSTANCE.getGoPath(project);
 		final String GOPATH = path[0];
 
@@ -194,7 +82,7 @@ public class GoCompiler {
 	 * @param pmonitor
 	 * @param fileList
 	 */
-	public void compileCmd(final IProject project, IProgressMonitor pmonitor, java.io.File target) 
+	public void compileCmd(IProgressMonitor pmonitor, java.io.File target) 
 			throws CoreException {
 		
 		final IPath  projectLocation = project.getLocation();
@@ -235,7 +123,7 @@ public class GoCompiler {
 				);
 			}
 			
-			String goPath = buildGoPath(project, projectLocation, false);
+			String goPath = buildGoPath(project, false);
 			
 			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, pmonitor, 
 				target.getParentFile(), cmd, goPath);
@@ -247,7 +135,7 @@ public class GoCompiler {
 			
 			final String pkgPath = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
 			if (sal.getLines().size() > 0) {
-		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
+		    	errorCount = processCompileOutput(sal, pkgPath, file);
 		    }
 		
 	}
@@ -257,9 +145,7 @@ public class GoCompiler {
 	 * @param pmonitor
 	 * @param fileList
 	 */
-	public void compileAll(final IProject project, IProgressMonitor pmonitor, IFolder target) throws CoreException {
-		
-		final IPath  projectLocation = project.getLocation();
+	public void compileAll(IProgressMonitor pmonitor, IFolder target) throws CoreException {
 		
 		final String compilerPath = GoEnvironmentPrefs.COMPILER_PATH.get();
 
@@ -273,7 +159,7 @@ public class GoCompiler {
 				GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project)
 			);
 			
-			String goPath = buildGoPath(project, projectLocation, false);
+			String goPath = buildGoPath(project, false);
 
 			File file = new File(target.getLocation().toOSString());
 			
@@ -306,7 +192,7 @@ public class GoCompiler {
 	 * @param pmonitor
 	 * @param fileList
 	 */
-	public void compilePkg(final IProject project, IProgressMonitor pmonitor, final String pkgpath, java.io.File target) throws CoreException {
+	public void compilePkg(IProgressMonitor pmonitor, final String pkgpath, java.io.File target) throws CoreException {
 		
 		final String           compilerPath    = GoEnvironmentPrefs.COMPILER_PATH.get();
 		
@@ -327,7 +213,7 @@ public class GoCompiler {
 			workingDir = target;
 		}
 		
-			String  goPath  = buildGoPath(project, projectLocation, false);
+			String  goPath  = buildGoPath(project, false);
 			
 			ArrayList2<String> cmd = new ArrayList2<String>(
 				compilerPath,
@@ -348,7 +234,7 @@ public class GoCompiler {
 			StreamAsLines sal = new StreamAsLines(processResult);
 			
 			if (sal.getLines().size() > 0) {
-		    	errorCount = processCompileOutput(sal, project, pkgPath, file);
+		    	errorCount = processCompileOutput(sal, pkgPath, file);
 		    }
 			
 			GoTestRunner.scheduleTest(project, compilerPath, file, pkgPath,
@@ -363,9 +249,8 @@ public class GoCompiler {
 	 * @param pmonitor
 	 * @param fileList
 	 */
-	public void installAll(final IProject project, IProgressMonitor pmonitor) throws CoreException {
+	public void installAll(IProgressMonitor pmonitor) throws CoreException {
 		
-		final IPath  projectLocation = project.getLocation();
 		//final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		//final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
 
@@ -373,7 +258,7 @@ public class GoCompiler {
 		
 			ArrayList2<String> cmd = new ArrayList2<>(compilerPath, GoCommandConstants.GO_INSTALL_COMMAND, "all");
 
-			String  goPath  = buildGoPath(project, projectLocation, false);
+			String  goPath  = buildGoPath(project, false);
 			
 			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, pmonitor, 
 				project.getLocation().toFile(), cmd, goPath);
@@ -385,7 +270,7 @@ public class GoCompiler {
 			//clearPackageErrorMessages(project, pkgPath);
 			int errorCount = 0;
 		    if (sal.getLines().size() > 0) {
-		    	errorCount = processCompileOutput(sal, project, null, null);
+		    	errorCount = processCompileOutput(sal, null, null);
 		    }
 
 	}
@@ -433,7 +318,7 @@ public class GoCompiler {
 	 * @param dependencies
 	 * @return
 	 */
-	private boolean dependenciesExist(IProject project, String[] dependencies) {
+	private boolean dependenciesExist(String[] dependencies) {
 		ArrayList2<String> sourceDependencies = new ArrayList2<String>();
 		for (String dependency : dependencies) {
 			if (dependency.endsWith(GoFileNaming.GO_SOURCE_FILE_EXTENSION)) {
@@ -485,7 +370,6 @@ public class GoCompiler {
      * @param relativeTargetDir
      */
 	private int processCompileOutput(final StreamAsLines output,
-			                          final IProject      project,
 			                          final String        relativeTargetDir,
 			                          final IFile         file) {
 		int errorCount = 0;
@@ -615,32 +499,4 @@ public class GoCompiler {
 		return version;
 	}
 	
-	/**
-	 * TODO this needs to be centralized into a common index...
-	 * 
-	 * @param file
-	 * @return
-	 * @throws IOException
-	 */
-	private List<Import> getImports(File file) throws IOException {
-		Lexer 		  lexer        = new Lexer();
-		Tokenizer 	  tokenizer    = new Tokenizer(lexer);
-		ImportParser  importParser = new ImportParser(tokenizer, file);
-		
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String temp = "";
-		StringBuilder builder = new StringBuilder();
-		while( (temp = reader.readLine()) != null ) {
-			builder.append(temp);
-			builder.append("\n");
-		}
-		
-		reader.close();
-		lexer.scan(builder.toString());
-		List<Import> imports = importParser.getImports();
-		
-		return imports;
-	}
-
-
 }

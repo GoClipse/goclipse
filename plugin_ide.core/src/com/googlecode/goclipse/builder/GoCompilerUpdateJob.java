@@ -32,22 +32,30 @@ public class GoCompilerUpdateJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		List<IProject> dirtyProjects = new ArrayList<IProject>();
 		
-		GoCompiler compiler = new GoCompiler();
+		if(true) {
+			// The following code has been disabled cause it is out of date, 
+			// due to changes in GoCompiler class
+			// It needs rewritting to be reenabled (it may not even be necessary)
+			return Status.OK_STATUS;
+		}
 		
 		try {
-			if (compiler.getVersion() != null) {
 				for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
 					if (!project.isOpen()) {
 						continue;
 					}
 					
-					if (project.getNature(GoNature.NATURE_ID) != null) {
+					if (project.getNature(GoNature.NATURE_ID) == null) {
+						continue;
+					}
+					GoCompiler compiler = new GoCompiler(project);
+					
+					if (compiler.getVersion() != null) {
 						if (compiler.requiresRebuild(project)) {
 							dirtyProjects.add(project);
 						}
 					}
 				}
-			}
 		} catch (CoreException ce) {
 			Activator.logError(ce);
 		}

@@ -1,5 +1,8 @@
 package com.googlecode.goclipse.builder;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -13,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.LangProjectBuilder;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -21,7 +26,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,6 +34,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
+import com.googlecode.goclipse.core.GoCoreMessages;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.dependency.DependencyGraph;
@@ -42,22 +47,48 @@ import com.googlecode.goclipse.go.lang.parser.PackageParser;
  * This class is the target called by the Eclipse environment to
  * build the active Go projects in the workspace.
  */
-public class GoBuilder extends IncrementalProjectBuilder {
+public class GoBuilder extends LangProjectBuilder {
 	
 	public  static final String  BUILDER_ID = "com.googlecode.goclipse.goBuilder";
 	private boolean onlyFullBuild = false;
-	private GoCompiler compiler;
 	
 	public GoBuilder() {
 	}
 	
 	@Override
+	protected String getBuildProblemId() {
+		return MarkerUtilities.MARKER_ID;
+	}
+	
+	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-		IProject project = getProject();
+		assertTrue(kind != CLEAN_BUILD);
+		
+		IProject project = assertNotNull(getProject());
+		
+		return doBuild(project, kind, args, monitor);
+	}
+	
+	private boolean checkBuild() throws CoreException {
+		
+		if (!GoEnvironmentPrefs.isValid()){
+			MarkerUtilities.addMarker(getProject(), GoCoreMessages.INVALID_PREFERENCES_MESSAGE);
+			return false;
+			
+		} else {
+			return true;
+		}
+	}
+	
+	@Override
+	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
+			throws CoreException {
 		
  		if (!checkBuild()) {
 			return null;
 		}
+ 		
+		GoCompiler compiler = new GoCompiler(project);
  		
 		if (compiler.requiresRebuild(project)) {
 			kind = FULL_BUILD;
@@ -74,13 +105,13 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		try {
 			
 			if (kind == FULL_BUILD || onlyFullBuild) {
-				fullBuild(monitor);
+				fullBuild(compiler, monitor);
 				onlyFullBuild = false;
 			} else {
 				if (delta == null) {
-					fullBuild(monitor);
+					fullBuild(compiler, monitor);
 				} else {
-					incrementalBuild(project, delta, monitor);
+					incrementalBuild(compiler, delta, monitor);
 				}
 			}
 			
@@ -105,31 +136,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	/**
-	 * @return
-	 * @throws CoreException
-	 */
-	private boolean checkBuild() throws CoreException {
-		
-		if (!GoEnvironmentPrefs.isValid()){
-			MarkerUtilities.addMarker(getProject(), GoConstants.INVALID_PREFERENCES_MESSAGE);
-			return false;
-			
-		} else {
-			
-			if (compiler == null){
-				compiler = new GoCompiler();
-			}
-			
-			return true;
-		}
-	}
 
-	/**
-	 * @param pmonitor
-	 * @throws CoreException
-	 */
-	protected void fullBuild(final IProgressMonitor pmonitor)
+	protected void fullBuild(GoCompiler compiler, final IProgressMonitor pmonitor)
 			throws CoreException {
 		Activator.logInfo("fullBuild");
 		
@@ -145,18 +153,13 @@ public class GoBuilder extends IncrementalProjectBuilder {
 		
 		clean(monitor.newChild(10));
 		
-		doBuild(toCompile, monitor);
+		doBuild(compiler, toCompile, monitor);
 		Activator.logInfo("fullBuild - done");
 		getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 	}
 
-	/**
-	 * @param fileList
-	 * @param monitor
-	 * @throws CoreException
-	 */
-	private void doBuild(List<IResource> fileList, final SubMonitor monitor) throws CoreException {
-		IProject project = getProject();
+	private void doBuild(GoCompiler compiler, List<IResource> fileList, final SubMonitor monitor) throws CoreException {
+		final IProject project = getProject();
 		Set<String> packages = new HashSet<String>();
 		
 		int cost = 2000/(fileList.size()+1);  // not looking for complete accuracy, just some feedback
@@ -172,7 +175,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 					if ( isCommandFile(file) ){
 						// if it is a command file, compile as such
 						monitor.beginTask("Compiling command file "+file.getName(), cost);
-						compiler.compileCmd(project, monitor.newChild(100), file);
+						compiler.compileCmd(monitor.newChild(100), file);
 
 					} else {
 						// else if not a command file, schedule to build the package
@@ -180,7 +183,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 
 						if ( !packages.contains(pkgpath) ) {
 							monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), cost);
-							compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
+							compiler.compilePkg(monitor.newChild(100), pkgpath, file);
 							packages.add(pkgpath);
 						}
 					}
@@ -218,13 +221,10 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	 * Then, it walks the reverse dependencies backwards building packages and
 	 * command files until everything that depended on the original pkg or
 	 * command file was built.
-	 * 
-	 * @param project
-	 * @param delta
-	 * @param pmonitor
 	 */
-	protected void incrementalBuild(IProject project, IResourceDelta delta,
+	protected void incrementalBuild(GoCompiler compiler, IResourceDelta delta,
 			IProgressMonitor pmonitor) throws CoreException {
+		final IProject project = compiler.getProject();
 		
 		List<IFolder> srcfolders = Environment.INSTANCE.getSourceFolders(project);
 		
@@ -259,7 +259,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 				try {
 					if ( isCommandFile(file) ){
 						// if it is a command file, compile as such
-						compiler.compileCmd(project, monitor.newChild(100), file);
+						compiler.compileCmd(monitor.newChild(100), file);
 						
 					} else {
 						
@@ -289,8 +289,8 @@ public class GoBuilder extends IncrementalProjectBuilder {
 						}
 						
 						monitor.beginTask("Compiling package "+file.getName().replace(".go", ""), 1);
-						compiler.compilePkg(project, monitor.newChild(100), pkgpath, file);
-						buildDependencies(project, srcfolders, monitor, graph, file, pkg);
+						compiler.compilePkg(monitor.newChild(100), pkgpath, file);
+						buildDependencies(compiler, srcfolders, monitor, graph, file, pkg);
 					}
 					
 				} catch (IOException e) {
@@ -309,9 +309,11 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	}
 	
 	
-    private void buildDependencies(IProject project, List<IFolder> srcfolders, SubMonitor monitor,
+    private void buildDependencies(GoCompiler compiler, List<IFolder> srcfolders, SubMonitor monitor,
             DependencyGraph graph, File file, String pkg) throws CoreException {
-
+    	
+    	final IProject project = compiler.getProject();
+    	
 		Set<String> built   = new HashSet<String>();
 		Set<String> depends = graph.getReverseDependencies(pkg);
 	    int max_depth = 32;
@@ -352,7 +354,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	    		
 	    		if ( name.endsWith(".go")) {
 	    			File cmdfile = graph.getCommandFileForName(name);
-	    			compiler.compileCmd(project, monitor.newChild(100), cmdfile);
+	    			compiler.compileCmd(monitor.newChild(100), cmdfile);
 	    			
 	    		} else {
 	    			
@@ -365,7 +367,7 @@ public class GoBuilder extends IncrementalProjectBuilder {
 	    				
 	    				if (!built.contains(target) ) {
 	    					monitor.beginTask("Compiling package  "+file.getName().replace(".go", ""), 1);
-	    					compiler.compilePkg(project, monitor.newChild(100), target, file2);
+	    					compiler.compilePkg(monitor.newChild(100), target, file2);
 	    				}
 	    			}
 	    		}
