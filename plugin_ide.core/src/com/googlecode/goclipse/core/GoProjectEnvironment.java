@@ -26,15 +26,15 @@ import com.googlecode.goclipse.tooling.env.GoRoot;
 public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
 	public static GoRoot getEffectiveGoRoot(IProject project) {
-		return new GoRoot(getEffectiveValue_NonNull(GoEnvironmentPrefConstants.GO_ROOT, project, GOROOT));
+		return new GoRoot(getEffectiveValue_NonNull(GoEnvironmentPrefs.GO_ROOT, project, GOROOT));
 	}
 	
 	public static GoArch getEffectiveGoArch(IProject project) {
-		return new GoArch(getEffectiveValue_NonNull(GoEnvironmentPrefConstants.GO_ARCH, project, GOARCH));
+		return new GoArch(getEffectiveValue_NonNull(GoEnvironmentPrefs.GO_ARCH, project, GOARCH));
 	}
 	
 	public static GoOs getEffectiveGoOs(IProject project) {
-		return new GoOs(getEffectiveValue_NonNull(GoEnvironmentPrefConstants.GO_OS, project, GOOS));
+		return new GoOs(getEffectiveValue_NonNull(GoEnvironmentPrefs.GO_OS, project, GOOS));
 	}
 	
 	public static GoPath getEffectiveGoPath(IProject project) {
@@ -42,7 +42,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	}
 	
 	public static String getEffectiveGoPathString(IProject project) {
-		String goPathPref = getEffectiveValue_NonNull(GoEnvironmentPrefConstants.GO_PATH, project, GOPATH);
+		String goPathPref = getEffectiveValue_NonNull(GoEnvironmentPrefs.GO_PATH, project, GOPATH);
 		if(project == null) {
 			return goPathPref;
 		}
@@ -71,6 +71,10 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		GoOs goOs = getEffectiveGoOs(project);
 		GoPath goPath = getEffectiveGoPath(project);
 		return new GoEnvironment(goRoot, goArch, goOs, goPath);
+	}
+
+	public static boolean isValid(IProject project) {
+		return getGoEnvironment(project).isValid();
 	}
 	
 }

@@ -25,7 +25,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.framework.Version;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.core.GoEnvironmentPrefConstants;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoEnvironmentUtils;
 import com.googlecode.goclipse.core.GoToolPreferences;
@@ -95,7 +94,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		        { GoOs.OS_WINDOWS, GoOs.OS_WINDOWS } }, fieldParent);
 		addField(goosEditor);
 
-		goarchEditor = new ComboFieldEditor(GoEnvironmentPrefConstants.GO_ARCH.key, "GO&ARCH:", new String[][] { 
+		goarchEditor = new ComboFieldEditor(GoEnvironmentPrefs.GO_ARCH.key, "GO&ARCH:", new String[][] { 
 				{ "", "" },
 		        { GoArch.ARCH_AMD64, GoArch.ARCH_AMD64 },
 		        { GoArch.ARCH_386, GoArch.ARCH_386 },

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
-import static com.googlecode.goclipse.core.GoEnvironmentPrefConstants.GO_OS;
+import static com.googlecode.goclipse.core.GoEnvironmentPrefs.GO_OS;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -24,7 +24,7 @@ public class GoWorkspace extends CommonGoLocation {
 	protected final IProject project;
 	
 	public GoWorkspace(IProject project) {
-		super(project.getLocation().toFile().toString(), GO_OS.get(), GoEnvironmentPrefConstants.GO_ARCH.get());
+		super(project.getLocation().toFile().toString(), GO_OS.get(), GoEnvironmentPrefs.GO_ARCH.get());
 		this.project = project;
 	}
 	

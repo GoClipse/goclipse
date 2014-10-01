@@ -29,10 +29,10 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		
-		GoEnvironmentPrefConstants.GO_ROOT.set(SAMPLE_GO_ROOT.toString());
-		GoEnvironmentPrefConstants.GO_ARCH.set("386");
-		GoEnvironmentPrefConstants.GO_OS.set("windows");
-		GoEnvironmentPrefConstants.GO_PATH.set(SAMPLE_GO_PATH.toString());
+		GoEnvironmentPrefs.GO_ROOT.set(SAMPLE_GO_ROOT.toString());
+		GoEnvironmentPrefs.GO_ARCH.set("386");
+		GoEnvironmentPrefs.GO_OS.set("windows");
+		GoEnvironmentPrefs.GO_PATH.set(SAMPLE_GO_PATH.toString());
 		
 		// Test that it works with null
 		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(null); 

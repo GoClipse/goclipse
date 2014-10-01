@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.core.GoCoreMessages;
-import com.googlecode.goclipse.core.GoEnvironmentPrefs;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.dependency.DependencyGraph;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
@@ -69,9 +69,9 @@ public class GoBuilder extends LangProjectBuilder {
 		return doBuild(project, kind, args, monitor);
 	}
 	
-	private boolean checkBuild() throws CoreException {
+	private boolean checkBuild(IProject project) throws CoreException {
 		
-		if (!GoEnvironmentPrefs.isValid()){
+		if (!GoProjectEnvironment.isValid(project)){
 			MarkerUtilities.addMarker(getProject(), GoCoreMessages.INVALID_PREFERENCES_MESSAGE);
 			return false;
 			
@@ -84,7 +84,7 @@ public class GoBuilder extends LangProjectBuilder {
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
 			throws CoreException {
 		
- 		if (!checkBuild()) {
+ 		if (!checkBuild(project)) {
 			return null;
 		}
  		

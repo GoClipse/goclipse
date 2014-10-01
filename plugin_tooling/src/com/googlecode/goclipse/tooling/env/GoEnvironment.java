@@ -17,13 +17,13 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import com.googlecode.goclipse.tooling.StatusException;
-
 import melnorme.lang.tooling.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+import melnorme.utilbox.misc.StringUtil;
+
+import com.googlecode.goclipse.tooling.StatusException;
 
 /**
  * Immutable description of a Go environment, under which Go operations and semantic analysis can be run.
@@ -152,6 +152,17 @@ public class GoEnvironment {
 		}
 		
 		return StringUtil.collToString(pkgFolders, File.pathSeparator);
+	}
+	
+	public boolean isValid() {
+		if (isNullOrEmpty(goRoot.asString()) || isNullOrEmpty(goOs.asString()) || isNullOrEmpty(goArch.asString())) {
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean isNullOrEmpty(String string) {
+		return string == null || string.isEmpty();
 	}
 	
 }

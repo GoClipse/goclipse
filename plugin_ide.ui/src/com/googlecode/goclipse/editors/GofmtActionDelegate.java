@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.core.GoCore;
-import com.googlecode.goclipse.core.GoEnvironmentPrefConstants;
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
@@ -28,7 +28,7 @@ public class GofmtActionDelegate extends TransformTextAction {
 	protected String transformText(final String text) throws CoreException {
 		final String currentContent = text;
 		
-		String gofmtPath = GoEnvironmentPrefConstants.FORMATTER_PATH.get();
+		String gofmtPath = GoEnvironmentPrefs.FORMATTER_PATH.get();
 		
 		/* FIXME: Use AbstractEditorOperation */
 		

@@ -10,26 +10,19 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
+import static com.googlecode.goclipse.core.GoEnvironmentUtils.getGO_OS_Default;
+import static com.googlecode.goclipse.core.GoEnvironmentUtils.get_GO_ARCH_Default;
+import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
-/* FIXME: the deprecations from this class */
-public class GoEnvironmentPrefs implements GoEnvironmentPrefConstants {
+public interface GoEnvironmentPrefs {
 	
-	/** @return true if the preferences have been set for all values */
-	@Deprecated
-	public static boolean isValid() {
-		String goroot = GoEnvironmentPrefConstants.GO_ROOT.get();
-		String goarch = GoEnvironmentPrefConstants.GO_ARCH.get();
-		String goos = GoEnvironmentPrefConstants.GO_OS.get();
-		
-		if (isNullOrEmpty(goroot) || isNullOrEmpty(goos) || isNullOrEmpty(goarch)) {
-			return false;
-		}
-		
-		return true;
-	}
+	static StringPreference GO_ROOT = new StringPreference("com.googlecode.goclipse.goroot", "");
+	static StringPreference GO_PATH = new StringPreference("com.googlecode.goclipse.gopath", "");
+	static StringPreference GO_OS = new StringPreference("com.googlecode.goclipse.goos", getGO_OS_Default());
+	static StringPreference GO_ARCH = new StringPreference("com.googlecode.goclipse.goarch", get_GO_ARCH_Default());
 	
-	private static boolean isNullOrEmpty(String string) {
-		return string == null || string.isEmpty();
-	}
+	static StringPreference COMPILER_PATH = new StringPreference("com.googlecode.goclipse.compiler.path", "");
+	static StringPreference FORMATTER_PATH = new StringPreference("com.googlecode.goclipse.formatter.path", "");
+	static StringPreference DOCUMENTOR_PATH = new StringPreference("com.googlecode.goclipse.documentor.path", "");
 	
 }

@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
-import com.googlecode.goclipse.core.GoEnvironmentPrefs;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**
@@ -76,7 +76,7 @@ public class GoProjectWizardPage extends WizardPage {
 	}
 
 	private void validate() {
-		if (GoEnvironmentPrefs.isValid()) {
+		if (GoProjectEnvironment.isValid(null)) {
 			setErrorMessage(null);
 		} else {
 			setErrorMessage("GOROOT has not been set. This can be done from the Go preference page.");
