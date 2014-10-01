@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
-import static com.googlecode.goclipse.core.GoEnvironmentPrefUtils.getGO_OS_Default;
-import static com.googlecode.goclipse.core.GoEnvironmentPrefUtils.get_GO_ARCH_Default;
+import static com.googlecode.goclipse.core.GoEnvironmentUtils.getGO_OS_Default;
+import static com.googlecode.goclipse.core.GoEnvironmentUtils.get_GO_ARCH_Default;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface GoEnvironmentPrefConstants {

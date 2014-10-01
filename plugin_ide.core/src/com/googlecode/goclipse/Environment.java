@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.core.GoEnvironmentPrefConstants;
 
 /**
  * Provides environmental utility methods for acquiring and storing a user
@@ -171,7 +171,7 @@ public class Environment {
 		
 		// Plug-in property comes next
 		if (goPath == null || "".equals(goPath)) {
-			goPath = PreferenceConstants.GO_PATH.get(project);
+			goPath = GoEnvironmentPrefConstants.GO_PATH.get(project);
 		}
 		
 		// last ditch effort via a system environment variable
@@ -193,7 +193,7 @@ public class Environment {
 		
 		// Plug-in property comes next
 		if (goroot == null || "".equals(goroot)) {
-			goroot = PreferenceConstants.GO_ROOT.get(project);
+			goroot = GoEnvironmentPrefConstants.GO_ROOT.get(project);
 		}
 		
 		// last ditch effort via a system environment variable

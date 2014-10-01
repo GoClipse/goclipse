@@ -22,6 +22,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
+import com.googlecode.goclipse.tooling.StatusException;
+
 /**
  * Utility for handling exceptions during UI operations, by presenting an information dialog to the user.
  */
@@ -91,6 +93,10 @@ public class UIOperationExceptionHandler {
 		boolean logError = status.matches(IStatus.ERROR);
 		
 		handleWithErrorDialog(logError, dialogTitle, ce.getMessage(), ce.getCause());
+	}
+	
+	public static void handleOperationStatus(String dialogTitle, StatusException ce) {
+		handleWithErrorDialog(true, dialogTitle, ce.getMessage(), ce.getCause());
 	}
 	
 }

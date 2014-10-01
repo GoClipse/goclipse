@@ -10,12 +10,16 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import melnorme.utilbox.misc.MiscUtil;
 
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 
-public class GoEnvironmentPrefUtils {
+// XXX: Some of the methods of this class may not be necessary, could use some refactoring.
+public class GoEnvironmentUtils {
 
 	public static String get_GO_ARCH_Default() {
 		if (isAMD64()){
@@ -47,6 +51,56 @@ public class GoEnvironmentPrefUtils {
 		} else {
 			return "";
 		}
+	}
+	
+	public static String getDefaultPlatformChar() {
+		if (GoEnvironmentUtils.isAMD64()){
+			return "6";
+		} else if (GoEnvironmentUtils.is386()) {
+			return "8";
+		}
+		return null;
+	}
+	
+	public static String getDefaultCompilerName() {
+		String platformChar = getDefaultPlatformChar();
+		if (platformChar == null){
+			return null;
+		}
+		return "go"+(MiscUtil.OS_IS_WINDOWS?".exe":"");
+	}
+	
+	// TODO refactor this out
+	protected static String get32bitCompilerName() {
+		return "go"+(MiscUtil.OS_IS_WINDOWS?".exe":"");
+	}
+	
+	public static List<String> getSupportedCompilerNames() {
+	  List<String> names = new ArrayList<String>();
+	  
+	  String defaultCompiler = getDefaultCompilerName();
+	  
+	  if (defaultCompiler != null) {
+	    names.add(defaultCompiler);
+	  }
+	  
+	  if (GoEnvironmentUtils.isAMD64()) {
+	    String altCompiler = get32bitCompilerName();
+	    
+	    if (altCompiler != null) {
+	      names.add(altCompiler);
+	    }
+	  }
+	  
+	  return names;
+	}
+	
+	public static String getDefaultGodocName() {
+		return "godoc" +(MiscUtil.OS_IS_WINDOWS?".exe":"");
+	}
+
+	public static String getDefaultGofmtName() {
+		return "gofmt" +(MiscUtil.OS_IS_WINDOWS?".exe":"");
 	}
 	
 }

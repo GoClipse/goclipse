@@ -26,6 +26,7 @@ import org.osgi.framework.Version;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.core.GoEnvironmentPrefConstants;
+import com.googlecode.goclipse.core.GoEnvironmentUtils;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.preferences.PreferenceInitializer;
@@ -158,14 +159,14 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 
 				if (binFile.exists() && binFile.isDirectory()) {
 					if ("".equals(compilerEditor.getStringValue())) {
-						File compilerFile = findExistingFile(binPath, PreferenceInitializer.getSupportedCompilerNames());
+						File compilerFile = findExistingFile(binPath, GoEnvironmentUtils.getSupportedCompilerNames());
 						if (compilerFile != null && !compilerFile.isDirectory()) {
 							compilerEditor.setStringValue(compilerFile.getAbsolutePath());
 						}
 					}
 
 					if ("".equals(formatterEditor.getStringValue())) {
-						String goFmtName = PreferenceInitializer.getDefaultGofmtName();
+						String goFmtName = GoEnvironmentUtils.getDefaultGofmtName();
 						IPath formatterPath = binPath.append(goFmtName);
 						File formatterFile = formatterPath.toFile();
 						if (formatterFile.exists() && !formatterFile.isDirectory()) {
@@ -174,7 +175,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 					}
 
 					if ("".equals(documentorEditor.getStringValue())) {
-						String goDocName = PreferenceInitializer.getDefaultGodocName();
+						String goDocName = GoEnvironmentUtils.getDefaultGodocName();
 						IPath testerPath = binPath.append(goDocName);
 						File testerFile = testerPath.toFile();
 						if (testerFile.exists() && !testerFile.isDirectory()) {

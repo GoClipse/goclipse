@@ -14,9 +14,8 @@ import java.nio.file.Path;
 
 import org.eclipse.core.runtime.CoreException;
 
-import com.googlecode.goclipse.preferences.PreferenceConstants;
 
-
+/* FIXME: the deprecations from this class */
 public class GoEnvironmentPrefs implements GoEnvironmentPrefConstants {
 	
 	public static GoRoot getGoRoot() {
@@ -36,11 +35,13 @@ public class GoEnvironmentPrefs implements GoEnvironmentPrefConstants {
 		
 	}
 	
+	
 	/** @return true if the preferences have been set for all values */
+	@Deprecated
 	public static boolean isValid() {
-		String goroot = PreferenceConstants.GO_ROOT.get();
-		String goarch = PreferenceConstants.GO_ARCH.get();
-		String goos = PreferenceConstants.GO_OS.get();
+		String goroot = GoEnvironmentPrefConstants.GO_ROOT.get();
+		String goarch = GoEnvironmentPrefConstants.GO_ARCH.get();
+		String goos = GoEnvironmentPrefConstants.GO_OS.get();
 		
 		if (isNullOrEmpty(goroot) || isNullOrEmpty(goos) || isNullOrEmpty(goarch)) {
 			return false;

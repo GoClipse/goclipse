@@ -2,7 +2,6 @@ package com.googlecode.goclipse.ui.wizards;
 
 import java.io.File;
 
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.WizardPage;
@@ -10,9 +9,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.core.GoCore;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.tooling.StatusException;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
+import com.googlecode.goclipse.tooling.env.GoRoot;
 import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**
@@ -64,35 +64,37 @@ public class GoReferenceProjectWizardPage extends WizardPage {
 		// validate
 		boolean valid = true;
 
-		if (!isGoRootSet()) {
+		GoRoot goRoot = getEnvironment().getGoRoot();
+		if (goRoot.isEmpty()) {
 			// TODO: provide a hyperlink to the preference page
 
 			setErrorMessage("GOROOT has not been set. This can be done from the Go preference page.");
 
 			valid = false;
-		} else if (!getGoRootSrcFolder().exists()) {
-			// TODO: provide a hyperlink to the preference page
+		} else {
+			try {
+				if (!getGoRootSrcFolder().exists()) {
+					// TODO: provide a hyperlink to the preference page
 
-			setErrorMessage("GOROOT/src folder does not exist. Please check the preference setting for the GOROOT path.");
+					setErrorMessage("GOROOT/src folder does not exist. Please check the preference setting for the GOROOT path.");
 
-			valid = false;
+					valid = false;
+				}
+			} catch (StatusException e) {
+				setErrorMessage(e.getMessage());
+				valid = false;
+			}
 		}
 
 		setPageComplete(valid);
 	}
-
-	protected File getGoRootSrcFolder() {
-		String goRoot = PreferenceConstants.GO_ROOT.get();
-
-		File srcFolder = Path.fromOSString(goRoot).append("src").toFile();
-
-		return srcFolder;
+	
+	protected GoEnvironment getEnvironment() {
+		return GoProjectEnvironment.getGoEnvironment(null); //XXX: review if this is correct
 	}
-
-	private boolean isGoRootSet() {
-		String goRoot = PreferenceConstants.GO_ROOT.get();
-		
-		return !"".equals(goRoot);
+	
+	protected File getGoRootSrcFolder() throws StatusException {
+		return getEnvironment().getGoRoot().getSourceRootLocation().toFile();
 	}
-
+	
 }

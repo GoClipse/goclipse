@@ -12,7 +12,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
-import com.googlecode.goclipse.core.GoEnvironmentPrefUtils;
+import com.googlecode.goclipse.core.GoEnvironmentUtils;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -83,7 +83,7 @@ public class GocodePlugin extends Plugin {
 		
 		IPath toolsPath = Path.fromOSString(pluginDir.getAbsolutePath()).append("tools");
 		
-		String name = GoEnvironmentPrefUtils.getGO_OS_Default() + "_" + GoEnvironmentPrefUtils.get_GO_ARCH_Default();
+		String name = GoEnvironmentUtils.getGO_OS_Default() + "_" + GoEnvironmentUtils.get_GO_ARCH_Default();
 		
 		toolsPath = toolsPath.append(name).append(getExeName());
 		
