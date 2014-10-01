@@ -12,6 +12,7 @@ package com.googlecode.goclipse.core.launch;
 
 
 import melnorme.lang.ide.launching.AbstractLangLaunchConfigurationDelegate;
+import melnorme.lang.tooling.ProcessUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -22,7 +23,6 @@ import org.eclipse.debug.core.Launch;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
-import com.googlecode.goclipse.utils.LaunchUtil;
 
 public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurationDelegate {
 	
@@ -47,9 +47,8 @@ public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurati
 		
 		if (goWorkspaceEntry != null) {
 			
-			String cmdName = LaunchUtil.getCmdName(programRelativePath);
-			IPath executablePath = LaunchUtil.getExecutablePath(cmdName, project);
-			String executableName = executablePath.lastSegment();
+			String cmdName = programRelativePath.removeFileExtension().lastSegment();
+			String executableName = cmdName + ProcessUtils.getExecutableSuffix();
 			
 			return GoProjectEnvironment.getBinFolder(goWorkspaceEntry).append(executableName);
 		}

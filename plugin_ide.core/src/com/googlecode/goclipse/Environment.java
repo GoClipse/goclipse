@@ -2,7 +2,6 @@ package com.googlecode.goclipse;
 
 import java.util.ArrayList;
 import java.util.List;
-import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -70,10 +69,6 @@ public class Environment {
 	 */
 	public static boolean isPkgFile(IPath path) {
 		return getDefaultPkgSourceFolder().isPrefixOf(path);
-	}
-	
-	public static String getExecutableExtension() {
-		return MiscUtil.OS_IS_WINDOWS ? ".exe" : "";
 	}
 	
 	/**

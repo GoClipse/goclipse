@@ -29,6 +29,7 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 
@@ -36,12 +37,13 @@ import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.core.GoCoreMessages;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.dependency.DependencyGraph;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Package;
 import com.googlecode.goclipse.go.lang.parser.PackageParser;
+import com.googlecode.goclipse.tooling.StatusException;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 /**
  * This class is the target called by the Eclipse environment to
@@ -207,7 +209,14 @@ public class GoBuilder extends LangProjectBuilder {
 		
 		String[] split = pkgname.split(File.separatorChar == '\\' ? "\\\\" : File.separator);
 		
-		String path = new GoWorkspace(project).getPkgFolderLocation().toOSString();
+		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
+		java.nio.file.Path packageObjectsDir;
+		try {
+			packageObjectsDir = goEnv.getPackageObjectsDir(project.getLocation().toFile().toPath());
+		} catch (StatusException e) {
+			throw LangCore.createCoreException(e.getMessage(), e.getCause());
+		}
+		String path = Path.fromOSString(packageObjectsDir.toString()).toOSString();
 		for (int i = 2; i < split.length; i++) {
 			path += File.separator + split[i];
 		}
@@ -418,8 +427,7 @@ public class GoBuilder extends LangProjectBuilder {
 			deleteFolder(binFolder, true);
 		}
 		
-		File pkgFolder = new GoWorkspace(project).getGoPackagesLocation().toFile();
-		
+		File pkgFolder = GoProjectEnvironment.getPkgFolder(project).toFile();
 		if (pkgFolder.exists()) {
 			deleteFolder(pkgFolder, true);
 		}

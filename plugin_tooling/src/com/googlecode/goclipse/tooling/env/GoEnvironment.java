@@ -31,6 +31,9 @@ import com.googlecode.goclipse.tooling.StatusException;
  */
 public class GoEnvironment {
 	
+	public static final String ENV_BIN_FOLDER = "bin";
+	public static final String ENV_PKG_FOLDER = "pkg";
+	
 	protected final GoRoot goRoot;
 	protected final GoArch goArch;
 	protected final GoOs goOs;
@@ -121,7 +124,7 @@ public class GoEnvironment {
 	
 	/* -----------------  ----------------- */
 	
-	protected String getGoOS_GoArch_segment() {
+	public String getGoOS_GoArch_segment() {
 		return getGoOs().asString() + "_" + getGoArch().asString();
 	}
 	
@@ -130,11 +133,15 @@ public class GoEnvironment {
 	}
 	
 	public Path getPackageObjectsDir(Path basePath) throws StatusException {
-		return basePath.resolve("pkg").resolve(getGoOS_GoArch_segment());
+		return basePath.resolve(getPackageObjectsRelativePath());
+	}
+	
+	public Path getPackageObjectsRelativePath() throws StatusException {
+		return MiscUtil.createValidPath("pkg").resolve(createPath(getGoOS_GoArch_segment()));
 	}
 	
 	public Path getGoRootToolsDir() throws StatusException {
-		return goRoot.asPath().resolve("pkg/tool/").resolve(getGoOS_GoArch_segment());
+		return goRoot.asPath().resolve("pkg/tool/").resolve(createPath(getGoOS_GoArch_segment()));
 	}
 	
 	
