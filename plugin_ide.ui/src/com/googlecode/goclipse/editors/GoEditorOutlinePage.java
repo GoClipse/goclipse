@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import melnorme.utilbox.core.CoreUtil;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -39,7 +41,6 @@ import com.googlecode.goclipse.go.lang.model.Type;
 import com.googlecode.goclipse.go.lang.model.TypeClass;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.views.GoImageProvider;
-import com.googlecode.goclipse.utils.ObjectUtils;
 
 /**
  * The outline page for the Go editor.
@@ -273,7 +274,7 @@ public class GoEditorOutlinePage extends ContentOutlinePage {
 		public void setCodeContext(CodeContext inCodeContext) {
 			this.codeContext = inCodeContext;
 			
-			if (ObjectUtils.objectEquals(this.codeContext, inCodeContext)) {
+			if (CoreUtil.areEqual(this.codeContext, inCodeContext)) {
 				viewer.refresh();
 			} else {
 				viewer.setInput(this.codeContext);

@@ -3,6 +3,7 @@ package com.googlecode.goclipse.builder;
 import java.io.File;
 
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -26,7 +27,6 @@ import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.tooling.GoCommandConstants;
 import com.googlecode.goclipse.tooling.GoFileNaming;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
-import com.googlecode.goclipse.utils.ObjectUtils;
 
 /**
  * GoCompiler provides the GoClipse interface to the go build tool.
@@ -330,7 +330,7 @@ public class GoCompiler {
 			// a rebuild.
 			return false;
 		} else {
-			return !ObjectUtils.objectEquals(storedVersion, currentVersion);
+			return !CoreUtil.areEqual(storedVersion, currentVersion);
 		}
 	}
 	

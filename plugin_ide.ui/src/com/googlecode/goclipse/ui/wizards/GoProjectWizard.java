@@ -34,7 +34,6 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.builder.GoNature;
-import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.ui.GoPerspective;
 
 /**
