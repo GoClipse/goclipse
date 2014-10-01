@@ -23,38 +23,26 @@ import com.googlecode.goclipse.tooling.GoOs;
 import com.googlecode.goclipse.tooling.GoPath;
 import com.googlecode.goclipse.tooling.GoRoot;
 
-public class GoProjectEnvironment {
+public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
 	public static GoRoot getEffectiveGoRoot(IProject project) {
-		String prefValue = getPrefValue(GoEnvironmentPrefConstants.GO_ROOT, project, GoEnvironmentConstants.GOROOT);
-		if(prefValue == null) 
-			return null;
-		return new GoRoot(prefValue);
+		return new GoRoot(getEffectiveValue_NonNull(GoEnvironmentPrefConstants.GO_ROOT, project, GOROOT));
 	}
 	
 	public static GoArch getEffectiveGoArch(IProject project) {
-		String prefValue = getPrefValue(GoEnvironmentPrefConstants.GO_ARCH, project, GoEnvironmentConstants.GOARCH);
-		if(prefValue == null) 
-			return null;
-		return new GoArch(prefValue);
+		return new GoArch(getEffectiveValue_NonNull(GoEnvironmentPrefConstants.GO_ARCH, project, GOARCH));
 	}
 	
 	public static GoOs getEffectiveGoOs(IProject project) {
-		String prefValue = getPrefValue(GoEnvironmentPrefConstants.GO_OS, project, GoEnvironmentConstants.GOOS);
-		if(prefValue == null) 
-			return null;
-		return new GoOs(prefValue);
+		return new GoOs(getEffectiveValue_NonNull(GoEnvironmentPrefConstants.GO_OS, project, GOOS));
 	}
 	
 	public static GoPath getEffectiveGoPath(IProject project) {
-		String goPathString = getEffectiveGoPathString(project);
-		if(goPathString == null) 
-			return null;
-		return new GoPath(goPathString);
+		return new GoPath(getEffectiveGoPathString(project));
 	}
 	
 	public static String getEffectiveGoPathString(IProject project) {
-		String goPathPref = getPrefValue(GoEnvironmentPrefConstants.GO_PATH, project, GoEnvironmentConstants.GOPATH);
+		String goPathPref = getEffectiveValue_NonNull(GoEnvironmentPrefConstants.GO_PATH, project, GOPATH);
 		if(project == null) {
 			return goPathPref;
 		}
@@ -63,15 +51,18 @@ public class GoProjectEnvironment {
 		return project.getLocation().toOSString() + File.pathSeparator + goPathPref;
 	}
 	
-	protected static String getPrefValue(StringPreference stringPref, IProject project, String envAlternative) {
+	protected static String getEffectiveValue_NonNull(StringPreference stringPref, IProject project, 
+			String envAlternative) {
 		String prefValue = stringPref.get(project);
 		if(prefValue == null || prefValue.isEmpty()) {
-			return System.getenv(envAlternative);
+			String envValue = System.getenv(envAlternative);
+			return envValue == null ? "" : envValue;
 		}
 		return prefValue;
 	}
 	
 	/**
+	 * @return {@link GoEnvironment} for given project.
 	 * @param project - can be null.
 	 */
 	public static GoEnvironment getGoEnvironment(IProject project) {
