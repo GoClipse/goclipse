@@ -16,12 +16,12 @@ import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 import org.eclipse.core.resources.IProject;
 
-import com.googlecode.goclipse.tooling.GoArch;
-import com.googlecode.goclipse.tooling.GoEnvironment;
-import com.googlecode.goclipse.tooling.GoEnvironmentConstants;
-import com.googlecode.goclipse.tooling.GoOs;
-import com.googlecode.goclipse.tooling.GoPath;
-import com.googlecode.goclipse.tooling.GoRoot;
+import com.googlecode.goclipse.tooling.env.GoArch;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
+import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
+import com.googlecode.goclipse.tooling.env.GoOs;
+import com.googlecode.goclipse.tooling.env.GoPath;
+import com.googlecode.goclipse.tooling.env.GoRoot;
 
 public class GoProjectEnvironment implements GoEnvironmentConstants {
 	

@@ -15,9 +15,9 @@ import java.nio.file.Path;
 import org.junit.Test;
 
 import com.googlecode.goclipse.tooling.CommonGoToolingTest;
-import com.googlecode.goclipse.tooling.GoEnvironment;
-import com.googlecode.goclipse.tooling.GoPath;
-import com.googlecode.goclipse.tooling.GoRoot;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
+import com.googlecode.goclipse.tooling.env.GoPath;
+import com.googlecode.goclipse.tooling.env.GoRoot;
 
 public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	

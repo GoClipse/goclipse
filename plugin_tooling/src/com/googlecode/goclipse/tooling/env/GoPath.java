@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.tooling;
+package com.googlecode.goclipse.tooling.env;
 
 import static java.util.Collections.unmodifiableList;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;

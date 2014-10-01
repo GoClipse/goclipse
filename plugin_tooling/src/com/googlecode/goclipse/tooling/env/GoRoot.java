@@ -8,11 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.tooling;
+package com.googlecode.goclipse.tooling.env;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
+
+import com.googlecode.goclipse.tooling.StatusException;
 
 public class GoRoot {
 	

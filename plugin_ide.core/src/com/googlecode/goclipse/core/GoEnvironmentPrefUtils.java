@@ -12,8 +12,8 @@ package com.googlecode.goclipse.core;
 
 import melnorme.utilbox.misc.MiscUtil;
 
-import com.googlecode.goclipse.tooling.GoArch;
-import com.googlecode.goclipse.tooling.GoOs;
+import com.googlecode.goclipse.tooling.env.GoArch;
+import com.googlecode.goclipse.tooling.env.GoOs;
 
 public class GoEnvironmentPrefUtils {
 

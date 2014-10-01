@@ -1,6 +1,6 @@
 package com.googlecode.goclipse.builder;
 
-import com.googlecode.goclipse.tooling.GoEnvironmentConstants;
+import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
 
 import melnorme.lang.ide.launching.LaunchConstants;
 

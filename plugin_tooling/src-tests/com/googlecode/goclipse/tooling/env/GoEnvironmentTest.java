@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.tooling;
+package com.googlecode.goclipse.tooling.env;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -16,6 +16,10 @@ import java.io.File;
 import java.nio.file.Path;
 
 import org.junit.Test;
+
+import com.googlecode.goclipse.tooling.CommonGoToolingTest;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
+import com.googlecode.goclipse.tooling.env.GoPath;
 
 public class GoEnvironmentTest extends CommonGoToolingTest {
 	

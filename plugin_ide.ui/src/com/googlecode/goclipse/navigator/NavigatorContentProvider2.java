@@ -18,9 +18,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.tooling.GoPath;
-import com.googlecode.goclipse.tooling.GoRoot;
 import com.googlecode.goclipse.tooling.StatusException;
+import com.googlecode.goclipse.tooling.env.GoPath;
+import com.googlecode.goclipse.tooling.env.GoRoot;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 // TODO: this content provider is hard-coded to show files from GOROOT; we'll probably want this

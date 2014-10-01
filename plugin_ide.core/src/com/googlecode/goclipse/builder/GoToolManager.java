@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.googlecode.goclipse.preferences.PreferenceConstants;
-import com.googlecode.goclipse.tooling.GoEnvironmentConstants;
+import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
 
 /**
  * Manager for running various go tools, usually for build.

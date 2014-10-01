@@ -23,9 +23,9 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.googlecode.goclipse.tooling.GoEnvironment;
 import com.googlecode.goclipse.tooling.JsonDeserializeHelper;
 import com.googlecode.goclipse.tooling.StatusException;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 	

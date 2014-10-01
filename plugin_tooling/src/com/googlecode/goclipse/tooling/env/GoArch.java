@@ -8,13 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.tooling;
+package com.googlecode.goclipse.tooling.env;
 
-public interface GoEnvironmentConstants {
+public class GoArch {
 	
-	public static final String GOROOT = "GOROOT";
-	public static final String GOARCH = "GOARCH";
-	public static final String GOOS   = "GOOS";
-	public static final String GOPATH = "GOPATH";
+	public static final String ARCH_AMD64 = "amd64";
+	public static final String ARCH_386   = "386";
+	public static final String ARCH_ARM   = "arm";
+	
+	protected final String goArch;
+	
+	public GoArch(String goArch) {
+		this.goArch = goArch;
+	}
+	
+	public String asString() {
+		return goArch;
+	}
 	
 }

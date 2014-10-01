@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.tooling;
+package com.googlecode.goclipse.tooling.env;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -16,6 +16,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+
+import com.googlecode.goclipse.tooling.StatusException;
 
 import melnorme.lang.tooling.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;

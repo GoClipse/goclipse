@@ -28,8 +28,8 @@ import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.core.GoEnvironmentPrefConstants;
 import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.preferences.PreferenceInitializer;
-import com.googlecode.goclipse.tooling.GoArch;
-import com.googlecode.goclipse.tooling.GoOs;
+import com.googlecode.goclipse.tooling.env.GoArch;
+import com.googlecode.goclipse.tooling.env.GoOs;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 /**

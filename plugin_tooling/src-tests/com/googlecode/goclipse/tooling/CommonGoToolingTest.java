@@ -12,6 +12,12 @@ package com.googlecode.goclipse.tooling;
 
 import java.nio.file.Path;
 
+import com.googlecode.goclipse.tooling.env.GoArch;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
+import com.googlecode.goclipse.tooling.env.GoOs;
+import com.googlecode.goclipse.tooling.env.GoPath;
+import com.googlecode.goclipse.tooling.env.GoRoot;
+
 import melnorme.utilbox.tests.CommonTestExt;
 import melnorme.utilbox.tests.TestsWorkingDir;
 

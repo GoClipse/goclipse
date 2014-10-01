@@ -8,24 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.tooling;
+package com.googlecode.goclipse.tooling.env;
 
-public class GoOs {
+public interface GoEnvironmentConstants {
 	
-	public static final String OS_WINDOWS = "windows";
-	public static final String OS_DARWIN  = "darwin";
-	public static final String OS_LINUX   = "linux";
-	public static final String OS_FREEBSD = "freebsd";
-	public static final String OS_NACL    = "nacl";
-	
-	protected final String goOs;
-	
-	public GoOs(String goOs) {
-		this.goOs = goOs;
-	}
-	
-	public String asString() {
-		return goOs;
-	}
+	public static final String GOROOT = "GOROOT";
+	public static final String GOARCH = "GOARCH";
+	public static final String GOOS   = "GOOS";
+	public static final String GOPATH = "GOPATH";
 	
 }

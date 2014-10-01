@@ -10,8 +10,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.tooling.GoEnvironment;
 import com.googlecode.goclipse.tooling.StatusException;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 /**
  * An action to run the gofix command.

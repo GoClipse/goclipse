@@ -23,8 +23,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoToolPreferences;
-import com.googlecode.goclipse.tooling.GoEnvironment;
 import com.googlecode.goclipse.tooling.StatusException;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation;
 
 public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperation {

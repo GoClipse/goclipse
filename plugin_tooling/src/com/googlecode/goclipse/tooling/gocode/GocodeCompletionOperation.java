@@ -16,8 +16,8 @@ import java.util.regex.Pattern;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import com.googlecode.goclipse.tooling.GoEnvironment;
 import com.googlecode.goclipse.tooling.StatusException;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 
 public abstract class GocodeCompletionOperation<EXC extends Exception> {

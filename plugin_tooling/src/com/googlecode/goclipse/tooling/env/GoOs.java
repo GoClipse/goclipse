@@ -8,22 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.tooling;
+package com.googlecode.goclipse.tooling.env;
 
-public class GoArch {
+public class GoOs {
 	
-	public static final String ARCH_AMD64 = "amd64";
-	public static final String ARCH_386   = "386";
-	public static final String ARCH_ARM   = "arm";
+	public static final String OS_WINDOWS = "windows";
+	public static final String OS_DARWIN  = "darwin";
+	public static final String OS_LINUX   = "linux";
+	public static final String OS_FREEBSD = "freebsd";
+	public static final String OS_NACL    = "nacl";
 	
-	protected final String goArch;
+	protected final String goOs;
 	
-	public GoArch(String goArch) {
-		this.goArch = goArch;
+	public GoOs(String goOs) {
+		this.goOs = goOs;
 	}
 	
 	public String asString() {
-		return goArch;
+		return goOs;
 	}
 	
 }
