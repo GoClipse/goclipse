@@ -78,7 +78,7 @@ public abstract class AbstractUIOperation {
 			performLongRunningComputation_inCurrentThread();
 			return;
 		}
-		performLongRunningComputation_inUIThread();
+		performLongRunningComputation_usingProgressDialog();
 	}
 	
 	protected void performLongRunningComputation_inCurrentThread() throws CoreException {
@@ -87,7 +87,7 @@ public abstract class AbstractUIOperation {
 		performLongRunningComputation_do(monitor);
 	}
 	
-	protected void performLongRunningComputation_inUIThread() throws InterruptedException, CoreException {
+	protected void performLongRunningComputation_usingProgressDialog() throws InterruptedException, CoreException {
 		IProgressService ps = PlatformUI.getWorkbench().getProgressService();
 		try {
 			ps.busyCursorWhile(new IRunnableWithProgress() {

@@ -18,6 +18,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.builder.GoToolManager;
@@ -33,6 +34,13 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	
 	public GoOracleOpenDefinitionOperation(ITextEditor editor, SourceRange range, OpenNewEditorMode openEditorMode) {
 		super(OPEN_DEFINITION_OpName, editor, range, openEditorMode);
+	}
+	
+	@Override
+	protected void prepareOperation() throws CoreException {
+		super.prepareOperation();
+		
+		editor.doSave(new NullProgressMonitor());
 	}
 	
 	@Override
