@@ -66,6 +66,7 @@ public class GoCompiler {
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		final IPath  binFolder       = new GoWorkspace(project).getBinFolderRelativePath();
+		final IPath binFolderPath = projectLocation.append(binFolder);
 		
 		final String compilerPath = GoEnvironmentPrefs.COMPILER_PATH.get();
 		final String outExtension = (MiscUtil.OS_IS_WINDOWS ? ".exe" : "");
@@ -75,8 +76,8 @@ public class GoCompiler {
 			ArrayList2<String> cmd = new ArrayList2<>();
 			
 			MarkerUtilities.deleteFileMarkers(file);
-			if(Environment.INSTANCE.isCmdSrcFolder(project, (IFolder)file.getParent())){
-				outPath = projectLocation.append(binFolder).toOSString() + File.separator + target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, outExtension);
+			if(Environment.isCmdSrcFolder(project, (IFolder)file.getParent())){
+				outPath = binFolderPath.append(target.getName().replace(GoFileNaming.GO_SOURCE_FILE_EXTENSION, outExtension)).toOSString();
 				cmd.addElements(
 					compilerPath,
 					GoCommandConstants.GO_BUILD_COMMAND
@@ -89,7 +90,7 @@ public class GoCompiler {
 				);
 			} else {
 				MarkerUtilities.deleteFileMarkers(file.getParent());
-				outPath = projectLocation.append(binFolder).toOSString() + File.separator + target.getParentFile().getName() + outExtension;
+				outPath = binFolderPath.append(target.getParentFile().getName() + outExtension).toOSString();
 				cmd.addElements(
 					compilerPath,
 					GoCommandConstants.GO_BUILD_COMMAND
@@ -209,7 +210,7 @@ public class GoCompiler {
 		    }
 			
 			String  goPath  = goEnv.getGoPathString();
-			String goroot = Environment.INSTANCE.getGoRoot(project);
+			String goroot = goEnv.getGoPathString();
 			
 			GoTestRunner.scheduleTest(project, compilerPath, file, pkgPath,
 					workingDir, goPath, goroot, errorCount);

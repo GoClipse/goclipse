@@ -10,31 +10,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
-import java.nio.file.Path;
-
-import org.eclipse.core.runtime.CoreException;
-
 
 /* FIXME: the deprecations from this class */
 public class GoEnvironmentPrefs implements GoEnvironmentPrefConstants {
-	
-	public static GoRoot getGoRoot() {
-		return new GoRoot(GO_ROOT.get(), GO_OS.get(), GO_ARCH.get());
-	}
-	
-	@Deprecated
-	public static class GoRoot extends CommonGoLocation {
-		
-		public GoRoot(String location, String go_os, String go_arch) {
-			super(location, go_os, go_arch);
-		}
-		
-		public Path getToolsLocation() throws CoreException {
-			return createPath(location + "/pkg/tool/").resolve(getGo_OS_Arch_segment());
-		}
-		
-	}
-	
 	
 	/** @return true if the preferences have been set for all values */
 	@Deprecated

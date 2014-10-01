@@ -168,7 +168,7 @@ public class GoBuilder extends LangProjectBuilder {
 			File file = new File(res.getLocation().toOSString());
 
 			if ( file.isFile() && res instanceof IFile &&
-					Environment.INSTANCE.isSourceFile(project, (IFile)res) ) {
+					Environment.isSourceFile(project, (IFile)res) ) {
 
 				try {
 
@@ -226,7 +226,7 @@ public class GoBuilder extends LangProjectBuilder {
 			IProgressMonitor pmonitor) throws CoreException {
 		final IProject project = compiler.getProject();
 		
-		List<IFolder> srcfolders = Environment.INSTANCE.getSourceFolders(project);
+		List<IFolder> srcfolders = Environment.getSourceFolders(project);
 		
 		SubMonitor monitor = SubMonitor.convert(pmonitor, 170);
 		
@@ -254,7 +254,7 @@ public class GoBuilder extends LangProjectBuilder {
 			File file = res.getLocation().toFile();
 			
 			if ( file.isFile() && res instanceof IFile &&
-					Environment.INSTANCE.isSourceFile(project, (IFile)res) ) {
+					Environment.isSourceFile(project, (IFile)res) ) {
 				
 				try {
 					if ( isCommandFile(file) ){
@@ -282,7 +282,7 @@ public class GoBuilder extends LangProjectBuilder {
 						 */
 						String pkg = res.toString();
 						String parent = res.getParent().toString();
-						for(IFolder folder : Environment.INSTANCE.getSourceFolders(project)) {
+						for(IFolder folder : Environment.getSourceFolders(project)) {
 							if (parent.startsWith(folder.toString())){
 								pkg = parent.replace(folder.toString()+"/", "");
 							}
@@ -429,13 +429,12 @@ public class GoBuilder extends LangProjectBuilder {
 			@Override
 			public boolean visit(IResource resource) throws CoreException {
 				IPath relativePath = resource.getProjectRelativePath();
-				Environment instance = Environment.INSTANCE;
 				String lastSegment = relativePath.lastSegment();
 				IPath rawLocation = resource.getRawLocation();
 				if (rawLocation != null) {
 					File file = rawLocation.toFile();
 					if (file.exists() && file.isDirectory() &&
-						(instance.isCmdFile(relativePath) || instance.isPkgFile(relativePath))
+						(Environment.isCmdFile(relativePath) || Environment.isPkgFile(relativePath))
 						&& (lastSegment.equals(GoConstants.OBJ_FILE_DIRECTORY) || lastSegment.equals(GoConstants.TEST_FILE_DIRECTORY)))
 					{
 						deleteFolder(file, true);

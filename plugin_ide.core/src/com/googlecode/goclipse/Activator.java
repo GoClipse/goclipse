@@ -12,12 +12,13 @@ import com.googlecode.goclipse.core.GoCore;
  */
 public class Activator extends GoCore {
 	
+	public static final boolean DEBUG = Boolean.getBoolean("goclipse.debug");
 	
 	/**
 	 * Log the given info message to the Eclipse log.
 	 */
 	public static void logInfo(String message) {
-		if (Environment.DEBUG) {
+		if (DEBUG) {
 			GoCore.logStatus(new Status(IStatus.INFO, PLUGIN_ID, message));
 		}
 	}

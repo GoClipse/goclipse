@@ -60,8 +60,7 @@ public class DependencyGraph {
 			graphs.put(project.getName(), graph);
 
 			// get the src directories
-			List<IFolder> folders = Environment.INSTANCE
-					.getSourceFolders(project);
+			List<IFolder> folders = Environment.getSourceFolders(project);
 
 			for (IFolder srcfolder : folders) {
 				try {
@@ -180,8 +179,7 @@ public class DependencyGraph {
 	 * @param modified
 	 */
 	public void reprocessResources(List<IResource> modified) {
-		List<IFolder> srcFolders = Environment.INSTANCE
-				.getSourceFolders(project);
+		List<IFolder> srcFolders = Environment.getSourceFolders(project);
 
 		for (IResource resource : modified) {
 			for (IFolder srcfolder : srcFolders) {

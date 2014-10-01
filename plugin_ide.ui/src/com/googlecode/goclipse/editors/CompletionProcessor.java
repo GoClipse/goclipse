@@ -23,6 +23,7 @@ import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lib.indexer.Keywords;
+import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.views.GoImageProvider;
 
@@ -80,7 +81,7 @@ public class CompletionProcessor implements IContentAssistProcessor {
 
         try {
           codeContext = CodeContext.getCodeContext(filename, document.get());
-        } catch (IOException e) {
+        } catch (IOException | StatusException e) {
           Activator.logError(e);
         }
       }

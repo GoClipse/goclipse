@@ -29,6 +29,7 @@ import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
+import com.googlecode.goclipse.tooling.StatusException;
 
 /**
  * 
@@ -297,7 +298,7 @@ public class GoTestRunner {
 	        
         } catch (NumberFormatException e) {
         	Activator.logError(e);
-        } catch (IOException e) {
+        } catch (IOException | StatusException e) {
         	Activator.logError(e);
         }
     }

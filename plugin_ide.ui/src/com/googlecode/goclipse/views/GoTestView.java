@@ -530,7 +530,7 @@ public class GoTestView extends ViewPart {
 			}
 			
 			invisibleRoot = new TreeParent(project.getLocation().toFile(), project);
-			List<IFolder> folders = Environment.INSTANCE.getSourceFolders(project);
+			List<IFolder> folders = Environment.getSourceFolders(project);
 
 			for (IFolder folder : folders) {
 				File file = folder.getLocation().toFile();

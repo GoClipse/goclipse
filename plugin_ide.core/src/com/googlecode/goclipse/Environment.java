@@ -1,10 +1,7 @@
 package com.googlecode.goclipse;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
-
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.resources.IFile;
@@ -14,8 +11,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.core.GoEnvironmentPrefConstants;
+import com.googlecode.goclipse.tooling.GoFileNaming;
 
 /**
  * Provides environmental utility methods for acquiring and storing a user
@@ -25,14 +21,10 @@ import com.googlecode.goclipse.core.GoEnvironmentPrefConstants;
 @Deprecated
 public class Environment {
 	
-	public static final boolean DEBUG = Boolean.getBoolean("goclipse.debug");
-	
-	public static final Environment INSTANCE = new Environment();
-	
 	private Environment() {
 	}
 	
-	public String[] getSourceFoldersAsStringArray(IProject project) {
+	public static String[] getSourceFoldersAsStringArray(IProject project) {
 		return new String[] {"src"};
 	}
 	
@@ -41,7 +33,7 @@ public class Environment {
 	 * 
 	 * @return
 	 */
-	public List<IFolder> getSourceFolders(IProject project) {
+	public static List<IFolder> getSourceFolders(IProject project) {
 		List<IFolder> result = new ArrayList<IFolder>();
 		
 		for (String path : getSourceFoldersAsStringArray(project)) {
@@ -56,11 +48,11 @@ public class Environment {
 		return result;
 	}
 	
-	public IPath getDefaultCmdSourceFolder() {
+	public static IPath getDefaultCmdSourceFolder() {
 		return Path.fromOSString("src");
 	}
 	
-	public IPath getDefaultPkgSourceFolder() {
+	public static IPath getDefaultPkgSourceFolder() {
 		return Path.fromOSString("src");
 	}
 	
@@ -68,7 +60,7 @@ public class Environment {
 	 * @param path
 	 * @return
 	 */
-	public boolean isCmdFile(IPath path) {
+	public static boolean isCmdFile(IPath path) {
 		return getDefaultCmdSourceFolder().isPrefixOf(path);
 	}
 	
@@ -76,7 +68,7 @@ public class Environment {
 	 * @param path
 	 * @return
 	 */
-	public boolean isPkgFile(IPath path) {
+	public static boolean isPkgFile(IPath path) {
 		return getDefaultPkgSourceFolder().isPrefixOf(path);
 	}
 	
@@ -89,7 +81,7 @@ public class Environment {
 	 * @param folder
 	 * @return
 	 */
-	public boolean isCmdSrcFolder(IProject project, IFolder folder){
+	public static boolean isCmdSrcFolder(IProject project, IFolder folder){
 		
 		if (project == null || folder == null) {
 			return false;
@@ -141,14 +133,14 @@ public class Environment {
 	 * @param file
 	 * @return
 	 */
-	public boolean isSourceFile(IProject project, IFile file) {
+	public static boolean isSourceFile(IProject project, IFile file) {
 		IPath p = file.getProjectRelativePath();
 		IResource res = project.findMember(p);
 		if ( res==null ) {
 			return false;
 		}
 		
-		if ( !file.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION) ) {
+		if ( !file.getName().endsWith(GoFileNaming.GO_SOURCE_FILE_EXTENSION) ) {
 			return false;
 		}
 		
@@ -159,55 +151,6 @@ public class Environment {
 		}
 		
 		return false;
-	}
-	
-	/**
-	 * @param project
-	 * @return
-	 */
-	public String[] getGoPath(IProject project) {
-		String[] path   = { "" };
-		String   goPath = null;
-		
-		// Plug-in property comes next
-		if (goPath == null || "".equals(goPath)) {
-			goPath = GoEnvironmentPrefConstants.GO_PATH.get(project);
-		}
-		
-		// last ditch effort via a system environment variable
-		if (goPath == null || "".equals(goPath)) {
-			goPath = System.getenv(GoConstants.GOPATH);
-		}
-		
-		// If null, we give up and just return the default...
-		// which is essentially an empty string
-		if (goPath == null) {
-			return path;
-		}
-		
-		return goPath.split(Pattern.quote(File.pathSeparator));
-	}
-	
-	public String getGoRoot(IProject project) {
-		String goroot = null;
-		
-		// Plug-in property comes next
-		if (goroot == null || "".equals(goroot)) {
-			goroot = GoEnvironmentPrefConstants.GO_ROOT.get(project);
-		}
-		
-		// last ditch effort via a system environment variable
-		if (goroot == null || "".equals(goroot)) {
-			goroot = System.getenv(GoConstants.GOROOT);
-		}
-		
-		// If null, we give up and just return the default...
-		// which is essentially an empty string
-		if (goroot == null) {
-			return "";
-		}
-		
-		return goroot;
 	}
 	
 }

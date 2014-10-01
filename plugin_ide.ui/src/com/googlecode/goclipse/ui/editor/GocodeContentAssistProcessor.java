@@ -88,7 +88,7 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessor {
 		if (codeContext == null) {
 			try {
 				codeContext = CodeContext.getCodeContext(getProjectFor(editor), filePath, document.get());
-			} catch (IOException e) {
+			} catch (IOException | StatusException e) {
 				throw LangCore.createCoreException("Error during code Context:", e);
 			}
 		}

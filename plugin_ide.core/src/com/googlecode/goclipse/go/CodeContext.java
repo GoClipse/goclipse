@@ -15,8 +15,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.core.GoEnvironmentPrefs;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.TokenUnit;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
@@ -35,6 +34,9 @@ import com.googlecode.goclipse.go.lang.parser.ScopeParser;
 import com.googlecode.goclipse.go.lang.parser.TokenizedPage;
 import com.googlecode.goclipse.go.lang.parser.TypeParser;
 import com.googlecode.goclipse.go.lang.parser.VariableParser;
+import com.googlecode.goclipse.tooling.GoFileNaming;
+import com.googlecode.goclipse.tooling.StatusException;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 /**
  * Used to provide code completions and navigation through the code base
@@ -45,6 +47,8 @@ public class CodeContext {
 
 	static HashMap<String, CodeContext>	externalContexts	= new HashMap<String, CodeContext>();
 
+	protected final IProject project;
+	
 	public String	                    name;
 	public String	                    filetext;
 	public Package	                    pkg;
@@ -56,48 +60,21 @@ public class CodeContext {
 	public ArrayList<Var>	            vars	         = new ArrayList<Var>();
 	public ArrayList<Scope>	            moduleScope	     = new ArrayList<Scope>();
 
-	/**
-	 * @param filename
-	 * @param fileText
-	 * @throws IOException
-	 */
-	public CodeContext(String name) throws IOException {
+	public CodeContext(String name, IProject project) throws IOException {
 		this.name = name;
+		this.project = project;
 	}
 
-	/**
-	 * @param filename
-	 * @param fileText
-	 * @return
-	 * @throws IOException
-	 * @throws RecognitionException
-	 */
-	public static CodeContext getCodeContext(String filename, String fileText) throws IOException {
+	public static CodeContext getCodeContext(String filename, String fileText) throws IOException, StatusException {
 		return getCodeContext(null, filename, fileText, true);
 	}
 
-	/**
-	 * @param filename
-	 * @param fileText
-	 * @param useExternalContext
-	 * @return
-	 * @throws IOException
-	 * @throws RecognitionException
-	 */
 	public static CodeContext getCodeContext(String filename, String fileText, boolean useExternalContext)
-	        throws IOException {
+	        throws IOException, StatusException {
 		return getCodeContext(null, filename, fileText, useExternalContext);
 	}
 
-	/**
-	 * @param project
-	 * @param filename
-	 * @param fileText
-	 * @return
-	 * @throws IOException
-	 * @throws RecognitionException
-	 */
-	public static CodeContext getCodeContext(IProject project, String filename, String fileText) throws IOException {
+	public static CodeContext getCodeContext(IProject project, String filename, String fileText) throws IOException, StatusException {
 		return getCodeContext(project, filename, fileText, true);
 	}
 
@@ -111,9 +88,10 @@ public class CodeContext {
 	 * @param useExternalContext
 	 * @return
 	 * @throws IOException
+	 * @throws StatusException 
 	 */
-	public static CodeContext getCodeContext(IProject project, String filename, String fileText,
-	        boolean useExternalContext) throws IOException {
+	public static CodeContext getCodeContext(final IProject project, String filename, String fileText,
+	        boolean useExternalContext) throws IOException, StatusException {
 
 		boolean isCmdSrcFolder = false;
 
@@ -121,13 +99,13 @@ public class CodeContext {
 			IResource res = project.findMember(filename);
 
 			if (res != null && res instanceof IFile
-			        && Environment.INSTANCE.isCmdSrcFolder(project, (IFolder) res.getParent())) {
+			        && Environment.isCmdSrcFolder(project, (IFolder) res.getParent())) {
 				isCmdSrcFolder = true;
 
 			}
 		}
 
-		CodeContext codeContext = new CodeContext(filename);
+		CodeContext codeContext = new CodeContext(filename, project);
 
 		File targetContext = new File(filename);
 		if (!targetContext.exists()) {
@@ -136,7 +114,7 @@ public class CodeContext {
 
 		File packageFolder = targetContext.getParentFile();
 
-		parseText(project, targetContext, fileText, false, useExternalContext, codeContext);
+		parseText(targetContext, fileText, false, useExternalContext, codeContext);
 
 		//
 		// Only look at the other files in the directory if the file
@@ -147,11 +125,11 @@ public class CodeContext {
 		//
 		if (!isCmdSrcFolder && useExternalContext) {
 			for (File file : packageFolder.listFiles()) {
-				if (file.isFile() && file.canRead() && file.getName().endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)
-				        && !file.getName().endsWith(GoConstants.GO_TEST_FILE_EXTENSION)) {
+				if (file.isFile() && file.canRead() && file.getName().endsWith(GoFileNaming.GO_SOURCE_FILE_EXTENSION)
+				        && !file.getName().endsWith(GoFileNaming.GO_TEST_FILE_EXTENSION)) {
 
 					String text = readFile(file);
-					parseText(project, file, text, true, false, codeContext);
+					parseText(file, text, true, false, codeContext);
 				}
 			}
 		}
@@ -163,12 +141,13 @@ public class CodeContext {
 	 * @param filename
 	 * @return
 	 * @throws IOException
+	 * @throws StatusException 
 	 */
-	public static CodeContext getTestCodeContext(IProject project, File pkg) throws IOException {
-		CodeContext context = new CodeContext(pkg.getName());
+	public static CodeContext getTestCodeContext(final IProject project, File pkg) throws IOException, StatusException {
+		CodeContext context = new CodeContext(pkg.getName(), project);
 		for(File child:pkg.listFiles()) {
 			if (child.getName().endsWith("_test.go")) {
-				parseText(project, child, readFile(child), false, false, context);
+				parseText(child, readFile(child), false, false, context);
 			}
 		}
 		
@@ -222,9 +201,12 @@ public class CodeContext {
 	 * @param useExternalContext
 	 * @param codeContext
 	 * @throws IOException
+	 * @throws StatusException 
 	 */
-	private static void parseText(IProject project, File file, String fileText, boolean packagePeer, boolean useExternalContext,
-	        CodeContext codeContext) throws IOException {
+	private static void parseText(File file, String fileText, boolean packagePeer, boolean useExternalContext,
+	        CodeContext codeContext) throws IOException, StatusException {
+		
+		final IProject project = codeContext.project; 
 
 		Lexer         lexer         = new Lexer();
 		Tokenizer     tokenizer     = new Tokenizer(lexer);
@@ -288,16 +270,17 @@ public class CodeContext {
 	 * @param fileText
 	 * @return
 	 * @throws IOException
+	 * @throws StatusException 
 	 * @throws RecognitionException
 	 */
-	public static CodeContext getExternalCodeContext(IProject project, String packagePath) throws IOException {
+	public static CodeContext getExternalCodeContext(final IProject project, String packagePath) throws IOException, StatusException {
+		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 		
-		CodeContext codeContext = new CodeContext(packagePath);
+		CodeContext codeContext = new CodeContext(packagePath, project);
 
 		// InterfaceParser interfaceParser = new InterfaceParser(tokenizer);
 		// find path
-		String goroot = GoEnvironmentPrefs.getGoRoot().getLocation();
-		File pkgdir = new File(goroot + "/src/pkg/" + packagePath);
+		File pkgdir = goEnvironment.getGoRoot().getSourceRootLocation().resolve(packagePath).toFile();
 		
 		// TODO Get rid of the following duplication
 
@@ -306,7 +289,7 @@ public class CodeContext {
 
 		} else {
 
-			for (IFolder folder : Environment.INSTANCE.getSourceFolders(project)) {
+			for (IFolder folder : Environment.getSourceFolders(project)) {
 
 //				String path = Environment.INSTANCE.getAbsoluteProjectPath();
 
@@ -319,7 +302,9 @@ public class CodeContext {
 					continue;
 				}
 
-				String goPath = Environment.INSTANCE.getGoPath(project)[0];
+				List<String> goPathElements = goEnvironment.getGoPathElements();
+				// FIXME: BM: this code is most certainly buggy, perhaps the whole function too.
+				String goPath = goPathElements.get(0);
 
 				pkgdir = new File(goPath + "/src/" + packagePath);
 				if (pkgdir.exists() && pkgdir.isDirectory()) {

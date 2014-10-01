@@ -17,7 +17,7 @@ public class LaunchUtil {
 		String cmdName;
 		// if it's directly in the cmd folder, name it by filename, else name it
 		// by folder name
-		if (Environment.INSTANCE.getDefaultCmdSourceFolder().equals(srcFolderPath)) {
+		if (Environment.getDefaultCmdSourceFolder().equals(srcFolderPath)) {
 			cmdName = resourceRelativePath.removeFileExtension().lastSegment();
 		} else {
 			cmdName = srcFolderPath.lastSegment();
