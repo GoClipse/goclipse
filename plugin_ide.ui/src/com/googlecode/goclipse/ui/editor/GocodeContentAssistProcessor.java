@@ -31,7 +31,6 @@ import org.eclipse.ui.IEditorPart;
 
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.tooling.StatusException;
@@ -108,9 +107,9 @@ public class GocodeContentAssistProcessor implements IContentAssistProcessor {
 		try {
 			GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(getProjectFor(editor));
 			
-			GocodeClient client = new GocodeClient(gocodePathStr);
+			GocodeClient client = new GocodeClient(gocodePathStr, goEnvironment);
 			
-			ExternalProcessResult processResult = client.execute(goEnvironment, filePath, document.get(), offset);
+			ExternalProcessResult processResult = client.execute(filePath, document.get(), offset);
 			String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
 			completions = new ArrayList2<>(GocodeClient.LINE_SPLITTER.split(stdout));
 			

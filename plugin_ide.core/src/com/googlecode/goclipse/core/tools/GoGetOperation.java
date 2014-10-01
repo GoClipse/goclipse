@@ -18,25 +18,28 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.builder.GoCompiler;
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.builder.MarkerUtilities;
 import com.googlecode.goclipse.builder.StreamAsLines;
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Import;
 import com.googlecode.goclipse.go.lang.parser.ImportParser;
 import com.googlecode.goclipse.tooling.GoCommandConstants;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 // BM: This class was extracted from GoCompiler
 public class GoGetOperation {
 
 	protected final IProject project;
+	protected final GoEnvironment goEnv;
 	
 	public GoGetOperation(IProject project) {
 		this.project = project;
+		this.goEnv = GoProjectEnvironment.getGoEnvironment(project);
 	}
 	
 	/**
@@ -114,12 +117,10 @@ public class GoGetOperation {
 			cmd.add(0, GoCommandConstants.GO_GET_COMMAND);
 			cmd.add(0, compilerPath);
 			
-			String   goPath  = GoCompiler.buildGoPath(project, true);
-			
 			monitor.worked(3);
 			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, monitor, 
-				target.getParentFile(), cmd, goPath);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, project, monitor, 
+				target.getParentFile(), cmd);
 			
 			StreamAsLines sal = new StreamAsLines(processResult);
 			
@@ -159,7 +160,7 @@ public class GoGetOperation {
 								exMsg = false;
 								MarkerUtilities.addMarker(file, "There are problems with the external imports in this file.\n" +
 										                        "You may want to attempt to resolve them outside of eclipse.\n" +
-										                        "Here is the GOPATH to use: \n\t"+goPath);
+										                        "Here is the GOPATH to use: \n\t"+goEnv.getGoPathString());
 							}
 							
 						} catch (Exception e){

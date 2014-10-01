@@ -9,7 +9,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.core.GoCore;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 /**
  * 
@@ -28,10 +30,13 @@ public class GofmtActionDelegate extends TransformTextAction {
 		
 		String gofmtPath = PreferenceConstants.FORMATTER_PATH.get();
 		
+		/* FIXME: Use AbstractEditorOperation */
+		
 		IProject project = null; // TODO
 		IProgressMonitor pm = new NullProgressMonitor(); // TODO
+		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
-		ExternalProcessResult processResult = GoToolManager.getDefault().runGoTool(
+		ExternalProcessResult processResult = GoToolManager.getDefault().runGoTool(goEnv,
 			gofmtPath, project, pm, currentContent);
 		
 		if (processResult.exitValue != 0) {

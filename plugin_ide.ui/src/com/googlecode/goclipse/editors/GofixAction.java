@@ -34,7 +34,7 @@ public class GofixAction extends TransformTextAction {
 		IProject project = null; // TODO
 		IProgressMonitor pm = new NullProgressMonitor(); // TODO
 		
-		ExternalProcessResult processResult = GoToolManager.getDefault().runGoTool(goFixPath, project, pm, text);
+		ExternalProcessResult processResult = GoToolManager.getDefault().runGoTool(goEnv, goFixPath, project, pm, text);
 		if (processResult.exitValue != 0) {
 			throw GoCore.createCoreException(
 				goFixPath + " completed with non-zero exit value (" + processResult.exitValue + ")", null);

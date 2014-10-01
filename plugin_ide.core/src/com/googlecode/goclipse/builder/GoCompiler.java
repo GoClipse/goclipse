@@ -21,10 +21,12 @@ import org.eclipse.core.runtime.QualifiedName;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.tooling.GoCommandConstants;
 import com.googlecode.goclipse.tooling.GoFileNaming;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.utils.ObjectUtils;
 
 /**
@@ -38,44 +40,20 @@ public class GoCompiler {
 	private static final QualifiedName	COMPILER_VERSION_QN	= new QualifiedName(Activator.PLUGIN_ID, "compilerVersion");
 	
 	protected final IProject project;
+	protected final GoEnvironment goEnv;
 	
 	private String version;
 	private long versionLastUpdated	= 0;
 		
 	public GoCompiler(IProject project) {
 		this.project = project;
+		this.goEnv = GoProjectEnvironment.getGoEnvironment(project);
 	}
 	
 	public IProject getProject() {
 		return project;
 	}
 	
-	/**
-	 * @param projectLocation
-	 * @return
-	 */
-	public static String buildGoPath(IProject project, boolean extGoRootFavored) {
-		
-		String delim = File.pathSeparator;
-		
-		String       goPath = project.getLocation().toOSString();
-		String[]     path   = Environment.INSTANCE.getGoPath(project);
-		final String GOPATH = path[0];
-
-		if ( GOPATH != null && !"".equals(GOPATH) ) {
-			if (extGoRootFavored) {
-				goPath = GOPATH + delim + goPath;
-			} else {
-				goPath = goPath + delim + GOPATH;
-			}
-		}
-		
-		for(int i = 1; i < path.length; i++){
-			goPath = goPath + delim + path[i];
-		}
-
-		return goPath;
-	}
 
 	/**
 	 * @param project
@@ -123,10 +101,8 @@ public class GoCompiler {
 				);
 			}
 			
-			String goPath = buildGoPath(project, false);
-			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, pmonitor, 
-				target.getParentFile(), cmd, goPath);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, project, pmonitor, 
+				target.getParentFile(), cmd);
 			
 			refreshProject(project, pmonitor);
 			int errorCount = 0;
@@ -159,12 +135,10 @@ public class GoCompiler {
 				GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project)
 			);
 			
-			String goPath = buildGoPath(project, false);
-
 			File file = new File(target.getLocation().toOSString());
 			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, pmonitor, 
-				file, cmd, goPath);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, project, pmonitor, 
+				file, cmd);
 
 
 			refreshProject(project, pmonitor);
@@ -213,8 +187,6 @@ public class GoCompiler {
 			workingDir = target;
 		}
 		
-			String  goPath  = buildGoPath(project, false);
-			
 			ArrayList2<String> cmd = new ArrayList2<String>(
 				compilerPath,
 				GoCommandConstants.GO_BUILD_COMMAND,
@@ -223,10 +195,9 @@ public class GoCompiler {
 				"."
 			);
 			
-			String goroot = Environment.INSTANCE.getGoRoot(project);
 			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, pmonitor, 
-				workingDir, cmd, goPath);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, project, pmonitor, 
+				workingDir, cmd);
 
 		    refreshProject(project, pmonitor);
 			clearPackageErrorMessages(project, pkgPath);
@@ -236,6 +207,9 @@ public class GoCompiler {
 			if (sal.getLines().size() > 0) {
 		    	errorCount = processCompileOutput(sal, pkgPath, file);
 		    }
+			
+			String  goPath  = goEnv.getGoPathString();
+			String goroot = Environment.INSTANCE.getGoRoot(project);
 			
 			GoTestRunner.scheduleTest(project, compilerPath, file, pkgPath,
 					workingDir, goPath, goroot, errorCount);
@@ -258,10 +232,8 @@ public class GoCompiler {
 		
 			ArrayList2<String> cmd = new ArrayList2<>(compilerPath, GoCommandConstants.GO_INSTALL_COMMAND, "all");
 
-			String  goPath  = buildGoPath(project, false);
-			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(project, pmonitor, 
-				project.getLocation().toFile(), cmd, goPath);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, project, pmonitor, 
+				project.getLocation().toFile(), cmd);
 			
 			refreshProject(project, pmonitor);
 			

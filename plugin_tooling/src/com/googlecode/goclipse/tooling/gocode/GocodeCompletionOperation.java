@@ -24,16 +24,17 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 	
 	public static final boolean USE_TCP = true;
 	
-	public String gocodePath;
+	protected final GoEnvironment goEnvironment;
+	protected final String gocodePath;
 	
-	public GocodeCompletionOperation(String gocodePath) {
+	public GocodeCompletionOperation(GoEnvironment goEnvironment, String gocodePath) {
+		this.goEnvironment = goEnvironment;
 		this.gocodePath = gocodePath;
 	}
 	
-	public ExternalProcessResult execute(GoEnvironment goEnvironment, String filePath, String bufferText, 
-			int offset) throws StatusException, EXC {
+	public ExternalProcessResult execute(String filePath, String bufferText, int offset) throws StatusException, EXC {
 		
-		setLibPathForEnvironment(goEnvironment);
+		setLibPathForEnvironment();
 		
 		ArrayList2<String> arguments = new ArrayList2<String>();
 		if (USE_TCP) {
@@ -53,7 +54,7 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 		return processResult;
 	}
 	
-	protected void setLibPathForEnvironment(GoEnvironment goEnvironment) throws StatusException, EXC {
+	protected void setLibPathForEnvironment() throws StatusException, EXC {
 		ArrayList2<String> arguments = new ArrayList2<>();
 		
 		if (USE_TCP) {
