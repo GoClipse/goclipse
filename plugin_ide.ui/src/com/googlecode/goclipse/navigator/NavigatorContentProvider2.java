@@ -31,124 +31,124 @@ import com.googlecode.goclipse.ui.GoUIPlugin;
  * @author devoncarew
  */
 public class NavigatorContentProvider2 implements ITreeContentProvider, IPropertyChangeListener {
-  private final Object[] NO_CHILDREN = new Object[0];
-  
-  protected static final String GOROOT_Name = "GOROOT";
-
-  private Viewer viewer;
-
-  public NavigatorContentProvider2() {
-    // TODO: we really want to listen for changes to the root directories referenced by the project.
-    GoUIPlugin.getPrefStore().addPropertyChangeListener(this);
-    GoUIPlugin.getCorePrefStore().addPropertyChangeListener(this);
-  }
-
-  @Override
-  public void dispose() {
-	GoUIPlugin.getPrefStore().removePropertyChangeListener(this);
-	GoUIPlugin.getCorePrefStore().removePropertyChangeListener(this);
-  }
-
-  @Override
-  public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-    this.viewer = viewer;
-  }
-
-  @Override
-  public Object[] getElements(Object inputElement) {
-    return getChildren(inputElement);
-  }
-
-  @Override
-  public Object[] getChildren(Object parentElement) {
-    if (parentElement instanceof IProject) {
-      File[] goPath = getGoPathSrcFolder((IProject)parentElement);
-
-      if (!isGoRootSet()) {
-        return NO_CHILDREN;
-        
-      } else {
-    	  
-        if (goPath!=null && goPath.length > 0) {
-        	
-        	// populate the go paths
-        	if (goPath.length == 1) {
-        		return new GoPathElement[] {
-        				new GoPathElement(GOROOT_Name, getGoRootSrcFolder()),
-        				new GoPathElement(goPath[0].getParent(), goPath[0])};
-        
-        	} else if (goPath.length > 1) {
-        		GoPathElement[] gpe = new GoPathElement[goPath.length+1];
-        		gpe[0] = new GoPathElement(GOROOT_Name, getGoRootSrcFolder());
-        		
-        		for (int i = 0; i < goPath.length; i++){
-        			gpe[i+1] = new GoPathElement(goPath[i].getParent(), goPath[i]);
-        		}
-        	}
-        } else {
-          return new GoPathElement[] {new GoPathElement(GOROOT_Name, getGoRootSrcFolder())};
-        }
-      }
-    } else if (parentElement instanceof GoPathElement) {
-      GoPathElement pathElement = (GoPathElement) parentElement;
-
-      try {
-        IFileStore fileStore = EFS.getStore(pathElement.getDirectory().toURI());
-
-        return fileStore.childStores(EFS.NONE, null);
-      } catch (CoreException exception) {
-        return NO_CHILDREN;
-      }
-    } else if (parentElement instanceof IFileStore) {
-      IFileStore file = (IFileStore) parentElement;
-
-      try {
-        return file.childStores(EFS.NONE, null);
-      } catch (CoreException e) {
-        return NO_CHILDREN;
-      }
-    }
-
-    return NO_CHILDREN;
-  }
-
-  @Override
-  public Object getParent(Object element) {
-    if (element instanceof IFileStore) {
-      IFileStore file = (IFileStore) element;
-
-      // TODO: trim this at the GOROOT directory
-
-      return file.getParent();
-    }
-
-    return null;
-  }
-
-  @Override
-  public boolean hasChildren(Object element) {
-    return getChildren(element).length > 0;
-  }
-
-  @Override
-  public void propertyChange(PropertyChangeEvent event) {
-    updateViewer();
-  }
-
-  private boolean isGoRootSet() {
-    String goRoot = PreferenceConstants.GO_ROOT.get();
-
-    return !"".equals(goRoot);
-  }
-
-  protected File getGoRootSrcFolder() {
-    String goRoot = PreferenceConstants.GO_ROOT.get();
-
-    File srcFolder = Path.fromOSString(goRoot).append("src/pkg").toFile();
-
-    return srcFolder;
-  }
-
+	private final Object[] NO_CHILDREN = new Object[0];
+	
+	protected static final String GOROOT_Name = "GOROOT";
+	
+	private Viewer viewer;
+	
+	public NavigatorContentProvider2() {
+		// TODO: we really want to listen for changes to the root directories referenced by the project.
+		GoUIPlugin.getPrefStore().addPropertyChangeListener(this);
+		GoUIPlugin.getCorePrefStore().addPropertyChangeListener(this);
+	}
+	
+	@Override
+	public void dispose() {
+		GoUIPlugin.getPrefStore().removePropertyChangeListener(this);
+		GoUIPlugin.getCorePrefStore().removePropertyChangeListener(this);
+	}
+	
+	@Override
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		this.viewer = viewer;
+	}
+	
+	@Override
+	public Object[] getElements(Object inputElement) {
+		return getChildren(inputElement);
+	}
+	
+	@Override
+	public Object[] getChildren(Object parentElement) {
+		if (parentElement instanceof IProject) {
+			File[] goPath = getGoPathSrcFolder((IProject)parentElement);
+			
+			if (!isGoRootSet()) {
+				return NO_CHILDREN;
+				
+			} else {
+				
+				if (goPath!=null && goPath.length > 0) {
+					
+					// populate the go paths
+					if (goPath.length == 1) {
+						return new GoPathElement[] {
+								new GoPathElement(GOROOT_Name, getGoRootSrcFolder()),
+								new GoPathElement(goPath[0].getParent(), goPath[0])};
+						
+					} else if (goPath.length > 1) {
+						GoPathElement[] gpe = new GoPathElement[goPath.length+1];
+						gpe[0] = new GoPathElement(GOROOT_Name, getGoRootSrcFolder());
+						
+						for (int i = 0; i < goPath.length; i++){
+							gpe[i+1] = new GoPathElement(goPath[i].getParent(), goPath[i]);
+						}
+					}
+				} else {
+					return new GoPathElement[] {new GoPathElement(GOROOT_Name, getGoRootSrcFolder())};
+				}
+			}
+		} else if (parentElement instanceof GoPathElement) {
+			GoPathElement pathElement = (GoPathElement) parentElement;
+			
+			try {
+				IFileStore fileStore = EFS.getStore(pathElement.getDirectory().toURI());
+				
+				return fileStore.childStores(EFS.NONE, null);
+			} catch (CoreException exception) {
+				return NO_CHILDREN;
+			}
+		} else if (parentElement instanceof IFileStore) {
+			IFileStore file = (IFileStore) parentElement;
+			
+			try {
+				return file.childStores(EFS.NONE, null);
+			} catch (CoreException e) {
+				return NO_CHILDREN;
+			}
+		}
+		
+		return NO_CHILDREN;
+	}
+	
+	@Override
+	public Object getParent(Object element) {
+		if (element instanceof IFileStore) {
+			IFileStore file = (IFileStore) element;
+			
+			// TODO: trim this at the GOROOT directory
+			
+			return file.getParent();
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public boolean hasChildren(Object element) {
+		return getChildren(element).length > 0;
+	}
+	
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		updateViewer();
+	}
+	
+	private boolean isGoRootSet() {
+		String goRoot = PreferenceConstants.GO_ROOT.get();
+		
+		return !"".equals(goRoot);
+	}
+	
+	protected File getGoRootSrcFolder() {
+		String goRoot = PreferenceConstants.GO_ROOT.get();
+		
+		File srcFolder = Path.fromOSString(goRoot).append("src/pkg").toFile();
+		
+		return srcFolder;
+	}
+	
 	protected File[] getGoPathSrcFolder(IProject project) {
 		
 		GoPath goPath = GoProjectEnvironment.getEffectiveGoPath(project);
@@ -170,16 +170,16 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		
 		return files;
 	}
-
-  private void updateViewer() {
-    Display.getDefault().asyncExec(new Runnable() {
-      @Override
-      public void run() {
-        if (viewer != null) {
-          viewer.refresh();
-        }
-      }
-    });
-  }
-
+	
+	private void updateViewer() {
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				if (viewer != null) {
+					viewer.refresh();
+				}
+			}
+		});
+	}
+	
 }
