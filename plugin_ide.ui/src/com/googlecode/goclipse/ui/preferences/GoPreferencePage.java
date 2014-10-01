@@ -26,6 +26,7 @@ import org.osgi.framework.Version;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.core.GoEnvironmentPrefConstants;
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.preferences.PreferenceInitializer;
 import com.googlecode.goclipse.tooling.env.GoArch;
@@ -79,13 +80,13 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		Composite fieldParent = new Composite(group, SWT.NONE);
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).hint(150, -1).applyTo(fieldParent);
 
-		goRootEditor = new DirectoryFieldEditorExt(GoEnvironmentPrefConstants.GO_ROOT.key, "GO&ROOT:", fieldParent);
+		goRootEditor = new DirectoryFieldEditorExt(GoEnvironmentPrefs.GO_ROOT.key, "GO&ROOT:", fieldParent);
 		addField(goRootEditor);
 
-	    goPathEditor = new GoPathFieldEditor(GoEnvironmentPrefConstants.GO_PATH.key, "GO&PATH:", fieldParent);
+	    goPathEditor = new GoPathFieldEditor(GoEnvironmentPrefs.GO_PATH.key, "GO&PATH:", fieldParent);
 	    addField(goPathEditor);
     
-		goosEditor = new ComboFieldEditor(GoEnvironmentPrefConstants.GO_OS.key, "G&OOS:", new String[][] { 
+		goosEditor = new ComboFieldEditor(GoEnvironmentPrefs.GO_OS.key, "G&OOS:", new String[][] { 
 				{ "", "" },
 		        { GoOs.OS_DARWIN, GoOs.OS_DARWIN },
 		        { GoOs.OS_LINUX, GoOs.OS_LINUX },
@@ -111,13 +112,13 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		fieldParent = new Composite(group, SWT.NONE);
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(fieldParent);
 
-		addField(compilerEditor = new FileFieldEditor(GoEnvironmentPrefConstants.COMPILER_PATH.key, 
+		addField(compilerEditor = new FileFieldEditor(GoEnvironmentPrefs.COMPILER_PATH.key, 
 			"Go &tool path (go):", fieldParent));
 
-		addField(formatterEditor = new FileFieldEditor(GoEnvironmentPrefConstants.FORMATTER_PATH.key,
+		addField(formatterEditor = new FileFieldEditor(GoEnvironmentPrefs.FORMATTER_PATH.key,
 		    "Go &formatter (gofmt):", fieldParent));
 
-		addField(documentorEditor = new FileFieldEditor(GoEnvironmentPrefConstants.DOCUMENTOR_PATH.key,
+		addField(documentorEditor = new FileFieldEditor(GoEnvironmentPrefs.DOCUMENTOR_PATH.key,
 		    "Go &documentor (godoc):", fieldParent));
 		
 		

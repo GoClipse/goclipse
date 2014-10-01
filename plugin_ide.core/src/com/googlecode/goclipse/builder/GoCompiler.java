@@ -25,13 +25,15 @@ import org.eclipse.core.runtime.QualifiedName;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.core.GoCore;
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Import;
 import com.googlecode.goclipse.go.lang.parser.ImportParser;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.tooling.GoCommandConstants;
+import com.googlecode.goclipse.tooling.GoFileNaming;
 import com.googlecode.goclipse.utils.ObjectUtils;
 
 /**
@@ -58,7 +60,7 @@ public class GoCompiler {
 	public void goGetDependencies(final IProject project, IProgressMonitor monitor, java.io.File target) throws CoreException {
 		
 		final IPath projectLocation = project.getLocation();
-		final String compilerPath   = PreferenceConstants.COMPILER_PATH.get();
+		final String compilerPath   = GoEnvironmentPrefs.COMPILER_PATH.get();
 		final IFile  file           = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 			
 			/**
@@ -97,7 +99,7 @@ public class GoCompiler {
 			//String[] cmd     = { compilerPath, GoConstants.GO_GET_COMMAND, "-u" };
 			cmd.add(0, "-u");
 			cmd.add(0, "-fix");
-			cmd.add(0, GoConstants.GO_GET_COMMAND);
+			cmd.add(0, GoCommandConstants.GO_GET_COMMAND);
 			cmd.add(0, compilerPath);
 			
 			String   goPath  = buildGoPath(project, projectLocation, true);
@@ -199,7 +201,7 @@ public class GoCompiler {
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		final IPath  binFolder       = new GoWorkspace(project).getBinFolderRelativePath();
 		
-		final String compilerPath = PreferenceConstants.COMPILER_PATH.get();
+		final String compilerPath = GoEnvironmentPrefs.COMPILER_PATH.get();
 		final String outExtension = (MiscUtil.OS_IS_WINDOWS ? ".exe" : "");
 
 			// the path exist to find the cc
@@ -211,11 +213,11 @@ public class GoCompiler {
 				outPath = projectLocation.append(binFolder).toOSString() + File.separator + target.getName().replace(GoConstants.GO_SOURCE_FILE_EXTENSION, outExtension);
 				cmd.addElements(
 					compilerPath,
-					GoConstants.GO_BUILD_COMMAND
+					GoCommandConstants.GO_BUILD_COMMAND
 				).addElements(
 					GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project)
 				).addElements(
-					GoConstants.COMPILER_OPTION_O,
+					GoCommandConstants.COMPILER_OPTION_O,
 					outPath, 
 					file.getName() 					
 				);
@@ -224,11 +226,11 @@ public class GoCompiler {
 				outPath = projectLocation.append(binFolder).toOSString() + File.separator + target.getParentFile().getName() + outExtension;
 				cmd.addElements(
 					compilerPath,
-					GoConstants.GO_BUILD_COMMAND
+					GoCommandConstants.GO_BUILD_COMMAND
 				).addElements(
 					GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project)
 				).addElements(
-					GoConstants.COMPILER_OPTION_O,
+					GoCommandConstants.COMPILER_OPTION_O,
 					outPath 
 				);
 			}
@@ -259,14 +261,14 @@ public class GoCompiler {
 		
 		final IPath  projectLocation = project.getLocation();
 		
-		final String compilerPath = PreferenceConstants.COMPILER_PATH.get();
+		final String compilerPath = GoEnvironmentPrefs.COMPILER_PATH.get();
 
 			ArrayList2<String> cmd = new ArrayList2<>();
 			
 			MarkerUtilities.deleteFileMarkers(target);
 			cmd.addElements(
 				compilerPath,
-				GoConstants.GO_BUILD_COMMAND
+				GoCommandConstants.GO_BUILD_COMMAND
 			).addElements(
 				GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project)
 			);
@@ -306,7 +308,7 @@ public class GoCompiler {
 	 */
 	public void compilePkg(final IProject project, IProgressMonitor pmonitor, final String pkgpath, java.io.File target) throws CoreException {
 		
-		final String           compilerPath    = PreferenceConstants.COMPILER_PATH.get();
+		final String           compilerPath    = GoEnvironmentPrefs.COMPILER_PATH.get();
 		
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
@@ -329,8 +331,8 @@ public class GoCompiler {
 			
 			ArrayList2<String> cmd = new ArrayList2<String>(
 				compilerPath,
-				GoConstants.GO_BUILD_COMMAND,
-				GoConstants.COMPILER_OPTION_O,
+				GoCommandConstants.GO_BUILD_COMMAND,
+				GoCommandConstants.COMPILER_OPTION_O,
 				pkgpath,
 				"."
 			);
@@ -367,9 +369,9 @@ public class GoCompiler {
 		//final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
 		//final String pkgPath         = target.getParentFile().getAbsolutePath().replace(projectLocation.toOSString(), "");
 
-		final String           compilerPath    = PreferenceConstants.COMPILER_PATH.get();
+		final String           compilerPath    = GoEnvironmentPrefs.COMPILER_PATH.get();
 		
-			ArrayList2<String> cmd = new ArrayList2<>(compilerPath, GoConstants.GO_INSTALL_COMMAND, "all");
+			ArrayList2<String> cmd = new ArrayList2<>(compilerPath, GoCommandConstants.GO_INSTALL_COMMAND, "all");
 
 			String  goPath  = buildGoPath(project, projectLocation, false);
 			
@@ -434,7 +436,7 @@ public class GoCompiler {
 	private boolean dependenciesExist(IProject project, String[] dependencies) {
 		ArrayList2<String> sourceDependencies = new ArrayList2<String>();
 		for (String dependency : dependencies) {
-			if (dependency.endsWith(GoConstants.GO_SOURCE_FILE_EXTENSION)) {
+			if (dependency.endsWith(GoFileNaming.GO_SOURCE_FILE_EXTENSION)) {
 				sourceDependencies.add(dependency);
 			}
 		}
@@ -510,11 +512,11 @@ public class GoCompiler {
 				continue;
 			}
 			
-			int goPos = line.indexOf(GoConstants.GO_SOURCE_FILE_EXTENSION);
+			int goPos = line.indexOf(GoFileNaming.GO_SOURCE_FILE_EXTENSION);
 
 			if (goPos > 0) {
 				
-				int fileNameLength = goPos + GoConstants.GO_SOURCE_FILE_EXTENSION.length();
+				int fileNameLength = goPos + GoFileNaming.GO_SOURCE_FILE_EXTENSION.length();
 
 				// Strip the prefix off the error message
 				String fileName = line.substring(0, fileNameLength);
@@ -586,13 +588,13 @@ public class GoCompiler {
 	public static String getCompilerVersion() throws CoreException {
 		
 		String version = null;
-		String compilerPath = PreferenceConstants.COMPILER_PATH.get();
+		String compilerPath = GoEnvironmentPrefs.COMPILER_PATH.get();
 
 		if (compilerPath == null || compilerPath.length() == 0) {
 			return null;
 		}
 
-			ArrayList2<String> cmd = new ArrayList2<String>(compilerPath, GoConstants.GO_VERSION_COMMAND);
+			ArrayList2<String> cmd = new ArrayList2<String>(compilerPath, GoCommandConstants.GO_VERSION_COMMAND);
 
 			ProcessBuilder pb = new ProcessBuilder(cmd).directory(null);
 			
