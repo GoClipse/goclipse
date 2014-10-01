@@ -30,7 +30,8 @@ public class GoPath {
 	
 	public GoPath(String goPathString) {
 		assertNotNull(goPathString);
-		this.goPathElements = unmodifiableList(new ArrayList2<>(goPathString.split(File.pathSeparator)));
+		String[] elements = goPathString.isEmpty() ? new String[0] : goPathString.split(File.pathSeparator);
+		this.goPathElements = unmodifiableList(new ArrayList2<>(elements));
 	}
 	
 	public List<String> getGoPathElements() {
@@ -65,6 +66,10 @@ public class GoPath {
 		
 		Path sourceRoot = goWorkspaceEntry.resolve("src");
 		return GoRoot.getGoPackageFromSourceModule(goModulePath, sourceRoot);
+	}
+	
+	public boolean isEmpty() {
+		return goPathElements.size() == 0;
 	}
 	
 }

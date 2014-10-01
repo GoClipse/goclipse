@@ -1,5 +1,7 @@
 package com.googlecode.goclipse.navigator;
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
 import java.io.File;
 
 import melnorme.utilbox.misc.MiscUtil;
@@ -9,7 +11,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -17,8 +18,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.preferences.PreferenceConstants;
 import com.googlecode.goclipse.tooling.GoPath;
+import com.googlecode.goclipse.tooling.GoRoot;
+import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 // TODO: this content provider is hard-coded to show files from GOROOT; we'll probably want this
@@ -62,33 +64,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof IProject) {
-			File[] goPath = getGoPathSrcFolder((IProject)parentElement);
-			
-			if (!isGoRootSet()) {
-				return NO_CHILDREN;
-				
-			} else {
-				
-				if (goPath!=null && goPath.length > 0) {
-					
-					// populate the go paths
-					if (goPath.length == 1) {
-						return new GoPathElement[] {
-								new GoPathElement(GOROOT_Name, getGoRootSrcFolder()),
-								new GoPathElement(goPath[0].getParent(), goPath[0])};
-						
-					} else if (goPath.length > 1) {
-						GoPathElement[] gpe = new GoPathElement[goPath.length+1];
-						gpe[0] = new GoPathElement(GOROOT_Name, getGoRootSrcFolder());
-						
-						for (int i = 0; i < goPath.length; i++){
-							gpe[i+1] = new GoPathElement(goPath[i].getParent(), goPath[i]);
-						}
-					}
-				} else {
-					return new GoPathElement[] {new GoPathElement(GOROOT_Name, getGoRootSrcFolder())};
-				}
-			}
+			getProjectChildren((IProject) parentElement);
 		} else if (parentElement instanceof GoPathElement) {
 			GoPathElement pathElement = (GoPathElement) parentElement;
 			
@@ -110,6 +86,46 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		}
 		
 		return NO_CHILDREN;
+	}
+
+	protected Object[] getProjectChildren(IProject project) {
+		
+		GoRoot goRoot = GoProjectEnvironment.getEffectiveGoRoot(project);
+		java.nio.file.Path goRootSource;
+		try {
+			goRootSource = goRoot.getSourceRootLocation();
+		} catch (StatusException e) {
+			return NO_CHILDREN;
+		}
+		
+		if (goRoot.isEmpty()) {
+			return NO_CHILDREN;
+		}
+		
+		GoPath goPath2 = GoProjectEnvironment.getEffectiveGoPath(project);
+		File[] goPath = getGoPathSrcFolder(goPath2);
+		
+		if (goPath != null && goPath.length > 0) {
+			
+			// populate the go paths
+			if (goPath.length == 1) {
+				return array(
+					new GoPathElement(GOROOT_Name, goRootSource.toFile()),
+					new GoPathElement(goPath[0].getParent(), goPath[0])
+				);
+				
+			} else {
+				GoPathElement[] gpe = new GoPathElement[goPath.length+1];
+				gpe[0] = new GoPathElement(GOROOT_Name, goRootSource.toFile());
+				
+				for (int i = 0; i < goPath.length; i++){
+					gpe[i+1] = new GoPathElement(goPath[i].getParent(), goPath[i]);
+				}
+				return gpe;
+			}
+		} else {
+			return array(new GoPathElement(GOROOT_Name, goRootSource.toFile()));
+		}
 	}
 	
 	@Override
@@ -135,23 +151,8 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		updateViewer();
 	}
 	
-	private boolean isGoRootSet() {
-		String goRoot = PreferenceConstants.GO_ROOT.get();
+	protected File[] getGoPathSrcFolder(GoPath goPath) {
 		
-		return !"".equals(goRoot);
-	}
-	
-	protected File getGoRootSrcFolder() {
-		String goRoot = PreferenceConstants.GO_ROOT.get();
-		
-		File srcFolder = Path.fromOSString(goRoot).append("src/pkg").toFile();
-		
-		return srcFolder;
-	}
-	
-	protected File[] getGoPathSrcFolder(IProject project) {
-		
-		GoPath goPath = GoProjectEnvironment.getEffectiveGoPath(project);
 		int size = goPath.getGoPathElements().size();
 		
 		File[] files = new File[size];

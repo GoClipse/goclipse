@@ -26,6 +26,10 @@ public class GoRoot {
 		return goRoot;
 	}
 	
+	public boolean isEmpty() {
+		return goRoot.isEmpty();
+	}
+	
 	public Path asPath() throws StatusException {
 		return GoEnvironment.createPath(goRoot);
 	}

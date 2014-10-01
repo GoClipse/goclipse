@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.io.File;
 import java.nio.file.Path;
 
@@ -36,6 +38,12 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 		assertAreEqual(goPath.getGoPackageFromSourceModule(WS_BAR.resolve("src/xxx/m.go")), path("xxx"));
 		assertAreEqual(goPath.getGoPackageFromSourceModule(WS_BAR.resolve("src/src/src/m.go")), path("src/src"));
 		assertAreEqual(goPath.getGoPackageFromSourceModule(TESTS_WORKDIR.resolve("src/xxx/m.go")), null);
+		
+		// Test empty case
+		goPath = new GoPath("");
+		assertTrue(goPath.isEmpty());
+		assertTrue(goPath.getGoPathElements().size() == 0);
+		assertEquals(goPath.getGoPathWorkspaceString(), "");
 	}
 	
 	@Test
