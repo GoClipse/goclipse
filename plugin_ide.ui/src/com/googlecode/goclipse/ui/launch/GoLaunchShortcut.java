@@ -23,6 +23,7 @@ import com.googlecode.goclipse.builder.GoConstants;
 /**
  * @author steel
  */
+/* FIXME: use abstract Launch configuration*/
 public class GoLaunchShortcut implements ILaunchShortcut {
 	
 	@Override

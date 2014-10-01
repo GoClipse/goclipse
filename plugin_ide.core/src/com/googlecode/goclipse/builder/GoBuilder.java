@@ -413,8 +413,7 @@ public class GoBuilder extends LangProjectBuilder {
 		
 		MarkerUtilities.deleteAllMarkers(project);
 		
-		File binFolder = new File(new GoWorkspace(project).getBinFolderLocation().toOSString());
-		
+		File binFolder = GoProjectEnvironment.getBinFolder(project).toFile();
 		if (binFolder.exists()) {
 			deleteFolder(binFolder, true);
 		}

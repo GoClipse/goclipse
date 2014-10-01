@@ -12,18 +12,16 @@ package com.googlecode.goclipse.core.launch;
 
 
 import melnorme.lang.ide.launching.AbstractLangLaunchConfigurationDelegate;
-import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.Launch;
 
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.core.GoWorkspace;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.utils.LaunchUtil;
 
 public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurationDelegate {
@@ -32,10 +30,7 @@ public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurati
 	protected IPath getProgramFullPath(ILaunchConfiguration configuration) throws CoreException {
 		IPath programRelativePath = getProgramRelativePath(configuration);
 		
-		programRelativePath = concertSourcePathToExecutablePath(configuration, programRelativePath);
-		
-		IProject project = getProject(configuration);
-		return project.getFile(programRelativePath).getLocation();
+		return concertSourcePathToExecutablePath(configuration, programRelativePath);
 	}
 	
 	// For Go this can be not an executable but a Go source,
@@ -44,26 +39,23 @@ public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurati
 	protected IPath concertSourcePathToExecutablePath(ILaunchConfiguration configuration, IPath programRelativePath)
 			throws CoreException {
 		
-		IProject prj = getProject(configuration);
+		IProject project = getProject(configuration);
+		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
-		if (Environment.isCmdFile(programRelativePath)) {
-			IPath exeBase = new GoWorkspace(prj).getBinFolderRelativePath();
+		java.nio.file.Path programFullPath = project.getLocation().append(programRelativePath).toFile().toPath();
+		java.nio.file.Path goWorkspaceEntry = goEnv.getGoPath().getGoPathEntryForSourceModule(programFullPath);
+		
+		if (goWorkspaceEntry != null) {
+			
 			String cmdName = LaunchUtil.getCmdName(programRelativePath);
-			IPath executablePath = LaunchUtil.getExecutablePath(cmdName, prj);
+			IPath executablePath = LaunchUtil.getExecutablePath(cmdName, project);
 			String executableName = executablePath.lastSegment();
 			
-			//BM: I don't know what difference it makes these two alternatives:
-			if (!MiscUtil.OS_IS_WINDOWS) {
-				executablePath = Path.fromOSString(".").append(executableName);
-			} else {
-				executablePath = Path.fromOSString(executableName);
-			}
-			
-			programRelativePath = exeBase.append(executablePath);
+			return GoProjectEnvironment.getBinFolder(goWorkspaceEntry).append(executableName);
 		}
-		return programRelativePath;
+		return project.getFile(programRelativePath).getLocation();
 	}
-	
+
 	@Override
 	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
 		return new Launch(configuration, mode, null);

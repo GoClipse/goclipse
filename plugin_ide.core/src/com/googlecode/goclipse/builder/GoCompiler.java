@@ -23,7 +23,6 @@ import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
-import com.googlecode.goclipse.core.GoWorkspace;
 import com.googlecode.goclipse.tooling.GoCommandConstants;
 import com.googlecode.goclipse.tooling.GoFileNaming;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
@@ -65,8 +64,7 @@ public class GoCompiler {
 		
 		final IPath  projectLocation = project.getLocation();
 		final IFile  file            = project.getFile(target.getAbsolutePath().replace(projectLocation.toOSString(), ""));
-		final IPath  binFolder       = new GoWorkspace(project).getBinFolderRelativePath();
-		final IPath binFolderPath = projectLocation.append(binFolder);
+		final IPath  binFolderPath       = GoProjectEnvironment.getBinFolder(project); 
 		
 		final String compilerPath = GoEnvironmentPrefs.COMPILER_PATH.get();
 		final String outExtension = (MiscUtil.OS_IS_WINDOWS ? ".exe" : "");

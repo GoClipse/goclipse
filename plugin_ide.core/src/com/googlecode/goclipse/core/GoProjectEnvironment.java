@@ -15,6 +15,8 @@ import java.io.File;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
@@ -75,6 +77,25 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 
 	public static boolean isValid(IProject project) {
 		return getGoEnvironment(project).isValid();
+	}
+	
+	/* ----------------- ----------------- */
+	
+	@SuppressWarnings("unused") 
+	public static boolean isSourceModule(IProject prj, IPath programRelativePath) {
+		return Path.fromOSString("src").isPrefixOf(programRelativePath);
+	}
+	
+	public static IPath getBinFolder(IProject project) {
+		return project.getLocation().append("bin");
+	}
+	
+	public static IPath getPkgFolder(IProject project) {
+		return project.getLocation().append("pkg");
+	}
+	
+	public static IPath getBinFolder(java.nio.file.Path goWorkspaceEntry) {
+		return Path.fromOSString(goWorkspaceEntry.resolve("bin").toString());
 	}
 	
 }

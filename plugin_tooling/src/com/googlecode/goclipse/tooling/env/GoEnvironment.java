@@ -75,6 +75,7 @@ public class GoEnvironment {
 		return goPath.getGoPathWorkspaceString();
 	}
 	
+	// FIXME: change return type to a specific module class
 	public Path getGoPackageFromSourceModule(Path goModulePath) throws StatusException {
 		Path goPackage = goRoot.getGoPackageFromSourceModule(goModulePath);
 		if(goPackage != null) {

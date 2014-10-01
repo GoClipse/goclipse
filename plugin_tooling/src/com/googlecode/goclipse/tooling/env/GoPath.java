@@ -46,6 +46,8 @@ public class GoPath {
 		return StringUtil.collToString(goPathElements, File.pathSeparator);
 	}
 	
+	/** @return the full path of a GOPATH workspace entry (a workspace root) that contains
+	 * the given path. */
 	public Path getGoWorkspacePathEntry(Path path) {
 		if(path == null) {
 			return null;
@@ -54,6 +56,15 @@ public class GoPath {
 			if(path.startsWith(pathElement)) {
 				return MiscUtil.createPathOrNull(pathElement);
 			}
+		}
+		return null;
+	}
+	
+	public Path getGoPathEntryForSourceModule(Path path) {
+		Path workspaceEntry = getGoWorkspacePathEntry(path);
+		
+		if(path.startsWith(workspaceEntry.resolve("src"))) {
+			return workspaceEntry;
 		}
 		return null;
 	}

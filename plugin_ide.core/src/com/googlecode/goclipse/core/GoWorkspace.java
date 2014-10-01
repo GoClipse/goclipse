@@ -32,17 +32,13 @@ public class GoWorkspace extends CommonGoLocation {
 		return location; // TODO: multiple locations.
 	}
 	
-	public IPath getBinFolderRelativePath() {
+	public static IPath getBinFolderRelativePath() {
 		// This is not a preference ATM, it constant.
 		return Path.fromOSString(DEFAULT_BIN_OUTPUT_FOLDER); 
 	}
 	
 	public IPath getPkgFolderRelativePath() throws CoreException {
 		return Path.fromOSString(DEFAULT_PKG_OUTPUT_FOLDER).append(getGo_OS_Arch_segment().toString());
-	}
-	
-	public IPath getBinFolderLocation() throws CoreException {
-		return project.getFolder(getBinFolderRelativePath()).getLocation();
 	}
 	
 	public IPath getPkgFolderLocation() throws CoreException {
