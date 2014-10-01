@@ -11,6 +11,7 @@
 package com.googlecode.goclipse.tooling;
 
 import static java.util.Collections.unmodifiableList;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -28,6 +29,7 @@ public class GoPath {
 	protected final List<String> goPathElements;
 	
 	public GoPath(String goPathString) {
+		assertNotNull(goPathString);
 		this.goPathElements = unmodifiableList(new ArrayList2<>(goPathString.split(File.pathSeparator)));
 	}
 	

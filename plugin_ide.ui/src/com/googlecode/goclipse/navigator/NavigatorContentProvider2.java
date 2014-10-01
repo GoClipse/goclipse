@@ -2,6 +2,9 @@ package com.googlecode.goclipse.navigator;
 
 import java.io.File;
 
+import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IProject;
@@ -13,11 +16,9 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
-import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.GoConstants;
-import com.googlecode.goclipse.core.GoCore;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
+import com.googlecode.goclipse.tooling.GoPath;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 // TODO: this content provider is hard-coded to show files from GOROOT; we'll probably want this
@@ -148,43 +149,26 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
     return srcFolder;
   }
 
-  /**
-   * @return File representing the external GOPATH
-   */
 	protected File[] getGoPathSrcFolder(IProject project) {
 		
-		try {
+		GoPath goPath = GoProjectEnvironment.getEffectiveGoPath(project);
+		int size = goPath.getGoPathElements().size();
+		
+		File[] files = new File[size];
+		
+		for (int i = 0; i < size; i++) {
+			String goPathEntry = goPath.getGoPathElements().get(i);
 			
-			String[] goPath = Environment.INSTANCE.getGoPath(project);
-			
-			if("".equals(goPath[0])){
-				return null;
+			File srcFolder;
+			try {
+				srcFolder = MiscUtil.createPath(goPathEntry).resolve("src").toFile();
+			} catch (InvalidPathExceptionX e) {
+				return null; // FIXME: create error element
 			}
-			
-			File[] files = new File[goPath.length];
-
-			for (int i = 0; i < goPath.length; i++) {
-				String path = goPath[i];
-				File srcFolder = Path.fromOSString(path).append("src").toFile();
-				
-				if (!srcFolder.exists()) {
-
-					try {
-						srcFolder.mkdirs();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				
-				files[i] = srcFolder;
-
-			}
-
-			return files;
-
-		} catch (Exception e) {
-			return null;
+			files[i] = srcFolder;
 		}
+		
+		return files;
 	}
 
   private void updateViewer() {

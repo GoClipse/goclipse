@@ -1,7 +1,9 @@
 package com.googlecode.goclipse;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -11,6 +13,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+
 import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.preferences.PreferenceConstants;
 
@@ -182,21 +185,7 @@ public class Environment {
 			return path;
 		}
 		
-		if (MiscUtil.OS_IS_WINDOWS) {
-			if (goPath.contains(";")) {
-				path = goPath.split(";");
-			} else {
-				path[0] = goPath;
-			}
-		} else {
-			if (goPath.contains(":")) {
-				path =  goPath.split(":");
-			} else {
-				path[0] = goPath;
-			}
-		}
-		
-		return path;
+		return goPath.split(Pattern.quote(File.pathSeparator));
 	}
 	
 	public String getGoRoot(IProject project) {
