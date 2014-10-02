@@ -377,59 +377,6 @@
       </page>
    </extension>
 
-   <extension point = "org.eclipse.ui.actionSets">
-	   <actionSet id="com.googlecode.goclipse.hiddenActionSet"
-		   label="Goclipse hidden actions"
-		   visible="true">
-		   <action id="com.googlecode.goclipse.matchingbracket"
-		   	   label="Go to Matching Bracket"
-			   class="com.googlecode.goclipse.editors.PairMatcher"
-			   definitionId="com.googlecode.goclipse.editors.PairMatcherShortcut.run">
-		   </action>
-	   </actionSet>
-   </extension>
-   
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="Go Coding"
-            description="Action set containing coding related Go actions"
-            visible="false"
-            id="com.googlecode.goclipse.codingActionSet">
-<!-- edit group -->
-         <action
-               definitionId="org.eclipse.ui.edit.text.shiftLeft"
-               label="S&amp;hift Left"
-               retarget="true"
-               menubarPath="com.googlecode.goclipse.editor.sourceMenu/format"
-               id="com.googlecode.goclipse.actions.ShiftLeft">
-         </action>
-         <action
-               definitionId="org.eclipse.ui.edit.text.shiftRight"
-               label="&amp;Shift Right"
-               retarget="true"
-               menubarPath="com.googlecode.goclipse.editor.sourceMenu/format"
-               id="com.googlecode.goclipse.actions.ShiftRight">
-         </action>
-<!-- Comment Group -->
-         <action
-               definitionId="com.googlecode.goclipse.editors.ToggleComment.run"
-               label="Togg&amp;le Comment"
-               retarget="true"
-               menubarPath="com.googlecode.goclipse.editor.sourceMenu/comment"
-               id="com.googlecode.goclipse.actions.ToggleComment">
-         </action>
-      </actionSet>
-   </extension>
-
-   <extension
-         point="org.eclipse.ui.actionSetPartAssociations">
-      <actionSetPartAssociation
-            targetID="com.googlecode.goclipse.codingActionSet">
-         <part id="com.googlecode.goclipse.editors.Editor"/>
-      </actionSetPartAssociation>
-   </extension>
-   
 	<extension point="org.eclipse.ui.commands">
 		<category
 			name="%CommandsCategory.name"
@@ -524,6 +471,59 @@
 			      schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			      contextId="com.googlecode.goclipse.editor">
       </key>
+   </extension>
+   
+   <extension point = "org.eclipse.ui.actionSets">
+	   <actionSet id="com.googlecode.goclipse.hiddenActionSet"
+		   label="Goclipse hidden actions"
+		   visible="true">
+		   <action id="com.googlecode.goclipse.matchingbracket"
+		   	   label="Go to Matching Bracket"
+			   class="com.googlecode.goclipse.editors.PairMatcher"
+			   definitionId="com.googlecode.goclipse.editors.PairMatcherShortcut.run">
+		   </action>
+	   </actionSet>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Go Coding"
+            description="Action set containing coding related Go actions"
+            visible="false"
+            id="com.googlecode.goclipse.codingActionSet">
+<!-- edit group -->
+         <action
+               definitionId="org.eclipse.ui.edit.text.shiftLeft"
+               label="S&amp;hift Left"
+               retarget="true"
+               menubarPath="com.googlecode.goclipse.editor.sourceMenu/format"
+               id="com.googlecode.goclipse.actions.ShiftLeft">
+         </action>
+         <action
+               definitionId="org.eclipse.ui.edit.text.shiftRight"
+               label="&amp;Shift Right"
+               retarget="true"
+               menubarPath="com.googlecode.goclipse.editor.sourceMenu/format"
+               id="com.googlecode.goclipse.actions.ShiftRight">
+         </action>
+<!-- Comment Group -->
+         <action
+               definitionId="com.googlecode.goclipse.editors.ToggleComment.run"
+               label="Togg&amp;le Comment"
+               retarget="true"
+               menubarPath="com.googlecode.goclipse.editor.sourceMenu/comment"
+               id="com.googlecode.goclipse.actions.ToggleComment">
+         </action>
+      </actionSet>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="com.googlecode.goclipse.codingActionSet">
+         <part id="com.googlecode.goclipse.editors.Editor"/>
+      </actionSetPartAssociation>
    </extension>
    
    <extension
@@ -660,14 +660,6 @@
          <part id="org.eclipse.search.SearchResultView"/>
          <part id="com.googlecode.goclipse.editors.Editor"/>
       </actionSetPartAssociation>
-   </extension>
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            class="com.googlecode.goclipse.command.GoGetContribution"
-            locationURI="menu:org.eclipse.ui.main.menu">
-      </menuContribution>
    </extension>
    <!--<extension
          point="org.eclipse.help.contexts">
