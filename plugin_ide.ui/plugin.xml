@@ -20,7 +20,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="com.googlecode.goclipse.editors.GoEditor"
-            contributorClass="com.googlecode.goclipse.editors.GoEditorActionContributor"
+            contributorClass="com.googlecode.goclipse.ui.editor.actions.GoEditorActionContributor"
             extensions="go"
             icon="icons/gopage.png"
             id="com.googlecode.goclipse.editors.Editor"
@@ -471,8 +471,22 @@
 			      schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			      contextId="com.googlecode.goclipse.editor">
       </key>
-   </extension>
-   
+	</extension>
+	
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
+			<menu
+				id="com.googlecode.goclipse.ui.sourceMenu"
+				label="Source"
+				mnemonic="S">
+				<separator name="comment" visible="true"/>
+				<separator name="format" visible="true"/>
+				<separator name="additions" visible="true"/>
+			</menu>
+		</menuContribution>
+	</extension>
+	
+	
    <extension point = "org.eclipse.ui.actionSets">
 	   <actionSet id="com.googlecode.goclipse.hiddenActionSet"
 		   label="Goclipse hidden actions"
@@ -483,87 +497,6 @@
 			   definitionId="com.googlecode.goclipse.editors.PairMatcherShortcut.run">
 		   </action>
 	   </actionSet>
-   </extension>
-   
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="Go Coding"
-            description="Action set containing coding related Go actions"
-            visible="false"
-            id="com.googlecode.goclipse.codingActionSet">
-<!-- edit group -->
-         <action
-               definitionId="org.eclipse.ui.edit.text.shiftLeft"
-               label="S&amp;hift Left"
-               retarget="true"
-               menubarPath="com.googlecode.goclipse.editor.sourceMenu/format"
-               id="com.googlecode.goclipse.actions.ShiftLeft">
-         </action>
-         <action
-               definitionId="org.eclipse.ui.edit.text.shiftRight"
-               label="&amp;Shift Right"
-               retarget="true"
-               menubarPath="com.googlecode.goclipse.editor.sourceMenu/format"
-               id="com.googlecode.goclipse.actions.ShiftRight">
-         </action>
-<!-- Comment Group -->
-         <action
-               definitionId="com.googlecode.goclipse.editors.ToggleComment.run"
-               label="Togg&amp;le Comment"
-               retarget="true"
-               menubarPath="com.googlecode.goclipse.editor.sourceMenu/comment"
-               id="com.googlecode.goclipse.actions.ToggleComment">
-         </action>
-      </actionSet>
-   </extension>
-
-   <extension
-         point="org.eclipse.ui.actionSetPartAssociations">
-      <actionSetPartAssociation
-            targetID="com.googlecode.goclipse.codingActionSet">
-         <part id="com.googlecode.goclipse.editors.Editor"/>
-      </actionSetPartAssociation>
-   </extension>
-   
-   <extension
-         point="org.eclipse.ui.editorActions">
-      <editorContribution
-            id="com.googlecode.goclipse.editorContribution"
-            targetID="com.googlecode.goclipse.editors.Editor">
-         <action
-               class="com.googlecode.goclipse.editors.GofmtActionDelegate"
-               definitionId="com.googlecode.goclipse.editors.GofmtShortcut.run"
-               id="com.googlecode.goclipse.gofmt"
-               label="&amp;Format (go fmt)"
-               menubarPath="com.googlecode.goclipse.editor.sourceMenu/format">
-         </action>
-       
-         <action
-               class="com.googlecode.goclipse.editors.GofixAction"
-               definitionId="com.googlecode.goclipse.editors.GofixShortcut.run"
-               id="com.googlecode.goclipse.gofix"
-               label="Fix (go fix)"
-               menubarPath="com.googlecode.goclipse.editor.sourceMenu/additions">
-         </action>
-         <action
-               class="com.googlecode.goclipse.editors.GoGetActionDelegate"
-               definitionId="com.googlecode.goclipse.editors.GoGetShortcut.run"
-               id="com.googlecode.goclipse.goget"
-               label="&amp;Get (go get -fix -u)"
-               menubarPath="com.googlecode.goclipse.editor.sourceMenu/additions"
-               tooltip="Run the &apos;go get&apos; command for the current file.">
-         </action>
-         
-         <menu
-               id="com.googlecode.goclipse.editor.sourceMenu"
-               label="&amp;Source"
-               path="edit">
-            <separator name="comment"/>
-            <separator name="format"/>
-            <separator name="additions"/>
-         </menu>
-      </editorContribution>
    </extension>
    
    <!-- hyperlink detection -->

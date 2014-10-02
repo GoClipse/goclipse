@@ -4,6 +4,7 @@ import java.util.ResourceBundle;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.AbstractLangEditorActions;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -23,6 +24,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
+import com.googlecode.goclipse.ui.editor.actions.GoEditorActions;
 
 public class GoEditor extends AbstractLangEditor {
 	
@@ -83,6 +85,11 @@ public class GoEditor extends AbstractLangEditor {
 		support.setMatchingCharacterPainterPreferenceKeys(
 			GoUIPreferenceConstants.EDITOR_MATCHING_BRACKETS,
 			GoUIPreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR);
+	}
+	
+	@Override
+	protected AbstractLangEditorActions createActionsManager() {
+		return new GoEditorActions(this);
 	}
 	
 	@Override

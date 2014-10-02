@@ -6,7 +6,8 @@
    * Path to `oracle` command can be configured in the Go preference page.
    * Go oracle Open Definition can now also be invoked under an editor with F3 key.
  * gocode Code Completion now works with files outside of an Eclipse project.
- * Removed "RELEASE/DEBUG" config option from launch configuration, since it didn't actually do anything. 
+ * Removed "RELEASE/DEBUG" config option from launch configuration, since it didn't actually do anything.
+ * Fixed bug where some items in the Workbench "Source" menu would disappear when switching editors. 
 
 ### Goclipse 0.8.1
  * Changed the Eclipse update site URL to: http://goclipse.github.io/releases/
