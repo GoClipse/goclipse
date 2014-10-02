@@ -91,8 +91,6 @@ public class GoLaunchShortcut implements ILaunchShortcut {
 				workingCopy.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, pName);
 				workingCopy.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN, fName);
 				workingCopy.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_ARGS, "");
-				workingCopy.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_BUILD_CONFIG,
-						BuildConfiguration.RELEASE.toString());
 				workingCopy.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
 				workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, "UTF-8");
 				

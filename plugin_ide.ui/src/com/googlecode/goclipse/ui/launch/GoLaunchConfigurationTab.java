@@ -31,22 +31,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.builder.GoConstants;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
 
-/* FIXME: remove deprecated uses */
 public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
 	public GoLaunchConfigurationTab() {
 	}
 	
-	protected final BuildConfigField buildConfigField = new BuildConfigField() {
-		@Override
-		protected void fieldValueChanged() {
-			updateLaunchConfigurationDialog();
-		};		
-	};
 	protected final LangArgumentsBlock2 argumentsBlock = new LangArgumentsBlock2() {
 		@Override
 		protected void fieldValueChanged() {
@@ -59,7 +51,6 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	protected void createCustomControls(Composite parent) {
 		super.createCustomControls(parent);
 		
-		buildConfigField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
 		argumentsBlock.createComponent(parent, new GridData(GridData.FILL_BOTH));
 		workingDirectoryBlock.createControl(parent);
 	}
@@ -74,7 +65,6 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	protected void setDefaults(IResource contextualResource, ILaunchConfigurationWorkingCopy config) {
 		super.setDefaults(contextualResource, config);
 		
-		config.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_BUILD_CONFIG, BuildConfiguration.RELEASE.toString());
 		config.setAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "");
 		workingDirectoryBlock.setDefaults(config);
 	}
@@ -88,10 +78,8 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	public void initializeFrom(ILaunchConfiguration config) {
 		super.initializeFrom(config);
 		
-		String buildconfig = getConfigAttribute(config, GoConstants.GO_CONF_ATTRIBUTE_BUILD_CONFIG, null);
 		String programargs = getConfigAttribute(config, LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "");
 		
-		buildConfigField.setFieldValue(BuildConfiguration.get(buildconfig));
 		argumentsBlock.setFieldValue(programargs);
 		workingDirectoryBlock.initializeFrom(config);
 	}
@@ -100,7 +88,6 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	protected void doPerformApply(ILaunchConfigurationWorkingCopy config) {
 		super.doPerformApply(config);
 		
-		config.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_BUILD_CONFIG, buildConfigField.getFieldValueAsString());
 		config.setAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, argumentsBlock.getFieldValue());
 		workingDirectoryBlock.performApply(config);
 	}
@@ -127,6 +114,8 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
 	@Override
 	protected void openProgramPathDialog(IProject project) {
+		// TODO: this should be refactored to shows Go packages
+		// and after even better: only main packages
 		try {
 			String[] pathRoots = Environment.getSourceFoldersAsStringArray(project);
 			

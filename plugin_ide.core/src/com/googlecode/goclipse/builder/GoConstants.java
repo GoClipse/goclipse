@@ -30,6 +30,5 @@ public class GoConstants implements GoEnvironmentConstants, GoCommandConstants, 
 	public static final String GO_CONF_ATTRIBUTE_MAIN              = LaunchConstants.ATTR_PROGRAM_PATH;
 	public static final String GO_CONF_ATTRIBUTE_ARGS              = LaunchConstants.ATTR_PROGRAM_ARGUMENTS;
 	public static final String GO_CONF_ATTRIBUTE_WORKING_DIRECTORY = LaunchConstants.ATTR_WORKING_DIRECTORY;
-	public static final String GO_CONF_ATTRIBUTE_BUILD_CONFIG      = LaunchConstants.ATTR_BUILD_CONFIG;
 	
 }
