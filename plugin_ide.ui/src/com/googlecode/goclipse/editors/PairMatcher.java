@@ -9,29 +9,38 @@ import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-public class PairMatcher extends Action implements IWorkbenchWindowActionDelegate{
-	private IWorkbenchWindow window;
-	private ISelection selection;
-
+public class PairMatcher extends Action implements IEditorActionDelegate {
+	
+	private IEditorPart targetEditor;
+	
 	@Override
-	public void run() {
-		super.run();
+	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+		this.targetEditor = targetEditor;
 	}
-
+	
+	@Override
+	public final void selectionChanged(IAction action, ISelection selection) {
+	}
+	
 	@Override
 	public void run(IAction action) {
-		GoEditor editor = null;
-		IEditorPart editorPart = window.getActivePage().getActiveEditor();
-		if (editorPart instanceof GoEditor) {
-			editor = (GoEditor)editorPart;
-		} else {
-			editor = null;
+		run();
+	}
+	
+	@Override
+	public void run() {
+		if (!(targetEditor instanceof GoEditor)) {
+			return;
 		}
-		if (editor != null && selection != null && selection instanceof TextSelection) {
+		
+		GoEditor editor = (GoEditor) targetEditor;
+		
+		ISelection selection = editor.getSelectionProvider().getSelection();
+		
+		if (selection != null && selection instanceof TextSelection) {
 			DefaultCharacterPairMatcher matcher = editor.getPairMatcher();
 			IDocument doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
 			Object obj = editor.getAdapter(Control.class);
@@ -44,7 +53,7 @@ public class PairMatcher extends Action implements IWorkbenchWindowActionDelegat
 					int low = ro + 1;
 					int high = ro + r.getLength();
 					int pairOffset = low == startOffset?high:low;
-
+					
 					editor.setHighlightRange(pairOffset, 1, true);
 				}
 			}
@@ -52,23 +61,5 @@ public class PairMatcher extends Action implements IWorkbenchWindowActionDelegat
 		}
 		selection = null;
 	}
-
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		this.selection = selection;		
-	}
-
-	@Override
-	public void dispose() {
-		selection = null;
-		window = null;
-		
-	}
-
-	@Override
-	public void init(IWorkbenchWindow window) {
-		this.window = window;
-	}
-	
 	
 }

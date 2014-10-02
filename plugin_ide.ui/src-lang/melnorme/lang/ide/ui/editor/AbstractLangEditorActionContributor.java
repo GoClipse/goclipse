@@ -75,26 +75,17 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 	
 	/* -----------------  ----------------- */
 	
-	/**
-	 * Helper to contribute programmatically menu contributions based on an editor {@link Action} as a handler.
-	 */
-	public static class EditorActionHelper implements IActiveEditorListener {
-
+	public static abstract class EditorCommandHelper implements IActiveEditorListener {
+		
 		protected final String commandId;
-		protected final String editorActionId;
 		protected IHandlerActivation handlerActivation;
-
-		public EditorActionHelper(String commandId, String editorActionId) {
+		
+		public EditorCommandHelper(String commandId) {
 			this.commandId = assertNotNull(commandId);
-			this.editorActionId = assertNotNull(editorActionId);
 		}
 		
 		public String getCommandId() {
 			return commandId;
-		}
-		
-		public CommandContributionItem createContributionItem(AbstractLangEditorActionContributor actionContributor) {
-			return actionContributor.createCommandContribution(commandId);
 		}
 		
 		@Override
@@ -107,10 +98,60 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 				handlerService.deactivateHandler(handlerActivation);
 				handlerActivation = null;
 			}
-			IAction action = getAction(textEditor, editorActionId);
+			IAction action = getAction(textEditor);
 			if(action != null) {
 				handlerActivation = handlerService.activateHandler(commandId, new ActionHandler(action));
 			}
+		}
+		
+		protected abstract IAction getAction(ITextEditor textEditor);
+		
+	}
+	
+	public static class EditorActionHelper2 extends EditorCommandHelper implements IActiveEditorListener {
+		
+		protected final IAction action;
+		
+		public EditorActionHelper2(String commandId, IAction action) {
+			super(commandId);
+			this.action = assertNotNull(action);
+		}
+		
+		@Override
+		public void setActiveEditor(IEditorPart part) {
+			if(action instanceof IEditorActionDelegate) {
+				IEditorActionDelegate editorActionDelegate = (IEditorActionDelegate) action;
+				editorActionDelegate.setActiveEditor(action, part);
+			}
+			super.setActiveEditor(part);
+		}
+		
+		@Override
+		protected IAction getAction(ITextEditor textEditor) {
+			return action;
+		}
+	}
+	
+	
+	/**
+	 * Helper to contribute programmatically menu contributions based on an editor {@link Action} as a handler.
+	 */
+	public static class EditorActionHelper extends EditorCommandHelper implements IActiveEditorListener {
+
+		protected final String editorActionId;
+
+		public EditorActionHelper(String commandId, String editorActionId) {
+			super(commandId);
+			this.editorActionId = assertNotNull(editorActionId);
+		}
+		
+		public CommandContributionItem createContributionItem(AbstractLangEditorActionContributor actionContributor) {
+			return actionContributor.createCommandContribution(commandId);
+		}
+		
+		@Override
+		protected IAction getAction(ITextEditor textEditor) {
+			return getAction(textEditor, editorActionId);
 		}
 		
 		protected IAction getAction(ITextEditor editor, String actionId) {

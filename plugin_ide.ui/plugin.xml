@@ -486,19 +486,6 @@
 		</menuContribution>
 	</extension>
 	
-	
-   <extension point = "org.eclipse.ui.actionSets">
-	   <actionSet id="com.googlecode.goclipse.hiddenActionSet"
-		   label="Goclipse hidden actions"
-		   visible="true">
-		   <action id="com.googlecode.goclipse.matchingbracket"
-		   	   label="Go to Matching Bracket"
-			   class="com.googlecode.goclipse.editors.PairMatcher"
-			   definitionId="com.googlecode.goclipse.editors.PairMatcherShortcut.run">
-		   </action>
-	   </actionSet>
-   </extension>
-   
    <!-- hyperlink detection -->
 
    <extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">

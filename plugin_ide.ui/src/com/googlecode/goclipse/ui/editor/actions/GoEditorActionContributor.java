@@ -15,12 +15,14 @@ import melnorme.lang.ide.ui.editor.AbstractLangEditorActionContributor;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 import com.googlecode.goclipse.editors.GoGetActionDelegate;
 import com.googlecode.goclipse.editors.GofixAction;
 import com.googlecode.goclipse.editors.GofmtActionDelegate;
+import com.googlecode.goclipse.editors.PairMatcher;
 
-public class GoEditorActionContributor extends AbstractLangEditorActionContributor {
+public class GoEditorActionContributor extends AbstractLangEditorActionContributor implements GoCommandConstants {
 	
 	public static final String SOURCE_MENU_ID = "com.googlecode.goclipse.ui.sourceMenu";
 	
@@ -34,6 +36,8 @@ public class GoEditorActionContributor extends AbstractLangEditorActionContribut
 	@Override
 	public void init(IActionBars bars) {
 		super.init(bars);
+		
+		registerContribution(new EditorActionHelper2(COMMAND_GoToMatchingBracket, new PairMatcher()));
 	}
 	
 	@Override
@@ -43,28 +47,28 @@ public class GoEditorActionContributor extends AbstractLangEditorActionContribut
 		IMenuManager sourceMenu = menu.findMenuUsingPath(SOURCE_MENU_ID);
 		
 		sourceMenu.appendToGroup(SOURCE_MENU__COMMENT, createEditorContribution(
-			"com.googlecode.goclipse.editors.ToggleComment.run", "ToggleComment"));
-
+			COMMAND_ToggleLineComment, "ToggleComment"));
+		
 		sourceMenu.appendToGroup(SOURCE_MENU__FORMAT, createEditorContribution(
-			"org.eclipse.ui.edit.text.shiftLeft", ITextEditorActionConstants.SHIFT_LEFT));
+			ITextEditorActionDefinitionIds.SHIFT_LEFT, ITextEditorActionConstants.SHIFT_LEFT));
 		sourceMenu.appendToGroup(SOURCE_MENU__FORMAT, createEditorContribution(
-			"org.eclipse.ui.edit.text.shiftRight", ITextEditorActionConstants.SHIFT_RIGHT));
+			ITextEditorActionDefinitionIds.SHIFT_RIGHT, ITextEditorActionConstants.SHIFT_RIGHT));
 		
 		
 		ReusableAction goFormat = registerContribution(new ReusableAction(
-			"com.googlecode.goclipse.editors.GofmtShortcut.run", 
+			COMMAND_RunGoFmt, 
 			"&Format (go fmt)",
 			new GofmtActionDelegate()
 		));
 		
 		ReusableAction goFix = registerContribution(new ReusableAction(
-			"com.googlecode.goclipse.editors.GofixShortcut.run", 
+			COMMAND_RunGoFix, 
 			"Fix (go fix)",
 			new GofixAction()
 		));
 		
 		ReusableAction goGet = registerContribution(new ReusableAction(
-			"com.googlecode.goclipse.editors.GoGetShortcut.run",
+			COMMAND_RunGoGet,
 			"&Get (go get -fix -u)",
 			new GoGetActionDelegate()
 		) {{setToolTipText("Run the 'go get' command for the current file.");}});
