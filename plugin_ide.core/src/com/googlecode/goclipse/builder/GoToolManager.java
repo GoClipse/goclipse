@@ -17,9 +17,10 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
-import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -58,6 +59,7 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 		return new RunGoToolTask(pb, project, pm);
 	}
 	
+	/* FIXME: Need to refactor RunGoToolTask */
 	public class RunGoToolTask extends RunExternalProcessTask<IExternalProcessListener> {
 		public RunGoToolTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor) {
 			super(pb, project, cancelMonitor, GoToolManager.this);
@@ -73,9 +75,15 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 			pb.directory(workingDir);
 		}
 		RunGoToolTask runTask = new RunGoToolTask(pb, project, pm);
-		EclipseExternalProcessHelper processHelper = runTask.startProcess();
-		processHelper.writeInput(processInput);
-		ExternalProcessResult processResult = processHelper.strictAwaitTermination();
+		
+		ExternalProcessResult processResult;
+		try {
+			ExternalProcessNotifyingHelper processHelper = runTask.startProcess();
+			processHelper.writeInput_(processInput);
+			processResult = processHelper.strictAwaitTermination_();
+		} catch (CommonException e) {
+			throw LangCore.createCoreException(e);
+		}
 		
 		if(throwOnNonZero) {
 			if (processResult.exitValue != 0) {
@@ -104,7 +112,11 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 		// Note: project can be null
 		RunGoToolTask processTask = createRunToolTask(pb, project, pm);
 		
-		return processTask.startProcess().strictAwaitTermination();
+		try {
+			return processTask.startProcess().strictAwaitTermination_();
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
 	}
 	
 	/* ----------------- ----------------- */

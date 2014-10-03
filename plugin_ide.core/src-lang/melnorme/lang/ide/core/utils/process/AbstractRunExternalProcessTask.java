@@ -15,16 +15,18 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.io.IOException;
 import java.util.List;
 
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * A task that runs an external process and notifies listeners of process lifecycle events.
  */
+@Deprecated /* FIXME: need to refactor*/
 public abstract class AbstractRunExternalProcessTask<LISTENER extends IExternalProcessListener> 
 		implements IRunProcessTask {
 	
@@ -53,29 +55,30 @@ public abstract class AbstractRunExternalProcessTask<LISTENER extends IExternalP
 	protected abstract List<? extends LISTENER> getListeners();
 	
 	@Override
-	public ExternalProcessResult call() throws CoreException {
+	public ExternalProcessResult call() throws CommonException {
 		return startProcessAndAwait();
 	}
 	
-	public ExternalProcessResult startProcessAndAwait() throws CoreException {
-		return startProcess().strictAwaitTermination();
+	public ExternalProcessResult startProcessAndAwait() throws CommonException {
+		return startProcess().strictAwaitTermination_();
 	}
 	
-	public EclipseExternalProcessHelper startProcess() throws CoreException {
-		EclipseExternalProcessHelper eclipseProcessHelper;
+	public ExternalProcessNotifyingHelper startProcess() throws CommonException {
+		ExternalProcessNotifyingHelper processHelper;
 		try {
-			eclipseProcessHelper = new EclipseExternalProcessHelper(pb, false, cancelMonitor);
-		} catch (CoreException ce) {
-			IOException ioe = (IOException) ce.getStatus().getException();
+			Process process = ExternalProcessHelper.startProcess(pb);
+			processHelper = new EclipseProcessHelper(process, false, cancelMonitor); 
+		} catch (CommonException ce) {
+			IOException ioe = (IOException) ce.getCause();
+			/* FIXME: refactor this */
 			notifyProcessFailedToStart(ioe);
 			throw ce;
 		}
 		
-		ExternalProcessNotifyingHelper processHelper = eclipseProcessHelper.getNotifyingProcessHelper();
 		notifyProcessStarted(processHelper);
 		processHelper.startReaderThreads();
 		
-		return eclipseProcessHelper;
+		return processHelper;
 	}
 	
 }

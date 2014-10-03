@@ -1,5 +1,7 @@
 package melnorme.lang.ide.core;
 
+import melnorme.utilbox.core.CommonException;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
@@ -101,6 +103,11 @@ public abstract class LangCore extends Plugin {
 	/** Creates a CoreException describing an error in this plugin. */
 	public static CoreException createCoreException(String message, Throwable throwable) {
 		return new CoreException(createErrorStatus(message, throwable));
+	}
+	
+	/** Creates a CoreException describing an error in this plugin, from given {@link CommonException} */
+	public static CoreException createCoreException(CommonException ce) {
+		return createCoreException(ce.getMessage(), ce.getCause());
 	}
 	
 	/* ----------------- Logging ----------------- */

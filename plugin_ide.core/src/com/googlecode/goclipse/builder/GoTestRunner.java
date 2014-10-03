@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.googlecode.goclipse.Activator;
@@ -129,7 +128,7 @@ public class GoTestRunner {
                 
                 markErrors(stdout, stderr);
                 
-            } catch (CoreException e) {
+            } catch (CommonException e) {
             	GoCore.logError("Error executing tests runner for " + activeTest.pkgPath, e);
 			}
         }

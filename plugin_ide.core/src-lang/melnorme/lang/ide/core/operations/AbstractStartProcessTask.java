@@ -10,9 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.process.EclipseProcessHelper;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,38 +29,42 @@ public abstract class AbstractStartProcessTask {
 		this.pb = pb;
 	}
 	
-	public EclipseExternalProcessHelper call() throws CoreException {
-		return startProcess();
+	public ExternalProcessNotifyingHelper call() throws CoreException {
+		try {
+			return startProcess();
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce.getMessage(), ce.getCause());
+		}
 	}
 	
-	public ExternalProcessResult runProcess(String inputText, IProgressMonitor pm) throws CoreException {
-		EclipseExternalProcessHelper processHelper = startProcess(pm);
-		processHelper.writeInput(inputText);
-		return processHelper.strictAwaitTermination();
-	}
-	
-	public EclipseExternalProcessHelper startProcess() throws CoreException {
+	public ExternalProcessNotifyingHelper startProcess() throws CommonException {
 		return startProcess(new NullProgressMonitor());
 	}
 	
-	public EclipseExternalProcessHelper startProcess(IProgressMonitor pm) throws CoreException {
+	public ExternalProcessNotifyingHelper startProcess(IProgressMonitor pm) throws CommonException {
 		Process process;
 		try {
-			process = EclipseExternalProcessHelper.startProcess(pb);
-		} catch (CoreException ce) {
-			handleProcessStartResult(null, ce);
+			process = ExternalProcessNotifyingHelper.startProcess(pb);
+		} catch (CommonException ce) {
+			/* FIXME: use CommonException in listerners*/
+			handleProcessStartResult(null, LangCore.createCoreException(ce));
 			throw ce;
 		}
 		
 		return readFromProcess(pm, process);
 	}
 	
-	protected EclipseExternalProcessHelper readFromProcess(IProgressMonitor pm, Process process) {
-		EclipseExternalProcessHelper eclipseProcessHelper = new EclipseExternalProcessHelper(process, false, pm);
-		ExternalProcessNotifyingHelper processHelper = eclipseProcessHelper.getProcessHelper(); 
+	public ExternalProcessResult runProcess(String inputText, IProgressMonitor pm) throws CommonException {
+		ExternalProcessNotifyingHelper processHelper = startProcess(pm);
+		processHelper.writeInput_(inputText);
+		return processHelper.strictAwaitTermination_();
+	}
+	
+	protected ExternalProcessNotifyingHelper readFromProcess(IProgressMonitor pm, Process process) {
+		ExternalProcessNotifyingHelper processHelper = new EclipseProcessHelper(process, false, pm);
 		handleProcessStartResult(processHelper, null);
 		processHelper.startReaderThreads();
-		return eclipseProcessHelper;
+		return processHelper;
 	}
 	
 	protected abstract void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CoreException ce);

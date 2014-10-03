@@ -15,9 +15,19 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+/**
+ * An adapter to {@link ExternalProcessNotifyingHelper} that is customized to run in Eclipse. 
+ * In particular:
+ *  Allows using an {@link IProgressMonitor} as a cancel monitor.
+ *  Log errors in Eclipse log.
+ */
 public class EclipseProcessHelper extends ExternalProcessNotifyingHelper {
 	
 	protected final IProgressMonitor monitor;
+	
+	public EclipseProcessHelper(Process process, boolean startReaders, IProgressMonitor monitor) {
+		this(process, true, startReaders, monitor);
+	}
 	
 	public EclipseProcessHelper(Process process, boolean readStdErr, boolean startReaders, IProgressMonitor monitor) {
 		super(process, readStdErr, startReaders);

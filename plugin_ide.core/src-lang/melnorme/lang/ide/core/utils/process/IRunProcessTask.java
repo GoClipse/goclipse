@@ -10,10 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.process;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import org.eclipse.core.runtime.CoreException;
-
-public interface IRunProcessTask extends ICallable<ExternalProcessResult, CoreException> {
+public interface IRunProcessTask extends ICallable<ExternalProcessResult, CommonException> {
 }

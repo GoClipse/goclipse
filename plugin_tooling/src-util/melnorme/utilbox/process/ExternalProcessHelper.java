@@ -99,6 +99,14 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		return new CommonException(message, cause);
 	}
 	
+	public static Process startProcess(ProcessBuilder pb) throws CommonException {
+		try {
+			return pb.start();
+		} catch (IOException ie) {
+			throw new CommonException(ProcessHelperMessages.ExternalProcess_CouldNotStart, ie);
+		}
+	}
+	
 	/* ----------------- writing helpers ----------------- */
 	
 	public void writeInput(String input) throws IOException {
@@ -111,6 +119,10 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 		OutputStream processInputStream = getProcess().getOutputStream();
 		StreamUtil.writeStringToStream(input, processInputStream, charset);
+	}
+	
+	public void writeInput_(String input) throws CommonException {
+		writeInput_(input, StringUtil.UTF8);
 	}
 	
 	public void writeInput_(String input, Charset charset) throws CommonException {
@@ -204,6 +216,10 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 				throw createCommonException(ProcessHelperMessages.ExternalProcess_ProcessTimeout, te);
 			}
 		}
+	}
+	
+	public ExternalProcessResult strictAwaitTermination_() throws CommonException {
+		return strictAwaitTermination_(NO_TIMEOUT);
 	}
 	
 }
