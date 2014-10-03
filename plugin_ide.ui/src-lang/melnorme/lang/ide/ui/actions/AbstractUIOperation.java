@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
+import java.util.concurrent.CancellationException;
 
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -97,11 +98,9 @@ public abstract class AbstractUIOperation {
 					monitor.setTaskName(MessageFormat.format(MSG_EXECUTING_OPERATION, operationName));
 					
 					try {
-						performLongRunningComputation_do(monitor);
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
+						performLongRunningComputation_inWorkerThread(monitor);
 					} catch (OperationCancellation e) {
-						throw new InvocationTargetException(e);
+						throw new InterruptedException(); // Send through as an InterruptedException
 					}
 				}
 			});
@@ -116,7 +115,24 @@ public abstract class AbstractUIOperation {
 			
 			throw LangUIPlugin.createCoreException(LangCoreMessages.LangCore_internalError, cause);
 		} catch (InterruptedException e) {
-			throw new OperationCancellation(e);
+			throw new OperationCancellation();
+		}
+	}
+	
+	protected void performLongRunningComputation_inWorkerThread(IProgressMonitor monitor) 
+			throws OperationCancellation, InvocationTargetException {
+		try {
+			performLongRunningComputation_do(monitor);
+		} catch (CoreException ce) {
+			if(monitor.isCanceled()) {
+				throw new OperationCancellation();
+			}
+			if(ce.getCause() instanceof CancellationException) {
+				// In principle this should not happen, because monitor.isCanceled() would be true.
+				// But in case some operation code used other monitor or some other means to cancel... 
+				throw (CancellationException) ce.getCause();
+			}
+			throw new InvocationTargetException(ce);
 		}
 	}
 	

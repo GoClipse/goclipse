@@ -13,10 +13,7 @@ package melnorme.lang.ide.core.utils.process;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
@@ -26,7 +23,6 @@ import melnorme.utilbox.process.ProcessHelperMessages;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 
 /**
  * An adapter to {@link ExternalProcessNotifyingHelper} that is customized to run in Eclipse. In particular:
@@ -78,11 +74,6 @@ public class EclipseExternalProcessHelper {
 			return ph.strictAwaitTermination_(timeout);
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce.getMessage() , ce.getCause());
-		} catch (TimeoutException te) {
-			String message = monitor.isCanceled() ? 
-					LangCoreMessages.ExternalProcess_TaskCancelled : 
-					LangCoreMessages.ExternalProcess_ProcessTimeout;
-			throw new CoreException(LangCore.createStatus(IStatus.INFO, message, te));
 		}
 	}
 	

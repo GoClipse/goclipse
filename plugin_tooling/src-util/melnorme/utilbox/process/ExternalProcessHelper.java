@@ -18,6 +18,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.ExceptionTrackingRunnable;
@@ -184,13 +185,24 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		return strictAwaitTermination(NO_TIMEOUT);
 	}
 	
-	public ExternalProcessResult strictAwaitTermination_(int timeout) throws CommonException, TimeoutException {
+	public ExternalProcessResult strictAwaitTermination_(int timeout) throws CommonException {
 		try {
 			return strictAwaitTermination(timeout);
 		} catch (InterruptedException e) {
 			throw createCommonException(ProcessHelperMessages.ExternalProcess_InterruptedAwaitingTermination, e);
 		} catch (IOException e) {
 			throw createCommonException(ProcessHelperMessages.ExternalProcess_ErrorStreamReaderIOException, e);
+		} catch (TimeoutException te) {
+			// at this point a TimeoutException can be one of two things, an actual timeout, or a cancellation.
+			
+			if(isCanceled()) {
+				// Send this as an exception. It will be the responsibility of higher-level application code
+				// to check if exception was a cancellation, if they want to respond differently to this case.
+				throw createCommonException(ProcessHelperMessages.ExternalProcess_TaskCancelled, 
+						new OperationCancellation());
+			} else {
+				throw createCommonException(ProcessHelperMessages.ExternalProcess_ProcessTimeout, te);
+			}
 		}
 	}
 	

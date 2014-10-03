@@ -16,9 +16,5 @@ public class OperationCancellation extends Throwable {
 	
 	public OperationCancellation() {
 	}
-
-	public OperationCancellation(Exception cause) {
-		super(cause);
-	}
 	
 }
