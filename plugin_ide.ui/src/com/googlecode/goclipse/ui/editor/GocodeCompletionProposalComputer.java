@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ContextInformation;
@@ -68,8 +67,7 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 			GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 			
 			// TODO: we should run this operation outside the UI thread.
-			// And use a timeout monitor.
-			IProgressMonitor pm = new NullProgressMonitor();
+			IProgressMonitor pm = new TimeoutProgressMonitor(5000, true);
 			GocodeClient client = new GocodeClient(gocodePath.toOSString(), goEnvironment, pm);
 			
 			ExternalProcessResult processResult = client.execute(filePath, document.get(), offset);
