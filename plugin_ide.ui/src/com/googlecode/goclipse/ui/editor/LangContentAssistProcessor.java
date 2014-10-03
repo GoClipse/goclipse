@@ -14,6 +14,7 @@ package com.googlecode.goclipse.ui.editor;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
@@ -21,8 +22,6 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-
-import com.googlecode.goclipse.core.GoCore;
 
 public abstract class LangContentAssistProcessor implements IContentAssistProcessor {
 	
@@ -39,7 +38,7 @@ public abstract class LangContentAssistProcessor implements IContentAssistProces
 		errorMessage = null;
 		try {
 			if(editor == null) {
-				throw LangCore.createCoreException("Error, no editor provided:", null);
+				throw LangCore.createCoreException("Error, no editor available for operation.", null);
 			}
 			
 			String filePath = EditorUtils.getFilePathFromEditorInput(editor.getEditorInput()).toString();
@@ -48,8 +47,7 @@ public abstract class LangContentAssistProcessor implements IContentAssistProces
 			}
 			return doComputeCompletionProposals(offset, filePath, viewer.getDocument());
 		} catch (CoreException ce) {
-			/* FIXME: show errors to user */
-			GoCore.logStatus(ce);
+			UIOperationExceptionHandler.handleOperationStatus("Content Assist", ce);
 			errorMessage = ce.getMessage();
 			return array();
 		}
