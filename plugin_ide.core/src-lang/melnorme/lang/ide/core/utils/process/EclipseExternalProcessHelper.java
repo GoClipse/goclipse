@@ -17,6 +17,7 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -83,11 +84,9 @@ public class EclipseExternalProcessHelper {
 	
 	public ExternalProcessResult strictAwaitTermination(int timeout) throws CoreException {
 		try {
-			return ph.strictAwaitTermination(timeout);
-		} catch (InterruptedException e) {
-			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_InterruptedAwaitingTermination, e);
-		} catch (IOException e) {
-			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_ErrorStreamReaderIOException, e);
+			return ph.strictAwaitTermination_(timeout);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce.getMessage() , ce.getCause());
 		} catch (TimeoutException te) {
 			String message = monitor.isCanceled() ? 
 					LangCoreMessages.ExternalProcess_TaskCancelled : 
@@ -98,9 +97,9 @@ public class EclipseExternalProcessHelper {
 	
 	public void writeInput(String input) throws CoreException {
 		try {
-			ph.writeInput(input, StringUtil.UTF8);
-		} catch (IOException e) {
-			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_ErrorWritingInput , e);
+			ph.writeInput_(input, StringUtil.UTF8);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce.getMessage() , ce.getCause());
 		}
 	}
 	
