@@ -18,6 +18,7 @@ import java.text.MessageFormat;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.concurrency.OperationCancellation;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -65,7 +66,7 @@ public abstract class AbstractUIOperation {
 			performLongRunningComputation();
 			
 			performOperation_handleResult();
-		} catch (InterruptedException e) {
+		} catch (OperationCancellation e) {
 			return;
 		}
 	}
@@ -73,7 +74,7 @@ public abstract class AbstractUIOperation {
 	protected void prepareOperation() throws CoreException {
 	}
 	
-	protected final void performLongRunningComputation() throws InterruptedException, CoreException {
+	protected final void performLongRunningComputation() throws OperationCancellation, CoreException {
 		if(Display.getCurrent() == null) {
 			performLongRunningComputation_inCurrentThread();
 			return;
@@ -81,13 +82,13 @@ public abstract class AbstractUIOperation {
 		performLongRunningComputation_usingProgressDialog();
 	}
 	
-	protected void performLongRunningComputation_inCurrentThread() throws CoreException {
+	protected void performLongRunningComputation_inCurrentThread() throws CoreException, OperationCancellation {
 		// Perform computation directly in this thread, cancellation won't be possible.
 		NullProgressMonitor monitor = new NullProgressMonitor();
 		performLongRunningComputation_do(monitor);
 	}
 	
-	protected void performLongRunningComputation_usingProgressDialog() throws InterruptedException, CoreException {
+	protected void performLongRunningComputation_usingProgressDialog() throws OperationCancellation, CoreException {
 		IProgressService ps = PlatformUI.getWorkbench().getProgressService();
 		try {
 			ps.busyCursorWhile(new IRunnableWithProgress() {
@@ -99,22 +100,28 @@ public abstract class AbstractUIOperation {
 						performLongRunningComputation_do(monitor);
 					} catch (CoreException e) {
 						throw new InvocationTargetException(e);
-					}
-					if(monitor.isCanceled()) {
-						throw new InterruptedException();
+					} catch (OperationCancellation e) {
+						throw new InvocationTargetException(e);
 					}
 				}
 			});
 		} catch (InvocationTargetException e) {
-			if(e.getCause() instanceof CoreException) {
-				throw (CoreException) e.getCause();
+			Throwable cause = e.getCause();
+			if(cause instanceof CoreException) {
+				throw (CoreException) cause;
 			}
-			throw new CoreException(LangUIPlugin.createErrorStatus(
-				LangCoreMessages.LangCore_error, e.getTargetException()));
+			if(cause instanceof OperationCancellation) {
+				throw (OperationCancellation) cause;
+			}
+			
+			throw LangUIPlugin.createCoreException(LangCoreMessages.LangCore_internalError, cause);
+		} catch (InterruptedException e) {
+			throw new OperationCancellation(e);
 		}
 	}
 	
-	protected abstract void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException;
+	protected abstract void performLongRunningComputation_do(IProgressMonitor monitor) 
+			throws CoreException, OperationCancellation;
 	
 	protected abstract void performOperation_handleResult() throws CoreException;
 	

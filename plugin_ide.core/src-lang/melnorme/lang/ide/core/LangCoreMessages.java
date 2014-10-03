@@ -6,4 +6,6 @@ public class LangCoreMessages implements ProcessHelperMessages {
 	
 	public static final String LangCore_error = "Core Error";
 	
+	public static final String LangCore_internalError = "Internal Error";
+	
 }

@@ -22,6 +22,7 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import melnorme.utilbox.process.ProcessHelperMessages;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,11 +40,11 @@ public class EclipseExternalProcessHelper {
 		try {
 			return pb.start();
 		} catch (IOException e) {
-			throw LangCore.createCoreException(LangCoreMessages.ExternalProcess_CouldNotStart, e);
+			throw LangCore.createCoreException(ProcessHelperMessages.ExternalProcess_CouldNotStart, e);
 		}
 	}
 	
-	protected final ExternalProcessNotifyingHelper ph;
+	public final ExternalProcessNotifyingHelper ph;
 	protected final IProgressMonitor monitor;
 	
 	public EclipseExternalProcessHelper(ProcessBuilder pb, boolean startReaders, IProgressMonitor monitor)
@@ -53,17 +54,7 @@ public class EclipseExternalProcessHelper {
 	
 	public EclipseExternalProcessHelper(Process process, boolean startReaders, final IProgressMonitor monitor) {
 		this.monitor = assertNotNull(monitor);
-		this.ph = new ExternalProcessNotifyingHelper(process, true, startReaders) {
-			@Override
-			protected boolean isCanceled() {
-				return monitor.isCanceled();
-			}
-			
-			@Override
-			protected void handleListenerException(RuntimeException e) {
-				LangCore.logError("Internal error notifying listener", e);
-			}
-		};
+		this.ph = new EclipseProcessHelper(process, true, startReaders, monitor);
 	}
 	
 	public ExternalProcessNotifyingHelper getNotifyingProcessHelper() {
