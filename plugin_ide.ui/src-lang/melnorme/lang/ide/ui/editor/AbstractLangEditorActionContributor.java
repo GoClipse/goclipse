@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 import melnorme.utilbox.collections.ArrayList2;
 
+import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -48,7 +49,7 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 	}
 	
 	protected CommandContributionItem createEditorContribution(String commandId, String editorActionId) {
-		final EditorActionHelper editorActionHelper = new EditorActionHelper(commandId, editorActionId);
+		final EditorActionContribution editorActionHelper = new EditorActionContribution(commandId, editorActionId);
 		registerContribution(editorActionHelper);
 		return editorActionHelper.createContributionItem(this);
 	}
@@ -75,12 +76,12 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 	
 	/* -----------------  ----------------- */
 	
-	public static abstract class EditorCommandHelper implements IActiveEditorListener {
+	public static abstract class AbstractEditorCommandHelper implements IActiveEditorListener {
 		
 		protected final String commandId;
 		protected IHandlerActivation handlerActivation;
 		
-		public EditorCommandHelper(String commandId) {
+		public AbstractEditorCommandHelper(String commandId) {
 			this.commandId = assertNotNull(commandId);
 		}
 		
@@ -98,21 +99,44 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 				handlerService.deactivateHandler(handlerActivation);
 				handlerActivation = null;
 			}
-			IAction action = getAction(textEditor);
-			if(action != null) {
-				handlerActivation = handlerService.activateHandler(commandId, new ActionHandler(action));
+			IHandler handler = getHandler(textEditor);
+			if(handler != null) {
+				handlerActivation = handlerService.activateHandler(commandId, handler);
 			}
 		}
 		
-		protected abstract IAction getAction(ITextEditor textEditor);
+		protected abstract IHandler getHandler(ITextEditor textEditor);
 		
 	}
 	
-	public static class EditorActionHelper2 extends EditorCommandHelper implements IActiveEditorListener {
+	public class HandlerContribution extends AbstractEditorCommandHelper implements IActiveEditorListener {
+		
+		protected final IHandler handler;
+		
+		public HandlerContribution(String commandId, IHandler action) {
+			super(commandId);
+			this.handler = assertNotNull(action);
+		}
+		
+		@Override
+		protected IHandler getHandler(ITextEditor textEditor) {
+			return handler;
+		}
+		
+		public CommandContributionItem createContributionItem() {
+			return createCommandContribution(commandId);
+		}
+		
+	}
+	
+	/**
+	 * Helper to contribute programmatically menu contributions based on an {@link Action} as a handler.
+	 */
+	public static class ActionContribution extends AbstractEditorCommandHelper implements IActiveEditorListener {
 		
 		protected final IAction action;
 		
-		public EditorActionHelper2(String commandId, IAction action) {
+		public ActionContribution(String commandId, IAction action) {
 			super(commandId);
 			this.action = assertNotNull(action);
 		}
@@ -127,20 +151,20 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		}
 		
 		@Override
-		protected IAction getAction(ITextEditor textEditor) {
-			return action;
+		protected ActionHandler getHandler(ITextEditor textEditor) {
+			return new ActionHandler(action);
 		}
+		
 	}
-	
 	
 	/**
 	 * Helper to contribute programmatically menu contributions based on an editor {@link Action} as a handler.
 	 */
-	public static class EditorActionHelper extends EditorCommandHelper implements IActiveEditorListener {
+	public static class EditorActionContribution extends AbstractEditorCommandHelper implements IActiveEditorListener {
 
 		protected final String editorActionId;
 
-		public EditorActionHelper(String commandId, String editorActionId) {
+		public EditorActionContribution(String commandId, String editorActionId) {
 			super(commandId);
 			this.editorActionId = assertNotNull(editorActionId);
 		}
@@ -150,8 +174,8 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		}
 		
 		@Override
-		protected IAction getAction(ITextEditor textEditor) {
-			return getAction(textEditor, editorActionId);
+		protected ActionHandler getHandler(ITextEditor textEditor) {
+			return new ActionHandler(getAction(textEditor, editorActionId));
 		}
 		
 		protected IAction getAction(ITextEditor editor, String actionId) {

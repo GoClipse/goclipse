@@ -11,10 +11,11 @@
 package com.googlecode.goclipse.builder;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.getLocation;
-import static melnorme.utilbox.core.CoreUtil.listFrom;
 
 import java.io.File;
 import java.util.List;
+
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
@@ -65,14 +66,8 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 	
 	/* -----------------  ----------------- */
 
-	public ExternalProcessResult runGoTool(GoEnvironment goEnv, String goCommand, IProject project, 
-			IProgressMonitor pm, String processInput) throws CoreException {
-		ProcessBuilder pb = goEnv.createProcessBuilder(listFrom(goCommand));
-		return runGoTool(project, pm, pb, processInput);
-	}
-	
 	public ExternalProcessResult runGoTool(IProject project, IProgressMonitor pm, ProcessBuilder pb,
-			String processInput) throws CoreException {
+			String processInput, boolean throwOnNonZero) throws CoreException {
 		File workingDir = getLocation(project);
 		if(workingDir != null) {
 			pb.directory(workingDir);
@@ -80,7 +75,17 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 		RunGoToolTask runTask = new RunGoToolTask(pb, project, pm);
 		EclipseExternalProcessHelper processHelper = runTask.startProcess();
 		processHelper.writeInput(processInput);
-		return processHelper.strictAwaitTermination();
+		ExternalProcessResult processResult = processHelper.strictAwaitTermination();
+		
+		if(throwOnNonZero) {
+			if (processResult.exitValue != 0) {
+				String command = pb.command().get(0);
+				throw LangCore.createCoreException(
+					command + " completed with non-zero exit value (" + processResult.exitValue + ")", null);
+			}
+		}
+		
+		return processResult;
 	}
 	
 	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProject project, IProgressMonitor pm, 

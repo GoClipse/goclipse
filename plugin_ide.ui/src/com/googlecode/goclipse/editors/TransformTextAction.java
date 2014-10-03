@@ -38,20 +38,11 @@ abstract class TransformTextAction implements IEditorActionDelegate {
 	@Override
 	public final void run(IAction action) {
 		if (editor != null) {
-			String currentContent = editor.getText();
-			
-			try {
-				String newText = transformText(currentContent);
-				
-				if (newText != null) {
-					editor.replaceText(newText);
-				}
-			} catch (CoreException ce) {
-				ErrorDialogUtil.displayError(editor.getSite().getShell(), "Error Running " + name, ce.getMessage());
-			}
+			doRun(editor);
 		}
 	}
-
-	protected abstract String transformText(String text) throws CoreException;
 	
+	protected void doRun(GoEditor editor) {
+	}
+
 }

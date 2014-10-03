@@ -24,6 +24,8 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 			"See error log for more details.";
 	
 	
+	public static final String INTERNAL_ERROR_NoEditorForCommand = 
+			"Internal error: No editor for command.";
 	
 	public static String mainLaunchTab_title = 
 			"Main";

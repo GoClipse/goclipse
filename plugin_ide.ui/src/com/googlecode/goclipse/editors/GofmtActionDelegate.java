@@ -1,23 +1,13 @@
 package com.googlecode.goclipse.editors;
 
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-
-import com.googlecode.goclipse.builder.GoToolManager;
-import com.googlecode.goclipse.core.GoCore;
-import com.googlecode.goclipse.core.GoEnvironmentPrefs;
-import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.tooling.env.GoEnvironment;
+import com.googlecode.goclipse.ui.editor.actions.RunGoFmtOperation;
 
 /**
  * 
  * @author steel
  *
  */
+@Deprecated
 public class GofmtActionDelegate extends TransformTextAction {
 	
 	public GofmtActionDelegate() {
@@ -25,32 +15,8 @@ public class GofmtActionDelegate extends TransformTextAction {
 	}
 	
 	@Override
-	protected String transformText(final String text) throws CoreException {
-		final String currentContent = text;
-		
-		String gofmtPath = GoEnvironmentPrefs.FORMATTER_PATH.get();
-		
-		/* FIXME: Use AbstractEditorOperation */
-		
-		IProject project = null; // TODO
-		IProgressMonitor pm = new NullProgressMonitor(); // TODO
-		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
-		
-		ExternalProcessResult processResult = GoToolManager.getDefault().runGoTool(goEnv,
-			gofmtPath, project, pm, currentContent);
-		
-		if (processResult.exitValue != 0) {
-			throw GoCore.createCoreException(
-				gofmtPath + " completed with non-zero exit value (" + processResult.exitValue + ")", null);
-		}
-		
-		String formattedText = processResult.getStdOutBytes().toString();
-		
-		if (!formattedText.equals(currentContent)) {
-			return formattedText;
-		} else {
-			return null;
-		}
+	protected void doRun(GoEditor editor) {
+		new RunGoFmtOperation(editor).executeAndHandle();
 	}
 	
 }

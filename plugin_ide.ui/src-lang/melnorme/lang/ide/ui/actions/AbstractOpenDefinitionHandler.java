@@ -16,26 +16,12 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public abstract class AbstractOpenDefinitionHandler extends AbstractHandler {
+public abstract class AbstractOpenDefinitionHandler extends AbstractEditorHandler {
 	
 	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ITextEditor editor = (ITextEditor) HandlerUtil.getActiveEditorChecked(event);
-		if(editor == null) {
-			throw new ExecutionException("Internal error: No editor for action");
-		}
-		runOperation(editor);
-		
-		return null;
-	}
-	
 	public void runOperation(ITextEditor editor) {
 		assertNotNull(editor);
 		createOperation(editor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS).executeAndHandle();

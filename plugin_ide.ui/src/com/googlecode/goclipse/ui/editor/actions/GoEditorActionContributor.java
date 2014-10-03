@@ -14,6 +14,7 @@ import melnorme.lang.ide.ui.editor.AbstractLangEditorActionContributor;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
@@ -37,7 +38,7 @@ public class GoEditorActionContributor extends AbstractLangEditorActionContribut
 	public void init(IActionBars bars) {
 		super.init(bars);
 		
-		registerContribution(new EditorActionHelper2(COMMAND_GoToMatchingBracket, new PairMatcher()));
+		registerContribution(new ActionContribution(COMMAND_GoToMatchingBracket, new PairMatcher()));
 	}
 	
 	@Override
@@ -77,6 +78,13 @@ public class GoEditorActionContributor extends AbstractLangEditorActionContribut
 		
 		sourceMenu.appendToGroup(SOURCE_MENU__ADDITIONS, goFix);
 		sourceMenu.appendToGroup(SOURCE_MENU__ADDITIONS, goGet);
+		
+
+//		HandlerContribution goFmt2 = registerContribution(new HandlerContribution(COMMAND_RunGoFmt, 
+//			RunGoFmtOperation.handler));
+//		
+//		CommandContributionItem createContributionItem = goFmt2.createContributionItem();
+//		sourceMenu.appendToGroup(SOURCE_MENU__FORMAT, createContributionItem);
 	}
 	
 }

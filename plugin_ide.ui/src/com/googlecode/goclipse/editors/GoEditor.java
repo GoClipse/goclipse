@@ -113,18 +113,23 @@ public class GoEditor extends AbstractLangEditor {
 		return getSourceViewer().getDocument().get();
 	}
 	
-	public void replaceText(String newText) {
-		ISelection sel = getSelectionProvider().getSelection();
-		int topIndex = getSourceViewer().getTopIndex();
+	// public access
+	public final ISourceViewer getSourceViewer_() {
+		return getSourceViewer();
+	}
+	
+	public static void replaceText(ISourceViewer sourceViewer, String newText) {
+		ISelection sel = sourceViewer.getSelectionProvider().getSelection();
+		int topIndex = sourceViewer.getTopIndex();
 		
-		getSourceViewer().getDocument().set(newText);
+		sourceViewer.getDocument().set(newText);
 		
 		if (sel != null) {
-			getSelectionProvider().setSelection(sel);
+			sourceViewer.getSelectionProvider().setSelection(sel);
 		}
 		
 		if (topIndex != -1) {
-			getSourceViewer().setTopIndex(topIndex);
+			sourceViewer.setTopIndex(topIndex);
 		}
 	}
 	
