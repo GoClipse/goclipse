@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import melnorme.utilbox.core.CommonException;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -23,7 +25,6 @@ import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Node;
 import com.googlecode.goclipse.go.lib.indexer.Keywords;
-import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.views.GoImageProvider;
 
@@ -81,7 +82,7 @@ public class CompletionProcessor implements IContentAssistProcessor {
 
         try {
           codeContext = CodeContext.getCodeContext(filename, document.get());
-        } catch (IOException | StatusException e) {
+        } catch (IOException | CommonException e) {
           Activator.logError(e);
         }
       }

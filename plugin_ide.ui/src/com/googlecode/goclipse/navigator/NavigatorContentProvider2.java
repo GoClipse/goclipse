@@ -4,6 +4,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.File;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 
@@ -18,7 +19,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 import com.googlecode.goclipse.ui.GoUIPlugin;
@@ -94,7 +94,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		java.nio.file.Path goRootSource;
 		try {
 			goRootSource = goRoot.getSourceRootLocation();
-		} catch (StatusException e) {
+		} catch (CommonException e) {
 			return NO_CHILDREN;
 		}
 		

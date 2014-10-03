@@ -19,11 +19,10 @@ import java.util.Map;
 
 import melnorme.lang.tooling.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 import melnorme.utilbox.misc.StringUtil;
-
-import com.googlecode.goclipse.tooling.StatusException;
 
 /**
  * Immutable description of a Go environment, under which Go operations and semantic analysis can be run.
@@ -54,7 +53,7 @@ public class GoEnvironment {
 		return goRoot;
 	}
 	
-	public Path getGoRoot_Path() throws StatusException {
+	public Path getGoRoot_Path() throws CommonException {
 		return goRoot.asPath();
 	}
 	
@@ -79,7 +78,7 @@ public class GoEnvironment {
 	}
 	
 	// FIXME: change return type to a specific module class
-	public Path getGoPackageFromSourceModule(Path goModulePath) throws StatusException {
+	public Path getGoPackageFromSourceModule(Path goModulePath) throws CommonException {
 		Path goPackage = goRoot.getGoPackageFromSourceModule(goModulePath);
 		if(goPackage != null) {
 			return goPackage;
@@ -114,11 +113,11 @@ public class GoEnvironment {
 	
 	/* ----------------- helpers ----------------- */
 	
-	protected static Path createPath(String pathString) throws StatusException {
+	protected static Path createPath(String pathString) throws CommonException {
 		try {
 			return MiscUtil.createPath(pathString);
 		} catch (InvalidPathExceptionX e) {
-			throw new StatusException("Invalid path: " + e.getCause().getMessage(), null);
+			throw new CommonException("Invalid path: " + e.getCause().getMessage(), null);
 		}
 	}
 	
@@ -128,19 +127,19 @@ public class GoEnvironment {
 		return getGoOs().asString() + "_" + getGoArch().asString();
 	}
 	
-	public Path getGoRootPackageObjectsDir() throws StatusException {
+	public Path getGoRootPackageObjectsDir() throws CommonException {
 		return getPackageObjectsDir(getGoRoot_Path());
 	}
 	
-	public Path getPackageObjectsDir(Path basePath) throws StatusException {
+	public Path getPackageObjectsDir(Path basePath) throws CommonException {
 		return basePath.resolve(getPackageObjectsRelativePath());
 	}
 	
-	public Path getPackageObjectsRelativePath() throws StatusException {
+	public Path getPackageObjectsRelativePath() throws CommonException {
 		return MiscUtil.createValidPath("pkg").resolve(createPath(getGoOS_GoArch_segment()));
 	}
 	
-	public Path getGoRootToolsDir() throws StatusException {
+	public Path getGoRootToolsDir() throws CommonException {
 		return goRoot.asPath().resolve("pkg/tool/").resolve(createPath(getGoOS_GoArch_segment()));
 	}
 	
@@ -148,7 +147,7 @@ public class GoEnvironment {
 	// The following methods, I'm not sure they are really necessary.
 	// with some refactoring, we might be able to remove their uses
 	
-	public String getPackageObjectsPathString() throws StatusException {
+	public String getPackageObjectsPathString() throws CommonException {
 		
 		ArrayList2<String> pkgFolders = new ArrayList2<>();
 		

@@ -13,11 +13,11 @@ package com.googlecode.goclipse.tooling.oracle;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ops.SourceLineColumnLocation;
+import melnorme.utilbox.core.CommonException;
 
 import org.junit.Test;
 
 import com.googlecode.goclipse.tooling.CommonGoToolingTest;
-import com.googlecode.goclipse.tooling.StatusException;
 
 public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 	
@@ -33,7 +33,7 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 		try {
 			op.createProcessBuilder(SAMPLE_GOEnv_1, SAMPLE_GOPATH_Entry.resolve("not_on_src/foobar/file.go"), 0);
 			assertFail();
-		} catch (StatusException se) {
+		} catch (CommonException se) {
 			assertTrue(se.getMessage().contains("file not in the Go environment"));
 		}
 	}

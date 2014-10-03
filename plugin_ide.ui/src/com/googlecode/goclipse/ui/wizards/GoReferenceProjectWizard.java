@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -25,7 +26,6 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.tooling.StatusException;
 
 /**
  * This wizard creates a new Go Reference project - a project with a src folder linked to the
@@ -58,7 +58,7 @@ public class GoReferenceProjectWizard extends Wizard implements INewWizard {
 		final File srcFolder;
 		try {
 			srcFolder = wizardPage.getGoRootSrcFolder();
-		} catch (StatusException se) {
+		} catch (CommonException se) {
 			UIOperationExceptionHandler.handleOperationStatus("Error Creating Project", se);
 			return false;
 		}

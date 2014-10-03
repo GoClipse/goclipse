@@ -12,12 +12,12 @@ package com.googlecode.goclipse.ui.editor.actions;
 
 import static melnorme.utilbox.core.CoreUtil.listFrom;
 import melnorme.lang.ide.ui.actions.AbstractEditorHandler;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoCore;
-import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 public class RunGoFixOperation extends AbstractEditorGoToolOperation {
@@ -37,7 +37,7 @@ public class RunGoFixOperation extends AbstractEditorGoToolOperation {
 	protected void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException {
 		try {
 			toolPath = goEnv.getGoRootToolsDir().resolve("fix").toString();
-		} catch (StatusException se) {
+		} catch (CommonException se) {
 			throw GoCore.createCoreException(se.getMessage(), se.getCause());
 		}
 		pb = goEnv.createProcessBuilder(listFrom(toolPath));

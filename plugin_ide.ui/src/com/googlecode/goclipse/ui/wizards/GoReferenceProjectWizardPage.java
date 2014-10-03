@@ -2,6 +2,8 @@ package com.googlecode.goclipse.ui.wizards;
 
 import java.io.File;
 
+import melnorme.utilbox.core.CommonException;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.wizard.WizardPage;
@@ -10,7 +12,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 import com.googlecode.goclipse.ui.GoPluginImages;
@@ -80,7 +81,7 @@ public class GoReferenceProjectWizardPage extends WizardPage {
 
 					valid = false;
 				}
-			} catch (StatusException e) {
+			} catch (CommonException e) {
 				setErrorMessage(e.getMessage());
 				valid = false;
 			}
@@ -93,7 +94,7 @@ public class GoReferenceProjectWizardPage extends WizardPage {
 		return GoProjectEnvironment.getGoEnvironment(null); //XXX: review if this is correct
 	}
 	
-	protected File getGoRootSrcFolder() throws StatusException {
+	protected File getGoRootSrcFolder() throws CommonException {
 		return getEnvironment().getGoRoot().getSourceRootLocation().toFile();
 	}
 	

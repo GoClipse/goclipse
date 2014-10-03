@@ -17,6 +17,7 @@ import java.util.Set;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -42,7 +43,6 @@ import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Package;
 import com.googlecode.goclipse.go.lang.parser.PackageParser;
-import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 /**
@@ -213,7 +213,7 @@ public class GoBuilder extends LangProjectBuilder {
 		java.nio.file.Path packageObjectsDir;
 		try {
 			packageObjectsDir = goEnv.getPackageObjectsDir(project.getLocation().toFile().toPath());
-		} catch (StatusException e) {
+		} catch (CommonException e) {
 			throw LangCore.createCoreException(e.getMessage(), e.getCause());
 		}
 		String path = Path.fromOSString(packageObjectsDir.toString()).toOSString();

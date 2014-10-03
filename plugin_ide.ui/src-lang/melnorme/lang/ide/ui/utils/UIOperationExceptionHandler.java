@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -21,8 +22,6 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-
-import com.googlecode.goclipse.tooling.StatusException;
 
 /**
  * Utility for handling exceptions during UI operations, by presenting an information dialog to the user.
@@ -95,7 +94,7 @@ public class UIOperationExceptionHandler {
 		handleWithErrorDialog(logError, dialogTitle, ce.getMessage(), ce.getCause());
 	}
 	
-	public static void handleOperationStatus(String dialogTitle, StatusException ce) {
+	public static void handleOperationStatus(String dialogTitle, CommonException ce) {
 		handleWithErrorDialog(true, dialogTitle, ce.getMessage(), ce.getCause());
 	}
 	

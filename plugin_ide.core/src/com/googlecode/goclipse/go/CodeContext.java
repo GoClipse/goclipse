@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import melnorme.utilbox.core.CommonException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -35,7 +37,6 @@ import com.googlecode.goclipse.go.lang.parser.TokenizedPage;
 import com.googlecode.goclipse.go.lang.parser.TypeParser;
 import com.googlecode.goclipse.go.lang.parser.VariableParser;
 import com.googlecode.goclipse.tooling.GoFileNaming;
-import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 /**
@@ -65,16 +66,16 @@ public class CodeContext {
 		this.project = project;
 	}
 
-	public static CodeContext getCodeContext(String filename, String fileText) throws IOException, StatusException {
+	public static CodeContext getCodeContext(String filename, String fileText) throws IOException, CommonException {
 		return getCodeContext(null, filename, fileText, true);
 	}
 
 	public static CodeContext getCodeContext(String filename, String fileText, boolean useExternalContext)
-	        throws IOException, StatusException {
+	        throws IOException, CommonException {
 		return getCodeContext(null, filename, fileText, useExternalContext);
 	}
 
-	public static CodeContext getCodeContext(IProject project, String filename, String fileText) throws IOException, StatusException {
+	public static CodeContext getCodeContext(IProject project, String filename, String fileText) throws IOException, CommonException {
 		return getCodeContext(project, filename, fileText, true);
 	}
 
@@ -88,10 +89,10 @@ public class CodeContext {
 	 * @param useExternalContext
 	 * @return
 	 * @throws IOException
-	 * @throws StatusException 
+	 * @throws CommonException 
 	 */
 	public static CodeContext getCodeContext(final IProject project, String filename, String fileText,
-	        boolean useExternalContext) throws IOException, StatusException {
+	        boolean useExternalContext) throws IOException, CommonException {
 
 		boolean isCmdSrcFolder = false;
 
@@ -141,9 +142,9 @@ public class CodeContext {
 	 * @param filename
 	 * @return
 	 * @throws IOException
-	 * @throws StatusException 
+	 * @throws CommonException 
 	 */
-	public static CodeContext getTestCodeContext(final IProject project, File pkg) throws IOException, StatusException {
+	public static CodeContext getTestCodeContext(final IProject project, File pkg) throws IOException, CommonException {
 		CodeContext context = new CodeContext(pkg.getName(), project);
 		for(File child:pkg.listFiles()) {
 			if (child.getName().endsWith("_test.go")) {
@@ -201,10 +202,10 @@ public class CodeContext {
 	 * @param useExternalContext
 	 * @param codeContext
 	 * @throws IOException
-	 * @throws StatusException 
+	 * @throws CommonException 
 	 */
 	private static void parseText(File file, String fileText, boolean packagePeer, boolean useExternalContext,
-	        CodeContext codeContext) throws IOException, StatusException {
+	        CodeContext codeContext) throws IOException, CommonException {
 		
 		final IProject project = codeContext.project; 
 
@@ -270,10 +271,10 @@ public class CodeContext {
 	 * @param fileText
 	 * @return
 	 * @throws IOException
-	 * @throws StatusException 
+	 * @throws CommonException 
 	 * @throws RecognitionException
 	 */
-	public static CodeContext getExternalCodeContext(final IProject project, String packagePath) throws IOException, StatusException {
+	public static CodeContext getExternalCodeContext(final IProject project, String packagePath) throws IOException, CommonException {
 		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 		
 		CodeContext codeContext = new CodeContext(packagePath, project);

@@ -17,6 +17,7 @@ import java.text.MessageFormat;
 
 import melnorme.lang.tooling.ops.SourceLineColumnLocation;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -24,7 +25,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.googlecode.goclipse.tooling.JsonDeserializeHelper;
-import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
@@ -35,10 +35,10 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		this.goOraclePath = goOraclePath;
 	}
 	
-	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Path filePath, int offset) throws StatusException {
+	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Path filePath, int offset) throws CommonException {
 		Path goPackage = goEnv.getGoPackageFromSourceModule(filePath);
 		if(goPackage == null) {
-			throw new StatusException(MessageFormat.format(
+			throw new CommonException(MessageFormat.format(
 				"Could not determine Go package for Go file ({0}), file not in the Go environment.", filePath), 
 				null);
 		}
@@ -54,9 +54,9 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		return goEnv.createProcessBuilder(commandLine);
 	}
 	
-	public FindDefinitionResult parseJsonResult(ExternalProcessResult result) throws StatusException {
+	public FindDefinitionResult parseJsonResult(ExternalProcessResult result) throws CommonException {
 		if(result.exitValue != 0) {
-			throw new StatusException("Program exited with non-zero status: " + result.exitValue, null);
+			throw new CommonException("Program exited with non-zero status: " + result.exitValue, null);
 		}
 		
 		String output = result.getStdOutBytes().toString();
@@ -64,11 +64,11 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		try {
 			return parseJsonResult(output);
 		} catch (JSONException e) {
-			throw new StatusException("Error parsing JSON output: ", e);
+			throw new CommonException("Error parsing JSON output: ", e);
 		}
 	}
 	
-	protected FindDefinitionResult parseJsonResult(String output) throws JSONException, StatusException {
+	protected FindDefinitionResult parseJsonResult(String output) throws JSONException, CommonException {
 		JSONObject jsonResult = new JSONObject(output);
 		
 		JSONObject describe = jsonResult.getJSONObject("describe");
@@ -97,7 +97,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		
 		
 		if(columnStr == null || lineStr == null) {
-			throw new StatusException("No line or column position given.", null);
+			throw new CommonException("No line or column position given.", null);
 		}
 		int line = parseInt(lineStr, "Invalid number for line: " + lineStr);
 		int column = parseInt(columnStr, "Invalid number for column: " + columnStr);

@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
-import com.googlecode.goclipse.tooling.StatusException;
+import melnorme.utilbox.core.CommonException;
 
 public class GoRoot {
 	
@@ -32,15 +32,15 @@ public class GoRoot {
 		return goRoot.isEmpty();
 	}
 	
-	public Path asPath() throws StatusException {
+	public Path asPath() throws CommonException {
 		return GoEnvironment.createPath(goRoot);
 	}
 	
-	public Path getSourceRootLocation() throws StatusException {
+	public Path getSourceRootLocation() throws CommonException {
 		return asPath().resolve("src/pkg");
 	}
 	
-	public Path getGoPackageFromSourceModule(Path goModulePath) throws StatusException {
+	public Path getGoPackageFromSourceModule(Path goModulePath) throws CommonException {
 		return getGoPackageFromSourceModule(goModulePath, getSourceRootLocation());
 	}
 	

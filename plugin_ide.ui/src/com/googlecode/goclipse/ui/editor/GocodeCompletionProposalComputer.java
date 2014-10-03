@@ -7,6 +7,7 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -24,7 +25,6 @@ import org.eclipse.ui.IEditorPart;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.go.CodeContext;
-import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoUIPlugin;
@@ -89,7 +89,7 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 			}
 			
 			return results.toArray(new ICompletionProposal[] {});
-		} catch (StatusException e) {
+		} catch (CommonException e) {
 			throw LangCore.createCoreException(e.getMessage(), e.getCause());
 		}
 		

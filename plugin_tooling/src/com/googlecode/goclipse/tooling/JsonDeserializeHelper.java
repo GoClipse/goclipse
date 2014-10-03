@@ -12,6 +12,7 @@ package com.googlecode.goclipse.tooling;
 
 import java.nio.file.Path;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 
 
@@ -22,20 +23,20 @@ public class JsonDeserializeHelper {
 	
 	/* -----------------  ----------------- */
 	
-	protected Path parsePath(String pathStr) throws StatusException {
+	protected Path parsePath(String pathStr) throws CommonException {
 		Path path = MiscUtil.createPathOrNull(pathStr);
 		if(path == null) {
-			throw new StatusException("Invalid path: " + pathStr, null);
+			throw new CommonException("Invalid path: " + pathStr, null);
 		}
 		return path;
 	}
 	
-	protected int parseInt(String integerString, String errorMessage) throws StatusException {
+	protected int parseInt(String integerString, String errorMessage) throws CommonException {
 		
 		try {
 			return Integer.parseInt(integerString);
 		} catch (NumberFormatException e) {
-			throw new StatusException(errorMessage, null);
+			throw new CommonException(errorMessage, null);
 		}
 	}
 	

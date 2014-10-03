@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import melnorme.utilbox.core.CommonException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 /**
@@ -61,7 +62,7 @@ class PackageVertex {
 		try {
 			GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 			pkgOutPath = Path.fromOSString(goEnv.getPackageObjectsRelativePath().toString()).toOSString();
-		} catch (StatusException e) {
+		} catch (CommonException e) {
 			GoCore.logError(e.getMessage(), e.getCause());
 			pkgOutPath = "pkg";
 		}

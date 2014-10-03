@@ -14,6 +14,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.CoreException;
@@ -24,7 +25,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoToolPreferences;
-import com.googlecode.goclipse.tooling.StatusException;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation;
 
@@ -56,7 +56,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 			ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, monitor);
 			
 			findResult = op.parseJsonResult(result);
-		} catch (StatusException se) {
+		} catch (CommonException se) {
 			throw LangCore.createCoreException(se.getMessage(), se.getCause());
 		}
 	}

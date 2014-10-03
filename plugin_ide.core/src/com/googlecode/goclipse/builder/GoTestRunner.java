@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -29,7 +30,6 @@ import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
-import com.googlecode.goclipse.tooling.StatusException;
 
 /**
  * 
@@ -298,7 +298,7 @@ public class GoTestRunner {
 	        
         } catch (NumberFormatException e) {
         	Activator.logError(e);
-        } catch (IOException | StatusException e) {
+        } catch (IOException | CommonException e) {
         	Activator.logError(e);
         }
     }
