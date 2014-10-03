@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
+import melnorme.lang.ide.ui.actions.AbstractEditorHandler;
 import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.core.commands.IHandler;
@@ -63,6 +64,11 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		IWorkbenchWindow svcLocator = getPage().getWorkbenchWindow();
 		return new CommandContributionItem(
 			new CommandContributionItemParameter(svcLocator, null, commandId, CommandContributionItem.STYLE_PUSH));
+	}
+	
+	protected CommandContributionItem registerEditorHandler(String commandId, AbstractEditorHandler handler) {
+		HandlerContribution goFmt = registerContribution(new HandlerContribution(commandId, handler));
+		return goFmt.createContributionItem();
 	}
 	
 	@Override

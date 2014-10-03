@@ -14,13 +14,9 @@ import melnorme.lang.ide.ui.editor.AbstractLangEditorActionContributor;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
-import com.googlecode.goclipse.editors.GoGetActionDelegate;
-import com.googlecode.goclipse.editors.GofixAction;
-import com.googlecode.goclipse.editors.GofmtActionDelegate;
 import com.googlecode.goclipse.editors.PairMatcher;
 
 public class GoEditorActionContributor extends AbstractLangEditorActionContributor implements GoCommandConstants {
@@ -56,35 +52,13 @@ public class GoEditorActionContributor extends AbstractLangEditorActionContribut
 			ITextEditorActionDefinitionIds.SHIFT_RIGHT, ITextEditorActionConstants.SHIFT_RIGHT));
 		
 		
-		ReusableAction goFormat = registerContribution(new ReusableAction(
-			COMMAND_RunGoFmt, 
-			"&Format (go fmt)",
-			new GofmtActionDelegate()
-		));
+		sourceMenu.appendToGroup(SOURCE_MENU__ADDITIONS, 
+			registerEditorHandler(COMMAND_RunGoFix, RunGoFixOperation.handler));
+		sourceMenu.appendToGroup(SOURCE_MENU__ADDITIONS, 
+			registerEditorHandler(COMMAND_RunGoGet, RunGoGetOperation.handler));
 		
-		ReusableAction goFix = registerContribution(new ReusableAction(
-			COMMAND_RunGoFix, 
-			"Fix (go fix)",
-			new GofixAction()
-		));
-		
-		ReusableAction goGet = registerContribution(new ReusableAction(
-			COMMAND_RunGoGet,
-			"&Get (go get -fix -u)",
-			new GoGetActionDelegate()
-		) {{setToolTipText("Run the 'go get' command for the current file.");}});
-		
-		sourceMenu.appendToGroup(SOURCE_MENU__FORMAT, goFormat);
-		
-		sourceMenu.appendToGroup(SOURCE_MENU__ADDITIONS, goFix);
-		sourceMenu.appendToGroup(SOURCE_MENU__ADDITIONS, goGet);
-		
-
-//		HandlerContribution goFmt2 = registerContribution(new HandlerContribution(COMMAND_RunGoFmt, 
-//			RunGoFmtOperation.handler));
-//		
-//		CommandContributionItem createContributionItem = goFmt2.createContributionItem();
-//		sourceMenu.appendToGroup(SOURCE_MENU__FORMAT, createContributionItem);
+		sourceMenu.appendToGroup(SOURCE_MENU__FORMAT, 
+			registerEditorHandler(COMMAND_RunGoFmt, RunGoFmtOperation.handler));
 	}
 	
 }

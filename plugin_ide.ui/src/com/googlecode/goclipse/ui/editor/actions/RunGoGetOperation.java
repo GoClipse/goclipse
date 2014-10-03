@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.editor.actions;
 
+import melnorme.lang.ide.ui.actions.AbstractEditorHandler;
 import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 
@@ -22,6 +23,13 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.googlecode.goclipse.core.tools.GoGetOperation;
 
 public class RunGoGetOperation extends AbstractEditorOperation {
+	
+	public static final AbstractEditorHandler handler = new AbstractEditorHandler() {
+		@Override
+		public void runOperation(ITextEditor editor) {
+			new RunGoGetOperation(editor).executeAndHandle();
+		}
+	};
 	
 	public RunGoGetOperation(ITextEditor editor) {
 		super(null, editor);
