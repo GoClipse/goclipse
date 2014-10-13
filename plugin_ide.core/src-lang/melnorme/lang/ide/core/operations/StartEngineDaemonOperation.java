@@ -10,8 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import org.eclipse.core.runtime.CoreException;
-
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 public class StartEngineDaemonOperation extends AbstractStartProcessTask {
@@ -24,7 +23,7 @@ public class StartEngineDaemonOperation extends AbstractStartProcessTask {
 	}
 	
 	@Override
-	protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CoreException ce) {
+	protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 		for (ILangOperationsListener listener : abstractToolsManager.getListeners()) {
 			listener.engineDaemonStart(pb, ce, processHelper);
 		}

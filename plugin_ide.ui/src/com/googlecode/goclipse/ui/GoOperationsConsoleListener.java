@@ -10,20 +10,16 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
-import java.io.IOException;
-
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
 import melnorme.lang.ide.ui.tools.console.ConsoleOuputProcessListener;
 import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
 import melnorme.lang.ide.ui.tools.console.ProcessOutputToConsoleListener;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole;
-import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 
 import com.googlecode.goclipse.builder.IGoBuildListener;
 
@@ -59,9 +55,7 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	
 	@Override
 	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
-			ExternalProcessNotifyingHelper processHelper, IOException e) {
-		
-		CoreException ce = LangCore.createCoreException("Could not start process.", e);
+			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 		
 		GoBuildConsole console = getOperationConsole(project, false);
 		
@@ -73,7 +67,7 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	}
 	
 	@Override
-	public void engineDaemonStart(ProcessBuilder pb, CoreException ce, 
+	public void engineDaemonStart(ProcessBuilder pb, CommonException ce, 
 			ExternalProcessNotifyingHelper processHelper) {
 		
 		if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
@@ -91,7 +85,7 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	}
 	
 	@Override
-	public void engineClientToolStart(ProcessBuilder pb, CoreException ce,
+	public void engineClientToolStart(ProcessBuilder pb, CommonException ce,
 			ExternalProcessNotifyingHelper processHelper) {
 		
 		if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {

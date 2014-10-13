@@ -12,7 +12,6 @@ package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.io.IOException;
 import java.util.List;
 
 import melnorme.utilbox.core.CommonException;
@@ -40,9 +39,9 @@ public abstract class AbstractRunExternalProcessTask<LISTENER extends IExternalP
 		this.cancelMonitor = assertNotNull(cancelMonitor);
 	}
 	
-	protected void notifyProcessStartResult(ExternalProcessNotifyingHelper processHelper, IOException e) {
+	protected void notifyProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 		for(IExternalProcessListener processListener : getListeners()) {
-			processListener.handleProcessStartResult(pb, project, processHelper, e);
+			processListener.handleProcessStartResult(pb, project, processHelper, ce);
 		}
 	}
 	
@@ -63,8 +62,7 @@ public abstract class AbstractRunExternalProcessTask<LISTENER extends IExternalP
 			Process process = ExternalProcessHelper.startProcess(pb);
 			processHelper = new EclipseProcessHelper(process, false, cancelMonitor); 
 		} catch (CommonException ce) {
-			IOException ioe = (IOException) ce.getCause();
-			notifyProcessStartResult(null, ioe);
+			notifyProcessStartResult(null, ce);
 			throw ce;
 		}
 		

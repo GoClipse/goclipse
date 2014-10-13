@@ -10,17 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.process;
 
-import java.io.IOException;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
-
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 
 
 public interface IExternalProcessListener {
 	
 	void handleProcessStartResult(ProcessBuilder pb, IProject project, ExternalProcessNotifyingHelper processHelper,
-			IOException e);
+			CommonException ce);
 	
 }

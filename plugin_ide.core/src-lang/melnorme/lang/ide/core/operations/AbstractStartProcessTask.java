@@ -46,18 +46,11 @@ public abstract class AbstractStartProcessTask {
 		try {
 			process = ExternalProcessNotifyingHelper.startProcess(pb);
 		} catch (CommonException ce) {
-			/* FIXME: use CommonException in listerners*/
-			handleProcessStartResult(null, LangCore.createCoreException(ce));
+			handleProcessStartResult(null, ce);
 			throw ce;
 		}
 		
 		return readFromProcess(pm, process);
-	}
-	
-	public ExternalProcessResult runProcess(String inputText, IProgressMonitor pm) throws CommonException {
-		ExternalProcessNotifyingHelper processHelper = startProcess(pm);
-		processHelper.writeInput_(inputText);
-		return processHelper.strictAwaitTermination_();
 	}
 	
 	protected ExternalProcessNotifyingHelper readFromProcess(IProgressMonitor pm, Process process) {
@@ -67,6 +60,12 @@ public abstract class AbstractStartProcessTask {
 		return processHelper;
 	}
 	
-	protected abstract void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CoreException ce);
+	protected abstract void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce);
+	
+	public ExternalProcessResult runProcess(String inputText, IProgressMonitor pm) throws CommonException {
+		ExternalProcessNotifyingHelper processHelper = startProcess(pm);
+		processHelper.writeInput_(inputText);
+		return processHelper.strictAwaitTermination_();
+	}
 	
 }

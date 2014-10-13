@@ -18,10 +18,10 @@ import java.util.List;
 import melnorme.lang.ide.core.operations.ILangOperationsListener;
 import melnorme.lang.ide.ui.LangOperationConsole_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
@@ -71,7 +71,7 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 	}
 	
 	protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
-			CoreException ce) {
+			CommonException ce) {
 		List<String> commandLine = pb.command();
 		String text = prefix + StringUtil.collToString(commandLine, " ") + "\n";
 		
