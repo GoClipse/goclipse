@@ -26,7 +26,7 @@ public class GoEditorActionContributor extends AbstractLangEditorActionContribut
 	public static final String SOURCE_MENU__ADDITIONS = "additions";
 	public static final String SOURCE_MENU__FORMAT = "format";
 	public static final String SOURCE_MENU__COMMENT = "comment";
-
+	
 	public GoEditorActionContributor() {
 	}
 	

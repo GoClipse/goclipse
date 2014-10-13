@@ -10,11 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
-import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
-import melnorme.lang.ide.ui.tools.console.ConsoleOuputProcessListener;
-import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
-import melnorme.lang.ide.ui.tools.console.ProcessOutputToConsoleListener;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
@@ -51,55 +47,28 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 			"************  Build terminated.  ************\n");
 	}
 	
-	/* FIXME: refactor IGoBuildListener usage. */
-	
 	@Override
 	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
 			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 		
-		GoBuildConsole console = getOperationConsole(project, false);
-		
-		printProcessStartResult(console.infoOut, ">> Running: ", pb, ce);
-		
-		if(processHelper != null) {
-			processHelper.getOutputListenersHelper().addListener(new ProcessOutputToConsoleListener(console));
-		}
+		new ProcessUIConsoleHandler(pb, project, ">> Running: ", processHelper, ce);
 	}
 	
 	@Override
 	public void engineDaemonStart(ProcessBuilder pb, CommonException ce, 
 			ExternalProcessNotifyingHelper processHelper) {
 		
-		if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
-			return;
-		}
-		
-		DaemonToolMessageConsole console = DaemonToolMessageConsole.getConsole();
-		
-		printProcessStartResult(console.infoOut, "##########  Starting gocode server:  ##########\n" + "   ", pb, ce);
-		
-		if(processHelper != null) {
-			processHelper.getOutputListenersHelper().addListener(
-				new ConsoleOuputProcessListener(console.serverStdOut, console.serverStdErr));
-		}
+		new EngineServerProcessUIConsoleHandler(pb, null, 
+			"##########  Starting gocode server:  ##########\n" + "   ", processHelper, ce);
 	}
 	
 	@Override
 	public void engineClientToolStart(ProcessBuilder pb, CommonException ce,
 			ExternalProcessNotifyingHelper processHelper) {
 		
-		if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
-			return;
-		}
+		new EngineClientProcessUIConsoleHandler(pb, null, 
+			">> Running: ", processHelper, ce);
 		
-		DaemonToolMessageConsole console = DaemonToolMessageConsole.getConsole();
-		
-		printProcessStartResult(console.infoOut, ">> Running: ", pb, ce);
-		
-		if(processHelper != null) {
-			processHelper.getOutputListenersHelper().addListener(
-				new ConsoleOuputProcessListener(console.stdOut, console.serverStdErr));
-		}
 	}
 	
 }

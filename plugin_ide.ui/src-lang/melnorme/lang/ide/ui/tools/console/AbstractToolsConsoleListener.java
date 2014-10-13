@@ -15,11 +15,14 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.io.IOException;
 import java.util.List;
 
+import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.core.operations.ILangOperationsListener;
 import melnorme.lang.ide.ui.LangOperationConsole_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -70,7 +73,46 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 		return new LangOperationConsole_Actual(name);
 	}
 	
-	protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
+	/* -----------------  ----------------- */
+	
+	public class ProcessUIConsoleHandler {
+		
+		protected final ProcessBuilder pb;
+		protected final IProject project;
+		protected final String prefixText;
+		protected final ExternalProcessNotifyingHelper processHelper;
+		protected final CommonException ce;
+		
+		protected final ToolsConsole console;
+		
+		public ProcessUIConsoleHandler(ProcessBuilder pb, IProject project, String prefixText,
+				ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+			this.pb = pb;
+			this.project = project;
+			this.prefixText = prefixText;
+			this.processHelper = processHelper;
+			this.ce = ce;
+			
+			console = getOperationConsole(project, false);
+			
+			handle();
+		}
+		
+		public void handle() {
+			printProcessStartResult(console.infoOut, prefixText, pb, ce);
+			
+			if(processHelper != null) {
+				processHelper.getOutputListenersHelper().addListener(createOutputListener());
+			}
+		}
+		
+		protected IProcessOutputListener createOutputListener() {
+			return new ProcessOutputToConsoleListener(console);
+		}
+		
+	}
+	
+	protected static void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
 			CommonException ce) {
 		List<String> commandLine = pb.command();
 		String text = prefix + StringUtil.collToString(commandLine, " ") + "\n";
@@ -87,6 +129,45 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 			outStream.write(text);
 		} catch (IOException e) {
 			// Do nothing
+		}
+	}
+	
+	public class EngineServerProcessUIConsoleHandler extends ProcessUIConsoleHandler {
+		
+		protected DaemonToolMessageConsole console;
+		
+		public EngineServerProcessUIConsoleHandler(ProcessBuilder pb, IProject project, String prefixText,
+				ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+			super(pb, project, prefixText, processHelper, ce);
+		}
+		
+		@Override
+		public void handle() {
+			if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
+				return;
+			}
+			
+			console = DaemonToolMessageConsole.getConsole();
+			
+			super.handle();
+		}
+		
+		@Override
+		protected ConsoleOuputProcessListener createOutputListener() {
+			return new ConsoleOuputProcessListener(console.serverStdOut, console.serverStdErr);
+		}
+	
+	}
+	
+	public class EngineClientProcessUIConsoleHandler extends EngineServerProcessUIConsoleHandler {
+		public EngineClientProcessUIConsoleHandler(ProcessBuilder pb, IProject project, String prefixText,
+				ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+			super(pb, project, prefixText, processHelper, ce);
+		}
+		
+		@Override
+		protected ConsoleOuputProcessListener createOutputListener() {
+			return new ConsoleOuputProcessListener(console.stdOut, console.stdErr);
 		}
 	}
 	

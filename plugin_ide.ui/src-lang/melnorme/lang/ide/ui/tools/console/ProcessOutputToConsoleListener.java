@@ -14,30 +14,13 @@ import java.io.IOException;
 
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
-public class ProcessOutputToConsoleListener implements IProcessOutputListener {
+public class ProcessOutputToConsoleListener extends ConsoleOuputProcessListener implements IProcessOutputListener {
 	
 	private final ToolsConsole console;
 	
 	public ProcessOutputToConsoleListener(ToolsConsole console) {
+		super(console.stdOut, console.stdErr);
 		this.console = console;
-	}
-	
-	@Override
-	public void notifyStdOutListeners(byte[] buffer, int offset, int readCount) {
-		try {
-			console.stdOut.write(buffer, offset, readCount);
-		} catch (IOException e) {
-			// Ignore, it could simply mean the console page has been closed
-		}
-	}
-	
-	@Override
-	public void notifyStdErrListeners(byte[] buffer, int offset, int readCount) {
-		try {
-			console.stdErr.write(buffer, offset, readCount);
-		} catch (IOException e) {
-			// Ignore, it could simply mean the console page has been closed
-		}
 	}
 	
 	@Override
