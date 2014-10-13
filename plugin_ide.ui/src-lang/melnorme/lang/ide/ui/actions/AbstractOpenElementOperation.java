@@ -20,6 +20,7 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.SourceLineColumnLocation;
 
 import org.eclipse.core.resources.IFile;
@@ -30,8 +31,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
-
-import com.googlecode.goclipse.tooling.oracle.FindDefinitionResult;
 
 public abstract class AbstractOpenElementOperation extends AbstractEditorOperation {
 	

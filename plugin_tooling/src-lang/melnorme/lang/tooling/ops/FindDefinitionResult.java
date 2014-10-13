@@ -8,9 +8,8 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.tooling.oracle;
+package melnorme.lang.tooling.ops;
 
-import melnorme.lang.tooling.ops.SourceLineColumnLocation;
 
 public class FindDefinitionResult {
 	

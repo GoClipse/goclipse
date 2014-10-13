@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 
+import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.SourceLineColumnLocation;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
