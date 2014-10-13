@@ -8,20 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.process;
+package melnorme.utilbox.concurrency;
 
-import java.io.IOException;
-
-import org.eclipse.core.resources.IProject;
-
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
-
-
-
-public interface IExternalProcessListener {
+public class OperationCancellation extends Throwable {
 	
-	void handleProcessStarted(ProcessBuilder pb, IProject project, ExternalProcessNotifyingHelper processHelper);
+	private static final long serialVersionUID = -8709454826700411533L;
 	
-	void handleProcessStartFailure(ProcessBuilder pb, IProject project, IOException processStartException);
+	public OperationCancellation() {
+	}
 	
 }

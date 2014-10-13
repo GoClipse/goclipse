@@ -10,16 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import java.io.File;
-import java.util.List;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-
-import melnorme.lang.tooling.ProcessUtils;
-import melnorme.utilbox.collections.ArrayList2;
+import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).
@@ -27,36 +24,23 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public abstract class AbstractToolsManager<LISTENER extends ILangOperationsListener> 
 		extends ListenerListHelper<LISTENER> {
 	
-	public ProcessBuilder createDefaultProcessBuilder(List<String> commandLine) {
-		return createDefaultProcessBuilder(commandLine, (File) null);
+	/* ----------------- ----------------- */
+	
+	public RunExternalProcessTask newRunToolTask(ProcessBuilder pb, IProject project, IProgressMonitor pm) {
+		return new RunExternalProcessTask(pb, project, pm, this);
 	}
 	
-	public ProcessBuilder createDefaultProcessBuilder(List<String> commandLine, File workingDir) {
-		ProcessBuilder pb = ProcessUtils.createProcessBuilder(commandLine, workingDir);
-		setupDefaultEnvironment(pb);
-		return pb;
-	}
-	
-	@SuppressWarnings("unused")
-	protected void setupDefaultEnvironment(ProcessBuilder pb) {
-	}
-	
-	public ExternalProcessResult runEngineClientTool(String clientPath, List<String> arguments,
-			String clientInput, IProgressMonitor pm) throws CoreException {
-		return runEngineClientTool(new ArrayList2<>(clientPath).addElements(arguments), clientInput, pm);
-	}
-	
-	public ExternalProcessResult runEngineClientTool(List<String> commandLine, String clientInput,
-			IProgressMonitor pm) throws CoreException {
-		ProcessBuilder pb = createDefaultProcessBuilder(commandLine);
-		return new RunEngineClientOperation(this, pb).runProcess(clientInput, pm);
+	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb) 
+			throws CoreException {
+		// Note: project can be null
+		return newRunToolTask(pb, project, pm).runProcess();
 	}
 	
 	/* ----------------- ----------------- */
 	
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, IProgressMonitor pm)
 			throws CoreException {
-		return new RunEngineClientOperation(this, pb).runProcess(clientInput, pm);
+		return new RunEngineClientOperation(this, pb, pm).runProcess(clientInput);
 	}
 	
 }

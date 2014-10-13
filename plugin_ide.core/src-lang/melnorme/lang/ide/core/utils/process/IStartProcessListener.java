@@ -10,10 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.process;
 
-import melnorme.utilbox.core.fntypes.ICallable;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IProject;
 
-public interface IRunProcessTask extends ICallable<ExternalProcessResult, CoreException> {
+
+
+public interface IStartProcessListener {
+	
+	void handleProcessStartResult(ProcessBuilder pb, IProject project, ExternalProcessNotifyingHelper processHelper,
+			CommonException ce);
+	
 }

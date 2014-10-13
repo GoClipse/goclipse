@@ -10,14 +10,14 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import melnorme.lang.ide.core.utils.process.IStartProcessListener;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
-import org.eclipse.core.runtime.CoreException;
-
-public interface ILangOperationsListener {
+public interface ILangOperationsListener extends IStartProcessListener {
 	
-	void engineDaemonStart(ProcessBuilder pb, CoreException ce, ExternalProcessNotifyingHelper processHelper);
+	void engineDaemonStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper processHelper);
 	
-	void engineClientToolStart(ProcessBuilder pb, CoreException ce, ExternalProcessNotifyingHelper processHelper);
+	void engineClientToolStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper processHelper);
 	
 }

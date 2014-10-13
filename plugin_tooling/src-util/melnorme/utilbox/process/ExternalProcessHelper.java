@@ -18,6 +18,8 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.ExceptionTrackingRunnable;
 import melnorme.utilbox.misc.StreamUtil;
@@ -91,6 +93,48 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 	}
 	
+	/* ----------------- ----------------- */
+	
+	protected CommonException createCommonException(String message, Throwable cause) {
+		return new CommonException(message, cause);
+	}
+	
+	public static Process startProcess(ProcessBuilder pb) throws CommonException {
+		try {
+			return pb.start();
+		} catch (IOException ie) {
+			throw new CommonException(ProcessHelperMessages.ExternalProcess_CouldNotStart, ie);
+		}
+	}
+	
+	/* ----------------- writing helpers ----------------- */
+	
+	public void writeInput(String input) throws IOException {
+		writeInput(input, StringUtil.UTF8);
+	}
+	
+	public void writeInput(String input, Charset charset) throws IOException {
+		if(input == null)
+			return;
+		
+		OutputStream processInputStream = getProcess().getOutputStream();
+		StreamUtil.writeStringToStream(input, processInputStream, charset);
+	}
+	
+	public void writeInput_(String input) throws CommonException {
+		writeInput_(input, StringUtil.UTF8);
+	}
+	
+	public void writeInput_(String input, Charset charset) throws CommonException {
+		try {
+			writeInput(input, charset);
+		} catch (IOException e) {
+			throw createCommonException(ProcessHelperMessages.ExternalProcess_ErrorWritingInput, e);
+		}
+	}
+	
+	/* ----------------- result helpers ----------------- */
+	
 	protected ByteArrayOutputStreamExt getStdOutBytes() {
 		assertTrue(isFullyTerminated());
 		return mainReader.byteArray;
@@ -100,6 +144,28 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		assertTrue(isFullyTerminated());
 		assertTrue(readStdErr);
 		return stderrReader.byteArray;
+	}
+	
+	public class ExternalProcessResult {
+		
+		public final int exitValue;
+		public final ByteArrayOutputStreamExt stdout;
+		public final ByteArrayOutputStreamExt stderr;
+		
+		public ExternalProcessResult(int exitValue, ByteArrayOutputStreamExt stdout, ByteArrayOutputStreamExt stderr) {
+			this.exitValue = exitValue;
+			this.stdout = stdout;
+			this.stderr = stderr;
+		}
+		
+		public ByteArrayOutputStreamExt getStdOutBytes() {
+			return stdout;
+		}
+		
+		public ByteArrayOutputStreamExt getStdErrBytes() {
+			return stderr;
+		}
+		
 	}
 	
 	public void tryStrictAwaitTermination(int timeoutMs) throws InterruptedException, TimeoutException, IOException {
@@ -131,40 +197,38 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		return strictAwaitTermination(NO_TIMEOUT);
 	}
 	
-	public class ExternalProcessResult {
-		
-		public final int exitValue;
-		public final ByteArrayOutputStreamExt stdout;
-		public final ByteArrayOutputStreamExt stderr;
-		
-		public ExternalProcessResult(int exitValue, ByteArrayOutputStreamExt stdout, ByteArrayOutputStreamExt stderr) {
-			this.exitValue = exitValue;
-			this.stdout = stdout;
-			this.stderr = stderr;
+	public ExternalProcessResult strictAwaitTermination_(int timeout) throws CommonException {
+		try {
+			return strictAwaitTermination(timeout);
+		} catch (InterruptedException e) {
+			throw createCommonException(ProcessHelperMessages.ExternalProcess_InterruptedAwaitingTermination, e);
+		} catch (IOException e) {
+			throw createCommonException(ProcessHelperMessages.ExternalProcess_ErrorStreamReaderIOException, e);
+		} catch (TimeoutException te) {
+			// at this point a TimeoutException can be one of two things, an actual timeout, or a cancellation.
+			
+			if(isCanceled()) {
+				// Send this as an exception. It will be the responsibility of higher-level application code
+				// to check if exception was a cancellation, if they want to respond differently to this case.
+				throw createCommonException(ProcessHelperMessages.ExternalProcess_TaskCancelled, 
+						new OperationCancellation());
+			} else {
+				throw createCommonException(ProcessHelperMessages.ExternalProcess_ProcessTimeout, te);
+			}
 		}
-		
-		public ByteArrayOutputStreamExt getStdOutBytes() {
-			return stdout;
-		}
-		
-		public ByteArrayOutputStreamExt getStdErrBytes() {
-			return stderr;
-		}
-		
 	}
 	
-	/* ----------------- writing helpers ----------------- */
-	
-	public void writeInput(String input) throws IOException {
-		writeInput(input, StringUtil.UTF8);
+	public ExternalProcessResult strictAwaitTermination_() throws CommonException {
+		return strictAwaitTermination_(false);
 	}
 	
-	public void writeInput(String input, Charset charset) throws IOException {
-		if(input == null)
-			return;
+	public ExternalProcessResult strictAwaitTermination_(boolean throwOnNonZeroStatus) throws CommonException {
+		ExternalProcessResult processResult = strictAwaitTermination_(NO_TIMEOUT);
 		
-		OutputStream processInputStream = getProcess().getOutputStream();
-		StreamUtil.writeStringToStream(input, processInputStream, charset);
+		if(throwOnNonZeroStatus && processResult.exitValue != 0) {
+			throw new CommonException("Process completed with non-zero exit value (" + processResult.exitValue + ")");
+		}
+		return processResult;
 	}
 	
 }

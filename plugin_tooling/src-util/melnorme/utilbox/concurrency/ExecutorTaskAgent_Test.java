@@ -88,7 +88,7 @@ public class ExecutorTaskAgent_Test {
 		Runnable npeRunnable = new Runnable() {
 			@Override
 			public void run() {
-				throw new NullPointerException(); // a RuntimeException, representing an internal error
+				throw new RuntimeException(); // a RuntimeException, representing an internal error
 			}
 		};
 		Callable<String> normalTask = new Callable<String>() {
@@ -112,7 +112,7 @@ public class ExecutorTaskAgent_Test {
 		
 		
 		checkExceptionHandling(unexpectedExceptions, agent, 
-			agent.submit(npeRunnable), NullPointerException.class, false);
+			agent.submit(npeRunnable), RuntimeException.class, false);
 		
 		checkExceptionHandling(unexpectedExceptions, agent, 
 			agent.submit(normalTask), IOException.class, true);

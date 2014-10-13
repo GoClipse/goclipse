@@ -16,7 +16,7 @@ import melnorme.utilbox.misc.ListenerListHelper;
  * Extends {@link ExternalProcessHelper} to allow optional listeners to be notified
  * of output read from the external process, as well as process termination events.
  */
-public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
+public abstract class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	public ExternalProcessNotifyingHelper(Process process, boolean readStdErr, boolean startReaders) {
 		super(process, readStdErr, startReaders);
@@ -97,8 +97,6 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 		}
 	}
 	
-	protected void handleListenerException(RuntimeException e) {
-		e.printStackTrace();
-	}
+	protected abstract void handleListenerException(RuntimeException e);
 	
 }

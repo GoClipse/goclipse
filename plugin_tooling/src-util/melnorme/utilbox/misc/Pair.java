@@ -53,7 +53,7 @@ public final class Pair<T1, T2> {
 	
 	@Override
 	public int hashCode() {
-		return MiscUtil.combineHashCodes(first.hashCode(), second.hashCode());
+		return HashcodeUtil.combineHashCodes(first.hashCode(), second.hashCode());
 	}
 	
 	@Override

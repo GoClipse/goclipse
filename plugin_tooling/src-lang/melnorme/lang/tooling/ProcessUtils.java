@@ -15,6 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import melnorme.utilbox.misc.MiscUtil;
+
 public class ProcessUtils {
 
 	public static ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {
@@ -25,6 +27,10 @@ public class ProcessUtils {
 			pb.directory(workingDir);
 		}
 		return pb;
+	}
+	
+	public static String getExecutableSuffix() {
+		return MiscUtil.OS_IS_WINDOWS ? ".exe" : "";
 	}
 	
 }

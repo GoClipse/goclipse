@@ -10,21 +10,24 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
+import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
-public class RunEngineClientOperation extends AbstractStartProcessTask {
+public class RunEngineClientOperation extends AbstractRunProcessTask {
 	
 	protected final AbstractToolsManager<?> abstractToolsManager;
 	
-	public RunEngineClientOperation(AbstractToolsManager<?> abstractToolsManager, ProcessBuilder pb) {
-		super(pb);
+	public RunEngineClientOperation(AbstractToolsManager<?> abstractToolsManager, ProcessBuilder pb,
+			IProgressMonitor cancelMonitor) {
+		super(pb, cancelMonitor);
 		this.abstractToolsManager = abstractToolsManager;
 	}
 	
 	@Override
-	protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CoreException ce) {
+	protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 		for (ILangOperationsListener listener : abstractToolsManager.getListeners()) {
 			listener.engineClientToolStart(pb, ce, processHelper);
 		}
