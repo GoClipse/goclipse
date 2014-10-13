@@ -83,8 +83,6 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 		protected final ExternalProcessNotifyingHelper processHelper;
 		protected final CommonException ce;
 		
-		protected final ToolsConsole console;
-		
 		public ProcessUIConsoleHandler(ProcessBuilder pb, IProject project, String prefixText,
 				ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 			this.pb = pb;
@@ -93,20 +91,24 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 			this.processHelper = processHelper;
 			this.ce = ce;
 			
-			console = getOperationConsole(project, false);
-			
 			handle();
 		}
 		
 		public void handle() {
+			ToolsConsole console = getConsole();
+			
 			printProcessStartResult(console.infoOut, prefixText, pb, ce);
 			
 			if(processHelper != null) {
-				processHelper.getOutputListenersHelper().addListener(createOutputListener());
+				processHelper.getOutputListenersHelper().addListener(createOutputListener(console));
 			}
 		}
 		
-		protected IProcessOutputListener createOutputListener() {
+		protected ToolsConsole getConsole() {
+			return getOperationConsole(project, false);
+		}
+		
+		protected IProcessOutputListener createOutputListener(ToolsConsole console) {
 			return new ProcessOutputToConsoleListener(console);
 		}
 		
@@ -146,14 +148,17 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 			if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
 				return;
 			}
-			
-			console = DaemonToolMessageConsole.getConsole();
-			
 			super.handle();
 		}
 		
 		@Override
-		protected ConsoleOuputProcessListener createOutputListener() {
+		public ToolsConsole getConsole() {
+			console = DaemonToolMessageConsole.getConsole();
+			return console;
+		}
+		
+		@Override
+		protected ConsoleOuputProcessListener createOutputListener(ToolsConsole console_) {
 			return new ConsoleOuputProcessListener(console.serverStdOut, console.serverStdErr);
 		}
 	
@@ -166,7 +171,7 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 		}
 		
 		@Override
-		protected ConsoleOuputProcessListener createOutputListener() {
+		protected ConsoleOuputProcessListener createOutputListener(ToolsConsole console_) {
 			return new ConsoleOuputProcessListener(console.stdOut, console.stdErr);
 		}
 	}

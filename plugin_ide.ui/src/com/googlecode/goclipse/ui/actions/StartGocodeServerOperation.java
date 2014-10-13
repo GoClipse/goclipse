@@ -17,6 +17,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Status;
 
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 
@@ -31,15 +32,11 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	public void executeAndHandle() {
-		if (DaemonEnginePreferences.AUTO_START_SERVER.get() == false)
-			return;
-		
-		super.executeAndHandle();
-	}
-	
-	@Override
 	protected void prepareOperation() throws CoreException {
+		if (DaemonEnginePreferences.AUTO_START_SERVER.get() == false) {
+			throw new CoreException(Status.OK_STATUS); // stop operation
+		}
+		
 		gocodePath = gocodeServerManager.getBestGocodePath();
 	}
 	
