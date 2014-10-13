@@ -9,7 +9,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.googlecode.goclipse.builder.GoToolManager;
+import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
@@ -26,7 +26,7 @@ public class GocodeClient extends GocodeCompletionOperation<CommonException> {
 	@Override
 	protected ExternalProcessResult runGocode(List<String> arguments, String input) throws CommonException {
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(new ArrayList2<>(gocodePath).addElements(arguments));
-		return new RunEngineClientOperation(GoToolManager.getDefault(), pb).runProcess(input, pm);
+		return new RunEngineClientOperation(GoToolManager.getDefault(), pb, pm).runProcess(input);
 	}
 	
 }

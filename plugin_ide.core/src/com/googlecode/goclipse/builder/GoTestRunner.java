@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -24,9 +25,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.builder.GoToolManager.RunGoToolTask;
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
+import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
 
@@ -118,10 +119,10 @@ public class GoTestRunner {
 				}).start();
                 
             try {
-            	RunGoToolTask runTestsTask = GoToolManager.getDefault().
+            	RunExternalProcessTask runTestsTask = GoToolManager.getDefault().
             			createRunToolTask(testProcessBuilder, null, new NullProgressMonitor());
                 
-                ExternalProcessResult processResult = runTestsTask.startProcessAndAwait();
+                ExternalProcessResult processResult = runTestsTask.runProcess();
                 
                 String stdout = processResult.getStdOutBytes().toString();
                 String stderr = processResult.getStdErrBytes().toString();

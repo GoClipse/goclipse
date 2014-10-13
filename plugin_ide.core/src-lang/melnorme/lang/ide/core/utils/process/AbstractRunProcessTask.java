@@ -8,40 +8,36 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations;
+package melnorme.lang.ide.core.utils.process;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.process.EclipseProcessHelper;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 
-public abstract class AbstractStartProcessTask {
+/**
+ * Helper class to start, or run (start & await completion) of an external process.
+ * Provides support for {@link IProgressMonitor} cancellation, and notifying listeners. 
+ */
+public abstract class AbstractRunProcessTask {
 	
 	protected final ProcessBuilder pb;
+	protected final IProgressMonitor cancelMonitor;
 	
-	public AbstractStartProcessTask(ProcessBuilder pb) {
-		this.pb = pb;
-	}
-	
-	public ExternalProcessNotifyingHelper call() throws CoreException {
-		try {
-			return startProcess();
-		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce.getMessage(), ce.getCause());
-		}
+	public AbstractRunProcessTask(ProcessBuilder pb, IProgressMonitor cancelMonitor) {
+		this.pb = assertNotNull(pb);
+		this.cancelMonitor = assertNotNull(cancelMonitor);
 	}
 	
 	public ExternalProcessNotifyingHelper startProcess() throws CommonException {
-		return startProcess(new NullProgressMonitor());
+		return startProcess(cancelMonitor);
 	}
 	
-	public ExternalProcessNotifyingHelper startProcess(IProgressMonitor pm) throws CommonException {
+	protected ExternalProcessNotifyingHelper startProcess(IProgressMonitor pm) throws CommonException {
 		Process process;
 		try {
 			process = ExternalProcessNotifyingHelper.startProcess(pb);
@@ -50,10 +46,10 @@ public abstract class AbstractStartProcessTask {
 			throw ce;
 		}
 		
-		return readFromProcess(pm, process);
+		return readFromStartedProcess(process, pm);
 	}
 	
-	protected ExternalProcessNotifyingHelper readFromProcess(IProgressMonitor pm, Process process) {
+	protected ExternalProcessNotifyingHelper readFromStartedProcess(Process process, IProgressMonitor pm) {
 		ExternalProcessNotifyingHelper processHelper = new EclipseProcessHelper(process, false, pm);
 		handleProcessStartResult(processHelper, null);
 		processHelper.startReaderThreads();
@@ -62,9 +58,17 @@ public abstract class AbstractStartProcessTask {
 	
 	protected abstract void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce);
 	
-	public ExternalProcessResult runProcess(String inputText, IProgressMonitor pm) throws CommonException {
+	public ExternalProcessResult runProcess() throws CommonException {
+		return runProcess(null, cancelMonitor);
+	}
+	
+	public ExternalProcessResult runProcess(String input) throws CommonException {
+		return runProcess(input, cancelMonitor);
+	}
+	
+	protected ExternalProcessResult runProcess(String input, IProgressMonitor pm) throws CommonException {
 		ExternalProcessNotifyingHelper processHelper = startProcess(pm);
-		processHelper.writeInput_(inputText);
+		processHelper.writeInput_(input, StringUtil.UTF8);
 		return processHelper.strictAwaitTermination_();
 	}
 	

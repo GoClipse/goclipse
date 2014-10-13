@@ -18,12 +18,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.builder.MarkerUtilities;
 import com.googlecode.goclipse.builder.StreamAsLines;
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Import;

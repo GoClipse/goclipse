@@ -8,17 +8,18 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.builder;
+package melnorme.lang.ide.core.utils.process;
 
-import melnorme.lang.ide.core.operations.ILangOperationsListener;
-import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
 
-public interface IGoBuildListener extends IExternalProcessListener, ILangOperationsListener {
+
+
+public interface IStartProcessListener {
 	
-	public void handleBuildStarted(IProject project);
-	
-	public void handleBuildTerminated(IProject project);
+	void handleProcessStartResult(ProcessBuilder pb, IProject project, ExternalProcessNotifyingHelper processHelper,
+			CommonException ce);
 	
 }

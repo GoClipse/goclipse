@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.builder;
+package com.googlecode.goclipse.core.operations;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.getLocation;
 
@@ -17,7 +17,6 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
-import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
@@ -33,7 +32,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
  * Manager for running various go tools, usually for build.
  * Note that running such tools under this class will notify Eclipse console listeners.
  */
-public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
+public class GoToolManager extends AbstractToolsManager<IGoOperationsListener> {
 	
 	protected static GoToolManager instance = new GoToolManager();
 	
@@ -41,28 +40,15 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 		return instance;
 	}
 	
-	protected void notifyBuildStarting(IProject project) {
-		for (IGoBuildListener processListener : getListeners()) {
+	public void notifyBuildStarting(IProject project) {
+		for (IGoOperationsListener processListener : getListeners()) {
 			processListener.handleBuildStarted(project);
 		}
 	}
 	
-	protected void notifyBuildTerminated(IProject project) {
-		for (IGoBuildListener processListener : getListeners()) {
+	public void notifyBuildTerminated(IProject project) {
+		for (IGoOperationsListener processListener : getListeners()) {
 			processListener.handleBuildTerminated(project);
-		}
-	}
-	
-	/* ----------------- ----------------- */
-	
-	public RunGoToolTask createRunToolTask(ProcessBuilder pb, IProject project, IProgressMonitor pm) {
-		return new RunGoToolTask(pb, project, pm);
-	}
-	
-	/* FIXME: Need to refactor RunGoToolTask */
-	public class RunGoToolTask extends RunExternalProcessTask<IExternalProcessListener> {
-		public RunGoToolTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor) {
-			super(pb, project, cancelMonitor, GoToolManager.this);
 		}
 	}
 	
@@ -74,7 +60,7 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 		if(workingDir != null) {
 			pb.directory(workingDir);
 		}
-		RunGoToolTask runTask = new RunGoToolTask(pb, project, pm);
+		RunExternalProcessTask runTask = createRunToolTask(pb, project, pm);
 		
 		ExternalProcessResult processResult;
 		try {
@@ -110,7 +96,7 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 	public ExternalProcessResult runBuildTool(IProject project, IProgressMonitor pm, 
 			ProcessBuilder pb) throws CoreException {
 		// Note: project can be null
-		RunGoToolTask processTask = createRunToolTask(pb, project, pm);
+		RunExternalProcessTask processTask = createRunToolTask(pb, project, pm);
 		
 		try {
 			return processTask.startProcess().strictAwaitTermination_();
@@ -118,7 +104,5 @@ public class GoToolManager extends AbstractToolsManager<IGoBuildListener> {
 			throw LangCore.createCoreException(ce);
 		}
 	}
-	
-	/* ----------------- ----------------- */
 	
 }

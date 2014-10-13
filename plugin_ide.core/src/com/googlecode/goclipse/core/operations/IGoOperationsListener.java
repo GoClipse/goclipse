@@ -8,11 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.process;
+package com.googlecode.goclipse.core.operations;
 
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.ICallable;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.lang.ide.core.operations.ILangOperationsListener;
+import org.eclipse.core.resources.IProject;
 
-public interface IRunProcessTask extends ICallable<ExternalProcessResult, CommonException> {
+public interface IGoOperationsListener extends ILangOperationsListener {
+	
+	public void handleBuildStarted(IProject project);
+	
+	public void handleBuildTerminated(IProject project);
+	
 }

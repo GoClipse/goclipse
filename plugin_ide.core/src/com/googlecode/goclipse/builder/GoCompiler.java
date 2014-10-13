@@ -24,6 +24,7 @@ import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
+import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.GoCommandConstants;
 import com.googlecode.goclipse.tooling.GoFileNaming;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;

@@ -21,9 +21,9 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
 
-import com.googlecode.goclipse.builder.IGoBuildListener;
+import com.googlecode.goclipse.core.operations.IGoOperationsListener;
 
-public class GoOperationsConsoleListener extends AbstractToolsConsoleListener implements IGoBuildListener {
+public class GoOperationsConsoleListener extends AbstractToolsConsoleListener implements IGoOperationsListener {
 	
 	@Override
 	protected String getOperationConsoleName(IProject project) {

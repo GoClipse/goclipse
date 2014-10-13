@@ -4,16 +4,18 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.core.operations.StartEngineDaemonOperation;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 
-import com.googlecode.goclipse.builder.GoToolManager;
 import com.googlecode.goclipse.core.GoCore;
+import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 /**
@@ -73,7 +75,13 @@ public class GocodeServerManager implements IDisposable {
 		
 		ProcessBuilder pb = new ProcessBuilder(commandLine);
 		
-		gocodeProcess = new StartEngineDaemonOperation(GoToolManager.getDefault(), pb).call();
+		try {
+			/* FIXME: use job to have a cancel monitor*/
+			NullProgressMonitor pm = new NullProgressMonitor();
+			gocodeProcess = new StartEngineDaemonOperation(GoToolManager.getDefault(), pb, pm).startProcess();
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce.getMessage(), ce.getCause());
+		}
 	}
 	
 	public void stopServer() {

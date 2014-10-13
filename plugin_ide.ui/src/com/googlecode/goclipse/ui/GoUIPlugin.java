@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.BundleContext;
 
-import com.googlecode.goclipse.builder.GoToolManager;
+import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 
 public class GoUIPlugin extends LangUIPlugin {

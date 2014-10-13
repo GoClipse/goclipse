@@ -11,28 +11,30 @@
 package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.List;
-
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class RunExternalProcessTask<LISTENER extends IExternalProcessListener> 
-	extends AbstractRunExternalProcessTask<LISTENER>{
+public class RunExternalProcessTask extends AbstractRunProcessTask {
 	
-	protected final ListenerListHelper<? extends LISTENER> listenersList;
+	protected final IProject project;
+	protected final ListenerListHelper<? extends IStartProcessListener> listenersList;
 	
 	public RunExternalProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor,
-			ListenerListHelper<? extends LISTENER> listenersList) {
-		super(pb, project, cancelMonitor);
+			ListenerListHelper<? extends IStartProcessListener> listenersList) {
+		super(pb, cancelMonitor);
+		this.project = project; // can be null
 		this.listenersList = assertNotNull(listenersList);
 	}
 	
 	@Override
-	protected List<? extends LISTENER> getListeners() {
-		return listenersList.getListeners();
+	protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+		for(IStartProcessListener processListener : listenersList.getListeners()) {
+			processListener.handleProcessStartResult(pb, project, processHelper, ce);
+		}
 	}
 	
 }
