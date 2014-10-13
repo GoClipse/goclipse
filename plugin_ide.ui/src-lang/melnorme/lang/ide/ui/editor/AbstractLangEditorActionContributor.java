@@ -75,8 +75,8 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 	public void setActiveEditor(IEditorPart part) {
 		super.setActiveEditor(part);
 		
-		for (IActiveEditorListener activeEditorListeners : activeEditorListeners) {
-			activeEditorListeners.setActiveEditor(part);
+		for (IActiveEditorListener activeEditorListener : activeEditorListeners) {
+			activeEditorListener.setActiveEditor(part);
 		}
 	}
 	
