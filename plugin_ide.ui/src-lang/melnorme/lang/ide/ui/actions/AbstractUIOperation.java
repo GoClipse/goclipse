@@ -14,10 +14,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
+import java.util.concurrent.CancellationException;
 
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.concurrency.OperationCancellation;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -65,7 +67,7 @@ public abstract class AbstractUIOperation {
 			performLongRunningComputation();
 			
 			performOperation_handleResult();
-		} catch (InterruptedException e) {
+		} catch (OperationCancellation e) {
 			return;
 		}
 	}
@@ -73,21 +75,21 @@ public abstract class AbstractUIOperation {
 	protected void prepareOperation() throws CoreException {
 	}
 	
-	protected final void performLongRunningComputation() throws InterruptedException, CoreException {
+	protected final void performLongRunningComputation() throws OperationCancellation, CoreException {
 		if(Display.getCurrent() == null) {
 			performLongRunningComputation_inCurrentThread();
 			return;
 		}
-		performLongRunningComputation_inUIThread();
+		performLongRunningComputation_usingProgressDialog();
 	}
 	
-	protected void performLongRunningComputation_inCurrentThread() throws CoreException {
+	protected void performLongRunningComputation_inCurrentThread() throws CoreException, OperationCancellation {
 		// Perform computation directly in this thread, cancellation won't be possible.
 		NullProgressMonitor monitor = new NullProgressMonitor();
 		performLongRunningComputation_do(monitor);
 	}
 	
-	protected void performLongRunningComputation_inUIThread() throws InterruptedException, CoreException {
+	protected void performLongRunningComputation_usingProgressDialog() throws OperationCancellation, CoreException {
 		IProgressService ps = PlatformUI.getWorkbench().getProgressService();
 		try {
 			ps.busyCursorWhile(new IRunnableWithProgress() {
@@ -96,25 +98,46 @@ public abstract class AbstractUIOperation {
 					monitor.setTaskName(MessageFormat.format(MSG_EXECUTING_OPERATION, operationName));
 					
 					try {
-						performLongRunningComputation_do(monitor);
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
-					}
-					if(monitor.isCanceled()) {
-						throw new InterruptedException();
+						performLongRunningComputation_inWorkerThread(monitor);
+					} catch (OperationCancellation e) {
+						throw new InterruptedException(); // Send through as an InterruptedException
 					}
 				}
 			});
 		} catch (InvocationTargetException e) {
-			if(e.getCause() instanceof CoreException) {
-				throw (CoreException) e.getCause();
+			Throwable cause = e.getCause();
+			if(cause instanceof CoreException) {
+				throw (CoreException) cause;
 			}
-			throw new CoreException(LangUIPlugin.createErrorStatus(
-				LangCoreMessages.LangCore_error, e.getTargetException()));
+			if(cause instanceof OperationCancellation) {
+				throw (OperationCancellation) cause;
+			}
+			
+			throw LangUIPlugin.createCoreException(LangCoreMessages.LangCore_internalError, cause);
+		} catch (InterruptedException e) {
+			throw new OperationCancellation();
 		}
 	}
 	
-	protected abstract void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException;
+	protected void performLongRunningComputation_inWorkerThread(IProgressMonitor monitor) 
+			throws OperationCancellation, InvocationTargetException {
+		try {
+			performLongRunningComputation_do(monitor);
+		} catch (CoreException ce) {
+			if(monitor.isCanceled()) {
+				throw new OperationCancellation();
+			}
+			if(ce.getCause() instanceof CancellationException) {
+				// In principle this should not happen, because monitor.isCanceled() would be true.
+				// But in case some operation code used other monitor or some other means to cancel... 
+				throw (CancellationException) ce.getCause();
+			}
+			throw new InvocationTargetException(ce);
+		}
+	}
+	
+	protected abstract void performLongRunningComputation_do(IProgressMonitor monitor) 
+			throws CoreException, OperationCancellation;
 	
 	protected abstract void performOperation_handleResult() throws CoreException;
 	

@@ -12,19 +12,19 @@ package melnorme.lang.ide.ui.editor;
 
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.utilbox.ownership.IDisposable;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
-public class AbstractLangEditorMenuContributor {
+public abstract class AbstractLangEditorActions implements IDisposable {
 	
-	protected final AbstractDecoratedTextEditor editor;
+	protected final AbstractLangEditor editor;
 
-	public AbstractLangEditorMenuContributor(AbstractDecoratedTextEditor editor) {
+	public AbstractLangEditorActions(AbstractLangEditor editor) {
 		this.editor = editor;
 	}
 	
@@ -38,5 +38,12 @@ public class AbstractLangEditorMenuContributor {
 			)
 		));
 	}
+	
+	@Override
+	public void dispose() {
+		doDispose();
+	}
+	
+	protected abstract void doDispose();
 	
 }

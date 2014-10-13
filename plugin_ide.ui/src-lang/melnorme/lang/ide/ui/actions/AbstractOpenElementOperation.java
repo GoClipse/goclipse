@@ -16,15 +16,19 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.SourceLineColumnLocation;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -35,6 +39,8 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	protected final SourceRange range; // range of element to open. Usually only offset matters
 	protected final OpenNewEditorMode openEditorMode;
 	protected final IProject project;
+	
+	protected FindDefinitionResult findResult;
 	
 	public AbstractOpenElementOperation(String operationName, ITextEditor editor, SourceRange range,
 			OpenNewEditorMode openEditorMode) {
@@ -68,6 +74,41 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		}
 		
 		return lineOffset + column_oneBased-1;
+	}
+	
+	
+	@Override
+	protected void performOperation_handleResult() throws CoreException {
+		
+		if(findResult.getErrorMessage() != null) {
+			dialogError(findResult.getErrorMessage());
+			return;
+		}
+		
+		if(findResult.getInfoMessage() != null) {
+			dialogInfo(findResult.getInfoMessage());
+		}
+		
+		SourceLineColumnLocation location = findResult.getLocation();
+		if(location == null) {
+			Display.getCurrent().beep();
+			return;
+		}
+		
+		openEditorForLocation(location);
+	}
+	
+	protected void openEditorForLocation(SourceLineColumnLocation location) throws CoreException {
+		IEditorInput newInput = getNewEditorInput(location.path);
+		
+		SourceRange sr = new SourceRange(0, 0);
+		ITextEditor newEditor = EditorUtils.openEditor(editor, EditorSettings_Actual.EDITOR_ID, 
+			newInput, sr, openEditorMode);
+		
+		IDocument doc = EditorUtils.getEditorDocument(newEditor);
+		int selectionOffset = getOffsetFrom(doc, location.line, location.column);
+		
+		EditorUtils.setEditorSelection(newEditor, new SourceRange(selectionOffset, 0));
 	}
 	
 }
