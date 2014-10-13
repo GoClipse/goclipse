@@ -11,7 +11,7 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 
 import com.googlecode.goclipse.core.GoCore;
@@ -46,11 +46,10 @@ public class GocodeServerManager implements IDisposable {
 		return null;
 	}
 	
-	public void prepareGocodeServer() throws CoreException {
+	public void requestServerStart(IPath path, IProgressMonitor monitor) throws CoreException {
 		if (DaemonEnginePreferences.AUTO_START_SERVER.get() == false)
 			return;
 		
-		IPath path = getBestGocodePath();
 		if(path == null || path.isEmpty()) {
 			throw LangCore.createCoreException("No gocode path provided.", null);
 		}
@@ -58,11 +57,11 @@ public class GocodeServerManager implements IDisposable {
 		if(gocodeProcess != null) {
 			// TODO: check path hasn't changed
 		} else {
-			startServer(path);
+			doStartServer(path, monitor);
 		}
 	}
 	
-	public void startServer(IPath gocodePath) throws CoreException {
+	public void doStartServer(IPath gocodePath, IProgressMonitor monitor) throws CoreException {
 		
 		GoCore.createInfoStatus("starting gocode server [" + gocodePath + "]").logInPlugin();
 		
@@ -76,9 +75,7 @@ public class GocodeServerManager implements IDisposable {
 		ProcessBuilder pb = new ProcessBuilder(commandLine);
 		
 		try {
-			/* FIXME: use job to have a cancel monitor*/
-			NullProgressMonitor pm = new NullProgressMonitor();
-			gocodeProcess = new StartEngineDaemonOperation(GoToolManager.getDefault(), pb, pm).startProcess();
+			gocodeProcess = new StartEngineDaemonOperation(GoToolManager.getDefault(), pb, monitor).startProcess();
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce.getMessage(), ce.getCause());
 		}
