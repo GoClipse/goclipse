@@ -11,11 +11,11 @@
 package melnorme.lang.ide.core.operations;
 
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
-import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
@@ -26,14 +26,20 @@ public abstract class AbstractToolsManager<LISTENER extends ILangOperationsListe
 	
 	/* ----------------- ----------------- */
 	
-	public RunExternalProcessTask createRunToolTask(ProcessBuilder pb, IProject project, IProgressMonitor pm) {
+	public RunExternalProcessTask newRunToolTask(ProcessBuilder pb, IProject project, IProgressMonitor pm) {
 		return new RunExternalProcessTask(pb, project, pm, this);
+	}
+	
+	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb) 
+			throws CoreException {
+		// Note: project can be null
+		return newRunToolTask(pb, project, pm).runProcess();
 	}
 	
 	/* ----------------- ----------------- */
 	
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, IProgressMonitor pm)
-			throws CommonException {
+			throws CoreException {
 		return new RunEngineClientOperation(this, pb, pm).runProcess(clientInput);
 	}
 	

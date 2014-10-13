@@ -219,7 +219,16 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	}
 	
 	public ExternalProcessResult strictAwaitTermination_() throws CommonException {
-		return strictAwaitTermination_(NO_TIMEOUT);
+		return strictAwaitTermination_(false);
+	}
+	
+	public ExternalProcessResult strictAwaitTermination_(boolean throwOnNonZeroStatus) throws CommonException {
+		ExternalProcessResult processResult = strictAwaitTermination_(NO_TIMEOUT);
+		
+		if(throwOnNonZeroStatus && processResult.exitValue != 0) {
+			throw new CommonException("Process completed with non-zero exit value (" + processResult.exitValue + ")");
+		}
+		return processResult;
 	}
 	
 }

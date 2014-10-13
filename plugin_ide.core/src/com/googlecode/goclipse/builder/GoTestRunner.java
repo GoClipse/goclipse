@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 import com.googlecode.goclipse.Activator;
@@ -120,7 +121,7 @@ public class GoTestRunner {
                 
             try {
             	RunExternalProcessTask runTestsTask = GoToolManager.getDefault().
-            			createRunToolTask(testProcessBuilder, null, new NullProgressMonitor());
+            			newRunToolTask(testProcessBuilder, null, new NullProgressMonitor());
                 
                 ExternalProcessResult processResult = runTestsTask.runProcess();
                 
@@ -129,7 +130,7 @@ public class GoTestRunner {
                 
                 markErrors(stdout, stderr);
                 
-            } catch (CommonException e) {
+            } catch (CoreException e) {
             	GoCore.logError("Error executing tests runner for " + activeTest.pkgPath, e);
 			}
         }

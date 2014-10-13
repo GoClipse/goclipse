@@ -11,11 +11,13 @@
 package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 
@@ -58,18 +60,28 @@ public abstract class AbstractRunProcessTask {
 	
 	protected abstract void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce);
 	
-	public ExternalProcessResult runProcess() throws CommonException {
-		return runProcess(null, cancelMonitor);
+	
+	public ExternalProcessResult runProcess() throws CoreException {
+		return runProcess(null);
 	}
 	
-	public ExternalProcessResult runProcess(String input) throws CommonException {
-		return runProcess(input, cancelMonitor);
+	public ExternalProcessResult runProcess(String input) throws CoreException {
+		return runProcess(input, false);
 	}
 	
-	protected ExternalProcessResult runProcess(String input, IProgressMonitor pm) throws CommonException {
-		ExternalProcessNotifyingHelper processHelper = startProcess(pm);
+	public ExternalProcessResult runProcess(String input, boolean throwOnNonZeroStatus)
+			throws CoreException {
+		try {
+			return doRunProcess(input, throwOnNonZeroStatus);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
+	}
+	
+	public ExternalProcessResult doRunProcess(String input, boolean throwOnNonZeroStatus) throws CommonException {
+		ExternalProcessNotifyingHelper processHelper = startProcess(cancelMonitor);
 		processHelper.writeInput_(input, StringUtil.UTF8);
-		return processHelper.strictAwaitTermination_();
+		return processHelper.strictAwaitTermination_(throwOnNonZeroStatus);
 	}
 	
 }

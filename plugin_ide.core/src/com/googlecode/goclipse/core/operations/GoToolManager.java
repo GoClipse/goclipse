@@ -15,11 +15,7 @@ import static melnorme.lang.ide.core.utils.ResourceUtils.getLocation;
 import java.io.File;
 import java.util.List;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
-import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -54,55 +50,20 @@ public class GoToolManager extends AbstractToolsManager<IGoOperationsListener> {
 	
 	/* -----------------  ----------------- */
 
-	public ExternalProcessResult runGoTool(IProject project, IProgressMonitor pm, ProcessBuilder pb,
+	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProject project, IProgressMonitor pm, 
+			File workingDir, List<String> commandLine) throws CoreException {
+		
+		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir);
+		return runTool(project, pm, pb);
+	}
+	
+	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb,
 			String processInput, boolean throwOnNonZero) throws CoreException {
 		File workingDir = getLocation(project);
 		if(workingDir != null) {
 			pb.directory(workingDir);
 		}
-		RunExternalProcessTask runTask = createRunToolTask(pb, project, pm);
-		
-		ExternalProcessResult processResult;
-		try {
-			ExternalProcessNotifyingHelper processHelper = runTask.startProcess();
-			processHelper.writeInput_(processInput);
-			processResult = processHelper.strictAwaitTermination_();
-		} catch (CommonException e) {
-			throw LangCore.createCoreException(e);
-		}
-		
-		if(throwOnNonZero) {
-			if (processResult.exitValue != 0) {
-				String command = pb.command().get(0);
-				throw LangCore.createCoreException(
-					command + " completed with non-zero exit value (" + processResult.exitValue + ")", null);
-			}
-		}
-		
-		return processResult;
-	}
-	
-	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProject project, IProgressMonitor pm, 
-			File workingDir, List<String> commandLine) throws CoreException {
-		
-		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine);
-		if(workingDir != null) {
-			pb.directory(workingDir);
-		}
-		
-		return runBuildTool(project, pm, pb);
-	}
-	
-	public ExternalProcessResult runBuildTool(IProject project, IProgressMonitor pm, 
-			ProcessBuilder pb) throws CoreException {
-		// Note: project can be null
-		RunExternalProcessTask processTask = createRunToolTask(pb, project, pm);
-		
-		try {
-			return processTask.startProcess().strictAwaitTermination_();
-		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
-		}
+		return newRunToolTask(pb, project, pm).runProcess(processInput, throwOnNonZero);
 	}
 	
 }

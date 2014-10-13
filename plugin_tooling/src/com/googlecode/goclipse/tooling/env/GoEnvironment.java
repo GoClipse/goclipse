@@ -87,6 +87,14 @@ public class GoEnvironment {
 		return goPath.getGoPackageFromSourceModule(goModulePath);
 	}
 	
+	public ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {
+		ProcessBuilder pb = createProcessBuilder(commandLine);
+		if(workingDir != null) {
+			pb.directory(workingDir);
+		}
+		return pb;
+	}
+	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine) {
 		ProcessBuilder pb = ProcessUtils.createProcessBuilder(commandLine, null);
 		

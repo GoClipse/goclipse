@@ -26,7 +26,7 @@ public class GocodeClient extends GocodeCompletionOperation<CommonException> {
 	@Override
 	protected ExternalProcessResult runGocode(List<String> arguments, String input) throws CommonException {
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(new ArrayList2<>(gocodePath).addElements(arguments));
-		return new RunEngineClientOperation(GoToolManager.getDefault(), pb, pm).runProcess(input);
+		return new RunEngineClientOperation(GoToolManager.getDefault(), pb, pm).doRunProcess(input, false);
 	}
 	
 }

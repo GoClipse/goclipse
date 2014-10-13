@@ -454,7 +454,7 @@ public class GoCompiler {
 
 			ProcessBuilder pb = new ProcessBuilder(cmd).directory(null);
 			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(
+			ExternalProcessResult processResult = GoToolManager.getDefault().runTool(
 				null, new NullProgressMonitor(), pb);
 			
 			StreamAsLines output = new StreamAsLines(processResult);

@@ -57,7 +57,8 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	protected void performLongRunningComputation_do(IProgressMonitor pm) throws CoreException {
 		
 		IProject project = null;
-		ExternalProcessResult processResult = GoToolManager.getDefault().runGoTool(project, pm, pb, editorText, true);
+		ExternalProcessResult processResult = 
+				GoToolManager.getDefault().runTool(project, pm, pb, editorText, true);
 		
 		outputText = processResult.getStdOutBytes().toString();
 	}
