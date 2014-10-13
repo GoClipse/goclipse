@@ -40,15 +40,9 @@ public abstract class AbstractRunExternalProcessTask<LISTENER extends IExternalP
 		this.cancelMonitor = assertNotNull(cancelMonitor);
 	}
 	
-	protected void notifyProcessStarted(ExternalProcessNotifyingHelper processHelper) {
+	protected void notifyProcessStartResult(ExternalProcessNotifyingHelper processHelper, IOException e) {
 		for(IExternalProcessListener processListener : getListeners()) {
-			processListener.handleProcessStarted(pb, project, processHelper);
-		}
-	}
-	
-	protected void notifyProcessFailedToStart(IOException e) {
-		for(IExternalProcessListener processListener : getListeners()) {
-			processListener.handleProcessStartFailure(pb, project, e);
+			processListener.handleProcessStartResult(pb, project, processHelper, e);
 		}
 	}
 	
@@ -70,12 +64,11 @@ public abstract class AbstractRunExternalProcessTask<LISTENER extends IExternalP
 			processHelper = new EclipseProcessHelper(process, false, cancelMonitor); 
 		} catch (CommonException ce) {
 			IOException ioe = (IOException) ce.getCause();
-			/* FIXME: refactor this */
-			notifyProcessFailedToStart(ioe);
+			notifyProcessStartResult(null, ioe);
 			throw ce;
 		}
 		
-		notifyProcessStarted(processHelper);
+		notifyProcessStartResult(processHelper, null);
 		processHelper.startReaderThreads();
 		
 		return processHelper;

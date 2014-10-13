@@ -20,8 +20,7 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 public interface IExternalProcessListener {
 	
-	void handleProcessStarted(ProcessBuilder pb, IProject project, ExternalProcessNotifyingHelper processHelper);
-	
-	void handleProcessStartFailure(ProcessBuilder pb, IProject project, IOException processStartException);
+	void handleProcessStartResult(ProcessBuilder pb, IProject project, ExternalProcessNotifyingHelper processHelper,
+			IOException e);
 	
 }

@@ -12,6 +12,7 @@ package com.googlecode.goclipse.ui;
 
 import java.io.IOException;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
 import melnorme.lang.ide.ui.tools.console.ConsoleOuputProcessListener;
@@ -57,33 +58,17 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	/* FIXME: refactor IGoBuildListener usage. */
 	
 	@Override
-	public void handleProcessStarted(ProcessBuilder pb, IProject project, 
-			ExternalProcessNotifyingHelper processHelper) {
+	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
+			ExternalProcessNotifyingHelper processHelper, IOException e) {
+		
+		CoreException ce = LangCore.createCoreException("Could not start process.", e);
+		
 		GoBuildConsole console = getOperationConsole(project, false);
 		
-		try {
-			writeProcessStartPrefix(pb, console);
-			
+		printProcessStartResult(console.infoOut, ">> Running: ", pb, ce);
+		
+		if(processHelper != null) {
 			processHelper.getOutputListenersHelper().addListener(new ProcessOutputToConsoleListener(console));
-		} catch (IOException e) {
-			return;
-		}
-	}
-	
-	protected void writeProcessStartPrefix(ProcessBuilder pb, GoBuildConsole console) throws IOException {
-		console.infoOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
-	}
-	
-	@Override
-	public void handleProcessStartFailure(ProcessBuilder pb, IProject project, IOException processStartException) {
-		GoBuildConsole console = getOperationConsole(project, false);
-		
-		try {
-			writeProcessStartPrefix(pb, console);
-			console.infoOut.write(">>>  Failed to start process: \n");
-			console.infoOut.write(processStartException.getMessage());
-		} catch (IOException consoleIOE) {
-			return;
 		}
 	}
 	
@@ -91,20 +76,15 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	public void engineDaemonStart(ProcessBuilder pb, CoreException ce, 
 			ExternalProcessNotifyingHelper processHelper) {
 		
-		DaemonToolMessageConsole console = DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() ? 
-				DaemonToolMessageConsole.getConsole() : null;
-				
-		if(console != null) {
-			printProcessStartResult(console.infoOut, 
-				"##########  Starting gocode server:  ##########\n"
-				+ "   ", pb, ce);
+		if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
+			return;
 		}
 		
-		if(processHelper == null) {
-			return;
-		} 
+		DaemonToolMessageConsole console = DaemonToolMessageConsole.getConsole();
 		
-		if(console != null) {
+		printProcessStartResult(console.infoOut, "##########  Starting gocode server:  ##########\n" + "   ", pb, ce);
+		
+		if(processHelper != null) {
 			processHelper.getOutputListenersHelper().addListener(
 				new ConsoleOuputProcessListener(console.serverStdOut, console.serverStdErr));
 		}
@@ -114,18 +94,15 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	public void engineClientToolStart(ProcessBuilder pb, CoreException ce,
 			ExternalProcessNotifyingHelper processHelper) {
 		
-		DaemonToolMessageConsole console = DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() ?
-				DaemonToolMessageConsole.getConsole() : null;
-				
-		if(console != null) {
-			printProcessStartResult(console.infoOut, ">> Running: ", pb, ce);
-		}
-		
-		if(processHelper == null) {
+		if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
 			return;
 		}
 		
-		if(console != null) {
+		DaemonToolMessageConsole console = DaemonToolMessageConsole.getConsole();
+		
+		printProcessStartResult(console.infoOut, ">> Running: ", pb, ce);
+		
+		if(processHelper != null) {
 			processHelper.getOutputListenersHelper().addListener(
 				new ConsoleOuputProcessListener(console.stdOut, console.serverStdErr));
 		}
