@@ -1,7 +1,6 @@
 package com.googlecode.goclipse.core.tools;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.core.operations.StartEngineDaemonOperation;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -28,7 +27,7 @@ public class GocodeServerManager implements IDisposable {
 	public GocodeServerManager() {
 	}
 	
-	public IPath getBestGocodePath() {
+	public static IPath getBestGocodePath() {
 		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
 			GoCore.CONTENT_ASSIST_EXTENSION_ID);
 		
@@ -46,19 +45,25 @@ public class GocodeServerManager implements IDisposable {
 		return null;
 	}
 	
+	protected boolean isChildServerRunning() {
+		return gocodeProcess != null;
+	}
+	
 	public void requestServerStart(IPath path, IProgressMonitor monitor) throws CoreException {
-		if (DaemonEnginePreferences.AUTO_START_SERVER.get() == false)
-			return;
+		boolean needsStart = prepareServerStart(path);
 		
-		if(path == null || path.isEmpty()) {
+		if(needsStart) {
+			doStartServer(path, monitor);
+		}
+	}
+	
+	public boolean prepareServerStart(IPath gocodePath) throws CoreException {
+		if(gocodePath == null || gocodePath.isEmpty()) {
 			throw LangCore.createCoreException("No gocode path provided.", null);
 		}
 		
-		if(gocodeProcess != null) {
-			// TODO: check path hasn't changed
-		} else {
-			doStartServer(path, monitor);
-		}
+		// TODO: check path hasn't changed
+		return gocodeProcess == null;
 	}
 	
 	public void doStartServer(IPath gocodePath, IProgressMonitor monitor) throws CoreException {

@@ -37,13 +37,17 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 			throw new CoreException(Status.OK_STATUS); // stop operation
 		}
 		
-		gocodePath = gocodeServerManager.getBestGocodePath();
+		gocodePath = GocodeServerManager.getBestGocodePath();
+		boolean needsStart = gocodeServerManager.prepareServerStart(gocodePath);
+		if(needsStart == false) {
+			throw new CoreException(Status.OK_STATUS); // stop operation
+		}
 	}
 	
 	@Override
 	protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException,
 			OperationCancellation {
-		gocodeServerManager.requestServerStart(gocodePath, monitor);
+		gocodeServerManager.doStartServer(gocodePath, monitor);
 	}
 	
 	@Override
