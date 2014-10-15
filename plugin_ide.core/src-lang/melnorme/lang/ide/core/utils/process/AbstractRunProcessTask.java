@@ -64,7 +64,7 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 	@Override
 	public ExternalProcessResult call() throws CoreException {
 		return runProcess();
-	}	
+	}
 	
 	public ExternalProcessResult runProcess() throws CoreException {
 		return runProcess(null);
