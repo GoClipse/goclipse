@@ -79,14 +79,17 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 		protected final String prefixText;
 		protected final ExternalProcessNotifyingHelper processHelper;
 		protected final CommonException ce;
+		protected boolean clearConsole = false;
 		
-		public ProcessUIConsoleHandler(ProcessBuilder pb, IProject project, String prefixText,
+		public ProcessUIConsoleHandler(ProcessBuilder pb, IProject project, String prefixText, boolean clearConsole, 
 				ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 			this.pb = pb;
 			this.project = project;
 			this.prefixText = prefixText;
 			this.processHelper = processHelper;
 			this.ce = ce;
+			
+			this.clearConsole = clearConsole;
 			
 			handle();
 		}
@@ -102,7 +105,7 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 		}
 		
 		protected ToolsConsole getConsole() {
-			return getOperationConsole(project, false);
+			return getOperationConsole(project, clearConsole);
 		}
 		
 		protected IProcessOutputListener createOutputListener(ToolsConsole console) {
@@ -134,13 +137,7 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 	@Override
 	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
 			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-		final ToolsConsole console = getOperationConsole(project, true);
-		
-		printProcessStartResult(console.infoOut, ">> Running: ", pb, ce);
-		
-		if(processHelper != null) {
-			processHelper.getOutputListenersHelper().addListener(new ProcessOutputToConsoleListener(console));
-		}
+		new ProcessUIConsoleHandler(pb, project, ">> Running: ", false, processHelper, ce);
 	}
 	
 	public class EngineServerProcessUIConsoleHandler extends ProcessUIConsoleHandler {
@@ -149,7 +146,7 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 		
 		public EngineServerProcessUIConsoleHandler(ProcessBuilder pb, IProject project, String prefixText,
 				ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-			super(pb, project, prefixText, processHelper, ce);
+			super(pb, project, prefixText, false, processHelper, ce);
 		}
 		
 		@Override

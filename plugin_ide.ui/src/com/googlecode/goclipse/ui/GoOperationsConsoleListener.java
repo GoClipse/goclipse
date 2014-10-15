@@ -55,8 +55,7 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	@Override
 	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
 			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-		
-		new ProcessUIConsoleHandler(pb, project, ">> Running: ", processHelper, ce);
+		new ProcessUIConsoleHandler(pb, project, ">> Running: ", false, processHelper, ce);
 	}
 	
 	@Override
