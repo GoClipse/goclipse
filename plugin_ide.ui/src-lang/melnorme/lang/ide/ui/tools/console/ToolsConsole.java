@@ -10,12 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.tools.console;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.io.IOException;
 
 import melnorme.lang.ide.core.utils.prefs.IPrefChangeListener;
 import melnorme.utilbox.ownership.OwnedObjects;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.part.IPageBookViewPage;
@@ -53,13 +56,8 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 	}
 	
 	@Override
-	protected void dispose() {
-		owned.dispose();
-		super.dispose();
-	}
-	
-	@Override
 	protected void ui_initStreamColors() {
+		super.ui_initStreamColors();
 		
 		owned.add(ToolsConsolePrefs.INFO_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
 			@Override
@@ -86,6 +84,14 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 			}
 		}));
 		
+	}
+	
+	@Override
+	protected void disposeDo() {
+		assertTrue(Display.getCurrent() != null);
+		owned.dispose(); // owned is modified from UI thread (in initialization), so we dispose it in UI thread too.
+		
+		super.disposeDo();
 	}
 	
 	@Override

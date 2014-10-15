@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.tools.console;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.jface.text.ColorManager;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -29,6 +31,8 @@ public abstract class AbstractProcessMessageConsole extends IOConsole {
 	
 	public final IOConsoleOutputStream stdOut;
 	public final IOConsoleOutputStream stdErr;
+	
+	public volatile boolean disposed;
 	
 	/**
 	 * Note: subclasse must call {@link #postToUI_initOutputStreamColors()} after all members
@@ -56,6 +60,27 @@ public abstract class AbstractProcessMessageConsole extends IOConsole {
 	
 	/** Initialize stream colors. This method is only called in the UI thread. */
 	protected void ui_initStreamColors() {
+		assertTrue(disposed == false);
+	}
+	
+	/**
+	 * Dispose this class, by running the actual disposing to the UI thread.
+	 */
+	@Override
+	protected final void dispose() {
+		// Diposing in UI thread is one way to solve certain concurrency issues arising with the use of this class. 
+		SWTUtil.runInSWTThread(new Runnable() {
+			@Override
+			public void run() {
+				disposed = true;
+				disposeDo();
+			}
+		});
+	}
+	
+	protected void disposeDo() {
+		assertTrue(Display.getCurrent() != null);
+		super.dispose(); // run actual dispose code
 	}
 	
 	protected ISharedTextColors getColorManager() {
