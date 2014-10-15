@@ -35,6 +35,11 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	}
 	
 	@Override
+	protected ToolsConsole createConsole(String name) {
+		return new GoBuildConsole(name);
+	}
+	
+	@Override
 	public void handleBuildStarted(IProject project) {
 		String projName = project.getName();
 		getOperationConsole(project, true).writeOperationInfo(
