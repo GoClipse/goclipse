@@ -11,6 +11,8 @@ import org.osgi.framework.BundleContext;
 public abstract class LangCore extends Plugin {
 	
 	public static final String PLUGIN_ID = LangCore_Actual.PLUGIN_ID;
+	public static final String TESTS_PLUGIN_ID = PLUGIN_ID + ".tests";
+	
 	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
 	protected static LangCore pluginInstance;
