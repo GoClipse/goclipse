@@ -6,7 +6,7 @@ import com.googlecode.goclipse.Activator;
 
 public class LangCore_Actual {
 	
-	public static final String PLUGIN_ID = Activator.PLUGIN_ID;
+	public static final String PLUGIN_ID = "com.googlecode.goclipse.core";
 	public static final String NATURE_ID = Activator.PLUGIN_ID + ".goNature";
 	
 	public static Plugin getInstance() {

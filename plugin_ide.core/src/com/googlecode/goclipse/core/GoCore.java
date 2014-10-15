@@ -19,8 +19,6 @@ import com.googlecode.goclipse.builder.GoBuilder;
 
 public class GoCore extends LangCore {
 	
-	public static final String PLUGIN_ID = "com.googlecode.goclipse.core";
-	
 	public static final String CONTENT_ASSIST_EXTENSION_ID = "com.googlecode.goclipse.contentassistprocessor";
 	
 	@Override
