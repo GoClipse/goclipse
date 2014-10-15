@@ -2,13 +2,12 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
-import org.eclipse.jface.text.source.ISourceViewer;
-
 import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
+
+import org.eclipse.jface.text.source.ISourceViewer;
 
 import com.googlecode.goclipse.editors.TextHover;
 import com.googlecode.goclipse.ui.GoPluginImages;
-import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 
 /**
@@ -16,7 +15,7 @@ import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
  */
 public final class LangUIPlugin_Actual {
 	
-	public static final String PLUGIN_ID = GoUIPlugin.PLUGIN_ID;
+	public static final String PLUGIN_ID = "com.googlecode.goclipse.ui";
 	
 	public static final String EDITOR_CONTEXT = "#GoEditorContext";
 	public static final String RULER_CONTEXT = "#GoEditorRulerContext";

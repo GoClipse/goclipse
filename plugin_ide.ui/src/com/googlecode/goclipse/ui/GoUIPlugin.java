@@ -18,16 +18,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.core.operations.GoToolManager;
+import com.googlecode.goclipse.core.operations.IGoOperationsListener;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.ui.actions.StartGocodeServerOperation;
 
 public class GoUIPlugin extends LangUIPlugin {
 	
-	public static final String PLUGIN_ID = "com.googlecode.goclipse.ui";
-	
 	protected static GocodeServerManager gocodeServerManager = new GocodeServerManager();
 	
-	protected GoOperationsConsoleListener operationsListener;
+	protected IGoOperationsListener operationsListener;
 	
 	@Override
 	protected void doCustomStart_finalStage() {
@@ -42,7 +41,7 @@ public class GoUIPlugin extends LangUIPlugin {
 	}
 	
 	public static GocodeServerManager prepareGocodeManager_inUI() {
-		// This must run from UI thread
+		// This must run from UI thread, so that we can report errors if startup fails
 		
 		new StartGocodeServerOperation(gocodeServerManager).executeAndHandle();
 		
