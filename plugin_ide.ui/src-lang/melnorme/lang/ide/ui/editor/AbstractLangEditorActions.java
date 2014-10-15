@@ -19,12 +19,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 public abstract class AbstractLangEditorActions implements IDisposable {
 	
-	protected final AbstractLangEditor editor;
+	protected final AbstractDecoratedTextEditor editor;
 
-	public AbstractLangEditorActions(AbstractLangEditor editor) {
+	public AbstractLangEditorActions(AbstractDecoratedTextEditor editor) {
 		this.editor = editor;
 	}
 	

@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * Helper class to start, or run (start & await completion) of an external process.
  * Provides support for {@link IProgressMonitor} cancellation, and notifying listeners. 
  */
-public abstract class AbstractRunProcessTask {
+public abstract class AbstractRunProcessTask implements IRunProcessTask {
 	
 	protected final ProcessBuilder pb;
 	protected final IProgressMonitor cancelMonitor;
@@ -60,6 +60,11 @@ public abstract class AbstractRunProcessTask {
 	
 	protected abstract void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce);
 	
+	
+	@Override
+	public ExternalProcessResult call() throws CoreException {
+		return runProcess();
+	}
 	
 	public ExternalProcessResult runProcess() throws CoreException {
 		return runProcess(null);
