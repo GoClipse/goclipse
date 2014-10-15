@@ -16,10 +16,10 @@ import java.io.IOException;
 import java.util.List;
 
 import melnorme.lang.ide.core.operations.ILangOperationsListener;
-import melnorme.lang.ide.ui.LangOperationConsole_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
@@ -28,8 +28,8 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
 
 public abstract class AbstractToolsConsoleListener implements ILangOperationsListener {
 	
-	public static LangOperationConsole_Actual recreateMessageConsole(String name, boolean recreateConsole) {
-		LangOperationConsole_Actual console = ConsoleUtils.findConsole(name, LangOperationConsole_Actual.class);
+	public ToolsConsole recreateMessageConsole(String name, boolean recreateConsole) {
+		ToolsConsole console = ConsoleUtils.findConsole(name, ToolsConsole.class);
 		if(console != null) {
 			if(!recreateConsole) {
 				return console;
@@ -47,7 +47,7 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 		super();
 	}
 	
-	protected LangOperationConsole_Actual getOperationConsole(IProject project, boolean clearConsole) {
+	protected ToolsConsole getOperationConsole(IProject project, boolean clearConsole) {
 		// We recreate a message console to have a clear console. 
 		// console.clearConsole() is not used because of poor concurrency behavior: if more than one cleanConsole
 		// is requested per a console lifetime, these aditional clears may appear out of order with regards
@@ -59,15 +59,13 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 	
 	protected abstract String getOperationConsoleName(IProject project);
 	
+	protected abstract ToolsConsole createConsole(String name);
+	
 	protected String getProjectNameSuffix(IProject project) {
 		if(project == null) {
 			return "(Global)";
 		}
 		return "["+ project.getName() +"]";
-	}
-	
-	protected static LangOperationConsole_Actual createConsole(String name) {
-		return new LangOperationConsole_Actual(name);
 	}
 	
 	protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
@@ -87,6 +85,18 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 			outStream.write(text);
 		} catch (IOException e) {
 			// Do nothing
+		}
+	}
+	
+	@Override
+	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
+			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+		final ToolsConsole console = getOperationConsole(project, true);
+		
+		printProcessStartResult(console.infoOut, ">> Running: ", pb, ce);
+		
+		if(processHelper != null) {
+			processHelper.getOutputListenersHelper().addListener(new ProcessOutputToConsoleListener(console));
 		}
 	}
 	
