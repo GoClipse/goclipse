@@ -1,5 +1,7 @@
 package com.googlecode.goclipse.navigator;
 
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -15,8 +17,6 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
-
-import com.googlecode.goclipse.ui.util.ErrorDialogUtil;
 
 /**
  * Handle the open action on IFileStore elements.
@@ -56,7 +56,7 @@ public class NavigatorActionProvider extends CommonActionProvider {
 				try {
 					IDE.openEditorOnFileStore(page, selectedFile);
 				} catch (PartInitException exception) {
-					ErrorDialogUtil.displayError("Error Opening File", exception);
+					UIOperationExceptionHandler.handleError("Error Opening File", exception);
 				}
 			}
 		}
