@@ -2,7 +2,7 @@
 
 #### Requirements: 
  * Eclipse 4.3 (Kepler) or later (http://www.eclipse.org/).
- * A **1.7** Java VM or later (http://www.java.com/). Otherwise GoClipse will silently fail to start.
+ * A **1.7** Java SDK or later (http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html). Otherwise GoClipse will silently fail to start.
  * Go development tools and libraries installed on target machine (http://golang.org/doc/install.html). Currently, only the plan 9 style compilers are supported. GCCGO may be supported in the future
 
 #### Instructions:
