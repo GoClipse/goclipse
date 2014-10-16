@@ -4,6 +4,8 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
+import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
+
 /**
  * This adapter factory adapts GoPathElement and IFileStore objects to IWorkbenchAdapters.
  */

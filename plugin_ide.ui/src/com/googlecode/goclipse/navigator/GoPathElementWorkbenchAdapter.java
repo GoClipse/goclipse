@@ -4,6 +4,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import com.googlecode.goclipse.ui.GoPluginImages;
+import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
 
 /**
  * An IWorkbenchAdapter implementation for GoPathElement objects.

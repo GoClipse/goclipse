@@ -142,7 +142,7 @@
          <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
       </factory>
       <factory
-            adaptableType="com.googlecode.goclipse.navigator.GoPathElement"
+            adaptableType="com.googlecode.goclipse.ui.navigator.elements.GoPathElement"
             class="com.googlecode.goclipse.navigator.GoWorkbenchAdapterFactory">
          <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
       </factory>
@@ -202,7 +202,7 @@
 			<possibleChildren>
 				<or>
 					<instanceof value="org.eclipse.core.filesystem.IFileStore"/>
-					<instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
+					<instanceof value="com.googlecode.goclipse.ui.navigator.elements.IGoProjectElement"/>
 					<reference definitionId="com.googlecode.goclipse.core.expressions.isResourceInIDEProject"/>
 				</or>
 			</possibleChildren>
@@ -269,7 +269,6 @@
                </adapt>
                <instanceof value="org.eclipse.core.resources.IResource" />
                <instanceof value="org.eclipse.core.filesystem.IFileStore" />
-               <instanceof value="com.googlecode.goclipse.navigator.GoPathElement" />
             </or>
          </selectionEnablement>
       </linkHelper>          

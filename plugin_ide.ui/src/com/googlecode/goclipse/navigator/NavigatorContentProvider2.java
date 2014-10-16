@@ -24,6 +24,9 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 import com.googlecode.goclipse.ui.GoUIPlugin;
+import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
+import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
+import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 
 // TODO: this content provider is hard-coded to show files from GOROOT; we'll probably want this
 // to have better knowledge of the GOROOT / GOPATH directories that are in use by the project.
@@ -39,8 +42,6 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 	protected final Object[] NO_CHILDREN = new Object[0];
 	
 	protected static final String IS_LAYOUT_FLAT = "isLayoutFlat";
-	
-	protected static final String GOROOT_Name = "GOROOT";
 	
 	private Viewer viewer;
 	
@@ -109,7 +110,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		
 		ArrayList2<GoPathElement> buildpathChildren = new ArrayList2<>();
 		
-		buildpathChildren.add(new GoPathElement(GOROOT_Name, goRootSource.toFile()));
+		buildpathChildren.add(new GoRootElement(goRootSource.toFile()));
 		
 		GoPath effectiveGoPath = GoProjectEnvironment.getEffectiveGoPath(project);
 		
@@ -126,7 +127,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 			
 			File srcFolder = goPathEntryPath.resolve("src").toFile();
 			
-			buildpathChildren.add(new GoPathElement(goPathEntry, srcFolder));
+			buildpathChildren.add(new GoPathEntryElement(goPathEntry, srcFolder));
 		}
 		
 		return buildpathChildren.toArray();

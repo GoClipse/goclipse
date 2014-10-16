@@ -1,13 +1,14 @@
-package com.googlecode.goclipse.navigator;
+package com.googlecode.goclipse.ui.navigator.elements;
 
 import java.io.File;
 
 /**
  * A representation of top level root nodes, like GOROOT and GOPATH entries.
  */
-public class GoPathElement {
-	private String name;
-	private File rootFolder;
+public abstract class GoPathElement implements IGoProjectElement {
+	
+	protected String name;
+	protected File rootFolder;
 	
 	public GoPathElement(String name, File rootFolder) {
 		this.name = name;
@@ -33,14 +34,17 @@ public class GoPathElement {
 	}
 	
 	@Override
-	public boolean equals(Object other) {
-		if(!(other instanceof GoPathElement)) {
+	public boolean equals(Object obj) {
+		if(this == obj) {
+			return true;
+		}
+		if(obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 		
-		GoPathElement obj = (GoPathElement) other;
+		GoPathElement other = (GoPathElement) obj;
 		
-		return rootFolder.equals(obj.rootFolder);
+		return rootFolder.equals(other.rootFolder);
 	}
 	
 }

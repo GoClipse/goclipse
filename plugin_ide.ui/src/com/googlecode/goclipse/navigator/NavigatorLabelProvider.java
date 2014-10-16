@@ -21,6 +21,7 @@ import org.eclipse.ui.navigator.IExtensionStateModel;
 
 import com.googlecode.goclipse.builder.GoNature;
 import com.googlecode.goclipse.ui.GoPluginImages;
+import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
 
 /**
  * The label provider for the Go CNF navigator.
