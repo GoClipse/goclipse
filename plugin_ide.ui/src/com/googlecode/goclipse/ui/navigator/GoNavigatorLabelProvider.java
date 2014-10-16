@@ -74,10 +74,10 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 		
 		if(element instanceof IGoProjectElement) {
 			if(element instanceof GoRootElement) {
-				return GoPluginImages.NAVIGATOR_GO_PATH_ELEMENT.getImage();
+				return GoPluginImages.NAVIGATOR_GOPATH_ENTRY.getImage();
 			}
 			if(element instanceof GoPathEntryElement) {
-				return GoPluginImages.NAVIGATOR_GO_PATH_ELEMENT.getImage();
+				return GoPluginImages.NAVIGATOR_GOPATH_ENTRY.getImage();
 			}
 			assertFail();
 		}
@@ -87,7 +87,7 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 			
 			try {
 				if (fileStore.fetchInfo().isDirectory()) {
-					return GoPluginImages.NAVIGATOR_SOURCE_CONTAINER.getImage();
+					return GoPluginImages.NAVIGATOR_SOURCE_PACKAGE_FOLDER.getImage();
 				}
 				
 				// TODO: should cleanup up this.
@@ -134,7 +134,7 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 					return GoPluginImages.NAVIGATOR_BIN_FOLDER.getDescriptor();
 				}
 			} else if(isSubpackage(folder)) {
-				return GoPluginImages.NAVIGATOR_SOURCE_CONTAINER.getDescriptor();
+				return GoPluginImages.NAVIGATOR_SOURCE_PACKAGE_FOLDER.getDescriptor();
 			}
 		} else if(resource instanceof IFile) {
 			IFile file = (IFile) resource;

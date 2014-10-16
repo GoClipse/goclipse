@@ -23,12 +23,12 @@ public class GoPluginImages extends LangImages {
 	
 	public static final ImageHandle GO_CONSOLE_ICON = createManaged("", "go-icon16.png");
 	
-	public static final ImageHandle NAVIGATOR_SRC_FOLDER = createManaged("", "src-folder.png");
-	public static final ImageHandle NAVIGATOR_PKG_FOLDER = createManaged("", "open_artifact_obj.gif");
-	public static final ImageHandle NAVIGATOR_BIN_FOLDER = createManaged("", "cf_obj.gif");
-	public static final ImageHandle NAVIGATOR_SOURCE_CONTAINER = createManaged("", "source-folder.gif");
-	public static final ImageHandle NAVIGATOR_GO_PACKAGE_FILE = createManaged("", "package_file.png");
-	public static final ImageHandle NAVIGATOR_GO_PATH_ELEMENT = createManaged("", "jar_l_obj-1.gif");
+	public static final ImageHandle NAVIGATOR_SRC_FOLDER = createManaged("", "navigator/src-folder.png");
+	public static final ImageHandle NAVIGATOR_PKG_FOLDER = createManaged("", "navigator/pkg_folder.gif");
+	public static final ImageHandle NAVIGATOR_BIN_FOLDER = createManaged("", "navigator/bin_folder.gif");
+	public static final ImageHandle NAVIGATOR_SOURCE_PACKAGE_FOLDER = createManaged("", "navigator/source_package.gif");
+	public static final ImageHandle NAVIGATOR_GO_PACKAGE_FILE = createManaged("", "navigator/package_file.png");
+	public static final ImageHandle NAVIGATOR_GOPATH_ENTRY = createManaged("", "navigator/gopath_entry.gif");
 	
 	
 	public static final ImageHandle ELEMENT_IMPORT_CONTAINER = createManaged("", "impc_obj.gif");
