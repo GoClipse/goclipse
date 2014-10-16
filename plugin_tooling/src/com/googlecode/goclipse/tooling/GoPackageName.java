@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
@@ -36,7 +35,9 @@ public class GoPackageName extends AbstractElementName {
 	}
 
 	public static GoPackageName fromPath(Path path) {
-		assertNotNull(path);
+		if(path == null) {
+			return null;
+		}
 		assertTrue(path.isAbsolute() == false);
 		
 		return new GoPackageName(path.toString().replace(File.separator, NAME_SEP));
