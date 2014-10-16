@@ -1,9 +1,8 @@
 package com.googlecode.goclipse.navigator;
 
-import static melnorme.utilbox.core.CoreUtil.array;
-
 import java.io.File;
 
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
@@ -33,6 +32,7 @@ import com.googlecode.goclipse.ui.GoUIPlugin;
  * @author devoncarew
  */
 public class NavigatorContentProvider2 implements ITreeContentProvider, IPropertyChangeListener {
+	
 	private final Object[] NO_CHILDREN = new Object[0];
 	
 	protected static final String GOROOT_Name = "GOROOT";
@@ -64,7 +64,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof IProject) {
-			getProjectChildren((IProject) parentElement);
+			return getProjectChildren((IProject) parentElement);
 		} else if (parentElement instanceof GoPathElement) {
 			GoPathElement pathElement = (GoPathElement) parentElement;
 			
@@ -102,30 +102,22 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 			return NO_CHILDREN;
 		}
 		
+		ArrayList2<GoPathElement> buildpathChildren = new ArrayList2<>();
+		
+		buildpathChildren.add(new GoPathElement(GOROOT_Name, goRootSource.toFile()));
+		
 		GoPath goPath2 = GoProjectEnvironment.getEffectiveGoPath(project);
 		File[] goPath = getGoPathSrcFolder(goPath2);
 		
-		if (goPath != null && goPath.length > 0) {
+		if (goPath != null) {
 			
 			// populate the go paths
-			if (goPath.length == 1) {
-				return array(
-					new GoPathElement(GOROOT_Name, goRootSource.toFile()),
-					new GoPathElement(goPath[0].getParent(), goPath[0])
-				);
-				
-			} else {
-				GoPathElement[] gpe = new GoPathElement[goPath.length+1];
-				gpe[0] = new GoPathElement(GOROOT_Name, goRootSource.toFile());
-				
-				for (int i = 0; i < goPath.length; i++){
-					gpe[i+1] = new GoPathElement(goPath[i].getParent(), goPath[i]);
-				}
-				return gpe;
+			for (int i = 0; i < goPath.length; i++){
+				buildpathChildren.add(new GoPathElement(goPath[i].getParent(), goPath[i]));
 			}
-		} else {
-			return array(new GoPathElement(GOROOT_Name, goRootSource.toFile()));
 		}
+		
+		return buildpathChildren.toArray();
 	}
 	
 	@Override
