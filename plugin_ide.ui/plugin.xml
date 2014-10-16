@@ -208,7 +208,7 @@
 			</possibleChildren>
 			
 			<commonSorter
-				class="com.googlecode.goclipse.navigator.NavigatorViewerSorter"
+				class="com.googlecode.goclipse.ui.navigator.GoNavigatorSorter"
 				id="com.googlecode.goclipse.navigator.sorter">
 			</commonSorter>
 			
