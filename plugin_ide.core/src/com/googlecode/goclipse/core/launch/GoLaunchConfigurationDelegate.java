@@ -12,7 +12,7 @@ package com.googlecode.goclipse.core.launch;
 
 
 import melnorme.lang.ide.launching.AbstractLangLaunchConfigurationDelegate;
-import melnorme.lang.tooling.ProcessUtils;
+import melnorme.lang.utils.ProcessUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;

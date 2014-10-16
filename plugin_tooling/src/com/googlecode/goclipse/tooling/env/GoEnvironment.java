@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import melnorme.lang.tooling.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
@@ -96,7 +95,7 @@ public class GoEnvironment {
 	}
 	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine) {
-		ProcessBuilder pb = ProcessUtils.createProcessBuilder(commandLine, null);
+		ProcessBuilder pb = melnorme.lang.utils.ProcessUtils.createProcessBuilder(commandLine, null);
 		
 		Map<String, String> env = pb.environment();
 		
