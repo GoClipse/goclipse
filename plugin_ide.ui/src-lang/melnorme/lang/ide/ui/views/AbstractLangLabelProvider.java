@@ -42,11 +42,11 @@ public abstract class AbstractLangLabelProvider extends LabelProvider
 	
 	/* ----------------- styler helpers ----------------- */
 	
-	protected ForegroundColorStyler fgColor(RGB rgb) {
+	public static ForegroundColorStyler fgColor(RGB rgb) {
 		return new ForegroundColorStyler(rgb);
 	}
 	
-	protected class ForegroundColorStyler extends Styler {
+	public static class ForegroundColorStyler extends Styler {
 		protected final RGB fgColor;
 		
 		public ForegroundColorStyler(RGB fgColor) {
