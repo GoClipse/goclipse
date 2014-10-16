@@ -89,11 +89,11 @@ public abstract class LangNature implements IProjectNature {
 	
 	/* ----------------- util methods ----------------- */
 	
-	public static boolean isAcessible(IProject project) throws CoreException {
+	public static boolean isAccessible(IProject project) throws CoreException {
 		return project.isAccessible() && project.hasNature(NATURE_ID);
 	}
 	
-	public static boolean isAcessible(IProject project, boolean logOnError){
+	public static boolean isAccessible(IProject project, boolean logOnError){
 		try {
 			return project.isAccessible() && project.hasNature(NATURE_ID);
 		} catch (CoreException e) {
