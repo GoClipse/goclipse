@@ -2,7 +2,6 @@ package com.googlecode.goclipse.navigator;
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import java.io.File;
 import java.nio.file.Path;
 
 import melnorme.utilbox.collections.ArrayList2;
@@ -40,8 +39,6 @@ import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 public class NavigatorContentProvider2 implements ITreeContentProvider, IPropertyChangeListener {
 	
 	protected final Object[] NO_CHILDREN = new Object[0];
-	
-	protected static final String IS_LAYOUT_FLAT = "isLayoutFlat";
 	
 	private Viewer viewer;
 	
@@ -125,9 +122,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 				continue; // Don't add this entry.
 			}
 			
-			File srcFolder = goPathEntryPath.resolve("src").toFile();
-			
-			buildpathChildren.add(new GoPathEntryElement(goPathEntry, srcFolder));
+			buildpathChildren.add(new GoPathEntryElement(goPathEntryPath));
 		}
 		
 		return buildpathChildren.toArray();
@@ -139,7 +134,6 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 			IFileStore file = (IFileStore) element;
 			
 			// TODO: trim this at the GOROOT directory
-			
 			return file.getParent();
 		}
 		

@@ -12,4 +12,6 @@ package com.googlecode.goclipse.ui.navigator.elements;
 
 public interface IGoProjectElement {
 	
+	String getName();
+	
 }

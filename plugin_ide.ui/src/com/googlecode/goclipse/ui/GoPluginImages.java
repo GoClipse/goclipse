@@ -28,7 +28,6 @@ public class GoPluginImages extends LangImages {
 	public static final ImageHandle NAVIGATOR_BIN_FOLDER = createManaged("", "cf_obj.gif");
 	public static final ImageHandle NAVIGATOR_SOURCE_CONTAINER = createManaged("", "source-folder.gif");
 	public static final ImageHandle NAVIGATOR_GO_PACKAGE_FILE = createManaged("", "package_file.png");
-	public static final ImageHandle NAVIGATOR_BINARY_FILE = createManaged("", "binary_file.png");
 	public static final ImageHandle NAVIGATOR_GO_PATH_ELEMENT = createManaged("", "jar_l_obj-1.gif");
 	
 	

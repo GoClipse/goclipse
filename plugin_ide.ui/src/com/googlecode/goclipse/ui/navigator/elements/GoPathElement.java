@@ -15,6 +15,7 @@ public abstract class GoPathElement implements IGoProjectElement {
 		this.rootFolder = rootFolder;
 	}
 	
+	@Override
 	public String getName() {
 		return name;
 	}

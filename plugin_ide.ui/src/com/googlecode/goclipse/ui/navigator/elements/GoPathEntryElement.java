@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.navigator.elements;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public class GoPathEntryElement extends GoPathElement {
 	
-	public GoPathEntryElement(String name, File rootFolder) {
-		super(name, rootFolder);
+	protected Path goPathEntryPath;
+	
+	public GoPathEntryElement(Path goPathEntryPath) {
+		super("GOPATH", goPathEntryPath.resolve("src").toFile());
+		this.goPathEntryPath = goPathEntryPath;
 	}
 	
 }

@@ -141,16 +141,6 @@
             class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
          <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
       </factory>
-      <factory
-            adaptableType="com.googlecode.goclipse.ui.navigator.elements.GoPathElement"
-            class="com.googlecode.goclipse.navigator.GoWorkbenchAdapterFactory">
-         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-      </factory>
-      <factory
-            adaptableType="org.eclipse.core.filesystem.IFileStore"
-            class="com.googlecode.goclipse.navigator.GoWorkbenchAdapterFactory">
-         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-      </factory>
    </extension>
     
    <extension point="org.eclipse.ui.decorators">
@@ -175,7 +165,7 @@
 			activeByDefault="true"
 			icon="icons/go-icon16.png"
 			id="com.googlecode.goclipse.navigator.content"
-			labelProvider="com.googlecode.goclipse.navigator.NavigatorLabelProvider"
+			labelProvider="com.googlecode.goclipse.ui.navigator.GoNavigatorLabelProvider"
 			contentProvider="com.googlecode.goclipse.navigator.NavigatorContentProvider2"
 			priority="highest"
 			name="Go Elements">
