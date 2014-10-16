@@ -13,18 +13,29 @@
             id="com.googlecode.goclipse.goBuilder">
       </builder>
    </extension>
-   
-   <extension point="org.eclipse.core.expressions.definitions">
-      <definition id="com.googlecode.goclipse.core.expressions.isGoProject">
-         <adapt type="org.eclipse.core.resources.IProject">
-            <test
-                  property="org.eclipse.core.resources.projectNature"
-                  value="com.googlecode.goclipse.core.goNature">
-            </test>
-         </adapt>
-      </definition>
-   </extension>
-   
+	
+	<extension point="org.eclipse.core.expressions.definitions">
+		<definition id="com.googlecode.goclipse.core.expressions.isGoProject">
+			 <adapt type="org.eclipse.core.resources.IProject">
+				<test
+					property="org.eclipse.core.resources.projectNature"
+					value="com.googlecode.goclipse.core.goNature">
+				</test>
+			</adapt>
+		</definition>
+		
+		<definition id="com.googlecode.goclipse.core.expressions.isResourceInIDEProject">
+			<and>
+				<instanceof value="org.eclipse.core.resources.IResource" />
+				<test
+					property="org.eclipse.core.resources.projectNature"
+					value="com.googlecode.goclipse.core.goNature">
+				</test>
+			</and>
+		</definition>
+		
+	</extension>
+	
    <extension point="org.eclipse.core.contenttype.contentTypes"> 
       <content-type
          id="com.googlecode.goclipse.gosourcefile"

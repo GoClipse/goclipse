@@ -170,107 +170,86 @@
       </decorator>
    </extension>
 
-   <extension
-      point="org.eclipse.ui.navigator.navigatorContent">
-      <navigatorContent
-         activeByDefault="true"
-         icon="icons/go-icon16.png"
-         id="com.googlecode.goclipse.navigator.content"
-         labelProvider="com.googlecode.goclipse.navigator.NavigatorLabelProvider"
-         contentProvider="com.googlecode.goclipse.navigator.NavigatorContentProvider"
-         priority="highest"
-         name="Go Elements">
-         
-         <triggerPoints>
-            <adapt type="org.eclipse.core.resources.IProject">
-               <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
-            </adapt>
-         </triggerPoints>
-
-         <!-- Despite what the documentation currently says, possibleChildren is queried by Navigator service to find out whether 
-         to use label provider or not, regardless of trigger points. Therefore we should ensure possible children only aplies to Go projects. 
-         See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=429572
-         -->
-         <possibleChildren>
-            <or>
-               <and>
-                  <instanceof value="org.eclipse.core.resources.IResource"/>
-                  <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
-               </and>
-            </or>
-         </possibleChildren> 
-      
-         <commonSorter
-               class="com.googlecode.goclipse.navigator.NavigatorViewerSorter"
-               id="com.googlecode.goclipse.navigator.sorter">
-         </commonSorter>
-         
-         <commonWizard
-            menuGroupId="com.googlecode.goclipse.wizards.projects"
-            type="new"
-            wizardId="com.googlecode.goclipse.wizards.NewGoFileWizard">
-            <enablement>
-            </enablement>
-         </commonWizard>
-       
-         <commonWizard
-            menuGroupId="com.googlecode.goclipse.wizards.projects"
-            type="new"
-            wizardId="com.googlecode.goclipse.wizards.project.mainwiz">
-            <enablement>
-            </enablement>
-         </commonWizard>
-         
-         <actionProvider class="com.googlecode.goclipse.navigator.NavigatorActionProvider"/>         
-      </navigatorContent>
-      
-      <navigatorContent
-         activeByDefault="true"
-         icon="icons/go-icon16.png"
-         id="com.googlecode.goclipse.navigator.content2"
-         labelProvider="com.googlecode.goclipse.navigator.NavigatorLabelProvider"
-         contentProvider="com.googlecode.goclipse.navigator.NavigatorContentProvider2"
-         priority="low"
-         name="Go Root Elements">
-         
-         <triggerPoints>
-            <adapt type="org.eclipse.core.resources.IProject">
-               <test property="org.eclipse.core.resources.projectNature" value="com.googlecode.goclipse.core.goNature"/>
-            </adapt>
-         </triggerPoints>
-
-         <possibleChildren>
-            <or>
-               <instanceof value="org.eclipse.core.filesystem.IFileStore"/>
-               <instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
-            </or>
-         </possibleChildren> 
-      
-         <commonSorter
-               class="com.googlecode.goclipse.navigator.NavigatorViewerSorter"
-               id="com.googlecode.goclipse.navigator.sorter">
-         </commonSorter>
-         
-         <!-- actionProvider class="com.googlecode.goclipse.navigator.NavigatorActionProvider"/ -->         
-      </navigatorContent>
-      
-      <commonFilter
-            activeByDefault="true"
-            class="com.googlecode.goclipse.navigator.NavigatorObjViewerFilter"
-            id="com.googlecode.goclipse.navigator.objFilter"
-            visibleInUI="true"
-            name="Go _obj folders">
-      </commonFilter>
-      
-      <commonFilter
-            activeByDefault="false"
-            class="com.googlecode.goclipse.navigator.NavigatorPackageViewerFilter"
-            id="com.googlecode.goclipse.navigator.packageFilter"
-            visibleInUI="true"
-            name="Go bin, pkg folders">
-      </commonFilter>
-   </extension>
-   
+	<extension point="org.eclipse.ui.navigator.navigatorContent">
+		<navigatorContent
+			activeByDefault="true"
+			icon="icons/go-icon16.png"
+			id="com.googlecode.goclipse.navigator.content"
+			labelProvider="com.googlecode.goclipse.navigator.NavigatorLabelProvider"
+			contentProvider="com.googlecode.goclipse.navigator.NavigatorContentProvider2"
+			priority="highest"
+			name="Go Elements">
+		<!-- 
+		Priority needs to be highest, because we could be competing with other plugins like JDT or CDT,
+		which have triggerPoints for any IResource regardless of project nature:
+		While that doesn't affect the content providers, it affects the common sorter, 
+		and that's important since we want to sort IResource's.
+		Also, triggerPoints has to match the children we want to sort, not just the parent of the children, 
+		so we can't just use expressions.isLangProject 
+		-->
+			<triggerPoints>
+				<or>
+					<reference definitionId="com.googlecode.goclipse.core.expressions.isResourceInIDEProject"/>
+				</or>
+			</triggerPoints>
+			
+			<!-- 
+			 Despite what the documentation currently says, possibleChildren is queried by Navigator service 
+			 to find out whether to use label provider or not, regardless of trigger points. 
+			 Therefore we should ensure possible children only aplies to D projects. 
+			 See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=429572
+			 -->
+			<possibleChildren>
+				<or>
+					<instanceof value="org.eclipse.core.filesystem.IFileStore"/>
+					<instanceof value="com.googlecode.goclipse.navigator.GoPathElement"/>
+					<reference definitionId="com.googlecode.goclipse.core.expressions.isResourceInIDEProject"/>
+				</or>
+			</possibleChildren>
+			
+			<commonSorter
+				class="com.googlecode.goclipse.navigator.NavigatorViewerSorter"
+				id="com.googlecode.goclipse.navigator.sorter">
+			</commonSorter>
+			
+			<commonWizard
+				menuGroupId="com.googlecode.goclipse.wizards.projects"
+				type="new"
+				wizardId="com.googlecode.goclipse.wizards.NewGoFileWizard">
+				<enablement>
+				</enablement>
+			</commonWizard>
+			
+			<commonWizard
+				menuGroupId="com.googlecode.goclipse.wizards.projects"
+				type="new"
+				wizardId="com.googlecode.goclipse.wizards.project.mainwiz">
+			<enablement>
+			</enablement>
+			</commonWizard>
+			
+			<actionProvider class="com.googlecode.goclipse.navigator.NavigatorActionProvider"/>
+			
+		</navigatorContent>
+		
+		<commonFilter
+			activeByDefault="true"
+			class="com.googlecode.goclipse.navigator.NavigatorObjViewerFilter"
+			id="com.googlecode.goclipse.navigator.objFilter"
+			visibleInUI="true"
+			name="Go _obj folders">
+		</commonFilter>
+		
+		<commonFilter
+			activeByDefault="false"
+			class="com.googlecode.goclipse.navigator.NavigatorPackageViewerFilter"
+			id="com.googlecode.goclipse.navigator.packageFilter"
+			visibleInUI="true"
+			name="Go bin, pkg folders">
+		</commonFilter>
+		
+	</extension>
+	
    <extension
        point="org.eclipse.ui.navigator.linkHelper">
       <linkHelper

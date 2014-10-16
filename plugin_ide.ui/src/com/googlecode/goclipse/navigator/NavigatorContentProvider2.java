@@ -36,7 +36,9 @@ import com.googlecode.goclipse.ui.GoUIPlugin;
  */
 public class NavigatorContentProvider2 implements ITreeContentProvider, IPropertyChangeListener {
 	
-	private final Object[] NO_CHILDREN = new Object[0];
+	protected final Object[] NO_CHILDREN = new Object[0];
+	
+	protected static final String IS_LAYOUT_FLAT = "isLayoutFlat";
 	
 	protected static final String GOROOT_Name = "GOROOT";
 	
