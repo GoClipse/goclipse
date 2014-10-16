@@ -42,11 +42,11 @@ public class GoRoot {
 		return asPath().resolve("src/pkg");
 	}
 	
-	public GoPackageName getGoPackageFromSourceModule(Path goModulePath) throws CommonException {
-		return getGoPackageFromSourceModule(goModulePath, getSourceRootLocation());
+	public GoPackageName findGoPackageForSourceModule(Path goModulePath) throws CommonException {
+		return findGoPackageForSourceModule(goModulePath, getSourceRootLocation());
 	}
 	
-	public static GoPackageName getGoPackageFromSourceModule(Path goModulePath, Path sourceRoot) {
+	public static GoPackageName findGoPackageForSourceModule(Path goModulePath, Path sourceRoot) {
 		goModulePath = goModulePath.normalize();
 		if(!goModulePath.startsWith(sourceRoot)) {
 			return null;

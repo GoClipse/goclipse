@@ -303,7 +303,7 @@ public class CodeContext {
 					continue;
 				}
 
-				List<String> goPathElements = goEnvironment.getGoPathElements();
+				List<String> goPathElements = goEnvironment.getGoPathEntries();
 				// FIXME: BM: this code is most certainly buggy, perhaps the whole function too.
 				String goPath = goPathElements.get(0);
 

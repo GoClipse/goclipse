@@ -38,7 +38,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 	}
 	
 	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Path filePath, int offset) throws CommonException {
-		GoPackageName goPackage = goEnv.getGoPackageFromSourceModule(filePath);
+		GoPackageName goPackage = goEnv.findGoPackageForSourceModule(filePath);
 		if(goPackage == null) {
 			throw new CommonException(MessageFormat.format(
 				"Could not determine Go package for Go file ({0}), file not in the Go environment.", filePath), 

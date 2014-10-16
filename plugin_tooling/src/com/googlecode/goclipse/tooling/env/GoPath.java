@@ -36,7 +36,7 @@ public class GoPath {
 		this.goPathElements = unmodifiableList(new ArrayList2<>(elements));
 	}
 	
-	public List<String> getGoPathElements() {
+	public List<String> getGoPathEntries() {
 		return goPathElements;
 	}
 	
@@ -48,9 +48,8 @@ public class GoPath {
 		return StringUtil.collToString(goPathElements, File.pathSeparator);
 	}
 	
-	/** @return the full path of a GOPATH workspace entry (a workspace root) that contains
-	 * the given path. */
-	public Path getGoWorkspacePathEntry(Path path) {
+	/** @return the full path of a GOPATH workspace entry (a workspace root) that contains the given path. */
+	public Path findGoPathEntry(Path path) {
 		if(path == null) {
 			return null;
 		}
@@ -62,8 +61,8 @@ public class GoPath {
 		return null;
 	}
 	
-	public Path getGoPathEntryForSourceModule(Path path) {
-		Path workspaceEntry = getGoWorkspacePathEntry(path);
+	public Path findGoPathEntryForSourceModule(Path path) {
+		Path workspaceEntry = findGoPathEntry(path);
 		
 		if(path.startsWith(workspaceEntry.resolve("src"))) {
 			return workspaceEntry;
@@ -71,14 +70,14 @@ public class GoPath {
 		return null;
 	}
 	
-	public GoPackageName getGoPackageFromSourceModule(Path goModulePath) {
-		Path goWorkspaceEntry = getGoWorkspacePathEntry(goModulePath);
+	public GoPackageName findGoPackageForSourceModule(Path goModulePath) {
+		Path goWorkspaceEntry = findGoPathEntry(goModulePath);
 		if(goWorkspaceEntry == null) {
 			return null;
 		}
 		
 		Path sourceRoot = goWorkspaceEntry.resolve("src");
-		return GoRoot.getGoPackageFromSourceModule(goModulePath, sourceRoot);
+		return GoRoot.findGoPackageForSourceModule(goModulePath, sourceRoot);
 	}
 	
 	public boolean isEmpty() {

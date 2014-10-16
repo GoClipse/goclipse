@@ -39,7 +39,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 		
 		assertEquals(goEnvironment.getGoRoot().asString(), SAMPLE_GO_ROOT.toString());
 		assertEquals(goEnvironment.getGoPathString(), SAMPLE_GO_PATH.toString());
-		assertEquals(goEnvironment.getGoPathElements(), list(SAMPLE_GO_PATH.toString()));
+		assertEquals(goEnvironment.getGoPathEntries(), list(SAMPLE_GO_PATH.toString()));
 	}
 	
 }

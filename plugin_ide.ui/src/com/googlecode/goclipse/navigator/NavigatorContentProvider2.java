@@ -1,6 +1,9 @@
 package com.googlecode.goclipse.navigator;
 
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+
 import java.io.File;
+import java.nio.file.Path;
 
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -106,15 +109,22 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		
 		buildpathChildren.add(new GoPathElement(GOROOT_Name, goRootSource.toFile()));
 		
-		GoPath goPath2 = GoProjectEnvironment.getEffectiveGoPath(project);
-		File[] goPath = getGoPathSrcFolder(goPath2);
+		GoPath effectiveGoPath = GoProjectEnvironment.getEffectiveGoPath(project);
 		
-		if (goPath != null) {
-			
-			// populate the go paths
-			for (int i = 0; i < goPath.length; i++){
-				buildpathChildren.add(new GoPathElement(goPath[i].getParent(), goPath[i]));
+		for (String goPathEntry : effectiveGoPath.getGoPathEntries()) {
+			Path goPathEntryPath;
+			try {
+				goPathEntryPath = MiscUtil.createPath(goPathEntry);
+			} catch (InvalidPathExceptionX e) {
+				continue; // TODO: create error element
 			}
+			if(areEqual(goPathEntryPath, project.getLocation().toFile().toPath())) {
+				continue; // Don't add this entry.
+			}
+			
+			File srcFolder = goPathEntryPath.resolve("src").toFile();
+			
+			buildpathChildren.add(new GoPathElement(goPathEntry, srcFolder));
 		}
 		
 		return buildpathChildren.toArray();
@@ -141,27 +151,6 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		updateViewer();
-	}
-	
-	protected File[] getGoPathSrcFolder(GoPath goPath) {
-		
-		int size = goPath.getGoPathElements().size();
-		
-		File[] files = new File[size];
-		
-		for (int i = 0; i < size; i++) {
-			String goPathEntry = goPath.getGoPathElements().get(i);
-			
-			File srcFolder;
-			try {
-				srcFolder = MiscUtil.createPath(goPathEntry).resolve("src").toFile();
-			} catch (InvalidPathExceptionX e) {
-				return null; // FIXME: create error element
-			}
-			files[i] = srcFolder;
-		}
-		
-		return files;
 	}
 	
 	private void updateViewer() {

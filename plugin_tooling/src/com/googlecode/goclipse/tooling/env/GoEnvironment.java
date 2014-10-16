@@ -70,21 +70,21 @@ public class GoEnvironment {
 		return goPath;
 	}
 	
-	public List<String> getGoPathElements() {
-		return goPath.getGoPathElements();
+	public List<String> getGoPathEntries() {
+		return goPath.getGoPathEntries();
 	}
 	
 	public String getGoPathString() {
 		return goPath.getGoPathWorkspaceString();
 	}
 	
-	public GoPackageName getGoPackageFromSourceModule(Path goModulePath) throws CommonException {
-		GoPackageName goPackage = goRoot.getGoPackageFromSourceModule(goModulePath);
+	public GoPackageName findGoPackageForSourceModule(Path goModulePath) throws CommonException {
+		GoPackageName goPackage = goRoot.findGoPackageForSourceModule(goModulePath);
 		if(goPackage != null) {
 			return goPackage;
 		}
 		
-		return goPath.getGoPackageFromSourceModule(goModulePath);
+		return goPath.findGoPackageForSourceModule(goModulePath);
 	}
 	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {
@@ -161,7 +161,7 @@ public class GoEnvironment {
 		
 		pkgFolders.add(getGoRootPackageObjectsDir().toString());
 		
-		for (String goPathElement : getGoPathElements()) {
+		for (String goPathElement : getGoPathEntries()) {
 			Path pkgFolder = getPackageObjectsDir(createPath(goPathElement));
 			pkgFolders.add(pkgFolder.toString());
 		}
