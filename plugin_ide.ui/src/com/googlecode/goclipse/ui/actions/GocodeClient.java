@@ -1,9 +1,6 @@
 package com.googlecode.goclipse.ui.actions;
 
-import java.util.List;
-
 import melnorme.lang.ide.core.operations.RunEngineClientOperation;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -22,10 +19,8 @@ public class GocodeClient extends GocodeCompletionOperation<CommonException> {
 		this.pm = pm;
 	}
 	
-	/* FIXME: take a second look. */
 	@Override
-	protected ExternalProcessResult runGocode(List<String> arguments, String input) throws CommonException {
-		ProcessBuilder pb = goEnvironment.createProcessBuilder(new ArrayList2<>(gocodePath).addElements(arguments));
+	protected ExternalProcessResult runGocodeProcess(ProcessBuilder pb, String input) throws CommonException {
 		return new RunEngineClientOperation(GoToolManager.getDefault(), pb, pm).doRunProcess(input, false);
 	}
 	

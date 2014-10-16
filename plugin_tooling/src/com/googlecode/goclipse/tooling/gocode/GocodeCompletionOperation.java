@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.gocode;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import melnorme.utilbox.collections.ArrayList2;
@@ -36,7 +35,8 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 		
 		setLibPathForEnvironment();
 		
-		ArrayList2<String> arguments = new ArrayList2<String>();
+		ArrayList2<String> arguments = new ArrayList2<String>(gocodePath);
+		
 		if (USE_TCP) {
 			arguments.add("-sock=tcp");
 		}
@@ -45,7 +45,9 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 		arguments.add(filePath);
 		arguments.add("c" + offset);
 		
-		ExternalProcessResult processResult = runGocode(arguments, bufferText);
+		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments);
+		
+		ExternalProcessResult processResult = runGocodeProcess(pb, bufferText);
 
 		if(processResult.exitValue != 0) {
 			throw new CommonException("Error, gocode returned non-zero status: " + processResult.exitValue);
@@ -55,7 +57,8 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 	}
 	
 	protected void setLibPathForEnvironment() throws CommonException, EXC {
-		ArrayList2<String> arguments = new ArrayList2<>();
+		
+		ArrayList2<String> arguments = new ArrayList2<>(gocodePath);
 		
 		if (USE_TCP) {
 			arguments.add("-sock=tcp");
@@ -64,11 +67,15 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 		arguments.add("lib-path");
 		arguments.add(goEnvironment.getPackageObjectsPathString());
 		
-		runGocode(arguments, null);
+		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments);
+		
+		runGocodeProcess(pb, null);
 	}
 	
-	protected abstract ExternalProcessResult runGocode(List<String> arguments, String input) throws EXC;
+	protected abstract ExternalProcessResult runGocodeProcess(ProcessBuilder pb, String input) throws CommonException;
+	
+	// TODO: move the code that process gocode result to here
 	
 	public static final Pattern LINE_SPLITTER = Pattern.compile("\n|(\r\n)|\r");
-	
+
 }
