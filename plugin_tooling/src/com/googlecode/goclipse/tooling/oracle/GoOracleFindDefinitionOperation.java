@@ -25,6 +25,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.JsonDeserializeHelper;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
@@ -37,7 +38,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 	}
 	
 	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Path filePath, int offset) throws CommonException {
-		Path goPackage = goEnv.getGoPackageFromSourceModule(filePath);
+		GoPackageName goPackage = goEnv.getGoPackageFromSourceModule(filePath);
 		if(goPackage == null) {
 			throw new CommonException(MessageFormat.format(
 				"Could not determine Go package for Go file ({0}), file not in the Go environment.", filePath), 
@@ -49,7 +50,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 			"-pos=" + filePath.toString() + ":#" + offset + ",#" + offset,
 			"-format=json",
 			"describe",
-			goPackage.toString()
+			goPackage.getFullNameAsString()
 		);
 		
 		return goEnv.createProcessBuilder(commandLine);

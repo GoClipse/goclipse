@@ -17,6 +17,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import com.googlecode.goclipse.tooling.GoPackageName;
+
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
@@ -76,9 +78,8 @@ public class GoEnvironment {
 		return goPath.getGoPathWorkspaceString();
 	}
 	
-	// FIXME: change return type to a specific module class
-	public Path getGoPackageFromSourceModule(Path goModulePath) throws CommonException {
-		Path goPackage = goRoot.getGoPackageFromSourceModule(goModulePath);
+	public GoPackageName getGoPackageFromSourceModule(Path goModulePath) throws CommonException {
+		GoPackageName goPackage = goRoot.getGoPackageFromSourceModule(goModulePath);
 		if(goPackage != null) {
 			return goPackage;
 		}

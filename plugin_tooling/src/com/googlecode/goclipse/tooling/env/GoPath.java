@@ -17,6 +17,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.googlecode.goclipse.tooling.GoPackageName;
+
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -69,7 +71,7 @@ public class GoPath {
 		return null;
 	}
 	
-	public Path getGoPackageFromSourceModule(Path goModulePath) {
+	public GoPackageName getGoPackageFromSourceModule(Path goModulePath) {
 		Path goWorkspaceEntry = getGoWorkspacePathEntry(goModulePath);
 		if(goWorkspaceEntry == null) {
 			return null;

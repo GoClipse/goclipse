@@ -14,6 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
+import com.googlecode.goclipse.tooling.GoPackageName;
+
 import melnorme.utilbox.core.CommonException;
 
 public class GoRoot {
@@ -40,17 +42,17 @@ public class GoRoot {
 		return asPath().resolve("src/pkg");
 	}
 	
-	public Path getGoPackageFromSourceModule(Path goModulePath) throws CommonException {
+	public GoPackageName getGoPackageFromSourceModule(Path goModulePath) throws CommonException {
 		return getGoPackageFromSourceModule(goModulePath, getSourceRootLocation());
 	}
 	
-	public static Path getGoPackageFromSourceModule(Path goModulePath, Path sourceRoot) {
+	public static GoPackageName getGoPackageFromSourceModule(Path goModulePath, Path sourceRoot) {
 		goModulePath = goModulePath.normalize();
 		if(!goModulePath.startsWith(sourceRoot)) {
 			return null;
 		}
 		goModulePath = sourceRoot.relativize(goModulePath);
-		return goModulePath.getParent(); // Discard file name
+		return GoPackageName.fromPath(goModulePath.getParent()); // Discard file name
 	}
 	
 }
