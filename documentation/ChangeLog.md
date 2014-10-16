@@ -2,7 +2,8 @@
 
 ### Goclipse 0.8.x
  * Fixed: Project Explorer no longer shows GOPATH entry if that entry location is the as the project location.
- * Fixed: GOROOT entry in Project Explorer now sorted at the top.
+ * Added: GOROOT entry in Project Explorer now sorted at the top, and has own icon.
+ * Added: GOPATH entries have location subtext. ###
  * Added gocode process argument information to gocode log console.
  * Added Ctrl-click open definition functionality using `go oracle`.
    * Path to `oracle` command can be configured in the Go preference page.

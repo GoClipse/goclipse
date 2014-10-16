@@ -74,7 +74,7 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 		
 		if(element instanceof IGoProjectElement) {
 			if(element instanceof GoRootElement) {
-				return GoPluginImages.NAVIGATOR_GOPATH_ENTRY.getImage();
+				return GoPluginImages.NAVIGATOR_GOROOT_ENTRY.getImage();
 			}
 			if(element instanceof GoPathEntryElement) {
 				return GoPluginImages.NAVIGATOR_GOPATH_ENTRY.getImage();
