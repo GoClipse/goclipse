@@ -12,30 +12,30 @@ import com.googlecode.goclipse.builder.GoNature;
  * A filter to remove "_obj" folders from the navigator view.
  */
 public class NavigatorObjViewerFilter extends ViewerFilter {
-
-  /**
-   * Create a new NavigatorObjViewerFilter.
-   */
-  public NavigatorObjViewerFilter() {
-
-  }
-
-  @Override
-  public boolean select(Viewer viewer, Object parentElement, Object element) {
-    try {
-      if (element instanceof IFolder) {
-        IFolder folder = (IFolder) element;
-        IProject project = folder.getProject();
-
-        if (project.hasNature(GoNature.NATURE_ID)) {
-          return !folder.getName().equals("_obj");
-        }
-      }
-    } catch (CoreException e) {
-      
-    }
-    
-    return true;
-  }
-
+	
+	/**
+	 * Create a new NavigatorObjViewerFilter.
+	 */
+	public NavigatorObjViewerFilter() {
+		
+	}
+	
+	@Override
+	public boolean select(Viewer viewer, Object parentElement, Object element) {
+		try {
+			if (element instanceof IFolder) {
+				IFolder folder = (IFolder) element;
+				IProject project = folder.getProject();
+				
+				if (project.hasNature(GoNature.NATURE_ID)) {
+					return !folder.getName().equals("_obj");
+				}
+			}
+		} catch (CoreException e) {
+			
+		}
+		
+		return true;
+	}
+	
 }
