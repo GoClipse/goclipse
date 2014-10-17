@@ -89,10 +89,6 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			return false;
 		}
 		
-		if (projectPath != null && !new File(projectPath).exists()) {
-			return false;
-		}
-
 		CreateProjectOperation operation = new CreateProjectOperation(projectName, projectPath);
 
 		try {
@@ -179,7 +175,7 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			project.open(new NullProgressMonitor());
 
 			this.project = project;
-
+			
 			description = project.getDescription();
 			String[] natures = description.getNatureIds();
 			String[] newNatures = new String[natures.length + 1];

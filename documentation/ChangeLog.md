@@ -14,7 +14,8 @@
  * Added display of an error dialog when gocode Content Assist fails.
  * Added a timeout of 5 seconds for gocode process invocation during Content Assist. 
  * Removed "RELEASE/DEBUG" config option from launch configuration, since it didn't actually do anything.
- * Fixed bug where some items in the Workbench "Source" menu would disappear when switching editors.
+ * Fixed: bug in Go Project Wizard where using "Create project from existing source" will make the finish button not work.
+ * Fixed: bug where some items in the Workbench "Source" menu would disappear when switching editors.
  
 ### Goclipse 0.8.1
  * Changed the Eclipse update site URL to: http://goclipse.github.io/releases/
