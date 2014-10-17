@@ -1,7 +1,7 @@
 ## release ChangeLog
 
 ### Goclipse 0.9.0
- * Eclipse Go projects can now be created inside the "src" folder of a GOPATH entry, and that scenario will be handled properly by the toolchain (gocode, oracle, build, etc.).
+ * Added #84: Eclipse Go projects can now be created inside the "src" folder of a GOPATH entry, and that scenario will be handled properly by the toolchain (gocode, oracle, build, etc.).
    * In this case, the project location will not be implicitly added to the GOPATH, as the project is part of the GOPATH already. 
  * Fixed: Project Explorer no longer shows GOPATH entry if that entry location is the as the project location.
  * Added: GOROOT entry in Project Explorer now sorted at the top, and has own icon.
