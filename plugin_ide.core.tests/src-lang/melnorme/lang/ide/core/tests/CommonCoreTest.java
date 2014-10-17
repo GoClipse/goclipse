@@ -85,8 +85,8 @@ public abstract class CommonCoreTest extends CommonTest {
 		Location instanceLocation = Platform.getInstanceLocation();
 		try {
 			URI uri = instanceLocation.getURL().toURI();
-			String workingDirPath = new File(uri).getAbsolutePath();
-			TestsWorkingDir.initWorkingDir(workingDirPath);
+			Path workingDirPath = new File(uri).toPath().toAbsolutePath().resolve("TestsWD");
+			TestsWorkingDir.initWorkingDir(workingDirPath.toString());
 		} catch (URISyntaxException e) {
 			throw assertFail();
 		}

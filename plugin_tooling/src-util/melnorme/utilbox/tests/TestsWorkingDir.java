@@ -14,7 +14,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
+
+import melnorme.utilbox.misc.FileUtil;
 
 public class TestsWorkingDir {
 	
@@ -63,6 +66,13 @@ public class TestsWorkingDir {
 	
 	public static Path getWorkingDirPath(String relativePath) {
 		return getWorkingDirPath().resolve(relativePath);
+	}
+	
+	/** Delete given dir, but for safety, check that it is within TestsWorkingDir. */
+	public static void deleteDir(Path dir) throws IOException {
+		dir = dir.normalize();
+		assertTrue(dir.startsWith(getWorkingDirPath()));
+		FileUtil.deleteDir(dir);
 	}
 	
 }
