@@ -92,7 +92,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	}
 	
 	protected void checkEnvGoPath(IProject project, Collection<String> list, boolean insideGoPath) {
-		assertTrue(GoProjectEnvironment.isProjectInsideGOPATH(project) == insideGoPath);
+		assertTrue(GoProjectEnvironment.isProjectInsideGoPath(project) == insideGoPath);
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		assertEquals(goEnv.getGoPathEntries(), list);
 	}

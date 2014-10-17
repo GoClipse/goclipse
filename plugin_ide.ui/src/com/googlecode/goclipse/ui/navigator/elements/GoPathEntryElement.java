@@ -12,13 +12,31 @@ package com.googlecode.goclipse.ui.navigator.elements;
 
 import java.nio.file.Path;
 
+import org.eclipse.core.resources.IProject;
+
+import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.tooling.env.GoPath;
+
 public class GoPathEntryElement extends GoPathElement {
 	
-	protected Path goPathEntryPath;
+	protected final Path goPathEntryPath;
+	protected final IProject project;
+	protected boolean projectInsideGoPath;
 	
-	public GoPathEntryElement(Path goPathEntryPath) {
+	public GoPathEntryElement(Path goPathEntryPath, IProject project, GoPath goPath) {
 		super("GOPATH", goPathEntryPath.resolve("src").toFile());
 		this.goPathEntryPath = goPathEntryPath;
+		this.project = project;
+		
+		this.projectInsideGoPath = GoProjectEnvironment.isProjectInsideGoPath(project, goPath);
+	}
+	
+	public IProject getProject() {
+		return project;
+	}
+	
+	public boolean isProjectInsideGoPath() {
+		return projectInsideGoPath;
 	}
 	
 }

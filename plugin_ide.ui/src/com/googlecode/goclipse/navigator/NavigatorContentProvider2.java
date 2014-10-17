@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 import com.googlecode.goclipse.ui.GoUIPlugin;
@@ -93,7 +94,9 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 
 	protected Object[] getProjectChildren(IProject project) {
 		
-		GoRoot goRoot = GoProjectEnvironment.getEffectiveGoRoot(project);
+		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
+		
+		GoRoot goRoot = goEnvironment.getGoRoot();
 		java.nio.file.Path goRootSource;
 		try {
 			goRootSource = goRoot.getSourceRootLocation();
@@ -109,7 +112,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		
 		buildpathChildren.add(new GoRootElement(goRootSource.toFile()));
 		
-		GoPath effectiveGoPath = GoProjectEnvironment.getEffectiveGoPath(project);
+		GoPath effectiveGoPath = goEnvironment.getGoPath();
 		
 		for (String goPathEntry : effectiveGoPath.getGoPathEntries()) {
 			Path goPathEntryPath;
@@ -122,7 +125,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 				continue; // Don't add this entry.
 			}
 			
-			buildpathChildren.add(new GoPathEntryElement(goPathEntryPath));
+			buildpathChildren.add(new GoPathEntryElement(goPathEntryPath, project, effectiveGoPath));
 		}
 		
 		return buildpathChildren.toArray();

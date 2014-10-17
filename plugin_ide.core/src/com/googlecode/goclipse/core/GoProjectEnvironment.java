@@ -63,8 +63,12 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return new GoPath(newGoPathEntries);
 	}
 	
-	public static boolean isProjectInsideGOPATH(IProject project) {
+	public static boolean isProjectInsideGoPath(IProject project) {
 		GoPath goPath = getEffectiveGoPath(project);
+		return isProjectInsideGoPath(project, goPath);
+	}
+	
+	public static boolean isProjectInsideGoPath(IProject project, GoPath goPath) {
 		IPath location = project.getLocation();
 		if(location == null) {
 			return false;

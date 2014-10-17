@@ -61,7 +61,20 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 			}
 			if(element instanceof GoPathEntryElement) {
 				GoPathEntryElement goPathEntryElement = (GoPathEntryElement) element;
-				baseText.append(" - " + goPathEntryElement.getDirectory().toString(), fgColor(LOCATION_ANNOTATION_FG));
+				
+				baseText.append(" - ", fgColor(LOCATION_ANNOTATION_FG));
+				
+				String goPathEntryLocation = goPathEntryElement.getDirectory().toString();
+				
+				StyledString suffix;
+				if(goPathEntryElement.isProjectInsideGoPath()) {
+					suffix = new StyledString(goPathEntryLocation, 
+						new ItalicStyler(fgColor(LOCATION_ANNOTATION_FG)));
+				} else {
+					suffix = new StyledString(goPathEntryLocation, fgColor(LOCATION_ANNOTATION_FG));
+				}
+				baseText.append(suffix);
+				
 				return baseText;
 			}
 			assertFail();
@@ -132,7 +145,7 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 			IFolder folder = (IFolder)resource;
 			
 			IProject project = resource.getProject();
-			boolean isProjecInsideGoPath = GoProjectEnvironment.isProjectInsideGOPATH(project);
+			boolean isProjecInsideGoPath = GoProjectEnvironment.isProjectInsideGoPath(project);
 			
 			if(resource.getParent() instanceof IProject && !isProjecInsideGoPath) {
 				if("src".equals(resource.getName())) {
