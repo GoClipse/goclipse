@@ -32,6 +32,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
@@ -126,7 +127,10 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 		if (resource instanceof IFolder) {
 			IFolder folder = (IFolder)resource;
 			
-			if(resource.getParent() instanceof IProject) {
+			IProject project = resource.getProject();
+			boolean isProjecInsideGoPath = GoProjectEnvironment.isProjectInsideGOPATH(project);
+			
+			if(resource.getParent() instanceof IProject && !isProjecInsideGoPath) {
 				if("src".equals(resource.getName())) {
 					return GoPluginImages.NAVIGATOR_SRC_FOLDER.getDescriptor();
 				} else if("pkg".equals(resource.getName())) {

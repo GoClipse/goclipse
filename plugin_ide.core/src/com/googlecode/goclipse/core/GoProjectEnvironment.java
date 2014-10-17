@@ -44,7 +44,11 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 			return rawGoPath;
 		}
 		
-		java.nio.file.Path projectPath = project.getLocation().toFile().toPath();
+		IPath location = project.getLocation();
+		if(location == null) {
+			return rawGoPath;
+		}
+		java.nio.file.Path projectPath = location.toFile().toPath();
 		
 		java.nio.file.Path goPathEntry = rawGoPath.findGoPathEntryForSourceModule(projectPath);
 		if(goPathEntry != null) {
@@ -57,6 +61,15 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		newGoPathEntries.addElements(rawGoPath.getGoPathEntries());
 		
 		return new GoPath(newGoPathEntries);
+	}
+	
+	public static boolean isProjectInsideGOPATH(IProject project) {
+		GoPath goPath = getEffectiveGoPath(project);
+		IPath location = project.getLocation();
+		if(location == null) {
+			return false;
+		}
+		return goPath.findGoPathEntryForSourceModule(location.toFile().toPath()) != null;
 	}
 	
 	protected static String getEffectiveValue_NonNull(StringPreference stringPref, IProject project, 

@@ -11,6 +11,7 @@
 package com.googlecode.goclipse.core;
 
 import static com.googlecode.goclipse.tooling.CommonGoToolingTest.SAMPLE_GOPATH_Entry;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -58,14 +59,14 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 			IPath location = project.getLocation();
 			
 			// Test that project location is added to effective GOPATH entries 
-			checkEnvGoPath(project, list(location.toOSString(), SAMPLE_GOPATH_Entry.toString()));
+			checkEnvGoPath(project, list(location.toOSString(), SAMPLE_GOPATH_Entry.toString()), false);
 			
 			String goPathEntryOther = location.append("other").toOSString();
 			String gopath = location.toOSString() + File.pathSeparator + goPathEntryOther;
 			GoEnvironmentPrefs.GO_PATH.set(gopath);
 			
 			// Test GOPATH which already has project location. Also nested GOPATH entry.
-			checkEnvGoPath(project, list(location.toOSString(), goPathEntryOther));
+			checkEnvGoPath(project, list(location.toOSString(), goPathEntryOther), false);
 		}
 		
 		try (SampleProject sampleProject = new SampleProject(getClass().getSimpleName())){
@@ -75,20 +76,23 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 			
 			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve("src/github.com/foo"));
 			// Test that project location is not added, because project is in a Go source package
-			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString()));
+			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString()), true);
 			
-			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve("src/foo")); // Test 1 dir under 'src'
-			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString()));
+			 // Test 1 dir under 'src'
+			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve("src/foo"));
+			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString()), true);
 			
+			 // Test under 'src'
 			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve("../temp"));
 			TestsWorkingDir.deleteDir(SAMPLE_GOPATH_Entry);
-			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve("src")); // Test under 'src'
-			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString()));
+			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve("src"));
+			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString()), true);
 		}
 		
 	}
 	
-	protected void checkEnvGoPath(IProject project, Collection<String> list) {
+	protected void checkEnvGoPath(IProject project, Collection<String> list, boolean insideGoPath) {
+		assertTrue(GoProjectEnvironment.isProjectInsideGOPATH(project) == insideGoPath);
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		assertEquals(goEnv.getGoPathEntries(), list);
 	}
