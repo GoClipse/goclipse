@@ -17,13 +17,13 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import com.googlecode.goclipse.tooling.GoPackageName;
-
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 import melnorme.utilbox.misc.StringUtil;
+
+import com.googlecode.goclipse.tooling.GoPackageName;
 
 /**
  * Immutable description of a Go environment, under which Go operations and semantic analysis can be run.

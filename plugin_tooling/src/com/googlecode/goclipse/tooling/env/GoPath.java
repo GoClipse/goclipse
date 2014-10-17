@@ -11,17 +11,18 @@
 package com.googlecode.goclipse.tooling.env;
 
 import static java.util.Collections.unmodifiableList;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 
-import com.googlecode.goclipse.tooling.GoPackageName;
-
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
+
+import com.googlecode.goclipse.tooling.GoPackageName;
 
 /**
  * Helper class to work with a GOPATH entry list.
@@ -31,9 +32,18 @@ public class GoPath {
 	protected final List<String> goPathElements;
 	
 	public GoPath(String goPathString) {
-		assertNotNull(goPathString);
-		String[] elements = goPathString.isEmpty() ? new String[0] : goPathString.split(File.pathSeparator);
-		this.goPathElements = unmodifiableList(new ArrayList2<>(elements));
+		this(StringUtil.splitToList(goPathString, File.pathSeparator));
+	}
+	
+	public GoPath(Collection<String> goPathElements) {
+		// Use HashSet to remove duplicates
+		LinkedHashSet<String> newElements = new LinkedHashSet<>();
+		for (String string : goPathElements) {
+			if(!string.isEmpty()) {
+				newElements.add(string);
+			}
+		}
+		this.goPathElements = unmodifiableList(new ArrayList<>(newElements));
 	}
 	
 	public List<String> getGoPathEntries() {
@@ -61,15 +71,19 @@ public class GoPath {
 		return null;
 	}
 	
-	public Path findGoPathEntryForSourceModule(Path path) {
-		Path workspaceEntry = findGoPathEntry(path);
+	/** @return the GOPATH entry that contains the given goModulePath, if it's in the "src" folder of that entry. 
+	 * Return null otherwise. */
+	public Path findGoPathEntryForSourceModule(Path goModulePath) {
+		Path workspaceEntry = findGoPathEntry(goModulePath);
 		
-		if(path.startsWith(workspaceEntry.resolve("src"))) {
+		if(workspaceEntry != null && goModulePath.startsWith(workspaceEntry.resolve("src"))) {
 			return workspaceEntry;
 		}
 		return null;
 	}
 	
+	/** @return the Go package path for given goModulePath, if it's in a source package in some GOPATH entry. 
+	 * Return null otherwise. */
 	public GoPackageName findGoPackageForSourceModule(Path goModulePath) {
 		Path goWorkspaceEntry = findGoPathEntry(goModulePath);
 		if(goWorkspaceEntry == null) {

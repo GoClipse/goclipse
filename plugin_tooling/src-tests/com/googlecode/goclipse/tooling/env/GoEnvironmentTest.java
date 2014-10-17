@@ -29,6 +29,10 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 	private static final Path WS_BAR = TESTS_WORKDIR.resolve("WorkspaceBar");
 	private static final Path WS_FOO = TESTS_WORKDIR.resolve("WorkspaceFoo");
 	
+	public static GoPackageName gopackage(String pathString) {
+		return GoPackageName.fromPath(MiscUtil.createPathOrNull(pathString));
+	}
+	
 	@Test
 	public void test_GoPath() throws Exception { test_GoPath$(); }
 	public void test_GoPath$() throws Exception {
@@ -51,10 +55,6 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 		assertTrue(goPath.isEmpty());
 		assertTrue(goPath.getGoPathEntries().size() == 0);
 		assertEquals(goPath.getGoPathWorkspaceString(), "");
-	}
-	
-	public static GoPackageName gopackage(String pathString) {
-		return GoPackageName.fromPath(MiscUtil.createPathOrNull(pathString));
 	}
 	
 	@Test

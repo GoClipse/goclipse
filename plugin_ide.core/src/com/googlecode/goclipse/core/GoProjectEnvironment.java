@@ -10,10 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
-import java.io.File;
-
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
-
+import melnorme.utilbox.collections.ArrayList2;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -40,17 +38,25 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	}
 	
 	public static GoPath getEffectiveGoPath(IProject project) {
-		return new GoPath(getEffectiveGoPathString(project));
-	}
-	
-	public static String getEffectiveGoPathString(IProject project) {
 		String goPathPref = getEffectiveValue_NonNull(GoEnvironmentPrefs.GO_PATH, project, GOPATH);
+		GoPath rawGoPath = new GoPath(goPathPref);
 		if(project == null) {
-			return goPathPref;
+			return rawGoPath;
+		}
+		
+		java.nio.file.Path projectPath = project.getLocation().toFile().toPath();
+		
+		java.nio.file.Path goPathEntry = rawGoPath.findGoPathEntryForSourceModule(projectPath);
+		if(goPathEntry != null) {
+			// GOPATH already contains project location
+			return rawGoPath;
 		}
 		
 		// Implicitly add project location to GOPATH
-		return project.getLocation().toOSString() + File.pathSeparator + goPathPref;
+		ArrayList2<String> newGoPathEntries = new ArrayList2<>(projectPath.toString());
+		newGoPathEntries.addElements(rawGoPath.getGoPathEntries());
+		
+		return new GoPath(newGoPathEntries);
 	}
 	
 	protected static String getEffectiveValue_NonNull(StringPreference stringPref, IProject project, 

@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.resources.IFile;
