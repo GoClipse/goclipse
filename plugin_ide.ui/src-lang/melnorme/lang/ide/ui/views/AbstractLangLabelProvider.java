@@ -11,11 +11,15 @@
 package melnorme.lang.ide.ui.views;
 
 
+import org.eclipse.jface.resource.FontDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.StyledString.Styler;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
@@ -42,11 +46,7 @@ public abstract class AbstractLangLabelProvider extends LabelProvider
 	
 	/* ----------------- styler helpers ----------------- */
 	
-	public static ForegroundColorStyler fgColor(RGB rgb) {
-		return new ForegroundColorStyler(rgb);
-	}
-	
-	public static class ForegroundColorStyler extends Styler {
+	protected class ForegroundColorStyler extends Styler {
 		protected final RGB fgColor;
 		
 		public ForegroundColorStyler(RGB fgColor) {
@@ -58,6 +58,60 @@ public abstract class AbstractLangLabelProvider extends LabelProvider
 			if(fgColor != null) {
 				textStyle.foreground = new Color(Display.getCurrent(), fgColor);
 			}
+		}
+	}
+	
+	protected ForegroundColorStyler fgColor(RGB rgb) {
+		return new ForegroundColorStyler(rgb);
+	}
+	
+	protected abstract class FontStyler extends Styler {
+		
+		protected Styler parentStyler;
+		
+		public FontStyler(Styler parentStyler) {
+			this.parentStyler = parentStyler;
+		}
+		
+		@Override
+		public void applyStyles(TextStyle textStyle) {
+			if(parentStyler != null) {
+				parentStyler.applyStyles(textStyle);
+			}
+			
+			Font font = textStyle.font;
+			if(font == null) {
+				font = JFaceResources.getDefaultFont(); 
+			}
+			FontDescriptor fontDescriptor = FontDescriptor.createFrom(font);
+			fontDescriptor = getModifiedFontDescriptor(fontDescriptor);
+			textStyle.font = fontDescriptor.createFont(Display.getCurrent());
+		}
+		
+		protected abstract FontDescriptor getModifiedFontDescriptor(FontDescriptor fontDescriptor);
+	}
+	
+	public class ItalicStyler extends FontStyler {
+		
+		public ItalicStyler(Styler parentStyler) {
+			super(parentStyler);
+		}
+
+		@Override
+		protected FontDescriptor getModifiedFontDescriptor(FontDescriptor fontDescriptor) {
+			return fontDescriptor.setStyle(SWT.ITALIC);
+		}
+	}
+	
+	public class BoldStyler extends FontStyler {
+		
+		public BoldStyler(Styler parentStyler) {
+			super(parentStyler);
+		}
+		
+		@Override
+		protected FontDescriptor getModifiedFontDescriptor(FontDescriptor fontDescriptor) {
+			return fontDescriptor.setStyle(SWT.BOLD);
 		}
 	}
 	
