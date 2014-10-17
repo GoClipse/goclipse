@@ -13,8 +13,12 @@ package com.googlecode.goclipse.ui.navigator;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+
+import java.nio.file.Path;
+
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.ui.views.AbstractLangLabelProvider;
+import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -138,7 +142,7 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 				} else if("bin".equals(resource.getName())) {
 					return GoPluginImages.NAVIGATOR_BIN_FOLDER.getDescriptor();
 				}
-			} else if(isSubpackage(folder)) {
+			} else if(isSourcePackageFolder(folder, isProjecInsideGoPath)) {
 				return GoPluginImages.NAVIGATOR_SOURCE_PACKAGE_FOLDER.getDescriptor();
 			}
 		} else if(resource instanceof IFile) {
@@ -151,9 +155,23 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 		return null;
 	}
 	
+	protected static boolean isSourcePackageFolder(IFolder folder, boolean isProjecInsideGoPath) {
+		Path path = folder.getProjectRelativePath().toFile().toPath();
+		
+		if(isProjecInsideGoPath) {
+			return isValidSourcePackageName(path);
+		} else {
+			if(path.startsWith("src")) {
+				path = MiscUtil.createValidPath("src").relativize(path);
+				return isValidSourcePackageName(path);
+			}
+			return false;
+		}
+	}
+	
 	@SuppressWarnings("unused")
-	protected static boolean isSubpackage(IFolder folder) {
-		return false; // TODO:
+	protected static boolean isValidSourcePackageName(Path path) {
+		return true; // TODO: check for invalid names
 	}
 	
 }
