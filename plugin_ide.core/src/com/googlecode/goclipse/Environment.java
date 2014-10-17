@@ -1,5 +1,7 @@
 package com.googlecode.goclipse;
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +13,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 import com.googlecode.goclipse.tooling.GoFileNaming;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-/**
- * Provides environmental utility methods for acquiring and storing a user
- * session's contextual data.
- * 
- */
+/** FIXME: Need to review an rewrite users of this class, since this likely breaks
+ * with the neew {@link GoEnvironment} API that allows projects contained in the GOPATH. */
 @Deprecated
 public class Environment {
 	
@@ -24,7 +24,7 @@ public class Environment {
 	}
 	
 	public static String[] getSourceFoldersAsStringArray(IProject project) {
-		return new String[] {"src"};
+		return array("src");
 	}
 	
 	/**
@@ -47,26 +47,10 @@ public class Environment {
 		return result;
 	}
 	
-	public static IPath getDefaultCmdSourceFolder() {
-		return Path.fromOSString("src");
-	}
-	
 	public static IPath getDefaultPkgSourceFolder() {
 		return Path.fromOSString("src");
 	}
 	
-	/**
-	 * @param path
-	 * @return
-	 */
-	public static boolean isCmdFile(IPath path) {
-		return getDefaultCmdSourceFolder().isPrefixOf(path);
-	}
-	
-	/**
-	 * @param path
-	 * @return
-	 */
 	public static boolean isPkgFile(IPath path) {
 		return getDefaultPkgSourceFolder().isPrefixOf(path);
 	}

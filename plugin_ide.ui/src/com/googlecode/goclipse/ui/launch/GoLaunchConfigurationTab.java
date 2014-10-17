@@ -18,7 +18,9 @@ import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.launch.LangArgumentsBlock2;
 import melnorme.lang.ide.ui.launch.LangWorkingDirectoryBlock;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -30,8 +32,7 @@ import org.eclipse.debug.ui.WorkingDirectoryBlock;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
-import com.googlecode.goclipse.Environment;
-import com.googlecode.goclipse.ui.GoUIPlugin;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
 
 public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
@@ -117,22 +118,16 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		// TODO: this should be refactored to shows Go packages
 		// and after even better: only main packages
 		try {
-			String[] pathRoots = Environment.getSourceFoldersAsStringArray(project);
+			
+			// load stack
+			Stack<IContainer> stack = new Stack<IContainer>();
+			stack.push(GoProjectEnvironment.getSourceFolderRoot(project));
 			
 			ArrayList<IResource> resources = new ArrayList<IResource>();
 			
-			// load stack
-			Stack<IFolder> stack = new Stack<IFolder>();
-			for (String path : pathRoots) {
-				IResource res = project.findMember(path);
-				if (res.getType() == IResource.FOLDER) {
-					stack.push((IFolder) res);
-				}
-			}
-			
 			// walk resource tree
 			while (!stack.isEmpty()) {
-				IFolder folder = stack.pop();
+				IContainer folder = stack.pop();
 				for (IResource resource : folder.members()) {
 					if (resource.getType() == IResource.FILE && resource.getName().endsWith(".go")) {
 						resources.add(resource);
@@ -154,8 +149,8 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 				String programPath = ((IResource) objs[0]).getProjectRelativePath().toString();
 				programPathField.setFieldValue(programPath);
 			}
-		} catch (CoreException e) {
-			GoUIPlugin.logStatus(e);
+		} catch (CoreException ce) {
+			UIOperationExceptionHandler.handleOperationStatus("Error opening dialog", ce);
 		}
 	}
 	

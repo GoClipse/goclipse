@@ -12,7 +12,10 @@ package com.googlecode.goclipse.core;
 
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.utilbox.collections.ArrayList2;
+
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
@@ -119,6 +122,18 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
 	public static IPath getBinFolder(java.nio.file.Path goWorkspaceEntry) {
 		return Path.fromOSString(goWorkspaceEntry.resolve("bin").toString());
+	}
+	
+	public static IContainer getSourceFolderRoot(IProject project) throws CoreException {
+		
+		if(isProjectInsideGoPath(project)) {
+			if(project.getLocation() == null) {
+				throw GoCore.createCoreException("Invalid project location: " + project.getLocationURI(), null);
+			}
+			return project;
+		}
+		
+		return project.getFolder("src");
 	}
 	
 }

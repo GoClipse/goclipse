@@ -441,9 +441,9 @@ public class GoBuilder extends LangProjectBuilder {
 				IPath rawLocation = resource.getRawLocation();
 				if (rawLocation != null) {
 					File file = rawLocation.toFile();
-					if (file.exists() && file.isDirectory() &&
-						(Environment.isCmdFile(relativePath) || Environment.isPkgFile(relativePath))
-						&& (lastSegment.equals(GoConstants.OBJ_FILE_DIRECTORY) || lastSegment.equals(GoConstants.TEST_FILE_DIRECTORY)))
+					if (file.exists() && file.isDirectory() 
+							&& (Environment.isPkgFile(relativePath)) 
+							&& (lastSegment.equals(GoConstants.OBJ_FILE_DIRECTORY) || lastSegment.equals(GoConstants.TEST_FILE_DIRECTORY)))
 					{
 						deleteFolder(file, true);
 					}
