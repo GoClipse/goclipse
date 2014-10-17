@@ -10,13 +10,17 @@
  *******************************************************************************/
 package melnorme.utilbox.misc;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.fntypes.Function;
 
 /**
@@ -295,6 +299,12 @@ public final class StringUtil {
 		
 		segments[count] = string.substring(startIx);
 		return segments;
+	}
+	
+	/** Splits given string using given regex. Return the result as an {@link ArrayList}. */
+	public static ArrayList2<String> splitToList(String string, String regex) {
+		assertNotNull(string);
+		return new ArrayList2<>(string.split(regex));
 	}
 	
 }

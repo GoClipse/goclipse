@@ -63,6 +63,11 @@ public class ResourceUtils {
 		writeToFile(file, new ByteArrayInputStream(contents.getBytes(charset)));
 	}
 	
+	public static void createFolder(IFolder folder, boolean force, IProgressMonitor monitor) 
+			throws CoreException {
+		createFolder(folder, force, true, monitor);
+	}
+	
 	public static void createFolder(IFolder folder, boolean force, boolean local, IProgressMonitor monitor) 
 			throws CoreException {
 		if (folder.exists()) {
