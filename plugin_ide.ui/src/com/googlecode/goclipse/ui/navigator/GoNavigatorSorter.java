@@ -10,11 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.navigator;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ViewerSorter;
 
@@ -28,7 +25,6 @@ public class GoNavigatorSorter extends ViewerSorter {
 	
 	@Override
 	public int category(Object element) {
-		assertTrue(!(element instanceof IProject));
 		
 		if(element instanceof GoRootElement) {
 			return -20;
