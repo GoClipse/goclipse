@@ -7,8 +7,8 @@
 <repository location="http://archive.eclipse.org/tools/orbit/downloads/drops/R20130517111416/repository/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.feature.group" version="4.3.0.v20130605-2000"/>
-<repository location="http://download.eclipse.org/releases/kepler/"/>
+<unit id="org.eclipse.platform.feature.group" version="4.4.0.v20140925-0400"/>
+<repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.cdt.platform.feature.group" version="8.4.0.201406111759"/>
