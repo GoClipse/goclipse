@@ -24,7 +24,9 @@ public final class ErrorLogListener implements ILogListener {
 		if(status.getSeverity() == IStatus.ERROR && errorOccurred == false) {
 			errorOccurred = true;
 			exception = status.getException();
-			assertNotNull(exception);
+			System.out.println("!!!>>>>>>>>> Logged error from: " + plugin);
+			System.out.println(status);
+			assertNotNull(exception, status.getMessage());
 		}
 	}
 	
