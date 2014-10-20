@@ -16,6 +16,7 @@
  * Removed "RELEASE/DEBUG" config option from launch configuration, since it didn't actually do anything.
  * Fixed: bug in Go Project Wizard where using "Create project from existing source" will make the finish button not work.
  * Fixed: bug where some items in the Workbench "Source" menu would disappear when switching editors.
+ * Fixed: Provide correct GOPATH 'lib-path' argument to gocode.
  
 ### Goclipse 0.8.1
  * Changed the Eclipse update site URL to: http://goclipse.github.io/releases/

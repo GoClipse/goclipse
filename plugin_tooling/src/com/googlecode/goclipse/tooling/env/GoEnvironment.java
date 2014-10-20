@@ -155,20 +155,6 @@ public class GoEnvironment {
 	// The following methods, I'm not sure they are really necessary.
 	// with some refactoring, we might be able to remove their uses
 	
-	public String getPackageObjectsPathString() throws CommonException {
-		
-		ArrayList2<String> pkgFolders = new ArrayList2<>();
-		
-		pkgFolders.add(getGoRootPackageObjectsDir().toString());
-		
-		for (String goPathElement : getGoPathEntries()) {
-			Path pkgFolder = getPackageObjectsDir(createPath(goPathElement));
-			pkgFolders.add(pkgFolder.toString());
-		}
-		
-		return StringUtil.collToString(pkgFolders, File.pathSeparator);
-	}
-	
 	public boolean isValid() {
 		if (isNullOrEmpty(goRoot.asString()) || isNullOrEmpty(goOs.asString()) || isNullOrEmpty(goArch.asString())) {
 			return false;
