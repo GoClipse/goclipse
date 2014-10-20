@@ -9,7 +9,8 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional
 Bundle-ClassPath: .
-Export-Package: melnorme.lang.tooling,
+Export-Package: melnorme.lang.tests,
+ melnorme.lang.tooling,
  melnorme.lang.tooling.ast,
  melnorme.lang.tooling.ops,
  melnorme.lang.utils,
