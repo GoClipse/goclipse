@@ -10,14 +10,18 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
+import java.io.IOException;
+
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import com.googlecode.goclipse.core.operations.IGoOperationsListener;
+import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
 
 public class GoOperationsConsoleListener extends AbstractToolsConsoleListener implements IGoOperationsListener {
 	
@@ -55,7 +59,14 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	@Override
 	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
 			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-		new ProcessUIConsoleHandler(pb, project, ">> Running: ", false, processHelper, ce);
+		new ProcessUIConsoleHandler(pb, project, ">> Running: ", false, processHelper, ce) {
+			@Override
+			protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
+					CommonException ce) {
+				super.printProcessStartResult(outStream, prefix, pb, ce);
+				printGoPathString(outStream, pb);
+			}
+		};
 	}
 	
 	@Override
@@ -71,8 +82,26 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 			ExternalProcessNotifyingHelper processHelper) {
 		
 		new EngineClientProcessUIConsoleHandler(pb, null, 
-			">> Running: ", processHelper, ce);
+			">> Running: ", processHelper, ce) {
+			@Override
+			protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix,
+					ProcessBuilder pb, CommonException ce) {
+				super.printProcessStartResult(outStream, prefix, pb, ce);
+				printGoPathString(outStream, pb);
+			}
+		};
 		
+	}
+	
+	protected void printGoPathString(IOConsoleOutputStream outStream, ProcessBuilder pb) {
+		String gopathString = pb.environment().get(GoEnvironmentConstants.GOPATH);
+		if(gopathString != null) {
+			try {
+				outStream.write("  with GOPATH: " + gopathString + "\n");
+			} catch (IOException e) {
+				// Do nothing
+			}
+		}
 	}
 	
 }

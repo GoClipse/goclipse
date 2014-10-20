@@ -112,26 +112,26 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 			return new ProcessOutputToConsoleListener(console);
 		}
 		
-	}
-	
-	protected static void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
-			CommonException ce) {
-		List<String> commandLine = pb.command();
-		String text = prefix + StringUtil.collToString(commandLine, " ") + "\n";
-		
-		if(ce != null) {
-			text += "  FAILED: " + ce.getMessage();
-			Throwable cause = ce.getCause();
-			if(cause != null) {
-				text += "   Reason: " + cause.getMessage() + "\n";
+		protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
+				CommonException ce) {
+			List<String> commandLine = pb.command();
+			String text = prefix + StringUtil.collToString(commandLine, " ") + "\n";
+			
+			if(ce != null) {
+				text += "  FAILED: " + ce.getMessage();
+				Throwable cause = ce.getCause();
+				if(cause != null) {
+					text += "   Reason: " + cause.getMessage() + "\n";
+				}
+			}
+			
+			try {
+				outStream.write(text);
+			} catch (IOException e) {
+				// Do nothing
 			}
 		}
 		
-		try {
-			outStream.write(text);
-		} catch (IOException e) {
-			// Do nothing
-		}
 	}
 	
 	@Override
