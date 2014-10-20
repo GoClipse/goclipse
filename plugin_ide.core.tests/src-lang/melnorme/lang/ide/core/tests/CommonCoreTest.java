@@ -36,6 +36,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -57,6 +60,19 @@ public abstract class CommonCoreTest extends CommonTest {
 	
 	static {
 		initializeWorkingDirToEclipseInstanceLocation();
+		
+		disableAutoBuild();
+	}
+	
+	protected static void disableAutoBuild() {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IWorkspaceDescription desc= workspace.getDescription();
+		desc.setAutoBuilding(false);
+		try {
+			workspace.setDescription(desc);
+		} catch (CoreException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 	protected static ErrorLogListener logErrorListener;
