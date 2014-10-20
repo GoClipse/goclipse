@@ -20,6 +20,7 @@ import java.util.Collection;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.junit.Test;
 
@@ -91,7 +92,8 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 		
 	}
 	
-	protected void checkEnvGoPath(IProject project, Collection<String> list, boolean insideGoPath) {
+	protected void checkEnvGoPath(IProject project, Collection<String> list, boolean insideGoPath) 
+			throws CoreException {
 		assertTrue(GoProjectEnvironment.isProjectInsideGoPath(project) == insideGoPath);
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		assertEquals(goEnv.getGoPathEntries(), list);

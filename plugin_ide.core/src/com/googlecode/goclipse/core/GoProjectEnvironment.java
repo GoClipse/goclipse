@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
+import java.util.List;
+
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.utilbox.collections.ArrayList2;
 
@@ -19,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
+import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
@@ -66,17 +70,13 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return new GoPath(newGoPathEntries);
 	}
 	
-	public static boolean isProjectInsideGoPath(IProject project) {
+	public static boolean isProjectInsideGoPath(IProject project) throws CoreException {
 		GoPath goPath = getEffectiveGoPath(project);
 		return isProjectInsideGoPath(project, goPath);
 	}
 	
-	public static boolean isProjectInsideGoPath(IProject project, GoPath goPath) {
-		IPath location = project.getLocation();
-		if(location == null) {
-			return false;
-		}
-		return goPath.findGoPathEntryForSourceModule(location.toFile().toPath()) != null;
+	public static boolean isProjectInsideGoPath(IProject project, GoPath goPath) throws CoreException {
+		return goPath.findGoPathEntryForSourceModule(getProjectPath(project)) != null;
 	}
 	
 	protected static String getEffectiveValue_NonNull(StringPreference stringPref, IProject project, 
@@ -103,6 +103,26 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 
 	public static boolean isValid(IProject project) {
 		return getGoEnvironment(project).isValid();
+	}
+	
+	public static List<GoPackageName> getSourcePackages(IProject project, GoEnvironment goEnvironment)
+			throws CoreException {
+		GoPath goPath = goEnvironment.getGoPath();
+		
+		if(isProjectInsideGoPath(project, goPath)) {
+			return GoPath.getSourcePackages(getProjectPath(project));
+		} else {
+			java.nio.file.Path goPathEntry = goPath.findGoPathEntryForSourceModule(getProjectPath(project));
+			return GoPath.getSourcePackages(goPathEntry.resolve(GoPath.SRC_DIR));
+		}
+	}
+	
+	public static java.nio.file.Path getProjectPath(IProject project) throws CoreException {
+		IPath location = project.getLocation();
+		if(location == null) {
+			throw LangCore.createCoreException("Invalid project path", null);
+		}
+		return location.toFile().toPath();
 	}
 	
 	/* ----------------- ----------------- */

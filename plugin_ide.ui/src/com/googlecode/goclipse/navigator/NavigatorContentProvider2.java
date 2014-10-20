@@ -125,7 +125,11 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 				continue; // Don't add this entry.
 			}
 			
-			buildpathChildren.add(new GoPathEntryElement(goPathEntryPath, project, effectiveGoPath));
+			try {
+				buildpathChildren.add(new GoPathEntryElement(goPathEntryPath, project, effectiveGoPath));
+			} catch (CoreException e) {
+				// Don't add any entry.
+			}
 		}
 		
 		return buildpathChildren.toArray();

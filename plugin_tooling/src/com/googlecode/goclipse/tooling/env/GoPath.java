@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -28,6 +29,8 @@ import com.googlecode.goclipse.tooling.GoPackageName;
  * Helper class to work with a GOPATH entry list.
  */
 public class GoPath {
+	
+	public static final String SRC_DIR = "src";
 	
 	protected final List<String> goPathElements;
 	
@@ -76,7 +79,7 @@ public class GoPath {
 	public Path findGoPathEntryForSourceModule(Path goModulePath) {
 		Path workspaceEntry = findGoPathEntry(goModulePath);
 		
-		if(workspaceEntry != null && goModulePath.startsWith(workspaceEntry.resolve("src"))) {
+		if(workspaceEntry != null && goModulePath.startsWith(workspaceEntry.resolve(SRC_DIR))) {
 			return workspaceEntry;
 		}
 		return null;
@@ -90,12 +93,17 @@ public class GoPath {
 			return null;
 		}
 		
-		Path sourceRoot = goWorkspaceEntry.resolve("src");
+		Path sourceRoot = goWorkspaceEntry.resolve(SRC_DIR);
 		return GoRoot.findGoPackageForSourceModule(goModulePath, sourceRoot);
 	}
 	
 	public boolean isEmpty() {
 		return goPathElements.size() == 0;
+	}
+	
+	public static List<GoPackageName> getSourcePackages(java.nio.file.Path path) {
+		// TODO Auto-generated method stub
+		return new ArrayList2<>();
 	}
 	
 }

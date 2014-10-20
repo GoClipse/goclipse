@@ -17,7 +17,9 @@ import java.util.Set;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -37,6 +39,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.core.GoCoreMessages;
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.dependency.DependencyGraph;
@@ -44,6 +47,7 @@ import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Package;
 import com.googlecode.goclipse.go.lang.parser.PackageParser;
+import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 /**
@@ -106,6 +110,8 @@ public class GoBuilder extends LangProjectBuilder {
 		GoToolManager.getDefault().notifyBuildStarting(project);
 		
 		try {
+			doBuildAll(project, monitor);
+			
 			
 			if (kind == FULL_BUILD || onlyFullBuild) {
 				fullBuild(compiler, monitor);
@@ -137,6 +143,26 @@ public class GoBuilder extends LangProjectBuilder {
 		
 		// no project dependencies (yet)
 		return null;
+	}
+
+	private void doBuildAll(final IProject project, IProgressMonitor monitor) throws CoreException {
+		
+		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
+		String compilerPath = GoEnvironmentPrefs.COMPILER_PATH.get();
+		
+		ArrayList2<String> arrayList2 = new ArrayList2<>(compilerPath, "build");
+		
+		List<GoPackageName> sourcePackages = GoProjectEnvironment.getSourcePackages(project, goEnvironment);
+		for (GoPackageName goPackageName : sourcePackages) {
+			arrayList2.add(goPackageName.getFullNameAsString());
+		}
+		
+		if(false) {
+			// TODO:
+			ExternalProcessResult buildAllResult = GoToolManager.getDefault().runBuildTool(goEnvironment, project, monitor,
+				project.getLocation().toFile(), arrayList2);
+		}
+		
 	}
 
 

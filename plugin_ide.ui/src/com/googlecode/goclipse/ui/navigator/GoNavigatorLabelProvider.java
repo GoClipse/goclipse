@@ -145,7 +145,12 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 			IFolder folder = (IFolder)resource;
 			
 			IProject project = resource.getProject();
-			boolean isProjecInsideGoPath = GoProjectEnvironment.isProjectInsideGoPath(project);
+			boolean isProjecInsideGoPath;
+			try {
+				isProjecInsideGoPath = GoProjectEnvironment.isProjectInsideGoPath(project);
+			} catch (CoreException e) {
+				return null;
+			}
 			
 			if(resource.getParent() instanceof IProject && !isProjecInsideGoPath) {
 				if("src".equals(resource.getName())) {
