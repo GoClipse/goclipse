@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.utils;
+package melnorme.lang.tests;
 
 
 import java.io.PrintStream;

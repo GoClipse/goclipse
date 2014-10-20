@@ -12,16 +12,16 @@ package com.googlecode.goclipse.tooling;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tests.CommonToolingTest;
+import melnorme.utilbox.tests.TestsWorkingDir;
+
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoOs;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 
-import melnorme.utilbox.tests.CommonTestExt;
-import melnorme.utilbox.tests.TestsWorkingDir;
-
-public class CommonGoToolingTest extends CommonTestExt {
+public class CommonGoToolingTest extends CommonToolingTest {
 	
 	public static final Path TESTS_WORKDIR = TestsWorkingDir.getWorkingDirPath();
 	
