@@ -43,16 +43,7 @@ public class GoRoot {
 	}
 	
 	public GoPackageName findGoPackageForSourceModule(Path goModulePath) throws CommonException {
-		return findGoPackageForSourceModule(goModulePath, getSourceRootLocation());
-	}
-	
-	public static GoPackageName findGoPackageForSourceModule(Path goModulePath, Path sourceRoot) {
-		goModulePath = goModulePath.normalize();
-		if(!goModulePath.startsWith(sourceRoot)) {
-			return null;
-		}
-		goModulePath = sourceRoot.relativize(goModulePath);
-		return GoPackageName.fromPath(goModulePath.getParent()); // Discard file name
+		return GoEnvironment.getGoPackageForSourceFile(goModulePath, getSourceRootLocation());
 	}
 	
 }

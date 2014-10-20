@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -144,25 +145,26 @@ public class GoBuilder extends LangProjectBuilder {
 		// no project dependencies (yet)
 		return null;
 	}
-
-	private void doBuildAll(final IProject project, IProgressMonitor monitor) throws CoreException {
+	
+	protected void doBuildAll(final IProject project, IProgressMonitor monitor) throws CoreException {
 		
 		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 		String compilerPath = GoEnvironmentPrefs.COMPILER_PATH.get();
 		
+		if(compilerPath.isEmpty()) {
+			throw LangCore.createCoreException("Compiler Path not defined.", null);
+		}
 		ArrayList2<String> arrayList2 = new ArrayList2<>(compilerPath, "build");
 		
-		List<GoPackageName> sourcePackages = GoProjectEnvironment.getSourcePackages(project, goEnvironment);
+		Collection<GoPackageName> sourcePackages = GoProjectEnvironment.getSourcePackages(project, goEnvironment);
 		for (GoPackageName goPackageName : sourcePackages) {
 			arrayList2.add(goPackageName.getFullNameAsString());
 		}
 		
-		if(false) {
-			// TODO:
-			ExternalProcessResult buildAllResult = GoToolManager.getDefault().runBuildTool(goEnvironment, project, monitor,
-				project.getLocation().toFile(), arrayList2);
-		}
+		ExternalProcessResult buildAllResult = GoToolManager.getDefault().runBuildTool(goEnvironment, project, monitor,
+			project.getLocation().toFile(), arrayList2);
 		
+		//GoBuildOuputProcessor.processCompileOutput(project, buildAllResult, relativeTargetDir, file);
 	}
 
 

@@ -10,8 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
-import java.util.List;
-
+import java.util.Collection;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.utilbox.collections.ArrayList2;
@@ -57,7 +56,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		}
 		java.nio.file.Path projectPath = location.toFile().toPath();
 		
-		java.nio.file.Path goPathEntry = rawGoPath.findGoPathEntryForSourceModule(projectPath);
+		java.nio.file.Path goPathEntry = rawGoPath.findGoPathEntryForSourcePath(projectPath);
 		if(goPathEntry != null) {
 			// GOPATH already contains project location
 			return rawGoPath;
@@ -76,7 +75,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	}
 	
 	public static boolean isProjectInsideGoPath(IProject project, GoPath goPath) throws CoreException {
-		return goPath.findGoPathEntryForSourceModule(getProjectPath(project)) != null;
+		return goPath.findGoPathEntryForSourcePath(getProjectPath(project)) != null;
 	}
 	
 	protected static String getEffectiveValue_NonNull(StringPreference stringPref, IProject project, 
@@ -105,16 +104,10 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return getGoEnvironment(project).isValid();
 	}
 	
-	public static List<GoPackageName> getSourcePackages(IProject project, GoEnvironment goEnvironment)
+	public static Collection<GoPackageName> getSourcePackages(IProject project, GoEnvironment goEnvironment)
 			throws CoreException {
 		GoPath goPath = goEnvironment.getGoPath();
-		
-		if(isProjectInsideGoPath(project, goPath)) {
-			return GoPath.getSourcePackages(getProjectPath(project));
-		} else {
-			java.nio.file.Path goPathEntry = goPath.findGoPathEntryForSourceModule(getProjectPath(project));
-			return GoPath.getSourcePackages(goPathEntry.resolve(GoPath.SRC_DIR));
-		}
+		return goPath.findSourcePackages(getProjectPath(project));
 	}
 	
 	public static java.nio.file.Path getProjectPath(IProject project) throws CoreException {

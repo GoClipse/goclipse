@@ -10,10 +10,12 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.env;
 
+import static melnorme.lang.tests.LangToolingTestResources.getTestResourcePath;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.HashSet;
 
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -21,8 +23,6 @@ import org.junit.Test;
 
 import com.googlecode.goclipse.tooling.CommonGoToolingTest;
 import com.googlecode.goclipse.tooling.GoPackageName;
-import com.googlecode.goclipse.tooling.env.GoEnvironment;
-import com.googlecode.goclipse.tooling.env.GoPath;
 
 public class GoEnvironmentTest extends CommonGoToolingTest {
 	
@@ -42,13 +42,13 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 		assertAreEqual(goPath.findGoPathEntry(WS_BAR.resolve("xxx")), WS_BAR);
 		assertAreEqual(goPath.findGoPathEntry(TESTS_WORKDIR.resolve("xxx")), null);
 		
-		assertAreEqual(goPath.findGoPackageForSourceModule(WS_FOO.resolve("xxx/m.go")), null);
-		assertAreEqual(goPath.findGoPackageForSourceModule(WS_FOO.resolve("src/xxx/m.go")), gopackage("xxx"));
-		assertAreEqual(goPath.findGoPackageForSourceModule(WS_FOO.resolve("src/xxx/zzz/m.go")), gopackage("xxx/zzz"));
-		assertAreEqual(goPath.findGoPackageForSourceModule(WS_FOO.resolve("src/m.go")), null);
-		assertAreEqual(goPath.findGoPackageForSourceModule(WS_BAR.resolve("src/xxx/m.go")), gopackage("xxx"));
-		assertAreEqual(goPath.findGoPackageForSourceModule(WS_BAR.resolve("src/src/src/m.go")), gopackage("src/src"));
-		assertAreEqual(goPath.findGoPackageForSourceModule(TESTS_WORKDIR.resolve("src/xxx/m.go")), null);
+		assertAreEqual(goPath.findGoPackageForSourceFile(WS_FOO.resolve("xxx/m.go")), null);
+		assertAreEqual(goPath.findGoPackageForSourceFile(WS_FOO.resolve("src/xxx/m.go")), gopackage("xxx"));
+		assertAreEqual(goPath.findGoPackageForSourceFile(WS_FOO.resolve("src/xxx/zzz/m.go")), gopackage("xxx/zzz"));
+		assertAreEqual(goPath.findGoPackageForSourceFile(WS_FOO.resolve("src/m.go")), null);
+		assertAreEqual(goPath.findGoPackageForSourceFile(WS_BAR.resolve("src/xxx/m.go")), gopackage("xxx"));
+		assertAreEqual(goPath.findGoPackageForSourceFile(WS_BAR.resolve("src/src/src/m.go")), gopackage("src/src"));
+		assertAreEqual(goPath.findGoPackageForSourceFile(TESTS_WORKDIR.resolve("src/xxx/m.go")), null);
 		
 		// Test empty case
 		goPath = new GoPath("");
@@ -70,6 +70,38 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 		assertAreEqual(goEnv.findGoPackageForSourceModule(goRootSrc.resolve("pack/m.go")), gopackage("pack"));
 		assertAreEqual(goEnv.findGoPackageForSourceModule(goRootSrc.resolve("pack/foo/m.go")), gopackage("pack/foo"));
 		assertAreEqual(goEnv.findGoPackageForSourceModule(goRootSrc.resolve("../foo/m.go")), null);
+	}
+	
+	
+	@Test
+	public void testFindSourcePackage() throws Exception { testFindSourcePackage$(); }
+	public void testFindSourcePackage$() throws Exception {
+		
+		Path goPathEntry = getTestResourcePath("sampleGoPathEntry");
+		GoPath goPath = new GoPath(goPathEntry.toString());
+		
+		HashSet<GoPackageName> sampleGoPathEntry_result = hashSet(
+			gopackage("samplePackage"),
+			gopackage("samplePackage/subpack"),
+			gopackage("samplePackage/subpack/bar"),
+			gopackage("samplePackage2/xxx")
+		);
+		
+		assertEquals(goPath.findSourcePackages(goPathEntry), sampleGoPathEntry_result);
+		assertEquals(goPath.findSourcePackages(goPathEntry.resolve("src")), sampleGoPathEntry_result);
+		
+		assertEquals(goPath.findSourcePackages(goPathEntry.resolve("src/samplePackage")), hashSet(
+			gopackage("samplePackage"),
+			gopackage("samplePackage/subpack"),
+			gopackage("samplePackage/subpack/bar")
+		));
+		
+		assertEquals(goPath.findSourcePackages(goPathEntry.resolve("src/samplePackage2")), hashSet(
+			gopackage("samplePackage2/xxx")
+		));
+		
+		 // Test no results
+		assertEquals(goPath.findSourcePackages(goPathEntry.resolve("..").normalize()), hashSet());
 	}
 	
 }

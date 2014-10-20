@@ -43,14 +43,14 @@ public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurati
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
 		java.nio.file.Path programAbsolutePath = project.getLocation().append(programRelativePath).toFile().toPath();
-		java.nio.file.Path goWorkspaceEntry = goEnv.getGoPath().findGoPathEntryForSourceModule(programAbsolutePath);
+		java.nio.file.Path goPathEntry = goEnv.getGoPath().findGoPathEntryForSourcePath(programAbsolutePath);
 		
-		if (goWorkspaceEntry != null) {
+		if (goPathEntry != null) {
 			
 			String cmdName = programRelativePath.removeFileExtension().lastSegment();
 			String executableName = cmdName + ProcessUtils.getExecutableSuffix();
 			
-			return GoProjectEnvironment.getBinFolder(goWorkspaceEntry).append(executableName);
+			return GoProjectEnvironment.getBinFolder(goPathEntry).append(executableName);
 		}
 		return project.getFile(programRelativePath).getLocation();
 	}

@@ -17,11 +17,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
-import melnorme.utilbox.misc.StringUtil;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
 
@@ -84,7 +82,7 @@ public class GoEnvironment {
 			return goPackage;
 		}
 		
-		return goPath.findGoPackageForSourceModule(goModulePath);
+		return goPath.findGoPackageForSourceFile(goModulePath);
 	}
 	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {
@@ -151,6 +149,14 @@ public class GoEnvironment {
 		return goRoot.asPath().resolve("pkg/tool/").resolve(createPath(getGoOS_GoArch_segment()));
 	}
 	
+	public static GoPackageName getGoPackageForSourceFile(Path sourceFilePath, Path sourceRoot) {
+		sourceFilePath = sourceFilePath.normalize();
+		if(!sourceFilePath.startsWith(sourceRoot)) {
+			return null;
+		}
+		sourceFilePath = sourceRoot.relativize(sourceFilePath);
+		return GoPackageName.fromPath(sourceFilePath.getParent()); // Discard file name
+	}
 	
 	// The following methods, I'm not sure they are really necessary.
 	// with some refactoring, we might be able to remove their uses
