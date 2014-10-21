@@ -1,6 +1,9 @@
 libbar\blah.go:3:8: cannot find package "xxx" in any of:
 	D:\devel\tools.Go\go1.3.2.windows-386\go\src\pkg\fmt222 (from $GOROOT)
 	D:\devel\tools.Go\go-workspace\src\fmt222 (from $GOPATH)
-..\MyGoLibFoo\libfoo\blah.go:3:8: cannot find package "zzz" in any of:
+..\MyGoLibFoo\libfoo\blah.go:3:8: cannot find package "yyy" in any of:
+	D:\devel\tools.Go\go1.3.2.windows-386\go\src\pkg\fmt22 (from $GOROOT)
+	D:\devel\tools.Go\go-workspace\src\fmt22 (from $GOPATH)
+$$TESTRESOURCE_SAMPLE_GOPATH_ENTRY$$/src/samplePackage/foo.go:3:2: cannot find package "zzz" in any of:
 	D:\devel\tools.Go\go1.3.2.windows-386\go\src\pkg\fmt22 (from $GOROOT)
 	D:\devel\tools.Go\go-workspace\src\fmt22 (from $GOPATH)

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
+import static melnorme.lang.tests.LangToolingTestResources.getTestResourcePath;
+
 import java.nio.file.Path;
 
 import melnorme.lang.tests.CommonToolingTest;
@@ -35,5 +37,7 @@ public class CommonGoToolingTest extends CommonToolingTest {
 		new GoArch("386"), new GoOs("windows"), 
 		SAMPLE_GO_PATH
 	);
+	
+	public static final Path TR_SAMPLE_GOPATH_ENTRY = getTestResourcePath("sampleGoPathEntry");
 	
 }

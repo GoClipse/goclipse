@@ -19,8 +19,8 @@ import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import melnorme.lang.tooling.ops.ToolSourceError;
 import melnorme.lang.tooling.ops.SourceLineColumnLocation;
+import melnorme.lang.tooling.ops.ToolSourceError;
 import melnorme.lang.utils.ParseHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -39,11 +39,7 @@ public abstract class GoBuildOutputProcessor extends ParseHelper {
 		return buildErrors;
 	}
 	
-	protected void parseOutput(ExternalProcessResult result) {
-		if(result.exitValue != 0) {
-			
-		}
-		
+	public void parseOutput(ExternalProcessResult result) {
 		parseErrors(result.stderr.toString());
 	}
 	
@@ -56,13 +52,11 @@ public abstract class GoBuildOutputProcessor extends ParseHelper {
 		} catch (IOException e) {
 			e.printStackTrace();
 			assertFail();
-		} catch (CommonException ce) {
-			handleParseError(ce);
 		}
 	}
 	
-	protected final void handleUnknownLineFormat(String line) {
-		handleParseError(new CommonException("Unknown error line syntax:" + line));
+	protected final void handleUnknownLineSyntax(String line) {
+		handleParseError(new CommonException("Unknown error line syntax: " + line));
 	}
 	
 	protected abstract void handleParseError(CommonException ce);
@@ -74,34 +68,42 @@ public abstract class GoBuildOutputProcessor extends ParseHelper {
 			"\\s(.*)$" // error message
 	);
 	
-	protected void parseErrors(StringReader sr) throws IOException, CommonException {
+	public static final Pattern WINDOWS_DRIVE_LETTER = Pattern.compile("[a-zA-Z]:\\\\.*", Pattern.DOTALL);
+	
+	protected void parseErrors(StringReader sr) throws IOException {
 		BufferedReader br = new BufferedReader(sr);
 		
-		Path currentPackagePath = basePath;
 		while(true) {
-			String line = br.readLine();
-			if(line == null) {
+			String outputLine = br.readLine();
+			if(outputLine == null) {
 				break;
 			}
-			if(line.startsWith("# ")) {
-				String pathString = line.substring("# ".length());
-				try {
-					Path parsedPath = parsePath(pathString).getParent();
-					currentPackagePath = basePath.resolve(parsedPath);
-				} catch (CommonException ce) {
-					handleParseError(ce);
-				} 
+			if(outputLine.startsWith("# ")) {
+				// Not necessary for now
 				continue;
 			}
 			
-			Matcher matcher = ERROR_LINE_Regex.matcher(line);
-			if(!matcher.matches()) {
-				handleUnknownLineFormat(line);
+			String pathDevicePrefix = "";
+			
+			if(WINDOWS_DRIVE_LETTER.matcher(outputLine).matches()) {
+				// Remove Windows drive letter from path, cause it will mess up regex
+				pathDevicePrefix = outputLine.substring(0, 2);
+				outputLine = outputLine.substring(2);
 			}
 			
-			Path filePath = currentPackagePath.resolve(parsePath(matcher.group(1))).normalize();
-			int lineNo = parsePositiveInt(matcher.group(2));
-			int column = parseColumnString(matcher);
+			if(!outputLine.contains(":")) {
+				continue; // Ignore line
+			}
+			
+			Matcher matcher = ERROR_LINE_Regex.matcher(outputLine);
+			if(!matcher.matches()) {
+				handleUnknownLineSyntax(outputLine);
+				continue;
+			}
+			
+			String pathString = pathDevicePrefix + matcher.group(1);
+			String lineString = matcher.group(2);
+			String columnString = matcher.group(4);
 			String errorMessage = matcher.group(5);
 			
 			while(true) {
@@ -118,13 +120,26 @@ public abstract class GoBuildOutputProcessor extends ParseHelper {
 				}
 			}
 			
-			addBuildError(new ToolSourceError(new SourceLineColumnLocation(filePath, lineNo, column), errorMessage));
+			try {
+				addBuildError(parseError(pathString, lineString, columnString, errorMessage));
+			} catch (CommonException ce) {
+				handleParseError(ce);
+				continue;
+			}
 		}
 	}
 	
-	protected int parseColumnString(Matcher matcher) throws CommonException {
-		String columnStr = matcher.group(4);
-		return columnStr == null ? 0 : parsePositiveInt(columnStr);
+	protected ToolSourceError parseError(String pathString, String lineString,
+			String columnString, String errorMessage) throws CommonException {
+		Path filePath = basePath.resolve(parsePath(pathString)).normalize();
+		int lineNo = parsePositiveInt(lineString);
+		int column = parseColumnString(columnString);
+		
+		return new ToolSourceError(new SourceLineColumnLocation(filePath, lineNo, column), errorMessage);
+	}
+	
+	protected int parseColumnString(String columnStr) throws CommonException {
+		return columnStr == null ? -1 : parsePositiveInt(columnStr);
 	}
 	
 	protected void addBuildError(ToolSourceError be) {

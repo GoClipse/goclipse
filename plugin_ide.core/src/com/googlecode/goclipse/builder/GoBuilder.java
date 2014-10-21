@@ -1,8 +1,5 @@
 package com.googlecode.goclipse.builder;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -18,8 +15,10 @@ import java.util.Set;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.tooling.ops.ToolSourceError;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IContainer;
@@ -42,12 +41,14 @@ import com.googlecode.goclipse.Environment;
 import com.googlecode.goclipse.core.GoCoreMessages;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.dependency.DependencyGraph;
 import com.googlecode.goclipse.go.lang.lexer.Lexer;
 import com.googlecode.goclipse.go.lang.lexer.Tokenizer;
 import com.googlecode.goclipse.go.lang.model.Package;
 import com.googlecode.goclipse.go.lang.parser.PackageParser;
+import com.googlecode.goclipse.tooling.GoBuildOutputProcessor;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
@@ -70,11 +71,7 @@ public class GoBuilder extends LangProjectBuilder {
 	
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-		assertTrue(kind != CLEAN_BUILD);
-		
-		IProject project = assertNotNull(getProject());
-		
-		return doBuild(project, kind, args, monitor);
+		return super.build(kind, args, monitor);
 	}
 	
 	private boolean checkBuild(IProject project) throws CoreException {
@@ -102,18 +99,20 @@ public class GoBuilder extends LangProjectBuilder {
 			kind = FULL_BUILD;
 		}
 		
-		// Note: delta == null means that unspecified changes have occurred
-		IResourceDelta delta = getDelta(project);
-		if(kind != FULL_BUILD && delta != null && delta.getAffectedChildren().length == 0) {
- 			return null; // Don't even start the build
- 		}
-		
 		GoToolManager.getDefault().notifyBuildStarting(project);
 		
 		try {
 			doBuildAll(project, monitor);
 			
 			
+			if(false) {
+				
+			// Note: delta == null means that unspecified changes have occurred
+			IResourceDelta delta = getDelta(project);
+			if(kind != FULL_BUILD && delta != null && delta.getAffectedChildren().length == 0) {
+	 			return null; // Don't even start the build
+	 		}
+				
 			if (kind == FULL_BUILD || onlyFullBuild) {
 				fullBuild(compiler, monitor);
 				onlyFullBuild = false;
@@ -126,6 +125,7 @@ public class GoBuilder extends LangProjectBuilder {
 			}
 			
 			compiler.updateVersion(project);
+			}
 			
 		} 
 		catch (CoreException ce) {
@@ -154,20 +154,32 @@ public class GoBuilder extends LangProjectBuilder {
 		if(compilerPath.isEmpty()) {
 			throw LangCore.createCoreException("Compiler Path not defined.", null);
 		}
-		ArrayList2<String> arrayList2 = new ArrayList2<>(compilerPath, "build");
+		ArrayList2<String> goBuildCmdLine = new ArrayList2<>(compilerPath, "install", "-v");
+		
+		goBuildCmdLine.addElements(GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project));
 		
 		Collection<GoPackageName> sourcePackages = GoProjectEnvironment.getSourcePackages(project, goEnvironment);
 		for (GoPackageName goPackageName : sourcePackages) {
-			arrayList2.add(goPackageName.getFullNameAsString());
+			goBuildCmdLine.add(goPackageName.getFullNameAsString());
 		}
 		
 		ExternalProcessResult buildAllResult = GoToolManager.getDefault().runBuildTool(goEnvironment, project, monitor,
-			project.getLocation().toFile(), arrayList2);
+			project.getLocation().toFile(), goBuildCmdLine);
 		
-		//GoBuildOuputProcessor.processCompileOutput(project, buildAllResult, relativeTargetDir, file);
+		GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor(MiscUtil.createValidPath("")) {
+			@Override
+			protected void handleParseError(CommonException ce) {
+				LangCore.logError(ce.getMessage(), ce.getCause());
+			}
+		};
+		buildOutput.parseOutput(buildAllResult);
+		
+		ArrayList2<ToolSourceError> buildErrors = buildOutput.getBuildErrors();
+		addErrorMarkers(buildErrors);
 	}
-
-
+	
+	
+	@Deprecated
 	protected void fullBuild(GoCompiler compiler, final IProgressMonitor pmonitor)
 			throws CoreException {
 		Activator.logInfo("fullBuild");
@@ -260,6 +272,7 @@ public class GoBuilder extends LangProjectBuilder {
 	 * command files until everything that depended on the original pkg or
 	 * command file was built.
 	 */
+	@Deprecated
 	protected void incrementalBuild(GoCompiler compiler, IResourceDelta delta,
 			IProgressMonitor pmonitor) throws CoreException {
 		final IProject project = compiler.getProject();

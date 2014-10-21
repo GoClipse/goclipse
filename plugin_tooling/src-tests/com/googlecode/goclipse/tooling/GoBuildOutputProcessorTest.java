@@ -10,15 +10,17 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
+import static melnorme.lang.tests.LangToolingTestResources.getTestResourcePath;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.CoreUtil.listFrom;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import melnorme.lang.tests.LangToolingTestResources;
-import melnorme.lang.tooling.ops.ToolSourceError;
 import melnorme.lang.tooling.ops.SourceLineColumnLocation;
+import melnorme.lang.tooling.ops.ToolSourceError;
 import melnorme.utilbox.core.CommonException;
 
 import org.junit.Test;
@@ -26,7 +28,7 @@ import org.junit.Test;
 
 public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	
-	protected static final Path BUILD_OUTPUT_TestResources = LangToolingTestResources.getTestResourcePath("buildOutput");
+	protected static final Path BUILD_OUTPUT_TestResources = getTestResourcePath("buildOutput");
 	
 	protected static ToolSourceError error(Path path, int line, int column, String errorMessage) {
 		return new ToolSourceError(new SourceLineColumnLocation(path, line, column), errorMessage);
@@ -35,41 +37,81 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		Path basePath = path("ProjectPath");
-		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor(basePath) {
+		runTest(path("ProjectPath"));
+		runTest(TR_SAMPLE_GOPATH_ENTRY);
+		
+		runInvalidSyntaxTest();
+	}
+	
+	protected void runTest(Path rootDir) {
+		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor(rootDir) {
 			@Override
 			protected void handleParseError(CommonException ce) {
 				assertFail();
 			}
 		};
 		
-		buildProcessor.parseErrors("");
-		assertEquals(buildProcessor.getBuildErrors(), listFrom()); // Empty
-
+		testParseError(buildProcessor, "", listFrom());  // Empty
+		
+		
+		testParseError(buildProcessor, 
+			"asdfsdaf/asdfsd", // Test that this line is ignored without reporting a syntax error.
+			listFrom()); 
+		
+		
 		List<ToolSourceError> OUTPUTA_Errors = listFrom(
-			error(basePath.resolve("MyGoLibFoo/libfoo/blah.go"), 7, 0, "undefined: asdfsd"),
-			error(basePath.resolve("MyGoLibFoo/libfoo/blah.go"), 10, 0, "not enough arguments in call to fmt.Printf")
+			error(rootDir.resolve("MyGoLibFoo/libfoo/blah.go"), 7, -1, "undefined: asdfsd"),
+			error(rootDir.resolve("MyGoLibFoo/libfoo/blah.go"), 10, -1, "not enough arguments in call to fmt.Printf"),
+			error(rootDir.resolve("MyGoLibFoo/foo.go"), 3, -1, "undefined: ziggy"),
+			error(TR_SAMPLE_GOPATH_ENTRY.resolve("src/samplePackage/foo.go"), 5, -1, "undefined: ziggy2")
 		);
-		buildProcessor.parseErrors(readStringFromFile(BUILD_OUTPUT_TestResources.resolve("outputA.txt")));
-		assertEquals(buildProcessor.getBuildErrors(), OUTPUTA_Errors);
+		testParseError(buildProcessor,
+			readTemplatedFiled(BUILD_OUTPUT_TestResources.resolve("outputA.txt")),
+			OUTPUTA_Errors);
 		
 		
-		String OUTPUT_B = readStringFromFile(BUILD_OUTPUT_TestResources.resolve("outputB.txt"));
+		String OUTPUT_B = readTemplatedFiled(BUILD_OUTPUT_TestResources.resolve("outputB.txt"));
 		
 		String errorMessage1 = findMatch(OUTPUT_B, "cannot find package \"xxx.*\\n.*\\n.*", 0).replace("\r", "");
-		String errorMessage2 = findMatch(OUTPUT_B, "cannot find package \"zzz.*\\n.*\\n.*", 0).replace("\r", "");
+		String errorMessage2 = findMatch(OUTPUT_B, "cannot find package \"yyy.*\\n.*\\n.*", 0).replace("\r", "");
+		String errorMessage3 = findMatch(OUTPUT_B, "cannot find package \"zzz.*\\n.*\\n.*", 0).replace("\r", "");
 		
 		
 		List<ToolSourceError> OUTPUTB_Errors = listFrom(
-			error(normResolve(basePath, "libbar/blah.go"), 3, 8, errorMessage1),
-			error(normResolve(basePath, "../MyGoLibFoo/libfoo/blah.go"), 3, 8, errorMessage2)
+			error(normResolve(rootDir, "libbar/blah.go"), 3, 8, errorMessage1),
+			error(normResolve(rootDir, "../MyGoLibFoo/libfoo/blah.go"), 3, 8, errorMessage2),
+			error(TR_SAMPLE_GOPATH_ENTRY.resolve("src/samplePackage/foo.go"), 3, 2, errorMessage3)
 		);
-		buildProcessor.parseErrors(OUTPUT_B);
-		assertEquals(buildProcessor.getBuildErrors(), OUTPUTB_Errors);
+		testParseError(buildProcessor,
+			OUTPUT_B,
+			OUTPUTB_Errors);
+	}
+	
+	protected void testParseError(GoBuildOutputProcessor buildProcessor, String stderr, List<?> expected) {
+		buildProcessor.parseErrors(stderr);
+		assertEquals(buildProcessor.getBuildErrors(), expected);
+	}
+	
+	protected String readTemplatedFiled(Path filePath) {
+		String fileContents = readStringFromFile(filePath);
+		return fileContents.replaceAll(
+			Pattern.quote("$$TESTRESOURCE_SAMPLE_GOPATH_ENTRY$$"), 
+			Matcher.quoteReplacement(TR_SAMPLE_GOPATH_ENTRY.toString())
+		);
 	}
 	
 	protected Path normResolve(Path basePath, String other) {
 		return basePath.resolve(other).normalize();
+	}
+	
+	protected void runInvalidSyntaxTest() {
+		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor(SAMPLE_GOPATH_Entry) {
+			@Override
+			protected void handleParseError(CommonException ce) {
+			}
+		};
+		
+		buildProcessor.parseErrors("libbar\blah.go:");
 	}
 	
 }

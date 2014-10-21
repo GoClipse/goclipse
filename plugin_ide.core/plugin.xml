@@ -65,19 +65,19 @@
       </file-association -->
    </extension>
    
-   <extension
-         id="com.googlecode.goclipse.goBuilder"
-         name="Go Project Builder"
-         point="org.eclipse.core.resources.builders">
-      <builder
-            callOnEmptyDelta="false"
-            hasNature="true"
-            isConfigurable="true">
-         <run
-               class="com.googlecode.goclipse.builder.GoBuilder">
-         </run>
-      </builder>
-   </extension>
+	
+	<extension
+		id="com.googlecode.goclipse.goBuilder"
+		name="Go Project Builder"
+		point="org.eclipse.core.resources.builders">
+		<builder
+			callOnEmptyDelta="true"	
+			hasNature="true"
+			isConfigurable="true">
+		<run class="com.googlecode.goclipse.builder.GoBuilder">
+		</run>
+	</builder>
+	</extension>
 
    
   

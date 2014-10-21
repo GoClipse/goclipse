@@ -31,6 +31,22 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 		this.gocodePath = gocodePath;
 	}
 	
+	protected void setLibPathForEnvironment() throws CommonException, EXC {
+		
+		ArrayList2<String> arguments = new ArrayList2<>(gocodePath);
+		
+		if (USE_TCP) {
+			arguments.add("-sock=tcp");
+		}
+		arguments.add("set");
+		arguments.add("lib-path");
+		arguments.add(goEnvironment.getGoPathString());
+		
+		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments);
+		
+		runGocodeProcess(pb, null);
+	}
+	
 	public ExternalProcessResult execute(String filePath, String bufferText, int offset) throws CommonException, EXC {
 		
 		setLibPathForEnvironment();
@@ -54,22 +70,6 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 		}
 		
 		return processResult;
-	}
-	
-	protected void setLibPathForEnvironment() throws CommonException, EXC {
-		
-		ArrayList2<String> arguments = new ArrayList2<>(gocodePath);
-		
-		if (USE_TCP) {
-			arguments.add("-sock=tcp");
-		}
-		arguments.add("set");
-		arguments.add("lib-path");
-		arguments.add(goEnvironment.getGoPathString());
-		
-		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments);
-		
-		runGocodeProcess(pb, null);
 	}
 	
 	protected abstract ExternalProcessResult runGocodeProcess(ProcessBuilder pb, String input) throws CommonException;

@@ -19,7 +19,7 @@ import java.util.Map;
 
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
 

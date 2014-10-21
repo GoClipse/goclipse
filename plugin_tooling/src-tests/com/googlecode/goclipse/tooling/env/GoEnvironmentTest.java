@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.env;
 
-import static melnorme.lang.tests.LangToolingTestResources.getTestResourcePath;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
@@ -77,8 +76,7 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 	public void testFindSourcePackage() throws Exception { testFindSourcePackage$(); }
 	public void testFindSourcePackage$() throws Exception {
 		
-		Path goPathEntry = getTestResourcePath("sampleGoPathEntry");
-		GoPath goPath = new GoPath(goPathEntry.toString());
+		GoPath goPath = new GoPath(TR_SAMPLE_GOPATH_ENTRY.toString());
 		
 		HashSet<GoPackageName> sampleGoPathEntry_result = hashSet(
 			gopackage("samplePackage"),
@@ -87,21 +85,21 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 			gopackage("samplePackage2/xxx")
 		);
 		
-		assertEquals(goPath.findSourcePackages(goPathEntry), sampleGoPathEntry_result);
-		assertEquals(goPath.findSourcePackages(goPathEntry.resolve("src")), sampleGoPathEntry_result);
+		assertEquals(goPath.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY), sampleGoPathEntry_result);
+		assertEquals(goPath.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve("src")), sampleGoPathEntry_result);
 		
-		assertEquals(goPath.findSourcePackages(goPathEntry.resolve("src/samplePackage")), hashSet(
+		assertEquals(goPath.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve("src/samplePackage")), hashSet(
 			gopackage("samplePackage"),
 			gopackage("samplePackage/subpack"),
 			gopackage("samplePackage/subpack/bar")
 		));
 		
-		assertEquals(goPath.findSourcePackages(goPathEntry.resolve("src/samplePackage2")), hashSet(
+		assertEquals(goPath.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve("src/samplePackage2")), hashSet(
 			gopackage("samplePackage2/xxx")
 		));
 		
 		 // Test no results
-		assertEquals(goPath.findSourcePackages(goPathEntry.resolve("..").normalize()), hashSet());
+		assertEquals(goPath.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve("..").normalize()), hashSet());
 	}
 	
 }
