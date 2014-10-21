@@ -12,6 +12,11 @@ package melnorme.utilbox.misc;
 
 public class HashcodeUtil {
 	
+	/** Helper to get the hashcode for a member object. */
+	public static int getHashCode(Object member) {
+		return member == null ? 0 : member.hashCode();
+	}
+	
 	/** Combines two hash codes to make a new one. */
 	public static int combineHashCodes(int hashCode1, int hashCode2) {
 		return hashCode1 * 31 + hashCode2;

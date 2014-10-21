@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.FileUtil;
@@ -147,5 +149,20 @@ public class CommonTestExt extends CommonTest {
 	protected static <V> void checkSetContains(Set<V> set, V expectedValue) {
 		assertTrue(set.remove(expectedValue));
 	};
+	
+	/* ----------------- string/parsing ----------------- */
+	
+	public static String findMatch(String input, String regex) {
+		return findMatch(input, regex, 0);
+	}
+	
+	public static String findMatch(String input, String regex, int resultGroup) {
+		Matcher matcher = Pattern.compile(regex, Pattern.UNIX_LINES).matcher(input);
+		boolean hasFound = matcher.find();
+		if(!hasFound) {
+			return null;
+		}
+		return matcher.group(resultGroup);
+	}
 	
 }

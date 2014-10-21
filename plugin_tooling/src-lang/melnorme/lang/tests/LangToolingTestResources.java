@@ -54,13 +54,13 @@ public class LangToolingTestResources {
 		return file;
 	}
 	
-	public static File getTestResource(String... segments) {
+	public static File getTestResourceFile(String... segments) {
 		return MiscFileUtils.getFile(LangToolingTestResources.getInstance().getResourcesDir(), segments);
 	}
 	
 	public static Path getTestResourcePath(String... segments) {
 		try {
-			Path path = getTestResource(segments).getCanonicalFile().toPath();
+			Path path = getTestResourceFile(segments).getCanonicalFile().toPath();
 			assertTrue(path.toFile().exists());
 			return path;
 		} catch (IOException e) {
