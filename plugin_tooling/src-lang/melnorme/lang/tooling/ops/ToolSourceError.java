@@ -13,6 +13,9 @@ package melnorme.lang.tooling.ops;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.misc.HashcodeUtil.getHashCode;
+
+import java.nio.file.Path;
+
 import melnorme.utilbox.misc.HashcodeUtil;
 
 public class ToolSourceError {
@@ -23,6 +26,22 @@ public class ToolSourceError {
 	public ToolSourceError(SourceLineColumnLocation location, String errorMessage) {
 		this.location = assertNotNull(location);
 		this.errorMessage = assertNotNull(errorMessage);
+	}
+	
+	public Path getFilePath() {
+		return location.path;
+	}
+	
+	public int getFileLineNumber() {
+		return location.line;
+	}
+	
+	public int getFileColumnNumber() {
+		return location.column;
+	}
+	
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 	
 	@Override

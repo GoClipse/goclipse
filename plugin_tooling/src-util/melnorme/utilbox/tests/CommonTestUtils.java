@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.utilbox.tests;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.CollectionUtil.createHashSet;
@@ -39,6 +40,22 @@ public class CommonTestUtils {
 	
 	public static void assertEquals(Object obj1, Object obj2) {
 		Assert.equals(obj1, obj2);
+	}
+	
+	/** Helper for interactive debugging: 
+	 * Does the same check as {@link List#equals(Object)}, but fails right on the spot where it's not equal. */
+	public static void assertEquals(List<?> list1, List<?> list2) {
+		if(list1 == null && list2 == null)
+			return;
+		
+		if(list1.size() != list2.size()) {
+			assertFail();
+		}
+		for (int ix = 0; ix < list1.size(); ix++) {
+			Object obj1 = list1.get(ix);
+			Object obj2 = list2.get(ix);
+			assertAreEqual(obj1, obj2);
+		}
 	}
 	
 	public static void assertAreEqual(Object obj1, Object obj2) {

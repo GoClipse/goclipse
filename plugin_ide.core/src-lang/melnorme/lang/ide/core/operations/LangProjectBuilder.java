@@ -17,7 +17,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.ops.ToolSourceError;
+import melnorme.utilbox.collections.ArrayList2;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -61,5 +64,32 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected abstract IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor pm)
 		throws CoreException;
+	
+	
+	protected void addErrorMarkers(ArrayList2<ToolSourceError> buildErrors) throws CoreException {
+		for (ToolSourceError buildError : buildErrors) {
+			String filePath = buildError.getFilePath().toString();
+			IResource resource = getProject().findMember(filePath);
+			if(resource == null)
+				continue;
+			
+			IMarker dubMarker = resource.createMarker(getBuildProblemId());
+			
+			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+			dubMarker.setAttribute(IMarker.MESSAGE, buildError.getErrorMessage());
+			
+			int line = buildError.getFileLineNumber();
+			if(line >= 0) {
+				dubMarker.setAttribute(IMarker.LINE_NUMBER, line);
+			}
+			int column = buildError.getFileColumnNumber();
+			if(column >= 0) {
+				// TODO: map column to position?
+				//dubMarker.setAttribute(IMarker.LINE_NUMBER, column);
+			}
+
+		}
+		
+	}
 	
 }

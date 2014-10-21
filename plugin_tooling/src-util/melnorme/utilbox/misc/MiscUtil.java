@@ -18,16 +18,13 @@ import static melnorme.utilbox.misc.StreamUtil.readAllBytesFromStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.ownership.IDisposable;
 
-public class MiscUtil {
+public class MiscUtil extends PathUtil {
 	
 	public static final String OS_NAME = StringUtil.nullAsEmpty(System.getProperty("os.name"));
 	
@@ -112,46 +109,6 @@ public class MiscUtil {
 	
 	public static <T> T nullToOther(T object, T altValue) {
 		return object == null ? altValue : object;
-	}
-	
-	/** @return a valid path, 
-	 * or null if a valid path could not be created from given pathString. */
-	public static Path createPathOrNull(String pathString) {
-		try {
-			return Paths.get(pathString);
-		} catch (InvalidPathException ipe) {
-			return null;
-		}
-	}
-	
-	/** @return a valid path. Given pathString must represent a valid path. */
-	public static Path createValidPath(String pathString) {
-		try {
-			return Paths.get(pathString);
-		} catch (InvalidPathException ipe) {
-			throw assertFail();
-		}
-	}
-	
-	/** @return a valid path, 
-	 * or throws a checked exception if a valid path could not be created from given pathString. */
-	public static Path createPath(String pathString) throws InvalidPathExceptionX {
-		try {
-			return Paths.get(pathString);
-		} catch (InvalidPathException ipe) {
-			throw new InvalidPathExceptionX(ipe);
-		}
-	}
-	
-	/** Checked analogue/wrapper for {@link InvalidPathException} */
-	public static class InvalidPathExceptionX extends Exception {
-		
-		private static final long serialVersionUID = 1L;
-		
-		public InvalidPathExceptionX(InvalidPathException ipe) {
-			super(ipe);
-		}
-		
 	}
 	
 	/** @return true if given throwable is a Java unchecked throwable, false otherwise. */
