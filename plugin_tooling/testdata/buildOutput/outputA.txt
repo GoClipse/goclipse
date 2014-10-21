@@ -1,0 +1,3 @@
+# MyGoLibFoo/libfoo
+libfoo\blah.go:7: undefined: asdfsd
+libfoo\blah.go:10: not enough arguments in call to fmt.Printf
