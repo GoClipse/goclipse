@@ -5,14 +5,12 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-import com.googlecode.goclipse.tooling.GoFileNaming;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 /** FIXME: Need to review an rewrite users of this class, since this likely breaks
@@ -82,51 +80,6 @@ public class Environment {
 		
 		if (folder.getName().equals("cmd") || folder.getName().equals("src")) {
 			return true;
-		}
-		
-		return false;
-	}
-	
-	
-	/**
-	 * Determines via the file suffix if the file is a test file or not.
-	 * @param file
-	 * @return
-	 */
-	public boolean isNonTestSourceFile(IFile file){
-		
-		if (file==null) {
-			return false;
-		}
-		
-		if (file.getName().endsWith("_test.go")) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * 
-	 * @param project
-	 * @param file
-	 * @return
-	 */
-	public static boolean isSourceFile(IProject project, IFile file) {
-		IPath p = file.getProjectRelativePath();
-		IResource res = project.findMember(p);
-		if ( res==null ) {
-			return false;
-		}
-		
-		if ( !file.getName().endsWith(GoFileNaming.GO_SOURCE_FILE_EXTENSION) ) {
-			return false;
-		}
-		
-		for (IFolder folder : getSourceFolders(project)) {
-			if(file.getLocation().toOSString().startsWith(folder.getLocation().toOSString())) {
-				return true;
-			}
 		}
 		
 		return false;

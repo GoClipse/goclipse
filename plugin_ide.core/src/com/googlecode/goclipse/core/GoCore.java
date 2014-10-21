@@ -15,8 +15,6 @@ import melnorme.lang.ide.core.LangCore;
 
 import org.osgi.framework.BundleContext;
 
-import com.googlecode.goclipse.builder.GoBuilder;
-
 public class GoCore extends LangCore {
 	
 	public static final String CONTENT_ASSIST_EXTENSION_ID = "com.googlecode.goclipse.contentassistprocessor";
@@ -27,7 +25,6 @@ public class GoCore extends LangCore {
 	
 	@Override
 	public void doInitializeAfterUIStart() {
-		GoBuilder.checkForCompilerUpdates(true);
 	}
 	
 	@Override

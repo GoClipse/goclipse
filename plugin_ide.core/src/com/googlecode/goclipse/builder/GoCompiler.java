@@ -3,7 +3,6 @@ package com.googlecode.goclipse.builder;
 import java.io.File;
 
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -17,7 +16,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.QualifiedName;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.Environment;
@@ -35,16 +33,12 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
  * @author ??? - Original author?
  * @author Bruno - cleanup refactoring of external tool calling
  */
+@Deprecated
 public class GoCompiler {
 
-	private static final QualifiedName	COMPILER_VERSION_QN	= new QualifiedName(Activator.PLUGIN_ID, "compilerVersion");
-	
 	protected final IProject project;
 	protected final GoEnvironment goEnv;
 	
-	private String version;
-	private long versionLastUpdated	= 0;
-		
 	public GoCompiler(IProject project) {
 		this.project = project;
 		this.goEnv = GoProjectEnvironment.getGoEnvironment(project);
@@ -270,71 +264,6 @@ public class GoCompiler {
 	    }
     }
 
-	public String getVersion() throws CoreException {
-		// The getCompilerVersion() call takes about ~30 msec to compute.
-		// Because it's expensive,
-		// we cache the value for a short time.
-		final long TEN_SECONDS = 10 * 1000;
-
-		if ((System.currentTimeMillis() - versionLastUpdated) > TEN_SECONDS) {
-			version = getCompilerVersion();
-			versionLastUpdated = System.currentTimeMillis();
-		}
-
-		return version;
-	}
-
-	/**
-	 * 
-	 * @param project
-	 * @param dependencies
-	 * @return
-	 */
-	private boolean dependenciesExist(String[] dependencies) {
-		ArrayList2<String> sourceDependencies = new ArrayList2<String>();
-		for (String dependency : dependencies) {
-			if (dependency.endsWith(GoFileNaming.GO_SOURCE_FILE_EXTENSION)) {
-				sourceDependencies.add(dependency);
-			}
-		}
-		return GoBuilder.dependenciesExist(project, sourceDependencies.toArray(new String[] {}));
-	}
-
-	/**
-	 * @param project
-	 */
-	public void updateVersion(IProject project) {
-		try {
-			project.setPersistentProperty(COMPILER_VERSION_QN, getVersion());
-		} catch (CoreException ex) {
-			Activator.logError(ex);
-		}
-	}
-
-	/**
-	 * @param project
-	 * @return
-	 */
-	public boolean requiresRebuild(IProject project) throws CoreException {
-		String storedVersion;
-
-		try {
-			storedVersion = project.getPersistentProperty(COMPILER_VERSION_QN);
-		} catch (CoreException ex) {
-			storedVersion = null;
-		}
-
-		String currentVersion = getVersion();
-		
-		if (currentVersion == null) {
-			// We were not able to get the latest compiler version - don't force
-			// a rebuild.
-			return false;
-		} else {
-			return !CoreUtil.areEqual(storedVersion, currentVersion);
-		}
-	}
-	
 	private int processCompileOutput( final StreamAsLines output,
             final String        relativeTargetDir,
             final IFile         file) {
