@@ -45,6 +45,10 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 				null);
 		}
 		
+		// go oracle requires this
+		goEnv.validateGoArch();
+		goEnv.validateGoOs();
+		
 		ArrayList2<String> commandLine = new ArrayList2<>(
 			goOraclePath,
 			"-pos=" + filePath.toString() + ":#" + offset + ",#" + offset,

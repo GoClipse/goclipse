@@ -60,7 +60,7 @@ public class GoEnvironment {
 		validateGoArch();
 		return goArch;
 	}
-	protected void validateGoArch() throws CommonException {
+	public void validateGoArch() throws CommonException {
 		if(goArch == null || goArch.asString().isEmpty()) 
 			throw new CommonException("GOARCH is undefined");
 	}
@@ -69,7 +69,7 @@ public class GoEnvironment {
 		validateGoOs();
 		return goOs;
 	}
-	protected void validateGoOs() throws CommonException {
+	public void validateGoOs() throws CommonException {
 		if(goOs == null || goOs.asString().isEmpty()) 
 			throw new CommonException("GOOS is undefined");
 	}
