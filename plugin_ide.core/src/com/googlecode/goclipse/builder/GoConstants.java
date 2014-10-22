@@ -13,11 +13,6 @@ import melnorme.lang.ide.launching.LaunchConstants;
 public class GoConstants implements GoEnvironmentConstants, GoCommandConstants, GoFileNaming {
 	
 	
-	public static final String OBJ_FILE_DIRECTORY   = "_obj";
-	public static final String TEST_FILE_DIRECTORY  = "_test";
-	public static final String GO_TEST_MAIN 		= "_testmain" + GO_SOURCE_FILE_EXTENSION;
-	public static final String EXE_FILE_DIRECTORY   = "out";
-
 	/**
 	 * defined in plugin.xml
 	 */

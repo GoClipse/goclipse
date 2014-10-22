@@ -2,7 +2,6 @@ package com.googlecode.goclipse.builder;
 
 import static melnorme.lang.ide.core.LangCore_Actual.BUILD_PROBLEM_ID;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
@@ -13,6 +12,7 @@ import com.googlecode.goclipse.Activator;
  * 
  * @author devoncarew
  */
+@Deprecated
 public class MarkerUtilities {
 	
 	public static void addMarker(IResource res, String message) {

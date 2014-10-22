@@ -12,12 +12,6 @@ package com.googlecode.goclipse.tooling;
 
 public interface GoCommandConstants {
 	
-	public static final String COMPILER_OPTION_I 	= "-I";
-	public static final String COMPILER_OPTION_L 	= "-L";
-	public static final String COMPILER_OPTION_O 	= "-o";
-	public static final String COMPILER_OPTION_E 	= "-e";
-	public static final String PACKER_OPTIONS_GRC 	= "grc";
-	
 	public static final String GO_VERSION_COMMAND  = "version";
 	public static final String GO_BUILD_COMMAND    = "build";
 	public static final String GO_CLEAN_COMMAND    = "clean";
