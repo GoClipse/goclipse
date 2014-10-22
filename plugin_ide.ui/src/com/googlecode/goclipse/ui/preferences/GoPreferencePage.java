@@ -75,7 +75,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 	@Override
 	public void createFieldEditors() {
 		Group group = new Group(getFieldEditorParent(), SWT.NONE);
-		group.setText("GOROOT and Platform Settings");
+		group.setText("Go environment");
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(group);
 		GridLayoutFactory.fillDefaults().margins(10, 4).applyTo(group);
 
@@ -130,8 +130,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
 		
 		addField(new FileFieldEditorExt(GoToolPreferences.GO_ORACLE_Path.key, "Go oracle path:", group));
-		
-		GridLayoutFactory.fillDefaults().numColumns(3).applyTo(group);
+		GridLayoutFactory.fillDefaults().margins(10, 4).numColumns(3).applyTo(group);
 	}
 
 	@Override
