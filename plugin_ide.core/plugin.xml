@@ -7,7 +7,7 @@
          name="Go"
          point="org.eclipse.core.resources.natures">
       <runtime>
-         <run class="com.googlecode.goclipse.builder.GoNature" />
+         <run class="com.googlecode.goclipse.core.GoNature" />
       </runtime>
       <builder
             id="com.googlecode.goclipse.goBuilder">
@@ -74,7 +74,7 @@
 			callOnEmptyDelta="true"	
 			hasNature="true"
 			isConfigurable="true">
-		<run class="com.googlecode.goclipse.builder.GoBuilder">
+		<run class="com.googlecode.goclipse.core.tools.GoBuilder">
 		</run>
 	</builder>
 	</extension>

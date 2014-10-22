@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.builder;
+package com.googlecode.goclipse.core.tools;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.getProjectLocation;
 
@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;

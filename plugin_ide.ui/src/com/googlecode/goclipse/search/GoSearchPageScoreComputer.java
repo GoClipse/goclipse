@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.search.ui.ISearchPageScoreComputer;
 
-import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.core.GoNature;
 
 class GoSearchPageScoreComputer implements ISearchPageScoreComputer {
 

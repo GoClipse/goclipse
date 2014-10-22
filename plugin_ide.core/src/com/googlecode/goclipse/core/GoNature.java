@@ -1,4 +1,6 @@
-package com.googlecode.goclipse.builder;
+package com.googlecode.goclipse.core;
+
+import com.googlecode.goclipse.core.tools.GoBuilder;
 
 import melnorme.lang.ide.core.LangNature;
 

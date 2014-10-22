@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.core.GoNature;
 
 /**
  * A filter to remove "_obj" folders from the navigator view.

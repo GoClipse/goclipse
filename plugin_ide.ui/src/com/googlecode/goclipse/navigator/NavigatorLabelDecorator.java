@@ -11,7 +11,7 @@ import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 
-import com.googlecode.goclipse.builder.GoNature;
+import com.googlecode.goclipse.core.GoNature;
 import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**

@@ -31,6 +31,8 @@ import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.go.lang.model.Function;
+import com.googlecode.goclipse.tooling.GoCommandConstants;
+import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
 
 /**
  * 
@@ -140,13 +142,13 @@ public class GoTestRunner {
          */
         private ProcessBuilder configureProcess() {
             String[] testCmd = { activeTest.compilerPath,
-                                 GoConstants.GO_TEST_COMMAND,
+                                 GoCommandConstants.GO_TEST_COMMAND,
                                  "-test.run="+GoProjectPrefConstants.AUTO_UNIT_TEST_REGEX.get(activeTest.project)
                                };
             
             final ProcessBuilder testProcessBuilder = new ProcessBuilder(testCmd).directory(activeTest.workingDir);
-            testProcessBuilder.environment().put(GoConstants.GOROOT, activeTest.goroot);
-            testProcessBuilder.environment().put(GoConstants.GOPATH, activeTest.goPath);
+            testProcessBuilder.environment().put(GoEnvironmentConstants.GOROOT, activeTest.goroot);
+            testProcessBuilder.environment().put(GoEnvironmentConstants.GOPATH, activeTest.goPath);
             testProcessBuilder.environment().put("PATH", activeTest.path);
             return testProcessBuilder;
         }

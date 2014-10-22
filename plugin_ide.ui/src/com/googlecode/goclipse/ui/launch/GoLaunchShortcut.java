@@ -18,7 +18,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.builder.GoConstants;
+import com.googlecode.goclipse.core.launch.GoLaunchConstants;
 
 /**
  * @author steel
@@ -69,9 +69,9 @@ public class GoLaunchShortcut implements ILaunchShortcut {
 			ILaunchConfiguration[] lcfgs = lm.getLaunchConfigurations(lct);
 			
 			for (ILaunchConfiguration lcf : lcfgs) {
-				String project = lcf.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, "");
-				String mainfile = lcf.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN, "");
-				String prgArgs = lcf.getAttribute(GoConstants.GO_CONF_ATTRIBUTE_ARGS, "");
+				String project = lcf.getAttribute(GoLaunchConstants.GO_CONF_ATTRIBUTE_PROJECT, "");
+				String mainfile = lcf.getAttribute(GoLaunchConstants.GO_CONF_ATTRIBUTE_MAIN, "");
+				String prgArgs = lcf.getAttribute(GoLaunchConstants.GO_CONF_ATTRIBUTE_ARGS, "");
 				
 				if (prgArgs.isEmpty()) {
 					// this is an empty run, no params, don't mix with already
@@ -88,9 +88,9 @@ public class GoLaunchShortcut implements ILaunchShortcut {
 				//create a new launch configuration
 				String cfgName = lm.generateLaunchConfigurationName(Path.fromOSString(fName).lastSegment());
 				ILaunchConfigurationWorkingCopy workingCopy = lct.newInstance(null, cfgName);
-				workingCopy.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_PROJECT, pName);
-				workingCopy.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_MAIN, fName);
-				workingCopy.setAttribute(GoConstants.GO_CONF_ATTRIBUTE_ARGS, "");
+				workingCopy.setAttribute(GoLaunchConstants.GO_CONF_ATTRIBUTE_PROJECT, pName);
+				workingCopy.setAttribute(GoLaunchConstants.GO_CONF_ATTRIBUTE_MAIN, fName);
+				workingCopy.setAttribute(GoLaunchConstants.GO_CONF_ATTRIBUTE_ARGS, "");
 				workingCopy.setAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT, true);
 				workingCopy.setAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, "UTF-8");
 				
