@@ -52,10 +52,8 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		
 		testParseError(buildProcessor, "", listFrom());  // Empty
 		
-		
-		testParseError(buildProcessor, 
-			"asdfsdaf/asdfsd", // Test that this line is ignored without reporting a syntax error.
-			listFrom()); 
+		// Test that this line is ignored without reporting a syntax error.
+		testParseError(buildProcessor, "asdfsdaf/asdfsd", listFrom()); 
 		
 		
 		List<ToolSourceError> OUTPUTA_Errors = listFrom(

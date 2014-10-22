@@ -126,7 +126,7 @@ public class GoBuilder extends LangProjectBuilder {
 		GoEnvironment goEnv = getValidGoEnvironment(project);
 		
 		ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
-		goBuildCmdLine.addElements("clean");
+		goBuildCmdLine.addElements("clean", "-i", "-x");
 		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
 		
 		GoToolManager.getDefault().runBuildTool(goEnv, monitor, getProjectLocation(project), goBuildCmdLine);
