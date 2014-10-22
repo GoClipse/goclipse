@@ -56,12 +56,22 @@ public class GoEnvironment {
 		return goRoot.asPath();
 	}
 	
-	public GoArch getGoArch() {
+	public GoArch getGoArch() throws CommonException{
+		validateGoArch();
 		return goArch;
 	}
+	protected void validateGoArch() throws CommonException {
+		if(goArch == null || goArch.asString().isEmpty()) 
+			throw new CommonException("GOARCH is undefined");
+	}
 	
-	public GoOs getGoOs() {
+	public GoOs getGoOs() throws CommonException {
+		validateGoOs();
 		return goOs;
+	}
+	protected void validateGoOs() throws CommonException {
+		if(goOs == null || goOs.asString().isEmpty()) 
+			throw new CommonException("GOOS is undefined");
 	}
 	
 	public GoPath getGoPath() {
@@ -133,27 +143,15 @@ public class GoEnvironment {
 	
 	/* -----------------  ----------------- */
 	
-	public String getGoOS_GoArch_segment() {
+	protected String getGoOS_GoArch_segment() throws CommonException {
 		return getGoOs().asString() + "_" + getGoArch().asString();
-	}
-	
-	public Path getGoRootPackageObjectsDir() throws CommonException {
-		return getPackageObjectsDir(getGoRoot_Path());
-	}
-	
-	public Path getPackageObjectsDir(Path basePath) throws CommonException {
-		return basePath.resolve(getPackageObjectsRelativePath());
-	}
-	
-	public Path getPackageObjectsRelativePath() throws CommonException {
-		return MiscUtil.createValidPath("pkg").resolve(createPath(getGoOS_GoArch_segment()));
 	}
 	
 	public Path getGoRootToolsDir() throws CommonException {
 		return goRoot.asPath().resolve("pkg/tool/").resolve(createPath(getGoOS_GoArch_segment()));
 	}
 	
-	public static GoPackageName getGoPackageForSourceFile(Path sourceFilePath, Path sourceRoot) {
+	protected static GoPackageName getGoPackageForSourceFile(Path sourceFilePath, Path sourceRoot) {
 		sourceFilePath = sourceFilePath.normalize();
 		if(!sourceFilePath.startsWith(sourceRoot)) {
 			return null;
@@ -162,11 +160,8 @@ public class GoEnvironment {
 		return GoPackageName.fromPath(sourceFilePath.getParent()); // Discard file name
 	}
 	
-	// The following methods, I'm not sure they are really necessary.
-	// with some refactoring, we might be able to remove their uses
-	
 	public boolean isValid() {
-		if (isNullOrEmpty(goRoot.asString()) || isNullOrEmpty(goOs.asString()) || isNullOrEmpty(goArch.asString())) {
+		if (isNullOrEmpty(goRoot.asString())) {
 			return false;
 		}
 		return true;

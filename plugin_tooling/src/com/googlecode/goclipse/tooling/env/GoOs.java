@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.env;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 public class GoOs {
@@ -39,7 +40,7 @@ public class GoOs {
 	protected final String goOs;
 	
 	public GoOs(String goOs) {
-		this.goOs = goOs;
+		this.goOs = assertNotNull(goOs);
 	}
 	
 	public String asString() {

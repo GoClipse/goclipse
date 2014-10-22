@@ -10,16 +10,14 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
-import static com.googlecode.goclipse.core.GoEnvironmentUtils.getGO_OS_Default;
-import static com.googlecode.goclipse.core.GoEnvironmentUtils.get_GO_ARCH_Default;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface GoEnvironmentPrefs {
 	
 	static StringPreference GO_ROOT = new StringPreference("com.googlecode.goclipse.goroot", "");
 	static StringPreference GO_PATH = new StringPreference("com.googlecode.goclipse.gopath", "");
-	static StringPreference GO_OS = new StringPreference("com.googlecode.goclipse.goos", getGO_OS_Default());
-	static StringPreference GO_ARCH = new StringPreference("com.googlecode.goclipse.goarch", get_GO_ARCH_Default());
+	static StringPreference GO_OS = new StringPreference("com.googlecode.goclipse.goos", "");
+	static StringPreference GO_ARCH = new StringPreference("com.googlecode.goclipse.goarch", "");
 	
 	static StringPreference COMPILER_PATH = new StringPreference("com.googlecode.goclipse.compiler.path", "");
 	static StringPreference FORMATTER_PATH = new StringPreference("com.googlecode.goclipse.formatter.path", "");

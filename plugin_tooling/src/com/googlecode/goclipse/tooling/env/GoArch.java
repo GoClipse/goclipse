@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.env;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 public class GoArch {
 	
 	public static final String ARCH_AMD64 = "amd64";
@@ -19,7 +21,7 @@ public class GoArch {
 	protected final String goArch;
 	
 	public GoArch(String goArch) {
-		this.goArch = goArch;
+		this.goArch = assertNotNull(goArch);
 	}
 	
 	public String asString() {
