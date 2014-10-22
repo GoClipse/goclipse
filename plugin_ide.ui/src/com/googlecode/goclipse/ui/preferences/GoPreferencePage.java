@@ -5,9 +5,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.io.File;
 import java.util.List;
 
-import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.jface.preference.DirectoryFieldEditorExt;
-import melnorme.util.swt.jface.preference.FileFieldEditorExt;
 import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.core.runtime.IPath;
@@ -30,7 +28,6 @@ import org.osgi.framework.Version;
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoEnvironmentUtils;
-import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 import com.googlecode.goclipse.ui.GoUIPlugin;
@@ -108,7 +105,7 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		((GridLayout) fieldParent.getLayout()).numColumns = 3;
 
 		group = new Group(getFieldEditorParent(), SWT.NONE);
-		group.setText("Go Tools");
+		group.setText("Go SDK Tools");
 		GridDataFactory.swtDefaults().grab(true, false).align(SWT.FILL, SWT.TOP).applyTo(group);
 		GridLayoutFactory.fillDefaults().margins(10, 4).applyTo(group);
 
@@ -124,13 +121,6 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 		addField(documentorEditor = new FileFieldEditor(GoEnvironmentPrefs.DOCUMENTOR_PATH.key,
 		    "Go &documentor (godoc):", fieldParent));
 		
-		
-		group = SWTFactoryUtil.createGroup(getFieldEditorParent(),
-			"Go oracle",
-			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
-		
-		addField(new FileFieldEditorExt(GoToolPreferences.GO_ORACLE_Path.key, "Go oracle path:", group));
-		GridLayoutFactory.fillDefaults().margins(10, 4).numColumns(3).applyTo(group);
 	}
 
 	@Override

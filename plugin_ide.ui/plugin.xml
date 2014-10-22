@@ -98,9 +98,9 @@
 		
 		<page
 			category="com.googlecode.goclipse.ui.PreferencePage"
-			class="com.googlecode.goclipse.ui.preferences.GocodePreferencePage"
+			class="com.googlecode.goclipse.ui.preferences.GoToolsPreferencePage"
 			id="com.googlecode.goclipse.ui.preferences.GocodePreferencePag"
-			name="Gocode">
+			name="Tools">
 		</page>
 		
    </extension>
