@@ -14,13 +14,16 @@ package melnorme.lang.ide.core.operations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.nio.file.Path;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ops.ToolSourceError;
 import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.core.resources.IBuildConfiguration;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -113,30 +116,41 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			throws CoreException;
 	
 	
-	protected void addErrorMarkers(ArrayList2<ToolSourceError> buildErrors) throws CoreException {
+	protected void addErrorMarkers(ArrayList2<ToolSourceError> buildErrors, Path rootPath) throws CoreException {
+		assertTrue(rootPath.isAbsolute());
+		
 		for (ToolSourceError buildError : buildErrors) {
-			String filePath = buildError.getFilePath().toString();
-			IResource resource = getProject().findMember(filePath);
-			if(resource == null)
-				continue;
+			Path path = buildError.getFilePath();
+			path = rootPath.resolve(path); // Absolute paths will remain unchanged.
+			path = path.normalize();
 			
-			IMarker dubMarker = resource.createMarker(getBuildProblemId());
-			
-			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-			dubMarker.setAttribute(IMarker.MESSAGE, buildError.getErrorMessage());
-			
-			int line = buildError.getFileLineNumber();
-			if(line >= 0) {
-				dubMarker.setAttribute(IMarker.LINE_NUMBER, line);
+			IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(path.toUri());
+			for (IFile file : files) {
+				if(!file.exists())
+					continue;
+				
+				// TODO: check if marker already exists?
+				addErrorMarker(file, buildError);
 			}
-			int column = buildError.getFileColumnNumber();
-			if(column >= 0) {
-				// TODO: map column to position?
-				//dubMarker.setAttribute(IMarker.LINE_NUMBER, column);
-			}
-			
 		}
 		
+	}
+	
+	protected void addErrorMarker(IResource resource, ToolSourceError buildError) throws CoreException {
+		IMarker dubMarker = resource.createMarker(getBuildProblemId());
+		
+		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		dubMarker.setAttribute(IMarker.MESSAGE, buildError.getErrorMessage());
+		
+		int line = buildError.getFileLineNumber();
+		if(line >= 0) {
+			dubMarker.setAttribute(IMarker.LINE_NUMBER, line);
+		}
+		int column = buildError.getFileColumnNumber();
+		if(column >= 0) {
+			// TODO: map column to position?
+			//dubMarker.setAttribute(IMarker.LINE_NUMBER, column);
+		}
 	}
 	
 }
