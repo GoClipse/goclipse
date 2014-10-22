@@ -37,14 +37,13 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		runTest(path("ProjectPath"));
-		runTest(TR_SAMPLE_GOPATH_ENTRY);
+		runTest();
 		
 		runInvalidSyntaxTest();
 	}
 	
-	protected void runTest(Path rootDir) {
-		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor(rootDir) {
+	protected void runTest() {
+		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor() {
 			@Override
 			protected void handleParseError(CommonException ce) {
 				assertFail();
@@ -60,9 +59,9 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		
 		
 		List<ToolSourceError> OUTPUTA_Errors = listFrom(
-			error(rootDir.resolve("MyGoLibFoo/libfoo/blah.go"), 7, -1, "undefined: asdfsd"),
-			error(rootDir.resolve("MyGoLibFoo/libfoo/blah.go"), 10, -1, "not enough arguments in call to fmt.Printf"),
-			error(rootDir.resolve("MyGoLibFoo/foo.go"), 3, -1, "undefined: ziggy"),
+			error(path("MyGoLibFoo/libfoo/blah.go"), 7, -1, "undefined: asdfsd"),
+			error(path("MyGoLibFoo/libfoo/blah.go"), 10, -1, "not enough arguments in call to fmt.Printf"),
+			error(path("MyGoLibFoo/foo.go"), 3, -1, "undefined: ziggy"),
 			error(TR_SAMPLE_GOPATH_ENTRY.resolve("src/samplePackage/foo.go"), 5, -1, "undefined: ziggy2")
 		);
 		testParseError(buildProcessor,
@@ -78,8 +77,8 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		
 		
 		List<ToolSourceError> OUTPUTB_Errors = listFrom(
-			error(normResolve(rootDir, "libbar/blah.go"), 3, 8, errorMessage1),
-			error(normResolve(rootDir, "../MyGoLibFoo/libfoo/blah.go"), 3, 8, errorMessage2),
+			error(path("libbar/blah.go"), 3, 8, errorMessage1),
+			error(path("../MyGoLibFoo/libfoo/blah.go"), 3, 8, errorMessage2),
 			error(TR_SAMPLE_GOPATH_ENTRY.resolve("src/samplePackage/foo.go"), 3, 2, errorMessage3)
 		);
 		testParseError(buildProcessor,
@@ -100,12 +99,8 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		);
 	}
 	
-	protected Path normResolve(Path basePath, String other) {
-		return basePath.resolve(other).normalize();
-	}
-	
 	protected void runInvalidSyntaxTest() {
-		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor(SAMPLE_GOPATH_Entry) {
+		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor() {
 			@Override
 			protected void handleParseError(CommonException ce) {
 			}

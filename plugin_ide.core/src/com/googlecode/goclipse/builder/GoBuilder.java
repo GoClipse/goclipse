@@ -18,7 +18,6 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -77,7 +76,7 @@ public class GoBuilder extends LangProjectBuilder {
 		ExternalProcessResult buildAllResult = 
 			GoToolManager.getDefault().runBuildTool(goEnv, monitor, getProjectLocation(), goBuildCmdLine);
 		
-		GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor(MiscUtil.createValidPath("")) {
+		GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 			@Override
 			protected void handleParseError(CommonException ce) {
 				LangCore.logError(ce.getMessage(), ce.getCause());

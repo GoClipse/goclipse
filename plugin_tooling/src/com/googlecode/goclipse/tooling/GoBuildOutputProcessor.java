@@ -28,13 +28,11 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class GoBuildOutputProcessor extends ParseHelper {
 	
-	protected final Path basePath;
 	protected ArrayList2<ToolSourceError> buildErrors;
 	
-	public GoBuildOutputProcessor(Path basePath) {
-		this.basePath = basePath;
+	public GoBuildOutputProcessor() {
 	}
-
+	
 	public ArrayList2<ToolSourceError> getBuildErrors() {
 		return buildErrors;
 	}
@@ -131,7 +129,7 @@ public abstract class GoBuildOutputProcessor extends ParseHelper {
 	
 	protected ToolSourceError parseError(String pathString, String lineString,
 			String columnString, String errorMessage) throws CommonException {
-		Path filePath = basePath.resolve(parsePath(pathString)).normalize();
+		Path filePath = parsePath(pathString).normalize();
 		int lineNo = parsePositiveInt(lineString);
 		int column = parseColumnString(columnString);
 		
