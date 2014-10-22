@@ -14,6 +14,7 @@ import melnorme.lang.ide.ui.tools.AbstractDeamonToolPrefPage;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.jface.preference.FileFieldEditorExt;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -57,8 +58,13 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 	@Override
 	protected void createDaemonPathFieldEditor(Group group) {
 		super.createDaemonPathFieldEditor(group);
+		IPath gocodePath = GocodeServerManager.getBestGocodePath();
+		String labelText = 
+				gocodePath == null? "" : 
+				"If path is empty, the built-in gocode will be used:\n" + gocodePath.toOSString();
+		
 		gocodeLabel = SWTFactoryUtil.createLabel(group, SWT.WRAP, 
-			"If path is empty, the built-in gocode will be used:\n" + GocodeServerManager.getBestGocodePath().toOSString(),
+			labelText,
 			GridDataFactory.fillDefaults().grab(true, false).indent(10, 0).minSize(200, SWT.DEFAULT).create());
 	}
 	
