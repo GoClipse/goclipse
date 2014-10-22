@@ -3,6 +3,7 @@
 ### Goclipse 0.9.0
  * Added: New simple project builder that delegates to the `go install/build` command all the build work. (fixes #64)
    * This should improve compilation speed, and avoid certain problems, since Goclipse no longer tries to figure out package dependencies itself.
+   * Disabled continuous testing feature, as it was broken.
  * Goclipse now uses one build console only, instead of one per project.
  * Added #84: Eclipse Go projects can now be created inside the "src" folder of a GOPATH entry, and that scenario will be handled properly by the toolchain (gocode, oracle, build, etc.).
    * In this case, the project location will not be implicitly added to the GOPATH, as the project is part of the GOPATH already. 

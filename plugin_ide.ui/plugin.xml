@@ -335,6 +335,7 @@
             <reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
          </enabledWhen>
       </page>
+<!--      
       <page
             class="com.googlecode.goclipse.ui.properties.GoContinuousTestingPropertyPage"
             id="com.googlecode.goclipse.ui.properties.ContinuousTestingPropertyPage"
@@ -343,6 +344,7 @@
             <reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
          </enabledWhen>
       </page>
+-->
    </extension>
 
 	<extension point="org.eclipse.ui.commands">
