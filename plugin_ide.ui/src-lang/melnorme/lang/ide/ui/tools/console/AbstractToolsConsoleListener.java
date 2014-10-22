@@ -30,7 +30,7 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
 
 public abstract class AbstractToolsConsoleListener implements ILangOperationsListener {
 	
-	public ToolsConsole recreateMessageConsole(String name, boolean recreateConsole) {
+	public ToolsConsole getOrRecreateMessageConsole(String name, boolean recreateConsole) {
 		ToolsConsole console = ConsoleUtils.findConsole(name, ToolsConsole.class);
 		if(console != null) {
 			if(!recreateConsole) {
@@ -50,13 +50,13 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 	}
 	
 	protected ToolsConsole getOperationConsole(IProject project, boolean clearConsole) {
+		String operationConsoleName = getOperationConsoleName(project);
 		// We recreate a message console to have a clear console. 
 		// console.clearConsole() is not used because of poor concurrency behavior: if more than one cleanConsole
 		// is requested per a console lifetime, these aditional clears may appear out of order with regards
 		// to input written to the console output streams.
 		// since org.eclipse.ui.console_3.5.200.v20130514-0954
-		boolean recreateConsole = clearConsole;
-		return recreateMessageConsole(getOperationConsoleName(project), recreateConsole);
+		return getOrRecreateMessageConsole(operationConsoleName, clearConsole);
 	}
 	
 	protected abstract String getOperationConsoleName(IProject project);
@@ -65,9 +65,9 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 	
 	protected String getProjectNameSuffix(IProject project) {
 		if(project == null) {
-			return "(Global)";
+			return " (Global)";
 		}
-		return "["+ project.getName() +"]";
+		return " ["+ project.getName() +"]";
 	}
 	
 	/* -----------------  ----------------- */
@@ -108,10 +108,6 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 			return getOperationConsole(project, clearConsole);
 		}
 		
-		protected IProcessOutputListener createOutputListener(ToolsConsole console) {
-			return new ProcessOutputToConsoleListener(console);
-		}
-		
 		protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
 				CommonException ce) {
 			List<String> commandLine = pb.command();
@@ -129,6 +125,30 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 				outStream.write(text);
 			} catch (IOException e) {
 				// Do nothing
+			}
+		}
+		
+		protected IProcessOutputListener createOutputListener(final ToolsConsole console) {
+			return new ConsoleOuputProcessListener(console.stdOut, console.stdErr) {
+				@Override
+				public void notifyProcessTerminatedAndRead(int exitCode) {
+					try {
+						console.stdOut.flush();
+						console.stdErr.flush();
+					} catch (IOException e) {
+						// Ignore
+					}
+					handleProcessTerminated(console, exitCode);
+				}
+			};
+		}
+		
+		protected void handleProcessTerminated(ToolsConsole console, int exitCode) {
+			try {
+				console.infoOut.write("^ --- Terminated, exit code: " + exitCode +  " --- ^\n");
+				console.infoOut.flush();
+			} catch (IOException e) {
+				// Ignore
 			}
 		}
 		

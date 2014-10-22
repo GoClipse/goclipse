@@ -95,8 +95,8 @@ public class GoCompiler {
 				);
 			}
 			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, project, pmonitor, 
-				target.getParentFile(), cmd);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, pmonitor, target.getParentFile(), 
+				cmd);
 			
 			refreshProject(project, pmonitor);
 			int errorCount = 0;
@@ -131,8 +131,8 @@ public class GoCompiler {
 			
 			File file = new File(target.getLocation().toOSString());
 			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, project, pmonitor, 
-				file, cmd);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, pmonitor, file, 
+				cmd);
 
 
 			refreshProject(project, pmonitor);
@@ -190,8 +190,8 @@ public class GoCompiler {
 			);
 			
 			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, project, pmonitor, 
-				workingDir, cmd);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, pmonitor, workingDir, 
+				cmd);
 
 		    refreshProject(project, pmonitor);
 			clearPackageErrorMessages(project, pkgPath);
@@ -226,8 +226,8 @@ public class GoCompiler {
 		
 			ArrayList2<String> cmd = new ArrayList2<>(compilerPath, GoCommandConstants.GO_INSTALL_COMMAND, "all");
 
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, project, pmonitor, 
-				project.getLocation().toFile(), cmd);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, pmonitor, project.getLocation().toFile(), 
+				cmd);
 			
 			refreshProject(project, pmonitor);
 			

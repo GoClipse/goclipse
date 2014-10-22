@@ -15,7 +15,7 @@ import org.eclipse.core.resources.IProject;
 
 public interface IGoOperationsListener extends ILangOperationsListener {
 	
-	public void handleBuildStarted(IProject project);
+	public void handleBuildStarted(IProject project, boolean clearConsole);
 	
 	public void handleBuildTerminated(IProject project);
 	

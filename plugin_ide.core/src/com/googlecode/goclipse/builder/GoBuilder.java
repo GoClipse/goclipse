@@ -22,7 +22,6 @@ import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -53,33 +52,20 @@ public class GoBuilder extends LangProjectBuilder {
 	}
 	
 	@Override
+	protected void handleFirstOfKind() {
+		GoToolManager.getDefault().notifyBuildStarting(null, true);
+	}
+	
+	@Override
+	protected void handleLastOfKind() {
+		GoToolManager.getDefault().notifyBuildTerminated(null);
+	}
+	
+	@Override
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
 			throws CoreException {
 		
-		GoToolManager.getDefault().notifyBuildStarting(project);
-		
-		try {
-			doBuildAll(project, monitor);
-		} 
-		catch (CoreException ce) {
-			if(!monitor.isCanceled()) {
-				LangCore.logStatus(ce.getStatus());
-			}
-			
-			forgetLastBuiltState();
-			throw ce; // Note: if monitor is cancelled, exception will be ignored.
-		} 
-		finally {
-			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
-			
-			GoToolManager.getDefault().notifyBuildTerminated(project);
-		}
-		
-		// no project dependencies (yet)
-		return null;
-	}
-	
-	protected void doBuildAll(final IProject project, IProgressMonitor monitor) throws CoreException {
+		GoToolManager.getDefault().notifyBuildStarting(project, false);
 		
 		GoEnvironment goEnv = getValidGoEnvironment(project);
 		
@@ -89,7 +75,7 @@ public class GoBuilder extends LangProjectBuilder {
 		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
 		
 		ExternalProcessResult buildAllResult = 
-			GoToolManager.getDefault().runBuildTool(goEnv, project, monitor, getProjectLocation(), goBuildCmdLine);
+			GoToolManager.getDefault().runBuildTool(goEnv, monitor, getProjectLocation(), goBuildCmdLine);
 		
 		GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor(MiscUtil.createValidPath("")) {
 			@Override
@@ -100,6 +86,8 @@ public class GoBuilder extends LangProjectBuilder {
 		buildOutput.parseOutput(buildAllResult);
 		
 		addErrorMarkers(buildOutput.getBuildErrors());
+		
+		return null;
 	}
 	
 	protected File getProjectLocation() {
@@ -133,7 +121,7 @@ public class GoBuilder extends LangProjectBuilder {
 	
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
-		deleteBuildMarkers();
+		deleteProjectBuildMarkers();
 		
 		IProject project = getProject();
 		GoEnvironment goEnv = getValidGoEnvironment(project);
@@ -142,7 +130,7 @@ public class GoBuilder extends LangProjectBuilder {
 		goBuildCmdLine.addElements("clean");
 		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
 		
-		GoToolManager.getDefault().runBuildTool(goEnv, project, monitor, getProjectLocation(), goBuildCmdLine);
+		GoToolManager.getDefault().runBuildTool(goEnv, monitor, getProjectLocation(), goBuildCmdLine);
 	}
 	
 }

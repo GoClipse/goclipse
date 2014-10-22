@@ -25,35 +25,43 @@ import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
 
 public class GoOperationsConsoleListener extends AbstractToolsConsoleListener implements IGoOperationsListener {
 	
-	@Override
-	protected String getOperationConsoleName(IProject project) {
-		return "Go build " + getProjectNameSuffix(project);
-	}
-	
-	public static class GoBuildConsole extends ToolsConsole {
-		
-		public GoBuildConsole(String name) {
-			super(name, GoPluginImages.GO_CONSOLE_ICON.getDescriptor());
-		}
-		
-	}
+	protected static final String GO_BUILD_CONSOLE_NAME = "Go build";
 	
 	@Override
 	protected ToolsConsole createConsole(String name) {
 		return new GoBuildConsole(name);
 	}
 	
+	public static class GoBuildConsole extends ToolsConsole {
+		public GoBuildConsole(String name) {
+			super(name, GoPluginImages.GO_CONSOLE_ICON.getDescriptor());
+		}
+	}
+	
 	@Override
-	public void handleBuildStarted(IProject project) {
-		String projName = project.getName();
-		getOperationConsole(project, true).writeOperationInfo(
-			"************  Running Go build for project: " + projName + "  ************\n");
+	public void handleBuildStarted(IProject project, boolean clearConsole) {
+		getOperationConsole(null, clearConsole).writeOperationInfo((project == null) ?
+			"************  Building Go workspace  ************\n" :
+			"------- Building Go project: " + project.getName() + "  -------\n");
 	}
 	
 	@Override
 	public void handleBuildTerminated(IProject project) {
-		getOperationConsole(project, false).writeOperationInfo(
+		getOperationConsole(null, false).writeOperationInfo(
 			"************  Build terminated.  ************\n");
+	}
+	
+	@Override
+	protected String getOperationConsoleName(IProject project) {
+		return "Go build" + getProjectNameSuffix(project);
+	}
+	
+	@Override
+	protected String getProjectNameSuffix(IProject project) {
+		if(project == null) {
+			return "";
+		}
+		return super.getProjectNameSuffix(project);
 	}
 	
 	@Override

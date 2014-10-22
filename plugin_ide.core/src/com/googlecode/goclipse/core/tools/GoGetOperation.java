@@ -119,8 +119,8 @@ public class GoGetOperation {
 			
 			monitor.worked(3);
 			
-			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, project, monitor, 
-				target.getParentFile(), cmd);
+			ExternalProcessResult processResult = GoToolManager.getDefault().runBuildTool(goEnv, monitor, target.getParentFile(), 
+				cmd);
 			
 			StreamAsLines sal = new StreamAsLines(processResult);
 			

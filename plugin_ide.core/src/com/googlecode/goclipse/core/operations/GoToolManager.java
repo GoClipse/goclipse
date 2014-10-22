@@ -36,9 +36,9 @@ public class GoToolManager extends AbstractToolsManager<IGoOperationsListener> {
 		return instance;
 	}
 	
-	public void notifyBuildStarting(IProject project) {
+	public void notifyBuildStarting(IProject project, boolean clearConsole) {
 		for (IGoOperationsListener processListener : getListeners()) {
-			processListener.handleBuildStarted(project);
+			processListener.handleBuildStarted(project, clearConsole);
 		}
 	}
 	
@@ -50,11 +50,11 @@ public class GoToolManager extends AbstractToolsManager<IGoOperationsListener> {
 	
 	/* -----------------  ----------------- */
 
-	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProject project, IProgressMonitor pm, 
-			File workingDir, List<String> commandLine) throws CoreException {
+	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProgressMonitor pm, File workingDir, 
+			List<String> commandLine) throws CoreException {
 		
 		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir);
-		return runTool(project, pm, pb);
+		return runTool(null, pm, pb);
 	}
 	
 	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb,
