@@ -1,26 +1,28 @@
 ## release ChangeLog
 
 ### Goclipse 0.9.0
- * Added: New simple project builder that delegates to the `go install/build` command all the build work. (fixes #64)
-   * This should improve compilation speed, and avoid certain problems, since Goclipse no longer tries to figure out package dependencies itself.
-   * Disabled continuous testing feature, as it was broken.
- * Goclipse now uses one build console only, instead of one per project.
- * Added #84: Eclipse Go projects can now be created inside the "src" folder of a GOPATH entry, and that scenario will be handled properly by the toolchain (gocode, oracle, build, etc.).
-   * In this case, the project location will not be implicitly added to the GOPATH, as the project is part of the GOPATH already. 
- * Fixed: Project Explorer no longer shows GOPATH entry if that entry location is the as the project location.
- * Added: GOROOT entry in Project Explorer now sorted at the top, and has own icon.
- * Added: Project Explorer: GOPATH entries have location subtext. ###
- * Added gocode process argument information to gocode log console.
- * Added Ctrl-click open definition functionality using `go oracle`.
-   * Path to `oracle` command can be configured in the Go preference page.
-   * Go oracle Open Definition can now also be invoked under an editor with F3 key.
- * gocode Code Completion now works with files outside of an Eclipse project.
- * Added display of an error dialog when gocode Content Assist fails.
- * Added a timeout of 5 seconds for gocode process invocation during Content Assist. 
+ * Added: A simplified project builder that delegates to the `go install` command all the build work. (fixes #64)
+   * This should improve compilation speed, since Goclipse no longer tries to figure out package dependencies itself. (and is likely more robust)
+   * Disabled continuous testing feature, as the feature became broken.
+   * Goclipse now uses one global build console only, instead of one per project.
+ * Added Ctrl-click open definition functionality using the [Go Oracle tool](http://golang.org/s/oracle-user-manual).
+   * Path to the `oracle` command can be configured in the Go/Tools preference page.
+   * Open Definition using Go Oracle can now also be invoked in an editor with the F3 key.
+ * Added #84: Goclipse projects can now be created inside the "src" folder of a GOPATH entry, and invoking the toolchain (gocode, oracle, build, etc.) will be handled correctly for this scenario.
+   * Note: with such projects, the project location will not be implicitly added to the GOPATH entries, as the project is part of the GOPATH already. 
+ * Added: Project Explorer UI improvements:
+   * GOROOT entry in now sorted at the top, and has own icon.
+   * GOPATH entries have a location sub-label.
+   * GOPATH entry no longer shown if that entry location is the same as the project location.
+ * gocode handling improvements:
+   * Added gocode process argument information to gocode log console.
+   * gocode Code Completion now works with files outside of an Eclipse project.
+   * Added display of an error dialog when gocode Content Assist fails.
+   * Set timeout of 5 seconds for gocode process invocation during Content Assist. 
+   * Fixed: Provide correct GOPATH 'lib-path' argument to gocode. 
  * Removed "RELEASE/DEBUG" config option from launch configuration, since it didn't actually do anything.
- * Fixed: bug in Go Project Wizard where using "Create project from existing source" will make the finish button not work.
+ * Fixed: bug in Go Project Wizard where using "Create project from existing source" would make the finish button not work.
  * Fixed: bug where some items in the Workbench "Source" menu would disappear when switching editors.
- * Fixed: Provide correct GOPATH 'lib-path' argument to gocode.
  
 ### Goclipse 0.8.1
  * Changed the Eclipse update site URL to: http://goclipse.github.io/releases/
