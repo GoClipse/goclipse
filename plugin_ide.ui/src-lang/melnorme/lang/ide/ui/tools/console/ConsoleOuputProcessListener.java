@@ -12,9 +12,9 @@ package melnorme.lang.ide.ui.tools.console;
 
 import java.io.IOException;
 
-import org.eclipse.ui.console.IOConsoleOutputStream;
-
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
+
+import org.eclipse.ui.console.IOConsoleOutputStream;
 
 public class ConsoleOuputProcessListener implements IProcessOutputListener {
 	
@@ -46,12 +46,12 @@ public class ConsoleOuputProcessListener implements IProcessOutputListener {
 	
 	@Override
 	public void notifyProcessTerminatedAndRead(int exitCode) {
-//		try {
-//			getConsole().stdOut.flush();
-//			getConsole().stdErr.flush();
-//		} catch (IOException e) {
-//			GoCore.logError(e);
-//		}
+		try {
+			processStdOut.flush();
+			processStdErr.flush();
+		} catch (IOException e) {
+			// Ignore
+		}
 	}
 	
 }
