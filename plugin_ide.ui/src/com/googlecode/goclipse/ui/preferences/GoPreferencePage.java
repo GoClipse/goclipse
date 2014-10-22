@@ -1,11 +1,14 @@
 package com.googlecode.goclipse.ui.preferences;
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
 import java.io.File;
 import java.util.List;
 
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.jface.preference.DirectoryFieldEditorExt;
 import melnorme.util.swt.jface.preference.FileFieldEditorExt;
+import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -84,18 +87,19 @@ public class GoPreferencePage extends FieldEditorPreferencePage implements IWork
 
 	    goPathEditor = new GoPathFieldEditor(GoEnvironmentPrefs.GO_PATH.key, "GO&PATH:", fieldParent);
 	    addField(goPathEditor);
-    
-		goosEditor = new ComboFieldEditor(GoEnvironmentPrefs.GO_OS.key, "G&OOS:", new String[][] { 
-				{ "", "" },
-		        { GoOs.OS_DARWIN, GoOs.OS_DARWIN },
-		        { GoOs.OS_LINUX, GoOs.OS_LINUX },
-		        { GoOs.OS_FREEBSD, GoOs.OS_FREEBSD },
-		        { GoOs.OS_NACL, GoOs.OS_NACL },
-		        { GoOs.OS_WINDOWS, GoOs.OS_WINDOWS } }, fieldParent);
+	    
+	    ArrayList2<String[]> goosEntries = new ArrayList2<>();
+	    goosEntries.add(array("<default>", ""));
+	    for (String goosValue : GoOs.GOOS_VALUES) {
+	    	goosEntries.add(array(goosValue, goosValue));
+		}
+	    
+		goosEditor = new ComboFieldEditor(GoEnvironmentPrefs.GO_OS.key, "G&OOS:", 
+			goosEntries.toArray(String[].class), fieldParent);
 		addField(goosEditor);
 
 		goarchEditor = new ComboFieldEditor(GoEnvironmentPrefs.GO_ARCH.key, "GO&ARCH:", new String[][] { 
-				{ "", "" },
+				{ "<default>", "" },
 		        { GoArch.ARCH_AMD64, GoArch.ARCH_AMD64 },
 		        { GoArch.ARCH_386, GoArch.ARCH_386 },
 		        { GoArch.ARCH_ARM, GoArch.ARCH_ARM } }, fieldParent);
