@@ -1,7 +1,11 @@
 package com.googlecode.goclipse.builder;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -154,8 +158,7 @@ public class GoTestRunner {
         }
         
         private void markErrors(String stdout, String stderr) {
-            List<String> lines = StreamAsLines.buildTestStreamAsLines(
-            	new StringReader(stdout), new StringReader(stderr));
+            List<String> lines = StreamAsLines.parseLinesFromOutput(stdout, stderr);
 			if (lines.size() > 0) {
 				processTestOutput(lines, activeTest);
             }
@@ -335,4 +338,37 @@ public class GoTestRunner {
         	
         }
 	}
+}
+
+class StreamAsLines {
+	
+	protected List<String> lines = new ArrayList<String>();
+	
+	public static List<String> parseLinesFromOutput(String stdout, String stderr) {
+		try {
+			return parseLinesFromOutput(new StringReader(stdout), new StringReader(stderr));
+		} catch (IOException e) {
+			throw assertUnreachable(); // StringReader doesn't throw IOException
+		}
+	}
+	
+	public static List<String> parseLinesFromOutput(Reader stdoutReader, Reader stderrReader) throws IOException {
+		StreamAsLines sal = new StreamAsLines();
+		sal.processTestStream(stdoutReader);
+		sal.processTestStream(stderrReader);
+		return sal.lines;
+	}
+	
+	public void processTestStream(Reader isr) throws IOException {
+		String line;
+		BufferedReader br = new BufferedReader(isr);
+		
+		while ((line = br.readLine()) != null) {
+			if ("# command-line-arguments".equals(line)){
+			} else {
+				lines.add(line);
+			}
+		}
+	}
+	
 }
