@@ -72,17 +72,42 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 	
 	/* -----------------  ----------------- */
 	
+	protected static void default_printProcessStartResult(IOConsoleOutputStream outStream, String prefix, 
+			ProcessBuilder pb, CommonException ce) {
+		List<String> commandLine = pb.command();
+		String text = prefix + StringUtil.collToString(commandLine, " ") + "\n";
+		
+		if(ce != null) {
+			text += "  FAILED: " + ce.getMessage();
+			Throwable cause = ce.getCause();
+			if(cause != null) {
+				text += "   Reason: " + cause.getMessage() + "\n";
+			}
+		}
+		
+		try {
+			outStream.write(text);
+		} catch (IOException e) {
+			// Do nothing
+		}
+	}
+	
 	public class ProcessUIConsoleHandler {
 		
-		protected final ProcessBuilder pb;
-		protected final IProject project;
-		protected final String prefixText;
-		protected final ExternalProcessNotifyingHelper processHelper;
-		protected final CommonException ce;
+		protected ProcessBuilder pb;
+		protected IProject project;
+		protected String prefixText;
+		protected ExternalProcessNotifyingHelper processHelper;
+		protected CommonException ce;
 		protected boolean clearConsole = false;
 		
-		public ProcessUIConsoleHandler(ProcessBuilder pb, IProject project, String prefixText, boolean clearConsole, 
+		public void handle(ProcessBuilder pb, IProject project, String prefixText, boolean clearConsole,
 				ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+			init(pb, project, prefixText, clearConsole, processHelper, ce).handle();
+		}
+		
+		public ProcessUIConsoleHandler init(ProcessBuilder pb, IProject project, String prefixText, 
+				boolean clearConsole, ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 			this.pb = pb;
 			this.project = project;
 			this.prefixText = prefixText;
@@ -91,53 +116,35 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 			
 			this.clearConsole = clearConsole;
 			
-			handle();
+			return this;
 		}
 		
 		public void handle() {
 			ToolsConsole console = getConsole();
-			
-			printProcessStartResult(console.infoOut, prefixText, pb, ce);
+			handle(console);
+		}
+		
+		public void handle(ToolsConsole console) {
+			printProcessStartResult(console.infoOut);
 			
 			if(processHelper != null) {
 				processHelper.getOutputListenersHelper().addListener(createOutputListener(console));
 			}
 		}
 		
+		protected void printProcessStartResult(IOConsoleOutputStream outStream) {
+			default_printProcessStartResult(outStream, prefixText, pb, ce);
+		}
+		
 		protected ToolsConsole getConsole() {
 			return getOperationConsole(project, clearConsole);
 		}
 		
-		protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
-				CommonException ce) {
-			List<String> commandLine = pb.command();
-			String text = prefix + StringUtil.collToString(commandLine, " ") + "\n";
-			
-			if(ce != null) {
-				text += "  FAILED: " + ce.getMessage();
-				Throwable cause = ce.getCause();
-				if(cause != null) {
-					text += "   Reason: " + cause.getMessage() + "\n";
-				}
-			}
-			
-			try {
-				outStream.write(text);
-			} catch (IOException e) {
-				// Do nothing
-			}
-		}
-		
 		protected IProcessOutputListener createOutputListener(final ToolsConsole console) {
-			return new ConsoleOuputProcessListener(console.stdOut, console.stdErr) {
+			return new ConsoleOutputProcessListener(console.stdOut, console.stdErr) {
 				@Override
 				public void notifyProcessTerminatedAndRead(int exitCode) {
-					try {
-						console.stdOut.flush();
-						console.stdErr.flush();
-					} catch (IOException e) {
-						// Ignore
-					}
+					super.notifyProcessTerminatedAndRead(exitCode);
 					handleProcessTerminated(console, exitCode);
 				}
 			};
@@ -145,11 +152,15 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 		
 		protected void handleProcessTerminated(ToolsConsole console, int exitCode) {
 			try {
-				console.infoOut.write("^ --- Terminated, exit code: " + exitCode +  " --- ^\n");
+				console.infoOut.write(getProcessTerminatedMessage(exitCode));
 				console.infoOut.flush();
 			} catch (IOException e) {
 				// Ignore
 			}
+		}
+		
+		protected String getProcessTerminatedMessage(int exitCode) {
+			return "  ^^^ Terminated, exit code: " + exitCode +  " ^^^\n";
 		}
 		
 	}
@@ -157,48 +168,33 @@ public abstract class AbstractToolsConsoleListener implements ILangOperationsLis
 	@Override
 	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
 			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-		new ProcessUIConsoleHandler(pb, project, ">> Running: ", false, processHelper, ce);
+		new ProcessUIConsoleHandler().handle(pb, project, ">> Running: ", false, processHelper, ce);
 	}
 	
 	public class EngineServerProcessUIConsoleHandler extends ProcessUIConsoleHandler {
 		
 		protected DaemonToolMessageConsole console;
 		
-		public EngineServerProcessUIConsoleHandler(ProcessBuilder pb, IProject project, String prefixText,
-				ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-			super(pb, project, prefixText, false, processHelper, ce);
-		}
-		
 		@Override
 		public void handle() {
 			if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
 				return;
 			}
-			super.handle();
-		}
-		
-		@Override
-		public ToolsConsole getConsole() {
 			console = DaemonToolMessageConsole.getConsole();
-			return console;
+			handle(console);
 		}
 		
 		@Override
-		protected ConsoleOuputProcessListener createOutputListener(ToolsConsole console_) {
-			return new ConsoleOuputProcessListener(console.serverStdOut, console.serverStdErr);
+		protected ConsoleOutputProcessListener createOutputListener(ToolsConsole console_) {
+			return new ConsoleOutputProcessListener(console.serverStdOut, console.serverStdErr);
 		}
 	
 	}
 	
 	public class EngineClientProcessUIConsoleHandler extends EngineServerProcessUIConsoleHandler {
-		public EngineClientProcessUIConsoleHandler(ProcessBuilder pb, IProject project, String prefixText,
-				ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-			super(pb, project, prefixText, processHelper, ce);
-		}
-		
 		@Override
-		protected ConsoleOuputProcessListener createOutputListener(ToolsConsole console_) {
-			return new ConsoleOuputProcessListener(console.stdOut, console.stdErr);
+		protected ConsoleOutputProcessListener createOutputListener(ToolsConsole console_) {
+			return new ConsoleOutputProcessListener(console.stdOut, console.stdErr);
 		}
 	}
 	
