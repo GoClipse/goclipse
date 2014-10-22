@@ -67,13 +67,21 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	@Override
 	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
 			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+		String prefixText = ">> Running: ";
+		
 		new ProcessUIConsoleHandler() {
 			@Override
 			protected void printProcessStartResult(IOConsoleOutputStream outStream) {
 				super.printProcessStartResult(outStream);
 				printGoPathString(outStream, pb);
 			}
-		}.handle(pb, project, ">> Running: ", false, processHelper, ce);
+			
+			@Override
+			protected String getProcessTerminatedMessage(int exitCode) {
+				return "   ^^^ Terminated, exit code: " + exitCode +  " ^^^ \n";
+			};
+			
+		}.handle(pb, project, prefixText, false, processHelper, ce);
 	}
 	
 	@Override
@@ -102,7 +110,7 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 		String gopathString = pb.environment().get(GoEnvironmentConstants.GOPATH);
 		if(gopathString != null) {
 			try {
-				outStream.write("  with GOPATH: " + gopathString + "\n");
+				outStream.write("   with GOPATH: " + gopathString + "\n");
 			} catch (IOException e) {
 				// Do nothing
 			}
