@@ -20,6 +20,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tooling.ops.ToolSourceError;
 import melnorme.utilbox.collections.ArrayList2;
 
+import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -37,7 +38,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		assertTrue(getProject() != null);
 	}
 	
-	protected void deleteBuildMarkers() {
+	protected void deleteProjectBuildMarkers() {
 		try {
 			getProject().deleteMarkers(getBuildProblemId(), true, IResource.DEPTH_INFINITE);
 		} catch (CoreException ce) {
@@ -47,23 +48,69 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected abstract String getBuildProblemId();
 	
+	protected boolean isFirstProjectOfKind() throws CoreException {
+		boolean firstOfKind = true;
+		for (IBuildConfiguration buildConfig : getContext().getAllReferencedBuildConfigs()) {
+			if(buildConfig.getProject().hasNature(LangCore.NATURE_ID)) {
+				firstOfKind = false;
+			}
+		}
+		return firstOfKind;
+	}
+	
+	protected boolean isLastProjectOfKind() throws CoreException {
+		boolean lastOfKind = true;
+		for (IBuildConfiguration buildConfig : getContext().getAllReferencingBuildConfigs()) {
+			if(buildConfig.getProject().hasNature(LangCore.NATURE_ID)) {
+				lastOfKind = false;
+			}
+		}
+		return lastOfKind;
+	}
+	
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		assertTrue(kind != CLEAN_BUILD);
 		
 		IProject project = assertNotNull(getProject());
 		
-		deleteBuildMarkers();
+		if(isFirstProjectOfKind()) {
+			handleFirstOfKind();
+		}
+		
+		deleteProjectBuildMarkers();
 		
 		try {
-			return doBuild(project, kind, args, monitor);
-		} finally {
+			doBuild(project, kind, args, monitor);
+		} 
+		catch (CoreException ce) {
+			if(!monitor.isCanceled()) {
+				LangCore.logStatus(ce);
+			}
 			
+			forgetLastBuiltState();
+			throw ce; // Note: if monitor is cancelled, exception will be ignored.
+		} 
+		finally {
+			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+			
+			if(isLastProjectOfKind()) {
+				handleLastOfKind();
+			}
 		}
+		
+		// no project dependencies (yet)
+		return null;
+	}
+	
+	protected void handleFirstOfKind() {
+	}
+	
+	protected void handleLastOfKind() {
 	}
 	
 	protected abstract IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor pm)
-		throws CoreException;
+			throws CoreException;
 	
 	
 	protected void addErrorMarkers(ArrayList2<ToolSourceError> buildErrors) throws CoreException {
@@ -87,7 +134,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 				// TODO: map column to position?
 				//dubMarker.setAttribute(IMarker.LINE_NUMBER, column);
 			}
-
+			
 		}
 		
 	}
