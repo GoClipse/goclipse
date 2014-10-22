@@ -54,8 +54,6 @@ public class GoEditorActionContributor extends AbstractLangEditorActionContribut
 		
 		sourceMenu.appendToGroup(SOURCE_MENU__ADDITIONS, 
 			registerEditorHandler(COMMAND_RunGoFix, RunGoFixOperation.handler));
-		sourceMenu.appendToGroup(SOURCE_MENU__ADDITIONS, 
-			registerEditorHandler(COMMAND_RunGoGet, RunGoGetOperation.handler));
 		
 		sourceMenu.appendToGroup(SOURCE_MENU__FORMAT, 
 			registerEditorHandler(COMMAND_RunGoFmt, RunGoFmtOperation.handler));

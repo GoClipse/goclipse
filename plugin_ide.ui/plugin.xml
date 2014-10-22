@@ -390,12 +390,6 @@
             categoryId="com.googlecode.goclipse.ui.commands.Category"
             id="com.googlecode.goclipse.editors.ToggleComment.run">
       </command>
-      <command
-            name="Get (go get -fix -u)"
-            description="Run the &apos;go get&apos; command on the current file."
-            categoryId="com.googlecode.goclipse.ui.commands.Category"
-            id="com.googlecode.goclipse.editors.GoGetShortcut.run">
-      </command>
    </extension>
    <extension point="org.eclipse.ui.contexts">
           <context name="Editing Go Source"
