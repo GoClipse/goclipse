@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -127,7 +128,7 @@ public class GoGetOperation {
 			boolean exMsg = true;
 			
 			try {
-	            project.deleteMarkers(MarkerUtilities.MARKER_ID, false, IResource.DEPTH_ZERO);
+	            project.deleteMarkers(LangCore_Actual.BUILD_PROBLEM_ID, false, IResource.DEPTH_ZERO);
             } catch (CoreException e1) {
 	            Activator.logError(e1);
             }

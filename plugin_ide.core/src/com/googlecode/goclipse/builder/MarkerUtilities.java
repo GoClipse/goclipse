@@ -1,12 +1,12 @@
 package com.googlecode.goclipse.builder;
 
+import static melnorme.lang.ide.core.LangCore_Actual.BUILD_PROBLEM_ID;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import com.googlecode.goclipse.Activator;
-import com.googlecode.goclipse.core.GoCore;
 
 /**
  * A utility class for dealing with Go markers.
@@ -15,8 +15,6 @@ import com.googlecode.goclipse.core.GoCore;
  */
 public class MarkerUtilities {
 	
-	public static final String MARKER_ID = GoCore.PLUGIN_ID + ".goProblem";
-
 	public static void addMarker(IResource res, String message) {
 		addMarker(res, -1, message, IMarker.SEVERITY_ERROR);
 	}
@@ -35,7 +33,7 @@ public class MarkerUtilities {
 
 		try {
 			// never add a duplicate marker
-			for (IMarker mark : file.findMarkers(MARKER_ID, true, IResource.DEPTH_INFINITE)) {
+			for (IMarker mark : file.findMarkers(BUILD_PROBLEM_ID, true, IResource.DEPTH_INFINITE)) {
 				int line_number = (Integer) mark.getAttribute(IMarker.LINE_NUMBER);
 				String msg = (String) mark.getAttribute(IMarker.MESSAGE);
 				if (line == line_number && message.equals(msg)) {
@@ -48,7 +46,7 @@ public class MarkerUtilities {
 		}
 
 		try {
-			IMarker marker = file.createMarker(MARKER_ID);
+			IMarker marker = file.createMarker(BUILD_PROBLEM_ID);
 			marker.setAttribute(IMarker.MESSAGE, message);
 			marker.setAttribute(IMarker.SEVERITY, severity);
 
@@ -75,17 +73,7 @@ public class MarkerUtilities {
 	public static void deleteFileMarkers(IResource resource) {
 		try {
 			if (resource != null && resource.exists()) {
-				resource.deleteMarkers(MARKER_ID, false, IResource.DEPTH_ZERO);
-			}
-		} catch (CoreException ce) {
-			Activator.logError(ce);
-		}
-	}
-
-	public static void deleteAllMarkers(IProject project) {
-		try {
-			if (project != null && project.exists()) {
-				project.deleteMarkers(MARKER_ID, true, IResource.DEPTH_INFINITE);
+				resource.deleteMarkers(BUILD_PROBLEM_ID, false, IResource.DEPTH_ZERO);
 			}
 		} catch (CoreException ce) {
 			Activator.logError(ce);

@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -42,10 +43,6 @@ public class GoBuilder extends LangProjectBuilder {
 	public GoBuilder() {
 	}
 	
-	@Override
-	protected String getBuildProblemId() {
-		return MarkerUtilities.MARKER_ID;
-	}
 	
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
