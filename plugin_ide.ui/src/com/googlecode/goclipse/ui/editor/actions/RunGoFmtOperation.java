@@ -29,7 +29,7 @@ public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	};
 	
 	public RunGoFmtOperation(ITextEditor editor) {
-		super(null, editor);
+		super("Run 'gofmt'", editor);
 	}
 	
 	@Override

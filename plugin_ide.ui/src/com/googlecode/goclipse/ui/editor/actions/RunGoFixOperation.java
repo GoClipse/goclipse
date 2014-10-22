@@ -30,7 +30,7 @@ public class RunGoFixOperation extends AbstractEditorGoToolOperation {
 	};
 	
 	public RunGoFixOperation(ITextEditor editor) {
-		super(null, editor);
+		super("Run 'go fix'", editor);
 	}
 	
 	@Override
