@@ -20,9 +20,12 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Group;
 
 public abstract class AbstractDeamonToolPrefPage extends FieldEditorPreferencePage {
+	
+	protected Group toolGroup;
 	
 	public AbstractDeamonToolPrefPage() {
 		super(GRID);
@@ -33,22 +36,41 @@ public abstract class AbstractDeamonToolPrefPage extends FieldEditorPreferencePa
 	
 	@Override
 	protected void createFieldEditors() {
-		Group group = SWTFactoryUtil.createGroup(getFieldEditorParent(),
+		toolGroup = SWTFactoryUtil.createGroup(getFieldEditorParent(),
 			getDaemonToolName(),
 			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
 		
 		addField(new BooleanFieldEditor(
 			DaemonEnginePreferences.AUTO_START_SERVER.key,
-			"Start " + getDaemonToolName() + " server automatically", group));
-		
-		addField(new FileFieldEditor(
-			DaemonEnginePreferences.DAEMON_PATH.key, getDaemonToolName() + " path:", group));
+			"Start " + getDaemonToolName() + " server automatically", toolGroup));
 		
 		addField(new BooleanFieldEditor(
 			DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.key,
-			"Enable " + getDaemonToolName() + " log console (requires restart)", group));
+			"Enable " + getDaemonToolName() + " log console (requires restart)", toolGroup));
 		
-		GridLayoutFactory.fillDefaults().margins(6, 4).numColumns(3).applyTo(group);
+		createDaemonPathFieldEditor(toolGroup);
+		
+		GridLayoutFactory.fillDefaults().spacing(6, 2).margins(6, 4).applyTo(toolGroup);
+	}
+	
+	protected void createDaemonPathFieldEditor(Group group) {
+		addField(new FileFieldEditor(
+			DaemonEnginePreferences.DAEMON_PATH.key, getDaemonToolName() + " path:", group));
+	}
+	
+	@Override
+	protected void adjustGridLayout() {
+		super.adjustGridLayout();
+		
+		int numColumns = ((GridLayout) getFieldEditorParent().getLayout()).numColumns;
+		// Fix parent layout, the number of columns there is irrelevant, because we are using groups.
+		((GridLayout) getFieldEditorParent().getLayout()).numColumns = 1;
+		// Instead, adjudt the numColumns of the group layout:
+		adjustGridLayoutForFieldsNumberofColumns(numColumns);
+	}
+	
+	protected void adjustGridLayoutForFieldsNumberofColumns(int numColumns) {
+		((GridLayout) toolGroup.getLayout()).numColumns = numColumns;
 	}
 	
 	protected abstract String getDaemonToolName();
