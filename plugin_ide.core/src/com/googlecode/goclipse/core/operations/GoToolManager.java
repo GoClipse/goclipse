@@ -10,12 +10,12 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
-import static melnorme.lang.ide.core.utils.ResourceUtils.getLocation;
-
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -52,6 +52,11 @@ public class GoToolManager extends AbstractToolsManager<IGoOperationsListener> {
 
 	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProgressMonitor pm, File workingDir, 
 			List<String> commandLine) throws CoreException {
+		return runBuildTool(goEnv, pm, workingDir.toPath(), commandLine);
+	}
+	
+	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProgressMonitor pm, Path workingDir, 
+			List<String> commandLine) throws CoreException {
 		
 		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir);
 		return runTool(null, pm, pb);
@@ -59,9 +64,9 @@ public class GoToolManager extends AbstractToolsManager<IGoOperationsListener> {
 	
 	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb,
 			String processInput, boolean throwOnNonZero) throws CoreException {
-		File workingDir = getLocation(project);
+		Path workingDir = project == null ? null : ResourceUtils.getProjectLocation(project);
 		if(workingDir != null) {
-			pb.directory(workingDir);
+			pb.directory(workingDir.toFile());
 		}
 		return newRunToolTask(pb, project, pm).runProcess(processInput, throwOnNonZero);
 	}

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.builder;
 
-import java.io.File;
+import static melnorme.lang.ide.core.utils.ResourceUtils.getProjectLocation;
+
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 
@@ -73,8 +75,10 @@ public class GoBuilder extends LangProjectBuilder {
 		goBuildCmdLine.addElements(GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project));
 		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
 		
+		Path rootDir = getProjectLocation(project);
+		
 		ExternalProcessResult buildAllResult = 
-			GoToolManager.getDefault().runBuildTool(goEnv, monitor, getProjectLocation(), goBuildCmdLine);
+			GoToolManager.getDefault().runBuildTool(goEnv, monitor, rootDir, goBuildCmdLine);
 		
 		GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 			@Override
@@ -84,13 +88,9 @@ public class GoBuilder extends LangProjectBuilder {
 		};
 		buildOutput.parseOutput(buildAllResult);
 		
-		addErrorMarkers(buildOutput.getBuildErrors());
+		addErrorMarkers(buildOutput.getBuildErrors(), rootDir);
 		
 		return null;
-	}
-	
-	protected File getProjectLocation() {
-		return getProject().getLocation().toFile();
 	}
 	
 	protected GoEnvironment getValidGoEnvironment(final IProject project) throws CoreException {
@@ -129,7 +129,7 @@ public class GoBuilder extends LangProjectBuilder {
 		goBuildCmdLine.addElements("clean");
 		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
 		
-		GoToolManager.getDefault().runBuildTool(goEnv, monitor, getProjectLocation(), goBuildCmdLine);
+		GoToolManager.getDefault().runBuildTool(goEnv, monitor, getProjectLocation(project), goBuildCmdLine);
 	}
 	
 }

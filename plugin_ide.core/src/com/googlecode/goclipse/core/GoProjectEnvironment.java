@@ -11,7 +11,8 @@
 package com.googlecode.goclipse.core;
 
 import java.util.Collection;
-import melnorme.lang.ide.core.LangCore;
+
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.utilbox.collections.ArrayList2;
 
@@ -75,7 +76,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	}
 	
 	public static boolean isProjectInsideGoPath(IProject project, GoPath goPath) throws CoreException {
-		return goPath.findGoPathEntryForSourcePath(getProjectPath(project)) != null;
+		return goPath.findGoPathEntryForSourcePath(ResourceUtils.getProjectLocation(project)) != null;
 	}
 	
 	protected static String getEffectiveValue_NonNull(StringPreference stringPref, IProject project, 
@@ -107,15 +108,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	public static Collection<GoPackageName> getSourcePackages(IProject project, GoEnvironment goEnvironment)
 			throws CoreException {
 		GoPath goPath = goEnvironment.getGoPath();
-		return goPath.findSourcePackages(getProjectPath(project));
-	}
-	
-	public static java.nio.file.Path getProjectPath(IProject project) throws CoreException {
-		IPath location = project.getLocation();
-		if(location == null) {
-			throw LangCore.createCoreException("Invalid project path", null);
-		}
-		return location.toFile().toPath();
+		return goPath.findSourcePackages(ResourceUtils.getProjectLocation(project));
 	}
 	
 	/* ----------------- ----------------- */
@@ -138,14 +131,9 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	}
 	
 	public static IContainer getSourceFolderRoot(IProject project) throws CoreException {
-		
 		if(isProjectInsideGoPath(project)) {
-			if(project.getLocation() == null) {
-				throw GoCore.createCoreException("Invalid project location: " + project.getLocationURI(), null);
-			}
 			return project;
 		}
-		
 		return project.getFolder("src");
 	}
 	
