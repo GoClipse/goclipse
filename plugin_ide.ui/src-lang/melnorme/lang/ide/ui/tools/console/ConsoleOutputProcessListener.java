@@ -16,12 +16,12 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputLis
 
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
-public class ConsoleOuputProcessListener implements IProcessOutputListener {
+public class ConsoleOutputProcessListener implements IProcessOutputListener {
 	
 	protected final IOConsoleOutputStream processStdOut;
 	protected final IOConsoleOutputStream processStdErr;
 	
-	public ConsoleOuputProcessListener(IOConsoleOutputStream processStdOut, IOConsoleOutputStream processStdErr) {
+	public ConsoleOutputProcessListener(IOConsoleOutputStream processStdOut, IOConsoleOutputStream processStdErr) {
 		this.processStdOut = processStdOut;
 		this.processStdErr = processStdErr;
 	}

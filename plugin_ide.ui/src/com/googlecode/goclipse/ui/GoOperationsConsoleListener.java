@@ -67,37 +67,34 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	@Override
 	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
 			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-		new ProcessUIConsoleHandler(pb, project, ">> Running: ", false, processHelper, ce) {
+		new ProcessUIConsoleHandler() {
 			@Override
-			protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb,
-					CommonException ce) {
-				super.printProcessStartResult(outStream, prefix, pb, ce);
+			protected void printProcessStartResult(IOConsoleOutputStream outStream) {
+				super.printProcessStartResult(outStream);
 				printGoPathString(outStream, pb);
 			}
-		};
+		}.handle(pb, project, ">> Running: ", false, processHelper, ce);
 	}
 	
 	@Override
 	public void engineDaemonStart(ProcessBuilder pb, CommonException ce, 
 			ExternalProcessNotifyingHelper processHelper) {
 		
-		new EngineServerProcessUIConsoleHandler(pb, null, 
-			"##########  Starting gocode server:  ##########\n" + "   ", processHelper, ce);
+		new EngineServerProcessUIConsoleHandler().handle(pb, null, 
+			"##########  Starting gocode server:  ##########\n" + "   ", true, processHelper, ce);
 	}
 	
 	@Override
 	public void engineClientToolStart(ProcessBuilder pb, CommonException ce,
 			ExternalProcessNotifyingHelper processHelper) {
 		
-		new EngineClientProcessUIConsoleHandler(pb, null, 
-			">> Running: ", processHelper, ce) {
+		new EngineClientProcessUIConsoleHandler() {
 			@Override
-			protected void printProcessStartResult(IOConsoleOutputStream outStream, String prefix,
-					ProcessBuilder pb, CommonException ce) {
-				super.printProcessStartResult(outStream, prefix, pb, ce);
+			protected void printProcessStartResult(IOConsoleOutputStream outStream) {
+				super.printProcessStartResult(outStream);
 				printGoPathString(outStream, pb);
 			}
-		};
+		}.handle(pb, null, ">> Running: ", false, processHelper, ce);
 		
 	}
 	
