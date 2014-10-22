@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ops.ToolSourceError;
 import melnorme.utilbox.collections.ArrayList2;
@@ -49,7 +50,9 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		}
 	}
 	
-	protected abstract String getBuildProblemId();
+	protected String getBuildProblemId() {
+		return LangCore_Actual.BUILD_PROBLEM_ID;
+	}
 	
 	protected boolean isFirstProjectOfKind() throws CoreException {
 		boolean firstOfKind = true;
