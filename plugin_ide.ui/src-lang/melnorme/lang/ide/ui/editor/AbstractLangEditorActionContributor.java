@@ -97,21 +97,21 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		
 		@Override
 		public void setActiveEditor(IEditorPart part) {
-			ITextEditor textEditor = tryCast(part, ITextEditor.class);
 			
-			IHandlerService handlerService = getHandlerService(textEditor);
+			IHandlerService handlerService = getHandlerService(part);
 			
 			if(handlerActivation != null) {
 				handlerService.deactivateHandler(handlerActivation);
 				handlerActivation = null;
 			}
-			IHandler handler = getHandler(textEditor);
+			
+			IHandler handler = getHandler(part);
 			if(handler != null) {
 				handlerActivation = handlerService.activateHandler(commandId, handler);
 			}
 		}
 		
-		protected abstract IHandler getHandler(ITextEditor textEditor);
+		protected abstract IHandler getHandler(IEditorPart editorPart);
 		
 	}
 	
@@ -125,7 +125,7 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		}
 		
 		@Override
-		protected IHandler getHandler(ITextEditor textEditor) {
+		protected IHandler getHandler(IEditorPart editorPart) {
 			return handler;
 		}
 		
@@ -157,7 +157,7 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		}
 		
 		@Override
-		protected ActionHandler getHandler(ITextEditor textEditor) {
+		protected ActionHandler getHandler(IEditorPart editorPart) {
 			return new ActionHandler(action);
 		}
 		
@@ -180,17 +180,16 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		}
 		
 		@Override
-		protected ActionHandler getHandler(ITextEditor textEditor) {
-			return new ActionHandler(getAction(textEditor, editorActionId));
-		}
-		
-		protected IAction getAction(ITextEditor editor, String actionId) {
-			return (editor == null || actionId == null ? null : editor.getAction(actionId));
+		protected ActionHandler getHandler(IEditorPart editorPart) {
+			ITextEditor textEditor = tryCast(editorPart, ITextEditor.class);
+			if(textEditor == null) 
+				return null;
+			return new ActionHandler(textEditor.getAction(editorActionId));
 		}
 		
 	}
 	
-	protected static IHandlerService getHandlerService(ITextEditor textEditor) {
+	protected static IHandlerService getHandlerService(IEditorPart textEditor) {
 		return (IHandlerService) textEditor.getEditorSite().getService(IHandlerService.class);
 	}
 	
