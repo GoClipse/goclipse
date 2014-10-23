@@ -13,6 +13,8 @@
 
 Debbugger issues can be hard to track down, because of all the components involved: Goclipse, CDT, GDB, OS binary format, and Go toolchain.
 
+> _**Note:** The Go toolchain does not properly support debugging in Windows. While setting breakpoints and step/continue seems to work, inspecting variables doesn't work._
+
 If you think you've found a problem with the debugger integration, please try the following first:
  * Use latest version of Goclipse.
  * Use recommended/tested version of CDT (this is the CDT version that GoClipse has most recently been tested against). This is listed in the changelog for each GoClipse release.
