@@ -18,9 +18,11 @@ with 4Gb of RAM or more, the following is recommended as minimum values:
 -Xmx1024m
 ```
 
-### GoClipse Prerequisites and Configuration
+### GoClipse Prerequisites and Initial Setup
 
-Open Eclipse preferences, go to the Go preference page, and configure the GOROOT, GOPATH settings appropriately. You will need an installation of the Gocode tools.
+Open Eclipse preferences, go to the Go preference page, and configure the GOROOT, GOPATH settings appropriately. You will need an installation of the Go SDK, as well as [gocode](https://github.com/nsf/gocode) and [Go Oracle](http://golang.org/s/oracle-user-manual). These last two can be configured in the `Go / Tools` preference page.
+
+> Note: for convenience, Goclipse comes installed with its own version of gocode, but this one can be quite out of date. It is recommended to install the latest gocode: `go get -u github.com/nsf/gocode`
 
 ### Project setup
 
@@ -28,7 +30,11 @@ Open Eclipse preferences, go to the Go preference page, and configure the GOROOT
 A new Go project can be created in the Project Explorer view. Open `New / Project...` and then `Go / Go Project`. The Go perspective should open after creation, if it's not open already.
 
 ##### Project structure: 
-A Go project has the structure of a Go workspace, and operates like one. Therefore it will contain the `bin`, `pkg`, and `src` directories. In the `src` folder you can create Go source files that will be compiled into a library package (and placed into `pkg`), or into an executable (and placed in `bin`). See http://golang.org/doc/code.html for more information on the organization of a Go workspace.
+A Goclipse project can work in two ways:
+ * The project location is a subfolder of the 'src' folder of some GOPATH entry. The project will then consist of the Go source packages contained there.
+ * The project location is not part of any GOPATH entry. In this case the project location will implicitly be added as an entry to the GOPATH, and a Go workspace structure with the `bin`, `pkg`, and `src` directories will be used in the project. Note that the project's implicit GOPATH entry will only apply to the source modules in that project. It will not be visible to other Goclipse projects (unless the entry is explicitly added to the global GOPATH).
+
+ > In the `src` folder you can create Go source files that will be compiled into a library package (and placed into `pkg`), or into an executable (and placed in `bin`). See http://golang.org/doc/code.html for more information on the organization of a Go workspace.
 
 ##### Build:
 The `go` tool will be used to build the project. The output of this tool will be displayed in a console. Additionally, error markers resulting from the build will be collected and displayed in the the Go editor and Problems view.
