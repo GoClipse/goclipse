@@ -2,6 +2,8 @@
 
 ### Goclipse 0.9.x
  * Fixed: Project wizard: only create "bin,pkg,src" folders if project is not in the GOPATH.
+ 
+▶ Recommended/tested CDT version: 8.4.0
 
 ### Goclipse 0.9.0
  * Added: A simplified project builder that delegates to the `go install` command all the build work. (fixes #64)
@@ -26,6 +28,8 @@
  * Removed "RELEASE/DEBUG" config option from launch configuration, since it didn't actually do anything.
  * Fixed: bug in Go Project Wizard where using "Create project from existing source" would make the finish button not work.
  * Fixed: bug where some items in the Workbench "Source" menu would disappear when switching editors.
+ 
+▶ Recommended/tested CDT version: 8.4.0
  
 ### Goclipse 0.8.1
  * Changed the Eclipse update site URL to: http://goclipse.github.io/releases/
