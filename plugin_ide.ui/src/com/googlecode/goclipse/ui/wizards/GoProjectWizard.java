@@ -1,7 +1,8 @@
 package com.googlecode.goclipse.ui.wizards;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+
+import melnorme.lang.ide.core.utils.EclipseUtils;
 
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.resources.IFolder;
@@ -176,14 +177,8 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 
 			this.project = project;
 			
-			description = project.getDescription();
-			String[] natures = description.getNatureIds();
-			String[] newNatures = new String[natures.length + 1];
-			System.arraycopy(natures, 0, newNatures, 0, natures.length);
-			newNatures[natures.length] = GoNature.NATURE_ID;
-			description.setNatureIds(newNatures);
-			project.setDescription(description, null);
-
+			EclipseUtils.addNature(project, GoNature.NATURE_ID);
+			
 			createFolder(project.getFolder("src"));
 			createFolder(project.getFolder("bin"));
 			createFolder(project.getFolder("pkg"));
