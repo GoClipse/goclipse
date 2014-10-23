@@ -1,5 +1,8 @@
 ## release ChangeLog
 
+### Goclipse 0.9.x
+ * Fixed: Project wizard: only create "bin,pkg,src" folders if project is not in the GOPATH.
+
 ### Goclipse 0.9.0
  * Added: A simplified project builder that delegates to the `go install` command all the build work. (fixes #64)
    * This should improve compilation speed, since Goclipse no longer tries to figure out package dependencies itself. (and is likely more robust)

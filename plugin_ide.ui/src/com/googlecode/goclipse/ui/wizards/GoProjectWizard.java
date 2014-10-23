@@ -35,6 +35,8 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
 import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.core.GoNature;
+import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.ui.GoPerspective;
 
 /**
@@ -179,9 +181,12 @@ public class GoProjectWizard extends Wizard implements INewWizard, IWizard {
 			
 			EclipseUtils.addNature(project, GoNature.NATURE_ID);
 			
-			createFolder(project.getFolder("src"));
-			createFolder(project.getFolder("bin"));
-			createFolder(project.getFolder("pkg"));
+			if(!GoProjectEnvironment.isProjectInsideGoPath(project)) {
+				createFolder(project.getFolder("src"));
+				createFolder(project.getFolder("bin"));
+				createFolder(project.getFolder("pkg"));
+			}
+			
 		}
 
 		private void createFolder(IFolder folder) throws CoreException {
