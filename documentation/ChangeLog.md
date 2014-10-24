@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### Goclipse 0.9.x
+ * Fixed: Builder does not ignore folders with names stating with "_" or "."
  * Fixed: Project wizard: only create "bin,pkg,src" folders if project is not in the GOPATH.
  
 ▶ Recommended/tested CDT version: 8.4.0

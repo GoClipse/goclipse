@@ -40,6 +40,8 @@ public abstract class GoPackagesVisitor {
 		}
 	}
 	
+	protected abstract FileVisitResult handleFileVisitException(Path file, IOException exc);
+	
 	protected void visitFolder(final Path startingDir) throws IOException {
 		if(!startingDir.toFile().exists()) {
 			return;
@@ -48,6 +50,11 @@ public abstract class GoPackagesVisitor {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 				assertTrue(dir.startsWith(startingDir));
+				
+				String fileName = dir.getFileName().toString();
+				if(isIgnoredName(fileName)) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
 				
 				if(isDirectoryAValidGoPackage(dir)) {
 					addEntry(GoPath.getGoPackageForPath(goPathEntry, dir), dir);
@@ -69,7 +76,9 @@ public abstract class GoPackagesVisitor {
 		});
 	}
 	
-	protected abstract FileVisitResult handleFileVisitException(Path file, IOException exc);
+	protected boolean isIgnoredName(String fileName) {
+		return fileName.startsWith("_") || fileName.startsWith(".");
+	}
 	
 	protected boolean isDirectoryAValidGoPackage(final Path goPackageDir) throws IOException {
 		CheckDirectoryHasGoSourceFiles checkSourceFiles = new CheckDirectoryHasGoSourceFiles();
@@ -83,7 +92,8 @@ public abstract class GoPackagesVisitor {
 		
 		@Override
 		public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) throws IOException {
-			if(!attrs.isDirectory() && filePath.getFileName().toString().endsWith(".go")) {
+			String fileName = filePath.getFileName().toString();
+			if(!attrs.isDirectory() && fileName.endsWith(".go") && !isIgnoredName(fileName)) {
 				this.hasGoSourceFiles = true;
 				return FileVisitResult.TERMINATE;
 			}
