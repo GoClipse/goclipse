@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -189,12 +190,21 @@ public abstract class AbstractLangLaunchConfigurationDelegate extends LaunchConf
 	}
 	
 	protected IPath getProgramRelativePath(ILaunchConfiguration configuration) throws CoreException {
+		return getLaunchablePath(configuration, true);
+	}
+	
+	/**
+	 * Alternative API to {@link #getProgramRelativePath(ILaunchConfiguration)}
+	 * Allow absolute paths.
+	 */
+	protected IPath getLaunchablePath(ILaunchConfiguration configuration, boolean failOnEmptyPath) 
+			throws CoreException {
+		
 		String attribValueRaw = getProcessRelativePath_Attribute(configuration);
-		if (attribValueRaw == null || attribValueRaw.isEmpty()) {
-			fail(LaunchMessages.LCD_errProcessNotSpecified);
-		}
+		attribValueRaw = StringUtil.nullAsEmpty(attribValueRaw);
+		
 		String expandedValue = getVariableManager().performStringSubstitution(attribValueRaw);
-		if (expandedValue.isEmpty()) {
+		if ((failOnEmptyPath && attribValueRaw.isEmpty())) {
 			fail(LaunchMessages.LCD_errProcessPathEmtpy);
 		}
 		return new Path(expandedValue);
