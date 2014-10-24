@@ -5,6 +5,8 @@
    * Now using "./..." pattern to list files to compile.
  * Fixed: Project wizard: only create "bin,pkg,src" folders if project is not in the GOPATH.
  * Renamed `gocode log` console to `Oracle/gocode log`. Clarified UserGuide about the use of these tools.
+ * Fixed: no error dialog is shown to the user if 'Run As'/'Debug As' context action results in a error.
+ * Fixed: Go launch configuration tab "program" selection field now asks for a Go main package, instead of Go source file.
  
 ▶ Recommended/tested CDT version: 8.4.0
 

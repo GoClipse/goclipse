@@ -21,40 +21,38 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.Launch;
 
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurationDelegate {
 	
+	// Return the absolute path of the executable to launch.
 	@Override
 	protected IPath getProgramFullPath(ILaunchConfiguration configuration) throws CoreException {
-		IPath programRelativePath = getProgramRelativePath(configuration);
-		
-		return concertSourcePathToExecutablePath(configuration, programRelativePath);
-	}
-	
-	// For Go this can be not an executable but a Go source,
-	// so we need to figure out the corresponding executable.
-	// Original @author steel
-	protected IPath concertSourcePathToExecutablePath(ILaunchConfiguration configuration, IPath programRelativePath)
-			throws CoreException {
+		IPath path = getLaunchablePath(configuration, false);
+		if(path.isAbsolute()) {
+			return path;
+		}
 		
 		IProject project = getProject(configuration);
+		IPath launchResource = project.findMember(path).getLocation();
+		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
-		java.nio.file.Path programAbsolutePath = project.getLocation().append(programRelativePath).toFile().toPath();
-		java.nio.file.Path goPathEntry = goEnv.getGoPath().findGoPathEntryForSourcePath(programAbsolutePath);
+		java.nio.file.Path goPackageAbsolutePath = launchResource.toFile().toPath();
+		java.nio.file.Path goPathEntry = goEnv.getGoPath().findGoPathEntryForSourcePath(goPackageAbsolutePath);
 		
-		if (goPathEntry != null) {
-			
-			String cmdName = programRelativePath.removeFileExtension().lastSegment();
+		if (goPathEntry == null) {
+			throw GoCore.createCoreException("Given Go package not found: " + path, null);
+		} else {
+			String cmdName = goPackageAbsolutePath.getFileName().toString(); // get last segment
 			String executableName = cmdName + ProcessUtils.getExecutableSuffix();
 			
 			return GoProjectEnvironment.getBinFolder(goPathEntry).append(executableName);
 		}
-		return project.getFile(programRelativePath).getLocation();
 	}
-
+	
 	@Override
 	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
 		return new Launch(configuration, mode, null);

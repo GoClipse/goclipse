@@ -11,17 +11,17 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
 
-import java.util.ArrayList;
-import java.util.Stack;
+import java.nio.file.Path;
+import java.util.Collection;
 
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.launch.LangArgumentsBlock2;
 import melnorme.lang.ide.ui.launch.LangWorkingDirectoryBlock;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StringUtil;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -29,15 +29,29 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.WorkingDirectoryBlock;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.ui.dialogs.ResourceListSelectionDialog;
+import com.googlecode.goclipse.tooling.GoPackageName;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
 	public GoLaunchConfigurationTab() {
+	}
+	
+	@Override
+	protected Launch_ProgramPathField createProgramPathField() {
+		return new Launch_ProgramPathField() {
+			@Override
+			protected String getGroupLabel() {
+				return "Go main package (path relative to project)";
+			}
+		};
 	}
 	
 	protected final LangArgumentsBlock2 argumentsBlock = new LangArgumentsBlock2() {
@@ -114,43 +128,54 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
+	protected void validateProgramPath() {
+		// Ignore validation
+		//super.validateProgramPath();
+	}
+	
+	@Override
 	protected void openProgramPathDialog(IProject project) {
-		// TODO: this should be refactored to shows Go packages
-		// and after even better: only main packages
+		// TODO: this should be refactored to show only main packages
+		
 		try {
 			
-			// load stack
-			Stack<IContainer> stack = new Stack<IContainer>();
-			stack.push(GoProjectEnvironment.getSourceFolderRoot(project));
-			
-			ArrayList<IResource> resources = new ArrayList<IResource>();
-			
-			// walk resource tree
-			while (!stack.isEmpty()) {
-				IContainer folder = stack.pop();
-				for (IResource resource : folder.members()) {
-					if (resource.getType() == IResource.FILE && resource.getName().endsWith(".go")) {
-						resources.add(resource);
-					} else if (resource.getType() == IResource.FOLDER) {
-						stack.push((IFolder) resource);
-					}
+			ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), new LabelProvider() {
+				@Override
+				public String getText(Object element) {
+					GoPackageName goPackageName = (GoPackageName) element;
+					return goPackageName.getFullNameAsString();
 				}
+			});
+			dialog.setTitle("Select Go main package");
+			dialog.setMessage("Select Go main package");
+			
+			GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
+			Collection<GoPackageName> sourcePackages = GoProjectEnvironment.getSourcePackages(project, goEnv);
+			
+			dialog.setElements(ArrayUtil.createFrom(sourcePackages));
+			
+			if (dialog.open() == IDialogConstants.OK_ID) {
+				GoPackageName goPackageName = (GoPackageName) dialog.getFirstResult();
+				String packageResourcePath = goPackageName.getFullNameAsString();
+				
+				if(!GoProjectEnvironment.isProjectInsideGoPath(project, goEnv.getGoPath())) {
+					packageResourcePath = "src/" + packageResourcePath;
+				} else {
+					Path projectLocation = project.getLocation().toFile().toPath();
+					GoPackageName projectGoPackage = 
+							goEnv.getGoPath().findGoPackageForSourceFile(projectLocation.resolve("dummy.go"));
+					
+					// snip project base name.
+					packageResourcePath = StringUtil.segmentAfterMatch(packageResourcePath, 
+						projectGoPackage.getFullNameAsString() + "/");
+					
+				}
+				// check extension
+				programPathField.setFieldValue(packageResourcePath);
 			}
 			
-			ResourceListSelectionDialog dialog = new ResourceListSelectionDialog(getShell(),
-					resources.toArray(new IResource[resources.size()]));
-			
-			dialog.setStartingPattern("?");
-			dialog.setTitle("Go Main File Selection:");
-			
-			dialog.open();
-			Object[] objs = dialog.getResult();
-			if (objs != null && objs.length > 0) {
-				String programPath = ((IResource) objs[0]).getProjectRelativePath().toString();
-				programPathField.setFieldValue(programPath);
-			}
 		} catch (CoreException ce) {
-			UIOperationExceptionHandler.handleOperationStatus("Error opening dialog", ce);
+			UIOperationExceptionHandler.handleOperationStatus("Error selecting package from dialog: ", ce);
 		}
 	}
 	
