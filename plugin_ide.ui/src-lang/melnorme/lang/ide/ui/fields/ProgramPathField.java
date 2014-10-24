@@ -35,9 +35,13 @@ public class ProgramPathField extends WidgetFieldComponent<String> {
 	@Override
 	protected Composite createTopLevelControl(Composite parent) {
 		Group topControl = new Group(parent, SWT.NONE);
-		topControl.setText(LangUIMessages.ProgramPathField_title);
+		topControl.setText(getGroupLabel());
 		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		return topControl;
+	}
+	
+	protected String getGroupLabel() {
+		return LangUIMessages.ProgramPathField_title;
 	}
 	
 	@Override

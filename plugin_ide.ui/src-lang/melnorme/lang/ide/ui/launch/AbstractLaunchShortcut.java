@@ -51,6 +51,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+@Deprecated
 public abstract class AbstractLaunchShortcut implements ILaunchShortcut {
 	
 	@Override

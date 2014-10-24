@@ -39,17 +39,23 @@ public abstract class MainLaunchConfigurationTab extends CommonMainLaunchConfigu
 		super();
 	}
 	
-	protected ProgramPathField programPathField = new ProgramPathField() {
+	protected ProgramPathField programPathField = createProgramPathField();
+	
+	protected Launch_ProgramPathField createProgramPathField() {
+		return new Launch_ProgramPathField();
+	}
+	
+	protected class Launch_ProgramPathField extends ProgramPathField {
 		@Override
 		protected void handleSearchButtonSelected() {
 			openProgramPathDialog();
-		};
+		}
 		
 		@Override
 		protected void fieldValueChanged() {
 			updateLaunchConfigurationDialog();
-		};
-	};
+		}
+	}
 	
 	@Override
 	protected void createCustomControls(Composite parent) {
