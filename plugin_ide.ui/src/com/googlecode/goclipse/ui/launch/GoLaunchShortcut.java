@@ -10,13 +10,21 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
 
+import java.nio.file.Path;
+
 import melnorme.lang.ide.core.LaunchConstants_Actual;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.ILaunchShortcut;
+
+import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.tooling.GoPackageName;
+import com.googlecode.goclipse.tooling.env.GoPath;
 
 public class GoLaunchShortcut extends AbstractLaunchShortcut2 implements ILaunchShortcut {
 	
@@ -39,6 +47,17 @@ public class GoLaunchShortcut extends AbstractLaunchShortcut2 implements ILaunch
 			return super.resourceToLaunchTarget(container);
 		}
 		return super.resourceToLaunchTarget(resource);
+	}
+	
+	@Override
+	protected ILaunchConfiguration createConfiguration(ILaunchTarget launchable) {
+		Path packageLocation = launchable.getAssociatedResource().getLocation().toFile().toPath();
+		IProject project = launchable.getProject();
+		
+		GoPath goPath = GoProjectEnvironment.getEffectiveGoPath(project);
+		GoPackageName goPackage = goPath.findGoPackageForSourceFile(packageLocation.resolve("dummy.go"));
+		String suggestedName = project.getName() + " - " + goPackage.getFullNameAsString();
+		return super.createConfiguration(launchable, suggestedName);
 	}
 	
 }
