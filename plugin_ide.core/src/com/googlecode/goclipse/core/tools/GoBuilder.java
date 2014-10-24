@@ -69,12 +69,20 @@ public class GoBuilder extends LangProjectBuilder {
 		ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
 		goBuildCmdLine.addElements("install", "-v");
 		goBuildCmdLine.addElements(GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project));
-		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
+		goBuildCmdLine.addElements("./...");
+//		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
 		
-		Path rootDir = getProjectLocation(project);
+		Path projectLocation = getProjectLocation(project);
+		Path sourceRootDir;
+		
+		if(GoProjectEnvironment.isProjectInsideGoPath(project, goEnv.getGoPath())) {
+			sourceRootDir = projectLocation;
+		} else {
+			sourceRootDir = projectLocation.resolve("src");
+		}
 		
 		ExternalProcessResult buildAllResult = 
-			GoToolManager.getDefault().runBuildTool(goEnv, monitor, rootDir, goBuildCmdLine);
+			GoToolManager.getDefault().runBuildTool(goEnv, monitor, sourceRootDir, goBuildCmdLine);
 		
 		GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 			@Override
@@ -84,7 +92,7 @@ public class GoBuilder extends LangProjectBuilder {
 		};
 		buildOutput.parseOutput(buildAllResult);
 		
-		addErrorMarkers(buildOutput.getBuildErrors(), rootDir);
+		addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir);
 		
 		return null;
 	}
