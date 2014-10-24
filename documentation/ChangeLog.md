@@ -4,6 +4,7 @@
  * Fixed: Builder does not ignore folders with names stating with "_" or "."
    * Now using "./..." pattern to list files to compile.
  * Fixed: Project wizard: only create "bin,pkg,src" folders if project is not in the GOPATH.
+ * Renamed `gocode log` console to `Oracle/gocode log`. Clarified UserGuide about the use of these tools.
  
 ▶ Recommended/tested CDT version: 8.4.0
 

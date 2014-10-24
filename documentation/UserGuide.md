@@ -52,12 +52,12 @@ Invoked with Ctrl-Space. This functionality is generally called Content Assist i
 
 Code completion is provided by means of the [gocode tool](http://github.com/nsf/gocode). Goclipse includes gocode already, but you can also use your own gocode instance, by configuring its location in the `Go / Gocode` preference page. This is recommended (using the latest gocode version). 
 
-> If there is a problem with this operation, and you need a diagnostics log, the output of gocode can be seen in the `gocode log` console page in the Eclipse Console view.
+> If there is a problem with this operation, and you need a diagnostics log, the output of gocode can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
 
 ##### Open Definition:
 The Open Definition functionality is invoked by pressing F3 in the source editor. Open Definition is also available in the editor context menu and by means of editor *hyper-linking* (hold Ctrl and click on a reference with the mouse cursor). When pressing F3, the [Go Oracle](http://golang.org/s/oracle-user-manual) tool will be used to resolve the definition. When Ctrl-click is used, you will be given a choice between Oracle and the Goclipse built-in resolver (Oracle is more accurate and complete).
 
-> If there is a problem with this operation, and you need a diagnostics log, the output of oracle can be seen in the `gocode log` console page in the Eclipse Console view.
+> If there is a problem with this operation, and you need a diagnostics log, the output of oracle can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
 
 ### Launch and Debug:
 To run a Go project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open 'Run' / 'Run Configurations...'. Then double click 'Go Application" to create a new launch, and configure it accordingly. You can run these launches from the 'Run Configurations...', or for quicker access, from the Launch button in the Eclipse toolbar.
