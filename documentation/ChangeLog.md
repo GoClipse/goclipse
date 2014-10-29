@@ -1,5 +1,8 @@
 ## release ChangeLog
 
+### Goclipse 0.9.x
+ * Added: `Show In > Project Explorer` command to `Show In` menu in Go perspective.
+
 ### Goclipse 0.9.1
  * Fixed: Builder does not ignore folders with names starting with "_" or ".".
    * Now using "./..." pattern to specify files to compile.

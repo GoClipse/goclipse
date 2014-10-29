@@ -103,18 +103,23 @@
 			name="Tools">
 		</page>
 		
-   </extension>
-
-   <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="com.googlecode.goclipse.ui.GoPerspective"
-            icon="icons/go-icon16.png"
-            id="com.googlecode.goclipse.perspectives.GoPerspective"
-            name="Go">
-      </perspective>
-   </extension>
-
+	</extension>
+	
+	<extension point="org.eclipse.ui.perspectives">
+		<perspective
+			class="com.googlecode.goclipse.ui.GoPerspective"
+			icon="icons/go-icon16.png"
+			id="com.googlecode.goclipse.perspectives.GoPerspective"
+			name="Go">
+		</perspective>
+	</extension>
+	
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="com.googlecode.goclipse.perspectives.GoPerspective">
+			<showInPart id="org.eclipse.ui.navigator.ProjectExplorer" />
+		</perspectiveExtension>
+	</extension>
+	
    <extension point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
          <perspectiveShortcut id="com.googlecode.goclipse.perspectives.GoPerspective"/>
