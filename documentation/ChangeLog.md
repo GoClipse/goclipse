@@ -1,12 +1,13 @@
 ## release ChangeLog
 
-### Goclipse 0.9.x
- * Fixed: Builder does not ignore folders with names stating with "_" or "."
-   * Now using "./..." pattern to list files to compile.
- * Fixed: Project wizard: only create "bin,pkg,src" folders if project is not in the GOPATH.
+### Goclipse 0.9.1
+ * Fixed: Builder does not ignore folders with names starting with "_" or ".".
+   * Now using "./..." pattern to specify files to compile.
+ * Fixed: Project wizard: only create "bin,pkg,src" folders if project is not already in the GOPATH.
  * Renamed `gocode log` console to `Oracle/gocode log`. Clarified UserGuide about the use of these tools.
  * Fixed: no error dialog is shown to the user if 'Run As'/'Debug As' context action results in a error.
- * Fixed: Go launch configuration tab "program" selection field now asks for a Go main package, instead of Go source file.
+ * Fixed: 'Run As'/'Debug As' now properly creates the Go package of the new launch configuration.
+ * Fixed: The "Program" selection field, of the Go launch configuration tab, now asks for a Go main package, instead of Go source file.
  
 ▶ Recommended/tested CDT version: 8.4.0
 
