@@ -6,7 +6,7 @@
 
 #### Instructions:
  1. Use your existing Eclipse, or download a new Eclipse package from http://www.eclipse.org/downloads/. 
-  * For an Eclipse package without any other IDEs or extras (such a VCS tools), download the ["Platform Runtime Binary"](http://download.eclipse.org/eclipse/downloads/drops4/R-4.3.1-201309111000/#PlatformRuntime). 
+  * For an Eclipse package without any other IDEs or extras (such a VCS tools), download the ["Platform Runtime Binary"](http://archive.eclipse.org/eclipse/downloads/drops4/R-4.4.1-201409250400/#PlatformRuntime). 
  1. Start Eclipse, go to `Help -> Install New Software...`
  1. Click the `Add...` button to add a new update site, enter the LANG_IDE_UPDATE_SITE URL in the Location field, click OK.
  1. Select the recently added update site in the `Work with:` dropdown. Type `LANG_IDE_NAME` in the filter box. Now the LANG_IDE_NAME feature should appear below.
