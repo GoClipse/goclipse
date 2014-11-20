@@ -8,6 +8,10 @@
 	<artifactId>goclipse.aggregator</artifactId>
 	<version>1-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
+
 
 	<properties>
 		<tycho-version>0.21.0</tycho-version>
