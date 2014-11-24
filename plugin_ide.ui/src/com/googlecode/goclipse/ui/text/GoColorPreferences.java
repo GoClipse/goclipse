@@ -6,8 +6,6 @@ import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
 
 public interface GoColorPreferences {
 	
-	String PREFIX = "editor.coloring."; 
-	
 	
     public static final ColoringItemPreference SYNTAX_COLORING__TEXT = 
     		new ColoringItemPreference("syntax_highlighting_text", true, new RGB(0, 0, 0), false, false, false);
