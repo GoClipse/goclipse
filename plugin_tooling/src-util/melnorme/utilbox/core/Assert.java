@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.core;
 
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+
 
 /**
  * Contains utility methods for assertion contract checking .
@@ -162,6 +164,10 @@ public class Assert {
 		/** Asserts that given object1 equals object2. */
 		public static void assertEquals(Object object1, Object object2) {
 			checkAssertion(object1.equals(object2), null);
+		}
+		
+		public static void assertAreEqual(Object object1, Object object2) {
+			checkAssertion(areEqual(object1, object2), null);
 		}
 		
 		
