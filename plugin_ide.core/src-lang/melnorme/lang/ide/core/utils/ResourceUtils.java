@@ -13,9 +13,13 @@ package melnorme.lang.ide.core.utils;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IContainer;
@@ -32,6 +36,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public class ResourceUtils {
 	
+	public static org.eclipse.core.runtime.Path epath(melnorme.utilbox.misc.Location loc) {
+		return new org.eclipse.core.runtime.Path(loc.path.toString());
+	}
+	
+	public static org.eclipse.core.runtime.Path epath(Path path) {
+		return new org.eclipse.core.runtime.Path(path.toString());
+	}
+	
+	/* -----------------  ----------------- */ 
+	
 	/** Convenience method to get the workspace root. */
 	public static IWorkspaceRoot getWorkspaceRoot() {
 		return ResourcesPlugin.getWorkspace().getRoot();
@@ -40,6 +54,11 @@ public class ResourceUtils {
 	/** Convenience method to get the workspace. */
 	public static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
+	}
+	
+	public static Location getWorkspaceLocation() {
+		IPath location_ = getWorkspaceRoot().getLocation();
+		return Location.fromAbsolutePath(location_.toFile().toPath());
 	}
 	
 	public static IProject getProject(String name) {
@@ -139,5 +158,17 @@ public class ResourceUtils {
 		}
 		return location.toFile().toPath();
 	}
+	
+	@Deprecated
+	public static File getLocation(IProject project) {
+		if(project == null)
+			return null;
+		IPath location = project.getLocation();
+		if(location == null)
+			return null;
+		return location.toFile();
+	}
+	
+
 	
 }

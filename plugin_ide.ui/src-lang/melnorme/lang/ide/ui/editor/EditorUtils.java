@@ -19,6 +19,8 @@ import java.nio.file.Paths;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.misc.PathUtil;
+import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -137,6 +139,19 @@ public class EditorUtils {
 		}
 		
 		return null;
+	}
+	
+	public static Path getLocationFromEditor(IEditorInput editorInput) throws CoreException {
+		String filePath = getFilePathFromEditorInput(editorInput).toString();
+		if (filePath == null) {
+			throw LangCore.createCoreException("Error: Could not determine file path for editor.", null);
+		}
+		
+		try {
+			return PathUtil.createPath(filePath);
+		} catch (InvalidPathExceptionX e) {
+			throw LangCore.createCoreException("Invalid editor path.", e);
+		}
 	}
 	
 	/* -----------------  ----------------- */

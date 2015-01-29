@@ -16,6 +16,7 @@ import java.util.zip.ZipFile;
 
 import melnorme.lang.tests.CommonToolingTest;
 import melnorme.utilbox.core.fntypes.Function;
+import melnorme.utilbox.misc.Location;
 
 /**
  * Miscellaneous utils relating to {@link File}'s.
@@ -38,11 +39,12 @@ public class MiscFileUtils {
 	
 	public static class FileTraverser {
 		
-		protected File rootDir;
+		protected Location rootDir;
 		
-		public void traverseDirectory(File dir) throws IOException {
+		public void traverseDirectory(Location dirLoc) throws IOException {
+			File dir = dirLoc.toFile();
 			assertTrue(dir.exists() && dir.isDirectory());
-			rootDir = dir;
+			rootDir = dirLoc;
 			traverseFileOrDir(dir);
 		}
 		
@@ -76,24 +78,22 @@ public class MiscFileUtils {
 		
 	}
 	
-	public static void copyDirContentsIntoDirectory(File sourceDir, File destFolder) {
-		try {
-			new FileCopyTraverser(destFolder).traverseDirectory(sourceDir);
-		} catch(IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-	}
-	
 	public static void copyDirContentsIntoDirectory(Path sourceDir, Path destFolder) throws IOException {
-		File sourcePath = sourceDir.toFile();
-		assertTrue(sourcePath.exists());
-		new FileCopyTraverser(destFolder.toFile()).traverseDirectory(sourcePath);
+		copyDirContentsIntoDirectory(Location.create_fromValid(sourceDir), Location.create_fromValid(destFolder));
+	}
+	public static void copyDirContentsIntoDirectory(File sourceDir, File destFolder) throws IOException {
+		copyDirContentsIntoDirectory(sourceDir.toPath(), destFolder.toPath());
 	}
 	
+	public static void copyDirContentsIntoDirectory(Location sourceDir, Location destFolder) throws IOException {
+		assertTrue(sourceDir.toFile().exists());
+		new FileCopyTraverser(destFolder).traverseDirectory(sourceDir);
+	}
 	public static final class FileCopyTraverser extends FileTraverser {
-		protected final File destFolder;
 		
-		private FileCopyTraverser(File destFolder) {
+		protected final Location destFolder;
+		
+		private FileCopyTraverser(Location destFolder) {
 			this.destFolder = destFolder;
 		}
 		

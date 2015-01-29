@@ -35,13 +35,20 @@ public final class StringUtil {
 	
 	/** @return a String produced from the given coll with the given separator String, 
 	 * using the elements's toString() method. */
-	public static String collToString(Collection<?> coll, String separator) {
+	public static String toString(Iterable<?> iterable, String separator) {
+		return toString(iterable, separator, null);
+	}
+	public static String collToString(Iterable<?> coll, String separator) {
 		return iterToString(coll, separator, null);
 	}
 	
-	public static <T> String iterToString(Iterable<T> sequence, String separator, 
+	public static <T> String iterToString(Iterable<T> iterable, String separator, 
 			Function<? super T, String> toStringFn) {
-		return iteratorToString(sequence.iterator(), separator, toStringFn);
+		return toString(iterable, separator, toStringFn);
+	}
+	
+	public static <T> String toString(Iterable<T> iterable, String separator, Function<? super T, String> toStringFn) {
+		return iteratorToString(iterable.iterator(), separator, toStringFn);
 	}
 	
 	private static <T> String iteratorToString(Iterator<T> iter, String sep, Function<? super T, String> toStringFn) {

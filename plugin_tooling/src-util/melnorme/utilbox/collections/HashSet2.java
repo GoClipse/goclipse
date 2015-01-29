@@ -10,33 +10,33 @@
  *******************************************************************************/
 package melnorme.utilbox.collections;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import melnorme.utilbox.misc.ArrayUtil;
 
 /**
- * Extension to {@link java.util.ArrayList}, with some helper methods,
+ * Extension to {@link java.util.HashSet}, with some helper methods,
  * and implementing a read-only interface.
  */
-public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
+public class HashSet2<E> extends HashSet<E> implements Collection2<E> {
 	
-	private static final long serialVersionUID = -9212035453691203439L;
-	
-	public ArrayList2() {
+	private static final long serialVersionUID = -7612795787860334443L;
+
+	public HashSet2() {
 		super();
 	}
 	
-	public ArrayList2(Collection<? extends E> c) {
+	public HashSet2(Collection<? extends E> c) {
 		super(c);
 	}
 	
-	public ArrayList2(int initialCapacity) {
+	public HashSet2(int initialCapacity) {
 		super(initialCapacity);
 	}
 	
 	@SafeVarargs
-	public ArrayList2(E... elements) {
+	public HashSet2(E... elements) {
 		super();
 		addElements(elements);
 	}
@@ -44,14 +44,14 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 	/* -----------------  ----------------- */
 	
 	@SafeVarargs
-	public final ArrayList2<E> addElements(E... elements) {
+	public final HashSet2<E> addElements(E... elements) {
 		for (E element : elements) {
 			add(element);
 		}
 		return this;
 	}
 	
-	public final ArrayList2<E> addElements(Collection<? extends E> elements) {
+	public final HashSet2<E> addElements(Collection<? extends E> elements) {
 		for (E element : elements) {
 			add(element);
 		}
@@ -65,13 +65,13 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 	/** Cast the type parameter to something. This operation is only safe if the underlying collection 
 	 * is used only for reading (for a type parameter upcast) or writing (for a type parameter upcast).*/
 	@SuppressWarnings("unchecked")
-	public <T> ArrayList2<T> castTypeParam() {
-		return (ArrayList2<T>) this;
+	public <T> HashSet2<T> castTypeParam() {
+		return (HashSet2<T>) this;
 	}
 	
 	@SuppressWarnings("unused")
 	private static void _generics_test() {
-		ArrayList2<Integer> arrayListExt = new ArrayList2<Integer>();
+		HashSet2<Integer> arrayListExt = new HashSet2<Integer>();
 		arrayListExt.<Number>castTypeParam().toArray(Number.class);
 		ArrayUtil.createFrom(arrayListExt, Number.class);
 	}

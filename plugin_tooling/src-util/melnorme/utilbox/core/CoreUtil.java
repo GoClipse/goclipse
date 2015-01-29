@@ -127,8 +127,13 @@ public class CoreUtil /* extends Assert */ {
 		return elems;
 	}
 	
-	/** @return given coll if it's not null, or an immutable empty collection otherwise. */
+	/** @return given coll if it's not null, or an empty immutable {@link Collection} otherwise. */
 	public static <U> Collection<U> nullToEmpty(Collection<U> coll) {
+		return coll == null ? Collections.EMPTY_LIST : coll;
+	}
+	
+	/** @return given coll if it's not null, or an empty immutable {@link Iterable} otherwise. */
+	public static <E> Iterable<E> nullToEmpty(Iterable<E> coll) {
 		return coll == null ? Collections.EMPTY_LIST : coll;
 	}
 	

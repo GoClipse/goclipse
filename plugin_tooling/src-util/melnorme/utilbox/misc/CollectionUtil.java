@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.HashSet2;
 import melnorme.utilbox.core.fntypes.Predicate;
 
 /**
@@ -25,11 +27,32 @@ import melnorme.utilbox.core.fntypes.Predicate;
  */
 public class CollectionUtil {
 	
+	public static <T extends Collection<E>, E> T addAll(T collection, Iterable<? extends E> iterable) {
+		if(iterable != null) {
+			for (E elem : iterable) {
+				collection.add(elem);
+			}
+		}
+		return collection;
+	}
+	
 	/** @return a new {@link ArrayList} from given collection 
 	 * (a null collection is considered as if it's an empty one). */
-	public static <E> ArrayList<E> createArrayList(Collection<? extends E> collection) {
-		return new ArrayList<E>(collection == null ? Collections.EMPTY_LIST : collection);
+	public static <E> ArrayList2<E> createArrayList(Iterable<? extends E> iterable) {
+		return addAll(new ArrayList2<E>(), iterable);
 	}
+	/** @return a new {@link LinkedList} from given collection 
+	 * (a null collection is considered as if it's an empty one). */
+	public static <E> LinkedList<E> createLinkedList(Iterable<? extends E> iterable) {
+		return addAll(new LinkedList<E>(), iterable);
+	}
+	/** @return a new {@link HashSet} from given collection 
+	 * (a null collection is considered as if it's an empty one). */
+	public static <E> HashSet2<E> createHashSet(Iterable<? extends E> iterable) {
+		return addAll(new HashSet2<E>(), iterable);
+	}
+	
+	
 	/** @return a new {@link ArrayList} from given array (a null array is considered like it's an empty one). */
 	@SafeVarargs
 	public static <E> ArrayList<E> createArrayList(E... array) {
@@ -38,12 +61,6 @@ public class CollectionUtil {
 			Collections.addAll(newCollection, array);
 		}
 		return newCollection;
-	}
-	
-	/** @return a new {@link LinkedList} from given collection 
-	 * (a null collection is considered as if it's an empty one). */
-	public static <E> LinkedList<E> createLinkedList(Collection<? extends E> collection) {
-		return new LinkedList<E>(collection == null ? Collections.EMPTY_LIST : collection);
 	}
 	/** @return a new {@link LinkedList} from given array (a null array is considered like it's an empty one). */
 	@SafeVarargs
@@ -54,30 +71,27 @@ public class CollectionUtil {
 		}
 		return newCollection;
 	}
-	
-	/** @return a new {@link HashSet} from given collection 
-	 * (a null collection is considered as if it's an empty one). */
-	public static <E> HashSet<E> createHashSet(Collection<? extends E> collection) {
-		return new HashSet<E>(collection == null ? Collections.EMPTY_LIST : collection);
-	}
 	/** @return a new {@link HashSet} from given array (a null array is considered like it's an empty one). */
 	@SafeVarargs
-	public static <E> HashSet<E> createHashSet(E... array) {
-		HashSet<E> newCollection = new HashSet<E>();
+	public static <E> HashSet2<E> createHashSet(E... array) {
+		HashSet2<E> newCollection = new HashSet2<E>();
 		if(array != null) {
 			Collections.addAll(newCollection, array);
 		}
 		return newCollection;
 	}
 	
-	/** @return given coll if it's non-null, an empty collection otherwise.
-	 * The returned collection cannot be modified. */
+	/** @return given iterable if it's non-null, an empty immutable {@link Iterable} otherwise. */
+	public static <E> Iterable<E> nullToEmpty(Iterable<E> iterable) {
+		return iterable == null ? Collections.EMPTY_LIST : iterable;
+	}
+	
+	/** @return given coll if it's non-null, an empty immutable {@link Collection} otherwise. */
 	public static <E> Collection<E> nullToEmpty(Collection<E> coll) {
 		return coll == null ? Collections.EMPTY_LIST : coll;
 	}
 	
-	/** @return given list if it's non-null, an empty List otherwise.
-	 * The returned list cannot be modified. */
+	/** @return given list if it's non-null, an empty immutable {@link List} otherwise. */
 	public static <E> List<E> nullToEmpty(List<E> list) {
 		return list == null ? Collections.EMPTY_LIST : list;
 	}
@@ -147,6 +161,15 @@ public class CollectionUtil {
 	public static <E, T extends List<? super E>> T addAll(T coll, Collection<E> other) {
 		coll.addAll(other);
 		return coll;
+	}
+	
+	/** @return whether given coll contains all elements of other, using a naive/basic algorithm. */
+	public static boolean containsAll(Collection<?> coll, Collection<?> other) {
+		Iterator<?> citer = other.iterator();
+		while (citer.hasNext())
+			if (!coll.contains(citer.next()))
+				return false;
+		return true;
 	}
 	
 }

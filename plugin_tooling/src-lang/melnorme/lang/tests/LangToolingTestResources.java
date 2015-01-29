@@ -14,10 +14,10 @@ package melnorme.lang.tests;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 
-import melnorme.lang.utils.MiscFileUtils;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.PathUtil;
 
 
 public class LangToolingTestResources {
@@ -36,36 +36,41 @@ public class LangToolingTestResources {
 		return instance;
 	}
 	
-	private String testResourcesDir;
+	private Location testResourcesDir;
 	
 	public LangToolingTestResources() {
-		testResourcesDir = System.getProperty(TEST_RESOURCES_BASE_DIR_PROPERTY);
+		String testResourcesDir = System.getProperty(TEST_RESOURCES_BASE_DIR_PROPERTY);
 		if(testResourcesDir == null) {
 			// Assume a default based on process working directory
 			// This is so test can be started from typical Eclipse workspace without setting up VM properties
 			testResourcesDir = "../plugin_tooling/"+TESTDATA;
 		}
-		System.out.println("testResourcesDir:" + testResourcesDir);
+		Path path = PathUtil.createValidPath(testResourcesDir);
+		this.testResourcesDir = Location.create_fromValid(path.toAbsolutePath());
+		System.out.println("[==] testResourcesDir: " + testResourcesDir);
 	}
 	
-	public File getResourcesDir() {
-		File file = new File(testResourcesDir).toPath().toAbsolutePath().normalize().toFile();
-		assertTrue(file.exists() && file.isDirectory() && file.isAbsolute());
-		return file;
+	public Location getResourcesDir() {
+		assertTrue(testResourcesDir != null);
+		File file = testResourcesDir.toFile();
+		assertTrue(file.exists() && file.isDirectory());
+		return testResourcesDir;
 	}
 	
 	public static File getTestResourceFile(String... segments) {
-		return MiscFileUtils.getFile(LangToolingTestResources.getInstance().getResourcesDir(), segments);
+		return getTestResourceLoc(segments).toFile();
+	}
+	public static Path getTestResourcePath(String... segments) {
+		return getTestResourceLoc(segments).toPath();
 	}
 	
-	public static Path getTestResourcePath(String... segments) {
-		try {
-			Path path = getTestResourceFile(segments).getCanonicalFile().toPath();
-			assertTrue(path.toFile().exists());
-			return path;
-		} catch (IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+	public static Location getTestResourceLoc(String... segments) {
+		Location loc = getInstance().getResourcesDir();
+		for (String pathSegment : segments) {
+			loc = loc.resolve_fromValid(pathSegment);
 		}
+		assertTrue(loc.toFile().exists());
+		return loc;
 	}
 	
 	public static String resourceFileToString(File file) {

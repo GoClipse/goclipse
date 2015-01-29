@@ -21,6 +21,9 @@ import melnorme.utilbox.core.CommonException;
 
 public class PathUtil {
 	
+	public static final Path DEFAULT_ROOT_PATH = createValidPath("").toAbsolutePath().getRoot();
+	public static final Location DEFAULT_ROOT_LOC = Location.fromAbsolutePath(DEFAULT_ROOT_PATH);
+	
 	/** @return a valid path, 
 	 * or null if a valid path could not be created from given pathString. */
 	public static Path createPathOrNull(String pathString) {
@@ -50,7 +53,7 @@ public class PathUtil {
 		}
 	}
 
-	/** Checked analogue/wrapper for {@link InvalidPathException} */
+	/** Checked exception wrapper for {@link InvalidPathException} */
 	public static class InvalidPathExceptionX extends Exception {
 		
 		private static final long serialVersionUID = 1L;

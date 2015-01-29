@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.core.fntypes.Predicate;
 
@@ -270,7 +271,19 @@ public class ArrayUtil {
 	
 	/** @return the same as {@link List#indexOf(Object)}, using given array as a collection. */
 	public static <T> int indexOf(T[] array, T elem) {
-		return Arrays.asList(array).indexOf(elem);
+		// return Arrays.asList(array).indexOf(elem);
+		if(elem == null) {
+			for(int ix = 0; ix < array.length; ix++) {
+				if(array[ix] == null)
+					return ix;
+			}
+		} else {
+			for(int ix = 0; ix < array.length; ix++) {
+				if(elem.equals(array[ix]))
+					return ix;
+			}
+		}
+		return -1;
 	}
 	
 	/** @return true if array contains an element equal to obj. */
@@ -325,10 +338,25 @@ public class ArrayUtil {
 	public static <T> Object[] map(Collection<T> coll, Function<? super T, ? extends Object> evalFunction) {
 		return map(coll, evalFunction, Object.class);
 	}
+	/** Is {@link #map(Collection, IEvalFunc, Class klass)}, IEvalFunc, Class) with klass = Object.class */
+	public static <T> Object[] map(Collection2<T> coll, Function<? super T, ? extends Object> evalFunction) {
+		return map(coll, evalFunction, Object.class);
+	}
 	
 	/** Creates a new array, based on given coll, whose elements are produced element-wise from the original 
 	 * coll using given evalFunction. */
 	public static <T, R> R[] map(Collection<T> coll, Function<? super T, ? extends R> evalFunction, Class<R> klass) {
+		R[] newArray = create(coll.size(), klass);
+		int i = 0;
+		for(T elem : coll) {
+			newArray[i] = evalFunction.evaluate(elem);
+			i++;
+		}
+		return newArray;
+	}
+	/** Creates a new array, based on given coll, whose elements are produced element-wise from the original 
+	 * coll using given evalFunction. */
+	public static <T, R> R[] map(Collection2<T> coll, Function<? super T, ? extends R> evalFunction, Class<R> klass) {
 		R[] newArray = create(coll.size(), klass);
 		int i = 0;
 		for(T elem : coll) {
