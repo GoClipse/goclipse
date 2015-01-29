@@ -13,11 +13,9 @@ package melnorme.lang.ide.core.utils;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -158,17 +156,5 @@ public class ResourceUtils {
 		}
 		return location.toFile().toPath();
 	}
-	
-	@Deprecated
-	public static File getLocation(IProject project) {
-		if(project == null)
-			return null;
-		IPath location = project.getLocation();
-		if(location == null)
-			return null;
-		return location.toFile();
-	}
-	
-
 	
 }
