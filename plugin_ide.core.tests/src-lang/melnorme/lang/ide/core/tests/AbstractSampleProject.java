@@ -53,7 +53,7 @@ public class AbstractSampleProject implements AutoCloseable {
 	
 	public void moveToLocation(Path packageLocation) throws CoreException {
 		IProjectDescription description = project.getDescription();
-		description.setLocation(EclipseUtils.path(packageLocation));
+		description.setLocation(EclipseUtils.epath(packageLocation));
 		project.move(description, false, null);
 	}
 	
