@@ -46,7 +46,7 @@ public abstract class AbstractLangLabelProvider extends LabelProvider
 	
 	/* ----------------- styler helpers ----------------- */
 	
-	protected class ForegroundColorStyler extends Styler {
+	protected static class ForegroundColorStyler extends Styler {
 		protected final RGB fgColor;
 		
 		public ForegroundColorStyler(RGB fgColor) {
@@ -61,11 +61,11 @@ public abstract class AbstractLangLabelProvider extends LabelProvider
 		}
 	}
 	
-	protected ForegroundColorStyler fgColor(RGB rgb) {
+	public static ForegroundColorStyler fgColor(RGB rgb) {
 		return new ForegroundColorStyler(rgb);
 	}
 	
-	protected abstract class FontStyler extends Styler {
+	protected static abstract class FontStyler extends Styler {
 		
 		protected Styler parentStyler;
 		
@@ -91,7 +91,7 @@ public abstract class AbstractLangLabelProvider extends LabelProvider
 		protected abstract FontDescriptor getModifiedFontDescriptor(FontDescriptor fontDescriptor);
 	}
 	
-	public class ItalicStyler extends FontStyler {
+	public static class ItalicStyler extends FontStyler {
 		
 		public ItalicStyler(Styler parentStyler) {
 			super(parentStyler);
@@ -103,7 +103,7 @@ public abstract class AbstractLangLabelProvider extends LabelProvider
 		}
 	}
 	
-	public class BoldStyler extends FontStyler {
+	public static class BoldStyler extends FontStyler {
 		
 		public BoldStyler(Styler parentStyler) {
 			super(parentStyler);

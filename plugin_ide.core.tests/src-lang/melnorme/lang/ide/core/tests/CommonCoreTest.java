@@ -29,7 +29,6 @@ import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
-import melnorme.utilbox.tests.CommonTestExt;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.eclipse.core.resources.IFile;
