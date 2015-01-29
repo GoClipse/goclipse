@@ -50,9 +50,9 @@ public abstract class CommonUITest extends CommonCoreTest_ActualClass {
 	}
 	
 	@Override
-	public void checkLogErrors() throws Throwable {
+	protected void doCheckLogErrors() throws Throwable {
 		SWTTestUtils.clearEventQueue();
-		super.checkLogErrors();
+		super.doCheckLogErrors();
 	}
 	
 }

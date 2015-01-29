@@ -99,23 +99,35 @@ public final class FileUtil {
 		return Files.deleteIfExists(path);
 	}
 	
+	
 	public static void deleteDirContents(Path dir) throws IOException {
-		deleteDirContents(dir, false);
+		deleteDirContents(Location.create_fromValid(dir), false);
 	}
 	
+	/* ----------------- TODO: convert the utils above to Location ----------------- */
+	
+	@Deprecated
 	public static void deleteDir(File dir) throws IOException {
-		deleteDir(dir.toPath());
+		deleteDirContents(Location.create_fromValid(dir.toPath()));
 	}
+	@Deprecated
 	public static void deleteDir(Path dir) throws IOException {
+		deleteDirContents(Location.create_fromValid(dir));
+	}
+	public static void deleteDir(Location dir) throws IOException {
 		deleteDirContents(dir, true);
 	}
 	
-	protected static void deleteDirContents(final Path directory, final boolean deleteDirectory) throws IOException {
+	public static void deleteDirContents(Location directory) throws IOException {
+		deleteDirContents(directory, false);
+	}
+	protected static void deleteDirContents(final Location directory, final boolean deleteDirectory) 
+			throws IOException {
 		if(!directory.toFile().exists()) {
 			return;
 		}
 		
-		Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+		Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 				Files.deleteIfExists(file);

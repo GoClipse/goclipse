@@ -14,7 +14,7 @@ import java.util.Iterator;
 
 /**
  */
-public class ChainedIterator<T> implements Iterator<T> {
+public class SimpleChainedIterator<T> implements Iterator<T> {
 
     Iterator<? extends T> firstIter;
     Iterator<? extends T> secondIter;
@@ -23,10 +23,10 @@ public class ChainedIterator<T> implements Iterator<T> {
 	public static <U> Iterator<? extends U> create(
 			Iterator<? extends U> firstIter,
 			Iterator<? extends U> secondIter) {
-		return new ChainedIterator<U>(firstIter, secondIter);
+		return new SimpleChainedIterator<U>(firstIter, secondIter);
 	}
     
-    public ChainedIterator(Iterator<? extends T> firstIter, Iterator<? extends T> secondIter) {
+    public SimpleChainedIterator(Iterator<? extends T> firstIter, Iterator<? extends T> secondIter) {
     	this.firstIter = firstIter;
     	this.secondIter = secondIter;
     	//currentIter = firstIter;
@@ -51,4 +51,3 @@ public class ChainedIterator<T> implements Iterator<T> {
     }
 
 }
-

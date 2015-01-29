@@ -54,7 +54,11 @@ public class LangCoreTestResources {
 	public static IFolder createFolderFromDirectory(File directory, IProject project, String destFolderName)
 			throws CoreException {
 		IFolder destFolder = project.getFolder(destFolderName);
-		MiscFileUtils.copyDirContentsIntoDirectory(directory, destFolder.getLocation().toFile());
+		try {
+			MiscFileUtils.copyDirContentsIntoDirectory(directory, destFolder.getLocation().toFile());
+		} catch (IOException e) {
+			throw LangCore.createCoreException("Error in copyDirContentsIntoDirectory", e);
+		}
 		destFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
 		return destFolder;
 	}

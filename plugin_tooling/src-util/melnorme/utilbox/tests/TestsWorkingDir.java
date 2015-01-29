@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.Location;
 
 public class TestsWorkingDir {
 	
@@ -36,19 +37,7 @@ public class TestsWorkingDir {
 		if(!file.exists()) {
 			file.mkdir();
 		}
-	}
-	
-	public static File getWorkingDir() {
-		defaultWorkingDirInit(); // attempt default init
-		
-		assertNotNull(testsWorkingDir);
-		File file = new File(testsWorkingDir);
-		assertTrue(file.exists() && file.isDirectory());
-		return file;
-	}
-	
-	public static Path getWorkingDirPath() {
-		return getWorkingDir().toPath();
+		assertTrue(file.toPath().isAbsolute());
 	}
 	
 	protected static void defaultWorkingDirInit() {
@@ -64,6 +53,27 @@ public class TestsWorkingDir {
 		}
 	}
 	
+	public static Location getWorkingDir() {
+		defaultWorkingDirInit(); // attempt default init
+		
+		assertNotNull(testsWorkingDir);
+		File file = new File(testsWorkingDir);
+		assertTrue(file.exists() && file.isDirectory() && file.isAbsolute());
+		return Location.create_fromValid(file.toPath()); // Tests code, so assume valid
+	}
+	
+	public static File getWorkingDirFile() {
+		return getWorkingDir().toFile();
+	}
+	
+	public static Path getWorkingDirPath() {
+		return getWorkingDir().getPath();
+	}
+	
+	public static Location getWorkingDir(String relativePath) {
+		return getWorkingDir().resolve_fromValid(relativePath);
+	}
+	
 	public static Path getWorkingDirPath(String relativePath) {
 		return getWorkingDirPath().resolve(relativePath);
 	}
@@ -72,7 +82,7 @@ public class TestsWorkingDir {
 	public static void deleteDir(Path dir) throws IOException {
 		dir = dir.normalize();
 		assertTrue(dir.startsWith(getWorkingDirPath()));
-		FileUtil.deleteDir(dir);
+		FileUtil.deleteDir(Location.fromAbsolutePath(dir));
 	}
 	
 }

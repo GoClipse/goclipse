@@ -1,23 +1,23 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Bruno Medeiros - initial implementation
+ *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.misc;
+package melnorme.utilbox.collections;
 
-import java.util.Iterator;
+import java.util.RandomAccess;
 
-@Deprecated
-public class ChainedIterator<T> extends melnorme.utilbox.collections.ChainedIterator<T> {
+/**
+ * interface for a read-only view of a random access collection
+ */
+public interface Indexable<E> extends Collection2<E>, RandomAccess {
 	
-	public ChainedIterator(Iterator<? extends T> firstIter, Iterator<? extends T> secondIter) {
-		super(firstIter, secondIter);
-	}
-
+	/** @return the element at given index. */
+	E get(int index);
+	
 }
-

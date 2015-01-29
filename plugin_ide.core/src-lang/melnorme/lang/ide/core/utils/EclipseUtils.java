@@ -12,6 +12,10 @@ package melnorme.lang.ide.core.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -33,8 +37,9 @@ public class EclipseUtils extends ResourceUtils {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
 	
+	@Deprecated
 	public static Path path(java.nio.file.Path path) {
-		return new Path(path.toString());
+		return epath(path);
 	}
 	
 	public static void startOtherPlugin(String pluginId) {
@@ -76,6 +81,23 @@ public class EclipseUtils extends ResourceUtils {
 	@SuppressWarnings("unchecked")
 	public static <T> T getAdapter(Object adaptable, Class<T> adapterType) {
 		return (T) Platform.getAdapterManager().getAdapter(adaptable, adapterType);
+	}
+	
+	public static <T> T getFutureResult(Future<T> future, int timeout, TimeUnit timeUnit, String opName) 
+			throws CoreException {
+		try {
+			return future.get(timeout, timeUnit);
+		} catch (ExecutionException e) {
+			if(e.getCause() instanceof CoreException) {
+				CoreException coreException = (CoreException) e.getCause();
+				throw coreException; 
+			}
+			throw LangCore.createCoreException("Error performing " + opName + ".", e.getCause());
+		} catch (TimeoutException e) {
+			throw LangCore.createCoreException("Timeout performing " + opName + ".", null);
+		} catch (InterruptedException e) {
+			throw LangCore.createCoreException("Interrupted.", e);
+		}
 	}
 	
 }
