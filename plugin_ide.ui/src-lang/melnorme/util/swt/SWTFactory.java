@@ -18,6 +18,17 @@ import org.eclipse.swt.widgets.Label;
 
 public class SWTFactory {
 	
+	public static Composite createComposite(Composite parent, GridData layoutData) {
+		Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayoutData(layoutData);
+		return composite;
+	}
+	
+	public static Composite createComposite(Composite parent) {
+		Composite composite = new Composite(parent, SWT.NONE);
+		return composite;
+	}
+	
 	public static Group createGroup(Composite parent, String label, GridData layoutData) {
 		Group group = createGroup(parent, label);
 		group.setLayoutData(layoutData);

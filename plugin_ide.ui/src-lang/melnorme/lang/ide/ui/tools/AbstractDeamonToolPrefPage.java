@@ -12,18 +12,15 @@ package melnorme.lang.ide.ui.tools;
 
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.lang.ide.ui.preferences.FieldEditorPreferencePageExt;
 
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Group;
 
-public abstract class AbstractDeamonToolPrefPage extends FieldEditorPreferencePage {
+public abstract class AbstractDeamonToolPrefPage extends FieldEditorPreferencePageExt {
 	
 	protected Group toolGroup;
 	
@@ -36,9 +33,7 @@ public abstract class AbstractDeamonToolPrefPage extends FieldEditorPreferencePa
 	
 	@Override
 	protected void createFieldEditors() {
-		toolGroup = SWTFactoryUtil.createGroup(getFieldEditorParent(),
-			getDaemonToolName(),
-			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
+		toolGroup = createPreferenceGroup(getDaemonToolName());
 		
 		addField(new BooleanFieldEditor(
 			DaemonEnginePreferences.AUTO_START_SERVER.key,
@@ -59,16 +54,6 @@ public abstract class AbstractDeamonToolPrefPage extends FieldEditorPreferencePa
 	}
 	
 	@Override
-	protected void adjustGridLayout() {
-		super.adjustGridLayout();
-		
-		int numColumns = ((GridLayout) getFieldEditorParent().getLayout()).numColumns;
-		// Fix parent layout, the number of columns there is irrelevant, because we are using groups.
-		((GridLayout) getFieldEditorParent().getLayout()).numColumns = 1;
-		// Instead, adjudt the numColumns of the group layout:
-		adjustGridLayoutForFieldsNumberofColumns(numColumns);
-	}
-	
 	protected void adjustGridLayoutForFieldsNumberofColumns(int numColumns) {
 		((GridLayout) toolGroup.getLayout()).numColumns = numColumns;
 	}
