@@ -32,3 +32,6 @@ If it does seem to be a GoClipse problem, open a new issue in Github, providing 
  * The contents of `gdb` and `gdb traces` console in Eclipse, for your debug launch. 
 
 > (if you're looking for a place to upload large files, you can use https://gist.github.com)
+
+## Contributing
+The Goclipse project welcomes contributions. TODO more info
