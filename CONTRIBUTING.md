@@ -1,5 +1,7 @@
 ## Reporting issues
 
+ Issues can be reported in the project's Github page: https://github.com/GoClipse/goclipse/issues
+
  Notes:
 
  * Please report the GoClipse version you are using (can be found on `"Help/About/Installation Details/Installed Software"`), and operating system and architecture.

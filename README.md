@@ -1,4 +1,4 @@
-See the [About](documentation/About.md) page for user information, and [Reporting Issues](documentation/ReportIssue.md) for guidance creating an issue report.
+See the [About](documentation/About.md) page for user information, and [Reporting Issues](CONTRIBUTING.md#reporting-issues) for issue reporting guidance.
 
 ## Developers Guide
 
