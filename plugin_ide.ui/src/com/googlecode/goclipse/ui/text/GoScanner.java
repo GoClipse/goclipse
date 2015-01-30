@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
+import melnorme.lang.ide.ui.text.coloring.DefaultPredicateRule;
 
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
+import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
@@ -21,7 +24,8 @@ public class GoScanner extends AbstractLangScanner {
 		GoUIPreferenceConstants.SYNTAX_COLORING__VALUE.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION.key,
-//		GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key,
+		GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key,
+		GoUIPreferenceConstants.SYNTAX_COLORING__SYNTAX_CHARS.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__STRING.key,
 	};
 	
@@ -71,7 +75,7 @@ public class GoScanner extends AbstractLangScanner {
 		wordRule.addWord("import",      keyword);
 		wordRule.addWord("return",      keyword);
 		wordRule.addWord("var",         keyword);
-
+		
 		wordRule.addWord("append",  builtinFunction);
 		wordRule.addWord("cap",     builtinFunction);
 		wordRule.addWord("close",   builtinFunction);
@@ -87,12 +91,12 @@ public class GoScanner extends AbstractLangScanner {
 		wordRule.addWord("println", builtinFunction);
 		wordRule.addWord("real",    builtinFunction);
 		wordRule.addWord("recover", builtinFunction);
-
+		
 		wordRule.addWord("nil",   value);
 		wordRule.addWord("true",  value);
 		wordRule.addWord("false", value);
 		wordRule.addWord("iota",  value);
-
+		
 		wordRule.addWord("uint8", primitive);
 		wordRule.addWord("uint16", primitive);
 		wordRule.addWord("uint32", primitive);
@@ -115,60 +119,100 @@ public class GoScanner extends AbstractLangScanner {
 		wordRule.addWord("bool",   primitive);
 		wordRule.addWord("error",  primitive);
 		
-		// Note: operator matching is not actually working, WordRule cant be used for this
-		
-//		final IToken operator        = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key);
-//
-//		wordRule.addWord("+",   operator);
-//		wordRule.addWord("&",   operator);
-//		wordRule.addWord("+=",  operator);
-//		wordRule.addWord("&=",  operator);
-//		wordRule.addWord("&&",  operator);
-//		wordRule.addWord("==",  operator);
-//		wordRule.addWord("!=",  operator);
-//		wordRule.addWord("(",   operator);
-//		wordRule.addWord(")",   operator);
-//		wordRule.addWord("-",   operator);
-//		wordRule.addWord("|",   operator);
-//		wordRule.addWord("-=",  operator);
-//		wordRule.addWord("|=",  operator);
-//		wordRule.addWord("||",  operator);
-//		wordRule.addWord("<",   operator);
-//		wordRule.addWord("<=",  operator);
-//		wordRule.addWord("[",   operator);
-//		wordRule.addWord("]",   operator);
-//		wordRule.addWord("*",   operator);
-//		wordRule.addWord("^",   operator);
-//		wordRule.addWord("*=",  operator);
-//		wordRule.addWord("^=",  operator);
-//		wordRule.addWord("<-",  operator);
-//		wordRule.addWord(">",   operator);
-//		wordRule.addWord(">=",  operator);
-//		wordRule.addWord("{",   operator);
-//		wordRule.addWord("}",   operator);
-//		wordRule.addWord("/",   operator);
-//		wordRule.addWord("<<",  operator);
-//		wordRule.addWord("/=",  operator);
-//		wordRule.addWord("<<=", operator);
-//		wordRule.addWord("++",  operator);
-//		wordRule.addWord("=",   operator);
-//		wordRule.addWord(":=",  operator);
-//		wordRule.addWord(",",   operator);
-//		wordRule.addWord(";",   operator);
-//		wordRule.addWord("%",   operator);
-//		wordRule.addWord(">>",  operator);
-//		wordRule.addWord("%=",  operator);
-//		wordRule.addWord(">>=", operator);
-//		wordRule.addWord("--",  operator);
-//		wordRule.addWord("!",   operator);
-//		wordRule.addWord("...", operator);
-//		wordRule.addWord(":",   operator);
-//		wordRule.addWord("&^",  operator);
-//		wordRule.addWord("&^=", operator);
-		
 		rules.add(wordRule);
 		
+		rules.add(new GoOperatorRule(getToken(GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key)));
+		rules.add(new GoControlCharactersRule(getToken(GoUIPreferenceConstants.SYNTAX_COLORING__SYNTAX_CHARS.key)));
+		
 		setRules(rules);
+	}
+	
+	public static class GoOperatorRule extends DefaultPredicateRule {
+		
+		public GoOperatorRule(IToken token) {
+			super(token);
+		}
+		
+		@Override
+		public IToken evaluate(ICharacterScanner scanner) {
+			int read = scanner.read();
+			
+			if(read == ICharacterScanner.EOF) {
+				return Token.UNDEFINED;
+			}
+			
+			switch (read) {
+			case '+': return currentOr('=', '+', scanner);
+			case '-': return currentOr('=', '-', scanner);
+			case '*': return currentOr('=', scanner);
+			case '/': return currentOr('=', scanner);
+			case '^': return currentOr('=', scanner);
+			case '!': return currentOr('=', scanner);
+			case '=': return currentOr('=', scanner);
+			case '%': return currentOr('=', scanner);
+			case '|': return currentOr('=', '|', scanner);
+			case '&': 
+				if(consume('^', scanner)) {
+					return currentOr('=', scanner);
+				}
+				return currentOr('=', '&', scanner);
+			
+			case '<': 
+				if(consume('<', scanner)) {
+					return currentOr('=', scanner);
+				}
+				return currentOr('=', '-', scanner);
+			case '>': 
+				if(consume('>', scanner)) {
+					return currentOr('=', scanner); // ">>" , ">>="
+				}
+				return currentOr('=', scanner);
+				
+			case ':':
+				if(consume('=', scanner)) {
+					return getSuccessToken(); // ":="
+				}
+				
+				// fall-through
+			default:
+				scanner.unread(); return Token.UNDEFINED;
+			}
+			
+		}
+		
+	}
+	
+	public static class GoControlCharactersRule extends DefaultPredicateRule {
+		
+		public GoControlCharactersRule(IToken token) {
+			super(token);
+		}
+		
+		@Override
+		public IToken evaluate(ICharacterScanner scanner) {
+			int read = scanner.read();
+			
+			if(read == ICharacterScanner.EOF) {
+				return Token.UNDEFINED;
+			}
+			
+			switch (read) {
+			case ':':
+			case ';':
+			case '.':
+			case '(':
+			case ')':
+			case '[':
+			case ']':
+			case '{':
+			case '}':
+				return getSuccessToken();
+			default:
+				scanner.unread(); return Token.UNDEFINED;
+			}
+			
+		}
+		
 	}
 	
 }
