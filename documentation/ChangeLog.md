@@ -2,6 +2,7 @@
 
 ### Goclipse 0.9.x
  * Added: `Show In > Project Explorer` command to `Show In` menu in Go perspective.
+ * Clean up UI and behavior of main Go preference page.
 
 ### Goclipse 0.9.1
  * Fixed: Builder does not ignore folders with names starting with "_" or ".".

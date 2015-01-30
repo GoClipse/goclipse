@@ -37,9 +37,9 @@ public class GoPreferencePage extends FieldEditorPreferencePageExt implements IW
 	protected GoPathFieldEditor goPathEditor;
 	protected ComboFieldEditor goosEditor;
 	protected ComboFieldEditor goarchEditor;
-	protected FileFieldEditor compilerEditor;
-	protected FileFieldEditor formatterEditor;
-	protected FileFieldEditor documentorEditor;
+	protected FileFieldEditor goToolPathEditor;
+	protected FileFieldEditor gofmtPathEditor;
+	protected FileFieldEditor godocPathEditor;
 	
 	public GoPreferencePage() {
 		super(GRID);
@@ -50,7 +50,7 @@ public class GoPreferencePage extends FieldEditorPreferencePageExt implements IW
 	
 	@Override
 	public void createFieldEditors() {
-		Group goSDK = createPreferenceGroup("Go SDK installation");
+		Group goSDK = createPreferenceGroup("Go SDK installation:");
 		
 		int numColumns = 3;
 		
@@ -66,15 +66,15 @@ public class GoPreferencePage extends FieldEditorPreferencePageExt implements IW
 			SWT.SEPARATOR | SWT.HORIZONTAL, "",
 			fillGridDataFactory(1).indent(0, 5).span(numColumns, 1).create());
 		
-		addField(compilerEditor = new FileFieldEditor(GoEnvironmentPrefs.COMPILER_PATH.key, "go tool:", goSDK));
-		addField(formatterEditor = new FileFieldEditor(GoEnvironmentPrefs.FORMATTER_PATH.key, "gofmt:", goSDK));
-		addField(documentorEditor = new FileFieldEditor(GoEnvironmentPrefs.DOCUMENTOR_PATH.key, "godoc:", goSDK));
+		addField(goToolPathEditor = new FileFieldEditor(GoEnvironmentPrefs.COMPILER_PATH.key, "go tool:", goSDK));
+		addField(gofmtPathEditor = new FileFieldEditor(GoEnvironmentPrefs.FORMATTER_PATH.key, "gofmt:", goSDK));
+		addField(godocPathEditor = new FileFieldEditor(GoEnvironmentPrefs.DOCUMENTOR_PATH.key, "godoc:", goSDK));
 		
 		applyDefaultGridLayout(goSDK, numColumns);
 		
 		/* -----------------  ----------------- */
 		
-		Group goPath = createPreferenceGroup("GOPATH:");
+		Group goPath = createPreferenceGroup("Default environment:");
 		
 		goPathEditor = new GoPathFieldEditor(GoEnvironmentPrefs.GO_PATH.key, "GO&PATH:", goPath);
 		addField(goPathEditor);
@@ -99,41 +99,37 @@ public class GoPreferencePage extends FieldEditorPreferencePageExt implements IW
 		super.propertyChange(event);
 		
 		if (event.getSource() == goRootEditor) {
+			handleGoRootChange();
+		}
+	}
+	
+	protected void handleGoRootChange() {
+		IPath gorootPath = new Path(goRootEditor.getStringValue());
+		File binPath = gorootPath.append("bin").toFile();
+		
+		if (goRootEditor.isValid()) {
 			
-			IPath gorootPath = new Path(goRootEditor.getStringValue());
-			File gorootFile  = gorootPath.toFile();
+			File compilerFile = findExistingFile(binPath.toPath(), 
+				GoEnvironmentUtils.getSupportedCompilerNames());
 			
-			if (gorootFile.exists() && gorootFile.isDirectory()) {
-				IPath binPath = gorootPath.append("bin");
-				File binFile = binPath.toFile();
-				
-				if (binFile.exists() && binFile.isDirectory()) {
-					if ("".equals(compilerEditor.getStringValue())) {
-						File compilerFile = findExistingFile(binPath, GoEnvironmentUtils.getSupportedCompilerNames());
-						if (compilerFile != null && !compilerFile.isDirectory()) {
-							compilerEditor.setStringValue(compilerFile.getAbsolutePath());
-						}
-					}
-					
-					if ("".equals(formatterEditor.getStringValue())) {
-						String goFmtName = GoEnvironmentUtils.getDefaultGofmtName();
-						IPath formatterPath = binPath.append(goFmtName);
-						File formatterFile = formatterPath.toFile();
-						if (formatterFile.exists() && !formatterFile.isDirectory()) {
-							formatterEditor.setStringValue(formatterFile.getAbsolutePath());
-						}
-					}
-					
-					if ("".equals(documentorEditor.getStringValue())) {
-						String goDocName = GoEnvironmentUtils.getDefaultGodocName();
-						IPath testerPath = binPath.append(goDocName);
-						File testerFile = testerPath.toFile();
-						if (testerFile.exists() && !testerFile.isDirectory()) {
-							documentorEditor.setStringValue(testerFile.getAbsolutePath());
-						}
-					}
-				}
-			}
+			setValueIfFileExists(goToolPathEditor, compilerFile);
+			
+			String goFmtName = GoEnvironmentUtils.getDefaultGofmtName();
+			setValueIfFileExists(gofmtPathEditor, gorootPath.append("bin").append(goFmtName).toFile());
+			
+			String goDocName = GoEnvironmentUtils.getDefaultGodocName();
+			setValueIfFileExists(godocPathEditor, gorootPath.append("bin").append(goDocName).toFile());
+			
+			goosEditor.loadDefault();
+			goarchEditor.loadDefault();
+		}
+	}
+	
+	protected void setValueIfFileExists(FileFieldEditor fileFieldEditor, File filePath) {
+		if (filePath != null && filePath.exists() && filePath.isFile()) {
+			fileFieldEditor.setStringValue(filePath.getAbsolutePath());
+		} else {
+			fileFieldEditor.setStringValue("");
 		}
 	}
 	
@@ -155,9 +151,9 @@ public class GoPreferencePage extends FieldEditorPreferencePageExt implements IW
 				{ GoArch.ARCH_ARM, GoArch.ARCH_ARM } };
 	}
 	
-	protected static File findExistingFile(IPath binPath, List<String> paths) {
+	protected static File findExistingFile(java.nio.file.Path binPath, List<String> paths) {
 		for (String strPath : paths) {
-			IPath path = binPath.append(strPath);
+			java.nio.file.Path path = binPath.resolve(strPath);
 			File file = path.toFile();
 			if (file.exists()) {
 				return file;
