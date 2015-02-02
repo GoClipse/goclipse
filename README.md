@@ -1,7 +1,7 @@
 Developers Guide
 ================
 
-See project page ( MMRNMHRM_PAGE ) for user information.
+See project page ( LANG_IDE_SITE ) for user information.
 
 #### Setting up the development environment:
  * Clone the Git repository.
