@@ -12,9 +12,9 @@ See project page ( LANG_IDE_SITE ) for user information.
 #### Running the tests in Eclipse:
 
 #### Automated Building and Testing:
-Using Maven (and Tycho), it is possible to automatically build DDT, create an update site, and run all the tests. Download [Maven](http://maven.apache.org/) (minimum version 3.0), and run the following commands on the root folder of the repository:
- * Run `mvn package` to build the DDT feature into a p2 repository (which is a local update site). It will be placed at `bin-maven/features.repository/repository`
- * Run `mvn integration-test` to build DDT as above and also run the test suites. You can do `mvn integration-test -P TestsLiteMode` to run the test suites in "Lite Mode" (skip certain long-running tests).
+Using Maven (and Tycho), it is possible to automatically build LANG_IDE_NAME, create an update site, and run all the tests. Download [Maven](http://maven.apache.org/) (minimum version 3.0), and run the following commands on the root folder of the repository:
+ * Run `mvn package` to build the LANG_IDE_NAME feature into a p2 repository (which is a local update site). It will be placed at `bin-maven/features.repository/repository`
+ * Run `mvn integration-test` to build LANG_IDE_NAME as above and also run the test suites. You can do `mvn integration-test -P TestsLiteMode` to run the test suites in "Lite Mode" (skip certain long-running tests).
 
 #### Creating and deploying a new release:
 A release is a web site with an Eclipse p2 update site. The website may contain no web pages at all, rather it can be just the p2 site. To create and deploy a new release:
