@@ -19,7 +19,7 @@ public interface GoColorPreferences {
 			new ColoringItemPreference("syntax_highlighting_builtin_function", true, new RGB(0, 0, 0), true, false, false);
 	public static final ColoringItemPreference SYNTAX_COLORING__OPERATOR = 
 			new ColoringItemPreference("syntax_highlighting_operator", true, new RGB(0, 0, 0), false, false, false);
-	public static final ColoringItemPreference SYNTAX_COLORING__SYNTAX_CHARS = 
+	public static final ColoringItemPreference SYNTAX_COLORING__STRUCTURAL_SYMBOLS = 
 			new ColoringItemPreference("syntax_highlighting_syntax_chars", true, new RGB(0, 0, 0), false, false, false);
 	public static final ColoringItemPreference SYNTAX_COLORING__STRING = 
 			new ColoringItemPreference("syntax_highlighting_string", true, new RGB(0, 75, 200), false, false, false);

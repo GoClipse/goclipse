@@ -25,7 +25,7 @@ public class GoScanner extends AbstractLangScanner {
 		GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key,
-		GoUIPreferenceConstants.SYNTAX_COLORING__SYNTAX_CHARS.key,
+		GoUIPreferenceConstants.SYNTAX_COLORING__STRUCTURAL_SYMBOLS.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__STRING.key,
 	};
 	
@@ -122,7 +122,7 @@ public class GoScanner extends AbstractLangScanner {
 		rules.add(wordRule);
 		
 		rules.add(new GoOperatorRule(getToken(GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key)));
-		rules.add(new GoControlCharactersRule(getToken(GoUIPreferenceConstants.SYNTAX_COLORING__SYNTAX_CHARS.key)));
+		rules.add(new GoControlCharactersRule(getToken(GoUIPreferenceConstants.SYNTAX_COLORING__STRUCTURAL_SYMBOLS.key)));
 		
 		setRules(rules);
 	}
