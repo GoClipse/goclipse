@@ -1,4 +1,4 @@
-package mmrnmhrm.tests;
+package LANG_PROJECT_ID.tests;
 
 import org.junit.Test;
 
