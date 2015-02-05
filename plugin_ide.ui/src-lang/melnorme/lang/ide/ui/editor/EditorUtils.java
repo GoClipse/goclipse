@@ -39,6 +39,7 @@ import org.eclipse.ui.IReusableEditor;
 import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -157,35 +158,56 @@ public class EditorUtils {
 	/* -----------------  ----------------- */
 	
 	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING_EDITORS, NEVER }
-
+	
+	@Deprecated
 	public static ITextEditor openEditor(ITextEditor currentEditor, String editorId, 
 			IEditorInput newInput, SourceRange sourceRange, OpenNewEditorMode openNewEditor) throws CoreException {
-		
+		return openEditorAndSetSelection(currentEditor, editorId, newInput, openNewEditor, sourceRange);
+	}
+	
+	public static ITextEditor openEditorAndSetSelection(String editorId, IEditorInput newInput, 
+			SourceRange sourceRange) throws CoreException {
+		return openEditorAndSetSelection(null, editorId, newInput, OpenNewEditorMode.ALWAYS, sourceRange);
+	}
+	
+	public static ITextEditor openEditorAndSetSelection(ITextEditor currentEditor, String editorId, 
+			IEditorInput newInput, OpenNewEditorMode openNewEditor, SourceRange selectionRange) 
+					throws PartInitException, CoreException {
+		ITextEditor editor = openEditor(currentEditor, editorId, newInput, openNewEditor);
+		if(selectionRange != null) {
+			setEditorSelection(editor, selectionRange);
+		}
+		return editor;
+	}
+	
+	public static ITextEditor openEditor(String editorId, IEditorInput newInput) throws CoreException {
+		return openEditor(null, editorId, newInput, OpenNewEditorMode.ALWAYS);
+	}
+	
+	public static ITextEditor openEditor(ITextEditor currentEditor, String editorId, IEditorInput newInput,
+			OpenNewEditorMode openNewEditor) throws PartInitException, CoreException {
 		IWorkbenchPage page = currentEditor.getEditorSite().getWorkbenchWindow().getActivePage();
 		
 		if(openNewEditor == OpenNewEditorMode.NEVER) {
 			if(currentEditor.getEditorInput().equals(newInput)) {
-				setEditorSelection(currentEditor, sourceRange);
 				return currentEditor;
 			} else if(currentEditor instanceof IReusableEditor) {
 				IReusableEditor reusableEditor = (IReusableEditor) currentEditor;
 				reusableEditor.setInput(newInput);
-				setEditorSelection(currentEditor, sourceRange);
 				return currentEditor;
 			} else {
-				return openEditor(currentEditor, editorId, newInput, sourceRange, OpenNewEditorMode.ALWAYS);
+				openNewEditor = OpenNewEditorMode.ALWAYS;
 			}
-		} else {
-			int matchFlags = openNewEditor == OpenNewEditorMode.ALWAYS ? 
-				IWorkbenchPage.MATCH_NONE : IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID;
-			IEditorPart editor = page.openEditor(newInput, editorId, true, matchFlags);
-			ITextEditor targetEditor = tryCast(editor, ITextEditor.class);
-			if(targetEditor == null) {
-				throw LangCore.createCoreException("Not a text editor", null);
-			}
-			setEditorSelection(targetEditor, sourceRange);
-			return targetEditor;
 		}
+		
+		int matchFlags = openNewEditor == OpenNewEditorMode.ALWAYS ? 
+			IWorkbenchPage.MATCH_NONE : IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID;
+		IEditorPart editor = page.openEditor(newInput, editorId, true, matchFlags);
+		ITextEditor targetEditor = tryCast(editor, ITextEditor.class);
+		if(targetEditor == null) {
+			throw LangCore.createCoreException("Not a text editor", null);
+		}
+		return targetEditor;
 	}
 	
 }

@@ -101,9 +101,8 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	protected void openEditorForLocation(SourceLineColumnLocation location) throws CoreException {
 		IEditorInput newInput = getNewEditorInput(location.path);
 		
-		SourceRange sr = new SourceRange(0, 0);
-		ITextEditor newEditor = EditorUtils.openEditor(editor, EditorSettings_Actual.EDITOR_ID, 
-			newInput, sr, openEditorMode);
+		ITextEditor newEditor = EditorUtils.openEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, 
+			newInput, openEditorMode, null);
 		
 		IDocument doc = EditorUtils.getEditorDocument(newEditor);
 		int selectionOffset = getOffsetFrom(doc, location.line, location.column);
