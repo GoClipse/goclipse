@@ -78,6 +78,18 @@ public class EclipseUtils extends ResourceUtils {
 		project.setDescription(description, null);
 	}
 	
+	/** Remove nature from given project, if project has given nature. */
+	public static void removeNature(IProject project, String natureID) throws CoreException {
+		IProjectDescription description = project.getDescription();
+		String[] natures = description.getNatureIds();
+		
+		String[] newNatures = ArrayUtil.remove(natures, natureID);
+		if(newNatures != natures) {
+			description.setNatureIds(newNatures);
+			project.setDescription(description, null);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T> T getAdapter(Object adaptable, Class<T> adapterType) {
 		return (T) Platform.getAdapterManager().getAdapter(adaptable, adapterType);

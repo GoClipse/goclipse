@@ -12,7 +12,8 @@ package melnorme.lang.ide.ui.fields;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.launch.AbstractLaunchConfigurationTabExt;
-import melnorme.util.swt.components.AbstractFieldExt;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractFieldExt2;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -20,10 +21,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
-public class ArgumentsGroupField extends AbstractFieldExt<String> {
+public class ArgumentsGroupField extends AbstractFieldExt2<String> {
 	
 	protected Text text;
 	protected int textStyle;
@@ -34,26 +34,23 @@ public class ArgumentsGroupField extends AbstractFieldExt<String> {
 	}
 	
 	public ArgumentsGroupField(String labelText, int textStyle) {
-		super(labelText);
+		super(labelText, "");
 		this.textStyle = textStyle;
 	}
 	
 	@Override
-	public String getDefaultFieldValue() {
-		return "";
+	protected Composite doCreateTopLevelControl(Composite parent) {
+		return SWTFactoryUtil.createGroup(parent, labelText, SWT.NONE);
 	}
 	
 	@Override
-	protected Composite createTopLevelControl(Composite parent) {
-		Group topControl = new Group(parent, SWT.NONE);
-		topControl.setText(labelText);
-		createTopLevelControlLayout(topControl);
-		return topControl;
+	protected GridLayoutFactory createTopLevelLayout() {
+		return glSwtDefaults().numColumns(getPreferredLayoutColumns());
 	}
 	
 	@Override
-	protected void createTopLevelControlLayout(Composite topControl) {
-		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(1).create());
+	public int getPreferredLayoutColumns() {
+		return 1;
 	}
 	
 	@Override

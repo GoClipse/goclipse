@@ -129,6 +129,10 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 		}
 	}
 	
+	@Override
+	public int getPreferredLayoutColumns() {
+		return 1;
+	}
 	
 	@Override
 	public void createContents(Composite topControl) {

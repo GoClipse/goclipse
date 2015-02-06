@@ -13,6 +13,7 @@ package melnorme.util.swt.components;
 import melnorme.util.swt.SWTFactoryUtil;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -56,6 +57,13 @@ public abstract class AbstractComponentExt extends AbstractComponent {
 		return GridDataFactory.fillDefaults();
 	}
 	
+	protected static GridLayoutFactory glSwtDefaults() {
+		return GridLayoutFactory.swtDefaults();
+	}
+	
+	protected static GridLayoutFactory glFillDefaults() {
+		return GridLayoutFactory.fillDefaults();
+	}
 	
 	/* ----------------- helpers ----------------- */
 	

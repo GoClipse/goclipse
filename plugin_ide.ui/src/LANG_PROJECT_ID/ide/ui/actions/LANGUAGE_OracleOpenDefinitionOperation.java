@@ -46,8 +46,8 @@ public class LANGUAGE_OracleOpenDefinitionOperation extends AbstractOpenElementO
 		
 		IEditorInput newInput = editorInput;
 		
-		SourceRange sr = new SourceRange(0, 0);
-		EditorUtils.openEditor(editor, EditorSettings_Actual.EDITOR_ID, newInput, sr, openEditorMode);
+		EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, newInput, 
+			openEditorMode, new SourceRange(0, 0));
 	}
 	
 }

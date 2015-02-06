@@ -25,6 +25,11 @@ public class LangEditorConfigurationBlock extends AbstractPreferencesConfigBlock
 	}
 	
 	@Override
+	public int getPreferredLayoutColumns() {
+		return 1;
+	}
+	
+	@Override
 	protected void createContents(Composite topControl) {
 		createAppearanceGroup(topControl);
 	}

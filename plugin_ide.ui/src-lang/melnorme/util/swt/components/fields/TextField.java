@@ -11,31 +11,31 @@
 package melnorme.util.swt.components.fields;
 
 import melnorme.util.swt.SWTFactory;
-import melnorme.util.swt.components.AbstractFieldExt;
+import melnorme.util.swt.components.AbstractFieldExt2;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class TextField extends AbstractFieldExt<String> {
+public class TextField extends AbstractFieldExt2<String> {
 	
 	protected Label label;
 	protected Text text;
-	protected int textStyle;
+	protected int defaultTextStyle;
 	
 	public TextField(String labelText) {
-		this(labelText, SWT.BORDER);
+		this(labelText, SWT.SINGLE | SWT.BORDER);
 	}
 	
 	public TextField(String labelText, int textStyle) {
-		super(labelText);
-		this.textStyle = textStyle;
+		super(labelText, "");
+		this.defaultTextStyle = textStyle;
 	}
 	
 	@Override
-	public String getDefaultFieldValue() {
-		return "";
+	public int getPreferredLayoutColumns() {
+		return 2;
 	}
 	
 	@Override
@@ -49,12 +49,12 @@ public class TextField extends AbstractFieldExt<String> {
 	}
 	
 	protected void createText(Composite parent) {
-		text = createFieldText(this, parent, textStyle);
+		text = createFieldText(this, parent, defaultTextStyle);
 	}
 	
 	@Override
 	protected void createContents_layout() {
-		layout2Controls(label, text, true);
+		layout2Controls_expandLast(label, text);
 	}
 	
 	@Override

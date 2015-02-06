@@ -11,28 +11,35 @@
 package melnorme.util.swt;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 
 public class SWTFactory {
 	
-	public static Group createGroup(Composite parent, String label, GridData layoutData) {
+	public static Group createGroup(Composite parent, String label, GridData gridData) {
 		Group group = createGroup(parent, label);
-		group.setLayoutData(layoutData);
+		group.setLayoutData(gridData);
 		return group;
 	}
 	
 	public static Group createGroup(Composite parent, String label) {
-		Group group = new Group(parent, SWT.SHADOW_NONE);
+		return createGroup(parent, label, SWT.SHADOW_NONE);
+	}
+	
+	public static Group createGroup(Composite parent, String label, int style) {
+		Group group = new Group(parent, style);
 		group.setText(label);
 		return group;
 	}
 	
-	public static Label createLabel(Composite parent, int style, String labelText, GridData layoutData) {
+	public static Label createLabel(Composite parent, int style, String labelText, GridData gridData) {
 		Label label = createLabel(parent, style, labelText);
-		label.setLayoutData(layoutData);
+		label.setLayoutData(gridData);
 		return label;
 	}
 
@@ -40,6 +47,41 @@ public class SWTFactory {
 		Label label = new Label(parent, style);
 		label.setText(labelText);
 		return label;
+	}
+	
+	public static Link createLink(Composite parent, int style, String labelText, GridData gridData) {
+		Link link = createLink(parent, style, labelText);
+		link.setLayoutData(gridData);
+		return link;
+	}
+	
+	public static Link createLink(Composite parent, int style, String labelText) {
+		Link link = new Link(parent, style);
+		link.setText(labelText);
+		return link;
+	}
+	
+	public static Button createButton(Composite parent, int style, String label, GridData gridData) {
+		return createButton(parent, style, label, null, gridData);
+	}
+	public static Button createButton(Composite parent, int style, String label, Image image, GridData gridData) {
+		Button button = createButton(parent, style, label, image);
+		button.setLayoutData(gridData);
+		return button;
+	}
+	
+	public static Button createButton(Composite parent, int style, String label) {
+		return createButton(parent, style, label, (Image) null);
+	}
+	public static Button createButton(Composite parent, int style, String label, Image image) {
+		Button button = new Button(parent, style);
+		if(image != null) {
+			button.setImage(image);
+		}
+		if(label != null) {
+			button.setText(label);
+		}
+		return button;
 	}
 	
 }

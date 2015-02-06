@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences.fields;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
 import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.AbstractField;
@@ -22,8 +23,13 @@ public abstract class AbstractFieldAdapter<VALUE> extends AbstractComponent impl
 	protected final AbstractField<VALUE> field;
 	
 	public AbstractFieldAdapter(String prefKey, AbstractField<VALUE> field) {
-		this.prefKey = prefKey;
-		this.field = field;
+		this.prefKey = assertNotNull(prefKey);
+		this.field = assertNotNull(field);
+	}
+	
+	@Override
+	public int getPreferredLayoutColumns() {
+		return field.getPreferredLayoutColumns();
 	}
 	
 	@Override

@@ -21,7 +21,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -33,11 +32,18 @@ public class ProgramPathField extends WidgetFieldComponent<String> {
 	protected Button fSearchButton;
 	
 	@Override
-	protected Composite createTopLevelControl(Composite parent) {
-		Group topControl = new Group(parent, SWT.NONE);
-		topControl.setText(getGroupLabel());
-		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
-		return topControl;
+	protected Composite doCreateTopLevelControl(Composite parent) {
+		return SWTFactoryUtil.createGroup(parent, getGroupLabel(), SWT.NONE);
+	}
+	
+	@Override
+	protected GridLayoutFactory createTopLevelLayout() {
+		return glSwtDefaults().numColumns(getPreferredLayoutColumns());
+	}
+	
+	@Override
+	public int getPreferredLayoutColumns() {
+		return 2;
 	}
 	
 	protected String getGroupLabel() {

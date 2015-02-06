@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
@@ -159,34 +160,41 @@ public class EditorUtils {
 	
 	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING_EDITORS, NEVER }
 	
+	public static IEditorPart openEditor(String editorId, IEditorInput newInput) throws CoreException {
+		IWorkbenchPage page = WorkbenchUtils.getActiveWorkbenchWindow().getActivePage(); 
+		return page.openEditor(newInput, editorId, true, IWorkbenchPage.MATCH_NONE);
+	}
+	
 	@Deprecated
 	public static ITextEditor openEditor(ITextEditor currentEditor, String editorId, 
 			IEditorInput newInput, SourceRange sourceRange, OpenNewEditorMode openNewEditor) throws CoreException {
-		return openEditorAndSetSelection(currentEditor, editorId, newInput, openNewEditor, sourceRange);
+		return openTextEditorAndSetSelection(currentEditor, editorId, newInput, openNewEditor, sourceRange);
 	}
 	
-	public static ITextEditor openEditorAndSetSelection(String editorId, IEditorInput newInput, 
+	public static ITextEditor openTextEditorAndSetSelection(String editorId, IEditorInput newInput, 
 			SourceRange sourceRange) throws CoreException {
-		return openEditorAndSetSelection(null, editorId, newInput, OpenNewEditorMode.ALWAYS, sourceRange);
+		return openTextEditorAndSetSelection(null, editorId, newInput, OpenNewEditorMode.ALWAYS, sourceRange);
 	}
 	
-	public static ITextEditor openEditorAndSetSelection(ITextEditor currentEditor, String editorId, 
+	public static ITextEditor openTextEditorAndSetSelection(ITextEditor currentEditor, String editorId, 
 			IEditorInput newInput, OpenNewEditorMode openNewEditor, SourceRange selectionRange) 
 					throws PartInitException, CoreException {
-		ITextEditor editor = openEditor(currentEditor, editorId, newInput, openNewEditor);
+		ITextEditor editor = openTextEditor(currentEditor, editorId, newInput, openNewEditor);
 		if(selectionRange != null) {
 			setEditorSelection(editor, selectionRange);
 		}
 		return editor;
 	}
 	
-	public static ITextEditor openEditor(String editorId, IEditorInput newInput) throws CoreException {
-		return openEditor(null, editorId, newInput, OpenNewEditorMode.ALWAYS);
-	}
-	
-	public static ITextEditor openEditor(ITextEditor currentEditor, String editorId, IEditorInput newInput,
+	public static ITextEditor openTextEditor(ITextEditor currentEditor, String editorId, IEditorInput newInput,
 			OpenNewEditorMode openNewEditor) throws PartInitException, CoreException {
-		IWorkbenchPage page = currentEditor.getEditorSite().getWorkbenchWindow().getActivePage();
+		IWorkbenchPage page;
+		if(currentEditor == null) {
+			page = WorkbenchUtils.getActivePage();
+			openNewEditor = OpenNewEditorMode.ALWAYS;
+		} else {
+			page = currentEditor.getEditorSite().getWorkbenchWindow().getActivePage();
+		}
 		
 		if(openNewEditor == OpenNewEditorMode.NEVER) {
 			if(currentEditor.getEditorInput().equals(newInput)) {

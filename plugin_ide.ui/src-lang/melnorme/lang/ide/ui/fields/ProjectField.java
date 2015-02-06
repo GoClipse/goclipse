@@ -27,7 +27,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
@@ -42,11 +41,18 @@ public class ProjectField extends WidgetFieldComponent<String> {
 	protected Button projectSelectionButton;
 	
 	@Override
-	protected Composite createTopLevelControl(Composite parent) {
-		Group topControl = new Group(parent, SWT.NONE);
-		topControl.setText(LangUIMessages.mainTab_projectGroup);
-		topControl.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
-		return topControl;
+	protected Composite doCreateTopLevelControl(Composite parent) {
+		return SWTFactoryUtil.createGroup(parent, LangUIMessages.mainTab_projectGroup, SWT.NONE);
+	}
+	
+	@Override
+	protected GridLayoutFactory createTopLevelLayout() {
+		return glSwtDefaults().numColumns(getPreferredLayoutColumns());
+	}
+	
+	@Override
+	public int getPreferredLayoutColumns() {
+		return 2;
 	}
 	
 	@Override

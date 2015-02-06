@@ -187,8 +187,13 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	protected abstract LabeledTreeElement[] getTreeElements();
 	
 	@Override
-	protected void createTopLevelControlLayout(Composite topControl) {
-		topControl.setLayout(GridLayoutFactory.fillDefaults().spacing(0, 5).create());
+	protected GridLayoutFactory createTopLevelLayout() {
+		return glFillDefaults().spacing(0, 5).numColumns(getPreferredLayoutColumns());
+	}
+	
+	@Override
+	public int getPreferredLayoutColumns() {
+		return 1;
 	}
 	
 	@Override
