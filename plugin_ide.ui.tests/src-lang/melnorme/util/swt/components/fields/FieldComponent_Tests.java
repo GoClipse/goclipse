@@ -10,12 +10,14 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.util.swt.components.AbstractField;
 import melnorme.util.swt.components.AbstractFieldTest;
 import melnorme.utilbox.tests.CommonTest;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Shell;
 
 public abstract class FieldComponent_Tests extends CommonTest {
@@ -286,6 +288,93 @@ public abstract class FieldComponent_Tests extends CommonTest {
 			field.setFieldValue(-1);
 			assertEquals(field.getFieldValue(), -1);
 			assertEquals(field.getFieldStringValue(), "");
+		}
+		
+	}
+	
+	
+	public static class RadioSelectionFieldTest extends AbstractFieldTest {
+		
+		protected RadioSelectionField<Values> field;
+		
+		protected static enum Values {
+			ZERO("0"),
+			ONE("One"),
+			TWO("Two"),
+			THREE("3");
+			
+			private String toString;
+			
+			Values(String toString) {
+				this.toString = toString;
+			}
+			
+			@Override
+			public String toString() {
+				return toString;
+			}
+			
+		}
+		
+		@Override
+		public AbstractField<?> createField() {
+			return field = new RadioSelectionField<Values>(Values.values()) {
+				@Override
+				protected void doUpdateComponentFromValue() {
+					controlsUpdateCount++;
+					super.doUpdateComponentFromValue();
+				}
+			};
+		}
+		
+		@Override
+		public void setFirstFieldValue() {
+			field.setFieldValue(Values.TWO);
+		}
+		
+		@Override
+		public void setSecondFieldValue() {
+			field.setFieldValue(Values.ZERO);
+		}
+		
+		@Override
+		public void doChangeFromControl() {
+			Button[] radioControls = field.getRadioControls();
+			
+			radioControls[field.getSelectionIndex()].setSelection(false);
+			radioControls[1].setSelection(true);
+			for (Button button : radioControls) {
+				button.notifyListeners(SWT.Selection, null);
+			}
+		}
+		
+		@Override
+		protected Object getValueFromControl() {
+			return field.getValueFromControl();
+		}
+		
+		@Override
+		protected void runTestWithCreatedComponent_extra() {
+			assertTrue(field.getFieldValue() == Values.ZERO);
+			checkSelectionCount(1);
+			
+			field.setFieldValue(Values.TWO);
+			assertTrue(field.getFieldValue() == Values.TWO);
+			checkSelectionCount(1);
+			
+			field.setFieldValue(null);
+			assertEquals(field.getFieldValue(), Values.ZERO);
+			checkSelectionCount(1);
+		}
+		
+		protected void checkSelectionCount(int selectionCount) {
+			int count = 0;
+			for (Button button : field.getRadioControls()) {
+				if(button.getSelection()) {
+					count++;
+				}
+			}
+			assertTrue(count == selectionCount);
 		}
 		
 	}

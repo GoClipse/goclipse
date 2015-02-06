@@ -14,8 +14,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -24,6 +26,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -40,6 +43,13 @@ public class ResourceUtils {
 	
 	public static org.eclipse.core.runtime.Path epath(Path path) {
 		return new org.eclipse.core.runtime.Path(path.toString());
+	}
+	
+	public static URI toUri(IPath path) {
+		if(path == null) {
+			return null;
+		}
+		return path.toFile().toURI();
 	}
 	
 	/* -----------------  ----------------- */ 
@@ -131,21 +141,44 @@ public class ResourceUtils {
 	
 	public static IProject createAndOpenProject(String name, boolean overwrite, IProgressMonitor pm)
 			throws CoreException {
+		return createAndOpenProject(name, null, overwrite, pm);
+	}
+	
+	public static IProject createAndOpenProject(String name, URI locationUri, boolean overwrite, IProgressMonitor pm)
+			throws CoreException {
 		IProject project = EclipseUtils.getWorkspaceRoot().getProject(name);
 		if(overwrite && project.exists()) {
 			project.delete(true, pm);
 		}
-		project.create(pm);
+		
+		IProjectDescription projectDesc = project.getWorkspace().newProjectDescription(project.getName());
+		if(locationUri != null) {
+			projectDesc.setLocationURI(locationUri);
+		}
+		project.create(projectDesc, pm);
+		
 		project.open(pm);
 		return project;
 	}
 	
+	@Deprecated
 	public static void deleteProject_unchecked(String projectName) {
 		IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
 		try {
 			project.delete(true, null);
 		} catch (CoreException e) {
 			// Ignore
+		}
+	}
+	
+	public static void tryDeleteProject(String projectName) throws CoreException {
+		IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
+		try {
+			project.delete(true, null);
+		} catch (CoreException ce) {
+			if(project.exists()) {
+				throw ce;
+			}
 		}
 	}
 	

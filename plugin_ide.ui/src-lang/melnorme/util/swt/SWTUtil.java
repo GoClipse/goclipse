@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * Miscelleanous SWT utilities.
@@ -68,5 +69,29 @@ public class SWTUtil {
 		messageBox.setMessage(message);
 		return messageBox.open(); 
 	}
-
+	
+	
+	/**
+	 * Post {@link Control#setFocus()} on the UI thread, if current thread not UI thread.
+	 */
+	public static void post_setFocus(final Text control) {
+		if(!isOkToUse(control)) {
+			return;
+		}
+		
+		Display display = control.getDisplay();
+		if(display == Display.getCurrent()) {
+			control.setFocus();
+		} else {
+			display.asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					if(!control.isDisposed()) {
+						control.setFocus();
+					}
+				}
+			});
+		}
+	}
+	
 }

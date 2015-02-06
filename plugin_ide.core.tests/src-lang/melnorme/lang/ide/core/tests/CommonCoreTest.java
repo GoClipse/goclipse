@@ -133,8 +133,8 @@ public abstract class CommonCoreTest extends CommonTest {
 		return ResourceUtils.createAndOpenProject(name, overwrite);
 	}
 	
-	public static void deleteProject(String projectName) {
-		ResourceUtils.deleteProject_unchecked(projectName);
+	public static void deleteProject(String projectName) throws CoreException {
+		ResourceUtils.tryDeleteProject(projectName);
 	}
 	
 	public static IFolder createFolder(IFolder folder) throws CoreException {

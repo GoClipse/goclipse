@@ -11,7 +11,7 @@
 package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.util.swt.components.AbstractFieldExt;
+import melnorme.util.swt.components.AbstractFieldExt2;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 
-public class ComboBoxField extends AbstractFieldExt<Integer> {
+public class ComboBoxField extends AbstractFieldExt2<Integer> {
 	
 	protected final String[] valueLabels;
 	protected final String[] values;
@@ -28,7 +28,7 @@ public class ComboBoxField extends AbstractFieldExt<Integer> {
 	protected Combo combo;
 	
 	public ComboBoxField(String labelText, String[] labels, String[] values) {
-		super(labelText);
+		super(labelText, 0);
 		this.valueLabels = labels;
 		this.values = values;
 		assertTrue(labels != null && values != null && labels.length == values.length);
@@ -36,8 +36,8 @@ public class ComboBoxField extends AbstractFieldExt<Integer> {
 	}
 	
 	@Override
-	public Integer getDefaultFieldValue() {
-		return 0;
+	public int getPreferredLayoutColumns() {
+		return 2;
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ public class ComboBoxField extends AbstractFieldExt<Integer> {
 	
 	@Override
 	protected void createContents_layout() {
-		layout2Controls(label, combo, false);
+		layout2Controls_spanLast(label, combo);
 	}
 	
 	@Override

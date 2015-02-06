@@ -11,25 +11,25 @@
 package melnorme.util.swt.components.fields;
 
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractFieldExt;
+import melnorme.util.swt.components.AbstractFieldExt2;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-public class SpinnerNumberField extends AbstractFieldExt<Integer> {
+public class SpinnerNumberField extends AbstractFieldExt2<Integer> {
 	
 	protected Label label;
 	protected Spinner spinner;
 	
 	public SpinnerNumberField(String labelText) {
-		super(labelText);
+		super(labelText, 0);
 	}
 	
 	@Override
-	public Integer getDefaultFieldValue() {
-		return 0;
+	public int getPreferredLayoutColumns() {
+		return 2;
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class SpinnerNumberField extends AbstractFieldExt<Integer> {
 	
 	@Override
 	protected void createContents_layout() {
-		layout2Controls(label, spinner, false);
+		layout2Controls_spanLast(label, spinner);
 	}
 	
 	public Spinner getSpinner() {

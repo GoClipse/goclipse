@@ -31,6 +31,11 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 	}
 	
 	@Override
+	public int getPreferredLayoutColumns() {
+		return 1;
+	}
+	
+	@Override
 	protected void createContents(Composite topControl) {
 		createAutoClosingGroup(topControl);
 		createAutoEditGroup(topControl);

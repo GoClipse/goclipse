@@ -11,9 +11,8 @@
 package melnorme.util.swt.components.fields;
 
 import melnorme.util.swt.SWTFactory;
-import melnorme.util.swt.components.AbstractFieldExt;
+import melnorme.util.swt.components.AbstractFieldExt2;
 
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -23,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
-public class ColorField extends AbstractFieldExt<RGB> {
+public class ColorField extends AbstractFieldExt2<RGB> {
 	
 	public static class ColorSelectorExt extends ColorSelector {
 		
@@ -53,12 +52,12 @@ public class ColorField extends AbstractFieldExt<RGB> {
 	protected ColorSelector colorSelector;
 	
 	public ColorField(String labelText) {
-		super(labelText);
+		super(labelText, new RGB(0, 0, 0));
 	}
 	
 	@Override
-	public RGB getDefaultFieldValue() {
-		return new RGB(0, 0, 0);
+	public int getPreferredLayoutColumns() {
+		return 2;
 	}
 	
 	@Override
@@ -82,13 +81,8 @@ public class ColorField extends AbstractFieldExt<RGB> {
 	}
 	
 	@Override
-	protected void createTopLevelControlLayout(Composite topControl) {
-		topControl.setLayout(GridLayoutFactory.fillDefaults().numColumns(2).create());
-	}
-	
-	@Override
 	protected void createContents_layout() {
-		layout2Controls(label, colorSelector.getButton(), true);
+		layout2Controls_expandLast(label, colorSelector.getButton());
 	}
 	
 	public ColorSelector getColorSelector() {

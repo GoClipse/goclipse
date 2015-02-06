@@ -32,18 +32,9 @@ public class SWTFactoryUtil extends SWTFactory {
 	 * @return a new push button
 	 */
 	public static Button createPushButton(Composite parent, String label, Image image) {
-		Button button = new Button(parent, SWT.PUSH);
-		button.setFont(parent.getFont());
-		if (image != null) {
-			button.setImage(image);
-		}
-		if (label != null) {
-			button.setText(label);
-		}
-		GridData gd = new GridData();
-		button.setLayoutData(gd);	
+		Button button = createButton(parent, SWT.PUSH, label, image, new GridData());	
 		setButtonDimensionHint(button);
-		return button;	
+		return button;
 	}
 	
 	/**

@@ -101,7 +101,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	protected void openEditorForLocation(SourceLineColumnLocation location) throws CoreException {
 		IEditorInput newInput = getNewEditorInput(location.path);
 		
-		ITextEditor newEditor = EditorUtils.openEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, 
+		ITextEditor newEditor = EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, 
 			newInput, openEditorMode, null);
 		
 		IDocument doc = EditorUtils.getEditorDocument(newEditor);

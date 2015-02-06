@@ -19,8 +19,8 @@ import melnorme.util.swt.components.fields.SpinnerNumberField;
 import melnorme.util.swt.components.fields.TextField;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -53,8 +53,13 @@ public class GoContinuousTestingPropertyPage extends AbstractProjectPropertyPage
 		}
 		
 		@Override
-		protected void createTopLevelControlLayout(Composite topControl) {
-			topControl.setLayout(new GridLayout(2, false));
+		protected GridLayoutFactory createTopLevelLayout() {
+			return GridLayoutFactory.swtDefaults().numColumns(getPreferredLayoutColumns());
+		}
+		
+		@Override
+		public int getPreferredLayoutColumns() {
+			return 2;
 		}
 		
 		@Override

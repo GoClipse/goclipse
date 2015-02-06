@@ -8,18 +8,23 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.ui.wizards;
+package melnorme.util.swt.components.fields;
 
-import com.googlecode.goclipse.ui.wizards.GoProjectWizard;
+import org.eclipse.swt.widgets.DirectoryDialog;
 
-import melnorme.lang.ide.ui.dialogs.LangProjectWizardTest;
-
-
-public class GoProjectWizardTest extends LangProjectWizardTest {
+public class DirectoryTextField extends ButtonTextField {
+	
+	public DirectoryTextField(String label, String buttonlabel) {
+		super(label, buttonlabel);
+	}
 	
 	@Override
-	protected GoProjectWizard createNewProjectWizard() {
-		return new GoProjectWizard();
+	protected String getNewValueFromButtonSelection() {
+		DirectoryDialog dialog = new DirectoryDialog(button.getShell());
+		if(!getFieldValue().isEmpty()) {
+			dialog.setFilterPath(getFieldValue());
+		}
+		return dialog.open();
 	}
 	
 }

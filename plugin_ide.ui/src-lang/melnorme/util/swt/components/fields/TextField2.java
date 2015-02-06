@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -32,8 +34,9 @@ public class TextField2 extends TextField {
 	
 	@Override
 	protected void createContents_layout() {
-		GridData textGD = layout2Controls(label, text, false);
+		layoutControls(array(label, text), null, text);
 		
+		GridData textGD = (GridData) text.getLayoutData();
 		PixelConverter pixelConverter = new PixelConverter(text.getParent());
 		textGD.widthHint = pixelConverter.convertWidthInCharsToPixels(textLimit + 1);
 	}

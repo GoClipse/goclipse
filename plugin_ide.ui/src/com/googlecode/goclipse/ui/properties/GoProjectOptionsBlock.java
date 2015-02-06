@@ -33,6 +33,11 @@ public class GoProjectOptionsBlock extends AbstractComponentExt {
 	}
 	
 	@Override
+	public int getPreferredLayoutColumns() {
+		return 1;
+	}
+	
+	@Override
 	protected void createContents(Composite topControl) {
 		buildExtraOptionsField.createComponent(topControl,
 			GridDataFactory.fillDefaults().grab(true, false).hint(200, SWT.DEFAULT).create());

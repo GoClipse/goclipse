@@ -31,15 +31,21 @@ public abstract class AbstractComponent implements IWidgetComponent {
 		createContents(parent);
 	}
 	
-	protected Composite createTopLevelControl(Composite parent) {
-		Composite topControl = new Composite(parent, SWT.NONE);
-		createTopLevelControlLayout(topControl);
+	protected final Composite createTopLevelControl(Composite parent) {
+		Composite topControl = doCreateTopLevelControl(parent);
+		topControl.setLayout(createTopLevelLayout().create());
 		return topControl;
 	}
 	
-	protected void createTopLevelControlLayout(Composite topControl) {
-		topControl.setLayout(GridLayoutFactory.fillDefaults().spacing(0, 0).create());
+	protected Composite doCreateTopLevelControl(Composite parent) {
+		return new Composite(parent, SWT.NONE);
 	}
+	
+	protected GridLayoutFactory createTopLevelLayout() {
+		return GridLayoutFactory.fillDefaults().numColumns(getPreferredLayoutColumns());
+	}
+	
+	public abstract int getPreferredLayoutColumns();
 	
 	protected abstract void createContents(Composite topControl);
 	

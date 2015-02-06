@@ -38,6 +38,10 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		this.value = assertNotNull(getDefaultFieldValue());
 	}
 	
+	public AbstractField(VALUE defaultFieldValue) {
+		this.value = assertNotNull(defaultFieldValue);
+	}
+	
 	public abstract VALUE getDefaultFieldValue();
 	
 	@Override

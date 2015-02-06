@@ -19,13 +19,23 @@ import org.eclipse.swt.widgets.Control;
 /**
  * Some extended functionality to {@link AbstractField}.
  * 
+ * @deprecated seet {@link AbstractFieldExt2}
  */
+@Deprecated
 public abstract class AbstractFieldExt<VALUE> extends AbstractField<VALUE>{
 	
 	protected String labelText;
+	protected final VALUE defaultFieldValue;
 	
-	public AbstractFieldExt(String labelText) {
+	public AbstractFieldExt(String labelText, VALUE defaultFieldValue) {
+		super(defaultFieldValue);
 		this.labelText = labelText;
+		this.defaultFieldValue = defaultFieldValue;
+	}
+	
+	@Override
+	public final VALUE getDefaultFieldValue() {
+		return defaultFieldValue;
 	}
 	
 	@Override
@@ -40,8 +50,8 @@ public abstract class AbstractFieldExt<VALUE> extends AbstractField<VALUE>{
 	
 	
 	public GridData layout2Controls(Control leftControl, Control lastControl, boolean expandLast) {
-		GridLayout layoutData = (GridLayout) lastControl.getParent().getLayout();
-		int numColumns = layoutData.numColumns;
+		GridLayout gridLayout = (GridLayout) lastControl.getParent().getLayout();
+		int numColumns = gridLayout.numColumns;
 		
 		leftControl.setLayoutData(GridDataFactory.swtDefaults().create());
 		numColumns--;
@@ -53,14 +63,14 @@ public abstract class AbstractFieldExt<VALUE> extends AbstractField<VALUE>{
 	}
 	
 	public GridData layout1Control(Control lastControl) {
-		GridLayout layoutData = (GridLayout) lastControl.getParent().getLayout();
-		int numColumns = layoutData.numColumns;
+		GridLayout gridLayout = (GridLayout) lastControl.getParent().getLayout();
+		int numColumns = gridLayout.numColumns;
 		return layoutLastControl(lastControl, numColumns, true);
 	}
 	
 	protected GridData layoutLastControl(Control lastControl, int numColumns, boolean expandLast) {
 		GridDataFactory gdf = expandLast ?
-				GridDataFactory.fillDefaults() :
+				GridDataFactory.fillDefaults().grab(true, false) :
 				GridDataFactory.swtDefaults();
 		GridData gridData = gdf.span(numColumns, 1).create();
 		lastControl.setLayoutData(gridData);
