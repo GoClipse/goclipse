@@ -23,6 +23,9 @@ with 4Gb of RAM or more, the following is recommended as minimum values:
 
 ### Project setup
 
+##### Project creation:
+A new LANGUAGE project can be created in the Project Explorer view. Open `New / Project...` and then `LANGUAGE / LANGUAGE Project`.
+
 
 ### Launch and Debug:
 To run a LANGUAGE project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open 'Run' / 'Run Configurations...'. Then double click 'LANGUAGE Application" to create a new LANGUAGE launch, and configure it accordingly. You can run these launches from the 'Run Configurations...', or for quicker access, from the Launch button in the Eclipse toolbar.
