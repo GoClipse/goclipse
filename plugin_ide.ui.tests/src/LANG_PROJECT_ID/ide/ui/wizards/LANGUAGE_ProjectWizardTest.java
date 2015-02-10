@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.wizards;
+package LANG_PROJECT_ID.ide.ui.wizards;
 
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardTest;
 import LANG_PROJECT_ID.ide.ui.wizards.LANGUAGE_ProjectWizard;
