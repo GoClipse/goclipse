@@ -15,15 +15,18 @@ import static melnorme.utilbox.core.CoreUtil.assertInstance;
 import java.net.URI;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IPageChangingListener;
 import org.eclipse.jface.dialogs.PageChangingEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -160,6 +163,38 @@ public abstract class LangNewProjectWizard extends Wizard
 		public URI getProjectLocation() {
 			return LangNewProjectWizard.this.getProjectLocation();
 		}
+		
+		protected void createSampleHelloWorldBundle(String manifestFile, String sourceFolderPath, String sourceFile)
+				throws CoreException {
+			IProject project = getProject();
+			final IFile manifest = project.getFile(manifestFile);
+			if(manifest.exists()) {
+				return;
+			}
+				
+			final IFolder folder = project.getFolder(sourceFolderPath);
+			ResourceUtils.createFolder(folder, true, true, null);
+			
+			final IFile appFile = folder.getFile(sourceFile);
+			ResourceUtils.writeStringToFile(appFile, getHelloWorldContents());
+			
+			ResourceUtils.writeStringToFile(manifest, getDefaultManifestFileContents());
+			
+			revertActions.add(new IRevertAction() {
+				@Override
+				public void run(IProgressMonitor monitor) throws CoreException {
+					manifest.delete(false, monitor);
+					appFile.delete(false, monitor);
+					if(folder.members().length == 0) {
+						folder.delete(false, monitor);
+					}
+				}
+			});
+		}
+		
+		protected abstract String getHelloWorldContents();
+		
+		protected abstract String getDefaultManifestFileContents();
 		
 	}
 	

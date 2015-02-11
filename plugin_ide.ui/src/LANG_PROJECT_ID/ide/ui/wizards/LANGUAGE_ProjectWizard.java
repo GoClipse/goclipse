@@ -11,6 +11,7 @@
 package LANG_PROJECT_ID.ide.ui.wizards;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.lang.ide.ui.WizardMessages_Actual;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
@@ -43,18 +44,28 @@ public class LANGUAGE_ProjectWizard extends LangNewProjectWizard {
 	
 	@Override
 	protected ProjectCreator_ForWizard createProjectCreator() {
-		return new DeeProjectCreator();
+		return new LANGUAGE_ProjectCreator();
 	}
 	
-	public class DeeProjectCreator extends ProjectCreator_ForWizard {
+	public class LANGUAGE_ProjectCreator extends ProjectCreator_ForWizard {
 		
-		public DeeProjectCreator() {
+		public LANGUAGE_ProjectCreator() {
 			super(LANGUAGE_ProjectWizard.this);
 		}
 		
 		@Override
 		protected void configureCreatedProject(IProgressMonitor monitor) throws CoreException {
 			// TODO:
+		}
+
+		@Override
+		protected String getHelloWorldContents() {
+			throw assertFail();
+		}
+
+		@Override
+		protected String getDefaultManifestFileContents() {
+			throw assertFail();
 		}
 		
 	}

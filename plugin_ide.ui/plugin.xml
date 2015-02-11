@@ -156,7 +156,7 @@
 			name="%LangWizardsCategory.name"/>
 		<wizard
 			category="LANG_PROJECT_ID.ide.ui.category"
-			id="LANG_PROJECT_ID.ide.ui.wizards.newProjectWizard"
+			id="LANG_PROJECT_ID.ide.ui.wizards.NewProjectWizard"
 			class="LANG_PROJECT_ID.ide.ui.wizards.LANGUAGE_ProjectWizard"
 			icon="icons/actions/new_project_wizard.16.png"
 			name="%NewProjectWizard.name"
