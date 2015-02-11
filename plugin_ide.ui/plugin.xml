@@ -14,7 +14,7 @@
 	<extension point="org.eclipse.ui.perspectives">
 		<perspective
 			class="com.googlecode.goclipse.ui.GoPerspective"
-			icon="icons/go-icon16.png"
+			icon="icons/views/Perspective.16.png"
 			id="com.googlecode.goclipse.perspectives.GoPerspective"
 			name="Go">
 		</perspective>
@@ -215,7 +215,7 @@
 			<commonWizard
 				menuGroupId="com.googlecode.goclipse.wizards.projects"
 				type="new"
-				wizardId="com.googlecode.goclipse.wizards.project.mainwiz">
+				wizardId="com.googlecode.goclipse.ui.wizards.NewProjectWizard">
 			<enablement>
 			</enablement>
 			</commonWizard>
@@ -279,8 +279,7 @@
      </viewerContentBinding>
    </extension>
    
-   <extension
-         point="org.eclipse.ui.newWizards">
+   <extension point="org.eclipse.ui.newWizards">
       <category
             id="com.googlecode.goclipse.wizards.projects"
             name="Go">
@@ -291,13 +290,10 @@
             category="com.googlecode.goclipse.wizards.projects"
             class="com.googlecode.goclipse.ui.wizards.GoProjectWizard"
             finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
-            icon="icons/newprj_obj.png"
-            id="com.googlecode.goclipse.wizards.project.mainwiz"
+            icon="icons/actions/new_project_wizard.16.png"
+            id="com.googlecode.goclipse.ui.wizards.NewProjectWizard"
             name="Go Project"
             project="true">
-            <description>
-               Create a new Go language project
-            </description>
       </wizard>
       
       <!-- wizard
@@ -357,11 +353,11 @@
 		</category>
 		
 		<command
-	        categoryId="com.googlecode.goclipse.ui.commands.Category"
-	        defaultHandler="com.googlecode.goclipse.ui.actions.GoOpenDefinitionHandler"
-	        description="%OpenDefinitionAction.tooltip"
-	        id="com.googlecode.goclipse.ui.commands.openDefinition"
-	        name="%OpenDefinitionAction.name">
+			categoryId="com.googlecode.goclipse.ui.commands.Category"
+			defaultHandler="com.googlecode.goclipse.ui.actions.GoOpenDefinitionHandler"
+			description="%OpenDefinitionAction.tooltip"
+			id="com.googlecode.goclipse.ui.commands.openDefinition"
+			name="%OpenDefinitionAction.name">
 		</command>
 		
       <command

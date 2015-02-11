@@ -1,7 +1,7 @@
 ## release ChangeLog
 
 ### Goclipse 0.9.x
- * Added: `Show In > Project Explorer` command to `Show In` menu in Go perspective.
+ * Added: `Show In > Project Explorer` command to `Show In` menu in Go perspective (requires that the perspective be reset: `Window/Perspective/Reset Perspective...`) .
  * Clean up UI and behavior of main Go preference page.
  * Added: two new syntax highlighting options: Operators, and Syntax Control Characters (braces, parentheses, semicolon, etc.).
  * Added: An improved New Project wizard.
