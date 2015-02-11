@@ -93,7 +93,7 @@ public abstract class LangNewProjectWizard extends Wizard
 		this.workbench = workbench;
 		this.selection = selection;
 		
-		if(selection.getFirstElement() instanceof IProject) {
+		if(selection != null && selection.getFirstElement() instanceof IProject) {
 			IProject selectedProject = (IProject) selection.getFirstElement();
 			getFirstPage().getNameGroup().getNameField().setFieldValue(selectedProject.getName());
 		}
