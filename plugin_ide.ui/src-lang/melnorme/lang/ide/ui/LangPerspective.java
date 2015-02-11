@@ -44,8 +44,6 @@ public class LangPerspective implements IPerspectiveFactory {
 		IFolderLayout leftFolder = layout.createFolder("leftPane", IPageLayout.LEFT, 0.25f, editorArea);
 		leftFolder.addView(IPageLayout.ID_PROJECT_EXPLORER);
 		
-		layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, 0.75f, editorArea);
-		
 		IFolderLayout bottomFolder = layout.createFolder("bottomPane", IPageLayout.BOTTOM, 0.75f, editorArea);
 		
 		bottomFolder.addView(IPageLayout.ID_PROBLEM_VIEW);
@@ -54,6 +52,8 @@ public class LangPerspective implements IPerspectiveFactory {
 		bottomFolder.addView(IPageLayout.ID_PROGRESS_VIEW);
 		bottomFolder.addView(IConsoleConstants.ID_CONSOLE_VIEW);
 		
+		// Create outline after bottom pane
+		layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, 0.75f, editorArea);
 	}
 	
 	protected void addShowViewShortcuts(IPageLayout layout) {
