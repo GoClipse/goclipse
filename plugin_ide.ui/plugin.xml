@@ -1,21 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
-   <extension point="org.eclipse.core.runtime.preferences">
-      <initializer class="com.googlecode.goclipse.ui.GoUIPreferencesInitializer"/>
-   </extension>
 	
-   <extension
-         id="GoDocumentSetupParticipant"
-         name="Go Document Setup Participant"
-         point="org.eclipse.core.filebuffers.documentSetup">
-      <participant
-            class="com.googlecode.goclipse.ui.text.GoDocumentSetupParticipant"
-            contentTypeId="com.googlecode.goclipse.gosourcefile">
-      </participant>
-   </extension>
-
+	<extension point="org.eclipse.ui.ide.projectNatureImages">
+		<!-- use go-alt.png / go-icon8.png / go-nature.png? -->
+		<image
+			icon="icons/go-nature.png"
+			id="com.googlecode.goclipse.goNature.image1"
+			natureId="com.googlecode.goclipse.core.goNature">
+		</image>
+	</extension>
+	
+	<extension point="org.eclipse.ui.perspectives">
+		<perspective
+			class="com.googlecode.goclipse.ui.GoPerspective"
+			icon="icons/go-icon16.png"
+			id="com.googlecode.goclipse.perspectives.GoPerspective"
+			name="Go">
+		</perspective>
+	</extension>
+	
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="com.googlecode.goclipse.perspectives.GoPerspective">
+			<showInPart id="org.eclipse.ui.navigator.ProjectExplorer" />
+		</perspectiveExtension>
+	</extension>
+	
+	<!-- ============ EDITOR ============= -->
+	
+	<extension
+		id="GoDocumentSetupParticipant"
+		name="Go Document Setup Participant"
+		point="org.eclipse.core.filebuffers.documentSetup">
+		<participant
+			class="com.googlecode.goclipse.ui.text.GoDocumentSetupParticipant"
+			contentTypeId="com.googlecode.goclipse.gosourcefile">
+		</participant>
+	</extension>
+	
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -30,39 +52,15 @@
      		</contentTypeBinding>
       </editor>
    </extension>
-   <extension
-         point="org.eclipse.ui.ide.projectNatureImages">
-         <!-- use go-alt.png / go-icon8.png / go-nature.png? -->
-      <image
-            icon="icons/go-nature.png"
-            id="com.googlecode.goclipse.goNature.image1"
-            natureId="com.googlecode.goclipse.core.goNature">
-      </image>
-   </extension>
 
-   <extension
-         point="org.eclipse.ui.intro.configExtension">
-      <configExtension
-            configId="org.eclipse.ui.intro.universalConfig"
-            content="welcome/intro.xml">
-      </configExtension>
-   </extension>
-   
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="com.googlecode.goclipse.contribution1"
-            nameFilter="*"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="com.googlecode.goclipse.builder.ToggleNatureAction"
-               enablesFor="+"
-               id="com.googlecode.goclipse.addRemoveNatureAction"
-               label="Convert to Go Project..."
-               menubarPath="org.eclipse.ui.projectConfigure/additions">
-         </action>
-      </objectContribution>
+	<!-- ============ Actions/Commands ============= -->
+	
+<!-- TODO refactor/cleanup command extensions at end of this file -->
+	
+	<!-- ============ Preference pages ============= -->
+	
+  <extension point="org.eclipse.core.runtime.preferences">
+      <initializer class="com.googlecode.goclipse.ui.GoUIPreferencesInitializer"/>
    </extension>
 	
 	<extension point="org.eclipse.ui.preferencePages">
@@ -105,20 +103,19 @@
 		
 	</extension>
 	
-	<extension point="org.eclipse.ui.perspectives">
-		<perspective
-			class="com.googlecode.goclipse.ui.GoPerspective"
-			icon="icons/go-icon16.png"
-			id="com.googlecode.goclipse.perspectives.GoPerspective"
-			name="Go">
-		</perspective>
-	</extension>
+	<!-- ============ Wizards ============= -->
 	
-	<extension point="org.eclipse.ui.perspectiveExtensions">
-		<perspectiveExtension targetID="com.googlecode.goclipse.perspectives.GoPerspective">
-			<showInPart id="org.eclipse.ui.navigator.ProjectExplorer" />
-		</perspectiveExtension>
-	</extension>
+	
+	<!-- ============ Other (TODO cleanup) ============= -->
+	
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="welcome/intro.xml">
+      </configExtension>
+   </extension>
+   
 	
    <extension point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
