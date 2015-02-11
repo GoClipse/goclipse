@@ -31,7 +31,7 @@ import com.googlecode.goclipse.ui.GoUIPlugin;
 
 public class GoPreferencePage extends FieldEditorPreferencePageExt implements IWorkbenchPreferencePage {
 	
-	public static final String	 ID	= "com.googlecode.goclipse.preferences.GoPreferencePage";
+	public static final String	 ID	= "com.googlecode.goclipse.ui.PreferencePage";
 	
 	protected DirectoryFieldEditor goRootEditor;
 	protected GoPathFieldEditor goPathEditor;
