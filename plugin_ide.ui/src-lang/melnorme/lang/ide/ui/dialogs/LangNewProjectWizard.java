@@ -41,6 +41,8 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 public abstract class LangNewProjectWizard extends Wizard 
 	implements INewWizard, IExecutableExtension, IPageChangingListener {
 	
+	public static final String WIZARD_ID = LangUIPlugin.PLUGIN_ID + ".wizards.NewProjectWizard";
+	
 	protected IWorkbench workbench;
 	protected IStructuredSelection selection;
 	

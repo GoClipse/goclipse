@@ -3,13 +3,27 @@
 <plugin>
 	
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
-      <image
-            icon="icons/project-nature.png"
-            id="LANG_PROJECT_ID.ide.ui.NatureImage"
-            natureId="LANG_PROJECT_ID.ide.core.nature">
-      </image>
+		<image
+			icon="icons/project-nature.png"
+			id="LANG_PROJECT_ID.ide.ui.NatureImage"
+			natureId="LANG_PROJECT_ID.ide.core.nature">
+		</image>
 	</extension>
 	
+	<extension point="org.eclipse.ui.perspectives">
+		<perspective
+			class="LANG_PROJECT_ID.ide.ui.LANGUAGE_Perspective"
+			icon="icons/views/Perspective.16.png"
+			id="LANG_PROJECT_ID.ide.ui.Perspective"
+			name="%LangPerspective.name">
+		</perspective>
+	</extension>
+	
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="LANG_PROJECT_ID.ide.ui.Perspective">
+			<showInPart id="org.eclipse.ui.navigator.ProjectExplorer" />
+		</perspectiveExtension>
+	</extension>
 	
 	<!-- ============ EDITOR ============= -->
 		
@@ -47,7 +61,6 @@
 	
 	
 	
-	
 	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
 		<target 
 			id="LANG_PROJECT_ID.ide.ui.Editor.HyperlinkCodeTarget"
@@ -74,11 +87,11 @@
 		</category>
 		
 		<command
-	        categoryId="LANG_PROJECT_ID.ide.ui.commands.Category"
-	        defaultHandler="LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OpenDefinitionHandler"
-	        description="%OpenDefinitionAction.tooltip"
-	        id="LANG_PROJECT_ID.ide.ui.commands.openDefinition"
-	        name="%OpenDefinitionAction.name">
+			categoryId="LANG_PROJECT_ID.ide.ui.commands.Category"
+			defaultHandler="LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OpenDefinitionHandler"
+			description="%OpenDefinitionAction.tooltip"
+			id="LANG_PROJECT_ID.ide.ui.commands.openDefinition"
+			name="%OpenDefinitionAction.name">
 		</command>
 	</extension>
 	
@@ -134,7 +147,26 @@
 		
 	</extension>
 	
-		
+	
+	<!-- ============ Wizards ============= -->
+	
+	<extension point="org.eclipse.ui.newWizards">
+		<category
+			id="LANG_PROJECT_ID.ide.ui.category"
+			name="%LangWizardsCategory.name"/>
+		<wizard
+			category="LANG_PROJECT_ID.ide.ui.category"
+			id="LANG_PROJECT_ID.ide.ui.wizards.newProjectWizard"
+			class="LANG_PROJECT_ID.ide.ui.wizards.LANGUAGE_ProjectWizard"
+			icon="icons/actions/new_project_wizard.16.png"
+			name="%NewProjectWizard.name"
+			finalPerspective="LANG_PROJECT_ID.ide.ui.Perspective"
+			preferredPerspectives="LANG_PROJECT_ID.ide.ui.Perspective"
+			project="true">
+		</wizard>
+	</extension>
+	
+	
 	<!-- ============ Launch ============= -->
 	
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
