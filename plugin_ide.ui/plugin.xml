@@ -4,7 +4,7 @@
 	
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
 		<image
-			icon="icons/project-nature.png"
+			icon="icons/project-nature.ovr.png"
 			id="LANG_PROJECT_ID.ide.ui.NatureImage"
 			natureId="LANG_PROJECT_ID.ide.core.nature">
 		</image>
