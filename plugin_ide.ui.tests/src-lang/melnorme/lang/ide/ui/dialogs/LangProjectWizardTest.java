@@ -160,6 +160,10 @@ public abstract class LangProjectWizardTest extends CommonUITest {
 	public void testPage2() throws Throwable { testPage2$(); }
 	public void testPage2$() throws Throwable {
 		
+		if(wizard.getSecondPage() == null) {
+			return; // Not applicable.
+		}
+		
 		setUp();
 		firstPage_setProjectName(NEWPROJNAME);
 		simulateEnterPage2();
@@ -177,10 +181,10 @@ public abstract class LangProjectWizardTest extends CommonUITest {
 		simulatePressFinish();
 		assertTrue(checkLangProjectExists(NEWPROJNAME));
 		
-		test_RevertOnlyTheEnactedChanges();
+		test_RevertOnlyTheEnactedChanges$();
 	}
 	
-	protected void test_RevertOnlyTheEnactedChanges() throws CoreException, Exception, Throwable {
+	protected void test_RevertOnlyTheEnactedChanges$() throws CoreException, Exception, Throwable {
 		try {
 			ResourceUtils.createAndOpenProject(EXISTING_TEMP_PROJ_NAME, true);
 			assertProjectExists(EXISTING_TEMP_PROJ_NAME, false);
