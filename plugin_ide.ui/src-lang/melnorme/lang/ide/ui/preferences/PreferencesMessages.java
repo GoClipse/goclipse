@@ -1,6 +1,12 @@
 package melnorme.lang.ide.ui.preferences;
 
-public interface PreferencesMessages {
+import melnorme.lang.ide.ui.PreferencesMessages_Actual;
+
+/**
+ * These fields are in a class and not an interface, so that non-Lang code could change them, if necessary.
+ * The messages that are expected to be IDE specific are in {@link PreferencesMessages_Actual} though.
+ */
+public class PreferencesMessages implements PreferencesMessages_Actual {
 	
 	public static String EditorPreferencePage_tabAlwaysIndent =
 			"Tab always indents line";

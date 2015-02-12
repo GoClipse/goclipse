@@ -1,0 +1,78 @@
+/*******************************************************************************
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+package melnorme.lang.ide.ui.preferences;
+
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.AbstractField;
+import melnorme.util.swt.components.fields.DirectoryTextField;
+
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.swt.widgets.Composite;
+
+public class LangSDKConfigBlock extends AbstractComponentExt {
+	
+	protected final LangSDKConfigBlock.LanguageSDKLocationGroup sdkLocationGroup = new LanguageSDKLocationGroup();
+	
+	public LangSDKConfigBlock() {
+	}
+	
+	public AbstractField<String> getLocationField() {
+		return sdkLocationGroup.sdkLocation;
+	}
+	
+	@Override
+	public int getPreferredLayoutColumns() {
+		return 1;
+	}
+	
+	@Override
+	protected void createContents(Composite topControl) {
+		sdkLocationGroup.createComponent(topControl, gdFillDefaults().grab(true, false).create());
+	}
+	
+
+	public static class LanguageSDKLocationGroup extends AbstractComponentExt {
+		
+		protected final DirectoryTextField sdkLocation = new DirectoryTextField(
+			PreferencesMessages.ROOT_SDKGroup_path_Label);
+		
+		@Override
+		protected Composite doCreateTopLevelControl(Composite parent) {
+			return SWTFactoryUtil.createGroup(parent, 
+				PreferencesMessages.ROOT_SDKGroup_Label);
+		}
+		
+		@Override
+		protected GridLayoutFactory createTopLevelLayout() {
+			return GridLayoutFactory.swtDefaults().numColumns(getPreferredLayoutColumns());
+		}
+		
+		@Override
+		public int getPreferredLayoutColumns() {
+			return 3;
+		}
+		
+		@Override
+		protected void createContents(Composite topControl) {
+			sdkLocation.createComponentInlined(topControl);
+		}
+		
+		@Override
+		public void updateComponentFromInput() {
+		}
+	}
+	
+	@Override
+	public void updateComponentFromInput() {
+	}
+	
+}

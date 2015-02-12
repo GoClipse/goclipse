@@ -12,65 +12,62 @@ package melnorme.lang.ide.ui.tools;
 
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesAdapterComponent.StringFieldAdapter;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.fields.CheckBoxField;
+import melnorme.util.swt.components.fields.FileTextField;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 
-public abstract class AbstractDeamonToolPrefPage extends FieldEditorPreferencePage {
+public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefPage {
+	
+	public AbstractDeamonToolPrefPage() {
+		// Note: we must use the Core preference store, as that's the scope where the preferences are stored.
+		super(LangUIPlugin.getCorePrefStore());
+	}
+	
+	@Override
+	protected String getHelpId() {
+		return null;
+	}
+	
+	/* -----------------  ----------------- */
 	
 	protected Group toolGroup;
 	
-	public AbstractDeamonToolPrefPage() {
-		super(GRID);
-		
-		// Note: we must use the Core preference store, as that's the scope where the preferences are stored.
-		setPreferenceStore(LangUIPlugin.getCorePrefStore());
-	}
-	
 	@Override
-	protected void createFieldEditors() {
-		toolGroup = SWTFactoryUtil.createGroup(getFieldEditorParent(),
+	protected Control createContents(Composite parent) {
+		Composite block = SWTFactoryUtil.createComposite(parent);
+		
+		block.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
+		
+		toolGroup = SWTFactoryUtil.createGroup(block,
 			getDaemonToolName(),
 			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
 		
-		addField(new BooleanFieldEditor(
-			DaemonEnginePreferences.AUTO_START_SERVER.key,
-			"Start " + getDaemonToolName() + " server automatically", toolGroup));
+		toolGroup.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).spacing(6, 2).margins(6, 4).create());
 		
-		addField(new BooleanFieldEditor(
-			DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.key,
-			"Enable " + getDaemonToolName() + " log console (requires restart)", toolGroup));
+		addBooleanComponent(DaemonEnginePreferences.AUTO_START_SERVER.key, toolGroup, new CheckBoxField(
+			"Start " + getDaemonToolName() + " server automatically"));
+		
+		addBooleanComponent(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.key, toolGroup, new CheckBoxField(
+			"Enable " + getDaemonToolName() + " log console (requires restart)"));
 		
 		createDaemonPathFieldEditor(toolGroup);
 		
-		GridLayoutFactory.fillDefaults().spacing(6, 2).margins(6, 4).applyTo(toolGroup);
+		return block;
 	}
 	
 	protected void createDaemonPathFieldEditor(Group group) {
-		addField(new FileFieldEditor(
-			DaemonEnginePreferences.DAEMON_PATH.key, getDaemonToolName() + " path:", group));
-	}
-	
-	@Override
-	protected void adjustGridLayout() {
-		super.adjustGridLayout();
-		
-		int numColumns = ((GridLayout) getFieldEditorParent().getLayout()).numColumns;
-		// Fix parent layout, the number of columns there is irrelevant, because we are using groups.
-		((GridLayout) getFieldEditorParent().getLayout()).numColumns = 1;
-		// Instead, adjudt the numColumns of the group layout:
-		adjustGridLayoutForFieldsNumberofColumns(numColumns);
-	}
-	
-	protected void adjustGridLayoutForFieldsNumberofColumns(int numColumns) {
-		((GridLayout) toolGroup.getLayout()).numColumns = numColumns;
+		final FileTextField pathField = new FileTextField(getDaemonToolName() + " path:");
+		pathField.createComponentInlined(group);
+		addComponent(new StringFieldAdapter(DaemonEnginePreferences.DAEMON_PATH.key, pathField));
 	}
 	
 	protected abstract String getDaemonToolName();

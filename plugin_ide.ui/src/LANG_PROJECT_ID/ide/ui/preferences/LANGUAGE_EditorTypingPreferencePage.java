@@ -10,25 +10,12 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.preferences;
 
-
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.LangEditorTypingPreferencePage;
 
 
-public class EditorPreferencePage extends AbstractPreferencesBlockPrefPage {
+public class LANGUAGE_EditorTypingPreferencePage extends LangEditorTypingPreferencePage {
 	
-	public EditorPreferencePage() {
-		super(LangUIPlugin.getInstance().getPreferenceStore());
-	}
-	
-	@Override
-	protected EditorConfigurationBlock createPreferencesComponent() {
-		return new EditorConfigurationBlock(this);
-	}
-	
-	@Override
-	protected String getHelpId() {
-		return null;
+	public LANGUAGE_EditorTypingPreferencePage() {
 	}
 	
 }

@@ -13,14 +13,15 @@
 package melnorme.lang.ide.ui.preferences;
 
 import melnorme.lang.ide.ui.preferences.EditorAppearanceColorsComponent.EditorColorItem;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 
 //originally from DLTK version 5.0.0
-public class LangEditorConfigurationBlock extends AbstractPreferencesConfigBlock {
+public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
 	
-	public LangEditorConfigurationBlock(PreferencePage mainPreferencePage) {
+	public LangEditorConfigurationBlock(AbstractComponentsPrefPage mainPreferencePage) {
 		super(mainPreferencePage);
 	}
 	
@@ -45,7 +46,7 @@ public class LangEditorConfigurationBlock extends AbstractPreferencesConfigBlock
 		}
 		EditorAppearanceColorsComponent appearanceItemsCp = new EditorAppearanceColorsComponent(editorColorItems);
 		appearanceItemsCp.createComponentInlined(parent);
-		addConfigComponent(appearanceItemsCp);
+		addPrefComponent(appearanceItemsCp);
 	}
 	
 	protected EditorColorItem[] createEditorAppearanceColorEntries() {

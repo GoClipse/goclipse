@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.ui;
 
-import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.ownership.IDisposable;
 
-public interface IPreferencesBlock extends IWidgetComponent, IDisposable {
+public interface PreferencesMessages_Actual {
 	
-	public void loadFromStore();
-	
-	public void saveToStore();
-	
-	public void loadStoreDefaults();
+	public static String ROOT_SDKGroup_Label = "LANGUAGE SDK:";
+	public static String ROOT_SDKGroup_path_Label = "SDK path: ";
 	
 }

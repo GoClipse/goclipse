@@ -14,6 +14,8 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ComboBoxField;
@@ -21,12 +23,11 @@ import melnorme.util.swt.components.fields.NumberField;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 
-public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferencesConfigBlock {
+public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock {
 	
-	public LangEditorSmartTypingConfigurationBlock(PreferencePage prefPage) {
+	public LangEditorTypingConfigurationBlock(AbstractComponentsPrefPage prefPage) {
 		super(prefPage);
 	}
 	

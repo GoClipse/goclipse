@@ -11,13 +11,13 @@
 package LANG_PROJECT_ID.ide.ui.preferences;
 
 import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 
 public class EditorConfigurationBlock extends LangEditorConfigurationBlock {
 	
-	public EditorConfigurationBlock(PreferencePage mainPreferencePage) {
+	public EditorConfigurationBlock(AbstractComponentsPrefPage mainPreferencePage) {
 		super(mainPreferencePage);
 	}
 	

@@ -134,7 +134,7 @@
 		</page>
 		<page
 			category="LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
-			class="LANG_PROJECT_ID.ide.ui.preferences.EditorSmartTypingPreferencePage"
+			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_EditorTypingPreferencePage"
 			id=   "LANG_PROJECT_ID.ide.ui.preferences.EditorSmartTypingPreferencePage"
 			name="%LangEditorTypingPreferencePage.name">
 		</page>

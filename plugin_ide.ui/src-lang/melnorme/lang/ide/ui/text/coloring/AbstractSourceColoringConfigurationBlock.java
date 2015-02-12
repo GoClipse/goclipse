@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.TextSettings_Actual;
-import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_Old.IPreferencesBlock_Old;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -62,7 +62,7 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
  * A configuration component for syntax (and possibly semantic) source highlighting options.
  */
 public abstract class AbstractSourceColoringConfigurationBlock extends AbstractComponentExt 
-	implements IPreferencesBlock, IDisposable {
+	implements IPreferencesBlock_Old {
 		
 	protected final SourceColoringListRoot coloringOptionsList;
 	protected final CColorManager colorManager = new CColorManager();

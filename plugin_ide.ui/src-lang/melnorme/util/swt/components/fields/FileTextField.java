@@ -10,26 +10,28 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
-public class DirectoryTextField extends ButtonTextField {
+public class FileTextField extends ButtonTextField {
 	
-	public DirectoryTextField(String label) {
+	public static final String DEFAULT_BUTTON_LABEL = "B&rowse...";
+	
+	public FileTextField(String label) {
 		super(label, FileTextField.DEFAULT_BUTTON_LABEL);
 	}
 	
-	public DirectoryTextField(String label, String buttonlabel) {
+	public FileTextField(String label, String buttonlabel) {
 		super(label, buttonlabel);
 	}
 	
 	@Override
 	protected String getNewValueFromButtonSelection() {
-		return openDirectoryDialog(getFieldValue(), button.getShell());
+		return openFileDialog(getFieldValue(), button.getShell());
 	}
 	
-	public static String openDirectoryDialog(String initialValue, Shell shell) {
-		DirectoryDialog dialog = new DirectoryDialog(shell);
+	public String openFileDialog(String initialValue, Shell shell) {
+		FileDialog dialog = new FileDialog(shell);
 		if(!initialValue.isEmpty()) {
 			dialog.setFilterPath(initialValue);
 		}
