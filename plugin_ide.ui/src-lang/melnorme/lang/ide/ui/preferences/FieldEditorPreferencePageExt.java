@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
+@Deprecated
 public abstract class FieldEditorPreferencePageExt extends FieldEditorPreferencePage {
 	
 	public FieldEditorPreferencePageExt(int style) {

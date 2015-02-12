@@ -37,13 +37,17 @@ public abstract class ButtonTextField extends TextField {
 	protected void createContents_do(Composite topControl) {
 		super.createContents_do(topControl);
 		
-		button = SWTFactoryUtil.createPushButton(topControl, buttonLabel, null);
+		button = SWTFactoryUtil.createPushButton(topControl, getButtonLabel(), null);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleButtonSelected();
 			}
 		});
+	}
+	
+	protected String getButtonLabel() {
+		return buttonLabel;
 	}
 	
 	@Override

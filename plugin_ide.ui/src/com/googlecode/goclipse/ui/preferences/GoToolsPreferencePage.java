@@ -10,19 +10,17 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.preferences;
 
+import static org.eclipse.jface.layout.GridDataFactory.fillDefaults;
 import melnorme.lang.ide.ui.tools.AbstractDeamonToolPrefPage;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.jface.preference.FileFieldEditorExt;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.googlecode.goclipse.core.GoToolPreferences;
@@ -33,21 +31,17 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 	
 	protected Group oracleGroup;
 	protected Label gocodeLabel;
-
-	@Override
-	public void init(IWorkbench workbench) {
-	}
 	
 	@Override
-	protected void createFieldEditors() {
-		oracleGroup = SWTFactoryUtil.createGroup(getFieldEditorParent(),
+	protected void doCreateContents(Composite block) {
+		oracleGroup = SWTFactoryUtil.createGroup(block,
 			"Go oracle",
 			GridDataFactory.fillDefaults().grab(true, false).minSize(200, SWT.DEFAULT).create());
+		GridLayoutFactory.fillDefaults().numColumns(3).margins(6, 4).applyTo(oracleGroup);
 		
-		addField(new FileFieldEditorExt(GoToolPreferences.GO_ORACLE_Path.key, "Go oracle path:", oracleGroup));
-		GridLayoutFactory.fillDefaults().margins(6, 4).applyTo(oracleGroup);
+		createFileTextField(oracleGroup, "Go oracle path:", GoToolPreferences.GO_ORACLE_Path.key);
 		
-		super.createFieldEditors();
+		super.doCreateContents(block);
 	}
 	
 	@Override
@@ -65,14 +59,7 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 		
 		gocodeLabel = SWTFactoryUtil.createLabel(group, SWT.WRAP, 
 			labelText,
-			GridDataFactory.fillDefaults().grab(true, false).indent(10, 0).minSize(200, SWT.DEFAULT).create());
-	}
-	
-	@Override
-	protected void adjustGridLayoutForFieldsNumberofColumns(int numColumns) {
-		super.adjustGridLayoutForFieldsNumberofColumns(numColumns);
-		((GridData) gocodeLabel.getLayoutData()).horizontalSpan = numColumns;
-		((GridLayout) oracleGroup.getLayout()).numColumns = numColumns;
+			fillDefaults().span(3, 1).grab(true, false).indent(10, 0).minSize(200, SWT.DEFAULT).create());
 	}
 	
 }

@@ -11,13 +11,13 @@
 package com.googlecode.goclipse.ui.preferences;
 
 import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 
 public class GoEditorConfigurationBlock extends LangEditorConfigurationBlock {
 	
-	public GoEditorConfigurationBlock(PreferencePage mainPreferencePage) {
+	public GoEditorConfigurationBlock(AbstractComponentsPrefPage mainPreferencePage) {
 		super(mainPreferencePage);
 	}
 	

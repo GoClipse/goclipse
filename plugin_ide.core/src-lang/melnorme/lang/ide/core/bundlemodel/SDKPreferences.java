@@ -8,18 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.core.bundlemodel;
 
-import melnorme.util.swt.components.IWidgetComponent;
+import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-
-public interface IPreferencesComponent extends IWidgetComponent {
+public interface SDKPreferences {
 	
-	public void loadFromStore(IPreferenceStore store);
-	
-	public void saveToStore(IPreferenceStore store);
-	
-	public void loadStoreDefaults(IPreferenceStore store);
+	public static final StringPreference SDK_PATH = new StringPreference("sdk_path", "");
 	
 }

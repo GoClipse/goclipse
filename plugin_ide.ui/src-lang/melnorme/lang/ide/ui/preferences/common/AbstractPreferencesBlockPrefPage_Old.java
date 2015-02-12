@@ -9,49 +9,40 @@
  *     IBM Corporation - initial API and implementation
  *     Bruno Medeiros - modifications, removed OverlayStore requirements
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.ui.preferences.common;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.utils.DialogPageUtils;
+import melnorme.util.swt.components.IWidgetComponent;
+import melnorme.utilbox.ownership.IDisposable;
 
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.eclipse.ui.PlatformUI;
 
 /**
- * Abstract preference page which is used to wrap a
- * {@link melnorme.lang.ide.ui.preferences.IPreferencesComponent}.
+ * Abstract preference wraping a {@link IPreferencesBlock_Old}.
+ * Old API, preferred to use {@link AbstractPreferencesBlock}.
  */
-public abstract class AbstractPreferencesComponentPrefPage extends PreferencePage 
-		implements IWorkbenchPreferencePage {
+public abstract class AbstractPreferencesBlockPrefPage_Old extends AbstractComponentsPrefPage {
 	
-	private IPreferencesBlock fConfigurationBlock;
+	public interface IPreferencesBlock_Old extends IWidgetComponent, IDisposable {
+		
+		public void loadFromStore();
+		
+		public void saveToStore();
+		
+		public void loadStoreDefaults();
+		
+	}
 	
-	public AbstractPreferencesComponentPrefPage(IPreferenceStore store) {
-		setDescription();
-		setPreferenceStore(store);
+	private IPreferencesBlock_Old fConfigurationBlock;
+	
+	public AbstractPreferencesBlockPrefPage_Old(IPreferenceStore store) {
+		super(store);
 		fConfigurationBlock = createPreferencesComponent();
 	}
 	
-	protected abstract void setDescription();
-	protected abstract String getHelpId();
-	protected abstract IPreferencesBlock createPreferencesComponent();
-	
-	@Override
-	public void init(IWorkbench workbench) {
-	}
-	
-	@Override
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), getHelpId());
-	}
+	protected abstract IPreferencesBlock_Old createPreferencesComponent();
 	
 	@Override
 	protected Control createContents(Composite parent) {
@@ -63,21 +54,19 @@ public abstract class AbstractPreferencesComponentPrefPage extends PreferencePag
 	
 	@Override
 	public boolean performOk() {
+		super.performOk();
+		
 		fConfigurationBlock.saveToStore();
 		LangUIPlugin.flushInstanceScope();
 		
 		return true;
 	}
 	
-	protected static final Status NO_STATUS = LangCore.createOkStatus(null);
-	
 	@Override
 	public void performDefaults() {
-		DialogPageUtils.applyStatusToPreferencePage(NO_STATUS, this);
+		super.performDefaults();
 		
 		fConfigurationBlock.loadStoreDefaults();
-		
-		super.performDefaults();
 	}
 	
 	@Override

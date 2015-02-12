@@ -12,23 +12,17 @@ package com.googlecode.goclipse.ui.preferences;
 
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
-import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
 
-public class GoEditorPreferencePage extends AbstractPreferencesComponentPrefPage {
+public class GoEditorPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
 	public GoEditorPreferencePage() {
 		super(LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override
-	protected void setDescription() {
-		setDescription(null);
-	}
-	
-	@Override
-	protected IPreferencesBlock createPreferencesComponent() {
+	protected GoEditorConfigurationBlock createPreferencesComponent() {
 		return new GoEditorConfigurationBlock(this);
 	}
 	

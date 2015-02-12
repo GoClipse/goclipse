@@ -1,18 +1,12 @@
 package com.googlecode.goclipse.ui.preferences;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
-import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_Old;
 
-public class GoSyntaxHighlightingPreferencePage extends AbstractPreferencesComponentPrefPage {
+public class GoSyntaxHighlightingPreferencePage extends AbstractPreferencesBlockPrefPage_Old {
 	
 	public GoSyntaxHighlightingPreferencePage() {
 		super(LangUIPlugin.getInstance().getPreferenceStore());
-	}
-	
-	@Override
-	protected void setDescription() {
-		setDescription(null);
 	}
 	
 	@Override
@@ -21,7 +15,7 @@ public class GoSyntaxHighlightingPreferencePage extends AbstractPreferencesCompo
 	}
 	
 	@Override
-	protected IPreferencesBlock createPreferencesComponent() {
+	protected GoSourceColoringConfigurationBlock createPreferencesComponent() {
 		return new GoSourceColoringConfigurationBlock(getPreferenceStore());
 	}
 	

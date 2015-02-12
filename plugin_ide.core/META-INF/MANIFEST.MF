@@ -44,6 +44,7 @@ Export-Package: com.googlecode.goclipse;
  com.googlecode.goclipse.go.lang.parser;uses:="com.googlecode.goclipse.model,com.googlecode.goclipse.go,com.googlecode.goclipse.go.lang.lexer",
  com.googlecode.goclipse.go.lib.indexer,
  melnorme.lang.ide.core,
+ melnorme.lang.ide.core.bundlemodel,
  melnorme.lang.ide.core.operations,
  melnorme.lang.ide.core.utils,
  melnorme.lang.ide.core.utils.prefs,

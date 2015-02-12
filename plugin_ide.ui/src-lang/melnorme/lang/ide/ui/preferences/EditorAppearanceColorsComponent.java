@@ -12,6 +12,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
+import melnorme.lang.ide.ui.preferences.common.IPreferencesAdapterComponent;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponent;
@@ -34,7 +35,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
 
 //originally from DLTK version 5.0.0
-public class EditorAppearanceColorsComponent extends AbstractComponent implements IPreferencesComponent {
+public class EditorAppearanceColorsComponent extends AbstractComponent implements IPreferencesAdapterComponent {
 	
 	public static class EditorColorItem {
 		public final String label;

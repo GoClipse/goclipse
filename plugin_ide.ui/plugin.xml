@@ -84,7 +84,7 @@
       <page
             category="com.googlecode.goclipse.ui.PreferencePage.Editor"
             id="com.googlecode.goclipse.ui.PreferencePage.Editor.Typing"
-            class="com.googlecode.goclipse.ui.preferences.GoEditorSmartTypingPreferencePage"
+            class="com.googlecode.goclipse.ui.preferences.GoEditorTypingPreferencePage"
             name="Typing">
       </page>
 		<page
