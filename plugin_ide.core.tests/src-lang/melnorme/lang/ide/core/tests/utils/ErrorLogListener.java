@@ -1,9 +1,8 @@
 package melnorme.lang.ide.core.tests.utils;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.core.LangCore;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -11,7 +10,7 @@ import org.eclipse.core.runtime.Platform;
 public final class ErrorLogListener implements ILogListener {
 	
 	protected boolean errorOccurred = false;
-	protected Throwable exception = null;
+	protected IStatus status;
 	
 	public static ErrorLogListener createAndInstall() {
 		ErrorLogListener loglistener = new ErrorLogListener() ;
@@ -23,17 +22,17 @@ public final class ErrorLogListener implements ILogListener {
 	public synchronized void logging(IStatus status, String plugin) {
 		if(status.getSeverity() == IStatus.ERROR && errorOccurred == false) {
 			errorOccurred = true;
-			exception = status.getException();
+			this.status = status;
+			
 			System.out.println("!!!>>>>>>>>> Logged error from: " + plugin);
 			System.out.println(status);
-			assertNotNull(exception, status.getMessage());
 		}
 	}
 	
 	public synchronized void checkErrors() throws Throwable {
 		if(errorOccurred == true) {
 			reset();
-			throw LangCore.createCoreException("Unexpected error logged.", exception);
+			throw new CoreException(status);
 		}
 		assertTrue(errorOccurred == false, "Assertion failed.");
 	}

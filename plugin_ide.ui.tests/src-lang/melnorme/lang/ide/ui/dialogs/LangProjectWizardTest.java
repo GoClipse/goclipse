@@ -34,9 +34,9 @@ import org.junit.Test;
 
 public abstract class LangProjectWizardTest extends CommonUITest {
 	
-	public static final String EXISTING_PROJ_NAME = LangProjectWizardTest.class + "_ExistingProject";
-	public static final String EXISTING_TEMP_PROJ_NAME = LangProjectWizardTest.class + "_ExistingProject";
-	public final static String NEWPROJNAME = "WizardCreationProject";
+	public final static String NEWPROJNAME = "LangProjectWizardTest_NewProject";
+	public static final String EXISTING_PROJ_NAME = "LangProjectWizardTest.ExistingProject";
+	public static final String EXISTING_TEMP_PROJ_NAME = "LangProjectWizardTest_TempProject";
 	
 	@BeforeClass
 	public static void classSetup() throws CoreException {
