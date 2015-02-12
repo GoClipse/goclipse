@@ -11,11 +11,13 @@
 package melnorme.lang.ide.ui.tests;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.core.tests.CommonCoreTest_ActualClass;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.util.swt.SWTTestUtils;
 
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -26,17 +28,29 @@ import org.junit.Before;
 public abstract class CommonUITest extends CommonCoreTest_ActualClass {
 	
 	static {
+		assertTrue(PlatformUI.isWorkbenchRunning());
+		
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		assertTrue(workbench != null);
+		assertTrue(workbench.isStarting() == false);
+		
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		page.closeAllEditors(false);
 		
 		IIntroPart intro = workbench.getIntroManager().getIntro();
 		workbench.getIntroManager().closeIntro(intro);
 		
-		page.setPerspective(workbench.getPerspectiveRegistry().findPerspectiveWithId(UITests_Actual.PERSPECTIVE_ID));
+		IPerspectiveDescriptor perspective = workbench.getPerspectiveRegistry().findPerspectiveWithId(
+			UITests_Actual.PERSPECTIVE_ID);
+		assertNotNull(perspective);
+		page.setPerspective(perspective);
 		
 		SWTTestUtils.________________flushUIEventQueue________________();
+		try {
+			checkLogErrors_();
+		} catch (Throwable e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 	@AfterClass
