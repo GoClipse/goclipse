@@ -65,7 +65,7 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 	}
 	
 	protected void createDaemonPathFieldEditor(Group group) {
-		createFileTextField(group, getDaemonToolName() + " path:", DaemonEnginePreferences.DAEMON_PATH.key);
+		createFileComponent(group, getDaemonToolName() + " path:", DaemonEnginePreferences.DAEMON_PATH.key);
 	}
 	
 	protected abstract String getDaemonToolName();

@@ -39,7 +39,7 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 			GridDataFactory.fillDefaults().grab(true, false).minSize(200, SWT.DEFAULT).create());
 		GridLayoutFactory.fillDefaults().numColumns(3).margins(6, 4).applyTo(oracleGroup);
 		
-		createFileTextField(oracleGroup, "Go oracle path:", GoToolPreferences.GO_ORACLE_Path.key);
+		createFileComponent(oracleGroup, "Go oracle path:", GoToolPreferences.GO_ORACLE_Path.key);
 		
 		super.doCreateContents(block);
 	}

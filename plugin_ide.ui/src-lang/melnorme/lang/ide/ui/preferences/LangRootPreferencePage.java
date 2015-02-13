@@ -25,7 +25,7 @@ public abstract class LangRootPreferencePage extends AbstractComponentsPrefPage 
 	public LangRootPreferencePage() {
 		super(LangUIPlugin.getCorePrefStore());
 		
-		addStringComponent(SDKPreferences.SDK_PATH.key, langSDKConfigBlock.getLocationField());
+		connectDirectoryField(SDKPreferences.SDK_PATH.key, langSDKConfigBlock.getLocationField());
 	}
 	
 	@Override

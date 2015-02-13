@@ -52,7 +52,15 @@ public class PathUtil {
 			throw new InvalidPathExceptionX(ipe);
 		}
 	}
-
+	
+	public static Path createPath2(String pathString) throws CommonException {
+		try {
+			return Paths.get(pathString);
+		} catch (InvalidPathException ipe) {
+			throw new CommonException("Invalid path:", ipe);
+		}
+	}
+	
 	/** Checked exception wrapper for {@link InvalidPathException} */
 	public static class InvalidPathExceptionX extends Exception {
 		
