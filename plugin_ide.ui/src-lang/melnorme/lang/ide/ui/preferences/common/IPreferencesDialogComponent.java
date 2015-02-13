@@ -17,7 +17,7 @@ import melnorme.util.swt.components.fields.ComboBoxField;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 
-public interface IPreferencesAdapterComponent {
+public interface IPreferencesDialogComponent {
 	
 	void loadFromStore(IPreferenceStore store);
 	
@@ -27,7 +27,7 @@ public interface IPreferencesAdapterComponent {
 	
 	/* ----------------- Default adapters: ----------------- */
 	
-	public abstract class AbstractFieldAdapter<VALUE> implements IPreferencesAdapterComponent {
+	public abstract class AbstractFieldAdapter<VALUE> implements IPreferencesDialogComponent {
 		
 		protected final String prefKey;
 		protected final AbstractField<VALUE> field;

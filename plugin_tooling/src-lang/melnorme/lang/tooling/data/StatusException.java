@@ -9,7 +9,11 @@ public class StatusException extends CommonException {
 		OK,
 		INFO,
 		WARNING,
-		ERROR,
+		ERROR,;
+		
+		public boolean isOkStatus() {
+			return this == OK;
+		}
 	}
 	
 	protected final StatusLevel statusLevel;
@@ -29,6 +33,10 @@ public class StatusException extends CommonException {
 	
 	public int getStatusLevelOrdinal() {
 		return statusLevel.ordinal();
+	}
+	
+	public boolean isOkStatus() {
+		return getStatusLevel() == StatusLevel.OK;
 	}
 	
 }

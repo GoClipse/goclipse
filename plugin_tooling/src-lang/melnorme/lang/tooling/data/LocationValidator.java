@@ -17,11 +17,11 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
-public class LocationValidator implements IFieldValidator<Location> {
+public class LocationValidator extends AbstractValidator implements IFieldValidator<Location> {
 
-	protected boolean canBeEmpty;
-	protected boolean fileOnly;
-	protected boolean directoryOnly;
+	public boolean canBeEmpty;
+	public boolean fileOnly;
+	public boolean directoryOnly;
 	
 	public LocationValidator() {
 		canBeEmpty = false;
@@ -42,6 +42,10 @@ public class LocationValidator implements IFieldValidator<Location> {
 			throw new StatusException(StatusLevel.ERROR, ValidationMessages.Path_InvalidPath(pathString));
 		}
 		
+		return validatePath(path);
+	}
+	
+	protected Location validatePath(Path path) throws StatusException {
 		Location location;
 		try {
 			location = Location.create2(path);
