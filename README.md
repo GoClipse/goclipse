@@ -7,7 +7,7 @@ See the [About](documentation/About.md) page for user information, and [Reportin
 #### Setting up the development environment:
  * Clone the Git repository.
  * In Eclipse, use the import existing projects wizard, navigate to the Git repository, and add all the  Eclipse projects that are present in the root of the Git repo. Java Compiler settings should automatically be configured, since each project has project-specific settings stored in source control.
- * Setup the target platform: Open the target platform file: `releng/target-platform/Goclipse.target` and set it as your target platform.
+ * Setup the target platform: Open the target platform file: `releng/target-platform/IDE.target` and set it as your target platform.
  
 #### Running the tests in Eclipse:
  * In `releng/launches` there is one or several Eclipse launch files for running the tests, so if this project is added to your Eclipse workspace, the launches will show up automatically in `Run Configurations...`, as "JUnit Plug-in Tests". 
