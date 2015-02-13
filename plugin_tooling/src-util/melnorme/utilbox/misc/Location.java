@@ -37,6 +37,7 @@ public class Location {
 	
 	/** @return a new {@link Location} from given path. 
 	 * @throws InvalidPathExceptionX if path is not absolute. */
+	@Deprecated
 	public static Location create(Path path) throws PathUtil.InvalidPathExceptionX {
 		if(!path.isAbsolute()) {
 			throw new PathUtil.InvalidPathExceptionX(new InvalidPathException(path.toString(), 
@@ -45,10 +46,22 @@ public class Location {
 		return new Location(path);
 	}
 	
+	public static Location create2(Path path) throws CommonException {
+		if(!path.isAbsolute()) {
+			throw new CommonException("Invalid location: path is not absolute");
+		}
+		return new Location(path);
+	}
+	
 	/** @return a new {@link Location} from given path string. 
 	 * @throws InvalidPathExceptionX if path is not absolute. */
+	@Deprecated
 	public static Location create(String pathString) throws PathUtil.InvalidPathExceptionX {
 		return create(PathUtil.createPath(pathString));
+	}
+	
+	public static Location create2(String pathString) throws CommonException {
+		return create2(PathUtil.createPath2(pathString));
 	}
 	
 	/** @return a new {@link Location} from given path, or null if path is not absolute.  */
@@ -58,8 +71,8 @@ public class Location {
 		}
 		
 		try {
-			return create(path);
-		} catch (InvalidPathExceptionX e) {
+			return create2(path);
+		} catch(CommonException e) {
 			return null;
 		}
 	}
@@ -153,8 +166,8 @@ public class Location {
 			return null;
 		}
 		try {
-			return create(filePath);
-		} catch (InvalidPathExceptionX e) {
+			return create2(filePath);
+		} catch (CommonException e) {
 			throw new CommonException("Invalid location for " + descText + ", path not absolute: " + filePath);
 		}
 	}

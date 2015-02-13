@@ -13,10 +13,8 @@ package melnorme.lang.ide.ui.tools;
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesAdapterComponent.StringFieldAdapter;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.CheckBoxField;
-import melnorme.util.swt.components.fields.FileTextField;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -44,7 +42,11 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite block = SWTFactoryUtil.createComposite(parent);
-		
+		doCreateContents(block);
+		return block;
+	}
+	
+	protected void doCreateContents(Composite block) {
 		block.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
 		
 		toolGroup = SWTFactoryUtil.createGroup(block,
@@ -60,14 +62,11 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 			"Enable " + getDaemonToolName() + " log console (requires restart)"));
 		
 		createDaemonPathFieldEditor(toolGroup);
-		
-		return block;
 	}
 	
 	protected void createDaemonPathFieldEditor(Group group) {
-		final FileTextField pathField = new FileTextField(getDaemonToolName() + " path:");
-		pathField.createComponentInlined(group);
-		addComponent(new StringFieldAdapter(DaemonEnginePreferences.DAEMON_PATH.key, pathField));
+		createFileComponent(group, getDaemonToolName() + " path:", 
+			DaemonEnginePreferences.DAEMON_PATH.key);
 	}
 	
 	protected abstract String getDaemonToolName();
