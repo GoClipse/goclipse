@@ -11,9 +11,9 @@
 package melnorme.lang.ide.ui.preferences.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesAdapterComponent.BooleanFieldAdapter;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesAdapterComponent.ComboFieldAdapter;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesAdapterComponent.StringFieldAdapter;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.BooleanFieldAdapter;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.ComboFieldAdapter;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.StringFieldAdapter;
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
@@ -45,7 +45,7 @@ public abstract class AbstractPreferencesBlock extends AbstractComponentExt {
 		DialogPageUtils.applyStatusToPreferencePage(status, prefPage);
 	}
 	
-	protected void addPrefComponent(IPreferencesAdapterComponent prefComponent) {
+	protected void addPrefComponent(IPreferencesDialogComponent prefComponent) {
 		prefPage.addComponent(prefComponent);
 	}
 	
