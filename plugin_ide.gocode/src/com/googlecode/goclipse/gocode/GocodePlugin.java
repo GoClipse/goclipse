@@ -105,6 +105,11 @@ public class GocodePlugin extends Plugin {
 			return path;
 		}
 		
+		return getDefaultGocodePath();
+	}
+	
+	public IPath getDefaultGocodePath() {
+		IPath path;
 		path = getGocodeGoBinPath();
 		
 		if (Utils.pathExists(path)) {

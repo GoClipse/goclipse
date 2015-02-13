@@ -45,6 +45,25 @@ public class GocodeServerManager implements IDisposable {
 		return null;
 	}
 	
+	// TODO: remove this duplicated code:
+	public static IPath getDefaultGocodePath() {
+		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
+			GoCore.CONTENT_ASSIST_EXTENSION_ID);
+		
+		try {
+			for (IConfigurationElement e : config) {
+				final Object extension = e.createExecutableExtension("class");
+				
+				if (extension instanceof IGocodePathProvider) {
+					return ((IGocodePathProvider) extension).getDefaultGocodePath();
+				}
+			}
+		} catch (CoreException ex) {
+			// do nothing
+		}
+		return null;
+	}
+	
 	protected boolean isChildServerRunning() {
 		return gocodeProcess != null;
 	}

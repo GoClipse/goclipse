@@ -52,7 +52,7 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 	@Override
 	protected void createDaemonPathFieldEditor(Group group) {
 		super.createDaemonPathFieldEditor(group);
-		IPath gocodePath = GocodeServerManager.getBestGocodePath();
+		IPath gocodePath = GocodeServerManager.getDefaultGocodePath();
 		String labelText = 
 				gocodePath == null? "" : 
 				"If path is empty, the built-in gocode will be used:\n" + gocodePath.toOSString();

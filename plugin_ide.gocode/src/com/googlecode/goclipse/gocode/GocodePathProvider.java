@@ -14,4 +14,9 @@ public class GocodePathProvider implements IGocodePathProvider {
 		return GocodePlugin.getPlugin().getBestGocodeInstance();
 	}
 	
+	@Override
+	public IPath getDefaultGocodePath() {
+		return GocodePlugin.getPlugin().getDefaultGocodePath();
+	}
+	
 }

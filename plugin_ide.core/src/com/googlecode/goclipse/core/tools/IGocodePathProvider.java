@@ -6,4 +6,6 @@ public interface IGocodePathProvider {
 	
 	IPath getBestGocodePath();
 	
+	IPath getDefaultGocodePath();
+	
 }
