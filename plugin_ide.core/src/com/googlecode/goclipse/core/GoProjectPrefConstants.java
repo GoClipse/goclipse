@@ -28,5 +28,8 @@ public interface GoProjectPrefConstants {
 		new StringPreference("projectPrefs.auto_unit_test.regex", "TestAuto[A-Za-z0-9_]*");
 	IntPreference AUTO_UNIT_TEST_MAX_TIME = 
 		new IntPreference("projectPrefs.auto_unit_test.max_time", 5000);
+
+        StringPreference GO_BUILD_TARGET =
+                new StringPreference("projectPrefs.go_build.target", "./...");
 	
 }

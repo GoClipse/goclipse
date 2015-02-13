@@ -69,7 +69,7 @@ public class GoBuilder extends LangProjectBuilder {
 		ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
 		goBuildCmdLine.addElements("install", "-v");
 		goBuildCmdLine.addElements(GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project));
-		goBuildCmdLine.addElements("./...");
+		goBuildCmdLine.addElements(GoProjectPrefConstants.GO_BUILD_TARGET.get(project));
 //		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
 		
 		Path projectLocation = getProjectLocation(project);
