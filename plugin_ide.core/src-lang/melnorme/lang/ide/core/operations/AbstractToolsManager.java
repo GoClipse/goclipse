@@ -10,9 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import java.nio.file.Path;
+
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -33,14 +39,38 @@ public abstract class AbstractToolsManager<LISTENER extends ILangOperationsListe
 	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb) 
 			throws CoreException {
 		// Note: project can be null
-		return newRunToolTask(pb, project, pm).runProcess();
+		return runTool(project, pm, pb, null, false);
+	}
+	
+	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb,
+			String processInput, boolean throwOnNonZero) throws CoreException {
+		Path workingDir = project == null ? null : ResourceUtils.getProjectLocation(project);
+		if(workingDir != null) {
+			pb.directory(workingDir.toFile());
+		}
+		return newRunToolTask(pb, project, pm).runProcess(processInput, throwOnNonZero);
 	}
 	
 	/* ----------------- ----------------- */
 	
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, IProgressMonitor pm)
 			throws CoreException {
-		return new RunEngineClientOperation(this, pb, pm).runProcess(clientInput);
+		return new RunEngineClientOperation(pb, pm).runProcess(clientInput);
+	}
+	
+	public class RunEngineClientOperation extends AbstractRunProcessTask {
+		
+		public RunEngineClientOperation(ProcessBuilder pb, IProgressMonitor cancelMonitor) {
+			super(pb, cancelMonitor);
+		}
+		
+		@Override
+		protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+			for (ILangOperationsListener listener : AbstractToolsManager.this.getListeners()) {
+				listener.engineClientToolStart(pb, ce, processHelper);
+			}
+		}
+		
 	}
 	
 }

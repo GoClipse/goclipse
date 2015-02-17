@@ -74,8 +74,7 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 		return runProcess(input, false);
 	}
 	
-	public ExternalProcessResult runProcess(String input, boolean throwOnNonZeroStatus)
-			throws CoreException {
+	public ExternalProcessResult runProcess(String input, boolean throwOnNonZeroStatus) throws CoreException {
 		try {
 			return doRunProcess(input, throwOnNonZeroStatus);
 		} catch (CommonException ce) {

@@ -19,6 +19,7 @@ Require-Bundle: LANG_PROJECT_ID.tooling;visibility:=reexport,
 Bundle-ClassPath: .
 Export-Package: LANG_PROJECT_ID.ide.core,
  LANG_PROJECT_ID.ide.core.launch,
+ LANG_PROJECT_ID.ide.core.operations,
  melnorme.lang.ide.core,
  melnorme.lang.ide.core.bundlemodel,
  melnorme.lang.ide.core.operations,

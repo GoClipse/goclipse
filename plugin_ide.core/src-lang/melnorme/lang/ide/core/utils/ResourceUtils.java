@@ -19,6 +19,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.data.LocationValidator;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -50,6 +52,14 @@ public class ResourceUtils {
 			return null;
 		}
 		return path.toFile().toURI();
+	}
+	
+	public static Location getValidLocation(String pathString) throws CoreException {
+		try {
+			return new LocationValidator().getValidatedField(pathString);
+		} catch (StatusException se) {
+			throw LangCore.createCoreException(se);
+		}
 	}
 	
 	/* -----------------  ----------------- */ 

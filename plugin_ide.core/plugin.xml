@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-
-   <extension
-         id="nature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run class="LANG_PROJECT_ID.ide.core.LANGUAGE_Nature"/>
-      </runtime>
-   </extension>
-   
-   <extension
-         point="org.eclipse.core.contenttype.contentTypes">
-      <content-type
-            base-type="org.eclipse.core.runtime.text"
-            default-charset="UTF-8"
-            file-extensions="%contentType_FileExtensions_actual"
-            id="LANG_PROJECT_ID.ide.core.content.source"
-            name="%contentType_Name_actual"
-            priority="high">
-      </content-type>
-   </extension>
-   
+	
+	<extension point="org.eclipse.core.resources.natures"
+		id="nature">
+		<runtime>
+			<run class="LANG_PROJECT_ID.ide.core.LANGUAGE_Nature"/>
+		</runtime>
+		<builder id="LANG_PROJECT_ID.ide.core.Builder" />
+	</extension>
+	
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type
+			base-type="org.eclipse.core.runtime.text"
+			default-charset="UTF-8"
+			file-extensions="%contentType_FileExtensions_actual"
+			id="LANG_PROJECT_ID.ide.core.content.source"
+			name="%contentType_Name_actual"
+			priority="high">
+		</content-type>
+	</extension>
+	
    <extension point="org.eclipse.core.expressions.definitions">
       <definition
             id="LANG_PROJECT_ID.ide.core.expressions.isLangProject">
@@ -57,6 +56,25 @@
       </definition>
    </extension>
 	
+	<!-- ============ BUILDER/PROBLEMS ============= -->
+	
+	<extension point="org.eclipse.core.resources.builders"
+		id="Builder"
+		name="%Builder_Name">
+		<builder
+			callOnEmptyDelta="true"	
+			hasNature="true"
+			isConfigurable="true">
+		<run class="LANG_PROJECT_ID.ide.core.operations.LANGUAGE_Builder" />
+	</builder>
+	</extension>
+	
+	<extension point="org.eclipse.core.resources.markers"
+		id="marker.problem"
+		name="%ProblemMarker_Name">
+		<super type="org.eclipse.core.resources.problemmarker" />
+		<persistent value="true" />
+	</extension>
 	
 	
 	<!-- ============ Launch configuration type ============= -->
