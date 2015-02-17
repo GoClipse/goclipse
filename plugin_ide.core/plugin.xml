@@ -2,17 +2,14 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-   <extension
-         id="goNature"
-         name="Go"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run class="com.googlecode.goclipse.core.GoNature" />
-      </runtime>
-      <builder
-            id="com.googlecode.goclipse.goBuilder">
-      </builder>
-   </extension>
+	<extension point="org.eclipse.core.resources.natures"
+		id="goNature"
+		name="Go">
+		<runtime>
+			<run class="com.googlecode.goclipse.core.GoNature" />
+		</runtime>
+		<builder id="com.googlecode.goclipse.goBuilder" />
+	</extension>
 	
 	<extension point="org.eclipse.core.expressions.definitions">
 		<definition id="com.googlecode.goclipse.core.expressions.isGoProject">
@@ -64,7 +61,8 @@
             file-extensions="c,h">
       </file-association -->
    </extension>
-   
+	
+	<!-- ============ BUILDER/PROBLEMS ============= -->
 	
 	<extension
 		id="com.googlecode.goclipse.goBuilder"
@@ -78,21 +76,16 @@
 		</run>
 	</builder>
 	</extension>
-
-   
-  
-   <extension
-         id="goProblem"
-         name="Go Problem"
-         point="org.eclipse.core.resources.markers">
-      <super
-            type="org.eclipse.core.resources.problemmarker">
-      </super>
-      <persistent
-            value="true">
-      </persistent>
-   </extension>
-   
+	
+	<extension point="org.eclipse.core.resources.markers"
+		id="goProblem"
+		name="Go Problem">
+		<super
+			type="org.eclipse.core.resources.problemmarker">
+		</super>
+		<persistent value="true" />
+	</extension>
+	
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
