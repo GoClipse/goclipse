@@ -130,10 +130,12 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected ProcessBuilder createSDKProcessBuilder(String... sdkOptions) throws CoreException {
+		Path projectLocation = ResourceUtils.getProjectLocation(getProject());
+		
 		ArrayList2<String> commandLine = new ArrayList2<>();
 		commandLine.add(getSDKToolPath());
 		commandLine.addElements(sdkOptions);
-		return ProcessUtils.createProcessBuilder(commandLine, null);
+		return ProcessUtils.createProcessBuilder(commandLine, projectLocation.toFile());
 	}
 	
 	protected String getSDKToolPath() throws CoreException {
