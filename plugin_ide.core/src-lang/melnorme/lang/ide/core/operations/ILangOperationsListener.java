@@ -10,11 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import org.eclipse.core.resources.IProject;
+
 import melnorme.lang.ide.core.utils.process.IStartProcessListener;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 public interface ILangOperationsListener extends IStartProcessListener {
+	
+	void handleBuildStarted(IProject project, boolean clearConsole);
+	void handleBuildTerminated(IProject project);
 	
 	void engineDaemonStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper processHelper);
 	

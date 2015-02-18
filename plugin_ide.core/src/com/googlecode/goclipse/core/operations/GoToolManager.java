@@ -14,11 +14,11 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -28,22 +28,10 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
  * Manager for running various go tools, usually for build.
  * Note that running such tools under this class will notify Eclipse console listeners.
  */
-public class GoToolManager extends AbstractToolsManager<IGoOperationsListener> {
+public class GoToolManager extends AbstractToolsManager<ILangOperationsListener_Actual> {
 	
 	public static GoToolManager getDefault() {
 		return (GoToolManager) LangCore.getToolManager();
-	}
-	
-	public void notifyBuildStarting(IProject project, boolean clearConsole) {
-		for (IGoOperationsListener processListener : getListeners()) {
-			processListener.handleBuildStarted(project, clearConsole);
-		}
-	}
-	
-	public void notifyBuildTerminated(IProject project) {
-		for (IGoOperationsListener processListener : getListeners()) {
-			processListener.handleBuildTerminated(project);
-		}
 	}
 	
 	/* -----------------  ----------------- */

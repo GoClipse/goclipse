@@ -18,6 +18,7 @@ import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
 import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
@@ -37,6 +38,10 @@ import com.googlecode.goclipse.tooling.GoBuildOutputProcessor;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
+
+/**
+ * Go builder. TODO refactor to use {@link LangProjectBuilderExt}
+ */
 public class GoBuilder extends LangProjectBuilder {
 	
 	public static class GoSDKLocationValidator extends SDKLocationValidator {

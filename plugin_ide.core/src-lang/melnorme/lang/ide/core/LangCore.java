@@ -26,7 +26,7 @@ public abstract class LangCore extends Plugin {
 	
 	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
-	protected static final AbstractToolsManager<?> toolManager = LangCore_Actual.createToolManagerSingleton();
+	protected static final AbstractToolsManager<ILangOperationsListener_Actual> toolManager = LangCore_Actual.createToolManagerSingleton();
 	
 	protected static LangCore pluginInstance;
 	
@@ -37,7 +37,7 @@ public abstract class LangCore extends Plugin {
 		return pluginInstance;
 	}
 	
-	public static AbstractToolsManager<?> getToolManager() {
+	public static AbstractToolsManager<ILangOperationsListener_Actual> getToolManager() {
 		return toolManager;
 	}
 	

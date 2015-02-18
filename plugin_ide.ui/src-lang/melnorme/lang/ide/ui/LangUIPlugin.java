@@ -10,10 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore.StatusExt;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.cdt.internal.ui.text.util.CColorManager;
@@ -23,9 +23,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.forms.FormColors;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
@@ -40,6 +37,11 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	public static LangUIPlugin getInstance() {
 		return pluginInstance;
+	}
+	
+	protected ILangOperationsListener_Actual operationsListener;
+	
+	public LangUIPlugin() {
 	}
 	
 	/* -------- start/stop methods -------- */
@@ -72,18 +74,17 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	/** Do final stage of plugin start: activate services, listeners, etc. */
 	protected void doCustomStart_finalStage() {
+		operationsListener = createOperationsConsoleListener();
+		if(operationsListener != null) {
+			LangCore.getToolManager().addListener(operationsListener);
+		}
+		
 		LangCore.getInstance().initializeAfterUIStart();
 		
 		new InitializeAfterLoadJob(this).schedule();
 	}
 	
-	public final void initializeAfterUILoad(IProgressMonitor monitor) {
-		try {
-			doInitializeAfterLoad(monitor);
-		} catch (CoreException ce) {
-			UIOperationExceptionHandler.handleOperationStatus("Error during UI initialization.", ce);
-		}
-	}
+	protected abstract ILangOperationsListener_Actual createOperationsConsoleListener();
 	
 	@SuppressWarnings("unused")
 	protected void doInitializeAfterLoad(IProgressMonitor monitor) throws CoreException {
@@ -91,12 +92,18 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	@Override
 	public void stop(BundleContext context) throws Exception {
+		if(operationsListener != null) {
+			LangCore.getToolManager().removeListener(operationsListener);
+		}
+		
 		doCustomStop(context);
 		super.stop(context);
 		pluginInstance = null;
 	}
 	
 	protected abstract void doCustomStop(BundleContext context);
+	
+	/* ######################################################################## */
 	
 	/* ----------------- logging helpers ----------------- */
 	
@@ -179,7 +186,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	public org.eclipse.cdt.ui.text.IColorManager getColorManager() {
 		return fColorManager;
 	}
-    
+	
 	/* -------- JDT copied stuff -------- */
 	
 	public static void flushInstanceScope() {
@@ -189,17 +196,5 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 			logError("Error saving instance preferences: ", e);
 		}
 	}
-	
-	private FormToolkit fDialogsFormToolkit;
-	
-	public FormToolkit getDialogsFormToolkit() {
-		if (fDialogsFormToolkit == null) {
-			FormColors colors= new FormColors(Display.getCurrent());
-			colors.setBackground(null);
-			colors.setForeground(null);
-			fDialogsFormToolkit= new FormToolkit(colors);
-		}
-		return fDialogsFormToolkit;
-	}
-	
+    
 }

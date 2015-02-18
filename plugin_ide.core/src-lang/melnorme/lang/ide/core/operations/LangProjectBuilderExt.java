@@ -13,6 +13,7 @@ package melnorme.lang.ide.core.operations;
 
 import java.util.Map;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -39,19 +40,19 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 	
 	@Override
 	protected void handleFirstOfKind() {
-//		GoToolManager.getDefault().notifyBuildStarting(null, true);
+		LangCore.getToolManager().notifyBuildStarting(null, true);
 	}
 	
 	@Override
 	protected void handleLastOfKind() {
-//		GoToolManager.getDefault().notifyBuildTerminated(null);
+		LangCore.getToolManager().notifyBuildTerminated(null);
 	}
 	
 	@Override
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
 			throws CoreException {
 		
-//		GoToolManager.getDefault().notifyBuildStarting(project, false);
+		LangCore.getToolManager().notifyBuildStarting(project, false);
 		
 		ProcessBuilder pb = createBuildPB();
 		

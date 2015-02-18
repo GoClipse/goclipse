@@ -17,8 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.osgi.framework.BundleContext;
 
-import com.googlecode.goclipse.core.operations.GoToolManager;
-import com.googlecode.goclipse.core.operations.IGoOperationsListener;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.ui.actions.StartGocodeServerOperation;
 
@@ -26,14 +24,9 @@ public class GoUIPlugin extends LangUIPlugin {
 	
 	protected static GocodeServerManager gocodeServerManager = new GocodeServerManager();
 	
-	protected IGoOperationsListener operationsListener;
-	
 	@Override
-	protected void doCustomStart_finalStage() {
-		operationsListener = new GoOperationsConsoleListener();
-		GoToolManager.getDefault().addListener(operationsListener);
-		
-		super.doCustomStart_finalStage();
+	protected GoOperationsConsoleListener createOperationsConsoleListener() {
+		return new GoOperationsConsoleListener();
 	}
 	
 	@Override
@@ -52,8 +45,6 @@ public class GoUIPlugin extends LangUIPlugin {
 	protected void doCustomStop(BundleContext context) {
 		MiscUtil.dispose(gocodeServerManager);
 		gocodeServerManager = null;
-		
-		GoToolManager.getDefault().removeListener(operationsListener);
 	}
 	
 }

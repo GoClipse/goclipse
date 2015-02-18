@@ -30,6 +30,19 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public abstract class AbstractToolsManager<LISTENER extends ILangOperationsListener> 
 		extends ListenerListHelper<LISTENER> {
 	
+	
+	public void notifyBuildStarting(IProject project, boolean clearConsole) {
+		for (ILangOperationsListener listener : getListeners()) {
+			listener.handleBuildStarted(project, clearConsole);
+		}
+	}
+	
+	public void notifyBuildTerminated(IProject project) {
+		for (ILangOperationsListener listener : getListeners()) {
+			listener.handleBuildTerminated(project);
+		}
+	}
+	
 	/* ----------------- ----------------- */
 	
 	public RunExternalProcessTask newRunToolTask(ProcessBuilder pb, IProject project, IProgressMonitor pm) {

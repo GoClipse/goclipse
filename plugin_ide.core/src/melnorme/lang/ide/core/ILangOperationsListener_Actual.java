@@ -8,15 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.core.operations;
+package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.operations.ILangOperationsListener;
-import org.eclipse.core.resources.IProject;
 
-public interface IGoOperationsListener extends ILangOperationsListener {
-	
-	public void handleBuildStarted(IProject project, boolean clearConsole);
-	
-	public void handleBuildTerminated(IProject project);
+public interface ILangOperationsListener_Actual extends ILangOperationsListener {
 	
 }

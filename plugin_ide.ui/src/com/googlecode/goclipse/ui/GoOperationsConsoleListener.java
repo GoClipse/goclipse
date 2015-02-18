@@ -12,56 +12,20 @@ package com.googlecode.goclipse.ui;
 
 import java.io.IOException;
 
-import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
-import melnorme.lang.ide.ui.tools.console.ToolsConsole;
+import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
-import com.googlecode.goclipse.core.operations.IGoOperationsListener;
 import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
 
-public class GoOperationsConsoleListener extends AbstractToolsConsoleListener implements IGoOperationsListener {
-	
-	protected static final String GO_BUILD_CONSOLE_NAME = "Go build";
-	
-	@Override
-	protected ToolsConsole createConsole(String name) {
-		return new GoBuildConsole(name);
-	}
-	
-	public static class GoBuildConsole extends ToolsConsole {
-		public GoBuildConsole(String name) {
-			super(name, GoPluginImages.GO_CONSOLE_ICON.getDescriptor());
-		}
-	}
-	
-	@Override
-	public void handleBuildStarted(IProject project, boolean clearConsole) {
-		getOperationConsole(null, clearConsole).writeOperationInfo((project == null) ?
-			"************  Building Go workspace  ************\n" :
-			"------- Building Go project: " + project.getName() + "  -------\n");
-	}
-	
-	@Override
-	public void handleBuildTerminated(IProject project) {
-		getOperationConsole(null, false).writeOperationInfo(
-			"************  Build terminated.  ************\n");
-	}
+public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 	
 	@Override
 	protected String getOperationConsoleName(IProject project) {
-		return "Go build" + getProjectNameSuffix(project);
-	}
-	
-	@Override
-	protected String getProjectNameSuffix(IProject project) {
-		if(project == null) {
-			return "";
-		}
-		return super.getProjectNameSuffix(project);
+		return BUILD_CONSOLE_NAME;
 	}
 	
 	@Override
@@ -85,15 +49,7 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 	}
 	
 	@Override
-	public void engineDaemonStart(ProcessBuilder pb, CommonException ce, 
-			ExternalProcessNotifyingHelper processHelper) {
-		
-		new EngineServerProcessUIConsoleHandler().handle(pb, null, 
-			"##########  Starting gocode server:  ##########\n" + "   ", true, processHelper, ce);
-	}
-	
-	@Override
-	public void engineClientToolStart(ProcessBuilder pb, CommonException ce,
+	public void engineClientToolStart(ProcessBuilder pb, CommonException ce, 
 			ExternalProcessNotifyingHelper processHelper) {
 		
 		new EngineClientProcessUIConsoleHandler() {

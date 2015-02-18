@@ -11,6 +11,7 @@
 package com.googlecode.goclipse.ui.preferences;
 
 import static org.eclipse.jface.layout.GridDataFactory.fillDefaults;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.tools.AbstractDeamonToolPrefPage;
 import melnorme.util.swt.SWTFactoryUtil;
 
@@ -46,7 +47,7 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 	
 	@Override
 	protected String getDaemonToolName() {
-		return "Gocode";
+		return LangUIPlugin_Actual.DAEMON_TOOL_Name;
 	}
 	
 	@Override
