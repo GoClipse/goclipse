@@ -18,9 +18,9 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 public class StartEngineDaemonOperation extends AbstractRunProcessTask {
 	
-	protected final AbstractToolsManager<?> abstractToolsManager;
+	protected final AbstractToolsManager abstractToolsManager;
 	
-	public StartEngineDaemonOperation(AbstractToolsManager<?> abstractToolsManager, ProcessBuilder pb,
+	public StartEngineDaemonOperation(AbstractToolsManager abstractToolsManager, ProcessBuilder pb,
 			IProgressMonitor cancelMonitor) {
 		super(pb, cancelMonitor);
 		this.abstractToolsManager = abstractToolsManager;

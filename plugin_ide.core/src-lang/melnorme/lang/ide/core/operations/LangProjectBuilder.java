@@ -125,7 +125,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	/* ----------------- Build processes ----------------- */
 	
-	protected AbstractToolsManager<?> getToolManager() {
+	protected AbstractToolsManager getToolManager() {
 		return LangCore.getToolManager();
 	}
 	
