@@ -1,5 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package melnorme.lang.ide.core;
 
+import melnorme.lang.ide.core.operations.AbstractToolsManager;
 import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -15,6 +26,8 @@ public abstract class LangCore extends Plugin {
 	
 	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
+	protected static final AbstractToolsManager<?> toolManager = LangCore_Actual.createToolManagerSingleton();
+	
 	protected static LangCore pluginInstance;
 	
 	protected boolean initializedAfterUI = false;
@@ -22,6 +35,10 @@ public abstract class LangCore extends Plugin {
 	/** Returns the singleton for this plugin instance. */
 	public static LangCore getInstance() {
 		return pluginInstance;
+	}
+	
+	public static AbstractToolsManager<?> getToolManager() {
+		return toolManager;
 	}
 	
 	@Override

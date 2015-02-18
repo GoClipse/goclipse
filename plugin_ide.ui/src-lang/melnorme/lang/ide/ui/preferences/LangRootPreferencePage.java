@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.preferences;
 
 
 import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
+import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 
@@ -20,13 +21,24 @@ import org.eclipse.swt.widgets.Control;
 
 public abstract class LangRootPreferencePage extends AbstractComponentsPrefPage {
 	
-	protected final LangSDKConfigBlock langSDKConfigBlock = new LangSDKConfigBlock();
+	protected final LangSDKConfigBlock langSDKConfigBlock;
 	
 	public LangRootPreferencePage() {
 		super(LangUIPlugin.getCorePrefStore());
 		
-		connectDirectoryField(SDKPreferences.SDK_PATH.key, langSDKConfigBlock.getLocationField(), false);
+		langSDKConfigBlock = createLangSDKConfigBlock();
 	}
+	
+	protected LangSDKConfigBlock createLangSDKConfigBlock() {
+		LangSDKConfigBlock langSDKConfigBlock = new LangSDKConfigBlock();
+		
+		connectStringField(SDKPreferences.SDK_PATH.key, langSDKConfigBlock.getLocationField(), 
+			getSDKValidator());
+		
+		return langSDKConfigBlock;
+	}
+	
+	protected abstract SDKLocationValidator getSDKValidator();
 	
 	@Override
 	protected Control createContents(Composite parent) {

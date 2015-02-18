@@ -72,7 +72,7 @@
 			callOnEmptyDelta="true"	
 			hasNature="true"
 			isConfigurable="true">
-		<run class="com.googlecode.goclipse.core.tools.GoBuilder">
+		<run class="com.googlecode.goclipse.core.operations.GoBuilder">
 		</run>
 	</builder>
 	</extension>
@@ -85,6 +85,8 @@
 		</super>
 		<persistent value="true" />
 	</extension>
+	
+	<!-- ============ Launch configuration type ============= -->
 	
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">

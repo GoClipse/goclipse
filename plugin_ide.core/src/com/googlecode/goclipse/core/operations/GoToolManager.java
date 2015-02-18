@@ -14,8 +14,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
-import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -30,10 +30,8 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
  */
 public class GoToolManager extends AbstractToolsManager<IGoOperationsListener> {
 	
-	protected static GoToolManager instance = new GoToolManager();
-	
 	public static GoToolManager getDefault() {
-		return instance;
+		return (GoToolManager) LangCore.getToolManager();
 	}
 	
 	public void notifyBuildStarting(IProject project, boolean clearConsole) {
@@ -60,15 +58,6 @@ public class GoToolManager extends AbstractToolsManager<IGoOperationsListener> {
 		
 		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir);
 		return runTool(null, pm, pb);
-	}
-	
-	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb,
-			String processInput, boolean throwOnNonZero) throws CoreException {
-		Path workingDir = project == null ? null : ResourceUtils.getProjectLocation(project);
-		if(workingDir != null) {
-			pb.directory(workingDir.toFile());
-		}
-		return newRunToolTask(pb, project, pm).runProcess(processInput, throwOnNonZero);
 	}
 	
 }

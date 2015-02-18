@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Group;
 
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoEnvironmentUtils;
+import com.googlecode.goclipse.core.operations.GoBuilder.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 
@@ -123,7 +124,8 @@ public class GoSDKConfigBlock extends AbstractComponentExt {
 		goSDK.setLayout(glSwtDefaults().numColumns(numColumns).create());
 		
 		goRootField.createComponentInlined(goSDK);
-		prefPage.connectDirectoryField(GoEnvironmentPrefs.GO_ROOT.key, goRootField, false);
+		prefPage.connectStringField(GoEnvironmentPrefs.GO_ROOT.key, goRootField, new GoSDKLocationValidator());
+		
 		goOSField.createComponentInlined(goSDK);
 		prefPage.addComboComponent(GoEnvironmentPrefs.GO_OS.key, goOSField);
 		goArchField.createComponentInlined(goSDK);

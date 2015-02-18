@@ -81,7 +81,7 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		return fieldStatus.getStatusLevel();
 	}
 	
-	protected void connectStringField(String prefKey, AbstractField<String> field, IFieldValidator<?> validator) {
+	public void connectStringField(String prefKey, AbstractField<String> field, IFieldValidator<?> validator) {
 		addStringComponent(prefKey, field);
 		
 		validators.put(field, validator);

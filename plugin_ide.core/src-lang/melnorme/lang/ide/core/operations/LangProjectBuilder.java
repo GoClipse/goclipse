@@ -19,8 +19,12 @@ import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.data.LocationValidator;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.ToolSourceError;
+import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.core.resources.IBuildConfiguration;
@@ -118,6 +122,32 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	protected abstract IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor pm)
 			throws CoreException;
 	
+	
+	/* ----------------- Build processes ----------------- */
+	
+	protected AbstractToolsManager<?> getToolManager() {
+		return LangCore.getToolManager();
+	}
+	
+	protected ProcessBuilder createSDKProcessBuilder(String... sdkOptions) throws CoreException {
+		ArrayList2<String> commandLine = new ArrayList2<>();
+		commandLine.add(getSDKToolPath());
+		commandLine.addElements(sdkOptions);
+		return ProcessUtils.createProcessBuilder(commandLine, null);
+	}
+	
+	protected String getSDKToolPath() throws CoreException {
+		String pathString = SDKPreferences.SDK_PATH.get();
+		try {
+			return getSDKLocationValidator().getValidatedField(pathString).toPathString();
+		} catch (StatusException se) {
+			throw LangCore.createCoreException(se);
+		}
+	}
+	
+	protected abstract LocationValidator getSDKLocationValidator();
+	
+	/* ----------------- Problem markers handling ----------------- */
 	
 	protected void addErrorMarkers(ArrayList2<ToolSourceError> buildErrors, Path rootPath) throws CoreException {
 		assertTrue(rootPath.isAbsolute());

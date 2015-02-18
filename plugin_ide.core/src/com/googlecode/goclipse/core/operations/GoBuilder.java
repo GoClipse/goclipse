@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.core.tools;
+package com.googlecode.goclipse.core.operations;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.getProjectLocation;
 
@@ -18,6 +18,9 @@ import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.ide.core.operations.SDKLocationValidator;
+import melnorme.lang.tooling.data.LocationValidator;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -30,18 +33,36 @@ import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
-import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.GoBuildOutputProcessor;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 public class GoBuilder extends LangProjectBuilder {
 	
-	public static final String BUILDER_ID = "com.googlecode.goclipse.goBuilder";
+	public static class GoSDKLocationValidator extends SDKLocationValidator {
+		@Override
+		protected String getSDKExecutable_append() {
+			return "bin/go"; 
+		}
+	}
 	
 	public GoBuilder() {
 	}
 	
+	@Override
+	protected LocationValidator getSDKLocationValidator() {
+		return new GoSDKLocationValidator();
+	}
+	
+	@Override
+	protected String getSDKToolPath() throws CoreException {
+		String pathString = GoEnvironmentPrefs.GO_ROOT.get(); // We use a different pref other than the LANG default
+		try {
+			return getSDKLocationValidator().getValidatedField(pathString).toPathString();
+		} catch (StatusException se) {
+			throw LangCore.createCoreException(se);
+		}
+	}
 	
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {

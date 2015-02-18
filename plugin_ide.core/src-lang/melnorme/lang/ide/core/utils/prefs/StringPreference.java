@@ -13,7 +13,7 @@ package melnorme.lang.ide.core.utils.prefs;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * Helper to work with a color preference.
+ * Helper to work with a string preference.
  */
 public class StringPreference extends PreferenceHelper<String> {
 	
