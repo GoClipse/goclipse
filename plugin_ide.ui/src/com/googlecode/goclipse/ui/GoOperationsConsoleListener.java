@@ -78,7 +78,7 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleListener im
 			
 			@Override
 			protected String getProcessTerminatedMessage(int exitCode) {
-				return "   ^^^ Terminated, exit code: " + exitCode +  " ^^^ \n";
+				return " " + super.getProcessTerminatedMessage(exitCode);
 			};
 			
 		}.handle(pb, project, prefixText, false, processHelper, ce);
