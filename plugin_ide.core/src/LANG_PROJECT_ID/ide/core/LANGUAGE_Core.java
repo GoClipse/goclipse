@@ -6,8 +6,6 @@ import org.osgi.framework.BundleContext;
 
 public class LANGUAGE_Core extends LangCore {
 	
-	public static final String PLUGIN_ID = "LANG_PROJECT_ID.ide.core";
-	
 	@Override
 	protected void doCustomStart(BundleContext context) {
 	}

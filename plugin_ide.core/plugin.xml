@@ -10,17 +10,6 @@
 		<builder id="LANG_PROJECT_ID.ide.core.Builder" />
 	</extension>
 	
-	<extension point="org.eclipse.core.contenttype.contentTypes">
-		<content-type
-			base-type="org.eclipse.core.runtime.text"
-			default-charset="UTF-8"
-			file-extensions="%contentType_FileExtensions_actual"
-			id="LANG_PROJECT_ID.ide.core.content.source"
-			name="%contentType_Name_actual"
-			priority="high">
-		</content-type>
-	</extension>
-	
    <extension point="org.eclipse.core.expressions.definitions">
       <definition
             id="LANG_PROJECT_ID.ide.core.expressions.isLangProject">
@@ -55,6 +44,19 @@
          </and>
       </definition>
    </extension>
+	
+	<!-- ============ Content type ============= -->
+	
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type
+			base-type="org.eclipse.core.runtime.text"
+			default-charset="UTF-8"
+			file-extensions="%contentType_FileExtensions_actual"
+			id="LANG_PROJECT_ID.ide.core.content.source"
+			name="%contentType_Name_actual"
+			priority="high">
+		</content-type>
+	</extension>
 	
 	<!-- ============ BUILDER/PROBLEMS ============= -->
 	
