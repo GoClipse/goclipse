@@ -10,25 +10,9 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
+import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
-import melnorme.lang.ide.core.operations.ILangOperationsListener;
 
-public class LANGUAGE_ToolManager extends AbstractToolsManager<ILangOperationsListener> {
-	
-//	public static LANGUAGE_ToolManager getDefault() {
-//		return LangCore.getToolManager();
-//	}
-	
-//	public void notifyBuildStarting(IProject project, boolean clearConsole) {
-//		for (IGoOperationsListener processListener : getListeners()) {
-//			processListener.handleBuildStarted(project, clearConsole);
-//		}
-//	}
-//	
-//	public void notifyBuildTerminated(IProject project) {
-//		for (IGoOperationsListener processListener : getListeners()) {
-//			processListener.handleBuildTerminated(project);
-//		}
-//	}
+public class LANGUAGE_ToolManager extends AbstractToolsManager<ILangOperationsListener_Actual> {
 	
 }

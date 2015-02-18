@@ -39,7 +39,7 @@ public abstract class LangCore extends Plugin {
 		return pluginInstance;
 	}
 	
-	public static AbstractToolsManager<?> getToolManager() {
+	public static AbstractToolsManager<ILangOperationsListener_Actual> getToolManager() {
 		return toolManager;
 	}
 	

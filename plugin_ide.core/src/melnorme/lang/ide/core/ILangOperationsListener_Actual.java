@@ -8,15 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui;
+package melnorme.lang.ide.core;
 
-import org.eclipse.swt.graphics.RGB;
+import melnorme.lang.ide.core.operations.ILangOperationsListener;
 
-public interface OperationsConsolePrefDefaults_Actual {
-	
-	static RGB INFO_COLOR_DEFAULT = new RGB(0, 0, 200);
-	static RGB STDERR_COLOR_DEFAULT = new RGB(255, 0, 0);
-	static RGB STDOUT_COLOR_DEFAULT = new RGB(0, 0, 0);
-	static RGB BACKGROUND_COLOR_DEFAULT = new RGB(124, 232, 52); // TODO: LANG
+public interface ILangOperationsListener_Actual extends ILangOperationsListener {
 	
 }

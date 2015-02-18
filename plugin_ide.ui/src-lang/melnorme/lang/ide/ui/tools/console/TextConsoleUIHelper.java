@@ -10,21 +10,23 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.tools.console;
 
-import org.eclipse.core.resources.IProject;
 
-@Deprecated
-public class AbstractToolsConsoleListener extends AbstractToolsConsoleHandler {
+
+public class TextConsoleUIHelper {
 	
-	@Override
-	protected String getOperationConsoleName(IProject project) {
-		return BUILD_CONSOLE_NAME + getProjectNameSuffix(project);
+	public TextConsoleUIHelper() {
 	}
 	
-	protected String getProjectNameSuffix(IProject project) {
-		if(project == null) {
-			return " (Global)";
-		}
-		return " ["+ project.getName() +"]";
+	protected String headerBIG(String headerString) {
+		return "************  " + headerString + "  ************"+"\n";
+	}
+	
+	protected String headerSMALL(String headerString) {
+		return "-------  " + headerString + "  -------"+"\n";
+	}
+	
+	protected String headerHASH(String headerString) {
+		return "##########  " + headerString + "  ##########"+"\n";
 	}
 	
 }

@@ -62,15 +62,18 @@ public abstract class LangImages {
 	protected static final String T_OVR = "ovr16";
 	protected static final String T_TABS = "view16";
 	
-	protected static final String LANG_ACTIONS = "icons-lang/actions/";
+	public static final String LANG_ACTIONS = "icons-lang/actions/";
+	public static final String CAT_VIEWS = "views";
 	
 	/* ---------------- Common Lang images ---------------- */
 	
-	public static ImageHandle IMG_LAUNCHTAB_MAIN = createManaged(T_TABS, "main_launch_tab.png");
-	public static ImageHandle IMG_LAUNCHTAB_ARGUMENTS = createManaged(T_TABS, "arguments_tab.gif");
+	public static final ImageHandle IMG_LAUNCHTAB_MAIN = createManaged(T_TABS, "main_launch_tab.png");
+	public static final ImageHandle IMG_LAUNCHTAB_ARGUMENTS = createManaged(T_TABS, "arguments_tab.gif");
 	
-	public static ImageHandle IMG_SCROLL_LOCK = createManaged(LANG_ACTIONS, "lock_co.png");
-	public static ImageHandle IMG_CLEAR_CONSOLE = createManaged(LANG_ACTIONS, "clear_co.png");
-	public static ImageHandle IMG_PIN_CONSOLE = createManaged(LANG_ACTIONS, "pin.png");
+	public static final ImageHandle IMG_SCROLL_LOCK = createManaged(LANG_ACTIONS, "lock_co.png");
+	public static final ImageHandle IMG_CLEAR_CONSOLE = createManaged(LANG_ACTIONS, "clear_co.png");
+	public static final ImageHandle IMG_PIN_CONSOLE = createManaged(LANG_ACTIONS, "pin.png");
+	
+	public static final ImageHandle TOOLS_CONSOLE_ICON = createManaged(CAT_VIEWS, "ToolsConsole.16.png");
 	
 }
