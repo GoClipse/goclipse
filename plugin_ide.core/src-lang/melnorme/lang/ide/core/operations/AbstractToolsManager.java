@@ -12,6 +12,7 @@ package melnorme.lang.ide.core.operations;
 
 import java.nio.file.Path;
 
+import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
@@ -27,8 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).
  */
-public abstract class AbstractToolsManager<LISTENER extends ILangOperationsListener> 
-		extends ListenerListHelper<LISTENER> {
+public abstract class AbstractToolsManager extends ListenerListHelper<ILangOperationsListener_Actual> {
 	
 	
 	public void notifyBuildStarting(IProject project, boolean clearConsole) {

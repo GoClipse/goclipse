@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import java.text.MessageFormat;
+
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusException.StatusLevel;
@@ -42,5 +44,8 @@ public abstract class SDKLocationValidator extends LocationValidator {
 	
 	protected abstract String getSDKExecutable_append();
 	
-	protected abstract String getSDKExecutableErrorMessage(Location exeLocation);
+	protected String getSDKExecutableErrorMessage(Location exeLocation) {
+		return MessageFormat.format("`{0}` executable not found.", exeLocation);
+	}
+	
 }

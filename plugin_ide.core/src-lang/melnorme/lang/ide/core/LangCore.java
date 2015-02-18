@@ -19,8 +19,6 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
-import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
-
 public abstract class LangCore extends Plugin {
 	
 	public static final String PLUGIN_ID = LangCore_Actual.PLUGIN_ID;
@@ -28,7 +26,7 @@ public abstract class LangCore extends Plugin {
 	
 	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
-	protected static final LANGUAGE_ToolManager toolManager = LangCore_Actual.createToolManagerSingleton();
+	protected static final AbstractToolsManager toolManager = LangCore_Actual.createToolManagerSingleton();
 	
 	protected static LangCore pluginInstance;
 	
@@ -39,7 +37,7 @@ public abstract class LangCore extends Plugin {
 		return pluginInstance;
 	}
 	
-	public static AbstractToolsManager<ILangOperationsListener_Actual> getToolManager() {
+	public static AbstractToolsManager getToolManager() {
 		return toolManager;
 	}
 	

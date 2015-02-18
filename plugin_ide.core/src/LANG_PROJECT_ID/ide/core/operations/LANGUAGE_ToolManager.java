@@ -10,9 +10,8 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
-import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
 
-public class LANGUAGE_ToolManager extends AbstractToolsManager<ILangOperationsListener_Actual> {
+public class LANGUAGE_ToolManager extends AbstractToolsManager {
 	
 }

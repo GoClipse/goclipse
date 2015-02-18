@@ -28,8 +28,6 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
-import LANG_PROJECT_ID.ide.ui.LANGUAGE_OperationsConsoleListener;
-
 
 public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
@@ -86,7 +84,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		new InitializeAfterLoadJob(this).schedule();
 	}
 	
-	protected abstract LANGUAGE_OperationsConsoleListener createOperationsConsoleListener();
+	protected abstract ILangOperationsListener_Actual createOperationsConsoleListener();
 	
 	@SuppressWarnings("unused")
 	protected void doInitializeAfterLoad(IProgressMonitor monitor) throws CoreException {

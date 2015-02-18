@@ -91,19 +91,17 @@ public abstract class AbstractToolsConsoleHandler extends TextConsoleUIHelper im
 	}
 	
 	@Override
-	public void engineDaemonStart(ProcessBuilder pb, CommonException ce, 
-			ExternalProcessNotifyingHelper processHelper) {
+	public void engineDaemonStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper ph) {
 		
 		new EngineServerProcessUIConsoleHandler().
 		handle(pb, null, 
-			headerHASH("Starting " + DAEMON_TOOL_Name + " server:  ") + "   ", true, processHelper, ce);
+			headerHASH("Starting " + DAEMON_TOOL_Name + " server:  ") + "   ", true, ph, ce);
 	}
 	
 	@Override
-	public void engineClientToolStart(ProcessBuilder pb, CommonException ce,
-			ExternalProcessNotifyingHelper processHelper) {
+	public void engineClientToolStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper ph) {
 		
-		new EngineClientProcessUIConsoleHandler().handle(pb, null, ">> Running: ", false, processHelper, ce);
+		new EngineClientProcessUIConsoleHandler().handle(pb, null, ">> Running: ", false, ph, ce);
 	}
 	
 	/* -----------------  ----------------- */
