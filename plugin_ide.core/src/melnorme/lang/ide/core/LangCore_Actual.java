@@ -8,7 +8,7 @@ public class LangCore_Actual {
 	public static final String NATURE_ID = PLUGIN_ID +".nature";
 	
 	public static final String BUILDER_ID = PLUGIN_ID + ".Builder";
-	public static final String BUILD_PROBLEM_ID = PLUGIN_ID + ".marker.problem";
+	public static final String BUILD_PROBLEM_ID = PLUGIN_ID + ".marker_problem";
 	
 	public static LANGUAGE_ToolManager createToolManagerSingleton() {
 		return new LANGUAGE_ToolManager();

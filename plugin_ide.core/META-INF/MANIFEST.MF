@@ -15,7 +15,8 @@ Require-Bundle: LANG_PROJECT_ID.tooling;visibility:=reexport,
  org.eclipse.core.expressions;bundle-version="3.4.0",
  org.eclipse.debug.core;bundle-version="3.6.0",
  org.eclipse.core.variables;bundle-version="3.2.0",
- org.eclipse.core.filesystem;bundle-version="1.4.0"
+ org.eclipse.core.filesystem;bundle-version="1.4.0",
+ org.eclipse.jface.text;bundle-version="3.9.1"
 Bundle-ClassPath: .
 Export-Package: LANG_PROJECT_ID.ide.core,
  LANG_PROJECT_ID.ide.core.launch,

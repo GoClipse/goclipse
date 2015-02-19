@@ -72,7 +72,7 @@
 	</extension>
 	
 	<extension point="org.eclipse.core.resources.markers"
-		id="marker.problem"
+		id="marker_problem"
 		name="%ProblemMarker_Name">
 		<super type="org.eclipse.core.resources.problemmarker" />
 		<persistent value="true" />
