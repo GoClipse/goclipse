@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core.operations;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -23,6 +24,7 @@ import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.lang.utils.ProcessUtils;
@@ -174,15 +176,19 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 	}
 	
-	protected void addErrorMarker(IResource resource, ToolSourceMessage buildError) throws CoreException {
+	protected void addErrorMarker(IResource resource, ToolSourceMessage buildmessage) throws CoreException {
 		if(!resource.exists())
 			return;
+		
+		if(buildmessage.getMessageKind() == StatusLevel.OK) {
+			return; // Don't add message as a marker.
+		}
 		
 		// TODO: check if marker already exists?
 		IMarker marker = resource.createMarker(getBuildProblemId());
 		
-		marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		marker.setAttribute(IMarker.MESSAGE, buildError.getMessage());
+		marker.setAttribute(IMarker.SEVERITY, severityFrom(buildmessage.getMessageKind()));
+		marker.setAttribute(IMarker.MESSAGE, buildmessage.getMessage());
 		
 		if(!(resource instanceof IFile)) {
 			return;
@@ -190,12 +196,12 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 		IFile file = (IFile) resource;
 		
-		int line = buildError.getFileLineNumber();
+		int line = buildmessage.getFileLineNumber();
 		if(line >= 0) {
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 		}
 		
-		SourceLineColumnRange range = buildError.range;
+		SourceLineColumnRange range = buildmessage.range;
 		
 		try {
 			ITextFileBufferManager fileBufferManager = FileBuffers.getTextFileBufferManager();
@@ -234,6 +240,16 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			// Ignore, don't set
 		}
 		
+	}
+	
+	public static int severityFrom(StatusLevel statusLevel) {
+		switch (statusLevel) {
+		case ERROR: return IMarker.SEVERITY_ERROR;
+		case WARNING: return IMarker.SEVERITY_WARNING;
+		case INFO: return IMarker.SEVERITY_INFO;
+		case OK: return IMarker.SEVERITY_INFO; // Shouldn't happen
+		}
+		throw assertFail();
 	}
 	
 }

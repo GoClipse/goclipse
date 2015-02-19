@@ -10,13 +10,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,19 +42,10 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	public static final Pattern WINDOWS_DRIVE_LETTER = Pattern.compile("[a-zA-Z]:\\\\.*", Pattern.DOTALL);
 	
 	@Override
-	protected ArrayList<ToolSourceMessage> parseErrors(StringReader sr) throws IOException {
-		buildMessages = new ArrayList2<>();
-
-		BufferedReader br = new BufferedReader(sr);
-		
-		while(true) {
-			String outputLine = br.readLine();
-			if(outputLine == null) {
-				break;
-			}
+	protected void doParseLine(String outputLine, BufferedReader br) throws IOException {
 			if(outputLine.startsWith("# ")) {
 				// Not necessary for now
-				continue;
+				return;
 			}
 			
 			String pathDevicePrefix = "";
@@ -70,13 +57,13 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 			}
 			
 			if(!outputLine.contains(":")) {
-				continue; // Ignore line
+				return; // Ignore line
 			}
 			
 			Matcher matcher = ERROR_LINE_Regex.matcher(outputLine);
 			if(!matcher.matches()) {
 				handleUnknownLineSyntax(outputLine);
-				continue;
+				return;
 			}
 			
 			String pathString = pathDevicePrefix + matcher.group(1);
@@ -102,16 +89,8 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 				addBuildError(parseError(pathString, lineString, columnString, errorMessage));
 			} catch (CommonException ce) {
 				handleLineParseError(ce);
-				continue;
+				return;
 			}
-		}
-		
-		return buildMessages;
-	}
-	
-	@Override
-	protected void doParseLine(String outputLine) {
-		 assertFail();
 	}
 	
 	protected ToolSourceMessage parseError(String pathString, String lineString,
