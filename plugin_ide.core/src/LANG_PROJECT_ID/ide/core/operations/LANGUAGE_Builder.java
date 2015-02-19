@@ -14,7 +14,7 @@ import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
 import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.LocationValidator;
-import melnorme.lang.tooling.ops.ToolSourceError;
+import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -50,7 +50,7 @@ public class LANGUAGE_Builder extends LangProjectBuilderExt {
 	
 	@Override
 	protected void processBuildResult(ExternalProcessResult buildAllResult) throws CoreException {
-		ArrayList2<ToolSourceError> buildErrors = new ArrayList2<>(); // TODO: Lang
+		ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); // TODO: Lang
 		
 		addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(getProject()));
 	}
