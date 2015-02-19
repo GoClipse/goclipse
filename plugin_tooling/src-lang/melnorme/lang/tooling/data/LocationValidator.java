@@ -12,7 +12,6 @@ package melnorme.lang.tooling.data;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.data.StatusException.StatusLevel;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;

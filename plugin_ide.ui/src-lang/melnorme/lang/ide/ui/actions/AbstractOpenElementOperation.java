@@ -21,7 +21,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
-import melnorme.lang.tooling.ops.SourceLineColumnLocation;
+import melnorme.lang.tooling.ops.SourceLineColumnRange;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -89,7 +89,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 			dialogInfo(findResult.getInfoMessage());
 		}
 		
-		SourceLineColumnLocation location = findResult.getLocation();
+		SourceLineColumnRange location = findResult.getLocation();
 		if(location == null) {
 			Display.getCurrent().beep();
 			return;
@@ -98,7 +98,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		openEditorForLocation(location);
 	}
 	
-	protected void openEditorForLocation(SourceLineColumnLocation location) throws CoreException {
+	protected void openEditorForLocation(SourceLineColumnRange location) throws CoreException {
 		IEditorInput newInput = getNewEditorInput(location.path);
 		
 		ITextEditor newEditor = EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, 

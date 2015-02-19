@@ -15,9 +15,9 @@ public class FindDefinitionResult {
 	
 	protected final String errorMessage;
 	protected final String infoMessage;
-	protected final SourceLineColumnLocation location;
+	protected final SourceLineColumnRange location;
 	
-	public FindDefinitionResult(String infoMessage, SourceLineColumnLocation location) {
+	public FindDefinitionResult(String infoMessage, SourceLineColumnRange location) {
 		this.errorMessage = null;
 		this.infoMessage = infoMessage;
 		this.location = location;
@@ -41,7 +41,7 @@ public class FindDefinitionResult {
 		return infoMessage;
 	}
 	
-	public SourceLineColumnLocation getLocation() {
+	public SourceLineColumnRange getLocation() {
 		return location;
 	}
 	

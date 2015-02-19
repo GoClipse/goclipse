@@ -22,6 +22,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
 import melnorme.utilbox.misc.ExceptionTrackingRunnable;
+import melnorme.utilbox.misc.IByteSequence;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -158,11 +159,11 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 			this.stderr = stderr;
 		}
 		
-		public ByteArrayOutputStreamExt getStdOutBytes() {
+		public IByteSequence getStdOutBytes() {
 			return stdout;
 		}
 		
-		public ByteArrayOutputStreamExt getStdErrBytes() {
+		public IByteSequence getStdErrBytes() {
 			return stderr;
 		}
 		
