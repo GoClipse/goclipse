@@ -16,52 +16,59 @@ import static melnorme.utilbox.misc.HashcodeUtil.getHashCode;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.misc.HashcodeUtil;
 
-public class ToolSourceError {
+public class ToolSourceMessage {
 	
-	public final SourceLineColumnLocation location;
-	public final String errorMessage;
+	public final SourceLineColumnRange range;
+	public final StatusLevel kind;
+	public final String message;
 	
-	public ToolSourceError(SourceLineColumnLocation location, String errorMessage) {
-		this.location = assertNotNull(location);
-		this.errorMessage = assertNotNull(errorMessage);
+	public ToolSourceMessage(SourceLineColumnRange range, StatusLevel level, String message) {
+		this.range = assertNotNull(range);
+		this.message = assertNotNull(message);
+		this.kind = assertNotNull(level);
 	}
 	
 	public Path getFilePath() {
-		return location.path;
+		return range.path;
 	}
 	
 	public int getFileLineNumber() {
-		return location.line;
+		return range.line;
 	}
 	
 	public int getFileColumnNumber() {
-		return location.column;
+		return range.column;
 	}
 	
-	public String getErrorMessage() {
-		return errorMessage;
+	public StatusLevel getMessageKind() {
+		return kind;
+	}
+	
+	public String getMessage() {
+		return message;
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
-		if(!(obj instanceof ToolSourceError)) return false;
+		if(!(obj instanceof ToolSourceMessage)) return false;
 		
-		ToolSourceError other = (ToolSourceError) obj;
+		ToolSourceMessage other = (ToolSourceMessage) obj;
 		
-		return areEqual(location, other.location) && areEqual(errorMessage, other.errorMessage);
+		return areEqual(range, other.range) && areEqual(kind, other.kind) && areEqual(message, other.message);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combineHashCodes(getHashCode(location), getHashCode(errorMessage));
+		return HashcodeUtil.combineHashCodes(getHashCode(range), getHashCode(message));
 	}
 	
 	@Override
 	public String toString() {
-		return location.path + ":" + location.line + ":" + location.column + ": " + errorMessage;
+		return range + " " + kind + ": "+ message;
 	}
 	
 }

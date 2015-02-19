@@ -19,8 +19,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import melnorme.lang.tooling.ops.SourceLineColumnLocation;
-import melnorme.lang.tooling.ops.ToolSourceError;
+import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.core.CommonException;
 
 import org.junit.Test;
@@ -30,8 +31,8 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	
 	protected static final Path BUILD_OUTPUT_TestResources = getTestResourcePath("buildOutput");
 	
-	protected static ToolSourceError error(Path path, int line, int column, String errorMessage) {
-		return new ToolSourceError(new SourceLineColumnLocation(path, line, column), errorMessage);
+	protected static ToolSourceMessage error(Path path, int line, int column, String errorMessage) {
+		return new ToolSourceMessage(new SourceLineColumnRange(path, line, column), StatusLevel.ERROR, errorMessage);
 	}
 	
 	@Test
@@ -45,7 +46,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	protected void runTest() {
 		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor() {
 			@Override
-			protected void handleParseError(CommonException ce) {
+			protected void handleLineParseError(CommonException ce) {
 				assertFail();
 			}
 		};
@@ -56,7 +57,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		testParseError(buildProcessor, "asdfsdaf/asdfsd", listFrom()); 
 		
 		
-		List<ToolSourceError> OUTPUTA_Errors = listFrom(
+		List<ToolSourceMessage> OUTPUTA_Errors = listFrom(
 			error(path("MyGoLibFoo/libfoo/blah.go"), 7, -1, "undefined: asdfsd"),
 			error(path("MyGoLibFoo/libfoo/blah.go"), 10, -1, "not enough arguments in call to fmt.Printf"),
 			error(path("MyGoLibFoo/foo.go"), 3, -1, "undefined: ziggy"),
@@ -74,7 +75,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		String errorMessage3 = findMatch(OUTPUT_B, "cannot find package \"zzz.*\\n.*\\n.*", 0).replace("\r", "");
 		
 		
-		List<ToolSourceError> OUTPUTB_Errors = listFrom(
+		List<ToolSourceMessage> OUTPUTB_Errors = listFrom(
 			error(path("libbar/blah.go"), 3, 8, errorMessage1),
 			error(path("../MyGoLibFoo/libfoo/blah.go"), 3, 8, errorMessage2),
 			error(TR_SAMPLE_GOPATH_ENTRY.resolve("src/samplePackage/foo.go"), 3, 2, errorMessage3)
@@ -85,7 +86,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	}
 	
 	protected void testParseError(GoBuildOutputProcessor buildProcessor, String stderr, List<?> expected) {
-		buildProcessor.parseErrors(stderr);
+		buildProcessor.parseMessages(stderr);
 		assertEquals(buildProcessor.getBuildErrors(), expected);
 	}
 	
@@ -100,11 +101,11 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	protected void runInvalidSyntaxTest() {
 		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor() {
 			@Override
-			protected void handleParseError(CommonException ce) {
+			protected void handleLineParseError(CommonException ce) {
 			}
 		};
 		
-		buildProcessor.parseErrors("libbar\blah.go:");
+		buildProcessor.parseMessages("libbar\blah.go:");
 	}
 	
 }

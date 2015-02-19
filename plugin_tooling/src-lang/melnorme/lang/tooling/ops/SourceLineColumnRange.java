@@ -17,16 +17,24 @@ import java.nio.file.Path;
 
 import melnorme.utilbox.misc.HashcodeUtil;
 
-public class SourceLineColumnLocation {
+public class SourceLineColumnRange {
 	
 	public final Path path;
 	public final int line; // 1-based index
 	public final int column; // 1-based index
+	public final int endLine; // 1-based index
+	public final int endColumn; // 1-based index
 	
-	public SourceLineColumnLocation(Path path, int line, int column) {
+	public SourceLineColumnRange(Path path, int line, int column, int endLine, int endColumn) {
 		this.path = assertNotNull(path);
 		this.line = line;
 		this.column = column;
+		this.endLine = endLine;
+		this.endColumn = endColumn;
+	}
+	
+	public SourceLineColumnRange(Path path, int line, int column) {
+		this(path, line, column, -1, -1);
 	}
 	
 	public int getLineIndex() {
@@ -51,12 +59,22 @@ public class SourceLineColumnLocation {
 		if(obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
-		SourceLineColumnLocation other = (SourceLineColumnLocation) obj;
+		SourceLineColumnRange other = (SourceLineColumnRange) obj;
 		return 
-				column == other.column &&
 				line == other.line &&
+				column == other.column &&
+				endLine == other.endLine &&
+				endColumn == other.endColumn &&
 				areEqual(path, other.path)
 		;
+	}
+	
+	@Override
+	public String toString() {
+		String startStr = line  + (column == -1 ? "" : ":" + column);
+		String endStr = endLine == - 1 ? "" : 
+			(" " + endLine + (endColumn == -1 ? "" : ":" + endColumn));
+		return "[" + startStr + endStr + "]";
 	}
 	
 }

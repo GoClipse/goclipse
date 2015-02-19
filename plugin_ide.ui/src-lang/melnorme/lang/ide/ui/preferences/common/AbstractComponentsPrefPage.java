@@ -25,7 +25,7 @@ import melnorme.lang.tooling.data.IFieldValidator;
 import melnorme.lang.tooling.data.LocationOrSinglePathValidator;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusException.StatusLevel;
+import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.components.AbstractField;
 import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.util.swt.components.fields.ComboBoxField;

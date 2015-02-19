@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 
 import melnorme.lang.tooling.ops.FindDefinitionResult;
-import melnorme.lang.tooling.ops.SourceLineColumnLocation;
+import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -110,7 +110,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		
 		Path path = parsePath(pathStr);
 		
-		return new FindDefinitionResult(null, new SourceLineColumnLocation(path, line, column));
+		return new FindDefinitionResult(null, new SourceLineColumnRange(path, line, column));
 	}
 	
 }

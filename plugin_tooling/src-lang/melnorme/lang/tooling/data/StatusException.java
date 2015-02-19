@@ -5,17 +5,6 @@ import melnorme.utilbox.core.CommonException;
 @SuppressWarnings("serial")
 public class StatusException extends CommonException {
 	
-	public static enum StatusLevel {
-		OK,
-		INFO,
-		WARNING,
-		ERROR,;
-		
-		public boolean isOkStatus() {
-			return this == OK;
-		}
-	}
-	
 	protected final StatusLevel statusLevel;
 	
 	public StatusException(StatusLevel statusLevel, String message) {

@@ -16,48 +16,25 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import melnorme.lang.tooling.ops.SourceLineColumnLocation;
-import melnorme.lang.tooling.ops.ToolSourceError;
-import melnorme.lang.utils.ParseHelper;
+import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.ops.BuildOutputParser;
+import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class GoBuildOutputProcessor extends ParseHelper {
-	
-	protected ArrayList2<ToolSourceError> buildErrors;
+public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	
 	public GoBuildOutputProcessor() {
 	}
 	
-	public ArrayList2<ToolSourceError> getBuildErrors() {
-		return buildErrors;
+	public ArrayList2<ToolSourceMessage> getBuildErrors() {
+		return buildMessages;
 	}
-	
-	public void parseOutput(ExternalProcessResult result) {
-		parseErrors(result.stderr.toString());
-	}
-	
-	public void parseErrors(String stderr) {
-		buildErrors = new ArrayList2<>();
-		
-		StringReader sr = new StringReader(stderr);
-		try {
-			parseErrors(sr);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertFail();
-		}
-	}
-	
-	protected final void handleUnknownLineSyntax(String line) {
-		handleParseError(new CommonException("Unknown error line syntax: " + line));
-	}
-	
-	protected abstract void handleParseError(CommonException ce);
 	
 	protected static final Pattern ERROR_LINE_Regex = Pattern.compile(
 			"^([^:\\n]*):" + // file
@@ -68,7 +45,10 @@ public abstract class GoBuildOutputProcessor extends ParseHelper {
 	
 	public static final Pattern WINDOWS_DRIVE_LETTER = Pattern.compile("[a-zA-Z]:\\\\.*", Pattern.DOTALL);
 	
-	protected void parseErrors(StringReader sr) throws IOException {
+	@Override
+	protected ArrayList<ToolSourceMessage> parseErrors(StringReader sr) throws IOException {
+		buildMessages = new ArrayList2<>();
+
 		BufferedReader br = new BufferedReader(sr);
 		
 		while(true) {
@@ -121,27 +101,31 @@ public abstract class GoBuildOutputProcessor extends ParseHelper {
 			try {
 				addBuildError(parseError(pathString, lineString, columnString, errorMessage));
 			} catch (CommonException ce) {
-				handleParseError(ce);
+				handleLineParseError(ce);
 				continue;
 			}
 		}
+		
+		return buildMessages;
 	}
 	
-	protected ToolSourceError parseError(String pathString, String lineString,
+	@Override
+	protected void doParseLine(String outputLine) {
+		 assertFail();
+	}
+	
+	protected ToolSourceMessage parseError(String pathString, String lineString,
 			String columnString, String errorMessage) throws CommonException {
 		Path filePath = parsePath(pathString).normalize();
 		int lineNo = parsePositiveInt(lineString);
-		int column = parseColumnString(columnString);
+		int column = parseOptionalPositiveInt(columnString);
 		
-		return new ToolSourceError(new SourceLineColumnLocation(filePath, lineNo, column), errorMessage);
+		return new ToolSourceMessage(new SourceLineColumnRange(filePath, lineNo, column), 
+			StatusLevel.ERROR, errorMessage);
 	}
 	
-	protected int parseColumnString(String columnStr) throws CommonException {
-		return columnStr == null ? -1 : parsePositiveInt(columnStr);
-	}
-	
-	protected void addBuildError(ToolSourceError be) {
-		buildErrors.add(be);
+	protected void addBuildError(ToolSourceMessage be) {
+		buildMessages.add(be);
 	}
 	
 }

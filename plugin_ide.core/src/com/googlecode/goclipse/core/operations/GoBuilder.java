@@ -112,7 +112,7 @@ public class GoBuilder extends LangProjectBuilder {
 		
 		GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 			@Override
-			protected void handleParseError(CommonException ce) {
+			protected void handleLineParseError(CommonException ce) {
 				LangCore.logError(ce.getMessage(), ce.getCause());
 			}
 		};

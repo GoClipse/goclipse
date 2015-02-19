@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusException.StatusLevel;
+import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 
