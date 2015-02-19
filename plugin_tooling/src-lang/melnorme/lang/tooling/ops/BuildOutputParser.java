@@ -46,13 +46,13 @@ public abstract class BuildOutputParser extends ParseHelper {
 	public ArrayList<ToolSourceMessage> parseMessages(String stderr) {
 		StringReader sr = new StringReader(stderr);
 		try {
-			return parseErrors(sr);
+			return parseMessages(sr);
 		} catch (IOException e) {
 			throw assertFail();
 		}
 	}
 	
-	protected ArrayList<ToolSourceMessage> parseErrors(StringReader sr) throws IOException {
+	protected ArrayList<ToolSourceMessage> parseMessages(StringReader sr) throws IOException {
 		buildMessages = new ArrayList2<>();
 		
 		BufferedReader br = new BufferedReader(sr);
@@ -63,13 +63,13 @@ public abstract class BuildOutputParser extends ParseHelper {
 				break;
 			}
 			
-			doParseLine(outputLine);
+			doParseLine(outputLine, br);
 		}
 		
 		return buildMessages;
 	}
 	
-	protected abstract void doParseLine(String outputLine);
+	protected abstract void doParseLine(String outputLine, BufferedReader br);
 	
 	protected void addMessage(String pathString, String lineString, String columnString, String endLineString,
 			String endColumnString, String messageTypeString, String message) {
@@ -81,7 +81,7 @@ public abstract class BuildOutputParser extends ParseHelper {
 		}
 	}
 	
-	protected final void handleUnknownLineSyntax(String line) {
+	protected void handleUnknownLineSyntax(String line) {
 		handleLineParseError(new CommonException("Unknown error line syntax: " + line));
 	}
 	
@@ -89,8 +89,9 @@ public abstract class BuildOutputParser extends ParseHelper {
 	
 	/* -----------------  ----------------- */
 	
-	protected ToolSourceMessage createMessage(String pathString, String lineString, String columnString, String endLineString,
-			String endColumnString, String messageTypeString, String message) throws CommonException {
+	protected ToolSourceMessage createMessage(String pathString, String lineString, String columnString, 
+			String endLineString, String endColumnString, 
+			String messageTypeString, String message) throws CommonException {
 		
 		Path filePath = parsePath(pathString).normalize();
 		int lineNo = parsePositiveInt(lineString);
