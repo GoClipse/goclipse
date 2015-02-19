@@ -22,6 +22,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -32,6 +33,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.resources.IBuildConfiguration;
@@ -203,25 +205,47 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 		SourceLineColumnRange range = buildmessage.range;
 		
+		SourceRange messageSR;
+		
+		ITextFileBufferManager fileBufferManager = FileBuffers.getTextFileBufferManager();
+		fileBufferManager.connect(file.getFullPath(), LocationKind.IFILE, null);
+		
 		try {
-			ITextFileBufferManager fileBufferManager = FileBuffers.getTextFileBufferManager();
-			IDocument doc = fileBufferManager.getTextFileBuffer(file.getFullPath(), LocationKind.IFILE).getDocument();
-			
-			int charStart;
-			int charEnd;
-			
-			int startLine;
-			int startColumn;
-			
+			ITextFileBuffer tfb = fileBufferManager.getTextFileBuffer(file.getFullPath(), LocationKind.IFILE);
+			messageSR = getMessageRangeUsingDocInfo(range, tfb.getDocument());
+		} finally {
+			fileBufferManager.disconnect(file.getFullPath(), LocationKind.IFILE, null);
+		}
+		
+		if(messageSR != null) {
+			try {
+				marker.setAttribute(IMarker.CHAR_START, messageSR.getStartPos());
+				marker.setAttribute(IMarker.CHAR_END, messageSR.getEndPos());
+			} catch (CoreException ce) {
+				LangCore.logStatus(ce);
+			}
+		}
+		
+	}
+
+	protected SourceRange getMessageRangeUsingDocInfo(SourceLineColumnRange range, IDocument doc) {
+		
+		int charStart;
+		int charEnd;
+		
+		int startLine;
+		int startColumn;
+		
+		try {
 			try {
 				startLine = range.getValidLineIndex();
 				startColumn = range.getValidColumnIndex();
 				
 				charStart = doc.getLineOffset(startLine) + startColumn;
 			} catch (CommonException ce) {
-				return;
+				return null;
 			}
-
+			
 			int endLine;
 			int endColumn;
 			try {
@@ -233,13 +257,11 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			} catch (CommonException e) {
 				charEnd = charStart + 1;
 			}
-			
-			marker.setAttribute(IMarker.CHAR_START, charStart);
-			marker.setAttribute(IMarker.CHAR_END, charEnd);
-		} catch (BadLocationException e) {
-			// Ignore, don't set
+		} catch(BadLocationException e ) {
+			return null;
 		}
 		
+		return SourceRange.srStartToEnd(charStart, charEnd);
 	}
 	
 	public static int severityFrom(StatusLevel statusLevel) {
