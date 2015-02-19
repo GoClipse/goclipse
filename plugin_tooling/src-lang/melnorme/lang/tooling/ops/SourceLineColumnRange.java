@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.nio.file.Path;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.HashcodeUtil;
 
 public class SourceLineColumnRange {
@@ -38,13 +39,39 @@ public class SourceLineColumnRange {
 	}
 	
 	public int getLineIndex() {
-		return line - 1;
+		return toIndex(line);
 	}
 	
 	public int getColumnIndex() {
-		return column - 1;
+		return toIndex(column);
 	}
 	
+	protected static int toIndex(int oneBasedPosition) {
+		return oneBasedPosition == -1 ? -1 : oneBasedPosition - 1;
+	}
+	
+	protected static int toValidIndex(int position) throws CommonException {
+		if(position <=0 ) {
+			throw new CommonException("Invalid position.");
+		}
+		return position - 1;
+	}
+	
+	public int getValidLineIndex() throws CommonException {
+		return toValidIndex(line);
+	}
+	
+	public int getValidColumnIndex() throws CommonException {
+		return toValidIndex(column);
+	}
+	
+	public int getValidEndLineIndex() throws CommonException {
+		return toValidIndex(endLine);
+	}
+	
+	public int getValidEndColumnIndex() throws CommonException {
+		return toValidIndex(endColumn);
+	}
 	
 	@Override
 	public int hashCode() {

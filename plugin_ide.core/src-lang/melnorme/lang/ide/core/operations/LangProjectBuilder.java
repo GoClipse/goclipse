@@ -23,10 +23,15 @@ import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -35,6 +40,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 
 public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
@@ -161,10 +168,6 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			
 			IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(path.toUri());
 			for (IFile file : files) {
-				if(!file.exists())
-					continue;
-				
-				// TODO: check if marker already exists?
 				addErrorMarker(file, buildError);
 			}
 		}
@@ -172,20 +175,65 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected void addErrorMarker(IResource resource, ToolSourceMessage buildError) throws CoreException {
-		IMarker dubMarker = resource.createMarker(getBuildProblemId());
+		if(!resource.exists())
+			return;
 		
-		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		dubMarker.setAttribute(IMarker.MESSAGE, buildError.getMessage());
+		// TODO: check if marker already exists?
+		IMarker marker = resource.createMarker(getBuildProblemId());
+		
+		marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+		marker.setAttribute(IMarker.MESSAGE, buildError.getMessage());
+		
+		if(!(resource instanceof IFile)) {
+			return;
+		}
+		
+		IFile file = (IFile) resource;
 		
 		int line = buildError.getFileLineNumber();
 		if(line >= 0) {
-			dubMarker.setAttribute(IMarker.LINE_NUMBER, line);
+			marker.setAttribute(IMarker.LINE_NUMBER, line);
 		}
-		int column = buildError.getFileColumnNumber();
-		if(column >= 0) {
-			// TODO: map column to position?
-			//dubMarker.setAttribute(IMarker.LINE_NUMBER, column);
+		
+		SourceLineColumnRange range = buildError.range;
+		
+		try {
+			ITextFileBufferManager fileBufferManager = FileBuffers.getTextFileBufferManager();
+			IDocument doc = fileBufferManager.getTextFileBuffer(file.getFullPath(), LocationKind.IFILE).getDocument();
+			
+			int charStart;
+			int charEnd;
+			
+			int startLine;
+			int startColumn;
+			
+			try {
+				startLine = range.getValidLineIndex();
+				startColumn = range.getValidColumnIndex();
+				
+				charStart = doc.getLineOffset(startLine) + startColumn;
+			} catch (CommonException ce) {
+				return;
+			}
+
+			int endLine;
+			int endColumn;
+			try {
+				endLine = range.getValidEndLineIndex();
+				endColumn = range.getValidEndColumnIndex();
+				
+				charEnd = doc.getLineOffset(endLine) + endColumn;
+				
+			} catch (CommonException e) {
+				charEnd = charStart + 1;
+			}
+			
+			marker.setAttribute(IMarker.CHAR_START, charStart);
+			marker.setAttribute(IMarker.CHAR_END, charEnd);
+		} catch (BadLocationException e) {
+			// Ignore, don't set
 		}
+		
 	}
 	
 }
