@@ -5,6 +5,7 @@
  * Clean up UI and behavior of main Go preference page.
  * Added: two new syntax highlighting options: Operators, and Syntax Control Characters (braces, parentheses, semicolon, etc.).
  * Added: An improved New Project wizard.
+ * Added: improved build error reporting: an error squigly line is now show in the column where the error occurred.
 
 ### Goclipse 0.9.1
  * Fixed: Builder does not ignore folders with names starting with "_" or ".".
