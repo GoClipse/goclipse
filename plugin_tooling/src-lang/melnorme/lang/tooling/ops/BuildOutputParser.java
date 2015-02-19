@@ -69,7 +69,7 @@ public abstract class BuildOutputParser extends ParseHelper {
 		return buildMessages;
 	}
 	
-	protected abstract void doParseLine(String outputLine, BufferedReader br);
+	protected abstract void doParseLine(String outputLine, BufferedReader br) throws IOException;
 	
 	protected void addMessage(String pathString, String lineString, String columnString, String endLineString,
 			String endColumnString, String messageTypeString, String message) {
