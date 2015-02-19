@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.tools;
 
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.CheckBoxField;
@@ -68,6 +69,8 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 		createFileComponent(group, getDaemonToolName() + " path:", DaemonEnginePreferences.DAEMON_PATH.key, true);
 	}
 	
-	protected abstract String getDaemonToolName();
+	protected String getDaemonToolName() {
+		return LangUIPlugin_Actual.DAEMON_TOOL_Name;
+	}
 	
 }
