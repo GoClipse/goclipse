@@ -15,24 +15,17 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.WizardMessages_Actual;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
-import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.core.operations.GoBuilder.GoSDKLocationValidator;
 import com.googlecode.goclipse.ui.GoPluginImages;
-import com.googlecode.goclipse.ui.preferences.GoPreferencePage;
 
 /**
  * Go New Project Wizard.
@@ -92,27 +85,8 @@ class GoProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	}
 	
 	@Override
-	protected void createContents(Composite parent) {
-		super.createContents(parent);
-		
-		Link link = SWTFactoryUtil.createLink(parent, SWT.NONE, 
-			"<a>Configure Go preferences...</a>", 
-			GridDataFactory.swtDefaults().span(1, 0).create());
-		
-		link.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				openGoPreferencePage();
-			}
-		});
-	}
-	
-	protected void openGoPreferencePage() {
-		PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(getShell(), GoPreferencePage.ID, null, null);
-		
-		if (pref != null) {
-			pref.open();
-		}
+	protected void validatePreferences() throws ValidationException {
+		 new GoSDKLocationValidator().getValidatedField(GoEnvironmentPrefs.GO_ROOT.get());
 	}
 	
 }

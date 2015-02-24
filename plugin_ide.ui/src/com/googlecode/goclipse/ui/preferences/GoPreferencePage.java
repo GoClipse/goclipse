@@ -21,8 +21,6 @@ import com.googlecode.goclipse.core.GoCore;
 
 public class GoPreferencePage extends AbstractComponentsPrefPage {
 	
-	public static final String ID = "com.googlecode.goclipse.ui.PreferencePage";
-	
 	protected final GoSDKConfigBlock goSDKConfigBlock = new GoSDKConfigBlock(this);
 	
 	public GoPreferencePage() {

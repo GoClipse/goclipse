@@ -65,39 +65,39 @@
 	
 	<extension point="org.eclipse.ui.preferencePages">
       <page
-            id="com.googlecode.goclipse.ui.PreferencePage"
+            id="com.googlecode.goclipse.ui.PreferencePages.Root"
             class="com.googlecode.goclipse.ui.preferences.GoPreferencePage"
             name="Go">
       </page>
       <page
-      		category="com.googlecode.goclipse.ui.PreferencePage"
-            id="com.googlecode.goclipse.ui.PreferencePage.Editor"
+      		category="com.googlecode.goclipse.ui.PreferencePages.Root"
+            id="com.googlecode.goclipse.ui.PreferencePages.Editor"
             class="com.googlecode.goclipse.ui.preferences.GoEditorPreferencePage"
             name="Editor">
       </page>
       <page
-            category="com.googlecode.goclipse.ui.PreferencePage.Editor"
-            id="com.googlecode.goclipse.ui.PreferencePage.Editor.Highlighting"
+            category="com.googlecode.goclipse.ui.PreferencePages.Editor"
+            id="com.googlecode.goclipse.ui.PreferencePages.Editor.Highlighting"
             class="com.googlecode.goclipse.ui.preferences.GoSyntaxHighlightingPreferencePage"
             name="Syntax Highlighting">
       </page>
       <page
-            category="com.googlecode.goclipse.ui.PreferencePage.Editor"
-            id="com.googlecode.goclipse.ui.PreferencePage.Editor.Typing"
+            category="com.googlecode.goclipse.ui.PreferencePages.Editor"
+            id="com.googlecode.goclipse.ui.PreferencePages.Editor.Typing"
             class="com.googlecode.goclipse.ui.preferences.GoEditorTypingPreferencePage"
             name="Typing">
       </page>
 		<page
-			category="com.googlecode.goclipse.ui.PreferencePage"
-			id="com.googlecode.goclipse.ui.preferences.GoOperationsConsolePrefPage"
+			category="com.googlecode.goclipse.ui.PreferencePages.Root"
+			id="com.googlecode.goclipse.ui.PreferencePages.GoOperationsConsolePrefPage"
 			class="com.googlecode.goclipse.ui.preferences.GoOperationsConsolePrefPage"
 			name="Build Console">
 		</page>
 		
 		<page
-			category="com.googlecode.goclipse.ui.PreferencePage"
+			category="com.googlecode.goclipse.ui.PreferencePages.Root"
+			id="com.googlecode.goclipse.ui.PreferencePages.GocodePreferencePage"
 			class="com.googlecode.goclipse.ui.preferences.GoToolsPreferencePage"
-			id="com.googlecode.goclipse.ui.preferences.GocodePreferencePag"
 			name="Tools">
 		</page>
 		
