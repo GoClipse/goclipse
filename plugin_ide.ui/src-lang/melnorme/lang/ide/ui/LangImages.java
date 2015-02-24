@@ -33,7 +33,11 @@ public abstract class LangImages {
 	}
 	
 	protected static ImageHandle createManaged(String prefix, String name) {
-		return helper.createManaged(getKey(prefix, name));
+		return createManaged(getKey(prefix, name));
+	}
+	
+	protected static ImageHandle createManaged(String imagePath) {
+		return helper.createManaged(imagePath);
 	}
 	
 	protected static ImageHandle createFromPlatformSharedImage(String prefix, String name, String sharedImageName) {
