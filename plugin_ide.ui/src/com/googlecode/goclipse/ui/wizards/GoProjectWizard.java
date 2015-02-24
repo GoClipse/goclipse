@@ -39,7 +39,7 @@ import com.googlecode.goclipse.ui.preferences.GoPreferencePage;
  */
 public class GoProjectWizard extends LangNewProjectWizard {
 	
-	protected final LANGUAGE_ProjectWizardFirstPage firstPage = new LANGUAGE_ProjectWizardFirstPage();
+	protected final GoProjectWizardFirstPage firstPage = new GoProjectWizardFirstPage();
 	
 	@Override
 	public LangProjectWizardFirstPage getFirstPage() {
@@ -82,9 +82,9 @@ public class GoProjectWizard extends LangNewProjectWizard {
 	
 }
 
-class LANGUAGE_ProjectWizardFirstPage extends LangProjectWizardFirstPage {
+class GoProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	
-	public LANGUAGE_ProjectWizardFirstPage() {
+	public GoProjectWizardFirstPage() {
 		setTitle(WizardMessages_Actual.LangNewProject_Page1_pageTitle);
 		setDescription(WizardMessages_Actual.LangNewProject_Page1_pageDescription);
 		
