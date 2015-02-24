@@ -41,6 +41,10 @@ public abstract class AbstractFieldExt2<VALUE> extends AbstractField<VALUE>{
 		return defaultFieldValue;
 	}
 	
+	public String getLabelText() {
+		return labelText;
+	}
+	
 	@Override
 	protected final void createContents(Composite topControl) {
 		createContents_do(topControl);

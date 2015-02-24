@@ -13,23 +13,23 @@ package melnorme.lang.ide.core.operations;
 import java.text.MessageFormat;
 
 import melnorme.lang.tooling.data.LocationValidator;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 
 public abstract class SDKLocationValidator extends LocationValidator {
 	
-	public SDKLocationValidator() {
+	public SDKLocationValidator(String fieldNamePrefix) {
+		super(fieldNamePrefix);
 		directoryOnly = true;
 	}
 	
 	@Override
-	protected Location getValidatedField_rest(Location sdkLocation) throws StatusException {
+	protected Location getValidatedField_rest(Location sdkLocation) throws ValidationException {
 		Location sdkExecutableLocation = getSDKExecutableLocation(sdkLocation);
 		
 		if(!sdkExecutableLocation.toFile().exists()) {
-			throw new StatusException(StatusLevel.WARNING, getSDKExecutableErrorMessage(sdkExecutableLocation));
+			throw createException(StatusLevel.WARNING, getSDKExecutableErrorMessage(sdkExecutableLocation));
 		}
 		return sdkExecutableLocation;
 	}

@@ -136,11 +136,11 @@ public class GoSDKConfigBlock extends AbstractComponentExt {
 			gdFillDefaults().span(numColumns, 1).grab(true, false).indent(0, 5).create());
 		
 		goToolPath.createComponentInlined(goSDK);
-		prefPage.connectFileField(GoEnvironmentPrefs.COMPILER_PATH.key, goToolPath, false);
+		prefPage.connectFileField(GoEnvironmentPrefs.COMPILER_PATH.key, goToolPath, false, goToolPath.getLabelText());
 		goFmtPath.createComponentInlined(goSDK);
-		prefPage.connectFileField(GoEnvironmentPrefs.FORMATTER_PATH.key, goFmtPath, false);
+		prefPage.connectFileField(GoEnvironmentPrefs.FORMATTER_PATH.key, goFmtPath, false, goFmtPath.getLabelText());
 		goDocPath.createComponentInlined(goSDK);
-		prefPage.connectFileField(GoEnvironmentPrefs.DOCUMENTOR_PATH.key, goDocPath, false);
+		prefPage.connectFileField(GoEnvironmentPrefs.DOCUMENTOR_PATH.key, goDocPath, false, goDocPath.getLabelText());
 		
 		/* -----------------  ----------------- */
 		

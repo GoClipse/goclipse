@@ -45,6 +45,11 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 public class GoBuilder extends LangProjectBuilder {
 	
 	public static class GoSDKLocationValidator extends SDKLocationValidator {
+		
+		public GoSDKLocationValidator() {
+			super("GOROOT:");
+		}
+		
 		@Override
 		protected String getSDKExecutable_append() {
 			return "bin/go"; 
