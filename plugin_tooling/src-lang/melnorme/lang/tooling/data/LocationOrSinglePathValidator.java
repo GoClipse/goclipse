@@ -16,11 +16,12 @@ import melnorme.utilbox.misc.Location;
 
 public class LocationOrSinglePathValidator extends LocationValidator {
 	
-	public LocationOrSinglePathValidator() {
+	public LocationOrSinglePathValidator(String fieldNamePrefix) {
+		super(fieldNamePrefix);
 	}
 	
 	@Override
-	protected Location validatePath(Path path) throws StatusException {
+	protected Location validatePath(Path path) throws ValidationException {
 		if(!path.isAbsolute() && path.getNameCount() == 1) {
 			return null; // special case allowed
 		}
