@@ -44,12 +44,16 @@ public class LocationValidator extends AbstractValidator implements IFieldValida
 			throw createException(StatusLevel.WARNING, ValidationMessages.Path_EmptyPath());
 		}
 		
+		Path path = createValidPath(pathString);
+		return validatePath(path);
+	}
+	
+	protected Path createValidPath(String pathString) throws ValidationException {
 		Path path = PathUtil.createPathOrNull(pathString);
 		if(path == null) {
 			throw createException(StatusLevel.ERROR, ValidationMessages.Path_InvalidPath(pathString));
 		}
-		
-		return validatePath(path);
+		return path;
 	}
 	
 	protected Location validatePath(Path path) throws ValidationException {
@@ -57,7 +61,7 @@ public class LocationValidator extends AbstractValidator implements IFieldValida
 		try {
 			location = Location.create2(path);
 		} catch (CommonException ce) {
-			throw createException(StatusLevel.ERROR, ValidationMessages.Location_NotAbsolute(path));
+			throw error_NotAbsolute(path);
 		}
 		
 		if(!location.toFile().exists()) {
@@ -66,6 +70,10 @@ public class LocationValidator extends AbstractValidator implements IFieldValida
 		
 		validateType(location);
 		return getValidatedField_rest(location);
+	}
+	
+	protected ValidationException error_NotAbsolute(Path path) throws ValidationException {
+		return createException(StatusLevel.ERROR, ValidationMessages.Location_NotAbsolute(path));
 	}
 	
 	public void validateType(Location location) throws ValidationException {
