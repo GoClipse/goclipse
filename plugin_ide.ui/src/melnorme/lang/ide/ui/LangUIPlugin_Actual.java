@@ -15,6 +15,8 @@ public final class LangUIPlugin_Actual {
 	
 	public static final String PLUGIN_ID = "LANG_PROJECT_ID.ide.ui";
 	
+	public static final String ROOT_PREF_PAGE_ID = PLUGIN_ID + ".PreferencePages.Root";
+	
 	public static final String RULER_CONTEXT = "#LANGUAGE_RulerContext";
 	public static final String EDITOR_CONTEXT = "#LANGUAGE_EditorContext";
 	

@@ -12,13 +12,17 @@ package LANG_PROJECT_ID.ide.ui.wizards;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.ui.WizardMessages_Actual;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
+import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.wizard.WizardPage;
+
+import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_Builder.LANGUAGE_SDKLocationValidator;
 
 /**
  * LANGUAGE New Project Wizard.
@@ -77,6 +81,11 @@ class LANGUAGE_ProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	public LANGUAGE_ProjectWizardFirstPage() {
 		setTitle(WizardMessages_Actual.LangNewProject_Page1_pageTitle);
 		setDescription(WizardMessages_Actual.LangNewProject_Page1_pageDescription);
+	}
+	
+	@Override
+	protected void validatePreferences() throws ValidationException {
+		new LANGUAGE_SDKLocationValidator().getValidatedField(SDKPreferences.SDK_PATH.get());
 	}
 	
 }

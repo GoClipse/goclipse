@@ -17,6 +17,8 @@ import java.net.URI;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
@@ -36,20 +38,25 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 
 public abstract class LangProjectWizardFirstPage extends WizardPage {
 	
 	protected final NameGroup nameGroup = new NameGroup();
-	protected final LocationGroup locationGroup = new LocationGroup(nameGroup);
-	protected final DetectGroup detectGroup = new DetectGroup();
+	protected final LocationGroup locationGroup = createLocationGroup();
+	protected final ProjectValidationGroup projectValidationGroup = createProjectValidationGroup();
+	protected final PreferencesValidationGroup prefValidationGroup = createPreferencesValidationGroup();
 	
 	public LangProjectWizardFirstPage() {
 		super(LangProjectWizardFirstPage.class.getSimpleName());
@@ -59,6 +66,18 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		super(pageName, title, titleImage);
 	}
 	
+	protected ProjectValidationGroup createProjectValidationGroup() {
+		return new ProjectValidationGroup();
+	}
+	protected LocationGroup createLocationGroup() {
+		return new LocationGroup(nameGroup);
+	}
+	protected PreferencesValidationGroup createPreferencesValidationGroup() {
+		return new PreferencesValidationGroup();
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public NameGroup getNameGroup() {
 		return nameGroup;
 	}
@@ -67,8 +86,8 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		return locationGroup;
 	}
 	
-	public DetectGroup getDetectGroup() {
-		return detectGroup;
+	public ProjectValidationGroup getDetectGroup() {
+		return projectValidationGroup;
 	}
 	
 	public IPath getProjectLocation() {
@@ -93,11 +112,16 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		Dialog.applyDialogFont(topControl);
 	}
 	
+	protected GridDataFactory sectionGDF() {
+		return fillDefaults().grab(true, false);
+	}
+	
 	protected void createContents(Composite parent) {
 		
-		nameGroup.createComponent(parent, fillDefaults().grab(true, false).create());
-		locationGroup.createComponent(parent, fillDefaults().grab(true, false).create());
-		detectGroup.createComponent(parent, fillDefaults().hint(500, SWT.DEFAULT).grab(true, false).create());
+		nameGroup.createComponent(parent, sectionGDF().create());
+		locationGroup.createComponent(parent, sectionGDF().create());
+		projectValidationGroup.createComponent(parent, sectionGDF().hint(500, SWT.DEFAULT).create());
+		prefValidationGroup.createComponent(parent, sectionGDF().hint(500, SWT.DEFAULT).create());
 		
 		IFieldValueListener listener = new IFieldValueListener() {
 			@Override
@@ -301,7 +325,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 	}
 	
-	public class DetectGroup extends AbstractComponentExt {
+	public class ProjectValidationGroup extends AbstractComponentExt {
 		
 		protected Label icon;
 		protected Link hintText;
@@ -336,15 +360,15 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			IPath projectLoc = getProjectLocation();
 			
 			if(projectHandle != null && projectHandle.exists()) {
-				setMessage(WizardMessages.LangNewProject_DetectGroup_projectExists);
+				setValidationMessage(WizardMessages.LangNewProject_DetectGroup_projectExists);
 			} else if(projectLoc != null && projectLoc.toFile().exists()) {
-				setMessage(WizardMessages.LangNewProject_DetectGroup_message);
+				setValidationMessage(WizardMessages.LangNewProject_DetectGroup_message);
 			} else {
-				setMessage(null);
+				setValidationMessage(null);
 			}
 		}
 		
-		protected void setMessage(String message) {
+		protected void setValidationMessage(String message) {
 			icon.setVisible(message != null);
 			hintText.setVisible(message != null);
 			hintText.setText(StringUtil.nullAsEmpty(message));
@@ -353,23 +377,73 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 	}
 	
+	public class PreferencesValidationGroup extends ProjectValidationGroup {
+		
+		@Override
+		protected void createContents(Composite parent) {
+			super.createContents(parent);
+			
+			icon.setImage(Dialog.getImage(Dialog.DLG_IMG_MESSAGE_WARNING));
+			
+			hintText.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					openPreferencePage();
+				}
+			});
+		}
+		
+		protected void openPreferencePage() {
+			PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(getShell(), 
+				LangUIPlugin_Actual.ROOT_PREF_PAGE_ID, null, null);
+			
+			if (pref != null) {
+				pref.open();
+				updateComponentFromInput();
+			}
+		}
+		
+		@Override
+		public void updateComponentFromInput() {
+			try {
+				validatePreferences();
+				setValidationMessage(null);
+			} catch (ValidationException ve) {
+				setPreferencesErrorMessage(ve);
+			}
+		}
+		
+		@SuppressWarnings("unused")
+		protected void setPreferencesErrorMessage(ValidationException ve) {
+			setValidationMessage("The "+ LangUIPlugin_Actual.LANGUAGE_NAME + 
+				" preferences have not been configured correctly.\n"+
+				"<a>Click here to configure preferences...</a>");
+		}
+		
+	}
+	
+	protected abstract void validatePreferences() throws ValidationException;
+	
 	protected boolean validateDialog() {
 		IStatus validationStatus = getValidationStatus();
 		
+		boolean valid;
 		if(validationStatus.isOK()) {
 			setErrorMessage(null);
 			setMessage(null);
 			setPageComplete(true);
 			
-			detectGroup.updateComponentFromInput();
-			
-			return true;
+			valid = true;
 		} else {
 			setErrorMessage(validationStatus.getMessage());
 			setPageComplete(false);
-			return false;
+			valid = false;
 		}
 		
+		projectValidationGroup.updateComponentFromInput();
+		prefValidationGroup.updateComponentFromInput();
+		
+		return valid;
 	}
 	
 	protected IStatus getValidationStatus() {

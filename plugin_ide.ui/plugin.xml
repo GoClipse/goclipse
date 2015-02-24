@@ -109,39 +109,39 @@
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
 			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
-			id=   "LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.Root"
 			name="%LangRootPreferencePage.name">
 		</page>
 		
 		<page
-			category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Root"
 			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_DaemonPreferencePage"
-			id=   "LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_DaemonPreferencePage"
+			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.LANGUAGE_Daemon"
 			name="%LangDaemonToolPrefPage.name">
 		</page>
 		<page
-			category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Root"
 			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
-			id=   "LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
+			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.LANGUAGE_ToolsConsole"
 			name="%LangToolsConsolePrefPage.name">
 		</page>
 		
 		<page
-			category="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Root"
 			class="LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
-			id=   "LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
+			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
 			name="%LangEditorPreferencePage.name">
 		</page>
 		<page
-			category="LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
+			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
 			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_EditorTypingPreferencePage"
-			id=   "LANG_PROJECT_ID.ide.ui.preferences.EditorSmartTypingPreferencePage"
+			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.EditorSmartTyping"
 			name="%LangEditorTypingPreferencePage.name">
 		</page>
 		<page
-			category="LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
+			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
 			class="LANG_PROJECT_ID.ide.ui.preferences.SourceColoringPreferencePage"
-			id=   "LANG_PROJECT_ID.ide.ui.preferences.SourceColoringPreferencePage"
+			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.SourceColoring"
 			name="%LangEditorSyntaxColoringPreferencePage.name">
 		</page>
 		
