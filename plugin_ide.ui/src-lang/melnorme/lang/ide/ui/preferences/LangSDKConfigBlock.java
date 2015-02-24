@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.preferences;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.AbstractField;
+import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -20,9 +21,13 @@ import org.eclipse.swt.widgets.Composite;
 
 public class LangSDKConfigBlock extends AbstractComponentExt {
 	
-	protected final LangSDKConfigBlock.LanguageSDKLocationGroup sdkLocationGroup = new LanguageSDKLocationGroup();
+	protected final LangSDKConfigBlock.LanguageSDKLocationGroup sdkLocationGroup = createSDKLocationGroup();
 	
 	public LangSDKConfigBlock() {
+	}
+	
+	protected LanguageSDKLocationGroup createSDKLocationGroup() {
+		return new LanguageSDKLocationGroup();
 	}
 	
 	public AbstractField<String> getLocationField() {
@@ -42,8 +47,11 @@ public class LangSDKConfigBlock extends AbstractComponentExt {
 
 	public static class LanguageSDKLocationGroup extends AbstractComponentExt {
 		
-		protected final DirectoryTextField sdkLocation = new DirectoryTextField(
-			PreferencesMessages.ROOT_SDKGroup_path_Label);
+		protected final ButtonTextField sdkLocation = createSdkLocationField();
+		
+		protected ButtonTextField createSdkLocationField() {
+			return new DirectoryTextField(PreferencesMessages.ROOT_SDKGroup_path_Label);
+		}
 		
 		@Override
 		protected Composite doCreateTopLevelControl(Composite parent) {
