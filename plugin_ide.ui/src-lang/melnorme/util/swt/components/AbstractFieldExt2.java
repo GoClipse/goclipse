@@ -36,6 +36,10 @@ public abstract class AbstractFieldExt2<VALUE> extends AbstractField<VALUE>{
 		this.defaultFieldValue = defaultFieldValue;
 	}
 	
+	public String getLabelText() {
+		return labelText;
+	}
+	
 	@Override
 	public final VALUE getDefaultFieldValue() {
 		return defaultFieldValue;

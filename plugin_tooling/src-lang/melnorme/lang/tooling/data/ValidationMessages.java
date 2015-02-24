@@ -19,6 +19,9 @@ public abstract class ValidationMessages {
 
 	public static String Path_Error_EmptyPath = 
 			"No path specified.";
+	public static String Path_EmptyPath() {
+		return Path_Error_EmptyPath;
+	}
 	
 	private static String Path_Error_InvalidPath = 
 			"Invalid path `{0}`.";
@@ -27,25 +30,25 @@ public abstract class ValidationMessages {
 	}
 	
 	private static String Location_Error_NotAbsolute = 
-			"Specified path `{0}` is not an absolute path.";
+			"Path `{0}` is not an absolute path.";
 	public static String Location_NotAbsolute(Path path) {
 		return MessageFormat.format(Location_Error_NotAbsolute, path);
 	}
 	
 	private static String Location_Error_DoesntExist = 
-			"Specified path `{0}` does not exist.";
+			"Path `{0}` does not exist.";
 	public static String Location_DoesntExist(Location location) {
 		return MessageFormat.format(Location_Error_DoesntExist, location);
 	}
 	
 	private static String Location_Error_NotAFile = 
-			"Specified path `{0}` is not a file.";
+			"Path `{0}` is not a file.";
 	public static String Location_NotAFile(Location location) {
 		return MessageFormat.format(Location_Error_NotAFile, location);
 	}
 	
 	private static String Location_Error_NotADirectory = 
-			"Specified path `{0}` is not a directory.";
+			"Path `{0}` is not a directory.";
 	public static String Location_NotADirectory(Location location) {
 		return MessageFormat.format(Location_Error_NotADirectory, location);
 	}

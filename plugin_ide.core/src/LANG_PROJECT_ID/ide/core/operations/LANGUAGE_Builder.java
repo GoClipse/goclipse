@@ -24,6 +24,11 @@ import org.eclipse.core.runtime.CoreException;
 public class LANGUAGE_Builder extends LangProjectBuilderExt {
 	
 	public static class LANGUAGE_SDKLocationValidator extends SDKLocationValidator {
+		
+		public LANGUAGE_SDKLocationValidator() {
+			super("SDK path:");
+		}
+		
 		@Override
 		protected String getSDKExecutable_append() {
 			return "bin/ls"; // TODO: LANG 

@@ -18,58 +18,66 @@ import melnorme.utilbox.misc.PathUtil;
 
 public class LocationValidator extends AbstractValidator implements IFieldValidator<Location> {
 
+	public final String fieldNamePrefix;
+	
 	public boolean canBeEmpty;
 	public boolean fileOnly;
 	public boolean directoryOnly;
 	
-	public LocationValidator() {
+	public LocationValidator(String fieldNamePrefix) {
+		this.fieldNamePrefix = fieldNamePrefix;
 		canBeEmpty = false;
 	}
 	
 	@Override
-	public Location getValidatedField(String pathString) throws StatusException {
+	protected String getFullMessage(String simpleMessage) {
+		return fieldNamePrefix + " " + super.getFullMessage(simpleMessage);
+	}
+	
+	@Override
+	public Location getValidatedField(String pathString) throws ValidationException {
 		
 		if(pathString.isEmpty()) {
 			if(canBeEmpty) {
 				return null;
 			}
-			throw new StatusException(StatusLevel.WARNING, ValidationMessages.Path_Error_EmptyPath);
+			throw createException(StatusLevel.WARNING, ValidationMessages.Path_EmptyPath());
 		}
 		
 		Path path = PathUtil.createPathOrNull(pathString);
 		if(path == null) {
-			throw new StatusException(StatusLevel.ERROR, ValidationMessages.Path_InvalidPath(pathString));
+			throw createException(StatusLevel.ERROR, ValidationMessages.Path_InvalidPath(pathString));
 		}
 		
 		return validatePath(path);
 	}
 	
-	protected Location validatePath(Path path) throws StatusException {
+	protected Location validatePath(Path path) throws ValidationException {
 		Location location;
 		try {
 			location = Location.create2(path);
 		} catch (CommonException ce) {
-			throw new StatusException(StatusLevel.ERROR, ValidationMessages.Location_NotAbsolute(path));
+			throw createException(StatusLevel.ERROR, ValidationMessages.Location_NotAbsolute(path));
 		}
 		
 		if(!location.toFile().exists()) {
-			throw new StatusException(StatusLevel.WARNING, ValidationMessages.Location_DoesntExist(location));
+			throw createException(StatusLevel.WARNING, ValidationMessages.Location_DoesntExist(location));
 		}
 		
 		validateType(location);
 		return getValidatedField_rest(location);
 	}
 	
-	public void validateType(Location location) throws StatusException {
+	public void validateType(Location location) throws ValidationException {
 		if(fileOnly && !location.toFile().isFile()) {
-			throw new StatusException(StatusLevel.WARNING, ValidationMessages.Location_NotAFile(location));
+			throw createException(StatusLevel.WARNING, ValidationMessages.Location_NotAFile(location));
 		}
 		if(directoryOnly && !location.toFile().isDirectory()) {
-			throw new StatusException(StatusLevel.WARNING, ValidationMessages.Location_NotADirectory(location));
+			throw createException(StatusLevel.WARNING, ValidationMessages.Location_NotADirectory(location));
 		}
 	}
 	
-	protected Location getValidatedField_rest(Location location) throws StatusException {
+	protected Location getValidatedField_rest(Location location) throws ValidationException {
 		return location;
 	}
 	

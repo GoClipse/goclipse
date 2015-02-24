@@ -187,32 +187,30 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		field.createComponentInlined(parent);
 	}
 	
-	public void connectFileField(String prefKey, AbstractField<String> stringField, boolean allowSinglePath) {
-		LocationValidator validator = allowSinglePath ? new LocationOrSinglePathValidator() : new LocationValidator();
+	public void connectFileField(String prefKey, AbstractField<String> stringField, boolean allowSinglePath, 
+			String fieldNamePrefix) {
+		LocationValidator validator = allowSinglePath ? 
+				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix);
 		validator.fileOnly = true;
 		connectStringField(prefKey, stringField, validator);
 	}
-	public void connectDirectoryField(String prefKey, AbstractField<String> stringField, boolean allowSinglePath) {
-		LocationValidator validator = allowSinglePath ? new LocationOrSinglePathValidator() : new LocationValidator();
+	public void connectDirectoryField(String prefKey, AbstractField<String> stringField, boolean allowSinglePath, 
+			String fieldNamePrefix) {
+		LocationValidator validator = allowSinglePath ? 
+				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix);
 		validator.directoryOnly = true;
 		connectStringField(prefKey, stringField, validator);
 	}
 	
-	public void createFileComponent(Group group, String label, String prefKey) {
-		createFileComponent(group, label, prefKey, false);
-	}
 	public void createFileComponent(Group group, String label, String prefKey, boolean allowSinglePath) {
 		FileTextField pathField = new FileTextField(label);
 		pathField.createComponentInlined(group);
-		connectFileField(prefKey, pathField, allowSinglePath);
-	}
-	public void createDirectoryComponent(Group group, String label, String prefKey) {
-		createDirectoryComponent(group, label, prefKey, false);
+		connectFileField(prefKey, pathField, allowSinglePath, label);
 	}
 	public void createDirectoryComponent(Group group, String label, String prefKey, boolean allowSinglePath) {
 		DirectoryTextField pathField = new DirectoryTextField(label);
 		pathField.createComponentInlined(group);
-		connectDirectoryField(prefKey, pathField, allowSinglePath);
+		connectDirectoryField(prefKey, pathField, allowSinglePath, label);
 	}
 	
 }
