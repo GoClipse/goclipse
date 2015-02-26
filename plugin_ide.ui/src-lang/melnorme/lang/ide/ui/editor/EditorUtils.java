@@ -28,7 +28,6 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
@@ -102,7 +101,11 @@ public class EditorUtils {
 	}
 	
 	public static IEditorInput getBestEditorInputForUri(URI uri) {
-		IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(uri, IWorkspaceRoot.INCLUDE_HIDDEN);
+		return getBestEditorInputForUri(uri, IResource.NONE);
+	}
+	
+	public static IEditorInput getBestEditorInputForUri(URI uri, int memberFlags) {
+		IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(uri, memberFlags);
 		if(files.length != 0) {
 			// As an improvement, if there is more than one file, we could try to see which one is more relevant
 			// instead of just using the first one.
@@ -163,12 +166,6 @@ public class EditorUtils {
 	public static IEditorPart openEditor(String editorId, IEditorInput newInput) throws CoreException {
 		IWorkbenchPage page = WorkbenchUtils.getActiveWorkbenchWindow().getActivePage(); 
 		return page.openEditor(newInput, editorId, true, IWorkbenchPage.MATCH_NONE);
-	}
-	
-	@Deprecated
-	public static ITextEditor openEditor(ITextEditor currentEditor, String editorId, 
-			IEditorInput newInput, SourceRange sourceRange, OpenNewEditorMode openNewEditor) throws CoreException {
-		return openTextEditorAndSetSelection(currentEditor, editorId, newInput, openNewEditor, sourceRange);
 	}
 	
 	public static ITextEditor openTextEditorAndSetSelection(String editorId, IEditorInput newInput, 
