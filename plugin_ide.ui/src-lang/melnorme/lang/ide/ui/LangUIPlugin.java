@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -187,7 +188,15 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		return fColorManager;
 	}
 	
-	/* -------- JDT copied stuff -------- */
+	/* -------- JDT/DLTK copied stuff -------- */
+	
+	public static IDialogSettings getDialogSettings(String sectionName) {
+		IDialogSettings settings = getInstance().getDialogSettings().getSection(sectionName);
+		if (settings == null) {
+			settings = getInstance().getDialogSettings().addNewSection(sectionName);
+		}
+		return settings;
+	}
 	
 	public static void flushInstanceScope() {
 		try {

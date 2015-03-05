@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.utilbox.misc.ArrayUtil;
 
@@ -43,20 +44,39 @@ public class LangDocumentPartitionerSetup implements IDocumentSetupParticipant {
 		return TextSettings_Actual.createPartitionScanner();
 	}
 	
-	public IDocumentPartitioner createDocumentPartitioner() {
+	public final IDocumentPartitioner createDocumentPartitioner() {
 		IPartitionTokenScanner scanner = createPartitionScanner();
 		return new FastPartitioner(scanner, LEGAL_CONTENT_TYPES);
 	}
 	
 	protected void setupDocumentPartitioner(IDocument document, String partitioning) {
 		IDocumentPartitioner partitioner = createDocumentPartitioner();
-		if (partitioner != null) {
-			partitioner.connect(document);
-			if (document instanceof IDocumentExtension3) {
-				IDocumentExtension3 extension3 = (IDocumentExtension3) document;
+		setupDocumentPartitioner$2(partitioner, document, partitioning);
+	}
+	
+	public static void setupDocumentPartitioner$2(IDocumentPartitioner partitioner, IDocument document, 
+			String partitioning) {
+		assertNotNull(partitioner);
+		
+		partitioner.connect(document);
+		if (document instanceof IDocumentExtension3) {
+			IDocumentExtension3 extension3 = (IDocumentExtension3) document;
+			extension3.setDocumentPartitioner(partitioning, partitioner);
+		} else {
+			document.setDocumentPartitioner(partitioner);
+		}
+	}
+	
+	public void setupPartitioningIfNotSet(IDocument document) {
+		if(document instanceof IDocumentExtension3) {
+			IDocumentExtension3 extension3 = (IDocumentExtension3) document;
+			
+			String partitioning = TextSettings_Actual.PARTITIONING_ID;
+			
+			if(extension3.getDocumentPartitioner(partitioning) == null) {
+				IDocumentPartitioner partitioner = createDocumentPartitioner();
+				partitioner.connect(document);
 				extension3.setDocumentPartitioner(partitioning, partitioner);
-			} else {
-				document.setDocumentPartitioner(partitioner);
 			}
 		}
 	}

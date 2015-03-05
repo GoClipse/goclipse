@@ -10,8 +10,8 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditorActionContributor;
+import melnorme.lang.ide.ui.editor.LangEditorActionContributorHelper;
 
-public class LANGUAGE_EditorActionContributor extends AbstractLangEditorActionContributor {
+public class LANGUAGE_EditorActionContributor extends LangEditorActionContributorHelper {
 	
 }

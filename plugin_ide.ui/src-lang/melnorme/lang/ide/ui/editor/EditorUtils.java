@@ -65,6 +65,10 @@ public class EditorUtils {
 	/* -----------------  ----------------- */
 	
 	public static IProject getAssociatedProject(IEditorInput input) {
+		if(input == null) {
+			return null;
+		}
+		
 		IResource resource = getAssociatedResource(input);
 		if(resource != null) {
 			return resource.getProject();
@@ -73,6 +77,10 @@ public class EditorUtils {
 	}
 	
 	public static IResource getAssociatedResource(IEditorInput input) {
+		if(input == null) {
+			return null;
+		}
+		
 		if(input instanceof IFileEditorInput) {
 			return ((IFileEditorInput) input).getFile();
 		}

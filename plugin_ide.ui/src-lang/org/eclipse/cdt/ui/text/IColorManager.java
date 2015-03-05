@@ -30,7 +30,7 @@ import org.eclipse.swt.graphics.RGB;
  * 
  * @since 5.1
  */
-public interface IColorManager {
+public interface IColorManager extends org.eclipse.jdt.ui.text.IColorManagerExtension {
 	
 	/**
 	 * Returns a color object for the given key. The color objects 
@@ -64,6 +64,7 @@ public interface IColorManager {
 	 * @throws UnsupportedOperationException if there is already a
 	 * 	color specification remembered under the given key
 	 */
+	@Override
 	void bindColor(String key, RGB rgb);
 	
 	
@@ -71,5 +72,7 @@ public interface IColorManager {
 	 * Forgets the color specification remembered under the given key.
 	 * @param key the color key
 	 */
+	@Override
 	void unbindColor(String key);
+	
 }

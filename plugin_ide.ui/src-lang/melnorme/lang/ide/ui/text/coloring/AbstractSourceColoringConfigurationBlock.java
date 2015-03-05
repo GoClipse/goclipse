@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.TextSettings_Actual;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_Old.IPreferencesBlock_Old;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
@@ -44,7 +45,6 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
@@ -385,11 +385,11 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	
 	protected ProjectionViewer createPreviewViewer(Composite parent, boolean showAnnotationsOverview,
 			int styles, IPreferenceStore store) {
-		ProjectionViewer sourceViewer = new ProjectionViewer(parent, null, null,
-			showAnnotationsOverview, styles);
+		LangSourceViewer sourceViewer = new LangSourceViewer(parent, null, null,
+			showAnnotationsOverview, styles, store);
+		
 		AbstractLangSourceViewerConfiguration configuration = createSimpleSourceViewerConfiguration(store);
 		sourceViewer.configure(configuration);
-		sourceViewer.getTextWidget().setFont(JFaceResources.getFont(JFaceResources.TEXT_FONT));
 		configuration.setupViewerForTextPresentationPrefChanges(sourceViewer);
 		return sourceViewer;
 	}
