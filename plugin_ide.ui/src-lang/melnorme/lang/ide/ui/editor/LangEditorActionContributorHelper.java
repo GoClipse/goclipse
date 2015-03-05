@@ -23,15 +23,15 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.commands.ActionHandler;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.editors.text.TextEditorActionContributor;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
+import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class AbstractLangEditorActionContributor extends TextEditorActionContributor {
+public class LangEditorActionContributorHelper extends TextEditorActionContributor {
 	
 	public static interface IActiveEditorListener {
 		
@@ -41,7 +41,7 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 	
 	protected final ArrayList2<IActiveEditorListener> activeEditorListeners = new ArrayList2<>();
 	
-	public AbstractLangEditorActionContributor() {
+	public LangEditorActionContributorHelper() {
 	}
 	
 	@Override
@@ -49,8 +49,17 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		super.contributeToMenu(menu);
 	}
 	
-	protected CommandContributionItem createEditorContribution(String commandId, String editorActionId) {
-		final EditorActionContribution editorActionHelper = new EditorActionContribution(commandId, editorActionId);
+	protected IServiceLocator getServiceLocator() {
+		return getPage().getWorkbenchWindow();
+	}
+	
+	protected IHandlerService getHandlerService() {
+		return (IHandlerService) getServiceLocator().getService(IHandlerService.class);
+	}
+	
+	protected CommandContributionItem createEditorActionContribution(String commandId, String editorActionId) {
+		final EditorActionContribution editorActionHelper = new EditorActionContribution(
+			getHandlerService(), commandId, editorActionId);
 		registerContribution(editorActionHelper);
 		return editorActionHelper.createContributionItem(this);
 	}
@@ -61,14 +70,14 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 	}
 	
 	protected CommandContributionItem createCommandContribution(String commandId) {
-		IWorkbenchWindow svcLocator = getPage().getWorkbenchWindow();
 		return new CommandContributionItem(
-			new CommandContributionItemParameter(svcLocator, null, commandId, CommandContributionItem.STYLE_PUSH));
+			new CommandContributionItemParameter(getServiceLocator(), 
+				null, commandId, CommandContributionItem.STYLE_PUSH));
 	}
 	
 	protected CommandContributionItem registerEditorHandler(String commandId, AbstractEditorHandler handler) {
-		HandlerContribution goFmt = registerContribution(new HandlerContribution(commandId, handler));
-		return goFmt.createContributionItem();
+		HandlerContribution hc = new HandlerContribution(getHandlerService(), commandId, handler);
+		return registerContribution(hc).createContributionItem();
 	}
 	
 	@Override
@@ -84,10 +93,13 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 	
 	public static abstract class AbstractEditorCommandHelper implements IActiveEditorListener {
 		
+		protected final IHandlerService handlerService;
 		protected final String commandId;
+		
 		protected IHandlerActivation handlerActivation;
 		
-		public AbstractEditorCommandHelper(String commandId) {
+		public AbstractEditorCommandHelper(IHandlerService handlerService, String commandId) {
+			this.handlerService = assertNotNull(handlerService);
 			this.commandId = assertNotNull(commandId);
 		}
 		
@@ -97,8 +109,6 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		
 		@Override
 		public void setActiveEditor(IEditorPart part) {
-			
-			IHandlerService handlerService = getHandlerService(part);
 			
 			if(handlerActivation != null) {
 				handlerService.deactivateHandler(handlerActivation);
@@ -119,8 +129,8 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		
 		protected final IHandler handler;
 		
-		public HandlerContribution(String commandId, IHandler action) {
-			super(commandId);
+		public HandlerContribution(IHandlerService handlerService, String commandId, IHandler action) {
+			super(handlerService, commandId);
 			this.handler = assertNotNull(action);
 		}
 		
@@ -142,8 +152,8 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 		
 		protected final IAction action;
 		
-		public ActionContribution(String commandId, IAction action) {
-			super(commandId);
+		public ActionContribution(IHandlerService handlerService, String commandId, IAction action) {
+			super(handlerService, commandId);
 			this.action = assertNotNull(action);
 		}
 		
@@ -170,12 +180,12 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 
 		protected final String editorActionId;
 
-		public EditorActionContribution(String commandId, String editorActionId) {
-			super(commandId);
+		public EditorActionContribution(IHandlerService handlerService, String commandId, String editorActionId) {
+			super(handlerService, commandId);
 			this.editorActionId = assertNotNull(editorActionId);
 		}
 		
-		public CommandContributionItem createContributionItem(AbstractLangEditorActionContributor actionContributor) {
+		public CommandContributionItem createContributionItem(LangEditorActionContributorHelper actionContributor) {
 			return actionContributor.createCommandContribution(commandId);
 		}
 		
@@ -187,10 +197,6 @@ public class AbstractLangEditorActionContributor extends TextEditorActionContrib
 			return new ActionHandler(textEditor.getAction(editorActionId));
 		}
 		
-	}
-	
-	protected static IHandlerService getHandlerService(IEditorPart textEditor) {
-		return (IHandlerService) textEditor.getEditorSite().getService(IHandlerService.class);
 	}
 	
 	/* -----------------  ----------------- */

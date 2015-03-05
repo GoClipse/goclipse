@@ -1,10 +1,16 @@
 package melnorme.lang.ide.ui;
 
-import org.eclipse.cdt.internal.ui.text.util.CColorManager;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
+
+import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
+import com.googlecode.goclipse.editors.GoEditor;
+import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
 import com.googlecode.goclipse.ui.editor.GoSimpleSourceViewerConfiguration;
+import com.googlecode.goclipse.ui.text.GoDocumentSetupParticipant;
 import com.googlecode.goclipse.ui.text.GoPartitionScanner;
 import com.googlecode.goclipse.ui.text.GoPartitions;
 
@@ -19,8 +25,18 @@ public class TextSettings_Actual {
 		return new GoPartitionScanner();
 	}
 	
+	public static LangDocumentPartitionerSetup createDocumentSetupHelper() {
+		return new GoDocumentSetupParticipant();
+	}
+	
+	public static GoEditorSourceViewerConfiguration createSourceViewerConfiguration(
+			IPreferenceStore preferenceStore, AbstractLangEditor editor) {
+		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		return new GoEditorSourceViewerConfiguration(preferenceStore, colorManager, (GoEditor) editor);
+	}
+	
 	public static GoSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration(
-			IPreferenceStore preferenceStore, CColorManager colorManager) {
+			IPreferenceStore preferenceStore, IColorManager colorManager) {
 		return new GoSimpleSourceViewerConfiguration(preferenceStore, colorManager, null);
 	}
 	

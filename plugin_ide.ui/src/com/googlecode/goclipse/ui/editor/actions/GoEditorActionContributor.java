@@ -10,22 +10,16 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.editor.actions;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditorActionContributor;
+import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 import com.googlecode.goclipse.editors.PairMatcher;
 
-public class GoEditorActionContributor extends AbstractLangEditorActionContributor implements GoCommandConstants {
+public class GoEditorActionContributor extends LangEditorActionContributor implements GoCommandConstants {
 	
 	public static final String SOURCE_MENU_ID = "com.googlecode.goclipse.ui.sourceMenu";
-	
-	public static final String SOURCE_MENU__ADDITIONS = "additions";
-	public static final String SOURCE_MENU__FORMAT = "format";
-	public static final String SOURCE_MENU__COMMENT = "comment";
 	
 	public GoEditorActionContributor() {
 	}
@@ -34,28 +28,21 @@ public class GoEditorActionContributor extends AbstractLangEditorActionContribut
 	public void init(IActionBars bars) {
 		super.init(bars);
 		
-		registerContribution(new ActionContribution(COMMAND_GoToMatchingBracket, new PairMatcher()));
+		registerContribution(new ActionContribution(getHandlerService(), COMMAND_GoToMatchingBracket, 
+			new PairMatcher()));
 	}
 	
 	@Override
-	public void contributeToMenu(IMenuManager menu) {
-		super.contributeToMenu(menu);
+	protected void contributeSourceMenu(IMenuManager sourceMenu) {
+		super.contributeSourceMenu(sourceMenu);
 		
-		IMenuManager sourceMenu = menu.findMenuUsingPath(SOURCE_MENU_ID);
-		
-		sourceMenu.appendToGroup(SOURCE_MENU__COMMENT, createEditorContribution(
+		sourceMenu.appendToGroup(SOURCE_MENU_GroupComment, createEditorActionContribution(
 			COMMAND_ToggleLineComment, "ToggleComment"));
 		
-		sourceMenu.appendToGroup(SOURCE_MENU__FORMAT, createEditorContribution(
-			ITextEditorActionDefinitionIds.SHIFT_LEFT, ITextEditorActionConstants.SHIFT_LEFT));
-		sourceMenu.appendToGroup(SOURCE_MENU__FORMAT, createEditorContribution(
-			ITextEditorActionDefinitionIds.SHIFT_RIGHT, ITextEditorActionConstants.SHIFT_RIGHT));
-		
-		
-		sourceMenu.appendToGroup(SOURCE_MENU__ADDITIONS, 
+		sourceMenu.appendToGroup(SOURCE_MENU_GroupAdditions, 
 			registerEditorHandler(COMMAND_RunGoFix, RunGoFixOperation.handler));
 		
-		sourceMenu.appendToGroup(SOURCE_MENU__FORMAT, 
+		sourceMenu.appendToGroup(SOURCE_MENU_GroupFormat, 
 			registerEditorHandler(COMMAND_RunGoFmt, RunGoFmtOperation.handler));
 	}
 	

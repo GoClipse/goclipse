@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.editor;
 
 
 import static melnorme.utilbox.core.CoreUtil.array;
+import static melnorme.utilbox.core.CoreUtil.assertInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,16 +20,22 @@ import java.util.List;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.utilbox.misc.ArrayUtil;
 
+import org.eclipse.cdt.internal.ui.editor.EclipsePreferencesAdapter;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.ISourceViewerExtension2;
+import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -38,7 +45,11 @@ public abstract class AbstractLangEditor extends TextEditor {
 	
 	public AbstractLangEditor() {
 		super();
-		
+	}
+	
+	@Override
+	protected void initializeKeyBindingScopes() {
+//		super.initializeKeyBindingScopes();
 		setKeyBindingScopes(array(EditorSettings_Actual.EDITOR_CONTEXT_ID));
 	}
 	
@@ -48,25 +59,29 @@ public abstract class AbstractLangEditor extends TextEditor {
 		initialize_setContextMenuIds();
 	}
 	
+	/* ----------------- input ----------------- */
+	
 	@Override
 	protected void doSetInput(IEditorInput input) throws CoreException {
 		super.doSetInput(input);
 		
-		ISourceViewer sourceViewer = getSourceViewer();
+		SourceViewer sourceViewer = getSourceViewer_();
 		
-		if (!(sourceViewer instanceof ISourceViewerExtension2)) {
+		if(sourceViewer == null) {
 			changePreferenceStore(createCombinedPreferenceStore(input));
 		} else {
-			ISourceViewerExtension2 sourceViewerExt2 = (ISourceViewerExtension2) sourceViewer;
-			
 			getSourceViewerDecorationSupport(sourceViewer).uninstall();
-			sourceViewerExt2.unconfigure();
-
+			sourceViewer.unconfigure();
+			
 			changePreferenceStore(createCombinedPreferenceStore(input));
 			
 			sourceViewer.configure(getSourceViewerConfiguration());
 			getSourceViewerDecorationSupport(sourceViewer).install(getPreferenceStore());
 		}
+		
+		IDocument doc = getDocumentProvider().getDocument(input);
+		// Setup up partitioning if not set. It can happen if opening non-language files in the language editor.
+		TextSettings_Actual.createDocumentSetupHelper().setupPartitioningIfNotSet(doc);
 		
 		internalDoSetInput(input);
 	}
@@ -80,7 +95,9 @@ public abstract class AbstractLangEditor extends TextEditor {
 	protected void internalDoSetInput(IEditorInput input) {
 	}
 	
-	protected abstract AbstractLangSourceViewerConfiguration createSourceViewerConfiguration();
+	protected AbstractLangSourceViewerConfiguration createSourceViewerConfiguration() {
+		return TextSettings_Actual.createSourceViewerConfiguration(getPreferenceStore(), this);
+	}
 	
 	protected AbstractLangSourceViewerConfiguration getSourceViewerConfiguration2() {
 		return (AbstractLangSourceViewerConfiguration) getSourceViewerConfiguration(); 
@@ -89,15 +106,22 @@ public abstract class AbstractLangEditor extends TextEditor {
 	protected IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
 		List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(4);
 		
-		// TODO: add project pref scope 
-		@SuppressWarnings("unused")
 		IProject project = EditorUtils.getAssociatedProject(input);
+		if (project != null) {
+			stores.add(new EclipsePreferencesAdapter(new ProjectScope(project), LangUIPlugin.PLUGIN_ID));
+		}
 		
 		stores.add(LangUIPlugin.getInstance().getPreferenceStore());
 		stores.add(LangUIPlugin.getInstance().getCorePreferenceStore());
+		
+		alterCombinedPreferenceStores_beforeEditorsUI(stores);
 		stores.add(EditorsUI.getPreferenceStore());
 		
 		return new ChainedPreferenceStore(ArrayUtil.createFrom(stores, IPreferenceStore.class));
+	}
+	
+	@SuppressWarnings("unused")
+	protected void alterCombinedPreferenceStores_beforeEditorsUI(List<IPreferenceStore> stores) {
 	}
 	
 	@Override
@@ -111,6 +135,19 @@ public abstract class AbstractLangEditor extends TextEditor {
 	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
 		return getSourceViewerConfiguration2().affectsTextPresentation(event)
 				|| super.affectsTextPresentation(event);
+	}
+	
+	
+	/* ----------------- create controls ----------------- */
+	
+	@Override
+	protected SourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
+		ISourceViewer sourceViewer = super.createSourceViewer(parent, ruler, styles);
+		return assertInstance(sourceViewer, SourceViewer.class);
+	}
+	
+	public SourceViewer getSourceViewer_() {
+		return (SourceViewer) getSourceViewer();
 	}
 	
 	/* ----------------- actions ----------------- */

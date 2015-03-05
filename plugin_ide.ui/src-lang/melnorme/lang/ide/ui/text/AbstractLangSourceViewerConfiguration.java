@@ -32,6 +32,7 @@ import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.cdt.ui.text.ITokenStore;
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
@@ -78,6 +79,10 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 	
 	public IPreferenceStore getPreferenceStore() {
 		return preferenceStore;
+	}
+	
+	public AbstractDecoratedTextEditor getEditor() {
+		return editor;
 	}
 	
 	@Override
@@ -139,7 +144,6 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		}
 	}
 	
-	//@Override
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
 		for (AbstractLangScanner scanner : getScanners()) {
 			if(scanner.affectsBehavior(event))
@@ -148,7 +152,6 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		return false;
 	}
 	
-	//@Override
 	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
 		for (AbstractLangScanner scanner : getScanners()) {
 			if (scanner.affectsBehavior(event)) {
@@ -180,6 +183,10 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		});
 		
 		preferenceStore.addPropertyChangeListener(propertyChangeListener);
+	}
+	
+	public String getFontPropertyPreferenceKey() {
+		return JFaceResources.TEXT_FONT;
 	}
 	
 	/* ----------------- Navigation operations ----------------- */

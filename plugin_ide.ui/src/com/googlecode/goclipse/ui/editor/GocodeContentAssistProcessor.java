@@ -1,5 +1,6 @@
 package com.googlecode.goclipse.ui.editor;
 
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 
 import org.eclipse.core.resources.IProject;
@@ -13,7 +14,6 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.ui.IEditorPart;
 
 import com.googlecode.goclipse.core.GoCore;
-import com.googlecode.goclipse.editors.GoEditor;
 
 /**
  * Implement an IContentAssistProcessor (and IContentAssistProcessorExt), and delegate the work
@@ -22,7 +22,7 @@ import com.googlecode.goclipse.editors.GoEditor;
  */
 public class GocodeContentAssistProcessor extends LangContentAssistProcessor {
 	
-	public GocodeContentAssistProcessor(GoEditor editor) {
+	public GocodeContentAssistProcessor(AbstractLangEditor editor) {
 		super(editor);
 	}
 	
