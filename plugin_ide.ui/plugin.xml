@@ -104,6 +104,21 @@
 		</key>
 	</extension>
 	
+	<!-- ________ Menu/UI contributions ________ -->
+	
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
+			<menu
+				id="LANG_PROJECT_ID.ide.ui.sourceMenu"
+				label="Source"
+				mnemonic="S">
+				<separator name="comment" visible="true"/>
+				<separator name="format" visible="true"/>
+				<separator name="additions" visible="true"/>
+			</menu>
+		</menuContribution>
+	</extension>
+	
 	<!-- ============ Preference pages ============= -->
 	
 	<extension point="org.eclipse.ui.preferencePages">

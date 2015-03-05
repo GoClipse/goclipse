@@ -10,8 +10,8 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import org.eclipse.ui.editors.text.TextEditorActionContributor;
+import melnorme.lang.ide.ui.editor.AbstractLangEditorActionContributor;
 
-public class LANGUAGE_EditorActionContributor extends TextEditorActionContributor {
+public class LANGUAGE_EditorActionContributor extends AbstractLangEditorActionContributor {
 	
 }
