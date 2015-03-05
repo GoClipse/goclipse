@@ -38,20 +38,17 @@
 		</participant>
 	</extension>
 	
-   <extension
-         point="org.eclipse.ui.editors">
-      <editor
-            class="com.googlecode.goclipse.editors.GoEditor"
-            contributorClass="com.googlecode.goclipse.ui.editor.actions.GoEditorActionContributor"
-            extensions="go"
-            icon="icons/gopage.png"
-            id="com.googlecode.goclipse.editors.Editor"
-            name="Go Editor">
-            <contentTypeBinding
-         		contentTypeId="com.googlecode.goclipse.gosourcefile">
-     		</contentTypeBinding>
-      </editor>
-   </extension>
+	<extension point="org.eclipse.ui.editors">
+		<editor
+			class="com.googlecode.goclipse.editors.GoEditor"
+			contributorClass="com.googlecode.goclipse.ui.editor.actions.GoEditorActionContributor"
+			extensions="go"
+			icon="icons/gopage.png"
+			id="com.googlecode.goclipse.editors.Editor"
+			name="Go Editor">
+			<contentTypeBinding contentTypeId="com.googlecode.goclipse.gosourcefile" />
+		</editor>
+	</extension>
 
 	<!-- ============ Actions/Commands ============= -->
 	
