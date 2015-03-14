@@ -26,11 +26,32 @@ import melnorme.utilbox.ownership.IDisposable;
 
 public class MiscUtil extends PathUtil {
 	
+	/* ----------------- System ----------------- */
+	
 	public static final String OS_NAME = StringUtil.nullAsEmpty(System.getProperty("os.name"));
 	
 	public static final boolean OS_IS_WINDOWS = OS_NAME.startsWith("Windows");
 	public static final boolean OS_IS_LINUX = OS_NAME.startsWith("Linux") || OS_NAME.startsWith("LINUX");
 	public static final boolean OS_IS_MAC = OS_NAME.startsWith("Mac");
+	
+	
+	public static String getSystemProperty(String propName, String defaultValue) {
+		String propValue = System.getProperty(propName);
+		if(propValue == null) {
+			return defaultValue;
+		}
+		return propValue;
+	}
+	
+	public static boolean getSystemProperty(String propName, boolean defaultValue) {
+		String propValue = System.getProperty(propName);
+		if(propValue == null) {
+			return defaultValue;
+		}
+		return propValue != null;
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public static <T> Predicate<T> getNotNullPredicate() {
 		return new NotNullPredicate<T>();
