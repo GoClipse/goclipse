@@ -34,6 +34,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
@@ -99,8 +100,12 @@ public abstract class AbstractLangEditor extends TextEditor {
 		return TextSettings_Actual.createSourceViewerConfiguration(getPreferenceStore(), this);
 	}
 	
-	protected AbstractLangSourceViewerConfiguration getSourceViewerConfiguration2() {
-		return (AbstractLangSourceViewerConfiguration) getSourceViewerConfiguration(); 
+	protected AbstractLangSourceViewerConfiguration getSourceViewerConfiguration_asLang() {
+		SourceViewerConfiguration svc = getSourceViewerConfiguration(); 
+		if(svc instanceof AbstractLangSourceViewerConfiguration) {
+			return (AbstractLangSourceViewerConfiguration) svc;
+		}
+		return null;
 	}
 	
 	protected IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
@@ -126,15 +131,22 @@ public abstract class AbstractLangEditor extends TextEditor {
 	
 	@Override
 	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
-		getSourceViewerConfiguration2().handlePropertyChangeEvent(event);
+		AbstractLangSourceViewerConfiguration langSVC = getSourceViewerConfiguration_asLang();
+		if(langSVC != null) {
+			langSVC.handlePropertyChangeEvent(event);
+		}
 		
 		super.handlePreferenceStoreChanged(event);
 	}
 	
 	@Override
 	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
-		return getSourceViewerConfiguration2().affectsTextPresentation(event)
-				|| super.affectsTextPresentation(event);
+		AbstractLangSourceViewerConfiguration langSVC = getSourceViewerConfiguration_asLang();
+		if(langSVC != null) {
+			return langSVC.affectsTextPresentation(event) || super.affectsTextPresentation(event);
+		}
+		
+		return super.affectsTextPresentation(event);
 	}
 	
 	

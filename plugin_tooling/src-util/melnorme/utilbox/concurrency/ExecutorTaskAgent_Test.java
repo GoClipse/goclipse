@@ -22,16 +22,27 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.junit.Test;
 
+import dtool.tests.DToolTests;
+
 public class ExecutorTaskAgent_Test {
 	
 	@Test
-	public void testShutdownNow() throws Exception {
+	public void test() throws Exception { test$(); }
+	public void test$() throws Exception {
+		int times = DToolTests.TESTS_LITE_MODE ? 10 : 100;
+		for (int i = 0; i < times; i++) {
+			testBasic();
+		}
+	}
+	public void testBasic() throws Exception {
 		ExecutorTaskAgent agent = new ExecutorTaskAgent("testShutdownNow");
 		LatchRunnable firstTask = new LatchRunnable();
 		LatchRunnable secondTask = new LatchRunnable();
 		
 		agent.submit(firstTask);
+		assertTrue(agent.getSubmittedTaskCount() == 1);
 		Future<?> secondTaskFuture = agent.submit(secondTask);
+		assertTrue(agent.getSubmittedTaskCount() == 2);
 		
 		firstTask.awaitTaskEntry();
 		assertTrue(secondTaskFuture.isCancelled() == false);

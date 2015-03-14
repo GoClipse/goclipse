@@ -29,13 +29,8 @@ public interface ITaskAgent extends ICommonAgent {
 	 */
 	void waitForPendingTasks();
 	
-	/**
-	 * Returns the approximate total number of tasks that have ever been
-	 * scheduled for execution. Because the states of tasks and
-	 * threads may change dynamically during computation, the returned
-	 * value is only an approximation.
-	 *
-	 * @return the number of tasks
+	/** 
+	 * @return the total number of tasks that have been submitted for execution (including possibly rejected tasks). 
 	 */
 	long getSubmittedTaskCount();
 	
