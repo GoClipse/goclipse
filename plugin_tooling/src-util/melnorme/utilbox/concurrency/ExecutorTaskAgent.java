@@ -23,6 +23,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * An implementation of {@link ITaskAgent} based on an {@link ExecutorService}.
@@ -42,6 +43,19 @@ public class ExecutorTaskAgent extends ThreadPoolExecutor implements ExecutorSer
 	
 	public String getName() {
 		return name;
+	}
+	
+	protected final AtomicInteger executeCount = new AtomicInteger(0);
+	
+	@Override
+	public long getSubmittedTaskCount() {
+		return executeCount.get();
+	}
+	
+	@Override
+	public void execute(Runnable command) {
+		executeCount.incrementAndGet();
+		super.execute(command);
 	}
 	
 	@Override
@@ -84,19 +98,6 @@ public class ExecutorTaskAgent extends ThreadPoolExecutor implements ExecutorSer
 	}
 	
 	@Override
-	public long getSubmittedTaskCount() {
-		return getTaskCount();
-	}
-	
-	/** @return true if there is any task being executed, or queued to be executed.
-	 * WARNING: This method has a concurrency bug and may return false
-	 * even if the current thread has submited a task that has not yet completed.
-	 * Use only for test code, in a tentative way only. */
-	public boolean guess_hasPendingTasks() {
-		return getQueue().size() > 0 || getActiveCount() > 0;
-	}
-	
-	@Override
 	public List<Runnable> shutdownNow() {
 		List<Runnable> remaining = super.shutdownNow();
 		for (Runnable runnable : remaining) {
@@ -119,7 +120,6 @@ public class ExecutorTaskAgent extends ThreadPoolExecutor implements ExecutorSer
 	
 	public void awaitPendingTasks() throws InterruptedException {
 		Future<?> waiter = submit(new Runnable() {
-			
 			@Override
 			public void run() {
 			}
