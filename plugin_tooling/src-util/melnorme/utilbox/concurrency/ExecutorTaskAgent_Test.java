@@ -20,16 +20,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.junit.Test;
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
 
-import dtool.tests.DToolTests;
+import org.junit.Test;
 
 public class ExecutorTaskAgent_Test {
 	
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		int times = DToolTests.TESTS_LITE_MODE ? 10 : 100;
+		int times = DevelopmentCodeMarkers.TESTS_LITE_MODE ? 10 : 100;
 		for (int i = 0; i < times; i++) {
 			testBasic();
 		}

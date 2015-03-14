@@ -13,8 +13,10 @@ package melnorme.utilbox.core;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import melnorme.utilbox.misc.MiscUtil;
+
 /**
- * Utility marker for conditional blocks 
+ * Utility markers and flags for commented code, or conditional blocks.
  */
 public interface DevelopmentCodeMarkers {
 	
@@ -26,6 +28,9 @@ public interface DevelopmentCodeMarkers {
 	
 	// Marker for disabled functionality
 	public static final boolean DISABLED_FUNCTIONALITY = false;
+	
+	// Flag for lightweight tests execution mode
+	public static final boolean TESTS_LITE_MODE = MiscUtil.getSystemProperty("" + "TestsLiteMode", false); 
 	
 	/**
 	 * Marker interface for test code that has a requirement on external, runtime dependencies,
