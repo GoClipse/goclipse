@@ -115,12 +115,18 @@ overwriting the previous one. (This removes history from the git repo it is push
 	
 	<target name="PublishProjectSite" depends="CreateProjectSite, _commitProjectSiteGitChanges">
 		<fail unless="projectSiteGitURL"/>
+		<fail unless="releaseTag"/>
+		
+		<runGit dir="${_projectSiteDir}" argLine="tag"><arg value="${releaseTag}"/></runGit>
 		
 		<condition property="PublishProjectSite._gitArg" value="--force" else="">
 		    <istrue value="${resetGitHistory}"/>
 		</condition>
 		
 		<runGit dir="${_projectSiteDir}" argLine="push ${projectSiteGitURL} ${PublishProjectSite._gitArg}" />
+	    <runGit dir="${_projectSiteDir}" argLine="push ${projectSiteGitURL} ${PublishProjectSite._gitArg}">
+	    	<arg value="${releaseTag}"/>
+	    </runGit>
 	</target>
 	
 </project>
