@@ -10,12 +10,31 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+
+import org.eclipse.cdt.ui.text.IColorManager;
+import org.eclipse.jface.preference.IPreferenceStore;
+
+import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SimpleSourceViewerConfiguration;
+import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SourceViewerConfiguration;
+
 public class EditorSettings_Actual {
 	
 	public static final String EDITOR_ID = "LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor";
 	public static final String EDITOR_CONTEXT_ID = "LANG_PROJECT_ID.ide.ui.Contexts.Editor";
 	
 	public static final String EDITOR_CODE_TARGET = "LANG_PROJECT_ID.ide.ui.Editor.HyperlinkCodeTarget";
+	
+	public static LANGUAGE_SourceViewerConfiguration createSourceViewerConfiguration(
+			IPreferenceStore preferenceStore, AbstractLangEditor editor) {
+		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		return new LANGUAGE_SourceViewerConfiguration(preferenceStore, colorManager, editor);
+	}
+	
+	public static LANGUAGE_SimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration(
+			IPreferenceStore preferenceStore, IColorManager colorManager) {
+		return new LANGUAGE_SimpleSourceViewerConfiguration(preferenceStore, colorManager);
+	}
 	
 	/* ----------------- actions ----------------- */
 	

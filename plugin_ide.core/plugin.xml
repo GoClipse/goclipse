@@ -45,7 +45,7 @@
       </definition>
    </extension>
 	
-	<!-- ============ Content type ============= -->
+	<!-- ============ TEXT ============= -->
 	
 	<extension point="org.eclipse.core.contenttype.contentTypes">
 		<content-type
@@ -57,6 +57,18 @@
 			priority="high">
 		</content-type>
 	</extension>
+	
+	<extension point="org.eclipse.core.filebuffers.documentSetup"
+		id="LANG_PROJECT_ID.DocumentSetupParticipant"
+		name="LANGUAGE Document Setup Participant"
+		>
+		<participant
+			class="LANG_PROJECT_ID.ide.core.text.LANGUAGE_DocumentSetupParticipant"
+			contentTypeId="LANG_PROJECT_ID.ide.core.content.source">
+		</participant>
+	</extension>
+	
+	
 	
 	<!-- ============ BUILDER/PROBLEMS ============= -->
 	

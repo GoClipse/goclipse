@@ -8,11 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text;
+package melnorme.lang.ide.core.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
-import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.tests.CommonTest;
 

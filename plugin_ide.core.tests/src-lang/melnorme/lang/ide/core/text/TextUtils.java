@@ -8,9 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text;
+package melnorme.lang.ide.core.text;
 
-public class LangAutoEditUtils {
+public class TextUtils {
 
 	public static char getBracePair(char braceChar) {
 		

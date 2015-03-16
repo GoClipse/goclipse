@@ -8,11 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text;
+package melnorme.lang.ide.core.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.junit.Test;
@@ -97,7 +97,7 @@ public class BlockHeuristicsScannnerTest extends Scanner_BaseTest {
 		StringBuffer buffer = new StringBuffer();
 		for (int i = string.length()-1; i >= 0; i--) {
 			char ch = string.charAt(i);
-			char revertedCh = LangAutoEditUtils.getBracePair(ch);
+			char revertedCh = TextUtils.getBracePair(ch);
 			buffer.append(revertedCh);
 		}
 		return buffer.toString();

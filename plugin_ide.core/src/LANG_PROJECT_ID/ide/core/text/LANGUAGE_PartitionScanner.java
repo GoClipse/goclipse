@@ -8,10 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package LANG_PROJECT_ID.ide.ui.text;
+package LANG_PROJECT_ID.ide.core.text;
 
-import melnorme.lang.ide.ui.TextSettings_Actual.LangPartitionTypes;
-import melnorme.lang.ide.ui.text.PatternRule_Fixed;
+import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
+import melnorme.lang.ide.core.text.PatternRule_Fixed;
 import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.jface.text.rules.IPredicateRule;

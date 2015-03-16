@@ -26,16 +26,6 @@
 	</extension>
 	
 	<!-- ============ EDITOR ============= -->
-		
-	<extension
-		 id="LANG_PROJECT_ID.DocumentSetupParticipant"
-		 name="LANGUAGE Document Setup Participant"
-		 point="org.eclipse.core.filebuffers.documentSetup">
-		<participant
-			class="LANG_PROJECT_ID.ide.ui.text.LANGUAGE_DocumentSetupParticipant"
-			contentTypeId="LANG_PROJECT_ID.ide.core.content.source">
-		</participant>
-	</extension>
 	
 	
 	<extension point="org.eclipse.ui.editors">

@@ -12,8 +12,8 @@ package melnorme.lang.ide.ui.editor.text;
 
 
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
-import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.jface.text.BadLocationException;

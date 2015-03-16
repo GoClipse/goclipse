@@ -8,10 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text;
+package melnorme.lang.ide.core.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.FnTokenAdvance;
+import melnorme.lang.ide.core.text.AbstractDocumentScanner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.FnTokenAdvance;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.junit.Test;

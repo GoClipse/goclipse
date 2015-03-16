@@ -11,11 +11,13 @@
 package melnorme.lang.ide.ui.editor.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.SamplePartitionScanner;
+import melnorme.lang.ide.core.text.Scanner_BaseTest;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
-import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
-import melnorme.lang.ide.ui.text.SamplePartitionScanner;
-import melnorme.lang.ide.ui.text.Scanner_BaseTest;
+import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
+import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategy;
 import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
 import melnorme.utilbox.misc.MiscUtil;
 

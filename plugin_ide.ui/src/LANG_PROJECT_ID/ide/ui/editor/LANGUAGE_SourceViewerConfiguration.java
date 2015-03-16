@@ -11,8 +11,8 @@
 package LANG_PROJECT_ID.ide.ui.editor;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
