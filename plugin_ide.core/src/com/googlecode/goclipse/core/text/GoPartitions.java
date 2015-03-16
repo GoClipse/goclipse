@@ -8,10 +8,23 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.ui.text;
+package com.googlecode.goclipse.core.text;
 
-import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
+import org.eclipse.jface.text.IDocument;
 
-public class GoDocumentSetupParticipant extends LangDocumentPartitionerSetup {
+public interface GoPartitions {
+	
+	String PARTITIONING_ID = "___go_partioning";
+	
+	String COMMENT = "__comment";
+	String STRING = "__string";
+	String MULTILINE_STRING = "__multiline_string";
+	
+	public static final String[] PARTITION_TYPES = new String[] { 
+		IDocument.DEFAULT_CONTENT_TYPE, 
+		COMMENT, 
+		STRING,
+		MULTILINE_STRING 
+	};
 	
 }

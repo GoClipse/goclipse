@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.ui.text;
+package com.googlecode.goclipse.core.text;
 
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;

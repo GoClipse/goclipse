@@ -17,10 +17,10 @@ import static melnorme.utilbox.core.CoreUtil.assertInstance;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.utilbox.misc.ArrayUtil;
 
@@ -97,7 +97,7 @@ public abstract class AbstractLangEditor extends TextEditor {
 	}
 	
 	protected AbstractLangSourceViewerConfiguration createSourceViewerConfiguration() {
-		return TextSettings_Actual.createSourceViewerConfiguration(getPreferenceStore(), this);
+		return EditorSettings_Actual.createSourceViewerConfiguration(getPreferenceStore(), this);
 	}
 	
 	protected AbstractLangSourceViewerConfiguration getSourceViewerConfiguration_asLang() {

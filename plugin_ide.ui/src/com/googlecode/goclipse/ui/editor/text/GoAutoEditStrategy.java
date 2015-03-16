@@ -14,7 +14,7 @@ import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyExt;
 
 import org.eclipse.jface.text.ITextViewer;
 
-import com.googlecode.goclipse.ui.text.GoPartitions;
+import com.googlecode.goclipse.core.text.GoPartitions;
 
 public class GoAutoEditStrategy extends LangAutoEditStrategyExt {
 	

@@ -33,34 +33,33 @@
 		
 	</extension>
 	
-   <extension point="org.eclipse.core.contenttype.contentTypes"> 
-      <content-type
-         id="com.googlecode.goclipse.gosourcefile"
-         name="Go source file"
-         file-extensions="go"
-         base-type="org.eclipse.core.runtime.text"
-         default-charset="UTF-8">
-      </content-type>
-      
-      <content-type
-         id="com.googlecode.goclipse.goPackageFile"
-         name="Go package object"
-         file-extensions="a">
-      </content-type>
-      
-      <content-type
-         id="com.googlecode.goclipse.textContentType"
-         name="Text file"
-         base-type="org.eclipse.core.runtime.text"
-         priority="low">
-      </content-type>
-      
-      <!-- this interfers with CDT detection of header files -->
-      <!-- file-association
-            content-type="com.googlecode.goclipse.textContentType"
-            file-extensions="c,h">
-      </file-association -->
-   </extension>
+	<!-- ============ TEXT ============= -->
+	
+	<extension point="org.eclipse.core.contenttype.contentTypes"> 
+		<content-type
+			id="com.googlecode.goclipse.gosourcefile"
+			name="Go source file"
+			file-extensions="go"
+			base-type="org.eclipse.core.runtime.text"
+			default-charset="UTF-8">
+		</content-type>
+		
+		<content-type
+			id="com.googlecode.goclipse.goPackageFile"
+			name="Go package object"
+			file-extensions="a">
+		</content-type>
+	</extension>
+		
+	<extension point="org.eclipse.core.filebuffers.documentSetup"
+		id="GoDocumentSetupParticipant"
+		name="Go Document Setup Participant"
+		>	
+		<participant
+			class="com.googlecode.goclipse.ui.text.GoDocumentSetupParticipant"
+			contentTypeId="com.googlecode.goclipse.gosourcefile">
+		</participant>
+	</extension>
 	
 	<!-- ============ BUILDER/PROBLEMS ============= -->
 	

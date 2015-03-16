@@ -19,12 +19,12 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
+import com.googlecode.goclipse.core.text.GoPartitionScanner;
 import com.googlecode.goclipse.editors.CompletionProcessor;
 import com.googlecode.goclipse.editors.DoubleClickStrategy;
 import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.editors.GoEditorReconcilingStrategy;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
-import com.googlecode.goclipse.ui.text.GoPartitionScanner;
 import com.googlecode.goclipse.ui.text.GoScanner;
 
 /**

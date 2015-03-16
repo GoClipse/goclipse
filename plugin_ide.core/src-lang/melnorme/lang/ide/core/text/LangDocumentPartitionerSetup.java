@@ -8,10 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text;
+package melnorme.lang.ide.core.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.ui.TextSettings_Actual;
+import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;

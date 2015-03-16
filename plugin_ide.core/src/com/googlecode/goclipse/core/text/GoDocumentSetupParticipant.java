@@ -8,23 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text;
+package com.googlecode.goclipse.core.text;
 
-public class LangAutoEditUtils {
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 
-	public static char getBracePair(char braceChar) {
-		
-		switch (braceChar) {
-		case '(': return ')';
-		case ')': return '(';
-		case '[': return ']';
-		case ']': return '[';
-		case '{': return '}';
-		case '}': return '{';
-		case '\"': return '\"';
-		case '\'': return '\'';
-		}		
-		return braceChar;
-	}
+
+public class GoDocumentSetupParticipant extends LangDocumentPartitionerSetup {
 	
 }

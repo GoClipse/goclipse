@@ -13,9 +13,9 @@ package melnorme.lang.ide.ui.editor.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import melnorme.lang.ide.ui.text.BlockHeuristicsScannner;
-import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockBalanceResult;
-import melnorme.lang.ide.ui.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockBalanceResult;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
 import melnorme.lang.ide.ui.text.util.AutoEditUtils;
 import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
 
