@@ -2,7 +2,7 @@ See the [About](documentation/About.md) page for user information, and [Reportin
 
 ## Developers Guide
 
-[![Build Status](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/badge/icon)](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/)
+[![Build Status](https://travis-ci.org/GoClipse/goclipse.svg?branch=master)](https://travis-ci.org/GoClipse/goclipse)
 
 #### Setting up the development environment:
  * Clone the Git repository.
