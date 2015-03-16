@@ -1,7 +1,7 @@
+See project page ( LANG_IDE_SITE ) for user information.
+
 Developers Guide
 ================
-
-See project page ( LANG_IDE_SITE ) for user information.
 
 #### Setting up the development environment:
  * Clone the Git repository.
@@ -24,15 +24,13 @@ A release is a web site with an Eclipse p2 update site. The website may contain 
  1. Create and push a new release tag for the current release commit. 
  1. Go to the Github releases page and edit the newly present release. Add the corresponding ([ChangeLog.md](documentation/ChangeLog.md)) entries to the release notes. 
  1. Locally, run `ant -f releng/ CreateProjectSite`. This last step will prepare the project web site under `bin-maven/ProjectSite`.
- 1. To actually publish the project site, run `ant -f releng/ PublishProjectSite -DprojectSiteGitURL=LANG_IDE_WEBSITE_GIT_REPO`. What happens here is that the whole project site will be pushed into a Git repository, to then be served in some way (for example Github Pages).
+ 1. To actually publish the project site, run `ant -f releng/ PublishProjectSite -DreleaseTag=<tagName>`. What happens here is that the whole project site will be pushed into a Git repository, to then be served in some way (for example Github Pages). If `projectSiteGitURL` is not specified, the default value in releng-build.properties will be used.
    * For more info on the Release Engineering script, run `ant -f releng/`, this will print the help.
  1. A branch or tag named `latest` should also be created in Github, pointing to the latest release commit. The previous `latest` tag can be deleted/overwritten. The documentation pages use this tag/branch in their links.
 
 
 
 ## Project design info and notes
-
-#### Old source history:
 
 #### About `src-lang/` and `melnorme.lang` code:
 The `melnorme.lang` code, or simply Lang code, is IDE functionality not specific to any language, designed to potentially be used by other language IDEs. To achieve this some constraints need to be observed:
