@@ -1,7 +1,7 @@
 ## Installation
 
 #### Requirements: 
- * Eclipse 4.4 (Luna) or later.
+ * Eclipse 4.4.1 (Luna SR1) or later.
  * A **1.7** Java VM or later. Otherwise LANG_IDE_NAME will silently fail to start.
 
 #### Instructions:
