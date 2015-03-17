@@ -1,12 +1,15 @@
 ## release ChangeLog
 
-### Goclipse 0.9.x
+### Goclipse 0.10.0
  * Added: `Show In > Project Explorer` command to `Show In` menu in Go perspective (requires that the perspective be reset: `Window/Perspective/Reset Perspective...`) .
  * Clean up UI and behavior of main Go preference page.
  * Added: two new syntax highlighting options: Operators, and Syntax Control Characters (braces, parentheses, semicolon, etc.).
  * Added: An improved New Project wizard.
 // * Added: improved build error reporting: an error squigly line is now show in the column where the error occurred.
  * Added: Source menu to editor context menu: FIXME entries missing
+ * Fixed #112: InvalidPathException invoking content assist. 
+  * This also fixes potential performance problems invoking content assist.
+  * However the documentation popup information will no longer be show for any content assist entries.
 
 ### Goclipse 0.9.1
  * Fixed: Builder does not ignore folders with names starting with "_" or ".".

@@ -1,8 +1,6 @@
 package com.googlecode.goclipse.ui.editor;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
@@ -17,14 +15,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
-import org.eclipse.jface.text.contentassist.ContextInformation;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.go.CodeContext;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoUIPlugin;
@@ -32,8 +27,6 @@ import com.googlecode.goclipse.ui.actions.GocodeClient;
 import com.googlecode.goclipse.ui.editor.LangContentAssistProcessor.ILangCompletionProposalComputer;
 
 public class GocodeCompletionProposalComputer implements ILangCompletionProposalComputer {
-	
-	private static HashMap<String, CodeContext> codeContexts = new HashMap<String, CodeContext>();
 	
 	protected final String filePath;
 	protected final int offset;
@@ -74,18 +67,18 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 			String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
 			List<String> completions = new ArrayList2<>(GocodeClient.LINE_SPLITTER.split(stdout));
 			
-			CodeContext codeContext = codeContexts.get(filePath);
-			if (codeContext == null) {
-				try {
-					codeContext = CodeContext.getCodeContext(project, filePath, document.get());
-				} catch (IOException e) {
-					throw LangCore.createCoreException("Error during code Context:", e);
-				}
-			}
+//			CodeContext codeContext = codeContexts.get(filePath);
+//			if (codeContext == null) {
+//				try {
+//					codeContext = CodeContext.getCodeContext(project, filePath, document.get());
+//				} catch (IOException e) {
+//					throw LangCore.createCoreException("Error during code Context:", e);
+//				}
+//			}
 			
 			
 			for (String completionEntry : completions) {
-				handleResult(offset, codeContext, results, prefix, completionEntry);
+				handleResult(offset, /*codeContext,*/ results, prefix, completionEntry);
 			}
 			
 			return results.toArray(new ICompletionProposal[] {});
@@ -95,7 +88,7 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 		
 	}
 	
-	protected void handleResult(final int offset, CodeContext codeContext, ArrayList<ICompletionProposal> results,
+	protected void handleResult(final int offset, /*CodeContext codeContext, */ArrayList<ICompletionProposal> results,
 			String prefix, String completionEntry) {
 		int firstComma = completionEntry.indexOf(",,");
 		int secondComma = completionEntry.indexOf(",,", firstComma + 2);
@@ -118,18 +111,18 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 			String spec = completionEntry.substring(secondComma + 2);
 			
 			String descriptiveString = identifier + " : " + spec;
-			String description = codeContext.getDescriptionForName(identifier).trim();
-			IContextInformation info = new ContextInformation(description, description);
-			//MessageFormat.format(JavaEditorMessages.getString("CompletionProcessor.Proposal.ContextInfo.pattern"), new Object[] { fgProposals[i] })); //$NON-NLS-1$
+			// BM: removed used of CodeContext because it is buggy, 
+			// see https://github.com/GoClipse/goclipse/issues/112
+//			String description = codeContext.getDescriptionForName(identifier).trim();
+//			IContextInformation info = new ContextInformation(description, description);
 			
 			Image image = GoPluginImages.SOURCE_OTHER.getImage();
 			String substr = identifier.substring(prefix.length());
 			int replacementLength = identifier.length() - prefix.length();
 			
 			if (descriptiveString != null && descriptiveString.contains(" : func")) {
-				if (codeContext.isMethodName(identifier)) {
+				if(identifier.isEmpty() || Character.isLowerCase(identifier.charAt(0))) {
 					image = GoPluginImages.SOURCE_PRIVATE_FUNCTION.getImage();
-					
 				} else {
 					image = GoPluginImages.SOURCE_FUNCTION.getImage();
 				}
@@ -162,7 +155,7 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 					" ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
 			
 			results.add(new CompletionProposal(identifier, offset - prefix.length(),
-				prefix.length(), identifier.length(), image, descriptiveString, info, description));
+				prefix.length(), identifier.length(), image, descriptiveString, null, null));
 		}
 	}
 	
