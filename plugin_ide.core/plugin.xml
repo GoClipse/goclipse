@@ -56,7 +56,7 @@
 		name="Go Document Setup Participant"
 		>	
 		<participant
-			class="com.googlecode.goclipse.ui.text.GoDocumentSetupParticipant"
+			class="com.googlecode.goclipse.core.text.GoDocumentSetupParticipant"
 			contentTypeId="com.googlecode.goclipse.gosourcefile">
 		</participant>
 	</extension>
