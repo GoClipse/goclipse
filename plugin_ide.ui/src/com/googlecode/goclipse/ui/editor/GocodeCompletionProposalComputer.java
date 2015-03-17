@@ -43,7 +43,7 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 		this.document = document;
 		this.prefix = prefix;
 		
-		this.gocodePath = GoUIPlugin.prepareGocodeManager_inUI().getBestGocodePath();
+		this.gocodePath = GoUIPlugin.prepareGocodeManager_inUI().getGocodePath();
 		if (gocodePath == null) {
 			throw LangCore.createCoreException("Error: gocode path not provided.", null);
 		}

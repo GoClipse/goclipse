@@ -17,8 +17,6 @@ import org.osgi.framework.BundleContext;
 
 public class GoCore extends LangCore {
 	
-	public static final String CONTENT_ASSIST_EXTENSION_ID = "com.googlecode.goclipse.contentassistprocessor";
-	
 	@Override
 	protected void doCustomStart(BundleContext context) {
 	}

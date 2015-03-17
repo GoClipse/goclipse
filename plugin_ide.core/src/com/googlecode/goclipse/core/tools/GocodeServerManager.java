@@ -1,6 +1,7 @@
 package com.googlecode.goclipse.core.tools;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.core.operations.StartEngineDaemonOperation;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -8,11 +9,9 @@ import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
-
+import org.eclipse.core.runtime.Path;
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
@@ -27,41 +26,14 @@ public class GocodeServerManager implements IDisposable {
 	public GocodeServerManager() {
 	}
 	
-	public static IPath getBestGocodePath() {
-		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
-			GoCore.CONTENT_ASSIST_EXTENSION_ID);
+	public static IPath getGocodePath() {
+		String pref = DaemonEnginePreferences.DAEMON_PATH.get();
 		
-		try {
-			for (IConfigurationElement e : config) {
-				final Object extension = e.createExecutableExtension("class");
-				
-				if (extension instanceof IGocodePathProvider) {
-					return ((IGocodePathProvider) extension).getBestGocodePath();
-				}
-			}
-		} catch (CoreException ex) {
-			// do nothing
+		if (pref == null || pref.length() == 0) {
+			return null;
 		}
-		return null;
-	}
-	
-	// TODO: remove this duplicated code:
-	public static IPath getDefaultGocodePath() {
-		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor(
-			GoCore.CONTENT_ASSIST_EXTENSION_ID);
 		
-		try {
-			for (IConfigurationElement e : config) {
-				final Object extension = e.createExecutableExtension("class");
-				
-				if (extension instanceof IGocodePathProvider) {
-					return ((IGocodePathProvider) extension).getDefaultGocodePath();
-				}
-			}
-		} catch (CoreException ex) {
-			// do nothing
-		}
-		return null;
+		return new Path(pref);
 	}
 	
 	protected boolean isChildServerRunning() {

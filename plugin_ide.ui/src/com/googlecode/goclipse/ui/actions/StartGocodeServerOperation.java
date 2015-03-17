@@ -37,7 +37,7 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 			throw new CoreException(Status.OK_STATUS); // stop operation
 		}
 		
-		gocodePath = GocodeServerManager.getBestGocodePath();
+		gocodePath = GocodeServerManager.getGocodePath();
 		boolean needsStart = gocodeServerManager.prepareServerStart(gocodePath);
 		if(needsStart == false) {
 			throw new CoreException(Status.OK_STATUS); // stop operation
