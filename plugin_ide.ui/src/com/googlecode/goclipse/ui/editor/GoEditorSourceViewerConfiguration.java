@@ -20,7 +20,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import com.googlecode.goclipse.core.text.GoPartitionScanner;
-import com.googlecode.goclipse.editors.CompletionProcessor;
 import com.googlecode.goclipse.editors.DoubleClickStrategy;
 import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.editors.GoEditorReconcilingStrategy;
@@ -79,11 +78,7 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	}
 	
 	protected IContentAssistProcessor getCompletionProcessor() {
-		if(true) {
-			return new GocodeContentAssistProcessor(editor);
-		}
-		// TODO: BM investigate this obsolete completion processor, see if it has any use, remove otherwise.
-		return new CompletionProcessor(editor);
+		return new GocodeContentAssistProcessor(editor);
 	}
 	
 	@Override

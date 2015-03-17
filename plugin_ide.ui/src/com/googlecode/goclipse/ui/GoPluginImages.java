@@ -17,8 +17,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 public class GoPluginImages extends LangImages {
 	
-	public static final ImageHandle COMPLETION_GO = createManaged("", "go.png");
-	
 	public static final ImageHandle GO_ICON = createManaged("", "go-icon16.png");
 	
 	public static final ImageHandle NAVIGATOR_GOROOT_ENTRY = createManaged("", "navigator/goroot_entry.png");
