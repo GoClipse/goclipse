@@ -167,6 +167,13 @@ public class GoEnvironment {
 		return true;
 	}
 	
+	public void validate() throws CommonException {
+		if(!isValid()) {
+			// TODO: more specific validation messages.
+			throw new CommonException("Go Environment settings are not valid");
+		}
+	}
+	
 	public static boolean isNullOrEmpty(String string) {
 		return string == null || string.isEmpty();
 	}

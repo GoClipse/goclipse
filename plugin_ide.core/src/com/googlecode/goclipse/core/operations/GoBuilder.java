@@ -30,7 +30,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
@@ -128,12 +127,12 @@ public class GoBuilder extends LangProjectBuilder {
 		return null;
 	}
 	
-	protected GoEnvironment getValidGoEnvironment(final IProject project) throws CoreException {
-		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
-		if(!goEnv.isValid()) { /* FIXME: one exception per build. */
-			throw GoCore.createCoreException("Go Environment settings are not valid", null);
+	protected GoEnvironment getValidGoEnvironment(IProject project) throws CoreException {
+		try {
+			return GoProjectEnvironment.getValidatedGoEnvironment(project);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
 		}
-		return goEnv;
 	}
 	
 	protected ArrayList2<String> getGoToolCommandLine() throws CoreException {

@@ -15,6 +15,7 @@ import java.util.Collection;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
@@ -105,10 +106,15 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return getGoEnvironment(project).isValid();
 	}
 	
+	public static GoEnvironment getValidatedGoEnvironment(final IProject project) throws CommonException {
+		GoEnvironment goEnv = getGoEnvironment(project);
+		goEnv.validate();
+		return goEnv;
+	}
+	
 	public static Collection<GoPackageName> getSourcePackages(IProject project, GoEnvironment goEnvironment)
 			throws CoreException {
-		GoPath goPath = goEnvironment.getGoPath();
-		return goPath.findSourcePackages(ResourceUtils.getProjectLocation(project));
+		return goEnvironment.getGoPath().findSourcePackages(ResourceUtils.getProjectLocation(project));
 	}
 	
 	/* ----------------- ----------------- */
