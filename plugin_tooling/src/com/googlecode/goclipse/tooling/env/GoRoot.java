@@ -39,7 +39,13 @@ public class GoRoot {
 	}
 	
 	public Path getSourceRootLocation() throws CommonException {
-		return asPath().resolve("src/pkg");
+		Path path = asPath().resolve("src/pkg");
+		if(path.toFile().isDirectory()) {
+			// if this path exists, the it is likely a Go installation before 1.4
+			return path;
+		}
+		// but for Go 1.4 and after, the source root is just in src
+		return asPath().resolve("src");
 	}
 	
 	public GoPackageName findGoPackageForSourceModule(Path goModulePath) throws CommonException {

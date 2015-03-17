@@ -11,6 +11,7 @@
   * This also fixes potential performance problems invoking content assist.
   * However the documentation popup information will no longer be show for any content assist entries.
  * Removed bundled `gocode` as it was very out of date (closes #88).
+ * Fixed #105: Project Explorer does not expand GOROOT for Go 1.4  
 
 ### Goclipse 0.9.1
  * Fixed: Builder does not ignore folders with names starting with "_" or ".".
