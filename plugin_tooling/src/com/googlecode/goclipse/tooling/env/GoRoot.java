@@ -11,47 +11,43 @@
 package com.googlecode.goclipse.tooling.env;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.nio.file.Path;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
 
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.PathUtil;
-
 public class GoRoot {
 	
-	protected final String goRoot;
+	protected final String goRootString;
 	
 	public GoRoot(String goRoot) {
-		this.goRoot = assertNotNull(goRoot);
+		this.goRootString = assertNotNull(goRoot);
 	}
 	
 	public String asString() {
-		return goRoot;
+		return goRootString;
 	}
 	
 	public boolean isEmpty() {
-		return goRoot.isEmpty();
+		return goRootString.isEmpty();
 	}
 	
-	/* FIXME: convert to Location */
-	public Path asPath() throws CommonException {
-		return PathUtil.createPath(goRoot, "Invalid GOROOT: ");
+	public Location asLocation() throws CommonException {
+		return Location.createValidLocation(goRootString, "Invalid GOROOT: ");
 	}
 	
-	public Path getSourceRootLocation() throws CommonException {
-		Path path = asPath().resolve("src/pkg");
-		if(path.toFile().isDirectory()) {
+	public Location getSourceRootLocation() throws CommonException {
+		Location loc = asLocation().resolve_fromValid("src/pkg");
+		if(loc.toFile().isDirectory()) {
 			// if this path exists, the it is likely a Go installation before 1.4
-			return path;
+			return loc;
 		}
 		// but for Go 1.4 and after, the source root is just in src
-		return asPath().resolve("src");
+		return asLocation().resolve_fromValid("src");
 	}
 	
-	public GoPackageName findGoPackageForSourceModule(Path goModulePath) throws CommonException {
-		return GoEnvironment.getGoPackageForSourceFile(goModulePath, getSourceRootLocation());
+	public GoPackageName findGoPackageForSourceModule(Location goModuleLoc) throws CommonException {
+		return GoEnvironment.getGoPackageForSourceFile(goModuleLoc, getSourceRootLocation());
 	}
 	
 }

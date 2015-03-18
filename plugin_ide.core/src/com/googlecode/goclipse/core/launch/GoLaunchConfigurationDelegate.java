@@ -11,10 +11,13 @@
 package com.googlecode.goclipse.core.launch;
 
 
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.launching.AbstractLangLaunchConfigurationDelegate;
 import melnorme.lang.utils.ProcessUtils;
+import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunch;
@@ -36,17 +39,17 @@ public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurati
 		}
 		
 		IProject project = getProject(configuration);
-		IPath launchResource = project.findMember(path).getLocation();
+		IResource launchResource = project.findMember(path);
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
-		java.nio.file.Path goPackageAbsolutePath = launchResource.toFile().toPath();
-		java.nio.file.Path goPathEntry = goEnv.getGoPath().findGoPathEntryForSourcePath(goPackageAbsolutePath);
+		Location goPackageLocation = ResourceUtils.getResourceLocation(launchResource);
+		Location goPathEntry = goEnv.getGoPath().findGoPathEntryForSourcePath(goPackageLocation);
 		
 		if (goPathEntry == null) {
 			throw GoCore.createCoreException("Given Go package not found: " + path, null);
 		} else {
-			String cmdName = goPackageAbsolutePath.getFileName().toString(); // get last segment
+			String cmdName = goPackageLocation.path.getFileName().toString(); // get last segment
 			String executableName = cmdName + ProcessUtils.getExecutableSuffix();
 			
 			return GoProjectEnvironment.getBinFolder(goPathEntry).append(executableName);

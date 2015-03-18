@@ -19,6 +19,7 @@ import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -37,11 +38,12 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		this.goOraclePath = goOraclePath;
 	}
 	
-	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Path filePath, int offset) throws CommonException {
-		GoPackageName goPackage = goEnv.findGoPackageForSourceModule(filePath);
+	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Location fileLoc, int offset) 
+			throws CommonException {
+		GoPackageName goPackage = goEnv.findGoPackageForSourceModule(fileLoc);
 		if(goPackage == null) {
 			throw new CommonException(MessageFormat.format(
-				"Could not determine Go package for Go file ({0}), file not in the Go environment.", filePath), 
+				"Could not determine Go package for Go file ({0}), file not in the Go environment.", fileLoc), 
 				null);
 		}
 		
@@ -51,7 +53,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		
 		ArrayList2<String> commandLine = new ArrayList2<>(
 			goOraclePath,
-			"-pos=" + filePath.toString() + ":#" + offset + ",#" + offset,
+			"-pos=" + fileLoc.toPathString() + ":#" + offset + ",#" + offset,
 			"-format=json",
 			"describe",
 			goPackage.getFullNameAsString()

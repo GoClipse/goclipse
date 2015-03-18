@@ -16,22 +16,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import melnorme.utilbox.misc.Location;
+
 import com.googlecode.goclipse.tooling.env.GoPath;
 
 public abstract class GoPackagesVisitor {
 	
-	protected final Path goPathEntry;
+	protected final Location goPathEntry;
 	protected final HashMap<GoPackageName, Path> modules = new HashMap<>();
 	protected final HashSet<Path> moduleFiles = new HashSet<>();
 	
-	public GoPackagesVisitor(Path goPathEntry, List<Path> directoriesToVisit) {
+	public GoPackagesVisitor(Location goPathEntry, List<Location> directoriesToVisit) {
 		this.goPathEntry = goPathEntry;
 		assertNotNull(goPathEntry);
 		
-		for (Path directoryToVisit : directoriesToVisit) {
+		for (Location directoryToVisit : directoriesToVisit) {
 			try {
 				if(directoryToVisit.equals(goPathEntry)) {
-					directoryToVisit = directoryToVisit.resolve(GoPath.SRC_DIR);
+					directoryToVisit = directoryToVisit.resolve_fromValid(GoPath.SRC_DIR);
 				}
 				visitFolder(directoryToVisit);
 			} catch (IOException e) {
@@ -42,14 +44,15 @@ public abstract class GoPackagesVisitor {
 	
 	protected abstract FileVisitResult handleFileVisitException(Path file, IOException exc);
 	
-	protected void visitFolder(final Path startingDir) throws IOException {
+	protected void visitFolder(final Location startingDir) throws IOException {
 		if(!startingDir.toFile().exists()) {
 			return;
 		}
-		Files.walkFileTree(startingDir, new SimpleFileVisitor<Path>() {
+		Files.walkFileTree(startingDir.toPath(), new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-				assertTrue(dir.startsWith(startingDir));
+				assertTrue(dir.startsWith(startingDir.path));
+				Location dirLoc = Location.create_fromValid(dir);
 				
 				String fileName = dir.getFileName().toString();
 				if(isIgnoredName(fileName)) {
@@ -57,7 +60,7 @@ public abstract class GoPackagesVisitor {
 				}
 				
 				if(isDirectoryAValidGoPackage(dir)) {
-					addEntry(GoPath.getGoPackageForPath(goPathEntry, dir), dir);
+					addEntry(GoPath.getGoPackageForPath(goPathEntry, dirLoc), dir);
 				}
 				
 				return FileVisitResult.CONTINUE;

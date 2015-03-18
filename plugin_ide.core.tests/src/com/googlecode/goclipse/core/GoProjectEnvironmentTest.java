@@ -14,9 +14,9 @@ import static com.googlecode.goclipse.tooling.CommonGoToolingTest.SAMPLE_GOPATH_
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Collection;
 
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.eclipse.core.resources.IProject;
@@ -31,7 +31,7 @@ import com.googlecode.goclipse.tooling.env.GoRoot;
 
 public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	
-	public static final Path WORKING_DIR = CommonGoToolingTest.TESTS_WORKDIR;
+	public static final Location WORKING_DIR = CommonGoToolingTest.TESTS_WORKDIR;
 	public static final GoRoot SAMPLE_GO_ROOT = CommonGoToolingTest.SAMPLE_GO_ROOT;
 	public static final GoPath SAMPLE_GO_PATH = CommonGoToolingTest.SAMPLE_GO_PATH;
 	
@@ -75,18 +75,18 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 			
 			GoEnvironmentPrefs.GO_PATH.set(SAMPLE_GO_PATH.asString());
 			
-			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve("src/github.com/foo"));
+			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve_valid("src/github.com/foo"));
 			// Test that project location is not added, because project is in a Go source package
 			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString()), true);
 			
 			 // Test 1 dir under 'src'
-			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve("src/foo"));
+			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve_valid("src/foo"));
 			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString()), true);
 			
 			 // Test under 'src'
-			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve("../temp"));
+			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve_valid("../temp"));
 			TestsWorkingDir.deleteDir(SAMPLE_GOPATH_Entry);
-			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve("src"));
+			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve_valid("src"));
 			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString()), true);
 		}
 		

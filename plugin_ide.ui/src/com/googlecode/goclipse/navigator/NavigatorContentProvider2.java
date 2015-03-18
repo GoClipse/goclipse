@@ -6,6 +6,7 @@ import java.nio.file.Path;
 
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.filesystem.EFS;
@@ -96,7 +97,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 		
 		GoRoot goRoot = goEnvironment.getGoRoot();
-		java.nio.file.Path goRootSource;
+		Location goRootSource;
 		try {
 			goRootSource = goRoot.getSourceRootLocation();
 		} catch (CommonException e) {

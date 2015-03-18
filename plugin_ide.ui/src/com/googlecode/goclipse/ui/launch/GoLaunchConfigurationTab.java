@@ -11,7 +11,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
 
-import java.nio.file.Path;
 import java.util.Collection;
 
 import melnorme.lang.ide.launching.LaunchConstants;
@@ -20,6 +19,7 @@ import melnorme.lang.ide.ui.launch.LangWorkingDirectoryBlock;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IProject;
@@ -161,9 +161,9 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 				if(!GoProjectEnvironment.isProjectInsideGoPath(project, goEnv.getGoPath())) {
 					packageResourcePath = "src/" + packageResourcePath;
 				} else {
-					Path projectLocation = project.getLocation().toFile().toPath();
+					Location projectLocation = Location.create_fromValid(project.getLocation().toFile().toPath());
 					GoPackageName projectGoPackage = 
-							goEnv.getGoPath().findGoPackageForSourceFile(projectLocation.resolve("dummy.go"));
+							goEnv.getGoPath().findGoPackageForSourceFile(projectLocation.resolve_valid("dummy.go"));
 					
 					// snip project base name.
 					packageResourcePath = StringUtil.segmentAfterMatch(packageResourcePath, 

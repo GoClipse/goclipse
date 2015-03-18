@@ -10,11 +10,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
-import static melnorme.lang.tests.LangToolingTestResources.getTestResourcePath;
-
-import java.nio.file.Path;
-
+import static melnorme.lang.tests.LangToolingTestResources.getTestResourceLoc;
 import melnorme.lang.tests.CommonToolingTest;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import com.googlecode.goclipse.tooling.env.GoArch;
@@ -25,11 +23,11 @@ import com.googlecode.goclipse.tooling.env.GoRoot;
 
 public class CommonGoToolingTest extends CommonToolingTest {
 	
-	public static final Path TESTS_WORKDIR = TestsWorkingDir.getWorkingDirPath();
+	public static final Location TESTS_WORKDIR = TestsWorkingDir.getWorkingDir();
 	
-	public static final GoRoot SAMPLE_GO_ROOT = new GoRoot(TESTS_WORKDIR.resolve("goRoot").toString());
+	public static final GoRoot SAMPLE_GO_ROOT = new GoRoot(TESTS_WORKDIR.resolve_valid("goRoot").toString());
 	
-	public static final Path SAMPLE_GOPATH_Entry = TESTS_WORKDIR.resolve("goPathEntry");
+	public static final Location SAMPLE_GOPATH_Entry = TESTS_WORKDIR.resolve_valid("goPathEntry");
 	public static final GoPath SAMPLE_GO_PATH = new GoPath(SAMPLE_GOPATH_Entry.toString());
 	
 	protected static final GoEnvironment SAMPLE_GOEnv_1 = new GoEnvironment(
@@ -38,6 +36,6 @@ public class CommonGoToolingTest extends CommonToolingTest {
 		SAMPLE_GO_PATH
 	);
 	
-	public static final Path TR_SAMPLE_GOPATH_ENTRY = getTestResourcePath("sampleGoPathEntry");
+	public static final Location TR_SAMPLE_GOPATH_ENTRY = getTestResourceLoc("sampleGoPathEntry");
 	
 }

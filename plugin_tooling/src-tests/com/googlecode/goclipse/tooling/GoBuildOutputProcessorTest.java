@@ -61,7 +61,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 			error(path("MyGoLibFoo/libfoo/blah.go"), 7, -1, "undefined: asdfsd"),
 			error(path("MyGoLibFoo/libfoo/blah.go"), 10, -1, "not enough arguments in call to fmt.Printf"),
 			error(path("MyGoLibFoo/foo.go"), 3, -1, "undefined: ziggy"),
-			error(TR_SAMPLE_GOPATH_ENTRY.resolve("src/samplePackage/foo.go"), 5, -1, "undefined: ziggy2")
+			error(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src/samplePackage/foo.go").path, 5, -1, "undefined: ziggy2")
 		);
 		testParseError(buildProcessor,
 			readTemplatedFiled(BUILD_OUTPUT_TestResources.resolve("outputA.txt")),
@@ -78,7 +78,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		List<ToolSourceMessage> OUTPUTB_Errors = listFrom(
 			error(path("libbar/blah.go"), 3, 8, errorMessage1),
 			error(path("../MyGoLibFoo/libfoo/blah.go"), 3, 8, errorMessage2),
-			error(TR_SAMPLE_GOPATH_ENTRY.resolve("src/samplePackage/foo.go"), 3, 2, errorMessage3)
+			error(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src/samplePackage/foo.go").path, 3, 2, errorMessage3)
 		);
 		testParseError(buildProcessor,
 			OUTPUT_B,

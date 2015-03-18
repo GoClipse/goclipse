@@ -23,7 +23,8 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
@@ -70,24 +71,26 @@ public class GoPath {
 	}
 	
 	/** @return the full path of a GOPATH workspace entry (a workspace root) that contains the given path. */
-	public Path findGoPathEntry(Path path) {
+	public Location findGoPathEntry(Location path) {
 		if(path == null) {
 			return null;
 		}
 		for (String pathElement : goPathElements) {
-			if(path.startsWith(pathElement)) {
-				return MiscUtil.createPathOrNull(pathElement);
+			Location pathElementLoc = Location.createValidOrNull(PathUtil.createPathOrNull(pathElement));
+			
+			if(pathElementLoc != null && path.startsWith(pathElementLoc)) {
+				return pathElementLoc;
 			}
 		}
 		return null;
 	}
 	
-	/** @return the GOPATH entry that contains the given goModulePath, if it's in the "src" folder of that entry. 
+	/** @return the GOPATH entry that contains the given sourcePath, if it's in the "src" folder of that entry. 
 	 * Return null otherwise. */
-	public Path findGoPathEntryForSourcePath(Path sourcePath) {
-		Path workspaceEntry = findGoPathEntry(sourcePath);
+	public Location findGoPathEntryForSourcePath(Location sourcePath) {
+		Location workspaceEntry = findGoPathEntry(sourcePath);
 		
-		if(workspaceEntry != null && sourcePath.startsWith(workspaceEntry.resolve(SRC_DIR))) {
+		if(workspaceEntry != null && sourcePath.startsWith(workspaceEntry.resolve_valid(SRC_DIR))) {
 			return workspaceEntry;
 		}
 		return null;
@@ -95,31 +98,31 @@ public class GoPath {
 	
 	/** @return the Go package path for given goModulePath, if it's in a source package in some GOPATH entry. 
 	 * Return null otherwise. */
-	public GoPackageName findGoPackageForSourceFile(Path sourceFilePath) {
-		Path goPathEntry = findGoPathEntry(sourceFilePath);
+	public GoPackageName findGoPackageForSourceFile(Location sourceFilePath) {
+		Location goPathEntry = findGoPathEntry(sourceFilePath);
 		if(goPathEntry == null) {
 			return null;
 		}
 		
-		Path sourceRoot = goPathEntry.resolve(SRC_DIR);
+		Location sourceRoot = goPathEntry.resolve_fromValid(SRC_DIR);
 		return GoEnvironment.getGoPackageForSourceFile(sourceFilePath, sourceRoot);
 	}
 	
-	public static GoPackageName getGoPackageForPath(Path goPathEntry, Path dirFullPath) {
-		Path sourceRoot = goPathEntry.resolve(SRC_DIR);
-		if(!dirFullPath.startsWith(goPathEntry)) {
+	public static GoPackageName getGoPackageForPath(Location goPathEntry, Location packageLoc) {
+		Location sourceRoot = goPathEntry.resolve_fromValid(SRC_DIR);
+		if(!packageLoc.startsWith(goPathEntry)) {
 			return null;
 		}
-		return GoPackageName.fromPath(sourceRoot.relativize(dirFullPath));
+		return GoPackageName.fromPath(sourceRoot.relativize(packageLoc));
 	}
 	
-	public Collection<GoPackageName> findSourcePackages(java.nio.file.Path path) {
-		Path goPathEntry = findGoPathEntry(path);
+	public Collection<GoPackageName> findSourcePackages(Location loc) {
+		Location goPathEntry = findGoPathEntry(loc);
 		if(goPathEntry == null) {
 			return new HashSet<>();
 		}
 		
-		GoPackagesVisitor goPackagesVisitor = new GoPackagesVisitor(goPathEntry, listFrom(path)) {
+		GoPackagesVisitor goPackagesVisitor = new GoPackagesVisitor(goPathEntry, listFrom(loc)) {
 			
 			@Override
 			protected FileVisitResult handleFileVisitException(Path file, IOException exc) {

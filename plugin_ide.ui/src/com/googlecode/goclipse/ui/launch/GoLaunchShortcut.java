@@ -10,10 +10,10 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
 
-import java.nio.file.Path;
-
 import melnorme.lang.ide.core.LaunchConstants_Actual;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
+import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -51,11 +51,11 @@ public class GoLaunchShortcut extends AbstractLaunchShortcut2 implements ILaunch
 	
 	@Override
 	protected ILaunchConfiguration createConfiguration(ILaunchTarget launchable) {
-		Path packageLocation = launchable.getAssociatedResource().getLocation().toFile().toPath();
+		Location packageLocation = ResourceUtils.getResourceLocation(launchable.getAssociatedResource());
 		IProject project = launchable.getProject();
 		
 		GoPath goPath = GoProjectEnvironment.getEffectiveGoPath(project);
-		GoPackageName goPackage = goPath.findGoPackageForSourceFile(packageLocation.resolve("dummy.go"));
+		GoPackageName goPackage = goPath.findGoPackageForSourceFile(packageLocation.resolve_valid("dummy.go"));
 		String suggestedName = project.getName() + " - " + goPackage.getFullNameAsString();
 		return super.createConfiguration(launchable, suggestedName);
 	}

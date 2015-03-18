@@ -10,12 +10,11 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
-import java.io.File;
-import java.nio.file.Path;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.CoreException;
@@ -34,16 +33,11 @@ public class GoToolManager extends AbstractToolsManager {
 	}
 	
 	/* -----------------  ----------------- */
-
-	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProgressMonitor pm, File workingDir, 
-			List<String> commandLine) throws CoreException {
-		return runBuildTool(goEnv, pm, workingDir.toPath(), commandLine);
-	}
 	
-	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProgressMonitor pm, Path workingDir, 
+	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProgressMonitor pm, Location workingDir, 
 			List<String> commandLine) throws CoreException {
 		
-		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir);
+		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir.path);
 		return runTool(null, pm, pb);
 	}
 	

@@ -16,6 +16,7 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
@@ -52,20 +53,19 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 			return rawGoPath;
 		}
 		
-		IPath location = project.getLocation();
-		if(location == null) {
+		Location projectLoc = ResourceUtils.getResourceLocation(project);
+		if(projectLoc == null) {
 			return rawGoPath;
 		}
-		java.nio.file.Path projectPath = location.toFile().toPath();
 		
-		java.nio.file.Path goPathEntry = rawGoPath.findGoPathEntryForSourcePath(projectPath);
+		Location goPathEntry = rawGoPath.findGoPathEntryForSourcePath(projectLoc);
 		if(goPathEntry != null) {
 			// GOPATH already contains project location
 			return rawGoPath;
 		}
 		
 		// Implicitly add project location to GOPATH
-		ArrayList2<String> newGoPathEntries = new ArrayList2<>(projectPath.toString());
+		ArrayList2<String> newGoPathEntries = new ArrayList2<>(projectLoc.toPathString());
 		newGoPathEntries.addElements(rawGoPath.getGoPathEntries());
 		
 		return new GoPath(newGoPathEntries);
@@ -132,8 +132,8 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return project.getLocation().append("pkg");
 	}
 	
-	public static IPath getBinFolder(java.nio.file.Path goWorkspaceEntry) {
-		return Path.fromOSString(goWorkspaceEntry.resolve("bin").toString());
+	public static IPath getBinFolder(Location goWorkspaceEntry) {
+		return Path.fromOSString(goWorkspaceEntry.resolve_valid("bin").toString());
 	}
 	
 	public static IContainer getSourceFolderRoot(IProject project) throws CoreException {

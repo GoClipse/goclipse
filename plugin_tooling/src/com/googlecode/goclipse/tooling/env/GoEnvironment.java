@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
@@ -51,8 +52,8 @@ public class GoEnvironment {
 		return goRoot;
 	}
 	
-	public Path getGoRoot_Path() throws CommonException {
-		return goRoot.asPath();
+	public Location getGoRoot_Location() throws CommonException {
+		return goRoot.asLocation();
 	}
 	
 	public GoArch getGoArch() throws CommonException{
@@ -85,13 +86,13 @@ public class GoEnvironment {
 		return goPath.getGoPathWorkspaceString();
 	}
 	
-	public GoPackageName findGoPackageForSourceModule(Path goModulePath) throws CommonException {
-		GoPackageName goPackage = goRoot.findGoPackageForSourceModule(goModulePath);
+	public GoPackageName findGoPackageForSourceModule(Location goModuleLoc) throws CommonException {
+		GoPackageName goPackage = goRoot.findGoPackageForSourceModule(goModuleLoc);
 		if(goPackage != null) {
 			return goPackage;
 		}
 		
-		return goPath.findGoPackageForSourceFile(goModulePath);
+		return goPath.findGoPackageForSourceFile(goModuleLoc);
 	}
 	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine, Path workingDir) {
@@ -136,17 +137,16 @@ public class GoEnvironment {
 		return getGoOs().asString() + "_" + getGoArch().asString();
 	}
 	
-	public Path getGoRootToolsDir() throws CommonException {
+	public Location getGoRootToolsDir() throws CommonException {
 		Path subPath = PathUtil.createPath(getGoOS_GoArch_segment(), "Invalid GOOS-GOARCH: ");
-		return goRoot.asPath().resolve("pkg/tool/").resolve(subPath);
+		return goRoot.asLocation().resolve_fromValid("pkg/tool/").resolve(subPath);
 	}
 	
-	protected static GoPackageName getGoPackageForSourceFile(Path sourceFilePath, Path sourceRoot) {
-		sourceFilePath = sourceFilePath.normalize();
-		if(!sourceFilePath.startsWith(sourceRoot)) {
+	protected static GoPackageName getGoPackageForSourceFile(Location sourceFileLoc, Location sourceRoot) {
+		if(!sourceFileLoc.startsWith(sourceRoot)) {
 			return null;
 		}
-		sourceFilePath = sourceRoot.relativize(sourceFilePath);
+		Path sourceFilePath = sourceRoot.relativize(sourceFileLoc);
 		return GoPackageName.fromPath(sourceFilePath.getParent()); // Discard file name
 	}
 	

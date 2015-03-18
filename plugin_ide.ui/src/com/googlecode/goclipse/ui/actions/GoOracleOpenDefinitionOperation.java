@@ -51,7 +51,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 		
 		try {
 			GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation(goOraclePath);
-			ProcessBuilder pb = op.createProcessBuilder(goEnv, inputPath, range.getOffset());
+			ProcessBuilder pb = op.createProcessBuilder(goEnv, inputLoc, range.getOffset());
 			
 			ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, monitor);
 			

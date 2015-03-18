@@ -12,7 +12,6 @@ package com.googlecode.goclipse.core.operations;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.getProjectLocation;
 
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 
@@ -24,6 +23,7 @@ import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -102,13 +102,13 @@ public class GoBuilder extends LangProjectBuilder {
 		goBuildCmdLine.addElements("./...");
 //		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
 		
-		Path projectLocation = getProjectLocation(project);
-		Path sourceRootDir;
+		Location projectLocation = getProjectLocation(project);
 		
+		Location sourceRootDir;
 		if(GoProjectEnvironment.isProjectInsideGoPath(project, goEnv.getGoPath())) {
 			sourceRootDir = projectLocation;
 		} else {
-			sourceRootDir = projectLocation.resolve("src");
+			sourceRootDir = projectLocation.resolve_valid("src");
 		}
 		
 		ExternalProcessResult buildAllResult = 
