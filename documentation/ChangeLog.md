@@ -10,7 +10,8 @@
  * Fixed #112: InvalidPathException invoking content assist. 
   * This also fixes potential performance problems invoking content assist.
   * However the documentation popup information will no longer be show for any content assist entries.
- * Removed bundled `gocode` as it was very out of date (closes #88).
+ * Removed `gocode` bundle in Goclipse as it was very out of date (closes #88).
+   * Added button/tool in Tools pref page to automatically download gocode from Github. 
  * Fixed #105: Project Explorer does not expand GOROOT for Go 1.4  
 
 ### Goclipse 0.9.1

@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
+import melnorme.utilbox.misc.PathUtil;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
 
@@ -131,16 +130,6 @@ public class GoEnvironment {
 		}
 	}
 	
-	/* ----------------- helpers ----------------- */
-	
-	protected static Path createPath(String pathString) throws CommonException {
-		try {
-			return MiscUtil.createPath(pathString);
-		} catch (InvalidPathExceptionX e) {
-			throw new CommonException("Invalid path: " + e.getCause().getMessage(), null);
-		}
-	}
-	
 	/* -----------------  ----------------- */
 	
 	protected String getGoOS_GoArch_segment() throws CommonException {
@@ -148,7 +137,8 @@ public class GoEnvironment {
 	}
 	
 	public Path getGoRootToolsDir() throws CommonException {
-		return goRoot.asPath().resolve("pkg/tool/").resolve(createPath(getGoOS_GoArch_segment()));
+		Path subPath = PathUtil.createPath(getGoOS_GoArch_segment(), "Invalid GOOS-GOARCH: ");
+		return goRoot.asPath().resolve("pkg/tool/").resolve(subPath);
 	}
 	
 	protected static GoPackageName getGoPackageForSourceFile(Path sourceFilePath, Path sourceRoot) {

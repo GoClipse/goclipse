@@ -50,7 +50,7 @@ This is unlike most source editors - if instead you want to just remove one leve
 ##### Code-Completion/Auto-Complete:
 Invoked with Ctrl-Space. This functionality is generally called Content Assist in Eclipse. 
 
-Code completion is provided by means of the [gocode tool](http://github.com/nsf/gocode). You must install this tool (see info [here](https://github.com/nsf/gocode#setup)), and then configuring its location in the `Go / Tools` preference page. It is recommended to use the latest gocode version. 
+Code completion is provided by means of the [gocode tool](http://github.com/nsf/gocode). You must install this tool (see info [here](https://github.com/nsf/gocode#setup)), and then configuring its location in the `Go / Tools` preference page. It is recommended to use the latest gocode version (the "Download gocode" button here will do just that). 
 
 > If there is a problem with this operation, and you need a diagnostics log, the output of gocode can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
 

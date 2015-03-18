@@ -57,6 +57,10 @@ public class GoPath {
 		return goPathElements;
 	}
 	
+	public boolean isEmpty() {
+		return goPathElements.size() == 0;
+	}
+	
 	public String asString() {
 		return getGoPathWorkspaceString(); 
 	}
@@ -107,10 +111,6 @@ public class GoPath {
 			return null;
 		}
 		return GoPackageName.fromPath(sourceRoot.relativize(dirFullPath));
-	}
-	
-	public boolean isEmpty() {
-		return goPathElements.size() == 0;
 	}
 	
 	public Collection<GoPackageName> findSourcePackages(java.nio.file.Path path) {

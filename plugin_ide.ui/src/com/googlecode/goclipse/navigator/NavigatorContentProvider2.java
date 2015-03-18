@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -117,8 +116,8 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		for (String goPathEntry : effectiveGoPath.getGoPathEntries()) {
 			Path goPathEntryPath;
 			try {
-				goPathEntryPath = MiscUtil.createPath(goPathEntry);
-			} catch (InvalidPathExceptionX e) {
+				goPathEntryPath = MiscUtil.createPath2(goPathEntry);
+			} catch (CommonException e) {
 				continue; // TODO: create error element
 			}
 			if(areEqual(goPathEntryPath, project.getLocation().toFile().toPath())) {

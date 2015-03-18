@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import com.googlecode.goclipse.tooling.GoPackageName;
 
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.PathUtil;
 
 public class GoRoot {
 	
@@ -34,8 +35,9 @@ public class GoRoot {
 		return goRoot.isEmpty();
 	}
 	
+	/* FIXME: convert to Location */
 	public Path asPath() throws CommonException {
-		return GoEnvironment.createPath(goRoot);
+		return PathUtil.createPath(goRoot, "Invalid GOROOT: ");
 	}
 	
 	public Path getSourceRootLocation() throws CommonException {
