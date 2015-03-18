@@ -13,6 +13,7 @@ package melnorme.lang.utils;
 import java.nio.file.Path;
 
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 
 /**
@@ -37,8 +38,12 @@ public class ParseHelper {
 		}
 	}
 	
-	protected Path parsePath(String string) throws CommonException {
-		return MiscUtil.createPath2(string);
+	protected Path parsePath(String pathString) throws CommonException {
+		return MiscUtil.createPath2(pathString);
+	}
+	
+	protected Location parseLocation(String pathString) throws CommonException {
+		return Location.create2(pathString);
 	}
 	
 }

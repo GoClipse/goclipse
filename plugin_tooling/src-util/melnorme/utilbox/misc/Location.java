@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.utilbox.misc;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
@@ -70,12 +71,28 @@ public class Location {
 		}
 	}
 	
+	public static Location validateLocation(Path filePath, boolean isRequired, String descText) 
+			throws CommonException {
+		if(filePath == null) {
+			if(isRequired) {
+				throw new CommonException("Path not specified for " + descText + "."); 
+			}
+			return null;
+		}
+		try {
+			return create2(filePath);
+		} catch (CommonException e) {
+			throw new CommonException("Invalid location for " + descText + ", path not absolute: " + filePath);
+		}
+	}
+	
 	/* -----------------  ----------------- */
 	
-	public final Path path;
+	public final Path path; // non-null
 	
 	protected Location(Path absolutePath) {
-		assertTrue(absolutePath != null && absolutePath.isAbsolute());
+		assertNotNull(absolutePath);
+		assertTrue(absolutePath.isAbsolute());
 		this.path = absolutePath.normalize();
 	}
 	
@@ -119,6 +136,13 @@ public class Location {
 		return path.toUri();
 	}
 	
+	/* -----------------  ----------------- */
+	
+	public Location resolve(String subPathStr) throws CommonException {
+		Path subPath = PathUtil.createPath2(subPathStr);
+		return resolve(subPath);
+	}
+	
 	/**
 	 * @return an new Location resolved from this Location against the given otherPathString. 
 	 * null if the other path is not valid. 
@@ -141,6 +165,10 @@ public class Location {
 		return resolve(otherPath);
 	}
 	
+	public Location resolve_valid(String otherPathString) {
+		return resolve_fromValid(otherPathString);
+	}
+	
 	public Location resolve(Path otherPath) {
 		// resolving should always result in a valid path: absolute and non-null
 		return Location.create_fromValid(path.resolve(otherPath));
@@ -154,19 +182,12 @@ public class Location {
 		return Location.create_fromValid(parent);
 	}
 	
-	public static Location validateLocation(Path filePath, boolean isRequired, String descText) 
-			throws CommonException {
-		if(filePath == null) {
-			if(isRequired) {
-				throw new CommonException("Path not specified for " + descText + "."); 
-			}
-			return null;
-		}
-		try {
-			return create2(filePath);
-		} catch (CommonException e) {
-			throw new CommonException("Invalid location for " + descText + ", path not absolute: " + filePath);
-		}
+	public boolean startsWith(Location otherLoc) {
+		return path.startsWith(otherLoc.path);
+	}
+	
+	public Path relativize(Location packageLoc) {
+		return path.relativize(packageLoc.path);
 	}
 	
 }

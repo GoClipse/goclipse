@@ -74,15 +74,10 @@ public class TestsWorkingDir {
 		return getWorkingDir().resolve_fromValid(relativePath);
 	}
 	
-	public static Path getWorkingDirPath(String relativePath) {
-		return getWorkingDirPath().resolve(relativePath);
-	}
-	
 	/** Delete given dir, but for safety, check that it is within TestsWorkingDir. */
-	public static void deleteDir(Path dir) throws IOException {
-		dir = dir.normalize();
-		assertTrue(dir.startsWith(getWorkingDirPath()));
-		FileUtil.deleteDir(Location.fromAbsolutePath(dir));
+	public static void deleteDir(Location dir) throws IOException {
+		assertTrue(dir.startsWith(getWorkingDir()));
+		FileUtil.deleteDir(dir);
 	}
 	
 }

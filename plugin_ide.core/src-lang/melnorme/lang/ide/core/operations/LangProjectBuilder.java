@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.nio.file.Path;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
@@ -31,6 +30,7 @@ import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
@@ -141,7 +141,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected ProcessBuilder createSDKProcessBuilder(String... sdkOptions) throws CoreException {
-		Path projectLocation = ResourceUtils.getProjectLocation(getProject());
+		Location projectLocation = ResourceUtils.getProjectLocation(getProject());
 		
 		ArrayList2<String> commandLine = new ArrayList2<>();
 		commandLine.add(getSDKToolPath());
@@ -162,15 +162,12 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	/* ----------------- Problem markers handling ----------------- */
 	
-	protected void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Path rootPath) throws CoreException {
-		assertTrue(rootPath.isAbsolute());
+	protected void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath) throws CoreException {
 		
 		for (ToolSourceMessage buildError : buildErrors) {
-			Path path = buildError.getFilePath();
-			path = rootPath.resolve(path); // Absolute paths will remain unchanged.
-			path = path.normalize();
+			Location loc = rootPath.resolve(buildError.getFilePath()); // Absolute paths will remain unchanged.
 			
-			IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(path.toUri());
+			IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(loc.toUri());
 			for (IFile file : files) {
 				addErrorMarker(file, buildError);
 			}

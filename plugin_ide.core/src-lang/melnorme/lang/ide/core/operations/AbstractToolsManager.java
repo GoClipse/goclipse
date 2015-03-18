@@ -10,14 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import java.nio.file.Path;
-
 import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
@@ -57,7 +56,7 @@ public abstract class AbstractToolsManager extends ListenerListHelper<ILangOpera
 	
 	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb,
 			String processInput, boolean throwOnNonZero) throws CoreException {
-		Path workingDir = project == null ? null : ResourceUtils.getProjectLocation(project);
+		Location workingDir = project == null ? null : ResourceUtils.getProjectLocation(project);
 		if(workingDir != null) {
 			pb.directory(workingDir.toFile());
 		}

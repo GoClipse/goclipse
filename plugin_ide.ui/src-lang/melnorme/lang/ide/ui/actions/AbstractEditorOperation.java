@@ -16,6 +16,7 @@ import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
@@ -28,7 +29,7 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 	protected final ITextEditor editor;
 	protected final IWorkbenchWindow window;
 	protected final IEditorInput editorInput;
-	protected final Path inputPath;
+	protected final Location inputLoc;
 	protected final IDocument doc;
 	
 	public AbstractEditorOperation(String operationName, ITextEditor editor) {
@@ -36,13 +37,14 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 		this.editor = editor;
 		this.window = editor.getSite().getWorkbenchWindow();
 		this.editorInput = editor.getEditorInput();
-		this.inputPath = EditorUtils.getFilePathFromEditorInput(editorInput);
+		Path inputPath = EditorUtils.getFilePathFromEditorInput(editorInput);
+		this.inputLoc = Location.createValidOrNull(inputPath);
 		this.doc = assertNotNull(editor.getDocumentProvider().getDocument(editor.getEditorInput()));
 	}
 	
 	@Override
 	protected void prepareOperation() throws CoreException {
-		if(inputPath == null) {
+		if(inputLoc == null) {
 			throw LangCore.createCoreException("Could not determine filesystem path from editor input", null); 
 		}
 	}
