@@ -15,11 +15,9 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.io.File;
 import java.net.URI;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 /**
  * A location is a normalized, absolute path, based upon {@link Path}.
@@ -35,33 +33,28 @@ public class Location {
 		return new Location(absolutePath);
 	}
 	
-	/** @return a new {@link Location} from given path. 
-	 * @throws InvalidPathExceptionX if path is not absolute. */
-	@Deprecated
-	public static Location create(Path path) throws PathUtil.InvalidPathExceptionX {
-		if(!path.isAbsolute()) {
-			throw new PathUtil.InvalidPathExceptionX(new InvalidPathException(path.toString(), 
-					"Invalid location: path is not absolute"));
-		}
-		return new Location(path);
-	}
-	
 	public static Location create2(Path path) throws CommonException {
+		return createValidLocation(path, "Invalid location: ");
+	}
+	public static Location create2(String pathString) throws CommonException {
+		return createValidLocation(pathString, "Invalid location: ");
+	}
+	
+	/** @return a valid {@link Location} from given path. 
+	 * @throws CommonException if a valid Location could not be created. 
+	 * Given errorMessagePrefix will be used as a prefix in {@link CommonException}'s message. */
+	public static Location createValidLocation(Path path, String errorMessagePrefix) throws CommonException {
 		if(!path.isAbsolute()) {
-			throw new CommonException("Invalid location: path is not absolute");
+			throw new CommonException(errorMessagePrefix + "Path `"+ path.toString()+"` is not absolute.");
 		}
 		return new Location(path);
 	}
-	
-	/** @return a new {@link Location} from given path string. 
-	 * @throws InvalidPathExceptionX if path is not absolute. */
-	@Deprecated
-	public static Location create(String pathString) throws PathUtil.InvalidPathExceptionX {
-		return create(PathUtil.createPath(pathString));
-	}
-	
-	public static Location create2(String pathString) throws CommonException {
-		return create2(PathUtil.createPath2(pathString));
+	/** @return a valid {@link Location} from given pathString. 
+	 * @throws CommonException if a valid Location could not be created. 
+	 * Given errorMessagePrefix will be used as a prefix in {@link CommonException}'s message. */
+	public static Location createValidLocation(String pathString, String errorMessagePrefix) throws CommonException {
+		Path path = PathUtil.createPath(pathString, errorMessagePrefix);
+		return createValidLocation(path, errorMessagePrefix);
 	}
 	
 	/** @return a new {@link Location} from given path, or null if path is not absolute.  */

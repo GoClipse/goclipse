@@ -26,6 +26,7 @@ import melnorme.lang.tooling.data.LocationOrSinglePathValidator;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractField;
 import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.util.swt.components.fields.ComboBoxField;
@@ -33,7 +34,9 @@ import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.FileTextField;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
@@ -162,7 +165,13 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		}
 	}
 	
-	/* ----------------- Helpers:  ----------------- */
+	/* ======================= Helpers:  ======================= */
+	
+	public static Group createOptionsSection(Composite parent, String label, GridData gridData, int numColumns) {
+		Group group = SWTFactoryUtil.createGroup(parent, label, gridData);
+		group.setLayout(GridLayoutFactory.fillDefaults().numColumns(numColumns).spacing(6, 4).margins(6, 4).create());
+		return group;
+	}
 	
 	public void addStringComponent(String prefKey, AbstractField<String> field) {
 		addComponent(new StringFieldAdapter(prefKey, field));
@@ -202,15 +211,18 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		connectStringField(prefKey, stringField, validator);
 	}
 	
-	public void createFileComponent(Group group, String label, String prefKey, boolean allowSinglePath) {
+	public FileTextField createFileComponent(Group group, String label, String prefKey, boolean allowSinglePath) {
 		FileTextField pathField = new FileTextField(label);
 		pathField.createComponentInlined(group);
 		connectFileField(prefKey, pathField, allowSinglePath, label);
+		return pathField;
 	}
-	public void createDirectoryComponent(Group group, String label, String prefKey, boolean allowSinglePath) {
+	public DirectoryTextField createDirectoryComponent(Group group, String label, String prefKey, 
+			boolean allowSinglePath) {
 		DirectoryTextField pathField = new DirectoryTextField(label);
 		pathField.createComponentInlined(group);
 		connectDirectoryField(prefKey, pathField, allowSinglePath, label);
+		return pathField;
 	}
 	
 }

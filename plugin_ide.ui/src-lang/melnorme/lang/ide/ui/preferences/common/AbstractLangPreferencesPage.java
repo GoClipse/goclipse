@@ -20,6 +20,8 @@ import org.eclipse.ui.PlatformUI;
 
 public abstract class AbstractLangPreferencesPage extends PreferencePage  implements IWorkbenchPreferencePage {
 	
+	protected IWorkbench workbench;
+	
 	public AbstractLangPreferencesPage(IPreferenceStore store) {
 		setPreferenceStore(store);
 	}
@@ -28,6 +30,7 @@ public abstract class AbstractLangPreferencesPage extends PreferencePage  implem
 	
 	@Override
 	public void init(IWorkbench workbench) {
+		this.workbench = workbench;
 	}
 	
 	@Override

@@ -43,33 +43,24 @@ public class PathUtil {
 		}
 	}
 
-	/** @return a valid path, 
-	 * or throws a checked exception if a valid path could not be created from given pathString. */
-	public static Path createPath(String pathString) throws InvalidPathExceptionX {
-		try {
-			return Paths.get(pathString);
-		} catch (InvalidPathException ipe) {
-			throw new InvalidPathExceptionX(ipe);
-		}
-	}
 	
 	public static Path createPath2(String pathString) throws CommonException {
+		return createPath(pathString, "Invalid path: ");
+	}
+	
+	/** @return a valid path from given pathString. 
+	 * @throws CommonException if a valid path could not be created. 
+	 * Given errorMessagePrefix will be used as a prefix in {@link CommonException}'s message. */
+	public static Path createPath(String pathString, String errorMessagePrefix) throws CommonException {
 		try {
 			return Paths.get(pathString);
 		} catch (InvalidPathException ipe) {
-			throw new CommonException("Invalid path:", ipe);
+			String pathMessage = ipe.getMessage();
+			if(pathMessage == null) {
+				pathMessage = ipe.toString();
+			}
+			throw new CommonException(errorMessagePrefix + pathMessage);
 		}
-	}
-	
-	/** Checked exception wrapper for {@link InvalidPathException} */
-	public static class InvalidPathExceptionX extends Exception {
-		
-		private static final long serialVersionUID = 1L;
-		
-		public InvalidPathExceptionX(InvalidPathException ipe) {
-			super(ipe);
-		}
-		
 	}
 	
 	public static Path getParentOrEmpty(Path path) throws CommonException {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.dialogs;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,13 +17,12 @@ import java.util.Collections;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsHelper;
 import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
@@ -56,26 +54,7 @@ public abstract class ProjectCreationOperation {
 	public abstract URI getProjectLocation();
 	
 	protected boolean runOperation(WorkspaceModifyOperation op, boolean isCancellable, String errorTitle) {
-		try {
-			getRunnableContext().run(true, isCancellable, op);
-			return true;
-		} catch (InvocationTargetException e) {
-			Throwable targetException = e.getTargetException();
-			if(targetException instanceof OperationCanceledException) {
-				return false;
-			}
-			
-			CoreException ce = (CoreException) e.getTargetException();
-			if(targetException instanceof CoreException) {
-				ce = (CoreException) e.getTargetException();
-			} else {
-				ce = LangCore.createCoreException("Internal error: ", targetException);
-			}
-			UIOperationExceptionHandler.handleOperationStatus(errorTitle, ce);
-			return false;
-		} catch (InterruptedException e) {
-			return false;
-		}
+		return UIOperationsHelper.runAndHandle(getRunnableContext(), op, isCancellable, errorTitle);
 	}
 	
 	public boolean performCreateProject() {

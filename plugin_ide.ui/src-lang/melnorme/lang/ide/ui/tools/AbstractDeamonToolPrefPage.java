@@ -15,6 +15,7 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -39,6 +40,7 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 	/* -----------------  ----------------- */
 	
 	protected Group toolGroup;
+	protected ButtonTextField daemonPathEditor;
 	
 	@Override
 	protected Control createContents(Composite parent) {
@@ -50,11 +52,10 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 	protected void doCreateContents(Composite block) {
 		block.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
 		
-		toolGroup = SWTFactoryUtil.createGroup(block,
-			getDaemonToolName(),
-			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
-		
-		toolGroup.setLayout(GridLayoutFactory.fillDefaults().numColumns(3).spacing(6, 2).margins(6, 4).create());
+		toolGroup = createOptionsSection(block, 
+			getDaemonToolName(), 
+			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create(), 
+			3);
 		
 		addBooleanComponent(DaemonEnginePreferences.AUTO_START_SERVER.key, toolGroup, new CheckBoxField(
 			"Start " + getDaemonToolName() + " server automatically"));
@@ -62,11 +63,11 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 		addBooleanComponent(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.key, toolGroup, new CheckBoxField(
 			"Enable " + getDaemonToolName() + " log console (requires restart)"));
 		
-		createDaemonPathFieldEditor(toolGroup);
+		daemonPathEditor = createDaemonPathFieldEditor(toolGroup);
 	}
 	
-	protected void createDaemonPathFieldEditor(Group group) {
-		createFileComponent(group, getDaemonToolName() + " path:", 
+	protected ButtonTextField createDaemonPathFieldEditor(Group group) {
+		return createFileComponent(group, getDaemonToolName() + " path:", 
 			DaemonEnginePreferences.DAEMON_PATH.key, true);
 	}
 	
