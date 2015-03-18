@@ -27,7 +27,6 @@
 		<module>plugin_ide.core.tests</module>
 		<module>plugin_ide.ui</module>
 		<module>plugin_ide.ui.tests</module>
-		<module>plugin_ide.gocode</module>
 		<module>plugin_ide.debug</module>
 		<module>feature</module>
 		<module>releng/repository</module>
