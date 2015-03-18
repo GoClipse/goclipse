@@ -64,7 +64,7 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 		
 		assertAreEqual(goEnv.getGoOS_GoArch_segment(), "windows_386");
 		
-		Path goRootSrc = goEnv.getGoRoot_Path().resolve("src/pkg");
+		Path goRootSrc = goEnv.getGoRoot_Path().resolve("src");
 		
 		assertAreEqual(goEnv.findGoPackageForSourceModule(goRootSrc.resolve("pack/m.go")), gopackage("pack"));
 		assertAreEqual(goEnv.findGoPackageForSourceModule(goRootSrc.resolve("pack/foo/m.go")), gopackage("pack/foo"));
