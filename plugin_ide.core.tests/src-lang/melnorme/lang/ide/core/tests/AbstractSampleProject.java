@@ -11,11 +11,9 @@
 package melnorme.lang.ide.core.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
-
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -51,7 +49,7 @@ public class AbstractSampleProject implements AutoCloseable {
 	
 	/* ----------------- helpers ----------------- */
 	
-	public void moveToLocation(Path packageLocation) throws CoreException {
+	public void moveToLocation(Location packageLocation) throws CoreException {
 		IProjectDescription description = project.getDescription();
 		description.setLocation(EclipseUtils.epath(packageLocation));
 		project.move(description, false, null);

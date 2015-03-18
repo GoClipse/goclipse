@@ -19,6 +19,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -27,6 +28,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -37,7 +39,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public class ResourceUtils {
 	
-	public static org.eclipse.core.runtime.Path epath(melnorme.utilbox.misc.Location loc) {
+	public static org.eclipse.core.runtime.Path epath(Location loc) {
 		return new org.eclipse.core.runtime.Path(loc.path.toString());
 	}
 	
@@ -52,13 +54,13 @@ public class ResourceUtils {
 		return path.toFile().toURI();
 	}
 	
-//	public static Location getValidLocation(String pathString) throws CoreException {
-//		try {
-//			return new LocationValidator().getValidatedField(pathString);
-//		} catch (StatusException se) {
-//			throw LangCore.createCoreException(se);
-//		}
-//	}
+	public static Location getResourceLocation(IResource resource) {
+		IPath location = resource.getLocation();
+		if(location == null) {
+			return null;
+		}
+		return Location.create_fromValid(location.toFile().toPath());
+	}
 	
 	/* -----------------  ----------------- */ 
 	
@@ -190,12 +192,16 @@ public class ResourceUtils {
 		}
 	}
 	
-	public static java.nio.file.Path getProjectLocation(IProject project) throws CoreException {
+	public static Location getProjectLocation(IProject project) throws CoreException {
 		IPath location = project.getLocation();
 		if(location == null) {
 			throw LangCore.createCoreException("Invalid project location: " + project.getLocationURI(), null);
 		}
-		return location.toFile().toPath();
+		try {
+			return Location.create2(location.toFile().toPath());
+		} catch (CommonException e) {
+			throw LangCore.createCoreException(e);
+		}
 	}
 	
 }

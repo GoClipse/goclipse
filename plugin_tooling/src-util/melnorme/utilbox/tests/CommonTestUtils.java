@@ -200,8 +200,8 @@ public class CommonTestUtils {
 		return baseLoc.resolve(PathUtil.createValidPath(pathString));
 	}
 	
-	public static Path workingDirPath(String relativePath) {
-		return TestsWorkingDir.getWorkingDirPath(relativePath);
+	public static Location workingDirLoc(String relativePath) {
+		return TestsWorkingDir.getWorkingDir(relativePath);
 	}
 	
 	/* -------------  Resources stuff   ------------ */

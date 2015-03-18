@@ -12,16 +12,15 @@ package melnorme.lang.ide.ui.actions;
 
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-
-import java.nio.file.Path;
-
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -53,15 +52,15 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		this.project = file == null ? null : file.getProject();
 	}
 	
-	protected IEditorInput getNewEditorInput(Path newEditorFilePath) throws CoreException {
+	protected IEditorInput getNewEditorInput(Location newEditorFilePath) throws CoreException {
 		if(newEditorFilePath == null) {
 			throw LangCore.createCoreException("No path provided for new element. ", null);
 		}
 		
-		if(areEqual(newEditorFilePath, inputPath)) {
+		if(areEqual(newEditorFilePath, inputLoc)) {
 			return editor.getEditorInput();
 		} else {
-			return EditorUtils.getBestEditorInputForPath(newEditorFilePath);
+			return EditorUtils.getBestEditorInputForLoc(newEditorFilePath);
 		}
 	}
 	
@@ -98,14 +97,15 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		openEditorForLocation(location);
 	}
 	
-	protected void openEditorForLocation(SourceLineColumnRange location) throws CoreException {
-		IEditorInput newInput = getNewEditorInput(location.path);
+	protected void openEditorForLocation(SourceLineColumnRange sourceLocation) throws CoreException {
+		Location loc = EclipseUtils.location(sourceLocation.path);
+		IEditorInput newInput = getNewEditorInput(loc);
 		
 		ITextEditor newEditor = EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, 
 			newInput, openEditorMode, null);
 		
 		IDocument doc = EditorUtils.getEditorDocument(newEditor);
-		int selectionOffset = getOffsetFrom(doc, location.line, location.column);
+		int selectionOffset = getOffsetFrom(doc, sourceLocation.line, sourceLocation.column);
 		
 		EditorUtils.setEditorSelection(newEditor, new SourceRange(selectionOffset, 0));
 	}
