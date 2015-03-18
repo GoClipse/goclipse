@@ -20,8 +20,8 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.PathUtil;
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -161,9 +161,9 @@ public class EditorUtils {
 		}
 		
 		try {
-			return PathUtil.createPath(filePath);
-		} catch (InvalidPathExceptionX e) {
-			throw LangCore.createCoreException("Invalid editor path.", e);
+			return PathUtil.createPath(filePath, "Invalid editorInput path: ");
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
 		}
 	}
 	

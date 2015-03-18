@@ -53,10 +53,10 @@ public class CollectionUtil {
 	}
 	
 	
-	/** @return a new {@link ArrayList} from given array (a null array is considered like it's an empty one). */
+	/** @return a new {@link ArrayList2} from given array (a null array is considered like it's an empty one). */
 	@SafeVarargs
-	public static <E> ArrayList<E> createArrayList(E... array) {
-		ArrayList<E> newCollection = new ArrayList<E>();
+	public static <E> ArrayList2<E> createArrayList(E... array) {
+		ArrayList2<E> newCollection = new ArrayList2<E>();
 		if(array != null) {
 			Collections.addAll(newCollection, array);
 		}
@@ -110,8 +110,8 @@ public class CollectionUtil {
 	/* ----------------- modifications ----------------- */
 	
 	/** Creates a List copy of orig, with all elements except elements equal to excludedElem. */
-	public static <E> List<E> copyExcept(E[] orig, E excludedElem) {
-		List<E> rejectedElements = new ArrayList<E>(orig.length);
+	public static <E> ArrayList2<E> copyExcept(E[] orig, E excludedElem) {
+		ArrayList2<E> rejectedElements = new ArrayList2<E>(orig.length);
 		
 		for (int i= 0; i < orig.length; i++) {
 			if (!orig[i].equals(excludedElem)) {

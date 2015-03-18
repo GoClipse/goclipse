@@ -14,7 +14,6 @@ import java.nio.file.Path;
 
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 /**
  * Fairly basic for now, more methods can be added.
@@ -39,11 +38,7 @@ public class ParseHelper {
 	}
 	
 	protected Path parsePath(String string) throws CommonException {
-		try {
-			return MiscUtil.createPath(string);
-		} catch (InvalidPathExceptionX e) {
-			throw new CommonException("Invalid path. ", e);
-		}
+		return MiscUtil.createPath2(string);
 	}
 	
 }

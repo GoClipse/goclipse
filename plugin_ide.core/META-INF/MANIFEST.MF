@@ -11,6 +11,7 @@ Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
  org.eclipse.debug.core,
  org.eclipse.core.filesystem,
  org.eclipse.jface.text;bundle-version="3.9.1",
+ org.eclipse.jface;bundle-version="3.9.1",
  com.googlecode.goclipse.tooling;visibility:=reexport,
  org.eclipse.core.filebuffers
 Bundle-ActivationPolicy: lazy
