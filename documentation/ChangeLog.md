@@ -12,7 +12,8 @@
   * However the documentation popup information will no longer be show for any content assist entries.
  * Removed `gocode` bundle in Goclipse as it was very out of date (closes #88).
    * Added button/tool in Tools pref page to automatically download gocode from Github. 
- * Fixed #105: Project Explorer does not expand GOROOT for Go 1.4  
+ * Fixed #105: Project Explorer does not expand GOROOT for Go 1.4
+ * Editor Ctrl-click (hyperlink) now only uses Go Oracle for the operation, the previous hyperlink has now been fully removed due to being buggy.
 
 ### Goclipse 0.9.1
  * Fixed: Builder does not ignore folders with names starting with "_" or ".".

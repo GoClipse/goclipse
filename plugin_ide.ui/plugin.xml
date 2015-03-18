@@ -464,12 +464,6 @@
    <extension
          point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
       <hyperlinkDetector
-            class="com.googlecode.goclipse.editors.GoHyperlinkDetector"
-            id="com.googlecode.goclipse.editors.GoHyperlinkDetector"
-            name="GoEditorHyperlinkDetector"
-            targetId="com.googlecode.goclipse.ui.Editor.CodeTarget">
-      </hyperlinkDetector>
-      <hyperlinkDetector
             class="com.googlecode.goclipse.ui.editor.text.GoHyperlinkDetector2"
             id="com.googlecode.goclipse.ui.editor.text.GoHyperlinkDetector2"
             name="GoEditorHyperlinkDetector2"

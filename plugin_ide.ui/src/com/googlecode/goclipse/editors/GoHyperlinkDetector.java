@@ -31,6 +31,7 @@ import com.googlecode.goclipse.go.lang.model.Var;
  * A hyperlink detector for the Go editor.  The hyperlink detector
  * is used for code navigation.
  */
+@Deprecated
 public class GoHyperlinkDetector extends AbstractHyperlinkDetector {
 	
 	public GoHyperlinkDetector() {
