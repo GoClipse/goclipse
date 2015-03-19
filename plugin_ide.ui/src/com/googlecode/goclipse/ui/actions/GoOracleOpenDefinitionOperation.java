@@ -13,7 +13,9 @@ package com.googlecode.goclipse.ui.actions;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -44,7 +46,8 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	}
 	
 	@Override
-	protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
+	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor) 
+			throws CoreException {
 		String goOraclePath = GoToolPreferences.GO_ORACLE_Path.get();
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
@@ -54,11 +57,23 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 			ProcessBuilder pb = op.createProcessBuilder(goEnv, inputLoc, range.getOffset());
 			
 			ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, monitor);
+			if(result.exitValue != 0) {
+				statusErrorMessage = "Go oracle did not complete successfully.";
+				return null;
+			}
 			
-			findResult = op.parseJsonResult(result);
+			return op.parseJsonResult(result);
 		} catch (CommonException se) {
 			throw LangCore.createCoreException(se.getMessage(), se.getCause());
 		}
+	}
+	
+	@Override
+	protected void handleStatusErrorMessage() {
+		DaemonToolMessageConsole engineToolsConsole = DaemonToolMessageConsole.getConsole();
+		engineToolsConsole.activate();
+		
+		super.handleStatusErrorMessage();
 	}
 	
 }

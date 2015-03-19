@@ -1,12 +1,11 @@
 ## release ChangeLog
 
 ### Goclipse 0.10.0
- * Added: `Show In > Project Explorer` command to `Show In` menu in Go perspective (requires that the perspective be reset: `Window/Perspective/Reset Perspective...`) .
+ * Added `Show In > Project Explorer` command to `Show In` menu in Go perspective (requires that the perspective be reset: `Window/Perspective/Reset Perspective...`) .
  * Clean up UI and behavior of main Go preference page.
- * Added: two new syntax highlighting options: Operators, and Syntax Control Characters (braces, parentheses, semicolon, etc.).
- * Added: An improved New Project wizard.
+ * Added two new syntax highlighting options: Operators, and Syntax Control Characters (braces, parentheses, semicolon, etc.).
+ * Added an improved New Project wizard.
 // * Added: improved build error reporting: an error squigly line is now show in the column where the error occurred.
- * Added: Source menu to editor context menu: FIXME entries missing
  * Fixed #112: InvalidPathException invoking content assist. 
   * This also fixes potential performance problems invoking content assist.
   * However the documentation popup information will no longer be show for any content assist entries.
@@ -14,6 +13,11 @@
    * Added button/tool in Tools pref page to automatically download gocode from Github. 
  * Fixed #105: Project Explorer does not expand GOROOT for Go 1.4
  * Editor Ctrl-click (hyperlink) now only uses Go Oracle for the operation, the previous hyperlink has now been fully removed due to being buggy.
+  * Improved: for Go Oracle integration, if the tool terminates with a non-zero exit code, instead of showing an error dialog, 
+a workbench status line message is shown, a beep is sounded, and the Tools console is activated.   
+
+ * Added Source menu to editor context menu: FIXME entries missing
+
 
 ### Goclipse 0.9.1
  * Fixed: Builder does not ignore folders with names starting with "_" or ".".
