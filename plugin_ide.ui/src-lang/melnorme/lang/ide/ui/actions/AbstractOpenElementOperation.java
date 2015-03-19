@@ -25,10 +25,12 @@ import melnorme.utilbox.misc.Location;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public abstract class AbstractOpenElementOperation extends AbstractEditorOperation {
@@ -39,6 +41,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	protected final OpenNewEditorMode openEditorMode;
 	protected final IProject project;
 	
+	protected String statusErrorMessage;
 	protected FindDefinitionResult findResult;
 	
 	public AbstractOpenElementOperation(String operationName, ITextEditor editor, SourceRange range,
@@ -50,6 +53,62 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		
 		IFile file = EditorUtils.findFileOfEditor(editor);
 		this.project = file == null ? null : file.getProject();
+	}
+	
+	@Override
+	protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
+		findResult = performLongRunningComputation_doAndGetResult(monitor);
+	}
+	
+	protected abstract FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor) 
+			throws CoreException;
+	
+	@Override
+	protected void performOperation_handleResult() throws CoreException {
+		if(statusErrorMessage != null) {
+			handleStatusErrorMessage();
+		}
+		if(findResult == null) {
+			return;
+		}
+		
+		if(findResult.getErrorMessage() != null) {
+			dialogError(findResult.getErrorMessage());
+			return;
+		}
+		
+		if(findResult.getInfoMessage() != null) {
+			dialogInfo(findResult.getInfoMessage());
+		}
+		
+		SourceLineColumnRange location = findResult.getLocation();
+		if(location == null) {
+			Display.getCurrent().beep();
+			return;
+		}
+		
+		openEditorForLocation(location);
+	}
+	
+	protected void handleStatusErrorMessage() {
+		if(editor instanceof AbstractTextEditor) {
+			AbstractTextEditor abstractTextEditor = (AbstractTextEditor) editor;
+			EditorUtils.setStatusLineErrorMessage(abstractTextEditor, statusErrorMessage, null);
+		}
+		Display.getCurrent().beep();
+	}
+	
+	protected void openEditorForLocation(SourceLineColumnRange sourceLocation) throws CoreException {
+		Location loc = EclipseUtils.location(sourceLocation.path);
+		IEditorInput newInput = getNewEditorInput(loc);
+		
+		ITextEditor newEditor = EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, 
+			newInput, openEditorMode, null);
+		
+		IDocument doc = EditorUtils.getEditorDocument(newEditor);
+		int selectionOffset = getOffsetFrom(doc, sourceLocation.line, sourceLocation.column);
+		
+		EditorUtils.setEditorSelection(newEditor, new SourceRange(selectionOffset, 0));
 	}
 	
 	protected IEditorInput getNewEditorInput(Location newEditorFilePath) throws CoreException {
@@ -73,41 +132,6 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		}
 		
 		return lineOffset + column_oneBased-1;
-	}
-	
-	
-	@Override
-	protected void performOperation_handleResult() throws CoreException {
-		
-		if(findResult.getErrorMessage() != null) {
-			dialogError(findResult.getErrorMessage());
-			return;
-		}
-		
-		if(findResult.getInfoMessage() != null) {
-			dialogInfo(findResult.getInfoMessage());
-		}
-		
-		SourceLineColumnRange location = findResult.getLocation();
-		if(location == null) {
-			Display.getCurrent().beep();
-			return;
-		}
-		
-		openEditorForLocation(location);
-	}
-	
-	protected void openEditorForLocation(SourceLineColumnRange sourceLocation) throws CoreException {
-		Location loc = EclipseUtils.location(sourceLocation.path);
-		IEditorInput newInput = getNewEditorInput(loc);
-		
-		ITextEditor newEditor = EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, 
-			newInput, openEditorMode, null);
-		
-		IDocument doc = EditorUtils.getEditorDocument(newEditor);
-		int selectionOffset = getOffsetFrom(doc, sourceLocation.line, sourceLocation.column);
-		
-		EditorUtils.setEditorSelection(newEditor, new SourceRange(selectionOffset, 0));
 	}
 	
 }
