@@ -38,7 +38,7 @@ public final class LangUIPlugin_Actual {
 	/* ----------------- UI messages:  ----------------- */
 	
 	public static final String LANGUAGE_NAME = "Go";
-	public static final String DAEMON_TOOL_Name = "Gocode";
+	public static final String DAEMON_TOOL_Name = "gocode";
 	public static final String DAEMON_TOOL_ConsoleName = "Oracle/gocode log";
 	
 }

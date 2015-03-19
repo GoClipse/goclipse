@@ -24,7 +24,16 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 
-public class GetAndInstallGocodeOperation extends CoreOperationAdapter {
+public class GetAndInstallGoPackageOperation extends CoreOperationAdapter {
+	
+	protected final String goPackage;
+	protected final String exeName;
+	protected boolean preventWindowsConsoleGUI = false;
+	
+	public GetAndInstallGoPackageOperation(String goPackage, String exeName) {
+		this.goPackage = goPackage;
+		this.exeName = exeName;
+	}
 	
 	protected Location workingDir;
 	
@@ -51,15 +60,17 @@ public class GetAndInstallGocodeOperation extends CoreOperationAdapter {
 	
 	public ArrayList2<String> getCmdLine() {
 		ArrayList2<String> cmdLine = CollectionUtil.createArrayList("go", "get", "-u");
-		if(MiscUtil.OS_IS_WINDOWS) {
+		
+		if(preventWindowsConsoleGUI && MiscUtil.OS_IS_WINDOWS) {
 			cmdLine.addElements("-ldflags", "-H=windowsgui");
 		}
-		cmdLine.addElements("github.com/nsf/gocode");
+		
+		cmdLine.addElements(goPackage);
 		return cmdLine;
 	}
 	
 	public Location getGocodeExeLocation() {
-		return workingDir.resolve_fromValid("bin/gocode" + (MiscUtil.OS_IS_WINDOWS ? ".exe" : ""));
+		return workingDir.resolve_fromValid("bin/"+exeName + (MiscUtil.OS_IS_WINDOWS ? ".exe" : ""));
 	}
 	
 }

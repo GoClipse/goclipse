@@ -10,13 +10,16 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.preferences;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.tools.AbstractDeamonToolPrefPage;
 import melnorme.lang.ide.ui.utils.UIOperationsHelper;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.util.swt.components.fields.FileTextField;
 import melnorme.utilbox.misc.StringUtil;
 
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -24,10 +27,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.googlecode.goclipse.core.GoToolPreferences;
-import com.googlecode.goclipse.core.operations.GetAndInstallGocodeOperation;
+import com.googlecode.goclipse.core.operations.GetAndInstallGoPackageOperation;
 
 public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 		IWorkbenchPreferencePage {
@@ -41,7 +45,11 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 			GridDataFactory.fillDefaults().grab(true, false).minSize(200, SWT.DEFAULT).create(),
 			3);
 		
-		createFileComponent(oracleGroup, "Go oracle path:", GoToolPreferences.GO_ORACLE_Path.key, true);
+		FileTextField goOracleFileEditor = 
+				createFileComponent(oracleGroup, "Go oracle path:", GoToolPreferences.GO_ORACLE_Path.key, true);
+		
+		createInstallPackageButton(oracleGroup, "Download Go oracle", "golang.org/x/tools/cmd/oracle", "oracle",
+			goOracleFileEditor);
 		
 		super.doCreateContents(block);
 	}
@@ -52,11 +60,20 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 	}
 	
 	@Override
-	protected ButtonTextField createDaemonPathFieldEditor(Group group) {
-		ButtonTextField result = super.createDaemonPathFieldEditor(group);
+	protected ButtonTextField createDaemonPathFieldEditor(Group daemonGroup) {
+		daemonPathEditor = super.createDaemonPathFieldEditor(daemonGroup);
 		
-		final GetAndInstallGocodeOperation op = new GetAndInstallGocodeOperation();
-		String buttonLabel = "Download gocode (run: `" + StringUtil.collToString(op.getCmdLine(), " ")  + "`)";
+		createInstallPackageButton(daemonGroup, "Download gocode", "github.com/nsf/gocode", "gocode", 
+			daemonPathEditor);
+		
+		return daemonPathEditor;
+	}
+	
+	protected void createInstallPackageButton(Group group, final String baseButtonLabel, String goPackage, 
+			String exeName, final ButtonTextField textFieldEditor) {
+		assertNotNull(textFieldEditor);
+		final GetAndInstallGoPackageOperation op = new GetAndInstallGoPackageOperation(goPackage, exeName);
+		String buttonLabel = baseButtonLabel + " (run: `" + StringUtil.collToString(op.getCmdLine(), " ")  + "`)";
 		
 		Button getGocodeButton = SWTFactoryUtil.createButton(group, SWT.PUSH, buttonLabel, 
 				GridDataFactory.fillDefaults().span(3, 0).create());
@@ -64,16 +81,15 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 		getGocodeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				boolean success = UIOperationsHelper.runAndHandle(workbench.getActiveWorkbenchWindow(), op, true, 
-					"Download gocode error.");
+				Shell shell = workbench.getActiveWorkbenchWindow().getShell();
+				boolean success = UIOperationsHelper.runAndHandle(new ProgressMonitorDialog(shell), op, true, 
+					baseButtonLabel + " error.");
 				
 				if(success) {
-					daemonPathEditor.setFieldValue(op.getGocodeExeLocation().toPathString());
+					textFieldEditor.setFieldValue(op.getGocodeExeLocation().toPathString());
 				}
 			}
 		});
-		
-		return result;
 	}
 	
 }
