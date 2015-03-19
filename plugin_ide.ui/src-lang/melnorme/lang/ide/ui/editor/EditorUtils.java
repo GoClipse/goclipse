@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -42,16 +43,18 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.texteditor.IEditorStatusLine;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class EditorUtils {
 	
-	public static TextSelection getSelection(ITextEditor editor) {
-		return (TextSelection) editor.getSelectionProvider().getSelection();
-	}
-	
 	public static IDocument getEditorDocument(ITextEditor textEditor) {
 		return textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+	}
+	
+	public static TextSelection getSelection(ITextEditor editor) {
+		return (TextSelection) editor.getSelectionProvider().getSelection();
 	}
 	
 	public static void setEditorSelection(ITextEditor textEditor, SourceRange sourceRange) {
@@ -62,7 +65,7 @@ public class EditorUtils {
 		textEditor.getSelectionProvider().setSelection(new TextSelection(offset, length)); 
 	}
 	
-	/* -----------------  ----------------- */
+	/* ----------------- Editor input utils ----------------- */
 	
 	public static IProject getAssociatedProject(IEditorInput input) {
 		if(input == null) {
@@ -106,10 +109,6 @@ public class EditorUtils {
 	
 	public static IEditorInput getBestEditorInputForLoc(Location fileLoc) {
 		return getBestEditorInputForUri(fileLoc.toUri());
-	}
-	@Deprecated
-	public static IEditorInput getBestEditorInputForPath(Path filePath) {
-		return getBestEditorInputForUri(filePath.toUri());
 	}
 	
 	public static IEditorInput getBestEditorInputForUri(URI uri) {
@@ -171,7 +170,7 @@ public class EditorUtils {
 		}
 	}
 	
-	/* -----------------  ----------------- */
+	/* -----------------  Editor opening utils  ----------------- */
 	
 	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING_EDITORS, NEVER }
 	
@@ -225,6 +224,15 @@ public class EditorUtils {
 			throw LangCore.createCoreException("Not a text editor", null);
 		}
 		return targetEditor;
+	}
+	
+	/* ----------------- ----------------- */
+	
+	public static void setStatusLineErrorMessage(AbstractTextEditor editor, String message, Image image) {
+		IEditorStatusLine statusLine= (IEditorStatusLine)editor.getAdapter(IEditorStatusLine.class);
+		if(statusLine != null) {
+			statusLine.setMessage(true, message, image);
+		}
 	}
 	
 }
