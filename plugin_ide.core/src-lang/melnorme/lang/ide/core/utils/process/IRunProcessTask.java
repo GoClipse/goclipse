@@ -10,13 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.process;
 
+import java.util.concurrent.Callable;
+
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.CoreException;
 
-public interface IRunProcessTask {
+public interface IRunProcessTask extends Callable<ExternalProcessResult>{
 	
+	@Override
 	ExternalProcessResult call() throws CoreException, OperationCancellation;
 	
 }
