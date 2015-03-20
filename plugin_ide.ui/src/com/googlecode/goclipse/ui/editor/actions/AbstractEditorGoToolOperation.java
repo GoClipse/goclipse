@@ -14,6 +14,7 @@ package com.googlecode.goclipse.ui.editor.actions;
 import static melnorme.lang.ide.ui.editor.EditorUtils.getEditorDocument;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -54,7 +55,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	protected abstract void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException;
 	
 	@Override
-	protected void performLongRunningComputation_do(IProgressMonitor pm) throws CoreException {
+	protected void performLongRunningComputation_do(IProgressMonitor pm) throws CoreException, OperationCancellation {
 		
 		IProject project = null;
 		ExternalProcessResult processResult = 

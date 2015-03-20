@@ -1,10 +1,13 @@
 package com.googlecode.goclipse.ui.editor;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -51,8 +54,7 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 	}
 	
 	@Override
-	public ICompletionProposal[] computeCompletionProposals()
-			throws CoreException {
+	public ICompletionProposal[] computeCompletionProposals() throws CoreException {
 		
 		ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
 		
@@ -67,16 +69,6 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 			String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
 			List<String> completions = new ArrayList2<>(GocodeClient.LINE_SPLITTER.split(stdout));
 			
-//			CodeContext codeContext = codeContexts.get(filePath);
-//			if (codeContext == null) {
-//				try {
-//					codeContext = CodeContext.getCodeContext(project, filePath, document.get());
-//				} catch (IOException e) {
-//					throw LangCore.createCoreException("Error during code Context:", e);
-//				}
-//			}
-			
-			
 			for (String completionEntry : completions) {
 				handleResult(offset, /*codeContext,*/ results, prefix, completionEntry);
 			}
@@ -84,6 +76,8 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 			return results.toArray(new ICompletionProposal[] {});
 		} catch (CommonException e) {
 			throw LangCore.createCoreException(e.getMessage(), e.getCause());
+		} catch (OperationCancellation e) {
+			throw LangCore.createCoreException("Timeout invoking content assist.", null);
 		}
 		
 	}

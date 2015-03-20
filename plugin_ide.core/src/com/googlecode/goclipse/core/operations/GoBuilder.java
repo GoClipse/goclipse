@@ -19,9 +19,11 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
 import melnorme.lang.ide.core.operations.SDKLocationValidator;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -90,7 +92,7 @@ public class GoBuilder extends LangProjectBuilder {
 	
 	@Override
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
-			throws CoreException {
+			throws CoreException, OperationCancellation {
 		
 		GoToolManager.getDefault().notifyBuildStarting(project, false);
 		
@@ -154,6 +156,15 @@ public class GoBuilder extends LangProjectBuilder {
 	
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
+		try {
+			EclipseUtils.checkMonitorCancelation(monitor);
+			doClean(monitor);
+		} catch (OperationCancellation e) {
+			// return
+		}
+	}
+	
+	protected void doClean(IProgressMonitor monitor) throws CoreException, OperationCancellation {
 		deleteProjectBuildMarkers();
 		
 		IProject project = getProject();

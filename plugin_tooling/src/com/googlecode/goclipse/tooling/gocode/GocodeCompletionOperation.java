@@ -13,13 +13,14 @@ package com.googlecode.goclipse.tooling.gocode;
 import java.util.regex.Pattern;
 
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 
-public abstract class GocodeCompletionOperation<EXC extends Exception> {
+public abstract class GocodeCompletionOperation {
 	
 	public static final boolean USE_TCP = true;
 	
@@ -31,7 +32,7 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 		this.gocodePath = gocodePath;
 	}
 	
-	protected void setLibPathForEnvironment() throws CommonException, EXC {
+	protected void setLibPathForEnvironment() throws CommonException, OperationCancellation {
 		
 		ArrayList2<String> arguments = new ArrayList2<>(gocodePath);
 		
@@ -47,7 +48,8 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 		runGocodeProcess(pb, null);
 	}
 	
-	public ExternalProcessResult execute(String filePath, String bufferText, int offset) throws CommonException, EXC {
+	public ExternalProcessResult execute(String filePath, String bufferText, int offset) 
+			throws CommonException, OperationCancellation {
 		
 		setLibPathForEnvironment();
 		
@@ -72,7 +74,8 @@ public abstract class GocodeCompletionOperation<EXC extends Exception> {
 		return processResult;
 	}
 	
-	protected abstract ExternalProcessResult runGocodeProcess(ProcessBuilder pb, String input) throws CommonException;
+	protected abstract ExternalProcessResult runGocodeProcess(ProcessBuilder pb, String input) 
+			throws CommonException, OperationCancellation;
 	
 	// TODO: move the code that process gocode result to here
 	

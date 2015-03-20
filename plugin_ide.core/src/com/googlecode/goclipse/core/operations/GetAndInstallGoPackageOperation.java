@@ -12,6 +12,7 @@ package com.googlecode.goclipse.core.operations;
 
 import melnorme.lang.ide.core.utils.CoreOperationAdapter;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.Location;
@@ -38,7 +39,7 @@ public class GetAndInstallGoPackageOperation extends CoreOperationAdapter {
 	protected Location workingDir;
 	
 	@Override
-	public void doRun(IProgressMonitor monitor) throws CommonException, CoreException {
+	public void doRun(IProgressMonitor monitor) throws CommonException, CoreException, OperationCancellation {
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(null);
 		workingDir = getFirstGoPathEntry(goEnv);
 		

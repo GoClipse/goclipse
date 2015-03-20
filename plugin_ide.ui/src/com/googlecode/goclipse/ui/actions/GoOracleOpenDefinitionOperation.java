@@ -16,6 +16,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -47,7 +48,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	
 	@Override
 	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor) 
-			throws CoreException {
+			throws CoreException, OperationCancellation {
 		String goOraclePath = GoToolPreferences.GO_ORACLE_Path.get();
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);

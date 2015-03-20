@@ -14,6 +14,7 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -35,7 +36,7 @@ public class GoToolManager extends AbstractToolsManager {
 	/* -----------------  ----------------- */
 	
 	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProgressMonitor pm, Location workingDir, 
-			List<String> commandLine) throws CoreException {
+			List<String> commandLine) throws CoreException, OperationCancellation {
 		
 		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir.path);
 		return runTool(null, pm, pb);
