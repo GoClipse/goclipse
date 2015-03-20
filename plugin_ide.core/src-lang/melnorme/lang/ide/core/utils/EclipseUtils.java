@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
@@ -27,6 +28,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
@@ -105,6 +107,8 @@ public class EclipseUtils extends ResourceUtils {
 		return (T) Platform.getAdapterManager().getAdapter(adaptable, adapterType);
 	}
 	
+	/* ----------------- concurrency ----------------- */
+	
 	public static <T> T getFutureResult(Future<T> future, int timeout, TimeUnit timeUnit, String opName) 
 			throws CoreException {
 		try {
@@ -119,6 +123,12 @@ public class EclipseUtils extends ResourceUtils {
 			throw LangCore.createCoreException("Timeout performing " + opName + ".", null);
 		} catch (InterruptedException e) {
 			throw LangCore.createCoreException("Interrupted.", e);
+		}
+	}
+	
+	public static void checkMonitorCancelation(IProgressMonitor progressMonitor) throws OperationCancellation {
+		if(progressMonitor.isCanceled()) {
+			throw new OperationCancellation();
 		}
 	}
 	

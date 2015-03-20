@@ -14,6 +14,7 @@ package melnorme.lang.ide.core.utils;
 import java.lang.reflect.InvocationTargetException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -34,14 +35,16 @@ public abstract class CoreOperationAdapter implements IRunnableWithProgress {
 		}
 	}
 	
-	protected void coreRun(IProgressMonitor monitor) throws CoreException {
+	protected void coreRun(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
 		try {
 			doRun(monitor);
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
-		}
+		} catch (OperationCancellation e) {
+			throw new OperationCanceledException();
+		} 
 	}
 	
-	public abstract void doRun(IProgressMonitor monitor) throws CommonException, CoreException;
+	public abstract void doRun(IProgressMonitor monitor) throws CommonException, CoreException, OperationCancellation;
 	
 }
