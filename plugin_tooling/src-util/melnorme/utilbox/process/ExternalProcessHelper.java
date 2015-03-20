@@ -198,7 +198,9 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		return strictAwaitTermination(NO_TIMEOUT);
 	}
 	
-	public ExternalProcessResult strictAwaitTermination_(int timeout) throws CommonException {
+	public ExternalProcessResult strictAwaitTermination_(int timeout) 
+			throws CommonException, OperationCancellation 
+	{
 		try {
 			return strictAwaitTermination(timeout);
 		} catch (InterruptedException e) {
@@ -209,21 +211,21 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 			// at this point a TimeoutException can be one of two things, an actual timeout, or a cancellation.
 			
 			if(isCanceled()) {
-				// Send this as an exception. It will be the responsibility of higher-level application code
-				// to check if exception was a cancellation, if they want to respond differently to this case.
-				throw createCommonException(ProcessHelperMessages.ExternalProcess_TaskCancelled, 
-						new OperationCancellation());
+				throw new OperationCancellation();
 			} else {
 				throw createCommonException(ProcessHelperMessages.ExternalProcess_ProcessTimeout, te);
 			}
 		}
 	}
 	
-	public ExternalProcessResult strictAwaitTermination_() throws CommonException {
+	public ExternalProcessResult strictAwaitTermination_() 
+			throws CommonException, OperationCancellation {
 		return strictAwaitTermination_(false);
 	}
 	
-	public ExternalProcessResult strictAwaitTermination_(boolean throwOnNonZeroStatus) throws CommonException {
+	public ExternalProcessResult strictAwaitTermination_(boolean throwOnNonZeroStatus) 
+			throws CommonException, OperationCancellation 
+	{
 		ExternalProcessResult processResult = strictAwaitTermination_(NO_TIMEOUT);
 		
 		if(throwOnNonZeroStatus && processResult.exitValue != 0) {

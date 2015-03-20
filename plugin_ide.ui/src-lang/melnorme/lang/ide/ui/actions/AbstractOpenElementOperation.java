@@ -20,6 +20,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IFile;
@@ -56,12 +57,13 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	}
 	
 	@Override
-	protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
+	protected void performLongRunningComputation_do(IProgressMonitor monitor) 
+			throws CoreException, OperationCancellation {
 		findResult = performLongRunningComputation_doAndGetResult(monitor);
 	}
 	
 	protected abstract FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor) 
-			throws CoreException;
+			throws CoreException, OperationCancellation;
 	
 	@Override
 	protected void performOperation_handleResult() throws CoreException {

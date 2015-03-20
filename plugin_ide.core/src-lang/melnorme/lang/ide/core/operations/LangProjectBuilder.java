@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Map;
-
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
@@ -29,6 +28,7 @@ import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -104,6 +104,9 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		try {
 			doBuild(project, kind, args, monitor);
 		} 
+		catch (OperationCancellation cancel) {
+			// do nothing, return
+		}
 		catch (CoreException ce) {
 			if(!monitor.isCanceled()) {
 				LangCore.logStatus(ce);
@@ -131,7 +134,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected abstract IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor pm)
-			throws CoreException;
+			throws CoreException, OperationCancellation;
 	
 	
 	/* ----------------- Build processes ----------------- */

@@ -12,6 +12,8 @@ package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
@@ -62,19 +64,23 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 	
 	
 	@Override
-	public ExternalProcessResult call() throws CoreException {
+	public ExternalProcessResult call() throws CoreException, OperationCancellation {
 		return runProcess();
 	}
 	
-	public ExternalProcessResult runProcess() throws CoreException {
+	public ExternalProcessResult runProcess() throws CoreException, OperationCancellation {
 		return runProcess(null);
 	}
 	
-	public ExternalProcessResult runProcess(String input) throws CoreException {
+	public ExternalProcessResult runProcess(String input) throws CoreException, OperationCancellation {
 		return runProcess(input, false);
 	}
 	
-	public ExternalProcessResult runProcess(String input, boolean throwOnNonZeroStatus) throws CoreException {
+	public ExternalProcessResult runProcess(String input, boolean throwOnNonZeroStatus) 
+			throws CoreException, OperationCancellation 
+	{
+		EclipseUtils.checkMonitorCancelation(cancelMonitor);
+		
 		try {
 			return doRunProcess(input, throwOnNonZeroStatus);
 		} catch (CommonException ce) {
@@ -82,7 +88,9 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 		}
 	}
 	
-	public ExternalProcessResult doRunProcess(String input, boolean throwOnNonZeroStatus) throws CommonException {
+	public ExternalProcessResult doRunProcess(String input, boolean throwOnNonZeroStatus) 
+			throws CommonException, OperationCancellation 
+	{
 		ExternalProcessNotifyingHelper processHelper = startProcess(cancelMonitor);
 		processHelper.writeInput_(input, StringUtil.UTF8);
 		return processHelper.strictAwaitTermination_(throwOnNonZeroStatus);

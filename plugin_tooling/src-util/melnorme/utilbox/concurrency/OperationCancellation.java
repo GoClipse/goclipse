@@ -10,6 +10,12 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import java.util.concurrent.CancellationException;
+
+/**
+ * Similar to {@link CancellationException} or {@link org.eclipse.core.runtime.OperationCanceledException}, 
+ * but it is a checked exception, because checked exceptions save lives and prevent forest fires! :)
+ */
 public class OperationCancellation extends Throwable {
 	
 	private static final long serialVersionUID = -8709454826700411533L;

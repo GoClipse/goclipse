@@ -14,8 +14,10 @@ package melnorme.lang.ide.core.operations;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -28,12 +30,13 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 		super();
 	}
 	
-	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ProcessBuilder pb) throws CoreException {
+	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ProcessBuilder pb) 
+			throws CoreException, OperationCancellation {
 		return getToolManager().runTool(getProject(), monitor, pb);
 	}
 	
 	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ArrayList2<String> toolCmdLine)
-			throws CoreException {
+			throws CoreException, OperationCancellation {
 		ProcessBuilder pb = ProcessUtils.createProcessBuilder(toolCmdLine, null);
 		return runBuildTool(monitor, pb);
 	}
@@ -50,7 +53,7 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 	
 	@Override
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
-			throws CoreException {
+			throws CoreException, OperationCancellation {
 		
 		LangCore.getToolManager().notifyBuildStarting(project, false);
 		
@@ -71,7 +74,12 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 		deleteProjectBuildMarkers();
 		
 		ProcessBuilder pb = createCleanPB();
-		runBuildTool(monitor, pb);
+		try {
+			EclipseUtils.checkMonitorCancelation(monitor);
+			runBuildTool(monitor, pb);
+		} catch (OperationCancellation e) {
+			// return
+		}
 	}
 	
 	protected abstract ProcessBuilder createCleanPB() throws CoreException;
