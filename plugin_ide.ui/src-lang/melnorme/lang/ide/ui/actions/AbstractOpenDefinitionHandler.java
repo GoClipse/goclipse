@@ -17,9 +17,14 @@ import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 
 import org.eclipse.jface.text.TextSelection;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public abstract class AbstractOpenDefinitionHandler extends AbstractEditorHandler {
+	
+	public AbstractOpenDefinitionHandler(IWorkbenchPage page) {
+		super(page);
+	}
 	
 	@Override
 	public void runOperation(ITextEditor editor) {
