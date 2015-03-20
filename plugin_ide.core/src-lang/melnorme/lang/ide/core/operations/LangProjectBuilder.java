@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Map;
+
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
@@ -105,16 +106,19 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			doBuild(project, kind, args, monitor);
 		} 
 		catch (OperationCancellation cancel) {
-			// do nothing, return
-		}
-		catch (CoreException ce) {
-			if(!monitor.isCanceled()) {
-				LangCore.logStatus(ce);
-			}
-			
 			forgetLastBuiltState();
-			throw ce; // Note: if monitor is cancelled, exception will be ignored.
-		} 
+			return null;
+		} catch (CoreException ce) {
+			forgetLastBuiltState();
+			
+			if(monitor.isCanceled()) {
+				// This shouldn't usually happen, a OperationCancellation should have been thrown,
+				// but sometimes its not wrapped correctly.
+				return null;
+			}
+			LangCore.logStatus(ce);
+			throw ce;
+		}
 		finally {
 			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
 			
