@@ -11,17 +11,28 @@
 package melnorme.lang.ide.ui.actions;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIMessages;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public abstract class AbstractEditorHandler extends AbstractHandler {
 	
-	public AbstractEditorHandler() {
+	protected final IWorkbenchPage page;
+	
+	public AbstractEditorHandler(IWorkbenchPage page) {
+		this.page = assertNotNull(page);
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return super.isEnabled() && EditorSettings_Actual.editorKlass().isInstance(page.getActiveEditor());
 	}
 	
 	@Override
