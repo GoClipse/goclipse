@@ -15,6 +15,8 @@ import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.utilbox.concurrency.OperationCancellation;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,8 +32,9 @@ public class LANGUAGE_OracleOpenDefinitionOperation extends AbstractOpenElementO
 	}
 	
 	@Override
-	protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
-		// TODO:
+	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor)
+			throws CoreException, OperationCancellation {
+		return null; // TODO: Lang
 	}
 	
 	@Override
