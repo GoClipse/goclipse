@@ -11,13 +11,16 @@
 package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.services.IServiceLocator;
 
 import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
 import com.googlecode.goclipse.ui.editor.GoSimpleSourceViewerConfiguration;
+import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
 
 public class EditorSettings_Actual {
 	
@@ -37,8 +40,20 @@ public class EditorSettings_Actual {
 		return new GoSimpleSourceViewerConfiguration(preferenceStore, colorManager, null);
 	}
 	
+	public static Class<GoEditor> editorKlass() {
+		return GoEditor.class;
+	}
+	
 	/* ----------------- actions ----------------- */
 	
-	public static final String COMMAND_OpenDef_ID = "com.googlecode.goclipse.ui.commands.openDefinition";
+	public static interface EditorCommandIds {
+		
+		public static final String OpenDef_ID = "com.googlecode.goclipse.ui.commands.openDefinition";
+		
+	}
+	
+	public static LangEditorContextMenuContributor createCommandsContribHelper(IServiceLocator svcLocator) {
+		return new GoEditorContextMenuContributor(svcLocator);
+	}
 	
 }

@@ -32,11 +32,15 @@ public class PairMatcher extends Action implements IEditorActionDelegate {
 	
 	@Override
 	public void run() {
-		if (!(targetEditor instanceof GoEditor)) {
+		goToMatchingBracket(targetEditor);
+	}
+	
+	public static void goToMatchingBracket(IEditorPart editorPart) {
+		if (!(editorPart instanceof GoEditor)) {
 			return;
 		}
 		
-		GoEditor editor = (GoEditor) targetEditor;
+		GoEditor editor = (GoEditor) editorPart;
 		
 		ISelection selection = editor.getSelectionProvider().getSelection();
 		

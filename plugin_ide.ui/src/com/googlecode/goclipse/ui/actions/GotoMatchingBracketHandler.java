@@ -10,19 +10,22 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
-import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
-import melnorme.lang.ide.ui.actions.AbstractOpenDefinitionHandler;
-import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.ide.ui.actions.AbstractEditorHandler;
 
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class GoOpenDefinitionHandler extends AbstractOpenDefinitionHandler  {
+import com.googlecode.goclipse.editors.PairMatcher;
+
+public class GotoMatchingBracketHandler extends AbstractEditorHandler  {
+	
+	public GotoMatchingBracketHandler(IWorkbenchPage page) {
+		super(page);
+	}
 	
 	@Override
-	public AbstractEditorOperation createOperation(ITextEditor editor, SourceRange range,
-			OpenNewEditorMode newEditorMode) {
-		return new GoOracleOpenDefinitionOperation(editor, range, newEditorMode);
+	public void runOperation(ITextEditor editor) {
+		PairMatcher.goToMatchingBracket(editor);
 	}
 	
 }

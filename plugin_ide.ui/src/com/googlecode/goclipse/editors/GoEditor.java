@@ -1,10 +1,9 @@
 package com.googlecode.goclipse.editors;
 
-import java.util.ResourceBundle;
-
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.AbstractLangEditorActions;
+import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -24,13 +23,9 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
-import com.googlecode.goclipse.ui.editor.actions.GoEditorActions;
 
 public class GoEditor extends AbstractLangEditor {
 	
-	private static final String BUNDLE_ID = "com.googlecode.goclipse.editors.GoEditorMessages";
-	
-	private static ResourceBundle editorResourceBundle = ResourceBundle.getBundle(BUNDLE_ID);
 	
 	private DefaultCharacterPairMatcher matcher;
 	private EditorImageUpdater imageUpdater;
@@ -88,8 +83,8 @@ public class GoEditor extends AbstractLangEditor {
 	}
 	
 	@Override
-	protected AbstractLangEditorActions createActionsManager() {
-		return new GoEditorActions(this);
+	protected LangEditorContextMenuContributor createActionsManager() {
+		return EditorSettings_Actual.createCommandsContribHelper(getSite().getWorkbenchWindow());
 	}
 	
 	@Override
@@ -98,7 +93,7 @@ public class GoEditor extends AbstractLangEditor {
 		
 		IAction action;
 		
-		action = new ToggleCommentAction(editorResourceBundle, "ToggleComment.", this);
+		action = new ToggleCommentAction("ToggleComment.", this);
 		action.setActionDefinitionId("com.googlecode.goclipse.actions.ToggleComment");
 		setAction("ToggleComment", action);
 		markAsStateDependentAction("ToggleComment", true);

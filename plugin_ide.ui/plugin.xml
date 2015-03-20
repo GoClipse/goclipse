@@ -356,7 +356,6 @@
 		
 		<command
 			categoryId="com.googlecode.goclipse.ui.commands.Category"
-			defaultHandler="com.googlecode.goclipse.ui.actions.GoOpenDefinitionHandler"
 			description="%OpenDefinitionAction.tooltip"
 			id="com.googlecode.goclipse.ui.commands.openDefinition"
 			name="%OpenDefinitionAction.name">

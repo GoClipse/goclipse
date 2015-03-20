@@ -37,6 +37,9 @@ public class ToggleCommentAction extends TextEditorAction {
   /** The comment prefixes */
   private Map<String, String[]> fPrefixesMap;
 
+  
+	private static final String BUNDLE_ID = "com.googlecode.goclipse.editors.GoEditorMessages";
+  
   /**
    * Creates and initializes the action for the given text editor. The action configures its visual
    * representation from the given resource bundle.
@@ -47,8 +50,8 @@ public class ToggleCommentAction extends TextEditorAction {
    * @param editor the text editor
    * @see ResourceAction#ResourceAction(ResourceBundle, String, int)
    */
-  public ToggleCommentAction(ResourceBundle bundle, String prefix, ITextEditor editor) {
-    super(bundle, prefix, editor);
+  public ToggleCommentAction(String prefix, ITextEditor editor) {
+    super(ResourceBundle.getBundle(BUNDLE_ID), prefix, editor);
   }
 
   public void configure(ISourceViewer sourceViewer, SourceViewerConfiguration configuration) {

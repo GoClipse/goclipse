@@ -16,8 +16,7 @@
  * Editor Ctrl-click (hyperlink) now only uses Go Oracle for the operation, the previous hyperlink has now been fully removed due to being buggy.
   * Improved: for Go Oracle integration, if the tool terminates with a non-zero exit code, instead of showing an error dialog, 
 a workbench status line message is shown, a beep is sounded, and the Tools console is activated.   
-
- * Added Source menu to editor context menu: FIXME entries missing
+ * Added Source submenu to editor context menu.
 
 
 ### Goclipse 0.9.1
