@@ -57,6 +57,11 @@ public class EditorUtils {
 		return (TextSelection) editor.getSelectionProvider().getSelection();
 	}
 	
+	public static SourceRange getSelectionSR(ITextEditor editor) {
+		TextSelection sel = getSelection(editor);
+		return new SourceRange(sel.getOffset(), sel.getLength());
+	}
+	
 	public static void setEditorSelection(ITextEditor textEditor, SourceRange sourceRange) {
 		EditorUtils.setEditorSelection(textEditor, sourceRange.getOffset(), sourceRange.getLength()); 
 	}
