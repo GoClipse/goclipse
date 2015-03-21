@@ -11,10 +11,13 @@
 package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.services.IServiceLocator;
 
+import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SimpleSourceViewerConfiguration;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SourceViewerConfiguration;
 
@@ -36,8 +39,20 @@ public class EditorSettings_Actual {
 		return new LANGUAGE_SimpleSourceViewerConfiguration(preferenceStore, colorManager);
 	}
 	
+	public static Class<LANGUAGE_Editor> editorKlass() {
+		return LANGUAGE_Editor.class;
+	}
+	
 	/* ----------------- actions ----------------- */
 	
-	public static final String COMMAND_OpenDef_ID = "LANG_PROJECT_ID.ide.ui.commands.openDefinition";
+	public static interface EditorCommandIds {
+		
+		public static final String OpenDef_ID = "LANG_PROJECT_ID.ide.ui.commands.openDefinition";
+		
+	}
+	
+	public static LangEditorContextMenuContributor createCommandsContribHelper(IServiceLocator svcLocator) {
+		return new LangEditorContextMenuContributor(svcLocator) { };
+	}
 	
 }

@@ -10,26 +10,8 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.AbstractLangEditorActions;
 
 public class LANGUAGE_Editor extends AbstractLangEditor {
-	
-	@Override
-	protected LANGUAGE_SourceViewerConfiguration createSourceViewerConfiguration() {
-		return new LANGUAGE_SourceViewerConfiguration(getPreferenceStore(),
-			LangUIPlugin.getInstance().getColorManager(), this);
-	}
-	
-	
-	@Override
-	protected AbstractLangEditorActions createActionsManager() {
-		return new AbstractLangEditorActions(this) {
-			@Override
-			protected void doDispose() {
-			}
-		};
-	}
 	
 }

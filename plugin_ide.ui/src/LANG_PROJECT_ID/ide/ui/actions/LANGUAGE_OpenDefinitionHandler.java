@@ -14,9 +14,14 @@ import melnorme.lang.ide.ui.actions.AbstractOpenDefinitionHandler;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class LANGUAGE_OpenDefinitionHandler extends AbstractOpenDefinitionHandler  {
+	
+	public LANGUAGE_OpenDefinitionHandler(IWorkbenchPage page) {
+		super(page);
+	}
 	
 	@Override
 	public LANGUAGE_OracleOpenDefinitionOperation createOperation(ITextEditor editor, SourceRange range,
