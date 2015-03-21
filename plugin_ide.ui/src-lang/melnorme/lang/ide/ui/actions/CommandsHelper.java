@@ -21,16 +21,27 @@ public abstract class CommandsHelper {
 	}
 	
 	public static CommandContributionItem pushItem(IServiceLocator svLocator, String commandId) {
-		return pushItem(svLocator, commandId, commandId);
+		return new CommandContributionItem(contribItemParameter(svLocator, commandId));
 	}
 	
 	public static CommandContributionItem pushItem(IServiceLocator svLocator, String commandId, String contribId) {
-		return new CommandContributionItem(
-			new CommandContributionItemParameter(svLocator, 
-				contribId, 
-				commandId, 
-				CommandContributionItem.STYLE_PUSH
-			)
+		return new CommandContributionItem(contribItemParameter(svLocator, commandId, contribId));
+	}
+	
+	public static CommandContributionItemParameter contribItemParameter(IServiceLocator svLocator, String commandId) {
+		return new CommandContributionItemParameter(svLocator, 
+			commandId, 
+			commandId, 
+			CommandContributionItem.STYLE_PUSH
+		);
+	}
+	
+	public static CommandContributionItemParameter contribItemParameter(IServiceLocator svLocator, String commandId,
+			String contribId) {
+		return new CommandContributionItemParameter(svLocator, 
+			contribId, 
+			commandId, 
+			CommandContributionItem.STYLE_PUSH
 		);
 	}
 	

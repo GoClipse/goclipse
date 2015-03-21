@@ -13,11 +13,14 @@ package melnorme.lang.ide.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.actions.CommandsHelper;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
@@ -32,10 +35,17 @@ public abstract class LangEditorContextMenuContributor extends CommandsHelper {
 	}
 	
 	public void editorContextMenuAboutToShow(IMenuManager ctxMenu) {
-		ctxMenu.prependToGroup(ICommonMenuConstants.GROUP_OPEN, 
-			pushItem(svcLocator, EditorSettings_Actual.EditorCommandIds.OpenDef_ID));
+		ctxMenu.prependToGroup(ICommonMenuConstants.GROUP_OPEN, new CommandContributionItem(
+			createOpenDefinitionContribParameters()));
 		
 		prepareSourceMenu(ctxMenu);
+	}
+	
+	protected CommandContributionItemParameter createOpenDefinitionContribParameters() {
+		CommandContributionItemParameter cip;
+		cip = contribItemParameter(svcLocator, EditorSettings_Actual.EditorCommandIds.OpenDef_ID);
+		cip.icon = LangImages.ACTIONS_OPEN_DEF.getDescriptor();
+		return cip;
 	}
 	
 	/* ----------------- header ----------------- */
