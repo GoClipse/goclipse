@@ -38,7 +38,7 @@ public class LangEditorActionContributorHelper extends TextEditorActionContribut
 		return getPage().getWorkbenchWindow();
 	}
 	
-	protected IHandlerService getHandlerService() {
+	protected IHandlerService getHandlerService_2() {
 		return (IHandlerService) getServiceLocator().getService(IHandlerService.class);
 	}
 	
