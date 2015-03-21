@@ -78,7 +78,6 @@
 		
 		<command
 			categoryId="LANG_PROJECT_ID.ide.ui.commands.Category"
-			defaultHandler="LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OpenDefinitionHandler"
 			description="%OpenDefinitionAction.tooltip"
 			id="LANG_PROJECT_ID.ide.ui.commands.openDefinition"
 			name="%OpenDefinitionAction.name">
