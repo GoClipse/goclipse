@@ -178,7 +178,9 @@ public abstract class AbstractLangEditor extends TextEditor {
 		editorActionsManager = createActionsManager();
 	}
 	
-	protected abstract LangEditorContextMenuContributor createActionsManager();
+	protected LangEditorContextMenuContributor createActionsManager() {
+		return EditorSettings_Actual.createCommandsContribHelper(getSite().getWorkbenchWindow());
+	}
 	
 	@Override
 	protected void editorContextMenuAboutToShow(IMenuManager menu) {
