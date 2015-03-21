@@ -18,11 +18,13 @@ import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.actions.AbstractEditorOperationHandler;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
@@ -30,6 +32,8 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 public abstract class LangEditorActionContributor extends LangEditorActionContributorHelper {
 	
 	public static final String SOURCE_MENU_ID = LangUIPlugin.PLUGIN_ID + ".sourceMenu";
+	
+	protected final ArrayList2<IHandlerActivation> handlerActivations = new ArrayList2<>(); 
 	
 	public LangEditorActionContributor() {
 		super();
@@ -41,10 +45,28 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 		
 		// Register some handlers active only when editor is active:
 		
-		getHandlerService().activateHandler(EditorSettings_Actual.EditorCommandIds.OpenDef_ID, 
-			getOpenDefinition_Handler());
+		activateHandler(EditorSettings_Actual.EditorCommandIds.OpenDef_ID, getOpenDefinition_Handler());
 		
 		registerOtherEditorHandlers();
+	}
+	
+	protected void activateHandler(String string, AbstractHandler handler) {
+		IHandlerActivation handlerActivation = getHandlerService_2().activateHandler(string, handler);
+		handlerActivations.add(handlerActivation);
+	}
+	
+	@Override
+	public final void dispose() {
+		doDispose();
+		
+		for (IHandlerActivation handlerActivation : handlerActivations) {
+			getHandlerService_2().deactivateHandler(handlerActivation);
+		}
+		
+		super.dispose();
+	}
+	
+	protected void doDispose() {
 	}
 	
 	protected AbstractHandler getOpenDefinition_Handler() {

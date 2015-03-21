@@ -46,7 +46,7 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 	
 	@Override
 	protected void registerOtherEditorHandlers() {
-		getHandlerService().activateHandler(COMMAND_GoToMatchingBracket, new GotoMatchingBracketHandler(getPage()));
+		activateHandler(COMMAND_GoToMatchingBracket, new GotoMatchingBracketHandler(getPage()));
 	}
 	
 	@Override
@@ -57,8 +57,8 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 		createEditorActionContribution(COMMAND_ToggleLineComment, "ToggleComment");
 //		getHandlerService().activateHandler(COMMAND_ToggleLineComment, ToggleCommentAction.getHandler(getPage()));
 		
-		getHandlerService().activateHandler(COMMAND_RunGoFix, RunGoFixOperation.getHandler(getPage()));
-		getHandlerService().activateHandler(COMMAND_RunGoFmt, RunGoFmtOperation.getHandler(getPage()));
+		activateHandler(COMMAND_RunGoFix, RunGoFixOperation.getHandler(getPage()));
+		activateHandler(COMMAND_RunGoFmt, RunGoFmtOperation.getHandler(getPage()));
 	}
 	
 	/* -----------------  ----------------- */
@@ -66,7 +66,7 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 	@Deprecated
 	protected void createEditorActionContribution(String commandId, String editorActionId) {
 		final EditorActionContribution editorActionHelper = new EditorActionContribution(
-			getHandlerService(), commandId, editorActionId);
+			getHandlerService_2(), commandId, editorActionId);
 		registerActiveEditorListener(editorActionHelper);
 	}
 	
