@@ -25,9 +25,9 @@ import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
 public class EditorSettings_Actual {
 	
 	public static final String EDITOR_ID = "com.googlecode.goclipse.editors.Editor";
-	public static final String EDITOR_CONTEXT_ID = "com.googlecode.goclipse.ui.Contexts.Editor";
+	public static final String EDITOR_CONTEXT_ID = LangUIPlugin.PLUGIN_ID + ".Contexts.Editor";
 	
-	public static final String EDITOR_CODE_TARGET = "com.googlecode.goclipse.ui.Editor.CodeTarget";
+	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".Editor.CodeTarget";
 	
 	public static GoEditorSourceViewerConfiguration createSourceViewerConfiguration(
 			IPreferenceStore preferenceStore, AbstractLangEditor editor) {
@@ -48,10 +48,10 @@ public class EditorSettings_Actual {
 	
 	public static interface EditorCommandIds {
 		
-		public static final String OpenDef_ID = "com.googlecode.goclipse.ui.commands.openDefinition";
+		public static final String OpenDef_ID = LangUIPlugin.PLUGIN_ID + ".commands.openDefinition";
 		
-		public static final String GoToMatchingBracket = "com.googlecode.goclipse.ui.commands.GoToMatchingBracket";
-		public static final String ToggleComment = "com.googlecode.goclipse.ui.commands.ToggleComment";
+		public static final String GoToMatchingBracket = LangUIPlugin.PLUGIN_ID + ".commands.GoToMatchingBracket";
+		public static final String ToggleComment = LangUIPlugin.PLUGIN_ID + ".commands.ToggleComment";
 		
 	}
 	
