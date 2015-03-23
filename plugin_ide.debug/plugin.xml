@@ -177,7 +177,7 @@
    <extension point="org.eclipse.core.runtime.adapters">
       <factory 
         	class="LANG_PROJECT_ID.ide.debug.ui.LANGUAGE_GdbAdapterFactory" 
-	        adaptableType="LANG_PROJECT_IDE.ide.debug.core.DeeGdbLaunch">
+	        adaptableType="LANG_PROJECT_ID.ide.debug.ui.LANGUAGE_GdbLaunch">
          <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider"/>
          <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxyFactory"/>
          <adapter type="org.eclipse.debug.ui.contexts.ISuspendTrigger"/>
