@@ -22,7 +22,7 @@ import org.eclipse.cdt.dsf.ui.viewmodel.IVMNode;
 import org.eclipse.cdt.dsf.ui.viewmodel.datamodel.RootDMVMNode;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
 
-@SuppressWarnings("restriction")
+//@SuppressWarnings("restriction")
 public class GdbExpressionVMProvider_Override extends GdbExpressionVMProvider {
 	
 	public GdbExpressionVMProvider_Override(AbstractVMAdapter adapter, IPresentationContext context,
