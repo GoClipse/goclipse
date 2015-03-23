@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.actions;
+package melnorme.lang.ide.ui.editor.actions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -41,11 +41,11 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 		if(editor == null) {
 			throw new ExecutionException(LangUIMessages.INTERNAL_ERROR_NoEditorForCommand);
 		}
-		runOperation(editor);
+		runWithEditor(editor);
 		
 		return null;
 	}
 	
-	public abstract void runOperation(ITextEditor editor);
+	public abstract void runWithEditor(ITextEditor editor);
 	
 }

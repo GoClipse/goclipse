@@ -40,6 +40,13 @@
 		</editor>
 	</extension>
 	
+	<extension point="org.eclipse.ui.contexts">
+		<context name="Editing Go Source"
+		description="Editing Go Source"
+		parentId="org.eclipse.ui.textEditorScope"
+		id="com.googlecode.goclipse.ui.Contexts.Editor" />
+	</extension>
+	
 	<extension point="org.eclipse.core.expressions.definitions">
 		<definition id="com.googlecode.goclipse.ui.expressions.InContext">
 			<or>
@@ -369,24 +376,29 @@
 			id="com.googlecode.goclipse.ui.commands.Category">
 		</category>
 		
-		<command
-			categoryId="com.googlecode.goclipse.ui.commands.Category"
-			description="%OpenDefinitionAction.tooltip"
+		<command categoryId="com.googlecode.goclipse.ui.commands.Category"
 			id="com.googlecode.goclipse.ui.commands.openDefinition"
-			name="%OpenDefinitionAction.name">
-		</command>
+			name="%OpenDefinitionAction.name"
+			description="%OpenDefinitionAction.tooltip"
+		/>
 		
-      <command
+		<command categoryId="com.googlecode.goclipse.ui.commands.Category"
+			id="com.googlecode.goclipse.ui.commands.GoToMatchingBracket"
+			name="%GoToMatchingBracketAction.name"
+			description="%GoToMatchingBracketAction.description"
+		/>
+		
+		<command categoryId="com.googlecode.goclipse.ui.commands.Category"
+			id="com.googlecode.goclipse.ui.commands.ToggleComment"
+			name="%ToggleCommentAction.name"
+			description="%ToggleCommentAction.description"
+		/>
+		
+		<command
             name="Launch Go Application"
             description="Launch Go Application"
             categoryId="com.googlecode.goclipse.ui.commands.Category"
             id="com.googlecode.goclipse.debug.ui.LaunchShortcut.run">
-      </command>
-      <command
-            name="Go to Matching Bracket"
-            description="Go to Matching Bracket"
-            categoryId="com.googlecode.goclipse.ui.commands.Category"
-            id="com.googlecode.goclipse.editors.PairMatcherShortcut.run">
       </command>
       <command
             name="Go Format (gofmt)"
@@ -400,29 +412,34 @@
             categoryId="com.googlecode.goclipse.ui.commands.Category"
             id="com.googlecode.goclipse.editors.GofixShortcut.run">
       </command>
-      <command
-            name="Toggle Comment"
-            description="comment/uncomment current selection"
-            categoryId="com.googlecode.goclipse.ui.commands.Category"
-            id="com.googlecode.goclipse.editors.ToggleComment.run">
-      </command>
    </extension>
-   <extension point="org.eclipse.ui.contexts">
-          <context name="Editing Go Source"
-           description="Editing Go Source"
-           parentId="org.eclipse.ui.textEditorScope"
-           id="com.googlecode.goclipse.editor" />
-   </extension>
-   
 	<extension point="org.eclipse.ui.bindings">
 		<!-- win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
 		     carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
 		
 		<key
 			commandId="com.googlecode.goclipse.ui.commands.openDefinition"
-			contextId="com.googlecode.goclipse.editor"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			sequence="F3">
+		</key>
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.GoToMatchingBracket"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+M2+P">
+		</key>
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.ToggleComment"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+M2+C">
+		</key>
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.ToggleComment"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+/">
 		</key>
 		
       <key
@@ -432,22 +449,10 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </key>
       <key
-            commandId="com.googlecode.goclipse.editors.PairMatcherShortcut.run"
-            contextId="com.googlecode.goclipse.editor"
-            sequence="M1+M2+P"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </key>
-      <key
             commandId="com.googlecode.goclipse.editors.GofmtShortcut.run"
-            contextId="com.googlecode.goclipse.editor"
+            contextId="com.googlecode.goclipse.ui.Contexts.Editor"
             sequence="M1+M2+F"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </key>
-      <key
-            sequence="M1+/"
-      			commandId="com.googlecode.goclipse.editors.ToggleComment.run"
-			      schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-			      contextId="com.googlecode.goclipse.editor">
       </key>
 	</extension>
 	

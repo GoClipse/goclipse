@@ -11,7 +11,7 @@
 package com.googlecode.goclipse.ui.editor.actions;
 
 import static melnorme.utilbox.core.CoreUtil.listFrom;
-import melnorme.lang.ide.ui.actions.AbstractEditorHandler;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
 import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -26,7 +26,7 @@ public class RunGoFixOperation extends AbstractEditorGoToolOperation {
 	public static AbstractEditorHandler getHandler(IWorkbenchPage page) {
 		return new AbstractEditorHandler(page) {
 			@Override
-			public void runOperation(ITextEditor editor) {
+			public void runWithEditor(ITextEditor editor) {
 				new RunGoFixOperation(editor).executeAndHandle();
 			}
 		};

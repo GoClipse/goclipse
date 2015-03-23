@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,28 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.actions;
+package melnorme.lang.ide.ui.editor.actions;
 
-
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public abstract class AbstractEditorOperationHandler extends AbstractEditorHandler {
+public class ToggleCommentHandler extends AbstractEditorHandler {
 	
-	public AbstractEditorOperationHandler(IWorkbenchPage page) {
+	public ToggleCommentHandler(IWorkbenchPage page) {
 		super(page);
 	}
 	
 	@Override
-	public void runOperation(ITextEditor editor) {
-		createOperation(editor).executeAndHandle();
+	public boolean isEnabled() {
+		return false; // TODO implement
 	}
 	
-	public abstract AbstractEditorOperation createOperation(ITextEditor editor);
+	@Override
+	public void runWithEditor(ITextEditor editor) {
+		Shell shell = editor.getSite().getShell();
+		MessageDialog.openInformation(shell, "", "Not implemented");
+	}
 	
 }

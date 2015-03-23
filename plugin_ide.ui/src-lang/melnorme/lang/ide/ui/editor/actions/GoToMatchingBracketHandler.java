@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,29 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.ui.actions;
+package melnorme.lang.ide.ui.editor.actions;
 
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
-
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.googlecode.goclipse.editors.PairMatcher;
 
-public class GotoMatchingBracketHandler extends AbstractEditorHandler  {
+public class GoToMatchingBracketHandler extends AbstractEditorHandler {
 	
-	public GotoMatchingBracketHandler(IWorkbenchPage page) {
+	public GoToMatchingBracketHandler(IWorkbenchPage page) {
 		super(page);
 	}
 	
 	@Override
+	public boolean isEnabled() {
+		return false; // TODO implement
+	}
+	
+	@Override
 	public void runWithEditor(ITextEditor editor) {
-		PairMatcher.goToMatchingBracket(editor);
+		Shell shell = editor.getSite().getShell();
+		MessageDialog.openInformation(shell, "", "Not implemented");
 	}
 	
 }

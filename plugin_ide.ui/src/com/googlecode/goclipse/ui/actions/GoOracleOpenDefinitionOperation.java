@@ -11,7 +11,7 @@
 package com.googlecode.goclipse.ui.actions;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
+import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
 import melnorme.lang.tooling.ast.SourceRange;

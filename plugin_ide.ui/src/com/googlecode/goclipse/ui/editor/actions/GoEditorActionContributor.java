@@ -12,7 +12,7 @@ package com.googlecode.goclipse.ui.editor.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
-import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
 import melnorme.lang.tooling.ast.SourceRange;

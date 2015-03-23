@@ -25,7 +25,7 @@ import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
 public class EditorSettings_Actual {
 	
 	public static final String EDITOR_ID = "com.googlecode.goclipse.editors.Editor";
-	public static final String EDITOR_CONTEXT_ID = "com.googlecode.goclipse.editor";
+	public static final String EDITOR_CONTEXT_ID = "com.googlecode.goclipse.ui.Contexts.Editor";
 	
 	public static final String EDITOR_CODE_TARGET = "com.googlecode.goclipse.ui.Editor.CodeTarget";
 	
@@ -49,6 +49,9 @@ public class EditorSettings_Actual {
 	public static interface EditorCommandIds {
 		
 		public static final String OpenDef_ID = "com.googlecode.goclipse.ui.commands.openDefinition";
+		
+		public static final String GoToMatchingBracket = "com.googlecode.goclipse.ui.commands.GoToMatchingBracket";
+		public static final String ToggleComment = "com.googlecode.goclipse.ui.commands.ToggleComment";
 		
 	}
 	

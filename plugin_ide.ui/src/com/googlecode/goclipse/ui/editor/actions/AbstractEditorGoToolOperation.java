@@ -13,7 +13,7 @@ package com.googlecode.goclipse.ui.editor.actions;
 
 import static melnorme.lang.ide.ui.editor.EditorUtils.getEditorDocument;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 

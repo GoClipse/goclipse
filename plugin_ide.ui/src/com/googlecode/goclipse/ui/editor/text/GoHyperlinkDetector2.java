@@ -44,8 +44,8 @@ public class GoHyperlinkDetector2 extends LangHyperlinkDetector {
 			textEditor.doSave(new NullProgressMonitor());
 			
 			SourceRange sr = new SourceRange(region.getOffset(), region.getLength());
-			new GoOracleOpenDefinitionOperation(textEditor, sr, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS)
-				.executeAndHandle();
+			new GoOracleOpenDefinitionOperation(textEditor, sr, OpenNewEditorMode.TRY_REUSING_EXISTING)
+				.executeAndHandleResult();
 		}
 		
 	}
