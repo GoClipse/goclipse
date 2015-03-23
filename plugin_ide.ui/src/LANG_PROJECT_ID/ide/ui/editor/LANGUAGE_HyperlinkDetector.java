@@ -38,7 +38,7 @@ public class LANGUAGE_HyperlinkDetector extends LangHyperlinkDetector {
 			textEditor.doSave(new NullProgressMonitor());
 			
 			new LANGUAGE_OracleOpenDefinitionOperation(
-				textEditor, getElementRange(), OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS).executeAndHandle();
+				textEditor, getElementRange(), OpenNewEditorMode.TRY_REUSING_EXISTING).executeAndHandleResult();
 		}
 		
 	}

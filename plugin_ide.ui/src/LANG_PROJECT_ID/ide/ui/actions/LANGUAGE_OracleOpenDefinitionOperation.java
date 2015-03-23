@@ -11,9 +11,9 @@
 package LANG_PROJECT_ID.ide.ui.actions;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
