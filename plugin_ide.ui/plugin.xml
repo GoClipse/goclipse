@@ -34,7 +34,7 @@
 		 contributorClass="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_EditorActionContributor"
 		 default="true"
 		 icon="icons/obj/editor_file.png"
-		 id="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor"
+		 id="LANG_PROJECT_ID.ide.ui.Editors.SourceEditor"
 		 name="%LangEditor.name">
 			<contentTypeBinding contentTypeId="LANG_PROJECT_ID.ide.core.content.source" />
 		</editor>
@@ -53,7 +53,7 @@
 		<definition id="LANG_PROJECT_ID.ide.ui.expressions.InContext">
 			<or>
 				<with variable="activeEditorId"> 
-					<equals value="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor"/> 
+					<equals value="LANG_PROJECT_ID.ide.ui.Editors.SourceEditor"/> 
 				</with>
 				<with variable="activeWorkbenchWindow.activePerspective"> 
 					<equals value="LANG_PROJECT_ID.ide.ui.Perspective"/> 

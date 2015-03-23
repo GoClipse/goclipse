@@ -45,7 +45,7 @@
 
    <extension point="org.eclipse.ui.editorActions">
       <editorContribution
-         targetID="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor"
+         targetID="LANG_PROJECT_ID.ide.ui.Editors.SourceEditor"
          id="LANG_PROJECT_ID.ide.debug.ui.EditorBreakpointRulerActions">
 
          <action label="%dummyLabel"

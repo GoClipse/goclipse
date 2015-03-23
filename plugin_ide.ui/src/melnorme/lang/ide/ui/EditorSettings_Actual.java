@@ -23,7 +23,7 @@ import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SourceViewerConfiguration;
 
 public class EditorSettings_Actual {
 	
-	public static final String EDITOR_ID = LangUIPlugin.PLUGIN_ID + ".editor.LANGUAGE_Editor";
+	public static final String EDITOR_ID = LangUIPlugin.PLUGIN_ID + ".Editors.SourceEditor";
 	public static final String EDITOR_CONTEXT_ID = LangUIPlugin.PLUGIN_ID + ".Contexts.Editor";
 	
 	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".Editor.HyperlinkCodeTarget";
