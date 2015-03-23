@@ -23,10 +23,10 @@ import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SourceViewerConfiguration;
 
 public class EditorSettings_Actual {
 	
-	public static final String EDITOR_ID = "LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor";
-	public static final String EDITOR_CONTEXT_ID = "LANG_PROJECT_ID.ide.ui.Contexts.Editor";
+	public static final String EDITOR_ID = LangUIPlugin.PLUGIN_ID + ".editor.LANGUAGE_Editor";
+	public static final String EDITOR_CONTEXT_ID = LangUIPlugin.PLUGIN_ID + ".Contexts.Editor";
 	
-	public static final String EDITOR_CODE_TARGET = "LANG_PROJECT_ID.ide.ui.Editor.HyperlinkCodeTarget";
+	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".Editor.HyperlinkCodeTarget";
 	
 	public static LANGUAGE_SourceViewerConfiguration createSourceViewerConfiguration(
 			IPreferenceStore preferenceStore, AbstractLangEditor editor) {
@@ -47,10 +47,10 @@ public class EditorSettings_Actual {
 	
 	public static interface EditorCommandIds {
 		
-		public static final String OpenDef_ID = "LANG_PROJECT_ID.ide.ui.commands.openDefinition";
+		public static final String OpenDef_ID = LangUIPlugin.PLUGIN_ID + ".commands.openDefinition";
 		
-		public static final String GoToMatchingBracket = "LANG_PROJECT_ID.ide.ui.commands.GoToMatchingBracket";
-		public static final String ToggleComment = "LANG_PROJECT_ID.ide.ui.commands.ToggleComment";
+		public static final String GoToMatchingBracket = LangUIPlugin.PLUGIN_ID + ".commands.GoToMatchingBracket";
+		public static final String ToggleComment = LangUIPlugin.PLUGIN_ID + ".commands.ToggleComment";
 		
 	}
 	
