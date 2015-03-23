@@ -13,7 +13,7 @@ import org.eclipse.cdt.dsf.ui.viewmodel.IVMNode;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
 import org.eclipse.jface.viewers.TreePath;
 
-@SuppressWarnings("restriction")
+//@SuppressWarnings("restriction")
 public class Lang_GdbExpressionVMProvider extends GdbExpressionVMProvider_Override
 		implements IElementFormatProvider {
 	

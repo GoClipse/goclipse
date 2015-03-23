@@ -30,7 +30,7 @@ import org.eclipse.cdt.dsf.ui.viewmodel.properties.PropertiesBasedLabelProvider;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IElementLabelProvider;
 
-@SuppressWarnings("restriction")
+//@SuppressWarnings("restriction")
 public class GdbVariableVMNode_Override extends GdbVariableVMNode {
 	
 	GdbVariableVMNode_Override(AbstractDMVMProvider provider, DsfSession session,
