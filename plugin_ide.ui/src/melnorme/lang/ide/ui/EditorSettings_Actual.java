@@ -49,6 +49,9 @@ public class EditorSettings_Actual {
 		
 		public static final String OpenDef_ID = "LANG_PROJECT_ID.ide.ui.commands.openDefinition";
 		
+		public static final String GoToMatchingBracket = "LANG_PROJECT_ID.ide.ui.commands.GoToMatchingBracket";
+		public static final String ToggleComment = "LANG_PROJECT_ID.ide.ui.commands.ToggleComment";
+		
 	}
 	
 	public static LangEditorContextMenuContributor createCommandsContribHelper(IServiceLocator svcLocator) {

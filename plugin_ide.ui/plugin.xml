@@ -85,17 +85,29 @@
 	
 	<extension point="org.eclipse.ui.commands">
 		<category
+			id="LANG_PROJECT_ID.ide.ui.commands.Category"
 			name="%CommandsCategory.name"
 			description="%CommandsCategory.description"
-			id="LANG_PROJECT_ID.ide.ui.commands.Category">
-		</category>
+		/>
 		
-		<command
-			categoryId="LANG_PROJECT_ID.ide.ui.commands.Category"
-			description="%OpenDefinitionAction.tooltip"
+		<command categoryId="LANG_PROJECT_ID.ide.ui.commands.Category"
 			id="LANG_PROJECT_ID.ide.ui.commands.openDefinition"
-			name="%OpenDefinitionAction.name">
-		</command>
+			name="%OpenDefinitionAction.name"
+			description="%OpenDefinitionAction.tooltip"
+		/>
+		
+		<command categoryId="LANG_PROJECT_ID.ide.ui.commands.Category"
+			id="LANG_PROJECT_ID.ide.ui.commands.GoToMatchingBracket"
+			name="%GoToMatchingBracketAction.name"
+			description="%GoToMatchingBracketAction.description"
+		/>
+		
+		<command categoryId="LANG_PROJECT_ID.ide.ui.commands.Category"
+			id="LANG_PROJECT_ID.ide.ui.commands.ToggleComment"
+			name="%ToggleCommentAction.name"
+			description="%ToggleCommentAction.description"
+		/>
+		
 	</extension>
 	
 	<extension point="org.eclipse.ui.bindings">
@@ -104,6 +116,24 @@
 			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			sequence="F3">
+		</key>
+		<key
+			commandId="LANG_PROJECT_ID.ide.ui.commands.GoToMatchingBracket"
+			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+M2+P">
+		</key>
+		<key
+			commandId="LANG_PROJECT_ID.ide.ui.commands.ToggleComment"
+			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+M2+C">
+		</key>
+		<key
+			commandId="LANG_PROJECT_ID.ide.ui.commands.ToggleComment"
+			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+/">
 		</key>
 	</extension>
 	

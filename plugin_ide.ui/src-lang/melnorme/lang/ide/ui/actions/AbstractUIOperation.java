@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.actions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
@@ -43,10 +44,14 @@ public abstract class AbstractUIOperation {
 	protected final String operationName;
 	
 	public AbstractUIOperation(String operationName) {
-		this.operationName = operationName;
+		this.operationName = assertNotNull(operationName);
 	}
 	
-	public void executeAndHandle() {
+	public final void executeAndHandleResult() {
+		executeAndHandle();
+	}
+	
+	protected void executeAndHandle() {
 		assertTrue(Display.getCurrent() != null);
 		
 		try {

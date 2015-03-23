@@ -177,7 +177,7 @@ public class EditorUtils {
 	
 	/* -----------------  Editor opening utils  ----------------- */
 	
-	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING_EDITORS, NEVER }
+	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING, NEVER }
 	
 	public static IEditorPart openEditor(String editorId, IEditorInput newInput) throws CoreException {
 		IWorkbenchPage page = WorkbenchUtils.getActiveWorkbenchWindow().getActivePage(); 

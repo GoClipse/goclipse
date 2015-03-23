@@ -8,13 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.actions;
+package melnorme.lang.ide.ui.editor.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.actions.AbstractUIOperation;
+import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.utilbox.misc.Location;
 

@@ -14,9 +14,10 @@ package melnorme.lang.ide.ui.editor;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
-import melnorme.lang.ide.ui.actions.AbstractEditorOperationHandler;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
+import melnorme.lang.ide.ui.editor.actions.GoToMatchingBracketHandler;
+import melnorme.lang.ide.ui.editor.actions.ToggleCommentHandler;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.ArrayList2;
 
@@ -39,17 +40,6 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 		super();
 	}
 	
-	@Override
-	public void init(IActionBars bars) {
-		super.init(bars);
-		
-		// Register some handlers active only when editor is active:
-		
-		activateHandler(EditorSettings_Actual.EditorCommandIds.OpenDef_ID, getOpenDefinition_Handler());
-		
-		registerOtherEditorHandlers();
-	}
-	
 	protected void activateHandler(String string, AbstractHandler handler) {
 		IHandlerActivation handlerActivation = getHandlerService_2().activateHandler(string, handler);
 		handlerActivations.add(handlerActivation);
@@ -69,23 +59,48 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 	protected void doDispose() {
 	}
 	
-	protected AbstractHandler getOpenDefinition_Handler() {
-		return new AbstractEditorOperationHandler(getPage()) {
-			
+	/* ----------------- Register handlers ----------------- */ 
+	
+	@Override
+	public void init(IActionBars bars) {
+		super.init(bars);
+		
+		// Register handlers active only when editor is active:
+		
+		activateHandler(EditorSettings_Actual.EditorCommandIds.OpenDef_ID, getHandler_OpenDefinition());
+		activateHandler(EditorSettings_Actual.EditorCommandIds.GoToMatchingBracket, getHandler_GoToMatchingBracket());
+		activateHandler(EditorSettings_Actual.EditorCommandIds.ToggleComment, getHandler_ToggleComment());
+		
+		registerOtherEditorHandlers();
+	}
+	
+	protected AbstractHandler getHandler_OpenDefinition() {
+		return new AbstractEditorOperationHandler() {
 			@Override
 			public AbstractEditorOperation createOperation(ITextEditor editor) {
-				OpenNewEditorMode newEditorMode = OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS;
+				OpenNewEditorMode newEditorMode = OpenNewEditorMode.TRY_REUSING_EXISTING;
 				return createOpenDefinitionOperation(editor, EditorUtils.getSelectionSR(editor), newEditorMode);
 			}
 		};
 	}
 	
-	protected void registerOtherEditorHandlers() {
-	}
-	
 	protected abstract AbstractEditorOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
 			OpenNewEditorMode newEditorMode);
 	
+	
+	protected abstract void registerOtherEditorHandlers();
+	
+	
+	protected AbstractHandler getHandler_GoToMatchingBracket() {
+		return new GoToMatchingBracketHandler(getPage());
+	}
+	
+	protected AbstractHandler getHandler_ToggleComment() {
+		return new ToggleCommentHandler(getPage());
+	}
+	
+	
+	/* ----------------- Menu / Toolbar contributions ----------------- */
 	
 	@Override
 	public void contributeToMenu(IMenuManager menu) {
@@ -95,11 +110,15 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 		
 		prepareSourceMenu(menu);
 		
+		prepareNavigateMenu(menu);
+		
+	}
+	
+	protected void prepareNavigateMenu(IMenuManager menu) {
 		IMenuManager navigateMenu= menu.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
 		if (navigateMenu != null) {
-			
+			// TODO: go to matching bracket
 		}
-		
 	}
 	
 	protected void prepareEditMenu(IMenuManager menu) {

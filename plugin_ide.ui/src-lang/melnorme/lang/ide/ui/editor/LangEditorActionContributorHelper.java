@@ -12,6 +12,8 @@ package melnorme.lang.ide.ui.editor;
 
 
 import melnorme.lang.ide.ui.actions.CommandsHelper;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.jface.action.IMenuManager;
@@ -20,6 +22,7 @@ import org.eclipse.ui.editors.text.TextEditorActionContributor;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.services.IServiceLocator;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class LangEditorActionContributorHelper extends TextEditorActionContributor {
 	
@@ -42,21 +45,6 @@ public class LangEditorActionContributorHelper extends TextEditorActionContribut
 		return (IHandlerService) getServiceLocator().getService(IHandlerService.class);
 	}
 	
-	@Override
-	public void contributeToMenu(IMenuManager menu) {
-		super.contributeToMenu(menu);
-	}
-	
-	protected CommandContributionItem pushItem(String commandId, String contribId) {
-		return CommandsHelper.pushItem(getServiceLocator(), commandId, contribId);
-	}
-	
-	protected CommandContributionItem pushItem(String commandId) {
-		return CommandsHelper.pushItem(getServiceLocator(), commandId, commandId);
-	}
-	
-	/* -----------------  ----------------- */
-	
 	protected <T extends IActiveEditorListener> T registerActiveEditorListener(T activeEditorListener) {
 		activeEditorListeners.add(activeEditorListener);
 		return activeEditorListener;
@@ -69,6 +57,40 @@ public class LangEditorActionContributorHelper extends TextEditorActionContribut
 		for (IActiveEditorListener activeEditorListener : activeEditorListeners) {
 			activeEditorListener.setActiveEditor(part);
 		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public abstract class AbstractEditorHandlerExt extends AbstractEditorHandler {
+		public AbstractEditorHandlerExt() {
+			super(getPage());
+		}
+	}
+	
+	public abstract class AbstractEditorOperationHandler extends AbstractEditorHandlerExt {
+		
+		@Override
+		public void runWithEditor(ITextEditor editor) {
+			createOperation(editor).executeAndHandleResult();
+		}
+		
+		public abstract AbstractEditorOperation createOperation(ITextEditor editor);
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void contributeToMenu(IMenuManager menu) {
+		super.contributeToMenu(menu);
+	}
+	
+	protected CommandContributionItem pushItem(String commandId, String contribId) {
+		return CommandsHelper.pushItem(getServiceLocator(), commandId, contribId);
+	}
+	
+	protected CommandContributionItem pushItem(String commandId) {
+		return CommandsHelper.pushItem(getServiceLocator(), commandId, commandId);
 	}
 	
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.actions;
+package melnorme.lang.ide.ui.editor.actions;
 
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
