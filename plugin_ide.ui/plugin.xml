@@ -39,6 +39,21 @@
 			<contentTypeBinding contentTypeId="com.googlecode.goclipse.gosourcefile" />
 		</editor>
 	</extension>
+	
+	<extension point="org.eclipse.core.expressions.definitions">
+		<definition id="com.googlecode.goclipse.ui.expressions.InContext">
+			<or>
+				<with variable="activeEditorId"> 
+					<equals value="com.googlecode.goclipse.editors.Editor"/> 
+				</with>
+				<with variable="activeWorkbenchWindow.activePerspective"> 
+					<equals value="com.googlecode.goclipse.perspectives.GoPerspective"/> 
+				</with>
+			</or>
+		</definition>
+	</extension>
+	
+	<!-- ============ EDITOR - Other ============= -->
 
 	<!-- ============ Actions/Commands ============= -->
 	
@@ -496,48 +511,54 @@
          class="com.googlecode.goclipse.search.GoSearchPage">
       </page>
    </extension>
+	
+	
+	<extension point="org.eclipse.ui.commands">
+		<command
+	        categoryId="com.googlecode.goclipse.ui.commands.Category"
+	        defaultHandler="com.googlecode.goclipse.ui.actions.GoOpenSearchPageHandler"
+	        id="com.googlecode.goclipse.ui.commands.GoSearch"
+	        name="Go...">
+		</command>
+	</extension>
 
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="Go Search"
-            description="Action set containing search related Go actions"
-            visible="false"
-            id="org.googlecode.goclipse.searchActionSet">
-<!-- see http://bugs.eclipse.org/bugs/show_bug.cgi?id=15684    -->
-<!-- Note: The menu (re-) definition has to be here due to bug: -->
-<!-- =================================================================== -->
-<!-- Search Menu                                                         -->
-<!-- =================================================================== -->
-         <menu
-               label="Se&amp;arch"
-               path="navigate"
-               id="org.eclipse.search.menu">
-        <groupMarker name="internalDialogGroup"/>   <!-- not to be used by clients  -->
-        <groupMarker name="dialogGroup"/>           <!-- to be used by clients      -->
-        <separator name="fileSearchContextMenuActionsGroup"/> <!-- to be used by clients      -->
-            <separator name="contextMenuActionsGroup"/> <!-- to be used by clients -->
-            <separator name="occurencesActionsGroup"/> <!-- to be used by clients -->
-            <separator name="extraSearchGroup"/> <!-- to be used by clients -->
-         </menu>
-         <action
-               label="Go..."
-               icon="icons/search_obj.png"
-               class="com.googlecode.goclipse.search.OpenGoSearchPageAction"
-               menubarPath="org.eclipse.search.menu/dialogGroup"
-               id="org.googlecode.goclipse.openSearchPage">
-         </action>
-      </actionSet>
-   </extension>
 
-   <extension
-         point="org.eclipse.ui.actionSetPartAssociations">
-      <actionSetPartAssociation
-            targetID="org.googlecode.goclipse.searchActionSet">
-         <part id="org.eclipse.search.SearchResultView"/>
-         <part id="com.googlecode.goclipse.editors.Editor"/>
-      </actionSetPartAssociation>
-   </extension>
+<!-- 
+ Because of some weird bug/limitation, the workbench Search menu is not defined in time to be used
+ by other contributions, so we must define it here first. 
+ BM: I suspect it's because org.eclipse.search still uses action API.
+ 
+ For reference structure see: https://wiki.eclipse.org/Menu_Contributions/Search_Menu#Menus
+ -->
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=navigate">
+			<menu label="Se&amp;arch"
+				mnemonic="%searchMenu.mnemonic"
+				id="org.eclipse.search.menu">
+				<separator name="internalDialogGroup" visible="false" />
+				<separator name="dialogGroup" visible="false" />
+				<separator name="fileSearchContextMenuActionsGroup" visible="true" />
+				<separator name="contextMenuActionsGroup" visible="true" />
+				<separator name="occurencesActionsGroup" visible="true" />
+				<separator name="extraSearchGroup" visible="true" />
+			</menu>
+		</menuContribution>
+	</extension>
+<!-- end of bug workaround -->	
+	
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:org.eclipse.search.menu?after=dialogGroup">
+			<command commandId="com.googlecode.goclipse.ui.commands.GoSearch"
+				icon="icons/search_obj.png"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="com.googlecode.goclipse.ui.expressions.InContext" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+	
+
    <!--<extension
          point="org.eclipse.help.contexts">
       <contexts
