@@ -17,6 +17,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
 import melnorme.lang.tooling.ast.SourceRange;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -33,8 +34,6 @@ import com.googlecode.goclipse.ui.actions.GotoMatchingBracketHandler;
 
 public class GoEditorActionContributor extends LangEditorActionContributor implements GoCommandConstants {
 	
-	public static final String SOURCE_MENU_ID = "com.googlecode.goclipse.ui.sourceMenu";
-	
 	public GoEditorActionContributor() {
 	}
 	
@@ -45,8 +44,12 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 	}
 	
 	@Override
+	protected AbstractHandler getHandler_GoToMatchingBracket() {
+		return new GotoMatchingBracketHandler(getPage());
+	}
+	
+	@Override
 	protected void registerOtherEditorHandlers() {
-		activateHandler(COMMAND_GoToMatchingBracket, new GotoMatchingBracketHandler(getPage()));
 	}
 	
 	@Override
