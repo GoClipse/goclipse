@@ -20,7 +20,8 @@ with 4Gb of RAM or more, the following is recommended as minimum values:
 
 ### GoClipse Prerequisites and Initial Setup
 
-Open Eclipse preferences, go to the Go preference page, and configure the GOROOT, GOPATH settings appropriately. You will need an installation of the Go SDK, as well as [gocode](https://github.com/nsf/gocode) and [Go Oracle](http://golang.org/s/oracle-user-manual). These last two can be configured in the `Go / Tools` preference page.
+You will need an installation of the Go SDK first of all. Open the Eclipse preferences dialog (`Window / Preferences`), and navigate to the `Go` preference page, to configure the GOROOT, GOPATH, and remaining settings appropriately.
+You will also need [gocode](https://github.com/nsf/gocode) and [Go Oracle](http://golang.org/s/oracle-user-manual). These last two can be configured in the `Go / Tools` preference page.
 
 > Note: for convenience, Goclipse comes installed with its own version of gocode, but this one can be quite out of date. It is recommended to install the latest gocode: `go get -u github.com/nsf/gocode`
 
