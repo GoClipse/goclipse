@@ -49,7 +49,21 @@
 		</context>
 	</extension>
 	
+	<extension point="org.eclipse.core.expressions.definitions">
+		<definition id="LANG_PROJECT_ID.ide.ui.expressions.InContext">
+			<or>
+				<with variable="activeEditorId"> 
+					<equals value="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor"/> 
+				</with>
+				<with variable="activeWorkbenchWindow.activePerspective"> 
+					<equals value="LANG_PROJECT_ID.ide.ui.Perspective"/> 
+				</with>
+			</or>
+		</definition>
+	</extension>
 	
+	
+	<!-- ============ EDITOR - Other ============= -->
 	
 	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
 		<target 
