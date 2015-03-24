@@ -11,7 +11,13 @@
 package LANG_PROJECT_ID.ide.ui.editor;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 
 public class LANGUAGE_Editor extends AbstractLangEditor {
+	
+	@Override
+	protected LangPairMatcher init_createBracketMatcher() {
+		return new LangPairMatcher("{}[]()".toCharArray()); // TODO: Lang
+	}
 	
 }
