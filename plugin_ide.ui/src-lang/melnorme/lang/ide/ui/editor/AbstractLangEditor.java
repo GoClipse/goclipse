@@ -172,17 +172,20 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	/* ----------------- Bracket matcher ----------------- */
 	
-	protected final GotoMatchingBracketManager gotoMatchingBracketManager = new GotoMatchingBracketManager(this); 
+	protected final LangPairMatcher fBracketMatcher = addOwned(init_createBracketMatcher());
+	protected final GotoMatchingBracketManager gotoMatchingBracketManager = init_createGoToMatchingBracketManager();
 	
-	/** The editor's bracket matcher */
-	protected LangPairMatcher fBracketMatcher = addOwned(
-		new LangPairMatcher(new char[] { '{', '}', '(', ')', '[', ']', '<', '>' } ));
+	protected abstract LangPairMatcher init_createBracketMatcher();
 	
-	public LangPairMatcher getBracketMatcher() {
+	protected GotoMatchingBracketManager init_createGoToMatchingBracketManager() {
+		return new GotoMatchingBracketManager(this);
+	}
+	
+	public final LangPairMatcher getBracketMatcher() {
 		return fBracketMatcher;
 	}
 	
-	public GotoMatchingBracketManager getGotoMatchingBracketManager() {
+	public final GotoMatchingBracketManager getGotoMatchingBracketManager() {
 		return gotoMatchingBracketManager;
 	}
 	

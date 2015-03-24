@@ -1,17 +1,14 @@
 package com.googlecode.goclipse.editors;
 
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
+import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.viewers.ISelection;
@@ -21,15 +18,9 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
-import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
-
 public class GoEditor extends AbstractLangEditor {
 	
-	
-	private DefaultCharacterPairMatcher matcher;
 	private EditorImageUpdater imageUpdater;
-	
 	private GoEditorOutlinePage outlinePage;
 	
 	public GoEditor() {
@@ -37,12 +28,23 @@ public class GoEditor extends AbstractLangEditor {
 	}
 	
 	@Override
-	protected GoEditorSourceViewerConfiguration createSourceViewerConfiguration() {
-		return new GoEditorSourceViewerConfiguration(getPreferenceStore(), 
-			LangUIPlugin.getInstance().getColorManager(), this);
+	protected LangPairMatcher init_createBracketMatcher() {
+		return new LangPairMatcher("{}[]()".toCharArray());
 	}
 	
+	@Override
+	protected void configureBracketMatcher(SourceViewerDecorationSupport support) {
+		support.setCharacterPairMatcher(fBracketMatcher);
+		support.setMatchingCharacterPainterPreferenceKeys(
+			EditorPrefConstants.MATCHING_BRACKETS, 
+			EditorPrefConstants.MATCHING_BRACKETS_COLOR, 
+			EditorPrefConstants.HIGHLIGHT_BRACKET_AT_CARET_LOCATION, 
+			EditorPrefConstants.ENCLOSING_BRACKETS);
+	}
 	
+	/* ----------------- need to review/cleanup rest of this code ----------------- */
+	
+	// make public accesss
 	@Override
 	protected void setTitleImage(Image image) {
 		super.setTitleImage(image);
@@ -70,22 +72,6 @@ public class GoEditor extends AbstractLangEditor {
 		}
 	}
 	
-	@Override
-	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
-		super.configureSourceViewerDecorationSupport(support);
-		
-		char[] matchChars = {'(', ')', '[', ']', '{', '}'}; //which brackets to match
-		matcher = new DefaultCharacterPairMatcher(matchChars, IDocumentExtension3.DEFAULT_PARTITIONING);
-		support.setCharacterPairMatcher(matcher);
-		support.setMatchingCharacterPainterPreferenceKeys(
-			GoUIPreferenceConstants.EDITOR_MATCHING_BRACKETS,
-			GoUIPreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR);
-	}
-	
-	@Override
-	protected LangEditorContextMenuContributor createActionsManager() {
-		return EditorSettings_Actual.createCommandsContribHelper(getSite().getWorkbenchWindow());
-	}
 	
 	@Override
 	protected void createActions() {
@@ -98,10 +84,6 @@ public class GoEditor extends AbstractLangEditor {
 		setAction("ToggleComment", action);
 		markAsStateDependentAction("ToggleComment", true);
 		configureToggleCommentAction();
-	}
-	
-	public DefaultCharacterPairMatcher getPairMatcher() {
-		return matcher;
 	}
 	
 	public String getText() {

@@ -10,22 +10,14 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.StringConverter;
-import org.eclipse.swt.graphics.RGB;
 
 public class GoUIPreferencesInitializer extends AbstractPreferenceInitializer 
 	implements GoUIPreferenceConstants {
 
 	@Override
 	public void initializeDefaultPreferences() {
-		final IPreferenceStore store = LangUIPlugin.getInstance().getPreferenceStore();
 		
-	    store.setDefault(EDITOR_MATCHING_BRACKETS, true);
-	    store.setDefault(EDITOR_MATCHING_BRACKETS_COLOR, StringConverter.asString(new RGB(128, 128, 128)));
 	}
 	
 }
