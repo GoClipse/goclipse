@@ -151,10 +151,12 @@ public class MiscUtil extends PathUtil {
 		}
 	}
 	
-	public static void dispose(IDisposable disposable) {
+	/** Dispose given disposable, and return null. Mean to be used for variables. */
+	public static <T extends IDisposable> T dispose(T disposable) {
 		if (disposable != null) {
 			disposable.dispose();
 		}
+		return null;
 	}
 	
 }

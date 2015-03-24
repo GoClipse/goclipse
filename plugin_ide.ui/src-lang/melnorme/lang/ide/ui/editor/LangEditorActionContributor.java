@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.editor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.EditorSettings_Actual.EditorCommandIds;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
@@ -23,6 +24,7 @@ import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.handlers.IHandlerActivation;
@@ -67,9 +69,9 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 		
 		// Register handlers active only when editor is active:
 		
-		activateHandler(EditorSettings_Actual.EditorCommandIds.OpenDef_ID, getHandler_OpenDefinition());
-		activateHandler(EditorSettings_Actual.EditorCommandIds.GoToMatchingBracket, getHandler_GoToMatchingBracket());
-		activateHandler(EditorSettings_Actual.EditorCommandIds.ToggleComment, getHandler_ToggleComment());
+		activateHandler(EditorCommandIds.OpenDef_ID, getHandler_OpenDefinition());
+		activateHandler(EditorCommandIds.GoToMatchingBracket, getHandler_GoToMatchingBracket());
+		activateHandler(EditorCommandIds.ToggleComment, getHandler_ToggleComment());
 		
 		registerOtherEditorHandlers();
 	}
@@ -115,9 +117,11 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 	}
 	
 	protected void prepareNavigateMenu(IMenuManager menu) {
-		IMenuManager navigateMenu= menu.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
-		if (navigateMenu != null) {
-			// TODO: go to matching bracket
+		IMenuManager gotoMenu= menu.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE + "/goTo");
+		if (gotoMenu != null) {
+			gotoMenu.add(new Separator("additions2"));
+			
+			gotoMenu.appendToGroup("additions2", pushItem(EditorCommandIds.GoToMatchingBracket));
 		}
 	}
 	
