@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
+import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -42,6 +43,10 @@ public class EditorSettings_Actual {
 	
 	public static Class<GoEditor> editorKlass() {
 		return GoEditor.class;
+	}
+	
+	public static interface EditorPrefConstants extends EditorPrefConstants_Common {
+		
 	}
 	
 	/* ----------------- actions ----------------- */

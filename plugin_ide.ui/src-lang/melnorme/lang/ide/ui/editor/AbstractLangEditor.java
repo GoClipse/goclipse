@@ -19,8 +19,11 @@ import java.util.List;
 
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.editor.actions.GotoMatchingBracketManager;
+import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.utilbox.misc.ArrayUtil;
 
@@ -28,7 +31,6 @@ import org.eclipse.cdt.internal.ui.editor.EclipsePreferencesAdapter;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -39,25 +41,31 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
+import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
-public abstract class AbstractLangEditor extends TextEditor {
+public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	public AbstractLangEditor() {
 		super();
 	}
 	
 	@Override
-	protected void initializeKeyBindingScopes() {
-//		super.initializeKeyBindingScopes();
-		setKeyBindingScopes(array(EditorSettings_Actual.EDITOR_CONTEXT_ID));
-	}
-	
-	@Override
 	protected void initializeEditor() {
 		super.initializeEditor();
 		initialize_setContextMenuIds();
+	}
+	
+	/* ----------------- actions init ----------------- */
+	
+	@Override
+	protected void initializeKeyBindingScopes() {
+		setKeyBindingScopes(array(EditorSettings_Actual.EDITOR_CONTEXT_ID));
+	}
+	
+	protected void initialize_setContextMenuIds() {
+		setEditorContextMenuId(LangUIPlugin_Actual.EDITOR_CONTEXT);
+		setRulerContextMenuId(LangUIPlugin_Actual.RULER_CONTEXT);
 	}
 	
 	/* ----------------- input ----------------- */
@@ -162,34 +170,35 @@ public abstract class AbstractLangEditor extends TextEditor {
 		return (SourceViewer) getSourceViewer();
 	}
 	
-	/* ----------------- actions ----------------- */
+	/* ----------------- Bracket matcher ----------------- */
 	
-	protected void initialize_setContextMenuIds() {
-		setEditorContextMenuId(LangUIPlugin_Actual.EDITOR_CONTEXT);
-		setRulerContextMenuId(LangUIPlugin_Actual.RULER_CONTEXT);
+	protected final GotoMatchingBracketManager gotoMatchingBracketManager = new GotoMatchingBracketManager(this); 
+	
+	/** The editor's bracket matcher */
+	protected LangPairMatcher fBracketMatcher = addOwned(
+		new LangPairMatcher(new char[] { '{', '}', '(', ')', '[', ']', '<', '>' } ));
+	
+	public LangPairMatcher getBracketMatcher() {
+		return fBracketMatcher;
 	}
 	
-	protected LangEditorContextMenuContributor editorActionsManager;
-	
-	@Override
-	protected void createActions() {
-		super.createActions();
-		
-		editorActionsManager = createActionsManager();
-	}
-	
-	protected LangEditorContextMenuContributor createActionsManager() {
-		return EditorSettings_Actual.createCommandsContribHelper(getSite().getWorkbenchWindow());
+	public GotoMatchingBracketManager getGotoMatchingBracketManager() {
+		return gotoMatchingBracketManager;
 	}
 	
 	@Override
-	protected void editorContextMenuAboutToShow(IMenuManager menu) {
-		super.editorContextMenuAboutToShow(menu);
-		editorContextMenuAboutToShow_extend(menu);
+	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
+		configureBracketMatcher(support);
+		super.configureSourceViewerDecorationSupport(support);
 	}
 	
-	protected void editorContextMenuAboutToShow_extend(IMenuManager menu) {
-		editorActionsManager.editorContextMenuAboutToShow(menu);
+	protected void configureBracketMatcher(SourceViewerDecorationSupport support) {
+		support.setCharacterPairMatcher(fBracketMatcher);
+		support.setMatchingCharacterPainterPreferenceKeys(
+			EditorPrefConstants.MATCHING_BRACKETS, 
+			EditorPrefConstants.MATCHING_BRACKETS_COLOR, 
+			EditorPrefConstants.HIGHLIGHT_BRACKET_AT_CARET_LOCATION, 
+			EditorPrefConstants.ENCLOSING_BRACKETS);
 	}
 	
 }

@@ -70,7 +70,7 @@ public class LangEditorActionContributorHelper extends TextEditorActionContribut
 	public abstract class AbstractEditorOperationHandler extends AbstractEditorHandlerExt {
 		
 		@Override
-		public void runWithEditor(ITextEditor editor) {
+		protected void doRunWithEditor(AbstractLangEditor editor) {
 			createOperation(editor).executeAndHandleResult();
 		}
 		

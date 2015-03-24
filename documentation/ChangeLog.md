@@ -17,6 +17,7 @@
   * Improved: for Go Oracle integration, if the tool terminates with a non-zero exit code, instead of showing an error dialog, 
 a workbench status line message is shown, a beep is sounded, and the Tools console is activated.   
  * Added Source submenu to editor context menu.
+ * Fixed some minor issues with Go To Matching Bracket action (shortcut: Ctrl+Shift+P).
 
 
 ### Goclipse 0.9.1

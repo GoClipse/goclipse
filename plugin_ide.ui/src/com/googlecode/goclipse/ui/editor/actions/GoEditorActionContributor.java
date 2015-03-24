@@ -12,12 +12,11 @@ package com.googlecode.goclipse.ui.editor.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.lang.tooling.ast.SourceRange;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -30,7 +29,6 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.ui.actions.GoOracleOpenDefinitionOperation;
-import com.googlecode.goclipse.ui.actions.GotoMatchingBracketHandler;
 
 public class GoEditorActionContributor extends LangEditorActionContributor implements GoCommandConstants {
 	
@@ -41,11 +39,6 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 	protected AbstractEditorOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
 			OpenNewEditorMode newEditorMode) {
 		return new GoOracleOpenDefinitionOperation(editor, range, newEditorMode);
-	}
-	
-	@Override
-	protected AbstractHandler getHandler_GoToMatchingBracket() {
-		return new GotoMatchingBracketHandler(getPage());
 	}
 	
 	@Override

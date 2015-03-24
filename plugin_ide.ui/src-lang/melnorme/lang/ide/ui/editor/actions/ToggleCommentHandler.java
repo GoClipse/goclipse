@@ -10,10 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.actions;
 
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 public class ToggleCommentHandler extends AbstractEditorHandler {
 	
@@ -27,7 +28,7 @@ public class ToggleCommentHandler extends AbstractEditorHandler {
 	}
 	
 	@Override
-	public void runWithEditor(ITextEditor editor) {
+	protected void doRunWithEditor(AbstractLangEditor editor) {
 		Shell shell = editor.getSite().getShell();
 		MessageDialog.openInformation(shell, "", "Not implemented");
 	}

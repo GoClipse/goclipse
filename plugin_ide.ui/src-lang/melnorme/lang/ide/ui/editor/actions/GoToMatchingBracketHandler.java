@@ -10,10 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.actions;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Shell;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 
 public class GoToMatchingBracketHandler extends AbstractEditorHandler {
@@ -23,14 +22,8 @@ public class GoToMatchingBracketHandler extends AbstractEditorHandler {
 	}
 	
 	@Override
-	public boolean isEnabled() {
-		return false; // TODO implement
-	}
-	
-	@Override
-	public void runWithEditor(ITextEditor editor) {
-		Shell shell = editor.getSite().getShell();
-		MessageDialog.openInformation(shell, "", "Not implemented");
+	protected void doRunWithEditor(AbstractLangEditor editor) {
+		editor.getGotoMatchingBracketManager().gotoMatchingBracket();
 	}
 	
 }
