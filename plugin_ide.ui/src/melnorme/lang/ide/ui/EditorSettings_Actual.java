@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 
@@ -20,7 +19,6 @@ import org.eclipse.ui.services.IServiceLocator;
 
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SimpleSourceViewerConfiguration;
-import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SourceViewerConfiguration;
 
 public class EditorSettings_Actual {
 	
@@ -28,12 +26,6 @@ public class EditorSettings_Actual {
 	public static final String EDITOR_CONTEXT_ID = LangUIPlugin.PLUGIN_ID + ".Contexts.Editor";
 	
 	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".Editor.HyperlinkCodeTarget";
-	
-	public static LANGUAGE_SourceViewerConfiguration createSourceViewerConfiguration(
-			IPreferenceStore preferenceStore, AbstractLangEditor editor) {
-		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new LANGUAGE_SourceViewerConfiguration(preferenceStore, colorManager, editor);
-	}
 	
 	public static LANGUAGE_SimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration(
 			IPreferenceStore preferenceStore, IColorManager colorManager) {

@@ -10,14 +10,24 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+
+import org.eclipse.cdt.ui.text.IColorManager;
 
 public class LANGUAGE_Editor extends AbstractLangEditor {
 	
 	@Override
 	protected LangPairMatcher init_createBracketMatcher() {
 		return new LangPairMatcher("{}[]()".toCharArray()); // TODO: Lang
+	}
+	
+	@Override
+	protected AbstractLangSourceViewerConfiguration createSourceViewerConfiguration() {
+		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		return new LANGUAGE_SourceViewerConfiguration(getPreferenceStore(), colorManager, this);
 	}
 	
 }
