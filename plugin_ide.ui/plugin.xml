@@ -26,6 +26,10 @@
 		</perspectiveExtension>
 	</extension>
 	
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer class="LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPreferencesInitializer"/>
+	</extension>
+	
 	<!-- ============ EDITOR ============= -->
 	
 	<extension point="org.eclipse.ui.editors">
@@ -60,6 +64,10 @@
 		</definition>
 	</extension>
 	
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer class="com.googlecode.goclipse.ui.GoUIPreferencesInitializer"/>
+	</extension>
+	
 	<!-- ============ EDITOR - Other ============= -->
 
 	<!-- ============ Actions/Commands ============= -->
@@ -82,11 +90,6 @@
 	</extension>
 	
 	<!-- ============ Preference pages ============= -->
-	
-  <extension point="org.eclipse.core.runtime.preferences">
-      <initializer class="com.googlecode.goclipse.ui.GoUIPreferencesInitializer"/>
-   </extension>
-	
 	<extension point="org.eclipse.ui.preferencePages">
       <page
             id="com.googlecode.goclipse.ui.PreferencePages.Root"

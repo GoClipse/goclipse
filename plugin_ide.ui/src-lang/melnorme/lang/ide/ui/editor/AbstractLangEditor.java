@@ -104,9 +104,7 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	protected void internalDoSetInput(IEditorInput input) {
 	}
 	
-	protected AbstractLangSourceViewerConfiguration createSourceViewerConfiguration() {
-		return EditorSettings_Actual.createSourceViewerConfiguration(getPreferenceStore(), this);
-	}
+	protected abstract AbstractLangSourceViewerConfiguration createSourceViewerConfiguration();
 	
 	protected AbstractLangSourceViewerConfiguration getSourceViewerConfiguration_asLang() {
 		SourceViewerConfiguration svc = getSourceViewerConfiguration(); 

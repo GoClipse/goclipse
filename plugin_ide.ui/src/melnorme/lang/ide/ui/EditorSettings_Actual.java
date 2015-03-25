@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 
@@ -19,7 +18,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.services.IServiceLocator;
 
 import com.googlecode.goclipse.editors.GoEditor;
-import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
 import com.googlecode.goclipse.ui.editor.GoSimpleSourceViewerConfiguration;
 import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
 
@@ -29,12 +27,6 @@ public class EditorSettings_Actual {
 	public static final String EDITOR_CONTEXT_ID = LangUIPlugin.PLUGIN_ID + ".Contexts.Editor";
 	
 	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".Editor.CodeTarget";
-	
-	public static GoEditorSourceViewerConfiguration createSourceViewerConfiguration(
-			IPreferenceStore preferenceStore, AbstractLangEditor editor) {
-		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new GoEditorSourceViewerConfiguration(preferenceStore, colorManager, (GoEditor) editor);
-	}
 	
 	public static GoSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration(
 			IPreferenceStore preferenceStore, IColorManager colorManager) {

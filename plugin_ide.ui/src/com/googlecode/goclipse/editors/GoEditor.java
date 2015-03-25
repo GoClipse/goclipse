@@ -1,9 +1,12 @@
 package com.googlecode.goclipse.editors;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
+import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -17,6 +20,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+
+import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
 
 public class GoEditor extends AbstractLangEditor {
 	
@@ -40,6 +45,12 @@ public class GoEditor extends AbstractLangEditor {
 			EditorPrefConstants.MATCHING_BRACKETS_COLOR, 
 			EditorPrefConstants.HIGHLIGHT_BRACKET_AT_CARET_LOCATION, 
 			EditorPrefConstants.ENCLOSING_BRACKETS);
+	}
+	
+	@Override
+	protected AbstractLangSourceViewerConfiguration createSourceViewerConfiguration() {
+		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		return new GoEditorSourceViewerConfiguration(getPreferenceStore(), colorManager, this);
 	}
 	
 	/* ----------------- need to review/cleanup rest of this code ----------------- */
@@ -125,6 +136,7 @@ public class GoEditor extends AbstractLangEditor {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	protected void handleReconcilation(IRegion partition) {
 		if (outlinePage != null) {
 			outlinePage.handleEditorReconcilation();
