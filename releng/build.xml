@@ -44,12 +44,11 @@ overwriting the previous one. (This removes history from the git repo it is push
 	<property name="_projectSiteDir" location="${_temporaryDir}/projectSite/" />
 	
 	<property name="p2repo_sourceDir" location="${_temporaryDir}/features.repository/repository" /> 
-	<ensureDirExists dir="${p2repo_sourceDir}"/>
     
     <loadproperties srcFile="releng-build.properties"/>
     
-	<property name="p2repo_ProjectSiteDestDir" value="local-repo" />
-	<property name="commitMessage" value="New release." />
+	<property name="p2repo_ProjectSiteDestDir" value="releases/local-repo" />
+	<property name="commitMessage" value="Release: ${releaseTag}." />
 	<property name="gitLocation" value="git" />
 	
 	
@@ -73,6 +72,8 @@ overwriting the previous one. (This removes history from the git repo it is push
 	</target>
 	
 	<target name="copyBuiltRepoToProjectSite">
+		<ensureDirExists dir="${p2repo_sourceDir}"/>
+		
 		<property name="repoDest" location="${_projectSiteDir}/${p2repo_ProjectSiteDestDir}" />
 		<copy verbose="true" todir="${repoDest}">
 			<fileset dir="${p2repo_sourceDir}"/>
@@ -98,7 +99,7 @@ overwriting the previous one. (This removes history from the git repo it is push
 	</macrodef>
 	
 	
-	<target name="prepareProjectSite.initGit" if="projectSiteGitURL">
+	<target name="prepareProjectSite.initGit" if="projectSiteGitURL" depends="clean">
 		<condition property="prepareProjectSite.initGit._gitArg" 
 			value="init" 
 			else="clone -n ${projectSiteGitURL} ${_projectSiteDir}">
@@ -127,6 +128,20 @@ overwriting the previous one. (This removes history from the git repo it is push
 	    <runGit dir="${_projectSiteDir}" argLine="push ${projectSiteGitURL} ${PublishProjectSite._gitArg}">
 	    	<arg value="${releaseTag}"/>
 	    </runGit>
+	</target>
+    
+    
+	<target name="GetEclipseRepoFromPublishedSite" depends="clean">
+	    <property name="_tempGitRepo.location" location="${_temporaryDir}/tempGitRepo" />
+	    
+		<delete dir="${_tempGitRepo.location}" includeEmptyDirs="true" failonerror="true" />
+		<runGit dir="${_temporaryDir}" argLine="clone ${projectSiteGitURL} ${_tempGitRepo.location}" />
+		
+		<delete dir="${p2repo_sourceDir}" includeEmptyDirs="true" failonerror="true" />
+	    
+	    <copy todir="${p2repo_sourceDir}" overwrite="false" verbose="true">
+			<fileset dir="${_tempGitRepo.location}/${p2repo_ProjectSiteDestDir}"/>
+		</copy>
 	</target>
 	
 </project>
