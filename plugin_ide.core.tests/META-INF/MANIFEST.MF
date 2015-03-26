@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.googlecode.goclipse.core.tests;singleton:=true
-Bundle-Version: 0.9.1.qualifier
+Bundle-Version: 0.10.0.qualifier
 Bundle-Name: com.googlecode.goclipse.core Tests
 Fragment-Host: com.googlecode.goclipse.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
