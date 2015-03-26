@@ -25,8 +25,6 @@ public class GoEditorContextMenuContributor extends LangEditorContextMenuContrib
 	protected void contributeSourceMenu(IMenuManager sourceMenu) {
 		super.contributeSourceMenu(sourceMenu);
 		
-		sourceMenu.appendToGroup(SOURCE_MENU_GroupComment, pushItem(svcLocator, COMMAND_ToggleLineComment));
-		
 		sourceMenu.appendToGroup(SOURCE_MENU_GroupFormat, pushItem(svcLocator, COMMAND_RunGoFmt));
 		
 		sourceMenu.appendToGroup(SOURCE_MENU_GroupAdditions, pushItem(svcLocator, COMMAND_RunGoFix));
