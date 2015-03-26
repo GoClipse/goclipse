@@ -15,9 +15,11 @@ import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -41,6 +43,12 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 		return runBuildTool(monitor, pb);
 	}
 	
+	protected Location getProjectLocation() throws CoreException {
+		return ResourceUtils.getProjectLocation(getProject());
+	}
+	
+	/* ----------------- Build ----------------- */
+	
 	@Override
 	protected void handleFirstOfKind() {
 		LangCore.getToolManager().notifyBuildStarting(null, true);
@@ -54,20 +62,32 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 	@Override
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
 			throws CoreException, OperationCancellation {
-		
-		LangCore.getToolManager().notifyBuildStarting(project, false);
-		
-		ProcessBuilder pb = createBuildPB();
-		
-		ExternalProcessResult buildAllResult = runBuildTool(monitor, pb);
-		processBuildResult(buildAllResult);
-		
-		return null;
+		return createBuildOp().execute(project, monitor);
 	}
 	
-	protected abstract ProcessBuilder createBuildPB() throws CoreException;
+	protected abstract AbstractRunBuildOperation createBuildOp();
 	
-	protected abstract void processBuildResult(ExternalProcessResult buildAllResult) throws CoreException;
+	public abstract class AbstractRunBuildOperation {
+		
+		public IProject[] execute(IProject project, IProgressMonitor monitor) 
+				throws CoreException, OperationCancellation {
+			LangCore.getToolManager().notifyBuildStarting(project, false);
+			
+			ProcessBuilder pb = createBuildPB();
+			
+			ExternalProcessResult buildAllResult = runBuildTool(monitor, pb);
+			doBuild_processBuildResult(buildAllResult);
+			
+			return null;
+		}
+		
+		protected abstract ProcessBuilder createBuildPB() throws CoreException;
+		
+		protected abstract void doBuild_processBuildResult(ExternalProcessResult buildAllResult) throws CoreException;
+		
+	}
+	
+	/* ----------------- Clean ----------------- */
 	
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
@@ -76,10 +96,14 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 		ProcessBuilder pb = createCleanPB();
 		try {
 			EclipseUtils.checkMonitorCancelation(monitor);
-			runBuildTool(monitor, pb);
+			doClean(monitor, pb);
 		} catch (OperationCancellation e) {
 			// return
 		}
+	}
+	
+	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) throws CoreException, OperationCancellation {
+		runBuildTool(monitor, pb);
 	}
 	
 	protected abstract ProcessBuilder createCleanPB() throws CoreException;
