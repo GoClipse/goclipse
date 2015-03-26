@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
+import java.text.MessageFormat;
 import java.util.Collection;
+
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
 import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -76,6 +79,13 @@ public class GoBuilder extends LangProjectBuilderExt {
 	
 	protected class GoRunBuildOperation extends AbstractRunBuildOperation {
 		
+		protected static final String ERROR_SrcRootContainsGoFiles = 
+				"The Go `src` directory at `{0}` contains .go files. " +
+				"This is not allowed, these files will be ignored.\n" + 
+				"Instead, all .go files should be in a subdirectory of `src`, " + 
+				"so that they will be part of a Go package. " + 
+				"This is so they can be built using the `./...` pattern, or imported by other Go files.";
+		
 		protected GoEnvironment goEnv;
 		protected Location sourceRootDir;
 		
@@ -91,9 +101,22 @@ public class GoBuilder extends LangProjectBuilderExt {
 				sourceRootDir = projectLocation;
 			} else {
 				sourceRootDir = projectLocation.resolve_valid("src");
+				
+				checkGoFilesInSourceRoot();
 			}
 			
 			return super.execute(project, monitor);
+		}
+		
+		protected void checkGoFilesInSourceRoot() throws CoreException {
+			CheckSrcFolderRootFilesWithNoPackage srcCheck = new CheckSrcFolderRootFilesWithNoPackage();
+			
+			srcCheck.checkDir(sourceRootDir);
+			
+			if(srcCheck.containsGoSources || true) {
+				getToolManager().notifyMessage(StatusLevel.WARNING, "Go build: Warning!", 
+					MessageFormat.format(ERROR_SrcRootContainsGoFiles, sourceRootDir));
+			}
 		}
 		
 		@Override
@@ -124,7 +147,7 @@ public class GoBuilder extends LangProjectBuilderExt {
 		
 	}
 	
-	protected GoEnvironment getValidGoEnvironment(IProject project) throws CoreException {
+	protected static GoEnvironment getValidGoEnvironment(IProject project) throws CoreException {
 		try {
 			return GoProjectEnvironment.getValidatedGoEnvironment(project);
 		} catch (CommonException ce) {

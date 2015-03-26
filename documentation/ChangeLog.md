@@ -18,6 +18,7 @@
 a workbench status line message is shown, a beep is sounded, and the Tools console is activated.   
  * Added Source submenu to editor context menu.
  * Fixed some minor issues with Go To Matching Bracket action (shortcut: Ctrl+Shift+P).
+ * Added: builder will report a warning message if .go files are containted directly in a Go workspace `src` directory.
 
 
 ### Goclipse 0.9.1

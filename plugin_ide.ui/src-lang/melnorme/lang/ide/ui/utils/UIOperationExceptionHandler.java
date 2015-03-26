@@ -57,10 +57,10 @@ public class UIOperationExceptionHandler {
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		
 		if(exception == null) {
-			MessageDialog.open(SWT.ERROR, shell, "Error: ", message, SWT.SHEET);
+			MessageDialog.open(MessageDialog.ERROR, shell, "Error: ", message, SWT.SHEET);
 		} else {
 			String exceptionText = getExceptionText(exception);
-			MessageDialog.open(SWT.ERROR, shell, "Error: " + message, exceptionText, SWT.SHEET);
+			MessageDialog.open(MessageDialog.ERROR, shell, "Error: " + message, exceptionText, SWT.SHEET);
 		}
 	}
 	
@@ -88,7 +88,7 @@ public class UIOperationExceptionHandler {
 		
 		if(exception == null) {
 			// No point in using ErrorDialog, use simpler dialog
-			MessageDialog.open(SWT.ERROR, shell, title, message, SWT.SHEET);
+			MessageDialog.open(MessageDialog.ERROR, shell, title, message, SWT.SHEET);
 			return;
 		}
 		
