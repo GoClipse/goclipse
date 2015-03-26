@@ -38,7 +38,7 @@ public class GoToolManager extends AbstractToolsManager {
 	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProgressMonitor pm, Location workingDir, 
 			List<String> commandLine) throws CoreException, OperationCancellation {
 		
-		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir.path);
+		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir);
 		return runTool(null, pm, pb);
 	}
 	

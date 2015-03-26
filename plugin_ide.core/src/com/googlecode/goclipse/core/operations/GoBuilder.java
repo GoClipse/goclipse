@@ -10,16 +10,10 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
-import static melnorme.lang.ide.core.utils.ResourceUtils.getProjectLocation;
-
 import java.util.Collection;
-import java.util.Map;
-
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
 import melnorme.lang.ide.core.operations.SDKLocationValidator;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
@@ -43,7 +37,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 /**
  * Go builder. TODO refactor to use {@link LangProjectBuilderExt}
  */
-public class GoBuilder extends LangProjectBuilder {
+public class GoBuilder extends LangProjectBuilderExt {
 	
 	public static class GoSDKLocationValidator extends SDKLocationValidator {
 		
@@ -76,57 +70,58 @@ public class GoBuilder extends LangProjectBuilder {
 	}
 	
 	@Override
-	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-		return super.build(kind, args, monitor);
+	protected AbstractRunBuildOperation createBuildOp() {
+		return new GoRunBuildOperation();
 	}
 	
-	@Override
-	protected void handleFirstOfKind() {
-		GoToolManager.getDefault().notifyBuildStarting(null, true);
-	}
-	
-	@Override
-	protected void handleLastOfKind() {
-		GoToolManager.getDefault().notifyBuildTerminated(null);
-	}
-	
-	@Override
-	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
-			throws CoreException, OperationCancellation {
+	protected class GoRunBuildOperation extends AbstractRunBuildOperation {
 		
-		GoToolManager.getDefault().notifyBuildStarting(project, false);
+		protected GoEnvironment goEnv;
+		protected Location sourceRootDir;
 		
-		GoEnvironment goEnv = getValidGoEnvironment(project);
 		
-		ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
-		goBuildCmdLine.addElements("install", "-v");
-		goBuildCmdLine.addElements(GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project));
-		goBuildCmdLine.addElements("./...");
-//		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
-		
-		Location projectLocation = getProjectLocation(project);
-		
-		Location sourceRootDir;
-		if(GoProjectEnvironment.isProjectInsideGoPath(project, goEnv.getGoPath())) {
-			sourceRootDir = projectLocation;
-		} else {
-			sourceRootDir = projectLocation.resolve_valid("src");
+		@Override
+		public IProject[] execute(IProject project, IProgressMonitor monitor) throws CoreException,
+				OperationCancellation {
+			
+			Location projectLocation = getProjectLocation();
+			
+			goEnv = getValidGoEnvironment(project);
+			if(GoProjectEnvironment.isProjectInsideGoPath(project, goEnv.getGoPath())) {
+				sourceRootDir = projectLocation;
+			} else {
+				sourceRootDir = projectLocation.resolve_valid("src");
+			}
+			
+			return super.execute(project, monitor);
 		}
 		
-		ExternalProcessResult buildAllResult = 
-			GoToolManager.getDefault().runBuildTool(goEnv, monitor, sourceRootDir, goBuildCmdLine);
+		@Override
+		protected ProcessBuilder createBuildPB() throws CoreException {
+			IProject project = getProject();
+			
+			ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
+			goBuildCmdLine.addElements("install", "-v");
+			goBuildCmdLine.addElements(GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project));
+			goBuildCmdLine.addElements("./...");
+//			addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
+			
+			return goEnv.createProcessBuilder(goBuildCmdLine, sourceRootDir);
+		}
 		
-		GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
-			@Override
-			protected void handleLineParseError(CommonException ce) {
-				LangCore.logError(ce.getMessage(), ce.getCause());
-			}
-		};
-		buildOutput.parseOutput(buildAllResult);
+		@Override
+		protected void doBuild_processBuildResult(ExternalProcessResult buildAllResult) throws CoreException {
+			GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
+				@Override
+				protected void handleLineParseError(CommonException ce) {
+					LangCore.logError(ce.getMessage(), ce.getCause());
+				}
+			};
+			buildOutput.parseOutput(buildAllResult);
+			
+			addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir);
+		}
 		
-		addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir);
-		
-		return null;
 	}
 	
 	protected GoEnvironment getValidGoEnvironment(IProject project) throws CoreException {
@@ -154,27 +149,22 @@ public class GoBuilder extends LangProjectBuilder {
 		}
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	protected void clean(IProgressMonitor monitor) throws CoreException {
-		try {
-			EclipseUtils.checkMonitorCancelation(monitor);
-			doClean(monitor);
-		} catch (OperationCancellation e) {
-			// return
-		}
+	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) throws CoreException, OperationCancellation {
+		getToolManager().runTool(null, monitor, pb);
 	}
 	
-	protected void doClean(IProgressMonitor monitor) throws CoreException, OperationCancellation {
-		deleteProjectBuildMarkers();
-		
+	@Override
+	protected ProcessBuilder createCleanPB() throws CoreException {
 		IProject project = getProject();
 		GoEnvironment goEnv = getValidGoEnvironment(project);
 		
 		ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
 		goBuildCmdLine.addElements("clean", "-i", "-x");
 		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
-		
-		GoToolManager.getDefault().runBuildTool(goEnv, monitor, getProjectLocation(project), goBuildCmdLine);
+		return goEnv.createProcessBuilder(goBuildCmdLine, getProjectLocation());
 	}
 	
 }
