@@ -14,6 +14,7 @@ package melnorme.lang.ide.ui.editor;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorCommandIds;
+import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
@@ -79,9 +80,15 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 	protected AbstractHandler getHandler_OpenDefinition() {
 		return new AbstractEditorOperationHandler() {
 			@Override
+			protected String getOperationName() {
+				return LangUIMessages.Op_OpenDefinition_Name;
+			}
+			
+			@Override
 			public AbstractEditorOperation createOperation(ITextEditor editor) {
 				OpenNewEditorMode newEditorMode = OpenNewEditorMode.TRY_REUSING_EXISTING;
-				return createOpenDefinitionOperation(editor, EditorUtils.getSelectionSR(editor), newEditorMode);
+				SourceRange selection = EditorUtils.getSelectionSR(editor);
+				return createOpenDefinitionOperation(editor, selection, newEditorMode);
 			}
 		};
 	}

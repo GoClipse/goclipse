@@ -12,9 +12,16 @@ package melnorme.lang.ide.ui.editor;
 
 public interface LangEditorMessages {
 	
+	public static final String GotoMatchingBracket_error_title = 
+			"Go To Matching Bracket";
 	public static final String GotoMatchingBracket_error_noMatchingBracket = 
 			"No matching bracket found";
 	public static final String GotoMatchingBracket_error_bracketOutsideSelectedElement = 
 			"Matching bracket is outside the selected element";
+	
+	public static final String ToggleComment_error_title = 
+			"Toggle Comment";
+	public static final String ToggleComment_error_message = 
+			"Operation not enabled in target.";
 	
 }

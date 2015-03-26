@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.editor.actions;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.LangEditorMessages;
 
 import org.eclipse.ui.IWorkbenchPage;
 
@@ -19,6 +20,11 @@ public class GoToMatchingBracketHandler extends AbstractEditorHandler {
 	
 	public GoToMatchingBracketHandler(IWorkbenchPage page) {
 		super(page);
+	}
+	
+	@Override
+	protected String getOperationName() {
+		return LangEditorMessages.GotoMatchingBracket_error_title;
 	}
 	
 	@Override

@@ -16,7 +16,6 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorCommandIds;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.actions.CommandsHelper;
-import melnorme.utilbox.core.DevelopmentCodeMarkers;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -77,11 +76,8 @@ public abstract class LangEditorContextMenuContributor extends CommandsHelper {
 	}
 	
 	protected void contributeSourceMenu(IMenuManager sourceMenu) {
-		// TODO: toggle comment action
-		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
-			sourceMenu.appendToGroup(SOURCE_MENU_GroupComment, 
-				pushItem(svcLocator, EditorCommandIds.ToggleComment));
-		}
+		sourceMenu.appendToGroup(SOURCE_MENU_GroupComment, 
+			pushItem(svcLocator, EditorCommandIds.ToggleComment));
 		
 		sourceMenu.appendToGroup(SOURCE_MENU_GroupFormat, 
 			pushItem(svcLocator, ITextEditorActionDefinitionIds.SHIFT_RIGHT));

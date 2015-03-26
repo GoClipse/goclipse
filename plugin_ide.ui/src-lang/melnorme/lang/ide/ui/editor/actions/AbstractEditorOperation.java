@@ -36,7 +36,7 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 	
 	public AbstractEditorOperation(String operationName, ITextEditor editor) {
 		super(operationName);
-		this.editor = editor;
+		this.editor = assertNotNull(editor);
 		this.window = editor.getSite().getWorkbenchWindow();
 		this.editorInput = editor.getEditorInput();
 		Path inputPath = EditorUtils.getFilePathFromEditorInput(editorInput);

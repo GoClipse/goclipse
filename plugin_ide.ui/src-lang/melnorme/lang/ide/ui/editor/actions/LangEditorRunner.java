@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.editor.actions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 
@@ -35,15 +36,26 @@ public abstract class LangEditorRunner implements Runnable {
 	@Override
 	public void run() {
 		if(part == null) {
-			UIUserInteractionsHelper.openError(shell, "Internal Error", "No editor available.");
+			handleInternalError("No editor available.");
+			return;
 		}
+		if(getShell() == null) {
+			handleInternalError("No shell available.");
+			return;
+		}
+		
 		if(part instanceof AbstractLangEditor) {
 			AbstractLangEditor langEditor = (AbstractLangEditor) part;
 			runWithLangEditor(langEditor);
 		} else {
-			UIUserInteractionsHelper.openError(shell, "Internal Error", "Editor is not of the expected kind.");
+			handleInternalError("Editor is not of the expected kind.");
+			return;
 		}
 		
+	}
+	
+	protected void handleInternalError(String message) {
+		UIUserInteractionsHelper.openError(shell, LangUIMessages.InternalError, message);
 	}
 	
 	protected abstract void runWithLangEditor(AbstractLangEditor langEditor);

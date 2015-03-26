@@ -36,8 +36,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public abstract class AbstractOpenElementOperation extends AbstractEditorOperation {
 	
-	public static final String OPEN_DEFINITION_OpName = "Open Definition";
-	
 	protected final SourceRange range; // range of element to open. Usually only offset matters
 	protected final OpenNewEditorMode openEditorMode;
 	protected final IProject project;

@@ -8,14 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor.actions;
+package melnorme.lang.ide.ui;
 
-import org.eclipse.ui.IWorkbenchPage;
 
-public class ToggleCommentHandler extends ToggleCommentAction {
+/* package */ interface LangUIMessages_Default {
 	
-	public ToggleCommentHandler(IWorkbenchPage page) {
-		super(page);
-	}
+	String Op_OpenDefinition_Name = "Open Definition";
 	
 }

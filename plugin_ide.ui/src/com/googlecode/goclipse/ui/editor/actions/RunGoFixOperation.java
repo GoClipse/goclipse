@@ -24,8 +24,16 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 public class RunGoFixOperation extends AbstractEditorGoToolOperation {
 	
+	protected static final String RUN_GO_FIX_OpName = "Run 'go fix'";
+	
 	public static AbstractEditorHandler getHandler(IWorkbenchPage page) {
 		return new AbstractEditorHandler(page) {
+			
+			@Override
+			protected String getOperationName() {
+				return RUN_GO_FIX_OpName;
+			}
+			
 			@Override
 			protected void doRunWithEditor(AbstractLangEditor editor) {
 				new RunGoFixOperation(editor).executeAndHandle();
@@ -34,7 +42,7 @@ public class RunGoFixOperation extends AbstractEditorGoToolOperation {
 	}
 	
 	public RunGoFixOperation(ITextEditor editor) {
-		super("Run 'go fix'", editor);
+		super(RUN_GO_FIX_OpName, editor);
 	}
 	
 	@Override

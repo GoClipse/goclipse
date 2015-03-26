@@ -17,7 +17,6 @@ import org.eclipse.jface.text.source.DefaultAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import com.googlecode.goclipse.core.text.GoPartitionScanner;
 import com.googlecode.goclipse.editors.DoubleClickStrategy;
@@ -52,6 +51,13 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING.key), 
 			GoPartitionScanner.MULTILINE_STRING);
 	}
+	
+	@Override
+	protected String getToggleCommentPrefix() {
+		return "//";
+	}
+	
+	/* -----------------  Need to review remaining code ----------------- */
 	
 	@Override
 	public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
@@ -106,23 +112,8 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	}
 
 	@Override
-	public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
-		return new String[] { "//", "" };
-	}
-
-	@Override
 	public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
 		return new String[] { "\t", "" };
-	}
-
-	@Override
-	public int getTabWidth(ISourceViewer sourceViewer) {
-		
-		if (fPreferenceStore == null) {
-			return super.getTabWidth(sourceViewer);
-		}
-		
-		return fPreferenceStore.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
 	}
 	
 }

@@ -18,14 +18,14 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 		return MessageFormat.format(message, args);
 	}	
 	
+	public static String InternalError = 
+			"Internal Error";
+	
 	public static String LangPlugin_error = 
 			"UI plugin Error";
 	public static String ExceptionDialog_seeErrorLogMessage = 
 			"See error log for more details.";
 	
-	
-	public static final String INTERNAL_ERROR_NoEditorForCommand = 
-			"Internal error: No editor for command.";
 	
 	public static String mainLaunchTab_title = 
 			"Main";

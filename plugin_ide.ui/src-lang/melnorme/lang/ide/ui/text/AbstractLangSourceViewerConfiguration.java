@@ -209,4 +209,11 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		}
 	}
 	
+	@Override
+	public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
+		return new String[] { getToggleCommentPrefix(), "" };
+	}
+	
+	protected abstract String getToggleCommentPrefix();
+	
 }

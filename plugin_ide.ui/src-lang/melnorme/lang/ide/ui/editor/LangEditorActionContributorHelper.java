@@ -61,13 +61,11 @@ public class LangEditorActionContributorHelper extends TextEditorActionContribut
 	
 	/* -----------------  ----------------- */
 	
-	public abstract class AbstractEditorHandlerExt extends AbstractEditorHandler {
-		public AbstractEditorHandlerExt() {
+	public abstract class AbstractEditorOperationHandler extends AbstractEditorHandler {
+		
+		public AbstractEditorOperationHandler() {
 			super(getPage());
 		}
-	}
-	
-	public abstract class AbstractEditorOperationHandler extends AbstractEditorHandlerExt {
 		
 		@Override
 		protected void doRunWithEditor(AbstractLangEditor editor) {

@@ -10,10 +10,8 @@ import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
@@ -83,20 +81,6 @@ public class GoEditor extends AbstractLangEditor {
 		}
 	}
 	
-	
-	@Override
-	protected void createActions() {
-		super.createActions();
-		
-		IAction action;
-		
-		action = new ToggleCommentAction("ToggleComment.", this);
-		action.setActionDefinitionId("com.googlecode.goclipse.actions.ToggleComment");
-		setAction("ToggleComment", action);
-		markAsStateDependentAction("ToggleComment", true);
-		configureToggleCommentAction();
-	}
-	
 	public String getText() {
 		return getSourceViewer().getDocument().get();
 	}
@@ -124,16 +108,6 @@ public class GoEditor extends AbstractLangEditor {
 		}
 		
 		super.dispose();
-	}
-	
-	private void configureToggleCommentAction() {
-		IAction action = getAction("ToggleComment");
-		
-		if (action instanceof ToggleCommentAction) {
-			ISourceViewer sourceViewer = getSourceViewer();
-			SourceViewerConfiguration configuration = getSourceViewerConfiguration();
-			((ToggleCommentAction) action).configure(sourceViewer, configuration);
-		}
 	}
 	
 	@SuppressWarnings("unused")

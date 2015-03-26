@@ -23,8 +23,15 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	
+	protected static final String RUN_GOFMT_OpName = "Run 'gofmt'";
+	
 	public static AbstractEditorHandler getHandler(IWorkbenchPage page) {
 		return new AbstractEditorHandler(page) {
+			@Override
+			protected String getOperationName() {
+				return RUN_GOFMT_OpName;
+			}
+			
 			@Override
 			protected void doRunWithEditor(AbstractLangEditor editor) {
 				new RunGoFmtOperation(editor).executeAndHandle();
@@ -33,7 +40,7 @@ public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	}
 	
 	public RunGoFmtOperation(ITextEditor editor) {
-		super("Run 'gofmt'", editor);
+		super(RUN_GOFMT_OpName, editor);
 	}
 	
 	@Override
