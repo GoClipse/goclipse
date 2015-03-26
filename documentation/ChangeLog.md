@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### LANG_IDE_NAME 0.0.x
+ * Added: Toggle Comment action (Ctrl+/) .
  * Added editor Go To Matching Bracket action (shortcut: Ctrl+Shift+P)
 
  * Added New Project wizard.

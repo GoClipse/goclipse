@@ -11,12 +11,14 @@
 package LANG_PROJECT_ID.ide.ui.actions;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,7 +30,7 @@ public class LANGUAGE_OracleOpenDefinitionOperation extends AbstractOpenElementO
 	
 	public LANGUAGE_OracleOpenDefinitionOperation(ITextEditor editor, SourceRange range, 
 			OpenNewEditorMode openEditorMode) {
-		super(OPEN_DEFINITION_OpName, editor, range, openEditorMode);
+		super(LangUIMessages.Op_OpenDefinition_Name, editor, range, openEditorMode);
 	}
 	
 	@Override
@@ -39,7 +41,11 @@ public class LANGUAGE_OracleOpenDefinitionOperation extends AbstractOpenElementO
 	
 	@Override
 	protected void performOperation_handleResult() throws CoreException {
-		MessageDialog.openInformation(editor.getSite().getWorkbenchWindow().getShell(), "Error", "Not implemented.");
+		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
+		} else {
+			MessageDialog.openInformation(editor.getSite().getWorkbenchWindow().getShell(), "Error", "Not implemented.");
+			return;
+		}
 		
 		IEditorInput newInput = editorInput;
 		

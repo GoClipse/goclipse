@@ -47,6 +47,10 @@ public abstract class AbstractUIOperation {
 		this.operationName = assertNotNull(operationName);
 	}
 	
+	public String getOperationName() {
+		return operationName;
+	}
+	
 	public final void executeAndHandleResult() {
 		executeAndHandle();
 	}

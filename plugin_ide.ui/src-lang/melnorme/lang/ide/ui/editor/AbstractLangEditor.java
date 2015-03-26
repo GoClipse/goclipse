@@ -106,7 +106,7 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	protected abstract AbstractLangSourceViewerConfiguration createSourceViewerConfiguration();
 	
-	protected AbstractLangSourceViewerConfiguration getSourceViewerConfiguration_asLang() {
+	public AbstractLangSourceViewerConfiguration getSourceViewerConfiguration_asLang() {
 		SourceViewerConfiguration svc = getSourceViewerConfiguration(); 
 		if(svc instanceof AbstractLangSourceViewerConfiguration) {
 			return (AbstractLangSourceViewerConfiguration) svc;

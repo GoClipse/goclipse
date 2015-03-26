@@ -12,7 +12,7 @@ package melnorme.lang.ide.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
+import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.text.util.JavaWordFinder;
 import melnorme.lang.tooling.ast.SourceRange;
 
@@ -72,7 +72,7 @@ public abstract class LangHyperlinkDetector extends AbstractHyperlinkDetector {
 		
 		@Override
 		public String getHyperlinkText() {
-			return AbstractOpenElementOperation.OPEN_DEFINITION_OpName;
+			return LangUIMessages.Op_OpenDefinition_Name;
 		}
 		
 	}

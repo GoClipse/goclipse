@@ -43,6 +43,11 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 			LangPartitionTypes.STRING);
 	}
 	
+	@Override
+	protected String getToggleCommentPrefix() {
+		return "//";
+	}
+	
 	// TODO:
 //	@Override
 //	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
