@@ -15,6 +15,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
+import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ListenerListHelper;
@@ -31,6 +32,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public abstract class AbstractToolsManager extends ListenerListHelper<ILangOperationsListener_Actual> {
 	
+	public void notifyMessage(StatusLevel statusLevel, String title, String message) {
+		for (ILangOperationsListener listener : getListeners()) {
+			listener.notifyMessage(statusLevel, title, message);
+		}
+	}
 	
 	public void notifyBuildStarting(IProject project, boolean clearConsole) {
 		for (ILangOperationsListener listener : getListeners()) {

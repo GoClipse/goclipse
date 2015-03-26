@@ -10,6 +10,10 @@
  *******************************************************************************/
 package melnorme.util.swt;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import melnorme.lang.tooling.data.StatusLevel;
+
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -92,6 +96,16 @@ public class SWTUtil {
 				}
 			});
 		}
+	}
+	
+	public static int statusLevelToMessageDialogKing(StatusLevel statusLevel) {
+		switch (statusLevel) {
+		case ERROR: return MessageDialog.ERROR;
+		case INFO: return MessageDialog.INFORMATION;
+		case OK: return MessageDialog.OK;
+		case WARNING: return MessageDialog.WARNING;
+		}
+		throw assertFail();
 	}
 	
 }

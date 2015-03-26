@@ -13,6 +13,8 @@ package melnorme.lang.ide.ui.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -28,6 +30,19 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class UIOperationExceptionHandler {
 	
+	public static void handleStatusMessage(StatusLevel statusLevel, String title, String message) {
+		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
+		if(shell == null) {
+			LangCore.logError("Shell not available.");
+			return;
+		}
+		
+		int kind = SWTUtil.statusLevelToMessageDialogKing(statusLevel);
+		MessageDialog.open(kind, shell, title, message, SWT.SHEET);
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public static void handleError(String message, Throwable exception) {
 		handleError(true, message, exception);
 	}
@@ -42,10 +57,10 @@ public class UIOperationExceptionHandler {
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		
 		if(exception == null) {
-			MessageDialog.open(SWT.ERROR, shell, "Error: ", message, SWT.SHEET);
+			MessageDialog.open(MessageDialog.ERROR, shell, "Error: ", message, SWT.SHEET);
 		} else {
 			String exceptionText = getExceptionText(exception);
-			MessageDialog.open(SWT.ERROR, shell, "Error: " + message, exceptionText, SWT.SHEET);
+			MessageDialog.open(MessageDialog.ERROR, shell, "Error: " + message, exceptionText, SWT.SHEET);
 		}
 	}
 	
@@ -73,7 +88,7 @@ public class UIOperationExceptionHandler {
 		
 		if(exception == null) {
 			// No point in using ErrorDialog, use simpler dialog
-			MessageDialog.open(SWT.ERROR, shell, title, message, SWT.SHEET);
+			MessageDialog.open(MessageDialog.ERROR, shell, title, message, SWT.SHEET);
 			return;
 		}
 		
