@@ -1,26 +1,29 @@
 ## release ChangeLog
 
 ### Goclipse 0.10.0
- * Added `Show In > Project Explorer` command to `Show In` menu in Go perspective (requires that the perspective be reset: `Window/Perspective/Reset Perspective...`) .
- * Clean up UI and behavior of main Go preference page.
+ * Implemented #100: Make the go build target parametizable. Now the `./...` target can be changed in the project's Build Options.
+   * Warning! This is a breaking change: Existing projects will need to have `./...` added to the project build options.
+ * Fixed #112: InvalidPathException invoking content assist. 
+   * This also fixes potential performance problems invoking content assist.
+   * However the documentation popup information will no longer be show for any content assist entries.
  * Added two new syntax highlighting options: Operators, and Syntax Control Characters (braces, parentheses, semicolon, etc.).
  * Added an improved New Project wizard.
-// * Added: improved build error reporting: an error squigly line is now show in the column where the error occurred.
- * Fixed #112: InvalidPathException invoking content assist. 
-  * This also fixes potential performance problems invoking content assist.
-  * However the documentation popup information will no longer be show for any content assist entries.
+ * Editor Ctrl-click (hyperlink) now only uses Go Oracle for the operation, the previous hyperlink has now been fully removed due to being buggy.
+   * Improved: for Go Oracle integration, if the tool terminates with a non-zero exit code, instead of showing an error dialog, 
+a workbench status line message is shown, a beep is sounded, and the Tools console is activated.   
+ * Added Source submenu to editor context menu.
+ * Added `Show In > Project Explorer` command to `Show In` menu in Go perspective (requires that the perspective be reset: `Window/Perspective/Reset Perspective...`) .
+ * Clean up UI and behavior of main Go preference page.
  * Removed `gocode` bundle in Goclipse as it was very out of date (closes #88).
    * Added button/tool in Tools pref page to automatically download gocode from Github. 
  * Added button/tool in Tools pref page to automatically download Go oracle from Github. 
- * Fixed #105: Project Explorer does not expand GOROOT for Go 1.4
- * Editor Ctrl-click (hyperlink) now only uses Go Oracle for the operation, the previous hyperlink has now been fully removed due to being buggy.
-  * Improved: for Go Oracle integration, if the tool terminates with a non-zero exit code, instead of showing an error dialog, 
-a workbench status line message is shown, a beep is sounded, and the Tools console is activated.   
- * Added Source submenu to editor context menu.
- * Fixed some minor issues with Go To Matching Bracket action (shortcut: Ctrl+Shift+P).
+ * Added: Improved build error support: an error squigly line is now show in the column where the error occurred.
+   * Unfortunately this does not seem to be currently supported by the Go compiler.
  * Added: builder will report a warning message if .go files are containted directly in a Go workspace `src` directory.
- * Implemented #100: Make the go build target parametizable. Now the `./...` target can be changed in the project's build options.
-   * Warning! This is a breaking change: Existing projects will need to have `./.../` added to the project build options.
+ * Fixed #105: Project Explorer does not expand GOROOT for Go 1.4
+ * Fixed some minor issues with Go To Matching Bracket action (shortcut: Ctrl+Shift+P).
+ 
+ * Changed project site location to: http://goclipse.github.io/ (since Google Code is shutting down) 
 
 
 ### Goclipse 0.9.1
