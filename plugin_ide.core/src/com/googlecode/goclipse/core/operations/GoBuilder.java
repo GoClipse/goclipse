@@ -113,7 +113,7 @@ public class GoBuilder extends LangProjectBuilderExt {
 			
 			srcCheck.checkDir(sourceRootDir);
 			
-			if(srcCheck.containsGoSources || true) {
+			if(srcCheck.containsGoSources) {
 				getToolManager().notifyMessage(StatusLevel.WARNING, "Go build: Warning!", 
 					MessageFormat.format(ERROR_SrcRootContainsGoFiles, sourceRootDir));
 			}
