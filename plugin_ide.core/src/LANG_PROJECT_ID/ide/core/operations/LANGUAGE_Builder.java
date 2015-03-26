@@ -49,15 +49,21 @@ public class LANGUAGE_Builder extends LangProjectBuilderExt {
 	}
 	
 	@Override
-	protected ProcessBuilder createBuildPB() throws CoreException {
-		return createSDKProcessBuilder("build"); // TODO: Lang
-	}
-	
-	@Override
-	protected void processBuildResult(ExternalProcessResult buildAllResult) throws CoreException {
-		ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); // TODO: Lang
-		
-		addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(getProject()));
+	protected AbstractRunBuildOperation createBuildOp() {
+		return new AbstractRunBuildOperation() {
+			
+			@Override
+			protected ProcessBuilder createBuildPB() throws CoreException {
+				return createSDKProcessBuilder("build"); // TODO: Lang
+			}
+			
+			@Override
+			protected void doBuild_processBuildResult(ExternalProcessResult buildAllResult) throws CoreException {
+				ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); // TODO: Lang
+				
+				addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(getProject()));
+			}
+		};
 	}
 	
 	@Override
