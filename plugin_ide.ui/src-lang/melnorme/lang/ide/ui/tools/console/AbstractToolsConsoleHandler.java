@@ -21,6 +21,9 @@ import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
@@ -39,6 +42,19 @@ public abstract class AbstractToolsConsoleHandler extends TextConsoleUIHelper im
 	public AbstractToolsConsoleHandler() {
 		super();
 	}
+	
+	@Override
+	public void notifyMessage(final StatusLevel statusLevel, final String title, final String message) {
+		SWTUtil.runInSWTThread(new Runnable() {
+			@Override
+			public void run() {
+				UIOperationExceptionHandler.handleStatusMessage(statusLevel, title, message);
+			}
+		});
+	}
+	
+	
+	/* -----------------  ----------------- */
 	
 	public ToolsConsole getOrRecreateMessageConsole(String name, boolean recreateConsole) {
 		ToolsConsole console = ConsoleUtils.findConsole(name, ToolsConsole.class);

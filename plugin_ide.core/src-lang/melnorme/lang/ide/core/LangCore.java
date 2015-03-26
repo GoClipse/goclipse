@@ -101,8 +101,8 @@ public abstract class LangCore extends Plugin {
 	}
 	
 	/** Creates a Status with given status code and message. */
-	public static StatusExt createStatus(int statusCode, String message, Throwable throwable) {
-		return new StatusExt(statusCode, LangCore.getInstance(), message, throwable);
+	public static StatusExt createStatus(int severity, String message, Throwable throwable) {
+		return new StatusExt(severity, LangCore.getInstance(), message, throwable);
 	}
 	
 	public static final class StatusExt extends Status {
