@@ -19,6 +19,8 @@ a workbench status line message is shown, a beep is sounded, and the Tools conso
  * Added Source submenu to editor context menu.
  * Fixed some minor issues with Go To Matching Bracket action (shortcut: Ctrl+Shift+P).
  * Added: builder will report a warning message if .go files are containted directly in a Go workspace `src` directory.
+ * Implemented #100: Make the go build target parametizable. Now the `./...` target can be changed in the project's build options.
+   * Warning! This is a breaking change: Existing projects will need to have `./.../` added to the project build options.
 
 
 ### Goclipse 0.9.1

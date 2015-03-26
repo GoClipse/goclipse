@@ -27,7 +27,7 @@ public class GoProjectOptionsBlock extends AbstractComponentExt {
 	protected IProject project;
 	
 	protected final ArgumentsGroupField buildExtraOptionsField = new ArgumentsGroupField(
-		"Extra options for 'go build'");
+		"Arguments for 'go build'");
 	
 	public GoProjectOptionsBlock() {
 	}
