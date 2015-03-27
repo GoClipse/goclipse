@@ -6,20 +6,10 @@ the major functionalities available.
 ### Eclipse basics
 
 If you are new to Eclipse, you can learn some of the basics of the Eclipse IDE with this short intro article: 
-
 [An introduction to Eclipse for Visual Studio users
 ](http://www.ibm.com/developerworks/opensource/library/os-eclipse-visualstudio/)
 
-Also, to improve Eclipse performance on modern machines, it is recommended you increase the memory available to 
-the JVM. You can do so by modifying the _`eclipse.ini`_ file in your Eclipse installation. The two VM parameters 
-in _`eclipse.ini`_ to note are _-Xms_ (initial Java heap size) and _-Xmx_ (maximum Java heap size). For a machine
-with 4Gb of RAM or more, the following is recommended as minimum values:
-
-```
--vmargs
--Xms256m
--Xmx1024m
-```
+Also, to improve Eclipse performance and startup time, it is recommended you tweak the JVM parameters. There is a tool called Eclipse Optimizer that can do that automatically, it is recommended you use it. Read more about it [here](http://www.infoq.com/news/2015/03/eclipse-optimizer). (Installing/enabling the JRebel optimization is not necessary as that only applies to Java developers)
 
 ### Project setup
 
