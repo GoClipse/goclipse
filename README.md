@@ -1,4 +1,3 @@
-See the [About](documentation/About.md) page for user information.
 
 ## Developers Guide
 
