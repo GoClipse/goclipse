@@ -18,7 +18,8 @@ public class GoPartitionScanner extends RuleBasedPartitionScanner implements GoP
 		
 		rules[0] = new MultiLineRule("/*", "*/", comment, (char) 0, true);
 		rules[1] = new SingleLineRule("//", null, comment, (char) 0, true);
-		rules[2] = new SingleLineRule("'", "'", string); // RAW STRING LITERAL
+		
+		rules[2] = new SingleLineRule("'", "'", string, '\\');
 		rules[3] = new MultiLineRule("`", "`", mstring); // RAW STRING LITERAL
 		rules[4] = new SingleLineRule("\"", "\"", string, '\\');
 		
