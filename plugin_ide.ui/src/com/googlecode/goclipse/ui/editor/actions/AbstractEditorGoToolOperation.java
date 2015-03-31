@@ -17,7 +17,6 @@ import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -57,9 +56,8 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	@Override
 	protected void performLongRunningComputation_do(IProgressMonitor pm) throws CoreException, OperationCancellation {
 		
-		IProject project = null;
 		ExternalProcessResult processResult = 
-				GoToolManager.getDefault().runTool(project, pm, pb, editorText, true);
+				GoToolManager.getDefault().newRunToolTask(pb, null, pm).runProcess(editorText, true);
 		
 		outputText = processResult.getStdOutBytes().toString();
 	}

@@ -99,16 +99,12 @@ public class GoEnvironment {
 		return createProcessBuilder(commandLine, workingDir.toFile());
 	}
 	
-	public ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {
-		ProcessBuilder pb = createProcessBuilder(commandLine);
-		if(workingDir != null) {
-			pb.directory(workingDir);
-		}
-		return pb;
+	public ProcessBuilder createProcessBuilder(List<String> commandLine) {
+		return createProcessBuilder(commandLine, (File) null);
 	}
 	
-	public ProcessBuilder createProcessBuilder(List<String> commandLine) {
-		ProcessBuilder pb = melnorme.lang.utils.ProcessUtils.createProcessBuilder(commandLine, null);
+	public ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {
+		ProcessBuilder pb = melnorme.lang.utils.ProcessUtils.createProcessBuilder(commandLine, workingDir);
 		
 		Map<String, String> env = pb.environment();
 		

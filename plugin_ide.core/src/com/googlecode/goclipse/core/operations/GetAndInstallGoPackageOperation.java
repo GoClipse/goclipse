@@ -45,7 +45,7 @@ public class GetAndInstallGoPackageOperation extends CoreOperationAdapter {
 		
 		ArrayList2<String> cmdLine = getCmdLine();
 		
-		GoToolManager.getDefault().runBuildTool(goEnv, monitor, workingDir, cmdLine);
+		GoToolManager.getDefault().newRunToolTask(goEnv, cmdLine, workingDir, monitor).runProcess();
 	}
 	
 	protected Location getFirstGoPathEntry(GoEnvironment goEnv) throws CommonException {

@@ -14,9 +14,8 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
-import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -35,11 +34,10 @@ public class GoToolManager extends AbstractToolsManager {
 	
 	/* -----------------  ----------------- */
 	
-	public ExternalProcessResult runBuildTool(GoEnvironment goEnv, IProgressMonitor pm, Location workingDir, 
-			List<String> commandLine) throws CoreException, OperationCancellation {
-		
+	public RunExternalProcessTask newRunToolTask(GoEnvironment goEnv, List<String> commandLine, Location workingDir,
+			IProgressMonitor pm) throws CoreException {
 		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir);
-		return runTool(null, pm, pb);
+		return newRunToolTask(pb, null, pm);
 	}
 	
 }

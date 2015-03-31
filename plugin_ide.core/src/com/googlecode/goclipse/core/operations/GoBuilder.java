@@ -173,11 +173,6 @@ public class GoBuilder extends LangProjectBuilderExt {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) throws CoreException, OperationCancellation {
-		getToolManager().runTool(null, monitor, pb);
-	}
-	
-	@Override
 	protected ProcessBuilder createCleanPB() throws CoreException {
 		IProject project = getProject();
 		GoEnvironment goEnv = getValidGoEnvironment(project);
