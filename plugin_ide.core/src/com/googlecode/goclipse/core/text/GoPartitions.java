@@ -17,12 +17,14 @@ public interface GoPartitions {
 	String PARTITIONING_ID = "___go_partioning";
 	
 	String COMMENT = "__comment";
+	String CHARACTER = "__character";
 	String STRING = "__string";
 	String MULTILINE_STRING = "__multiline_string";
 	
 	public static final String[] PARTITION_TYPES = new String[] { 
 		IDocument.DEFAULT_CONTENT_TYPE, 
 		COMMENT, 
+		CHARACTER,
 		STRING,
 		MULTILINE_STRING 
 	};

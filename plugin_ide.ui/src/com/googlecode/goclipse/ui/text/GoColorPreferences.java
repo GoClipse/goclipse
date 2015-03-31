@@ -21,9 +21,11 @@ public interface GoColorPreferences {
 			new ColoringItemPreference("syntax_highlighting_operator", true, new RGB(0, 0, 0), false, false, false);
 	public static final ColoringItemPreference SYNTAX_COLORING__STRUCTURAL_SYMBOLS = 
 			new ColoringItemPreference("syntax_highlighting_syntax_chars", true, new RGB(0, 0, 0), false, false, false);
+	
+	public static final ColoringItemPreference SYNTAX_COLORING__CHARACTER = 
+			new ColoringItemPreference("syntax_highlighting_character", true, new RGB(0, 75, 200), false, false, false);
 	public static final ColoringItemPreference SYNTAX_COLORING__STRING = 
 			new ColoringItemPreference("syntax_highlighting_string", true, new RGB(0, 75, 200), false, false, false);
-	
 	public static final ColoringItemPreference SYNTAX_COLORING__MULTILINE_STRING = 
 			new ColoringItemPreference("syntax_highlighting_multiline_string", true, new RGB(230, 75, 0), false, false, false);
 

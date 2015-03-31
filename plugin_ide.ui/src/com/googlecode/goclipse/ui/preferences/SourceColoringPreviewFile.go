@@ -1,18 +1,13 @@
 package main
-
 import "fmt"
 
-// fib returns a function that returns
-// successive Fibonacci numbers.
-func fib() func() int {
+// A comment for this function
+func example() int {
+	var x = true
+	var str = "Hello"
+	var mstr = `line 1
+	line 2`
 	a, b := 0, 1
-	return func() int {
-		a, b = b, a+b
-		return a
-	}
+	fmt.Println(str, mstr, a+b, x)
+	return a + b;
 }
-
-var x = true;
-var str = `line 1
-line 2
-line 3`

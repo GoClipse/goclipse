@@ -2,7 +2,8 @@
 
 ### Goclipse 0.10.1
 Fixed: Bug `java.lang.ClassNotFoundException: LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPreferencesInitializer`
-Fixed #117: Incorrect highlight for single-quoted single quote
+Fixed #117: Incorrect highlight for single-quoted single quote.
+Added: source highlighting option for characters (instead of being the same highlighting as strings).
 
 ### Goclipse 0.10.0
  * Implemented #100: Make the go build target parametizable. Now the `./...` target can be changed in the project's Build Options.

@@ -46,6 +46,8 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	
 		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT.key), 
 			GoPartitionScanner.COMMENT);
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__CHARACTER.key), 
+			GoPartitionScanner.CHARACTER);
 		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__STRING.key), 
 			GoPartitionScanner.STRING);
 		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING.key), 
