@@ -17,9 +17,11 @@ import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
 import org.eclipse.cdt.ui.text.IColorManager;
+import org.eclipse.jdt.internal.ui.text.java.ContentAssistProcessor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
 
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_CodeScanner;
@@ -64,6 +66,14 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 		} else {
 			return super.getAutoEditStrategies(sourceViewer, contentType);
 		}
+	}
+	
+	/**
+	 * TODO: Use {@link ContentAssistProcessor}
+	 */
+	@Override
+	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+		return super.getContentAssistant(sourceViewer);
 	}
 	
 }
