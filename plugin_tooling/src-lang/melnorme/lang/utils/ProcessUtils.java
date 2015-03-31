@@ -15,10 +15,15 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 
 public class ProcessUtils {
-
+	
+	public static ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir) {
+		return createProcessBuilder(commandLine, workingDir.toFile()); 
+	}
+	
 	public static ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {
 		assertTrue(commandLine.size() > 0);
 		

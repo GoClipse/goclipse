@@ -32,15 +32,19 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 		super();
 	}
 	
-	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ProcessBuilder pb) 
+	protected ExternalProcessResult runBuildTool_2(IProgressMonitor monitor, ProcessBuilder pb) 
 			throws CoreException, OperationCancellation {
-		return getToolManager().runTool(getProject(), monitor, pb);
+		return getToolManager().newRunToolTask(pb, getProject(), monitor).runProcess();
 	}
 	
 	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ArrayList2<String> toolCmdLine)
 			throws CoreException, OperationCancellation {
-		ProcessBuilder pb = ProcessUtils.createProcessBuilder(toolCmdLine, null);
-		return runBuildTool(monitor, pb);
+		ProcessBuilder pb = createProcessBuilder(toolCmdLine);
+		return runBuildTool_2(monitor, pb);
+	}
+	
+	protected ProcessBuilder createProcessBuilder(ArrayList2<String> toolCmdLine) throws CoreException {
+		return ProcessUtils.createProcessBuilder(toolCmdLine, getProjectLocation());
 	}
 	
 	protected Location getProjectLocation() throws CoreException {
@@ -75,7 +79,7 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 			
 			ProcessBuilder pb = createBuildPB();
 			
-			ExternalProcessResult buildAllResult = runBuildTool(monitor, pb);
+			ExternalProcessResult buildAllResult = runBuildTool_2(monitor, pb);
 			doBuild_processBuildResult(buildAllResult);
 			
 			return null;
@@ -102,10 +106,10 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 		}
 	}
 	
-	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) throws CoreException, OperationCancellation {
-		runBuildTool(monitor, pb);
-	}
-	
 	protected abstract ProcessBuilder createCleanPB() throws CoreException;
+	
+	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) throws CoreException, OperationCancellation {
+		runBuildTool_2(monitor, pb);
+	}
 	
 }
