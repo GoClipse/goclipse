@@ -11,15 +11,12 @@
 package melnorme.lang.ide.core.operations;
 
 import melnorme.lang.ide.core.ILangOperationsListener_Actual;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ListenerListHelper;
-import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
@@ -56,30 +53,10 @@ public abstract class AbstractToolsManager extends ListenerListHelper<ILangOpera
 		return new RunExternalProcessTask(pb, project, pm, this);
 	}
 	
-	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb) 
-			throws CoreException, OperationCancellation {
-		// Note: project can be null
-		return runTool(project, pm, pb, null, false);
-	}
-	
-	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb,
-			String processInput, boolean throwOnNonZero) 
-			throws CoreException, OperationCancellation {
-		Location workingDir = project == null ? null : ResourceUtils.getProjectLocation(project);
-		if(workingDir != null) {
-			pb.directory(workingDir.toFile());
-		}
-		
-		EclipseUtils.checkMonitorCancelation(pm);
-		
-		return newRunToolTask(pb, project, pm).runProcess(processInput, throwOnNonZero);
-	}
-	
 	/* ----------------- ----------------- */
 	
-	public ExternalProcessResult runEngineTool(
-			ProcessBuilder pb, String clientInput, IProgressMonitor pm
-	) throws CoreException, OperationCancellation {
+	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, IProgressMonitor pm) 
+			throws CoreException, OperationCancellation {
 		return new RunEngineClientOperation(pb, pm).runProcess(clientInput);
 	}
 	
