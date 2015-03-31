@@ -1,5 +1,8 @@
 ## release ChangeLog
 
+### Goclipse 0.10.1
+Fixed: Bug `java.lang.ClassNotFoundException: LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPreferencesInitializer`
+
 ### Goclipse 0.10.0
  * Implemented #100: Make the go build target parametizable. Now the `./...` target can be changed in the project's Build Options.
    * Warning! This is a breaking change: Existing projects will need to have `./...` added to the project build options.

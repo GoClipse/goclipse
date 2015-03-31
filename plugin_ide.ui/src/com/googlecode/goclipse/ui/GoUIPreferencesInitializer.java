@@ -10,9 +10,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import melnorme.lang.ide.ui.LangUIPreferencesInitializer;
 
-public class GoUIPreferencesInitializer extends AbstractPreferenceInitializer 
+public class GoUIPreferencesInitializer extends LangUIPreferencesInitializer 
 	implements GoUIPreferenceConstants {
 
 	@Override
