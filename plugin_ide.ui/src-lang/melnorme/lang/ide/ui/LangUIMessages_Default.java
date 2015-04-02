@@ -15,4 +15,21 @@ package melnorme.lang.ide.ui;
 	
 	String Op_OpenDefinition_Name = "Open Definition";
 	
+	
+	
+	String ContentAssistProcessor_opName = "Content Assist";
+	
+	String ContentAssistProcessor_emptyDefaultProposals = "No proposals";
+	String ContentAssistProcessor_empty_message = "No {0}";
+	
+	String ContentAssistProcessor_toggle_affordance_press_gesture = "Press ''{2}'' to show {1}";
+	String ContentAssistProcessor_toggle_affordance_click_gesture = "Click to show {1}";
+	
+	
+	String ContentAssistProcessor_defaultProposalCategory = "Default Proposals";
+	String ContentAssistProcessor_snippetsProposalCategory = "Snippet Proposals";
+	
+	
+	String ContentAssist_additionalInfo_affordance = "Press 'Tab' from proposal table or click for focus";
+	
 }

@@ -142,6 +142,8 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 			langSVC.handlePropertyChangeEvent(event);
 		}
 		
+		getSourceViewer_asExt().handlePropertyChangeEvent_2(event, getPreferenceStore());
+		
 		super.handlePreferenceStoreChanged(event);
 	}
 	
@@ -159,13 +161,25 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	/* ----------------- create controls ----------------- */
 	
 	@Override
-	protected SourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
-		ISourceViewer sourceViewer = super.createSourceViewer(parent, ruler, styles);
-		return assertInstance(sourceViewer, SourceViewer.class);
+	protected final ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
+		SourceViewer viewer = doCreateSourceViewer(parent, ruler, styles);
+		assertInstance(viewer, SourceViewer.class);
+		assertInstance(viewer, ISourceViewerExt.class);
+		return viewer;
 	}
 	
 	public SourceViewer getSourceViewer_() {
 		return (SourceViewer) getSourceViewer();
+	}
+	public ISourceViewerExt getSourceViewer_asExt() {
+		return (ISourceViewerExt) getSourceViewer();
+	}
+	
+	protected SourceViewer doCreateSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
+		SourceViewer viewer= new SourceViewerExt(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
+		// ensure decoration support has been created and configured.
+		getSourceViewerDecorationSupport(viewer);
+		return viewer;
 	}
 	
 	/* ----------------- Bracket matcher ----------------- */

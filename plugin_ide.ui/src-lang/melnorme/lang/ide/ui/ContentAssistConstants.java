@@ -8,13 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.eclipse.jdt.internal.ui;
+package melnorme.lang.ide.ui;
 
-public interface JavaUIMessages {
+import melnorme.lang.ide.ui.text.completion.ContentAssistConstants_Default;
 
-	String OptionalMessageDialog_dontShowAgain = 
-			"Do not show this &message again";
-	String JavaEditor_codeassist_noCompletions = 
-			"No completions available.";
+public interface ContentAssistConstants extends ContentAssistConstants_Default {
 	
 }
