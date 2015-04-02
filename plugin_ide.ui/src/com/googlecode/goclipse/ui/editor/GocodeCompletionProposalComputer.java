@@ -1,14 +1,16 @@
 package com.googlecode.goclipse.ui.editor;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
+import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -16,45 +18,37 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
 
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 import com.googlecode.goclipse.ui.actions.GocodeClient;
-import com.googlecode.goclipse.ui.editor.LangContentAssistProcessor.ILangCompletionProposalComputer;
 
-public class GocodeCompletionProposalComputer implements ILangCompletionProposalComputer {
+public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
-	protected final String filePath;
-	protected final int offset;
-	protected final IDocument document;
-	protected final String prefix;
-	
-	protected final IProject project;
-	protected final IPath gocodePath;
-	
-	public GocodeCompletionProposalComputer(IEditorPart editor, String filePath, int offset, IDocument document,
-			String prefix) throws CoreException {
-		this.filePath = filePath;
-		this.offset = offset;
-		this.document = document;
-		this.prefix = prefix;
+	@Override
+	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
+			int offset) throws CoreException {
 		
-		this.gocodePath = GoUIPlugin.prepareGocodeManager_inUI().getGocodePath();
+		IEditorPart editor = context.getEditor_nonNull();
+		Location fileLoc = context.getEditorInputLocation();
+		IDocument document = context.getViewer().getDocument();
+		
+		String prefix = lastWord(document, offset);
+		
+		IPath gocodePath = GoUIPlugin.prepareGocodeManager_inUI().getGocodePath();
 		if (gocodePath == null) {
 			throw LangCore.createCoreException("Error: gocode path not provided.", null);
 		}
-		project = GocodeContentAssistProcessor.getProjectFor(editor);
-	}
-	
-	@Override
-	public ICompletionProposal[] computeCompletionProposals() throws CoreException {
+		IProject project = getProjectFor(editor);
 		
 		ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
 		
@@ -65,7 +59,7 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 			IProgressMonitor pm = new TimeoutProgressMonitor(5000, true);
 			GocodeClient client = new GocodeClient(gocodePath.toOSString(), goEnvironment, pm);
 			
-			ExternalProcessResult processResult = client.execute(filePath, document.get(), offset);
+			ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), document.get(), offset);
 			String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
 			List<String> completions = new ArrayList2<>(GocodeClient.LINE_SPLITTER.split(stdout));
 			
@@ -73,13 +67,33 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 				handleResult(offset, /*codeContext,*/ results, prefix, completionEntry);
 			}
 			
-			return results.toArray(new ICompletionProposal[] {});
+			return results;
 		} catch (CommonException e) {
 			throw LangCore.createCoreException(e.getMessage(), e.getCause());
 		} catch (OperationCancellation e) {
 			throw LangCore.createCoreException("Timeout invoking content assist.", null);
 		}
 		
+	}
+	
+	public static IProject getProjectFor(IEditorPart editor) {
+		return EditorUtils.getAssociatedProject(editor.getEditorInput());
+	}
+	
+	public static String lastWord(IDocument doc, int offset) {
+		try {
+			for (int n = offset - 1; n >= 0; n--) {
+				char c = doc.getChar(n);
+				
+				if (!Character.isJavaIdentifierPart(c)) {
+					return doc.get(n + 1, offset - n - 1);
+				}
+			}
+		} catch (BadLocationException e) {
+			GoCore.logInternalError(e);
+		}
+		
+		return "";
 	}
 	
 	protected void handleResult(final int offset, /*CodeContext codeContext, */ArrayList<ICompletionProposal> results,
@@ -152,5 +166,5 @@ public class GocodeCompletionProposalComputer implements ILangCompletionProposal
 				prefix.length(), identifier.length(), image, descriptiveString, null, null));
 		}
 	}
-	
+
 }

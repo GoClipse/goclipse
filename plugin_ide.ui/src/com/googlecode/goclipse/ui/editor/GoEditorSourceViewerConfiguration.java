@@ -2,6 +2,8 @@ package com.googlecode.goclipse.ui.editor;
 
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
+import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -9,7 +11,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.MonoReconciler;
@@ -59,6 +60,35 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 		return "//";
 	}
 	
+	@Override
+	protected void configureContentAssistantProcessors(ContentAssistant assistant) {
+		super.configureContentAssistantProcessors(assistant);
+		
+		assistant.enableAutoActivation(true);
+		assistant.setAutoActivationDelay(100);
+
+		assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+		assistant.setContextInformationPopupBackground(colorManager.getColor(new RGB(150, 150, 0)));
+		assistant.setInformationControlCreator(getInformationControlCreator(editor.getSourceViewer_()));
+	}
+	
+	@Override
+	protected ContentAssistCategoriesBuilder getContentAssistCategoriesProvider() {
+		return new ContentAssistCategoriesBuilder() {
+			
+			@Override
+			protected ILangCompletionProposalComputer createDefaultSymbolsProposalComputer() {
+				return new GocodeCompletionProposalComputer();
+			}
+			
+			@Override
+			protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
+				return null; // TODO snippets computer (need lang support)
+			}
+			
+		};
+	}
+	
 	/* -----------------  Need to review remaining code ----------------- */
 	
 	@Override
@@ -66,27 +96,6 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 		if (doubleClickStrategy == null)
 			doubleClickStrategy = new DoubleClickStrategy();
 		return doubleClickStrategy;
-	}
-	
-	@Override
-	public IContentAssistant getContentAssistant(ISourceViewer sv) {
-		final ContentAssistant ca = new ContentAssistant();
-		ca.enableAutoActivation(true);
-		ca.setAutoActivationDelay(100);
-
-		ca.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-		ca.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-		ca.setContextInformationPopupBackground(colorManager.getColor(new RGB(150, 150, 0)));
-		ca.setInformationControlCreator(getInformationControlCreator(sv));
-
-		IContentAssistProcessor cap = getCompletionProcessor();
-		ca.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
-		// ca.setInformationControlCreator(getInformationControlCreator(sv));
-		return ca;
-	}
-	
-	protected IContentAssistProcessor getCompletionProcessor() {
-		return new GocodeContentAssistProcessor(editor);
 	}
 	
 	@Override
