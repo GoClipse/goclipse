@@ -1,5 +1,9 @@
 ## release ChangeLog
 
+### (NextVersion)
+ * Doc - Installation guide: Added note for users in China.
+ * Doc - User Guide: Added note about Eclipse Optimizer
+
 ### Goclipse 0.10.1
  * Fixed: Bug `java.lang.ClassNotFoundException: LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPreferencesInitializer`.
  * Fixed #118: Errors and warnings not showing in Problems view.

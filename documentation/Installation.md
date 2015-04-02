@@ -18,3 +18,9 @@
 
 #### Updating:
 If you already have GoClipse installed, and want to update it to a newer release, click `Help -> Check for Updates...`.
+
+#### *Note for users in China*
+Note: if you are behind the Great Firewall of China, you are very likely to encounter problems installing GoClipse: blocked connections, timeouts, or slow downloads. This is because the update site is hosted in Github, which is blocked or has limited access. These alternative steps might help you perform the installation:
+
+* Download the website from https://github.com/GoClipse/goclipse.github.io/archive/master.zip, unpack the archive and use the `releases` directory as a Local repository instead of the Update Site URL. However, you will need to redownload the archive above whenever you want to update GoClipse to a newer version.
+* Download an Eclipse installation which already contains CDT (C Development Tools), so it doesn't have to be installed at the same time as GoClipse.
