@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.jdt.ui.text.java;
+package melnorme_org.eclipse.jdt.ui.text.java;
 
 import org.eclipse.core.runtime.Assert;
 
@@ -36,7 +36,7 @@ public class ContentAssistInvocationContext {
 	private final ITextViewer fViewer;
 	private final IDocument fDocument;
 	private final int fOffset;
-
+	
 	/* cached additional info */
 	private CharSequence fPrefix;
 
@@ -56,7 +56,7 @@ public class ContentAssistInvocationContext {
 		fDocument= null;
 		fOffset= offset;
 	}
-
+	
 	/**
 	 * Creates a new context with no viewer or invocation offset set.
 	 */
@@ -168,7 +168,9 @@ public class ContentAssistInvocationContext {
 		if (!getClass().equals(obj.getClass()))
 			return false;
 		ContentAssistInvocationContext other= (ContentAssistInvocationContext) obj;
-		return (fViewer == null && other.fViewer == null || fViewer != null && fViewer.equals(other.fViewer)) && fOffset == other.fOffset && (fDocument == null && other.fDocument == null || fDocument != null && fDocument.equals(other.fDocument));
+		return (fViewer == null && other.fViewer == null || fViewer != null && fViewer.equals(other.fViewer)) 
+			&& fOffset == other.fOffset 
+			&& (fDocument == null && other.fDocument == null || fDocument != null && fDocument.equals(other.fDocument));
 	}
 
 	@Override

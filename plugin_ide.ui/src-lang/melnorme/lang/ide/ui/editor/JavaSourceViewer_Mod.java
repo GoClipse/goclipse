@@ -22,7 +22,6 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.custom.StyleRange;
@@ -42,7 +41,7 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
  * Contains methods/code that seems useful or necessary, but whose operation or usage is not fully understood,
  * or simply hasn't been refactored yet.
  */
-public abstract class JavaSourceViewer_Mod extends ProjectionViewer implements IPropertyChangeListener {
+public abstract class JavaSourceViewer_Mod extends ProjectionViewerExt implements IPropertyChangeListener {
 
 	/**
 	 * Is this source viewer configured?

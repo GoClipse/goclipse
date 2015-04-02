@@ -58,6 +58,12 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		return this;
 	}
 	
+	public void addIfNotNull(E element) {
+		if(element != null) {
+			add(element);
+		}
+	}
+	
 	public E[] toArray(Class<E> componentType) {
 		return ArrayUtil.createFrom(this, componentType);
 	}
