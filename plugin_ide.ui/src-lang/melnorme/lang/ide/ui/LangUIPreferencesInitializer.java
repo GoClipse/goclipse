@@ -19,7 +19,7 @@ import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
 public abstract class LangUIPreferencesInitializer extends AbstractPreferenceInitializer  
-	implements EditorPrefConstants {
+implements EditorPrefConstants, ContentAssistConstants {
 	
 	public LangUIPreferencesInitializer() {
 		super();
@@ -31,6 +31,8 @@ public abstract class LangUIPreferencesInitializer extends AbstractPreferenceIni
 		
 		store.setDefault(MATCHING_BRACKETS, true);
 		store.setDefault(MATCHING_BRACKETS_COLOR, StringConverter.asString(new RGB(192, 192, 192)));
+		
+		_PrefInitializer.initializeDefaults(store);
 	}
 	
 }
