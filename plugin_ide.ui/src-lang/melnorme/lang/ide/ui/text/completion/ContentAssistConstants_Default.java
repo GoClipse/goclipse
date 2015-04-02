@@ -10,7 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.completion;
 
+import melnorme.lang.ide.ui.ContentAssistConstants;
 
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.swt.graphics.RGB;
+
+/**
+ * Only {@link ContentAssistConstants} should refer to this class, no one else, 
+ * not even the initializer class!
+ */
 public interface ContentAssistConstants_Default {
 	
 	String AUTOACTIVATION = "content_assist_autoactivation";
@@ -25,5 +34,27 @@ public interface ContentAssistConstants_Default {
 	String PREFIX_COMPLETION = "content_assist_prefix_completion";
 	
 	String AUTOACTIVATION_TRIGGERS = "content_assist_autoactivation_triggers_script";
+	
+	public class _PrefInitializer 
+		implements ContentAssistConstants // We need to import this constant, to use the overridable namespace 
+	{
+		
+		public static void initializeDefaults(final IPreferenceStore store) {
+			store.setDefault(AUTOACTIVATION, true);
+			store.setDefault(AUTOACTIVATION_DELAY, 200);
+			
+			store.setDefault(PROPOSALS_BACKGROUND, StringConverter.asString(new RGB(255, 255, 255)));
+			store.setDefault(PROPOSALS_FOREGROUND, StringConverter.asString(new RGB(0, 0, 0)));
+			store.setDefault(PARAMETERS_BACKGROUND, StringConverter.asString(new RGB(255, 255, 255)));
+			store.setDefault(PARAMETERS_FOREGROUND, StringConverter.asString(new RGB(0, 0, 0)));
+			
+			store.setDefault(AUTOINSERT, true);
+//			store.setDefault(TIMEOUT, 5000);
+			store.setDefault(PREFIX_COMPLETION, false);
+			
+			store.setDefault(AUTOACTIVATION_TRIGGERS, ".");
+		}
+		
+	}
 	
 }
