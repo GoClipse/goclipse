@@ -15,14 +15,17 @@ import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
+import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
 
 import org.eclipse.cdt.ui.text.IColorManager;
-import org.eclipse.jdt.internal.ui.text.java.ContentAssistProcessor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.ui.IEditorPart;
 
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_CodeScanner;
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
@@ -68,12 +71,32 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 		}
 	}
 	
-	/**
-	 * TODO: Use {@link ContentAssistProcessor}
-	 */
 	@Override
-	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+	public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 		return super.getContentAssistant(sourceViewer);
+	}
+	
+	@Override
+	protected void alterContentAssistant(ContentAssistant assistant) {
+		IContentAssistProcessor deeCodeCompletionProcessor = new DeeLangContentAssistProcessor(assistant, getEditor());
+		assistant.setContentAssistProcessor(deeCodeCompletionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+	}
+	
+	public static class DeeLangContentAssistProcessor extends LangContentAssistProcessor {
+		public DeeLangContentAssistProcessor(ContentAssistant contentAssistant, IEditorPart fEditor) {
+			super(contentAssistant, fEditor, new ContentAssistCategoriesBuilder() {
+				
+				@Override
+				protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
+					return null;
+				}
+				
+				@Override
+				protected ILangCompletionProposalComputer createDefaultSymbolsProposalComputer() {
+					return null;
+				}
+			}.getCategories());
+		}
 	}
 	
 }
