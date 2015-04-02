@@ -11,21 +11,15 @@
 package melnorme.lang.ide.ui.text.completion;
 
 
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.ui.IEditorPart;
 
 public abstract class LangCompletionProposalComputer implements ILangCompletionProposalComputer {
 	
@@ -55,16 +49,7 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 		errorMessage = null;
 		
 		try {
-			IEditorPart editor = context.getEditor_nonNull();
-			
-			IDocument document = context.getViewer().getDocument();
-			
-			Location fileLocation = EditorUtils.getLocationFromEditorInput(editor.getEditorInput());
-			if(fileLocation == null) {
-				throw LangCore.createCoreException("Error, invalid location for editor input.", null);
-			}
-			
-			return doComputeCompletionProposals(context.getInvocationOffset(), fileLocation.path, document);
+			return doComputeCompletionProposals(context, context.getInvocationOffset());
 		} catch (CoreException ce) {
 			handleExceptionInUI(ce);
 			errorMessage = ce.getMessage();
@@ -72,8 +57,8 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 		}
 	}
 	
-	protected abstract List<ICompletionProposal> doComputeCompletionProposals(int offset, Path filePath, 
-			IDocument document) throws CoreException;	
+	protected abstract List<ICompletionProposal> doComputeCompletionProposals(
+		LangContentAssistInvocationContext context, int offset) throws CoreException;	
 	
 	@Override
 	public List<IContextInformation> computeContextInformation(LangContentAssistInvocationContext context) {

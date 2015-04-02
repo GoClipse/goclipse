@@ -12,6 +12,8 @@ package melnorme.lang.ide.ui.text.completion;
 
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.utilbox.misc.Location;
 import melnorme_org.eclipse.jdt.ui.text.java.ContentAssistInvocationContext;
 
 import org.eclipse.core.runtime.CoreException;
@@ -41,6 +43,14 @@ public class LangContentAssistInvocationContext extends ContentAssistInvocationC
 			throw LangCore.createCoreException("Error, no editor available.", null);
 		}
 		return editor;
+	}
+	
+	public Location getEditorInputLocation() throws CoreException {
+		Location fileLocation = EditorUtils.getLocationFromEditorInput(editor.getEditorInput());
+		if(fileLocation == null) {
+			throw LangCore.createCoreException("Error, invalid location for editor input.", null);
+		}
+		return fileLocation;
 	}
 	
 }
