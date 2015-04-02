@@ -142,7 +142,10 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 			langSVC.handlePropertyChangeEvent(event);
 		}
 		
-		getSourceViewer_asExt().handlePropertyChangeEvent_2(event, getPreferenceStore());
+		ISourceViewerExt sourceViewer = getSourceViewer_asExt();
+		if(sourceViewer != null) {
+			sourceViewer.handlePropertyChangeEvent_2(event, getPreferenceStore());
+		}
 		
 		super.handlePreferenceStoreChanged(event);
 	}
