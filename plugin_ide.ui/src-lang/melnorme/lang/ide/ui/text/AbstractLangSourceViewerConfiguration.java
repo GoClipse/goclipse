@@ -19,8 +19,12 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
 import melnorme.lang.ide.ui.text.completion.ContentAssistPreferenceHandler;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
+import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
+import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
+import melnorme.utilbox.collections.Indexable;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -30,6 +34,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
@@ -107,7 +112,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 			
 			assistant.configure(fPreferenceStore);
 			
-			alterContentAssistant(assistant);
+			configureContentAssistantProcessors(assistant);
 			
 			return assistant;
 		}
@@ -119,6 +124,12 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 		return new ContentAssistPreferenceHandler();
 	}
 	
-	protected abstract void alterContentAssistant(ContentAssistant assistant);
+	protected void configureContentAssistantProcessors(ContentAssistant assistant) {
+		Indexable<CompletionProposalsGrouping> categories = getContentAssistCategoriesProvider().getCategories();
+		IContentAssistProcessor cap = new LangContentAssistProcessor(assistant, getEditor(), categories);
+		assistant.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
+	}
+	
+	protected abstract ContentAssistCategoriesBuilder getContentAssistCategoriesProvider();
 	
 }

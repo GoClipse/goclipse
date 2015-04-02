@@ -39,7 +39,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
-public abstract class LangContentAssistProcessor extends ContenAssistProcessorExt {
+public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	protected final ContentAssistant contentAssistant;
 	protected final IEditorPart editor; // can be null
