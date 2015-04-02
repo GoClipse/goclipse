@@ -1,7 +1,9 @@
 ## LANG_IDE_NAME release ChangeLog
 [Latest features on top]
 
-### LANG_IDE_NAME 0.0.x
+### (NextVersion)
+ * Doc - Installation guide: Added note for users in China.
+
  * Added: Toggle Comment action (Ctrl+/) .
  * Added editor Go To Matching Bracket action (shortcut: Ctrl+Shift+P)
 
