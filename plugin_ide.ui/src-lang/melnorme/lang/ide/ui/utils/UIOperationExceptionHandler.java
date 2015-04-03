@@ -33,7 +33,7 @@ public class UIOperationExceptionHandler {
 	public static void handleStatusMessage(StatusLevel statusLevel, String title, String message) {
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		if(shell == null) {
-			LangCore.logError("Shell not available.");
+			LangCore.logError("UIOperationExceptionHandler: shell not available.");
 			return;
 		}
 		
@@ -49,19 +49,32 @@ public class UIOperationExceptionHandler {
 	
 	public static void handleError(boolean logError, String message, Throwable exception) {
 		assertNotNull(message);
-		
+		handleError(logError, "Error: ", message, exception);
+	}
+	
+	public static void handleError(boolean logError, String title, String message, Throwable exception) {
 		if(logError) {
 			LangCore.logError(message, exception);
 		}
 		
+		if(message == null) {
+			message = "Error: ";
+		}
+		
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
+		if(shell == null) {
+			LangCore.logError("UIOperationExceptionHandler: shell not available.");
+			return;
+		}
 		
 		if(exception == null) {
-			MessageDialog.open(MessageDialog.ERROR, shell, "Error: ", message, SWT.SHEET);
-		} else {
-			String exceptionText = getExceptionText(exception);
-			MessageDialog.open(MessageDialog.ERROR, shell, "Error: " + message, exceptionText, SWT.SHEET);
+			// No point in using ErrorDialog, use simpler dialog
+			MessageDialog.open(MessageDialog.ERROR, shell, title, message, SWT.SHEET);
+			return;
 		}
+		
+		Status status = LangCore.createErrorStatus(getExceptionText(exception), null);
+		ErrorDialog.openError(shell, title, message, status);
 	}
 	
 	protected static String getExceptionText(Throwable exception) {
@@ -75,27 +88,6 @@ public class UIOperationExceptionHandler {
 		return exceptionText;
 	}
 	
-	public static void handleWithErrorDialog(boolean logError, String title, String message, Throwable exception) {
-		if(logError) {
-			LangCore.logError(message, exception);
-		}
-		
-		if(message == null) {
-			message = "Error";
-		}
-		
-		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
-		
-		if(exception == null) {
-			// No point in using ErrorDialog, use simpler dialog
-			MessageDialog.open(MessageDialog.ERROR, shell, title, message, SWT.SHEET);
-			return;
-		}
-		
-		Status status = LangCore.createErrorStatus(getExceptionText(exception), exception);
-		ErrorDialog.openError(shell, title, message, status);
-	}
-	
 	/* -----------------  ----------------- */
 	
 	public static void handleOperationStatus(String dialogTitle, CoreException ce) {
@@ -106,11 +98,11 @@ public class UIOperationExceptionHandler {
 		
 		boolean logError = status.matches(IStatus.ERROR);
 		
-		handleWithErrorDialog(logError, dialogTitle, ce.getMessage(), ce.getCause());
+		handleError(logError, dialogTitle, ce.getMessage(), ce.getCause());
 	}
 	
 	public static void handleOperationStatus(String dialogTitle, CommonException ce) {
-		handleWithErrorDialog(true, dialogTitle, ce.getMessage(), ce.getCause());
+		handleError(true, dialogTitle, ce.getMessage(), ce.getCause());
 	}
 	
 }
