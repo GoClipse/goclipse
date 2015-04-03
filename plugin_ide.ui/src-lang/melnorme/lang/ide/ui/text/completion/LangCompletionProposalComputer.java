@@ -53,7 +53,6 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 			return doComputeCompletionProposals(context, context.getInvocationOffset());
 		} catch (CoreException ce) {
 			handleExceptionInUI(ce);
-			errorMessage = ce.getMessage();
 		} catch (CompletionSoftFailure e) {
 			errorMessage = e.getMessage();
 		}

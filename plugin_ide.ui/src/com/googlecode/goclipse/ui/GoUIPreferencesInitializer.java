@@ -10,14 +10,15 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
+import org.eclipse.jface.preference.IPreferenceStore;
+
 import melnorme.lang.ide.ui.LangUIPreferencesInitializer;
 
 public class GoUIPreferencesInitializer extends LangUIPreferencesInitializer 
 	implements GoUIPreferenceConstants {
-
+	
 	@Override
-	public void initializeDefaultPreferences() {
-		
+	protected void initializeDefaultPreferences_other(IPreferenceStore langUIStore) {
 	}
 	
 }

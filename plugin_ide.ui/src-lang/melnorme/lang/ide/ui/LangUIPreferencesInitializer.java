@@ -26,13 +26,16 @@ implements EditorPrefConstants, ContentAssistConstants {
 	}
 	
 	@Override
-	public void initializeDefaultPreferences() {
+	public final void initializeDefaultPreferences() {
 		final IPreferenceStore store = LangUIPlugin.getInstance().getPreferenceStore();
 		
 		store.setDefault(MATCHING_BRACKETS, true);
 		store.setDefault(MATCHING_BRACKETS_COLOR, StringConverter.asString(new RGB(192, 192, 192)));
 		
 		_PrefInitializer.initializeDefaults(store);
+		initializeDefaultPreferences_other(store);
 	}
+	
+	protected abstract void initializeDefaultPreferences_other(final IPreferenceStore langUIStore);
 	
 }
