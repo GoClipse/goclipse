@@ -10,9 +10,15 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui;
 
+import org.eclipse.jface.preference.IPreferenceStore;
+
 import melnorme.lang.ide.ui.LangUIPreferencesInitializer;
 
 
 public class LANGUAGE_UIPreferencesInitializer extends LangUIPreferencesInitializer {
+	
+	@Override
+	protected void initializeDefaultPreferences_other(IPreferenceStore langUIStore) {
+	}
 	
 }
