@@ -72,13 +72,12 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 	protected ContentAssistCategoriesBuilder getContentAssistCategoriesProvider() {
 		return new ContentAssistCategoriesBuilder() {
 			@Override
-			protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
-				return null;
-			}
-			
-			@Override
 			protected ILangCompletionProposalComputer createDefaultSymbolsProposalComputer() {
-				return null;
+				return new LANGUAGE_CompletionProposalComputer();
+			}
+			@Override
+			protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
+				return null; // TODO: LANG
 			}
 		};
 	}
