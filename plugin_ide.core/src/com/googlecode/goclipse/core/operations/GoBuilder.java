@@ -124,8 +124,8 @@ public class GoBuilder extends LangProjectBuilderExt {
 			IProject project = getProject();
 			
 			ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
-			goBuildCmdLine.addElements("install", "-v");
-			goBuildCmdLine.addElements(GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getParsedArguments(project));
+			goBuildCmdLine.addElements();
+			goBuildCmdLine.addElements(GoProjectPrefConstants.GO_BUILD_OPTIONS.getParsedArguments(project));
 			
 			return goEnv.createProcessBuilder(goBuildCmdLine, sourceRootDir);
 		}

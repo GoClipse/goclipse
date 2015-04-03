@@ -46,7 +46,7 @@ public class GoProjectOptionsBlock extends AbstractComponentExt {
 	@Override
 	public void updateComponentFromInput() {
 		if(project != null) {
-			buildExtraOptionsField.setFieldValue(GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.get(project));
+			buildExtraOptionsField.setFieldValue(GoProjectPrefConstants.GO_BUILD_OPTIONS.get(project));
 		}
 	}
 	
@@ -61,7 +61,7 @@ public class GoProjectOptionsBlock extends AbstractComponentExt {
 			return false;
 		}
 		try {
-			GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.set(project, buildExtraOptionsField.getFieldValue());
+			GoProjectPrefConstants.GO_BUILD_OPTIONS.set(project, buildExtraOptionsField.getFieldValue());
 		} catch (BackingStoreException e) {
 			UIOperationExceptionHandler.handleError("Error saving preferences.", e);
 		}
@@ -69,7 +69,7 @@ public class GoProjectOptionsBlock extends AbstractComponentExt {
 	}
 	
 	public void restoreDefaults() {
-		buildExtraOptionsField.setFieldValue(GoProjectPrefConstants.GO_BUILD_EXTRA_OPTIONS.getDefault());
+		buildExtraOptionsField.setFieldValue(GoProjectPrefConstants.GO_BUILD_OPTIONS.getDefault());
 	}
 	
 }

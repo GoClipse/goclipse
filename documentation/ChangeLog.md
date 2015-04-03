@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Builder: The `install -v` options are no longer hardcoded either, but are not parw of the Project build options.
+   * Warning! This is a breaking change: Existing projects will need to add `install -v` to the Project build options (you can use the Restore Defaults button).
  * Doc - Installation guide: Added note for users in China.
  * Doc - User Guide: Added note about Eclipse Optimizer
 

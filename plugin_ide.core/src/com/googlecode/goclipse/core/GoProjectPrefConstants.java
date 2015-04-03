@@ -18,8 +18,9 @@ import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface GoProjectPrefConstants {
 	
-	ProgramArgumentsPreference GO_BUILD_EXTRA_OPTIONS = 
-			new ProgramArgumentsPreference("projectPrefs.build_extra_options", "-gcflags \"-N -l\" ./...");
+	ProgramArgumentsPreference GO_BUILD_OPTIONS = new ProgramArgumentsPreference(
+		"projectPrefs.build_extra_options", 
+		"install -v -gcflags \"-N -l\" ./...");
 	
 	
 	BooleanPreference ENABLE_AUTO_UNIT_TEST = 
