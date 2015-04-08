@@ -47,7 +47,7 @@ public class RunGoFixOperation extends AbstractEditorGoToolOperation {
 	@Override
 	protected void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException, CommonException {
 		toolPath = goEnv.getGoRootToolsDir().resolve("fix").toString();
-		pb = goEnv.createProcessBuilder(listFrom(toolPath));
+		pb = goEnv.createProcessBuilder(listFrom(toolPath), null, true);
 	}
 	
 }

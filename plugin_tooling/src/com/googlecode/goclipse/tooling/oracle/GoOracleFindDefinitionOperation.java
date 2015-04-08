@@ -59,7 +59,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 			goPackage.getFullNameAsString()
 		);
 		
-		return goEnv.createProcessBuilder(commandLine);
+		return goEnv.createProcessBuilder(commandLine, null, true);
 	}
 	
 	public FindDefinitionResult parseJsonResult(ExternalProcessResult result) throws CommonException {

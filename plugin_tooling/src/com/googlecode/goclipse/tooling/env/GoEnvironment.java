@@ -100,6 +100,11 @@ public class GoEnvironment {
 	}
 	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir) throws CommonException {
+		return createProcessBuilder(commandLine, workingDir, false);
+	}
+	
+	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir, boolean goRootInPath) 
+			throws CommonException {
 		ProcessBuilder pb = melnorme.lang.utils.ProcessUtils.createProcessBuilder(commandLine, workingDir);
 		
 		Map<String, String> env = pb.environment();
@@ -112,6 +117,15 @@ public class GoEnvironment {
 		}
 		if(goOs != null) {
 			putMapEntry(env, GoEnvironmentConstants.GOOS, goOs.asString());
+		}
+		
+		if(goRootInPath) {
+			String path = pb.environment().get("PATH");
+			
+			// Add GoRoot to path. See #113 for rationale
+			Location location = getGoRoot_Location();
+			path = path + File.pathSeparator + location.toPathString();
+			pb.environment().put("PATH", path);
 		}
 		
 		return pb;

@@ -37,7 +37,7 @@ public class GoToolManager extends AbstractToolsManager {
 	
 	public RunExternalProcessTask newRunToolTask(GoEnvironment goEnv, List<String> commandLine, Location workingDir,
 			IProgressMonitor pm) throws CoreException, CommonException {
-		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir);
+		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir, true);
 		return newRunToolTask(pb, null, pm);
 	}
 	

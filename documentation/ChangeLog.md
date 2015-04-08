@@ -5,6 +5,7 @@
    * Warning! This is a breaking change: Existing projects will need to add `install -v` to the Project build options (you can use the Restore Defaults button).
  * Doc - Installation guide: Added note for users in China.
  * Doc - User Guide: Added note about Eclipse Optimizer
+ * Added #113: Add GOROOT to PATH when invoking Go oracle and other tools.
 
 ### Goclipse 0.10.1
  * Fixed: Bug `java.lang.ClassNotFoundException: LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPreferencesInitializer`.

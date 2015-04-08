@@ -43,7 +43,7 @@ public abstract class GocodeCompletionOperation {
 		arguments.add("lib-path");
 		arguments.add(goEnvironment.getGoPathString());
 		
-		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments);
+		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
 		runGocodeProcess(pb, null);
 	}
@@ -63,10 +63,10 @@ public abstract class GocodeCompletionOperation {
 		arguments.add(filePath);
 		arguments.add("c" + offset);
 		
-		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments);
+		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
 		ExternalProcessResult processResult = runGocodeProcess(pb, bufferText);
-
+		
 		if(processResult.exitValue != 0) {
 			throw new CommonException("Error, gocode returned non-zero status: " + processResult.exitValue);
 		}
