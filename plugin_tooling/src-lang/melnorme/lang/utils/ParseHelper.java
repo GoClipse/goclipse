@@ -31,12 +31,21 @@ public class ParseHelper {
 	
 	protected int parseInt(String str) throws CommonException {
 		try {
-			int integer = Integer.parseInt(str);
-			return integer;
+			return Integer.parseInt(str);
 		} catch (NumberFormatException e) {
 			throw new CommonException("Invalid integer: " + str);
 		}
 	}
+	
+	protected int parseInt(String integerString, String errorMessage) throws CommonException {
+		try {
+			return Integer.parseInt(integerString);
+		} catch (NumberFormatException e) {
+			throw new CommonException(errorMessage, null);
+		}
+	}
+	
+	/* -----------------  ----------------- */
 	
 	protected Path parsePath(String pathString) throws CommonException {
 		return MiscUtil.createPath2(pathString);
