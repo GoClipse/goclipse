@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 public class RunGoFixOperation extends AbstractEditorGoToolOperation {
@@ -46,12 +45,8 @@ public class RunGoFixOperation extends AbstractEditorGoToolOperation {
 	}
 	
 	@Override
-	protected void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException {
-		try {
-			toolPath = goEnv.getGoRootToolsDir().resolve("fix").toString();
-		} catch (CommonException se) {
-			throw GoCore.createCoreException(se.getMessage(), se.getCause());
-		}
+	protected void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException, CommonException {
+		toolPath = goEnv.getGoRootToolsDir().resolve("fix").toString();
 		pb = goEnv.createProcessBuilder(listFrom(toolPath));
 	}
 	

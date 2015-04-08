@@ -15,6 +15,7 @@ import static melnorme.lang.ide.ui.editor.EditorUtils.getEditorDocument;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.CoreException;
@@ -48,10 +49,15 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 		editorText = getEditorDocument(editor).get();
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(null);
-		prepareProcessBuilder(goEnv);
+		
+		try {
+			prepareProcessBuilder(goEnv);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
 	}
 	
-	protected abstract void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException;
+	protected abstract void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException, CommonException;
 	
 	@Override
 	protected void performLongRunningComputation_do(IProgressMonitor pm) throws CoreException, OperationCancellation {

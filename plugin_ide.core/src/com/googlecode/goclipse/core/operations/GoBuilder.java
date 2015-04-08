@@ -120,7 +120,7 @@ public class GoBuilder extends LangProjectBuilderExt {
 		}
 		
 		@Override
-		protected ProcessBuilder createBuildPB() throws CoreException {
+		protected ProcessBuilder createBuildPB() throws CoreException, CommonException {
 			IProject project = getProject();
 			
 			ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
@@ -173,7 +173,7 @@ public class GoBuilder extends LangProjectBuilderExt {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected ProcessBuilder createCleanPB() throws CoreException {
+	protected ProcessBuilder createCleanPB() throws CoreException, CommonException {
 		IProject project = getProject();
 		GoEnvironment goEnv = getValidGoEnvironment(project);
 		

@@ -95,15 +95,11 @@ public class GoEnvironment {
 		return goPath.findGoPackageForSourceFile(goModuleLoc);
 	}
 	
-	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir) {
-		return createProcessBuilder(commandLine, workingDir.toFile());
+	public ProcessBuilder createProcessBuilder(List<String> commandLine) throws CommonException {
+		return createProcessBuilder(commandLine, null);
 	}
 	
-	public ProcessBuilder createProcessBuilder(List<String> commandLine) {
-		return createProcessBuilder(commandLine, (File) null);
-	}
-	
-	public ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {
+	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir) throws CommonException {
 		ProcessBuilder pb = melnorme.lang.utils.ProcessUtils.createProcessBuilder(commandLine, workingDir);
 		
 		Map<String, String> env = pb.environment();

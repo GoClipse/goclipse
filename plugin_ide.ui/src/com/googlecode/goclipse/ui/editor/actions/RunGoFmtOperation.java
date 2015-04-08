@@ -13,6 +13,7 @@ package com.googlecode.goclipse.ui.editor.actions;
 import static melnorme.utilbox.core.CoreUtil.listFrom;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchPage;
@@ -44,7 +45,7 @@ public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	}
 	
 	@Override
-	protected void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException {
+	protected void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException, CommonException {
 		toolPath = GoEnvironmentPrefs.FORMATTER_PATH.get();
 		pb = goEnv.createProcessBuilder(listFrom(toolPath));
 	}
