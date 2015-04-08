@@ -8,19 +8,21 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.completion;
+package melnorme.lang.tooling.ops;
+
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 /**
- * Throwable result for "soft" failures: these are non-critical failures, 
- * such as invoking content assist on an invalid location.
+ * Helper throwable result for "soft" failures: these are non-critical failures, 
+ * such as invoking content assist on a source location where that operation cannot be performed.
  * This class exists so that the UI can report these failures to the user in a less intrusive way than
  * a hard error (like an unexpected termination of the Content Assist deamon).
  */
 @SuppressWarnings("serial")
-public class CompletionSoftFailure extends Throwable {
+public class OperationSoftFailure extends Exception {
 	
-	public CompletionSoftFailure(String message) {
-		super(message);
+	public OperationSoftFailure(String message) {
+		super(assertNotNull(message));
 	}
 	
 }

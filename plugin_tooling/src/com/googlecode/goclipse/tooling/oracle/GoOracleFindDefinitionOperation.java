@@ -14,8 +14,8 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.text.MessageFormat;
 
-import melnorme.lang.tooling.completion.CompletionSoftFailure;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.lang.tooling.ops.ToolOutputParseHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -74,13 +74,13 @@ public class GoOracleFindDefinitionOperation extends ToolOutputParseHelper {
 			return doParseJsonResult(output);
 		} catch (JSONException e) {
 			throw new CommonException("Error parsing JSON output: ", e);
-		} catch (CompletionSoftFailure sf) {
+		} catch (OperationSoftFailure sf) {
 			return new FindDefinitionResult(sf.getMessage());
 		}
 	}
 	
 	protected FindDefinitionResult doParseJsonResult(String output) 
-			throws JSONException, CommonException, CompletionSoftFailure {
+			throws JSONException, CommonException, OperationSoftFailure {
 		JSONObject jsonResult = new JSONObject(output);
 		
 		JSONObject describe = jsonResult.getJSONObject("describe");
@@ -114,10 +114,10 @@ public class GoOracleFindDefinitionOperation extends ToolOutputParseHelper {
 		
 	}
 	
-	protected String getString(JSONObject value, String key, String resultErrorMessage) throws CompletionSoftFailure {
+	protected String getString(JSONObject value, String key, String resultErrorMessage) throws OperationSoftFailure {
 		String pathStr = getStringOrNull(value, key);
 		if(pathStr == null) {
-			throw new CompletionSoftFailure(resultErrorMessage);
+			throw new OperationSoftFailure(resultErrorMessage);
 		}
 		return pathStr;
 	}
