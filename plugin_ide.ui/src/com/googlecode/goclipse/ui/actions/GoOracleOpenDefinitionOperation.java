@@ -63,7 +63,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 				return null;
 			}
 			
-			return op.parseJsonResult(result);
+			return op.parseToolResult(result);
 		} catch (CommonException se) {
 			throw LangCore.createCoreException(se.getMessage(), se.getCause());
 		}

@@ -6,6 +6,7 @@
  * Doc - Installation guide: Added note for users in China.
  * Doc - User Guide: Added note about Eclipse Optimizer
  * Added #113: Append GOROOT to PATH when invoking Go oracle and other tools.
+ * Fixed #121: Oracle Open Definition not working for type references: "selected name does not refer to a source element"
 
 ### Goclipse 0.10.1
  * Fixed: Bug `java.lang.ClassNotFoundException: LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPreferencesInitializer`.

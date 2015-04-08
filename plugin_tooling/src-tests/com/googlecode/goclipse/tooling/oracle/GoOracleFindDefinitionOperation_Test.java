@@ -16,6 +16,7 @@ import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.utilbox.core.CommonException;
 
+import org.json.JSONException;
 import org.junit.Test;
 
 import com.googlecode.goclipse.tooling.CommonGoToolingTest;
@@ -43,15 +44,27 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		
+		testParseResult(getClassResourceAsString("oracle_result.var_ref.json"), 
+			new SourceLineColumnRange(path("D:\\go-workspace\\src\\github.com\\user\\newmath\\sqrt.go"), 5, 6));
+		
+		testParseResult(getClassResourceAsString("oracle_result.type1_ref.json"), 
+			new SourceLineColumnRange(path("D:\\devel\\DDT\\_runtime\\GoTest\\src\\other\\blah.go"), 16, 6));
+		
+		testParseResult(getClassResourceAsString("oracle_result.type2_def.json"), 
+			null);
+		
+		testParseResult(getClassResourceAsString("oracle_result.type3_anon.json"), 
+			null);
+	}
+	
+	protected void testParseResult(String toolOutput, SourceLineColumnRange expectedRange) throws JSONException,
+			CommonException{
 		GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation("gopath");
 		
-		FindDefinitionResult result = op.parseJsonResult(
-			getClassResourceAsString(GoOracleFindDefinitionOperation_Test.class, "result1.json"));
+		FindDefinitionResult result = op.parseJsonResult(toolOutput);
 		
-		SourceLineColumnRange loc = result.getLocation();
-		
-		assertEquals(loc, new SourceLineColumnRange(
-			path("D:\\devel\\tools.Go\\go-workspace\\src\\github.com\\user\\newmath\\sqrt.go"), 5, 6));
+		assertAreEqual(result.getLocation(), expectedRange);
+		assertEquals(result.getErrorMessage() == null, expectedRange != null);
 	}
 	
 }

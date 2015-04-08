@@ -1,0 +1,12 @@
+{
+	"mode": "describe",
+	"describe": {
+		"desc": "identifier",
+		"pos": "D:\\go-workspace\\src\\github.com\\user\\newmath\\sqrt.go:5:6",
+		"detail": "value",
+		"value": {
+			"type": "func(x float64) float64",
+			"objpos": "D:\\go-workspace\\src\\github.com\\user\\newmath\\sqrt.go:5:6"
+		}
+	}
+}

@@ -12,11 +12,11 @@ package com.googlecode.goclipse.tooling.oracle;
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import java.nio.file.Path;
 import java.text.MessageFormat;
 
+import melnorme.lang.tooling.completion.CompletionSoftFailure;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
-import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.lang.tooling.ops.ToolOutputParseHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -27,10 +27,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
-import com.googlecode.goclipse.tooling.JsonDeserializeHelper;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
+public class GoOracleFindDefinitionOperation extends ToolOutputParseHelper {
 	
 	protected final String goOraclePath;
 	
@@ -47,7 +46,7 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 				null);
 		}
 		
-		// go oracle requires this
+		// go oracle requires these variables are properly set
 		goEnv.validateGoArch();
 		goEnv.validateGoOs();
 		
@@ -62,57 +61,76 @@ public class GoOracleFindDefinitionOperation extends JsonDeserializeHelper {
 		return goEnv.createProcessBuilder(commandLine, null, true);
 	}
 	
-	public FindDefinitionResult parseJsonResult(ExternalProcessResult result) throws CommonException {
+	public FindDefinitionResult parseToolResult(ExternalProcessResult result) throws CommonException {
 		if(result.exitValue != 0) {
 			throw new CommonException("Program exited with non-zero status: " + result.exitValue, null);
 		}
 		
-		String output = result.getStdOutBytes().toString();
-		
+		return parseJsonResult(result.getStdOutBytes().toString());
+	}
+	
+	protected FindDefinitionResult parseJsonResult(String output) throws CommonException {
 		try {
-			return parseJsonResult(output);
+			return doParseJsonResult(output);
 		} catch (JSONException e) {
 			throw new CommonException("Error parsing JSON output: ", e);
+		} catch (CompletionSoftFailure sf) {
+			return new FindDefinitionResult(sf.getMessage());
 		}
 	}
 	
-	protected FindDefinitionResult parseJsonResult(String output) throws JSONException, CommonException {
+	protected FindDefinitionResult doParseJsonResult(String output) 
+			throws JSONException, CommonException, CompletionSoftFailure {
 		JSONObject jsonResult = new JSONObject(output);
 		
 		JSONObject describe = jsonResult.getJSONObject("describe");
 		
 		String desc = describe.getString("desc");
+		String detail = describe.getString("detail");
 		
 		if(areEqual(desc, "source file")) {
 			return new FindDefinitionResult(null, null);
 		}
-		if(!areEqual(desc, "identifier")) {
-			return new FindDefinitionResult(
-				"Selected name does not refer to a source element, rather it's a:\n" + desc, null);
+		
+		if(areEqual(desc, "identifier")) {
+			JSONObject value = describe.getJSONObject("value");
+			String pathStr = getString(value, "objpos", "Definition not available.");
+			return new FindDefinitionResult(null, parsePathLineColumn(pathStr, ":"));
+		}
+		if(areEqual(detail, "type")) {
+			final String DEFINITION_OF = "definition of ";
+			
+			if(desc != null && desc.startsWith(DEFINITION_OF)) {
+				desc = StringUtil.segmentAfterMatch(desc, DEFINITION_OF);
+				return new FindDefinitionResult("Already at a definition: " + desc);
+			}
+			JSONObject value = describe.getJSONObject("type");
+			String pathStr = getString(value, "namepos", "Definition not available.");
+			return new FindDefinitionResult(null, parsePathLineColumn(pathStr, ":"));
 		}
 		
+		return new FindDefinitionResult(
+				"Selected name does not refer to a source element, rather it's a:\n" + desc);
 		
-		JSONObject value = describe.getJSONObject("value");
-		
-		String pathStr = value.getString("objpos");
-		// We will need to parse objpos from the end, because on Windows the filePath can contain the ':' char
-		
-		String columnStr = StringUtil.segmentAfterLastMatch(pathStr, ":");
-		pathStr = StringUtil.substringUntilLastMatch(pathStr, ":");
-
-		String lineStr = StringUtil.segmentAfterLastMatch(pathStr, ":");
-		pathStr = StringUtil.substringUntilLastMatch(pathStr, ":");
-		
-		
-		if(columnStr == null || lineStr == null) {
-			throw new CommonException("No line or column position given.", null);
+	}
+	
+	protected String getString(JSONObject value, String key, String resultErrorMessage) throws CompletionSoftFailure {
+		String pathStr = getStringOrNull(value, key);
+		if(pathStr == null) {
+			throw new CompletionSoftFailure(resultErrorMessage);
 		}
-		int line = parseInt(lineStr, "Invalid number for line: " + lineStr);
-		int column = parseInt(columnStr, "Invalid number for column: " + columnStr);
-		
-		Path path = parsePath(pathStr);
-		
-		return new FindDefinitionResult(null, new SourceLineColumnRange(path, line, column));
+		return pathStr;
+	}
+	
+	protected String getStringOrNull(JSONObject value, String key) {
+		if(value.has(key)) {
+			try {
+				return value.getString(key);
+			} catch (JSONException e) {
+				return null;
+			}
+		}
+		return null;
 	}
 	
 }
