@@ -112,4 +112,10 @@ public class CommonTestExt extends CommonTest {
 		return matcher.group(resultGroup);
 	}
 	
+	/* -----------------  ----------------- */
+	
+	protected String getClassResourceAsString(String resourceName) {
+		return getClassResourceAsString(getClass(), resourceName);
+	}
+	
 }
