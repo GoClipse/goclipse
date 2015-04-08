@@ -16,7 +16,7 @@ import java.util.List;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.lang.tooling.completion.CompletionSoftFailure;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -53,14 +53,14 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 			return doComputeCompletionProposals(context, context.getInvocationOffset());
 		} catch (CoreException ce) {
 			handleExceptionInUI(ce);
-		} catch (CompletionSoftFailure e) {
+		} catch (OperationSoftFailure e) {
 			errorMessage = e.getMessage();
 		}
 		return Collections.EMPTY_LIST;
 	}
 	
 	protected abstract List<ICompletionProposal> doComputeCompletionProposals(
-		LangContentAssistInvocationContext context, int offset) throws CoreException, CompletionSoftFailure;	
+		LangContentAssistInvocationContext context, int offset) throws CoreException, OperationSoftFailure;	
 	
 	@Override
 	public List<IContextInformation> computeContextInformation(LangContentAssistInvocationContext context) {
