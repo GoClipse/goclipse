@@ -15,7 +15,7 @@ import java.util.List;
 
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
-import melnorme.lang.tooling.completion.CompletionSoftFailure;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -23,7 +23,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 final class LANGUAGE_CompletionProposalComputer extends LangCompletionProposalComputer {
 	@Override
 	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
-			int offset) throws CoreException, CompletionSoftFailure {
+			int offset) throws CoreException, OperationSoftFailure {
 		return Collections.EMPTY_LIST; // TODO: LANG
 	}
 }
