@@ -21,7 +21,8 @@ import melnorme.utilbox.misc.MiscUtil;
 public class ProcessUtils {
 	
 	public static ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir) {
-		return createProcessBuilder(commandLine, workingDir.toFile()); 
+		File file = workingDir == null ? null : workingDir.toFile();
+		return createProcessBuilder(commandLine, file); 
 	}
 	
 	public static ProcessBuilder createProcessBuilder(List<String> commandLine, File workingDir) {

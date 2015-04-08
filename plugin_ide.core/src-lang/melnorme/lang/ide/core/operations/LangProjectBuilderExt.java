@@ -19,6 +19,7 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -77,17 +78,22 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 				throws CoreException, OperationCancellation {
 			LangCore.getToolManager().notifyBuildStarting(project, false);
 			
-			ProcessBuilder pb = createBuildPB();
-			
-			ExternalProcessResult buildAllResult = runBuildTool_2(monitor, pb);
-			doBuild_processBuildResult(buildAllResult);
+			try {
+				ProcessBuilder pb = createBuildPB();
+				
+				ExternalProcessResult buildAllResult = runBuildTool_2(monitor, pb);
+				doBuild_processBuildResult(buildAllResult);
+			} catch (CommonException ce) {
+				throw LangCore.createCoreException(ce);
+			}
 			
 			return null;
 		}
 		
-		protected abstract ProcessBuilder createBuildPB() throws CoreException;
+		protected abstract ProcessBuilder createBuildPB() throws CoreException, CommonException;
 		
-		protected abstract void doBuild_processBuildResult(ExternalProcessResult buildAllResult) throws CoreException;
+		protected abstract void doBuild_processBuildResult(ExternalProcessResult buildAllResult) 
+				throws CoreException, CommonException;
 		
 	}
 	
@@ -97,16 +103,18 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		deleteProjectBuildMarkers();
 		
-		ProcessBuilder pb = createCleanPB();
 		try {
+			ProcessBuilder pb = createCleanPB();
 			EclipseUtils.checkMonitorCancelation(monitor);
 			doClean(monitor, pb);
 		} catch (OperationCancellation e) {
 			// return
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
 		}
 	}
 	
-	protected abstract ProcessBuilder createCleanPB() throws CoreException;
+	protected abstract ProcessBuilder createCleanPB() throws CoreException, CommonException;
 	
 	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) throws CoreException, OperationCancellation {
 		runBuildTool_2(monitor, pb);
