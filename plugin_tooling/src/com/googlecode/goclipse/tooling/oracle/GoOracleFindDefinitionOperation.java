@@ -110,7 +110,7 @@ public class GoOracleFindDefinitionOperation extends ToolOutputParseHelper {
 		}
 		
 		return new FindDefinitionResult(
-				"Selected name does not refer to a source element, rather it's a:\n" + desc);
+				"Selected position does not refer to a definition. Rather, it's a:\n" + desc);
 		
 	}
 	
