@@ -3,8 +3,8 @@ package com.googlecode.goclipse.ui.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.core.text.DefaultPredicateRule;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
-import melnorme.lang.ide.ui.text.coloring.DefaultPredicateRule;
 
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.text.rules.ICharacterScanner;

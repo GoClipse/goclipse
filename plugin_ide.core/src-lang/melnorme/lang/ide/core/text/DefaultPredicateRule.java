@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text.coloring;
+package melnorme.lang.ide.core.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -33,7 +33,7 @@ public abstract class DefaultPredicateRule implements IPredicateRule {
 	@Override
 	public IToken evaluate(ICharacterScanner scanner, boolean resume) {
 		if(resume) {
-			return Token.UNDEFINED;
+			return Token.UNDEFINED; // Not supported
 		}
 		return evaluate(scanner);
 	}
