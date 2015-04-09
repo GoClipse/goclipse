@@ -28,7 +28,7 @@ public class CharacterLexingRule extends CommonLexingRule implements ILexingRule
 	}
 	
 	protected boolean consumeStart(ICharacterReader reader) {
-		return reader.read() == '\'';
+		return reader.consume('\'');
 	}
 	
 	protected boolean consumeBody(ICharacterReader reader) {
@@ -36,7 +36,7 @@ public class CharacterLexingRule extends CommonLexingRule implements ILexingRule
 			return consume(reader, '\'') || consumeCommonEscape(reader) || consumeUnicodeEscapeSequence(reader);
 		};
 		
-		return notCharacter_norNull(reader, '\'');
+		return consumeAnyExceptNullOr(reader, '\'');
 	}
 	
 	protected boolean consumeEnd(ICharacterReader reader) {
@@ -73,9 +73,14 @@ public class CharacterLexingRule extends CommonLexingRule implements ILexingRule
 	
 	protected boolean consumeUnicodeEscapeSequence(ICharacterReader reader) {
 		if(consume(reader, 'u')) {
-			int la = reader.lookahead();
-			// This is not accurate to a spec, but is good enough.
-			while(la == '{' || la == '}' || isHexDigit(la)) {
+			
+			while(true) {
+				int la = reader.lookahead();
+				
+				// This is not accurate to any spec, but is good enough.
+				if(!(la == '{' || la == '}' || isHexDigit(la))) {
+					break;
+				}
 				reader.read();
 			}
 			

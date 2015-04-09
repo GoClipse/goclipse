@@ -13,6 +13,11 @@ package melnorme.lang.tooling.parser.lexer;
 
 public interface ILexingRule {
 	
+	/** 
+	 * Evaluate the rule using given reader.
+	 * If the rule succeeds, the reader position will be at the end of the token.
+	 * If the rule fails, the reader will be in an arbitrary position, and must be reset before re-use.  
+	 */
 	boolean evaluate(ICharacterReader reader);
 	
 }

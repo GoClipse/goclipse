@@ -21,9 +21,13 @@ public class CommonLexingRule {
 		return reader.consume(character);
 	}
 	
-	public static boolean notCharacter_norNull(ICharacterReader reader, int character) {
-		int read = reader.read();
-		return read != character && read != 0;
+	public static boolean consumeAnyExceptNullOr(ICharacterReader reader, int character) {
+		int ch = reader.lookahead();
+		if(ch != character && ch != 0) {
+			reader.read();
+			return true;
+		}
+		return false;
 	}
 	
 	public static boolean consumeHexDigit(ICharacterReader reader) {

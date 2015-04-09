@@ -42,6 +42,7 @@ public class CharacterLexingRule_Test {
 		
 		testRule(rule, "'\\xu'", 0);
 		
+		testRule(rule, "'\\uA0'", 6);
 		testRule(rule, "'\\u'", 4);
 		testRule(rule, "'\\u '", 0);
 		testRule(rule, "'\\u\\n'", 0);
