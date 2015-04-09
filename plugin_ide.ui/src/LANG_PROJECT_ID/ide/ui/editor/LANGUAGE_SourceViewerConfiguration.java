@@ -36,13 +36,24 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 	
 	@Override
 	protected void createScanners() {
-		addScanner(new LANGUAGE_CodeScanner(getTokenStoreFactory()), IDocument.DEFAULT_CONTENT_TYPE);
+		addScanner(new LANGUAGE_CodeScanner(getTokenStoreFactory()), 
+			IDocument.DEFAULT_CONTENT_TYPE);
 		
 		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.COMMENTS.key), 
-			LangPartitionTypes.COMMENT);
+			LangPartitionTypes.LINE_COMMENT.getId());
+		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.COMMENTS.key), 
+			LangPartitionTypes.BLOCK_COMMENT.getId());
+		
+		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.DOC_COMMENTS.key), 
+			LangPartitionTypes.DOC_LINE_COMMENT.getId());
+		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.DOC_COMMENTS.key), 
+			LangPartitionTypes.DOC_BLOCK_COMMENT.getId());
 		
 		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.STRINGS.key), 
-			LangPartitionTypes.STRING);
+			LangPartitionTypes.STRING.getId());
+		
+		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.CHARACTER.key), 
+			LangPartitionTypes.CHARACTER.getId());
 	}
 	
 	@Override
