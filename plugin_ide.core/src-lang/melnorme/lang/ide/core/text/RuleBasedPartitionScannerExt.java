@@ -38,7 +38,8 @@ public abstract class RuleBasedPartitionScannerExt extends RuleBasedPartitionSca
 	protected abstract void addRules(ArrayList2<IPredicateRule> rules);
 	
 	/***
-	 * Add some partition rules common to C-style languages
+	 * Add some partition rules common to C-style languages.
+	 * All rules are optional, if an id is null, the rule will not be added.
 	 */
 	protected void addStandardRules(ArrayList2<IPredicateRule> rules, 
 			String lineCommentId, String blockCommentId, 
