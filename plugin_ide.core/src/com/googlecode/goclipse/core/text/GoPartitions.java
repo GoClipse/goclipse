@@ -17,7 +17,7 @@ public interface GoPartitions {
 	String PARTITIONING_ID = "___go_partioning";
 	
 	String LINE_COMMENT = "__comment";
-	String BLOCK_COMMENT = "__comment";
+	String BLOCK_COMMENT = "__block_comment";
 	
 	String CHARACTER = "__character";
 	String STRING = "__string";
