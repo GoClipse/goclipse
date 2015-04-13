@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.ops;
+package melnorme.lang.tooling.ops.util;
 
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;

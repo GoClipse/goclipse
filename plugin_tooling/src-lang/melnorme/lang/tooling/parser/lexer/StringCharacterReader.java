@@ -12,11 +12,19 @@ package melnorme.lang.tooling.parser.lexer;
 
 public class StringCharacterReader implements ICharacterReader {
 	
-	protected final CharSequence source;
+	protected final String source;
 	protected int offset = 0;
 	
-	public StringCharacterReader(CharSequence source) {
+	public StringCharacterReader(String source) {
 		this.source = source;
+	}
+	
+	public String getSource() {
+		return source;
+	}
+	
+	public int getOffset() {
+		return offset;
 	}
 	
 	@Override
@@ -36,6 +44,9 @@ public class StringCharacterReader implements ICharacterReader {
 	
 	@Override
 	public void unread() {
+		if(offset < 0) {
+			return;
+		}
 		offset--;
 	}
 	

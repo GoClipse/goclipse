@@ -50,22 +50,6 @@ public class CommonTestUtils {
 		Assert.equals(obj1, obj2);
 	}
 	
-	/** Helper for interactive debugging: 
-	 * Does the same check as {@link List#equals(Object)}, but fails right on the spot where it's not equal. */
-	public static void assertEquals(List<?> list1, List<?> list2) {
-		if(list1 == null && list2 == null)
-			return;
-		
-		if(list1.size() != list2.size()) {
-			assertFail();
-		}
-		for (int ix = 0; ix < list1.size(); ix++) {
-			Object obj1 = list1.get(ix);
-			Object obj2 = list2.get(ix);
-			assertAreEqual(obj1, obj2);
-		}
-	}
-	
 	public static void assertAreEqual(Object obj1, Object obj2) {
 		assertTrue(CoreUtil.areEqual(obj1, obj2));
 	}
@@ -90,6 +74,26 @@ public class CommonTestUtils {
 	
 	public static <T> void assertContains(T[] array, T obj) {
 		assertTrue(ArrayUtil.contains(array, obj));
+	}
+	
+	public static void assertEquals(List<?> list1, List<?> list2) {
+		assertAreEqualLists(list1, list2);
+	}
+	
+	/** Helper for interactive debugging: 
+	 * Does the same check as {@link List#equals(Object)}, but fails right on the spot where it's not equal. */
+	public static void assertAreEqualLists(List<?> list1, List<?> list2) {
+		if(list1 == null && list2 == null)
+			return;
+		
+		if(list1.size() != list2.size()) {
+			assertFail();
+		}
+		for (int ix = 0; ix < list1.size(); ix++) {
+			Object obj1 = list1.get(ix);
+			Object obj2 = list2.get(ix);
+			assertAreEqual(obj1, obj2);
+		}
 	}
 	
 	public static void assertEqualSet(Set<?> result, Set<?> expected) {

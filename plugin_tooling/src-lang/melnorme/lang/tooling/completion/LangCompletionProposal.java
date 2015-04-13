@@ -10,6 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.tooling.completion;
 
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+import melnorme.utilbox.misc.HashcodeUtil;
+
 
 public class LangCompletionProposal {
 	
@@ -18,11 +21,15 @@ public class LangCompletionProposal {
 	protected final int replaceLength;
 	protected final String label;
 	
-	protected LangCompletionProposal(int completionLocation, String replaceString, int replaceLength, String label) {
+	public LangCompletionProposal(int completionLocation, String replaceString, int replaceLength, String label) {
 		this.completionOffset = completionLocation;
 		this.replaceString = replaceString;
 		this.replaceLength = replaceLength;
 		this.label = label;
+	}
+	
+	public LangCompletionProposal(int completionLocation, String replaceString, int replaceLength) {
+		this(completionLocation, replaceString, replaceLength, replaceString);
 	}
 	
 	public Object getExtraInfo() {
@@ -39,6 +46,30 @@ public class LangCompletionProposal {
 	
 	public int getReplaceLength() {
 		return replaceLength;
+	}
+	
+	@Override
+	public String toString() {
+		return "PROPOSAL: " + "@" + getReplaceStart() + ":" + getReplaceLength() + " " + getReplaceString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(!(obj instanceof LangCompletionProposal)) return false;
+		
+		LangCompletionProposal other = (LangCompletionProposal) obj;
+		
+		return 
+				completionOffset == other.completionOffset &&
+				areEqual(replaceString, other.replaceString) &&
+				replaceLength == other.replaceLength &&
+				areEqual(label, other.label);
+	}
+	
+	@Override
+	public int hashCode() {
+		return HashcodeUtil.combinedHashCode(completionOffset, replaceString, replaceLength);
 	}
 	
 }

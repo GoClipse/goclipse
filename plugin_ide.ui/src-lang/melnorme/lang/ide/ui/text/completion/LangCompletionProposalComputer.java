@@ -14,11 +14,22 @@ package melnorme.lang.ide.ui.text.completion;
 import java.util.Collections;
 import java.util.List;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.tooling.completion.LangCompletionProposal;
+import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.ops.IProcessRunner;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 
@@ -59,9 +70,6 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 		return Collections.EMPTY_LIST;
 	}
 	
-	protected abstract List<ICompletionProposal> doComputeCompletionProposals(
-		LangContentAssistInvocationContext context, int offset) throws CoreException, OperationSoftFailure;	
-	
 	@Override
 	public List<IContextInformation> computeContextInformation(LangContentAssistInvocationContext context) {
 		return Collections.emptyList();
@@ -69,6 +77,60 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 	
 	protected void handleExceptionInUI(CoreException ce) {
 		UIOperationExceptionHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
+	}
+	
+	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
+			int offset) throws CoreException, OperationSoftFailure {
+		
+		try {
+			final IProgressMonitor pm = new TimeoutProgressMonitor(5000);
+			
+			LangCompletionResult result = doInvokeContentAssistEngine(context, offset, pm);
+			
+			if(result.isErrorResult()) {
+				this.errorMessage = result.getErrorMessage();
+				return Collections.EMPTY_LIST; 
+			} else {
+				ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
+				for (LangCompletionProposal proposal : result.getProposals()) {
+					proposals.add(new CompletionProposal(
+						proposal.getReplaceString(),
+						proposal.getReplaceStart(),
+						proposal.getReplaceLength(),
+						proposal.getReplaceString().length()
+					));
+				}
+				
+				return proposals;
+			}
+			
+		} catch (CommonException e) {
+			throw LangCore.createCoreException(e.getMessage(), e.getCause());
+		} catch (OperationCancellation e) {
+			throw LangCore.createCoreException("Timeout invoking content assist.", null);
+		}
+		
+	}
+	
+	protected abstract LangCompletionResult doInvokeContentAssistEngine(LangContentAssistInvocationContext context,
+			int offset, final IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
+	
+	/* -----------------  ----------------- */
+	
+	/** Helper to start processes in the tool manager. */
+	public static class ToolProcessRunner implements IProcessRunner {
+		
+		protected final IProgressMonitor pm;
+		
+		public ToolProcessRunner(IProgressMonitor pm) {
+			this.pm = pm;
+		}
+		
+		@Override
+		public ExternalProcessResult runProcess(ProcessBuilder pb, String input) throws CommonException,
+				OperationCancellation {
+			return LangCore.getToolManager().new RunEngineClientOperation(pb, pm).doRunProcess(input, false);
+		}
 	}
 	
 }
