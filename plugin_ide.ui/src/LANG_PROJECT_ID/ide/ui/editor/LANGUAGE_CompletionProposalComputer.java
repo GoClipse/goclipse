@@ -10,20 +10,21 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import java.util.Collections;
-import java.util.List;
-
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.core.runtime.IProgressMonitor;
 
-final class LANGUAGE_CompletionProposalComputer extends LangCompletionProposalComputer {
+public class LANGUAGE_CompletionProposalComputer extends LangCompletionProposalComputer {
+
 	@Override
-	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
-			int offset) throws CoreException, OperationSoftFailure {
-		return Collections.EMPTY_LIST; // TODO: LANG
+	protected LangCompletionResult doInvokeContentAssistEngine(LangContentAssistInvocationContext context, int offset,
+			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+		return new LangCompletionResult("NOT IMPLEMENTED");
 	}
+	
 }

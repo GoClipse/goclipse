@@ -11,9 +11,9 @@
 package LANG_PROJECT_ID.ide.core.operations;
 
 import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
-import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.LocationValidator;
+import melnorme.lang.tooling.data.SDKLocationValidator;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
