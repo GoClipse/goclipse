@@ -15,7 +15,6 @@ import java.util.Collection;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
-import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -34,6 +33,7 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.tooling.GoBuildOutputProcessor;
 import com.googlecode.goclipse.tooling.GoPackageName;
+import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 
@@ -41,18 +41,6 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
  * Go builder. TODO refactor to use {@link LangProjectBuilderExt}
  */
 public class GoBuilder extends LangProjectBuilderExt {
-	
-	public static class GoSDKLocationValidator extends SDKLocationValidator {
-		
-		public GoSDKLocationValidator() {
-			super("GOROOT:");
-		}
-		
-		@Override
-		protected String getSDKExecutable_append() {
-			return "bin/go"; 
-		}
-	}
 	
 	public GoBuilder() {
 	}

@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Group;
 
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoEnvironmentUtils;
-import com.googlecode.goclipse.core.operations.GoBuilder.GoSDKLocationValidator;
+import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 

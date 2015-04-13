@@ -1,12 +1,16 @@
 package com.googlecode.goclipse.ui.editor;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
+import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -50,18 +54,18 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		}
 		IProject project = getProjectFor(editor);
 		
-		ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
-		
 		try {
 			GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 			
 			// TODO: we should run this operation outside the UI thread.
-			IProgressMonitor pm = new TimeoutProgressMonitor(5000, true);
+			IProgressMonitor pm = new TimeoutProgressMonitor(5000);
 			GocodeClient client = new GocodeClient(gocodePath.toOSString(), goEnvironment, pm);
 			
 			ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), document.get(), offset);
 			String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
 			List<String> completions = new ArrayList2<>(GocodeClient.LINE_SPLITTER.split(stdout));
+			
+			ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
 			
 			for (String completionEntry : completions) {
 				handleResult(offset, /*codeContext,*/ results, prefix, completionEntry);
@@ -74,6 +78,12 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 			throw LangCore.createCoreException("Timeout invoking content assist.", null);
 		}
 		
+	}
+	
+	@Override
+	protected LangCompletionResult doInvokeContentAssistEngine(LangContentAssistInvocationContext context, int offset,
+			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+		throw assertFail();
 	}
 	
 	public static IProject getProjectFor(IEditorPart editor) {
