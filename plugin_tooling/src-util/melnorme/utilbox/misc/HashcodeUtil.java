@@ -42,8 +42,8 @@ public class HashcodeUtil {
 		return result;
 	}
 	
-	/** Combines multiple hash codes to make a new one. */
-	public static int combineHashCodes(Object... objects) {
+	/** Combines hash codes from multiple objects to make a new one. */
+	public static int combinedHashCode(Object... objects) {
 		final int prime = 31;
 		int result = 1;
 		for (Object obj : objects) {

@@ -12,9 +12,9 @@ package melnorme.lang.ide.ui.preferences;
 
 
 import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
-import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.tooling.data.SDKLocationValidator;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
