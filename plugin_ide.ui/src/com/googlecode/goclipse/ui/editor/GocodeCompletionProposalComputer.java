@@ -8,8 +8,8 @@ import java.util.List;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
-import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -39,12 +39,12 @@ import com.googlecode.goclipse.ui.GoUIPlugin;
 public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
 	@Override
-	protected List<ICompletionProposal> computeProposals(LangContentAssistInvocationContext context, int offset,
+	protected List<ICompletionProposal> computeProposals(SourceOperationContext context, int offset,
 			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		
 		IEditorPart editor = context.getEditor_nonNull();
 		Location fileLoc = context.getEditorInputLocation();
-		IDocument document = context.getViewer().getDocument();
+		IDocument document = context.getDocument();
 		
 		String prefix = lastWord(document, offset);
 		
@@ -75,7 +75,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 	}
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(LangContentAssistInvocationContext context, int offset,
+	protected LangCompletionResult doComputeProposals(SourceOperationContext context, int offset,
 			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		throw assertFail();
 	}

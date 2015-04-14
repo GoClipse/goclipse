@@ -8,12 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text.completion;
+package melnorme.lang.ide.ui.editor.actions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.runtime.CoreException;
@@ -21,24 +23,27 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.texteditor.ITextEditor;
 
-public class LangContentAssistInvocationContext {
+public class SourceOperationContext {
 	
 	protected final ITextViewer viewer;
-	protected final int offset;
+	protected final SourceRange range;
 	protected final IDocument document;
 	protected final IEditorPart editor; // can be null
 	
-	public LangContentAssistInvocationContext(ITextViewer viewer, int offset, IEditorPart editor) {
-		this.viewer = assertNotNull(viewer);
-		this.offset = offset;
-		this.document = assertNotNull(viewer.getDocument());
-		
-		this.editor = editor;
+	public SourceOperationContext(ITextViewer viewer, int offset, ITextEditor editor) {
+		this(viewer, SourceRange.srStartToEnd(offset, offset), editor);
 	}
 	
-	public ITextViewer getViewer() {
-		return viewer;
+	public SourceOperationContext(ITextViewer viewer, SourceRange range, ITextEditor editor) {
+		this.range = range;
+		this.viewer = viewer;
+		this.editor = editor;
+		assertTrue(viewer != null || editor != null);
+		this.document = viewer != null ? viewer.getDocument() : EditorUtils.getEditorDocument(editor);
+		
+		assertNotNull(document);
 	}
 	
 	public IDocument getDocument() {
@@ -46,12 +51,23 @@ public class LangContentAssistInvocationContext {
 	}
 	
 	public int getInvocationOffset() {
-		return offset;
+		return range.getOffset();
 	}
 	
-	/** @return the editor for this context, or null if none. */
 	public IEditorPart getEditor_maybeNull() {
 		return editor;
+	}
+	
+	public IEditorPart getViewer_maybeNull() {
+		return editor;
+	}
+	
+	
+	public ITextViewer getViewer_nonNull() throws CoreException {
+		if(viewer == null) {
+			throw LangCore.createCoreException("Error, no viewer available.", null);
+		}
+		return viewer;
 	}
 	
 	public IEditorPart getEditor_nonNull() throws CoreException {

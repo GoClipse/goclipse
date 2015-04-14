@@ -19,6 +19,7 @@ import java.util.List;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -35,22 +36,22 @@ import org.eclipse.jface.text.contentassist.IContentAssistantExtension2;
 import org.eclipse.jface.text.contentassist.IContentAssistantExtension3;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	protected final ContentAssistant contentAssistant;
-	protected final IEditorPart editor; // can be null
+	protected final ITextEditor editor; // can be null
 	protected final Indexable<CompletionProposalsGrouping> categories;
 	
 	public LangContentAssistProcessor(ContentAssistant contentAssistant, 
-			IEditorPart fEditor, Indexable<CompletionProposalsGrouping> groupings) {
+			ITextEditor editor, Indexable<CompletionProposalsGrouping> groupings) {
 		this.contentAssistant = assertNotNull(contentAssistant);
-		this.editor = fEditor;
+		this.editor = editor;
 		this.categories = groupings;
 		assertTrue(categories != null && categories.size() > 0);
 		
@@ -195,13 +196,13 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	/* -----------------  ----------------- */
 	
-	protected LangContentAssistInvocationContext createContext(ITextViewer viewer, int offset) {
-		return new LangContentAssistInvocationContext(viewer, offset, editor);
+	protected SourceOperationContext createContext(ITextViewer viewer, int offset) {
+		return new SourceOperationContext(viewer, offset, editor);
 	}
 	
 	@Override
 	protected ICompletionProposal[] doComputeCompletionProposals(ITextViewer viewer, int offset) {
-		LangContentAssistInvocationContext context = createContext(viewer, offset);
+		SourceOperationContext context = createContext(viewer, offset);
 		
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;
@@ -214,7 +215,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	@Override
 	protected IContextInformation[] doComputeContextInformation(ITextViewer viewer, int offset) {
-		LangContentAssistInvocationContext context = createContext(viewer, offset);
+		SourceOperationContext context = createContext(viewer, offset);
 		
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;

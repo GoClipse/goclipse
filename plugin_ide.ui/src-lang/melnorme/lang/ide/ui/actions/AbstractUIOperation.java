@@ -17,10 +17,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.concurrent.CancellationException;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -95,7 +97,7 @@ public abstract class AbstractUIOperation {
 	protected void performLongRunningComputation_inCurrentThread() throws CoreException, OperationCancellation {
 		// Perform computation directly in this thread, cancellation won't be possible.
 		NullProgressMonitor monitor = new NullProgressMonitor();
-		performLongRunningComputation_do(monitor);
+		performLongRunningComputation_do_adapted(monitor);
 	}
 	
 	protected void performLongRunningComputation_usingProgressDialog() throws OperationCancellation, CoreException {
@@ -131,7 +133,7 @@ public abstract class AbstractUIOperation {
 	protected void performLongRunningComputation_inWorkerThread(IProgressMonitor monitor) 
 			throws OperationCancellation, InvocationTargetException {
 		try {
-			performLongRunningComputation_do(monitor);
+			performLongRunningComputation_do_adapted(monitor);
 		} catch (CoreException ce) {
 			if(monitor.isCanceled()) {
 				throw new OperationCancellation();
@@ -145,8 +147,17 @@ public abstract class AbstractUIOperation {
 		}
 	}
 	
+	protected void performLongRunningComputation_do_adapted(IProgressMonitor monitor) 
+			throws CoreException, OperationCancellation {
+		try {
+			performLongRunningComputation_do(monitor);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
+	}
+	
 	protected abstract void performLongRunningComputation_do(IProgressMonitor monitor) 
-			throws CoreException, OperationCancellation;
+			throws CoreException, CommonException, OperationCancellation;
 	
 	protected abstract void performOperation_handleResult() throws CoreException;
 	

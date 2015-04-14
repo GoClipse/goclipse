@@ -12,6 +12,8 @@ package melnorme.lang.ide.ui.text.completion;
 
 import java.util.List;
 
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 
@@ -19,9 +21,9 @@ public interface ILangCompletionProposalComputer {
 	
 	void sessionStarted();
 	
-	List<ICompletionProposal> computeCompletionProposals(LangContentAssistInvocationContext context);
+	List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context);
 	
-	List<IContextInformation> computeContextInformation(LangContentAssistInvocationContext context);
+	List<IContextInformation> computeContextInformation(SourceOperationContext context);
 	
 	void sessionEnded();
 	
