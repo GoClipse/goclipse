@@ -56,13 +56,21 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 	
 	/* -----------------  ----------------- */
 	
+	protected void handleExceptionInUI(CommonException ce) {
+		UIOperationExceptionHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
+	}
+	
 	@Override
 	public List<ICompletionProposal> computeCompletionProposals(LangContentAssistInvocationContext context) {
 		errorMessage = null;
 		
 		try {
-			return doComputeCompletionProposals(context, context.getInvocationOffset());
-		} catch (CoreException ce) {
+			try {
+				return doComputeCompletionProposals(context, context.getInvocationOffset());
+			} catch (CoreException ce) {
+				throw new CommonException(ce.getMessage(), ce.getCause());
+			}
+		} catch (CommonException ce) {
 			handleExceptionInUI(ce);
 		} catch (OperationSoftFailure e) {
 			errorMessage = e.getMessage();
@@ -75,47 +83,55 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 		return Collections.emptyList();
 	}
 	
-	protected void handleExceptionInUI(CoreException ce) {
-		UIOperationExceptionHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
-	}
-	
 	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
-			int offset) throws CoreException, OperationSoftFailure {
+			int offset) throws CoreException, CommonException, OperationSoftFailure {
 		
+		final TimeoutProgressMonitor pm = new TimeoutProgressMonitor(5000);
 		try {
-			final IProgressMonitor pm = new TimeoutProgressMonitor(5000);
 			
-			LangCompletionResult result = doInvokeContentAssistEngine(context, offset, pm);
+			return computeProposals(context, offset, pm);
 			
-			if(result.isErrorResult()) {
-				this.errorMessage = result.getErrorMessage();
-				return Collections.EMPTY_LIST; 
-			} else {
-				ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
-				for (LangCompletionProposal proposal : result.getProposals()) {
-					proposals.add(new CompletionProposal(
-						proposal.getReplaceString(),
-						proposal.getReplaceStart(),
-						proposal.getReplaceLength(),
-						proposal.getReplaceString().length()
-					));
-				}
-				
-				return proposals;
-			}
-			
-		} catch (CommonException e) {
-			throw LangCore.createCoreException(e.getMessage(), e.getCause());
 		} catch (OperationCancellation e) {
-			throw LangCore.createCoreException("Timeout invoking content assist.", null);
+			if(pm.isCanceled()) {
+				throw new CommonException(LangUIMessages.ContentAssist_Timeout);
+			}
+			// This shouldn't be possible in most concrete implementations,
+			// as OperationCancellation should only occur when the timeout is reached.
+			throw new OperationSoftFailure(LangUIMessages.ContentAssist_Cancelled); 
 		}
 		
 	}
 	
-	protected abstract LangCompletionResult doInvokeContentAssistEngine(LangContentAssistInvocationContext context,
-			int offset, final IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
+	protected List<ICompletionProposal> computeProposals(LangContentAssistInvocationContext context, int offset,
+			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+		LangCompletionResult result = doComputeProposals(context, offset, pm);
+		
+		if(result.isErrorResult()) {
+			this.errorMessage = result.getErrorMessage();
+			return Collections.EMPTY_LIST;
+		} else {
+			ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
+			for (LangCompletionProposal proposal : result.getProposals()) {
+				proposals.add(new CompletionProposal(
+					proposal.getReplaceString(),
+					proposal.getReplaceStart(),
+					proposal.getReplaceLength(),
+					proposal.getReplaceString().length()
+				));
+			}
+			
+			return proposals;
+		}
+	}
+	
+	protected abstract LangCompletionResult doComputeProposals(LangContentAssistInvocationContext context,
+			int offset, TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
+	
+	protected ToolProcessRunner getProcessRunner(IProgressMonitor pm) {
+		return new ToolProcessRunner(pm);
+	}
 	
 	/** Helper to start processes in the tool manager. */
 	public static class ToolProcessRunner implements IProcessRunner {

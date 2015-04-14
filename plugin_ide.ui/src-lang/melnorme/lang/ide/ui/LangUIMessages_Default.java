@@ -17,6 +17,11 @@ package melnorme.lang.ide.ui;
 	
 	
 	
+	String ContentAssist_Timeout = 
+			"Timeout invoking content assist.";
+	String ContentAssist_Cancelled = 
+			"Cancelled.";
+	
 	String ContentAssistProcessor_opName = "Content Assist";
 	
 	String ContentAssistProcessor_emptyDefaultProposals = "No proposals";
