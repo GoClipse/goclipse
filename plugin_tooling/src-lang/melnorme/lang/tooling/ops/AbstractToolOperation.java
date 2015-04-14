@@ -12,14 +12,20 @@ package melnorme.lang.tooling.ops;
 
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 
 public abstract class AbstractToolOperation<RESULT> {
 	
-	public AbstractToolOperation() {
-		super();
+	protected final IProcessRunner processRunner;
+	
+	public AbstractToolOperation(IProcessRunner processRunner) {
+		this.processRunner = processRunner;
 	}
 	
-	public abstract RESULT execute() throws CommonException, OperationCancellation;
+	protected ExternalProcessResult runToolProcess(ProcessBuilder pb, String input) 
+			throws CommonException, OperationCancellation {
+		return processRunner.runProcess(pb, input);
+	};
 	
 }
