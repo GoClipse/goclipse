@@ -17,12 +17,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class TimeoutProgressMonitor implements IProgressMonitor {
 	
-	protected int timeoutMs;
-	protected long startTimeMs = -1;
+	protected int timeoutMillis;
+	protected long startTimeMillis = -1;
 	
-	public TimeoutProgressMonitor(int timeoutMs) {
-		this.timeoutMs = timeoutMs;
-		this.startTimeMs = System.currentTimeMillis();
+	public TimeoutProgressMonitor(int timeoutMillis) {
+		this.timeoutMillis = timeoutMillis;
+		this.startTimeMillis = System.currentTimeMillis();
+	}
+	
+	public int getTimeoutMillis() {
+		return timeoutMillis;
 	}
 	
 	@Override
@@ -31,7 +35,7 @@ public class TimeoutProgressMonitor implements IProgressMonitor {
 	
 	@Override
 	public boolean isCanceled() {
-		return System.currentTimeMillis() - startTimeMs > timeoutMs;
+		return System.currentTimeMillis() - startTimeMillis > timeoutMillis;
 	}
 	
 	@Override
@@ -45,7 +49,7 @@ public class TimeoutProgressMonitor implements IProgressMonitor {
 	@Override
 	public void setCanceled(boolean value) {
 		if(value) {
-			timeoutMs = 0;
+			timeoutMillis = 0;
 		}
 	}
 	

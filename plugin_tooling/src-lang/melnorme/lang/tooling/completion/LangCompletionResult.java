@@ -11,12 +11,14 @@
 package melnorme.lang.tooling.completion;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling._actual.ToolCompletionProposal;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.Indexable;
 
 public class LangCompletionResult {
 	
 	protected final String errorMessage;
-	protected final Indexable<LangCompletionProposal> proposals;
+	protected final Indexable<ToolCompletionProposal> proposals;
 	
 	public LangCompletionResult(String errorMessage) {
 		super();
@@ -24,7 +26,7 @@ public class LangCompletionResult {
 		this.proposals = null;
 	}
 	
-	public LangCompletionResult(Indexable<LangCompletionProposal> proposals) {
+	public LangCompletionResult(Indexable<ToolCompletionProposal> proposals) {
 		this.errorMessage = null;
 		this.proposals = proposals;
 	}
@@ -37,8 +39,16 @@ public class LangCompletionResult {
 		return errorMessage;
 	}
 	
-	public Indexable<LangCompletionProposal> getProposals() {
+	protected Indexable<ToolCompletionProposal> getProposals() {
 		return proposals;
+	}
+	
+	public Indexable<ToolCompletionProposal> getValidatedProposals() throws OperationSoftFailure {
+		if(isErrorResult()) {
+			throw new OperationSoftFailure(getErrorMessage());
+		}
+		
+		return getProposals();
 	}
 	
 }

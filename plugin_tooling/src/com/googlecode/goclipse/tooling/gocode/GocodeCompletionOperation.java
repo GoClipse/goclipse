@@ -22,7 +22,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 
-public class GocodeCompletionOperation extends AbstractToolOperation<ExternalProcessResult>{
+public class GocodeCompletionOperation extends AbstractToolOperation {
 	
 	public static final boolean USE_TCP = true;
 	

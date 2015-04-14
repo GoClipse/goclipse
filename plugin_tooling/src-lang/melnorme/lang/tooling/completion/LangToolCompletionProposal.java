@@ -14,26 +14,21 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.utilbox.misc.HashcodeUtil;
 
 
-public class LangCompletionProposal {
+public abstract class LangToolCompletionProposal<EXTRA> {
 	
 	protected final int completionOffset;
 	protected final String replaceString;
 	protected final int replaceLength;
 	protected final String label;
+	protected final EXTRA extraData;
 	
-	public LangCompletionProposal(int completionLocation, String replaceString, int replaceLength, String label) {
+	public LangToolCompletionProposal(int completionLocation, String replaceString, int replaceLength, String label,
+			EXTRA extraData) {
 		this.completionOffset = completionLocation;
 		this.replaceString = replaceString;
 		this.replaceLength = replaceLength;
 		this.label = label;
-	}
-	
-	public LangCompletionProposal(int completionLocation, String replaceString, int replaceLength) {
-		this(completionLocation, replaceString, replaceLength, replaceString);
-	}
-	
-	public Object getExtraInfo() {
-		return null;
+		this.extraData = extraData;
 	}
 	
 	public String getReplaceString() {
@@ -48,6 +43,10 @@ public class LangCompletionProposal {
 		return replaceLength;
 	}
 	
+	public EXTRA getExtraData() {
+		return extraData;
+	}
+	
 	@Override
 	public String toString() {
 		return "PROPOSAL: " + "@" + getReplaceStart() + ":" + getReplaceLength() + " " + getReplaceString();
@@ -56,16 +55,19 @@ public class LangCompletionProposal {
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
-		if(!(obj instanceof LangCompletionProposal)) return false;
+		if(!(obj instanceof LangToolCompletionProposal)) return false;
 		
-		LangCompletionProposal other = (LangCompletionProposal) obj;
+		LangToolCompletionProposal<?> other = (LangToolCompletionProposal<?>) obj;
 		
 		return 
 				completionOffset == other.completionOffset &&
 				areEqual(replaceString, other.replaceString) &&
 				replaceLength == other.replaceLength &&
-				areEqual(label, other.label);
+				areEqual(label, other.label) &&
+				subclassEquals(other);
 	}
+	
+	protected abstract boolean subclassEquals(LangToolCompletionProposal<?> other);
 	
 	@Override
 	public int hashCode() {

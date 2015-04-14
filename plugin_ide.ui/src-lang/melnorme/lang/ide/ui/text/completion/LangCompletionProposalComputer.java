@@ -18,11 +18,12 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.lang.tooling.completion.LangCompletionProposal;
+import melnorme.lang.tooling._actual.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.ops.IProcessRunner;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -103,25 +104,23 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 	}
 	
 	protected List<ICompletionProposal> computeProposals(LangContentAssistInvocationContext context, int offset,
-			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+			TimeoutProgressMonitor pm)
+			throws CoreException, CommonException, OperationCancellation, OperationSoftFailure
+	{
 		LangCompletionResult result = doComputeProposals(context, offset, pm);
+		Indexable<ToolCompletionProposal> resultProposals = result.getValidatedProposals();
 		
-		if(result.isErrorResult()) {
-			this.errorMessage = result.getErrorMessage();
-			return Collections.EMPTY_LIST;
-		} else {
-			ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
-			for (LangCompletionProposal proposal : result.getProposals()) {
-				proposals.add(new CompletionProposal(
-					proposal.getReplaceString(),
-					proposal.getReplaceStart(),
-					proposal.getReplaceLength(),
-					proposal.getReplaceString().length()
-				));
-			}
-			
-			return proposals;
+		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
+		for (ToolCompletionProposal proposal : resultProposals) {
+			proposals.add(new CompletionProposal(
+				proposal.getReplaceString(),
+				proposal.getReplaceStart(),
+				proposal.getReplaceLength(),
+				proposal.getReplaceString().length()
+			));
 		}
+		
+		return proposals;
 	}
 	
 	protected abstract LangCompletionResult doComputeProposals(LangContentAssistInvocationContext context,

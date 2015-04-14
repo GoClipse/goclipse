@@ -18,6 +18,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -37,6 +38,7 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.keys.IBindingService;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
 public class LangContentAssistProcessor extends ContenAssistProcessorExt {
@@ -204,8 +206,8 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;
 		
-		List<ICompletionProposal> proposals= cat.computeCompletionProposals(context);
-		errorMessage = cat.getErrorMessage();
+		List<ICompletionProposal> proposals = cat.computeCompletionProposals(context);
+		setAndDisplayErrorMessage(cat.getErrorMessage());
 		
 		return ArrayUtil.createFrom(proposals, ICompletionProposal.class);
 	}
@@ -217,8 +219,8 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;
 		
-		List<IContextInformation> proposals= cat.computeContextInformation(context);
-		errorMessage = cat.getErrorMessage();
+		List<IContextInformation> proposals = cat.computeContextInformation(context);
+		setAndDisplayErrorMessage(cat.getErrorMessage());
 
 		return ArrayUtil.createFrom(proposals, IContextInformation.class);
 	}
@@ -226,6 +228,14 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	@Override
 	public IContextInformationValidator getContextInformationValidator() {
 		return null; // TODO: need to add proper support for this
+	}
+	
+	protected void setAndDisplayErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+		if(editor instanceof AbstractTextEditor) {
+			AbstractTextEditor abstractTextEditor = (AbstractTextEditor) editor;
+			EditorUtils.setStatusLineErrorMessage(abstractTextEditor, errorMessage, null);
+		}
 	}
 	
 	/* ----------------- Messages ----------------- */
