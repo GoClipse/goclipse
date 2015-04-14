@@ -112,15 +112,19 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 		
 		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
 		for (ToolCompletionProposal proposal : resultProposals) {
-			proposals.add(new CompletionProposal(
-				proposal.getReplaceString(),
-				proposal.getReplaceStart(),
-				proposal.getReplaceLength(),
-				proposal.getReplaceString().length()
-			));
+			proposals.add(adaptToolProposal(proposal));
 		}
 		
 		return proposals;
+	}
+	
+	protected ICompletionProposal adaptToolProposal(ToolCompletionProposal proposal) {
+		return new CompletionProposal(
+			proposal.getReplaceString(),
+			proposal.getReplaceStart(),
+			proposal.getReplaceLength(),
+			proposal.getReplaceString().length()
+		);
 	}
 	
 	protected abstract LangCompletionResult doComputeProposals(LangContentAssistInvocationContext context,
