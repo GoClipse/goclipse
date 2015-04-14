@@ -10,17 +10,18 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 
-public abstract class AbstractToolOperation<RESULT> {
+public abstract class AbstractToolOperation {
 	
 	protected final IProcessRunner processRunner;
 	
 	public AbstractToolOperation(IProcessRunner processRunner) {
-		this.processRunner = processRunner;
+		this.processRunner = assertNotNull(processRunner);
 	}
 	
 	protected ExternalProcessResult runToolProcess(ProcessBuilder pb, String input) 
