@@ -21,7 +21,6 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
@@ -31,16 +30,17 @@ import org.eclipse.ui.IEditorPart;
 
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
+import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoUIPlugin;
-import com.googlecode.goclipse.ui.actions.GocodeClient;
 
 public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
 	@Override
-	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
-			int offset) throws CoreException {
+	protected List<ICompletionProposal> computeProposals(LangContentAssistInvocationContext context, int offset,
+			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		
 		IEditorPart editor = context.getEditor_nonNull();
 		Location fileLoc = context.getEditorInputLocation();
@@ -48,41 +48,35 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		
 		String prefix = lastWord(document, offset);
 		
-		IPath gocodePath = GoUIPlugin.prepareGocodeManager_inUI().getGocodePath();
+		GoUIPlugin.prepareGocodeManager_inUI();
+		IPath gocodePath = GocodeServerManager.getGocodePath();
 		if (gocodePath == null) {
 			throw LangCore.createCoreException("Error: gocode path not provided.", null);
 		}
 		IProject project = getProjectFor(editor);
 		
-		try {
-			GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
-			
-			// TODO: we should run this operation outside the UI thread.
-			IProgressMonitor pm = new TimeoutProgressMonitor(5000);
-			GocodeClient client = new GocodeClient(gocodePath.toOSString(), goEnvironment, pm);
-			
-			ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), document.get(), offset);
-			String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
-			List<String> completions = new ArrayList2<>(GocodeClient.LINE_SPLITTER.split(stdout));
-			
-			ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
-			
-			for (String completionEntry : completions) {
-				handleResult(offset, /*codeContext,*/ results, prefix, completionEntry);
-			}
-			
-			return results;
-		} catch (CommonException e) {
-			throw LangCore.createCoreException(e.getMessage(), e.getCause());
-		} catch (OperationCancellation e) {
-			throw LangCore.createCoreException("Timeout invoking content assist.", null);
+		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
+		
+		// TODO: we should run this operation outside the UI thread.
+		GocodeCompletionOperation client = new GocodeCompletionOperation(
+			getProcessRunner(pm), goEnvironment, gocodePath.toOSString());
+		
+		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), document.get(), offset);
+		String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
+		List<String> completions = new ArrayList2<>(GocodeCompletionOperation.LINE_SPLITTER.split(stdout));
+		
+		ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
+		
+		for (String completionEntry : completions) {
+			handleResult(offset, /*codeContext,*/ results, prefix, completionEntry);
 		}
 		
+		return results;
 	}
 	
 	@Override
-	protected LangCompletionResult doInvokeContentAssistEngine(LangContentAssistInvocationContext context, int offset,
-			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+	protected LangCompletionResult doComputeProposals(LangContentAssistInvocationContext context, int offset,
+			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		throw assertFail();
 	}
 	
@@ -136,6 +130,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 			
 			Image image = GoPluginImages.SOURCE_OTHER.getImage();
 			String substr = identifier.substring(prefix.length());
+			@SuppressWarnings("unused")
 			int replacementLength = identifier.length() - prefix.length();
 			
 			if (descriptiveString != null && descriptiveString.contains(" : func")) {

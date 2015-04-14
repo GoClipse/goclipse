@@ -12,6 +12,8 @@ package com.googlecode.goclipse.tooling.gocode;
 
 import java.util.regex.Pattern;
 
+import melnorme.lang.tooling.ops.AbstractToolOperation;
+import melnorme.lang.tooling.ops.IProcessRunner;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -20,14 +22,15 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 
-public abstract class GocodeCompletionOperation {
+public class GocodeCompletionOperation extends AbstractToolOperation<ExternalProcessResult>{
 	
 	public static final boolean USE_TCP = true;
 	
 	protected final GoEnvironment goEnvironment;
 	protected final String gocodePath;
 	
-	public GocodeCompletionOperation(GoEnvironment goEnvironment, String gocodePath) {
+	public GocodeCompletionOperation(IProcessRunner processRunner, GoEnvironment goEnvironment, String gocodePath) {
+		super(processRunner);
 		this.goEnvironment = goEnvironment;
 		this.gocodePath = gocodePath;
 	}
@@ -45,7 +48,7 @@ public abstract class GocodeCompletionOperation {
 		
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
-		runGocodeProcess(pb, null);
+		runToolProcess(pb, null);
 	}
 	
 	public ExternalProcessResult execute(String filePath, String bufferText, int offset) 
@@ -65,7 +68,7 @@ public abstract class GocodeCompletionOperation {
 		
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
-		ExternalProcessResult processResult = runGocodeProcess(pb, bufferText);
+		ExternalProcessResult processResult = runToolProcess(pb, bufferText);
 		
 		if(processResult.exitValue != 0) {
 			throw new CommonException("Error, gocode returned non-zero status: " + processResult.exitValue);
@@ -73,9 +76,6 @@ public abstract class GocodeCompletionOperation {
 		
 		return processResult;
 	}
-	
-	protected abstract ExternalProcessResult runGocodeProcess(ProcessBuilder pb, String input) 
-			throws CommonException, OperationCancellation;
 	
 	// TODO: move the code that process gocode result to here
 	
