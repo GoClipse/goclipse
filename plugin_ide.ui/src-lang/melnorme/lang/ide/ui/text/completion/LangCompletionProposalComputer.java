@@ -14,19 +14,18 @@ package melnorme.lang.ide.ui.text.completion;
 import java.util.Collections;
 import java.util.List;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.tools.ToolProcessRunner;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling._actual.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
-import melnorme.lang.tooling.ops.IProcessRunner;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -62,7 +61,7 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 	}
 	
 	@Override
-	public List<ICompletionProposal> computeCompletionProposals(LangContentAssistInvocationContext context) {
+	public List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) {
 		errorMessage = null;
 		
 		try {
@@ -80,11 +79,11 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 	}
 	
 	@Override
-	public List<IContextInformation> computeContextInformation(LangContentAssistInvocationContext context) {
+	public List<IContextInformation> computeContextInformation(SourceOperationContext context) {
 		return Collections.emptyList();
 	}
 	
-	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
+	protected List<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context,
 			int offset) throws CoreException, CommonException, OperationSoftFailure {
 		
 		final TimeoutProgressMonitor pm = new TimeoutProgressMonitor(5000);
@@ -103,7 +102,7 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 		
 	}
 	
-	protected List<ICompletionProposal> computeProposals(LangContentAssistInvocationContext context, int offset,
+	protected List<ICompletionProposal> computeProposals(SourceOperationContext context, int offset,
 			TimeoutProgressMonitor pm)
 			throws CoreException, CommonException, OperationCancellation, OperationSoftFailure
 	{
@@ -127,29 +126,13 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 		);
 	}
 	
-	protected abstract LangCompletionResult doComputeProposals(LangContentAssistInvocationContext context,
+	protected abstract LangCompletionResult doComputeProposals(SourceOperationContext context,
 			int offset, TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
 	
 	protected ToolProcessRunner getProcessRunner(IProgressMonitor pm) {
 		return new ToolProcessRunner(pm);
-	}
-	
-	/** Helper to start processes in the tool manager. */
-	public static class ToolProcessRunner implements IProcessRunner {
-		
-		protected final IProgressMonitor pm;
-		
-		public ToolProcessRunner(IProgressMonitor pm) {
-			this.pm = pm;
-		}
-		
-		@Override
-		public ExternalProcessResult runProcess(ProcessBuilder pb, String input) throws CommonException,
-				OperationCancellation {
-			return LangCore.getToolManager().new RunEngineClientOperation(pb, pm).doRunProcess(input, false);
-		}
 	}
 	
 }

@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.text.completion;
 
 import java.util.List;
 
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 
@@ -87,7 +88,7 @@ public class CompletionProposalsGrouping implements ILangCompletionProposalCompu
 	}
 	
 	@Override
-	public List<ICompletionProposal> computeCompletionProposals(LangContentAssistInvocationContext context) {
+	public List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) {
 		clearErrorMessage();
 		
 		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
@@ -104,7 +105,7 @@ public class CompletionProposalsGrouping implements ILangCompletionProposalCompu
 	}
 	
 	@Override
-	public List<IContextInformation> computeContextInformation(LangContentAssistInvocationContext context) {
+	public List<IContextInformation> computeContextInformation(SourceOperationContext context) {
 		clearErrorMessage();
 		
 		ArrayList2<IContextInformation> proposals = new ArrayList2<>();
