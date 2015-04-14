@@ -10,6 +10,7 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
+import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import melnorme.lang.tooling.completion.LangCompletionResult;
@@ -17,13 +18,12 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 public class LANGUAGE_CompletionProposalComputer extends LangCompletionProposalComputer {
-
+	
 	@Override
-	protected LangCompletionResult doInvokeContentAssistEngine(LangContentAssistInvocationContext context, int offset,
-			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+	protected LangCompletionResult doComputeProposals(LangContentAssistInvocationContext context, int offset,
+			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		return new LangCompletionResult("NOT IMPLEMENTED");
 	}
 	
