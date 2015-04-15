@@ -10,6 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops;
 
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+import melnorme.utilbox.misc.HashcodeUtil;
+
 
 public class FindDefinitionResult {
 	
@@ -43,6 +46,36 @@ public class FindDefinitionResult {
 	
 	public SourceLineColumnRange getLocation() {
 		return location;
+	}
+	
+	@Override
+	public String toString() {
+		if(errorMessage != null) {
+			return "ResolveResult["+errorMessage+"]";
+		}
+		
+		return "ResolveResult[" + 
+			(infoMessage != null ? infoMessage +"," : "") +
+			location.toString() + 
+			"]";
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(!(obj instanceof FindDefinitionResult)) return false;
+		
+		FindDefinitionResult other = (FindDefinitionResult) obj;
+		
+		return 
+				areEqual(errorMessage, other.errorMessage) &&
+				areEqual(infoMessage, other.infoMessage) &&
+				areEqual(location, other.location);
+	}
+	
+	@Override
+	public int hashCode() {
+		return HashcodeUtil.combinedHashCode(errorMessage, infoMessage, location);
 	}
 	
 }

@@ -43,7 +43,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		runInvalidSyntaxTest();
 	}
 	
-	protected void runTest() {
+	protected void runTest() throws CommonException {
 		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor() {
 			@Override
 			protected void handleLineParseError(CommonException ce) {
@@ -85,7 +85,8 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 			OUTPUTB_Errors);
 	}
 	
-	protected void testParseError(GoBuildOutputProcessor buildProcessor, String stderr, List<?> expected) {
+	protected void testParseError(GoBuildOutputProcessor buildProcessor, String stderr, List<?> expected) 
+			throws CommonException {
 		buildProcessor.parseMessages(stderr);
 		assertEquals(buildProcessor.getBuildErrors(), expected);
 	}
@@ -98,7 +99,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		);
 	}
 	
-	protected void runInvalidSyntaxTest() {
+	protected void runInvalidSyntaxTest() throws CommonException {
 		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor() {
 			@Override
 			protected void handleLineParseError(CommonException ce) {

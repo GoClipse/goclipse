@@ -19,7 +19,7 @@ import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.tools.ToolProcessRunner;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.lang.tooling._actual.ToolCompletionProposal;
+import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.ArrayList2;

@@ -119,7 +119,8 @@ public class GoBuilder extends LangProjectBuilderExt {
 		}
 		
 		@Override
-		protected void doBuild_processBuildResult(ExternalProcessResult buildAllResult) throws CoreException {
+		protected void doBuild_processBuildResult(ExternalProcessResult buildAllResult) 
+				throws CoreException, CommonException {
 			GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 				@Override
 				protected void handleLineParseError(CommonException ce) {

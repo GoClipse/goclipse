@@ -33,7 +33,7 @@ public class ParseHelper {
 		try {
 			return Integer.parseInt(str);
 		} catch (NumberFormatException e) {
-			throw new CommonException("Invalid integer: " + str);
+			throw new CommonException("Invalid integer: `" + str + "`");
 		}
 	}
 	

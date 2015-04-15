@@ -8,20 +8,19 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling._actual;
+package melnorme.lang.tooling;
 
-import melnorme.lang.tooling.completion.LangToolCompletionProposal;
+import java.text.MessageFormat;
 
-public class ToolCompletionProposal extends LangToolCompletionProposal<Void> {
+/** Only {@link ToolingMessages} should refer to this class. */
+class ToolingMessages_Default {
 	
-	public ToolCompletionProposal(int completionLocation, String replaceString, int replaceLength, String label,
-			Void extraData) {
-		super(completionLocation, replaceString, replaceLength, label, extraData);
-	}
+	public static String FIND_DEFINITION_NoTargetFound = "No target found.";
 	
-	@Override
-	protected boolean subclassEquals(LangToolCompletionProposal<?> other) {
-		return true;
+	public static String FIND_DEFINITION_ToolError = "Error: ";
+	
+	public static String TOOLS_ExitedWithNonZeroStatus(int exitValue) {
+		return MessageFormat.format("Tool exited with non-zero status: {0}", exitValue);
 	}
 	
 }
