@@ -26,16 +26,16 @@ public class SourceLineColumnRange {
 	public final int endLine; // 1-based index
 	public final int endColumn; // 1-based index
 	
-	public SourceLineColumnRange(Path path, int line, int column, int endLine, int endColumn) {
+	public SourceLineColumnRange(Path path, int line_1, int column_1, int endLine, int endColumn) {
 		this.path = assertNotNull(path);
-		this.line = line;
-		this.column = column;
+		this.line = line_1;
+		this.column = column_1;
 		this.endLine = endLine;
 		this.endColumn = endColumn;
 	}
 	
-	public SourceLineColumnRange(Path path, int line, int column) {
-		this(path, line, column, -1, -1);
+	public SourceLineColumnRange(Path path, int line_1, int column_1) {
+		this(path, line_1, column_1, -1, -1);
 	}
 	
 	public int getLineIndex() {

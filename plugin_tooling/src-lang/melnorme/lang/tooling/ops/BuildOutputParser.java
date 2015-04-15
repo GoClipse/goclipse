@@ -19,32 +19,37 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.lang.utils.ParseHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 
-public abstract class BuildOutputParser extends ParseHelper {
+public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayList<ToolSourceMessage>> {
 	
 	protected ArrayList2<ToolSourceMessage> buildMessages;
 	
 	public BuildOutputParser() {
 	}
 	
-	public ArrayList<ToolSourceMessage> parseOutput(ExternalProcessResult buildAllResult) {
-		String stdErr = buildAllResult.getStdErrBytes().toString(StringUtil.UTF8);
-		
-		return parseMessages(stdErr);
-	}
-	
 	public ArrayList2<ToolSourceMessage> getBuildMessages() {
 		return buildMessages;
 	}
 	
-	public ArrayList<ToolSourceMessage> parseMessages(String stderr) {
-		StringReader sr = new StringReader(stderr);
+	public ArrayList<ToolSourceMessage> parseOutput(ExternalProcessResult buildResult) throws CommonException {
+		return doParse(buildResult);
+	}
+	@Override
+	protected ArrayList<ToolSourceMessage> doParse(ExternalProcessResult result) throws CommonException {
+		return parse(result.getStdErrBytes().toString(StringUtil.UTF8));
+	}
+	
+	public ArrayList<ToolSourceMessage> parseMessages(String stderr) throws CommonException {
+		return parse(stderr);
+	}
+	@Override
+	protected ArrayList<ToolSourceMessage> parse(String input) throws CommonException {
+		StringReader sr = new StringReader(input);
 		try {
 			return parseMessages(sr);
 		} catch (IOException e) {
@@ -85,6 +90,7 @@ public abstract class BuildOutputParser extends ParseHelper {
 		handleLineParseError(new CommonException("Unknown error line syntax: " + line));
 	}
 	
+	@Override
 	protected abstract void handleLineParseError(CommonException ce);
 	
 	/* -----------------  ----------------- */
