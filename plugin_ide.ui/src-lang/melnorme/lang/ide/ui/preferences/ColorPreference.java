@@ -27,6 +27,9 @@ public class ColorPreference extends PreferenceHelper<RGB> {
 	public ColorPreference(String key, RGB defaultValue) {
 		super(key, defaultValue);
 	}
+	public ColorPreference(String pluginId, String key, RGB defaultValue) {
+		super(pluginId, key, defaultValue);
+	}
 	
 	@Override
 	protected RGB doGet(PreferencesLookupHelper combinedPrefs) {

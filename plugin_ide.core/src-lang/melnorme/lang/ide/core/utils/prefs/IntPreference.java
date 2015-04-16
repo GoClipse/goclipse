@@ -21,9 +21,8 @@ public class IntPreference extends PreferenceHelper<Integer> {
 	public IntPreference(String key, int defaultValue) {
 		super(key, defaultValue);
 	}
-	
-	public IntPreference(String qualifier, String key, int defaultValue) {
-		super(qualifier, key, defaultValue);
+	public IntPreference(String pluginId, String key, int defaultValue) {
+		super(pluginId, key, defaultValue);
 	}
 	
 	@Override

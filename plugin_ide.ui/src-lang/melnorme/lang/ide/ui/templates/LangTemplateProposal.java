@@ -11,14 +11,17 @@
 package melnorme.lang.ide.ui.templates;
 
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension4;
 import org.eclipse.jface.text.templates.DocumentTemplateContext;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateContext;
+import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateProposal;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -72,6 +75,21 @@ public class LangTemplateProposal extends TemplateProposal implements ICompletio
 	@Override
 	public String toString() {
 		return getDisplayString();
+	}
+	
+	@Override
+	public String getAdditionalProposalInfo() {
+		if (getContext() instanceof LangContext) {
+			LangContext context = (LangContext) getContext();
+			
+			try {
+				return context.evaluate(getTemplate(), false).getString();
+			} catch (BadLocationException | TemplateException e) {
+				LangCore.logError("Error evaluating template", e);
+			}
+		}
+		
+		return getTemplate().getPattern();
 	}
 	
 }
