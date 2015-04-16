@@ -86,10 +86,6 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 			protected ILangCompletionProposalComputer createDefaultSymbolsProposalComputer() {
 				return new LANGUAGE_CompletionProposalComputer();
 			}
-			@Override
-			protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
-				return null; // TODO: LANG
-			}
 		};
 	}
 	

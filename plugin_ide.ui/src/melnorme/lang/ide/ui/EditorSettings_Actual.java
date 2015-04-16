@@ -51,7 +51,7 @@ public class EditorSettings_Actual {
 	
 	public static final String CODE_DEFAULT_COLOR = LANGUAGE_ColorPreferences.DEFAULT.key;
 	
-		public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
+	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
 		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
 		return new LANGUAGE_SimpleSourceViewerConfiguration(store, colorManager) {

@@ -16,7 +16,13 @@ public class TextSettings_Actual {
 	public static final String PARTITIONING_ID = "LANG_PROJECT_ID.Partitioning";
 	
 	public static enum LangPartitionTypes {
-		CODE, LINE_COMMENT, BLOCK_COMMENT, DOC_LINE_COMMENT, DOC_BLOCK_COMMENT, STRING, CHARACTER;
+		CODE, 
+		LINE_COMMENT, 
+		BLOCK_COMMENT, 
+		DOC_LINE_COMMENT, 
+		DOC_BLOCK_COMMENT, 
+		STRING, 
+		CHARACTER;
 		
 		public String getId() {
 			if(ordinal() == 0) {
