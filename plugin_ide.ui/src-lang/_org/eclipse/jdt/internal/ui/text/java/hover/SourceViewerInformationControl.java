@@ -64,55 +64,55 @@ public class SourceViewerInformationControl
 {
 
 	/** The control's shell */
-	private Shell fShell;
+	protected Shell fShell;
 	/** The control's text widget */
-	private StyledText fText;
+	protected StyledText fText;
 	/** The text font (do not dispose!) */
-	private Font fTextFont;
+	protected Font fTextFont;
 	/** The control's source viewer */
-	private SourceViewer fViewer;
+	protected SourceViewer fViewer;
 	/**
 	 * The optional status field.
 	 *
 	 * @since 3.0
 	 */
-	private Label fStatusField;
+	protected Label fStatusField;
 	/**
 	 * The separator for the optional status field.
 	 *
 	 * @since 3.0
 	 */
-	private Label fSeparator;
+	protected Label fSeparator;
 	/**
 	 * The font of the optional status text label.
 	 *
 	 * @since 3.0
 	 */
-	private Font fStatusTextFont;
+	protected Font fStatusTextFont;
 	/**
 	 * The color of the optional status text label or <code>null</code> if none.
 	 * 
 	 * @since 3.6
 	 */
-	private Color fStatusTextForegroundColor;
+	protected Color fStatusTextForegroundColor;
 	/**
 	 * The width size constraint.
 	 * @since 3.2
 	 */
-	private int fMaxWidth= SWT.DEFAULT;
+	protected int fMaxWidth= SWT.DEFAULT;
 	/**
 	 * The height size constraint.
 	 * @since 3.2
 	 */
-	private int fMaxHeight= SWT.DEFAULT;
+	protected int fMaxHeight= SWT.DEFAULT;
 	/**
 	 * The orientation of the shell
 	 * @since 3.4
 	 */
-	private final int fOrientation;
+	protected final int fOrientation;
 
-	private Color fBackgroundColor;
-	private boolean fIsSystemBackgroundColor= true;
+	protected Color fBackgroundColor;
+	protected boolean fIsSystemBackgroundColor= true;
 
 
 	/**
@@ -181,7 +181,7 @@ public class SourceViewerInformationControl
 		fText.addKeyListener(new KeyListener() {
 
 			@Override
-			public void keyPressed(KeyEvent e)  {
+			public void keyPressed(KeyEvent e) {
 				if (e.character == 0x1B) // ESC
 					fShell.dispose();
 			}
@@ -231,7 +231,7 @@ public class SourceViewerInformationControl
 	 * @return the interpolated color
 	 * @since 3.6
 	 */
-	private static RGB blend(RGB bg, RGB fg, float factor) {
+	protected static RGB blend(RGB bg, RGB fg, float factor) {
 		// copy of org.eclipse.jface.internal.text.revisions.Colors#blend(..)
 		Assert.isLegal(bg != null);
 		Assert.isLegal(fg != null);
@@ -245,7 +245,7 @@ public class SourceViewerInformationControl
 		);
 	}
 	
-	private void initializeColors() {
+	protected void initializeColors() {
 		IPreferenceStore store= LangUIPlugin.getInstance().getPreferenceStore();
 		RGB bgRGB;
 		if (store.getBoolean(EditorPreferences.SOURCE_HOVER_BACKGROUND_COLOR_UseSystemDefault.key)) {
@@ -333,7 +333,7 @@ public class SourceViewerInformationControl
 	 */
 	@Override
 	public void setVisible(boolean visible) {
-			fShell.setVisible(visible);
+		fShell.setVisible(visible);
 	}
 
 	/**
@@ -508,7 +508,7 @@ public class SourceViewerInformationControl
 	 * @param trim the shell's trim, will be updated
 	 * @since 3.4
 	 */
-	private void addInternalTrim(Rectangle trim) {
+	protected void addInternalTrim(Rectangle trim) {
 		Rectangle textTrim= fText.computeTrim(0, 0, 0, 0);
 		trim.x+= textTrim.x;
 		trim.y+= textTrim.y;
@@ -601,4 +601,5 @@ public class SourceViewerInformationControl
 
 		return new Point(widthInChars * width, heightInChars * height);
 	}
+	
 }

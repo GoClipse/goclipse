@@ -19,8 +19,9 @@ import org.eclipse.swt.graphics.RGB;
 interface EditorPreferences_Default {
 	
 	BooleanPreference SOURCE_HOVER_BACKGROUND_COLOR_UseSystemDefault = 
-			new BooleanPreference("SourceHover.bg_color.useSystemDefault", true); 
+			new BooleanPreference(LangUIPlugin.PLUGIN_ID, "SourceHover.bg_color.useSystemDefault", true); 
+	
 	ColorPreference SOURCE_HOVER_BACKGROUND_COLOR_rgb = 
-			new ColorPreference("SourceHover.bg_color.rgb", new RGB(255, 255, 255));
+			new ColorPreference(LangUIPlugin.PLUGIN_ID, "SourceHover.bg_color.rgb", new RGB(255, 255, 255));
 	
 }

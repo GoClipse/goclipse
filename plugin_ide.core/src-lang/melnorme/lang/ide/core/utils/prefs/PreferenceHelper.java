@@ -32,9 +32,9 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 		this(LangCore.PLUGIN_ID, key, defaultValue);
 	}
 	
-	public PreferenceHelper(String qualifier, String key, T defaultValue) {
+	public PreferenceHelper(String pluginId, String key, T defaultValue) {
 		super(key);
-		this.qualifier = qualifier;
+		this.qualifier = pluginId;
 		this.defaultValue = assertNotNull(defaultValue);
 		
 		initializeDefaultValueInDefaultScope();

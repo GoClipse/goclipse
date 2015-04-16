@@ -20,9 +20,8 @@ public class StringPreference extends PreferenceHelper<String> {
 	public StringPreference(String key, String defaultValue) {
 		super(key, defaultValue);
 	}
-	
-	public StringPreference(String qualifier, String key, String defaultValue) {
-		super(qualifier, key, defaultValue);
+	public StringPreference(String pluginId, String key, String defaultValue) {
+		super(pluginId, key, defaultValue);
 	}
 	
 	

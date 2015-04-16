@@ -22,8 +22,8 @@ public class BooleanPreference extends PreferenceHelper<Boolean> {
 		super(key, defaultValue);
 	}
 	
-	public BooleanPreference(String qualifier, String key, boolean defaultValue) {
-		super(qualifier, key, defaultValue);
+	public BooleanPreference(String pluginId, String key, boolean defaultValue) {
+		super(pluginId, key, defaultValue);
 	}
 	
 	@Override
