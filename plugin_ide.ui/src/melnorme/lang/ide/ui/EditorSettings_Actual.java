@@ -19,6 +19,7 @@ import org.eclipse.ui.services.IServiceLocator;
 
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SimpleSourceViewerConfiguration;
+import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
 
 public class EditorSettings_Actual {
 	
@@ -41,6 +42,9 @@ public class EditorSettings_Actual {
 	}
 	
 	public static final String TEMPLATE_CONTEXT_TYPE_ID = LangUIPlugin.PLUGIN_ID + ".TemplateContextType";
+	
+	public static final String CODE_DEFAULT_COLOR = LANGUAGE_ColorPreferences.DEFAULT.key;
+	
 	
 	/* ----------------- actions ----------------- */
 	

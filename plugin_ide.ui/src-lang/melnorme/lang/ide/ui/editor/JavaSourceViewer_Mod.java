@@ -41,7 +41,7 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
  * Contains methods/code that seems useful or necessary, but whose operation or usage is not fully understood,
  * or simply hasn't been refactored yet.
  */
-public abstract class JavaSourceViewer_Mod extends ProjectionViewerExt implements IPropertyChangeListener {
+public class JavaSourceViewer_Mod extends ProjectionViewerExt implements IPropertyChangeListener {
 
 	/**
 	 * Is this source viewer configured?
