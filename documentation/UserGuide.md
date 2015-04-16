@@ -46,7 +46,10 @@ Code completion is provided by means of the [gocode tool](http://github.com/nsf/
 > If there is a problem with this operation, and you need a diagnostics log, the output of gocode can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
 
 ##### Open Definition:
-The Open Definition functionality is invoked by pressing F3 in the source editor. Open Definition is also available in the editor context menu and by means of editor *hyper-linking* (hold Ctrl and click on a reference with the mouse cursor). When pressing F3, the [Go Oracle](http://golang.org/s/oracle-user-manual) tool will be used to resolve the definition. When Ctrl-click is used, you will be given a choice between Oracle and the Goclipse built-in resolver (Oracle is more accurate and complete).
+The Open Definition functionality is invoked by pressing F3 in the source editor. 
+Open Definition is also available in the editor context menu and by means of editor *hyper-linking* 
+(hold Ctrl and click on a reference with the mouse cursor). 
+The [Go Oracle](http://golang.org/s/oracle-user-manual) tool is used to resolve the symbol references. 
 
 > If there is a problem with this operation, and you need a diagnostics log, the output of oracle can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
 
