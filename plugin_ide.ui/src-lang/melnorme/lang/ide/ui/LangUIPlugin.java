@@ -14,6 +14,7 @@ import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore.StatusExt;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.templates.TemplateRegistry;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.cdt.internal.ui.text.util.CColorManager;
@@ -186,6 +187,15 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	public org.eclipse.cdt.ui.text.IColorManager getColorManager() {
 		return fColorManager;
+	}
+	
+	protected static TemplateRegistry instance;
+	
+	public static TemplateRegistry getTemplateRegistry() {
+		if(instance == null) {
+			instance = new TemplateRegistry();
+		}
+		return instance;
 	}
 	
 	/* -------- JDT/DLTK copied stuff -------- */

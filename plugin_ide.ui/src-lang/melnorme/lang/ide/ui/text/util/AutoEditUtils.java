@@ -208,7 +208,11 @@ public class AutoEditUtils {
 		}
 		return ""; //$NON-NLS-1$
 	}
-
+	
+	public static String getLineIndentOfOffset(IDocument document, int offset) throws BadLocationException {
+		return getLineIndent(document, document.getLineOfOffset(offset));
+	}
+	
 	/**
 	 * Returns the first offset greater than or equal to <code>offset</code>
 	 * and less than <code>end</code> whose character is not a space or tab

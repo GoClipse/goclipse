@@ -85,6 +85,18 @@
 		</hyperlinkDetector>
 	</extension>
 	
+	<extension point="org.eclipse.ui.editors.templates">
+		<contextType
+			class="LANG_PROJECT_ID.ide.ui.editor.templates.LANGUAGE_TemplateContextType"
+			id="LANG_PROJECT_ID.ide.ui.TemplateContextType"
+			name="%LangTemplateContext.name">
+		</contextType>
+		<include
+			file="templates/default-templates.xml"
+			translations="templates/default-templates.properties">
+		</include>
+	</extension>
+	
 	<!-- ============ Actions/Commands ============= -->
 	
 	<extension point="org.eclipse.ui.commands">

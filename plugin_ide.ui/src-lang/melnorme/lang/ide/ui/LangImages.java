@@ -64,8 +64,11 @@ public abstract class LangImages {
 	
 	public static final String LANG_ACTIONS = "icons-lang/actions/";
 	public static final String CAT_VIEWS = "views";
+	public static final String CAT_LANG_OBJ = "icons-lang/obj";
 	
 	/* ---------------- Common Lang images ---------------- */
+	
+	public static final ImageHandle OBJ_CA_TEMPLATE = createManaged(CAT_LANG_OBJ, "CA_Templates.16.gif");
 	
 	public static final ImageHandle ACTIONS_OPEN_DEF = createManaged(LANG_ACTIONS, "OpenDef.16.png");
 	
