@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore.StatusExt;
@@ -25,8 +26,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -216,4 +219,18 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		}
 	}
     
+	private IPreferenceStore fCombinedPreferenceStore;
+	
+	public IPreferenceStore getCombinedPreferenceStore() {
+		if(fCombinedPreferenceStore == null) {
+			IPreferenceStore generalTextStore = EditorsUI.getPreferenceStore();
+			fCombinedPreferenceStore = new ChainedPreferenceStore(array(
+					getPreferenceStore(),
+					getCorePreferenceStore(),
+					generalTextStore
+			));
+		}
+		return fCombinedPreferenceStore;
+	}
+	
 }

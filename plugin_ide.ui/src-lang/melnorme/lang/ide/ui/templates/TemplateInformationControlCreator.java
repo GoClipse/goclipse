@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2006 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,47 +10,49 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.templates;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
-import org.eclipse.jface.text.IInformationControlCreatorExtension;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Shell;
 
-import _org.eclipse.dltk.internal.ui.text.hover.SourceViewerInformationControl;
+import org.eclipse.core.runtime.Assert;
 
-final public class TemplateInformationControlCreator implements
-		IInformationControlCreator, IInformationControlCreatorExtension {
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.IInformationControlCreatorExtension;
+
+import _org.eclipse.jdt.internal.ui.JavaPlugin;
+import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
+
+
+public class TemplateInformationControlCreator 
+	implements IInformationControlCreator, IInformationControlCreatorExtension {
 	
 	private SourceViewerInformationControl fControl;
 
 	/**
-	 * The orientation to be used by this hover. Allowed values are:
-	 * SWT#RIGHT_TO_LEFT or SWT#LEFT_TO_RIGHT
-	 * 
+	 * The orientation to be used by this hover.
+	 * Allowed values are: SWT#RIGHT_TO_LEFT or SWT#LEFT_TO_RIGHT
 	 * @since 3.2
 	 */
 	private int fOrientation;
 	
 	/**
-	 * @param orientation
-	 *            the orientation, allowed values are: SWT#RIGHT_TO_LEFT or
-	 *            SWT#LEFT_TO_RIGHT
+	 * @param orientation the orientation, allowed values are: SWT#RIGHT_TO_LEFT or SWT#LEFT_TO_RIGHT
 	 */
 	public TemplateInformationControlCreator(int orientation) {
 		Assert.isLegal(orientation == SWT.RIGHT_TO_LEFT || orientation == SWT.LEFT_TO_RIGHT);
-		fOrientation = orientation;
+		fOrientation= orientation;
 	}
 	
 	@Override
 	public IInformationControl createInformationControl(Shell parent) {
-		fControl = new SourceViewerInformationControl(parent, SWT.TOOL | fOrientation, SWT.NONE);
+		fControl= new SourceViewerInformationControl(parent, false, fOrientation, 
+			JavaPlugin.getAdditionalInfoAffordanceString());
 		fControl.addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				fControl = null;
+				fControl= null;
 			}
 		});
 		return fControl;

@@ -20,6 +20,7 @@ import org.eclipse.ui.services.IServiceLocator;
 import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.ui.editor.GoSimpleSourceViewerConfiguration;
 import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
+import com.googlecode.goclipse.ui.text.GoColorPreferences;
 
 public class EditorSettings_Actual {
 	
@@ -42,6 +43,8 @@ public class EditorSettings_Actual {
 	}
 	
 	public static final String TEMPLATE_CONTEXT_TYPE_ID = LangUIPlugin.PLUGIN_ID + ".TemplateContextType";
+	
+	public static final String CODE_DEFAULT_COLOR = GoColorPreferences.SYNTAX_COLORING__TEXT.key;
 	
 	/* ----------------- actions ----------------- */
 	

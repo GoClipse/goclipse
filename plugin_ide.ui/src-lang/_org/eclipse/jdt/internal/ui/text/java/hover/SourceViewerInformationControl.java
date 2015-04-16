@@ -8,8 +8,27 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.jdt.internal.ui.text.java.hover;
+package _org.eclipse.jdt.internal.ui.text.java.hover;
 
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+import melnorme.lang.ide.ui.EditorPreferences;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
+
+import org.eclipse.cdt.ui.text.IColorManager;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.IInformationControlExtension;
+import org.eclipse.jface.text.IInformationControlExtension3;
+import org.eclipse.jface.text.IInformationControlExtension5;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
@@ -31,33 +50,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.resource.JFaceResources;
-
-import org.eclipse.jface.text.Document;
-import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
-import org.eclipse.jface.text.IInformationControlExtension;
-import org.eclipse.jface.text.IInformationControlExtension3;
-import org.eclipse.jface.text.IInformationControlExtension5;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewer;
-
 import org.eclipse.ui.texteditor.AbstractTextEditor;
-
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.jdt.ui.PreferenceConstants;
-import org.eclipse.jdt.ui.text.IJavaColorConstants;
-import org.eclipse.jdt.ui.text.IJavaPartitions;
-
-import org.eclipse.jdt.internal.ui.JavaPlugin;
-import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
-import org.eclipse.jdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
 
 /**
  * Source viewer based implementation of <code>IInformationControl</code>.
@@ -65,7 +58,10 @@ import org.eclipse.jdt.internal.ui.text.SimpleJavaSourceViewerConfiguration;
  *
  * @since 3.0
  */
-public class SourceViewerInformationControl implements IInformationControl, IInformationControlExtension, IInformationControlExtension3, IInformationControlExtension5, DisposeListener {
+public class SourceViewerInformationControl 
+		implements IInformationControl, IInformationControlExtension, IInformationControlExtension3, 
+		IInformationControlExtension5, DisposeListener 
+{
 
 	/** The control's shell */
 	private Shell fShell;
@@ -167,9 +163,11 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 		}
 
 		// Source viewer
-		IPreferenceStore store= JavaPlugin.getDefault().getCombinedPreferenceStore();
-		fViewer= new JavaSourceViewer(composite, null, null, false, textStyle, store);
-		fViewer.configure(new SimpleJavaSourceViewerConfiguration(JavaPlugin.getDefault().getJavaTextTools().getColorManager(), store, null, IJavaPartitions.JAVA_PARTITIONING, false));
+		IPreferenceStore store= LangUIPlugin.getInstance().getCombinedPreferenceStore();
+		
+		fViewer= new LangSourceViewer(composite, null, null, false, textStyle, store);
+		fViewer.configure(EditorSettings_Actual.createSimpleSourceViewerConfiguration(store, getColorManager()));
+		
 		fViewer.setEditable(false);
 
 		fText= fViewer.getTextWidget();
@@ -178,8 +176,8 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 		fText.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
 		fText.setBackground(fBackgroundColor);
 
-		initializeFont();
-
+//		initializeFont();
+		
 		fText.addKeyListener(new KeyListener() {
 
 			@Override
@@ -211,8 +209,9 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 			GridData gd2= new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 			fStatusField.setLayoutData(gd2);
 			
-			RGB javaDefaultColor= JavaUI.getColorManager().getColor(IJavaColorConstants.JAVA_DEFAULT).getRGB();
-			fStatusTextForegroundColor= new Color(fStatusField.getDisplay(), blend(fBackgroundColor.getRGB(), javaDefaultColor, 0.56f));
+			RGB javaDefaultColor= getColorManager().getColor(EditorSettings_Actual.CODE_DEFAULT_COLOR).getRGB();
+			fStatusTextForegroundColor= new Color(fStatusField.getDisplay(), blend(fBackgroundColor.getRGB(), 
+				javaDefaultColor, 0.56f));
 			fStatusField.setForeground(fStatusTextForegroundColor);
 			fStatusField.setBackground(fBackgroundColor);
 		}
@@ -247,12 +246,12 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 	}
 	
 	private void initializeColors() {
-		IPreferenceStore store= JavaPlugin.getDefault().getPreferenceStore();
+		IPreferenceStore store= LangUIPlugin.getInstance().getPreferenceStore();
 		RGB bgRGB;
-		if (store.getBoolean(PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT)) {
+		if (store.getBoolean(EditorPreferences.SOURCE_HOVER_BACKGROUND_COLOR_UseSystemDefault.key)) {
 			bgRGB= getVisibleBackgroundColor(fShell.getDisplay());
 		} else {
-			bgRGB= PreferenceConverter.getColor(store, PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR);
+			bgRGB= PreferenceConverter.getColor(store, EditorPreferences.SOURCE_HOVER_BACKGROUND_COLOR_rgb.key);
 		}
 		if (bgRGB != null) {
 			fBackgroundColor= new Color(fShell.getDisplay(), bgRGB);
@@ -261,6 +260,10 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 			fBackgroundColor= fShell.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND);
 			fIsSystemBackgroundColor= true;
 		}
+	}
+	
+	protected static IColorManager getColorManager() {
+		return LangUIPlugin.getInstance().getColorManager();
 	}
 
 	/**
@@ -274,13 +277,13 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 	public static RGB getVisibleBackgroundColor(Display display) {
 		float[] infoBgHSB= display.getSystemColor(SWT.COLOR_INFO_BACKGROUND).getRGB().getHSB();
 		
-		Color javaDefaultColor= JavaUI.getColorManager().getColor(IJavaColorConstants.JAVA_DEFAULT);
+		Color javaDefaultColor= getColorManager().getColor(EditorSettings_Actual.CODE_DEFAULT_COLOR);
 		RGB javaDefaultRGB= javaDefaultColor != null ? javaDefaultColor.getRGB() : new RGB(255, 255, 255);
 		float[] javaDefaultHSB= javaDefaultRGB.getHSB();
 		
 		if (Math.abs(infoBgHSB[2] - javaDefaultHSB[2]) < 0.5f) {
 			// workaround for dark tooltip background color, see https://bugs.eclipse.org/309334
-			IPreferenceStore preferenceStore= JavaPlugin.getDefault().getCombinedPreferenceStore();
+			IPreferenceStore preferenceStore= LangUIPlugin.getInstance().getCombinedPreferenceStore();
 			boolean useDefault= preferenceStore.getBoolean(AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT);
 			if (useDefault)
 				return display.getSystemColor(SWT.COLOR_LIST_BACKGROUND).getRGB();
@@ -288,17 +291,17 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 		}
 		return null;
 	}
-
-	/**
-	 * Initialize the font to the Java editor font.
-	 *
-	 * @since 3.2
-	 */
-	private void initializeFont() {
-		fTextFont= JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT);
-		StyledText styledText= getViewer().getTextWidget();
-		styledText.setFont(fTextFont);
-	}
+	
+//	/**
+//	 * Initialize the font to the Java editor font.
+//	 *
+//	 * @since 3.2
+//	 */
+//	private void initializeFont() {
+//		fTextFont= JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT);
+//		StyledText styledText= getViewer().getTextWidget();
+//		styledText.setFont(fTextFont);
+//	}
 
 	/*
 	 * @see org.eclipse.jface.text.IInformationControlExtension2#setInput(java.lang.Object)
@@ -321,7 +324,7 @@ public class SourceViewerInformationControl implements IInformationControl, IInf
 		}
 
 		IDocument doc= new Document(content);
-		JavaPlugin.getDefault().getJavaTextTools().setupJavaDocumentPartitioner(doc, IJavaPartitions.JAVA_PARTITIONING);
+		LangDocumentPartitionerSetup.getInstance().setup(doc);
 		fViewer.setInput(doc);
 	}
 
