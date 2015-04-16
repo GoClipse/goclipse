@@ -41,6 +41,8 @@ public class EditorSettings_Actual {
 		
 	}
 	
+	public static final String TEMPLATE_CONTEXT_TYPE_ID = LangUIPlugin.PLUGIN_ID + ".TemplateContextType";
+	
 	/* ----------------- actions ----------------- */
 	
 	public static interface EditorCommandIds {

@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.editor.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.core.ISourceFile;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.ast.SourceRange;
@@ -30,7 +31,7 @@ public class SourceOperationContext {
 	protected final ITextViewer viewer;
 	protected final SourceRange range;
 	protected final IDocument document;
-	protected final IEditorPart editor; // can be null
+	protected final ITextEditor editor; // can be null
 	
 	public SourceOperationContext(ITextViewer viewer, int offset, ITextEditor editor) {
 		this(viewer, SourceRange.srStartToEnd(offset, offset), editor);
@@ -54,12 +55,12 @@ public class SourceOperationContext {
 		return range.getOffset();
 	}
 	
-	public IEditorPart getEditor_maybeNull() {
+	public ITextEditor getEditor_maybeNull() {
 		return editor;
 	}
 	
-	public IEditorPart getViewer_maybeNull() {
-		return editor;
+	public ITextViewer getViewer_maybeNull() {
+		return viewer;
 	}
 	
 	
@@ -99,6 +100,16 @@ public class SourceOperationContext {
 		} catch (BadLocationException e) {
 			throw LangCore.createCoreException("Could not get column position.", e);
 		}
+	}
+	
+	public ISourceFile getSourceFile() throws CoreException {
+		final Location sourceFileLoc = getEditorInputLocation();
+		return new ISourceFile() {
+			@Override
+			public Location getLocation() {
+				return sourceFileLoc;
+			}
+		};
 	}
 	
 }

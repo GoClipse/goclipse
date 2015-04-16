@@ -54,4 +54,18 @@ public class SimpleLexingHelper extends StringCharacterReader {
 		return sb.toString();
 	}
 	
+	public String consumeUntil(String string) {
+		int startPos = getOffset();
+		
+		while(!lookaheadIsEOF()) {
+			
+			if(source.startsWith(string, getOffset())) {
+				break;
+			}
+			read();
+		}
+		String token = source.substring(startPos, getOffset());
+		return token;
+	}
+	
 }

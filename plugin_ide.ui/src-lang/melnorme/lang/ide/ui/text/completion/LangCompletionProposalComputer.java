@@ -11,7 +11,6 @@
 package melnorme.lang.ide.ui.text.completion;
 
 
-import java.util.Collections;
 import java.util.List;
 
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
@@ -75,12 +74,12 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 		} catch (OperationSoftFailure e) {
 			errorMessage = e.getMessage();
 		}
-		return Collections.EMPTY_LIST;
+		return null;
 	}
 	
 	@Override
 	public List<IContextInformation> computeContextInformation(SourceOperationContext context) {
-		return Collections.emptyList();
+		return null;
 	}
 	
 	protected List<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context,

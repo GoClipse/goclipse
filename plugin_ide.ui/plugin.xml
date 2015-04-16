@@ -130,6 +130,18 @@
 		
 	</extension>
 	
+	<extension point="org.eclipse.ui.editors.templates">
+		<contextType
+			class="com.googlecode.goclipse.ui.editor.templates.GoTemplateContextType"
+			id="com.googlecode.goclipse.ui.TemplateContextType"
+			name="%LangTemplateContext.name">
+		</contextType>
+		<include
+			file="templates/default-templates.xml"
+			translations="templates/default-templates.properties">
+		</include>
+	</extension>
+	
 	<!-- ============ Wizards ============= -->
 	
 	

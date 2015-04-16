@@ -35,6 +35,10 @@ public class StringCharacterReader implements ICharacterReader {
 		return source.charAt(offset);
 	}
 	
+	public boolean lookaheadIsEOF() {
+		return lookahead() == -1;
+	}
+	
 	@Override
 	public int read() {
 		int ch = lookahead();
