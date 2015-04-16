@@ -38,4 +38,9 @@ package melnorme.lang.ide.ui;
 	String ContentAssist_additionalInfo_affordance = "Press 'Tab' from proposal table or click for focus";
 	String SourceHover_additionalInfo_affordance = ContentAssist_additionalInfo_affordance;
 	
+	/* -----------------  ----------------- */
+	
+	String TemplatePreferencePage_title = "Code Snippets";
+	String TemplatePreferencePage_message = "&Create, edit or remove snippet templates:";
+	
 }

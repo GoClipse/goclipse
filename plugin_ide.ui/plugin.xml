@@ -208,6 +208,11 @@
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.SourceColoring"
 			name="%LangEditorSyntaxColoringPreferencePage.name">
 		</page>
+		<page
+			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
+			id=      "LANG_PROJECT_ID.ide.ui.PreferencePages.Editor.CodeTemplates"
+			class="LANG_PROJECT_ID.ide.ui.editor.templates.LANGUAGE_TemplatePreferencePage"
+			name="%LangCodeTemplatesPreferencePage.name" />
 		
 	</extension>
 	

@@ -10,11 +10,17 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import static melnorme.utilbox.core.CoreUtil.array;
+import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.services.IServiceLocator;
 
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor;
@@ -45,6 +51,22 @@ public class EditorSettings_Actual {
 	
 	public static final String CODE_DEFAULT_COLOR = LANGUAGE_ColorPreferences.DEFAULT.key;
 	
+		public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
+			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
+		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		return new LANGUAGE_SimpleSourceViewerConfiguration(store, colorManager) {
+			@Override
+			public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+				return setupSimpleContentAssistant(templateCAP, array(
+					LangPartitionTypes.CODE.getId(), 
+					LangPartitionTypes.LINE_COMMENT.getId(), 
+					LangPartitionTypes.BLOCK_COMMENT.getId(), 
+					LangPartitionTypes.DOC_LINE_COMMENT.getId(),
+					LangPartitionTypes.DOC_BLOCK_COMMENT.getId() 
+				));
+			}
+		};
+	}
 	
 	/* ----------------- actions ----------------- */
 	

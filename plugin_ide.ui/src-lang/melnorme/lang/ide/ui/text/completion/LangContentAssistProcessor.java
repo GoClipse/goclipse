@@ -20,6 +20,7 @@ import java.util.List;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -94,7 +95,9 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 				LangUIMessages.ContentAssistProcessor_snippetsProposalCategory, null, computers);
 		}
 		
-		protected abstract ILangCompletionProposalComputer createSnippetsProposalComputer();
+		protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
+			return new LangTemplateCompletionProposalComputer();
+		}
 		
 	}
 	
