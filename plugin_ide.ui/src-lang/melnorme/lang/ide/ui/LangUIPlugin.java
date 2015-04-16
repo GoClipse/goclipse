@@ -26,6 +26,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.templates.ContextTypeRegistry;
+import org.eclipse.jface.text.templates.persistence.TemplateStore;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -42,6 +44,10 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	public static LangUIPlugin getInstance() {
 		return pluginInstance;
+	}
+	
+	public static LangUIPlugin getDefault() {
+		return getInstance();
 	}
 	
 	protected ILangOperationsListener_Actual operationsListener;
@@ -199,6 +205,14 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 			instance = new TemplateRegistry();
 		}
 		return instance;
+	}
+	
+	public TemplateStore getTemplateStore() {
+		return getTemplateRegistry().getTemplateStore();
+	}
+	
+	public ContextTypeRegistry getTemplateContextTypeRegistry() {
+		return getTemplateRegistry().getContextTypeRegistry();
 	}
 	
 	/* -------- JDT/DLTK copied stuff -------- */

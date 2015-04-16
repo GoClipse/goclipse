@@ -127,6 +127,11 @@
 			class="com.googlecode.goclipse.ui.preferences.GoToolsPreferencePage"
 			name="Tools">
 		</page>
+		<page
+			category="com.googlecode.goclipse.ui.PreferencePages.Editor"
+			id=      "com.googlecode.goclipse.ui.PreferencePages.Editor.CodeTemplates"
+			class="com.googlecode.goclipse.ui.editor.templates.GoTemplatePreferencePage"
+			name="%LangCodeTemplatesPreferencePage.name" />
 		
 	</extension>
 	

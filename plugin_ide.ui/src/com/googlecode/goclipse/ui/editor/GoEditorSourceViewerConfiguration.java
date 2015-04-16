@@ -84,11 +84,6 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 				return new GocodeCompletionProposalComputer();
 			}
 			
-			@Override
-			protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
-				return null; // TODO snippets computer (need lang support)
-			}
-			
 		};
 	}
 	

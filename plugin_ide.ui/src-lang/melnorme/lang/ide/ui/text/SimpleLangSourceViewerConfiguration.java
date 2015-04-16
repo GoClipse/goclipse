@@ -33,6 +33,8 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
@@ -184,6 +186,20 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 				return new DefaultInformationControl(parent, false);
 			}
 		};
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static ContentAssistant setupSimpleContentAssistant(IContentAssistProcessor cap, String[] contentTypes) {
+		ContentAssistant ca = new ContentAssistant();
+		ca.enableAutoActivation(true);
+		ca.enableAutoInsert(true);
+		
+		for (String partitionType : contentTypes) {
+			ca.setContentAssistProcessor(cap, partitionType);
+		}
+		
+		return ca;
 	}
 	
 }

@@ -10,13 +10,20 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.services.IServiceLocator;
 
+import com.googlecode.goclipse.core.text.GoPartitions;
 import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.ui.editor.GoSimpleSourceViewerConfiguration;
 import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
@@ -46,6 +53,21 @@ public class EditorSettings_Actual {
 	
 	public static final String CODE_DEFAULT_COLOR = GoColorPreferences.SYNTAX_COLORING__TEXT.key;
 	
+	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
+			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
+		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		return new GoSimpleSourceViewerConfiguration(store, colorManager, null) {
+			@Override
+			public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+				return setupSimpleContentAssistant(templateCAP, array(
+					IDocument.DEFAULT_CONTENT_TYPE, 
+					GoPartitions.LINE_COMMENT, 
+					GoPartitions.STRING,
+					GoPartitions.BLOCK_COMMENT 
+				));
+			}
+		};
+	}
 	/* ----------------- actions ----------------- */
 	
 	public static interface EditorCommandIds {

@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <templates>
-
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="BUG" description="BUG here comment" enabled="true" name="BUG">/* FIXME: BUG here${cursor}*/</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="FIXME" description="FIXME comment" enabled="true" name="FIXME">/* FIXME: ${cursor}*/</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="header_comment" description="header comment" enabled="true" name="headerbar">/* ----------------- ${header} ----------------- */</template>
 </templates>
