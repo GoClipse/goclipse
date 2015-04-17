@@ -3,11 +3,13 @@ package melnorme.lang.ide.ui;
 import java.util.List;
 
 import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
 
 import org.eclipse.jface.text.source.ISourceViewer;
 
 import com.googlecode.goclipse.editors.TextHover;
 import com.googlecode.goclipse.ui.GoPluginImages;
+import com.googlecode.goclipse.ui.editor.structure.GoStructureModelManager;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 
 /**
@@ -33,6 +35,10 @@ public final class LangUIPlugin_Actual {
 	
 	public static GoAutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {
 		return new GoAutoEditStrategy(contentType, sourceViewer);
+	}
+	
+	public static StructureModelManager createStructureModelManager() {
+		return new GoStructureModelManager();
 	}
 	
 	/* ----------------- UI messages:  ----------------- */

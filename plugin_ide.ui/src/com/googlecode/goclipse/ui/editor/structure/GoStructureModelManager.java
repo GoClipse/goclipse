@@ -8,14 +8,21 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package _org.eclipse.jdt.internal.ui;
+package com.googlecode.goclipse.ui.editor.structure;
 
-import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
+import melnorme.utilbox.misc.Location;
 
-public class JavaPlugin {
+import org.eclipse.jface.text.IDocument;
 
-	public static String getAdditionalInfoAffordanceString() {
-		return SimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
+public class GoStructureModelManager extends StructureModelManager {
+	
+	public GoStructureModelManager() {
+	}
+	
+	@Override
+	public void rebuild(Location location, IDocument document) {
+		// TODO: LANG
 	}
 	
 }

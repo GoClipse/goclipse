@@ -1,9 +1,10 @@
 package com.googlecode.goclipse.editors;
 
+import melnorme.lang.ide.ui.editor.text.LangReconcilingStrategy;
+
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
-import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 
 import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
 
@@ -12,7 +13,8 @@ import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
  * 
  * @see GoEditorSourceViewerConfiguration
  */
-public class GoEditorReconcilingStrategy implements IReconcilingStrategy {
+public class GoEditorReconcilingStrategy extends LangReconcilingStrategy {
+	
 	private GoEditor editor;
 
 	/**
@@ -21,12 +23,12 @@ public class GoEditorReconcilingStrategy implements IReconcilingStrategy {
 	 * @param editor
 	 */
 	public GoEditorReconcilingStrategy(GoEditor editor) {
+		super(editor);
 		this.editor = editor;
 	}
 
 	@Override
 	public void setDocument(IDocument document) {
-
 	}
 
 	@Override
@@ -35,9 +37,11 @@ public class GoEditorReconcilingStrategy implements IReconcilingStrategy {
 		// reconciliation.
 		editor.handleReconcilation(null);
 	}
-
+	
 	@Override
 	public void reconcile(IRegion partition) {
+		super.reconcile(partition);
+		
 		editor.handleReconcilation(partition);
 	}
 

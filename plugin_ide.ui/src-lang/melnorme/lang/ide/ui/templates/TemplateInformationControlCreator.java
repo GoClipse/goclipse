@@ -10,16 +10,14 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.templates;
 
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.IInformationControlCreatorExtension;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Shell;
-
-import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
-import org.eclipse.jface.text.IInformationControlCreatorExtension;
 
 import _org.eclipse.jdt.internal.ui.JavaPlugin;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;

@@ -11,8 +11,8 @@
 package melnorme.lang.ide.ui.text.completion;
 
 import melnorme.lang.ide.ui.ContentAssistConstants;
-import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -23,8 +23,6 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 
 public class ContentAssistPreferenceHandler implements ContentAssistConstants {
@@ -112,12 +110,7 @@ public class ContentAssistPreferenceHandler implements ContentAssistConstants {
 	/* -----------------  ----------------- */
 	
 	public String getAdditionalInfoAffordanceString() {
-		IPreferenceStore prefStore = EditorsUI.getPreferenceStore();
-		if (!prefStore.getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SHOW_TEXT_HOVER_AFFORDANCE)) {
-			return null;
-		}
-		
-		return LangUIMessages.ContentAssist_additionalInfo_affordance;
+		return SimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
 	}
 	
 }

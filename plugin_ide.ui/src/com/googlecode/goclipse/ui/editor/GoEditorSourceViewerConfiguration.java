@@ -1,5 +1,6 @@
 package com.googlecode.goclipse.ui.editor;
 
+import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
@@ -12,12 +13,13 @@ import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
-import org.eclipse.jface.text.reconciler.IReconciler;
-import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.source.DefaultAnnotationHover;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.ui.texteditor.ITextEditor;
+
+import _org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy;
 
 import com.googlecode.goclipse.core.text.GoPartitionScanner;
 import com.googlecode.goclipse.editors.DoubleClickStrategy;
@@ -33,7 +35,6 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	
 	protected final GoEditor	        editor;
 	private DoubleClickStrategy	doubleClickStrategy;
-	private MonoReconciler	    reconciler;
 
 	public GoEditorSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager, 
 			GoEditor editor) {
@@ -110,16 +111,12 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	}
 	
 	@Override
-	public IReconciler getReconciler(ISourceViewer sourceViewer) {
-		
-		if (reconciler == null && sourceViewer != null) {
-			reconciler = new MonoReconciler(new GoEditorReconcilingStrategy(editor), false);
-			reconciler.setDelay(500);
-		}
-
-		return reconciler;
+	protected CompositeReconcilingStrategy getReconciler_createCompositeStrategy(ITextEditor editor) {
+		CompositeReconcilingStrategy compositeStrategy = new CompositeReconcilingStrategy();
+		compositeStrategy.setReconcilingStrategies(array(new GoEditorReconcilingStrategy(this.editor)));
+		return compositeStrategy;
 	}
-
+	
 	@Override
 	public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
 		return new String[] { "\t", "" };
