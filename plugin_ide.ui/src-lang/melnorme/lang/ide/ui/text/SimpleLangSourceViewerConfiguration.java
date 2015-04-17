@@ -188,6 +188,15 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		};
 	}
 	
+	protected IInformationControlCreator getInformationControl_ContentAsssist(final String statusFieldText) {
+		return new IInformationControlCreator() {
+			@Override
+			public IInformationControl createInformationControl(Shell parent) {
+				return new DefaultInformationControl(parent, statusFieldText);
+			}
+		};
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public static ContentAssistant setupSimpleContentAssistant(IContentAssistProcessor cap, String[] contentTypes) {

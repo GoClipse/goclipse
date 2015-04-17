@@ -18,17 +18,21 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension4;
+import org.eclipse.jface.text.contentassist.ICompletionProposalExtension6;
 import org.eclipse.jface.text.templates.DocumentTemplateContext;
 import org.eclipse.jface.text.templates.Template;
 import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.jface.text.templates.TemplateProposal;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.IWorkbenchPartOrientation;
 
-public class LangTemplateProposal extends TemplateProposal implements ICompletionProposalExtension4 {
+public class LangTemplateProposal extends TemplateProposal implements 
+	ICompletionProposalExtension4, ICompletionProposalExtension6 
+{
 	
 	public LangTemplateProposal(Template template, TemplateContext context, IRegion region, Image image) {
 		super(template, context, region, image);
@@ -37,6 +41,48 @@ public class LangTemplateProposal extends TemplateProposal implements ICompletio
 	public LangTemplateProposal(Template template, TemplateContext context, IRegion region, Image image, int relevance) {
 		super(template, context, region, image, relevance);
 	}
+	
+	
+	@Override
+	public String getDisplayString() {
+		return getStyledDisplayString().getString();
+	}
+	
+	protected StyledString styledDisplayString;
+	
+	@Override
+	public StyledString getStyledDisplayString() {
+		if(styledDisplayString == null) {
+			Template template = getTemplate();
+			StyledString styledString;
+			styledString = new StyledString(template.getName(), StyledString.COUNTER_STYLER);
+			styledString.append(new StyledString(" - " + template.getDescription(), StyledString.QUALIFIER_STYLER));
+			styledDisplayString = styledString;
+		}
+		return styledDisplayString;
+	}
+	
+	@Override
+	public String getAdditionalProposalInfo() {
+		if (getContext() instanceof LangContext) {
+			LangContext context = (LangContext) getContext();
+			
+			try {
+				return context.evaluate(getTemplate(), false).getString();
+			} catch (BadLocationException | TemplateException e) {
+				LangCore.logError("Error evaluating template", e);
+			}
+		}
+		
+		return getTemplate().getPattern();
+	}
+	
+	@Override
+	public String toString() {
+		return getDisplayString();
+	}
+	
+	/* ----------------- JDT copied stuff: ----------------- */
 	
 	@Override
 	public IInformationControlCreator getInformationControlCreator() {
@@ -70,26 +116,6 @@ public class LangTemplateProposal extends TemplateProposal implements ICompletio
 				return true;
 		}
 		return false;
-	}
-	
-	@Override
-	public String toString() {
-		return getDisplayString();
-	}
-	
-	@Override
-	public String getAdditionalProposalInfo() {
-		if (getContext() instanceof LangContext) {
-			LangContext context = (LangContext) getContext();
-			
-			try {
-				return context.evaluate(getTemplate(), false).getString();
-			} catch (BadLocationException | TemplateException e) {
-				LangCore.logError("Error evaluating template", e);
-			}
-		}
-		
-		return getTemplate().getPattern();
 	}
 	
 }
