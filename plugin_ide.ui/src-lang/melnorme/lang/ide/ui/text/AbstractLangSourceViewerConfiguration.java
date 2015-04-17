@@ -28,16 +28,12 @@ import melnorme.utilbox.collections.Indexable;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -99,19 +95,12 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 			assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 			
 			assistant.setRestoreCompletionProposalSize(LangUIPlugin.getDialogSettings("completion_proposal_size"));
-			assistant.setInformationControlCreator(getInformationControlCreator(sourceViewer));
-			
-			assistant.setInformationControlCreator(new IInformationControlCreator() {
-				@Override
-				public IInformationControl createInformationControl(Shell parent) {
-					return new DefaultInformationControl(parent, caPrefHelper.getAdditionalInfoAffordanceString());
-				}
-			});
-			
+			assistant.setInformationControlCreator(
+				getInformationControl_ContentAsssist(caPrefHelper.getAdditionalInfoAffordanceString()));
 			assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
+			assistant.enableColoredLabels(true);
 			
 			assistant.configure(fPreferenceStore);
-			
 			configureContentAssistantProcessors(assistant);
 			
 			return assistant;
