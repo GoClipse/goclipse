@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
 
@@ -45,7 +46,9 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 /**
  * Abstract SourceViewConfiguration
@@ -198,6 +201,15 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 	}
 	
 	/* -----------------  ----------------- */
+	
+	public static final String getAdditionalInfoAffordanceString() {
+		IPreferenceStore store = EditorsUI.getPreferenceStore();
+		if(!store.getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SHOW_TEXT_HOVER_AFFORDANCE)) {
+			return null;
+		}
+		
+		return LangUIMessages.SourceHover_additionalInfo_affordance;
+	}
 	
 	public static ContentAssistant setupSimpleContentAssistant(IContentAssistProcessor cap, String[] contentTypes) {
 		ContentAssistant ca = new ContentAssistant();

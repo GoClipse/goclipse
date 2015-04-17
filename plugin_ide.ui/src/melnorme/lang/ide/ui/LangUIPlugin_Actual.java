@@ -5,8 +5,10 @@ import java.util.List;
 import org.eclipse.jface.text.source.ISourceViewer;
 
 import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_AutoEditStrategy;
+import LANG_PROJECT_ID.ide.ui.editor.structure.LANGUAGE_StructureModelManager;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
@@ -31,6 +33,10 @@ public final class LangUIPlugin_Actual {
 	
 	public static LANGUAGE_AutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {
 		return new LANGUAGE_AutoEditStrategy(contentType, sourceViewer);
+	}
+	
+	public static StructureModelManager createStructureModelManager() {
+		return new LANGUAGE_StructureModelManager();
 	}
 	
 	/* ----------------- UI messages:  ----------------- */

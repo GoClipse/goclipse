@@ -19,6 +19,8 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.text.LangReconciler;
+import melnorme.lang.ide.ui.editor.text.LangReconcilingStrategy;
 import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
 import melnorme.lang.ide.ui.text.completion.ContentAssistPreferenceHandler;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
@@ -33,9 +35,13 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.reconciler.AbstractReconciler;
+import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import _org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy;
 
 public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSourceViewerConfiguration {
 	
@@ -120,5 +126,32 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	}
 	
 	protected abstract ContentAssistCategoriesBuilder getContentAssistCategoriesProvider();
+	
+	
+	/* ----------------- reconciler ----------------- */ 
+	
+	@Override
+	public IReconciler getReconciler(ISourceViewer sourceViewer) {
+		ITextEditor editor = getEditor();
+		if(editor != null && editor.isEditable()) {
+			AbstractReconciler reconciler = doCreateReconciler(editor);
+			reconciler.setIsAllowedToModifyDocument(false);
+			reconciler.setDelay(500);
+			
+			return reconciler;
+		}
+		return null;
+	}
+	
+	protected LangReconciler doCreateReconciler(ITextEditor editor) {
+		CompositeReconcilingStrategy strategy = getReconciler_createCompositeStrategy(editor);
+		return new LangReconciler(strategy, false, editor);
+	}
+	
+	protected CompositeReconcilingStrategy getReconciler_createCompositeStrategy(ITextEditor editor) {
+		CompositeReconcilingStrategy compositeStrategy = new CompositeReconcilingStrategy();
+		compositeStrategy.setReconcilingStrategies(array(new LangReconcilingStrategy(editor)));
+		return compositeStrategy;
+	}
 	
 }

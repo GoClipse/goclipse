@@ -8,14 +8,21 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package _org.eclipse.jdt.internal.ui;
+package LANG_PROJECT_ID.ide.ui.editor.structure;
 
-import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
+import melnorme.utilbox.misc.Location;
 
-public class JavaPlugin {
+import org.eclipse.jface.text.IDocument;
 
-	public static String getAdditionalInfoAffordanceString() {
-		return SimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
+public class LANGUAGE_StructureModelManager extends StructureModelManager {
+	
+	public LANGUAGE_StructureModelManager() {
+	}
+	
+	@Override
+	public void rebuild(Location location, IDocument document) {
+		// TODO: LANG
 	}
 	
 }
