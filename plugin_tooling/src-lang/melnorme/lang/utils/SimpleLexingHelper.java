@@ -26,7 +26,10 @@ public class SimpleLexingHelper extends StringCharacterReader {
 		return false;
 	}
 	
-	
+	/**
+	 * Consume a string delimited by give delimiter char, 
+	 * with given escapeChar acting a possible escape (use -1 for no escapeChar)
+	 */
 	public String consumeDelimitedString(int delimiter, int escapeChar) {
 		StringBuilder sb = new StringBuilder();
 		

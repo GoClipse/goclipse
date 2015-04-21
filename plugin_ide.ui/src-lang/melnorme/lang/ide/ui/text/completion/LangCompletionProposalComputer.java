@@ -16,8 +16,8 @@ import java.util.List;
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.lang.ide.ui.tools.ToolProcessRunner;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.tools.ToolManagerOperationHelper;
+import melnorme.lang.ide.ui.views.LangImageProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
@@ -28,60 +28,14 @@ import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
+import org.eclipse.swt.graphics.Image;
 
-public abstract class LangCompletionProposalComputer implements ILangCompletionProposalComputer {
-	
-	protected String errorMessage;
-	
-	public LangCompletionProposalComputer() {
-		super();
-	}
+public abstract class LangCompletionProposalComputer extends AbstractCompletionProposalComputer {
 	
 	@Override
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-	
-	@Override
-	public void sessionStarted() {
-	}
-	
-	@Override
-	public void sessionEnded() {
-	}
-	
-	/* -----------------  ----------------- */
-	
-	protected void handleExceptionInUI(CommonException ce) {
-		UIOperationExceptionHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
-	}
-	
-	@Override
-	public List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) {
-		errorMessage = null;
-		
-		try {
-			try {
-				return doComputeCompletionProposals(context, context.getInvocationOffset());
-			} catch (CoreException ce) {
-				throw new CommonException(ce.getMessage(), ce.getCause());
-			}
-		} catch (CommonException ce) {
-			handleExceptionInUI(ce);
-		} catch (OperationSoftFailure e) {
-			errorMessage = e.getMessage();
-		}
-		return null;
-	}
-	
-	@Override
-	public List<IContextInformation> computeContextInformation(SourceOperationContext context) {
-		return null;
-	}
-	
 	protected List<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context,
 			int offset) throws CoreException, CommonException, OperationSoftFailure {
 		
@@ -117,21 +71,28 @@ public abstract class LangCompletionProposalComputer implements ILangCompletionP
 	}
 	
 	protected ICompletionProposal adaptToolProposal(ToolCompletionProposal proposal) {
-		return new CompletionProposal(
-			proposal.getReplaceString(),
-			proposal.getReplaceStart(),
-			proposal.getReplaceLength(),
-			proposal.getReplaceString().length()
-		);
+		IContextInformation ctxInfo = null; // TODO: context information
+		return new LangCompletionProposal(proposal, null, getImage(proposal), ctxInfo);
 	}
+	
+	protected Image getImage(ToolCompletionProposal proposal) {
+		ImageDescriptor baseImageDescriptor = getBaseImageDescriptor(proposal);
+		return baseImageDescriptor.createImage();
+	}
+	
+	protected ImageDescriptor getBaseImageDescriptor(ToolCompletionProposal proposal) {
+		return getImageProvider().getImageDescriptor(proposal.getKind());
+	}
+	
+	protected abstract LangImageProvider getImageProvider();
 	
 	protected abstract LangCompletionResult doComputeProposals(SourceOperationContext context,
 			int offset, TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
 	
-	protected ToolProcessRunner getProcessRunner(IProgressMonitor pm) {
-		return new ToolProcessRunner(pm);
+	protected ToolManagerOperationHelper getProcessRunner(IProgressMonitor pm) {
+		return new ToolManagerOperationHelper(pm);
 	}
 	
 }
