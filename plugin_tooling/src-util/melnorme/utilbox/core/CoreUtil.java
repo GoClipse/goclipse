@@ -30,6 +30,14 @@ public class CoreUtil /* extends Assert */ {
 	public static boolean areEqual(Object o1, Object o2) {
 		return (o1 == o2) || (o1 != null && o2 != null && o1.equals(o2));
 	}
+	/** @return whether the two given int are equal. */
+	public static boolean areEqual(int o1, int o2) {
+		return o1 == o2;
+	}
+	/** @return whether the two given floats are equal. */
+	public static boolean areEqual(double o1, double o2) {
+		return o1 == o2;
+	}
 	
 	/** @return whether the two given arrays are the same (including null) or equal 
 	 * according to {@link Arrays#equals(Object[], Object[])}. */

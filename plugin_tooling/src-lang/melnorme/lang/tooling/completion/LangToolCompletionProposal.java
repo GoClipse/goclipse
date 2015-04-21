@@ -60,9 +60,9 @@ public abstract class LangToolCompletionProposal<EXTRA> {
 		LangToolCompletionProposal<?> other = (LangToolCompletionProposal<?>) obj;
 		
 		return 
-				completionOffset == other.completionOffset &&
+				areEqual(completionOffset, other.completionOffset) &&
 				areEqual(replaceString, other.replaceString) &&
-				replaceLength == other.replaceLength &&
+				areEqual(replaceLength, other.replaceLength) &&
 				areEqual(label, other.label) &&
 				subclassEquals(other);
 	}
