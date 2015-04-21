@@ -10,10 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.structure;
 
-import org.eclipse.jface.text.IDocument;
+import java.util.Hashtable;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
+
+import org.eclipse.jface.text.IDocument;
 
 public abstract class StructureModelManager {
 	
@@ -23,6 +28,32 @@ public abstract class StructureModelManager {
 		return manager;
 	}
 	
+	/* -----------------  ----------------- */
+	
+	protected final Hashtable<Location, SourceFileStructure> builtStructures = new Hashtable<>();
+	protected final ListenerListHelper<IStructureModelListener> listenerList = new ListenerListHelper<>();
+	
 	public abstract void rebuild(Location location, IDocument document);
+	
+	public void addListener(IStructureModelListener listener) {
+		listenerList.addListener(listener);
+	}
+	
+	public void removeListener(IStructureModelListener listener) {
+		listenerList.removeListener(listener);
+	}
+	
+	/* FIXME: concurrency */
+	protected void addNewStructure(Location location, SourceFileStructure moduleStructure) {
+		builtStructures.put(location, moduleStructure);
+		
+		for(IStructureModelListener listener : listenerList.getListeners()) {
+			try {
+				listener.newStructureBuild(location, moduleStructure);
+			} catch (Exception e) {
+				LangCore.logInternalError(e);
+			}
+		}
+	}
 	
 }
