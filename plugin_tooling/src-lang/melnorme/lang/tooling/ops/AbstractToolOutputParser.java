@@ -37,8 +37,6 @@ public abstract class AbstractToolOutputParser<RESULT> extends ParseHelper {
 	
 	protected abstract RESULT parse(String input) throws CommonException;
 	
-	protected void handleLineParseError(CommonException ce) throws CommonException {
-		 throw ce;
-	}
+	protected abstract void handleLineParseError(CommonException ce) throws CommonException;
 	
 }

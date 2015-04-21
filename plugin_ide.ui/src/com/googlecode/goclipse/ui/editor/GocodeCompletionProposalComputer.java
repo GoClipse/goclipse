@@ -1,6 +1,7 @@
 package com.googlecode.goclipse.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
+import melnorme.lang.ide.ui.views.LangImageProvider;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -171,5 +173,10 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 				prefix.length(), identifier.length(), image, descriptiveString, null, null));
 		}
 	}
-
+	
+	@Override
+	protected LangImageProvider getImageProvider() {
+		throw assertUnreachable();
+	}
+	
 }

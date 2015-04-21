@@ -18,15 +18,19 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class AbstractToolOperation {
 	
-	protected final IProcessRunner processRunner;
+	protected final IOperationHelper operationHelper;
 	
-	public AbstractToolOperation(IProcessRunner processRunner) {
-		this.processRunner = assertNotNull(processRunner);
+	public AbstractToolOperation(IOperationHelper opHelper) {
+		this.operationHelper = assertNotNull(opHelper);
 	}
 	
 	protected ExternalProcessResult runToolProcess(ProcessBuilder pb, String input) 
 			throws CommonException, OperationCancellation {
-		return processRunner.runProcess(pb, input);
+		return operationHelper.runProcess(pb, input);
 	};
+	
+	public IOperationHelper getOperationHelper() {
+		return operationHelper;
+	}
 	
 }

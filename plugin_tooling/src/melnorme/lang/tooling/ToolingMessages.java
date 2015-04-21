@@ -11,7 +11,7 @@
 package melnorme.lang.tooling;
 
 
-
+@LANG_SPECIFIC
 public class ToolingMessages extends ToolingMessages_Default {
 
 }

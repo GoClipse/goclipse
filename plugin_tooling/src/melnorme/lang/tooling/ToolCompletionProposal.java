@@ -12,15 +12,21 @@ package melnorme.lang.tooling;
 
 import melnorme.lang.tooling.completion.LangToolCompletionProposal;
 
-public class ToolCompletionProposal extends LangToolCompletionProposal<Void> {
+@LANG_SPECIFIC
+public class ToolCompletionProposal extends LangToolCompletionProposal {
 	
-	public ToolCompletionProposal(int completionLocation, String replaceString, int replaceLength, String label,
-			Void extraData) {
-		super(completionLocation, replaceString, replaceLength, label, extraData);
+	public ToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, String label,
+			CompletionProposalKind kind, String moduleName) {
+		super(replaceOffset, replaceLength, replaceString, label, kind, moduleName);
+	}
+	
+	public ToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, 
+			CompletionProposalKind kind, String moduleName) {
+		super(replaceOffset, replaceLength, replaceString, replaceString, kind, moduleName);
 	}
 	
 	@Override
-	protected boolean subclassEquals(LangToolCompletionProposal<?> other) {
+	protected boolean subclassEquals(LangToolCompletionProposal other) {
 		return true;
 	}
 	

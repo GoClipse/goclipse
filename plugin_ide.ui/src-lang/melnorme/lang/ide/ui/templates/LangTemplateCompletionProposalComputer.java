@@ -10,18 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.templates;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.util.List;
 
-import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
-import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.ide.ui.text.completion.AbstractCompletionProposalComputer;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -37,7 +32,7 @@ import _org.eclipse.jdt.internal.ui.text.template.contentassist.TemplateEngine;
  *
  * @since 3.4
  */
-public class LangTemplateCompletionProposalComputer extends LangCompletionProposalComputer{
+public class LangTemplateCompletionProposalComputer extends AbstractCompletionProposalComputer {
 	
 	/**
 	 * The engine for the current session, if any
@@ -90,12 +85,6 @@ public class LangTemplateCompletionProposalComputer extends LangCompletionPropos
 //			}
 //		}
 		return result;
-	}
-	
-	@Override
-	protected LangCompletionResult doComputeProposals(SourceOperationContext context, int offset,
-			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		throw assertFail();
 	}
 	
 	protected String getContextTypeId() {

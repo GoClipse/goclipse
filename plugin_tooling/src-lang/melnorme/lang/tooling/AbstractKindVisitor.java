@@ -8,17 +8,25 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.ops;
+package melnorme.lang.tooling;
 
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-
-public interface IProcessRunner {
+public abstract class AbstractKindVisitor<RET> {
 	
-	/**
-	 * Start a process from given ProcessBuilder pb, run it with given input until completion. 
-	 */
-	ExternalProcessResult runProcess(ProcessBuilder pb, String input) throws CommonException, OperationCancellation;
+	protected abstract RET visitVariable();
+	
+	protected abstract RET visitFunction();
+	protected abstract RET visitConstructor();
+	
+	protected abstract RET visitClass();
+	protected abstract RET visitInterface();
+	protected abstract RET visitStruct();
+	protected abstract RET visitEnum();
+	
+	protected abstract RET visitModule();
+	
+	/* -----------------  ----------------- */
+	
+	protected abstract RET visitKeyword();
+	protected abstract RET visitUnknown();
 	
 }

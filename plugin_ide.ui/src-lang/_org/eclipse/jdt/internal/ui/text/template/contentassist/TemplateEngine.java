@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import melnorme.lang.ide.core.ISourceFile;
-import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.ide.ui.LangObjImages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.templates.LangTemplateProposal;
@@ -157,7 +157,7 @@ public class TemplateEngine {
 	}
 
 	protected Image getImage() {
-		return LangImages.OBJ_CA_TEMPLATE.getImage();
+		return LangObjImages.CA_SNIPPET.getImage();
 	}
 
 	/**

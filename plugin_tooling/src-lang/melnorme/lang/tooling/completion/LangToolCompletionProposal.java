@@ -10,46 +10,67 @@
  *******************************************************************************/
 package melnorme.lang.tooling.completion;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+
+import java.text.MessageFormat;
+
+import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.utilbox.misc.HashcodeUtil;
 
 
-public abstract class LangToolCompletionProposal<EXTRA> {
+public abstract class LangToolCompletionProposal {
 	
-	protected final int completionOffset;
-	protected final String replaceString;
+	protected final int replaceOffset;
 	protected final int replaceLength;
+	protected final String replaceString;
 	protected final String label;
-	protected final EXTRA extraData;
+	protected final CompletionProposalKind kind;
+	protected final String moduleName; // can be null
 	
-	public LangToolCompletionProposal(int completionLocation, String replaceString, int replaceLength, String label,
-			EXTRA extraData) {
-		this.completionOffset = completionLocation;
-		this.replaceString = replaceString;
+	public LangToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, String label,
+			CompletionProposalKind kind, String moduleName) {
+		super();
+		this.replaceOffset = replaceOffset;
 		this.replaceLength = replaceLength;
-		this.label = label;
-		this.extraData = extraData;
+		this.replaceString = assertNotNull(replaceString);
+		this.label = assertNotNull(label);
+		this.kind = assertNotNull(kind);
+		this.moduleName = moduleName;
 	}
 	
-	public String getReplaceString() {
-		return replaceString;
-	}
-	
-	public int getReplaceStart() {
-		return completionOffset;
+	public int getReplaceOffset() {
+		return replaceOffset;
 	}
 	
 	public int getReplaceLength() {
 		return replaceLength;
 	}
 	
-	public EXTRA getExtraData() {
-		return extraData;
+	public String getReplaceString() {
+		return replaceString;
+	}
+	
+	public String getLabel() {
+		return label;
+	}
+	
+	public CompletionProposalKind getKind() {
+		return kind;
+	}
+	
+	public String getModuleName() {
+		return moduleName;
 	}
 	
 	@Override
 	public String toString() {
-		return "PROPOSAL: " + "@" + getReplaceStart() + ":" + getReplaceLength() + " " + getReplaceString();
+		return MessageFormat.format("PROPOSAL: @{0}:{1} {2} [{3}]{4}",
+			getReplaceOffset(), getReplaceLength(),
+			getLabel(),
+			getKind(),
+			moduleName == null ? "" : (" - " + moduleName)
+			);
 	}
 	
 	@Override
@@ -57,21 +78,23 @@ public abstract class LangToolCompletionProposal<EXTRA> {
 		if(this == obj) return true;
 		if(!(obj instanceof LangToolCompletionProposal)) return false;
 		
-		LangToolCompletionProposal<?> other = (LangToolCompletionProposal<?>) obj;
+		LangToolCompletionProposal other = (LangToolCompletionProposal) obj;
 		
 		return 
-				areEqual(completionOffset, other.completionOffset) &&
-				areEqual(replaceString, other.replaceString) &&
+				areEqual(replaceOffset, other.replaceOffset) &&
 				areEqual(replaceLength, other.replaceLength) &&
+				areEqual(replaceString, other.replaceString) &&
 				areEqual(label, other.label) &&
+				areEqual(kind, other.kind) &&
+				areEqual(moduleName, other.moduleName) &&
 				subclassEquals(other);
 	}
 	
-	protected abstract boolean subclassEquals(LangToolCompletionProposal<?> other);
+	protected abstract boolean subclassEquals(LangToolCompletionProposal other);
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(completionOffset, replaceString, replaceLength);
+		return HashcodeUtil.combinedHashCode(replaceOffset, replaceLength, replaceString, label, kind, moduleName);
 	}
 	
 }

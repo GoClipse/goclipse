@@ -11,19 +11,21 @@
 package melnorme.lang.ide.ui.tools;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.tooling.ops.IProcessRunner;
+import melnorme.lang.tooling.ops.IOperationHelper;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-/** Helper to start processes in the tool manager. */
-public class ToolProcessRunner implements IProcessRunner {
+/** 
+ * Helper to start processes in the tool manager. 
+ */
+public class ToolManagerOperationHelper implements IOperationHelper {
 	
 	protected final IProgressMonitor pm;
 	
-	public ToolProcessRunner(IProgressMonitor pm) {
+	public ToolManagerOperationHelper(IProgressMonitor pm) {
 		this.pm = pm;
 	}
 	
@@ -31,6 +33,11 @@ public class ToolProcessRunner implements IProcessRunner {
 	public ExternalProcessResult runProcess(ProcessBuilder pb, String input) throws CommonException,
 			OperationCancellation {
 		return LangCore.getToolManager().new RunEngineClientOperation(pb, pm).doRunProcess(input, false);
+	}
+	
+	@Override
+	public void logStatus(CommonException ce) {
+		 LangCore.logError(ce.getMessage(), ce.getCause());
 	}
 	
 }

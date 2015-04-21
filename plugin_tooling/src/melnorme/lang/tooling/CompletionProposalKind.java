@@ -8,16 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.structure;
+package melnorme.lang.tooling;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import melnorme.lang.tooling.AbstractKindVisitor;
-import melnorme.lang.tooling.LANG_SPECIFIC;
-
 
 @LANG_SPECIFIC
-// TODO: need to update this to Go code
-public enum StructureElementKind {
+public enum CompletionProposalKind {
+	
+	KEYWORD,
+	UNKNOWN,
 	
 	VARIABLE,
 	
@@ -28,34 +27,27 @@ public enum StructureElementKind {
 	INTERFACE,
 	STRUCT,
 	
-	MODULEDEC
-	;
+	MODULEDEC;
 	
-	public static abstract class StructureElementKindVisitor<RET> extends AbstractKindVisitor<RET> {
+	public static abstract class ProposalKindVisitor<RET> extends AbstractKindVisitor<RET> {
 		
-		public RET switchOnKind(StructureElementKind kind) {
+		public RET switchOnKind(CompletionProposalKind kind) {
 			switch(kind) {
+			case KEYWORD: return visitKeyword();
+			case UNKNOWN: return visitUnknown();
+			
 			case VARIABLE: return visitVariable();
 			
 			case FUNCTION: return visitFunction();
 			case CONSTRUCTOR: return visitConstructor();
 			
+			case STRUCT: return visitStruct();
 			case CLASS: return visitClass();
 			case INTERFACE: return visitInterface();
-			case STRUCT: return visitStruct();
 			
 			case MODULEDEC: return visitModule();
 			
 			}
-			throw assertUnreachable();
-		}
-		
-		@Override
-		protected RET visitUnknown() {
-			throw assertUnreachable();
-		}
-		@Override
-		protected RET visitKeyword() {
 			throw assertUnreachable();
 		}
 		
