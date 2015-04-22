@@ -20,12 +20,22 @@ import java.util.List;
 
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.fntypes.Predicate;
 
 /**
  * Utils for creation, query, and modification of Collection classes.
  */
 public class CollectionUtil {
+	
+	@SuppressWarnings("rawtypes")
+	public static final Indexable EMPTY_INDEXABLE = new ArrayList2<>();
+	
+	public static <T> Indexable<T> nullToEmpty(Indexable<T> indexable) {
+		@SuppressWarnings("unchecked")
+		Indexable<T> result = indexable == null ? EMPTY_INDEXABLE : indexable;
+		return result;
+	}
 	
 	public static <T extends Collection<E>, E> T addAll(T collection, Iterable<? extends E> iterable) {
 		if(iterable != null) {

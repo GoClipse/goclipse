@@ -27,4 +27,12 @@ public class TextUtils {
 		return braceChar;
 	}
 	
+	public static boolean isPrefix_ignoreCase(String prefix, String string) {
+		if(prefix.length() > string.length()) {
+			return false;
+		}
+		String subString = string.substring(0, prefix.length());
+		return subString.equalsIgnoreCase(prefix);
+	}
+	
 }

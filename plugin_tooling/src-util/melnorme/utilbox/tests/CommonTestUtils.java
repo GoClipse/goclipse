@@ -27,6 +27,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -83,6 +85,20 @@ public class CommonTestUtils {
 	/** Helper for interactive debugging: 
 	 * Does the same check as {@link List#equals(Object)}, but fails right on the spot where it's not equal. */
 	public static void assertAreEqualLists(List<?> list1, List<?> list2) {
+		if(list1 == null && list2 == null)
+			return;
+		
+		if(list1.size() != list2.size()) {
+			assertFail();
+		}
+		for (int ix = 0; ix < list1.size(); ix++) {
+			Object obj1 = list1.get(ix);
+			Object obj2 = list2.get(ix);
+			assertAreEqual(obj1, obj2);
+		}
+	}
+	
+	public static void assertAreEqualLists(Indexable<?> list1, Indexable<?> list2) {
 		if(list1 == null && list2 == null)
 			return;
 		
@@ -161,8 +177,8 @@ public class CommonTestUtils {
 	
 	
 	@SafeVarargs
-	public static <T> List<T> list(T... elems) {
-		return Arrays.asList(elems);
+	public static <T> ArrayList2<T> list(T... elems) {
+		return new ArrayList2<>(elems);
 	}
 	
 	@SafeVarargs

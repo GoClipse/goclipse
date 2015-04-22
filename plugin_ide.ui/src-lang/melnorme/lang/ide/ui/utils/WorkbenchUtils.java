@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.ResourceUtil;
@@ -43,6 +45,13 @@ public class WorkbenchUtils {
 		if(window == null)
 			return null;
 		return window.getActivePage();
+	}
+	
+	/** @return the active workbench site, or null if none. */
+	public static IWorkbenchSite getActiveSite() {
+		IWorkbenchPage workbenchPage = getActivePage();
+		IWorkbenchPart part = workbenchPage == null ? null : workbenchPage.getActivePart();
+		return part == null ? null : part.getSite();
 	}
 	
 	/** @return the active editor for the active workbench window, if any. */
