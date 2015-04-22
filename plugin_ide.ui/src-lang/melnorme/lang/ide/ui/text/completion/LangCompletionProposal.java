@@ -230,7 +230,7 @@ public class LangCompletionProposal implements
 	
 	protected boolean isValidPrefix(String prefix) {
 		String rplString = getBaseReplaceString();
-		return TextUtils.isPrefix_ignoreCase(prefix, rplString);
+		return TextUtils.isPrefix(prefix, rplString, true);
 	}
 	
 	@Override
