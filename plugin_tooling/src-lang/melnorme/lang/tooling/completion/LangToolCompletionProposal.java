@@ -11,11 +11,15 @@
 package melnorme.lang.tooling.completion;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.text.MessageFormat;
 
 import melnorme.lang.tooling.CompletionProposalKind;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.HashcodeUtil;
 
 
@@ -28,15 +32,23 @@ public abstract class LangToolCompletionProposal {
 	protected final CompletionProposalKind kind;
 	protected final String moduleName; // can be null
 	
-	public LangToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, String label,
-			CompletionProposalKind kind, String moduleName) {
-		super();
+	protected final String fullReplaceString;
+	protected final Indexable<SourceRange> sourceSubElements;
+	
+	public LangToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, 
+			String label, CompletionProposalKind kind, String moduleName, 
+			String fullReplaceString, Indexable<SourceRange> sourceSubElements) {
+		assertTrue(replaceOffset >= 0);
+		assertTrue(replaceLength >= 0);
 		this.replaceOffset = replaceOffset;
 		this.replaceLength = replaceLength;
 		this.replaceString = assertNotNull(replaceString);
 		this.label = assertNotNull(label);
 		this.kind = assertNotNull(kind);
 		this.moduleName = moduleName;
+		
+		this.fullReplaceString = assertNotNull(fullReplaceString);
+		this.sourceSubElements = CollectionUtil.nullToEmpty(sourceSubElements);
 	}
 	
 	public int getReplaceOffset() {
@@ -52,7 +64,7 @@ public abstract class LangToolCompletionProposal {
 	}
 	
 	public String getLabel() {
-		return label;
+		return assertNotNull(label);
 	}
 	
 	public CompletionProposalKind getKind() {
@@ -61,6 +73,16 @@ public abstract class LangToolCompletionProposal {
 	
 	public String getModuleName() {
 		return moduleName;
+	}
+	
+	/** @return Alternative replace string, with more completion text. 
+	 * Usually used for functions complete proposals that include parameters as well.*/
+	public String getFullReplaceString() {
+		return fullReplaceString;
+	}
+	
+	public Indexable<SourceRange> getSourceSubElements() {
+		return sourceSubElements;
 	}
 	
 	@Override
@@ -87,6 +109,8 @@ public abstract class LangToolCompletionProposal {
 				areEqual(label, other.label) &&
 				areEqual(kind, other.kind) &&
 				areEqual(moduleName, other.moduleName) &&
+				areEqual(fullReplaceString, other.fullReplaceString) &&
+				areEqual(sourceSubElements, other.sourceSubElements) &&
 				subclassEquals(other);
 	}
 	
