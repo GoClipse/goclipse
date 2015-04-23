@@ -20,6 +20,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ISourceLocator;
 
+import melnorme.lang.ide.debug.core.services.DebugServicesExtensions;
 import melnorme.lang.ide.launching.ProcessSpawnInfo;
 
 public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangLaunchConfigurationDelegate_Actual {
@@ -30,17 +31,28 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 	protected final GdbLaunchDelegateExtension gdbLaunchDelegate = createGdbLaunchDelegate();
 	
 	protected GdbLaunchDelegateExtension createGdbLaunchDelegate() {
-		return new GdbLaunchDelegateExtension() {
-			@Override
-			protected GdbLaunch createGdbLaunch(ILaunchConfiguration configuration, String mode,
-					ISourceLocator locator) throws CoreException {
-				return doCreateGdbLaunch(configuration, mode, locator);
-			}
-		};
+		return new GdbLaunchDelegateExt();
+	}
+	
+	protected class GdbLaunchDelegateExt extends GdbLaunchDelegateExtension {
+		@Override
+		protected GdbLaunch createGdbLaunch(ILaunchConfiguration configuration, String mode,
+				ISourceLocator locator) throws CoreException {
+			return doCreateGdbLaunch(configuration, mode, locator);
+		}
+		
+		@Override
+		protected DebugServicesExtensions createServicesExtensions() {
+			return doCreateServicesExtensions();
+		}
 	}
 	
 	protected abstract GdbLaunch doCreateGdbLaunch(ILaunchConfiguration configuration, String mode,
 			ISourceLocator locator);
+	
+	protected DebugServicesExtensions doCreateServicesExtensions() {
+		return new DebugServicesExtensions();
+	}
 	
 	@Override
 	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {

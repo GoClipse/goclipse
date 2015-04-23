@@ -11,6 +11,7 @@ import org.eclipse.cdt.dsf.gdb.launching.LaunchUtils;
 import org.eclipse.cdt.dsf.gdb.service.GdbDebugServicesFactory;
 import org.eclipse.cdt.dsf.gdb.service.GdbDebugServicesFactoryNS;
 import org.eclipse.cdt.dsf.gdb.service.macos.MacOSGdbDebugServicesFactory;
+import org.eclipse.cdt.dsf.mi.service.IMIBackend;
 import org.eclipse.cdt.dsf.service.DsfSession;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -95,17 +96,9 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 			// See super.createExpressionService(session);
 			return servicesExtensions.createExpressionService(session);
 		}
-	}
-	
-	protected class GdbDebugServicesFactory_LangExtension extends GdbDebugServicesFactory {
-		public GdbDebugServicesFactory_LangExtension(String version) {
-			super(version);
-		}
-		
 		@Override
-		protected IExpressions createExpressionService(DsfSession session) {
-			// See super.createExpressionService(session);
-			return servicesExtensions.createExpressionService(session);
+		protected IMIBackend createBackendGDBService(DsfSession session, ILaunchConfiguration lc) {
+			return servicesExtensions.createBackendGDBService(session, lc);
 		}
 	}
 	
@@ -118,6 +111,26 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 		protected IExpressions createExpressionService(DsfSession session) {
 			// See super.createExpressionService(session);
 			return servicesExtensions.createExpressionService(session);
+		}
+		@Override
+		protected IMIBackend createBackendGDBService(DsfSession session, ILaunchConfiguration lc) {
+			return servicesExtensions.createBackendGDBService(session, lc);
+		}
+	}
+	
+	protected class GdbDebugServicesFactory_LangExtension extends GdbDebugServicesFactory {
+		public GdbDebugServicesFactory_LangExtension(String version) {
+			super(version);
+		}
+		
+		@Override
+		protected IExpressions createExpressionService(DsfSession session) {
+			// See super.createExpressionService(session);
+			return servicesExtensions.createExpressionService(session);
+		}
+		@Override
+		protected IMIBackend createBackendGDBService(DsfSession session, ILaunchConfiguration lc) {
+			return servicesExtensions.createBackendGDBService(session, lc);
 		}
 	}
 	

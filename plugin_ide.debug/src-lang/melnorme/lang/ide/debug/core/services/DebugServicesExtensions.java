@@ -11,12 +11,15 @@
 package melnorme.lang.ide.debug.core.services;
 
 import org.eclipse.cdt.dsf.debug.service.IExpressions;
+import org.eclipse.cdt.dsf.gdb.service.GDBBackend;
 import org.eclipse.cdt.dsf.gdb.service.GDBPatternMatchingExpressions;
+import org.eclipse.cdt.dsf.mi.service.IMIBackend;
 import org.eclipse.cdt.dsf.mi.service.IMIExpressions;
 import org.eclipse.cdt.dsf.mi.service.MIExpressions;
 import org.eclipse.cdt.dsf.mi.service.MIVariableManager;
 import org.eclipse.cdt.dsf.service.DsfServicesTracker;
 import org.eclipse.cdt.dsf.service.DsfSession;
+import org.eclipse.debug.core.ILaunchConfiguration;
 
 public class DebugServicesExtensions {
 	
@@ -33,6 +36,10 @@ public class DebugServicesExtensions {
 	protected MIVariableManager services_createMIVariableManager(DsfSession session,
 			DsfServicesTracker servicesTracker) {
 		return new MIVariableManager_LangExtension(session, servicesTracker);
+	}
+	
+	public IMIBackend createBackendGDBService(DsfSession session, ILaunchConfiguration lc) {
+		return new GDBBackend(session, lc);
 	}
 	
 }
