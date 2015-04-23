@@ -10,8 +10,8 @@
 <repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.cdt.platform.feature.group" version="8.5.0.201409172108"/>
-<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.5.0.201409172108"/>
+<unit id="org.eclipse.cdt.platform.feature.group" version="8.6.0.201502131403"/>
+<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.6.0.201502131403"/>
 <repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 </locations>
