@@ -8,6 +8,8 @@
  * Added #113: Append GOROOT to PATH when invoking Go oracle and other tools.
  * Fixed #121: Oracle Open Definition not working for type references: "selected name does not refer to a source element"
  * Added: Content Assist of code snippets. Configurable in `Preferences/Go/Editor/Code Snippets`. TODO more defaults
+  ▶ Recommended/tested CDT version: 8.6.0
+
 
 ### Goclipse 0.10.1
  * Fixed: Bug `java.lang.ClassNotFoundException: LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPreferencesInitializer`.

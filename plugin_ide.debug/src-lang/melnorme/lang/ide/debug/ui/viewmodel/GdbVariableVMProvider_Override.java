@@ -2,9 +2,11 @@ package melnorme.lang.ide.debug.ui.viewmodel;
 
 
 import org.eclipse.cdt.dsf.debug.internal.ui.viewmodel.DsfCastToTypeSupport;
+import org.eclipse.cdt.dsf.debug.ui.viewmodel.IDebugVMConstants;
 import org.eclipse.cdt.dsf.debug.ui.viewmodel.variable.SyncVariableDataAccess;
 import org.eclipse.cdt.dsf.gdb.internal.ui.viewmodel.GdbVariableVMNode;
 import org.eclipse.cdt.dsf.gdb.internal.ui.viewmodel.GdbVariableVMProvider;
+import org.eclipse.cdt.dsf.mi.service.MIExpressions;
 import org.eclipse.cdt.dsf.service.DsfSession;
 import org.eclipse.cdt.dsf.ui.viewmodel.AbstractVMAdapter;
 import org.eclipse.cdt.dsf.ui.viewmodel.IRootVMNode;
@@ -18,6 +20,10 @@ public class GdbVariableVMProvider_Override extends GdbVariableVMProvider {
 	public GdbVariableVMProvider_Override(AbstractVMAdapter adapter, IPresentationContext context,
 			DsfSession session) {
 		super(adapter, context, session);
+		
+		getPresentationContext().setProperty(
+				IDebugVMConstants.PROP_FORMATTED_VALUE_FORMAT_PREFERENCE,
+				MIExpressions.DETAILS_FORMAT);
 	}
 	
 	// copied from super code

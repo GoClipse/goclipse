@@ -43,7 +43,6 @@ import org.eclipse.cdt.dsf.debug.ui.actions.DsfStepIntoSelectionCommand;
 import org.eclipse.cdt.dsf.debug.ui.actions.DsfStepOverCommand;
 import org.eclipse.cdt.dsf.debug.ui.actions.DsfStepReturnCommand;
 import org.eclipse.cdt.dsf.debug.ui.actions.DsfSuspendCommand;
-import org.eclipse.cdt.dsf.debug.ui.actions.IDsfStepIntoSelection;
 import org.eclipse.cdt.dsf.debug.ui.sourcelookup.DsfSourceDisplayAdapter;
 import org.eclipse.cdt.dsf.debug.ui.viewmodel.SteppingController;
 import org.eclipse.cdt.dsf.debug.ui.viewmodel.actions.DefaultRefreshAllTarget;
@@ -215,7 +214,6 @@ public class GdbAdapterFactory
             session.registerModelAdapter(ISelectNextTraceRecordHandler.class, fSelectNextRecordTarget);
             session.registerModelAdapter(ISelectPrevTraceRecordHandler.class, fSelectPrevRecordTarget);
             session.registerModelAdapter(IPinProvider.class, fPinProvider);
-            session.registerModelAdapter(IDsfStepIntoSelection.class, fStepIntoSelectionCommand);
 
             fDebugModelProvider = new IDebugModelProvider() {
                 // @see org.eclipse.debug.core.model.IDebugModelProvider#getModelIdentifiers()
@@ -313,21 +311,21 @@ public class GdbAdapterFactory
     }
 
     /**
-     * Active adapter sets.  They are accessed using the launch instance
-     * which owns the debug services session.
+     * Active adapter sets.  They are accessed using the launch instance 
+     * which owns the debug services session. 
      */
     private static Map<GdbLaunch, SessionAdapterSet> fgLaunchAdapterSets =
         Collections.synchronizedMap(new HashMap<GdbLaunch, SessionAdapterSet>());
 
     /**
      * Map of launches for which adapter sets have already been disposed.
-     * This map (used as a set) is maintained in order to avoid re-creating an
-     * adapter set after the launch was removed from the launch manager, but
-     * while the launch is still being held by other classes which may
-     * request its adapters.  A weak map is used to avoid leaking
+     * This map (used as a set) is maintained in order to avoid re-creating an 
+     * adapter set after the launch was removed from the launch manager, but 
+     * while the launch is still being held by other classes which may 
+     * request its adapters.  A weak map is used to avoid leaking 
      * memory once the launches are no longer referenced.
      * <p>
-     * Access to this map is synchronized using the fgLaunchAdapterSets
+     * Access to this map is synchronized using the fgLaunchAdapterSets 
      * instance.
      * </p>
      */
@@ -357,8 +355,8 @@ public class GdbAdapterFactory
 
         GdbLaunch launch = (GdbLaunch)adaptableObject;
 
-        // Check for valid session.
-        // Note: even if the session is no longer active, the adapter set
+        // Check for valid session.  
+        // Note: even if the session is no longer active, the adapter set 
         // should still be returned.  This is because the view model may still
         // need to show elements representing a terminated process/thread/etc.
         DsfSession session = launch.getSession();
@@ -370,7 +368,7 @@ public class GdbAdapterFactory
 
         SessionAdapterSet adapterSet;
         synchronized(fgLaunchAdapterSets) {
-            // The adapter set for the given launch was already disposed.
+            // The adapter set for the given launch was already disposed.  
             // Return a null adapter.
             if (fgDisposedLaunchAdapterSets.containsKey(launch)) {
                 return null;
@@ -384,7 +382,7 @@ public class GdbAdapterFactory
             	// Note that we must do this here because fgDisposedLaunchAdapterSets
             	// may not already know that the launch has been removed because of a race
             	// condition with the caller which is also processing a launchRemoved method.
-            	// Bug 334687
+            	// Bug 334687 
             	if (session.isActive() == false) {
             		return null;
             	}
