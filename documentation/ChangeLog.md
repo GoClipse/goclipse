@@ -2,6 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
+  ▶ Recommended/tested CDT version: 8.6.0
+  
  * Doc - Installation guide: Added note for users in China.
 
  * Added: Toggle Comment action (Ctrl+/) .

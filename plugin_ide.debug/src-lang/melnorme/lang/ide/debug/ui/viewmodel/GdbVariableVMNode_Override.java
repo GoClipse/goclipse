@@ -50,6 +50,10 @@ public class GdbVariableVMNode_Override extends GdbVariableVMNode {
 		return labelProvider;
 	}
 	
+	/**
+	 * This method modifies CDT's default label provider in two ways:
+	 * See {@link FormattedValueLabelText_Override} and {@link ErrorLabelText_Extension}
+	 */
 	protected static void customizeLabelProvider(PropertiesBasedLabelProvider provider) {
 		LabelColumnInfo columnInfo = provider.getColumnInfo(IDebugVMConstants.COLUMN_ID__VALUE);
 		LabelAttribute[] labelAttributes = columnInfo.getLabelAttributes();
@@ -79,6 +83,9 @@ public class GdbVariableVMNode_Override extends GdbVariableVMNode {
 		provider.setColumnInfo(IDebugVMConstants.COLUMN_ID__VALUE, new LabelColumnInfo(labelAttributes));
 	}
 	
+	/**
+	 * Override parent behaviour: don't add "(Details)" suffix
+	 */
 	public static class FormattedValueLabelText_Override extends FormattedValueLabelText {
 		
 	    protected String PROP_ACTIVE_FORMAT = IDebugVMConstants.PROP_FORMATTED_VALUE_ACTIVE_FORMAT;
@@ -92,7 +99,6 @@ public class GdbVariableVMNode_Override extends GdbVariableVMNode {
 	        if ( PROP_ACTIVE_FORMAT_VALUE.equals(propertyName) ) {
 	            Object activeFormat = properties.get(PROP_ACTIVE_FORMAT);
 	            if(activeFormat.equals(MIExpressions.DETAILS_FORMAT)){
-	            	// Override parent behaviour: don't add "(Details)" suffix
 	            	return properties.get(propertyName);
 	            }
 	        }
@@ -101,6 +107,10 @@ public class GdbVariableVMNode_Override extends GdbVariableVMNode {
 		
 	}
 	
+	/**
+	 * Trim certain error messages from the backend.
+	 * TODO: review this with future versions of CDT
+	 */
 	public static final class ErrorLabelText_Extension extends ErrorLabelText {
 		
 		protected static final String[] MESSAGES_TO_TRIM = {

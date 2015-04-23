@@ -61,6 +61,7 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 	@Override
 	protected IDsfDebugServicesFactory newServiceFactory(ILaunchConfiguration config, String version) {
 		boolean fIsNonStopSession = LaunchUtils.getIsNonStopMode(config);
+		
 		if (fIsNonStopSession && isNonStopSupportedInGdbVersion(version)) {
 			return new GdbDebugServicesFactoryNS_LangExtension(version);
 		}

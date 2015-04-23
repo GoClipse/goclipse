@@ -104,6 +104,7 @@ public class GdbExpressionVMProvider_Override extends GdbExpressionVMProvider {
          *  Let the work know which is the top level node.
          */
         setRootNode(rootNode);
+
     }
 	
 	protected GdbVariableVMNode createGdbVariableVMNode(SyncVariableDataAccess syncvarDataAccess) {

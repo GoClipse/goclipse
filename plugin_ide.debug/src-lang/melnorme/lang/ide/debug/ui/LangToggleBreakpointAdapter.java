@@ -18,17 +18,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.cdt.debug.core.CDIDebugModel;
+import org.eclipse.cdt.debug.core.cdi.model.ICDIMemorySpaceManagement;
+import org.eclipse.cdt.debug.core.cdi.model.ICDITarget;
 import org.eclipse.cdt.debug.core.model.ICBreakpointType;
+import org.eclipse.cdt.debug.core.model.ICDebugTarget;
 import org.eclipse.cdt.debug.core.model.ICEventBreakpoint;
 import org.eclipse.cdt.debug.core.model.ICFunctionBreakpoint;
 import org.eclipse.cdt.debug.core.model.ICLineBreakpoint;
 import org.eclipse.cdt.debug.core.model.ICWatchpoint;
+import org.eclipse.cdt.debug.internal.ui.actions.breakpoints.ToggleBreakpointAdapter;
 import org.eclipse.cdt.debug.ui.breakpoints.AbstractToggleBreakpointAdapter;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.ui.IWorkbenchPart;
 
-/**
+/** LANG: Copied from {@link ToggleBreakpointAdapter}
+ * 
  * Toggles a line breakpoint in a C/C++ editor.
  * 
  * @since 7.2
@@ -107,5 +114,23 @@ public class LangToggleBreakpointAdapter extends AbstractToggleBreakpointAdapter
 	protected int getBreakpointType() {
 		return ICBreakpointType.REGULAR;
 	}
+	
+	public static ICDIMemorySpaceManagement getMemorySpaceManagement(){
+        IAdaptable debugViewElement = DebugUITools.getDebugContext();
+        ICDIMemorySpaceManagement memMgr = null;
+        
+        if ( debugViewElement != null ) {
+            ICDebugTarget debugTarget = (ICDebugTarget)debugViewElement.getAdapter(ICDebugTarget.class);
+            
+            if ( debugTarget != null ){
+                ICDITarget target = (ICDITarget)debugTarget.getAdapter(ICDITarget.class);
+            
+                if (target instanceof ICDIMemorySpaceManagement)
+                    memMgr = (ICDIMemorySpaceManagement)target;
+            }
+        }
+        
+        return memMgr;
+    }
 	
 }
