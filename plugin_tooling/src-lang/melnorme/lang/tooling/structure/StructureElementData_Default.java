@@ -11,6 +11,25 @@
 package melnorme.lang.tooling.structure;
 
 
-class StructureElementData_Default {
+abstract class StructureElementData_Default {
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(!(obj instanceof StructureElementData)) return false;
+		
+		StructureElementData other = (StructureElementData) obj;
+		
+		return equals_subClass(other);
+	}
+	
+	protected abstract boolean equals_subClass(StructureElementData other);
+	
+	@Override
+	public int hashCode() {
+		return hashCode_subClass();
+	}
+	
+	protected abstract int hashCode_subClass();
 	
 }

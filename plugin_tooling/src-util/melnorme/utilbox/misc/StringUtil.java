@@ -314,4 +314,8 @@ public final class StringUtil {
 		return new ArrayList2<>(string.split(regex));
 	}
 	
+	public static String prefixStr(String prefix, String string) {
+		return string != null ? prefix + string : "";
+	}
+	
 }

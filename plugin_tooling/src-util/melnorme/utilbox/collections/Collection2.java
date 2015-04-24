@@ -28,4 +28,9 @@ public interface Collection2<E> extends Iterable<E>, RandomAccess {
 	/** @return <tt>true</tt> if this collection contains no elements */
 	boolean isEmpty();
 	
+	/** @return the receiver (this), with the type parameter recast. 
+	 * WARNING: This operation is only safe if: 
+	 * - The bound T is a supertype of E, and the returned collection is used only for reading. */
+	public <T> Collection2<T> upcastTypeParameter();
+	
 }

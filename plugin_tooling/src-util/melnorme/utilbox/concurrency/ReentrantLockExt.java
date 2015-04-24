@@ -8,21 +8,29 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.structure;
+package melnorme.utilbox.concurrency;
 
-import melnorme.lang.tooling.LANG_SPECIFIC;
+import java.util.concurrent.locks.ReentrantLock;
 
-@LANG_SPECIFIC
-public class StructureElementData extends StructureElementData_Default {
+/**
+ * Minor Extension to {@link ReentrantLock} to allow using of {@link AutoUnlockable}
+ */
+@SuppressWarnings("serial")
+public class ReentrantLockExt extends ReentrantLock implements AutoUnlockable {
 	
-	@Override
-	protected boolean equals_subClass(StructureElementData other) {
-		return true; 
+	public AutoUnlockable lock_() {
+		super.lock();
+		return this;
+	}
+	
+	public AutoUnlockable lockInterruptibly_() throws InterruptedException {
+		super.lockInterruptibly();
+		return this;
 	}
 	
 	@Override
-	protected int hashCode_subClass() {
-		return 0;
+	public void close() throws IllegalMonitorStateException {
+		 unlock();
 	}
 	
 }

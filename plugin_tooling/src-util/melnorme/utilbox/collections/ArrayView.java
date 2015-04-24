@@ -41,8 +41,9 @@ public class ArrayView<E> implements Indexable<E> {
 		this.array = array;
 	}
 	
-	public final <T> ArrayView<T> upcastTypeParameter() {
-		return CoreUtil.<ArrayView<T>>blindCast(this);
+	@Override
+	public <T> ArrayView<T> upcastTypeParameter() {
+		return CoreUtil.blindCast(this);
 	}
 	
 	@Override

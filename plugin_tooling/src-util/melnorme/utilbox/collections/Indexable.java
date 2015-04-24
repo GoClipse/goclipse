@@ -20,4 +20,7 @@ public interface Indexable<E> extends Collection2<E>, RandomAccess {
 	/** @return the element at given index. */
 	E get(int index);
 	
+	@Override
+	public <T> Indexable<T> upcastTypeParameter();
+	
 }

@@ -10,13 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.tooling.structure;
 
+import melnorme.utilbox.collections.Indexable;
 
-interface IStructureElementContainer {
+
+public interface IStructureElementContainer {
 	
 	/** @return the logical name of the compilation unit (aka, the module) of this element. Can be null. */
 	String getModuleName();
 	
 	/** @return the children of this container. */
-	Iterable<IStructureElement> getChildren();
+	Indexable<IStructureElement> getChildren();
 	
 }

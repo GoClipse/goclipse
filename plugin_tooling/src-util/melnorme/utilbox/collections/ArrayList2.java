@@ -13,6 +13,7 @@ package melnorme.utilbox.collections;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 
 /**
@@ -68,18 +69,15 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		return ArrayUtil.createFrom(this, componentType);
 	}
 	
-	/** Cast the type parameter to something. This operation is only safe if the underlying collection 
-	 * is used only for reading (for a type parameter upcast) or writing (for a type parameter upcast).*/
-	@SuppressWarnings("unchecked")
-	public <T> ArrayList2<T> castTypeParam() {
-		return (ArrayList2<T>) this;
+	@Override
+	public <T> Indexable<T> upcastTypeParameter() {
+		return CoreUtil.blindCast(this);
 	}
 	
 	@SuppressWarnings("unused")
 	private static void _generics_test() {
 		ArrayList2<Integer> arrayListExt = new ArrayList2<Integer>();
-		arrayListExt.<Number>castTypeParam().toArray(Number.class);
-		ArrayUtil.createFrom(arrayListExt, Number.class);
+		Indexable<Number> other = arrayListExt.upcastTypeParameter();
 	}
 	
 }

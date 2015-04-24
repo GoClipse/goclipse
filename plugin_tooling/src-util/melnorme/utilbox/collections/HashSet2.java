@@ -13,6 +13,7 @@ package melnorme.utilbox.collections;
 import java.util.Collection;
 import java.util.HashSet;
 
+import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 
 /**
@@ -62,17 +63,15 @@ public class HashSet2<E> extends HashSet<E> implements Collection2<E> {
 		return ArrayUtil.createFrom(this, componentType);
 	}
 	
-	/** Cast the type parameter to something. This operation is only safe if the underlying collection 
-	 * is used only for reading (for a type parameter upcast) or writing (for a type parameter upcast).*/
-	@SuppressWarnings("unchecked")
-	public <T> HashSet2<T> castTypeParam() {
-		return (HashSet2<T>) this;
+	@Override
+	public <T> HashSet2<T> upcastTypeParameter() {
+		return CoreUtil.blindCast(this);
 	}
 	
 	@SuppressWarnings("unused")
 	private static void _generics_test() {
 		HashSet2<Integer> arrayListExt = new HashSet2<Integer>();
-		arrayListExt.<Number>castTypeParam().toArray(Number.class);
+		arrayListExt.<Number>upcastTypeParameter().toArray(Number.class);
 		ArrayUtil.createFrom(arrayListExt, Number.class);
 	}
 	

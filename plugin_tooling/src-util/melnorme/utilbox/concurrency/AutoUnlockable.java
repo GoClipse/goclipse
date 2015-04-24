@@ -8,18 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor.structure;
+package melnorme.utilbox.concurrency;
 
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.utilbox.misc.Location;
-
-public interface IStructureModelListener {
+/**
+ * {@link AutoCloseable} to automatically unlock a lock, using a try-with-resources statement.
+ */
+public interface AutoUnlockable extends AutoCloseable {
 	
-	/** 
-	 * Indicates that the source file structure of the file at given location has changed.
-	 * 
-	 * This method runs under the scope of a Structure Model lock, so listeners should respond quickly.
-	 */
-	void structureChanged(Location location, SourceFileStructure sourceFileStructure, Object structureModelLock);
+	@Override
+	public void close() throws RuntimeException;
 	
 }

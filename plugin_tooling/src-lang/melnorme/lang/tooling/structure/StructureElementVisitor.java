@@ -8,18 +8,27 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor.structure;
+package melnorme.lang.tooling.structure;
 
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.utilbox.misc.Location;
-
-public interface IStructureModelListener {
+public abstract class StructureElementVisitor {
 	
-	/** 
-	 * Indicates that the source file structure of the file at given location has changed.
-	 * 
-	 * This method runs under the scope of a Structure Model lock, so listeners should respond quickly.
-	 */
-	void structureChanged(Location location, SourceFileStructure sourceFileStructure, Object structureModelLock);
+	int level = 0;
+	
+	public StructureElementVisitor() {
+	}
+	
+	protected void visitTree(IStructureElement element) {
+		level++;
+		
+		if(visitNode(element)) {
+			for (IStructureElement child : element.getChildren()) {
+				visitTree(child);
+			}
+		}
+		level--;
+	}
+	
+	/** @return whether to visit children. */
+	protected abstract boolean visitNode(IStructureElement element);
 	
 }

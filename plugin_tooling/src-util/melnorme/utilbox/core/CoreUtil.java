@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 
@@ -139,10 +140,13 @@ public class CoreUtil /* extends Assert */ {
 	public static <U> Collection<U> nullToEmpty(Collection<U> coll) {
 		return coll == null ? Collections.EMPTY_LIST : coll;
 	}
-	
 	/** @return given coll if it's not null, or an empty immutable {@link Iterable} otherwise. */
 	public static <E> Iterable<E> nullToEmpty(Iterable<E> coll) {
 		return coll == null ? Collections.EMPTY_LIST : coll;
+	}
+	/** @return given coll if it's not null, or an empty immutable {@link Indexable} otherwise. */
+	public static <E> Indexable<E> nullToEmpty(Indexable<E> coll) {
+		return coll == null ? CollectionUtil.EMPTY_INDEXABLE : coll;
 	}
 	
 	/** Create an array from the given list, with the given cpType as the run-time component type.
