@@ -11,9 +11,8 @@
 package LANG_PROJECT_ID.ide.ui.editor.structure;
 
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
+import melnorme.lang.utils.M_WorkerThread;
 import melnorme.utilbox.misc.Location;
-
-import org.eclipse.jface.text.IDocument;
 
 public class LANGUAGE_StructureModelManager extends StructureModelManager {
 	
@@ -21,7 +20,7 @@ public class LANGUAGE_StructureModelManager extends StructureModelManager {
 	}
 	
 	@Override
-	public void rebuild(Location location, IDocument document) {
+	public void rebuild(Location location, String source, M_WorkerThread reconcilerWorkerThread) {
 		// TODO: LANG
 	}
 	
