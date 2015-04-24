@@ -264,7 +264,7 @@
 			</enablement>
 			</commonWizard>
 			
-			<actionProvider class="com.googlecode.goclipse.navigator.NavigatorActionProvider"/>
+			<actionProvider class="com.googlecode.goclipse.ui.navigator.NavigatorActionProvider"/>
 			
 		</navigatorContent>
 		

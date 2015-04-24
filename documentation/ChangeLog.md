@@ -9,6 +9,7 @@
  * Fixed #121: Oracle Open Definition not working for type references: "selected name does not refer to a source element"
  * Added: Content Assist of code snippets. Configurable in `Preferences/Go/Editor/Code Snippets`. TODO more defaults
   ▶ Recommended/tested CDT version: 8.6.0
+ * Fixed: #127 "null argument" error dialog when double-clicking on Go project.
 
 
 ### Goclipse 0.10.1
