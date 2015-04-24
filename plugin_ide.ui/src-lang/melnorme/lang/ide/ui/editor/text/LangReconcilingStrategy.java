@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
+import melnorme.lang.utils.M_WorkerThread;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.SimpleLogger;
 
@@ -33,12 +34,15 @@ public class LangReconcilingStrategy implements IReconcilingStrategy, IReconcili
 	protected final StructureModelManager modelManager = StructureModelManager.getDefault();
 	protected final ITextEditor editor;
 	
+	protected IDocument document;
+	
 	public LangReconcilingStrategy(ITextEditor editor) {
 		this.editor = assertNotNull(editor);
 	}
 	
 	@Override
 	public void setDocument(IDocument document) {
+		this.document = document;
 		log.println("set Document :");
 	}
 	
@@ -67,9 +71,7 @@ public class LangReconcilingStrategy implements IReconcilingStrategy, IReconcili
 		
 		log.println("Reconcile [" + location +  "] @ " + partition);
 		
-		IDocument document = EditorUtils.getEditorDocument(editor);
-		
-		modelManager.rebuild(location, document);
+		modelManager.rebuild(location, document.get(), new M_WorkerThread());
 	}
 	
 }

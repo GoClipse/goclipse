@@ -8,18 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor.structure;
+package melnorme.lang.utils;
 
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.utilbox.misc.Location;
-
-public interface IStructureModelListener {
-	
-	/** 
-	 * Indicates that the source file structure of the file at given location has changed.
-	 * 
-	 * This method runs under the scope of a Structure Model lock, so listeners should respond quickly.
-	 */
-	void structureChanged(Location location, SourceFileStructure sourceFileStructure, Object structureModelLock);
+/** 
+ * Marker class to indicate to methods that hold an instance of this, 
+ * that they are currently running in a worker thread, as such, it is ok to perform long-running tasks. 
+ */
+public class M_WorkerThread {
 	
 }

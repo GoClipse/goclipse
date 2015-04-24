@@ -8,20 +8,29 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.ui.editor.structure;
+package melnorme.utilbox.concurrency;
 
-import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
-import melnorme.lang.utils.M_WorkerThread;
-import melnorme.utilbox.misc.Location;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class GoStructureModelManager extends StructureModelManager {
+/**
+ * Minor Extension to {@link ReentrantLock} to allow using of {@link AutoUnlockable}
+ */
+@SuppressWarnings("serial")
+public class ReentrantLockExt extends ReentrantLock implements AutoUnlockable {
 	
-	public GoStructureModelManager() {
+	public AutoUnlockable lock_() {
+		super.lock();
+		return this;
+	}
+	
+	public AutoUnlockable lockInterruptibly_() throws InterruptedException {
+		super.lockInterruptibly();
+		return this;
 	}
 	
 	@Override
-	public void rebuild(Location location, String source, M_WorkerThread reconcilerWorkerThread) {
-		// TODO: LANG
+	public void close() throws IllegalMonitorStateException {
+		 unlock();
 	}
 	
 }

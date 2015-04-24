@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import melnorme.utilbox.core.CoreUtil;
+
 /**
  * Extension to {@link java.util.HashMap}, with some helper methods,
  * and implementing a read-only interface.
@@ -34,47 +36,20 @@ public class HashMap2<K, V> extends HashMap<K, V> implements Collection2<Map.Ent
 		return entrySet().iterator();
 	}
 	
+	@Override
+	public <T> Collection2<T> upcastTypeParameter() {
+		return CoreUtil.blindCast(this);
+	}
+	
 	/* -----------------  ----------------- */
 	
-	protected final Collection2<K> keysView = new Collection2<K>() {
-		
-		@Override
-		public Iterator<K> iterator() {
-			return keySet().iterator();
-		}
-		
-		@Override
-		public int size() {
-			return keySet().size();
-		}
-		
-		@Override
-		public boolean isEmpty() {
-			return HashMap2.this.isEmpty();
-		}
-	};
+	protected final Collection2<K> keysView = new CollectionView<K>(keySet());
 	
 	public Collection2<K> getKeysView() {
 		return keysView;
 	}
 	
-	protected final Collection2<V> valuesView = new Collection2<V>() {
-		
-		@Override
-		public Iterator<V> iterator() {
-			return values().iterator();
-		}
-		
-		@Override
-		public int size() {
-			return values().size();
-		}
-		
-		@Override
-		public boolean isEmpty() {
-			return HashMap2.this.isEmpty();
-		}
-	};
+	protected final Collection2<V> valuesView = new CollectionView<V>(values());
 	
 	public Collection2<V> getValuesView() {
 		return valuesView;

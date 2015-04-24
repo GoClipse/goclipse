@@ -8,21 +8,39 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.structure;
+package melnorme.utilbox.collections;
 
-import melnorme.lang.tooling.LANG_SPECIFIC;
+import java.util.Collection;
+import java.util.Iterator;
 
-@LANG_SPECIFIC
-public class StructureElementData extends StructureElementData_Default {
+import melnorme.utilbox.core.CoreUtil;
+
+public class CollectionView<K> implements Collection2<K> {
 	
+	protected final Collection<K> coll;
+	
+	public CollectionView(Collection<K> coll) {
+		this.coll = coll;
+	}
+
 	@Override
-	protected boolean equals_subClass(StructureElementData other) {
-		return true; 
+	public Iterator<K> iterator() {
+		return coll.iterator();
 	}
 	
 	@Override
-	protected int hashCode_subClass() {
-		return 0;
+	public int size() {
+		return coll.size();
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		return coll.isEmpty();
+	}
+	
+	@Override
+	public <T> CollectionView<T> upcastTypeParameter() {
+		return CoreUtil.blindCast(this);
 	}
 	
 }

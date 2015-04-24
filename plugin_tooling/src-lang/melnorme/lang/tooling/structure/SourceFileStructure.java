@@ -11,17 +11,39 @@
 package melnorme.lang.tooling.structure;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
 
 public class SourceFileStructure implements ISourceFileStructure {
 	
 	protected final Location location;
-	protected final Iterable<IStructureElement> children;
+	protected final Indexable<IStructureElement> children;
 	
-	public SourceFileStructure(Location location, Iterable<IStructureElement> children) {
+	public SourceFileStructure(Location location, Indexable<IStructureElement> children) {
 		this.location = assertNotNull(location);
 		this.children = assertNotNull(children);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(!(obj instanceof SourceFileStructure)) return false;
+		
+		SourceFileStructure other = (SourceFileStructure) obj;
+		
+		return 
+			areEqual(location, other.location) &&
+			areEqual(children, other.children);
+	}
+	
+	@Override
+	public int hashCode() {
+		return HashcodeUtil.combinedHashCode(location, children.size());
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Override
 	public Location getLocation() {
@@ -29,7 +51,7 @@ public class SourceFileStructure implements ISourceFileStructure {
 	}
 	
 	@Override
-	public Iterable<IStructureElement> getChildren() {
+	public Indexable<IStructureElement> getChildren() {
 		return children;
 	}
 	
