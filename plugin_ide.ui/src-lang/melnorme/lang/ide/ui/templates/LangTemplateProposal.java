@@ -86,12 +86,11 @@ public class LangTemplateProposal extends TemplateProposal implements
 	
 	@Override
 	public IInformationControlCreator getInformationControlCreator() {
-		int orientation;
+		int orientation = SWT.LEFT_TO_RIGHT;
 		IEditorPart editor = WorkbenchUtils.getActiveEditor();
-		if (editor instanceof IWorkbenchPartOrientation) {
-			orientation = ((IWorkbenchPartOrientation)editor).getOrientation();
-		} else {
-			orientation = SWT.LEFT_TO_RIGHT;
+		if(editor instanceof IWorkbenchPartOrientation) {
+			orientation = ((IWorkbenchPartOrientation) editor).getOrientation();
+			orientation = orientation == SWT.NONE ? SWT.LEFT_TO_RIGHT : orientation;
 		}
 		return new TemplateInformationControlCreator(orientation);
 	}
