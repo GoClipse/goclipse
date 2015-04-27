@@ -38,6 +38,7 @@ import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.EditorsUI;
@@ -162,6 +163,12 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	
 	/* ----------------- create controls ----------------- */
+	
+	@Override
+	public int getOrientation() {
+		return SWT.LEFT_TO_RIGHT; // Always left to right, 
+		// also, this fixes bug super.getOrientation(), which can return SWT.NONE (but shouldn't)
+	}
 	
 	@Override
 	protected final ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
