@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,11 @@
  *******************************************************************************/
 package melnorme.utilbox.misc;
 
-import melnorme.utilbox.collections.Indexable;
+import melnorme.lang.tooling.data.StatusException;
 
 
-public interface IListenerList<LISTENER> {
+public interface ILogHandler {
 	
-	public Indexable<LISTENER> getListeners();
-	
-	public void removeListener(LISTENER listener);
-	
-	public void addListener(LISTENER listener);
+	void logStatus(StatusException statusException);
 	
 }

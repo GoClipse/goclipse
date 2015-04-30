@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,21 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.process;
 
-import java.util.concurrent.Callable;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import org.eclipse.core.runtime.IProgressMonitor;
 
-import org.eclipse.core.runtime.CoreException;
-
-public interface IRunProcessTask extends Callable<ExternalProcessResult>{
+public final class EclipseCancelMonitor implements ICancelMonitor {
+	
+	protected final IProgressMonitor monitor;
+	
+	public EclipseCancelMonitor(IProgressMonitor monitor) {
+		this.monitor = monitor;
+	}
 	
 	@Override
-	ExternalProcessResult call() throws CoreException, CommonException, OperationCancellation;
+	public boolean isCanceled() {
+		return monitor.isCanceled();
+	}
 	
 }

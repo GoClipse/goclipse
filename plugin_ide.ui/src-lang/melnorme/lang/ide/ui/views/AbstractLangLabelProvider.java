@@ -56,6 +56,7 @@ public abstract class AbstractLangLabelProvider extends LabelProvider
 		@Override
 		public void applyStyles(TextStyle textStyle) {
 			if(fgColor != null) {
+				/*FIXME: BUG here Color leak*/
 				textStyle.foreground = new Color(Display.getCurrent(), fgColor);
 			}
 		}

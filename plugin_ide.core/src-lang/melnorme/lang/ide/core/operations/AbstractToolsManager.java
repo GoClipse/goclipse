@@ -11,9 +11,12 @@
 package melnorme.lang.ide.core.operations;
 
 import melnorme.lang.ide.core.ILangOperationsListener_Actual;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
+import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ListenerListHelper;
@@ -49,20 +52,36 @@ public abstract class AbstractToolsManager extends ListenerListHelper<ILangOpera
 	
 	/* ----------------- ----------------- */
 	
+	protected EclipseCancelMonitor cm(IProgressMonitor pm) {
+		return new EclipseCancelMonitor(pm);
+	}
+	
 	public RunExternalProcessTask newRunToolTask(ProcessBuilder pb, IProject project, IProgressMonitor pm) {
-		return new RunExternalProcessTask(pb, project, pm, this);
+		return newRunToolTask(pb, project, cm(pm));
+	}
+	public RunExternalProcessTask newRunToolTask(ProcessBuilder pb, IProject project, ICancelMonitor cm) {
+		return new RunExternalProcessTask(pb, project, cm, this);
 	}
 	
 	/* ----------------- ----------------- */
 	
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, IProgressMonitor pm) 
 			throws CoreException, OperationCancellation {
-		return new RunEngineClientOperation(pb, pm).runProcess(clientInput);
+		return runEngineTool(pb, clientInput, cm(pm));
+	}
+	
+	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, ICancelMonitor cm) 
+			throws CoreException, OperationCancellation {
+		try {
+			return new RunEngineClientOperation(pb, cm).runProcess(clientInput);
+		} catch(CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
 	}
 	
 	public class RunEngineClientOperation extends AbstractRunProcessTask {
 		
-		public RunEngineClientOperation(ProcessBuilder pb, IProgressMonitor cancelMonitor) {
+		public RunEngineClientOperation(ProcessBuilder pb, ICancelMonitor cancelMonitor) {
 			super(pb, cancelMonitor);
 		}
 		

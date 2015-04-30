@@ -34,12 +34,12 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 	}
 	
 	protected ExternalProcessResult runBuildTool_2(IProgressMonitor monitor, ProcessBuilder pb) 
-			throws CoreException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		return getToolManager().newRunToolTask(pb, getProject(), monitor).runProcess();
 	}
 	
 	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ArrayList2<String> toolCmdLine)
-			throws CoreException, OperationCancellation {
+			throws CoreException, CommonException, OperationCancellation {
 		ProcessBuilder pb = createProcessBuilder(toolCmdLine);
 		return runBuildTool_2(monitor, pb);
 	}
@@ -116,7 +116,8 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 	
 	protected abstract ProcessBuilder createCleanPB() throws CoreException, CommonException;
 	
-	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) throws CoreException, OperationCancellation {
+	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) 
+			throws CoreException, CommonException, OperationCancellation {
 		runBuildTool_2(monitor, pb);
 	}
 	

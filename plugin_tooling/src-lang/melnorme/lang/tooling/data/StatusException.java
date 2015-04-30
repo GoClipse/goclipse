@@ -1,5 +1,6 @@
 package melnorme.lang.tooling.data;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.core.CommonException;
 
 @SuppressWarnings("serial")
@@ -13,7 +14,7 @@ public class StatusException extends CommonException {
 	
 	public StatusException(StatusLevel statusLevel, String message, Throwable cause) {
 		super(message, cause);
-		this.statusLevel = statusLevel;
+		this.statusLevel = assertNotNull(statusLevel);
 	}
 	
 	public StatusLevel getStatusLevel() {

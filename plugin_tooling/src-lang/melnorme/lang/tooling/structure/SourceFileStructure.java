@@ -43,6 +43,11 @@ public class SourceFileStructure implements ISourceFileStructure {
 		return HashcodeUtil.combinedHashCode(location, children.size());
 	}
 	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + location;
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override

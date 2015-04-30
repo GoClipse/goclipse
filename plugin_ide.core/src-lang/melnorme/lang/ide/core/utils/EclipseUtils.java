@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -18,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -29,6 +32,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
@@ -130,6 +134,16 @@ public class EclipseUtils extends ResourceUtils {
 		if(progressMonitor.isCanceled()) {
 			throw new OperationCancellation();
 		}
+	}
+	
+	public static int statusLevelToEclipseSeverity(StatusException se) {
+		switch (se.getStatusLevel()) {
+		case OK: return IStatus.OK;
+		case INFO: return IStatus.INFO;
+		case WARNING: return IStatus.WARNING;
+		case ERROR: return IStatus.ERROR;
+		}
+		throw assertUnreachable();
 	}
 	
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.structure;
 
+import melnorme.lang.ide.ui.editor.structure.StructureModelManager.StructureInfo;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.misc.Location;
 
@@ -18,8 +19,8 @@ public interface IStructureModelListener {
 	/** 
 	 * Indicates that the source file structure of the file at given location has changed.
 	 * 
-	 * This method runs under the scope of a Structure Model lock, so listeners should respond quickly.
+	 * This method runs under the scope of a {@link StructureInfo} lock, so listeners should respond quickly.
 	 */
-	void structureChanged(Location location, SourceFileStructure sourceFileStructure, Object structureModelLock);
+	void structureChanged(Location location, SourceFileStructure sourceFileStructure);
 	
 }

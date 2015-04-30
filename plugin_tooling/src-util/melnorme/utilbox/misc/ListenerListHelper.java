@@ -10,10 +10,10 @@
  *******************************************************************************/
 package melnorme.utilbox.misc;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
+
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 
 /**
  * Helper to manage a listener list, then used to fire events.
@@ -22,19 +22,25 @@ import java.util.List;
  */
 public class ListenerListHelper<LISTENER> implements IListenerList<LISTENER> {
 	
-	private volatile List<LISTENER> listeners;
+	private volatile Indexable<LISTENER> listeners;
 	
 	public ListenerListHelper() {
-		this.listeners = Collections.unmodifiableList(new ArrayList<LISTENER>());
+		this.listeners = new ArrayList2<LISTENER>();
 	}
 	
-	protected ListenerListHelper(List<LISTENER> listeners) {
+	protected ListenerListHelper(Indexable<LISTENER> listeners) {
 		this.listeners = listeners; // listeners must be unmodifiable
+	}
+	
+	
+	@Override
+	public Indexable<LISTENER> getListeners() {
+		return listeners;
 	}
 	
 	@Override
 	public void addListener(LISTENER listener) {
-		ArrayList<LISTENER> newListeners = new ArrayList<>(listeners);
+		ArrayList2<LISTENER> newListeners = new ArrayList2<>(listeners);
 		newListeners.add(listener);
 		
 		setNewListeners(newListeners);
@@ -42,7 +48,7 @@ public class ListenerListHelper<LISTENER> implements IListenerList<LISTENER> {
 	
 	@Override
 	public void removeListener(LISTENER listener) {
-		ArrayList<LISTENER> newListeners = new ArrayList<LISTENER>(listeners);
+		ArrayList2<LISTENER> newListeners = new ArrayList2<LISTENER>(listeners);
 		for (Iterator<LISTENER> iter = newListeners.iterator(); iter.hasNext(); ) {
 			LISTENER iterElem = iter.next();
 			if(iterElem == listener) {
@@ -54,15 +60,14 @@ public class ListenerListHelper<LISTENER> implements IListenerList<LISTENER> {
 		setNewListeners(newListeners);
 	}
 	
-	private void setNewListeners(ArrayList<LISTENER> newListeners) {
+	public void setNewListeners(Indexable<LISTENER> newListeners) {
 		synchronized(this) {
 			listeners = newListeners;
 		}
 	}
 	
-	@Override
-	public List<LISTENER> getListeners() {
-		return listeners;
+	public void clear() {
+		setNewListeners(new ArrayList2<LISTENER>());
 	}
 	
 }

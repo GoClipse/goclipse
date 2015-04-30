@@ -16,8 +16,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -89,6 +91,12 @@ public class WorkbenchUtils {
 		
 		IEditorInput editorInput = editor.getEditorInput();
 		return ResourceUtil.getResource(editorInput);
+	}
+	
+	public static IWorkbenchPart getActivePart(IWorkbenchPartSite site) {
+		IWorkbenchWindow window = site.getWorkbenchWindow();
+		IPartService service = window.getPartService();
+		return service.getActivePart();
 	}
 	
 }

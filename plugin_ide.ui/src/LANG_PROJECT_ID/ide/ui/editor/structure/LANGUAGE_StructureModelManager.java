@@ -11,7 +11,13 @@
 package LANG_PROJECT_ID.ide.ui.editor.structure;
 
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
-import melnorme.lang.utils.M_WorkerThread;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.structure.IStructureElement;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.tooling.structure.StructureElement;
+import melnorme.lang.tooling.structure.StructureElementData;
+import melnorme.lang.tooling.structure.StructureElementKind;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
 
 public class LANGUAGE_StructureModelManager extends StructureModelManager {
@@ -20,8 +26,16 @@ public class LANGUAGE_StructureModelManager extends StructureModelManager {
 	}
 	
 	@Override
-	public void rebuild(Location location, String source, M_WorkerThread reconcilerWorkerThread) {
-		// TODO: LANG
+	protected StructureUpdateTask createStructureUpdateTask(Location location, String source) {
+		return new StructureUpdateTask(location, source) {
+			@Override
+			protected SourceFileStructure createSourceFileStructure() {
+				SourceRange sr = new SourceRange(0, source.length());
+				StructureElement element = new StructureElement("NOT_IMPLEMENTED", sr, sr, 
+					StructureElementKind.MODULEDEC, new StructureElementData(), null, null);
+				return new SourceFileStructure(location, new ArrayList2<IStructureElement>(element));
+			}
+		};
 	}
 	
 }

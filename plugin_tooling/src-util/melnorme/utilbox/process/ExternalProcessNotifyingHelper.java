@@ -10,16 +10,25 @@
  *******************************************************************************/
 package melnorme.utilbox.process;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.misc.ILogHandler;
 import melnorme.utilbox.misc.ListenerListHelper;
 
 /**
  * Extends {@link ExternalProcessHelper} to allow optional listeners to be notified
  * of output read from the external process, as well as process termination events.
  */
-public abstract class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
+public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
-	public ExternalProcessNotifyingHelper(Process process, boolean readStdErr, boolean startReaders) {
-		super(process, readStdErr, startReaders);
+	protected final ILogHandler logHandler;
+	
+	public ExternalProcessNotifyingHelper(Process process, boolean readStdErr, boolean startReaders,
+			ICancelMonitor cancelMonitor, ILogHandler logHandler) {
+		super(process, readStdErr, startReaders, cancelMonitor);
+		this.logHandler = assertNotNull(logHandler);
 	}
 	
 	public static interface IProcessOutputListener {
@@ -68,7 +77,7 @@ public abstract class ExternalProcessNotifyingHelper extends ExternalProcessHelp
 					pol.notifyStdErrListeners(buffer, offset, readCount);
 				}
 			} catch (RuntimeException e) {
-				handleListenerException(e);
+				handleListenerException("Listener internal error at notifyDataRead.", e);
 			}
 		}
 	}
@@ -92,11 +101,13 @@ public abstract class ExternalProcessNotifyingHelper extends ExternalProcessHelp
 			try {
 				pol.notifyProcessTerminatedAndRead(exitCode);
 			} catch (RuntimeException e) {
-				handleListenerException(e);
+				handleListenerException("Listener internal error at notifyProcessTerminatedAndRead", e);
 			}
 		}
 	}
 	
-	protected abstract void handleListenerException(RuntimeException e);
+	protected void handleListenerException(String message, RuntimeException e) {
+		logHandler.logStatus(new StatusException(StatusLevel.ERROR, message, e));
+	}
 	
 }

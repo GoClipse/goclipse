@@ -18,6 +18,8 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeoutException;
 
+import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.ICancelMonitor.NullCancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ByteArrayOutputStreamExt;
@@ -34,20 +36,27 @@ import melnorme.utilbox.misc.StringUtil;
  */
 public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	
+	protected final ICancelMonitor cancelMonitor;
 	protected ReadAllBytesTask mainReader;
 	protected ReadAllBytesTask stderrReader;
 	
 	public ExternalProcessHelper(ProcessBuilder pb) throws IOException {
-		super(pb);
+		this(pb.start(), pb.redirectErrorStream() == false, true);
 	}
 	
 	public ExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders) {
+		this(process, readStdErr, startReaders, null);
+	}
+	
+	public ExternalProcessHelper(Process process, boolean readStdErr, boolean startReaders, 
+			ICancelMonitor cancelMonitor) {
 		super(process, readStdErr, startReaders);
+		this.cancelMonitor = cancelMonitor == null ? new NullCancelMonitor() : cancelMonitor;
 	}
 	
 	@Override
 	protected boolean isCanceled() {
-		return false;
+		return cancelMonitor.isCanceled();
 	}
 	
 	@Override

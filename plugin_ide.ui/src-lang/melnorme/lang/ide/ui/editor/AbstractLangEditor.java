@@ -38,6 +38,7 @@ import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
@@ -190,6 +191,25 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 		// ensure decoration support has been created and configured.
 		getSourceViewerDecorationSupport(viewer);
 		return viewer;
+	}
+	
+	@Override
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+		
+		editorSelChangedListener.install(getSelectionProvider());
+	}
+	
+	protected final AbstractSelectionChangedListener editorSelChangedListener = new AbstractSelectionChangedListener() {
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			handleEditorSelectionChanged(event);
+		}
+		
+	};
+	
+	@SuppressWarnings("unused")
+	protected void handleEditorSelectionChanged(SelectionChangedEvent event) {
 	}
 	
 	/* ----------------- Bracket matcher ----------------- */

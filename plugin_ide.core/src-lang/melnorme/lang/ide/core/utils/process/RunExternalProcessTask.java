@@ -11,19 +11,19 @@
 package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 public class RunExternalProcessTask extends AbstractRunProcessTask {
 	
 	protected final IProject project;
 	protected final ListenerListHelper<? extends IStartProcessListener> listenersList;
 	
-	public RunExternalProcessTask(ProcessBuilder pb, IProject project, IProgressMonitor cancelMonitor,
+	public RunExternalProcessTask(ProcessBuilder pb, IProject project, ICancelMonitor cancelMonitor,
 			ListenerListHelper<? extends IStartProcessListener> listenersList) {
 		super(pb, cancelMonitor);
 		this.project = project; // can be null

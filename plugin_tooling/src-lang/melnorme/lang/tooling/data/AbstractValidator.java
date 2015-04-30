@@ -31,6 +31,7 @@ public class AbstractValidator {
 	}
 	
 	protected ValidationException createException(StatusLevel statusLevel, String message) {
+		assertNotNull(statusLevel);
 		return new ValidationException(statusLevel, getFullMessage(message), message, null);
 	}
 	
