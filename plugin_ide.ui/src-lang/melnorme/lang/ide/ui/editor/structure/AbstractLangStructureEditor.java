@@ -11,14 +11,14 @@
 package melnorme.lang.ide.ui.editor.structure;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.tooling.structure.IStructureElement;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.utilbox.misc.Location;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.part.IShowInTargetList;
@@ -73,23 +73,15 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	/* ----------------- Structure helpers ----------------- */
 	
 	public IStructureElement getStructureElementAt(int offset) {
-		Location inputLocation;
-		try {
-			inputLocation = getInputLocation();
-		} catch(CoreException e) {
-			return null;
-		}
+		assertTrue(Display.getCurrent() != null);
 		
-		SourceFileStructure structure;
-		if(true) {
-			structure = StructureModelManager.getDefault().getStructure(inputLocation);
-		} else {
-//			structure = StructureModelManager.getDefault().getNonNullStructureSentinel(inputLocation).get();
-		}
+		GetUpdatedStructureUIOperation op = new GetUpdatedStructureUIOperation(this);
+		SourceFileStructure sourceFileStructure = op.executeAndGetHandledResult();
 		
-		/*FIXME: BUG here TODO */
-		return null;
-//		return structure.getStructureElementAt(offset);
+		if(sourceFileStructure == null) {
+			return null; // Note, error result have already been handled and reported to the user
+		}
+		return sourceFileStructure.getStructureElementAt(offset);
 	}
 	
 }

@@ -60,16 +60,17 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	protected abstract void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException, CommonException;
 	
 	@Override
-	protected void performLongRunningComputation_do(IProgressMonitor pm) throws CommonException, OperationCancellation {
+	protected void performLongRunningComputation(IProgressMonitor monitor) throws CoreException, CommonException,
+			OperationCancellation {
 		
 		ExternalProcessResult processResult = 
-				GoToolManager.getDefault().newRunToolTask(pb, null, pm).runProcess(editorText, true);
+				GoToolManager.getDefault().newRunToolTask(pb, null, monitor).runProcess(editorText, true);
 		
 		outputText = processResult.getStdOutBytes().toString();
 	}
 	
 	@Override
-	protected void performOperation_handleResult() throws CoreException {
+	protected void handleComputationResult() throws CoreException {
 		if (!outputText.equals(editorText)) {
 			GoEditor.replaceText(goEditor.getSourceViewer_(), outputText);
 		}

@@ -21,6 +21,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.utils.EntryMapExt;
+import melnorme.lang.utils.M_WorkerThread;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
@@ -47,6 +48,13 @@ public abstract class StructureModelManager {
 		}
 	};
 	
+	public StructureModelManager() {
+	}
+	
+	public void dispose() {
+		executor.shutdown();
+	}
+	
 	public StructureInfo getStructureInfo(Location location) {
 		return structureInfos.getEntry(location);
 	}
@@ -55,8 +63,8 @@ public abstract class StructureModelManager {
 		return getStructureInfo(location).getStructure();
 	}
 	
-	public void queueRebuildStructure(Location location, String source) {
-		getStructureInfo(location).queueRebuild(source);
+	public void queueRebuildStructure(Location location, String source, M_WorkerThread m_WorkerThread) {
+		getStructureInfo(location).queueRebuild(source, m_WorkerThread);
 	}
 	
 	
@@ -79,7 +87,8 @@ public abstract class StructureModelManager {
 			return updater != null;
 		}
 		
-		public synchronized void queueRebuild(final String source) {
+		@SuppressWarnings("unused")
+		public synchronized void queueRebuild(final String source, M_WorkerThread m_WorkerThread) {
 			if(updater != null) {
 				updater.cancelTask();
 			} else {
@@ -107,8 +116,11 @@ public abstract class StructureModelManager {
 		}
 		
 		public SourceFileStructure getUpdatedStructure(long timeout, TimeUnit unit) throws InterruptedException {
-			latch.await(timeout, unit);
-			return getStructure();
+			boolean success = latch.await(timeout, unit);
+			if(success) {
+				return getStructure();
+			}
+			throw new InterruptedException();
 		}
 		
 	}
@@ -120,7 +132,7 @@ public abstract class StructureModelManager {
 		protected final Location location;
 		protected final String source;
 		
-		protected volatile boolean cancelled = true;
+		protected volatile boolean cancelled = false;
 		
 		protected final ICancelMonitor cm = new ICancelMonitor() {
 			@Override
@@ -140,6 +152,9 @@ public abstract class StructureModelManager {
 		
 		@Override
 		public void run() {
+			if(cancelled) {
+				return;
+			}
 			SourceFileStructure newStructure = createSourceFileStructure();
 			
 			StructureInfo structureInfo = getStructureInfo(location);

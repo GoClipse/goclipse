@@ -39,8 +39,11 @@ public class AwaitResultFuture<V> implements Future<V> {
 	
 	@Override
 	public V get(long timeout, TimeUnit unit) throws InterruptedException {
-		latch.await(timeout, unit);
-		return resultValue;
+		boolean success = latch.await(timeout, unit);
+		if(success) {
+			return resultValue;
+		}
+		throw new InterruptedException();
 	}
 	
 	public void setResult(V resultValue) {

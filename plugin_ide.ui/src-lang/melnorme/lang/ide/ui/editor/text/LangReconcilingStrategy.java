@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
+import melnorme.lang.utils.M_WorkerThread;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.SimpleLogger;
 
@@ -61,7 +62,7 @@ public class LangReconcilingStrategy implements IReconcilingStrategy, IReconcili
 	
 	@Override
 	public void reconcile(IRegion partition) {
-		reconcile(partition);
+		doReconcile();
 	}
 	
 	protected void doReconcile() {
@@ -75,7 +76,7 @@ public class LangReconcilingStrategy implements IReconcilingStrategy, IReconcili
 		
 		log.println("Reconcile [" + location +  "] ");
 		
-		modelManager.queueRebuildStructure(location, document.get());
+		modelManager.queueRebuildStructure(location, document.get(), new M_WorkerThread());
 	}
 	
 }

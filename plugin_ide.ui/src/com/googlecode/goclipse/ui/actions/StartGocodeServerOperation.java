@@ -13,6 +13,7 @@ package com.googlecode.goclipse.ui.actions;
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.ui.actions.AbstractUIOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -45,13 +46,13 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException,
+	protected void performLongRunningComputation(IProgressMonitor monitor) throws CoreException, CommonException,
 			OperationCancellation {
 		gocodeServerManager.doStartServer(gocodePath, monitor);
 	}
 	
 	@Override
-	protected void performOperation_handleResult() throws CoreException {
+	protected void handleComputationResult() throws CoreException {
 	}
 	
 }

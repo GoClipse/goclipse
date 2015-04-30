@@ -65,4 +65,39 @@ public class SourceFileStructure implements ISourceFileStructure {
 		return location.getPath().getFileName().toString();
 	}
 	
+	public IStructureElement getStructureElementAt(int offset) {
+		return new StructureElementFinderByOffset(offset).findInnerMost(this);
+	}
+	
+	public static class StructureElementFinderByOffset {
+		
+		protected final int offset;
+		
+		protected IStructureElement pickedElement;
+		
+		public StructureElementFinderByOffset(int offset) {
+			this.offset = offset;
+		}
+		
+		public IStructureElement findInnerMost(IStructureElementContainer container) {
+			visitContainer(container);
+			return pickedElement;
+		}
+		
+		protected void visitContainer(IStructureElementContainer container) {
+			assertNotNull(container);
+			
+			for(IStructureElement structureElement : container.getChildren()) {
+				if(structureElement.getSourceRange().inclusiveContains(offset)) {
+					pickedElement = structureElement;
+					
+					visitContainer(structureElement); // Check children
+					return;
+				}
+			}
+			
+		}
+		
+	}
+	
 }
