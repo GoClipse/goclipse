@@ -28,8 +28,13 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		super();
 	}
 	
-	public ArrayList2(Collection<? extends E> c) {
-		super(c);
+	public ArrayList2(Collection<? extends E> coll) {
+		super(coll);
+	}
+	
+	public ArrayList2(Indexable<? extends E> coll) {
+		super(coll.size());
+		addAll(coll);
 	}
 	
 	public ArrayList2(int initialCapacity) {
@@ -52,8 +57,13 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		return this;
 	}
 	
-	public final ArrayList2<E> addElements(Collection<? extends E> elements) {
-		for (E element : elements) {
+	@Deprecated
+	public final ArrayList2<E> addElements(Iterable<? extends E> elements) {
+		return addAll(elements);
+	}
+	
+	public final ArrayList2<E> addAll(Iterable<? extends E> elements) {
+		for(E element : elements) {
 			add(element);
 		}
 		return this;

@@ -11,7 +11,10 @@
 package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.ILogHandler;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -141,6 +144,12 @@ public abstract class LangCore extends Plugin {
 		getInstance().getLog().log(ce.getStatus());
 	}
 	
+	/** Logs status of given StatusException. */
+	public static void logStatusException(StatusException se) {
+		int severity = EclipseUtils.statusLevelToEclipseSeverity(se);
+		logStatus(createStatus(severity, se.getMessage(), se.getCause()));
+	}
+	
 	/** Logs an error status with given message. */
 	public static void logError(String message) {
 		getInstance().getLog().log(createErrorStatus(message, null));
@@ -165,4 +174,10 @@ public abstract class LangCore extends Plugin {
 		logError("Internal Error!", throwable);
 	}
 	
+	public static final ILogHandler LOG_HANDLER = new ILogHandler() {
+		@Override
+		public void logStatus(StatusException statusException) {
+			LangCore.logStatusException(statusException);
+		}
+	};
 }

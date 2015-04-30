@@ -8,19 +8,29 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.process;
+package melnorme.lang.utils;
 
-import java.util.concurrent.Callable;
+import java.util.HashMap;
 
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-
-import org.eclipse.core.runtime.CoreException;
-
-public interface IRunProcessTask extends Callable<ExternalProcessResult>{
+/**
+ * Thread-safe version of {@link EntryMap}
+ */
+public abstract class EntryMapExt<KEY, ENTRY> extends EntryMap<KEY, ENTRY> {
+	
+	protected final HashMap<KEY, ENTRY> map = new HashMap<>();
 	
 	@Override
-	ExternalProcessResult call() throws CoreException, CommonException, OperationCancellation;
+	public ENTRY getEntry(KEY key) {
+		synchronized(this) {
+			return super.getEntry(key);
+		}
+	}
+	
+	@Override
+	public synchronized ENTRY getEntryOrNull(KEY key) {
+		synchronized(this) {
+			return super.getEntryOrNull(key);
+		}
+	}
 	
 }

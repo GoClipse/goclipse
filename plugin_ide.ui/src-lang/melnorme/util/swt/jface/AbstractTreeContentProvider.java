@@ -17,10 +17,13 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 
 public abstract class AbstractTreeContentProvider extends AbstractContentProvider implements ITreeContentProvider {
 	
+	protected Object[] EMPTY_CHILDREN = new Object[0];
+	
 	@Override
 	public Object[] getElements(Object inputElement) {
 		assertTrue(input == inputElement);
-		return getChildren(inputElement);
+		Object[] elements = getChildren(inputElement);
+		return elements == null ? EMPTY_CHILDREN : elements;
 	}
 	
 	@Override

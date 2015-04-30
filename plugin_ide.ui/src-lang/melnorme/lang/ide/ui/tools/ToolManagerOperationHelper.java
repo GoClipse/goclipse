@@ -11,6 +11,8 @@
 package melnorme.lang.ide.ui.tools;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.IOperationHelper;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -23,21 +25,21 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class ToolManagerOperationHelper implements IOperationHelper {
 	
-	protected final IProgressMonitor pm;
+	protected final EclipseCancelMonitor cm;
 	
-	public ToolManagerOperationHelper(IProgressMonitor pm) {
-		this.pm = pm;
+	public ToolManagerOperationHelper(IProgressMonitor monitor) {
+		this.cm = new EclipseCancelMonitor(monitor);
 	}
 	
 	@Override
 	public ExternalProcessResult runProcess(ProcessBuilder pb, String input) throws CommonException,
 			OperationCancellation {
-		return LangCore.getToolManager().new RunEngineClientOperation(pb, pm).doRunProcess(input, false);
+		return LangCore.getToolManager().new RunEngineClientOperation(pb, cm).doRunProcess(input, false);
 	}
 	
 	@Override
-	public void logStatus(CommonException ce) {
-		 LangCore.logError(ce.getMessage(), ce.getCause());
+	public void logStatus(StatusException statusException) {
+		LangCore.logStatusException(statusException);
 	}
 	
 }

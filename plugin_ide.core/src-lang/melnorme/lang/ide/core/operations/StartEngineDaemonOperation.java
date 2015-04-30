@@ -10,9 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
@@ -21,7 +20,7 @@ public class StartEngineDaemonOperation extends AbstractRunProcessTask {
 	protected final AbstractToolsManager abstractToolsManager;
 	
 	public StartEngineDaemonOperation(AbstractToolsManager abstractToolsManager, ProcessBuilder pb,
-			IProgressMonitor cancelMonitor) {
+			ICancelMonitor cancelMonitor) {
 		super(pb, cancelMonitor);
 		this.abstractToolsManager = abstractToolsManager;
 	}

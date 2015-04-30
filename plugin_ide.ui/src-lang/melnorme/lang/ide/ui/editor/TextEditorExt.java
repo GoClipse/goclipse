@@ -12,9 +12,12 @@ package melnorme.lang.ide.ui.editor;
 
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.editors.text.TextEditor;
 
@@ -74,6 +77,16 @@ public class TextEditorExt extends TextEditor {
 	
 	protected void editorContextMenuAboutToShow_extend(IMenuManager menu) {
 		editorActionsManager.editorContextMenuAboutToShow(menu);
+	}
+	
+	/* ----------------- Helpers ----------------- */
+	
+	public boolean isActivePart() {
+		return WorkbenchUtils.getActivePart(getSite()) == this;
+	}
+	
+	public Location getInputLocation() throws CoreException {
+		return EditorUtils.getLocationFromEditorInput(getEditorInput());
 	}
 	
 }
