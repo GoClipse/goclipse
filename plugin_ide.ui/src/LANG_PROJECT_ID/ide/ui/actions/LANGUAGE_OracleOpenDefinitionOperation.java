@@ -40,7 +40,7 @@ public class LANGUAGE_OracleOpenDefinitionOperation extends AbstractOpenElementO
 	}
 	
 	@Override
-	protected void performOperation_handleResult() throws CoreException {
+	protected void handleComputationResult() throws CoreException {
 		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
 		} else {
 			MessageDialog.openInformation(editor.getSite().getWorkbenchWindow().getShell(), "Error", "Not implemented.");
