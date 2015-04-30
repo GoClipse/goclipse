@@ -87,7 +87,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	}
 	
 	@Override
-	protected void performLongRunningComputation_do(IProgressMonitor monitor) 
+	protected void performLongRunningComputation(IProgressMonitor monitor) 
 			throws CoreException, CommonException, OperationCancellation {
 		findResult = performLongRunningComputation_doAndGetResult(monitor);
 	}
@@ -96,7 +96,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 			throws CoreException, CommonException, OperationCancellation;
 	
 	@Override
-	protected void performOperation_handleResult() throws CoreException {
+	protected void handleComputationResult() throws CoreException {
 		if(statusErrorMessage != null) {
 			handleStatusErrorMessage();
 		}

@@ -117,8 +117,6 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 	};
 	
 	public IStructureElement getStructureElementFor(ISelection selection) {
-		/*FIXME: needs testing*/
-		
 		if(selection instanceof ITextSelection) {
 			ITextSelection textSelection = (ITextSelection) selection;
 			return editor.getStructureElementAt(textSelection.getOffset());

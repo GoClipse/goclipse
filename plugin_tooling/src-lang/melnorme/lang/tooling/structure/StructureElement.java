@@ -93,7 +93,7 @@ public class StructureElement implements IStructureElement {
 	}
 	
 	@Override
-	public SourceRange getRange() {
+	public SourceRange getSourceRange() {
 		return sourceRange;
 	}
 	

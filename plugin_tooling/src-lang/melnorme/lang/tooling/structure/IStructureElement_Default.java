@@ -20,7 +20,7 @@ interface IStructureElement_Default extends IStructureElementContainer {
 	
 	/** @return the source range of this element, that is, 
 	 * the range in the source file that this elements corresponds to. */
-	SourceRange getRange();
+	SourceRange getSourceRange();
 	
 	/** @return the source range of the name of this element. */
 	SourceRange getNameSourceRange();
