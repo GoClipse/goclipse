@@ -6,6 +6,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 
 import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
+import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_AutoEditStrategy;
 import LANG_PROJECT_ID.ide.ui.editor.structure.LANGUAGE_StructureModelManager;
@@ -37,6 +38,11 @@ public final class LangUIPlugin_Actual {
 	
 	public static StructureModelManager createStructureModelManager() {
 		return new LANGUAGE_StructureModelManager();
+	}
+	
+	public static StructureElementLabelProvider getStructureElementLabelProvider() {
+		return new StructureElementLabelProvider() {
+		};
 	}
 	
 	/* ----------------- UI messages:  ----------------- */

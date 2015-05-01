@@ -20,6 +20,7 @@ public class StructureElementPrinter extends StructureElementVisitor {
 	}
 	
 	public String printElement(IStructureElement element) {
+		level = -1;
 		visitTree(element);
 		String baseString = sb.toString();
 		return baseString.substring(0, baseString.length()-1); // Remove last newline

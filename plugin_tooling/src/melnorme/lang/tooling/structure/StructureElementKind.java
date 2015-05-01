@@ -30,33 +30,28 @@ public enum StructureElementKind {
 	MODULEDEC
 	;
 	
-	public static abstract class StructureElementKindVisitor<RET> extends AbstractKindVisitor<RET> {
+	public <RET> RET switchOnKind(StructureElementKindVisitor<RET> visitor) {
+		return switchOnKind(this, visitor);
+	}
+	
+	public static <RET> RET switchOnKind(StructureElementKind kind, StructureElementKindVisitor<RET> visitor) {
+		switch(kind) {
+		case VARIABLE: return visitor.visitVariable();
 		
-		public RET switchOnKind(StructureElementKind kind) {
-			switch(kind) {
-			case VARIABLE: return visitVariable();
-			
-			case FUNCTION: return visitFunction();
-			case CONSTRUCTOR: return visitConstructor();
-			
-			case CLASS: return visitClass();
-			case INTERFACE: return visitInterface();
-			case STRUCT: return visitStruct();
-			
-			case MODULEDEC: return visitModule();
-			
-			}
-			throw assertUnreachable();
-		}
+		case FUNCTION: return visitor.visitFunction();
+		case CONSTRUCTOR: return visitor.visitConstructor();
 		
-		@Override
-		protected RET visitUnknown() {
-			throw assertUnreachable();
+		case CLASS: return visitor.visitClass();
+		case INTERFACE: return visitor.visitInterface();
+		case STRUCT: return visitor.visitStruct();
+		
+		case MODULEDEC: return visitor.visitModule();
+		
 		}
-		@Override
-		protected RET visitKeyword() {
-			throw assertUnreachable();
-		}
+		throw assertUnreachable();
+	}
+	
+	public static interface StructureElementKindVisitor<RET> extends AbstractKindVisitor<RET> {
 		
 	}
 	

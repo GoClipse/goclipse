@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.net.URL;
 
 import melnorme.util.swt.SWTUtil;
+import melnorme.util.swt.jface.IManagedImage;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
@@ -98,7 +99,7 @@ public class PluginImagesHelper {
 	/** 
 	 * A handle to an image in an image registry. 
 	 */
-	public class ImageHandle {
+	public class ImageHandle implements IManagedImage {
 		
 		protected String imageKey;
 		
@@ -110,13 +111,21 @@ public class PluginImagesHelper {
 			return imageKey;
 		}
 		
+		@Override
+		public ImageRegistry getImageRegistry() {
+			return imageRegistry;
+		}
+		
+		@Override
 		public Image getImage() {
 			return imageRegistry.get(imageKey);
 		}
 		
+		@Override
 		public ImageDescriptor getDescriptor() {
 			return imageRegistry.getDescriptor(imageKey);
 		}
+		
 	}
 	
 }

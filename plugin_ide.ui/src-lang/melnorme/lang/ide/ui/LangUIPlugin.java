@@ -10,12 +10,14 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore.StatusExt;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
+import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.cdt.internal.ui.text.util.CColorManager;
@@ -28,6 +30,8 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.templates.ContextTypeRegistry;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -198,6 +202,16 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		return fColorManager;
 	}
 	
+	protected ImageDescriptorRegistry fImageDescriptorRegistry;
+	
+	public ImageDescriptorRegistry getImageDescriptorRegistry() {
+		assertTrue(getStandardDisplay() != null);
+		if (fImageDescriptorRegistry == null) {
+			fImageDescriptorRegistry = new melnorme.util.swt.jface.resources.ImageDescriptorRegistry();
+		}
+		return fImageDescriptorRegistry;
+	}
+	
 	protected static TemplateRegistry instance;
 	
 	public static TemplateRegistry getTemplateRegistry() {
@@ -216,6 +230,10 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	}
 	
 	/* -------- JDT/DLTK copied stuff -------- */
+	
+	public static Display getStandardDisplay() {
+		return PlatformUI.getWorkbench().getDisplay();
+	}
 	
 	public static IDialogSettings getDialogSettings(String sectionName) {
 		IDialogSettings settings = getInstance().getDialogSettings().getSection(sectionName);

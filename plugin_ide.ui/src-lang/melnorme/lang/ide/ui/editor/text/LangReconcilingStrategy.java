@@ -42,8 +42,7 @@ public class LangReconcilingStrategy implements IReconcilingStrategy, IReconcili
 	
 	@Override
 	public void setDocument(IDocument document) {
-		this.document = document;
-		log.println("set Document :");
+		this.document = assertNotNull(document);
 	}
 	
 	@Override
@@ -71,6 +70,11 @@ public class LangReconcilingStrategy implements IReconcilingStrategy, IReconcili
 			location = EditorUtils.getLocationFromEditorInput(editor.getEditorInput());
 		} catch (CoreException e) {
 			LangUIPlugin.logInternalError(e);
+			return;
+		}
+		
+		if(document == null) {
+			LangUIPlugin.logInternalError(new Exception("Document not set."));
 			return;
 		}
 		

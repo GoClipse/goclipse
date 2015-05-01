@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.structure;
 
+import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
 
 
@@ -29,7 +30,7 @@ interface IStructureElement_Default extends IStructureElementContainer {
 	StructureElementKind getKind();
 	
 	/** @return the additional data object for this element. */
-	Object getData();
+	ElementAttributes getAttributes();
 	
 	/** @return the type of this element, or type-like text. Can be null.*/
 	String getType();

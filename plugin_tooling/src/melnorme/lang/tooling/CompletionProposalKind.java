@@ -29,27 +29,28 @@ public enum CompletionProposalKind {
 	
 	MODULEDEC;
 	
-	public static abstract class ProposalKindVisitor<RET> extends AbstractKindVisitor<RET> {
+	
+	public <RET> RET switchOnKind(ProposalKindVisitor<RET> visitor) {
+		switch(this) {
+		case KEYWORD: return visitor.visitKeyword();
+		case UNKNOWN: return visitor.visitUnknown();
 		
-		public RET switchOnKind(CompletionProposalKind kind) {
-			switch(kind) {
-			case KEYWORD: return visitKeyword();
-			case UNKNOWN: return visitUnknown();
-			
-			case VARIABLE: return visitVariable();
-			
-			case FUNCTION: return visitFunction();
-			case CONSTRUCTOR: return visitConstructor();
-			
-			case STRUCT: return visitStruct();
-			case CLASS: return visitClass();
-			case INTERFACE: return visitInterface();
-			
-			case MODULEDEC: return visitModule();
-			
-			}
-			throw assertUnreachable();
+		case VARIABLE: return visitor.visitVariable();
+		
+		case FUNCTION: return visitor.visitFunction();
+		case CONSTRUCTOR: return visitor.visitConstructor();
+		
+		case STRUCT: return visitor.visitStruct();
+		case CLASS: return visitor.visitClass();
+		case INTERFACE: return visitor.visitInterface();
+		
+		case MODULEDEC: return visitor.visitModule();
+		
 		}
+		throw assertUnreachable();
+	}
+	
+	public static interface ProposalKindVisitor<RET> extends AbstractKindVisitor<RET> {
 		
 	}
 	

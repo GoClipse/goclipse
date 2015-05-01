@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,27 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.structure;
+package melnorme.lang.tooling;
 
-import melnorme.lang.tooling.LANG_SPECIFIC;
+import melnorme.lang.tooling.parser.ISourceRepresentation;
 
-
-
-/**
- * A structure element is a lightweight structure describing a top-level element 
- * obtained from a source file (compilation unit).
- * Example: functions, classes, top level variables. etc. 
- */
-@LANG_SPECIFIC
-public interface IStructureElement extends IStructureElement_Default {
+public enum EProtection implements ISourceRepresentation {
+	
+    PRIVATE,
+    PACKAGE,
+    PROTECTED,
+    PUBLIC,
+    EXPORT,
+    ;
+    
+	@Override
+	public String getSourceValue() {
+		return super.toString().toLowerCase();
+	}
+	
+	@Override
+	public String toString() {
+		return getSourceValue();
+	}
 	
 }
