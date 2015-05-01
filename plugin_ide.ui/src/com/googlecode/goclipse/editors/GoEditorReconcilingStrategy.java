@@ -27,9 +27,9 @@ public class GoEditorReconcilingStrategy extends LangReconcilingStrategy {
 		this.editor = editor;
 	}
 
-	@Override
-	public void setDocument(IDocument document) {
-	}
+//	@Override
+//	public void setDocument(IDocument document) {
+//	}
 
 	@Override
 	public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
