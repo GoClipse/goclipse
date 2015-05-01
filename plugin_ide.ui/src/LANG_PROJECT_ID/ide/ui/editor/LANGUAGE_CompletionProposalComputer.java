@@ -11,9 +11,9 @@
 package LANG_PROJECT_ID.ide.ui.editor;
 
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
+import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
-import melnorme.lang.ide.ui.views.LangImageProvider;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;

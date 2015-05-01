@@ -10,7 +10,7 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui;
 
-import melnorme.lang.ide.ui.views.LangImageProvider;
+import melnorme.lang.ide.ui.LangImageProvider;
 
 public class LANGUAGE_ImageProvider extends LangImageProvider {
 	

@@ -11,13 +11,13 @@
 package LANG_PROJECT_ID.ide.ui.editor;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 
-public class LANGUAGE_Editor extends AbstractLangEditor {
+public class LANGUAGE_Editor extends AbstractLangStructureEditor {
 	
 	@Override
 	protected LangPairMatcher init_createBracketMatcher() {
