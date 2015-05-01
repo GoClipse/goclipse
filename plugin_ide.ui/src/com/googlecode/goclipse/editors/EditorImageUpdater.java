@@ -14,7 +14,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.services.IDisposable;
 
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.ui.GoPluginImages;
 
 /**
@@ -40,9 +39,9 @@ public class EditorImageUpdater implements IDisposable {
 		
 		defaultImage = editor.getTitleImage();
 		
-		warningImage = GoPluginImages.getCachedImage(new DecorationOverlayIcon(defaultImage,
+		warningImage = GoPluginImages.getManagedImage(new DecorationOverlayIcon(defaultImage,
 			GoPluginImages.OVERLAYS_WARNING, IDecoration.BOTTOM_LEFT));
-		errorImage = GoPluginImages.getCachedImage(new DecorationOverlayIcon(defaultImage, 
+		errorImage = GoPluginImages.getManagedImage(new DecorationOverlayIcon(defaultImage, 
 			GoPluginImages.OVERLAYS_ERROR, IDecoration.BOTTOM_LEFT));
 		
 		installResourceChangeListener(editor);

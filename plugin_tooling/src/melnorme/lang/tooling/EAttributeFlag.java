@@ -8,28 +8,21 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.structure;
+package melnorme.lang.tooling;
 
-
-abstract class StructureElementData_Default {
+public enum EAttributeFlag {
 	
-	@Override
-	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(!(obj instanceof StructureElementData)) return false;
-		
-		StructureElementData other = (StructureElementData) obj;
-		
-		return equals_subClass(other);
-	}
+	OVERRIDE,
+	STATIC,
+	FINAL,
+	ABSTRACT,
+	CONST,
+	IMMUTABLE,
 	
-	protected abstract boolean equals_subClass(StructureElementData other);
+	ALIAS,
+	TEMPLATED,
 	
-	@Override
-	public int hashCode() {
-		return hashCode_subClass();
-	}
+	/* ----------------- Flags above are Lang standard and should not be modified ----------------- */
 	
-	protected abstract int hashCode_subClass();
-	
+	;
 }

@@ -10,23 +10,23 @@
  *******************************************************************************/
 package melnorme.lang.tooling;
 
-public abstract class AbstractKindVisitor<RET> {
+public interface AbstractKindVisitor<RET> {
 	
-	protected abstract RET visitVariable();
+	public abstract RET visitVariable();
 	
-	protected abstract RET visitFunction();
-	protected abstract RET visitConstructor();
+	public abstract RET visitFunction();
+	public abstract RET visitConstructor();
 	
-	protected abstract RET visitClass();
-	protected abstract RET visitInterface();
-	protected abstract RET visitStruct();
-	protected abstract RET visitEnum();
+	public abstract RET visitClass();
+	public abstract RET visitInterface();
+	public abstract RET visitStruct();
+	public abstract RET visitEnum();
 	
-	protected abstract RET visitModule();
+	public abstract RET visitModule();
 	
 	/* -----------------  ----------------- */
 	
-	protected abstract RET visitKeyword();
-	protected abstract RET visitUnknown();
+	public abstract RET visitKeyword();
+	public abstract RET visitUnknown();
 	
 }

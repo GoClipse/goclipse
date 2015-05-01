@@ -10,9 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-import melnorme.lang.ide.ui.utils.ImageDescriptorRegistry;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
+import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -50,22 +51,14 @@ public abstract class LangImages {
 		return helper.createImageDescriptor(getKey(prefix, name), false);
 	}
 	
-	/* ----------------- Image cache indexed by ImageDescriptor ----------------- */
-	
-	protected static final ImageDescriptorRegistry imageCache = new ImageDescriptorRegistry();
-	
-	public static Image getCachedImage(ImageDescriptor imageDescriptor) {
-		return imageCache.getImage(imageDescriptor);
-	}
-	
-	protected static final String T_OBJ = "obj16";
-	protected static final String T_OVR = "ovr16";
-	protected static final String T_TABS = "view16";
-	
-	public static final String LANG_ACTIONS = "icons-lang/actions/";
-	public static final String CAT_VIEWS = "views";
 	
 	/* ---------------- Common Lang images ---------------- */
+	
+	public static final String LANG_ACTIONS = "icons-lang/actions/";
+	public static final String LANG_OVERLAYS = "icons-lang/overlays/";
+	
+	public static final String CAT_VIEWS = "views";
+	protected static final String T_TABS = "view16";
 	
 	public static final ImageHandle ACTIONS_OPEN_DEF = createManaged(LANG_ACTIONS, "OpenDef.16.png");
 	
@@ -77,5 +70,34 @@ public abstract class LangImages {
 	public static final ImageHandle IMG_SCROLL_LOCK = createManaged(LANG_ACTIONS, "lock_co.png");
 	public static final ImageHandle IMG_CLEAR_CONSOLE = createManaged(LANG_ACTIONS, "clear_co.png");
 	public static final ImageHandle IMG_PIN_CONSOLE = createManaged(LANG_ACTIONS, "pin.png");
+	
+	
+	/* ----------------- overlay decorations ----------------- */
+	
+	public static final ImageDescriptor DESC_OVR_PRIVATE = createUnmanaged(LANG_OVERLAYS, "prot_private.png");
+	public static final ImageDescriptor DESC_OVR_PROTECTED = createUnmanaged(LANG_OVERLAYS, "prot_protected.png");
+	public static final ImageDescriptor DESC_OVR_DEFAULT = createUnmanaged(LANG_OVERLAYS, "prot_default.png");
+	
+	public static final ImageDescriptor DESC_OVR_FINAL = createUnmanaged(LANG_OVERLAYS, "ovr_final.png");
+	public static final ImageDescriptor DESC_OVR_STATIC = createUnmanaged(LANG_OVERLAYS, "ovr_static.png");
+	public static final ImageDescriptor DESC_OVR_ABSTRACT = createUnmanaged(LANG_OVERLAYS, "ovr_abstract.png");
+	
+	public static final ImageDescriptor DESC_OVR_CONST = createUnmanaged(LANG_OVERLAYS, "ovr_const.png");
+	public static final ImageDescriptor DESC_OVR_IMMUTABLE = createUnmanaged(LANG_OVERLAYS, "ovr_immutable.png");
+	
+	public static final ImageDescriptor DESC_OVR_TEMPLATED = createUnmanaged(LANG_OVERLAYS, "ovr_templated.png");
+	public static final ImageDescriptor DESC_OVR_ALIAS = createUnmanaged(LANG_OVERLAYS, "ovr_alias_arrow.png");
+	
+	
+	/* ----------------- Image cache keyed by ImageDescriptor ----------------- */
+	
+	public static ImageDescriptorRegistry getImageDescriptorRegistry() {
+		assertTrue(LangUIPlugin.getStandardDisplay() != null);
+		return LangUIPlugin.getDefault().getImageDescriptorRegistry();
+	}
+	
+	public static Image getManagedImage(ImageDescriptor imageDescriptor) {
+		return getImageDescriptorRegistry().get(imageDescriptor);
+	}
 	
 }

@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 import static melnorme.utilbox.misc.StringUtil.prefixStr;
+import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.HashcodeUtil;
@@ -26,7 +27,7 @@ public class StructureElement implements IStructureElement {
 	protected final SourceRange sourceRange;
 	
 	protected final StructureElementKind elementKind;
-	protected final StructureElementData elementData;
+	protected final ElementAttributes elementAttributes;
 	
 	protected final String type;
 	
@@ -37,13 +38,13 @@ public class StructureElement implements IStructureElement {
 			String name, 
 			SourceRange nameSourceRange, SourceRange sourceRange, 
 			StructureElementKind elementKind,
-			StructureElementData elementData, 
+			ElementAttributes elementAttributes, 
 			String type, Indexable<StructureElement> children) {
 		this.name = assertNotNull(name);
 		this.nameSourceRange = assertNotNull(nameSourceRange);
 		this.sourceRange = assertNotNull(sourceRange);
 		this.elementKind = assertNotNull(elementKind);
-		this.elementData = assertNotNull(elementData);
+		this.elementAttributes = assertNotNull(elementAttributes);
 		this.type = type;
 		this.children = nullToEmpty(children);
 		
@@ -64,7 +65,7 @@ public class StructureElement implements IStructureElement {
 			areEqual(nameSourceRange, other.nameSourceRange) &&
 			areEqual(sourceRange, other.sourceRange) &&
 			areEqual(elementKind, other.elementKind) &&
-			areEqual(elementData, other.elementData) &&
+			areEqual(elementAttributes, other.elementAttributes) &&
 			areEqual(type, other.type) &&
 			areEqual(children, other.children)
 			;
@@ -73,11 +74,11 @@ public class StructureElement implements IStructureElement {
 	@Override
 	public int hashCode() {
 		// This should be enough to provide a good hash code
-		return HashcodeUtil.combinedHashCode(name, sourceRange, elementKind, elementData, children.size());
+		return HashcodeUtil.combinedHashCode(name, sourceRange, elementKind, elementAttributes, children.size());
 	}
 	
 	protected String toStringNode() {
-		return "StructureElem " + name + sourceRange + " " + elementKind + prefixStr(" : ", type);
+		return "ELEM " + name + sourceRange + " " + elementKind + prefixStr(" : ", type) + " " + elementAttributes;
 	}
 	
 	/* -----------------  ----------------- */
@@ -103,8 +104,8 @@ public class StructureElement implements IStructureElement {
 	}
 	
 	@Override
-	public StructureElementData getData() {
-		return elementData;
+	public ElementAttributes getAttributes() {
+		return elementAttributes;
 	}
 	
 	@Override

@@ -17,10 +17,11 @@ import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.tools.ToolManagerOperationHelper;
-import melnorme.lang.ide.ui.views.LangImageProvider;
+import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.util.swt.jface.IManagedImage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -28,7 +29,6 @@ import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
@@ -76,15 +76,15 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 	}
 	
 	protected Image getImage(ToolCompletionProposal proposal) {
-		ImageDescriptor baseImageDescriptor = getBaseImageDescriptor(proposal);
-		return baseImageDescriptor.createImage();
+		IManagedImage baseImageDescriptor = getBaseImageDescriptor(proposal);
+		return baseImageDescriptor.getImage();
 	}
 	
-	protected ImageDescriptor getBaseImageDescriptor(ToolCompletionProposal proposal) {
+	protected IManagedImage getBaseImageDescriptor(ToolCompletionProposal proposal) {
 		return getImageProvider().getImageDescriptor(proposal.getKind());
 	}
 	
-	protected abstract LangImageProvider getImageProvider();
+	protected abstract AbstractLangImageProvider getImageProvider();
 	
 	protected abstract LangCompletionResult doComputeProposals(SourceOperationContext context,
 			int offset, TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;

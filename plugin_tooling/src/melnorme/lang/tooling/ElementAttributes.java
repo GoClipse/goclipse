@@ -8,21 +8,21 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.structure;
+package melnorme.lang.tooling;
+
+import java.util.EnumSet;
 
 import melnorme.lang.tooling.LANG_SPECIFIC;
 
 @LANG_SPECIFIC
-public class StructureElementData extends StructureElementData_Default {
+public class ElementAttributes extends AbstractElementAttributes {
 	
-	@Override
-	protected boolean equals_subClass(StructureElementData other) {
-		return true; 
+	public ElementAttributes(EProtection protection, EnumSet<EAttributeFlag> flagsSet) {
+		super(protection, flagsSet);
 	}
 	
-	@Override
-	protected int hashCode_subClass() {
-		return 0;
+	public ElementAttributes(EProtection protection, EAttributeFlag... flagsArray) {
+		super(protection, flagsArray);
 	}
 	
 }
