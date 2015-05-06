@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import melnorme.lang.ide.core.ISourceFile;
-import melnorme.lang.ide.ui.LangObjImages;
+import melnorme.lang.ide.ui.LangElementImages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.templates.LangTemplateProposal;
@@ -157,9 +157,9 @@ public class TemplateEngine {
 	}
 
 	protected Image getImage() {
-		return LangObjImages.CA_SNIPPET.getImage();
+		return LangElementImages.CA_SNIPPET.getImage();
 	}
-
+	
 	/**
 	 * Returns <code>true</code> if one line is completely selected or if multiple lines are selected.
 	 * Being completely selected means that all characters except the new line characters are
