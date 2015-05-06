@@ -14,16 +14,16 @@ import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 
 public interface LangElementImages {
 
-	String CAT_LANG_OBJ = "icons-lang/obj";
-	String CAT_OBJ = "obj";
+	String CAT_LANG_OBJ = "icons-lang/language_elements";
 	
 	ImageHandle CA_SNIPPET = LangImages.createManaged(CAT_LANG_OBJ, "CA_Templates.16.gif");
 	
-	ImageHandle UKKNOWN  = LangImages.createManaged(CAT_LANG_OBJ, "unknown.gif");
-	ImageHandle ERROR_ELEMENT = LangImages.createManaged(CAT_LANG_OBJ, "error_element.png");
+	
 	ImageHandle ALIAS_ELEMENT = LangImages.createManaged(CAT_LANG_OBJ, "alias_se.png");
 	
-	ImageHandle VARIABLE = LangImages.createManaged(CAT_LANG_OBJ, "variable.png");
+	ImageHandle ATTRIBUTE = LangImages.createManaged(CAT_LANG_OBJ, "attribute.gif");
+	
+	ImageHandle ERROR_ELEMENT = LangImages.createManaged(CAT_LANG_OBJ, "error_element.png");
 	
 	ImageHandle FUNCTION = LangImages.createManaged(CAT_LANG_OBJ, "f_function.png");
 	ImageHandle CONSTRUCTOR = LangImages.createManaged(CAT_LANG_OBJ, "f_constructor.png");
@@ -33,14 +33,16 @@ public interface LangElementImages {
 	ImageHandle PACKAGE = LangImages.createManaged(CAT_LANG_OBJ, "package.png");
 	ImageHandle PACKAGE_EMPTY = LangImages.createManaged(CAT_LANG_OBJ, "package_empty.gif");
 
-	ImageHandle T_NATIVE = LangImages.createManaged(CAT_LANG_OBJ, "t_native.png");
 	ImageHandle T_CLASS = LangImages.createManaged(CAT_LANG_OBJ, "t_class.gif");
 	ImageHandle T_ENUM = LangImages.createManaged(CAT_LANG_OBJ, "t_enum.gif");
 	ImageHandle T_INTERFACE = LangImages.createManaged(CAT_LANG_OBJ, "t_interface.png");
+	ImageHandle T_NATIVE = LangImages.createManaged(CAT_LANG_OBJ, "t_native.png");
 	ImageHandle T_STRUCT = LangImages.createManaged(CAT_LANG_OBJ, "t_struct.png");
 	ImageHandle T_TYPE = LangImages.createManaged(CAT_LANG_OBJ, "t_type.png");
 //	ImageHandle T_UNION = LangImages.createManaged(CAT_LANG_OBJ, "t_union.gif");
 	
-	ImageHandle ATTRIBUTE = LangImages.createManaged(CAT_LANG_OBJ, "attribute.gif");
+	ImageHandle UKKNOWN  = LangImages.createManaged(CAT_LANG_OBJ, "unknown.png");
 	
+	ImageHandle VARIABLE = LangImages.createManaged(CAT_LANG_OBJ, "variable.png");
+
 }
