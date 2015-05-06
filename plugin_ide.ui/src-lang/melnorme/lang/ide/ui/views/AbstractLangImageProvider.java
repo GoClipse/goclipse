@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.views;
 
-import melnorme.lang.ide.ui.LangObjImages;
+import melnorme.lang.ide.ui.LangElementImages;
 import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.lang.tooling.CompletionProposalKind.ProposalKindVisitor;
 import melnorme.lang.tooling.structure.StructureElementKind.StructureElementKindVisitor;
@@ -31,55 +31,65 @@ public abstract class AbstractLangImageProvider implements
 		return imageDescriptor;
 	}
 	
-	public IManagedImage getDefaultImage() {
-		return new NullManagedImage();
+	public static IManagedImage getDefaultImage() {
+		return NullManagedImage.INSTANCE;
 	}
 	
 	@Override
-	public IManagedImage visitVariable() {
-		return LangObjImages.VARIABLE;
-	}
-	
-	@Override
-	public IManagedImage visitFunction() {
-		return LangObjImages.F_FUNCTION;
-	}
-	
-	@Override
-	public IManagedImage visitConstructor() {
-		return LangObjImages.F_CONSTRUCTOR;
-	}
-	
-	@Override
-	public IManagedImage visitClass() {
-		return LangObjImages.T_CLASS;
-	}
-	@Override
-	public IManagedImage visitInterface() {
-		return LangObjImages.T_INTERFACE;
-	}
-	@Override
-	public IManagedImage visitStruct() {
-		return LangObjImages.T_STRUCT;
-	}
-	@Override
-	public IManagedImage visitEnum() {
-		return LangObjImages.T_ENUM;
+	public IManagedImage visitAlias() {
+		return LangElementImages.ALIAS_ELEMENT;
 	}
 	
 	@Override
 	public IManagedImage visitModule() {
-		return LangObjImages.MODULE;
+		return LangElementImages.MODULE;
+	}
+	
+	@Override
+	public IManagedImage visitVariable() {
+		return LangElementImages.VARIABLE;
+	}
+	
+	@Override
+	public IManagedImage visitFunction() {
+		return LangElementImages.FUNCTION;
+	}
+	
+	@Override
+	public IManagedImage visitConstructor() {
+		return LangElementImages.CONSTRUCTOR;
+	}
+	
+	@Override
+	public IManagedImage visitClass() {
+		return LangElementImages.T_CLASS;
+	}
+	@Override
+	public IManagedImage visitInterface() {
+		return LangElementImages.T_INTERFACE;
+	}
+	@Override
+	public IManagedImage visitStruct() {
+		return LangElementImages.T_STRUCT;
+	}
+	@Override
+	public IManagedImage visitEnum() {
+		return LangElementImages.T_ENUM;
+	}
+	
+	@Override
+	public IManagedImage visitNative() {
+		return LangElementImages.T_NATIVE;
 	}
 	
 	@Override
 	public IManagedImage visitKeyword() {
-		return new NullManagedImage();
+		return NullManagedImage.INSTANCE;
 	}
 	
 	@Override
-	public IManagedImage visitUnknown() {
-		return getDefaultImage();
+	public IManagedImage visitError() {
+		return LangElementImages.ERROR_ELEMENT;
 	}
 	
 }

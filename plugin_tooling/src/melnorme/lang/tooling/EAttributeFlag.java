@@ -19,7 +19,7 @@ public enum EAttributeFlag {
 	CONST,
 	IMMUTABLE,
 	
-	ALIAS,
+	ALIASED,
 	TEMPLATED,
 	
 	/* ----------------- Flags above are Lang standard and should not be modified ----------------- */

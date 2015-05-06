@@ -165,7 +165,7 @@ public class LangElementImageDescriptor extends CompositeImageDescriptor {
 	
 	protected void drawBottomLeftDecorations() {
 		
-		if(elementAttributes.hasFlag(EAttributeFlag.ALIAS)) {
+		if(elementAttributes.hasFlag(EAttributeFlag.ALIASED)) {
 			drawDecorationImage(LangImages.DESC_OVR_ALIAS, Direction.RIGHT, false);
 		}
 	}

@@ -12,6 +12,13 @@ package melnorme.lang.tooling;
 
 public interface AbstractKindVisitor<RET> {
 	
+	public abstract RET visitKeyword();
+	public abstract RET visitAlias();
+	
+	/* -----------------  ----------------- */
+	
+	public abstract RET visitModule();
+	
 	public abstract RET visitVariable();
 	
 	public abstract RET visitFunction();
@@ -21,12 +28,6 @@ public interface AbstractKindVisitor<RET> {
 	public abstract RET visitInterface();
 	public abstract RET visitStruct();
 	public abstract RET visitEnum();
-	
-	public abstract RET visitModule();
-	
-	/* -----------------  ----------------- */
-	
-	public abstract RET visitKeyword();
-	public abstract RET visitUnknown();
+	public abstract RET visitNative();
 	
 }

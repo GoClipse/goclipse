@@ -29,6 +29,8 @@ public interface IManagedImage {
 	
 	public static class NullManagedImage implements IManagedImage {
 		
+		public static final NullManagedImage INSTANCE = new NullManagedImage();
+		
 		@Override
 		public ImageRegistry getImageRegistry() {
 			return null;

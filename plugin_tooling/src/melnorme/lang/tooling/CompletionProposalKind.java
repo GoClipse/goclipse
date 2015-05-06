@@ -16,7 +16,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 public enum CompletionProposalKind {
 	
 	KEYWORD,
-	UNKNOWN,
+	ERROR,
+	
+	MODULEDEC,
 	
 	VARIABLE,
 	
@@ -27,13 +29,17 @@ public enum CompletionProposalKind {
 	INTERFACE,
 	STRUCT,
 	
-	MODULEDEC;
+	ALIAS
+	
+	;
 	
 	
 	public <RET> RET switchOnKind(ProposalKindVisitor<RET> visitor) {
 		switch(this) {
 		case KEYWORD: return visitor.visitKeyword();
-		case UNKNOWN: return visitor.visitUnknown();
+		case ERROR: return visitor.visitError();
+		
+		case MODULEDEC: return visitor.visitModule();
 		
 		case VARIABLE: return visitor.visitVariable();
 		
@@ -44,13 +50,15 @@ public enum CompletionProposalKind {
 		case CLASS: return visitor.visitClass();
 		case INTERFACE: return visitor.visitInterface();
 		
-		case MODULEDEC: return visitor.visitModule();
+		case ALIAS: return visitor.visitAlias();
 		
 		}
 		throw assertUnreachable();
 	}
 	
 	public static interface ProposalKindVisitor<RET> extends AbstractKindVisitor<RET> {
+		
+		RET visitError();
 		
 	}
 	
