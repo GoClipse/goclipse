@@ -11,6 +11,8 @@
 package melnorme.lang.ide.ui.views;
 
 
+import melnorme.util.swt.jface.text.ColorManager;
+
 import org.eclipse.jface.resource.FontDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
@@ -18,7 +20,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.TextStyle;
@@ -46,8 +47,14 @@ public abstract class AbstractLangLabelProvider extends LabelProvider
 	
 	/* ----------------- styler helpers ----------------- */
 	
+	/**
+	 * Note: this doesn't dispose of created Colors, so to avoid leaking, 
+	 * it should be used with constant RGBs only 
+	 */
 	protected static class ForegroundColorStyler extends Styler {
+		
 		protected final RGB fgColor;
+		protected final ColorManager registry = ColorManager.getDefault();
 		
 		public ForegroundColorStyler(RGB fgColor) {
 			this.fgColor = fgColor;
@@ -56,10 +63,10 @@ public abstract class AbstractLangLabelProvider extends LabelProvider
 		@Override
 		public void applyStyles(TextStyle textStyle) {
 			if(fgColor != null) {
-				/*FIXME: BUG here Color leak*/
-				textStyle.foreground = new Color(Display.getCurrent(), fgColor);
+				textStyle.foreground = registry.getColor(fgColor);
 			}
 		}
+		
 	}
 	
 	public static ForegroundColorStyler fgColor(RGB rgb) {
