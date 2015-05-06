@@ -46,7 +46,7 @@ public abstract class LangToolCompletionProposal {
 		this.replaceLength = replaceLength;
 		this.replaceString = assertNotNull(replaceString);
 		this.label = assertNotNull(label);
-		this.kind = assertNotNull(kind);
+		this.kind = kind != null ? kind : CompletionProposalKind.UNKNOWN;
 		this.attributes = assertNotNull(attributes);
 		this.moduleName = moduleName;
 		
@@ -71,7 +71,7 @@ public abstract class LangToolCompletionProposal {
 	}
 	
 	public CompletionProposalKind getKind() {
-		return kind;
+		return assertNotNull(kind);
 	}
 	
 	public ElementAttributes getAttributes() {

@@ -24,6 +24,9 @@ public abstract class AbstractLangImageProvider implements
 {
 	
 	public IManagedImage getImageDescriptor(CompletionProposalKind kind) {
+		if(kind == null) {
+			return null;
+		}
 		IManagedImage imageDescriptor = kind.switchOnKind(this);
 		if(imageDescriptor == null) {
 			return getDefaultImage();
@@ -33,6 +36,21 @@ public abstract class AbstractLangImageProvider implements
 	
 	public static IManagedImage getDefaultImage() {
 		return NullManagedImage.INSTANCE;
+	}
+	
+	@Override
+	public IManagedImage visitUnknown() {
+		return LangElementImages.UKKNOWN;
+	}
+	
+	@Override
+	public IManagedImage visitKeyword() {
+		return NullManagedImage.INSTANCE;
+	}
+	
+	@Override
+	public IManagedImage visitError() {
+		return LangElementImages.ERROR_ELEMENT;
 	}
 	
 	@Override
@@ -80,16 +98,6 @@ public abstract class AbstractLangImageProvider implements
 	@Override
 	public IManagedImage visitNative() {
 		return LangElementImages.T_NATIVE;
-	}
-	
-	@Override
-	public IManagedImage visitKeyword() {
-		return NullManagedImage.INSTANCE;
-	}
-	
-	@Override
-	public IManagedImage visitError() {
-		return LangElementImages.ERROR_ELEMENT;
 	}
 	
 }
