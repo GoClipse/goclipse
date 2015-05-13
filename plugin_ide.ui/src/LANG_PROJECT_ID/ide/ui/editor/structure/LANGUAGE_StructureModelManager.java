@@ -13,7 +13,6 @@ package LANG_PROJECT_ID.ide.ui.editor.structure;
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.structure.IStructureElement;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
@@ -33,7 +32,7 @@ public class LANGUAGE_StructureModelManager extends StructureModelManager {
 				SourceRange sr = new SourceRange(0, source.length());
 				StructureElement element = new StructureElement("NOT_IMPLEMENTED", sr, sr, 
 					StructureElementKind.MODULEDEC, new ElementAttributes(null), null, null);
-				return new SourceFileStructure(location, new ArrayList2<IStructureElement>(element));
+				return new SourceFileStructure(location, new ArrayList2<StructureElement>(element));
 			}
 		};
 	}
