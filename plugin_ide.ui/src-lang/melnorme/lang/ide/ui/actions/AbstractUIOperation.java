@@ -24,8 +24,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.progress.IProgressService;
 
 
 public abstract class AbstractUIOperation {
@@ -97,8 +95,7 @@ public abstract class AbstractUIOperation {
 	}
 	
 	protected void performLongRunningComputation_usingProgressService() throws OperationCancellation, CoreException {
-		IProgressService ps = PlatformUI.getWorkbench().getProgressService();
-		computationRunnable.runUnderProgressService(ps);
+		computationRunnable.runUnderWorkbenchProgressService();
 	}
 	
 	protected final OperationRunnableWithProgress computationRunnable = new OperationRunnableWithProgress() {

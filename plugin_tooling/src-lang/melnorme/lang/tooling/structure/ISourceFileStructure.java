@@ -13,7 +13,7 @@ package melnorme.lang.tooling.structure;
 import melnorme.utilbox.misc.Location;
 
 
-interface ISourceFileStructure extends IStructureElementContainer {
+public interface ISourceFileStructure extends IStructureElementContainer {
 	
 	/** @return the location of this SourceFile. Non-null. */
 	Location getLocation();

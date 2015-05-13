@@ -124,6 +124,13 @@
 			description="%ToggleCommentAction.description"
 		/>
 		
+		<command 
+			categoryId="LANG_PROJECT_ID.ide.ui.commands.Category"
+			id="LANG_PROJECT_ID.ide.ui.commands.QuickOutline"
+			name="%QuickOutlineAction.name"
+			description="%QuickOutlineAction.description"
+		/>
+		
 	</extension>
 	
 	<extension point="org.eclipse.ui.bindings">
@@ -150,6 +157,12 @@
 			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			sequence="M1+/">
+		</key>
+		<key
+			commandId="LANG_PROJECT_ID.ide.ui.commands.QuickOutline"
+			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+O">
 		</key>
 	</extension>
 	

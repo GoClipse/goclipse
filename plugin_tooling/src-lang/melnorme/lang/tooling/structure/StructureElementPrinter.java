@@ -19,7 +19,7 @@ public class StructureElementPrinter extends StructureElementVisitor {
 	public StructureElementPrinter() {
 	}
 	
-	public String printElement(IStructureElement element) {
+	public String printElement(StructureElement element) {
 		level = -1;
 		visitTree(element);
 		String baseString = sb.toString();
@@ -27,7 +27,7 @@ public class StructureElementPrinter extends StructureElementVisitor {
 	}
 	
 	@Override
-	protected boolean visitNode(IStructureElement element) {
+	protected boolean visitNode(StructureElement element) {
 		sb.append(getIndent());
 		if(element instanceof StructureElement) {
 			StructureElement ss = (StructureElement) element;

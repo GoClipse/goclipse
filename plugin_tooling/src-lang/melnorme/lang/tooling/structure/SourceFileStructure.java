@@ -16,14 +16,13 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
 
-public class SourceFileStructure implements ISourceFileStructure {
+public class SourceFileStructure extends StructureContainer implements ISourceFileStructure {
 	
 	protected final Location location;
-	protected final Indexable<IStructureElement> children;
 	
-	public SourceFileStructure(Location location, Indexable<IStructureElement> children) {
+	public SourceFileStructure(Location location, Indexable<StructureElement> children) {
+		super(children);
 		this.location = assertNotNull(location);
-		this.children = assertNotNull(children);
 	}
 	
 	@Override
@@ -56,16 +55,11 @@ public class SourceFileStructure implements ISourceFileStructure {
 	}
 	
 	@Override
-	public Indexable<IStructureElement> getChildren() {
-		return children;
-	}
-	
-	@Override
 	public String getModuleName() {
 		return location.getPath().getFileName().toString();
 	}
 	
-	public IStructureElement getStructureElementAt(int offset) {
+	public StructureElement getStructureElementAt(int offset) {
 		return new StructureElementFinderByOffset(offset).findInnerMost(this);
 	}
 	
@@ -73,13 +67,13 @@ public class SourceFileStructure implements ISourceFileStructure {
 		
 		protected final int offset;
 		
-		protected IStructureElement pickedElement;
+		protected StructureElement pickedElement;
 		
 		public StructureElementFinderByOffset(int offset) {
 			this.offset = offset;
 		}
 		
-		public IStructureElement findInnerMost(IStructureElementContainer container) {
+		public StructureElement findInnerMost(IStructureElementContainer container) {
 			visitContainer(container);
 			return pickedElement;
 		}
@@ -87,7 +81,7 @@ public class SourceFileStructure implements ISourceFileStructure {
 		protected void visitContainer(IStructureElementContainer container) {
 			assertNotNull(container);
 			
-			for(IStructureElement structureElement : container.getChildren()) {
+			for(StructureElement structureElement : container.getChildren()) {
 				if(structureElement.getSourceRange().inclusiveContains(offset)) {
 					pickedElement = structureElement;
 					

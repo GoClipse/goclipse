@@ -8,19 +8,29 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor;
+package melnorme.lang.ide.ui.editor.actions;
+
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.LangEditorMessages;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
-import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.IWorkbenchPage;
 
-public interface ISourceViewerExt {
+
+public class OpenQuickOutlineHandler extends AbstractEditorHandler {
 	
-	IContentAssistant getContentAssistant();
+	public OpenQuickOutlineHandler(IWorkbenchPage page) {
+		super(page);
+	}
 	
-	void handlePropertyChangeEvent_2(PropertyChangeEvent event, IPreferenceStore prefStore);
+	@Override
+	protected String getOperationName() {
+		return LangEditorMessages.QuickOutline_title;
+	}
 	
-	void showOutline() throws CoreException;
+	@Override
+	protected void doRunWithEditor(AbstractLangEditor editor) throws CoreException {
+		editor.getSourceViewer_asExt().showOutline();
+	}
 	
 }

@@ -223,7 +223,7 @@ public abstract class LangNewProjectWizard extends Wizard
 	
 	protected void openEditorOnFile(IFile file) {
 		try {
-			EditorUtils.openEditor(EditorsUI.DEFAULT_TEXT_EDITOR_ID, new FileEditorInput(file));
+			EditorUtils.openEditor(new FileEditorInput(file), EditorsUI.DEFAULT_TEXT_EDITOR_ID);
 		} catch (CoreException e) {
 			LangCore.logInternalError(e);
 		}

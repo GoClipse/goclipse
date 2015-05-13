@@ -79,7 +79,12 @@ public abstract class AbstractContentOutlinePage extends Page implements IConten
 	
 	
 	protected TreeViewer createTreeViewer(Composite parent) {
-		return new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		TreeViewer treeViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		
+		treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
+		// TODO: allow certain StructureElements to not be initially expanded
+		treeViewer.setUseHashlookup(true);
+		return treeViewer;
 	}
 	
 	/* -----------------  ----------------- */

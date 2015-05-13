@@ -12,7 +12,6 @@ package melnorme.lang.ide.ui.editor;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorCommandIds;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.actions.CommandsHelper;
@@ -37,16 +36,21 @@ public abstract class LangEditorContextMenuContributor extends CommandsHelper {
 	
 	public void editorContextMenuAboutToShow(IMenuManager ctxMenu) {
 		ctxMenu.prependToGroup(ICommonMenuConstants.GROUP_OPEN, new CommandContributionItem(
-			createOpenDefinitionContribParameters()));
+			createCommandContrib_OpenDefinitionContrib()));
+		
+		ctxMenu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, new CommandContributionItem(
+			createCommandContrib_QuickOutline()));
 		
 		prepareSourceMenu(ctxMenu);
 	}
 	
-	protected CommandContributionItemParameter createOpenDefinitionContribParameters() {
-		CommandContributionItemParameter cip;
-		cip = contribItemParameter(svcLocator, EditorSettings_Actual.EditorCommandIds.OpenDef_ID);
-		cip.icon = LangImages.ACTIONS_OPEN_DEF.getDescriptor();
-		return cip;
+	protected CommandContributionItemParameter createCommandContrib_OpenDefinitionContrib() {
+		return contribItemParameter2(svcLocator, EditorCommandIds.OpenDef_ID, 
+			LangImages.ACTIONS_OPEN_DEF.getDescriptor());
+	}
+	
+	protected CommandContributionItemParameter createCommandContrib_QuickOutline() {
+		return contribItemParameter(svcLocator, EditorCommandIds.QuickOutline);
 	}
 	
 	/* ----------------- Source menu ----------------- */

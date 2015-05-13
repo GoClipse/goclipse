@@ -18,24 +18,30 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.actions.CalculateValueUIOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager.StructureInfo;
+import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.part.EditorPart;
 
 public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<SourceFileStructure> {
 	
-	protected final AbstractLangStructureEditor editor;
+	protected final IEditorInput editorInput;
 	
 	protected Location inputLocation;
 	protected StructureInfo structureInfo;
-
 	
-	public GetUpdatedStructureUIOperation(AbstractLangStructureEditor editor) {
+	public GetUpdatedStructureUIOperation(EditorPart editor) {
+		this(assertNotNull(editor).getEditorInput());
+	}
+	
+	public GetUpdatedStructureUIOperation(IEditorInput editorInput) {
 		super("Awaiting Structure Calculation");
-		this.editor = assertNotNull(editor);
+		this.editorInput = editorInput;
 	}
 	
 	@Override
@@ -45,7 +51,7 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	
 	@Override
 	protected void prepareOperation() throws CoreException {
-		inputLocation = EditorUtils.getLocationFromEditorInput(editor.getEditorInput());
+		inputLocation = EditorUtils.getLocationFromEditorInput(editorInput);
 		structureInfo = StructureModelManager.getDefault().getStructureInfo(inputLocation);
 	}
 	
@@ -78,6 +84,18 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	protected void handleNonCanceledNullResult() throws CoreException {
 		throw LangCore.createCoreException(
 			"Could not retrieve source file structure for: " + inputLocation, null);
+	}
+	
+	/* ----------------- util ----------------- */
+	
+	public static StructureElement getUpdatedStructureElementAt(EditorPart editor, int offset) {
+		GetUpdatedStructureUIOperation op = new GetUpdatedStructureUIOperation(editor);
+		SourceFileStructure sourceFileStructure = op.executeAndGetHandledResult();
+		
+		if(sourceFileStructure == null) {
+			return null; // Note, possible error result has already been handled and reported to the user.
+		}
+		return sourceFileStructure.getStructureElementAt(offset);
 	}
 	
 }

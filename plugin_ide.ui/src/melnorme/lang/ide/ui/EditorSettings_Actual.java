@@ -77,6 +77,8 @@ public class EditorSettings_Actual {
 		public static final String GoToMatchingBracket = LangUIPlugin.PLUGIN_ID + ".commands.GoToMatchingBracket";
 		public static final String ToggleComment = LangUIPlugin.PLUGIN_ID + ".commands.ToggleComment";
 		
+		public static final String QuickOutline = LangUIPlugin.PLUGIN_ID + ".commands.QuickOutline";
+		
 	}
 	
 	public static LangEditorContextMenuContributor createCommandsContribHelper(IServiceLocator svcLocator) {

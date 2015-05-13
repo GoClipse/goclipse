@@ -17,11 +17,11 @@ public abstract class StructureElementVisitor {
 	public StructureElementVisitor() {
 	}
 	
-	protected void visitTree(IStructureElement element) {
+	protected void visitTree(StructureElement element) {
 		level++;
 		
 		if(visitNode(element)) {
-			for (IStructureElement child : element.getChildren()) {
+			for (StructureElement child : element.getChildren()) {
 				visitTree(child);
 			}
 		}
@@ -29,6 +29,6 @@ public abstract class StructureElementVisitor {
 	}
 	
 	/** @return whether to visit children. */
-	protected abstract boolean visitNode(IStructureElement element);
+	protected abstract boolean visitNode(StructureElement element);
 	
 }
