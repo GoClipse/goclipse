@@ -10,16 +10,19 @@
  *******************************************************************************/
 package melnorme.lang.tooling.structure;
 
+import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.LANG_SPECIFIC;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.Indexable;
 
 
-
-/**
- * A structure element is a lightweight structure describing a top-level element 
- * obtained from a source file (compilation unit).
- * Example: functions, classes, top level variables. etc. 
- */
 @LANG_SPECIFIC
-public interface IStructureElement extends IStructureElement_Default {
+public class StructureElement extends StructureElement_Default {
+	
+	public StructureElement(String name, SourceRange nameSourceRange, SourceRange sourceRange,
+			StructureElementKind elementKind, ElementAttributes elementAttributes, String type,
+			Indexable<StructureElement> children) {
+		super(name, nameSourceRange, sourceRange, elementKind, elementAttributes, type, children);
+	}
 	
 }

@@ -14,8 +14,8 @@ package melnorme.lang.ide.ui.editor.structure;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.tooling.structure.IStructureElement;
 import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -116,18 +117,29 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		}
 	};
 	
-	public IStructureElement getStructureElementFor(ISelection selection) {
+	public StructureElement getStructureElementFor(ISelection selection) {
 		if(selection instanceof ITextSelection) {
 			ITextSelection textSelection = (ITextSelection) selection;
-			return editor.getStructureElementAt(textSelection.getOffset());
+			return GetUpdatedStructureUIOperation.getUpdatedStructureElementAt(editor, textSelection.getOffset());
 		} 
 		else if(selection instanceof IStructuredSelection) {
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			if(structuredSelection.getFirstElement() instanceof IStructureElement) {
-				return (IStructureElement) structuredSelection.getFirstElement();
+			if(structuredSelection.getFirstElement() instanceof StructureElement) {
+				return (StructureElement) structuredSelection.getFirstElement();
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	protected void treeViewerPostSelectionChanged(SelectionChangedEvent event) {
+		Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
+		if(firstElement instanceof StructureElement) {
+			StructureElement structureElement = (StructureElement) firstElement;
+			editor.setElementSelection(structureElement);
+		}
+		
+		super.treeViewerPostSelectionChanged(event);
 	}
 	
 	/* ----------------- Show in target ----------------- */
@@ -145,7 +157,7 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		return new IShowInTarget() {
 			@Override
 			public boolean show(ShowInContext context) {
-				IStructureElement structureElement = getStructureElementFor(context.getSelection());
+				StructureElement structureElement = getStructureElementFor(context.getSelection());
 				
 				if(structureElement != null) {
 					setSelection(new StructuredSelection(structureElement));

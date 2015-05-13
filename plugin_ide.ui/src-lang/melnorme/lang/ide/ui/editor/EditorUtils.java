@@ -179,9 +179,15 @@ public class EditorUtils {
 	
 	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING, NEVER }
 	
-	public static IEditorPart openEditor(String editorId, IEditorInput newInput) throws CoreException {
+	public static IEditorPart openEditor(IEditorInput newInput, String editorId) throws PartInitException {
+		return openEditor(newInput, editorId, false);
+	}
+	
+	public static IEditorPart openEditor(IEditorInput newInput, String editorId, boolean reuseExisitingEditor) 
+			throws PartInitException {
 		IWorkbenchPage page = WorkbenchUtils.getActiveWorkbenchWindow().getActivePage(); 
-		return page.openEditor(newInput, editorId, true, IWorkbenchPage.MATCH_NONE);
+		int matchFlags = reuseExisitingEditor ? IWorkbenchPage.MATCH_INPUT : IWorkbenchPage.MATCH_NONE;
+		return page.openEditor(newInput, editorId, true, matchFlags);
 	}
 	
 	public static ITextEditor openTextEditorAndSetSelection(String editorId, IEditorInput newInput, 

@@ -13,7 +13,6 @@ package com.googlecode.goclipse.ui.editor.structure;
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.structure.IStructureElement;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
@@ -31,9 +30,9 @@ public class GoStructureModelManager extends StructureModelManager {
 			@Override
 			protected SourceFileStructure createSourceFileStructure() {
 				SourceRange sr = new SourceRange(0, source.length());
-				StructureElement element = new StructureElement("NOT_IMPLEMENTED", sr, sr, 
+				StructureElement element = new StructureElement("Outline_Not_Implemented", sr, sr, 
 					StructureElementKind.MODULEDEC, new ElementAttributes(null), null, null);
-				return new SourceFileStructure(location, new ArrayList2<IStructureElement>(element));
+				return new SourceFileStructure(location, new ArrayList2<StructureElement>(element));
 			}
 		};
 	}

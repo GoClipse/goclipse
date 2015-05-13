@@ -414,6 +414,13 @@
 			description="%ToggleCommentAction.description"
 		/>
 		
+		<command 
+			categoryId="com.googlecode.goclipse.ui.commands.Category"
+			id="com.googlecode.goclipse.ui.commands.QuickOutline"
+			name="%QuickOutlineAction.name"
+			description="%QuickOutlineAction.description"
+		/>
+		
 		<command
             name="Launch Go Application"
             description="Launch Go Application"
@@ -461,7 +468,12 @@
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			sequence="M1+/">
 		</key>
-		
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.QuickOutline"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+O">
+		</key>		
       <key
             commandId="com.googlecode.goclipse.debug.ui.LaunchShortcut.run"
             contextId="org.eclipse.ui.contexts.window"

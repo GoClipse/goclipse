@@ -13,14 +13,16 @@ package melnorme.lang.tooling.structure;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 import static melnorme.utilbox.misc.StringUtil.prefixStr;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.HashcodeUtil;
 
-public class StructureElement implements IStructureElement {
+/**
+ * Only {@link StructureElement} can extend this class!
+ */
+abstract class StructureElement_Default extends StructureContainer implements IStructureElement {
 	
 	protected final String name;
 	protected final SourceRange nameSourceRange;
@@ -31,26 +33,21 @@ public class StructureElement implements IStructureElement {
 	
 	protected final String type;
 	
-	protected final Indexable<StructureElement> children;
 	protected IStructureElementContainer parent;
 	
-	public StructureElement(
+	public StructureElement_Default(
 			String name, 
 			SourceRange nameSourceRange, SourceRange sourceRange, 
 			StructureElementKind elementKind,
 			ElementAttributes elementAttributes, 
 			String type, Indexable<StructureElement> children) {
+		super(children);
 		this.name = assertNotNull(name);
 		this.nameSourceRange = assertNotNull(nameSourceRange);
 		this.sourceRange = assertNotNull(sourceRange);
 		this.elementKind = assertNotNull(elementKind);
 		this.elementAttributes = assertNotNull(elementAttributes);
 		this.type = type;
-		this.children = nullToEmpty(children);
-		
-		for (IStructureElement child : this.children) {
-			child.setParent(child);
-		}
 	}
 	
 	@Override
@@ -116,11 +113,6 @@ public class StructureElement implements IStructureElement {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public Indexable<IStructureElement> getChildren() {
-		return children.upcastTypeParameter();
-	}
-	
-	@Override
 	public IStructureElementContainer getParent() {
 		return parent;
 	}
@@ -138,6 +130,23 @@ public class StructureElement implements IStructureElement {
 		return parent == null ? null : parent.getModuleName();
 	}
 	
+	@Override
+	public ISourceFileStructure getContainingFileStructure() {
+		return getFileStructure(this);
+	}
+	
+	public static ISourceFileStructure getFileStructure(IStructureElement element) {
+		IStructureElementContainer parent = element.getParent();
+		
+		if(parent instanceof ISourceFileStructure) {
+			return (ISourceFileStructure) parent;
+		} else if (parent instanceof IStructureElement) {
+			return getFileStructure((IStructureElement) parent);
+		} else {
+			return null;
+		}
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override
@@ -147,7 +156,7 @@ public class StructureElement implements IStructureElement {
 	
 	public String toString(boolean printChildren) {
 		if(printChildren) {
-			return new StructureElementPrinter().printElement(this);
+			return new StructureElementPrinter().printElement((StructureElement) this);
 		} else {
 			return toStringNode();
 		}

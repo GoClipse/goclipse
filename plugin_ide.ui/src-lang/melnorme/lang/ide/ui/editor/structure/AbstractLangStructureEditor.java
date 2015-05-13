@@ -11,17 +11,15 @@
 package melnorme.lang.ide.ui.editor.structure;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.tooling.structure.IStructureElement;
-import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.StructureElement;
 
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.part.IShowInTargetList;
+import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
@@ -70,18 +68,18 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		return super.getAdapter(requestedClass);
 	}
 	
-	/* ----------------- Structure helpers ----------------- */
+	/* -----------------  ----------------- */
 	
-	public IStructureElement getStructureElementAt(int offset) {
-		assertTrue(Display.getCurrent() != null);
-		
-		GetUpdatedStructureUIOperation op = new GetUpdatedStructureUIOperation(this);
-		SourceFileStructure sourceFileStructure = op.executeAndGetHandledResult();
-		
-		if(sourceFileStructure == null) {
-			return null; // Note, error result have already been handled and reported to the user
+	public void setElementSelection(StructureElement element) {
+		setElementSelection(this, element);
+		markInNavigationHistory();
+	}
+	
+	public static void setElementSelection(ITextEditor editor, StructureElement element) {
+		SourceRange nameSR = element.getNameSourceRange();
+		if(nameSR != null) {
+			editor.selectAndReveal(nameSR.getOffset(), nameSR.getLength());
 		}
-		return sourceFileStructure.getStructureElementAt(offset);
 	}
 	
 }

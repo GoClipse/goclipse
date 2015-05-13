@@ -16,10 +16,13 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -66,7 +69,13 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 		new LangEditorRunner(getShell(), editor) {
 			@Override
 			protected void runWithLangEditor(AbstractLangEditor editor) {
-				doRunWithEditor(editor);
+				try {
+					doRunWithEditor(editor);
+				} catch(CoreException ce) {
+					UIOperationExceptionHandler.handleOperationStatus(getOperationName(), ce);
+				} catch(CommonException ce) {
+					UIOperationExceptionHandler.handleOperationStatus(getOperationName(), ce);
+				}
 			}
 			
 			@Override
@@ -87,6 +96,6 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 	}
 	
 	/** editor: not null */
-	protected abstract void doRunWithEditor(AbstractLangEditor editor);
+	protected abstract void doRunWithEditor(AbstractLangEditor editor) throws CoreException, CommonException;
 	
 }

@@ -11,6 +11,7 @@
 package melnorme.util.swt.jface;
 
 import org.eclipse.jface.viewers.ITreeSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
@@ -37,6 +38,10 @@ public class TreeViewerExt extends TreeViewer {
 	
 	public Object getSelectionFirstElement() {
 		return getSelection().getFirstElement();
+	}
+	
+	public void setSelectedElement(Object selectedElement) {
+		setSelection(selectedElement == null ? StructuredSelection.EMPTY : new StructuredSelection(selectedElement));
 	}
 	
 }

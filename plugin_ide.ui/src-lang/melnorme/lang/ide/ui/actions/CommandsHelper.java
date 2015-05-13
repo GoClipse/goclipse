@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.actions;
 
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.services.IServiceLocator;
@@ -34,6 +35,17 @@ public abstract class CommandsHelper {
 			commandId, 
 			CommandContributionItem.STYLE_PUSH
 		);
+	}
+	
+	public static CommandContributionItemParameter contribItemParameter2(IServiceLocator svLocator, String commandId,
+			ImageDescriptor icon) {
+		CommandContributionItemParameter cip = new CommandContributionItemParameter(svLocator, 
+			commandId, 
+			commandId, 
+			CommandContributionItem.STYLE_PUSH
+		);
+		cip.icon = icon;
+		return cip;
 	}
 	
 	public static CommandContributionItemParameter contribItemParameter(IServiceLocator svLocator, String commandId,

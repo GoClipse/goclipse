@@ -19,6 +19,6 @@ public interface IStructureElementContainer {
 	String getModuleName();
 	
 	/** @return the children of this container. */
-	Indexable<IStructureElement> getChildren();
+	Indexable<StructureElement> getChildren();
 	
 }

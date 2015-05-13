@@ -187,7 +187,9 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	}
 	
 	protected SourceViewer doCreateSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
-		SourceViewer viewer= new SourceViewerExt(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
+		IPreferenceStore store = getPreferenceStore();
+		SourceViewer viewer = 
+				new LangSourceViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles, store);
 		// ensure decoration support has been created and configured.
 		getSourceViewerDecorationSupport(viewer);
 		return viewer;

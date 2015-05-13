@@ -19,6 +19,9 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
+import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
 import melnorme.lang.ide.ui.editor.text.LangReconciler;
 import melnorme.lang.ide.ui.editor.text.LangReconcilingStrategy;
 import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
@@ -30,11 +33,15 @@ import melnorme.utilbox.collections.Indexable;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.information.IInformationProvider;
+import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.reconciler.AbstractReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -69,6 +76,30 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 		Map<String, ITextEditor> targets = super.getHyperlinkDetectorTargets(sourceViewer);
 		targets.put(EditorSettings_Actual.EDITOR_CODE_TARGET, editor); 
 		return targets;
+	}
+	
+	public void installOutlinePresenter(final LangSourceViewer sourceViewer) {
+		final InformationPresenter presenter = 
+				new InformationPresenter(getOutlinePresenterControlCreator(sourceViewer));
+		
+		presenter.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
+		presenter.setAnchor(AbstractInformationControlManager.ANCHOR_GLOBAL);
+		
+		IInformationProvider provider = new StructureElementInformationProvider(getEditor()); 
+		
+		for(String contentType : getConfiguredContentTypes(sourceViewer)) {
+			presenter.setInformationProvider(provider, contentType);
+		}
+		
+		presenter.setSizeConstraints(50, 20, true, false);
+		
+		presenter.install(sourceViewer);
+		sourceViewer.setOutlinePresenter(presenter);
+	}
+	
+	protected IInformationControlCreator getOutlinePresenterControlCreator(
+			@SuppressWarnings("unused") ISourceViewer sourceViewer) {
+		return new OutlineInformationControlCreator(this);
 	}
 	
 	/* ----------------- Modification operations ----------------- */
@@ -152,6 +183,13 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 		CompositeReconcilingStrategy compositeStrategy = new CompositeReconcilingStrategy();
 		compositeStrategy.setReconcilingStrategies(array(new LangReconcilingStrategy(editor)));
 		return compositeStrategy;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void setupCustomConfiguration(LangSourceViewer sourceViewer) {
+		installOutlinePresenter(sourceViewer);
 	}
 	
 }

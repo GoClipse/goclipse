@@ -19,6 +19,7 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.editor.actions.GoToMatchingBracketHandler;
+import melnorme.lang.ide.ui.editor.actions.OpenQuickOutlineHandler;
 import melnorme.lang.ide.ui.editor.actions.ToggleCommentHandler;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.ArrayList2;
@@ -74,6 +75,8 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 		activateHandler(EditorCommandIds.GoToMatchingBracket, getHandler_GoToMatchingBracket());
 		activateHandler(EditorCommandIds.ToggleComment, getHandler_ToggleComment());
 		
+		activateHandler(EditorCommandIds.QuickOutline, getHandler_QuickOutline());
+		
 		registerOtherEditorHandlers();
 	}
 	
@@ -108,6 +111,9 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 		return new ToggleCommentHandler(getPage());
 	}
 	
+	protected AbstractHandler getHandler_QuickOutline() {
+		return new OpenQuickOutlineHandler(getPage());
+	}
 	
 	/* ----------------- Menu / Toolbar contributions ----------------- */
 	
@@ -124,8 +130,13 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 	}
 	
 	protected void prepareNavigateMenu(IMenuManager menu) {
-		IMenuManager gotoMenu= menu.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE + "/goTo");
-		if (gotoMenu != null) {
+		IMenuManager navigateMenu = menu.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
+		if(navigateMenu != null) {
+			navigateMenu.appendToGroup(IWorkbenchActionConstants.SHOW_EXT, pushItem(EditorCommandIds.QuickOutline));
+		}
+		
+		IMenuManager gotoMenu = menu.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE + "/goTo");
+		if(gotoMenu != null) {
 			gotoMenu.add(new Separator("additions2"));
 			
 			gotoMenu.appendToGroup("additions2", pushItem(EditorCommandIds.GoToMatchingBracket));

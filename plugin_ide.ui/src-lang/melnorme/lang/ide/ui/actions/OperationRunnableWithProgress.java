@@ -22,30 +22,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 public abstract class OperationRunnableWithProgress implements IRunnableWithProgress {
 	
 	protected volatile Exception exceptionResult;
 	
-	@Override
-	public final void run(IProgressMonitor monitor) {
-		try {
-			doRun(monitor);
-		} catch(OperationCancellation oc) {
-			exceptionResult = new OperationCancellation();
-		} catch(CoreException ce) {
-			if(monitor.isCanceled()) {
-				exceptionResult = new OperationCancellation();
-			} else {
-				exceptionResult = ce;
-			}
-		} catch(OperationCanceledException oce) {
-			exceptionResult = new OperationCancellation();
-		}
+	public void runUnderWorkbenchProgressService() throws OperationCancellation, CoreException {
+		IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
+		runUnderProgressService(progressService);
 	}
-	
-	protected abstract void doRun(IProgressMonitor monitor) throws CoreException, OperationCancellation;
 	
 	public void runUnderProgressService(IProgressService ps) throws OperationCancellation, CoreException {
 		try {
@@ -72,5 +59,25 @@ public abstract class OperationRunnableWithProgress implements IRunnableWithProg
 			} 
 		}
 	}
+	
+	@Override
+	public final void run(IProgressMonitor monitor) {
+		try {
+			doRun(monitor);
+		} catch(OperationCancellation oc) {
+			exceptionResult = new OperationCancellation();
+		} catch(CoreException ce) {
+			if(monitor.isCanceled()) {
+				exceptionResult = new OperationCancellation();
+			} else {
+				exceptionResult = ce;
+			}
+		} catch(OperationCanceledException oce) {
+			exceptionResult = new OperationCancellation();
+		}
+	}
+	
+	protected abstract void doRun(IProgressMonitor monitor) throws CoreException, OperationCancellation;
+	
 	
 }

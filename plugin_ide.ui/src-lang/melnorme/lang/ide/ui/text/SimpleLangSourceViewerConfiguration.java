@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
 
@@ -221,6 +222,13 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		}
 		
 		return ca;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@SuppressWarnings("unused")
+	public void setupCustomConfiguration(LangSourceViewer sourceViewer) {
+		// Default: do nothing
 	}
 	
 }

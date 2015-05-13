@@ -24,4 +24,7 @@ public interface LangEditorMessages {
 	public static final String ToggleComment_error_message = 
 			"Operation not enabled in target.";
 	
+	public static final String QuickOutline_title = 
+			"Quick Outline";
+	
 }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.structure;
 
-import melnorme.lang.tooling.structure.IStructureElement;
+import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.IStructureElementContainer;
 import melnorme.util.swt.jface.AbstractTreeContentProvider;
 import melnorme.utilbox.collections.ArrayList2;
@@ -42,8 +42,8 @@ public class StructureElementContentProvider extends AbstractTreeContentProvider
 	
 	@Override
 	public Object getParent(Object element) {
-		if(element instanceof IStructureElement) {
-			IStructureElement structureElement = (IStructureElement) element;
+		if(element instanceof StructureElement) {
+			StructureElement structureElement = (StructureElement) element;
 			return structureElement.getParent(); 
 		}
 		return null;
