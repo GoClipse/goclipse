@@ -27,20 +27,12 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 public class CompositeReconcilingStrategy  implements IReconcilingStrategy, IReconcilingStrategyExtension {
 
 	/** The list of internal reconciling strategies. */
-	private IReconcilingStrategy[] fStrategies;
+	protected final IReconcilingStrategy[] fStrategies;
 
 	/**
 	 * Creates a new, empty composite reconciling strategy.
 	 */
-	public CompositeReconcilingStrategy() {
-	}
-
-	/**
-	 * Sets the reconciling strategies for this composite strategy.
-	 *
-	 * @param strategies the strategies to be set or <code>null</code>
-	 */
-	public void setReconcilingStrategies(IReconcilingStrategy[] strategies) {
+	public CompositeReconcilingStrategy(IReconcilingStrategy... strategies) {
 		fStrategies= strategies;
 	}
 

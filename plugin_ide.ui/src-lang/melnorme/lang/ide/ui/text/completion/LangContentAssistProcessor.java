@@ -21,8 +21,10 @@ import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.jface.bindings.TriggerSequence;
@@ -210,10 +212,21 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;
 		
-		List<ICompletionProposal> proposals = cat.computeCompletionProposals(context);
+		List<ICompletionProposal> proposals;
+		try {
+			proposals = cat.computeCompletionProposals(context);
+		} catch(CommonException ce) {
+			handleExceptionInUI(ce);
+			setAndDisplayErrorMessage(ce.getMessage());
+			return null;
+		}
 		setAndDisplayErrorMessage(cat.getErrorMessage());
 		
 		return ArrayUtil.createFrom(proposals, ICompletionProposal.class);
+	}
+	
+	protected void handleExceptionInUI(CommonException ce) {
+		UIOperationExceptionHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
 	}
 	
 	@Override

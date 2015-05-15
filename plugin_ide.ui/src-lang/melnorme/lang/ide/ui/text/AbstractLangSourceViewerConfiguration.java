@@ -23,7 +23,6 @@ import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
 import melnorme.lang.ide.ui.editor.text.LangReconciler;
-import melnorme.lang.ide.ui.editor.text.LangReconcilingStrategy;
 import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
 import melnorme.lang.ide.ui.text.completion.ContentAssistPreferenceHandler;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
@@ -152,8 +151,13 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	
 	protected void configureContentAssistantProcessors(ContentAssistant assistant) {
 		Indexable<CompletionProposalsGrouping> categories = getContentAssistCategoriesProvider().getCategories();
-		IContentAssistProcessor cap = new LangContentAssistProcessor(assistant, getEditor(), categories);
+		IContentAssistProcessor cap = createContentAssistProcessor(assistant, categories);
 		assistant.setContentAssistProcessor(cap, IDocument.DEFAULT_CONTENT_TYPE);
+	}
+	
+	protected LangContentAssistProcessor createContentAssistProcessor(ContentAssistant assistant,
+			Indexable<CompletionProposalsGrouping> categories) {
+		return new LangContentAssistProcessor(assistant, getEditor(), categories);
 	}
 	
 	protected abstract ContentAssistCategoriesBuilder getContentAssistCategoriesProvider();
@@ -167,7 +171,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 		if(editor != null && editor.isEditable()) {
 			AbstractReconciler reconciler = doCreateReconciler(editor);
 			reconciler.setIsAllowedToModifyDocument(false);
-			reconciler.setDelay(500);
+			reconciler.setDelay(500); // Can't use zero
 			
 			return reconciler;
 		}
@@ -179,10 +183,9 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 		return new LangReconciler(strategy, false, editor);
 	}
 	
+	@SuppressWarnings("unused")
 	protected CompositeReconcilingStrategy getReconciler_createCompositeStrategy(ITextEditor editor) {
-		CompositeReconcilingStrategy compositeStrategy = new CompositeReconcilingStrategy();
-		compositeStrategy.setReconcilingStrategies(array(new LangReconcilingStrategy(editor)));
-		return compositeStrategy;
+		return new CompositeReconcilingStrategy();
 	}
 	
 	/* -----------------  ----------------- */

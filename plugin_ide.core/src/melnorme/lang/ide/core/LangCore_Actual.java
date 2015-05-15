@@ -1,5 +1,6 @@
 package melnorme.lang.ide.core;
 
+import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_EngineClient;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
 
 public class LangCore_Actual {
@@ -12,6 +13,10 @@ public class LangCore_Actual {
 	
 	public static LANGUAGE_ToolManager createToolManagerSingleton() {
 		return new LANGUAGE_ToolManager();
+	}
+	
+	public static LANGUAGE_EngineClient createEngineClient() {
+		return new LANGUAGE_EngineClient();
 	}
 	
 }

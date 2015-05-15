@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,88 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.tooling.structure;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.CoreUtil.areEqual;
+import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
 
-public class SourceFileStructure extends StructureContainer implements ISourceFileStructure {
+public class SourceFileStructure extends SourceFileStructure_Default {
 	
-	protected final Location location;
-	
-	public SourceFileStructure(Location location, Indexable<StructureElement> children) {
-		super(children);
-		this.location = assertNotNull(location);
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(!(obj instanceof SourceFileStructure)) return false;
-		
-		SourceFileStructure other = (SourceFileStructure) obj;
-		
-		return 
-			areEqual(location, other.location) &&
-			areEqual(children, other.children);
-	}
-	
-	@Override
-	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(location, children.size());
-	}
-	
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + location;
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Override
-	public Location getLocation() {
-		return location;
-	}
-	
-	@Override
-	public String getModuleName() {
-		return location.getPath().getFileName().toString();
-	}
-	
-	public StructureElement getStructureElementAt(int offset) {
-		return new StructureElementFinderByOffset(offset).findInnerMost(this);
-	}
-	
-	public static class StructureElementFinderByOffset {
-		
-		protected final int offset;
-		
-		protected StructureElement pickedElement;
-		
-		public StructureElementFinderByOffset(int offset) {
-			this.offset = offset;
-		}
-		
-		public StructureElement findInnerMost(IStructureElementContainer container) {
-			visitContainer(container);
-			return pickedElement;
-		}
-		
-		protected void visitContainer(IStructureElementContainer container) {
-			assertNotNull(container);
-			
-			for(StructureElement structureElement : container.getChildren()) {
-				if(structureElement.getSourceRange().inclusiveContains(offset)) {
-					pickedElement = structureElement;
-					
-					visitContainer(structureElement); // Check children
-					return;
-				}
-			}
-			
-		}
-		
+	public SourceFileStructure(Location location, Indexable<StructureElement> children,
+			Indexable<ParserError> parserProblems) {
+		super(location, children, parserProblems);
 	}
 	
 }

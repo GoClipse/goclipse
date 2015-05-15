@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.text.completion;
 import java.util.List;
 
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -21,7 +22,7 @@ public interface ILangCompletionProposalComputer {
 	
 	void sessionStarted();
 	
-	List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context);
+	List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) throws CommonException;
 	
 	List<IContextInformation> computeContextInformation(SourceOperationContext context);
 	

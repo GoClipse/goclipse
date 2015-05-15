@@ -11,16 +11,12 @@
 package melnorme.lang.ide.ui.editor.structure;
 
 
-import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.util.swt.SWTUtil;
-import melnorme.utilbox.misc.Location;
+import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.utilbox.ownership.IDisposable;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -28,16 +24,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
 
 public class LangOutlinePage extends AbstractContentOutlinePage implements IAdaptable, IDisposable {
 	
-	protected final StructureModelManager modelManager = StructureModelManager.getDefault();
 	protected final AbstractLangStructureEditor editor;
-	
-	protected volatile Location inputLocation;
 	
 	public LangOutlinePage(AbstractLangStructureEditor editor) {
 		super();
@@ -57,9 +49,9 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		
 		customizeCreateControl();
 		
-		modelManager.addListener(modelListener);
+		editor.getStructureField().addListener(structureListener);
 		
-		updateInputFromEditor();
+		updateTreeViewer();
 	}
 	
 	protected void customizeCreateControl() {
@@ -67,20 +59,9 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 	
 	@Override
 	public void dispose() {
-		modelManager.removeListener(modelListener);
+		editor.getStructureField().removeListener(structureListener);
 		
 		super.dispose();
-	}
-	
-	// Note: this can be called multiple times per Control lifetime
-	public void updateInputFromEditor() {
-		try {
-			inputLocation = EditorUtils.getLocationFromEditorInput(editor.getEditorInput());
-		} catch(CoreException e) {
-			inputLocation = null;
-		}
-		
-		updateTreeViewer();
 	}
 	
 	protected void updateTreeViewer() {
@@ -88,32 +69,15 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 			return;
 		}
 		
-		if(inputLocation == null) {
-			getTreeViewer().setInput(null);
-			return;
-		}
-		
-		SourceFileStructure structure = modelManager.getStructure(inputLocation);
+		SourceFileStructure structure = editor.getSourceFileStructure();
 		getTreeViewer().setInput(structure);
 		getTreeViewer().refresh();
 	}
 	
-	protected final IStructureModelListener modelListener = new IStructureModelListener() {
+	protected final IFieldValueListener structureListener = new IFieldValueListener() {
 		@Override
-		public void structureChanged(Location location, final SourceFileStructure sourceFileStructure) {
-			
-			if(!areEqual(location, inputLocation)) {
-				return;
-			}
-			
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					if(SWTUtil.isOkToUse(getControl())) {
-						updateTreeViewer();
-					}
-				}
-			});
+		public void fieldValueChanged() {
+			updateTreeViewer();
 		}
 	};
 	

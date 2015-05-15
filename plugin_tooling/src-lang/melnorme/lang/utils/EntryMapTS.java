@@ -15,7 +15,7 @@ import java.util.HashMap;
 /**
  * Thread-safe version of {@link EntryMap}
  */
-public abstract class EntryMapExt<KEY, ENTRY> extends EntryMap<KEY, ENTRY> {
+public abstract class EntryMapTS<KEY, ENTRY> extends EntryMap<KEY, ENTRY> {
 	
 	protected final HashMap<KEY, ENTRY> map = new HashMap<>();
 	

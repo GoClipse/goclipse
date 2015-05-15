@@ -10,45 +10,46 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Similar behavior as DefaultThreadFactory, but allows seting an unique name for the pool/executor threads.
+ * Same behavior as {@link Executors#defaultThreadFactory()}, 
+ * but allows setting a custom name for created threads.
  */
-public class NameAgentThreadFactory implements ThreadFactory {
+public class NamingThreadFactory implements ThreadFactory {
+	
+	protected final ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
 	
 	protected final String poolName;
 	protected boolean useThreadNumber;
 	protected final AtomicInteger threadNumber = new AtomicInteger(1);
-	protected final ThreadGroup group;
 	
-	public NameAgentThreadFactory(String poolName) {
+	public NamingThreadFactory(String poolName) {
 		this(poolName, false);
 	}
 	
-	public NameAgentThreadFactory(String poolName, boolean useThreadNumber) {
+	public NamingThreadFactory(String poolName, boolean useThreadNumber) {
 		this.poolName = poolName;
 		this.useThreadNumber = useThreadNumber;
-		SecurityManager sm = System.getSecurityManager();
-		this.group = (sm != null) ? sm.getThreadGroup() : Thread.currentThread().getThreadGroup();
 	}
 	
 	@Override
 	public Thread newThread(Runnable runable) {
-		String threadName = poolName;
-		if(useThreadNumber) {
-			threadName = poolName + "-" + threadNumber.getAndIncrement();
-		}
-		Thread thread = new Thread(group, runable, threadName, 0);
+		Thread thread = defaultThreadFactory.newThread(runable);
 		
-		if(thread.isDaemon()) {
-			thread.setDaemon(false);
-		}
-		if(thread.getPriority() != Thread.NORM_PRIORITY) {
-			thread.setPriority(Thread.NORM_PRIORITY);
-		}
+		thread.setName(getThreadName());
+		
 		return thread;
+	}
+	
+	protected String getThreadName() {
+		if(useThreadNumber) {
+			return poolName + "-" + threadNumber.getAndIncrement();
+		} else {
+			return poolName;
+		}
 	}
 	
 }

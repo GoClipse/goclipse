@@ -17,12 +17,18 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.IFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -202,6 +208,49 @@ public class ResourceUtils {
 		} catch (CommonException e) {
 			throw LangCore.createCoreException(e);
 		}
+	}
+	
+	/* ----------------- file Buffer utils ----------------- */
+	
+	public static IFileBuffer getFileBuffer(Path filePath) {
+		
+		ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
+		
+		IFileBuffer fileBuffer = fbm.getFileBuffer(epath(filePath), LocationKind.NORMALIZE);
+		if(fileBuffer != null) {
+			return fileBuffer;
+		}
+		
+		// Could be an external file, try alternative API:
+		fileBuffer = fbm.getFileStoreFileBuffer(FileBuffers.getFileStoreAtLocation(epath(filePath)));
+		if(fileBuffer != null) {
+			return fileBuffer;
+		}
+		
+		// Fall back, try LocationKind.LOCATION
+		fileBuffer = fbm.getFileBuffer(epath(filePath), LocationKind.LOCATION);
+		return fileBuffer;
+	}
+	
+	public static Location getFileBufferLocation(IFileBuffer buffer) throws CoreException {
+		IFileStore fileStore = buffer.getFileStore();
+		if(fileStore == null) {
+			throw LangCore.createCoreException("Error in discardWorkingCopy: listener fileStore == null", null);
+		}
+		Path filePath;
+		try {
+			filePath = Paths.get(fileStore.toURI());
+		} catch (RuntimeException e) {
+			throw LangCore.createCoreException("Error converting URI to path.", e);
+		}
+		
+		Location fileLoc;
+		try {
+			fileLoc = Location.create2(filePath);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
+		return fileLoc;
 	}
 	
 }

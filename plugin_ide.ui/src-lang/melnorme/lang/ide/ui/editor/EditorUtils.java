@@ -42,6 +42,7 @@ import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.FileStoreEditorInput;
+import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
@@ -101,10 +102,10 @@ public class EditorUtils {
 	}
 	
 	public static IFile getAssociatedFile(IEditorInput editorInput) {
-		if (editorInput instanceof IFileEditorInput) {
-			return ((IFileEditorInput) editorInput).getFile();
-		}
-		return (IFile) editorInput.getAdapter(IFile.class);
+//		if (editorInput instanceof IFileEditorInput) {
+//			return ((IFileEditorInput) editorInput).getFile();
+//		}
+		return ResourceUtil.getFile(editorInput);
 	}
 	
 	/** Get a resource related to the input of this editor, or null if none. */
