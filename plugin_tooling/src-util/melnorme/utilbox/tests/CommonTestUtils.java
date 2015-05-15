@@ -178,7 +178,7 @@ public class CommonTestUtils {
 	
 	@SafeVarargs
 	public static <T> ArrayList2<T> list(T... elems) {
-		return new ArrayList2<>(elems);
+		return ArrayList2.create(elems);
 	}
 	
 	@SafeVarargs

@@ -37,7 +37,7 @@ public class ExecutorTaskAgent extends ThreadPoolExecutor implements ExecutorSer
 	protected final String name;
 	
 	public ExecutorTaskAgent(String name) {
-		super(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new NameAgentThreadFactory(name));
+		super(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new NamingThreadFactory(name));
 		this.name = name;
 	}
 	

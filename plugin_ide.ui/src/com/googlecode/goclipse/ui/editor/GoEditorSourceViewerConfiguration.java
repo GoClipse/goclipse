@@ -1,6 +1,5 @@
 package com.googlecode.goclipse.ui.editor;
 
-import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
@@ -112,9 +111,7 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	
 	@Override
 	protected CompositeReconcilingStrategy getReconciler_createCompositeStrategy(ITextEditor editor) {
-		CompositeReconcilingStrategy compositeStrategy = new CompositeReconcilingStrategy();
-		compositeStrategy.setReconcilingStrategies(array(new GoEditorReconcilingStrategy(this.editor)));
-		return compositeStrategy;
+		return new CompositeReconcilingStrategy(new GoEditorReconcilingStrategy(this.editor));
 	}
 	
 	@Override

@@ -10,37 +10,34 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.structure;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.concurrent.TimeUnit;
-
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.engine.StructureModelManager;
+import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
 import melnorme.lang.ide.ui.actions.CalculateValueUIOperation;
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.structure.StructureModelManager.StructureInfo;
-import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.IEditorPart;
 
 public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<SourceFileStructure> {
 	
+	protected final StructureModelManager modelManager;
 	protected final IEditorInput editorInput;
 	
-	protected Location inputLocation;
+	protected Object key;
 	protected StructureInfo structureInfo;
 	
-	public GetUpdatedStructureUIOperation(EditorPart editor) {
-		this(assertNotNull(editor).getEditorInput());
+	public GetUpdatedStructureUIOperation(IEditorPart editor) {
+		this(LangCore.getEngineClient().getStructureManager(), editor.getEditorInput());
 	}
 	
-	public GetUpdatedStructureUIOperation(IEditorInput editorInput) {
+	public GetUpdatedStructureUIOperation(StructureModelManager modelManager, IEditorInput editorInput) {
 		super("Awaiting Structure Calculation");
+		this.modelManager = modelManager;
 		this.editorInput = editorInput;
 	}
 	
@@ -51,15 +48,15 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	
 	@Override
 	protected void prepareOperation() throws CoreException {
-		inputLocation = EditorUtils.getLocationFromEditorInput(editorInput);
-		structureInfo = StructureModelManager.getDefault().getStructureInfo(inputLocation);
+		key = AbstractLangStructureEditor.getStructureModelKeyFromEditorInput(editorInput);
+		structureInfo = modelManager.getStructureInfo(key);
 	}
 	
 	@Override
 	protected void performLongRunningComputation() throws OperationCancellation, CoreException {
 		if(!structureInfo.isStale()) {
 			// No need for background computation
-			resultValue = structureInfo.getStructure();
+			resultValue = structureInfo.getStoredStructure();
 		} else {
 			super.performLongRunningComputation();
 		}
@@ -67,28 +64,18 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	
 	@Override
 	protected SourceFileStructure calculateValue(IProgressMonitor pm) throws OperationCancellation {
-		while(true) {
-			if(pm.isCanceled()) {
-				throw new OperationCancellation();
-			}
-			
-			try {
-				return structureInfo.getUpdatedStructure(100, TimeUnit.MILLISECONDS);
-			} catch(InterruptedException e) {
-				continue;
-			}
-		}
+		return structureInfo.getCurrentStructure(pm);
 	}
 	
 	@Override
 	protected void handleNonCanceledNullResult() throws CoreException {
 		throw LangCore.createCoreException(
-			"Could not retrieve source file structure for: " + inputLocation, null);
+			"Could not retrieve source file structure for: " + key, null);
 	}
 	
 	/* ----------------- util ----------------- */
 	
-	public static StructureElement getUpdatedStructureElementAt(EditorPart editor, int offset) {
+	public static StructureElement getUpdatedStructureElementAt(IEditorPart editor, int offset) {
 		GetUpdatedStructureUIOperation op = new GetUpdatedStructureUIOperation(editor);
 		SourceFileStructure sourceFileStructure = op.executeAndGetHandledResult();
 		

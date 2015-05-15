@@ -14,10 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tooling.data.StatusException;
@@ -112,23 +108,6 @@ public class EclipseUtils extends ResourceUtils {
 	}
 	
 	/* ----------------- concurrency ----------------- */
-	
-	public static <T> T getFutureResult(Future<T> future, int timeout, TimeUnit timeUnit, String opName) 
-			throws CoreException {
-		try {
-			return future.get(timeout, timeUnit);
-		} catch (ExecutionException e) {
-			if(e.getCause() instanceof CoreException) {
-				CoreException coreException = (CoreException) e.getCause();
-				throw coreException; 
-			}
-			throw LangCore.createCoreException("Error performing " + opName + ".", e.getCause());
-		} catch (TimeoutException e) {
-			throw LangCore.createCoreException("Timeout performing " + opName + ".", null);
-		} catch (InterruptedException e) {
-			throw LangCore.createCoreException("Interrupted.", e);
-		}
-	}
 	
 	public static void checkMonitorCancelation(IProgressMonitor progressMonitor) throws OperationCancellation {
 		if(progressMonitor.isCanceled()) {

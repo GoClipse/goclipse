@@ -1,5 +1,6 @@
 package com.googlecode.goclipse.editors;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.text.LangReconcilingStrategy;
 
 import org.eclipse.jface.text.IDocument;
@@ -23,7 +24,7 @@ public class GoEditorReconcilingStrategy extends LangReconcilingStrategy {
 	 * @param editor
 	 */
 	public GoEditorReconcilingStrategy(GoEditor editor) {
-		super(editor);
+		super(editor, LangCore.getEngineClient());
 		this.editor = editor;
 	}
 

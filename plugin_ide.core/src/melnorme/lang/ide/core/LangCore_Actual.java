@@ -3,6 +3,7 @@ package melnorme.lang.ide.core;
 import org.eclipse.core.runtime.Plugin;
 
 import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.core.engine.GoEngineClient;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 
 public class LangCore_Actual {
@@ -20,6 +21,10 @@ public class LangCore_Actual {
 	
 	public static GoToolManager createToolManagerSingleton() {
 		return new GoToolManager();
+	}
+	
+	public static GoEngineClient createEngineClient() {
+		return new GoEngineClient();
 	}
 	
 }

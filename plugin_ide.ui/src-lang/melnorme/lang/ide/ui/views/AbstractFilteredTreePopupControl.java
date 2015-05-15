@@ -22,7 +22,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.PopupDialog;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlExtension;
 import org.eclipse.jface.text.IInformationControlExtension2;
@@ -236,7 +235,7 @@ public abstract class AbstractFilteredTreePopupControl extends PopupDialog imple
 		filterText = new Text(parent, SWT.NONE);
 		Dialog.applyDialogFont(filterText);
 		
-		filterText.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).create());
+		filterText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
 		
 		filterText.addKeyListener(new KeyListener() {
 			@Override
@@ -378,6 +377,7 @@ public abstract class AbstractFilteredTreePopupControl extends PopupDialog imple
 		treeViewer.getControl().setRedraw(false);
 		treeViewer.refresh();
 		treeViewer.setSelectedElement(firstDirectlyFilteredInElement);
+		treeViewer.expandAll();
 		treeViewer.getControl().setRedraw(true);
 	}
 	

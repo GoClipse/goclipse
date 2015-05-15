@@ -16,7 +16,6 @@ import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.views.AbstractFilteredTreePopupControl;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.structure.ISourceFileStructure;
-import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -29,8 +28,6 @@ import org.eclipse.swt.widgets.Shell;
 import _org.eclipse.jdt.internal.ui.util.StringMatcher;
 
 public abstract class LangOutlineInformationControl extends AbstractFilteredTreePopupControl {
-	
-	protected final StructureModelManager modelManager = StructureModelManager.getDefault();
 	
 	public LangOutlineInformationControl(Shell parent, int shellStyle, int treeStyle) {
 		super(parent, shellStyle, treeStyle);
@@ -59,9 +56,6 @@ public abstract class LangOutlineInformationControl extends AbstractFilteredTree
 		
 		if(information instanceof ISourceFileStructure) {
 			structure = (ISourceFileStructure) information;
-		} else if(information instanceof Location) {
-			Location location = (Location) information;
-			structure = modelManager.getStructure(location);
 		}
 		
 		if(structure != null) {

@@ -12,9 +12,7 @@ package melnorme.lang.ide.ui.text.completion;
 
 import java.util.List;
 
-import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.core.CommonException;
 
@@ -50,22 +48,16 @@ public abstract class AbstractCompletionProposalComputer implements ILangComplet
 		return null;
 	}
 	
-	protected void handleExceptionInUI(CommonException ce) {
-		UIOperationExceptionHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
-	}
-	
 	@Override
-	public List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) {
+	public List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) 
+		throws CommonException 
+		{
 		errorMessage = null;
 		
 		try {
-			try {
-				return doComputeCompletionProposals(context, context.getInvocationOffset());
-			} catch (CoreException ce) {
-				throw new CommonException(ce.getMessage(), ce.getCause());
-			}
-		} catch (CommonException ce) {
-			handleExceptionInUI(ce);
+			return doComputeCompletionProposals(context, context.getInvocationOffset());
+		} catch (CoreException ce) {
+			throw new CommonException(ce.getMessage(), ce.getCause());
 		} catch (OperationSoftFailure e) {
 			errorMessage = e.getMessage();
 		}

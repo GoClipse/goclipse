@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
+import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.data.StatusException;
@@ -30,6 +31,7 @@ public abstract class LangCore extends Plugin {
 	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
 	protected static final AbstractToolsManager toolManager = LangCore_Actual.createToolManagerSingleton();
+	protected static final EngineClient engineClient = LangCore_Actual.createEngineClient();
 	
 	protected static LangCore pluginInstance;
 	
@@ -42,6 +44,10 @@ public abstract class LangCore extends Plugin {
 	
 	public static AbstractToolsManager getToolManager() {
 		return toolManager;
+	}
+	
+	public static EngineClient getEngineClient() {
+		return engineClient;
 	}
 	
 	@Override
@@ -74,6 +80,9 @@ public abstract class LangCore extends Plugin {
 	@Override
 	public final void stop(BundleContext context) throws Exception {
 		doCustomStop(context);
+		
+		engineClient.shutdown();
+		
 		super.stop(context);
 		pluginInstance = null;
 	}

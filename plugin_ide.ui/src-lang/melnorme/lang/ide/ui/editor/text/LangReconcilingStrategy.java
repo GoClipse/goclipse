@@ -10,15 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.text;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
-import melnorme.lang.utils.M_WorkerThread;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.SimpleLogger;
+import melnorme.lang.ide.core.engine.EngineClient;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -27,17 +22,17 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+@Deprecated
 public class LangReconcilingStrategy implements IReconcilingStrategy, IReconcilingStrategyExtension {
 	
-	protected static final SimpleLogger log = new SimpleLogger("LangReconcilingStrategy"); 
-	
-	protected final StructureModelManager modelManager = StructureModelManager.getDefault();
 	protected final ITextEditor editor;
+	protected final EngineClient engineClient;
 	
 	protected IDocument document;
 	
-	public LangReconcilingStrategy(ITextEditor editor) {
+	public LangReconcilingStrategy(ITextEditor editor, EngineClient engineClient) {
 		this.editor = assertNotNull(editor);
+		this.engineClient = assertNotNull(engineClient);
 	}
 	
 	@Override
@@ -65,22 +60,15 @@ public class LangReconcilingStrategy implements IReconcilingStrategy, IReconcili
 	}
 	
 	protected void doReconcile() {
-		Location location;
-		try {
-			location = EditorUtils.getLocationFromEditorInput(editor.getEditorInput());
-		} catch (CoreException e) {
-			LangUIPlugin.logInternalError(e);
-			return;
-		}
-		
 		if(document == null) {
-			LangUIPlugin.logInternalError(new Exception("Document not set."));
-			return;
+			throw assertFail();
 		}
 		
-		log.println("Reconcile [" + location +  "] ");
-		
-		modelManager.queueRebuildStructure(location, document.get(), new M_WorkerThread());
+//		Object modelKey = AbstractLangStructureEditor.getStructureModelKeyFromEditorInput(editor.getEditorInput());
+//		
+//		log.println("Reconcile: " + modelKey + "");
+//		
+//		engineClient.notifyDocumentChange(modelKey, document.get());
 	}
 	
 }
