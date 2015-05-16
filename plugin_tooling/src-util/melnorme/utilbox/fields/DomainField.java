@@ -8,23 +8,31 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.components;
+package melnorme.utilbox.fields;
 
-import melnorme.utilbox.fields.IDomainField;
-import melnorme.utilbox.fields.IFieldValueListener;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.misc.ListenerListHelper;
 
-
 /**
- * Base class for a field component. A field component has a value that can be retrieved and set.
- * 
- * Unless otherwise specified, the field value can only be get/set after the component has been created.
+ * A value that listener/observer can connect to and listen for modification.
  */
-public abstract class CommonFieldComponent<VALUE> extends AbstractComponentExt 
-	implements IDomainField<VALUE>, IWidgetComponent {
+public class DomainField<VALUE> implements IDomainField<VALUE> {
 	
-	public CommonFieldComponent() {
+	private VALUE value; // private to prevent direct modifications.
+	
+	public DomainField(VALUE defaultFieldValue) {
+		this.value = defaultFieldValue;
 	}
+	
+	public DomainField() {
+		this.value = getDefaultFieldValue();
+	}
+	
+	public VALUE getDefaultFieldValue() {
+		return null;
+	}
+	
+	/* ----------------- listeners ----------------- */
 	
 	protected final ListenerListHelper<IFieldValueListener> listeners = new ListenerListHelper<>();
 	
@@ -38,7 +46,8 @@ public abstract class CommonFieldComponent<VALUE> extends AbstractComponentExt
 		listeners.removeListener(listener);
 	}
 	
-	protected void fireFieldValueChanged() {
+	
+	public void fireFieldValueChanged() {
 		fieldValueChanged();
 		for (IFieldValueListener listener : listeners.getListeners()) {
 			listener.fieldValueChanged();
@@ -51,9 +60,37 @@ public abstract class CommonFieldComponent<VALUE> extends AbstractComponentExt
 	}
 	
 	@Override
-	public abstract VALUE getFieldValue();
+	public VALUE getFieldValue() {
+		return assertNotNull(value);
+	}
 	
 	@Override
-	public abstract void setFieldValue(VALUE projectName);
+	public void setFieldValue(VALUE value) {
+		doSetFieldValue(value);
+	}
+	
+	protected boolean notifyingListeners;
+	
+	protected void doSetFieldValue(VALUE newValue) {
+		if(notifyingListeners) {
+			handleReentrantSetValue(newValue);
+		} else {
+			
+			this.value = newValue;
+			
+			notifyingListeners = true;
+			try {
+				fireFieldValueChanged();
+			} finally {
+				notifyingListeners = false;
+			}
+		}
+		
+	}
+	
+	protected void handleReentrantSetValue(VALUE newValue) {
+		// This shouldn't happen in the first place, bad style.
+		this.value = newValue;
+	}
 	
 }

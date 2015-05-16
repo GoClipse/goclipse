@@ -22,10 +22,10 @@ import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.TextField;
+import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IProject;

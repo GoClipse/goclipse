@@ -28,10 +28,10 @@ import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractField;
-import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.FileTextField;
+import melnorme.utilbox.fields.IFieldValueListener;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridLayoutFactory;

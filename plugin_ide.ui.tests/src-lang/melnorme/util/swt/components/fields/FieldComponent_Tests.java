@@ -80,11 +80,11 @@ public abstract class FieldComponent_Tests extends CommonTest {
 			return field = new TextField("") {
 				
 				@Override
-				protected void doSetFieldValue(String value, boolean needsUpdateControls) {
+				protected void doSetFieldValue(String value) {
 					if(value.contains("XXX")) {
 						return; // Cancel field update. Controls remain unused
 					}
-					super.doSetFieldValue(value, needsUpdateControls);
+					super.doSetFieldValue(value);
 				}
 				
 				@Override

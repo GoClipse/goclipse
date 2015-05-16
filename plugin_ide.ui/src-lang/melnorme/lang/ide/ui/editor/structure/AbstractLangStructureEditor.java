@@ -23,7 +23,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.util.swt.components.IFieldValueListener;
+import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
 

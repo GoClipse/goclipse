@@ -40,8 +40,9 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
 	protected final LangArgumentsBlock2 argumentsBlock = new LangArgumentsBlock2() {
 		@Override
-		protected void fieldValueChanged() {
+		protected void fireFieldValueChanged() {
 			updateLaunchConfigurationDialog();
+			super.fireFieldValueChanged();
 		};
 	}; 
 	protected final LangWorkingDirectoryBlock workingDirectoryBlock = new LangWorkingDirectoryBlock();

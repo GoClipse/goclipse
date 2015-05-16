@@ -14,7 +14,7 @@ package melnorme.lang.ide.ui.editor.structure;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.util.swt.components.IFieldValueListener;
+import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.ownership.IDisposable;
 
 import org.eclipse.core.runtime.IAdaptable;

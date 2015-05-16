@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.ListenerListHelper;
 
 public abstract class FieldValueNotifier {

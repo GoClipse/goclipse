@@ -16,11 +16,11 @@ import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
-import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
+import melnorme.utilbox.fields.IFieldValueListener;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
