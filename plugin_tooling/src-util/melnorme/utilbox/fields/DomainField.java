@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.utilbox.fields;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.misc.ListenerListHelper;
 
 /**
@@ -40,10 +39,18 @@ public class DomainField<VALUE> implements IDomainField<VALUE> {
 	public void addValueChangedListener(IFieldValueListener listener) {
 		listeners.addListener(listener);
 	}
+	//alias
+	public void addListener(IFieldValueListener listener) {
+		addValueChangedListener(listener);
+	}
 	
 	@Override
 	public void removeValueChangedListener(IFieldValueListener listener) {
 		listeners.removeListener(listener);
+	}
+	//alias
+	public void removeListener(IFieldValueListener listener) {
+		removeValueChangedListener(listener);
 	}
 	
 	
@@ -61,7 +68,7 @@ public class DomainField<VALUE> implements IDomainField<VALUE> {
 	
 	@Override
 	public VALUE getFieldValue() {
-		return assertNotNull(value);
+		return value;
 	}
 	
 	@Override

@@ -23,8 +23,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.utilbox.fields.IFieldValueListener;
-import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.runtime.CoreException;
@@ -97,17 +96,14 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		}
 	}
 	
-	/* FIXME: use Domain Field. */
-	protected final ListenerListHelper<IFieldValueListener> structureField = new ListenerListHelper<>();
+	protected final DomainField<SourceFileStructure> structureField = new DomainField<>();
 	
-	public ListenerListHelper<IFieldValueListener> getStructureField() {
+	public DomainField<SourceFileStructure> getStructureField() {
 		return structureField;
 	}
 	
-	protected SourceFileStructure editorStructure;
-	
 	public SourceFileStructure getSourceFileStructure() {
-		return editorStructure;
+		return structureField.getFieldValue();
 	}
 	
 	protected void notifyEditorStructureUpdated(Object key, SourceFileStructure structure) {
@@ -121,11 +117,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 			return; // Ignore
 		}
 		
-		this.editorStructure = structure;
-		
-		for (IFieldValueListener listener : structureField.getListeners()) {
-			listener.fieldValueChanged();
-		}
+		structureField.setFieldValue(structure);
 	}
 	
 	/* ----------------- Outline ----------------- */
