@@ -13,10 +13,10 @@ package com.googlecode.goclipse.ui.properties;
 import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.SpinnerNumberField;
 import melnorme.util.swt.components.fields.TextField;
+import melnorme.utilbox.fields.IFieldValueListener;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.layout.GridLayoutFactory;

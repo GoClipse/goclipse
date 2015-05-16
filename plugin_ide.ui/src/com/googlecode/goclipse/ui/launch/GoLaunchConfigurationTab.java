@@ -56,8 +56,9 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
 	protected final LangArgumentsBlock2 argumentsBlock = new LangArgumentsBlock2() {
 		@Override
-		protected void fieldValueChanged() {
+		protected void fireFieldValueChanged() {
 			updateLaunchConfigurationDialog();
+			super.fireFieldValueChanged();
 		};
 	};
 	protected final WorkingDirectoryBlock workingDirectoryBlock = new LangWorkingDirectoryBlock();

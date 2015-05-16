@@ -18,11 +18,11 @@ import java.util.List;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.FileTextField;
+import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.runtime.IPath;

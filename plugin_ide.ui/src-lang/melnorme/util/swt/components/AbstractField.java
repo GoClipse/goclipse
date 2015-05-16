@@ -12,6 +12,9 @@ package melnorme.util.swt.components;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.util.swt.SWTUtil;
+import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.IDomainField;
+import melnorme.utilbox.fields.IFieldValueListener;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -29,24 +32,28 @@ import org.eclipse.swt.widgets.Text;
  * Field component with a field value that can be manipulated (get/set) even if the 
  * componented is not created.
  */
-public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
+public abstract class AbstractField<VALUE> extends AbstractComponentExt 
+	implements IDomainField<VALUE>, IWidgetComponent{
 	
-	private VALUE value; // private to prevent direct modifications.
+	private final DomainField<VALUE> domainField = new DomainField<>();
+	
 	protected boolean listenersNeedNotify;
 	
-	public AbstractField() {
-		this.value = assertNotNull(getDefaultFieldValue());
-	}
-	
 	public AbstractField(VALUE defaultFieldValue) {
-		this.value = assertNotNull(defaultFieldValue);
+		domainField.setFieldValue(assertNotNull(defaultFieldValue));
+		domainField.addValueChangedListener(new IFieldValueListener() {
+			@Override
+			public void fieldValueChanged() {
+				updateComponentFromInput();
+			}
+		});
 	}
 	
 	public abstract VALUE getDefaultFieldValue();
 	
 	@Override
 	public VALUE getFieldValue() {
-		return assertNotNull(value);
+		return assertNotNull(domainField.getFieldValue());
 	}
 	
 	@Override
@@ -54,26 +61,33 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		if(value == null) {
 			value = getDefaultFieldValue();
 		}
-		doSetFieldValue(value, true);
+		doSetFieldValue(value);
 	}
 	
 	/** Update the field value from a control modification. */
 	protected void setFieldValueFromControl(VALUE newValue) {
-		doSetFieldValue(newValue, false);
+		doSetFieldValue(newValue);
 	}
 	
-	protected void doSetFieldValue(VALUE newValue, boolean needsUpdateControls) {
-		this.value = newValue;
-		this.listenersNeedNotify = true;
-		
-		if(needsUpdateControls) {
-			updateComponentFromInput();
-		}
-		if(listenersNeedNotify) {
-			fireFieldValueChanged();
-		}
-		listenersNeedNotify = false;
+	protected void doSetFieldValue(VALUE newValue) {
+		domainField.setFieldValue(newValue);
 	}
+	
+	@Override
+	public void addValueChangedListener(IFieldValueListener listener) {
+		domainField.addValueChangedListener(listener);
+	}
+	
+	@Override
+	public void removeValueChangedListener(IFieldValueListener listener) {
+		domainField.removeValueChangedListener(listener);
+	}
+	
+	protected void fireFieldValueChanged() {
+		domainField.fireFieldValueChanged();
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Override
 	public void updateComponentFromInput() {

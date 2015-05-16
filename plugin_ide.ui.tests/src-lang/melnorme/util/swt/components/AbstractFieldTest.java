@@ -11,6 +11,7 @@
 package melnorme.util.swt.components;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.tests.CommonTest;
 
 import org.eclipse.swt.widgets.Display;
@@ -77,7 +78,7 @@ public abstract class AbstractFieldTest extends CommonTest {
 		field.createComponent(shell);
 		assertTrue(field.getFieldControl() != null);
 		assertTrue(field.isCreated() == true);
-		assertTrue(controlsUpdateCount <= controlsUpdateCount_expected + 1);
+		assertTrue(controlsUpdateCount <= controlsUpdateCount_expected + 2);
 		assertTrue(valueChangeCount <= valueChangeCount_expected + 1);
 		controlsUpdateCount_expected = controlsUpdateCount;
 		valueChangeCount_expected = valueChangeCount; 
@@ -97,12 +98,13 @@ public abstract class AbstractFieldTest extends CommonTest {
 		doChangeFromControl();
 		assertEquals(field.getFieldValue(), getValueFromControl());
 		valueChangeCount_expected++;
+		controlsUpdateCount_expected += 1; // Control get re-updated
 		__checkUpdatesInvariant();
 		
 		field.setFieldValue(null);
 		assertEquals(field.getFieldValue(), field.getDefaultFieldValue());
 		valueChangeCount_expected++;
-		controlsUpdateCount_expected++;
+		controlsUpdateCount_expected += 1; // Control get re-updated
 		__checkUpdatesInvariant();
 		
 		runTestWithCreatedComponent_extra();

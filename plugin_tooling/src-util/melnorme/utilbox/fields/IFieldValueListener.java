@@ -8,17 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.components;
+package melnorme.utilbox.fields;
 
-
-public interface IFieldComponent<VALUE> extends IWidgetComponent {
+public interface IFieldValueListener {
 	
-	VALUE getFieldValue();
-	
-	void setFieldValue(VALUE projectName);
-	
-	void addValueChangedListener(IFieldValueListener listener);
-	
-	void removeValueChangedListener(IFieldValueListener listener);
+	void fieldValueChanged();
 	
 }

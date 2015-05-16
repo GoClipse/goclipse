@@ -23,10 +23,10 @@ public class NumberField extends TextField2 {
 	}
 	
 	@Override
-	protected void doSetFieldValue(String newValue, boolean needsUpdateControls) {
+	protected void doSetFieldValue(String newValue) {
 		IStatus status = validatePositiveNumber(newValue);
 		if(status.isOK()) {
-			super.doSetFieldValue(newValue, needsUpdateControls);
+			super.doSetFieldValue(newValue);
 		}
 		statusChanged(status);
 	}
