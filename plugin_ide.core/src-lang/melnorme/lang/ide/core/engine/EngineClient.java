@@ -38,8 +38,6 @@ public abstract class EngineClient {
 	protected final IFileBufferListener fileBufferListener = init_createTextBuffersListener();
 	protected final ProblemMarkerUpdater problemUpdater = init_ProblemUpdater();
 	
-	protected volatile int requestSequenceCounter = 1;
-	
 	public EngineClient() {
 		FileBuffers.getTextFileBufferManager().addFileBufferListener(fileBufferListener);
 		problemUpdater.install(structureManager);
