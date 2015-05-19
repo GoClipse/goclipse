@@ -33,7 +33,7 @@ public final class FileUtil {
 	
 	/** Read all bytes of the given file. 
 	 * @return the bytes that where read in a {@link ByteArrayOutputStream}. */
-	public static IByteSequence readBytesFromFile(File file) throws IOException, FileNotFoundException {
+	public static IByteSequence readBytesFromFile(File file) throws IOException {
 		long fileLength = file.length();
 		/*
 		 * You cannot create an array using a long type. It needs to be an
@@ -48,25 +48,25 @@ public final class FileUtil {
 	
 	/** Read all bytes from the given file.
 	 * @return a String created from those bytes, with given charsetName. */
-	public static String readStringFromFile(File file, String charsetName) throws IOException, FileNotFoundException {
+	public static String readStringFromFile(File file, String charsetName) throws IOException {
 		return readBytesFromFile(file).toString(Charset.forName(charsetName));
 	}
 	
 	/** Read all bytes from the given file.
 	 * @return a String created from those bytes, with given charset. */
-	public static String readStringFromFile(File file, Charset charset) throws IOException, FileNotFoundException {
+	public static String readStringFromFile(File file, Charset charset) throws IOException {
 		return readBytesFromFile(file).toString(charset);
 	}
 	
 	/** Read all bytes from the given file.
 	 * @return a String created from those bytes, with given charset. */
-	public static String readStringFromFile(Path file, Charset charset) throws IOException, FileNotFoundException {
+	public static String readStringFromFile(Path file, Charset charset) throws IOException {
 		return readBytesFromFile(file.toFile()).toString(charset);
 	}
 	
 	
 	/** Write the given array of bytes to given file */
-	public static void writeBytesToFile(File file, byte[] bytes) throws IOException, FileNotFoundException {
+	public static void writeBytesToFile(File file, byte[] bytes) throws IOException {
 		FileOutputStream fileOS = new FileOutputStream(file);
 		StreamUtil.writeBytesToStream(bytes, fileOS);
 	}
