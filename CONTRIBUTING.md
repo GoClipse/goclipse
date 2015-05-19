@@ -24,7 +24,7 @@ If you think you've found a problem with the debugger integration, please try th
  * Make sure you are compiling with inline optimizations turned off, ie, compile with `-gcflags "-N -l"`.
 
 And most importantly: 
- * Try to reproduce the problem outside of Eclipse, using just the command-line GDB interface. If the problem also occurs there, then it's an issue in either GDB or the Go compiler tools, not GoClipse. For more info on how to use command-line GDB, see http://golang.org/doc/gdb.
+ * **Try to reproduce the problem outside of Eclipse, using just the command-line GDB interface. If the problem also occurs there, then it's an issue in either GDB or the Go compiler tools, not GoClipse. For more info on how to use command-line GDB, see http://golang.org/doc/gdb.** 
 
 If it does seem to be a GoClipse problem, open a new issue in Github, providing the following info:
  * Configuration Log: `Help/About/Installation Details/Configuration`
