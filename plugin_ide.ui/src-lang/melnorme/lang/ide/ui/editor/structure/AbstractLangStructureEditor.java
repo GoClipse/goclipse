@@ -30,6 +30,7 @@ import melnorme.utilbox.misc.Location;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
@@ -135,10 +136,10 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	protected void handleEditorStructureUpdated(Object key, SourceFileStructure structure) {
 		assertTrue(Display.getCurrent() != null);
 		
+		// editorKey might have changed, so re-check
 		if(!areEqual(key, editorKey)) {
-			return; // editorKey might have changed, so re-check
+			return;
 		}
-		
 		if(structure == null) {
 			return; // Ignore
 		}
@@ -158,13 +159,17 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	}
 	
 	protected void setSelectedElementField() {
-		SourceFileStructure structure = getSourceStructure();
+		ISelectionProvider selectionProvider = getSelectionProvider();
+		if(selectionProvider == null) {
+			return; // Can happen during dispose 
+		}
 		
-		ISelection selection = getSelectionProvider().getSelection();
+		ISelection selection = selectionProvider.getSelection();
 		if(selection instanceof TextSelection) {
 			TextSelection textSelection = (TextSelection) selection;
 			int caretOffset = textSelection.getOffset();
 			
+			SourceFileStructure structure = getSourceStructure();
 			if(structure != null) {
 				StructureElement selectedElement = structure.getStructureElementAt(caretOffset);
 				selectedElementField.setFieldValue(selectedElement);
