@@ -179,11 +179,17 @@ public class StructureModelManager {
 		
 		@Override
 		public void run() {
+			Thread currentThread = Thread.currentThread();
+			String originalName = currentThread.getName();
 			try {
+				currentThread.setName(originalName + " " + structureInfo.key);
+				
 				doRun();
 			} catch(Exception e) {
 				LangCore.logInternalError(e);
 				structureInfo.setNewStructure(null, this);
+			} finally {
+				currentThread.setName(originalName);
 			}
 		}
 		

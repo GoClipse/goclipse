@@ -11,7 +11,7 @@
 package melnorme.lang.ide.ui.editor.structure;
 
 
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.fields.IFieldValueListener;
@@ -45,7 +45,7 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		super.createControl(parent);
 		
 		getTreeViewer().setContentProvider(new StructureElementContentProvider());
-		getTreeViewer().setLabelProvider(LangUIPlugin_Actual.getStructureElementLabelProvider());
+		getTreeViewer().setLabelProvider(StructureElementLabelProvider.createLangLabelProvider());
 		
 		customizeCreateControl();
 		

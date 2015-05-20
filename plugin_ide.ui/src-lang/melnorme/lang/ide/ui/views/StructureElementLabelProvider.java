@@ -12,15 +12,27 @@ package melnorme.lang.ide.ui.views;
 
 import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.util.swt.jface.resources.LangElementImageDescriptor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
 public class StructureElementLabelProvider extends AbstractLangLabelProvider {
+	
+	public static DelegatingStyledCellLabelProvider createLangLabelProvider() {
+		StructureElementLabelProvider labelProvider = LangUIPlugin_Actual.getStructureElementLabelProvider();
+		// We wrap the base LabelProvider with a DelegatingStyledCellLabelProvider because for some reason
+		// that prevents flicker problems when changing selection in Windows classic themes
+		// Might not be necessary in the future.
+		return new DelegatingStyledCellLabelProvider(labelProvider);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Override
 	public StyledString getStyledText(Object element) {
