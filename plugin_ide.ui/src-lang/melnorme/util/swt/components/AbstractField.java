@@ -38,13 +38,16 @@ public abstract class AbstractField<VALUE> extends AbstractComponentExt
 	private final DomainField<VALUE> domainField = new DomainField<>();
 	
 	protected boolean listenersNeedNotify;
+	protected boolean settingValueFromControl;
 	
 	public AbstractField(VALUE defaultFieldValue) {
 		domainField.setFieldValue(assertNotNull(defaultFieldValue));
 		domainField.addValueChangedListener(new IFieldValueListener() {
 			@Override
 			public void fieldValueChanged() {
-				updateComponentFromInput();
+				if(!settingValueFromControl) {
+					updateComponentFromInput();
+				}
 			}
 		});
 	}
@@ -66,7 +69,12 @@ public abstract class AbstractField<VALUE> extends AbstractComponentExt
 	
 	/** Update the field value from a control modification. */
 	protected void setFieldValueFromControl(VALUE newValue) {
-		doSetFieldValue(newValue);
+		settingValueFromControl = true;
+		try {
+			doSetFieldValue(newValue);
+		} finally {
+			settingValueFromControl = false;
+		}
 	}
 	
 	protected void doSetFieldValue(VALUE newValue) {

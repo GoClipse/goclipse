@@ -78,7 +78,7 @@ public abstract class AbstractFieldTest extends CommonTest {
 		field.createComponent(shell);
 		assertTrue(field.getFieldControl() != null);
 		assertTrue(field.isCreated() == true);
-		assertTrue(controlsUpdateCount <= controlsUpdateCount_expected + 2);
+		assertTrue(controlsUpdateCount <= controlsUpdateCount_expected + 1);
 		assertTrue(valueChangeCount <= valueChangeCount_expected + 1);
 		controlsUpdateCount_expected = controlsUpdateCount;
 		valueChangeCount_expected = valueChangeCount; 
@@ -98,13 +98,12 @@ public abstract class AbstractFieldTest extends CommonTest {
 		doChangeFromControl();
 		assertEquals(field.getFieldValue(), getValueFromControl());
 		valueChangeCount_expected++;
-		controlsUpdateCount_expected += 1; // Control get re-updated
 		__checkUpdatesInvariant();
 		
 		field.setFieldValue(null);
 		assertEquals(field.getFieldValue(), field.getDefaultFieldValue());
 		valueChangeCount_expected++;
-		controlsUpdateCount_expected += 1; // Control get re-updated
+		controlsUpdateCount_expected++;
 		__checkUpdatesInvariant();
 		
 		runTestWithCreatedComponent_extra();
