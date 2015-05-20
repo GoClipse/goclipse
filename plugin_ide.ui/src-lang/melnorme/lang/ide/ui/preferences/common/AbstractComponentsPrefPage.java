@@ -24,6 +24,7 @@ import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.Strin
 import melnorme.lang.tooling.data.IFieldValidator;
 import melnorme.lang.tooling.data.LocationOrSinglePathValidator;
 import melnorme.lang.tooling.data.LocationValidator;
+import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -49,7 +50,7 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 	implements IPreferencesDialog {
 	
 	private final ArrayList<IPreferencesDialogComponent> prefComponents = new ArrayList<>();
-	private final LinkedHashMap<AbstractField<String>, IFieldValidator<?>> validators = new LinkedHashMap<>();
+	private final LinkedHashMap<AbstractField<String>, IFieldValidator> validators = new LinkedHashMap<>();
 	
 	private StatusException currentStatus = null;
 	
@@ -76,7 +77,7 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 	}
 	
 	public StatusLevel getFieldStatus(AbstractField<String> field) {
-		IFieldValidator<?> validator = validators.get(field);
+		IFieldValidator validator = validators.get(field);
 		StatusException fieldStatus = LocationValidator.getFieldStatus(validator, field.getFieldValue());
 		if(fieldStatus == null) {
 			return StatusLevel.OK;
@@ -84,7 +85,7 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		return fieldStatus.getStatusLevel();
 	}
 	
-	public void connectStringField(String prefKey, AbstractField<String> field, IFieldValidator<?> validator) {
+	public void connectStringField(String prefKey, AbstractField<String> field, IFieldValidator validator) {
 		addStringComponent(prefKey, field);
 		
 		validators.put(field, validator);
@@ -106,9 +107,9 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		setMessage(null);
 		setValid(true);
 		
-		for (Entry<AbstractField<String>, IFieldValidator<?>> entry : validators.entrySet()) {
+		for (Entry<AbstractField<String>, IFieldValidator> entry : validators.entrySet()) {
 			AbstractField<String> field = entry.getKey();
-			IFieldValidator<?> validator = entry.getValue();
+			IFieldValidator validator = entry.getValue();
 			
 			try {
 				validator.getValidatedField(field.getFieldValue());
@@ -198,14 +199,14 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 	
 	public void connectFileField(String prefKey, AbstractField<String> stringField, boolean allowSinglePath, 
 			String fieldNamePrefix) {
-		LocationValidator validator = allowSinglePath ? 
+		PathValidator validator = allowSinglePath ? 
 				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix);
 		validator.fileOnly = true;
 		connectStringField(prefKey, stringField, validator);
 	}
 	public void connectDirectoryField(String prefKey, AbstractField<String> stringField, boolean allowSinglePath, 
 			String fieldNamePrefix) {
-		LocationValidator validator = allowSinglePath ? 
+		PathValidator validator = allowSinglePath ? 
 				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix);
 		validator.directoryOnly = true;
 		connectStringField(prefKey, stringField, validator);

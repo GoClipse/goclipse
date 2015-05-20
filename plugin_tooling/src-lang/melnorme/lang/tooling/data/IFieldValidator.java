@@ -11,8 +11,8 @@
 package melnorme.lang.tooling.data;
 
 
-public interface IFieldValidator<T> {
+public interface IFieldValidator {
 	
-	public T getValidatedField(String stringValue) throws StatusException; 
+	public Object getValidatedField(String stringValue) throws StatusException; 
 	
 }

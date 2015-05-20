@@ -12,21 +12,20 @@ package melnorme.lang.tooling.data;
 
 import java.nio.file.Path;
 
-import melnorme.utilbox.misc.Location;
-
-public class LocationOrSinglePathValidator extends LocationValidator {
+public class LocationOrSinglePathValidator extends PathValidator {
 	
 	public LocationOrSinglePathValidator(String fieldNamePrefix) {
 		super(fieldNamePrefix);
+		fileOnly = true;
 	}
 	
 	@Override
-	protected Location validatePath(Path path) throws ValidationException {
-		if(!path.isAbsolute() && path.getNameCount() == 1) {
-			return null; // special case allowed
+	protected Path validateRelativePath(Path path) throws ValidationException {
+		if(path.getNameCount() != 1) {
+			throw createException(StatusLevel.ERROR, ValidationMessages.Path_NotAbsoluteNorSingle(path));
 		}
 		
-		return super.validatePath(path);
+		return path;
 	}
 	
 }

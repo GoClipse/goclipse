@@ -16,6 +16,7 @@ import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.SDKLocationValidator;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -44,7 +45,7 @@ public class LANGUAGE_Builder extends LangProjectBuilderExt {
 	}
 	
 	@Override
-	protected LocationValidator getSDKLocationValidator() {
+	protected LocationValidator getBuildToolPathValidator() {
 		return new LANGUAGE_SDKLocationValidator();
 	}
 	
@@ -53,7 +54,7 @@ public class LANGUAGE_Builder extends LangProjectBuilderExt {
 		return new AbstractRunBuildOperation() {
 			
 			@Override
-			protected ProcessBuilder createBuildPB() throws CoreException {
+			protected ProcessBuilder createBuildPB() throws CoreException, CommonException {
 				return createSDKProcessBuilder("build"); // TODO: Lang
 			}
 			
@@ -67,7 +68,7 @@ public class LANGUAGE_Builder extends LangProjectBuilderExt {
 	}
 	
 	@Override
-	protected ProcessBuilder createCleanPB() throws CoreException {
+	protected ProcessBuilder createCleanPB() throws CoreException, CommonException {
 		return createSDKProcessBuilder("clean"); // TODO: Lang
 	}
 	

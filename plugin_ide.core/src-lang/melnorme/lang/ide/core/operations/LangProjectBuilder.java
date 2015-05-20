@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.nio.file.Path;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
@@ -22,8 +23,8 @@ import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.data.LocationValidator;
-import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
+import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
@@ -147,25 +148,29 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		return LangCore.getToolManager();
 	}
 	
-	protected ProcessBuilder createSDKProcessBuilder(String... sdkOptions) throws CoreException {
+	protected ProcessBuilder createSDKProcessBuilder(String... sdkOptions) throws CoreException, CommonException {
 		Location projectLocation = ResourceUtils.getProjectLocation(getProject());
 		
+		Path buildToolPath = getBuildToolPath();
+		
 		ArrayList2<String> commandLine = new ArrayList2<>();
-		commandLine.add(getSDKToolPath());
+		commandLine.add(buildToolPath.toString());
 		commandLine.addElements(sdkOptions);
 		return ProcessUtils.createProcessBuilder(commandLine, projectLocation.toFile());
 	}
 	
-	protected String getSDKToolPath() throws CoreException {
+	protected Path getBuildToolPath() throws CommonException {
 		String pathString = SDKPreferences.SDK_PATH.get();
-		try {
-			return getSDKLocationValidator().getValidatedField(pathString).toPathString();
-		} catch (StatusException se) {
-			throw LangCore.createCoreException(se);
-		}
+		return getBuildToolPath(pathString);
 	}
 	
-	protected abstract LocationValidator getSDKLocationValidator();
+	protected Path getBuildToolPath(String pathString) throws ValidationException {
+		PathValidator buildToolPathValidator = getBuildToolPathValidator();
+		assertTrue(buildToolPathValidator.canBeEmpty == false);
+		return buildToolPathValidator.getValidatedPath(pathString);
+	}
+	
+	protected abstract PathValidator getBuildToolPathValidator();
 	
 	/* ----------------- Problem markers handling ----------------- */
 	

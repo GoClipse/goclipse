@@ -35,7 +35,7 @@ public abstract class ValidationMessages {
 		return MessageFormat.format(Location_Error_NotAbsolute, path);
 	}
 	
-	public static String Location_NotAbsoluteNorSingle(Path path) {
+	public static String Path_NotAbsoluteNorSingle(Path path) {
 		return MessageFormat.format("Path `{0}` must be an absolute path or a single name.", path);
 	}
 	
