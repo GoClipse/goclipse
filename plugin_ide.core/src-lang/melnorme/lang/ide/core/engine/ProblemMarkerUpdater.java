@@ -52,7 +52,7 @@ public class ProblemMarkerUpdater implements IDisposable {
 	
 	protected final IStructureModelListener problemUpdaterListener = new IStructureModelListener() {
 		@Override
-		public void structureChanged(SourceFileStructure sourceFileStructure, StructureInfo structureInfo) {
+		public void structureChanged(StructureInfo structureInfo, SourceFileStructure sourceFileStructure) {
 			Object key = structureInfo.key;
 			
 			if(key instanceof Location) {
@@ -62,7 +62,8 @@ public class ProblemMarkerUpdater implements IDisposable {
 		}
 	};
 	
-	public void queueUpdateProblemMarkers(final Location location, final SourceFileStructure sourceFileStructure) {
+	public void queueUpdateProblemMarkers(final Location location, 
+			final SourceFileStructure sourceFileStructure /** Can be null. */) {
 		problemsExecutor.submit(new Runnable() {
 			@Override
 			public void run() {
@@ -99,6 +100,10 @@ public class ProblemMarkerUpdater implements IDisposable {
 		}
 		
 		file.deleteMarkers(LangCore_Actual.BUILD_PROBLEM_ID, true, IResource.DEPTH_ZERO);
+		
+		if(sourceFileStructure == null) {
+			return;
+		}
 		
 		for (ParserError problem : sourceFileStructure.getParserProblems()) {
 			createMarker(location, file, problem);

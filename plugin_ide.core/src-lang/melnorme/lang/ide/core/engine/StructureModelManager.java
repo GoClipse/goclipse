@@ -222,7 +222,7 @@ public class StructureModelManager {
 	protected void notifyStructureChanged(final StructureInfo structureInfo) {
 		for(IStructureModelListener listener : listenerList.getListeners()) {
 			try {
-				listener.structureChanged(structureInfo.structure, structureInfo);
+				listener.structureChanged(structureInfo, structureInfo.structure);
 			} catch (Exception e) {
 				LangCore.logInternalError(e);
 			}

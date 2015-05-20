@@ -50,6 +50,7 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		customizeCreateControl();
 		
 		editor.getStructureField().addListener(structureListener);
+		editor.getSelectedElementField().addListener(structureListener);
 		
 		updateTreeViewer();
 	}
@@ -59,19 +60,10 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 	
 	@Override
 	public void dispose() {
+		editor.getSelectedElementField().removeListener(structureListener);
 		editor.getStructureField().removeListener(structureListener);
 		
 		super.dispose();
-	}
-	
-	protected void updateTreeViewer() {
-		if(getTreeViewer() == null) {
-			return;
-		}
-		
-		SourceFileStructure structure = editor.getSourceFileStructure();
-		getTreeViewer().setInput(structure);
-		getTreeViewer().refresh();
 	}
 	
 	protected final IFieldValueListener structureListener = new IFieldValueListener() {
@@ -81,18 +73,22 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		}
 	};
 	
-	public StructureElement getStructureElementFor(ISelection selection) {
-		if(selection instanceof ITextSelection) {
-			ITextSelection textSelection = (ITextSelection) selection;
-			return GetUpdatedStructureUIOperation.getUpdatedStructureElementAt(editor, textSelection.getOffset());
-		} 
-		else if(selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			if(structuredSelection.getFirstElement() instanceof StructureElement) {
-				return (StructureElement) structuredSelection.getFirstElement();
-			}
+	protected void updateTreeViewer() {
+		if(getTreeViewer() == null) {
+			return;
 		}
-		return null;
+		
+		SourceFileStructure structure = editor.getSourceStructure();
+		if(getTreeViewer().getInput() != structure) {
+			getTreeViewer().setInput(structure);
+			getTreeViewer().refresh();
+		}
+		updateSelectionFromEditor();
+	}
+	
+	protected void updateSelectionFromEditor() {
+		StructuredSelection newSelection = editor.getSelectedElementAsStructureSelection();
+		getTreeViewer().setSelection(newSelection, true);
 	}
 	
 	@Override
@@ -132,6 +128,20 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 			}
 
 		};
+	}
+	
+	public StructureElement getStructureElementFor(ISelection selection) {
+		if(selection instanceof ITextSelection) {
+			ITextSelection textSelection = (ITextSelection) selection;
+			return GetUpdatedStructureUIOperation.getUpdatedStructureElementAt(editor, textSelection.getOffset());
+		} 
+		else if(selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			if(structuredSelection.getFirstElement() instanceof StructureElement) {
+				return (StructureElement) structuredSelection.getFirstElement();
+			}
+		}
+		return null;
 	}
 	
 }

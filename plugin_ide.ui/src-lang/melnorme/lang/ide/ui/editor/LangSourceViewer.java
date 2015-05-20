@@ -74,6 +74,15 @@ public class LangSourceViewer extends JavaSourceViewer_Mod implements ISourceVie
 		}
 	}
 	
+	/* -----------------  ----------------- */
+	
+	@Override
+	protected int getEmptySelectionChangedEventDelay() {
+		// Change selection delay when moving caret. 
+		// This could have some unintendend consequences, but seems to be working well so far.
+		return 0; 
+	}
+	
 	/* ----------------- Quick Outline ----------------- */
 	
 	protected IInformationPresenter outlinePresenter;

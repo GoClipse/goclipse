@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.editor.structure;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.array;
@@ -27,6 +28,11 @@ import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.TextSelection;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPageLayout;
@@ -45,24 +51,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	public AbstractLangStructureEditor() {
 		super();
 		
-		engineClient.getStructureManager().addListener(new IStructureModelListener() {
-			@Override
-			public void structureChanged(final SourceFileStructure structure, StructureInfo lockedStructureInfo) {
-				final Object key = lockedStructureInfo.getKey();
-				
-				// Note: editorKey may be null at this stage.
-				
-				if(!areEqual(key, editorKey))
-					return;
-				
-				Display.getDefault().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						notifyEditorStructureUpdated(key, structure);
-					}
-				});
-			}
-		});
+		engineClient.getStructureManager().addListener(new StructureModelListener());
 	}
 	
 	public EngineClient getEngineClient() {
@@ -71,6 +60,25 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	
 	protected Location editorLocation;
 	protected volatile Object editorKey;
+	
+	protected class StructureModelListener implements IStructureModelListener {
+		@Override
+		public void structureChanged(StructureInfo lockedStructureInfo, final SourceFileStructure structure) {
+			final Object key = lockedStructureInfo.getKey();
+			
+			// Note: editorKey may be null at this stage.
+			
+			if(!areEqual(key, editorKey))
+				return;
+			
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					handleEditorStructureUpdated(key, structure);
+				}
+			});
+		}
+	}
 	
 	@Override
 	protected void internalDoSetInput(IEditorInput input) {
@@ -83,7 +91,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		
 		// Send initial update
 		SourceFileStructure storedStructure = engineClient.getStructureManager().getStoredStructure(editorKey);
-		notifyEditorStructureUpdated(editorKey, storedStructure);
+		handleEditorStructureUpdated(editorKey, storedStructure);
 	}
 	
 	public static Object getStructureModelKeyFromEditorInput(IEditorInput input) {
@@ -97,16 +105,34 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	}
 	
 	protected final DomainField<SourceFileStructure> structureField = new DomainField<>();
+	protected final DomainField<StructureElement> selectedElementField = new DomainField<>();
 	
 	public DomainField<SourceFileStructure> getStructureField() {
 		return structureField;
 	}
 	
-	public SourceFileStructure getSourceFileStructure() {
+	public DomainField<StructureElement> getSelectedElementField() {
+		return selectedElementField;
+	}
+	
+	public SourceFileStructure getSourceStructure() {
 		return structureField.getFieldValue();
 	}
 	
-	protected void notifyEditorStructureUpdated(Object key, SourceFileStructure structure) {
+	public StructureElement getSelectedElement() {
+		return selectedElementField.getFieldValue();
+	}
+	
+	public StructuredSelection getSelectedElementAsStructureSelection() {
+		StructureElement selectedElement = getSelectedElement();
+		if(selectedElement == null) {
+			return StructuredSelection.EMPTY;
+		}
+		return new StructuredSelection(selectedElement);
+	}
+	
+	
+	protected void handleEditorStructureUpdated(Object key, SourceFileStructure structure) {
 		assertTrue(Display.getCurrent() != null);
 		
 		if(!areEqual(key, editorKey)) {
@@ -118,6 +144,47 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		}
 		
 		structureField.setFieldValue(structure);
+		
+		setSelectedElementField();
+	}
+	
+	/* ----------------- Selection ----------------- */
+	
+	protected class EditorSelectionChangedListener extends AbstractSelectionChangedListener {
+		@Override
+		public void selectionChanged(SelectionChangedEvent event) {
+			setSelectedElementField();
+		}
+	}
+	
+	protected void setSelectedElementField() {
+		SourceFileStructure structure = getSourceStructure();
+		
+		ISelection selection = getSelectionProvider().getSelection();
+		if(selection instanceof TextSelection) {
+			TextSelection textSelection = (TextSelection) selection;
+			int caretOffset = textSelection.getOffset();
+			
+			if(structure != null) {
+				StructureElement selectedElement = structure.getStructureElementAt(caretOffset);
+				selectedElementField.setFieldValue(selectedElement);
+			}
+		}
+	}
+	
+	protected final EditorSelectionChangedListener editorSelectionListener = new EditorSelectionChangedListener();
+	
+	@Override
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+		
+		editorSelectionListener.install(assertNotNull(getSourceViewer_()));
+	}
+	
+	@Override
+	public void dispose() {
+		editorSelectionListener.uninstall(getSourceViewer_());
+		super.dispose();
 	}
 	
 	/* ----------------- Outline ----------------- */
@@ -147,6 +214,9 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	/* -----------------  ----------------- */
 	
 	public void setElementSelection(StructureElement element) {
+		if(getSelectedElementField().isNotifyingListeners()) {
+			return; // Ignore
+		}
 		setElementSelection(this, element);
 		markInNavigationHistory();
 	}

@@ -78,6 +78,10 @@ public class DomainField<VALUE> implements IDomainField<VALUE> {
 	
 	protected boolean notifyingListeners;
 	
+	public boolean isNotifyingListeners() {
+		return notifyingListeners;
+	}
+	
 	protected void doSetFieldValue(VALUE newValue) {
 		if(notifyingListeners) {
 			handleReentrantSetValue(newValue);
