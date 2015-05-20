@@ -37,15 +37,6 @@ public class CollectionUtil {
 		return result;
 	}
 	
-	public static <T extends Collection<E>, E> T addAll(T collection, Iterable<? extends E> iterable) {
-		if(iterable != null) {
-			for (E elem : iterable) {
-				collection.add(elem);
-			}
-		}
-		return collection;
-	}
-	
 	/** @return a new {@link ArrayList} from given collection 
 	 * (a null collection is considered as if it's an empty one). */
 	public static <E> ArrayList2<E> createArrayList(Iterable<? extends E> iterable) {
@@ -104,6 +95,27 @@ public class CollectionUtil {
 	/** @return given list if it's non-null, an empty immutable {@link List} otherwise. */
 	public static <E> List<E> nullToEmpty(List<E> list) {
 		return list == null ? Collections.EMPTY_LIST : list;
+	}
+	
+	
+	public static <E, COLL extends Collection<E>> COLL addAll(COLL collection, Iterable<? extends E> iterable) {
+		if(iterable != null) {
+			for(E elem : iterable) {
+				collection.add(elem);
+			}
+		}
+		return collection;
+	}
+	
+	/* ----------------- query ----------------- */
+	
+	/** @return whether given coll contains all elements of other, using a naive/basic algorithm. */
+	public static boolean containsAll(Collection<?> coll, Collection<?> other) {
+		Iterator<?> citer = other.iterator();
+		while (citer.hasNext())
+			if (!coll.contains(citer.next()))
+				return false;
+		return true;
 	}
 	
 	/* ----------------- retrieval ----------------- */
@@ -167,19 +179,6 @@ public class CollectionUtil {
 		ArrayList<? extends Integer> list2 = null;
 		list1 = sort(list1);
 		list2 = sort(list2);
-	}
-	public static <E, T extends List<? super E>> T addAll(T coll, Collection<E> other) {
-		coll.addAll(other);
-		return coll;
-	}
-	
-	/** @return whether given coll contains all elements of other, using a naive/basic algorithm. */
-	public static boolean containsAll(Collection<?> coll, Collection<?> other) {
-		Iterator<?> citer = other.iterator();
-		while (citer.hasNext())
-			if (!coll.contains(citer.next()))
-				return false;
-		return true;
 	}
 	
 }
