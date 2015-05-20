@@ -68,4 +68,8 @@ public class PathUtil {
 		return parent == null ? createValidPath("") : parent;
 	}
 	
+	public static Path toPath(Location location) {
+		return location == null ? null : location.toPath();
+	}
+	
 }

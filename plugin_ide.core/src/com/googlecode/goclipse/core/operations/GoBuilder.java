@@ -10,13 +10,13 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Collection;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
-import melnorme.lang.tooling.data.LocationValidator;
-import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -46,18 +46,14 @@ public class GoBuilder extends LangProjectBuilderExt {
 	}
 	
 	@Override
-	protected LocationValidator getSDKLocationValidator() {
+	protected PathValidator getBuildToolPathValidator() {
 		return new GoSDKLocationValidator();
 	}
 	
 	@Override
-	protected String getSDKToolPath() throws CoreException {
+	protected Path getBuildToolPath() throws CommonException {
 		String pathString = GoEnvironmentPrefs.GO_ROOT.get(); // We use a different pref other than the LANG default
-		try {
-			return getSDKLocationValidator().getValidatedField(pathString).toPathString();
-		} catch (StatusException se) {
-			throw LangCore.createCoreException(se);
-		}
+		return getBuildToolPathValidator().getValidatedPath(pathString);
 	}
 	
 	@Override

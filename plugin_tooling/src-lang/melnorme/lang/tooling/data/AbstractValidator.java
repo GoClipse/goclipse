@@ -18,7 +18,7 @@ public class AbstractValidator {
 	public AbstractValidator() {
 	}
 	
-	public static StatusException getFieldStatus(IFieldValidator<?> validator, String value) {
+	public static StatusException getFieldStatus(IFieldValidator validator, String value) {
 		if(validator == null) {
 			return null;
 		}
