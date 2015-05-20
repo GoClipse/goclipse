@@ -15,7 +15,7 @@ Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
  com.googlecode.goclipse.tooling;visibility:=reexport,
  org.eclipse.core.filebuffers
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: The GoClipse Development Team
 Bundle-ClassPath: .
 Export-Package: com.googlecode.goclipse,

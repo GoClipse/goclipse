@@ -10,6 +10,7 @@
  * Added: Content Assist of code snippets. Configurable in `Preferences/Go/Editor/Code Snippets`. TODO more defaults
   ▶ Recommended/tested CDT version: 8.6.0
  * Fixed: #127 "null argument" error dialog when double-clicking on Go project.
+ * Upgraded minimum Java version to Java 8
 
 
 ### Goclipse 0.10.1
