@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Upgraded minimum Java version to Java 8
   ▶ Recommended/tested CDT version: 8.6.0
   
  * Doc - Installation guide: Added note for users in China.

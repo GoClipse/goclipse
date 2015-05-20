@@ -4,7 +4,7 @@ Bundle-SymbolicName: LANG_PROJECT_ID.ide.core.tests;singleton:=true
 Bundle-Version: 0.0.1.qualifier
 Bundle-Name: LANGUAGE IDE Core Tests
 Fragment-Host: LANG_PROJECT_ID.ide.core;bundle-version="0.0.1"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.8.0"
 Bundle-ClassPath: .
 Export-Package: melnorme.lang.ide.core.tests;x-friends:="LANG_PROJECT_ID.ide.ui",

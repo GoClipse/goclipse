@@ -7,7 +7,7 @@ Bundle-Vendor: %pluginProvider
 Bundle-Activator: LANG_PROJECT_ID.ide.core.LANGUAGE_Core
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: LANG_PROJECT_ID.tooling;visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="[3.9.0,4.0.0)";visibility:=reexport,
  org.eclipse.core.resources;bundle-version="[3.8.0,4.0.0)";visibility:=reexport,
