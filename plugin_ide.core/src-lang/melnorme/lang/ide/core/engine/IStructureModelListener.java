@@ -20,6 +20,6 @@ public interface IStructureModelListener {
 	 * 
 	 * This method runs under the scope of a {@link StructureInfo} lock, so listeners should respond quickly.
 	 */
-	void structureChanged(SourceFileStructure sourceFileStructure, StructureInfo lockedStructureInfo);
+	void structureChanged(StructureInfo lockedStructureInfo, SourceFileStructure sourceFileStructure);
 	
 }
