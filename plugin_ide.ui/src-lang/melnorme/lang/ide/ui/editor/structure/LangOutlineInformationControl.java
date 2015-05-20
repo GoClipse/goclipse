@@ -44,7 +44,7 @@ public abstract class LangOutlineInformationControl extends AbstractFilteredTree
 	protected void createTreeViewer(Composite parent, int treeStyle) {
 		super.createTreeViewer(parent, treeStyle);
 		
-		treeViewer.setLabelProvider(new StructureElementLabelProvider());
+		treeViewer.setLabelProvider(StructureElementLabelProvider.createLangLabelProvider());
 		treeViewer.setContentProvider(new StructureElementContentProvider());
 	}
 	
