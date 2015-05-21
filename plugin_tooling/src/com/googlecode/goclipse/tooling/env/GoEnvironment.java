@@ -12,11 +12,11 @@ package com.googlecode.goclipse.tooling.env;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
@@ -100,7 +100,7 @@ public class GoEnvironment {
 	}
 	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir) throws CommonException {
-		return createProcessBuilder(commandLine, workingDir, false);
+		return createProcessBuilder(commandLine, workingDir, true);
 	}
 	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir, boolean goRootInPath) 
@@ -120,12 +120,8 @@ public class GoEnvironment {
 		}
 		
 		if(goRootInPath) {
-			String path = pb.environment().get("PATH");
-			
 			// Add GoRoot to path. See #113 for rationale
-			Location location = getGoRoot_Location();
-			path = path + File.pathSeparator + location.toPathString();
-			pb.environment().put("PATH", path);
+			ProcessUtils.addDirToPathEnv(getGoRoot_Location().toPath(), pb);
 		}
 		
 		return pb;
