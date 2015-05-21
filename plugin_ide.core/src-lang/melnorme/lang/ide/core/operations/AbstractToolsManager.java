@@ -10,16 +10,20 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import java.nio.file.Path;
+
 import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
@@ -31,6 +35,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).
  */
 public abstract class AbstractToolsManager extends ListenerListHelper<ILangOperationsListener_Actual> {
+	
+	public ProcessBuilder createToolProcessBuilder(Path buildToolCmdPath, Location workingDir, 
+			String... arguments) {
+		return ProcessUtils.createProcessBuilder(buildToolCmdPath, workingDir, true, arguments);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public void notifyMessage(StatusLevel statusLevel, String title, String message) {
 		for (ILangOperationsListener listener : getListeners()) {

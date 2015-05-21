@@ -28,8 +28,6 @@ import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
-import melnorme.lang.utils.ProcessUtils;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -153,10 +151,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 		Path buildToolPath = getBuildToolPath();
 		
-		ArrayList2<String> commandLine = new ArrayList2<>();
-		commandLine.add(buildToolPath.toString());
-		commandLine.addElements(sdkOptions);
-		return ProcessUtils.createProcessBuilder(commandLine, projectLocation.toFile());
+		return getToolManager().createToolProcessBuilder(buildToolPath, projectLocation, sdkOptions);
 	}
 	
 	protected Path getBuildToolPath() throws CommonException {
