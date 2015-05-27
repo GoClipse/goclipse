@@ -2,6 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
+
  * Upgraded minimum Java version to Java 8
   ▶ Recommended/tested CDT version: 8.6.0
   

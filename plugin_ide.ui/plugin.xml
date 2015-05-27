@@ -183,49 +183,75 @@
 	
 	<!-- ============ Preference pages ============= -->
 	
+	<extension point="org.eclipse.ui.keywords">
+		<keyword id="LANG_PROJECT_ID.ide.ui.RootPreferencePage" 
+		                            label="%RootPreferencePage.keywords"/>
+		<keyword id="LANG_PROJECT_ID.ide.ui.EditorPreferencePage"
+		                            label="%EditorPreferencePage.keywords"/>
+		<keyword id="LANG_PROJECT_ID.ide.ui.EditorTypingPreferencePage"
+		                            label="%EditorTypingPreferencePage.keywords"/>
+		<keyword id="LANG_PROJECT_ID.ide.ui.EditorSyntaxColoringPreferencePage"
+		                            label="%EditorSyntaxColoringPreferencePage.keywords"/>
+		<keyword id="LANG_PROJECT_ID.ide.ui.CodeTemplatesPreferencePage"
+		                            label="%CodeTemplatesPreferencePage.keywords"/>
+		<keyword id="LANG_PROJECT_ID.ide.ui.DaemonToolPrefPage"
+		                            label="%DaemonToolPrefPage.keywords"/>
+		<keyword id="LANG_PROJECT_ID.ide.ui.ToolsConsolePrefPage"
+		                            label="%ToolsConsolePrefPage.keywords"/>
+	</extension>
+	
+	
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
 			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.Root"
-			name="%LangRootPreferencePage.name">
+			name="%RootPreferencePage.name">
+			<keywordReference id="LANG_PROJECT_ID.ide.ui.RootPreferencePage"/>
 		</page>
 		
 		<page
 			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Root"
 			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_DaemonPreferencePage"
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.LANGUAGE_Daemon"
-			name="%LangDaemonToolPrefPage.name">
+			name="%DaemonToolPrefPage.name">
+			<keywordReference id="LANG_PROJECT_ID.ide.ui.DaemonToolPrefPage"/>
 		</page>
 		<page
 			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Root"
 			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolsConsolePrefPage"
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.LANGUAGE_ToolsConsole"
-			name="%LangToolsConsolePrefPage.name">
+			name="%ToolsConsolePrefPage.name">
+			<keywordReference id="LANG_PROJECT_ID.ide.ui.ToolsConsolePrefPage"/>
 		</page>
 		
 		<page
 			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Root"
 			class="LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
-			name="%LangEditorPreferencePage.name">
+			name="%EditorPreferencePage.name">
+			<keywordReference id="LANG_PROJECT_ID.ide.ui.EditorPreferencePage"/>
 		</page>
 		<page
 			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
 			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_EditorTypingPreferencePage"
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.EditorSmartTyping"
-			name="%LangEditorTypingPreferencePage.name">
+			name="%EditorTypingPreferencePage.name">
+			<keywordReference id="LANG_PROJECT_ID.ide.ui.EditorTypingPreferencePage"/>
 		</page>
 		<page
 			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
 			class="LANG_PROJECT_ID.ide.ui.preferences.SourceColoringPreferencePage"
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.SourceColoring"
-			name="%LangEditorSyntaxColoringPreferencePage.name">
+			name="%EditorSyntaxColoringPreferencePage.name">
+			<keywordReference id="LANG_PROJECT_ID.ide.ui.EditorSyntaxColoringPreferencePage"/>
 		</page>
 		<page
 			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
 			id=      "LANG_PROJECT_ID.ide.ui.PreferencePages.Editor.CodeTemplates"
 			class="LANG_PROJECT_ID.ide.ui.editor.templates.LANGUAGE_TemplatePreferencePage"
-			name="%LangCodeTemplatesPreferencePage.name" />
+			name="%CodeTemplatesPreferencePage.name">
+			<keywordReference id="LANG_PROJECT_ID.ide.ui.CodeTemplatesPreferencePage"/>
+		</page>
 		
 	</extension>
 	
