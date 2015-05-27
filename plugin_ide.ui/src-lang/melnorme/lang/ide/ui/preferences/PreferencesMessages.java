@@ -81,6 +81,8 @@ public class PreferencesMessages implements PreferencesMessages_Actual {
 			"Auto-Activation:";
 	public static final String LangPrefs_ContentAssist_AutoActivation_DotTrigger_Label = 
 			"Enable \".\" as trigger";
+	public static final String LangPrefs_ContentAssist_AutoActivation_DoubleColonTrigger_Label = 
+			"Enable \"::\" as trigger";
 	public static final String LangPrefs_ContentAssist_AutoActivation_AlphanumericTrigger_Label = 
 			"Enable alphabetic characters as trigger";
 	public static final String LangPrefs_ContentAssist_AutoActivation_Delay_Label = 
