@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.completion;
 
+import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.ContentAssistConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
@@ -25,7 +26,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
-public class ContentAssistPreferenceHandler implements ContentAssistConstants, ContentAssisPreferences {
+public class ContentAssistPreferenceHandler implements ContentAssistConstants, ContentAssistPreferences {
 	
 	public ContentAssistPreferenceHandler() {
 	}
@@ -52,6 +53,7 @@ public class ContentAssistPreferenceHandler implements ContentAssistConstants, C
 		setConfigurationOption(assistant, store, AUTO_INSERT__CommonPrefixes.key);
 		
 		setConfigurationOption(assistant, store, AUTO_ACTIVATE__DotTrigger.key);
+		setConfigurationOption(assistant, store, AUTO_ACTIVATE__DoubleColonTrigger.key);
 		setConfigurationOption(assistant, store, AUTO_ACTIVATE__AlphaNumericTrigger.key);
 		setConfigurationOption(assistant, store, AUTO_ACTIVATE__Delay.key);
 		
@@ -72,10 +74,10 @@ public class ContentAssistPreferenceHandler implements ContentAssistConstants, C
 			assistant.enablePrefixCompletion(AUTO_INSERT__CommonPrefixes.get());
 		}
 		
-		else if(equalsKey(AUTO_ACTIVATE__DotTrigger.key, key)) {
-			setAutoActivationTriggers(assistant, store);
-		}
-		else if(equalsKey(AUTO_ACTIVATE__AlphaNumericTrigger.key, key)) {
+		else if(
+				equalsKey(AUTO_ACTIVATE__DotTrigger.key, key) ||
+				equalsKey(AUTO_ACTIVATE__DoubleColonTrigger.key, key) ||
+				equalsKey(AUTO_ACTIVATE__AlphaNumericTrigger.key, key)) {
 			setAutoActivationTriggers(assistant, store);
 		}
 		else if(equalsKey(AUTO_ACTIVATE__Delay.key, key)) {
@@ -114,6 +116,9 @@ public class ContentAssistPreferenceHandler implements ContentAssistConstants, C
 		String triggers = "";
 		if(AUTO_ACTIVATE__DotTrigger.get()) {
 			triggers += ".";
+		}
+		if(AUTO_ACTIVATE__DoubleColonTrigger.get()) {
+			triggers += ":"; // Not perfect match, will match single colons too...
 		}
 		if(AUTO_ACTIVATE__AlphaNumericTrigger.get()) {
 			triggers +="abcdefghijklmnopqrstuvwxyz";
