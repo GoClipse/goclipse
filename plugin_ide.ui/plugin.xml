@@ -69,10 +69,149 @@
 	</extension>
 	
 	<!-- ============ EDITOR - Other ============= -->
-
+	
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+		<target
+			id="com.googlecode.goclipse.ui.Editor.CodeTarget"
+			name="GoEditorHyperlinkDetectorTarget">
+			<context type="org.eclipse.ui.texteditor.ITextEditor"/>
+		</target>
+	</extension>
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+		<hyperlinkDetector
+			class="com.googlecode.goclipse.ui.editor.text.GoHyperlinkDetector2"
+			id="com.googlecode.goclipse.ui.editor.text.GoHyperlinkDetector2"
+			name="GoEditorHyperlinkDetector2"
+			targetId="com.googlecode.goclipse.ui.Editor.CodeTarget">
+		</hyperlinkDetector>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors.templates">
+		<contextType
+			class="com.googlecode.goclipse.ui.editor.templates.GoTemplateContextType"
+			id="com.googlecode.goclipse.ui.TemplateContextType"
+			name="%LangTemplateContext.name">
+		</contextType>
+		<include
+			file="templates/default-templates.xml"
+			translations="templates/default-templates.properties">
+		</include>
+	</extension>
+	
 	<!-- ============ Actions/Commands ============= -->
 	
-<!-- TODO refactor/cleanup command extensions at end of this file -->
+	<extension point="org.eclipse.ui.commands">
+		<category
+			name="%CommandsCategory.name"
+			description="%CommandsCategory.description"
+			id="com.googlecode.goclipse.ui.commands.Category">
+		</category>
+		
+		<command categoryId="com.googlecode.goclipse.ui.commands.Category"
+			id="com.googlecode.goclipse.ui.commands.openDefinition"
+			name="%OpenDefinitionAction.name"
+			description="%OpenDefinitionAction.tooltip"
+		/>
+		
+		<command categoryId="com.googlecode.goclipse.ui.commands.Category"
+			id="com.googlecode.goclipse.ui.commands.GoToMatchingBracket"
+			name="%GoToMatchingBracketAction.name"
+			description="%GoToMatchingBracketAction.description"
+		/>
+		
+		<command categoryId="com.googlecode.goclipse.ui.commands.Category"
+			id="com.googlecode.goclipse.ui.commands.ToggleComment"
+			name="%ToggleCommentAction.name"
+			description="%ToggleCommentAction.description"
+		/>
+		
+		<command 
+			categoryId="com.googlecode.goclipse.ui.commands.Category"
+			id="com.googlecode.goclipse.ui.commands.QuickOutline"
+			name="%QuickOutlineAction.name"
+			description="%QuickOutlineAction.description"
+		/>
+		
+		<command
+            name="Launch Go Application"
+            description="Launch Go Application"
+            categoryId="com.googlecode.goclipse.ui.commands.Category"
+            id="com.googlecode.goclipse.debug.ui.LaunchShortcut.run">
+      </command>
+      <command
+            name="Go Format (gofmt)"
+            description="Run the &apos;go fmt&apos;command on the current file."
+            categoryId="com.googlecode.goclipse.ui.commands.Category"
+            id="com.googlecode.goclipse.editors.GofmtShortcut.run">
+      </command>
+      <command
+            name="Fix (go fix)"
+            description="Run the &apos;go fix&apos; command on the current file."
+            categoryId="com.googlecode.goclipse.ui.commands.Category"
+            id="com.googlecode.goclipse.editors.GofixShortcut.run">
+      </command>
+	</extension>
+	
+	<extension point="org.eclipse.ui.bindings">
+		<!-- win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
+		     carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
+		
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.openDefinition"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="F3">
+		</key>
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.GoToMatchingBracket"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+M2+P">
+		</key>
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.ToggleComment"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+M2+C">
+		</key>
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.ToggleComment"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+/">
+		</key>
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.QuickOutline"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+O">
+		</key>		
+      <key
+            commandId="com.googlecode.goclipse.debug.ui.LaunchShortcut.run"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M2+M3+G"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+      <key
+            commandId="com.googlecode.goclipse.editors.GofmtShortcut.run"
+            contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+            sequence="M1+M2+F"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+	</extension>
+	
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
+			<menu
+				id="com.googlecode.goclipse.ui.sourceMenu"
+				label="Source"
+				mnemonic="S">
+				<separator name="comment" visible="true"/>
+				<separator name="format" visible="true"/>
+				<separator name="additions" visible="true"/>
+			</menu>
+		</menuContribution>
+	</extension>
 
 	<!-- ________ Menu/UI contributions ________ -->
 	
@@ -115,6 +254,22 @@
 			name="Go">
 			<keywordReference id="com.googlecode.goclipse.ui.RootPreferencePage"/>
 		</page>
+		
+		<page
+			category="com.googlecode.goclipse.ui.PreferencePages.Root"
+			id="com.googlecode.goclipse.ui.PreferencePages.GocodePreferencePage"
+			class="com.googlecode.goclipse.ui.preferences.GoToolsPreferencePage"
+			name="Tools">
+			<keywordReference id="com.googlecode.goclipse.ui.DaemonToolPrefPage"/>
+		</page>
+		<page
+			category="com.googlecode.goclipse.ui.PreferencePages.Root"
+			id="com.googlecode.goclipse.ui.PreferencePages.GoOperationsConsolePrefPage"
+			class="com.googlecode.goclipse.ui.preferences.GoOperationsConsolePrefPage"
+			name="Build Console">
+			<keywordReference id="com.googlecode.goclipse.ui.ToolsConsolePrefPage"/>
+		</page>
+		
 		<page
 			category="com.googlecode.goclipse.ui.PreferencePages.Root"
 			id="com.googlecode.goclipse.ui.PreferencePages.Editor"
@@ -137,21 +292,6 @@
 			<keywordReference id="com.googlecode.goclipse.ui.EditorTypingPreferencePage"/>
 		</page>
 		<page
-			category="com.googlecode.goclipse.ui.PreferencePages.Root"
-			id="com.googlecode.goclipse.ui.PreferencePages.GoOperationsConsolePrefPage"
-			class="com.googlecode.goclipse.ui.preferences.GoOperationsConsolePrefPage"
-			name="Build Console">
-			<keywordReference id="com.googlecode.goclipse.ui.ToolsConsolePrefPage"/>
-		</page>
-		
-		<page
-			category="com.googlecode.goclipse.ui.PreferencePages.Root"
-			id="com.googlecode.goclipse.ui.PreferencePages.GocodePreferencePage"
-			class="com.googlecode.goclipse.ui.preferences.GoToolsPreferencePage"
-			name="Tools">
-			<keywordReference id="com.googlecode.goclipse.ui.DaemonToolPrefPage"/>
-		</page>
-		<page
 			category="com.googlecode.goclipse.ui.PreferencePages.Editor"
 			id=      "com.googlecode.goclipse.ui.PreferencePages.Editor.CodeTemplates"
 			class="com.googlecode.goclipse.ui.editor.templates.GoTemplatePreferencePage"
@@ -161,20 +301,51 @@
 		
 	</extension>
 	
-	<extension point="org.eclipse.ui.editors.templates">
-		<contextType
-			class="com.googlecode.goclipse.ui.editor.templates.GoTemplateContextType"
-			id="com.googlecode.goclipse.ui.TemplateContextType"
-			name="%LangTemplateContext.name">
-		</contextType>
-		<include
-			file="templates/default-templates.xml"
-			translations="templates/default-templates.properties">
-		</include>
+		
+	<extension point="org.eclipse.ui.propertyPages">
+		<page class="com.googlecode.goclipse.ui.properties.GoProjectBuildOptionsPage"
+			id="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
+			name="Go Project Configuration">
+			<enabledWhen>
+				<reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
+			</enabledWhen>
+		</page>
 	</extension>
 	
 	<!-- ============ Wizards ============= -->
 	
+	<extension point="org.eclipse.ui.newWizards">
+		<category
+			id="com.googlecode.goclipse.wizards.projects"
+			name="Go">
+		</category>
+		
+		<wizard
+			canFinishEarly="false"
+			category="com.googlecode.goclipse.wizards.projects"
+			class="com.googlecode.goclipse.ui.wizards.GoProjectWizard"
+			finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
+			icon="icons/actions/new_project_wizard.16.png"
+			id="com.googlecode.goclipse.ui.wizards.NewProjectWizard"
+			name="Go Project"
+			project="true">
+		</wizard>
+		
+      <wizard
+            category="com.googlecode.goclipse.wizards.projects"
+            class="com.googlecode.goclipse.ui.wizards.NewGoFileWizard"
+            finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
+            icon="icons/gopage.png"
+            id="com.googlecode.goclipse.wizards.NewGoFileWizard"
+            name="Go File"
+            project="false">
+            <description>
+               Create a new Go source file
+            </description>
+      </wizard>
+      
+	</extension>
+
 	
 	<!-- ============ Other (TODO cleanup) ============= -->
 	
@@ -349,217 +520,6 @@
      </viewerContentBinding>
    </extension>
    
-   <extension point="org.eclipse.ui.newWizards">
-      <category
-            id="com.googlecode.goclipse.wizards.projects"
-            name="Go">
-      </category>
-      
-      <wizard
-            canFinishEarly="false"
-            category="com.googlecode.goclipse.wizards.projects"
-            class="com.googlecode.goclipse.ui.wizards.GoProjectWizard"
-            finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
-            icon="icons/actions/new_project_wizard.16.png"
-            id="com.googlecode.goclipse.ui.wizards.NewProjectWizard"
-            name="Go Project"
-            project="true">
-      </wizard>
-      
-      <!-- wizard
-            canFinishEarly="false"
-            category="com.googlecode.goclipse.wizards.projects"
-            class="com.googlecode.goclipse.wizards.GoReferenceProjectWizard"
-            finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
-            icon="icons/newprj_obj.png"
-            id="com.googlecode.goclipse.wizards.referenceProjectWizard"
-            name="Go Reference Project"
-            project="true">
-            <description>
-               Create a new project containing a link to GOROOT/src; this is useful for browsing the source for the Go libraries
-            </description>
-      </wizard -->
-      
-      <wizard
-            category="com.googlecode.goclipse.wizards.projects"
-            class="com.googlecode.goclipse.ui.wizards.NewGoFileWizard"
-            finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
-            icon="icons/gopage.png"
-            id="com.googlecode.goclipse.wizards.NewGoFileWizard"
-            name="Go File"
-            project="false">
-            <description>
-               Create a new Go source file
-            </description>
-      </wizard>
-   </extension>
-   
-   <extension point="org.eclipse.ui.propertyPages">
-      <page class="com.googlecode.goclipse.ui.properties.GoProjectBuildOptionsPage"
-            id="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
-            name="Go Project Configuration">
-            
-         <enabledWhen>
-            <reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
-         </enabledWhen>
-      </page>
-<!--      
-      <page
-            class="com.googlecode.goclipse.ui.properties.GoContinuousTestingPropertyPage"
-            id="com.googlecode.goclipse.ui.properties.ContinuousTestingPropertyPage"
-            name="Go Continuous Testing">
-         <enabledWhen>
-            <reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
-         </enabledWhen>
-      </page>
--->
-   </extension>
-
-	<extension point="org.eclipse.ui.commands">
-		<category
-			name="%CommandsCategory.name"
-			description="%CommandsCategory.description"
-			id="com.googlecode.goclipse.ui.commands.Category">
-		</category>
-		
-		<command categoryId="com.googlecode.goclipse.ui.commands.Category"
-			id="com.googlecode.goclipse.ui.commands.openDefinition"
-			name="%OpenDefinitionAction.name"
-			description="%OpenDefinitionAction.tooltip"
-		/>
-		
-		<command categoryId="com.googlecode.goclipse.ui.commands.Category"
-			id="com.googlecode.goclipse.ui.commands.GoToMatchingBracket"
-			name="%GoToMatchingBracketAction.name"
-			description="%GoToMatchingBracketAction.description"
-		/>
-		
-		<command categoryId="com.googlecode.goclipse.ui.commands.Category"
-			id="com.googlecode.goclipse.ui.commands.ToggleComment"
-			name="%ToggleCommentAction.name"
-			description="%ToggleCommentAction.description"
-		/>
-		
-		<command 
-			categoryId="com.googlecode.goclipse.ui.commands.Category"
-			id="com.googlecode.goclipse.ui.commands.QuickOutline"
-			name="%QuickOutlineAction.name"
-			description="%QuickOutlineAction.description"
-		/>
-		
-		<command
-            name="Launch Go Application"
-            description="Launch Go Application"
-            categoryId="com.googlecode.goclipse.ui.commands.Category"
-            id="com.googlecode.goclipse.debug.ui.LaunchShortcut.run">
-      </command>
-      <command
-            name="Go Format (gofmt)"
-            description="Run the &apos;go fmt&apos;command on the current file."
-            categoryId="com.googlecode.goclipse.ui.commands.Category"
-            id="com.googlecode.goclipse.editors.GofmtShortcut.run">
-      </command>
-      <command
-            name="Fix (go fix)"
-            description="Run the &apos;go fix&apos; command on the current file."
-            categoryId="com.googlecode.goclipse.ui.commands.Category"
-            id="com.googlecode.goclipse.editors.GofixShortcut.run">
-      </command>
-   </extension>
-	<extension point="org.eclipse.ui.bindings">
-		<!-- win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
-		     carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
-		
-		<key
-			commandId="com.googlecode.goclipse.ui.commands.openDefinition"
-			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
-			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-			sequence="F3">
-		</key>
-		<key
-			commandId="com.googlecode.goclipse.ui.commands.GoToMatchingBracket"
-			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
-			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-			sequence="M1+M2+P">
-		</key>
-		<key
-			commandId="com.googlecode.goclipse.ui.commands.ToggleComment"
-			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
-			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-			sequence="M1+M2+C">
-		</key>
-		<key
-			commandId="com.googlecode.goclipse.ui.commands.ToggleComment"
-			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
-			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-			sequence="M1+/">
-		</key>
-		<key
-			commandId="com.googlecode.goclipse.ui.commands.QuickOutline"
-			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
-			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-			sequence="M1+O">
-		</key>		
-      <key
-            commandId="com.googlecode.goclipse.debug.ui.LaunchShortcut.run"
-            contextId="org.eclipse.ui.contexts.window"
-            sequence="M2+M3+G"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </key>
-      <key
-            commandId="com.googlecode.goclipse.editors.GofmtShortcut.run"
-            contextId="com.googlecode.goclipse.ui.Contexts.Editor"
-            sequence="M1+M2+F"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </key>
-	</extension>
-	
-	<extension point="org.eclipse.ui.menus">
-		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
-			<menu
-				id="com.googlecode.goclipse.ui.sourceMenu"
-				label="Source"
-				mnemonic="S">
-				<separator name="comment" visible="true"/>
-				<separator name="format" visible="true"/>
-				<separator name="additions" visible="true"/>
-			</menu>
-		</menuContribution>
-	</extension>
-	
-   <!-- hyperlink detection -->
-
-   <extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
-      <target
-         id="com.googlecode.goclipse.ui.Editor.CodeTarget"
-      	 name="GoEditorHyperlinkDetectorTarget">
-
-         <context type="org.eclipse.ui.texteditor.ITextEditor"/>
-      </target>
-   </extension>
-
-   <extension
-         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
-      <hyperlinkDetector
-            class="com.googlecode.goclipse.ui.editor.text.GoHyperlinkDetector2"
-            id="com.googlecode.goclipse.ui.editor.text.GoHyperlinkDetector2"
-            name="GoEditorHyperlinkDetector2"
-            targetId="com.googlecode.goclipse.ui.Editor.CodeTarget">
-      </hyperlinkDetector>
-   </extension>
-   
-   <!-- This is possibly not needed (and has a dependency on the JDT), but is nice to have -->
-<!--
-   <extension
-         point="org.eclipse.jdt.ui.javaElementFilters">
-      <filter
-          id="goclipse.objFolderFilter"
-          name="Go object folders"
-          description="Hide Go object (_obj) folders"
-          targetId="org.eclipse.jdt.ui.PackageExplorer"
-          pattern="_obj"/>
-   </extension>
--->
    
    <!-- Search -->
    
@@ -622,29 +582,6 @@
 	</extension>
 	
 
-   <!--<extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views">
-      <category
-            id="com.googlecode.goclipse.category.Go"
-            name="Go">
-      </category>
-      <view
-            allowMultiple="false"
-            category="com.googlecode.goclipse.category.Go"
-            class="com.googlecode.goclipse.views.GoTestView"
-            icon="icons/sample.gif"
-            id="com.googlecode.goclipse.views.GoTestView"
-            name="Go Tests"
-            restorable="true">
-      </view>
-   </extension>-->
-   
 
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
