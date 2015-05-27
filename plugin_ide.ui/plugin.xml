@@ -192,6 +192,8 @@
 		                            label="%EditorTypingPreferencePage.keywords"/>
 		<keyword id="LANG_PROJECT_ID.ide.ui.EditorSyntaxColoringPreferencePage"
 		                            label="%EditorSyntaxColoringPreferencePage.keywords"/>
+		<keyword id="LANG_PROJECT_ID.ide.ui.ContentAssistPreferencePage"
+		                            label="%ContentAssistPreferencePage.keywords"/>
 		<keyword id="LANG_PROJECT_ID.ide.ui.CodeTemplatesPreferencePage"
 		                            label="%CodeTemplatesPreferencePage.keywords"/>
 		<keyword id="LANG_PROJECT_ID.ide.ui.DaemonToolPrefPage"
@@ -244,6 +246,13 @@
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.SourceColoring"
 			name="%EditorSyntaxColoringPreferencePage.name">
 			<keywordReference id="LANG_PROJECT_ID.ide.ui.EditorSyntaxColoringPreferencePage"/>
+		</page>
+		<page
+			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
+			id=      "LANG_PROJECT_ID.ide.ui.PreferencePages.Editor.ContentAssist"
+			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ContentAssistPreferencePage"
+			name="%ContentAssistPreferencePage.name">
+			<keywordReference id="LANG_PROJECT_ID.ide.ui.ContentAssistPreferencePage"/>
 		</page>
 		<page
 			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"

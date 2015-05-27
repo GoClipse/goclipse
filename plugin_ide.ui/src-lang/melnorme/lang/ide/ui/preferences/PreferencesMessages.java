@@ -68,4 +68,22 @@ public class PreferencesMessages implements PreferencesMessages_Actual {
 	public static final String EditorPreferencePage_considerParenthesesAsBlocks = 
 		"Consider (parentheses) the same as {braces} for block smart indent";
 	
+	/* ----------------- Content Assist ----------------- */
+	
+	public static final String LangPrefs_ContentAssist_Insertion_group = 
+			"Insertion:";
+	public static final String LangPrefs_ContentAssist_Insertion_AutomaticSingleProposals_Label = 
+			"Insert single proposals automatically";
+	public static final String LangPrefs_ContentAssist_Insertion_AutomaticCommonPrefixes_Label = 
+			"Insert common prefixes automatically";
+	
+	public static final String LangPrefs_ContentAssist_AutoActivation_group = 
+			"Auto-Activation:";
+	public static final String LangPrefs_ContentAssist_AutoActivation_DotTrigger_Label = 
+			"Enable \".\" as trigger";
+	public static final String LangPrefs_ContentAssist_AutoActivation_AlphanumericTrigger_Label = 
+			"Enable alphabetic characters as trigger";
+	public static final String LangPrefs_ContentAssist_AutoActivation_Delay_Label = 
+			"Delay (ms): ";
+	
 }

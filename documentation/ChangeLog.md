@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Added Content Assist preference page, with auto-activation options.
  * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
 
  * Upgraded minimum Java version to Java 8
