@@ -136,8 +136,9 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 			assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
 			assistant.enableColoredLabels(true);
 			
-			assistant.configure(fPreferenceStore);
 			configureContentAssistantProcessors(assistant);
+			// Note: configuration must come after processors are created
+			assistant.configure(fPreferenceStore);
 			
 			return assistant;
 		}

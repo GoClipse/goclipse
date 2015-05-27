@@ -22,37 +22,23 @@ import org.eclipse.swt.graphics.RGB;
  */
 public interface ContentAssistConstants_Default {
 	
-	String AUTOACTIVATION = "content_assist_autoactivation";
-	String AUTOACTIVATION_DELAY = "content_assist_autoactivation_delay";
 	String PROPOSALS_FOREGROUND = "content_assist_proposals_foreground";
 	String PROPOSALS_BACKGROUND = "content_assist_proposals_background";
 	String PARAMETERS_FOREGROUND = "content_assist_parameters_foreground";
 	String PARAMETERS_BACKGROUND = "content_assist_parameters_background";
 	
-	String AUTOINSERT = "content_assist_autoinsert";
-	
-	String PREFIX_COMPLETION = "content_assist_prefix_completion";
-	
-	String AUTOACTIVATION_TRIGGERS = "content_assist_autoactivation_triggers_script";
 	
 	public class _PrefInitializer 
 		implements ContentAssistConstants // We need to import this constant, to use the overridable namespace 
 	{
 		
 		public static void initializeDefaults(final IPreferenceStore store) {
-			store.setDefault(AUTOACTIVATION, true);
-			store.setDefault(AUTOACTIVATION_DELAY, 200);
 			
 			store.setDefault(PROPOSALS_BACKGROUND, StringConverter.asString(new RGB(255, 255, 255)));
 			store.setDefault(PROPOSALS_FOREGROUND, StringConverter.asString(new RGB(0, 0, 0)));
 			store.setDefault(PARAMETERS_BACKGROUND, StringConverter.asString(new RGB(255, 255, 255)));
 			store.setDefault(PARAMETERS_FOREGROUND, StringConverter.asString(new RGB(0, 0, 0)));
 			
-			store.setDefault(AUTOINSERT, true);
-//			store.setDefault(TIMEOUT, 5000);
-			store.setDefault(PREFIX_COMPLETION, false);
-			
-			store.setDefault(AUTOACTIVATION_TRIGGERS, ".");
 		}
 		
 	}

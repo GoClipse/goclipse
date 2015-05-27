@@ -239,6 +239,8 @@
 		                            label="%EditorTypingPreferencePage.keywords"/>
 		<keyword id="com.googlecode.goclipse.ui.EditorSyntaxColoringPreferencePage"
 		                            label="%EditorSyntaxColoringPreferencePage.keywords"/>
+		<keyword id="com.googlecode.goclipse.ui.ContentAssistPreferencePage"
+		                            label="%ContentAssistPreferencePage.keywords"/>
 		<keyword id="com.googlecode.goclipse.ui.CodeTemplatesPreferencePage"
 		                            label="%CodeTemplatesPreferencePage.keywords"/>
 		<keyword id="com.googlecode.goclipse.ui.DaemonToolPrefPage"
@@ -290,6 +292,13 @@
 			class="com.googlecode.goclipse.ui.preferences.GoEditorTypingPreferencePage"
 			name="Typing">
 			<keywordReference id="com.googlecode.goclipse.ui.EditorTypingPreferencePage"/>
+		</page>
+		<page
+			category="com.googlecode.goclipse.ui.PreferencePages.Editor"
+			id=      "com.googlecode.goclipse.ui.PreferencePages.Editor.ContentAssist"
+			class="com.googlecode.goclipse.ui.preferences.GoContentAssistPreferencePage"
+			name="%ContentAssistPreferencePage.name">
+			<keywordReference id="com.googlecode.goclipse.ui.ContentAssistPreferencePage"/>
 		</page>
 		<page
 			category="com.googlecode.goclipse.ui.PreferencePages.Editor"

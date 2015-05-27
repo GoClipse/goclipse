@@ -25,7 +25,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
-public class ContentAssistPreferenceHandler implements ContentAssistConstants {
+public class ContentAssistPreferenceHandler implements ContentAssistConstants, ContentAssisPreferences {
 	
 	public ContentAssistPreferenceHandler() {
 	}
@@ -41,61 +41,87 @@ public class ContentAssistPreferenceHandler implements ContentAssistConstants {
 	
 	/* -----------------  ----------------- */
 	
-	public void changeConfiguration(ContentAssistant assistant, IPreferenceStore store, PropertyChangeEvent event) {
+	public void handlePrefChange(ContentAssistant assistant, IPreferenceStore store, PropertyChangeEvent event) {
 		setConfigurationOption(assistant, store, event.getProperty());
 	}
 	
 	public void configure(ContentAssistant assistant, IPreferenceStore store) {
+		assistant.enableAutoActivation(true);
 		
-		setConfigurationOption(assistant, store, AUTOACTIVATION);
-		setConfigurationOption(assistant, store, AUTOACTIVATION_DELAY);
+		setConfigurationOption(assistant, store, AUTO_INSERT__SingleProposals.key);
+		setConfigurationOption(assistant, store, AUTO_INSERT__CommonPrefixes.key);
+		
+		setConfigurationOption(assistant, store, AUTO_ACTIVATE__DotTrigger.key);
+		setConfigurationOption(assistant, store, AUTO_ACTIVATE__AlphaNumericTrigger.key);
+		setConfigurationOption(assistant, store, AUTO_ACTIVATE__Delay.key);
+		
 		setConfigurationOption(assistant, store, PROPOSALS_FOREGROUND);
 		setConfigurationOption(assistant, store, PROPOSALS_BACKGROUND);
 		setConfigurationOption(assistant, store, PARAMETERS_FOREGROUND);
 		setConfigurationOption(assistant, store, PARAMETERS_BACKGROUND);
-		setConfigurationOption(assistant, store, AUTOINSERT);
-		setConfigurationOption(assistant, store, PREFIX_COMPLETION);
-		
-		setConfigurationOption(assistant, store, AUTOACTIVATION_TRIGGERS);
 	}
 	
 	protected void setConfigurationOption(ContentAssistant assistant, IPreferenceStore store, String key) {
+		// store is not used for most pref keys, in any case it should be the standard UI pref store.
+		// TODO: this store usage/non-usage is not very elegant/safe, best if this could be cleaned up.
 		
-		if(AUTOACTIVATION.equals(key)) {
-			assistant.enableAutoActivation(store.getBoolean(AUTOACTIVATION));
-		} else if(AUTOACTIVATION_DELAY.equals(key)) {
-			assistant.setAutoActivationDelay(store.getInt(AUTOACTIVATION_DELAY));
-		} else if(PROPOSALS_FOREGROUND.equals(key)) {
+		if(equalsKey(AUTO_INSERT__SingleProposals.key, key)) {
+			assistant.enableAutoInsert(AUTO_INSERT__SingleProposals.get());
+		}
+		else if(equalsKey(AUTO_INSERT__CommonPrefixes.key, key)) {
+			assistant.enablePrefixCompletion(AUTO_INSERT__CommonPrefixes.get());
+		}
+		
+		else if(equalsKey(AUTO_ACTIVATE__DotTrigger.key, key)) {
+			setAutoActivationTriggers(assistant, store);
+		}
+		else if(equalsKey(AUTO_ACTIVATE__AlphaNumericTrigger.key, key)) {
+			setAutoActivationTriggers(assistant, store);
+		}
+		else if(equalsKey(AUTO_ACTIVATE__Delay.key, key)) {
+			assistant.setAutoActivationDelay(AUTO_ACTIVATE__Delay.get());
+		}
+		
+		else if(equalsKey(PROPOSALS_FOREGROUND, key)) {
 			assistant.setProposalSelectorForeground(getColor(store, PROPOSALS_FOREGROUND));
-		} else if(PROPOSALS_BACKGROUND.equals(key)) {
+		}
+		else if(equalsKey(PROPOSALS_BACKGROUND, key)) {
 			assistant.setProposalSelectorBackground(getColor(store, PROPOSALS_BACKGROUND));
-		} else if(PARAMETERS_FOREGROUND.equals(key)) {
+		}
+		else if(equalsKey(PARAMETERS_FOREGROUND, key)) {
 			Color paramsFg = getColor(store, PARAMETERS_FOREGROUND);
 			assistant.setContextInformationPopupForeground(paramsFg);
 			assistant.setContextSelectorForeground(paramsFg);
-		} else if(PARAMETERS_BACKGROUND.equals(key)) {
+		}
+		else if(equalsKey(PARAMETERS_BACKGROUND, key)) {
 			Color paramsBg = getColor(store, PARAMETERS_BACKGROUND);
 			assistant.setContextInformationPopupBackground(paramsBg);
 			assistant.setContextSelectorBackground(paramsBg);
-		} else if(AUTOINSERT.equals(key)) {
-			assistant.enableAutoInsert(store.getBoolean(AUTOINSERT));
-		} else if(PREFIX_COMPLETION.equals(key)) {
-			assistant.enablePrefixCompletion(store.getBoolean(PREFIX_COMPLETION));
 		}
 		
-		changeLangContentAssistProcessor(assistant, store, key);
 	}
 	
-	protected void changeLangContentAssistProcessor(ContentAssistant assistant, IPreferenceStore store, String key) {
+	protected static boolean equalsKey(String keyA, String keyB) {
+		return keyA.equals(keyB);
+	}
+	
+	protected void setAutoActivationTriggers(ContentAssistant assistant, 
+			@SuppressWarnings("unused") IPreferenceStore store) {
 		LangContentAssistProcessor jcp = getLangContentAssistProcessor(assistant);
 		if(jcp == null)
 			return;
 		
-		if(AUTOACTIVATION_TRIGGERS.equals(key)) {
-			String triggers = store.getString(AUTOACTIVATION_TRIGGERS);
-			if(triggers != null) {
-				jcp.setCompletionProposalAutoActivationCharacters(triggers.toCharArray());
-			}
+		String triggers = "";
+		if(AUTO_ACTIVATE__DotTrigger.get()) {
+			triggers += ".";
+		}
+		if(AUTO_ACTIVATE__AlphaNumericTrigger.get()) {
+			triggers +="abcdefghijklmnopqrstuvwxyz";
+			triggers +="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		}
+		
+		if(triggers != null) {
+			jcp.setCompletionProposalAutoActivationCharacters(triggers.toCharArray());
 		}
 	}
 	

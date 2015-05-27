@@ -33,7 +33,7 @@ public class ContentAssistantExt extends ContentAssistant {
 	}
 	
 	public void handlePrefChange(PropertyChangeEvent event, IPreferenceStore prefStore) {
-		caPrefHelper.changeConfiguration(this, prefStore, event);
+		caPrefHelper.handlePrefChange(this, prefStore, event);
 	}
 	
 	/* -----------------  ----------------- */
