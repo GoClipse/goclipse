@@ -90,6 +90,12 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 		return new ProjectScope(project).getNode(getQualifier());
 	}
 	
+	/* ----------------- util ----------------- */
+	
+	public boolean keyEquals(String otherKey) {
+		return otherKey!= null && key.equals(otherKey);
+	}
+	
 	/* ----------------- listeners ----------------- */
 	
 	public IPreferenceChangeListener_Ext addPrefChangeListener(boolean initializeChange, 

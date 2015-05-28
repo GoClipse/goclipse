@@ -13,6 +13,7 @@
  * Fixed: #127 "null argument" error dialog when double-clicking on Go project.
  * Upgraded minimum Java version to Java 8
  * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
+ * Fixed: `Tab policy: "Spaces Only"` preference ignored when pressing TAB.
 
 
 ### Goclipse 0.10.1

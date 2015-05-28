@@ -155,8 +155,8 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	@Override
 	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
 		AbstractLangSourceViewerConfiguration langSVC = getSourceViewerConfiguration_asLang();
-		if(langSVC != null) {
-			return langSVC.affectsTextPresentation(event) || super.affectsTextPresentation(event);
+		if(langSVC != null && langSVC.affectsTextPresentation(event)) {
+			return true;
 		}
 		
 		return super.affectsTextPresentation(event);
@@ -200,6 +200,13 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 		super.createPartControl(parent);
 		
 		editorSelChangedListener.install(getSelectionProvider());
+	}
+	
+	/* ----------------- other ----------------- */
+	
+	@Override
+	protected boolean isTabsToSpacesConversionEnabled() {
+		return false;
 	}
 	
 	protected final AbstractSelectionChangedListener editorSelChangedListener = new AbstractSelectionChangedListener() {

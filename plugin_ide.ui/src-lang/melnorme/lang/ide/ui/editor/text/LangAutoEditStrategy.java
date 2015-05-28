@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.editor.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockBalanceResult;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
@@ -109,6 +110,8 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 				smartIndentAfterNewLine(doc, cmd);
 			} else if(smartDeIndentAfterDeletion(doc, cmd)) {
 				return;
+			} else if(lastKeyEvent.character == SWT.TAB && areEqual(cmd.text, "\t")) {
+				smartTab(doc, cmd);
 			} else if(AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(cmd)) {
 				smartIndentOnKeypress(doc, cmd);
 			} else if(cmd.text.length() > 1 && fPreferences.isSmartPaste()) {
@@ -251,7 +254,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 	
 	protected String addIndent(String indentStr, int indentDelta) {
-		return indentStr + LangAutoEditUtils.stringNTimes(fPreferences.getIndent(), indentDelta);
+		return indentStr + LangAutoEditUtils.stringNTimes(fPreferences.getIndentUnit(), indentDelta);
 	}
 	
 	/* ------------------------------------- */
@@ -365,4 +368,10 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	protected void smartPaste(IDocument doc, DocumentCommand cmd) throws BadLocationException {
 		super.customizeDocumentCommand(doc, cmd);
 	}
+	
+	protected void smartTab(IDocument doc, DocumentCommand cmd) {
+		cmd.text = fPreferences.getIndentUnit();
+		super.customizeDocumentCommand(doc, cmd);
+	}
+	
 }
