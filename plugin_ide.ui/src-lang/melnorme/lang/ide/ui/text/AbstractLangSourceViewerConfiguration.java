@@ -10,11 +10,14 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.array;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.util.Map;
 
+import melnorme.lang.ide.ui.CodeFormatterConstants;
+import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
@@ -28,6 +31,7 @@ import melnorme.lang.ide.ui.text.completion.ContentAssistPreferenceHandler;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
+import melnorme.lang.ide.ui.text.util.AutoEditUtils;
 import melnorme.utilbox.collections.Indexable;
 
 import org.eclipse.cdt.ui.text.IColorManager;
@@ -44,6 +48,7 @@ import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.reconciler.AbstractReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -66,7 +71,6 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	public AbstractLangEditor getEditor_asLang() {
 		return tryCast(editor, AbstractLangEditor.class);
 	}
-
 	
 	/* ----------------- Navigation operations ----------------- */
 	
@@ -104,6 +108,13 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	/* ----------------- Modification operations ----------------- */
 	
 	@Override
+	public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
+		return new String[] { getToggleCommentPrefix(), "" };
+	}
+	
+	protected abstract String getToggleCommentPrefix();
+	
+	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		if(IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)) {
 			return array(LangUIPlugin_Actual.createAutoEditStrategy(sourceViewer, contentType));
@@ -113,11 +124,34 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	}
 	
 	@Override
-	public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
-		return new String[] { getToggleCommentPrefix(), "" };
+	public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
+		
+		IndentMode indentMode = CodeFormatterConstants.IndentMode.fromPrefStore();
+		int spaceIndentationSize = CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.get();
+		String spaceIndent = AutoEditUtils.getNSpaces(spaceIndentationSize);
+		
+		switch (indentMode) {
+		case TAB: return array("\t", spaceIndent); // return getIndentPrefixesForTab(spaceIndent); 
+		case SPACES: return array(spaceIndent, "\t"); // return getIndentPrefixesForSpaces(spaceIndent);
+		}
+		
+		throw assertUnreachable();
 	}
 	
-	protected abstract String getToggleCommentPrefix();
+	@Override
+	protected void updateIndentationSettings(SourceViewer sourceViewer, String property) {
+		super.updateIndentationSettings(sourceViewer, property);
+		
+		if(
+			CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.keyEquals(property) ||
+			CodeFormatterConstants.FORMATTER_INDENT_MODE.keyEquals(property)) {
+			
+			for(String contentType : getConfiguredContentTypes(sourceViewer)) {
+				String[] prefixes= getIndentPrefixes(sourceViewer, contentType);
+				sourceViewer.setIndentPrefixes(prefixes, contentType);
+			}
+		}
+	}
 	
 	/* ----------------- Content Assist ----------------- */
 	

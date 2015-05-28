@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
@@ -44,6 +45,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Shell;
@@ -80,6 +82,15 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 	public IPreferenceStore getPreferenceStore() {
 		return preferenceStore;
 	}
+	
+	public void reconfigureForPropertyChange(PropertyChangeEvent event, IPreferenceStore prefStore,
+			SourceViewer sourceViewer) {
+		assertTrue(prefStore == getPreferenceStore());
+		String property = event.getProperty();
+		updateIndentationSettings(sourceViewer, property);
+	}
+	
+	/* ----------------- scanners / partitioning ----------------- */
 	
 	@Override
 	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
@@ -178,6 +189,23 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 	
 	public String getFontPropertyPreferenceKey() {
 		return JFaceResources.TEXT_FONT;
+	}
+	
+	/* ----------------- TextViewer ----------------- */
+	
+	@Override
+	public int getTabWidth(ISourceViewer sourceViewer) {
+		if (fPreferenceStore == null)
+			return super.getTabWidth(sourceViewer);
+		return fPreferenceStore.getInt(CodeFormatterConstants.FORMATTER_TAB_SIZE.key);
+	}
+	
+	protected void updateIndentationSettings(SourceViewer sourceViewer, String property) {
+		if(CodeFormatterConstants.FORMATTER_TAB_SIZE.keyEquals(property)) {
+			StyledText textWidget = sourceViewer.getTextWidget();
+			int tabWidth = getTabWidth(sourceViewer);
+			textWidget.setTabs(tabWidth);
+		}
 	}
 	
 	/* ----------------- Presentation UI controls ----------------- */

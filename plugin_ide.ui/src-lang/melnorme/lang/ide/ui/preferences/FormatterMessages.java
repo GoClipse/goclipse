@@ -17,6 +17,6 @@ public interface FormatterMessages {
 	public static String IndentationGroup_tab_size =
 			"Displayed tab &size:";
 	public static String IndentationGroup_indent_size = 
-			"&Indentation size:";
+			"&Indentation size (for spaces):";
 	
 }

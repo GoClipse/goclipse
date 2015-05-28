@@ -46,7 +46,7 @@ public class LangAutoEditsPreferencesAdapter {
 		return IndentMode.fromPrefStore();
 	}
 	
-	public String getIndent() {
+	public String getIndentUnit() {
 		if (getTabStyle() == IndentMode.SPACES) {
 			return AutoEditUtils.getNSpaces(getIndentSize());
 		} else {

@@ -13,9 +13,10 @@ package melnorme.lang.ide.ui.editor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
-public interface ISourceViewerExt {
+public interface ISourceViewerExt extends ISourceViewer {
 	
 	IContentAssistant getContentAssistant();
 	

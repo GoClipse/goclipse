@@ -11,8 +11,9 @@
 package melnorme.lang.ide.ui.editor;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.ownership.IDisposable;
@@ -43,14 +44,24 @@ public class LangSourceViewer extends JavaSourceViewer_Mod implements ISourceVie
 		return ownedObject;
 	}
 	
+	protected SimpleLangSourceViewerConfiguration sourceViewerConfig;
+	
 	@Override
-	public void unconfigure() {
-		for(IDisposable disposable : configurationDisposables) {
-			disposable.dispose();
-		}
-		configurationDisposables.clear();
+	public void configure(SourceViewerConfiguration configuration) {
+		assertTrue(sourceViewerConfig == null);
 		
-		super.unconfigure();
+		super.configure(configuration);
+		
+		if(configuration instanceof SimpleLangSourceViewerConfiguration) {
+			sourceViewerConfig = (SimpleLangSourceViewerConfiguration) configuration;
+			
+			StyledText textWidget = getTextWidget();
+			if (textWidget != null) {
+				textWidget.setFont(JFaceResources.getFont(sourceViewerConfig.getFontPropertyPreferenceKey()));
+			}
+			
+			sourceViewerConfig.setupCustomConfiguration(this);
+		}
 	}
 	
 	@Override
@@ -59,19 +70,14 @@ public class LangSourceViewer extends JavaSourceViewer_Mod implements ISourceVie
 	}
 	
 	@Override
-	public void configure(SourceViewerConfiguration configuration) {
-		super.configure(configuration);
-		
-		if(configuration instanceof AbstractLangSourceViewerConfiguration) {
-			AbstractLangSourceViewerConfiguration langConfig = (AbstractLangSourceViewerConfiguration) configuration;
-			
-			StyledText textWidget = getTextWidget();
-			if (textWidget != null) {
-				textWidget.setFont(JFaceResources.getFont(langConfig.getFontPropertyPreferenceKey()));
-			}
-			
-			langConfig.setupCustomConfiguration(this);
+	public void unconfigure() {
+		for(IDisposable disposable : configurationDisposables) {
+			disposable.dispose();
 		}
+		configurationDisposables.clear();
+		
+		super.unconfigure();
+		sourceViewerConfig = null;
 	}
 	
 	/* -----------------  ----------------- */
@@ -123,6 +129,8 @@ public class LangSourceViewer extends JavaSourceViewer_Mod implements ISourceVie
 	
 	@Override
 	public void handlePropertyChangeEvent_2(PropertyChangeEvent event, IPreferenceStore prefStore) {
+		sourceViewerConfig.reconfigureForPropertyChange(event, prefStore, this);
+		
 		if(getContentAssistant() instanceof ContentAssistantExt) {
 			ContentAssistantExt caExt = (ContentAssistantExt) getContentAssistant();
 			caExt.handlePrefChange(event, prefStore);

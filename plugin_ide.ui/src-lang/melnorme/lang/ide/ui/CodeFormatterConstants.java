@@ -1,19 +1,13 @@
 package melnorme.lang.ide.ui;
 
-import static melnorme.utilbox.core.CoreUtil.array;
 
 public interface CodeFormatterConstants extends CodeFormatterConstants_Actual {
-	
-	public final String[] FORMATTER_TAB_CHAR__VALUES = array(
-		TAB, SPACES, MIXED 
-	);
 	
 	// helper for tab indent mode
 	public enum IndentMode {
 		
 		TAB(CodeFormatterConstants.TAB),
-		SPACES(CodeFormatterConstants.SPACES),
-		MIXED(CodeFormatterConstants.MIXED);
+		SPACES(CodeFormatterConstants.SPACES);
 		
 		protected final String prefValue;
 		

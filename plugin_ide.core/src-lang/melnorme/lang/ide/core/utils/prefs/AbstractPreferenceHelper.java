@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class AbstractPreferenceHelper {
 	public final String key;
 	
 	public AbstractPreferenceHelper(String key) {
-		this.key = key;
+		this.key = assertNotNull(key);
 		
 		synchronized (instances) {
 			// Allow only one instance of a preference helper per key.
