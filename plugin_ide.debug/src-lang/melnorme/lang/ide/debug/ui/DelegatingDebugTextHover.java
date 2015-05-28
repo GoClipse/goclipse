@@ -20,14 +20,12 @@ import org.eclipse.ui.IEditorPart;
  */
 //BM: adapted to ILangEditorTextHover
 // TODO: try to find a way to restrict the hover to relevant launches only?
-public class DelegatingDebugTextHover implements ILangEditorTextHover<Object>, ITextHoverExtension, ITextHoverExtension2 {
+public class DelegatingDebugTextHover 
+implements ILangEditorTextHover<Object>, ITextHoverExtension, ITextHoverExtension2 {
 
     private IEditorPart fEditor;
 	private ICEditorTextHover fDelegate;
 
-	/*
-	 * @see org.eclipse.jface.text.ITextHover#getHoverRegion(org.eclipse.jface.text.ITextViewer, int)
-	 */
 	@Override
 	public IRegion getHoverRegion(ITextViewer viewer, int offset) {
 		fDelegate = getDelegate();
@@ -37,9 +35,6 @@ public class DelegatingDebugTextHover implements ILangEditorTextHover<Object>, I
 		return null;
 	}
 	
-    /*
-     * @see org.eclipse.jface.text.ITextHover#getHoverInfo(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion)
-     */
     @Override
 	@SuppressWarnings("deprecation")
     public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
@@ -50,9 +45,6 @@ public class DelegatingDebugTextHover implements ILangEditorTextHover<Object>, I
         return null;
     }
 
-    /*
-     * @see org.eclipse.jface.text.ITextHoverExtension2#getHoverInfo2(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion)
-     */
     @Override
 	@SuppressWarnings("deprecation")
     public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
@@ -67,14 +59,6 @@ public class DelegatingDebugTextHover implements ILangEditorTextHover<Object>, I
         return null;
     }
     
-	@Override
-	public Object getHoverInfo2_do(ITextViewer textViewer, IRegion hoverRegion) {
-		return getHoverInfo2(textViewer, hoverRegion);
-	}
-
-    /*
-     * @see org.eclipse.jface.text.ITextHoverExtension#getHoverControlCreator()
-     */
     @Override
 	public IInformationControlCreator getHoverControlCreator() {
         if (fDelegate instanceof ITextHoverExtension) {
@@ -83,9 +67,6 @@ public class DelegatingDebugTextHover implements ILangEditorTextHover<Object>, I
         return null;
     }
 
-    /*
-     * @see org.eclipse.cdt.ui.text.c.hover.ICEditorTextHover#setEditor(org.eclipse.ui.IEditorPart)
-     */
     @Override
 	public final void setEditor(IEditorPart editor) {
         fEditor = editor;

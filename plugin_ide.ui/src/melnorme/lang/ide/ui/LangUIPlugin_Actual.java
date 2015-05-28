@@ -10,6 +10,8 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import com.googlecode.goclipse.editors.TextHover;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
+import _org.eclipse.jdt.internal.ui.text.java.hover.AnnotationHover;
+import _org.eclipse.jdt.internal.ui.text.java.hover.ProblemHover;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
@@ -29,7 +31,9 @@ public final class LangUIPlugin_Actual {
 	protected static final Class<?> PLUGIN_IMAGES_CLASS = GoPluginImages.class;
 	
 	protected static void initTextHovers(List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
+		textHoverSpecifications.add(ProblemHover.class);
 		textHoverSpecifications.add(TextHover.class);
+		textHoverSpecifications.add(AnnotationHover.class);
 	}
 	
 	public static GoAutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {

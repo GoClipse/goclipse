@@ -31,7 +31,7 @@ import org.eclipse.ui.IEditorPart;
  * hover that returns some text for the specified parameters.
  * 
  */
-public class BestMatchHover extends AbstractLangEditorTextHover<Object> {
+public class BestMatchHover extends AbstractLangEditorTextHover {
 	
 	protected final int stateMask; //TODO: use statemask
 	protected List<ILangEditorTextHover<?>> fInstantiatedTextHovers;
@@ -79,7 +79,7 @@ public class BestMatchHover extends AbstractLangEditorTextHover<Object> {
 	}
 	
 	@Override
-	public Object getHoverInfo2_do(ITextViewer textViewer, IRegion hoverRegion) {
+	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
 		fBestHover = null;
 		
 		for (ILangEditorTextHover<?> hover : fInstantiatedTextHovers) {
