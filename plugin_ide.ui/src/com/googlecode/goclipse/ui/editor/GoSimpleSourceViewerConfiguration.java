@@ -58,11 +58,6 @@ public class GoSimpleSourceViewerConfiguration extends GoEditorSourceViewerConfi
 	}
 	
 	@Override
-	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType) {
-		return null;
-	}
-	
-	@Override
 	public IContentFormatter getContentFormatter(ISourceViewer sourceViewer) {
 		return null;
 	}
@@ -76,16 +71,6 @@ public class GoSimpleSourceViewerConfiguration extends GoEditorSourceViewerConfi
 	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
 		return null;
 	}
-	
-//	@Override
-//	public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer, boolean doCodeResolve) {
-//		return null;
-//	}
-	
-//	@Override
-//	public IInformationPresenter getHierarchyPresenter(ScriptSourceViewer sourceViewer, boolean doCodeResolve) {
-//		return null;
-//	}
 	
 	@Override
 	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {

@@ -1,6 +1,5 @@
 package com.googlecode.goclipse.ui.editor;
 
-import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
@@ -9,11 +8,9 @@ import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
-import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
-import org.eclipse.jface.text.source.DefaultAnnotationHover;
-import org.eclipse.jface.text.source.IAnnotationHover;
+import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -64,6 +61,11 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	}
 	
 	@Override
+	protected IInformationProvider getInformationProvider(String contentType) {
+		return null;
+	}
+	
+	@Override
 	protected void configureContentAssistantProcessors(ContentAssistant assistant) {
 		super.configureContentAssistantProcessors(assistant);
 		
@@ -97,26 +99,8 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	}
 	
 	@Override
-	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
-		if(contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
-			return new BestMatchHover(editor, stateMask);
-		}
-		return null;
-	}
-	
-	@Override
-	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
-		return new DefaultAnnotationHover();
-	}
-	
-	@Override
 	protected CompositeReconcilingStrategy getReconciler_createCompositeStrategy(ITextEditor editor) {
 		return new CompositeReconcilingStrategy(new GoEditorReconcilingStrategy(this.editor));
-	}
-	
-	@Override
-	public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
-		return new String[] { "\t", "" };
 	}
 	
 }
