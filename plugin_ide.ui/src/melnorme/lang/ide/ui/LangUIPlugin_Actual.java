@@ -9,6 +9,8 @@ import org.eclipse.jface.text.source.ISourceViewer;
 
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_AutoEditStrategy;
+import _org.eclipse.jdt.internal.ui.text.java.hover.AnnotationHover;
+import _org.eclipse.jdt.internal.ui.text.java.hover.ProblemHover;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
@@ -27,8 +29,9 @@ public final class LangUIPlugin_Actual {
 	
 	protected static final Class<?> PLUGIN_IMAGES_CLASS = LANGUAGE_Images.class;
 	
-	@SuppressWarnings("unused")
 	protected static void initTextHovers( List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
+		textHoverSpecifications.add(ProblemHover.class);
+		textHoverSpecifications.add(AnnotationHover.class);
 	}
 	
 	public static LANGUAGE_AutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {

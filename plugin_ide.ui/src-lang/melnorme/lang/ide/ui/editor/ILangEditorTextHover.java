@@ -9,18 +9,14 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.IEditorPart;
 
 public interface ILangEditorTextHover<INFO_TYPE> extends ITextHover, ITextHoverExtension, ITextHoverExtension2 {
-
+	
 	/**
 	 * Sets the editor on which the hover is shown.
-	 * 
-	 * @param editor the editor on which the hover popup should be shown
 	 */
 	void setEditor(IEditorPart editor);
 	
 	@Override
-	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion);
-	
-	public INFO_TYPE getHoverInfo2_do(ITextViewer textViewer, IRegion hoverRegion);
+	public INFO_TYPE getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion);
 	
 	@Override
 	public IInformationControlCreator getHoverControlCreator();

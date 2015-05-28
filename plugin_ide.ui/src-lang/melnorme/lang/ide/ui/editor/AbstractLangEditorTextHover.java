@@ -17,16 +17,19 @@ import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextHover;
+import org.eclipse.jface.text.ITextHoverExtension;
+import org.eclipse.jface.text.ITextHoverExtension2;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 
-public abstract class AbstractLangEditorTextHover<T> implements ILangEditorTextHover<T>, IInformationProviderExtension2 {
+public abstract class AbstractLangEditorTextHover 
+	implements ITextHover, ITextHoverExtension, ITextHoverExtension2, IInformationProviderExtension2 {
 	
 	protected IEditorPart fEditor;
 	
-	@Override
 	public void setEditor(IEditorPart editor) {
 		fEditor = editor;
 	}
@@ -45,12 +48,7 @@ public abstract class AbstractLangEditorTextHover<T> implements ILangEditorTextH
 	}
 	
 	@Override
-	public final Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
-		return getHoverInfo2_do(textViewer, hoverRegion);
-	}
-	
-	@Override
-	public abstract T getHoverInfo2_do(ITextViewer textViewer, IRegion hoverRegion);
+	public abstract Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion);
 	
 	@Override
 	public abstract IInformationControlCreator getHoverControlCreator();
