@@ -86,9 +86,16 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		updateSelectionFromEditor();
 	}
 	
+	protected boolean updatingFromEditor = false;
+	
 	protected void updateSelectionFromEditor() {
 		StructuredSelection newSelection = editor.getSelectedElementAsStructureSelection();
-		getTreeViewer().setSelection(newSelection, true);
+		try {
+			updatingFromEditor = true;
+			getTreeViewer().setSelection(newSelection, true);
+		} finally {
+			updatingFromEditor = false;
+		}
 	}
 	
 	@Override
@@ -96,7 +103,9 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		Object firstElement = ((IStructuredSelection) event.getSelection()).getFirstElement();
 		if(firstElement instanceof StructureElement) {
 			StructureElement structureElement = (StructureElement) firstElement;
-			editor.setElementSelection(structureElement);
+			if(!updatingFromEditor) {
+				editor.setElementSelection(structureElement);
+			}
 		}
 		
 		super.treeViewerPostSelectionChanged(event);
