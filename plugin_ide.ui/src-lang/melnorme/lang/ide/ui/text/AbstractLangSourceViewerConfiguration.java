@@ -22,6 +22,7 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
@@ -37,22 +38,31 @@ import melnorme.utilbox.collections.Indexable;
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
+import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
+import org.eclipse.jface.text.ITextHover;
+import org.eclipse.jface.text.ITextViewerExtension2;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.reconciler.AbstractReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
+import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy;
+import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
 
 public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSourceViewerConfiguration {
 	
@@ -70,6 +80,67 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	
 	public AbstractLangEditor getEditor_asLang() {
 		return tryCast(editor, AbstractLangEditor.class);
+	}
+	
+	/* ----------------- Hovers ----------------- */
+	
+	@Override
+	public final ITextHover getTextHover(ISourceViewer sourceViewer, String contentType) {
+		return getTextHover(sourceViewer, contentType, ITextViewerExtension2.DEFAULT_HOVER_STATE_MASK);
+	}
+	
+	@Override
+	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
+		if(contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
+			return new BestMatchHover(getEditor(), stateMask);
+		}
+		return null;
+	}
+	
+	@Override
+	public IAnnotationHover getAnnotationHover(ISourceViewer sourceViewer) {
+		return new HTMLAnnotationHover(false) {
+			@Override
+			protected boolean isIncluded(Annotation annotation) {
+				return isShowInVerticalRuler(annotation);
+			}
+		};
+	}
+	
+	@Override
+	public IAnnotationHover getOverviewRulerAnnotationHover(ISourceViewer sourceViewer) {
+		return new HTMLAnnotationHover(true) {
+			@Override
+			protected boolean isIncluded(Annotation annotation) {
+				return isShowInOverviewRuler(annotation);
+			}
+		};
+	}
+	
+	@Override
+	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
+		InformationPresenter presenter = new InformationPresenter(getInformationPresenterControlCreator(sourceViewer));
+		presenter.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
+		
+		// Register information providers
+		for (String contentType : getConfiguredContentTypes(sourceViewer)) {
+			presenter.setInformationProvider(getInformationProvider(contentType), contentType);
+		}
+		
+		presenter.setSizeConstraints(100, 12, false, true);
+		return presenter;
+	}
+	
+	protected abstract IInformationProvider getInformationProvider(String contentType);
+	
+	protected IInformationControlCreator getInformationPresenterControlCreator(
+			@SuppressWarnings("unused") ISourceViewer sourceViewer) {
+		return new IInformationControlCreator() {
+			@Override
+			public IInformationControl createInformationControl(Shell parent) {
+				return new DefaultInformationControl(parent, true);
+			}
+		};
 	}
 	
 	/* ----------------- Navigation operations ----------------- */

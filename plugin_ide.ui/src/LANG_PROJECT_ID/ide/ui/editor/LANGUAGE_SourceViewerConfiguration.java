@@ -22,6 +22,7 @@ import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.source.ISourceViewer;
 
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_CodeScanner;
@@ -61,14 +62,10 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 		return "//";
 	}
 	
-	// TODO:
-//	@Override
-//	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
-//		if(contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
-//			return new BestMatchHover(editor, stateMask);
-//		}
-//		return null;
-//	}
+	@Override
+	protected IInformationProvider getInformationProvider(String contentType) {
+		return null;
+	}
 	
 	@Override
 	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
