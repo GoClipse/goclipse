@@ -23,7 +23,8 @@ import java.util.Map.Entry;
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
+import melnorme.lang.ide.ui.editor.ViewerColorUpdater;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
 
@@ -83,8 +84,10 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		return preferenceStore;
 	}
 	
-	public void reconfigureForPropertyChange(PropertyChangeEvent event, IPreferenceStore prefStore,
+	public void handlePropertyChange(PropertyChangeEvent event, IPreferenceStore prefStore,
 			SourceViewer sourceViewer) {
+		handleTextPresentationPropertyChangeEvent(event);
+		
 		assertTrue(prefStore == getPreferenceStore());
 		String property = event.getProperty();
 		updateIndentationSettings(sourceViewer, property);
@@ -159,7 +162,7 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		return false;
 	}
 	
-	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
+	public void handleTextPresentationPropertyChangeEvent(PropertyChangeEvent event) {
 		for (AbstractLangScanner scanner : getScanners()) {
 			if (scanner.affectsBehavior(event)) {
 				scanner.adaptToPreferenceChange(event);
@@ -172,7 +175,7 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if(affectsTextPresentation(event)) {
-					handlePropertyChangeEvent(event);
+					handleTextPresentationPropertyChangeEvent(event);
 					viewer.invalidateTextPresentation();
 				}
 			}
@@ -254,9 +257,14 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 	
 	/* -----------------  ----------------- */
 	
-	@SuppressWarnings("unused")
-	public void setupCustomConfiguration(LangSourceViewer sourceViewer) {
-		// Default: do nothing
+	public void configureViewer(ProjectionViewerExt sourceViewer) {
+		StyledText textWidget = sourceViewer.getTextWidget();
+		if (textWidget != null) {
+			textWidget.setFont(JFaceResources.getFont(getFontPropertyPreferenceKey()));
+			// TODO: respond to font changes
+		}
+		
+		new ViewerColorUpdater(fPreferenceStore, sourceViewer).configureViewer();
 	}
 	
 }

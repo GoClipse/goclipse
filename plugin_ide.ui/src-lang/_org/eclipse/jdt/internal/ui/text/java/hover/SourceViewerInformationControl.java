@@ -165,7 +165,7 @@ public class SourceViewerInformationControl
 		// Source viewer
 		IPreferenceStore store= LangUIPlugin.getInstance().getCombinedPreferenceStore();
 		
-		fViewer= new LangSourceViewer(composite, null, null, false, textStyle, store);
+		fViewer= new LangSourceViewer(composite, null, null, false, textStyle);
 		fViewer.configure(EditorSettings_Actual.createSimpleSourceViewerConfiguration(store, getColorManager()));
 		
 		fViewer.setEditable(false);

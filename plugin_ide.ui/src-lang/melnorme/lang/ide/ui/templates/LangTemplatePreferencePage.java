@@ -73,9 +73,8 @@ public abstract class LangTemplatePreferencePage extends TemplatePreferencePage 
 	
 	@Override
 	protected SourceViewer createViewer(Composite parent) {
-		IPreferenceStore store = getPreferenceStore();
 		SourceViewer viewer = new LangSourceViewer(parent, null, null, false, 
-			SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, store);
+			SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		
 		viewer.configure(createPreviewerSourceViewerConfiguration());
 		viewer.setEditable(false);
@@ -130,15 +129,15 @@ public abstract class LangTemplatePreferencePage extends TemplatePreferencePage 
 		
 		@Override
 		protected SourceViewer createViewer(Composite parent) {
-			IPreferenceStore store = LangUIPlugin.getDefault().getCombinedPreferenceStore();
 			LangSourceViewer viewer = new LangSourceViewer(parent, null, null, false,
-				SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, store);
+				SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 			
 			final IContentAssistProcessor templateProcessor = getTemplateProcessor();
 			
 			IDocument document = new Document();
 			LangDocumentPartitionerSetup.getInstance().setup(document);
 			
+			IPreferenceStore store = LangUIPlugin.getDefault().getCombinedPreferenceStore();
 			SourceViewerConfiguration configuration = EditorSettings_Actual
 					.createTemplateEditorSourceViewerConfiguration(store, templateProcessor);
 			viewer.configure(configuration);

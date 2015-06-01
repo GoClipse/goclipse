@@ -24,11 +24,11 @@ import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
 import melnorme.lang.ide.ui.editor.text.LangReconciler;
 import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
-import melnorme.lang.ide.ui.text.completion.ContentAssistPreferenceHandler;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
@@ -230,20 +230,18 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 		AbstractLangEditor editor = getEditor_asLang();
 		if(editor != null) {
-			final ContentAssistPreferenceHandler caPrefHelper = createContentAssistPrefHandler();
-			
-			ContentAssistantExt assistant = new ContentAssistantExt(caPrefHelper);
+			ContentAssistantExt assistant = createContentAssitant();
 			assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 			
 			assistant.setRestoreCompletionProposalSize(LangUIPlugin.getDialogSettings("completion_proposal_size"));
 			assistant.setInformationControlCreator(
-				getInformationControl_ContentAsssist(caPrefHelper.getAdditionalInfoAffordanceString()));
+				getInformationControl_ContentAsssist(getAdditionalInfoAffordanceString()));
 			assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
 			assistant.enableColoredLabels(true);
 			
 			configureContentAssistantProcessors(assistant);
 			// Note: configuration must come after processors are created
-			assistant.configure(fPreferenceStore);
+			assistant.configure(fPreferenceStore, editor.getSourceViewer_());
 			
 			return assistant;
 		}
@@ -251,8 +249,12 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 		return null;
 	}
 	
-	protected ContentAssistPreferenceHandler createContentAssistPrefHandler() {
-		return new ContentAssistPreferenceHandler();
+	protected ContentAssistantExt createContentAssitant() {
+		return new ContentAssistantExt(getPreferenceStore());
+	}
+	
+	public String contentAssist_getAdditionalInfoAffordanceString() {
+		return getAdditionalInfoAffordanceString();
 	}
 	
 	protected void configureContentAssistantProcessors(ContentAssistant assistant) {
@@ -297,8 +299,13 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void setupCustomConfiguration(LangSourceViewer sourceViewer) {
-		installOutlinePresenter(sourceViewer);
+	public void configureViewer(ProjectionViewerExt sourceViewer) {
+		super.configureViewer(sourceViewer);
+		
+		if(sourceViewer instanceof LangSourceViewer) {
+			LangSourceViewer langSourceViewer = (LangSourceViewer) sourceViewer;
+			installOutlinePresenter(langSourceViewer);
+		}
 	}
 	
 }

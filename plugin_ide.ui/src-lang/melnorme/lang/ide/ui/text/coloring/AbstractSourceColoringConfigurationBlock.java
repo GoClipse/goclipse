@@ -386,7 +386,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	protected ProjectionViewer createPreviewViewer(Composite parent, boolean showAnnotationsOverview,
 			int styles, IPreferenceStore store) {
 		LangSourceViewer sourceViewer = new LangSourceViewer(parent, null, null,
-			showAnnotationsOverview, styles, store);
+			showAnnotationsOverview, styles);
 		
 		AbstractLangSourceViewerConfiguration configuration = createSimpleSourceViewerConfiguration(store);
 		sourceViewer.configure(configuration);

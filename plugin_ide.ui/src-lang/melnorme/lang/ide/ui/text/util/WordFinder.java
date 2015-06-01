@@ -9,14 +9,14 @@
  *     QNX Software Systems - Initial API and implementation
  *     Sergey Prigogin (Google)
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor;
+package melnorme.lang.ide.ui.text.util;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 
-
+// Originally based on org.eclipse.cdt.internal.ui.text.CWordFinder
 /**
  * This is a helper class for the text editor to be able to determine, given a
  * particular offset in a document, various candidates segments for things like

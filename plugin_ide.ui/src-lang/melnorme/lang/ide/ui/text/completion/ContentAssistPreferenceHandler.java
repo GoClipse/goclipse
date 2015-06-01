@@ -10,10 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.completion;
 
-import melnorme.lang.ide.ui.ContentAssistPreferences;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.ui.ContentAssistConstants;
+import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
+import melnorme.lang.ide.ui.editor.SourceViewerConfigurer;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -26,9 +28,15 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
-public class ContentAssistPreferenceHandler implements ContentAssistConstants, ContentAssistPreferences {
+public class ContentAssistPreferenceHandler extends SourceViewerConfigurer 
+	implements ContentAssistConstants, ContentAssistPreferences {
 	
-	public ContentAssistPreferenceHandler() {
+	protected final ContentAssistantExt assistant;
+	
+	public ContentAssistPreferenceHandler(ContentAssistantExt contentAssistantExt, IPreferenceStore prefStore,
+			ProjectionViewerExt sourceViewer) {
+		super(prefStore, sourceViewer);
+		this.assistant = assertNotNull(contentAssistantExt);
 	}
 	
 	protected IColorManager getColorManager() {
@@ -40,13 +48,15 @@ public class ContentAssistPreferenceHandler implements ContentAssistConstants, C
 		return getColorManager().getColor(rgb);
 	}
 	
-	/* -----------------  ----------------- */
-	
-	public void handlePrefChange(ContentAssistant assistant, IPreferenceStore store, PropertyChangeEvent event) {
+	@Override
+	protected void handlePropertyChange(PropertyChangeEvent event) {
 		setConfigurationOption(assistant, store, event.getProperty());
 	}
 	
-	public void configure(ContentAssistant assistant, IPreferenceStore store) {
+	/* -----------------  ----------------- */
+	
+	@Override
+	protected void doConfigureViewer() {
 		assistant.enableAutoActivation(true);
 		
 		setConfigurationOption(assistant, store, AUTO_INSERT__SingleProposals.key);
@@ -61,6 +71,11 @@ public class ContentAssistPreferenceHandler implements ContentAssistConstants, C
 		setConfigurationOption(assistant, store, PROPOSALS_BACKGROUND);
 		setConfigurationOption(assistant, store, PARAMETERS_FOREGROUND);
 		setConfigurationOption(assistant, store, PARAMETERS_BACKGROUND);
+	}
+	
+	@Override
+	protected void doUnconfigureViewer() {
+		// No need to do anything
 	}
 	
 	protected void setConfigurationOption(ContentAssistant assistant, IPreferenceStore store, String key) {
@@ -136,12 +151,6 @@ public class ContentAssistPreferenceHandler implements ContentAssistConstants, C
 		if(cap instanceof LangContentAssistProcessor)
 			return (LangContentAssistProcessor) cap;
 		return null;
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public String getAdditionalInfoAffordanceString() {
-		return SimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
 	}
 	
 }
