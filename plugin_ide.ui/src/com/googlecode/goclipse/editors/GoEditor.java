@@ -13,7 +13,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
@@ -52,12 +51,6 @@ public class GoEditor extends AbstractLangStructureEditor {
 	}
 	
 	/* ----------------- need to review/cleanup rest of this code ----------------- */
-	
-	// make public accesss
-	@Override
-	protected void setTitleImage(Image image) {
-		super.setTitleImage(image);
-	}
 	
 	@Override
 	public Object getAdapter(Class required) {

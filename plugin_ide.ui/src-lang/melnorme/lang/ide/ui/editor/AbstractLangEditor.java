@@ -20,11 +20,13 @@ import java.util.List;
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
+import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.actions.GotoMatchingBracketManager;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.cdt.internal.ui.editor.EclipsePreferencesAdapter;
@@ -102,10 +104,6 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 		setSourceViewerConfiguration(createSourceViewerConfiguration());
 	}
 	
-	@SuppressWarnings("unused")
-	protected void internalDoSetInput(IEditorInput input) {
-	}
-	
 	protected abstract AbstractLangSourceViewerConfiguration createSourceViewerConfiguration();
 	
 	public AbstractLangSourceViewerConfiguration getSourceViewerConfiguration_asLang() {
@@ -162,6 +160,9 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 		return super.affectsTextPresentation(event);
 	}
 	
+	protected void internalDoSetInput(IEditorInput input) {
+		editorTitleImageUpdater.updateEditorImage(EditorUtils.getAssociatedFile(input));
+	}
 	
 	/* ----------------- create controls ----------------- */
 	
@@ -173,22 +174,22 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	@Override
 	protected final ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
-		SourceViewer viewer = doCreateSourceViewer(parent, ruler, styles);
+		LangSourceViewer viewer = doCreateSourceViewer(parent, ruler, styles);
 		assertInstance(viewer, SourceViewer.class);
 		assertInstance(viewer, ISourceViewerExt.class);
 		return viewer;
 	}
 	
-	public SourceViewer getSourceViewer_() {
-		return (SourceViewer) getSourceViewer();
+	public LangSourceViewer getSourceViewer_() {
+		return (LangSourceViewer) getSourceViewer();
 	}
 	public ISourceViewerExt getSourceViewer_asExt() {
 		return (ISourceViewerExt) getSourceViewer();
 	}
 	
-	protected SourceViewer doCreateSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
+	protected LangSourceViewer doCreateSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
 		IPreferenceStore store = getPreferenceStore();
-		SourceViewer viewer = 
+		LangSourceViewer viewer = 
 				new LangSourceViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles, store);
 		// ensure decoration support has been created and configured.
 		getSourceViewerDecorationSupport(viewer);
@@ -203,6 +204,12 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	}
 	
 	/* ----------------- other ----------------- */
+	
+	protected final EditorTitleImageUpdater editorTitleImageUpdater = addOwned(new EditorTitleImageUpdater(this));
+	
+	public ImageHandle getBaseEditorImage() {
+		return LangImages.SOURCE_EDITOR_ICON;
+	}
 	
 	@Override
 	protected boolean isTabsToSpacesConversionEnabled() {

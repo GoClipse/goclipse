@@ -19,6 +19,7 @@ import melnorme.utilbox.ownership.IDisposable;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.editors.text.TextEditor;
 
 /**
@@ -48,10 +49,16 @@ public class TextEditorExt extends TextEditor {
 	
 	/* -----------------  ----------------- */
 	
-	// Allow public access to method
+	// public access to method
 	@Override
 	public void setStatusLineErrorMessage(String message) {
 		super.setStatusLineErrorMessage(message);
+	}
+	
+	// public access to method
+	@Override
+	public void setTitleImage(Image titleImage) {
+		super.setTitleImage(titleImage);
 	}
 	
 	/* ----------------- actions ----------------- */

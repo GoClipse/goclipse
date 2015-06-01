@@ -37,7 +37,7 @@
 			class="com.googlecode.goclipse.editors.GoEditor"
 			contributorClass="com.googlecode.goclipse.ui.editor.actions.GoEditorActionContributor"
 			extensions="go"
-			icon="icons/gopage.png"
+			icon="icons/views/SourceEditor.png"
 			id="com.googlecode.goclipse.editors.Editor"
 			name="Go Editor">
 			<contentTypeBinding contentTypeId="com.googlecode.goclipse.gosourcefile" />
@@ -344,7 +344,7 @@
             category="com.googlecode.goclipse.wizards.projects"
             class="com.googlecode.goclipse.ui.wizards.NewGoFileWizard"
             finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
-            icon="icons/gopage.png"
+            icon="icons/sourceicon.png"
             id="com.googlecode.goclipse.wizards.NewGoFileWizard"
             name="Go File"
             project="false">
