@@ -33,12 +33,10 @@ import org.eclipse.ui.IEditorPart;
  */
 public class BestMatchHover extends AbstractLangEditorTextHover {
 	
-	protected final int stateMask; //TODO: use statemask
 	protected List<ILangEditorTextHover<?>> fInstantiatedTextHovers;
 	protected ILangEditorTextHover<?> fBestHover;
 	
-	public BestMatchHover(IEditorPart editor, int stateMask) {
-		this.stateMask = stateMask;
+	public BestMatchHover(IEditorPart editor) {
 		setEditor(editor);
 		prepareTextHovers();
 	}
