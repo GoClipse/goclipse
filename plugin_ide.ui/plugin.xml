@@ -37,7 +37,7 @@
 		 class="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor"
 		 contributorClass="LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_EditorActionContributor"
 		 default="true"
-		 icon="icons/obj/editor_file.png"
+		 icon="icons/views/SourceEditor.png"
 		 id="LANG_PROJECT_ID.ide.ui.Editors.SourceEditor"
 		 name="%LangEditor.name">
 			<contentTypeBinding contentTypeId="LANG_PROJECT_ID.ide.core.content.source" />

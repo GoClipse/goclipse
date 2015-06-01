@@ -39,6 +39,7 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
+import _org.eclipse.jdt.internal.ui.viewsupport.ProblemMarkerManager;
 
 public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
@@ -207,7 +208,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	public ImageDescriptorRegistry getImageDescriptorRegistry() {
 		assertTrue(getStandardDisplay() != null);
 		if (fImageDescriptorRegistry == null) {
-			fImageDescriptorRegistry = new melnorme.util.swt.jface.resources.ImageDescriptorRegistry();
+			fImageDescriptorRegistry = new ImageDescriptorRegistry();
 		}
 		return fImageDescriptorRegistry;
 	}
@@ -263,6 +264,15 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 			));
 		}
 		return fCombinedPreferenceStore;
+	}
+	
+	protected ProblemMarkerManager fProblemMarkerManager;
+	
+	public synchronized ProblemMarkerManager getProblemMarkerManager() {
+		if(fProblemMarkerManager == null) {
+			fProblemMarkerManager = new ProblemMarkerManager();
+		}
+		return fProblemMarkerManager;
 	}
 	
 }

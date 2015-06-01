@@ -63,6 +63,7 @@ public abstract class LangImages {
 	public static final ImageHandle ACTIONS_OPEN_DEF = createManaged(LANG_ACTIONS, "OpenDef.16.png");
 	
 	public static final ImageHandle TOOLS_CONSOLE_ICON = createManaged(CAT_VIEWS, "ToolsConsole.16.png");
+	public static final ImageHandle SOURCE_EDITOR_ICON = createManaged(CAT_VIEWS, "SourceEditor.png");
 	
 	public static final ImageHandle IMG_LAUNCHTAB_MAIN = createManaged(T_TABS, "main_launch_tab.png");
 	public static final ImageHandle IMG_LAUNCHTAB_ARGUMENTS = createManaged(T_TABS, "arguments_tab.gif");
@@ -73,6 +74,9 @@ public abstract class LangImages {
 	
 	
 	/* ----------------- overlay decorations ----------------- */
+	
+	public static final ImageDescriptor DESC_OVR_ERROR = createUnmanaged(LANG_OVERLAYS, "error.png");
+	public static final ImageDescriptor DESC_OVR_WARNING = createUnmanaged(LANG_OVERLAYS, "warning.png");
 	
 	public static final ImageDescriptor DESC_OVR_PRIVATE = createUnmanaged(LANG_OVERLAYS, "prot_private.png");
 	public static final ImageDescriptor DESC_OVR_PROTECTED = createUnmanaged(LANG_OVERLAYS, "prot_protected.png");
