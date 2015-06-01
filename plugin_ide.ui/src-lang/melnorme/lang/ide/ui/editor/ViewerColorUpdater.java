@@ -48,7 +48,7 @@ public class ViewerColorUpdater extends SourceViewerConfigurer {
 		fBackgroundColor = updateColorFromSetting(fBackgroundColor,
 			AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND_SYSTEM_DEFAULT,
 			AbstractTextEditor.PREFERENCE_COLOR_BACKGROUND);
-		styledText.setBackground(fForegroundColor);
+		styledText.setBackground(fBackgroundColor);
 		
 		// ----------- selection foreground color --------------------
 		fSelectionForegroundColor = updateColorFromSetting(fSelectionForegroundColor,
