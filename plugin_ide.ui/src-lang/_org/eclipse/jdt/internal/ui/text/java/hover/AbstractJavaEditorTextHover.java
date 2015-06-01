@@ -134,7 +134,7 @@ public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHove
 	}
 
 	/**
-	 * Delegate method for {@link JavaInformationProvider#getInformationPresenterControlCreator()}
+	 * Delegate method for {@link LangInformationProvider#getInformationPresenterControlCreator()}
 	 * 
 	 * @return the information control creator or null if none is available
 	 * @since 3.4

@@ -92,7 +92,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	@Override
 	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
 		if(contentType.equals(IDocument.DEFAULT_CONTENT_TYPE)) {
-			return new BestMatchHover(getEditor(), stateMask);
+			return new BestMatchHover(getEditor());
 		}
 		return null;
 	}
