@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor;
+package melnorme.utilbox.ownership;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
-import org.eclipse.jface.text.source.ISourceViewer;
+import melnorme.utilbox.collections.ArrayList2;
 
-public interface ISourceViewerExt extends ISourceViewer {
+public class OwnedArraylist extends ArrayList2<IDisposable> implements IOwnedList<IDisposable> {
 	
-	IContentAssistant getContentAssistant();
-	
-	void showOutline() throws CoreException;
+	private static final long serialVersionUID = 8056073985418947624L;
 	
 }

@@ -17,6 +17,7 @@ import java.util.List;
 
 import melnorme.lang.ide.ui.LangEditorTextHoversRegistry;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.text.util.WordFinder;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;

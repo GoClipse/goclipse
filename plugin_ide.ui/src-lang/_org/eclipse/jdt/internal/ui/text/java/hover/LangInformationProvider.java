@@ -11,7 +11,7 @@
 package _org.eclipse.jdt.internal.ui.text.java.hover;
 
 import melnorme.lang.ide.ui.editor.BestMatchHover;
-import melnorme.lang.ide.ui.text.util.JavaWordFinder;
+import melnorme.lang.ide.ui.text.util.WordFinder;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
@@ -38,7 +38,7 @@ public class LangInformationProvider implements IInformationProvider, IInformati
 	public IRegion getSubject(ITextViewer textViewer, int offset) {
 		
 		if (textViewer != null)
-			return JavaWordFinder.findWord(textViewer.getDocument(), offset);
+			return WordFinder.findWord(textViewer.getDocument(), offset);
 		
 		return null;
 	}

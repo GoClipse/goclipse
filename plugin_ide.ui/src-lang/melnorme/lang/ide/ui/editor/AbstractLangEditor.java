@@ -138,13 +138,10 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	@Override
 	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
 		AbstractLangSourceViewerConfiguration langSVC = getSourceViewerConfiguration_asLang();
-		if(langSVC != null) {
-			langSVC.handlePropertyChangeEvent(event);
-		}
 		
-		ISourceViewerExt sourceViewer = getSourceViewer_asExt();
-		if(sourceViewer != null) {
-			sourceViewer.handlePropertyChangeEvent_2(event, getPreferenceStore());
+		if(langSVC != null) {
+			LangSourceViewer sourceViewer = getSourceViewer_();
+			langSVC.handlePropertyChange(event, getPreferenceStore(), sourceViewer);
 		}
 		
 		super.handlePreferenceStoreChanged(event);
@@ -188,9 +185,8 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	}
 	
 	protected LangSourceViewer doCreateSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
-		IPreferenceStore store = getPreferenceStore();
 		LangSourceViewer viewer = 
-				new LangSourceViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles, store);
+				new LangSourceViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
 		// ensure decoration support has been created and configured.
 		getSourceViewerDecorationSupport(viewer);
 		return viewer;

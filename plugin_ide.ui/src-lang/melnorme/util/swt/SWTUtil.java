@@ -15,6 +15,7 @@ import melnorme.lang.tooling.data.StatusLevel;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Resource;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -30,6 +31,13 @@ public class SWTUtil {
 	/** @return true if a control can be used: is neither null, nor disposed. */
 	public static boolean isOkToUse(Control control) {
 		return control != null && !control.isDisposed();
+	}
+	
+	public static <T extends Resource> T dispose(T resource) {
+		if(resource != null) {
+			resource.dispose();
+		}
+		return null;
 	}
 	
 	/**

@@ -10,30 +10,26 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.completion;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.templates.LangTemplateProposal;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposalSorter;
-import org.eclipse.jface.util.PropertyChangeEvent;
 
 public class ContentAssistantExt extends ContentAssistant {
 	
-	protected final ContentAssistPreferenceHandler caPrefHelper;
+	protected final IPreferenceStore prefStore;
 	
-	public ContentAssistantExt(ContentAssistPreferenceHandler caPrefHelper) {
-		this.caPrefHelper = caPrefHelper;
-		
+	public ContentAssistantExt(IPreferenceStore prefStore) {
+		this.prefStore = assertNotNull(prefStore);
 		setSorter(new ContentAssistSorter());
 	}
 	
-	public void configure(IPreferenceStore prefStore) {
-		 caPrefHelper.configure(this, prefStore);
-	}
-	
-	public void handlePrefChange(PropertyChangeEvent event, IPreferenceStore prefStore) {
-		caPrefHelper.handlePrefChange(this, prefStore, event);
+	public void configure(IPreferenceStore prefStore, LangSourceViewer langSourceViewer) {
+		new ContentAssistPreferenceHandler(this, prefStore, langSourceViewer).configureViewer();
 	}
 	
 	/* -----------------  ----------------- */
