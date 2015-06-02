@@ -67,17 +67,14 @@ public abstract class Scanner_BaseTest extends CommonTest {
 	
 	public static void setupSamplePartitioner(Document document) {
 		SamplePartitionScanner partitionScanner = new SamplePartitionScanner();
-		String[] legalContentTypes = SamplePartitionScanner.LEGAL_CONTENT_TYPES;
-		installPartitioner(document, SamplePartitionScanner.LANG_PARTITIONING, partitionScanner, legalContentTypes);
+		setupPartitioner(document, partitionScanner, 
+			SamplePartitionScanner.LANG_PARTITIONING, SamplePartitionScanner.LEGAL_CONTENT_TYPES);
 	}
 	
-	public static FastPartitioner installPartitioner(Document document, String partitioning,
-			IPartitionTokenScanner partitionScanner, String[] legalContentTypes) {
-		partitionScanner.setRange(document, 0, document.getLength());
-		
+	public static FastPartitioner setupPartitioner(Document document, IPartitionTokenScanner partitionScanner,
+			String partitioning, String[] legalContentTypes) {
 		FastPartitioner fp = new FastPartitioner(partitionScanner, legalContentTypes);
-		fp.connect(document, false);
-		document.setDocumentPartitioner(partitioning, fp);
+		LangDocumentPartitionerSetup.setupDocumentPartitioner$2(fp, document, partitioning);
 		return fp;
 	}
 	
