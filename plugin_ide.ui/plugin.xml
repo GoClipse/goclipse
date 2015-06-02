@@ -344,7 +344,7 @@
             category="com.googlecode.goclipse.wizards.projects"
             class="com.googlecode.goclipse.ui.wizards.NewGoFileWizard"
             finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
-            icon="icons/sourceicon.png"
+            icon="icons/views/SourceEditor.png"
             id="com.googlecode.goclipse.wizards.NewGoFileWizard"
             name="Go File"
             project="false">
