@@ -2,7 +2,7 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
-import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 
 import org.eclipse.jface.text.source.ISourceViewer;

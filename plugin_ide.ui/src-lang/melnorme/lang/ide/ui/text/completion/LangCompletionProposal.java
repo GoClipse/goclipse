@@ -13,6 +13,8 @@ package melnorme.lang.ide.ui.text.completion;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.TextUtils;
+import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
+import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.Indexable;
@@ -165,9 +167,15 @@ public class LangCompletionProposal implements
 	public void unselected(ITextViewer viewer) {
 	}
 	
+	protected IInformationControlCreator informationControlCreator;
+	
 	@Override
 	public IInformationControlCreator getInformationControlCreator() {
-		return null; // TODO: browser control
+		if(informationControlCreator == null) {
+			String tooltipAffordanceString = SimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
+			informationControlCreator = BrowserControlHover.createHoverControlCreator(tooltipAffordanceString);
+		}
+		return informationControlCreator;
 	}
 	
 	@Override

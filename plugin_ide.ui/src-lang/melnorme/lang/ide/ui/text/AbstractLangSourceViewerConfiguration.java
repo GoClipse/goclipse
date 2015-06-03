@@ -22,9 +22,9 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
+import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
 import melnorme.lang.ide.ui.editor.text.LangReconciler;
@@ -251,10 +251,6 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	
 	protected ContentAssistantExt createContentAssitant() {
 		return new ContentAssistantExt(getPreferenceStore());
-	}
-	
-	public String contentAssist_getAdditionalInfoAffordanceString() {
-		return getAdditionalInfoAffordanceString();
 	}
 	
 	protected void configureContentAssistantProcessors(ContentAssistant assistant) {

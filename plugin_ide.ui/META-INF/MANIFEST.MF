@@ -25,5 +25,6 @@ Require-Bundle: LANG_PROJECT_ID.ide.core,
 Export-Package: LANG_PROJECT_ID.ide.ui.launch,
  melnorme.lang.ide.ui;x-friends:="LANG_PROJECT_ID.ide.debug",
  melnorme.lang.ide.ui.editor;x-friends:="LANG_PROJECT_ID.ide.debug",
+ melnorme.lang.ide.ui.editor.hover,
  melnorme.lang.ide.ui.launch
 Bundle-ClassPath: .

@@ -11,7 +11,7 @@
  *******************************************************************************/
 package _org.eclipse.jdt.internal.ui.text.java.hover;
 
-import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.text.util.WordFinder;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -132,26 +132,5 @@ public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHove
 			}
 		};
 	}
-
-	/**
-	 * Delegate method for {@link LangInformationProvider#getInformationPresenterControlCreator()}
-	 * 
-	 * @return the information control creator or null if none is available
-	 * @since 3.4
-	 */
-	public IInformationControlCreator getInformationPresenterControlCreator() {
-		return new IInformationControlCreator() {
-			@Override
-			public IInformationControl createInformationControl(Shell shell) {
-				return new DefaultInformationControl(shell, true);
-			}
-		};
-	}
-
-//	protected ITypeRoot getEditorInputJavaElement() {
-//		IEditorPart editor= getEditor();
-//		if (editor != null)
-//			return EditorUtility.getEditorInputJavaElement(editor, false);
-//		return null;
-//	}
+	
 }

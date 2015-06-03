@@ -11,22 +11,20 @@
  *     Anton Leherbauer (Wind River Systems)
  *     Bruno Medeiros - lang modifications
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor;
+package melnorme.lang.ide.ui.editor.hover;
 
-import org.eclipse.jface.text.DefaultInformationControl;
-import org.eclipse.jface.text.IInformationControl;
+import melnorme.lang.ide.ui.text.util.WordFinder;
+
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextHoverExtension2;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.information.IInformationProviderExtension2;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 
 public abstract class AbstractLangEditorTextHover 
-	implements ITextHover, ITextHoverExtension, ITextHoverExtension2, IInformationProviderExtension2 {
+	implements ITextHover, ITextHoverExtension, ITextHoverExtension2 {
 	
 	protected IEditorPart fEditor;
 	
@@ -39,7 +37,9 @@ public abstract class AbstractLangEditorTextHover
 	}
 	
 	@Override
-	public abstract IRegion getHoverRegion(ITextViewer textViewer, int offset);
+	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
+		return WordFinder.findWord(textViewer.getDocument(), offset);
+	}
 	
 	@Deprecated
 	@Override
@@ -52,16 +52,5 @@ public abstract class AbstractLangEditorTextHover
 	
 	@Override
 	public abstract IInformationControlCreator getHoverControlCreator();
-	
-	
-	@Override
-	public IInformationControlCreator getInformationPresenterControlCreator() {
-		return new IInformationControlCreator() {
-			@Override
-			public IInformationControl createInformationControl(Shell shell) {
-				return new DefaultInformationControl(shell, true);
-			}
-		};
-	}
 	
 }
