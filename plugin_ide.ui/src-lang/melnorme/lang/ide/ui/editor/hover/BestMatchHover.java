@@ -10,7 +10,7 @@
  *     Anton Leherbauer (Wind River Systems)
  *     Ericsson             - Fix improper hover order (Bug 294812)
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor;
+package melnorme.lang.ide.ui.editor.hover;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ import melnorme.lang.ide.ui.text.util.WordFinder;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.ui.IEditorPart;
 
 /**
@@ -103,12 +102,11 @@ public class BestMatchHover extends AbstractLangEditorTextHover {
 		return null;
 	}
 	
-	@Override
-	public IInformationControlCreator getInformationPresenterControlCreator() {
-		// This is wrong, but left here for backwards compatibility
-		if (fBestHover instanceof IInformationProviderExtension2)
-			return ((IInformationProviderExtension2) fBestHover).getInformationPresenterControlCreator();
-		
+	public IInformationControlCreator getHoverControlCreatorForInformationProvider() {
+		if(fBestHover instanceof BrowserControlHover) {
+			// Create a hover that is already focused.
+			return new BrowserControlHover.BrowserControlCreator();
+		}
 		return null;
 	}
 	

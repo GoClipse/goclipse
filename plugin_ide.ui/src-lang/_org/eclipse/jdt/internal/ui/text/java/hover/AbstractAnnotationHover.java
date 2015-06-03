@@ -586,42 +586,6 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 		}
 	}
 
-//	/**
-//	 * Action to configure the annotation preferences.
-//	 *
-//	 * @since 3.4
-//	 */
-//	private static final class ConfigureAnnotationsAction extends Action {
-//
-//		private final Annotation fAnnotation;
-//		private final IInformationControl fInfoControl;
-//
-//		public ConfigureAnnotationsAction(Annotation annotation, IInformationControl infoControl) {
-//			super();
-//			fAnnotation= annotation;
-//			fInfoControl= infoControl;
-//			setImageDescriptor(JavaPluginImages.DESC_ELCL_CONFIGURE_ANNOTATIONS);
-//			setDisabledImageDescriptor(JavaPluginImages.DESC_DLCL_CONFIGURE_ANNOTATIONS);
-//			setToolTipText(JavaHoverMessages.AbstractAnnotationHover_action_configureAnnotationPreferences);
-//		}
-//
-//		/*
-//		 * @see org.eclipse.jface.action.Action#run()
-//		 */
-//		@Override
-//		public void run() {
-//			Shell shell= PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-//
-//			Object data= null;
-//			AnnotationPreference preference= getAnnotationPreference(fAnnotation);
-//			if (preference != null)
-//				data= preference.getPreferenceLabel();
-//
-//			fInfoControl.dispose(); //FIXME: should have protocol to hide, rather than dispose
-//			PreferencesUtil.createPreferenceDialogOn(shell, "org.eclipse.ui.editors.preferencePages.Annotations", null, data).open(); //$NON-NLS-1$
-//		}
-//	}
-
 	private final IPreferenceStore fStore= LangUIPlugin.getDefault().getCombinedPreferenceStore();
 	private final DefaultMarkerAnnotationAccess fAnnotationAccess= new DefaultMarkerAnnotationAccess();
 	private final boolean fAllAnnotations;
@@ -735,11 +699,6 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 		return fHoverControlCreator;
 	}
 
-	/*
-	 * @see org.eclipse.jdt.internal.ui.text.java.hover.AbstractJavaEditorTextHover#getInformationPresenterControlCreator()
-	 * @since 3.4
-	 */
-	@Override
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		if (fPresenterControlCreator == null)
 			fPresenterControlCreator= new PresenterControlCreator();

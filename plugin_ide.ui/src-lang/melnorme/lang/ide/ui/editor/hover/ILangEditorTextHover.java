@@ -1,4 +1,4 @@
-package melnorme.lang.ide.ui.editor;
+package melnorme.lang.ide.ui.editor.hover;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;

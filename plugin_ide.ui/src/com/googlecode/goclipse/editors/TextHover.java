@@ -1,8 +1,8 @@
 package com.googlecode.goclipse.editors;
 
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditorTextHover;
-import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.hover.AbstractLangEditorTextHover;
+import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
