@@ -11,6 +11,7 @@
 package com.googlecode.goclipse.ui.wizards;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.WizardMessages_Actual;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
@@ -69,6 +70,16 @@ public class GoProjectWizard extends LangNewProjectWizard {
 				ResourceUtils.createFolder(project.getFolder("bin"), false, monitor);
 				ResourceUtils.createFolder(project.getFolder("pkg"), false, monitor);
 			}
+		}
+		
+		@Override
+		protected String getHelloWorldContents() {
+			throw assertUnreachable();
+		}
+		
+		@Override
+		protected String getDefaultManifestFileContents() {
+			throw assertUnreachable();
 		}
 		
 	}
