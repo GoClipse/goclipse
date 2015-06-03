@@ -20,7 +20,6 @@ import melnorme.lang.ide.ui.templates.TemplateRegistry;
 import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
 import melnorme.utilbox.misc.MiscUtil;
 
-import org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -39,6 +38,7 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
+import _org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import _org.eclipse.jdt.internal.ui.viewsupport.ProblemMarkerManager;
 
 public abstract class LangUIPlugin extends AbstractUIPlugin {
@@ -199,7 +199,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	protected CColorManager fColorManager = new CColorManager(true);
 	
-	public org.eclipse.cdt.ui.text.IColorManager getColorManager() {
+	public _org.eclipse.cdt.ui.text.IColorManager getColorManager() {
 		return fColorManager;
 	}
 	

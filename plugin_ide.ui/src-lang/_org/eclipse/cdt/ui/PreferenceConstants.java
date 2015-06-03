@@ -1,4 +1,4 @@
-package org.eclipse.cdt.ui;
+package _org.eclipse.cdt.ui;
 
 import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
 

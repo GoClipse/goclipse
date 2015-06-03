@@ -10,7 +10,7 @@
  *     QNX Software System
  *     Anton Leherbauer (Wind River Systems)
  *******************************************************************************/
-package org.eclipse.cdt.internal.ui.text.util;
+package _org.eclipse.cdt.internal.ui.text.util;
  
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
-import org.eclipse.cdt.ui.text.IColorManager;
+import _org.eclipse.cdt.ui.text.IColorManager;
 
 
 /**

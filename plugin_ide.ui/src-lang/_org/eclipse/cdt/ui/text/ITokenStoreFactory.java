@@ -8,7 +8,7 @@
  * Contributors:
  * Andrew Ferguson (Symbian) - Initial implementation
  *******************************************************************************/
-package org.eclipse.cdt.ui.text;
+package _org.eclipse.cdt.ui.text;
 
 /**
  * A means of obtaining ITokenStore objects.

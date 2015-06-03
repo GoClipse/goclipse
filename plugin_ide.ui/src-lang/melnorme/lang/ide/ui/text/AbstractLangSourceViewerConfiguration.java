@@ -35,7 +35,6 @@ import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAs
 import melnorme.lang.ide.ui.text.util.AutoEditUtils;
 import melnorme.utilbox.collections.Indexable;
 
-import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -61,6 +60,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import _org.eclipse.cdt.ui.text.IColorManager;
 import _org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy;
 import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
 

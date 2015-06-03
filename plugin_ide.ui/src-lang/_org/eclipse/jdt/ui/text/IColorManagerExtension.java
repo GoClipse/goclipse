@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.jdt.ui.text;
+package _org.eclipse.jdt.ui.text;
 
 import org.eclipse.swt.graphics.RGB;
 

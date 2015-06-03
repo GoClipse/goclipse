@@ -10,7 +10,7 @@
  *     QNX Software System
  *     Andrew Ferguson (Symbian) - refactored to TokenStore (previously part of AbstractCScanner)
  *******************************************************************************/
-package org.eclipse.cdt.internal.ui.text;
+package _org.eclipse.cdt.internal.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -28,9 +28,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.cdt.ui.PreferenceConstants;
-import org.eclipse.cdt.ui.text.IColorManager;
-import org.eclipse.cdt.ui.text.ITokenStore;
+
+import _org.eclipse.cdt.ui.PreferenceConstants;
+import _org.eclipse.cdt.ui.text.IColorManager;
+import _org.eclipse.cdt.ui.text.ITokenStore;
 
 
 /**

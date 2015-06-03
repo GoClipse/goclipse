@@ -12,7 +12,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.coloring;
 
-import org.eclipse.cdt.ui.text.ITokenStoreFactory;
+import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
 
 /**
  * 
