@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Added: Show error message dialog if starting Eclipse with a Java version below the minimum.
  * Fixed: `Tab policy: "Spaces Only"` preference ignored when pressing TAB.
  * Added Content Assist preference page, with auto-activation options.
  * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
