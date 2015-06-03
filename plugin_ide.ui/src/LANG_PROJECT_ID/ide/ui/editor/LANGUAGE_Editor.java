@@ -14,8 +14,7 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
-
-import org.eclipse.cdt.ui.text.IColorManager;
+import _org.eclipse.cdt.ui.text.IColorManager;
 
 public class LANGUAGE_Editor extends AbstractLangStructureEditor {
 	
