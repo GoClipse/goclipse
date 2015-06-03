@@ -24,6 +24,7 @@
 	</properties>
 
 	<modules>
+		<module>releng/plugin_jvmcheck</module>
 		<module>plugin_tooling</module>
 		<module>plugin_ide.core</module>
 		<module>plugin_ide.core.tests</module>
