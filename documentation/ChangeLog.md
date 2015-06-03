@@ -12,6 +12,7 @@
   ▶ Recommended/tested CDT version: 8.6.0
  * Fixed: #127 "null argument" error dialog when double-clicking on Go project.
  * Upgraded minimum Java version to Java 8
+  * Added: Show error message dialog if starting Eclipse with a Java version below the minimum.
  * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
  * Fixed: `Tab policy: "Spaces Only"` preference ignored when pressing TAB.
 
