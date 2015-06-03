@@ -16,7 +16,6 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 
-import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -51,6 +50,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
+
+import _org.eclipse.cdt.ui.text.IColorManager;
 
 /**
  * Source viewer based implementation of <code>IInformationControl</code>.

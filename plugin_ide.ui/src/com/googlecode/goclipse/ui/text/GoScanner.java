@@ -6,13 +6,14 @@ import java.util.List;
 import melnorme.lang.ide.core.text.DefaultPredicateRule;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 
-import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
+
+import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
 
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 

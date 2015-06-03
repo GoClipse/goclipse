@@ -8,13 +8,13 @@
  * Contributors:
  * Andrew Ferguson (Symbian) - Initial implementation
  *******************************************************************************/
-package org.eclipse.cdt.ui.text;
+package _org.eclipse.cdt.ui.text;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.rules.IToken;
 
-import org.eclipse.cdt.ui.IPropertyChangeParticipant;
-import org.eclipse.cdt.ui.PreferenceConstants;
+import _org.eclipse.cdt.ui.IPropertyChangeParticipant;
+import _org.eclipse.cdt.ui.PreferenceConstants;
 
 /**
  * An ITokenStore manages a set of tokens for a specified set of color property identifiers. Responsibilities include

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core.utils.prefs.EclipsePreferencesAdapter;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangImages;
@@ -29,7 +30,6 @@ import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 import melnorme.utilbox.misc.ArrayUtil;
 
-import org.eclipse.cdt.internal.ui.editor.EclipsePreferencesAdapter;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;

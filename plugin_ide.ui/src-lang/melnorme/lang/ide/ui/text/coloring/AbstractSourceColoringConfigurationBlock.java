@@ -40,7 +40,6 @@ import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.SimpleTreeElement;
 import melnorme.utilbox.tree.TreeVisitor;
 
-import org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -56,6 +55,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
+
+import _org.eclipse.cdt.internal.ui.text.util.CColorManager;
 
 /**
  * A configuration component for syntax (and possibly semantic) source highlighting options.

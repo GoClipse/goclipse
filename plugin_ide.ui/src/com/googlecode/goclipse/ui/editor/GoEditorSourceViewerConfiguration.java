@@ -4,7 +4,6 @@ import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 
-import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
@@ -15,6 +14,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import _org.eclipse.cdt.ui.text.IColorManager;
 import _org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy;
 
 import com.googlecode.goclipse.core.text.GoPartitionScanner;

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.cdt.internal.ui.editor;
+package melnorme.lang.ide.core.utils.prefs;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -16,9 +16,9 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.widgets.Display;
 import org.osgi.service.prefs.BackingStoreException;
 
+//BM: changed PreferenceChangeListener to not use Display
 /**
  * Adapts an options {@link IEclipsePreferences} to {@link org.eclipse.jface.preference.IPreferenceStore}.
  * <p>
@@ -40,16 +40,7 @@ public class EclipsePreferencesAdapter implements IPreferenceStore {
 		 */
 		@Override
 		public void preferenceChange(final IEclipsePreferences.PreferenceChangeEvent event) {
-			if (Display.getCurrent() == null) {
-				Display.getDefault().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						firePropertyChangeEvent(event.getKey(), event.getOldValue(), event.getNewValue());
-					}
-				});
-			} else {
-				firePropertyChangeEvent(event.getKey(), event.getOldValue(), event.getNewValue());
-			}
+			firePropertyChangeEvent(event.getKey(), event.getOldValue(), event.getNewValue());
 		}
 	}
 

@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     QNX Software System
  *******************************************************************************/
-package org.eclipse.cdt.ui.text;
+package _org.eclipse.cdt.ui.text;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -30,7 +30,7 @@ import org.eclipse.swt.graphics.RGB;
  * 
  * @since 5.1
  */
-public interface IColorManager extends org.eclipse.jdt.ui.text.IColorManagerExtension {
+public interface IColorManager extends _org.eclipse.jdt.ui.text.IColorManagerExtension {
 	
 	/**
 	 * Returns a color object for the given key. The color objects 

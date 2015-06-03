@@ -8,7 +8,7 @@
  * Contributors:
  * Andrew Ferguson (Symbian) - Initial Implementation
  *******************************************************************************/
-package org.eclipse.cdt.ui;
+package _org.eclipse.cdt.ui;
 
 import org.eclipse.jface.util.PropertyChangeEvent;
 

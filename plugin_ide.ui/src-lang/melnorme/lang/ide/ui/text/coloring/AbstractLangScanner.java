@@ -23,8 +23,9 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.cdt.ui.IPropertyChangeParticipant;
-import org.eclipse.cdt.ui.text.ITokenStore;
+
+import _org.eclipse.cdt.ui.IPropertyChangeParticipant;
+import _org.eclipse.cdt.ui.text.ITokenStore;
 
 /**
  * Convenience implementation for {@link ILangTokenScanner}.

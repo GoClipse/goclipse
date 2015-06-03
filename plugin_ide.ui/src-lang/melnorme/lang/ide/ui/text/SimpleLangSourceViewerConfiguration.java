@@ -28,10 +28,6 @@ import melnorme.lang.ide.ui.editor.ViewerColorUpdater;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
 
-import org.eclipse.cdt.internal.ui.text.TokenStore;
-import org.eclipse.cdt.ui.text.IColorManager;
-import org.eclipse.cdt.ui.text.ITokenStore;
-import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -53,6 +49,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
+
+import _org.eclipse.cdt.internal.ui.text.TokenStore;
+import _org.eclipse.cdt.ui.text.IColorManager;
+import _org.eclipse.cdt.ui.text.ITokenStore;
+import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
 
 /**
  * Abstract SourceViewConfiguration
