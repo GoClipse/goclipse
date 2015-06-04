@@ -13,11 +13,12 @@ package melnorme.lang.ide.ui.editor.structure;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.engine.IStructureModelListener;
+import melnorme.lang.ide.core.engine.StructureModelManager;
+import melnorme.lang.ide.core.engine.StructureModelManager.MDocumentSynchedAcess;
 import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
@@ -26,8 +27,10 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.ownership.IDisposable;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -51,48 +54,39 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	
 	public AbstractLangStructureEditor() {
 		super();
-		
-		engineClient.getStructureManager().addListener(new StructureModelListener());
 	}
 	
 	public EngineClient getEngineClient() {
 		return engineClient;
 	}
 	
-	protected Location editorLocation;
-	protected volatile Object editorKey;
+	protected final StructureInfoBinding structureInfoBinding = new StructureInfoBinding();
 	
-	protected class StructureModelListener implements IStructureModelListener {
-		@Override
-		public void structureChanged(StructureInfo lockedStructureInfo, final SourceFileStructure structure) {
-			final Object key = lockedStructureInfo.getKey();
-			
-			// Note: editorKey may be null at this stage.
-			
-			if(!areEqual(key, editorKey))
-				return;
-			
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					handleEditorStructureUpdated(key, structure);
-				}
-			});
-		}
-	}
+	protected Location editorLocation;
+	protected volatile StructureInfo editorStructureInfo;
 	
 	@Override
 	protected void internalDoSetInput(IEditorInput input) {
 		super.internalDoSetInput(input);
 		
-		editorKey = getStructureModelKeyFromEditorInput(input);
+		if(editorStructureInfo != null) {
+			// Disconnect from previous input
+			structureInfoBinding.endStructureUpdates();
+			editorStructureInfo = null;
+		}
+		
+		if(input == null) {
+			// I don't think this case is possible, but guard against it just in case
+			LangCore.logError("input is null.");
+			return;
+		}
+		
+		Object editorKey = getStructureModelKeyFromEditorInput(input);
 		editorLocation = (Location) (editorKey instanceof Location ? editorKey : null);
 		
-		// From this moment onwards, the structure model listener will give updates to new key only
-		
-		// Send initial update
-		SourceFileStructure storedStructure = engineClient.getStructureManager().getStoredStructure(editorKey);
-		handleEditorStructureUpdated(editorKey, storedStructure);
+		IDocument document = getDocumentProvider().getDocument(input);
+		structureInfoBinding.beginStructureUpdates(editorKey, document);
+		putOwned(structureInfoBinding);
 	}
 	
 	public static Object getStructureModelKeyFromEditorInput(IEditorInput input) {
@@ -103,6 +97,42 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 			// Is input thread-safe? We assume so since IEditorInput is supposed to be immutable.
 			return input;
 		}
+	}
+	
+	protected class StructureInfoBinding implements IStructureModelListener, IDisposable {
+		
+		protected final StructureModelManager structureMgr = engineClient;
+		
+		public void beginStructureUpdates(Object editorKey, IDocument doc) {
+			editorStructureInfo = structureMgr.connectStructureUpdates(editorKey, doc, this);
+			assertNotNull(editorStructureInfo);
+			// Send initial update
+			handleEditorStructureUpdated();
+		}
+		
+		public void endStructureUpdates() {
+			structureMgr.disconnectStructureUpdates2(editorStructureInfo, this, new MDocumentSynchedAcess() {});
+		}
+		
+		@Override
+		public void dispose() {
+			endStructureUpdates();
+		}
+		
+		@Override
+		public void structureChanged(StructureInfo lockedStructureInfo, final SourceFileStructure structure) {
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					// editor input might have changed, so re-check this update applies to editor structure info
+					if(lockedStructureInfo != editorStructureInfo) {
+						return;
+					}
+					handleEditorStructureUpdated();
+				}
+			});
+		}
+		
 	}
 	
 	protected final DomainField<SourceFileStructure> structureField = new DomainField<>();
@@ -133,13 +163,10 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	}
 	
 	
-	protected void handleEditorStructureUpdated(Object key, SourceFileStructure structure) {
+	protected void handleEditorStructureUpdated() {
 		assertTrue(Display.getCurrent() != null);
 		
-		// editorKey might have changed, so re-check
-		if(!areEqual(key, editorKey)) {
-			return;
-		}
+		SourceFileStructure structure = editorStructureInfo.getStoredStructure();
 		if(structure == null) {
 			return; // Ignore
 		}

@@ -42,7 +42,7 @@ public class HashcodeUtil {
 		return result;
 	}
 	
-	/** Combines hash codes from multiple objects to make a new one. */
+	/** Combines hash codes from multiple objects to make a new one. Each object in the array can be null. */
 	public static int combinedHashCode(Object... objects) {
 		final int prime = 31;
 		int result = 1;

@@ -81,7 +81,7 @@ public abstract class LangCore extends Plugin {
 	public final void stop(BundleContext context) throws Exception {
 		doCustomStop(context);
 		
-		engineClient.shutdown();
+		engineClient.dispose();
 		
 		super.stop(context);
 		pluginInstance = null;

@@ -20,25 +20,20 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 
 public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<SourceFileStructure> {
 	
 	protected final StructureModelManager modelManager;
-	protected final IEditorInput editorInput;
+	protected final StructureInfo structureInfo;
 	
-	protected Object key;
-	protected StructureInfo structureInfo;
-	
-	public GetUpdatedStructureUIOperation(IEditorPart editor) {
-		this(LangCore.getEngineClient().getStructureManager(), editor.getEditorInput());
+	public GetUpdatedStructureUIOperation(AbstractLangStructureEditor editor) {
+		this(LangCore.getEngineClient(), editor.editorStructureInfo);
 	}
 	
-	public GetUpdatedStructureUIOperation(StructureModelManager modelManager, IEditorInput editorInput) {
+	public GetUpdatedStructureUIOperation(StructureModelManager modelManager, StructureInfo structureInfo) {
 		super("Awaiting Structure Calculation");
 		this.modelManager = modelManager;
-		this.editorInput = editorInput;
+		this.structureInfo = structureInfo;
 	}
 	
 	@Override
@@ -48,8 +43,9 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	
 	@Override
 	protected void prepareOperation() throws CoreException {
-		key = AbstractLangStructureEditor.getStructureModelKeyFromEditorInput(editorInput);
-		structureInfo = modelManager.getStructureInfo(key);
+		if(structureInfo == null) {
+			throw LangCore.createCoreException("StructureInfo not available", null);
+		}
 	}
 	
 	@Override
@@ -64,18 +60,18 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	
 	@Override
 	protected SourceFileStructure calculateValue(IProgressMonitor pm) throws OperationCancellation {
-		return structureInfo.getCurrentStructure(pm);
+		return structureInfo.getUpdatedStructure(pm);
 	}
 	
 	@Override
 	protected void handleNonCanceledNullResult() throws CoreException {
 		throw LangCore.createCoreException(
-			"Could not retrieve source file structure for: " + key, null);
+			"Could not retrieve source file structure for: " + structureInfo.getKey(), null);
 	}
 	
 	/* ----------------- util ----------------- */
 	
-	public static StructureElement getUpdatedStructureElementAt(IEditorPart editor, int offset) {
+	public static StructureElement getUpdatedStructureElementAt(AbstractLangStructureEditor editor, int offset) {
 		GetUpdatedStructureUIOperation op = new GetUpdatedStructureUIOperation(editor);
 		SourceFileStructure sourceFileStructure = op.executeAndGetHandledResult();
 		

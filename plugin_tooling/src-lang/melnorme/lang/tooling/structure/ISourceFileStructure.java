@@ -15,8 +15,8 @@ import melnorme.utilbox.misc.Location;
 
 public interface ISourceFileStructure extends IStructureElementContainer {
 	
-	/** @return the location of this SourceFile. Non-null. */
-	Location getLocation();
+	/** @return the location of this SourceFile. Can be null */
+	Location getLocation2();
 	
 	@Override
 	public String getModuleName();

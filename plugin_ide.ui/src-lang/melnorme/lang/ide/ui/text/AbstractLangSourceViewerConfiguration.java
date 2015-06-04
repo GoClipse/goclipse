@@ -25,6 +25,7 @@ import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
 import melnorme.lang.ide.ui.editor.text.LangReconciler;
@@ -57,7 +58,6 @@ import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
@@ -66,15 +66,15 @@ import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
 
 public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSourceViewerConfiguration {
 	
-	protected final AbstractDecoratedTextEditor editor;
+	protected final AbstractLangStructureEditor editor;
 	
 	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager,
-			AbstractDecoratedTextEditor editor) {
+			AbstractLangStructureEditor editor) {
 		super(preferenceStore, colorManager);
 		this.editor = editor;
 	}
 	
-	public AbstractDecoratedTextEditor getEditor() {
+	public AbstractLangStructureEditor getEditor() {
 		return editor;
 	}
 	

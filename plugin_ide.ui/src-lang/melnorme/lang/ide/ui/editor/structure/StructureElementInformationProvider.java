@@ -17,15 +17,14 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 public class StructureElementInformationProvider 
 	implements IInformationProvider, IInformationProviderExtension 
 {
 	
-	protected final AbstractDecoratedTextEditor editor;
+	protected final AbstractLangStructureEditor editor;
 	
-	public StructureElementInformationProvider(AbstractDecoratedTextEditor editor) {
+	public StructureElementInformationProvider(AbstractLangStructureEditor editor) {
 		this.editor = editor;
 	}
 	

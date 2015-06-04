@@ -36,4 +36,8 @@ public abstract class EntryMap<KEY, ENTRY> {
 	
 	protected abstract ENTRY createEntry(KEY key);
 	
+	public ENTRY removeEntry(KEY key) {
+		return map.remove(key);
+	}
+	
 }

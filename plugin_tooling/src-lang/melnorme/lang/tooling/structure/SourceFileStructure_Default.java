@@ -26,7 +26,7 @@ public class SourceFileStructure_Default extends StructureContainer implements I
 	public SourceFileStructure_Default(Location location, Indexable<StructureElement> children, 
 			Indexable<ParserError> parserProblems) {
 		super(children);
-		this.location = assertNotNull(location);
+		this.location = location;
 		this.parserProblems = nullToEmpty(parserProblems);
 	}
 	
@@ -49,19 +49,19 @@ public class SourceFileStructure_Default extends StructureContainer implements I
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + location;
+		return StructureContainer.class.getSimpleName() + (location == null ? "" : " " + location); 
 	}
 	
 	/* -----------------  ----------------- */
 	
 	@Override
-	public Location getLocation() {
+	public Location getLocation2() {
 		return location;
 	}
 	
 	@Override
 	public String getModuleName() {
-		return location.getPath().getFileName().toString();
+		return location == null ? null : location.getPath().getFileName().toString();
 	}
 	
 	public StructureElement getStructureElementAt(int offset) {
