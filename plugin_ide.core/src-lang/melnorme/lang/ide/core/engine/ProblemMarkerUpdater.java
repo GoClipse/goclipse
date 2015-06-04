@@ -57,7 +57,7 @@ public class ProblemMarkerUpdater implements IDisposable {
 			
 			if(key instanceof Location) {
 				Location location = (Location) key;
-				queueUpdateProblemMarkers(location, structureInfo.structure);
+				queueUpdateProblemMarkers(location, structureInfo.getStoredStructure());
 			}
 		}
 	};

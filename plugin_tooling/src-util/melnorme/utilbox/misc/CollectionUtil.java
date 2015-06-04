@@ -109,12 +109,24 @@ public class CollectionUtil {
 	
 	/* ----------------- query ----------------- */
 	
+	/** @return whether given coll contains given obj 
+	 * (obj must be the same as the one contained, not just equal). 
+	 */
+	public static boolean containsSame(Collection<?> coll, Object obj) {
+		for(Object element : coll) {
+			if(element == obj)
+				return true;
+		}
+		return false;
+	}
+	
+	
 	/** @return whether given coll contains all elements of other, using a naive/basic algorithm. */
 	public static boolean containsAll(Collection<?> coll, Collection<?> other) {
-		Iterator<?> citer = other.iterator();
-		while (citer.hasNext())
-			if (!coll.contains(citer.next()))
+		for(Object otherElement : other) {
+			if(!coll.contains(otherElement))
 				return false;
+		}
 		return true;
 	}
 	

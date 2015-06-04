@@ -14,6 +14,7 @@ package melnorme.lang.ide.ui.editor;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
 
@@ -33,9 +34,19 @@ public class TextEditorExt extends TextEditor {
 		super();
 	}
 	
-	protected <T extends IDisposable> T addOwned(T ownedObject) {
-		owned.add(ownedObject);
-		return ownedObject;
+	protected <T extends IDisposable> T addOwned(T disposable) {
+		owned.add(disposable);
+		return disposable;
+	}
+	
+	/**
+	 * Add given disposable, if not present already.
+	 */
+	protected <T extends IDisposable> T putOwned(T disposable) {
+		if(!CollectionUtil.containsSame(owned, disposable)) {
+			owned.add(disposable);
+		}
+		return disposable;
 	}
 	
 	@Override

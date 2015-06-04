@@ -34,12 +34,12 @@ public class ListenerListHelper<LISTENER> implements IListenerList<LISTENER> {
 	
 	
 	@Override
-	public Indexable<LISTENER> getListeners() {
+	public synchronized Indexable<LISTENER> getListeners() {
 		return listeners;
 	}
 	
 	@Override
-	public void addListener(LISTENER listener) {
+	public synchronized void addListener(LISTENER listener) {
 		ArrayList2<LISTENER> newListeners = new ArrayList2<>(listeners);
 		newListeners.add(listener);
 		
@@ -47,7 +47,7 @@ public class ListenerListHelper<LISTENER> implements IListenerList<LISTENER> {
 	}
 	
 	@Override
-	public void removeListener(LISTENER listener) {
+	public synchronized void removeListener(LISTENER listener) {
 		ArrayList2<LISTENER> newListeners = new ArrayList2<LISTENER>(listeners);
 		for (Iterator<LISTENER> iter = newListeners.iterator(); iter.hasNext(); ) {
 			LISTENER iterElem = iter.next();
@@ -60,10 +60,8 @@ public class ListenerListHelper<LISTENER> implements IListenerList<LISTENER> {
 		setNewListeners(newListeners);
 	}
 	
-	public void setNewListeners(Indexable<LISTENER> newListeners) {
-		synchronized(this) {
-			listeners = newListeners;
-		}
+	public synchronized void setNewListeners(Indexable<LISTENER> newListeners) {
+		listeners = newListeners;
 	}
 	
 	public void clear() {

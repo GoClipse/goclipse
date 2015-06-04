@@ -26,6 +26,7 @@ import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.IFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.filesystem.IFileStore;
@@ -212,24 +213,33 @@ public class ResourceUtils {
 	
 	/* ----------------- file Buffer utils ----------------- */
 	
-	public static IFileBuffer getFileBuffer(Path filePath) {
+	public static ITextFileBuffer getTextFileBuffer(Location fileLoc) {
+		return getTextFileBuffer(fileLoc.path);
+	}
+	
+	public static ITextFileBuffer getTextFileBuffer(Path filePath) {
 		
 		ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
 		
-		IFileBuffer fileBuffer = fbm.getFileBuffer(epath(filePath), LocationKind.NORMALIZE);
+		ITextFileBuffer fileBuffer;
+		fileBuffer = fbm.getTextFileBuffer(epath(filePath), LocationKind.NORMALIZE);
 		if(fileBuffer != null) {
 			return fileBuffer;
 		}
 		
 		// Could be an external file, try alternative API:
-		fileBuffer = fbm.getFileStoreFileBuffer(FileBuffers.getFileStoreAtLocation(epath(filePath)));
+		fileBuffer = fbm.getFileStoreTextFileBuffer(FileBuffers.getFileStoreAtLocation(epath(filePath)));
 		if(fileBuffer != null) {
 			return fileBuffer;
 		}
 		
 		// Fall back, try LocationKind.LOCATION
-		fileBuffer = fbm.getFileBuffer(epath(filePath), LocationKind.LOCATION);
-		return fileBuffer;
+		fileBuffer = fbm.getTextFileBuffer(epath(filePath), LocationKind.LOCATION);
+		if(fileBuffer != null) {
+			return fileBuffer;
+		}
+		
+		return null;
 	}
 	
 	public static Location getFileBufferLocation(IFileBuffer buffer) throws CoreException {

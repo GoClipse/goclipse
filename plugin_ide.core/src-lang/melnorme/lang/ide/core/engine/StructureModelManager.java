@@ -25,8 +25,14 @@ import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.NamingThreadFactory;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.SimpleLogger;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.text.DocumentEvent;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
 
 /**
  * The purpose of Engine manager is two-fold:
@@ -35,7 +41,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * - Retrieve parsing/structural information from the client after such text updates.
  *
  */
-public class StructureModelManager {
+public abstract class StructureModelManager {
+	
+	public static SimpleLogger log = new SimpleLogger(Platform.inDebugMode());
 	
 	protected final ExecutorService executor = Executors.newCachedThreadPool(
 		new NamingThreadFactory(getClass().getSimpleName())); 
@@ -58,28 +66,94 @@ public class StructureModelManager {
 		}
 	};
 	
-	public StructureInfo getStructureInfo(Object key) {
-		return structureInfos.getEntry(key);
+	/**  @return the {@link SourceFileStructure} currently stored under given key. Can be null. */
+	public StructureInfo getStoredStructureInfo(Object key) {
+		return structureInfos.getEntryOrNull(key);
 	}
 	
-	public SourceFileStructure getStoredStructure(Object key) {
-		return structureInfos.getEntry(key).getStoredStructure();
+	/**
+	 * Connect given structure listener to structure under given key, 
+	 * and begin structure updates using given document as input.
+	 * 
+	 * If a previous listener was already connected, but with a different document,
+	 * an unmanaged {@link StructureInfo} will be returned
+	 * 
+	 * @return non-null. The {@link StructureInfo} resulting from given connection.
+	 */
+	public StructureInfo connectStructureUpdates(Object key, IDocument document, 
+			IStructureModelListener structureListener) {
+		assertNotNull(key);
+		assertNotNull(document);
+		assertNotNull(structureListener);
+		log.println("connectStructureUpdates: " + key);
+		
+		StructureInfo structureInfo = structureInfos.getEntry(key);
+		
+		boolean connected = structureInfo.connectDocument(document, structureListener);
+		
+		if(!connected) {
+			// Odd case: we tried to connect with equivalent key, but the document is other.
+			// return a non-primary structure info
+			structureInfo = new StructureInfo(key);
+			connected = structureInfo.connectDocument(document, structureListener);
+		}
+		assertTrue(connected);
+		
+		return structureInfo;
 	}
 	
+	protected void queueUpdateTask(StructureInfo structureInfo, IDocument document) {
+		Location location = getLocation(structureInfo.getKey());
+		// Note: document should only be acessed in the same thread that fires document listeners
+		// So retrieve the source now.
+		final String source = document.get(); 
+		structureInfo.queueTask(createUpdateTask2(structureInfo, source, location));
+	}
+	
+	/**
+	 * Create an update task for the given structureInfo.
+	 * @param source 
+	 * @param fileLocation the file location if document is based on a file, null otherwise.
+	 */
+	protected abstract StructureUpdateTask createUpdateTask2(StructureInfo structureInfo, String source,
+			Location fileLocation);
+	
+	
+	public void disconnectStructureUpdates2(StructureInfo structureInfo, IStructureModelListener structureListener,
+			MDocumentSynchedAcess docAcess) {
+		assertNotNull(structureInfo);
+		assertNotNull(structureListener);
+		log.println("disconnectStructureUpdates: " + structureInfo.getKey());
+		
+		Location fileLoc = getLocation(structureInfo.getKey());
+		structureInfo.disconnectFromDocument(structureListener, createDisposeTask2(structureInfo, fileLoc), 
+			docAcess);
+	}
+	
+	/**
+	 * Create a dispose task for the given structureInfo.
+	 * @param fileLocation the file location if document is based on a file, null otherwise.
+	 */
+	protected abstract StructureUpdateTask createDisposeTask2(StructureInfo structureInfo, Location fileLocation);
+
 	
 	public class StructureInfo {
 		
 		protected final Object key;
 		
-		protected SourceFileStructure structure = null;
-		protected StructureUpdateTask latestTask = null;
-		protected CountDownLatch latch = new CountDownLatch(0);
+		private final ListenerListHelper<IStructureModelListener> workingCopyListeners = new ListenerListHelper<>();
+		
+		private IDocument document = null;
+		
+		private SourceFileStructure structure = null;
+		private StructureUpdateTask latestTask = null;
+		private CountDownLatch latch = new CountDownLatch(0);
 		
 		public StructureInfo(Object key) {
 			this.key = assertNotNull(key);
 		}
 		
-		public Object getKey() {
+		public final Object getKey() {
 			return key;
 		}
 		
@@ -87,11 +161,56 @@ public class StructureModelManager {
 			return structure;
 		}
 		
+		public synchronized boolean isWorkingCopy() {
+			return workingCopyListeners.getListeners().size() > 0;
+		}
+		
 		public synchronized boolean isStale() {
 			return latestTask != null;
 		}
 		
-		public synchronized void queueUpdateTask(StructureUpdateTask updateTask) {
+		public synchronized boolean connectDocument(IDocument newDocument, IStructureModelListener structureListener) {
+			if(document == null) {
+				document = newDocument;
+				connectDocumentListener(newDocument, this);
+			}
+			else if(document != newDocument) {
+				return false;
+			}
+			
+			workingCopyListeners.addListener(structureListener);
+			return true;
+		}
+		
+		private void connectDocumentListener(IDocument document, StructureInfo structureInfo) {
+			document.addDocumentListener(docListener);
+			queueUpdateTask(structureInfo, document);
+		}
+		
+		private final IDocumentListener docListener = new IDocumentListener() {
+			@Override
+			public void documentAboutToBeChanged(DocumentEvent event) {
+			}
+			@Override
+			public void documentChanged(DocumentEvent event) {
+				queueUpdateTask(StructureInfo.this, document);
+			}
+		};
+		
+		public synchronized void disconnectFromDocument(IStructureModelListener structureListener,
+				StructureUpdateTask disposeTask, @SuppressWarnings("unused") MDocumentSynchedAcess docAcess) {
+			workingCopyListeners.removeListener(structureListener);
+			if(!isWorkingCopy()) {
+				document.removeDocumentListener(docListener);
+				document = null;
+			}
+			
+			if(disposeTask != null) {
+				queueTask(disposeTask);
+			}
+		}
+		
+		public synchronized void queueTask(StructureUpdateTask updateTask) {
 			if(latestTask != null) {
 				assertTrue(latch.getCount() == 1);
 				latestTask.cancel();
@@ -113,21 +232,22 @@ public class StructureModelManager {
 				structure = newStructure;
 				latch.countDown();
 				
-				notifyStructureChanged(this);
+				notifyStructureChanged(this, workingCopyListeners);
+				notifyStructureChanged(this, listenerList);
 			}
 		}
 		
 		/** @return an up-to-date SourceFileStructure, after all current update tasks are finish. 
 		 * Can be null (if no updates were ever requested). */
-		public SourceFileStructure getCurrentStructure() throws InterruptedException {
+		public SourceFileStructure getUpdatedStructure() throws InterruptedException {
 			latch.await();
 			return structure;
 		}
 		
 		/**
-		 * @see #getCurrentStructure()
+		 * @see #getUpdatedStructure()
 		 */
-		public SourceFileStructure getCurrentStructure(long timeout, TimeUnit unit) throws InterruptedException {
+		public SourceFileStructure getUpdatedStructure(long timeout, TimeUnit unit) throws InterruptedException {
 			boolean success = latch.await(timeout, unit);
 			if(success) {
 				return structure;
@@ -135,19 +255,24 @@ public class StructureModelManager {
 			throw new InterruptedException();
 		}
 		
-		public SourceFileStructure getCurrentStructure(IProgressMonitor pm) throws OperationCancellation {
+		public SourceFileStructure getUpdatedStructure(IProgressMonitor pm) throws OperationCancellation {
 			while(true) {
 				if(pm.isCanceled()) {
 					throw new OperationCancellation();
 				}
 				
 				try {
-					return getCurrentStructure(100, TimeUnit.MILLISECONDS);
+					return getUpdatedStructure(100, TimeUnit.MILLISECONDS);
 				} catch(InterruptedException e) {
 					continue;
 				}
 			}
 		}
+		
+	}
+	
+	/** Marker interface to represent that one has access to {@link StructureInfo#document} . */
+	public static class MDocumentSynchedAcess {
 		
 	}
 	
@@ -219,14 +344,37 @@ public class StructureModelManager {
 		listenerList.removeListener(listener);
 	}
 	
-	protected void notifyStructureChanged(final StructureInfo structureInfo) {
-		for(IStructureModelListener listener : listenerList.getListeners()) {
+	// FIXME: should this be synchronized?
+	protected void notifyStructureChanged(final StructureInfo structureInfo, 
+			ListenerListHelper<IStructureModelListener> listeners) {
+		for(IStructureModelListener listener : listeners.getListeners()) {
 			try {
 				listener.structureChanged(structureInfo, structureInfo.structure);
 			} catch (Exception e) {
 				LangCore.logInternalError(e);
 			}
 		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public void awaitUpdatedWorkingCopy(Object modelKey, IProgressMonitor pm) throws OperationCancellation {
+		// TODO: this could be update to await until server responds (meaning that its working copy is updated), 
+		// no need to actually wait for structure to be parsed. 
+		StructureInfo structureInfo = getStoredStructureInfo(modelKey);
+		if(structureInfo == null) {
+			return; // No updates pending
+		}
+		structureInfo.getUpdatedStructure(pm);
+	}
+	
+	/* ----------------- util ----------------- */
+	
+	protected Location getLocation(Object key) {
+		if(key instanceof Location) {
+			return (Location) key;
+		}
+		return null;
 	}
 	
 }

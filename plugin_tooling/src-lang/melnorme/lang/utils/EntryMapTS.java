@@ -27,9 +27,16 @@ public abstract class EntryMapTS<KEY, ENTRY> extends EntryMap<KEY, ENTRY> {
 	}
 	
 	@Override
-	public synchronized ENTRY getEntryOrNull(KEY key) {
+	public ENTRY getEntryOrNull(KEY key) {
 		synchronized(this) {
 			return super.getEntryOrNull(key);
+		}
+	}
+	
+	@Override
+	public ENTRY removeEntry(KEY key) {
+		synchronized(this) {
+			return super.removeEntry(key);
 		}
 	}
 	

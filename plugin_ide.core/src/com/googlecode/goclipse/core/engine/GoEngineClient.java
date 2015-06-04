@@ -11,8 +11,6 @@
 package com.googlecode.goclipse.core.engine;
 
 import melnorme.lang.ide.core.engine.EngineClient;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureUpdateTask;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.SourceFileStructure;
@@ -21,19 +19,13 @@ import melnorme.lang.tooling.structure.StructureElementKind;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
 
-import org.eclipse.jface.text.IDocument;
-
 public class GoEngineClient extends EngineClient {
 	
 	public GoEngineClient() {
 	}
 	
 	@Override
-	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, final Location fileLocation,
-			IDocument document, boolean isDirty) {
-		
-		final String source = document.get();
-		
+	protected StructureUpdateTask createUpdateTask2(StructureInfo structureInfo, String source, Location fileLocation) {
 		return new StructureUpdateTask(structureInfo) {
 			@Override
 			protected SourceFileStructure createSourceFileStructure() {
@@ -46,7 +38,7 @@ public class GoEngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
+	protected StructureUpdateTask createDisposeTask2(StructureInfo structureInfo, Location fileLocation) {
 		return new StructureUpdateTask(structureInfo) {
 			@Override
 			protected SourceFileStructure createSourceFileStructure() {
