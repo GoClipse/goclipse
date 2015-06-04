@@ -13,7 +13,7 @@ package LANG_PROJECT_ID.ide.ui.editor;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
@@ -24,14 +24,14 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import _org.eclipse.cdt.ui.text.IColorManager;
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_CodeScanner;
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
+import _org.eclipse.cdt.ui.text.IColorManager;
 
 public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
 	public LANGUAGE_SourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager,
-			AbstractLangEditor editor) {
+			AbstractLangStructureEditor editor) {
 		super(preferenceStore, colorManager, editor);
 	}
 	

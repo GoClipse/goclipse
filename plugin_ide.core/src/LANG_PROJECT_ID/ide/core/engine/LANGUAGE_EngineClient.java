@@ -10,11 +10,7 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.engine;
 
-import org.eclipse.jface.text.IDocument;
-
 import melnorme.lang.ide.core.engine.EngineClient;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureUpdateTask;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.SourceFileStructure;
@@ -29,11 +25,7 @@ public class LANGUAGE_EngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, final Location fileLocation,
-			IDocument document, boolean isDirty) {
-		
-		final String source = document.get();
-		
+	protected StructureUpdateTask createUpdateTask2(StructureInfo structureInfo, String source, Location fileLocation) {
 		return new StructureUpdateTask(structureInfo) {
 			@Override
 			protected SourceFileStructure createSourceFileStructure() {
@@ -46,7 +38,7 @@ public class LANGUAGE_EngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
+	protected StructureUpdateTask createDisposeTask2(StructureInfo structureInfo, Location fileLocation) {
 		return new StructureUpdateTask(structureInfo) {
 			@Override
 			protected SourceFileStructure createSourceFileStructure() {
