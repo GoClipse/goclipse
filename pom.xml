@@ -15,12 +15,10 @@
 
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
-		<rootBuildDirectory>${project.parent.basedir}/bin-maven</rootBuildDirectory>
 
 		<ide.targetPlatform>releng/target-platform/IDE</ide.targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
-			
-		<dtool.testdataDir>${parentBaseDir}/org.dsource.ddt.dtool/testdata</dtool.testdataDir>
+		
 	</properties>
 
 	<modules>
@@ -36,7 +34,6 @@
 	</modules>
 
 	<profiles>
-
 	</profiles>
 
 	<!-- Core build -->
