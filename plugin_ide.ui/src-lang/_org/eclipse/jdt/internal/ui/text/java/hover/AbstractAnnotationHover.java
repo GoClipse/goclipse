@@ -688,10 +688,6 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 		return new AnnotationInfo(annotation, position, textViewer);
 	}
 
-	/*
-	 * @see ITextHoverExtension#getHoverControlCreator()
-	 * @since 3.4
-	 */
 	@Override
 	public IInformationControlCreator getHoverControlCreator() {
 		if (fHoverControlCreator == null)
@@ -699,6 +695,7 @@ public abstract class AbstractAnnotationHover extends AbstractJavaEditorTextHove
 		return fHoverControlCreator;
 	}
 
+	@Override
 	public IInformationControlCreator getInformationPresenterControlCreator() {
 		if (fPresenterControlCreator == null)
 			fPresenterControlCreator= new PresenterControlCreator();

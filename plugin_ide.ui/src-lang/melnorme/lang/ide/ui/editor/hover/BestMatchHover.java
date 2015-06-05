@@ -17,11 +17,12 @@ import java.util.List;
 
 import melnorme.lang.ide.ui.LangEditorTextHoversRegistry;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.text.util.WordFinder;
+import melnorme.lang.ide.ui.text.util.JavaWordFinder;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.ui.IEditorPart;
 
 /**
@@ -31,10 +32,10 @@ import org.eclipse.ui.IEditorPart;
  * hover that returns some text for the specified parameters.
  * 
  */
-public class BestMatchHover extends AbstractLangEditorTextHover {
+public class BestMatchHover extends AbstractLangEditorTextHover implements IInformationProviderExtension2 {
 	
 	protected List<ILangEditorTextHover<?>> fInstantiatedTextHovers;
-	protected ILangEditorTextHover<?> fBestHover;
+	protected ILangEditorTextHover<?> matchedHover;
 	
 	public BestMatchHover(IEditorPart editor) {
 		setEditor(editor);
@@ -73,12 +74,12 @@ public class BestMatchHover extends AbstractLangEditorTextHover {
 	}
 	
 	public static IRegion doGetHoverRegion(ITextViewer textViewer, int offset) {
-		return WordFinder.findWord(textViewer.getDocument(), offset);
+		return JavaWordFinder.findWord(textViewer.getDocument(), offset);
 	}
 	
 	@Override
 	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
-		fBestHover = null;
+		matchedHover = null;
 		
 		for (ILangEditorTextHover<?> hover : fInstantiatedTextHovers) {
 			if (hover == null) 
@@ -86,7 +87,7 @@ public class BestMatchHover extends AbstractLangEditorTextHover {
 			
 			Object info = hover.getHoverInfo2(textViewer, hoverRegion);
 			if (info != null) {
-				fBestHover = hover;
+				matchedHover = hover;
 				return info;
 			}
 		}
@@ -96,18 +97,23 @@ public class BestMatchHover extends AbstractLangEditorTextHover {
 	
 	@Override
 	public IInformationControlCreator getHoverControlCreator() {
-		if(fBestHover != null) {
-			return fBestHover.getHoverControlCreator();
+		if(matchedHover != null) {
+			return matchedHover.getHoverControlCreator();
 		}
 		return null;
 	}
 	
-	public IInformationControlCreator getHoverControlCreatorForInformationProvider() {
-		if(fBestHover instanceof BrowserControlHover) {
-			// Create a hover that is already focused.
-			return new BrowserControlHover.BrowserControlCreator();
+	@Override
+	public IInformationControlCreator getInformationPresenterControlCreator() {
+		if(matchedHover == null) {
+			return null;
 		}
-		return null;
+		
+		if(matchedHover instanceof IInformationProviderExtension2) {
+			IInformationProviderExtension2 infProviderControlCreator = (IInformationProviderExtension2) matchedHover;
+			return infProviderControlCreator.getInformationPresenterControlCreator();
+		}
+		return matchedHover.getHoverControlCreator();
 	}
 	
 }

@@ -47,9 +47,9 @@ public class HoverInformationProvider
 	
 	@Override
 	public IInformationControlCreator getInformationPresenterControlCreator() {
-		if(editorHover instanceof BestMatchHover) {
-			BestMatchHover bestMatchHover = (BestMatchHover) editorHover;
-			return bestMatchHover.getHoverControlCreatorForInformationProvider();
+		if(editorHover instanceof IInformationProviderExtension2) {
+			IInformationProviderExtension2 infProviderControlCreator = (IInformationProviderExtension2) editorHover;
+			return infProviderControlCreator.getInformationPresenterControlCreator();
 		}
 		return editorHover.getHoverControlCreator();
 	}
