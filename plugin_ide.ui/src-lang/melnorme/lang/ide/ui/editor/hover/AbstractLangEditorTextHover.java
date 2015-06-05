@@ -13,7 +13,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.hover;
 
-import melnorme.lang.ide.ui.text.util.WordFinder;
+import melnorme.lang.ide.ui.text.util.JavaWordFinder;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
@@ -38,7 +38,7 @@ public abstract class AbstractLangEditorTextHover
 	
 	@Override
 	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
-		return WordFinder.findWord(textViewer.getDocument(), offset);
+		return JavaWordFinder.findWord(textViewer.getDocument(), offset);
 	}
 	
 	@Deprecated

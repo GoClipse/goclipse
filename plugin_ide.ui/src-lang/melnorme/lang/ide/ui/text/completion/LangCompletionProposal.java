@@ -172,8 +172,8 @@ public class LangCompletionProposal implements
 	@Override
 	public IInformationControlCreator getInformationControlCreator() {
 		if(informationControlCreator == null) {
-			String tooltipAffordanceString = SimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
-			informationControlCreator = BrowserControlHover.createHoverControlCreator(tooltipAffordanceString);
+			String statusFieldText = SimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
+			informationControlCreator = BrowserControlHover.createEnrichableBrowserControlCreator(statusFieldText);
 		}
 		return informationControlCreator;
 	}

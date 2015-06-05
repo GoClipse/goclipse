@@ -12,7 +12,7 @@
 package _org.eclipse.jdt.internal.ui.text.java.hover;
 
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
-import melnorme.lang.ide.ui.text.util.WordFinder;
+import melnorme.lang.ide.ui.text.util.JavaWordFinder;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -21,6 +21,7 @@ import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.editors.text.EditorsUI;
@@ -31,7 +32,8 @@ import org.eclipse.ui.editors.text.EditorsUI;
  *
  * @since 2.1
  */
-public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHover<Object> {
+public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHover<Object>, 
+	IInformationProviderExtension2 {
 	
 	private IEditorPart fEditor;
 	
@@ -67,7 +69,7 @@ public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHove
 
 	@Override
 	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
-		return WordFinder.findWord(textViewer.getDocument(), offset);
+		return JavaWordFinder.findWord(textViewer.getDocument(), offset);
 	}
 
 //	/**
@@ -119,10 +121,6 @@ public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHove
 		}
 	}
 
-	/*
-	 * @see ITextHoverExtension#getHoverControlCreator()
-	 * @since 3.0
-	 */
 	@Override
 	public IInformationControlCreator getHoverControlCreator() {
 		return new IInformationControlCreator() {
@@ -131,6 +129,11 @@ public abstract class AbstractJavaEditorTextHover implements ILangEditorTextHove
 				return new DefaultInformationControl(parent, EditorsUI.getTooltipAffordanceString());
 			}
 		};
+	}
+	
+	@Override
+	public IInformationControlCreator getInformationPresenterControlCreator() {
+		return getHoverControlCreator();
 	}
 	
 }

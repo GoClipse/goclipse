@@ -13,7 +13,7 @@ package melnorme.lang.ide.ui.editor;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.text.util.WordFinder;
+import melnorme.lang.ide.ui.text.util.JavaWordFinder;
 import melnorme.lang.tooling.ast.SourceRange;
 
 import org.eclipse.jface.text.IDocument;
@@ -34,7 +34,7 @@ public abstract class LangHyperlinkDetector extends AbstractHyperlinkDetector {
 		
 		IDocument document = EditorUtils.getEditorDocument(textEditor);
 		
-		IRegion wordRegion = WordFinder.findWord(document, requestedRegion.getOffset());
+		IRegion wordRegion = JavaWordFinder.findWord(document, requestedRegion.getOffset());
 		
 		return array(createHyperlink(requestedRegion, textEditor, wordRegion));
 	}
