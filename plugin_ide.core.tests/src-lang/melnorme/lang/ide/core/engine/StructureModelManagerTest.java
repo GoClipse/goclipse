@@ -23,6 +23,7 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.jface.text.Document;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class StructureModelManagerTest extends CommonCoreTest {
@@ -198,18 +199,20 @@ public class StructureModelManagerTest extends CommonCoreTest {
 	public void testTasks$() throws Exception {
 		// run test with a real client.
 		
-		new StructureModelManagerTest() {
-			@Override
-			protected EngineClient createEngineClient() {
-				return LangCore_Actual.createEngineClient();
-			};
-			
-			@Override
-			public void checkCounts() {
-				// Do nothing.
-			};
-			
-		}.testWorkflows$();
+		new StructureModelManager_ActualTest().testWorkflows$();
+	}
+	
+	@Ignore
+	protected final class StructureModelManager_ActualTest extends StructureModelManagerTest {
+		@Override
+		protected EngineClient createEngineClient() {
+			return LangCore_Actual.createEngineClient();
+		}
+		
+		@Override
+		public void checkCounts() {
+			// Do nothing.
+		}
 	}
 	
 }
