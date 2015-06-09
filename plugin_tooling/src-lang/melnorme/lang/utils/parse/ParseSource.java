@@ -10,16 +10,24 @@
  *******************************************************************************/
 package melnorme.lang.utils.parse;
 
-import java.io.IOException;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 
-public interface ParseSourceUtils extends IParseSource {
+/**
+ * Utility methods for an ICharSource, oriented to parsing a char sequence.
+ */
+public interface ParseSource<EXC extends Exception> extends ICharSource<EXC> {
 	
-	default boolean lookaheadIsEOF() throws IOException {
+	default boolean lookaheadIsEOF() throws EXC {
 		return !hasCharAhead();
 	}
 	
-	default boolean tryConsume(String string) throws IOException {
+	default void consumeAhead(String string) throws EXC {
+		assertTrue(lookaheadMatches(string));
+		consume(string.length());
+	}
+	
+	default boolean tryConsume(String string) throws EXC {
 		if(lookaheadMatches(string)) {
 			consume(string.length());
 			return true;
@@ -27,16 +35,28 @@ public interface ParseSourceUtils extends IParseSource {
 		return false;
 	}
 	
-	default String consumeUntil(String string) throws IOException {
+	default String stringUntil(String string) throws EXC {
 		StringBuilder sb = new StringBuilder();
 		
-		while(hasCharAhead() && !lookaheadMatches(string)) {
-			sb.append(consumeNonEOF());
+		int ix = 0;
+		while(!lookaheadMatches(string, ix)) {
+			int charAtIx = lookahead(ix);
+			if(charAtIx == -1) {
+				break;
+			}
+			sb.append((char) charAtIx);
+			ix++;
 		}
 		return sb.toString();
 	}
 	
-	default String consumeUntil(String endString, boolean consumeEndString) throws IOException {
+	default String consumeUntil(String string) throws EXC {
+		String stringUntil = stringUntil(string);
+		consume(stringUntil.length());
+		return stringUntil;
+	}
+	
+	default String consumeUntil(String endString, boolean consumeEndString) throws EXC {
 		String firstString = consumeUntil(endString);
 		if(consumeEndString) {
 			tryConsume(endString);
@@ -48,7 +68,7 @@ public interface ParseSourceUtils extends IParseSource {
 	 * Consume a string delimited by give delimiter char, 
 	 * with given escapeChar acting a possible escape (use -1 for no escapeChar)
 	 */
-	default String consumeDelimitedString(int delimiter, int escapeChar) throws IOException {
+	default String consumeDelimitedString(int delimiter, int escapeChar) throws EXC {
 		StringBuilder sb = new StringBuilder();
 		
 		while(hasCharAhead()) {

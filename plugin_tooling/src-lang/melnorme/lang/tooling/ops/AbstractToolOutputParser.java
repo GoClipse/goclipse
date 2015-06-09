@@ -12,6 +12,7 @@ package melnorme.lang.tooling.ops;
 
 
 import melnorme.lang.tooling.ToolingMessages;
+import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -34,7 +35,11 @@ public abstract class AbstractToolOutputParser<RESULT> extends ToolOutputParseHe
 		return parse(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
 	
-	protected abstract RESULT parse(String input) throws CommonException;
+	public RESULT parse(String outputSource) throws CommonException {
+		return parse(new StringParseSource(outputSource));
+	}
+	
+	protected abstract RESULT parse(StringParseSource source) throws CommonException;
 	
 	protected abstract void handleLineParseError(CommonException ce) throws CommonException;
 	
