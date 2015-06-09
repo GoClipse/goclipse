@@ -44,7 +44,7 @@ public class PathUtil {
 	}
 
 	
-	public static Path createPath2(String pathString) throws CommonException {
+	public static Path createPath(String pathString) throws CommonException {
 		return createPath(pathString, "Invalid path: ");
 	}
 	

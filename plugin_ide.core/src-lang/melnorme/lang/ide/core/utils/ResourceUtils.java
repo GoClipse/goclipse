@@ -205,7 +205,7 @@ public class ResourceUtils {
 			throw LangCore.createCoreException("Invalid project location: " + project.getLocationURI(), null);
 		}
 		try {
-			return Location.create2(location.toFile().toPath());
+			return Location.create(location.toFile().toPath());
 		} catch (CommonException e) {
 			throw LangCore.createCoreException(e);
 		}
@@ -256,7 +256,7 @@ public class ResourceUtils {
 		
 		Location fileLoc;
 		try {
-			fileLoc = Location.create2(filePath);
+			fileLoc = Location.create(filePath);
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}

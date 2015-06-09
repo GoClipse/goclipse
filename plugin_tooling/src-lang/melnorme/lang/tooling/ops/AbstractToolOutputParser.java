@@ -12,12 +12,11 @@ package melnorme.lang.tooling.ops;
 
 
 import melnorme.lang.tooling.ToolingMessages;
-import melnorme.lang.utils.ParseHelper;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class AbstractToolOutputParser<RESULT> extends ParseHelper {
+public abstract class AbstractToolOutputParser<RESULT> extends ToolOutputParseHelper {
 	
 	public AbstractToolOutputParser() {
 		super();

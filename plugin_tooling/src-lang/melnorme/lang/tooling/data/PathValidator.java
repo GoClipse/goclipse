@@ -76,7 +76,7 @@ public class PathValidator extends AbstractValidator implements IFieldValidator 
 	protected Location getValidatedLocation(Path path) throws ValidationException {
 		Location location;
 		try {
-			location = Location.create2(path);
+			location = Location.create(path);
 		} catch (CommonException ce) {
 			throw error_NotAbsolute(path);
 		}

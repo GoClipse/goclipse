@@ -38,7 +38,7 @@ public class EclipseUtils extends ResourceUtils {
 	
 	public static Location location(java.nio.file.Path path) throws CoreException {
 		try {
-			return Location.create2(path);
+			return Location.create(path);
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
