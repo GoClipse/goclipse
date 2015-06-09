@@ -12,14 +12,12 @@ package melnorme.lang.utils.parse;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.IOException;
 
+public interface ICharSource<EXC extends Exception> {
+	
+	int consume() throws EXC;
 
-public interface IParseSource {
-
-	int consume() throws IOException;
-
-	int lookahead(int n) throws IOException;
+	int lookahead(int n) throws EXC;
 	
 	/** @return number of characters available to consume without having to wait for a stream input, 
 	 * and with no risk of IOException if consume() is called.
@@ -28,29 +26,33 @@ public interface IParseSource {
 	int bufferedCharCount();
 	
 	
-	default int lookahead() throws IOException {
+	default int lookahead() throws EXC {
 		return lookahead(0);
 	}
 
-	default boolean hasCharAhead() throws IOException {
+	default boolean hasCharAhead() throws EXC {
 		return lookahead() != -1;
 	}
 	
-	default char consumeNonEOF() throws IOException {
+	default char consumeNonEOF() throws EXC {
 		int ch = consume();
 		assertTrue(ch != -1);
 		return (char) ch;
 	}
 	
-	default void consume(int amount) throws IOException {
+	default void consume(int amount) throws EXC {
 		while(amount-- > 0) {
 			consume();
 		}
 	}
 	
-	default boolean lookaheadMatches(String string) throws IOException {
+	default boolean lookaheadMatches(String string) throws EXC {
+		return lookaheadMatches(string, 0);
+	}
+	
+	default boolean lookaheadMatches(String string, int fromIndex) throws EXC {
 		for(int ix = 0; ix < string.length(); ix++) {
-			if(lookahead(ix) != string.charAt(ix)) {
+			if(lookahead(ix + fromIndex) != string.charAt(ix)) {
 				return false;
 			}
 		}

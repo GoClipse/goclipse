@@ -11,13 +11,17 @@
 package melnorme.lang.utils.parse;
 
 
-public class StringParseSource implements IParseSource {
+public class StringParseSource implements ParseSource<RuntimeException> {
 	
 	protected final String source;
 	protected int sourceIndex = 0;
 	
 	public StringParseSource(String source) {
 		this.source = source;
+	}
+	
+	public int getOffset() {
+		return sourceIndex;
 	}
 	
 	@Override
