@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.views;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -25,6 +26,9 @@ import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlExtension;
 import org.eclipse.jface.text.IInformationControlExtension2;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -443,9 +447,25 @@ public abstract class AbstractFilteredTreePopupControl extends PopupDialog imple
 		if(filteringString.length() == 0)
 			return true;
 		
-		String matchName = ((ILabelProvider) treeViewer.getLabelProvider()).getText(element);
-		
+		String matchName = getText(element);
+		assertNotNull(matchName);
 		return matchName != null && matchNameDirectlyFilteredIn(matchName);
+	}
+	
+	protected String getText(Object element) {
+		IBaseLabelProvider provider = treeViewer.getLabelProvider();
+		if(provider instanceof ILabelProvider) {
+			ILabelProvider labelProvider = (ILabelProvider) provider;
+			return labelProvider.getText(element);
+		} else if(provider instanceof IStyledLabelProvider) {
+			IStyledLabelProvider labelProvider = (IStyledLabelProvider) provider;
+			return labelProvider.getStyledText(element).getString();
+		} else if(provider instanceof DelegatingStyledCellLabelProvider) {
+			DelegatingStyledCellLabelProvider styledCellLabelProvider = (DelegatingStyledCellLabelProvider) provider;
+			IStyledLabelProvider labelProvider = styledCellLabelProvider.getStyledStringProvider();
+			return labelProvider.getStyledText(element).getString();
+		}
+		return null;
 	}
 	
 	protected abstract boolean matchNameDirectlyFilteredIn(String matchName);
