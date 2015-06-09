@@ -2,7 +2,7 @@
 
 #### Requirements: 
  * Eclipse 4.4.1 (Luna SR1) or later.
- * A **1.7** Java VM or later. Otherwise LANG_IDE_NAME will silently fail to start.
+ * Java VM version 8 or later.
 
 #### Instructions:
  1. Use your existing Eclipse, or download a new Eclipse package from http://www.eclipse.org/downloads/. 
