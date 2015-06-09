@@ -8,21 +8,21 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.utils;
+package melnorme.lang.utils.parse;
 
 import melnorme.lang.tests.CommonToolingTest;
 
 import org.junit.Test;
 
-public class SimpleLexingHelper_Test extends CommonToolingTest {
+public class ParseSourceUtils_Test extends CommonToolingTest {
 	
 	@Test
 	public void test_consumeDelimited() throws Exception { test_consumeDelimited$(); }
 	public void test_consumeDelimited$() throws Exception {
 		
-		assertEquals(new SimpleLexingHelper("blah").consumeDelimitedString('|', '#'), "blah");
+		assertEquals(new StringParserHelper("blah").consumeDelimitedString('|', '#'), "blah");
 		
-		SimpleLexingHelper lexingHelper = new SimpleLexingHelper("one|two|three##|four#|xxx|###|five");
+		StringParserHelper lexingHelper = new StringParserHelper("one|two|three##|four#|xxx|###|five");
 		assertEquals(lexingHelper.consumeDelimitedString('|', '#'), "one");
 		assertEquals(lexingHelper.consumeDelimitedString('|', '#'), "two");
 		assertEquals(lexingHelper.consumeDelimitedString('|', '#'), "three#");
