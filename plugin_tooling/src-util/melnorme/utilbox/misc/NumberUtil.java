@@ -11,6 +11,7 @@
 package melnorme.utilbox.misc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.utilbox.core.CommonException;
 
 
 public class NumberUtil {
@@ -49,24 +50,30 @@ public class NumberUtil {
 			return b;
 	}
 	
-	/** @return {@link Integer#parseInt(String)}, but with a checked exception. */
-	public static int parseInt(String string) throws NumberFormatException_ {
+	/* ----------------- Parsing helpers (they use checked exceptions) ----------------- */
+	
+	public static int parseInt(String integerString) throws CommonException {
 		try {
-			return Integer.parseInt(string);
-		} catch (NumberFormatException nfe) {
-			throw new NumberFormatException_(nfe);
+			return Integer.parseInt(integerString);
+		} catch (NumberFormatException e) {
+			throw new CommonException("Invalid integer: `" + integerString + "`");
 		}
 	}
 	
-	/** Checked analogue/wrapper for {@link NumberFormatException} */
-	public static class NumberFormatException_ extends Exception {
-		
-		private static final long serialVersionUID = 1L;
-		
-		public NumberFormatException_(NumberFormatException exc) {
-			super(exc);
+	public static int parseInt(String integerString, String errorMessage) throws CommonException {
+		try {
+			return Integer.parseInt(integerString);
+		} catch (NumberFormatException e) {
+			throw new CommonException(errorMessage, null);
 		}
-		
+	}
+	
+	public static int parsePositiveInt(String integerString) throws CommonException {
+		int integer = parseInt(integerString);
+		if(integer < 0) {
+			throw new CommonException("Integer is not positive: " + integerString);
+		}
+		return integer;
 	}
 	
 }

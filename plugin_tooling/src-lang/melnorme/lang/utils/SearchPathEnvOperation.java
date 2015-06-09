@@ -53,7 +53,7 @@ public abstract class SearchPathEnvOperation {
 				continue;
 			}
 			try {
-				Location location = Location.create2(path);
+				Location location = Location.create(path);
 				searchPathEntry(location);
 			} catch (CommonException e) {
 				continue;

@@ -12,21 +12,46 @@ package melnorme.lang.tooling.ops;
 
 import java.nio.file.Path;
 
-import melnorme.lang.utils.ParseHelper;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.NumberUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 
-public class ToolOutputParseHelper extends ParseHelper {
+@SuppressWarnings("static-method")
+public class ToolOutputParseHelper {
 	
 	public ToolOutputParseHelper() {
+	}
+	
+	/* ----------------- Common parsing utils ----------------- */
+	
+	protected final int parsePositiveInt(String integerString) throws CommonException {
+		return NumberUtil.parsePositiveInt(integerString);
+	}
+	
+	protected final int parseInt(String integerString) throws CommonException {
+		return NumberUtil.parseInt(integerString);
+	}
+
+	protected final int parseInt(String integerString, String errorMessage) throws CommonException {
+		return NumberUtil.parseInt(integerString, errorMessage);
+	}
+	
+	protected final Path parsePath(String pathString) throws CommonException {
+		return MiscUtil.createPath(pathString);
+	}
+	
+	protected final Location parseLocation(String pathString) throws CommonException {
+		return Location.create(pathString);
 	}
 	
 	/**
 	 * Parse a path+line+column from given string, which are expected to be separated by given separator.
 	 * Example sourceString: <code>D:\foo\bar\xpto.go:22:12</code> 
 	 */
-	protected SourceLineColumnRange parsePathLineColumn(String sourceString, String separator) 
+	public static SourceLineColumnRange parsePathLineColumn(String sourceString, String separator) 
 			throws CommonException {
 		
 		// We need to parse sourceLocationString starting from the end, 
@@ -42,10 +67,10 @@ public class ToolOutputParseHelper extends ParseHelper {
 		if(columnStr == null || lineStr == null) {
 			throw new CommonException("No line or column position given.", null);
 		}
-		int line = parseInt(lineStr, "Invalid number for line: " + lineStr);
-		int column = parseInt(columnStr, "Invalid number for column: " + columnStr);
+		int line = NumberUtil.parseInt(lineStr, "Invalid number for line: " + lineStr);
+		int column = NumberUtil.parseInt(columnStr, "Invalid number for column: " + columnStr);
 		
-		Path path = parsePath(sourceString);
+		Path path = MiscUtil.createPath(sourceString);
 		
 		return new SourceLineColumnRange(path, line, column);
 	}
