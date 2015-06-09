@@ -30,19 +30,22 @@ find definition, etc. (for example, autocomplete deamons) . But having that sema
 
 #### Functionality:
 
+LangEclipseIDE is not currently as big or complete as JDT/DLTK in terms of provided functionality, but it covers the basics:
+
 * New project wizard.
 
-* Editor Outline and Quick-Outline (with filtering) support. Based on structure model
+* Editor support:
+ * Editor Outline and Quick-Outline (with filtering) support. Based on structure model
  * Editor source reconciliation and parse errors reporting.
-* An auto-indentation strategy for curly braces language.
-* Common editor actions: Indent/Deindent Source; Toggle Comment; Go To Matching Bracket.
-* Many other minor editor improvements and boilerplate.
+ * An auto-indentation strategy for curly braces language.
+ * Common editor actions: Indent/Deindent Source; Toggle Comment; Go To Matching Bracket.
+ * Many other minor editor improvements and boilerplate.
+ * Boilerplate code for Content Assist, Find-Definition, editor hyperlinks functionality.
 
-* Boilerplate code for Content Assist, Find-Definition, editor hyperlinks functionality.
 * Content Assist "Code Snippets" functionality.
 
 * Boilerplate project build support, parsing build tool output, creating error markers, etc..
-* Helper code for calling other external tools, their output displayed in Eclipse consoles.
+ * Helper code for calling other external tools, their output displayed in Eclipse consoles.
 
 * Boilerplate launch and debug support.
  * Debug support using CDT GDB integration.
