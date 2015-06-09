@@ -117,7 +117,7 @@ public class NavigatorContentProvider2 implements ITreeContentProvider, IPropert
 		for (String goPathEntry : effectiveGoPath.getGoPathEntries()) {
 			Path goPathEntryPath;
 			try {
-				goPathEntryPath = MiscUtil.createPath2(goPathEntry);
+				goPathEntryPath = MiscUtil.createPath(goPathEntry);
 			} catch (CommonException e) {
 				continue; // TODO: create error element
 			}

@@ -34,10 +34,10 @@ public class Location {
 		return new Location(absolutePath);
 	}
 	
-	public static Location create2(Path path) throws CommonException {
+	public static Location create(Path path) throws CommonException {
 		return createValidLocation(path, "Invalid location: ");
 	}
-	public static Location create2(String pathString) throws CommonException {
+	public static Location create(String pathString) throws CommonException {
 		return createValidLocation(pathString, "Invalid location: ");
 	}
 	
@@ -65,7 +65,7 @@ public class Location {
 		}
 		
 		try {
-			return create2(path);
+			return create(path);
 		} catch(CommonException e) {
 			return null;
 		}
@@ -80,7 +80,7 @@ public class Location {
 			return null;
 		}
 		try {
-			return create2(filePath);
+			return create(filePath);
 		} catch (CommonException e) {
 			throw new CommonException("Invalid location for " + descText + ", path not absolute: " + filePath);
 		}
@@ -139,7 +139,7 @@ public class Location {
 	/* -----------------  ----------------- */
 	
 	public Location resolve(String subPathStr) throws CommonException {
-		Path subPath = PathUtil.createPath2(subPathStr);
+		Path subPath = PathUtil.createPath(subPathStr);
 		return resolve(subPath);
 	}
 	
