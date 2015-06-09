@@ -10,15 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -48,33 +44,26 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 		return parse(stderr);
 	}
 	@Override
-	protected ArrayList<ToolSourceMessage> parse(String input) throws CommonException {
-		StringReader sr = new StringReader(input);
-		try {
-			return parseMessages(sr);
-		} catch (IOException e) {
-			throw assertFail();
-		}
+	protected ArrayList<ToolSourceMessage> parse(StringParseSource output) throws CommonException {
+		return parseMessages(output);
 	}
 	
-	protected ArrayList<ToolSourceMessage> parseMessages(StringReader sr) throws IOException {
+	protected ArrayList<ToolSourceMessage> parseMessages(StringParseSource output) {
 		buildMessages = new ArrayList2<>();
 		
-		BufferedReader br = new BufferedReader(sr);
-		
-		while(true) {
-			String outputLine = br.readLine();
-			if(outputLine == null) {
-				break;
-			}
-			
-			doParseLine(outputLine, br);
+		while(!output.lookaheadIsEOF()) {
+			doParseLine(output);
 		}
 		
 		return buildMessages;
 	}
 	
-	protected abstract void doParseLine(String outputLine, BufferedReader br) throws IOException;
+	protected void doParseLine(StringParseSource output) {
+		String outputLine = output.consumeUntil("\n", true);
+		doParseLine(outputLine, output);
+	}
+	
+	protected abstract void doParseLine(String outputLine, StringParseSource output);
 	
 	protected void addMessage(String pathString, String lineString, String columnString, String endLineString,
 			String endColumnString, String messageTypeString, String message) {

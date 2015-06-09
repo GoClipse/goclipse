@@ -18,7 +18,7 @@ import java.util.Collections;
 import melnorme.lang.ide.core.ISourceFile;
 import melnorme.lang.ide.core.text.DocumentModification;
 import melnorme.lang.ide.ui.text.util.AutoEditUtils;
-import melnorme.lang.utils.parse.StringParserHelper;
+import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -89,7 +89,7 @@ public class LangContext extends JavaContext {
 		
 		StringBuilder newContents = new StringBuilder();
 		
-		StringParserHelper parser = new StringParserHelper(docString);
+		StringParseSource parser = new StringParseSource(docString);
 		String start = parser.consumeUntil(delimeter);
 		newContents.append(start);
 		
@@ -119,7 +119,7 @@ public class LangContext extends JavaContext {
 		
 		ArrayList2<DocumentModification> changes = new ArrayList2<>();
 		
-		StringParserHelper parser = new StringParserHelper(document.get());
+		StringParseSource parser = new StringParseSource(document.get());
 		parser.consumeUntil(delimeter);
 		while(true) {
 			if(!parser.tryConsume(delimeter)) {

@@ -13,7 +13,7 @@ package melnorme.lang.utils.parse;
 import java.io.IOException;
 import java.io.Reader;
 
-public class ReaderParseSource implements IParseSource {
+public class ReaderParseSource implements ParseSource<IOException> {
 	
 	protected final StringBuilder buffer = new StringBuilder();
 	protected final Reader reader;

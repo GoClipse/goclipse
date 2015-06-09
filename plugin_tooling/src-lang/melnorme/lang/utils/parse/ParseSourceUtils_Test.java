@@ -20,9 +20,9 @@ public class ParseSourceUtils_Test extends CommonToolingTest {
 	public void test_consumeDelimited() throws Exception { test_consumeDelimited$(); }
 	public void test_consumeDelimited$() throws Exception {
 		
-		assertEquals(new StringParserHelper("blah").consumeDelimitedString('|', '#'), "blah");
+		assertEquals(new StringParseSource("blah").consumeDelimitedString('|', '#'), "blah");
 		
-		StringParserHelper lexingHelper = new StringParserHelper("one|two|three##|four#|xxx|###|five");
+		StringParseSource lexingHelper = new StringParseSource("one|two|three##|four#|xxx|###|five");
 		assertEquals(lexingHelper.consumeDelimitedString('|', '#'), "one");
 		assertEquals(lexingHelper.consumeDelimitedString('|', '#'), "two");
 		assertEquals(lexingHelper.consumeDelimitedString('|', '#'), "three#");
