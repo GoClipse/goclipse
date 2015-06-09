@@ -233,7 +233,7 @@ public abstract class StructureModelManager {
 				latch.countDown();
 				
 				notifyStructureChanged(this, workingCopyListeners);
-				notifyStructureChanged(this, listenerList);
+				notifyStructureChanged(this, modelListeners);
 			}
 		}
 		
@@ -333,18 +333,17 @@ public abstract class StructureModelManager {
 	
 	/* ----------------- Listeners ----------------- */
 	
-	protected final ListenerListHelper<IStructureModelListener> listenerList = new ListenerListHelper<>();
+	protected final ListenerListHelper<IStructureModelListener> modelListeners = new ListenerListHelper<>();
 	
 	public void addListener(IStructureModelListener listener) {
 		assertNotNull(listener);
-		listenerList.addListener(listener);
+		modelListeners.addListener(listener);
 	}
 	
 	public void removeListener(IStructureModelListener listener) {
-		listenerList.removeListener(listener);
+		modelListeners.removeListener(listener);
 	}
 	
-	// FIXME: should this be synchronized?
 	protected void notifyStructureChanged(final StructureInfo structureInfo, 
 			ListenerListHelper<IStructureModelListener> listeners) {
 		for(IStructureModelListener listener : listeners.getListeners()) {
