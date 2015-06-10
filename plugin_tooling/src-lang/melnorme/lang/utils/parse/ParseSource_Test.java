@@ -26,7 +26,20 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 	protected String source;
 	protected int sourceIx;
 	protected int lookahead;
-
+	
+	protected void init(String source) {
+		this.source = source;
+		this.parseSource = createParseSource(source);
+		this.sourceIx = 0;
+	}
+	
+	protected abstract ParseSource<?> createParseSource(String source);
+	
+	@Test
+	public void test() throws Exception { test$(); }
+	public void test$() throws Exception {
+		doTest______();
+	}
 	
 	protected void doTest______() throws Exception {
 		init(TEST_SOURCE);
@@ -48,16 +61,15 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		parseSource.consumeAhead("abc");
 		assertTrue(parseSource.stringUntil("def").equals(""));
 		assertTrue(parseSource.stringUntil("z").equals("def"));
+		
+		init(TEST_SOURCE);
+		assertTrue(parseSource.consumeUntil("def").equals("abc"));
+		assertTrue(parseSource.lookaheadMatches("def"));
+		
+		init(TEST_SOURCE);
+		assertTrue(parseSource.consumeUntil("de", true).equals("abc"));
+		assertTrue(parseSource.lookaheadMatches("f"));
 	}
-	
-	protected void init(String source) {
-		this.source = source;
-		this.parseSource = createParseSource(TEST_SOURCE);
-		this.sourceIx = 0;
-	}
-	
-	protected abstract ParseSource<?> createParseSource(String source);
-	
 	
 	protected void testCharSource() throws Exception {
 		
@@ -115,14 +127,37 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		return lookahead;
 	}
 	
+	@Test
+	public void test_consumeDelimited() throws Exception { test_consumeDelimited$(); }
+	public void test_consumeDelimited$() throws Exception {
+		
+		init("blah");
+		assertEquals(parseSource.consumeDelimitedString('|', '#'), "blah");
+		
+		init("one|two|three##|four#|xxx|###|five");
+		assertEquals(parseSource.consumeDelimitedString('|', '#'), "one");
+		assertEquals(parseSource.consumeDelimitedString('|', '#'), "two");
+		assertEquals(parseSource.consumeDelimitedString('|', '#'), "three#");
+		assertEquals(parseSource.consumeDelimitedString('|', '#'), "four|xxx");
+		assertEquals(parseSource.consumeDelimitedString('|', '#'), "#|five");
+	}
+	
+	@Test
+	public void testConsumeNewline() throws Exception { testConsumeNewline$(); }
+	public void testConsumeNewline$() throws Exception {
+		init("abc\ndef\r\nzzz");
+		assertEquals(parseSource.stringUntilNewline(0), "abc");
+		assertEquals(parseSource.stringUntilNewline(1), "bc");
+		assertEquals(parseSource.stringUntilNewline(3), "");
+		assertEquals(parseSource.consumeLine(), "abc");
+		assertEquals(parseSource.consumeLine(), "def");
+		assertEquals(parseSource.consumeLine(), "zzz");
+	}
+	
+	
+	/* ----------------- Actual tests ----------------- */
+	
 	public static class ReaderParseSource_Test extends ParseSource_Test {
-		
-		@Test
-		public void test() throws Exception { test$(); }
-		public void test$() throws Exception {
-			doTest______();
-		}
-		
 		@Override
 		protected ParseSource<?> createParseSource(String source) {
 			return new ReaderParseSource(new StringReader(source));
@@ -130,13 +165,6 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 	}
 	
 	public static class StringParseSource_Test extends ParseSource_Test {
-		
-		@Test
-		public void test() throws Exception { test$(); }
-		public void test$() throws Exception {
-			doTest______();
-		}
-		
 		@Override
 		protected ParseSource<?> createParseSource(String source) {
 			return new StringParseSource(source);
