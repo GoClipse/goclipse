@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.utils.parse;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 
@@ -23,6 +24,7 @@ public interface ParseSource<EXC extends Exception> extends ICharSource<EXC> {
 	}
 	
 	default void consumeAhead(String string) throws EXC {
+		assertNotNull(string);
 		assertTrue(lookaheadMatches(string));
 		consume(string.length());
 	}
@@ -39,9 +41,9 @@ public interface ParseSource<EXC extends Exception> extends ICharSource<EXC> {
 		StringBuilder sb = new StringBuilder();
 		
 		int ix = 0;
-		while(!lookaheadMatches(string, ix)) {
+		while(true) {
 			int charAtIx = lookahead(ix);
-			if(charAtIx == -1) {
+			if(charAtIx == -1 || lookaheadMatches(string, ix)) {
 				break;
 			}
 			sb.append((char) charAtIx);
@@ -56,6 +58,12 @@ public interface ParseSource<EXC extends Exception> extends ICharSource<EXC> {
 		return stringUntil;
 	}
 	
+	/**
+	 * Consume characters until lookhead position matches given endString
+	 * If consumeEndString, also consume endString from source (although this is not included in result)
+	 * 
+	 * @return the consumed characters until endString 
+	 */
 	default String consumeUntil(String endString, boolean consumeEndString) throws EXC {
 		String firstString = consumeUntil(endString);
 		if(consumeEndString) {
@@ -94,4 +102,51 @@ public interface ParseSource<EXC extends Exception> extends ICharSource<EXC> {
 		return sb.toString();
 	}
 	
+	/* -----------------  Line helpers  ----------------- */
+	
+	default String determineNewlineSequenceAt(int offset) throws EXC {
+		
+		int la = lookahead(offset);
+			
+		if(la == -1) {
+			return "";
+		}
+		if(la == '\n') {
+			return "\n";
+		}
+		if(la == '\r') {
+			if(lookahead(offset + 1) == '\n') {
+				return "\r\n";
+			}
+			return "\r";
+		}
+		
+		return null;
+	}
+	
+	default String stringUntilNewline(int offset) throws EXC {
+		StringBuilder sb = new StringBuilder();
+		
+		int ix = offset;
+		while(true) {
+			if(determineNewlineSequenceAt(ix) != null) {
+				break;
+			}
+			sb.append((char) lookahead(ix));
+			ix++;
+		}
+		return sb.toString();
+	}
+	
+	default String consumeLine() throws EXC {
+		int offset = 0;
+		
+		if(lookaheadIsEOF()) {
+			return null;
+		}
+		String line = stringUntilNewline(offset);
+		consumeAhead(line);
+		consumeAhead(determineNewlineSequenceAt(offset));
+		return line;
+	}
 }

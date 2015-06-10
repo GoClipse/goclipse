@@ -17,7 +17,7 @@ public interface ICharSource<EXC extends Exception> {
 	
 	int consume() throws EXC;
 
-	int lookahead(int n) throws EXC;
+	int lookahead(int offset) throws EXC;
 	
 	/** @return number of characters available to consume without having to wait for a stream input, 
 	 * and with no risk of IOException if consume() is called.

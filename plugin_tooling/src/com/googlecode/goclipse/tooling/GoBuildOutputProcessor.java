@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +18,7 @@ import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.BuildOutputParser;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
+import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 
@@ -42,7 +41,7 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	public static final Pattern WINDOWS_DRIVE_LETTER = Pattern.compile("[a-zA-Z]:\\\\.*", Pattern.DOTALL);
 	
 	@Override
-	protected void doParseLine(String outputLine, BufferedReader br) throws IOException {
+	protected void doParseLine(String outputLine, StringParseSource output) {
 			if(outputLine.startsWith("# ")) {
 				// Not necessary for now
 				return;
@@ -72,15 +71,11 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 			String errorMessage = matcher.group(5);
 			
 			while(true) {
-				br.mark(1);
-				int readChar = br.read();
+				int readChar = output.lookahead();
 				if(readChar == '\t') {
-					br.reset();
-					errorMessage = errorMessage + "\n" + br.readLine(); 
+					String nextLine = output.consumeLine();
+					errorMessage = errorMessage + "\n" + nextLine;
 				} else {
-					if(readChar != -1) {
-						br.reset(); // reset not supported on EOF
-					}
 					break;
 				}
 			}
