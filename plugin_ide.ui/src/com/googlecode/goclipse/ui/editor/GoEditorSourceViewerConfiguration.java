@@ -7,11 +7,8 @@ import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAs
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
@@ -63,18 +60,6 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	@Override
 	protected IInformationProvider getInformationProvider(String contentType) {
 		return null;
-	}
-	
-	@Override
-	protected void configureContentAssistantProcessors(ContentAssistant assistant) {
-		super.configureContentAssistantProcessors(assistant);
-		
-		assistant.enableAutoActivation(true);
-		assistant.setAutoActivationDelay(100);
-
-		assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-		assistant.setContextInformationPopupBackground(colorManager.getColor(new RGB(150, 150, 0)));
-		assistant.setInformationControlCreator(getInformationControlCreator(editor.getSourceViewer_()));
 	}
 	
 	@Override
