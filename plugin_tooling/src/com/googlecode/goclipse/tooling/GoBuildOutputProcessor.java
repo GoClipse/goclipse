@@ -42,45 +42,44 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	protected ToolMessageData parseMessageData(StringParseSource output) throws CommonException {
 		String outputLine = output.consumeLine();
 		
-			if(outputLine.startsWith("# ")) {
-				// Not necessary for now
-				return null;
+		if(outputLine.startsWith("# ")) {
+			// Not necessary for now
+			return null;
+		}
+		
+		String pathDevicePrefix = "";
+		
+		if(WINDOWS_DRIVE_LETTER.matcher(outputLine).matches()) {
+			// Remove Windows drive letter from path, cause it will mess up regex
+			pathDevicePrefix = outputLine.substring(0, 2);
+			outputLine = outputLine.substring(2);
+		}
+		
+		if(!outputLine.contains(":")) {
+			return null; // Ignore line
+		}
+		
+		ToolMessageData msgData = new ToolMessageData();
+		
+		Matcher matcher = ERROR_LINE_Regex.matcher(outputLine);
+		if(!matcher.matches()) {
+			throw createUnknownLineSyntaxError(outputLine);
+		}
+		
+		msgData.pathString = pathDevicePrefix + matcher.group(1);
+		msgData.lineString = matcher.group(2);
+		msgData.columnString = matcher.group(4);
+		msgData.messageText = matcher.group(5);
+		
+		while(true) {
+			int readChar = output.lookahead();
+			if(readChar == '\t') {
+				String nextLine = output.consumeLine();
+				msgData.messageText += "\n" + nextLine;
+			} else {
+				break;
 			}
-			
-			String pathDevicePrefix = "";
-			
-			if(WINDOWS_DRIVE_LETTER.matcher(outputLine).matches()) {
-				// Remove Windows drive letter from path, cause it will mess up regex
-				pathDevicePrefix = outputLine.substring(0, 2);
-				outputLine = outputLine.substring(2);
-			}
-			
-			if(!outputLine.contains(":")) {
-				return null; // Ignore line
-			}
-			
-			ToolMessageData msgData = new ToolMessageData();
-			
-			Matcher matcher = ERROR_LINE_Regex.matcher(outputLine);
-			if(!matcher.matches()) {
-				throw createUnknownLineSyntaxError(outputLine);
-			}
-			
-			msgData.pathString = pathDevicePrefix + matcher.group(1);
-			msgData.lineString = matcher.group(2);
-			msgData.columnString = matcher.group(4);
-			msgData.messageText = matcher.group(5);
-			
-			while(true) {
-				int readChar = output.lookahead();
-				if(readChar == '\t') {
-					String nextLine = output.consumeLine();
-					msgData.messageText += "\n" + nextLine;
-				} else {
-					break;
-				}
-			}
-			
+		}
 		
 		msgData.messageTypeString = StatusLevel.ERROR.toString();
 		
