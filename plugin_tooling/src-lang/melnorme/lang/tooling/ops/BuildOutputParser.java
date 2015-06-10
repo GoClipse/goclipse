@@ -59,7 +59,7 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 	}
 	
 	protected void doParseLine(StringParseSource output) {
-		String outputLine = output.consumeUntil("\n", true);
+		String outputLine = output.consumeLine();
 		doParseLine(outputLine, output);
 	}
 	
