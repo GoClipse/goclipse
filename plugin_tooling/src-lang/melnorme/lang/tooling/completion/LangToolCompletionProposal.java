@@ -33,12 +33,14 @@ public abstract class LangToolCompletionProposal {
 	protected final CompletionProposalKind kind;
 	protected final ElementAttributes attributes;
 	protected final String moduleName; // can be null
+	protected final String description;
 	
 	protected final String fullReplaceString;
 	protected final Indexable<SourceRange> sourceSubElements;
 	
 	public LangToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, 
-			String label, CompletionProposalKind kind, ElementAttributes attributes, String moduleName, 
+			String label, CompletionProposalKind kind, ElementAttributes attributes, 
+			String moduleName, String description,
 			String fullReplaceString, Indexable<SourceRange> sourceSubElements) {
 		assertTrue(replaceOffset >= 0);
 		assertTrue(replaceLength >= 0);
@@ -49,6 +51,7 @@ public abstract class LangToolCompletionProposal {
 		this.kind = kind != null ? kind : CompletionProposalKind.UNKNOWN;
 		this.attributes = assertNotNull(attributes);
 		this.moduleName = moduleName;
+		this.description = description;
 		
 		this.fullReplaceString = assertNotNull(fullReplaceString);
 		this.sourceSubElements = CollectionUtil.nullToEmpty(sourceSubElements);
@@ -80,6 +83,10 @@ public abstract class LangToolCompletionProposal {
 	
 	public String getModuleName() {
 		return moduleName;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 	
 	/** @return Alternative replace string, with more completion text. 
@@ -116,6 +123,7 @@ public abstract class LangToolCompletionProposal {
 				areEqual(label, other.label) &&
 				areEqual(kind, other.kind) &&
 				areEqual(moduleName, other.moduleName) &&
+				areEqual(description, other.description) &&
 				areEqual(fullReplaceString, other.fullReplaceString) &&
 				areEqual(sourceSubElements, other.sourceSubElements) &&
 				subclassEquals(other);
