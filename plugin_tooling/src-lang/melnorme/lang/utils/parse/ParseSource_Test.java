@@ -146,12 +146,13 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 	public void testConsumeNewline() throws Exception { testConsumeNewline$(); }
 	public void testConsumeNewline$() throws Exception {
 		init("abc\ndef\r\nzzz");
-		assertEquals(parseSource.stringUntilNewline(0), "abc");
-		assertEquals(parseSource.stringUntilNewline(1), "bc");
-		assertEquals(parseSource.stringUntilNewline(3), "");
-		assertEquals(parseSource.consumeLine(), "abc");
-		assertEquals(parseSource.consumeLine(), "def");
-		assertEquals(parseSource.consumeLine(), "zzz");
+		assertAreEqual(parseSource.stringUntilNewline(0), "abc");
+		assertAreEqual(parseSource.stringUntilNewline(1), "bc");
+		assertAreEqual(parseSource.stringUntilNewline(3), "");
+		assertAreEqual(parseSource.consumeLine(), "abc");
+		assertAreEqual(parseSource.consumeLine(), "def");
+		assertAreEqual(parseSource.consumeLine(), "zzz");
+		assertAreEqual(parseSource.consumeLine(), null);
 	}
 	
 	
