@@ -46,7 +46,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	protected void runTest() throws CommonException {
 		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor() {
 			@Override
-			protected void handleLineParseError(CommonException ce) {
+			protected void handleMessageParseError(CommonException ce) {
 				assertFail();
 			}
 		};
@@ -102,7 +102,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	protected void runInvalidSyntaxTest() throws CommonException {
 		GoBuildOutputProcessor buildProcessor = new GoBuildOutputProcessor() {
 			@Override
-			protected void handleLineParseError(CommonException ce) {
+			protected void handleMessageParseError(CommonException ce) {
 			}
 		};
 		

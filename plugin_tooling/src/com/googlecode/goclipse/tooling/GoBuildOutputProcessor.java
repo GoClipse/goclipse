@@ -10,13 +10,11 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
-import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.BuildOutputParser;
-import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
@@ -41,10 +39,12 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	public static final Pattern WINDOWS_DRIVE_LETTER = Pattern.compile("[a-zA-Z]:\\\\.*", Pattern.DOTALL);
 	
 	@Override
-	protected void doParseLine(String outputLine, StringParseSource output) {
+	protected ToolMessageData parseMessageData(StringParseSource output) throws CommonException {
+		String outputLine = output.consumeLine();
+		
 			if(outputLine.startsWith("# ")) {
 				// Not necessary for now
-				return;
+				return null;
 			}
 			
 			String pathDevicePrefix = "";
@@ -56,50 +56,35 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 			}
 			
 			if(!outputLine.contains(":")) {
-				return; // Ignore line
+				return null; // Ignore line
 			}
+			
+			ToolMessageData msgData = new ToolMessageData();
 			
 			Matcher matcher = ERROR_LINE_Regex.matcher(outputLine);
 			if(!matcher.matches()) {
-				handleUnknownLineSyntax(outputLine);
-				return;
+				throw createUnknownLineSyntaxError(outputLine);
 			}
 			
-			String pathString = pathDevicePrefix + matcher.group(1);
-			String lineString = matcher.group(2);
-			String columnString = matcher.group(4);
-			String errorMessage = matcher.group(5);
+			msgData.pathString = pathDevicePrefix + matcher.group(1);
+			msgData.lineString = matcher.group(2);
+			msgData.columnString = matcher.group(4);
+			msgData.messageText = matcher.group(5);
 			
 			while(true) {
 				int readChar = output.lookahead();
 				if(readChar == '\t') {
 					String nextLine = output.consumeLine();
-					errorMessage = errorMessage + "\n" + nextLine;
+					msgData.messageText += "\n" + nextLine;
 				} else {
 					break;
 				}
 			}
 			
-			try {
-				addBuildError(parseError(pathString, lineString, columnString, errorMessage));
-			} catch (CommonException ce) {
-				handleLineParseError(ce);
-				return;
-			}
-	}
-	
-	protected ToolSourceMessage parseError(String pathString, String lineString,
-			String columnString, String errorMessage) throws CommonException {
-		Path filePath = parsePath(pathString).normalize();
-		int lineNo = parsePositiveInt(lineString);
-		int column = parseOptionalPositiveInt(columnString);
 		
-		return new ToolSourceMessage(new SourceLineColumnRange(filePath, lineNo, column), 
-			StatusLevel.ERROR, errorMessage);
-	}
-	
-	protected void addBuildError(ToolSourceMessage be) {
-		buildMessages.add(be);
+		msgData.messageTypeString = StatusLevel.ERROR.toString();
+		
+		return msgData;
 	}
 	
 }

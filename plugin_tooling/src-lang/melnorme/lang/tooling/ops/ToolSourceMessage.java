@@ -58,7 +58,10 @@ public class ToolSourceMessage {
 		
 		ToolSourceMessage other = (ToolSourceMessage) obj;
 		
-		return areEqual(range, other.range) && areEqual(kind, other.kind) && areEqual(message, other.message);
+		return 
+			areEqual(range, other.range) && 
+			areEqual(kind, other.kind) && 
+			areEqual(message, other.message);
 	}
 	
 	@Override
