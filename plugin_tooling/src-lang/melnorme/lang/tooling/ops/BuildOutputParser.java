@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -51,54 +53,71 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 	protected ArrayList<ToolSourceMessage> parseMessages(StringParseSource output) {
 		buildMessages = new ArrayList2<>();
 		
-		while(true) {
-			String outputLine = output.consumeLine();
-			if(outputLine == null) {
-				break;
-			}
-			doParseLine(outputLine, output);
+		while(output.hasCharAhead()) {
+			doParseToolMessage(output);
 		}
 		
 		return buildMessages;
 	}
 	
-	protected abstract void doParseLine(String outputLine, StringParseSource output);
-	
-	protected void addMessage(String pathString, String lineString, String columnString, String endLineString,
-			String endColumnString, String messageTypeString, String message) {
+	protected void doParseToolMessage(StringParseSource output) {
 		try {
-			buildMessages.add(createMessage(pathString, lineString, columnString, endLineString, endColumnString, 
-				messageTypeString, message));
+			ToolMessageData toolMessage = parseMessageData(output);
+			
+			if(toolMessage != null) {
+				addBuildMessage(toolMessage);
+			}
 		} catch (CommonException ce) {
-			handleLineParseError(ce);
+			handleMessageParseError(ce);
 		}
 	}
 	
-	protected void handleUnknownLineSyntax(String line) {
-		handleLineParseError(new CommonException("Unknown error line syntax: " + line));
+	protected void addBuildMessage(ToolMessageData toolMessage) throws CommonException {
+		buildMessages.add(createMessage(toolMessage));
 	}
 	
+	protected abstract ToolMessageData parseMessageData(StringParseSource output) throws CommonException;
+	
 	@Override
-	protected abstract void handleLineParseError(CommonException ce);
+	protected abstract void handleMessageParseError(CommonException ce);
+	
+	protected CommonException createUnknownLineSyntaxError(String line) {
+		return new CommonException("Unknown error line syntax: " + line);
+	}
 	
 	/* -----------------  ----------------- */
 	
-	protected ToolSourceMessage createMessage(String pathString, String lineString, String columnString, 
-			String endLineString, String endColumnString, 
-			String messageTypeString, String message) throws CommonException {
+	public static class ToolMessageData {
 		
-		Path filePath = parsePath(pathString).normalize();
-		int lineNo = parsePositiveInt(lineString);
-		int column = parseOptionalPositiveInt(columnString);
+		public String pathString;
+		public String lineString;
+		public String columnString;
 		
-		int endline = parseOptionalPositiveInt(endLineString);
-		int endColumn = parseOptionalPositiveInt(endColumnString);
+		public String endLineString;
+		public String endColumnString;
 		
-		// due to the REGEXP, can only be WARNING or ERROR
-		StatusLevel msgKind = StatusLevel.fromString(messageTypeString);  
+		public String messageTypeString;
+		
+		public String sourceBeforeMessageText;
+		public String messageText;
+		
+	}
+	
+	protected ToolSourceMessage createMessage(ToolMessageData msgdata) throws CommonException {
+		
+		Path filePath = parsePath(msgdata.pathString).normalize();
+		int lineNo = parsePositiveInt(msgdata.lineString);
+		int column = parseOptionalPositiveInt(msgdata.columnString);
+		
+		int endline = parseOptionalPositiveInt(msgdata.endLineString);
+		int endColumn = parseOptionalPositiveInt(msgdata.endColumnString);
+		
+		// messageTypeString should be valid to parse
+		StatusLevel msgKind = StatusLevel.fromString(msgdata.messageTypeString);
+		assertNotNull(msgKind);
 		
 		SourceLineColumnRange location = new SourceLineColumnRange(filePath, lineNo, column, endline, endColumn);
-		return new ToolSourceMessage(location, msgKind, message);
+		return new ToolSourceMessage(location, msgKind, msgdata.messageText);
 	}
 	
 	protected StatusLevel parseMessageKind(String messageTypeString) throws CommonException {
