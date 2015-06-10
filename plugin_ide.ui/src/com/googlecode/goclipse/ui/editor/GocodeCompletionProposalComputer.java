@@ -11,7 +11,11 @@ import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.text.completion.LangCompletionProposal;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
+import melnorme.lang.tooling.CompletionProposalKind;
+import melnorme.lang.tooling.ElementAttributes;
+import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -25,7 +29,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
@@ -169,8 +172,16 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 			descriptiveString = descriptiveString.replace(" : func", " ").replace(" : interface",
 					" ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
 			
-			results.add(new CompletionProposal(identifier, offset - prefix.length(),
-				prefix.length(), identifier.length(), image, descriptiveString, null, null));
+			ElementAttributes attributes = new ElementAttributes(null); // TODO
+			
+			ToolCompletionProposal propoosal = new ToolCompletionProposal(
+				offset - prefix.length(), prefix.length(), identifier, descriptiveString, 
+				CompletionProposalKind.UNKNOWN, attributes, null);
+			
+			results.add(new LangCompletionProposal(propoosal, null, image, null));
+			
+//			results.add(new CompletionProposal(identifier, offset - prefix.length(),
+//				prefix.length(), identifier.length(), image, descriptiveString, null, null));
 		}
 	}
 	

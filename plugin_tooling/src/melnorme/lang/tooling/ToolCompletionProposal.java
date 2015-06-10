@@ -18,10 +18,16 @@ import melnorme.utilbox.collections.Indexable;
 public class ToolCompletionProposal extends LangToolCompletionProposal {
 	
 	public ToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, String label,
+			CompletionProposalKind kind, ElementAttributes attributes, String moduleName) {
+		this(replaceOffset, replaceLength, replaceString, label, kind, attributes, moduleName, 
+			replaceString, null);
+	}
+	
+	public ToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, String label,
 			CompletionProposalKind kind, ElementAttributes attributes, String moduleName, String fullReplaceString,
 			Indexable<SourceRange> sourceSubElements) {
-		super(replaceOffset, replaceLength, replaceString, label, kind, attributes, moduleName, fullReplaceString, 
-			sourceSubElements);
+		super(replaceOffset, replaceLength, replaceString, label, kind, attributes, moduleName, 
+			fullReplaceString, sourceSubElements);
 	}
 	
 	@Override
