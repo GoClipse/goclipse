@@ -124,6 +124,10 @@ public interface ParseSource<EXC extends Exception> extends ICharSource<EXC> {
 		return null;
 	}
 	
+	default String stringUntilNewline() throws EXC {
+		return stringUntilNewline(0);
+	}
+	
 	default String stringUntilNewline(int offset) throws EXC {
 		StringBuilder sb = new StringBuilder();
 		

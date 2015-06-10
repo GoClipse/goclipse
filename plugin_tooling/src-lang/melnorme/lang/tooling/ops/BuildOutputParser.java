@@ -51,16 +51,15 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 	protected ArrayList<ToolSourceMessage> parseMessages(StringParseSource output) {
 		buildMessages = new ArrayList2<>();
 		
-		while(!output.lookaheadIsEOF()) {
-			doParseLine(output);
+		while(true) {
+			String outputLine = output.consumeLine();
+			if(outputLine == null) {
+				break;
+			}
+			doParseLine(outputLine, output);
 		}
 		
 		return buildMessages;
-	}
-	
-	protected void doParseLine(StringParseSource output) {
-		String outputLine = output.consumeLine();
-		doParseLine(outputLine, output);
 	}
 	
 	protected abstract void doParseLine(String outputLine, StringParseSource output);
