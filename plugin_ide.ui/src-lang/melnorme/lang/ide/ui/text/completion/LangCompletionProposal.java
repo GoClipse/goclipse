@@ -68,12 +68,11 @@ public class LangCompletionProposal implements
 	protected StyledString styledDisplayString;
 	
 	public LangCompletionProposal(ToolCompletionProposal proposal,
-			String additionalProposalInfo, 
 			Image image, 
 			IContextInformation contextInformation) {
 		super();
 		this.proposal = assertNotNull(proposal);
-		this.additionalProposalInfo = additionalProposalInfo;
+		this.additionalProposalInfo = proposal.getDescription();
 		this.image = image;
 		this.contextInformation = contextInformation;
 		

@@ -72,7 +72,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 	
 	protected ICompletionProposal adaptToolProposal(ToolCompletionProposal proposal) {
 		IContextInformation ctxInfo = null; // TODO: context information
-		return new LangCompletionProposal(proposal, null, getImage(proposal), ctxInfo);
+		return new LangCompletionProposal(proposal, getImage(proposal), ctxInfo);
 	}
 	
 	protected Image getImage(ToolCompletionProposal proposal) {

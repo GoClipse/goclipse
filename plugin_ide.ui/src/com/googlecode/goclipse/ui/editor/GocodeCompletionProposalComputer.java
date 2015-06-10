@@ -176,9 +176,9 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 			
 			ToolCompletionProposal propoosal = new ToolCompletionProposal(
 				offset - prefix.length(), prefix.length(), identifier, descriptiveString, 
-				CompletionProposalKind.UNKNOWN, attributes, null);
+				CompletionProposalKind.UNKNOWN, attributes, null, null);
 			
-			results.add(new LangCompletionProposal(propoosal, null, image, null));
+			results.add(new LangCompletionProposal(propoosal, image, null));
 			
 //			results.add(new CompletionProposal(identifier, offset - prefix.length(),
 //				prefix.length(), identifier.length(), image, descriptiveString, null, null));
