@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.dialogs;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +26,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 /**
@@ -34,6 +37,7 @@ public abstract class ProjectCreationOperation {
 	protected final IRunnableContext context;
 	
 	protected final ArrayList2<IRevertAction> revertActions = new ArrayList2<>();
+	protected final ArrayList2<Runnable> finishActions = new ArrayList2<>();
 	
 	public static interface IRevertAction {
 		
@@ -118,9 +122,19 @@ public abstract class ProjectCreationOperation {
 		
 		Collections.reverse(revertActionsToRun); // Run in reverse order.
 		
-		for (IRevertAction revertAction : revertActionsToRun) {
+		for(IRevertAction revertAction : revertActionsToRun) {
 			revertAction.run(monitor);
 		}
+	}
+	
+	
+	public void performFinishActions() {
+		assertTrue(Display.getCurrent() != null);
+		// Runs in UI thread.
+		for(Runnable runnable : finishActions) {
+			runnable.run();
+		}
+		finishActions.clear();
 	}
 	
 }

@@ -11,8 +11,6 @@
 package com.googlecode.goclipse.ui.wizards;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.WizardMessages_Actual;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
@@ -51,37 +49,14 @@ public class GoProjectWizard extends LangNewProjectWizard {
 	}
 	
 	@Override
-	protected ProjectCreator_ForWizard createProjectCreator() {
-		return new GoProjectCreator();
-	}
-	
-	public class GoProjectCreator extends ProjectCreator_ForWizard {
-		
-		public GoProjectCreator() {
-			super(GoProjectWizard.this);
+	protected void configureCreatedProject(ProjectCreator_ForWizard projectCreator, IProgressMonitor monitor)
+			throws CoreException {
+		IProject project = getProject();
+		if(!GoProjectEnvironment.isProjectInsideGoPath(project)) {
+			projectCreator.createFolder(project.getFolder("src"), monitor);
+			projectCreator.createFolder(project.getFolder("bin"), monitor);
+			projectCreator.createFolder(project.getFolder("pkg"), monitor);
 		}
-		
-		@Override
-		protected void configureCreatedProject(IProgressMonitor monitor) throws CoreException {
-			IProject project = getProject();
-			
-			if(!GoProjectEnvironment.isProjectInsideGoPath(project)) {
-				ResourceUtils.createFolder(project.getFolder("src"), false, monitor);
-				ResourceUtils.createFolder(project.getFolder("bin"), false, monitor);
-				ResourceUtils.createFolder(project.getFolder("pkg"), false, monitor);
-			}
-		}
-		
-		@Override
-		protected String getHelloWorldContents() {
-			throw assertUnreachable();
-		}
-		
-		@Override
-		protected String getDefaultManifestFileContents() {
-			throw assertUnreachable();
-		}
-		
 	}
 	
 }
