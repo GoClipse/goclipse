@@ -99,7 +99,7 @@ public class ProblemMarkerUpdater implements IDisposable {
 			return; // It could have been removed in the meanwhile.
 		}
 		
-		file.deleteMarkers(LangCore_Actual.BUILD_PROBLEM_ID, true, IResource.DEPTH_ZERO);
+		file.deleteMarkers(LangCore_Actual.SOURCE_PROBLEM_ID, true, IResource.DEPTH_ZERO);
 		
 		if(sourceFileStructure == null) {
 			return;
@@ -111,7 +111,7 @@ public class ProblemMarkerUpdater implements IDisposable {
 	}
 	
 	protected void createMarker(final Location location, IFile file, ParserError problem) throws CoreException {
-		IMarker marker = file.createMarker(LangCore_Actual.BUILD_PROBLEM_ID);
+		IMarker marker = file.createMarker(LangCore_Actual.SOURCE_PROBLEM_ID);
 		marker.setAttribute(IMarker.LOCATION, location.toPathString());
 		marker.setAttribute(IMarker.MESSAGE, problem.getUserMessage());
 		marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
