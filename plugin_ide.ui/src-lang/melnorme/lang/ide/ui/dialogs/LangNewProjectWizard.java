@@ -205,7 +205,7 @@ public abstract class LangNewProjectWizard extends Wizard
 			
 			createFolder(file.getParent(), monitor);
 			
-			ResourceUtils.writeStringToFile(file, contents);
+			ResourceUtils.writeStringToFile(file, contents, monitor);
 			
 			Runnable openEditorRunnable = new Runnable() {
 				@Override

@@ -90,20 +90,21 @@ public class ResourceUtils {
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 	}
 	
-	public static void writeToFile(IFile file, InputStream is) throws CoreException {
+	public static void writeToFile(IFile file, InputStream is, IProgressMonitor pm) throws CoreException {
 		if(file.exists()) {
-			file.setContents(is, false, false, null);
+			file.setContents(is, false, false, pm);
 		} else {
 			file.create(is, false, null);
 		}
 	}
 	
-	public static void writeStringToFile(IFile file, String contents) throws CoreException {
-		writeStringToFile(file, contents, StringUtil.UTF8);
+	public static void writeStringToFile(IFile file, String contents, IProgressMonitor pm) throws CoreException {
+		writeStringToFile(file, contents, StringUtil.UTF8, pm);
 	}
 	
-	public static void writeStringToFile(IFile file, String contents, Charset charset) throws CoreException {
-		writeToFile(file, new ByteArrayInputStream(contents.getBytes(charset)));
+	public static void writeStringToFile(IFile file, String contents, Charset charset, IProgressMonitor pm) 
+			throws CoreException {
+		writeToFile(file, new ByteArrayInputStream(contents.getBytes(charset)), pm);
 	}
 	
 	public static void createFolder(IFolder folder, boolean force, IProgressMonitor monitor) 
