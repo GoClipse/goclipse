@@ -166,7 +166,7 @@ public abstract class CommonCoreTest extends CommonTest {
 	public static void writeStringToFile(IProject project, String filePath, String contents) 
 			throws CoreException {
 		IFile file = project.getFile(filePath);
-		ResourceUtils.writeStringToFile(file, contents);
+		ResourceUtils.writeStringToFile(file, contents, null);
 	}
 	
 }
