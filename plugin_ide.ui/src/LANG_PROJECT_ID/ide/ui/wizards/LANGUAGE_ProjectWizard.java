@@ -11,13 +11,13 @@
 package LANG_PROJECT_ID.ide.ui.wizards;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.ui.WizardMessages_Actual;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
 import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.wizard.WizardPage;
@@ -47,31 +47,11 @@ public class LANGUAGE_ProjectWizard extends LangNewProjectWizard {
 	}
 	
 	@Override
-	protected ProjectCreator_ForWizard createProjectCreator() {
-		return new LANGUAGE_ProjectCreator();
-	}
-	
-	public class LANGUAGE_ProjectCreator extends ProjectCreator_ForWizard {
-		
-		public LANGUAGE_ProjectCreator() {
-			super(LANGUAGE_ProjectWizard.this);
-		}
-		
-		@Override
-		protected void configureCreatedProject(IProgressMonitor monitor) throws CoreException {
-			// TODO:
-		}
-
-		@Override
-		protected String getHelloWorldContents() {
-			throw assertFail();
-		}
-
-		@Override
-		protected String getDefaultManifestFileContents() {
-			throw assertFail();
-		}
-		
+	protected void configureCreatedProject(ProjectCreator_ForWizard projectCreator, IProgressMonitor monitor)
+			throws CoreException {
+		// TODO: LANG configureCreatedProject
+		IFile mainModule = getProject().getFolder("src").getFile("main.lang");
+		projectCreator.createFile(mainModule, "blah", true, monitor);
 	}
 	
 }

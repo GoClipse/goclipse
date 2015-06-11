@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.dialogs;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.assertInstance;
 
 import java.net.URI;
@@ -17,8 +18,8 @@ import java.net.URI;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.EditorUtils;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -36,8 +37,9 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 
@@ -72,16 +74,6 @@ public abstract class LangNewProjectWizard extends Wizard
 		return getFirstPage().getProjectLocationUri();
 	}
 	
-	@Override
-	public void setContainer(IWizardContainer wizardContainer) {
-		super.setContainer(wizardContainer);
-		
-		if(wizardContainer != null) {
-			WizardDialog wizardDialog = assertInstance(wizardContainer, WizardDialog.class);
-			wizardDialog.addPageChangingListener(this);
-		}
-	}
-	
 	/**
 	 * Stores the configuration for the wizard. 
 	 * this will be be used in {@link #performFinish()} to possible change the perspective after wizard completion. 
@@ -108,6 +100,16 @@ public abstract class LangNewProjectWizard extends Wizard
 	
 	public IStructuredSelection getSelection() {
 		return selection;
+	}
+	
+	@Override
+	public void setContainer(IWizardContainer wizardContainer) {
+		super.setContainer(wizardContainer);
+		
+		if(wizardContainer != null) {
+			WizardDialog wizardDialog = assertInstance(wizardContainer, WizardDialog.class);
+			wizardDialog.addPageChangingListener(this);
+		}
 	}
 	
 	/* -----------------  ----------------- */
@@ -146,12 +148,14 @@ public abstract class LangNewProjectWizard extends Wizard
 		return projectCreationOperation;
 	}
 	
-	protected abstract ProjectCreator_ForWizard createProjectCreator();
+	protected ProjectCreator_ForWizard createProjectCreator() {
+		return new ProjectCreator_ForWizard();
+	}
 	
-	protected abstract class ProjectCreator_ForWizard extends ProjectCreationOperation {
+	protected class ProjectCreator_ForWizard extends ProjectCreationOperation {
 		
-		public ProjectCreator_ForWizard(LangNewProjectWizard projectWizard) {
-			super(projectWizard.getContainer());
+		public ProjectCreator_ForWizard() {
+			super(LangNewProjectWizard.this.getContainer());
 		}
 		
 		@Override
@@ -164,39 +168,69 @@ public abstract class LangNewProjectWizard extends Wizard
 			return LangNewProjectWizard.this.getProjectLocation();
 		}
 		
-		protected void createSampleHelloWorldBundle(String manifestFile, String sourceFolderPath, String sourceFile)
-				throws CoreException {
-			IProject project = getProject();
-			final IFile manifest = project.getFile(manifestFile);
-			if(manifest.exists()) {
+		@Override
+		protected void configureCreatedProject(IProgressMonitor monitor) throws CoreException {
+			LangNewProjectWizard.this.configureCreatedProject(this, monitor);
+		}
+		
+		public void createFolder(IContainer container, IProgressMonitor monitor) throws CoreException {
+			
+			if(container.exists() || !(container instanceof IFolder)) {
 				return;
 			}
-				
-			final IFolder folder = project.getFolder(sourceFolderPath);
-			ResourceUtils.createFolder(folder, true, true, null);
 			
-			final IFile appFile = folder.getFile(sourceFile);
-			ResourceUtils.writeStringToFile(appFile, getHelloWorldContents());
+			createFolder(container.getParent(), monitor);
 			
-			ResourceUtils.writeStringToFile(manifest, getDefaultManifestFileContents());
+			IFolder folder = (IFolder) container;
+			ResourceUtils.createFolder(folder, true, true, monitor);
 			
 			revertActions.add(new IRevertAction() {
 				@Override
 				public void run(IProgressMonitor monitor) throws CoreException {
-					manifest.delete(false, monitor);
-					appFile.delete(false, monitor);
 					if(folder.members().length == 0) {
 						folder.delete(false, monitor);
 					}
 				}
 			});
+
 		}
 		
-		protected abstract String getHelloWorldContents();
-		
-		protected abstract String getDefaultManifestFileContents();
-		
+		public void createFile(IFile file, String contents, boolean openEditor, IProgressMonitor monitor) 
+				throws CoreException {
+			assertNotNull(contents);
+			
+			if(file.exists()) {
+				return;
+			}
+			
+			createFolder(file.getParent(), monitor);
+			
+			ResourceUtils.writeStringToFile(file, contents);
+			
+			Runnable openEditorRunnable = new Runnable() {
+				@Override
+				public void run() {
+					selectAndReveal(file);
+					openEditorOnFile(file);
+				}
+			};
+			
+			revertActions.add(new IRevertAction() {
+				@Override
+				public void run(IProgressMonitor monitor) throws CoreException {
+					finishActions.remove(openEditorRunnable);
+					file.delete(false, monitor);
+				}
+			});
+			if(openEditor) {
+				finishActions.add(openEditorRunnable);
+			}
+		}
+
 	}
+	
+	protected abstract void configureCreatedProject(ProjectCreator_ForWizard projectCreator, IProgressMonitor monitor)
+			throws CoreException;
 	
 	/* -----------------  ----------------- */
 	
@@ -206,6 +240,7 @@ public abstract class LangNewProjectWizard extends Wizard
 		if(success) {
 			BasicNewProjectResourceWizard.updatePerspective(fConfigElement);
 			selectAndReveal(getProject());
+			getProjectCreator().performFinishActions();
 		}
 		return success;
 	}
@@ -219,12 +254,14 @@ public abstract class LangNewProjectWizard extends Wizard
 		return getProjectCreator().revertProjectCreation();
 	}
 	
+	
 	/* ----------------- util: ----------------- */
 	
 	protected void openEditorOnFile(IFile file) {
+		IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
 		try {
-			EditorUtils.openEditor(new FileEditorInput(file), EditorsUI.DEFAULT_TEXT_EDITOR_ID);
-		} catch (CoreException e) {
+			IDE.openEditor(page, file, true);
+		} catch(PartInitException e) {
 			LangCore.logInternalError(e);
 		}
 	}
