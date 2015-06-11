@@ -79,10 +79,15 @@
 	<extension point="org.eclipse.core.resources.markers"
 		id="goProblem"
 		name="Go Problem">
-		<super
-			type="org.eclipse.core.resources.problemmarker">
-		</super>
+		<super type="org.eclipse.core.resources.problemmarker" />
 		<persistent value="true" />
+	</extension>
+	
+	<extension point="org.eclipse.core.resources.markers"
+		id="source_problem"
+		name="%ProblemMarker_Name">
+		<super type="com.googlecode.goclipse.core.goProblem" />
+		<persistent value="false" />
 	</extension>
 	
 	<!-- ============ Launch configuration type ============= -->

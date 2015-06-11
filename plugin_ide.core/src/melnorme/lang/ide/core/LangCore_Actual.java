@@ -14,6 +14,7 @@ public class LangCore_Actual {
 //	public static final String BUILDER_ID = PLUGIN_ID + ".Builder";
 	public static final String BUILDER_ID = "com.googlecode.goclipse.goBuilder";
 	public static final String BUILD_PROBLEM_ID = PLUGIN_ID + ".goProblem";
+	public static final String SOURCE_PROBLEM_ID = PLUGIN_ID + ".source_problem";
 	
 	public static Plugin getInstance() {
 		return Activator.getDefault();
