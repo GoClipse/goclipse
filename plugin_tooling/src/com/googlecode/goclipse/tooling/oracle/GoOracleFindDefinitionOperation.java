@@ -11,54 +11,19 @@
 package com.googlecode.goclipse.tooling.oracle;
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-
-import java.text.MessageFormat;
-
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
-import melnorme.lang.tooling.ops.ToolOutputParseHelper;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.googlecode.goclipse.tooling.GoPackageName;
-import com.googlecode.goclipse.tooling.env.GoEnvironment;
-
-public class GoOracleFindDefinitionOperation extends ToolOutputParseHelper {
-	
-	protected final String goOraclePath;
+public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 	
 	public GoOracleFindDefinitionOperation(String goOraclePath) {
-		this.goOraclePath = goOraclePath;
-	}
-	
-	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Location fileLoc, int offset) 
-			throws CommonException {
-		GoPackageName goPackage = goEnv.findGoPackageForSourceModule(fileLoc);
-		if(goPackage == null) {
-			throw new CommonException(MessageFormat.format(
-				"Could not determine Go package for Go file ({0}), file not in the Go environment.", fileLoc), 
-				null);
-		}
-		
-		// go oracle requires these variables are properly set
-		goEnv.validateGoArch();
-		goEnv.validateGoOs();
-		
-		ArrayList2<String> commandLine = new ArrayList2<>(
-			goOraclePath,
-			"-pos=" + fileLoc.toPathString() + ":#" + offset + ",#" + offset,
-			"-format=json",
-			"describe",
-			goPackage.getFullNameAsString()
-		);
-		
-		return goEnv.createProcessBuilder(commandLine, null, true);
+		super(goOraclePath);
 	}
 	
 	public FindDefinitionResult parseToolResult(ExternalProcessResult result) throws CommonException {

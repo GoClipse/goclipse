@@ -1,0 +1,70 @@
+{
+	"mode": "describe",
+	"describe": {
+		"desc": "definition of package \"util/MyUtilFoo/libfoo\"",
+		"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:1:9",
+		"detail": "package",
+		"package": {
+			"path": "util/MyUtilFoo/libfoo",
+			"members": [
+				{
+					"name": "Hello2",
+					"type": "func()",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:5:6",
+					"kind": "func"
+				},
+				{
+					"name": "xxx",
+					"type": "int",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:17:5",
+					"kind": "var"
+				},
+				{
+					"name": "encodeFragment",
+					"type": "util.encoding",
+					"value": "4",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:56:2",
+					"kind": "const"
+				},
+				{
+					"name": "User",
+					"type": "func(username string) *util.Userinfo",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:242:6",
+					"kind": "func"
+				},
+				{
+					"name": "geometry",
+					"type": "interface{area() float64; perim() float64}",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:59:6",
+					"kind": "type",
+					"methods": [
+						{
+							"name": "method (geometry) area() float64",
+							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:60:5"
+						},
+						{
+							"name": "method (geometry) perim() float64",
+							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:61:5"
+						}
+					]
+				},
+				{
+					"name": "URL",
+					"type": "struct{Scheme string; Opaque string;}",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:230:6",
+					"kind": "type",
+					"methods": [
+						{
+							"name": "method (*URL) IsAbs() bool",
+							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:624:15"
+						},
+						{
+							"name": "method (*URL) Parse(ref string) (*URL, error)",
+							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:631:15"
+						}
+					]
+				}
+			]
+		}
+	}
+}

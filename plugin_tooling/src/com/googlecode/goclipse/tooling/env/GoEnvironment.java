@@ -105,7 +105,7 @@ public class GoEnvironment {
 	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir, boolean goRootInPath) 
 			throws CommonException {
-		ProcessBuilder pb = melnorme.lang.utils.ProcessUtils.createProcessBuilder(commandLine, workingDir);
+		ProcessBuilder pb = ProcessUtils.createProcessBuilder(commandLine, workingDir);
 		
 		Map<String, String> env = pb.environment();
 		

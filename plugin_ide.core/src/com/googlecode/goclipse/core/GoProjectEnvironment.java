@@ -90,6 +90,11 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return prefValue;
 	}
 	
+	public static GoEnvironment getGoEnvironmentFromLocation(Location fileLocation) {
+		IProject project = ResourceUtils.getProject(fileLocation);
+		return getGoEnvironment(project);
+	}
+	
 	/**
 	 * @return {@link GoEnvironment} for given project.
 	 * @param project - can be null.

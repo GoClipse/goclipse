@@ -106,7 +106,7 @@ public abstract class StructureModelManager {
 		Location location = getLocation(structureInfo.getKey());
 		// Note: document should only be acessed in the same thread that fires document listeners
 		// So retrieve the source now.
-		final String source = document.get(); 
+		final String source = document.get();
 		structureInfo.queueTask(createUpdateTask2(structureInfo, source, location));
 	}
 	
