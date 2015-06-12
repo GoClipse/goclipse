@@ -90,6 +90,33 @@ public class ResourceUtils {
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 	}
 	
+	public static IProject getProject(Location fileLocation) {
+		IFile[] files = getWorkspaceRoot().findFilesForLocationURI(fileLocation.toUri());
+		
+		for (IFile file : files) {
+			IProject project = file.getProject();
+			if(project.exists() && project.isOpen()) {
+				return project;
+			}
+		}
+		
+		return null;
+	}
+	
+	public static Location getProjectLocation(IProject project) throws CoreException {
+		IPath location = project.getLocation();
+		if(location == null) {
+			throw LangCore.createCoreException("Invalid project location: " + project.getLocationURI(), null);
+		}
+		try {
+			return Location.create(location.toFile().toPath());
+		} catch (CommonException e) {
+			throw LangCore.createCoreException(e);
+		}
+	}
+	
+	/* ----------------- File read/write ----------------- */
+	
 	public static void writeToFile(IFile file, InputStream is, IProgressMonitor pm) throws CoreException {
 		if(file.exists()) {
 			file.setContents(is, false, false, pm);
@@ -106,6 +133,8 @@ public class ResourceUtils {
 			throws CoreException {
 		writeToFile(file, new ByteArrayInputStream(contents.getBytes(charset)), pm);
 	}
+	
+	/* -----------------  ----------------- */
 	
 	public static void createFolder(IFolder folder, boolean force, IProgressMonitor monitor) 
 			throws CoreException {
@@ -197,18 +226,6 @@ public class ResourceUtils {
 			if(project.exists()) {
 				throw ce;
 			}
-		}
-	}
-	
-	public static Location getProjectLocation(IProject project) throws CoreException {
-		IPath location = project.getLocation();
-		if(location == null) {
-			throw LangCore.createCoreException("Invalid project location: " + project.getLocationURI(), null);
-		}
-		try {
-			return Location.create(location.toFile().toPath());
-		} catch (CommonException e) {
-			throw LangCore.createCoreException(e);
 		}
 	}
 	
