@@ -9,15 +9,12 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
-import _org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy;
 
 import com.googlecode.goclipse.core.text.GoPartitionScanner;
 import com.googlecode.goclipse.editors.DoubleClickStrategy;
 import com.googlecode.goclipse.editors.GoEditor;
-import com.googlecode.goclipse.editors.GoEditorReconcilingStrategy;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.text.GoScanner;
 
@@ -81,11 +78,6 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 		if (doubleClickStrategy == null)
 			doubleClickStrategy = new DoubleClickStrategy();
 		return doubleClickStrategy;
-	}
-	
-	@Override
-	protected CompositeReconcilingStrategy getReconciler_createCompositeStrategy(ITextEditor editor) {
-		return new CompositeReconcilingStrategy(new GoEditorReconcilingStrategy(this.editor));
 	}
 	
 }

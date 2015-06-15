@@ -9,7 +9,6 @@ import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorInput;
@@ -23,7 +22,6 @@ import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
 public class GoEditor extends AbstractLangStructureEditor {
 	
 	private EditorImageUpdater imageUpdater;
-	private GoEditorOutlinePage outlinePage;
 	
 	public GoEditor() {
 		super();
@@ -101,13 +99,6 @@ public class GoEditor extends AbstractLangStructureEditor {
 		}
 		
 		super.dispose();
-	}
-	
-	@SuppressWarnings("unused")
-	protected void handleReconcilation(IRegion partition) {
-		if (outlinePage != null) {
-			outlinePage.handleEditorReconcilation();
-		}
 	}
 	
 	public IProject getCurrentProject() {
