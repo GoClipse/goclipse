@@ -25,11 +25,22 @@ public interface ICharSource<EXC extends Exception> {
 	 * Use intended for tests or performance optimizations */
 	int bufferedCharCount();
 	
+	/** Return a substring from the source, starting at given offset, with given length.
+	 * Although a default implementation could be provided, this is left for subclasses to implement,
+	 * so that an optimized version can be defined. */
+	String lookaheadString(int offset, int length) throws EXC;
+	
 	
 	default int lookahead() throws EXC {
 		return lookahead(0);
 	}
-
+	
+	default char lookaheadChar() throws EXC {
+		int la = lookahead();
+		assertTrue(la != -1);
+		return (char) la;
+	}
+	
 	default boolean hasCharAhead() throws EXC {
 		return lookahead() != -1;
 	}
@@ -44,6 +55,12 @@ public interface ICharSource<EXC extends Exception> {
 		while(amount-- > 0) {
 			consume();
 		}
+	}
+	
+	default String consumeString(int length) throws EXC {
+		String string = lookaheadString(0, length);
+		consume(length);
+		return string;
 	}
 	
 	default boolean lookaheadMatches(String string) throws EXC {

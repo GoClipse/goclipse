@@ -59,4 +59,17 @@ public class ReaderParseSource implements ParseSource<IOException> {
 		return buffer.length();
 	}
 	
+	@Override
+	public String lookaheadString(int offset, int length) throws IOException {
+		int endPos = offset + length;
+		
+		while(buffer.length() < endPos) {
+			if(reader.read() == -1) {
+				return null;
+			}
+		}
+		
+		return buffer.substring(offset, endPos);
+	}
+	
 }
