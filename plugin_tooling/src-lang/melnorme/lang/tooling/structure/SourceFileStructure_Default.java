@@ -84,6 +84,7 @@ public class SourceFileStructure_Default extends StructureContainer implements I
 			this.offset = offset;
 		}
 		
+		// Note: This could be optimized if element tree is sorted
 		public StructureElement findInnerMost(IStructureElementContainer container) {
 			visitContainer(container);
 			return pickedElement;
@@ -92,13 +93,19 @@ public class SourceFileStructure_Default extends StructureContainer implements I
 		protected void visitContainer(IStructureElementContainer container) {
 			assertNotNull(container);
 			
-			for(StructureElement structureElement : container.getChildren()) {
-				if(structureElement.getSourceRange().inclusiveContains(offset)) {
-					pickedElement = structureElement;
+			for(StructureElement childElement : container.getChildren()) {
+				if(childElement.getSourceRange().inclusiveContains(offset)) {
 					
-					visitContainer(structureElement); // Check children
-					return;
+					if(pickedElement == null) {
+						pickedElement = childElement;
+					} else if(pickedElement.getSourceRange().inclusiveContains(childElement.getSourceRange())) {
+						// childElement has a more specific source-range, so it's a better match
+						pickedElement = childElement;
+					}
+					
 				}
+				
+				visitContainer(childElement); // Check children
 			}
 			
 		}
