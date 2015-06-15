@@ -116,7 +116,7 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 		
 		StructureElementKind elementKind;
 		if(parsingMethods) {
-			elementKind = StructureElementKind.FUNCTION; // Methods
+			elementKind = StructureElementKind.METHOD;
 		} else {
 			if(kindString == null) {
 				throw new CommonException("No `kind` field for element: " + name);
@@ -125,9 +125,15 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 		}
 		if(elementKind == STRUCT || elementKind == StructureElementKind.INTERFACE) {
 			type = null;
-		} else if(elementKind == StructureElementKind.FUNCTION) {
+		} else if(elementKind == StructureElementKind.METHOD) {
 			if(name.startsWith("method ")) {
 				name = name.substring("method ".length());
+				if(name.startsWith("(")) {
+					String newName = StringUtil.segmentAfterMatch(name, ")");
+					if(newName != null) {
+						name = newName.trim();
+					}
+				}
 			}
 		}
 		

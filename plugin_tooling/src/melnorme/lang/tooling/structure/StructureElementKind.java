@@ -23,7 +23,7 @@ public enum StructureElementKind {
 	CONST,
 	
 	FUNCTION,
-//	CONSTRUCTOR,
+	METHOD,
 	
 //	CLASS,
 	INTERFACE,
@@ -43,7 +43,7 @@ public enum StructureElementKind {
 		case CONST: return visitor.visitConst();
 		
 		case FUNCTION: return visitor.visitFunction();
-//		case CONSTRUCTOR: return visitor.visitConstructor();
+		case METHOD: return visitor.visitMethod();
 		
 //		case CLASS: return visitor.visitClass();
 		case INTERFACE: return visitor.visitInterface();
@@ -57,6 +57,8 @@ public enum StructureElementKind {
 	}
 	
 	public static interface StructureElementKindVisitor<RET> extends AbstractKindVisitor<RET> {
+		
+		RET visitMethod();
 		
 		RET visitConst();
 		

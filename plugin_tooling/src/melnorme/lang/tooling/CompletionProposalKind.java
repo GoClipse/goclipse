@@ -24,7 +24,7 @@ public enum CompletionProposalKind {
 	VARIABLE,
 	
 	FUNCTION,
-	CONSTRUCTOR,
+	CONSTRUCTOR, // Not applicable to Go
 	
 	CLASS,
 	INTERFACE,

@@ -20,13 +20,23 @@ import com.googlecode.goclipse.ui.GoPluginImages;
 public class LangImageProvider extends AbstractLangImageProvider {
 	
 	@Override
+	public IManagedImage visitFunction() {
+		return GoPluginImages.NODE_FUNCTION;
+	}
+	
+	@Override
+	public IManagedImage visitMethod() {
+		return GoPluginImages.NODE_METHOD;
+	}
+	
+	@Override
 	public IManagedImage visitConst() {
-		return LangElementImages.T_NATIVE;
+		return LangElementImages.VARIABLE;
 	}
 	
 	@Override
 	public IManagedImage visitTypeDecl() {
-		return GoPluginImages.NODE_TYPE;
+		return LangElementImages.T_TYPE;
 	}
 	
 }

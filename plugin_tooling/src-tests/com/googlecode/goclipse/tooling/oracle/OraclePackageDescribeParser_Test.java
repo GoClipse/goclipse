@@ -13,6 +13,7 @@ package com.googlecode.goclipse.tooling.oracle;
 import static melnorme.lang.tooling.structure.StructureElementKind.CONST;
 import static melnorme.lang.tooling.structure.StructureElementKind.FUNCTION;
 import static melnorme.lang.tooling.structure.StructureElementKind.INTERFACE;
+import static melnorme.lang.tooling.structure.StructureElementKind.METHOD;
 import static melnorme.lang.tooling.structure.StructureElementKind.STRUCT;
 import static melnorme.lang.tooling.structure.StructureElementKind.VARIABLE;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -133,12 +134,12 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 			elem("encodeFragment", sr("encodeFragment"), CONST, att(), "util.encoding", null),
 			elem("User", sr("User"), FUNCTION, att(), USER__Type, null),
 			elem("geometry", sr("geometry"), INTERFACE, att(), null, elems(
-				elem("(geometry) area() float64", sr("area"), FUNCTION, att(), null, null),
-				elem("(geometry) perim() float64", sr("perim"), FUNCTION, att(), null, null)
+				elem("area() float64", sr("area"), METHOD, att(), null, null),
+				elem("perim() float64", sr("perim"), METHOD, att(), null, null)
 			)),
 			elem("URL", sr("URL"), STRUCT, att(), null, elems(
-				elem("(*URL) IsAbs() bool", sr("IsAbs"), FUNCTION, att(), null, null),
-				elem("(*URL) Parse(ref string) (*URL, error)", sr("Parse"), FUNCTION, att(), null, null)
+				elem("IsAbs() bool", sr("IsAbs"), METHOD, att(), null, null),
+				elem("Parse(ref string) (*URL, error)", sr("Parse"), METHOD, att(), null, null)
 			))
 		);
 		

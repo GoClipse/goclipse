@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
 
@@ -55,13 +54,13 @@ public class GoEditor extends AbstractLangStructureEditor {
 	
 	@Override
 	public Object getAdapter(Class required) {
-		if (IContentOutlinePage.class.equals(required)) {
-			if (outlinePage == null) {
-				outlinePage = new GoEditorOutlinePage(getDocumentProvider(), this);
-			}
-			
-			return outlinePage;
-		}
+//		if (IContentOutlinePage.class.equals(required)) {
+//			if (outlinePage == null) {
+//				outlinePage = new GoEditorOutlinePage(getDocumentProvider(), this);
+//			}
+//			
+//			return outlinePage;
+//		}
 		
 		return super.getAdapter(required);
 	}
