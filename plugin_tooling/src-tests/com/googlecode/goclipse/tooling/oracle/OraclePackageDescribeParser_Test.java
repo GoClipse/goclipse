@@ -134,12 +134,12 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 			elem("encodeFragment", sr("encodeFragment"), CONST, att(), "util.encoding", null),
 			elem("User", sr("User"), FUNCTION, att(), USER__Type, null),
 			elem("geometry", sr("geometry"), INTERFACE, att(), null, elems(
-				elem("area() float64", sr("area"), METHOD, att(), null, null),
-				elem("perim() float64", sr("perim"), METHOD, att(), null, null)
+				elem("area", sr("area"), METHOD, att(), "func() float64", null),
+				elem("perim", sr("perim"), METHOD, att(), "func() float64", null)
 			)),
 			elem("URL", sr("URL"), STRUCT, att(), null, elems(
-				elem("IsAbs() bool", sr("IsAbs"), METHOD, att(), null, null),
-				elem("Parse(ref string) (*URL, error)", sr("Parse"), METHOD, att(), null, null)
+				elem("IsAbs", sr("IsAbs"), METHOD, att(), "func() bool", null),
+				elem("Parse", sr("Parse"), METHOD, att(), "func(ref string) (*URL, error)", null)
 			))
 		);
 		

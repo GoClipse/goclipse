@@ -20,6 +20,7 @@ import melnorme.lang.tooling.ops.util.SourceLinesInfo;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
+import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -129,9 +130,14 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 			if(name.startsWith("method ")) {
 				name = name.substring("method ".length());
 				if(name.startsWith("(")) {
-					String newName = StringUtil.segmentAfterMatch(name, ")");
-					if(newName != null) {
-						name = newName.trim();
+					String fullName = StringUtil.segmentAfterMatch(name, ")");
+					if(fullName != null) {
+						fullName = fullName.trim();
+						int idLength = parseIdentifierStart(fullName);
+						if(idLength > 0) {
+							name = fullName.substring(0, idLength);
+							type = "func" + fullName.substring(idLength);
+						}
 					}
 				}
 			}
@@ -144,6 +150,11 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 		
 		return new StructureElement(name, nameSourceRange, sourceRange, 
 			elementKind, elementAttributes, type, children);
+	}
+
+	protected int parseIdentifierStart(String source) {
+		StringParseSource parser = new StringParseSource(source);
+		return parser.matchJavaIdentifier();
 	}
 	
 	protected SourceRange parseSourceRange(String positionString) throws CommonException {
