@@ -16,6 +16,7 @@ import static melnorme.lang.tooling.structure.StructureElementKind.INTERFACE;
 import static melnorme.lang.tooling.structure.StructureElementKind.STRUCT;
 import static melnorme.lang.tooling.structure.StructureElementKind.VARIABLE;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tests.CommonToolingTest;
 import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.EProtection;
@@ -24,6 +25,7 @@ import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
+import melnorme.lang.tooling.structure.StructureElementKind;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -53,11 +55,17 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		return new ArrayList2<>(expectedElements);
 	}
 	
+	public StructureElement elem(String name, SourceRange nameSR, StructureElementKind elementKind,
+			ElementAttributes elementAttributes, String type, Indexable<StructureElement> children) {
+		return new StructureElement(name, nameSR, nameSR, elementKind, elementAttributes, type, children);
+	}
 	
+	protected String goSource;
 	
-	protected void testParseStructure(String source, StructureElement... expectedElements) throws CommonException {
+	protected void testParseStructure(String describeOutput, String goSource, StructureElement... expectedElements)
+			throws CommonException {
 		OraclePackageDescribeParser parser = new OraclePackageDescribeParser(null);
-		SourceFileStructure structure = parser.parse(source);
+		SourceFileStructure structure = parser.parse(describeOutput, goSource);
 		
 		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
 		SourceFileStructure expected = new SourceFileStructure(null, expectedStructure, (Indexable<ParserError>) null);
@@ -66,46 +74,77 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		assertEquals(structure, expected);
 	}
 	
+	public int ixof(String marker) {
+		int indexOf = goSource.indexOf(marker);
+		assertTrue(indexOf >= 0);
+		return indexOf;
+	}
+	
+	public SourceRange sr(String marker) {
+		return sr(ixof(marker), marker.length());
+	}
+	
+	
 	protected static final String USER__Type = "func(username string) *util.Userinfo";
 	
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		
-		testParseStructure(getClassResourceAsString("oracle_describe.0_Empty.json"));
+		testParseStructure(getClassResourceAsString("oracle_describe.0_Empty.json"), "");
 		
-		testParseStructure(getClassResourceAsString("oracle_describe.1_Basic.json"),
-			new StructureElement("Hello2", sr(5, 6), sr(5, 6), FUNCTION, att(), "func()", null),
-			new StructureElement("other", sr(10, 6), sr(10, 6), FUNCTION, att(), "func()", null),
-			new StructureElement("i", sr(15, 5), sr(15, 5), VARIABLE, att(), "int", null),
-			new StructureElement("xxx", sr(17, 5), sr(17, 5), VARIABLE, att(), "int", null)
+		
+		goSource = getClassResourceAsString("oracle_describe.1_Basic.go");
+		testParseStructure(
+			getClassResourceAsString("oracle_describe.1_Basic.json"), goSource,
+			
+			elem("Hello", sr("Hello"), FUNCTION, att(), "func()", null),
+			elem("other", sr("other"), FUNCTION, att(), "func()", null),
+			elem("i2", sr("i2"), VARIABLE, att(), "int", null),
+			elem("xxx", sr("xxx"), VARIABLE, att(), "int", null)
 		);
 		
 		try {
-			testParseStructure(getClassResourceAsString("oracle_describe.2_Error1.json"));
+			testParseStructure(getClassResourceAsString("oracle_describe.2_Error1.json"), "");
 			assertFail();
 		} catch (CommonException e) {
 			// continue
 		}
 		
-		testParseStructure(getClassResourceAsString("oracle_describe.2_Test.json"),
-			new StructureElement("Hello2", sr(5, 6), sr(5, 6), FUNCTION, att(), "func()", null),
-			new StructureElement("xxx", sr(17, 5), sr(17, 5), VARIABLE, att(), "int", null),
-			new StructureElement("encodeFragment", sr(56, 2), sr(56, 2), CONST, att(), "util.encoding", null),
-			new StructureElement("User", sr(242, 6), sr(242, 6), FUNCTION, att(), USER__Type, null),
-			new StructureElement("geometry", sr(59, 6), sr(59, 6), INTERFACE, att(), null, 
-				elems(
-					new StructureElement("(geometry) area() float64", sr(60, 5), sr(60, 5), FUNCTION, att(), null, null),
-					new StructureElement("(geometry) perim() float64", sr(61, 5), sr(61, 5), FUNCTION, att(), null, null)
-				)),
-			new StructureElement("URL", sr(230, 6), sr(230, 6), STRUCT, att(), null, 
-				elems(
-					new StructureElement("(*URL) IsAbs() bool", sr(624, 15), sr(624, 15), FUNCTION, att(), null, null),
-					new StructureElement("(*URL) Parse(ref string) (*URL, error)", sr(631, 15), sr(631, 15), FUNCTION, att(), null, null)
-				))
+		// test bad source ranges
+		try {
+			testParseStructure(getClassResourceAsString("oracle_describe.2_Error2a.json"), "");
+			assertFail();
+		} catch (CommonException e) { 
+			assertTrue(e.toString().contains("Invalid line number: 0"));
+		}
+		try {
+			testParseStructure(getClassResourceAsString("oracle_describe.2_Error2b.json"), "");
+			assertFail();
+		} catch (CommonException e) { 
+			assertTrue(e.toString().contains("Invalid line, out of bounds."));
+		}
+		
+		goSource = getClassResourceAsString("oracle_describe.2_Test.go");
+		testParseStructure(getClassResourceAsString("oracle_describe.2_Test.json"), goSource,
+			
+			elem("Hello2", sr("Hello2"), FUNCTION, att(), "func()", null),
+			elem("xxx", sr("xxx"), VARIABLE, att(), "int", null),
+			elem("encodeFragment", sr("encodeFragment"), CONST, att(), "util.encoding", null),
+			elem("User", sr("User"), FUNCTION, att(), USER__Type, null),
+			elem("geometry", sr("geometry"), INTERFACE, att(), null, elems(
+				elem("(geometry) area() float64", sr("area"), FUNCTION, att(), null, null),
+				elem("(geometry) perim() float64", sr("perim"), FUNCTION, att(), null, null)
+			)),
+			elem("URL", sr("URL"), STRUCT, att(), null, elems(
+				elem("(*URL) IsAbs() bool", sr("IsAbs"), FUNCTION, att(), null, null),
+				elem("(*URL) Parse(ref string) (*URL, error)", sr("Parse"), FUNCTION, att(), null, null)
+			))
 		);
-
-		new OraclePackageDescribeParser(null).parse(getClassResourceAsString("oracle_describe.A_std_url.json"));
+		
+		goSource = getClassResourceAsString("oracle_describe.A_std_url.go");
+		new OraclePackageDescribeParser(null).parse(
+			getClassResourceAsString("oracle_describe.A_std_url.json"), goSource);
 		
 	}
 	

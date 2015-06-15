@@ -112,7 +112,7 @@ public class GoEngineClient extends EngineClient {
 			ProcessBuilder pb = oracleOp.createProcessBuilder(goEnv, opTempFile, offset);
 			
 			ExternalProcessResult describeResult = LangCore.getToolManager().runEngineTool(pb, null, cm);
-			return new OraclePackageDescribeParser(opTempFile).parse(describeResult);
+			return new OraclePackageDescribeParser(opTempFile).parse(describeResult, source);
 		}
 		
 	}

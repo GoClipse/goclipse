@@ -8,27 +8,27 @@
 			"path": "util/MyUtilFoo/libfoo",
 			"members": [
 				{
-					"name": "Hello2",
+					"name": "Hello",
 					"type": "func()",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:5:6",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:5:1",
 					"kind": "func"
 				},
 				{
 					"name": "other",
 					"type": "func()",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:10:6",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:10:4",
 					"kind": "func"
 				},
 				{
-					"name": "i",
+					"name": "i2",
 					"type": "int",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:15:5",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:15:2",
 					"kind": "var"
 				},
 				{
 					"name": "xxx",
 					"type": "int",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:17:5",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:17:2",
 					"kind": "var"
 				}
 			]

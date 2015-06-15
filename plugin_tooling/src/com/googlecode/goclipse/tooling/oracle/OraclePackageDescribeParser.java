@@ -16,6 +16,7 @@ import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolingMessages;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.util.SourceLinesInfo;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
@@ -35,23 +36,27 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 	
 	protected final Location location;
 	
+	protected SourceLinesInfo sourceLineInfo;
+	
 	public OraclePackageDescribeParser(Location location) {
 		this.location = location;
 	}
 	
-	public SourceFileStructure parse(ExternalProcessResult result) throws CommonException {
+	public SourceFileStructure parse(ExternalProcessResult result, String goSource) throws CommonException {
 		if(result.exitValue != 0) {
 			throw new CommonException(ToolingMessages.TOOLS_ExitedWithNonZeroStatus(result.exitValue));
 		}
 		
-		return parse(result.getStdOutBytes().toString(StringUtil.UTF8));
+		return parse(result.getStdOutBytes().toString(StringUtil.UTF8), goSource);
 	}
 	
-	public SourceFileStructure parse(String output) throws CommonException {
+	public SourceFileStructure parse(String describeOutput, String goSource) throws CommonException {
+		
+		sourceLineInfo = new SourceLinesInfo(goSource);
 		
 		ArrayList2<StructureElement> elements;
 		try {
-			elements = doParseJsonResult(output);
+			elements = doParseJsonResult(describeOutput);
 		} catch(JSONException e) {
 			throw new CommonException("Error parsing JSON output: ", e);
 		}
@@ -149,7 +154,10 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 		int line = NumberUtil.parsePositiveInt(lineStr);
 		int column = NumberUtil.parsePositiveInt(columnStr);
 		
-		return new SourceRange(line, column); // FIXME this is a misuse of the sourcerange
+		int validatedOffset = sourceLineInfo.getValidatedOffset(line, column);
+		int length = sourceLineInfo.getIdentifierAt(validatedOffset);
+		
+		return new SourceRange(validatedOffset, length);
 	}
 	
 	protected String getSourceRangeString(String posString, int i) {
