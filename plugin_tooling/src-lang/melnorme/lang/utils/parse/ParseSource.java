@@ -38,18 +38,15 @@ public interface ParseSource<EXC extends Exception> extends ICharSource<EXC> {
 	}
 	
 	default String stringUntil(String string) throws EXC {
-		StringBuilder sb = new StringBuilder();
-		
-		int ix = 0;
+		int length = 0;
 		while(true) {
-			int charAtIx = lookahead(ix);
-			if(charAtIx == -1 || lookaheadMatches(string, ix)) {
+			int charAtIx = lookahead(length);
+			if(charAtIx == -1 || lookaheadMatches(string, length)) {
 				break;
 			}
-			sb.append((char) charAtIx);
-			ix++;
+			length++;
 		}
-		return sb.toString();
+		return lookaheadString(0, length);
 	}
 	
 	default String consumeUntil(String string) throws EXC {
@@ -129,17 +126,15 @@ public interface ParseSource<EXC extends Exception> extends ICharSource<EXC> {
 	}
 	
 	default String stringUntilNewline(int offset) throws EXC {
-		StringBuilder sb = new StringBuilder();
-		
-		int ix = offset;
+		int endPos = offset;
 		while(true) {
-			if(determineNewlineSequenceAt(ix) != null) {
+			if(determineNewlineSequenceAt(endPos) != null) {
 				break;
 			}
-			sb.append((char) lookahead(ix));
-			ix++;
+			endPos++;
 		}
-		return sb.toString();
+		
+		return lookaheadString(offset, endPos - offset);
 	}
 	
 	default String consumeLine() throws EXC {
@@ -153,4 +148,37 @@ public interface ParseSource<EXC extends Exception> extends ICharSource<EXC> {
 		consumeAhead(determineNewlineSequenceAt(offset));
 		return line;
 	}
+	
+	/* ----------------- Identifier helpers ----------------- */
+	
+	default String tryConsumeJavaIdentifier() throws EXC {
+		int length = matchJavaIdentifier();
+		if(length == 0) {
+			return null;
+		}
+		return consumeString(length);
+	}
+	
+	/**
+	 * @return length of token matching a Java identifier. Zero if nothing matches
+	 */
+	default int matchJavaIdentifier() throws EXC {
+		int length = 0;
+		
+		int la = lookahead(length);
+		if(la == -1 || !Character.isJavaIdentifierStart(la)) {
+			return length;
+		}
+		length++;
+		
+		while(true) {
+			la = lookahead(length);
+			if(la == -1 || !Character.isJavaIdentifierPart(la)) {
+				break;
+			}
+			length++;
+		}
+		return length;
+	}
+	
 }

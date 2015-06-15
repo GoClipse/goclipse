@@ -51,6 +51,10 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		assertTrue(parseSource.lookaheadMatches("abc", TEST_SOURCE.length()) == false);
 		assertTrue(parseSource.lookaheadMatches("", TEST_SOURCE.length()));
 		
+		assertTrue(parseSource.lookaheadString(0, 6).equals(TEST_SOURCE));
+		parseSource.consume(2);
+		assertTrue(parseSource.lookaheadString(0, 4).equals("cdef"));
+		
 		init(TEST_SOURCE);
 		testCharSource();
 		

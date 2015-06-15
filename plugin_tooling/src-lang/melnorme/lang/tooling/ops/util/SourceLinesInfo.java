@@ -86,23 +86,7 @@ public class SourceLinesInfo {
 	public int getIdentifierAt(int validatedOffset) {
 		StringParseSource parser = new StringParseSource(source);
 		parser.consume(validatedOffset);
-		
-		int length = 0;
-		
-		int lookahead = parser.lookahead(length);
-		if(lookahead == -1 || !Character.isJavaIdentifierStart(lookahead)) {
-			return length;
-		}
-		length++;
-		
-		while(true) {
-			lookahead = parser.lookahead(length);
-			if(lookahead == -1 || !Character.isJavaIdentifierPart(lookahead)) {
-				break;
-			}
-			length++;
-		}
-		return length;
+		return parser.matchJavaIdentifier();
 	}
 	
 }

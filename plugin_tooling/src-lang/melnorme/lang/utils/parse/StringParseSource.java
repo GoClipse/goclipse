@@ -47,4 +47,13 @@ public class StringParseSource implements ParseSource<RuntimeException> {
 		return source.length() - sourceIndex;
 	}
 	
+	@Override
+	public String lookaheadString(int offset, int length) throws RuntimeException {
+		return sourceSubString(offset, offset + length);
+	}
+	
+	protected String sourceSubString(int startPos, int endPos) {
+		return source.substring(sourceIndex + startPos, sourceIndex + endPos);
+	}
+	
 }
