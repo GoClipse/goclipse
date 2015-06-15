@@ -41,7 +41,8 @@ public class StructureElementLabelProvider extends AbstractLangLabelProvider {
 			StyledString styledString = new StyledString(structureElement.getName());
 			
 			if(structureElement.getType() != null) {
-				styledString.append(" : " + structureElement.getType());
+				String typeSuffix = " : " + structureElement.getType();
+				styledString.append(new StyledString(typeSuffix, StyledString.DECORATIONS_STYLER));
 			}
 			return styledString;
 		}
