@@ -1,15 +1,17 @@
-### Screenshot:
-
 ### Features:
 
  * Go source code editor, with:
    * Syntax highlighting (configurable). 
    * Automatic indent/de-indent and brace completion on certain keypresses (Enter, Backspace).
-   * Editor outline and Quick-Outline (`Ctrl+O`).
  * Go Project wizard and project builder.
    * With in-editor build errors reporting.
 
 | [![sample_basic](screenshots/sample_basic.thumb.png)](screenshots/sample_basic.png?raw=true)<br/>`Editor and workbench screenshot` |
+|----|
+
+   * Editor outline and Quick-Outline (`Ctrl+O`).
+   
+| [![sample_basic](screenshots/Feature_QuickOutline.thumb.png)](screenshots/Feature_QuickOutline.png?raw=true)<br/>`Editor and workbench screenshot` |
 |----|
 
  * Open Definition (and "Ctrl-click") via [Go oracle](http://golang.org/s/oracle-user-manual).
