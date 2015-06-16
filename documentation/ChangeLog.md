@@ -2,6 +2,7 @@
 
 ### (NextVersion)
  * Added: rewrote Outline page to use 'oracle describe', fixes some parsing errors.
+  * Added: Quick-Outline.
  * Added: Content Assist preference page, with auto-activation options.
  * Builder: The `install -v` options are no longer hardcoded either, but are now part of the Project build options. (Fixes #119)
    * Warning! This is a breaking change: Existing projects will need to add `install -v` to the Project build options (you can use the Restore Defaults button).
