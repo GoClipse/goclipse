@@ -6,13 +6,8 @@ import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
@@ -20,8 +15,6 @@ import _org.eclipse.cdt.ui.text.IColorManager;
 import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
 
 public class GoEditor extends AbstractLangStructureEditor {
-	
-	private EditorImageUpdater imageUpdater;
 	
 	public GoEditor() {
 		super();
@@ -63,19 +56,6 @@ public class GoEditor extends AbstractLangStructureEditor {
 		return super.getAdapter(required);
 	}
 	
-	@Override
-	protected final void doSetInput(IEditorInput input) throws CoreException {
-		super.doSetInput(input);
-		
-		if (input instanceof IFileEditorInput) {
-			imageUpdater = new EditorImageUpdater(this);
-		}
-	}
-	
-	public String getText() {
-		return getSourceViewer().getDocument().get();
-	}
-	
 	public static void replaceText(ISourceViewer sourceViewer, String newText) {
 		ISelection sel = sourceViewer.getSelectionProvider().getSelection();
 		int topIndex = sourceViewer.getTopIndex();
@@ -89,35 +69,6 @@ public class GoEditor extends AbstractLangStructureEditor {
 		if (topIndex != -1) {
 			sourceViewer.setTopIndex(topIndex);
 		}
-	}
-	
-	@Override
-	public void dispose() {
-		
-		if (imageUpdater != null) {
-			imageUpdater.dispose();
-		}
-		
-		super.dispose();
-	}
-	
-	public IProject getCurrentProject() {
-		if (getEditorInput() instanceof IFileEditorInput) {
-			IFileEditorInput input = (IFileEditorInput) getEditorInput();
-			
-			IFile file = input.getFile();
-			
-			if (file != null) {
-				return file.getProject();
-			}
-		}
-		
-		return null;
-	}
-	
-	@Override
-	protected boolean isTabsToSpacesConversionEnabled() {
-		return false;
 	}
 	
 }
