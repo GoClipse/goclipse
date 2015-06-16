@@ -21,12 +21,12 @@ public class LangImageProvider extends AbstractLangImageProvider {
 	
 	@Override
 	public IManagedImage visitFunction() {
-		return GoPluginImages.NODE_FUNCTION;
+		return GoPluginImages.SOURCE_FUNCTION;
 	}
 	
 	@Override
 	public IManagedImage visitMethod() {
-		return GoPluginImages.NODE_METHOD;
+		return GoPluginImages.SOURCE_METHOD;
 	}
 	
 	@Override

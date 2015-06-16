@@ -3,7 +3,6 @@
 <plugin>
 	
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
-		<!-- use go-alt.png / go-icon8.png / go-nature.png? -->
 		<image
 			icon="icons/go-nature.png"
 			id="com.googlecode.goclipse.goNature.image1"

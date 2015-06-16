@@ -10,14 +10,13 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
+import melnorme.lang.ide.ui.LangElementImages;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 
 public class GoPluginImages extends LangImages {
-	
-	public static final ImageHandle GO_ICON = createManaged("", "go-icon16.png");
 	
 	public static final ImageHandle NAVIGATOR_GOROOT_ENTRY = createManaged("", "navigator/goroot_entry.png");
 	public static final ImageHandle NAVIGATOR_GOPATH_ENTRY = createManaged("", "navigator/gopath_entry.gif");
@@ -29,36 +28,17 @@ public class GoPluginImages extends LangImages {
 	public static final ImageHandle NAVIGATOR_SOURCE_PACKAGE_FOLDER = createManaged("", "navigator/source_package.gif");
 	
 	
-	public static final ImageHandle ELEMENT_IMPORT_CONTAINER = createManaged("", "impc_obj.gif");
-	public static final ImageHandle ELEMENT_SOURCE_FOLDER = createManaged("", "source-folder.gif");
-	public static final ImageHandle ELEMENT_PACKAGE = createManaged("", "package.gif");
 	
-	public static final ImageHandle NODE_PACKAGE = createManaged("", "package.gif");
-	public static final ImageHandle NODE_IMPORT = createManaged("", "imp_obj.gif");
-	
-	public static final ImageHandle NODE_TYPE = createManaged("", "type.png");
-	public static final ImageHandle NODE_STRUCT = createManaged("", "struct.png");
-	public static final ImageHandle NODE_INTERFACE = createManaged("", "interface.gif");
-	
-	public static final ImageHandle NODE_VAR = createManaged("", "private_co.gif");
-	public static final ImageHandle NODE_MEMBER = createManaged("", "private_co.gif");
-	
-	public static final ImageHandle NODE_FUNCTION = createManaged("", "function_co.png");
-	public static final ImageHandle NODE_METHOD = createManaged("", "public_co.gif");
-	
-	public static final ImageHandle NODE_SCOPE = createManaged("", "function_co.png");
-	public static final ImageHandle NODE_FILESCOPE = createManaged("", "function_co.png");
-	
-	
-	public static final ImageHandle SOURCE_OTHER = createManaged("", "orange_cube16.png");
+	public static final ImageHandle SOURCE_OTHER = LangElementImages.UKKNOWN;
 	public static final ImageHandle SOURCE_FUNCTION = createManaged("", "function_co.png");
 	public static final ImageHandle SOURCE_PRIVATE_FUNCTION = createManaged("", "public_co.gif"); // Is this icon correct?
-	public static final ImageHandle SOURCE_INTERFACE = NODE_INTERFACE;
-	public static final ImageHandle SOURCE_STRUCT = NODE_STRUCT;
-	public static final ImageHandle SOURCE_IMPORT = NODE_IMPORT;
+	public static final ImageHandle SOURCE_METHOD = createManaged("", "public_co.gif");
+	
+	public static final ImageHandle SOURCE_INTERFACE = LangElementImages.T_INTERFACE;
+	public static final ImageHandle SOURCE_STRUCT = LangElementImages.T_STRUCT;
+	public static final ImageHandle SOURCE_IMPORT = createManaged("", "imp_obj.gif");
 	public static final ImageHandle SOURCE_PRIVATE_VAR = createManaged("", "field_private_obj.gif");
 	public static final ImageHandle SOURCE_PUBLIC_VAR = createManaged("", "field_public_obj.gif");
-	public static final ImageHandle SOURCE_LOCAL_VAR = createManaged("", "variable_local_obj.gif");
 	
 	
 	public static final ImageDescriptor OVERLAYS_WARNING = createUnmanaged("", "warning_co.gif");
