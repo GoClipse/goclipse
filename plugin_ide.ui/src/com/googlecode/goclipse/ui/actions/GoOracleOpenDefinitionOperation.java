@@ -40,7 +40,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException {
+	protected void prepareOperation() throws CoreException, CommonException {
 		super.prepareOperation();
 		
 		editor.doSave(new NullProgressMonitor());

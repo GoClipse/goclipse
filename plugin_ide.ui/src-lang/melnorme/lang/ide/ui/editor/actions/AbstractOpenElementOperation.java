@@ -39,6 +39,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public abstract class AbstractOpenElementOperation extends AbstractEditorOperation {
 	
+	protected final String source;
 	protected final SourceRange range; // range of element to open. Usually only offset matters
 	protected final OpenNewEditorMode openEditorMode;
 	protected final IProject project;
@@ -55,6 +56,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 			OpenNewEditorMode openEditorMode) {
 		super(operationName, editor);
 		
+		this.source = doc.get();
 		this.range = range;
 		this.openEditorMode = openEditorMode;
 		
@@ -70,7 +72,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		this.context = new SourceOperationContext(viewer, range, editor);
 	}
 	
-	public int getInvocationOffest() {
+	public int getInvocationOffset() {
 		return context.getInvocationOffset();
 	}
 	
@@ -79,8 +81,12 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException {
+	protected void prepareOperation() throws CoreException, CommonException {
 		super.prepareOperation();
+		
+		if(! (new SourceRange(0, source.length())).contains(range)) {
+			throw new CommonException("Invalid range, out of bounds of the document");
+		}
 		
 		line_0 = getContext().getInvocationLine_0();
 		col_0 = getContext().getInvocationColumn_0();

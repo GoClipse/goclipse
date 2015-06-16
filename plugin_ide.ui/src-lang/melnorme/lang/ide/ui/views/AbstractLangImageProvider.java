@@ -40,7 +40,7 @@ public abstract class AbstractLangImageProvider implements
 	
 	@Override
 	public IManagedImage visitUnknown() {
-		return LangElementImages.UKKNOWN;
+		return LangElementImages.UNKNOWN;
 	}
 	
 	@Override

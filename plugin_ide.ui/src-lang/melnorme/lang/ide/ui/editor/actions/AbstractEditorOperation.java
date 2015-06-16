@@ -18,6 +18,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.actions.AbstractUIOperation;
 import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.runtime.CoreException;
@@ -45,7 +46,7 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException {
+	protected void prepareOperation() throws CoreException, CommonException {
 		if(inputLoc == null) {
 			throw LangCore.createCoreException("Could not determine filesystem path from editor input", null); 
 		}

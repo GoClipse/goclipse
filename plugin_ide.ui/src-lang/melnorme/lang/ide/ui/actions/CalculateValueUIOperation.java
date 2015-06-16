@@ -33,7 +33,7 @@ public abstract class CalculateValueUIOperation<VALUE> extends AbstractUIOperati
 		return getResultValue();
 	}
 	
-	public VALUE executeAndGetValidatedResult() throws CoreException {
+	public VALUE executeAndGetValidatedResult() throws CoreException, CommonException {
 		executeOperation();
 		return getResultValue();
 	}

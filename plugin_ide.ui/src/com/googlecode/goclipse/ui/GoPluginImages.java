@@ -29,7 +29,7 @@ public class GoPluginImages extends LangImages {
 	
 	
 	
-	public static final ImageHandle SOURCE_OTHER = LangElementImages.UKKNOWN;
+	public static final ImageHandle SOURCE_OTHER = LangElementImages.UNKNOWN;
 	public static final ImageHandle SOURCE_FUNCTION = createManaged("", "function_co.png");
 	public static final ImageHandle SOURCE_PRIVATE_FUNCTION = createManaged("", "public_co.gif"); // Is this icon correct?
 	public static final ImageHandle SOURCE_METHOD = createManaged("", "public_co.gif");
