@@ -10,16 +10,15 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
-import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CoderResult;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
-import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
@@ -27,6 +26,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
+import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -51,6 +51,27 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 		super.prepareOperation();
 		
 		editor.doSave(new NullProgressMonitor());
+		
+		byteOffset = getByteOffsetForInvocationEncoding();
+	}
+	
+	protected int byteOffset;
+	
+	protected int getByteOffsetForInvocationEncoding() throws CommonException {
+		ITextFileBuffer textFileBuffer = ResourceUtils.getTextFileBuffer(inputLoc);
+		Charset charset = Charset.forName(textFileBuffer.getEncoding());
+		return getByteOffsetFromEncoding(source, getInvocationOffset(), charset);
+	}
+	
+	protected int getByteOffsetFromEncoding(String source, int charOffset, Charset charset) throws CommonException {
+		CharsetEncoder encoder = charset.newEncoder();
+		
+		CharBuffer src = CharBuffer.wrap(source, 0, charOffset);
+		try {
+			return encoder.encode(src).limit();
+		} catch(CharacterCodingException e) {
+			throw new CommonException("Could not determine byte offset for Unicode string.", e);
+		}
 	}
 	
 	@Override
@@ -59,11 +80,10 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 		String goOraclePath = GoToolPreferences.GO_ORACLE_Path.get();
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
-		SourceRange adjustedRange = adjustUtf8ToByteOffset(EditorUtils.getEditorDocument(editor).get(), range);
 		
 		try {
 			GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation(goOraclePath);
-			ProcessBuilder pb = op.createProcessBuilder(goEnv, inputLoc, adjustedRange.getOffset());
+			ProcessBuilder pb = op.createProcessBuilder(goEnv, inputLoc, byteOffset);
 			
 			ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, monitor);
 			if(result.exitValue != 0) {
@@ -84,36 +104,5 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 		
 		super.handleStatusErrorMessage();
 	}
-
-	private SourceRange adjustUtf8ToByteOffset(String source, SourceRange range) {
-		if (range.getOffset() > source.length()) {
-			return range;
-		}
-		CharBuffer src = CharBuffer.wrap(source, 0, range.getOffset());
-		if (!src.hasRemaining()) {
-			return range;
-		}
-
-		CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
-		final ByteBuffer outputBuffer = ByteBuffer.allocate(1024);
-
-		int bytes = 0;
-		CoderResult status;
-		do {
-			status = encoder.encode(src, outputBuffer, true);
-			if (status.isError()) {
-				return range;
-			}
-			bytes += outputBuffer.position();
-			outputBuffer.clear();
-		} while (status.isOverflow());
-
-		status = encoder.flush(outputBuffer);
-		if (status.isError() || status.isOverflow()) {
-			return range;
-		}
-		bytes += outputBuffer.position();
-
-		return new SourceRange(bytes, range.getLength());
-	}
+	
 }

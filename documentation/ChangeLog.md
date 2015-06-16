@@ -17,6 +17,7 @@
   * Added: Show error message dialog if starting Eclipse with a Java version below the minimum.
  * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
  * Fixed: `Tab policy: "Spaces Only"` preference ignored when pressing TAB.
+ * Fixed #132: Calling oracle with incorrect position when source file has non-ASCII characters
 
 
 ### Goclipse 0.10.1
