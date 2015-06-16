@@ -55,6 +55,9 @@ public abstract class AbstractUIOperation {
 		
 		try {
 			executeOperation();
+		} catch (CommonException ce) {
+			UIOperationExceptionHandler.handleOperationStatus(
+				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName), ce);
 		} catch (CoreException ce) {
 			UIOperationExceptionHandler.handleOperationStatus(
 				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName), ce);
@@ -64,7 +67,7 @@ public abstract class AbstractUIOperation {
 		}
 	}
 	
-	public final void executeOperation() throws CoreException {
+	public final void executeOperation() throws CoreException, CommonException {
 		prepareOperation();
 		
 		try {
@@ -78,7 +81,7 @@ public abstract class AbstractUIOperation {
 		}
 	}
 	
-	protected void prepareOperation() throws CoreException {
+	protected void prepareOperation() throws CoreException, CommonException {
 	}
 	
 	protected void performLongRunningComputation() throws OperationCancellation, CoreException {

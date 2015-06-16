@@ -38,7 +38,7 @@ public interface LangElementImages {
 	ImageHandle T_TYPE = LangImages.createManaged(CAT_LANG_OBJ, "t_type.png");
 //	ImageHandle T_UNION = LangImages.createManaged(CAT_LANG_OBJ, "t_union.gif");
 	
-	ImageHandle UKKNOWN  = LangImages.createManaged(CAT_LANG_OBJ, "unknown.png");
+	ImageHandle UNKNOWN  = LangImages.createManaged(CAT_LANG_OBJ, "unknown.png");
 	
 	ImageHandle VARIABLE = LangImages.createManaged(CAT_LANG_OBJ, "variable.png");
 
