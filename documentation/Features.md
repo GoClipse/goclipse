@@ -1,5 +1,7 @@
 ## LANG_IDE_NAME :
 
+(LANG_OTHER: create screenshots linked in this file)
+
 ### Features:
 
  * LANGUAGE source code editor, with:

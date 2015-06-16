@@ -81,7 +81,7 @@ To get started creating a new LangEclipseIDE-based IDE, fork the repo, and then 
 |LANG_IDE_SITE   |  URL of project website. | <sub><sup>`http://ddt-ide.github.io/`</sup></sub> |
 |LANG_IDE_UPDATE_SITE| URL of project's Eclipse Update Site. | <sub><sup>`http://ddt-ide.github.io/releases`</sup></sub> |
 |LANG_IDE_WEBSITE_GIT_REPO| URL of the Git repository of the Github-Pages-based project website. | <sub><sup>`https://github.com/DDT-IDE/ddt-ide.github.io.git`</sup></sub>  |
-|LANG_OTHER      | Other location specific changes. |  |
+|LANG_OTHER      | Other location specific changes. | N/A |
 
 Note: some strings like `LANGUAGE_` or `LANG_PROJECT_ID`  will replace Java class identifiers. After this replace you will need to rename the compilation unit, and/or move them to a different folder. This can be done quickly in Eclipse with quick-fixes.
 
