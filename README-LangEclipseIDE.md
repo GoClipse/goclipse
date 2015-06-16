@@ -68,7 +68,33 @@ LangEclipseIDE is not currently as big or complete as JDT/DLTK in terms of provi
  * Skeleton project website, designed to be used by Github pages.
 
  
-### Getting started writting a LangEclipseIDE-based IDE:
+### Writing a LangEclipseIDE-based IDE:
 
-See LangIDE_templatedNames.txt from strings one needs to replace to create a newIDE.
-TODO: add more detail / info
+To get started creating a new LangEclipseIDE-based IDE, fork the repo, and then do a search-replace on the following strings, replace for the appropriate text for your project:
+
+| String 	| Description | Example |
+|---------	|--------------	| -----	|
+|LANGUAGE  | Name of language - for UI display. | <sub><sup>`D`</sup></sub> |
+|LANGUAGE_ |  Name of language - for Java class names| <sub><sup>`Dee`</sup></sub> |
+|LANG_PROJECT_ID | Common identifier prefix for all IDE plugins. | <sub><sup>`org.dsource.ddt`</sup></sub> |
+|LANG_IDE_NAME   | Name of IDE, long form. | <sub><sup>`D Development Tools`</sup></sub> |
+|LANG_IDE_SITE   |  URL of project website | <sub><sup>`http://ddt-ide.github.io/`</sup></sub> |
+|LANG_IDE_UPDATE_SITE| URL of project's Eclipse Update Site | <sub><sup>`http://ddt-ide.github.io/releases`</sup></sub> |
+|LANG_IDE_WEBSITE_GIT_REPO| URL of the Git repository of the Github-Pages-based project website | <sub><sup>`https://github.com/DDT-IDE/ddt-ide.github.io.git`</sup></sub>  |
+
+
+Note: some strings like `LANGUAGE_` or `LANG_PROJECT_ID`  will replace Java class identifiers. After this replace you will need to rename the compilation unit, and/or move them to a different folder. This can be done quickly in Eclipse with quick-fixes.
+
+##### Language specific code.
+To implement language specific IDE functionality, several language specific implementations need to be created or customized.
+
+* TODO: document this more
+
+##### LangEclipseIDE source embedding
+The LangEclipseIDE source is embedded directly into the host IDE. To make it easier to manage source updates to and from LangEclipseIDE, the following rules need to be observed. 
+
+ * The vast majority of `melnorme.lang` code, or simply Lang code, is code not specific to any language, and should only depend on other `melnorme` code, or on Eclipse.org platform plugins. But not on IDE specific code.   
+   * Such is placed on a separate source folder: `src-lang/`.
+   * The source of all code placed in `src-lang/` should be the exact same for all LangEclipseIDE based IDEs (even if the binary or runtime structure/API may differ).
+ * Then, the rest of `melnorme.lang` code will have IDE specific code. Such classes must be annotated with the `melnorme.lang.tooling.LANG_SPECIFIC` annotation, or have an `_Actual` suffix in the name (this is deprecated). This code will contain bindings to IDE-specific code (such as ids, other IDE constants, or even IDE-specific methods).
+  * This language specific `melnorme.lang` code must be place not on `src-lang/`, but on the same source folder as the rest of the language specific code (`src` by default).

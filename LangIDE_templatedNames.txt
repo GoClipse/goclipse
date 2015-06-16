@@ -1,7 +1,0 @@
-LANGUAGE 	- Name of language - for UI, (example: D)
-LANGUAGE_ 	- Name of language - for Java class names, (example: Dee)
-LANG_PROJECT_ID	- base ID of plugins (example: org.dsource.ddt)
-LANG_IDE_NAME 	- Name of IDE (example: D Development Tools)
-LANG_IDE_SITE	- Site of project (example: https://code.google.com/p/ddt/ )
-LANG_IDE_UPDATE_SITE - URL of Update site of the project (example: http://ddt-ide.github.io/releases/ )
-LANG_IDE_WEBSITE_GIT_REPO - URL of the Git repository of the *project website* (example: https://github.com/DDT-IDE/ddt-ide.github.io.git )
