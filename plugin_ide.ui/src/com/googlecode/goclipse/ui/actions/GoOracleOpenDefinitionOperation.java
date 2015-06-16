@@ -10,8 +10,15 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
+
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
 import melnorme.lang.tooling.ast.SourceRange;
@@ -52,10 +59,11 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 		String goOraclePath = GoToolPreferences.GO_ORACLE_Path.get();
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
+		SourceRange adjustedRange = adjustUtf8ToByteOffset(EditorUtils.getEditorDocument(editor).get(), range);
 		
 		try {
 			GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation(goOraclePath);
-			ProcessBuilder pb = op.createProcessBuilder(goEnv, inputLoc, range.getOffset());
+			ProcessBuilder pb = op.createProcessBuilder(goEnv, inputLoc, adjustedRange.getOffset());
 			
 			ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, monitor);
 			if(result.exitValue != 0) {
@@ -76,5 +84,36 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 		
 		super.handleStatusErrorMessage();
 	}
-	
+
+	private SourceRange adjustUtf8ToByteOffset(String source, SourceRange range) {
+		if (range.getOffset() > source.length()) {
+			return range;
+		}
+		CharBuffer src = CharBuffer.wrap(source, 0, range.getOffset());
+		if (!src.hasRemaining()) {
+			return range;
+		}
+
+		CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();
+		final ByteBuffer outputBuffer = ByteBuffer.allocate(1024);
+
+		int bytes = 0;
+		CoderResult status;
+		do {
+			status = encoder.encode(src, outputBuffer, true);
+			if (status.isError()) {
+				return range;
+			}
+			bytes += outputBuffer.position();
+			outputBuffer.clear();
+		} while (status.isOverflow());
+
+		status = encoder.flush(outputBuffer);
+		if (status.isError() || status.isOverflow()) {
+			return range;
+		}
+		bytes += outputBuffer.position();
+
+		return new SourceRange(bytes, range.getLength());
+	}
 }
