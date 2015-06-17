@@ -82,6 +82,10 @@ public abstract class LangImages {
 	public static final ImageDescriptor DESC_OVR_PROTECTED = createUnmanaged(LANG_OVERLAYS, "prot_protected.png");
 	public static final ImageDescriptor DESC_OVR_DEFAULT = createUnmanaged(LANG_OVERLAYS, "prot_default.png");
 	
+	public static final ImageDescriptor DESC_OVR_PRIVATE_SMALL = createUnmanaged(LANG_OVERLAYS, "prot_private.2.png");
+	public static final ImageDescriptor DESC_OVR_PROTECTED_SMALL = createUnmanaged(LANG_OVERLAYS, "prot_protected.2.png");
+	public static final ImageDescriptor DESC_OVR_DEFAULT_SMALL = createUnmanaged(LANG_OVERLAYS, "prot_default.2.png");
+	
 	public static final ImageDescriptor DESC_OVR_FINAL = createUnmanaged(LANG_OVERLAYS, "ovr_final.png");
 	public static final ImageDescriptor DESC_OVR_STATIC = createUnmanaged(LANG_OVERLAYS, "ovr_static.png");
 	public static final ImageDescriptor DESC_OVR_ABSTRACT = createUnmanaged(LANG_OVERLAYS, "ovr_abstract.png");
