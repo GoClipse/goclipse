@@ -7,12 +7,13 @@ import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import com.googlecode.goclipse.ui.GoPluginImages;
-import com.googlecode.goclipse.ui.editor.GoDocHover;
-import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
-
 import _org.eclipse.jdt.internal.ui.text.java.hover.AnnotationHover;
 import _org.eclipse.jdt.internal.ui.text.java.hover.ProblemHover;
+
+import com.googlecode.goclipse.ui.GoPluginImages;
+import com.googlecode.goclipse.ui.GoStructureElementLabelProvider;
+import com.googlecode.goclipse.ui.editor.GoDocHover;
+import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
@@ -42,8 +43,7 @@ public final class LangUIPlugin_Actual {
 	}
 	
 	public static StructureElementLabelProvider getStructureElementLabelProvider() {
-		return new StructureElementLabelProvider() {
-		};
+		return new GoStructureElementLabelProvider();
 	}
 	
 	/* ----------------- UI messages:  ----------------- */
