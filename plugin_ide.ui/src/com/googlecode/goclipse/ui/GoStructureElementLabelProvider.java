@@ -15,13 +15,14 @@ import melnorme.lang.tooling.ElementAttributes;
 import melnorme.util.swt.jface.resources.LangElementImageDescriptor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Point;
 
 public class GoStructureElementLabelProvider extends StructureElementLabelProvider {
 	
 	@Override
 	public LangElementImageDescriptor getElementImageDescriptor(ImageDescriptor baseImage,
 			ElementAttributes elementAttributes) {
-		return new LangElementImageDescriptor(baseImage, elementAttributes) {
+		return new LangElementImageDescriptor(new Point(17, 16), baseImage, elementAttributes) {
 			
 			@Override
 			protected ImageDescriptor getProtectionDecoration() {
