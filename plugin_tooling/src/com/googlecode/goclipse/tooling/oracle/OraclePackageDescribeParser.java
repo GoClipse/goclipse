@@ -143,7 +143,17 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 			}
 		}
 		
-		ElementAttributes elementAttributes = new ElementAttributes(EProtection.PUBLIC);
+		if(name.length() == 0) {
+			throw new CommonException("No name provided");
+		}
+		
+		EProtection protection = EProtection.PUBLIC;
+		
+		if(!parsingMethods && Character.isLowerCase(name.charAt(0))) {
+			protection = EProtection.PRIVATE;
+		}
+		
+		ElementAttributes elementAttributes = new ElementAttributes(protection);
 		
 		JSONArray methods = getOptionalJSONArray(object, "methods");
 		Indexable<StructureElement> children = parseElements(methods, true);

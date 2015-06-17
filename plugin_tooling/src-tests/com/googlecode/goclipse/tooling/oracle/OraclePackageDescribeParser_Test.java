@@ -44,6 +44,10 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		return new ElementAttributes(EProtection.PUBLIC, flags);
 	}
 	
+	public static ElementAttributes attPriv(EAttributeFlag... flags) {
+		return new ElementAttributes(EProtection.PRIVATE, flags);
+	}
+	
 	protected static ElementAttributes eat(EAttributeFlag... flags) {
 		return att(ArrayUtil.concat(flags, EAttributeFlag.TEMPLATED));
 	}
@@ -100,9 +104,9 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 			getClassResourceAsString("oracle_describe.1_Basic.json"), goSource,
 			
 			elem("Hello", sr("Hello"), FUNCTION, att(), "func()", null),
-			elem("other", sr("other"), FUNCTION, att(), "func()", null),
-			elem("i2", sr("i2"), VARIABLE, att(), "int", null),
-			elem("xxx", sr("xxx"), VARIABLE, att(), "int", null)
+			elem("other", sr("other"), FUNCTION, attPriv(), "func()", null),
+			elem("i2", sr("i2"), VARIABLE, attPriv(), "int", null),
+			elem("xxx", sr("xxx"), VARIABLE, attPriv(), "int", null)
 		);
 		
 		try {
@@ -130,10 +134,10 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		testParseStructure(getClassResourceAsString("oracle_describe.2_Test.json"), goSource,
 			
 			elem("Hello2", sr("Hello2"), FUNCTION, att(), "func()", null),
-			elem("xxx", sr("xxx"), VARIABLE, att(), "int", null),
-			elem("encodeFragment", sr("encodeFragment"), CONST, att(), "util.encoding", null),
+			elem("xxx", sr("xxx"), VARIABLE, attPriv(), "int", null),
+			elem("encodeFragment", sr("encodeFragment"), CONST, attPriv(), "util.encoding", null),
 			elem("User", sr("User"), FUNCTION, att(), USER__Type, null),
-			elem("geometry", sr("geometry"), INTERFACE, att(), null, elems(
+			elem("geometry", sr("geometry"), INTERFACE, attPriv(), null, elems(
 				elem("area", sr("area"), METHOD, att(), "func() float64", null),
 				elem("perim", sr("perim"), METHOD, att(), "func() float64", null)
 			)),
