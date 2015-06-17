@@ -14,14 +14,17 @@ package melnorme.lang.ide.ui.text.completion;
 import java.util.List;
 
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
+import melnorme.lang.ide.ui.LangImageProvider;
+import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.tools.ToolManagerOperationHelper;
 import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
+import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
-import melnorme.util.swt.jface.IManagedImage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -29,6 +32,7 @@ import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
@@ -70,24 +74,35 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		return proposals;
 	}
 	
+	protected abstract LangCompletionResult doComputeProposals(SourceOperationContext context,
+			int offset, TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
+	
+	/* -----------------  ----------------- */
+	
 	protected ICompletionProposal adaptToolProposal(ToolCompletionProposal proposal) {
 		IContextInformation ctxInfo = null; // TODO: context information
 		return new LangCompletionProposal(proposal, getImage(proposal), ctxInfo);
 	}
 	
 	protected Image getImage(ToolCompletionProposal proposal) {
-		IManagedImage baseImageDescriptor = getBaseImageDescriptor(proposal);
-		return baseImageDescriptor.getImage();
+		ImageDescriptor imageDescriptor = createImageDescriptor(proposal);
+		return LangImages.getImageDescriptorRegistry().get(imageDescriptor); 
 	}
 	
-	protected IManagedImage getBaseImageDescriptor(ToolCompletionProposal proposal) {
-		return getImageProvider().getImageDescriptor(proposal.getKind());
+	public ImageDescriptor createImageDescriptor(ToolCompletionProposal proposal) {
+		ImageDescriptor baseImage = getBaseImageDescriptor(proposal);
+		
+		StructureElementLabelProvider labelDecorator = LangUIPlugin_Actual.getStructureElementLabelProvider();
+		return labelDecorator.getElementImageDescriptor(baseImage, proposal.getAttributes());
 	}
 	
-	protected abstract AbstractLangImageProvider getImageProvider();
+	protected ImageDescriptor getBaseImageDescriptor(ToolCompletionProposal proposal) {
+		return getImageProvider().getImageDescriptor(proposal.getKind()).getDescriptor();
+	}
 	
-	protected abstract LangCompletionResult doComputeProposals(SourceOperationContext context,
-			int offset, TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
+	protected AbstractLangImageProvider getImageProvider() {
+		return new LangImageProvider();
+	}
 	
 	/* -----------------  ----------------- */
 	

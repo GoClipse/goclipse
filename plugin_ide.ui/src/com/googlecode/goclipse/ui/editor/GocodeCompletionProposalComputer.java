@@ -7,7 +7,6 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
-import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
@@ -127,11 +126,6 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 			ToolCompletionProposal proposal = getProposal(offset, prefix, type, identifier, spec);
 			results.add(adaptToolProposal(proposal));
 		}
-	}
-	
-	@Override
-	protected LangImageProvider getImageProvider() {
-		return new LangImageProvider();
 	}
 	
 	protected ToolCompletionProposal getProposal(final int offset, String prefix, String type, String identifier,
