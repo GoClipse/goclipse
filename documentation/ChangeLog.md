@@ -1,6 +1,6 @@
 ## release ChangeLog
 
-### (NextVersion)
+### 0.11.0
  * Added: rewrote Outline page to use 'oracle describe', fixes some parsing errors.
   * Added: Quick-Outline.
  * Added: Content Assist preference page, with auto-activation options.
