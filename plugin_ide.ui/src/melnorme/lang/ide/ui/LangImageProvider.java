@@ -30,8 +30,13 @@ public class LangImageProvider extends AbstractLangImageProvider {
 	}
 	
 	@Override
+	public IManagedImage visitVariable() {
+		return GoPluginImages.SOURCE_VARIABLE;
+	}
+	
+	@Override
 	public IManagedImage visitConst() {
-		return LangElementImages.VARIABLE;
+		return GoPluginImages.SOURCE_VARIABLE;
 	}
 	
 	@Override

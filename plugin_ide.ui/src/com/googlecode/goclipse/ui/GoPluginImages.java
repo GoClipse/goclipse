@@ -31,6 +31,7 @@ public class GoPluginImages extends LangImages {
 	public static final ImageHandle SOURCE_IMPORT = createManaged("", "imp_obj.gif");
 	public static final ImageHandle SOURCE_FUNCTION = createManaged("", "go_function.png");
 	public static final ImageHandle SOURCE_METHOD = createManaged("", "go_method.gif");
+	public static final ImageHandle SOURCE_VARIABLE = createManaged("", "variable2.png");
 	
 	public static final ImageDescriptor OVERLAYS_WARNING = createUnmanaged("", "warning_co.gif");
 	public static final ImageDescriptor OVERLAYS_ERROR = createUnmanaged("", "error_co.gif");
