@@ -25,7 +25,7 @@ import org.eclipse.ui.services.IServiceLocator;
 import _org.eclipse.cdt.ui.text.IColorManager;
 
 import com.googlecode.goclipse.core.text.GoPartitions;
-import com.googlecode.goclipse.editors.GoEditor;
+import com.googlecode.goclipse.ui.editor.GoEditor;
 import com.googlecode.goclipse.ui.editor.GoSimpleSourceViewerConfiguration;
 import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
 import com.googlecode.goclipse.ui.text.GoColorPreferences;

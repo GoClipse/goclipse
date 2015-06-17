@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.editors;
+package com.googlecode.goclipse.ui.editor;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -11,8 +11,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
-
-import com.googlecode.goclipse.ui.editor.GoEditorSourceViewerConfiguration;
 
 public class GoEditor extends AbstractLangStructureEditor {
 	

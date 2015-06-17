@@ -22,8 +22,6 @@ import org.eclipse.jface.text.source.ISourceViewer;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
 
-import com.googlecode.goclipse.editors.GoEditor;
-
 public class GoSimpleSourceViewerConfiguration extends GoEditorSourceViewerConfiguration {
 	
 	public GoSimpleSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager, 

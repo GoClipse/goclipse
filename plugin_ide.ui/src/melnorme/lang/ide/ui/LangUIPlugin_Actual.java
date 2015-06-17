@@ -7,9 +7,10 @@ import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import com.googlecode.goclipse.editors.TextHover;
 import com.googlecode.goclipse.ui.GoPluginImages;
+import com.googlecode.goclipse.ui.editor.GoDocHover;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
+
 import _org.eclipse.jdt.internal.ui.text.java.hover.AnnotationHover;
 import _org.eclipse.jdt.internal.ui.text.java.hover.ProblemHover;
 
@@ -32,7 +33,7 @@ public final class LangUIPlugin_Actual {
 	
 	protected static void initTextHovers(List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
 		textHoverSpecifications.add(ProblemHover.class);
-		textHoverSpecifications.add(TextHover.class);
+		textHoverSpecifications.add(GoDocHover.class);
 		textHoverSpecifications.add(AnnotationHover.class);
 	}
 	

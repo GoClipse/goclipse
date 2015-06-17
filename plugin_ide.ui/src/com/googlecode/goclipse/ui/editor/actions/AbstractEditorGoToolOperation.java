@@ -24,8 +24,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.operations.GoToolManager;
-import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
+import com.googlecode.goclipse.ui.editor.GoEditor;
 
 public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperation {
 	

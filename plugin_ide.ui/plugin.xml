@@ -33,7 +33,7 @@
 	
 	<extension point="org.eclipse.ui.editors">
 		<editor
-			class="com.googlecode.goclipse.editors.GoEditor"
+			class="com.googlecode.goclipse.ui.editor.GoEditor"
 			contributorClass="com.googlecode.goclipse.ui.editor.actions.GoEditorActionContributor"
 			extensions="go"
 			icon="icons/views/SourceEditor.png"

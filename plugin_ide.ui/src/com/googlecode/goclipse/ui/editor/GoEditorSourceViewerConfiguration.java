@@ -11,7 +11,6 @@ import org.eclipse.jface.text.information.IInformationProvider;
 import _org.eclipse.cdt.ui.text.IColorManager;
 
 import com.googlecode.goclipse.core.text.GoPartitionScanner;
-import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.text.GoScanner;
 

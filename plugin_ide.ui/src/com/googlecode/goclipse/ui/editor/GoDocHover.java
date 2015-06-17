@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.editors;
+package com.googlecode.goclipse.ui.editor;
 
 
 import melnorme.lang.ide.ui.editor.hover.AbstractLangEditorTextHover;
@@ -9,7 +9,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 
 // TODO: this does nothing at the moment...
-public class TextHover extends AbstractLangEditorTextHover implements ILangEditorTextHover<String> {
+public class GoDocHover extends AbstractLangEditorTextHover implements ILangEditorTextHover<String> {
 	
 	@Override
 	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
