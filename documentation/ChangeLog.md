@@ -1,23 +1,28 @@
 ## release ChangeLog
 
 ### 0.11.0
- * Added: rewrote Outline page to use 'oracle describe', fixes some parsing errors.
-  * Added: Quick-Outline.
- * Added: Content Assist preference page, with auto-activation options.
+Important changes:
+
+ * Added: rewrote Outline page to use 'oracle describe', fixes some outline parsing errors.
+  * Added: Quick-Outline (`Ctrl-O`).
  * Builder: The `install -v` options are no longer hardcoded either, but are now part of the Project build options. (Fixes #119)
    * Warning! This is a breaking change: Existing projects will need to add `install -v` to the Project build options (you can use the Restore Defaults button).
- * Doc - Installation guide: Added note for users in China.
- * Doc - User Guide: Added note about Eclipse Optimizer
- * Added #113: Append GOROOT to PATH when invoking Go oracle and other tools.
- * Fixed #121: Oracle Open Definition not working for type references: "selected name does not refer to a source element"
- * Added: Content Assist of code snippets. Configurable in `Preferences/Go/Editor/Code Snippets`. TODO more defaults
-  ▶ Recommended/tested CDT version: 8.6.0
- * Fixed: #127 "null argument" error dialog when double-clicking on Go project.
+ * Added: Content Assist of code snippets. Configurable in `Preferences/Go/Editor/Code Snippets`. 
+ * Added: Content Assist preference page, with auto-activation options.
  * Upgraded minimum Java version to Java 8
   * Added: Show error message dialog if starting Eclipse with a Java version below the minimum.
- * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
+ * Doc - User Guide: Added note about Eclipse Optimizer
+
+  ▶ Recommended/tested CDT version: 8.6.0
+
+Other changes:
+
+ * Doc - Installation guide: Added note for users in China.
+ * Added #113: Append GOROOT to PATH when invoking Go oracle and other tools.
+ * Fixed #121: Oracle Open Definition not working for type references: "selected name does not refer to a source element".
+ * Fixed: #127 "null argument" error dialog when double-clicking on Go project.
+ * Fixed #132: Calling oracle with incorrect position when source file has non-ASCII characters. * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
  * Fixed: `Tab policy: "Spaces Only"` preference ignored when pressing TAB.
- * Fixed #132: Calling oracle with incorrect position when source file has non-ASCII characters
 
 
 ### Goclipse 0.10.1
