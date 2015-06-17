@@ -20,6 +20,8 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
@@ -72,7 +74,23 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	@Override
 	protected void handleComputationResult() throws CoreException {
 		if (!outputText.equals(editorText)) {
-			GoEditor.replaceText(goEditor.getSourceViewer_(), outputText);
+			replaceText(goEditor.getSourceViewer_(), outputText);
+		}
+	}
+	
+	
+	public static void replaceText(ISourceViewer sourceViewer, String newText) {
+		ISelection sel = sourceViewer.getSelectionProvider().getSelection();
+		int topIndex = sourceViewer.getTopIndex();
+		
+		sourceViewer.getDocument().set(newText);
+		
+		if (sel != null) {
+			sourceViewer.getSelectionProvider().setSelection(sel);
+		}
+		
+		if (topIndex != -1) {
+			sourceViewer.setTopIndex(topIndex);
 		}
 	}
 	
