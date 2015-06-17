@@ -20,6 +20,7 @@ public enum CompletionProposalKind {
 	ERROR,
 	
 	MODULEDEC,
+	IMPORT,
 	
 	VARIABLE,
 	
@@ -43,6 +44,7 @@ public enum CompletionProposalKind {
 		case ERROR: return visitor.visitError();
 		
 		case MODULEDEC: return visitor.visitModule();
+		case IMPORT: return visitor.visitImport();
 		
 		case VARIABLE: return visitor.visitVariable();
 		
@@ -64,6 +66,8 @@ public enum CompletionProposalKind {
 	public static interface ProposalKindVisitor<RET> extends AbstractKindVisitor<RET> {
 		
 		RET visitError();
+		
+		RET visitImport();
 		
 	}
 	

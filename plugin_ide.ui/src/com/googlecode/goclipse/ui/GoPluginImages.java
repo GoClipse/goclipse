@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
-import melnorme.lang.ide.ui.LangElementImages;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 
@@ -29,17 +28,9 @@ public class GoPluginImages extends LangImages {
 	
 	
 	
-	public static final ImageHandle SOURCE_OTHER = LangElementImages.UNKNOWN;
-	public static final ImageHandle SOURCE_FUNCTION = createManaged("", "function_co.png");
-	public static final ImageHandle SOURCE_PRIVATE_FUNCTION = createManaged("", "public_co.gif"); // Is this icon correct?
-	public static final ImageHandle SOURCE_METHOD = createManaged("", "public_co.gif");
-	
-	public static final ImageHandle SOURCE_INTERFACE = LangElementImages.T_INTERFACE;
-	public static final ImageHandle SOURCE_STRUCT = LangElementImages.T_STRUCT;
 	public static final ImageHandle SOURCE_IMPORT = createManaged("", "imp_obj.gif");
-	public static final ImageHandle SOURCE_PRIVATE_VAR = createManaged("", "field_private_obj.gif");
-	public static final ImageHandle SOURCE_PUBLIC_VAR = createManaged("", "field_public_obj.gif");
-	
+	public static final ImageHandle SOURCE_FUNCTION = createManaged("", "go_function.png");
+	public static final ImageHandle SOURCE_METHOD = createManaged("", "go_method.gif");
 	
 	public static final ImageDescriptor OVERLAYS_WARNING = createUnmanaged("", "warning_co.gif");
 	public static final ImageDescriptor OVERLAYS_ERROR = createUnmanaged("", "error_co.gif");

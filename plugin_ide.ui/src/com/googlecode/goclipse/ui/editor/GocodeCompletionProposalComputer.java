@@ -1,7 +1,6 @@
 package com.googlecode.goclipse.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +10,9 @@ import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.lang.ide.ui.text.completion.LangCompletionProposal;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.CompletionProposalKind;
+import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
@@ -30,7 +29,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorPart;
 
 import com.googlecode.goclipse.core.GoCore;
@@ -38,7 +36,6 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
-import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
@@ -127,67 +124,67 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 			
 			String spec = completionEntry.substring(secondComma + 2);
 			
-			String descriptiveString = identifier + " : " + spec;
-			// BM: removed used of CodeContext because it is buggy, 
-			// see https://github.com/GoClipse/goclipse/issues/112
-//			String description = codeContext.getDescriptionForName(identifier).trim();
-//			IContextInformation info = new ContextInformation(description, description);
-			
-			Image image = GoPluginImages.SOURCE_OTHER.getImage();
-			String substr = identifier.substring(prefix.length());
-			@SuppressWarnings("unused")
-			int replacementLength = identifier.length() - prefix.length();
-			
-			if (descriptiveString != null && descriptiveString.contains(" : func")) {
-				if(identifier.isEmpty() || Character.isLowerCase(identifier.charAt(0))) {
-					image = GoPluginImages.SOURCE_PRIVATE_FUNCTION.getImage();
-				} else {
-					image = GoPluginImages.SOURCE_FUNCTION.getImage();
-				}
-				
-				substr = identifier.substring(prefix.length()) + "()";
-				replacementLength++;
-				
-			} else if (descriptiveString != null && descriptiveString.contains(" : interface")) {
-				image = GoPluginImages.SOURCE_INTERFACE.getImage();
-				
-			} else if (descriptiveString != null && descriptiveString.contains(" : struct")) {
-				image = GoPluginImages.SOURCE_STRUCT.getImage();
-				
-			} else if ("package".equals(type)) {
-				image = GoPluginImages.SOURCE_IMPORT.getImage();
-				
-				substr = identifier.substring(prefix.length()) + ".";
-				replacementLength++;
-			} else {
-				if (substr != null && substr.length() > 0 && Character.isUpperCase(substr.charAt(0))) {
-					image = GoPluginImages.SOURCE_PUBLIC_VAR.getImage();
-					
-				} else {
-					image = GoPluginImages.SOURCE_PRIVATE_VAR.getImage();
-				}
-			}
-			
-			// format the output
-			descriptiveString = descriptiveString.replace(" : func", " ").replace(" : interface",
-					" ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
-			
-			ElementAttributes attributes = new ElementAttributes(null); // TODO
-			
-			ToolCompletionProposal propoosal = new ToolCompletionProposal(
-				offset - prefix.length(), prefix.length(), identifier, descriptiveString, 
-				CompletionProposalKind.UNKNOWN, attributes, null, null);
-			
-			results.add(new LangCompletionProposal(propoosal, image, null));
-			
-//			results.add(new CompletionProposal(identifier, offset - prefix.length(),
-//				prefix.length(), identifier.length(), image, descriptiveString, null, null));
+			ToolCompletionProposal proposal = getProposal(offset, prefix, type, identifier, spec);
+			results.add(adaptToolProposal(proposal));
 		}
 	}
 	
 	@Override
 	protected LangImageProvider getImageProvider() {
-		throw assertUnreachable();
+		return new LangImageProvider();
+	}
+	
+	protected ToolCompletionProposal getProposal(final int offset, String prefix, String type, String identifier,
+			String spec) {
+		String descriptiveString = identifier + " : " + spec;
+		// BM: removed used of CodeContext because it is buggy, 
+		// see https://github.com/GoClipse/goclipse/issues/112
+//			String description = codeContext.getDescriptionForName(identifier).trim();
+//			IContextInformation info = new ContextInformation(description, description);
+		
+		CompletionProposalKind kind = CompletionProposalKind.UNKNOWN;
+		EProtection prot = null;
+		
+		String substr = identifier.substring(prefix.length());
+		@SuppressWarnings("unused")
+		int replacementLength = identifier.length() - prefix.length();
+		
+		if (descriptiveString != null && descriptiveString.contains(" : func")) {
+			if(identifier.isEmpty() || Character.isLowerCase(identifier.charAt(0))) {
+				prot = EProtection.PRIVATE;
+			}
+			kind = CompletionProposalKind.FUNCTION;
+			
+			substr = identifier.substring(prefix.length()) + "()";
+			replacementLength++;
+			
+		} else if (descriptiveString != null && descriptiveString.contains(" : interface")) {
+			kind = CompletionProposalKind.INTERFACE;
+			
+		} else if (descriptiveString != null && descriptiveString.contains(" : struct")) {
+			kind = CompletionProposalKind.STRUCT;
+			
+		} else if ("package".equals(type)) {
+			kind = CompletionProposalKind.IMPORT;
+			
+			substr = identifier.substring(prefix.length()) + ".";
+			replacementLength++;
+		} else {
+			if (substr != null && substr.length() > 0 && Character.isLowerCase(substr.charAt(0))) {
+				prot = EProtection.PRIVATE;
+			}
+			kind = CompletionProposalKind.VARIABLE;
+		}
+		
+		// format the output
+		descriptiveString = descriptiveString.replace(" : func", " ").replace(" : interface",
+				" ").replace(" : struct", " ").replace("(", "( ").replace(")", " )");
+		
+		ElementAttributes attributes = new ElementAttributes(prot);
+		
+		return new ToolCompletionProposal(
+			offset - prefix.length(), prefix.length(), identifier, descriptiveString, 
+			kind, attributes, null, null);
 	}
 	
 }
