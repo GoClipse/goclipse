@@ -14,16 +14,16 @@
 					"kind": "func"
 				},
 				{
-					"name": "other",
-					"type": "func()",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:10:4",
-					"kind": "func"
-				},
-				{
 					"name": "i2",
 					"type": "int",
 					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:15:2",
 					"kind": "var"
+				},
+				{
+					"name": "other",
+					"type": "func()",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:10:4",
+					"kind": "func"
 				},
 				{
 					"name": "xxx",

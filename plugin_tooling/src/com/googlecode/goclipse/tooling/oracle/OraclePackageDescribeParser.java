@@ -12,6 +12,10 @@ package com.googlecode.goclipse.tooling.oracle;
 
 
 import static melnorme.lang.tooling.structure.StructureElementKind.STRUCT;
+
+import java.util.Collections;
+import java.util.Comparator;
+
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolingMessages;
@@ -99,6 +103,19 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 				}
 			}
 		}
+		
+		Collections.sort(elements, new Comparator<StructureElement>() {
+			@Override
+			public int compare(StructureElement o1, StructureElement o2) {
+				SourceRange sr1 = o1.getSourceRange();
+				SourceRange sr2 = o2.getSourceRange();
+				int cmp = sr1.getOffset() - sr2.getOffset();
+				if(cmp == 0) {
+					return o1.getNameSourceRange().getOffset() - o2.getNameSourceRange().getOffset();
+				}
+				return cmp;
+			}
+		});
 		
 		return elements;
 	}

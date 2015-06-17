@@ -133,9 +133,9 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		goSource = getClassResourceAsString("oracle_describe.2_Test.go");
 		testParseStructure(getClassResourceAsString("oracle_describe.2_Test.json"), goSource,
 			
+			elem("encodeFragment", sr("encodeFragment"), CONST, attPriv(), "util.encoding", null),
 			elem("Hello2", sr("Hello2"), FUNCTION, att(), "func()", null),
 			elem("xxx", sr("xxx"), VARIABLE, attPriv(), "int", null),
-			elem("encodeFragment", sr("encodeFragment"), CONST, attPriv(), "util.encoding", null),
 			elem("User", sr("User"), FUNCTION, att(), USER__Type, null),
 			elem("geometry", sr("geometry"), INTERFACE, attPriv(), null, elems(
 				elem("area", sr("area"), METHOD, att(), "func() float64", null),

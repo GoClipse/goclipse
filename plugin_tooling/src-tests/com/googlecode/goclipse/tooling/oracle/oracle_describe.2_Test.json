@@ -14,12 +14,6 @@
 					"kind": "func"
 				},
 				{
-					"name": "xxx",
-					"type": "int",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:5:2",
-					"kind": "var"
-				},
-				{
 					"name": "encodeFragment",
 					"type": "util.encoding",
 					"value": "4",
@@ -39,12 +33,12 @@
 					"kind": "type",
 					"methods": [
 						{
-							"name": "method (geometry) area() float64",
-							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:14:6"
-						},
-						{
 							"name": "method (geometry) perim() float64",
 							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:15:6"
+						},
+						{
+							"name": "method (geometry) area() float64",
+							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:14:6"
 						}
 					]
 				},
@@ -63,7 +57,13 @@
 							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:22:15"
 						}
 					]
-				}
+				},
+				{
+					"name": "xxx",
+					"type": "int",
+					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:5:2",
+					"kind": "var"
+				}				
 			]
 		}
 	}
