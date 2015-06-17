@@ -17,6 +17,7 @@ Important changes:
 
 Other changes:
 
+ * Minor changes to Content Assist icons (now has an overlay for private Go elements).
  * Doc - Installation guide: Added note for users in China.
  * Added #113: Append GOROOT to PATH when invoking Go oracle and other tools.
  * Fixed #121: Oracle Open Definition not working for type references: "selected name does not refer to a source element".
