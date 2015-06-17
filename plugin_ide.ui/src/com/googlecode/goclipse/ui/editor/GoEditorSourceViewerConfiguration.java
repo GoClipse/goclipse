@@ -6,14 +6,11 @@ import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAs
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.information.IInformationProvider;
-import org.eclipse.jface.text.source.ISourceViewer;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
 
 import com.googlecode.goclipse.core.text.GoPartitionScanner;
-import com.googlecode.goclipse.editors.DoubleClickStrategy;
 import com.googlecode.goclipse.editors.GoEditor;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 import com.googlecode.goclipse.ui.text.GoScanner;
@@ -24,7 +21,6 @@ import com.googlecode.goclipse.ui.text.GoScanner;
 public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
 	protected final GoEditor	        editor;
-	private DoubleClickStrategy	doubleClickStrategy;
 
 	public GoEditorSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager, 
 			GoEditor editor) {
@@ -69,15 +65,6 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 			}
 			
 		};
-	}
-	
-	/* -----------------  Need to review remaining code ----------------- */
-	
-	@Override
-	public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
-		if (doubleClickStrategy == null)
-			doubleClickStrategy = new DoubleClickStrategy();
-		return doubleClickStrategy;
 	}
 	
 }
