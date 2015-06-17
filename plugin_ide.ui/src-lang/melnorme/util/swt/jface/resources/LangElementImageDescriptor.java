@@ -54,7 +54,7 @@ public class LangElementImageDescriptor extends CompositeImageDescriptor {
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
-		if(!(obj instanceof LangElementImageDescriptor)) return false;
+		if(obj == null || !getClass().equals(obj.getClass())) return false;
 		
 		LangElementImageDescriptor other = (LangElementImageDescriptor) obj;
 		
@@ -191,6 +191,20 @@ public class LangElementImageDescriptor extends CompositeImageDescriptor {
 		case PRIVATE: return LangImages.DESC_OVR_PRIVATE;
 		case PROTECTED: return LangImages.DESC_OVR_PROTECTED;
 		case PACKAGE: return LangImages.DESC_OVR_DEFAULT;
+		case PUBLIC:
+			default: return null;
+		}
+	}
+	
+	public static ImageDescriptor getProtectionDecoration_Small(EProtection protection) {
+		if(protection == null)
+			return null;
+		
+		switch (protection) {
+		
+		case PRIVATE: return LangImages.DESC_OVR_PRIVATE_SMALL;
+		case PROTECTED: return LangImages.DESC_OVR_PROTECTED_SMALL;
+		case PACKAGE: return LangImages.DESC_OVR_DEFAULT_SMALL;
 		case PUBLIC:
 			default: return null;
 		}
