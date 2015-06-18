@@ -13,7 +13,7 @@
 	<extension point="org.eclipse.ui.perspectives">
 		<perspective
 			class="com.googlecode.goclipse.ui.GoPerspective"
-			icon="icons/views/Perspective.16.png"
+			icon="icons/views/Perspective.png"
 			id="com.googlecode.goclipse.perspectives.GoPerspective"
 			name="Go">
 		</perspective>
@@ -354,97 +354,41 @@
       
 	</extension>
 
+	<!-- ============ Navigator extensions ============= -->
 	
-	<!-- ============ Other (TODO cleanup) ============= -->
-	
-   <extension
-         point="org.eclipse.ui.intro.configExtension">
-      <configExtension
-            configId="org.eclipse.ui.intro.universalConfig"
-            content="welcome/intro.xml">
-      </configExtension>
-   </extension>
-   
-	
-   <extension point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
-         <perspectiveShortcut id="com.googlecode.goclipse.perspectives.GoPerspective"/>
-      </perspectiveExtension>
-
-      <perspectiveExtension targetID="org.eclipse.debug.ui.DebugPerspective">
-         <perspectiveShortcut id="com.googlecode.goclipse.perspectives.GoPerspective"/>
-      </perspectiveExtension>
-   </extension>
-   
-   <extension point="org.eclipse.core.runtime.adapters">
-      <factory
-            adaptableType="org.eclipse.ui.IEditorInput"
-            class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
-         <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
-      </factory>
-      <factory
-            adaptableType="org.eclipse.core.resources.IResource"
-            class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
-         <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
-      </factory>
-      <factory
-            adaptableType="org.eclipse.core.resources.IMarker"
-            class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
-         <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
-      </factory>
-   </extension>
-    
-   <extension point="org.eclipse.ui.decorators">
-      <decorator
-         class="com.googlecode.goclipse.navigator.NavigatorLabelDecorator"
-         id="com.googlecode.goclipse.ui.navigator.lightweightDecorator"
-         label="Go"
-         lightweight="true"
-         location="TOP_LEFT"
-         state="true">
-         
-         <enablement>
-            <objectClass
-               name="org.eclipse.core.resources.IResource">
-            </objectClass>
-         </enablement>
-      </decorator>
-   </extension>
-
 	<extension point="org.eclipse.ui.navigator.navigatorContent">
 		<navigatorContent
 			activeByDefault="true"
-			icon="icons/go-icon16.png"
+			icon="icons/views/Perspective.png"
 			id="com.googlecode.goclipse.navigator.content"
-			labelProvider="com.googlecode.goclipse.ui.navigator.GoNavigatorLabelProvider"
 			contentProvider="com.googlecode.goclipse.navigator.NavigatorContentProvider2"
-			priority="highest"
-			name="Go Elements">
-		<!-- 
-		Priority needs to be highest, because we could be competing with other plugins like JDT or CDT,
-		which have triggerPoints for any IResource regardless of project nature:
-		While that doesn't affect the content providers, it affects the common sorter, 
-		and that's important since we want to sort IResource's.
-		Also, triggerPoints has to match the children we want to sort, not just the parent of the children, 
-		so we can't just use expressions.isLangProject 
-		-->
+			labelProvider="com.googlecode.goclipse.ui.navigator.GoNavigatorLabelProvider"
+			name="Go Elements"
+			priority="highest">
+			
+			<!-- 
+			 Priority needs to be highest, because we could be competing with other plugins like JDT or CDT,
+			 which have triggerPoints for any IResource regardless of project nature:
+			 While that doesn't affect the content providers, it affects the common sorter, 
+			 and that's important since we want to sort IResource's.
+			 Also, triggerPoints has to match the children we want to sort, not just the parent of the children, 
+			 so we can't just use expressions.isLangProject 
+			-->
 			<triggerPoints>
-				<or>
-					<reference definitionId="com.googlecode.goclipse.core.expressions.isResourceInIDEProject"/>
-				</or>
+				<or><reference definitionId="com.googlecode.goclipse.core.expressions.isResourceInIDEProject"/></or>
 			</triggerPoints>
 			
 			<!-- 
 			 Despite what the documentation currently says, possibleChildren is queried by Navigator service 
 			 to find out whether to use label provider or not, regardless of trigger points. 
-			 Therefore we should ensure possible children only aplies to D projects. 
+			 Therefore we should ensure possible children only aplies to our IDE projects. 
 			 See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=429572
 			 -->
 			<possibleChildren>
 				<or>
+					<reference definitionId="com.googlecode.goclipse.core.expressions.isResourceInIDEProject"/>
 					<instanceof value="org.eclipse.core.filesystem.IFileStore"/>
 					<instanceof value="com.googlecode.goclipse.ui.navigator.elements.IGoProjectElement"/>
-					<reference definitionId="com.googlecode.goclipse.core.expressions.isResourceInIDEProject"/>
 				</or>
 			</possibleChildren>
 			
@@ -491,8 +435,7 @@
 		
 	</extension>
 	
-   <extension
-       point="org.eclipse.ui.navigator.linkHelper">
+   <extension point="org.eclipse.ui.navigator.linkHelper">
       <linkHelper
             class="com.googlecode.goclipse.navigator.NavigatorLinkHelper"
             id="com.googlecode.goclipse.navigator.linkHelper">          
@@ -515,20 +458,60 @@
       </linkHelper>          
    </extension>
    
-   <extension
-        point="org.eclipse.ui.navigator.viewer">
+   <extension point="org.eclipse.ui.navigator.viewer">
      <viewerContentBinding viewerId="org.eclipse.ui.navigator.ProjectExplorer">
         <includes>
            <contentExtension pattern="com.googlecode.goclipse.navigator.content"/>
-           <contentExtension pattern="com.googlecode.goclipse.navigator.content2"/>
            <contentExtension pattern="com.googlecode.goclipse.navigator.objFilter"/>
            <contentExtension pattern="com.googlecode.goclipse.navigator.packageFilter"/>
            <contentExtension pattern="com.googlecode.goclipse.navigator.linkHelper" /> 
         </includes>
      </viewerContentBinding>
    </extension>
+
+	
+	
+	
+	
+	
+	<!-- ============ Other (TODO cleanup) ============= -->
+	
+   <extension point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="welcome/intro.xml">
+      </configExtension>
+   </extension>
    
+	
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+         <perspectiveShortcut id="com.googlecode.goclipse.perspectives.GoPerspective"/>
+      </perspectiveExtension>
+
+      <perspectiveExtension targetID="org.eclipse.debug.ui.DebugPerspective">
+         <perspectiveShortcut id="com.googlecode.goclipse.perspectives.GoPerspective"/>
+      </perspectiveExtension>
+   </extension>
    
+   <extension point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.ui.IEditorInput"
+            class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
+         <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.core.resources.IResource"
+            class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
+         <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.core.resources.IMarker"
+            class="com.googlecode.goclipse.search.GoSearchAdapterFactory">
+         <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
+      </factory>
+   </extension>
+    
    <!-- Search -->
    
    <extension point="org.eclipse.search.searchPages">

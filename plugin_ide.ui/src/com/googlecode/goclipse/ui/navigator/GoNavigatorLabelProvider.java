@@ -11,13 +11,12 @@
 package com.googlecode.goclipse.ui.navigator;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
 
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.LangNature;
-import melnorme.lang.ide.ui.views.AbstractLangLabelProvider;
+import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.filesystem.IFileStore;
@@ -42,7 +41,7 @@ import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 import com.googlecode.goclipse.ui.navigator.elements.IGoProjectElement;
 
-public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
+public class GoNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider  {
 	
 	protected static final RGB LOCATION_ANNOTATION_FG = new RGB(128, 128, 128);
 	
@@ -89,7 +88,7 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 	}
 	
 	@Override
-	public Image getImage(Object element) {
+	protected Image getImageForCustomElements(Object element) {
 		
 		if(element instanceof IGoProjectElement) {
 			if(element instanceof GoRootElement) {
@@ -125,11 +124,6 @@ public class GoNavigatorLabelProvider extends AbstractLangLabelProvider  {
 		
 		if(element instanceof IResource) {
 			IResource resource = (IResource) element;
-			try {
-				assertTrue(resource.getProject().hasNature(LangNature.NATURE_ID));
-			} catch (CoreException e) {
-				assertFail();
-			}
 			
 			ImageDescriptor decoratedImage = getResourceImageDescriptor(resource);
 			if(decoratedImage != null) {
