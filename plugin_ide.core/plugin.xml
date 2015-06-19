@@ -10,40 +10,33 @@
 		<builder id="LANG_PROJECT_ID.ide.core.Builder" />
 	</extension>
 	
-   <extension point="org.eclipse.core.expressions.definitions">
-      <definition
-            id="LANG_PROJECT_ID.ide.core.expressions.isLangProject">
-         <adapt
-               type="org.eclipse.core.resources.IProject">
-            <test
-                  property="org.eclipse.core.resources.projectNature"
-                  value="LANG_PROJECT_ID.ide.core.nature">
-            </test>
-         </adapt>
-      </definition>
-      <definition
-            id="LANG_PROJECT_ID.ide.core.expressions.isLangNatureContainer">
-         <adapt
-               type="org.eclipse.core.resources.IContainer">
-            <test
-                  property="org.eclipse.core.resources.projectNature"
-                  value="LANG_PROJECT_ID.ide.core.nature">
-            </test>
-         </adapt>
-      </definition>
-      <definition
-            id="LANG_PROJECT_ID.ide.core.expressions.isResourceInLangProject">
-         <and>
-            <instanceof
-                  value="org.eclipse.core.resources.IResource">
-            </instanceof>
-            <test
-                  property="org.eclipse.core.resources.projectNature"
-                  value="LANG_PROJECT_ID.ide.core.nature">
-            </test>
-         </and>
-      </definition>
-   </extension>
+	<extension point="org.eclipse.core.expressions.definitions">
+		<definition id="LANG_PROJECT_ID.ide.core.expressions.isLangProject">
+			<adapt type="org.eclipse.core.resources.IProject">
+				<test
+					property="org.eclipse.core.resources.projectNature"
+					value="LANG_PROJECT_ID.ide.core.nature">
+				</test>
+			</adapt>
+		</definition>
+		<definition id="LANG_PROJECT_ID.ide.core.expressions.isLangNatureContainer">
+			<adapt type="org.eclipse.core.resources.IContainer">
+				<test
+					property="org.eclipse.core.resources.projectNature"
+					value="LANG_PROJECT_ID.ide.core.nature">
+				</test>
+			</adapt>
+		</definition>
+		<definition id="LANG_PROJECT_ID.ide.core.expressions.isResourceInLangProject">
+			<and>
+				<instanceof value="org.eclipse.core.resources.IResource"/>
+				<test
+					property="org.eclipse.core.resources.projectNature"
+					value="LANG_PROJECT_ID.ide.core.nature">
+				</test>
+			</and>
+		</definition>
+	</extension>
 	
 	<!-- ============ TEXT ============= -->
 	
@@ -76,11 +69,9 @@
 		id="Builder"
 		name="%Builder_Name">
 		<builder
-			callOnEmptyDelta="true"	
-			hasNature="true"
-			isConfigurable="true">
-		<run class="LANG_PROJECT_ID.ide.core.operations.LANGUAGE_Builder" />
-	</builder>
+			callOnEmptyDelta="true">
+			<run class="LANG_PROJECT_ID.ide.core.operations.LANGUAGE_Builder" />
+		</builder>
 	</extension>
 	
 	<extension point="org.eclipse.core.resources.markers"
