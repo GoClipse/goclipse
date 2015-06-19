@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.tools.console;
+package melnorme.lang.ide.core.operations;
 
 import org.eclipse.core.resources.IProject;
 
-@Deprecated
-public class AbstractToolsConsoleListener extends AbstractToolsConsoleHandler {
+public interface IToolOperation {
 	
-	@Override
-	protected String getOperationConsoleName(IProject project) {
-		return BUILD_CONSOLE_NAME + getProjectNameSuffix(project);
-	}
-	
-	protected String getProjectNameSuffix(IProject project) {
-		if(project == null) {
-			return " (Global)";
-		}
-		return " ["+ project.getName() +"]";
-	}
+	public IProject getProject();
+	public String getOperationName();
 	
 }

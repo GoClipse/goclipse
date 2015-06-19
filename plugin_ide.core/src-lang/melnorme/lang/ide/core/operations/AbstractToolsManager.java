@@ -12,11 +12,10 @@ package melnorme.lang.ide.core.operations;
 
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.ILangOperationsListener_Actual;
+import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
-import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.concurrency.ICancelMonitor;
@@ -34,7 +33,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).
  */
-public abstract class AbstractToolsManager extends ListenerListHelper<ILangOperationsListener_Actual> {
+public abstract class AbstractToolsManager extends ListenerListHelper<ILangOperationsListener> {
 	
 	public ProcessBuilder createToolProcessBuilder(Path buildToolCmdPath, Location workingDir, 
 			String... arguments) {
@@ -44,20 +43,26 @@ public abstract class AbstractToolsManager extends ListenerListHelper<ILangOpera
 	/* -----------------  ----------------- */
 	
 	public void notifyMessage(StatusLevel statusLevel, String title, String message) {
-		for (ILangOperationsListener listener : getListeners()) {
+		for(ILangOperationsListener listener : getListeners()) {
 			listener.notifyMessage(statusLevel, title, message);
 		}
 	}
 	
 	public void notifyBuildStarting(IProject project, boolean clearConsole) {
-		for (ILangOperationsListener listener : getListeners()) {
+		for(ILangOperationsListener listener : getListeners()) {
 			listener.handleBuildStarted(project, clearConsole);
 		}
 	}
 	
 	public void notifyBuildTerminated(IProject project) {
-		for (ILangOperationsListener listener : getListeners()) {
+		for(ILangOperationsListener listener : getListeners()) {
 			listener.handleBuildTerminated(project);
+		}
+	}
+	
+	public void notifyOperationStarted(IToolOperation dubOperation, OperationInfo opInfo) {
+		for(ILangOperationsListener processListener : getListeners()) {
+			processListener.handleToolOperationStart(dubOperation, opInfo);
 		}
 	}
 	
@@ -67,11 +72,23 @@ public abstract class AbstractToolsManager extends ListenerListHelper<ILangOpera
 		return new EclipseCancelMonitor(pm);
 	}
 	
-	public RunExternalProcessTask newRunToolTask(ProcessBuilder pb, IProject project, IProgressMonitor pm) {
+	public AbstractRunProcessTask newRunToolTask(ProcessBuilder pb, IProject project, IProgressMonitor pm) {
 		return newRunToolTask(pb, project, cm(pm));
 	}
-	public RunExternalProcessTask newRunToolTask(ProcessBuilder pb, IProject project, ICancelMonitor cm) {
-		return new RunExternalProcessTask(pb, project, cm, this);
+	public AbstractRunProcessTask newRunToolTask(ProcessBuilder pb, IProject project, ICancelMonitor cm) {
+		return new AbstractRunProcessTask(pb, cm) {
+			@Override
+			protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+				for(ILangOperationsListener processListener : getListeners()) {
+					processListener.handleProcessStart(newStartProcessInfo(pb, project, processHelper, ce), null);
+				}
+			}
+		};
+	}
+	
+	protected ProcessStartInfo newStartProcessInfo(ProcessBuilder pb, IProject project,
+			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+		return new ProcessStartInfo(pb, project, ">> Running: ", false, processHelper, ce);
 	}
 	
 	/* ----------------- ----------------- */

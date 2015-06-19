@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.ide.core.operations.ProcessStartInfo;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ListenerListHelper;
@@ -33,8 +34,17 @@ public class RunExternalProcessTask extends AbstractRunProcessTask {
 	@Override
 	protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 		for(IStartProcessListener processListener : listenersList.getListeners()) {
-			processListener.handleProcessStartResult(pb, project, processHelper, ce);
+			handleProcessStartResult(processHelper, ce, processListener);
 		}
+	}
+	
+	protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce,
+			IStartProcessListener processListener) {
+		processListener.handleProcessStart(newStartProcessInfo(processHelper, ce));
+	}
+	
+	protected ProcessStartInfo newStartProcessInfo(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+		return new ProcessStartInfo(pb, project, ">> Running: ", false, processHelper, ce);
 	}
 	
 }

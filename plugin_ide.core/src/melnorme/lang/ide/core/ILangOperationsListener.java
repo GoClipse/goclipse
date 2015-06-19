@@ -10,8 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import melnorme.lang.ide.core.operations.ILangOperationsListener;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 
-public interface ILangOperationsListener_Actual extends ILangOperationsListener {
+@LANG_SPECIFIC
+public interface ILangOperationsListener extends ILangOperationsListener_Default {
 	
 }

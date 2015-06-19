@@ -10,17 +10,21 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import org.eclipse.core.resources.IProject;
-
-import melnorme.lang.ide.core.utils.process.IStartProcessListener;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
-public interface ILangOperationsListener extends IStartProcessListener {
+import org.eclipse.core.resources.IProject;
+
+public interface ILangOperationsListener_Default {
 	
 	/** Report a message to the user. */
 	void notifyMessage(StatusLevel statusLevel, String title, String message);
+	
+	void handleToolOperationStart(IToolOperation toolOperation, OperationInfo opInfo);
+	
+	void handleProcessStart(ProcessStartInfo processStartInfo, OperationInfo opInfo);
+	
 	
 	void handleBuildStarted(IProject project, boolean clearConsole);
 	void handleBuildTerminated(IProject project);
