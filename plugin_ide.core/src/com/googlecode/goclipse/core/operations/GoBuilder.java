@@ -13,6 +13,7 @@ package com.googlecode.goclipse.core.operations;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
@@ -75,8 +76,8 @@ public class GoBuilder extends LangProjectBuilderExt {
 		
 		
 		@Override
-		public IProject[] execute(IProject project, IProgressMonitor monitor) throws CoreException,
-				OperationCancellation {
+		public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
+				throws CoreException, CommonException, OperationCancellation {
 			
 			Location projectLocation = getProjectLocation();
 			
@@ -89,7 +90,7 @@ public class GoBuilder extends LangProjectBuilderExt {
 				checkGoFilesInSourceRoot();
 			}
 			
-			return super.execute(project, monitor);
+			return super.execute(project, kind, args, monitor);
 		}
 		
 		protected void checkGoFilesInSourceRoot() throws CoreException {

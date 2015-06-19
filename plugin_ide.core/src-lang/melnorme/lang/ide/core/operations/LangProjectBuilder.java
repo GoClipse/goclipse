@@ -96,7 +96,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		IProject project = assertNotNull(getProject());
 		
 		if(isFirstProjectOfKind()) {
-			handleFirstOfKind();
+			handleBeginWorkspaceBuild();
 		}
 		
 		deleteProjectBuildMarkers();
@@ -122,7 +122,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
 			
 			if(isLastProjectOfKind()) {
-				handleLastOfKind();
+				handleEndWorkspaceBuild();
 			}
 		}
 		
@@ -130,10 +130,10 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 	
-	protected void handleFirstOfKind() {
+	protected void handleBeginWorkspaceBuild() {
 	}
 	
-	protected void handleLastOfKind() {
+	protected void handleEndWorkspaceBuild() {
 	}
 	
 	protected abstract IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor pm)

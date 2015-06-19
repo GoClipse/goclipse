@@ -55,37 +55,38 @@ public abstract class LangProjectBuilderExt extends LangProjectBuilder {
 	/* ----------------- Build ----------------- */
 	
 	@Override
-	protected void handleFirstOfKind() {
+	protected void handleBeginWorkspaceBuild() {
 		LangCore.getToolManager().notifyBuildStarting(null, true);
 	}
 	
 	@Override
-	protected void handleLastOfKind() {
+	protected void handleEndWorkspaceBuild() {
 		LangCore.getToolManager().notifyBuildTerminated(null);
 	}
 	
 	@Override
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
 			throws CoreException, OperationCancellation {
-		return createBuildOp().execute(project, monitor);
+		try {
+			return createBuildOp().execute(project, kind, args, monitor);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
 	}
 	
-	protected abstract AbstractRunBuildOperation createBuildOp();
+	protected abstract IBuildTargetOperation createBuildOp();
 	
-	public abstract class AbstractRunBuildOperation {
+	public abstract class AbstractRunBuildOperation implements IBuildTargetOperation {
 		
-		public IProject[] execute(IProject project, IProgressMonitor monitor) 
-				throws CoreException, OperationCancellation {
+		@Override
+		public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) 
+				throws CoreException, CommonException, OperationCancellation {
 			LangCore.getToolManager().notifyBuildStarting(project, false);
 			
-			try {
-				ProcessBuilder pb = createBuildPB();
-				
-				ExternalProcessResult buildAllResult = runBuildTool_2(monitor, pb);
-				doBuild_processBuildResult(buildAllResult);
-			} catch (CommonException ce) {
-				throw LangCore.createCoreException(ce);
-			}
+			ProcessBuilder pb = createBuildPB();
+			
+			ExternalProcessResult buildAllResult = runBuildTool_2(monitor, pb);
+			doBuild_processBuildResult(buildAllResult);
 			
 			return null;
 		}
