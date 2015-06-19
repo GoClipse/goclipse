@@ -14,7 +14,7 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
-import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
+import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -35,7 +35,7 @@ public class GoToolManager extends AbstractToolsManager {
 	
 	/* -----------------  ----------------- */
 	
-	public RunExternalProcessTask newRunToolTask(GoEnvironment goEnv, List<String> commandLine, Location workingDir,
+	public AbstractRunProcessTask newRunToolTask(GoEnvironment goEnv, List<String> commandLine, Location workingDir,
 			IProgressMonitor pm) throws CoreException, CommonException {
 		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir, true);
 		return newRunToolTask(pb, null, pm);

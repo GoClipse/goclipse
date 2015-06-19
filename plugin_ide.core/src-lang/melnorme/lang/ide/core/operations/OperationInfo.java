@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.process;
+package melnorme.lang.ide.core.operations;
 
-import melnorme.lang.ide.core.operations.ProcessStartInfo;
+import melnorme.utilbox.collections.HashMap2;
 
-
-
-public interface IStartProcessListener {
-	
-	void handleProcessStart(ProcessStartInfo processStartInfo);
+@SuppressWarnings("serial")
+public class OperationInfo extends HashMap2<String, Object> {
 	
 }

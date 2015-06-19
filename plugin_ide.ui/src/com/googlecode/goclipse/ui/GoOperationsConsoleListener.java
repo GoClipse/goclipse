@@ -12,6 +12,8 @@ package com.googlecode.goclipse.ui;
 
 import java.io.IOException;
 
+import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.ProcessStartInfo;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
@@ -29,15 +31,12 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 	}
 	
 	@Override
-	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
-			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-		String prefixText = ">> Running: ";
-		
-		new ProcessUIConsoleHandler() {
+	public void handleProcessStart(ProcessStartInfo processStartInfo, OperationInfo opInfo) {
+		ProcessUIConsoleHandler consoleHandler = new ProcessUIConsoleHandler(processStartInfo) {
 			@Override
 			protected void printProcessStartResult(IOConsoleOutputStream outStream) {
 				super.printProcessStartResult(outStream);
-				printGoPathString(outStream, pb);
+				printGoPathString(outStream, processStartInfo.pb);
 			}
 			
 			@Override
@@ -45,20 +44,27 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 				return " " + super.getProcessTerminatedMessage(exitCode);
 			};
 			
-		}.handle(pb, project, prefixText, false, processHelper, ce);
+		};
+		
+		if(opInfo == null) {
+			consoleHandler.handle();
+		} else {
+			consoleHandler.handle(opInfo);
+		}
 	}
 	
 	@Override
 	public void engineClientToolStart(ProcessBuilder pb, CommonException ce, 
-			ExternalProcessNotifyingHelper processHelper) {
+			ExternalProcessNotifyingHelper ph) {
+		ProcessStartInfo processStartInfo = new ProcessStartInfo(pb, null, ">> Running: ", false, ph, ce);
 		
-		new EngineClientProcessUIConsoleHandler() {
+		new EngineClientProcessUIConsoleHandler(processStartInfo) {
 			@Override
 			protected void printProcessStartResult(IOConsoleOutputStream outStream) {
 				super.printProcessStartResult(outStream);
 				printGoPathString(outStream, pb);
 			}
-		}.handle(pb, null, ">> Running: ", false, processHelper, ce);
+		}.handle();
 		
 	}
 	

@@ -12,7 +12,7 @@ package melnorme.lang.ide.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.lang.ide.core.ILangOperationsListener_Actual;
+import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore.StatusExt;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -55,7 +55,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		return getInstance();
 	}
 	
-	protected ILangOperationsListener_Actual operationsListener;
+	protected ILangOperationsListener operationsListener;
 	
 	public LangUIPlugin() {
 	}
@@ -100,7 +100,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		new InitializeAfterLoadJob(this).schedule();
 	}
 	
-	protected abstract ILangOperationsListener_Actual createOperationsConsoleListener();
+	protected abstract ILangOperationsListener createOperationsConsoleListener();
 	
 	@SuppressWarnings("unused")
 	protected void doInitializeAfterLoad(IProgressMonitor monitor) throws CoreException {
