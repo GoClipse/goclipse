@@ -17,17 +17,13 @@ import org.eclipse.core.resources.IProject;
 
 public class ProcessStartInfo {
 	
-	public ProcessBuilder pb;
-	public IProject project;
-	public String prefixText;
-	public ExternalProcessNotifyingHelper processHelper;
-	public CommonException ce;
+	public final ProcessBuilder pb;
+	public final IProject project;
+	public final String prefixText;
+	public final ExternalProcessNotifyingHelper processHelper;
+	public final CommonException ce;
 	
-	public boolean clearConsole;
-	
-	public ProcessStartInfo(boolean clearConsole) {
-		this.clearConsole = clearConsole;
-	}
+	public final boolean clearConsole;
 	
 	public ProcessStartInfo(ProcessBuilder pb, IProject project, String prefixText, 
 			boolean clearConsole, ExternalProcessNotifyingHelper processHelper, CommonException ce) {

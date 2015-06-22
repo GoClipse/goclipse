@@ -10,10 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import static melnorme.lang.ide.core.operations.TextMessageUtils.headerBIG;
+
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -60,9 +63,9 @@ public abstract class AbstractToolsManager extends ListenerListHelper<ILangOpera
 		}
 	}
 	
-	public void notifyOperationStarted(IToolOperation dubOperation, OperationInfo opInfo) {
+	public void notifyOperationStarted(OperationInfo opInfo) {
 		for(ILangOperationsListener processListener : getListeners()) {
-			processListener.handleToolOperationStart(dubOperation, opInfo);
+			processListener.handleToolOperationStart(opInfo);
 		}
 	}
 	
@@ -89,6 +92,45 @@ public abstract class AbstractToolsManager extends ListenerListHelper<ILangOpera
 	protected ProcessStartInfo newStartProcessInfo(ProcessBuilder pb, IProject project,
 			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 		return new ProcessStartInfo(pb, project, ">> Running: ", false, processHelper, ce);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public RunProcessOperation newRunProcessOperation(IProject project, String operationName, 
+			String[] commands, IProgressMonitor pm) {
+		OperationInfo opInfo = new OperationInfo(project, false, headerBIG(operationName));
+		return newRunProcessTask(opInfo, commands, pm);
+	}
+	
+	public RunProcessOperation newRunProcessTask(OperationInfo opInfo, String[] commands, IProgressMonitor pm) {
+		ProcessBuilder pb = createProcessBuilder(opInfo.project, commands);
+		return new RunProcessOperation(pb, new EclipseCancelMonitor(pm), opInfo);
+	}
+	
+	public static ProcessBuilder createProcessBuilder(IProject project, String... commands) {
+		Path workingDir = project != null ?
+			project.getLocation().toFile().toPath() :
+			EclipseUtils.getWorkspaceRoot().getLocation().toFile().toPath();
+		return new ProcessBuilder(commands).directory(workingDir.toFile());
+	}
+	
+	public class RunProcessOperation extends AbstractRunProcessTask {
+		
+		protected final OperationInfo opInfo;
+		
+		public RunProcessOperation(ProcessBuilder pb, ICancelMonitor cancelMonitor, OperationInfo opInfo) {
+			super(pb, cancelMonitor);
+			this.opInfo = opInfo;
+		}
+		
+		@Override
+		protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+			for(ILangOperationsListener processListener : getListeners()) {
+				processListener.handleProcessStart(
+					new ProcessStartInfo(pb, opInfo.project, "> ", false, processHelper, ce), opInfo);
+			}
+		}
+		
 	}
 	
 	/* ----------------- ----------------- */

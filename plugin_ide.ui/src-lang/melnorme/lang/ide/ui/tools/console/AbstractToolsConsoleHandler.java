@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.tools.console;
 
+import static melnorme.lang.ide.core.operations.TextMessageUtils.headerHASH;
 import static melnorme.lang.ide.ui.LangUIPlugin_Actual.DAEMON_TOOL_Name;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
@@ -18,12 +19,11 @@ import java.io.IOException;
 import java.util.List;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
-import melnorme.lang.ide.core.operations.IToolOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ProcessStartInfo;
 import melnorme.lang.ide.ui.LangImages;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -38,10 +38,9 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 
-public abstract class AbstractToolsConsoleHandler extends TextConsoleUIHelper implements ILangOperationsListener {
+public abstract class AbstractToolsConsoleHandler implements ILangOperationsListener {
 	
-	protected final String LANGUAGE_NAME = LangUIPlugin_Actual.LANGUAGE_NAME;
-	protected final String BUILD_CONSOLE_NAME = LANGUAGE_NAME + " build";
+	protected static final String BUILD_CONSOLE_NAME = LangCore_Actual.LANGUAGE_NAME + " build";
 	
 	public AbstractToolsConsoleHandler() {
 		super();
@@ -115,36 +114,21 @@ public abstract class AbstractToolsConsoleHandler extends TextConsoleUIHelper im
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void handleBuildStarted(IProject project, boolean clearConsole) {
-		String msg = (project == null) ?
-			headerBIG("Building " + LANGUAGE_NAME +" workspace") :
-			headerSMALL(" Building " + LANGUAGE_NAME + " project: " + project.getName());
-		getOperationConsole(null, clearConsole).writeOperationInfo(msg);
-	}
-	
-	@Override
-	public void handleBuildTerminated(IProject project) {
-		getOperationConsole(null, false).writeOperationInfo(
-			headerBIG("Build terminated."));
-	}
-	
-	@Override
-	public void handleToolOperationStart(IToolOperation toolOperation, OperationInfo opInfo) {
-		final ToolsConsole console = getOperationConsole(toolOperation.getProject(), true);
-		try {
-			console.infoOut.write("************  " + toolOperation.getOperationName() + "  ************\n");
-		} catch (IOException e) {
-			return;
-		}
-		
-		opInfo.put(TOOL_INFO__KEY_CONSOLE, console);
+	public void handleToolOperationStart(OperationInfo opInfo) {
+		final ToolsConsole console = getOperationConsole(opInfo.getProject(), opInfo.clearConsole);
+		opInfo.putProperty(TOOL_INFO__KEY_CONSOLE, console);
+		console.writeOperationInfo(opInfo.operationMessage);
 	}
 	
 	public static final String TOOL_INFO__KEY_CONSOLE = "CONSOLE";
 	
 	@Override
+	public void handleProcessStart(ProcessStartInfo processStartInfo, OperationInfo opInfo) {
+		new ProcessUIConsoleHandler(processStartInfo, opInfo).handle();
+	}
+	
+	@Override
 	public void engineDaemonStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper ph) {
-		
 		String prefixText = headerHASH("Starting " + DAEMON_TOOL_Name + " server:  ") + "   ";
 		ProcessStartInfo processStartInfo = new ProcessStartInfo(pb, null, prefixText, true, ph, ce);
 		
@@ -182,27 +166,38 @@ public abstract class AbstractToolsConsoleHandler extends TextConsoleUIHelper im
 	public class ProcessUIConsoleHandler {
 		
 		protected final ProcessStartInfo info;
+		protected final OperationInfo opInfo;
 		
-		public ProcessUIConsoleHandler(ProcessStartInfo info) {
-			this.info = assertNotNull(info);
+		protected ToolsConsole console;
+		
+		public ProcessUIConsoleHandler(ProcessStartInfo processStartInfo) {
+			this(processStartInfo, null);
 		}
 		
-		public void handle() {
-			ToolsConsole console = getConsole();
-			handle(console);
-		}
-		
-		public void handle(OperationInfo opInfo) {
-			Object consoleObj = opInfo.get(TOOL_INFO__KEY_CONSOLE);
-			if(consoleObj instanceof ToolsConsole) {
-				ToolsConsole console = (ToolsConsole) consoleObj;
-				handle(console);
-			} else {
-				handle();
+		public ProcessUIConsoleHandler(ProcessStartInfo processStartInfo, OperationInfo opInfo) {
+			this.info = assertNotNull(processStartInfo);
+			this.opInfo = opInfo;
+			
+			if(opInfo != null) {
+				Object consoleObj = opInfo.getProperty(TOOL_INFO__KEY_CONSOLE);
+				if(consoleObj instanceof ToolsConsole) {
+					console = (ToolsConsole) consoleObj;
+				}
 			}
 		}
 		
-		public void handle(ToolsConsole console) {
+		public void handle() {
+			if(console == null) {
+				console = getConsole();
+			}
+			handle(console);
+		}
+		
+		protected ToolsConsole getConsole() {
+			return getOperationConsole(info.project, info.clearConsole);
+		}
+		
+		public final void handle(ToolsConsole console) {
 			printProcessStartResult(console.infoOut);
 			
 			if(info.processHelper != null) {
@@ -212,10 +207,6 @@ public abstract class AbstractToolsConsoleHandler extends TextConsoleUIHelper im
 		
 		protected void printProcessStartResult(IOConsoleOutputStream outStream) {
 			default_printProcessStartResult(outStream, info.prefixText, info.pb, info.ce);
-		}
-		
-		protected ToolsConsole getConsole() {
-			return getOperationConsole(info.project, info.clearConsole);
 		}
 		
 		protected IProcessOutputListener createOutputListener(final ToolsConsole console) {
@@ -243,29 +234,21 @@ public abstract class AbstractToolsConsoleHandler extends TextConsoleUIHelper im
 		
 	}
 	
-	@Override
-	public void handleProcessStart(ProcessStartInfo processStartInfo, OperationInfo opInfo) {
-		if(opInfo == null) {
-			new ProcessUIConsoleHandler(processStartInfo).handle();
-		} else {
-			new ProcessUIConsoleHandler(processStartInfo).handle(opInfo);
-		}
-	}
-	
 	public class EngineServerProcessUIConsoleHandler extends ProcessUIConsoleHandler {
+		
+		protected final DaemonToolMessageConsole console;
 		
 		public EngineServerProcessUIConsoleHandler(ProcessStartInfo info) {
 			super(info);
+			
+			console = DaemonToolMessageConsole.getConsole();
 		}
-		
-		protected DaemonToolMessageConsole console;
 		
 		@Override
 		public void handle() {
 			if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
 				return;
 			}
-			console = DaemonToolMessageConsole.getConsole();
 			handle(console);
 		}
 		

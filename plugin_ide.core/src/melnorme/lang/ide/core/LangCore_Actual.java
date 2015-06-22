@@ -28,4 +28,6 @@ public class LangCore_Actual {
 		return new GoEngineClient();
 	}
 	
+	public static final String LANGUAGE_NAME = "Go";
+	
 }

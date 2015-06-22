@@ -16,6 +16,7 @@ import static org.eclipse.jface.layout.GridDataFactory.fillDefaults;
 import java.net.URI;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
@@ -415,7 +416,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 		@SuppressWarnings("unused")
 		protected void setPreferencesErrorMessage(ValidationException ve) {
-			setValidationMessage("The "+ LangUIPlugin_Actual.LANGUAGE_NAME + 
+			setValidationMessage("The "+ LangCore_Actual.LANGUAGE_NAME + 
 				" preferences have not been configured correctly.\n"+
 				"<a>Click here to configure preferences...</a>");
 		}

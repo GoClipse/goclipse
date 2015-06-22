@@ -32,7 +32,7 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 	
 	@Override
 	public void handleProcessStart(ProcessStartInfo processStartInfo, OperationInfo opInfo) {
-		ProcessUIConsoleHandler consoleHandler = new ProcessUIConsoleHandler(processStartInfo) {
+		new ProcessUIConsoleHandler(processStartInfo, opInfo) {
 			@Override
 			protected void printProcessStartResult(IOConsoleOutputStream outStream) {
 				super.printProcessStartResult(outStream);
@@ -44,13 +44,7 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 				return " " + super.getProcessTerminatedMessage(exitCode);
 			};
 			
-		};
-		
-		if(opInfo == null) {
-			consoleHandler.handle();
-		} else {
-			consoleHandler.handle(opInfo);
-		}
+		}.handle();
 	}
 	
 	@Override

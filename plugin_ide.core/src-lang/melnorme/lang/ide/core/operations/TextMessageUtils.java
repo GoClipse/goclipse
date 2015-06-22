@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,19 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.tools.console;
+package melnorme.lang.ide.core.operations;
 
-
-
-public class TextConsoleUIHelper {
+public interface TextMessageUtils {
 	
-	public TextConsoleUIHelper() {
-	}
-	
-	protected String headerBIG(String headerString) {
+	public static String headerBIG(String headerString) {
 		return "************  " + headerString + "  ************"+"\n";
 	}
 	
-	protected String headerSMALL(String headerString) {
+	public static String headerSMALL(String headerString) {
 		return "-------  " + headerString + "  -------"+"\n";
 	}
 	
-	protected String headerHASH(String headerString) {
+	public static String headerHASH(String headerString) {
 		return "##########  " + headerString + "  ##########"+"\n";
 	}
 	

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import static melnorme.lang.ide.core.operations.TextMessageUtils.headerBIG;
+import static melnorme.lang.ide.core.operations.TextMessageUtils.headerSMALL;
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
@@ -21,13 +24,22 @@ public interface ILangOperationsListener_Default {
 	/** Report a message to the user. */
 	void notifyMessage(StatusLevel statusLevel, String title, String message);
 	
-	void handleToolOperationStart(IToolOperation toolOperation, OperationInfo opInfo);
+	void handleToolOperationStart(OperationInfo opInfo);
 	
 	void handleProcessStart(ProcessStartInfo processStartInfo, OperationInfo opInfo);
 	
 	
-	void handleBuildStarted(IProject project, boolean clearConsole);
-	void handleBuildTerminated(IProject project);
+	default void handleBuildStarted(IProject project, boolean clearConsole) {
+		String msg = (project == null) ?
+			headerBIG("Building " + LangCore_Actual.LANGUAGE_NAME +" workspace") :
+			headerSMALL(" Building " + LangCore_Actual.LANGUAGE_NAME + " project: " + project.getName());
+		
+		handleToolOperationStart(new OperationInfo(project, clearConsole, msg));
+	}
+	
+	default void handleBuildTerminated(IProject project) {
+		handleToolOperationStart(new OperationInfo(project, false, headerBIG("Build terminated.")));
+	}
 	
 	void engineDaemonStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper processHelper);
 	
