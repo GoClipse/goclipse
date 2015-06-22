@@ -10,9 +10,34 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import org.eclipse.core.resources.IProject;
+
 import melnorme.utilbox.collections.HashMap2;
 
-@SuppressWarnings("serial")
-public class OperationInfo extends HashMap2<String, Object> {
+public class OperationInfo {
+	
+	protected final HashMap2<String, Object> properties = new HashMap2<>();
+	
+	public final IProject project; // can be null
+	public final boolean clearConsole;
+	public final String operationMessage;
+	
+	public OperationInfo(IProject project, boolean clearConsole, String operationMessage) {
+		this.project = project;
+		this.clearConsole = clearConsole;
+		this.operationMessage = operationMessage;
+	}
+	
+	public IProject getProject() {
+		return project;
+	}
+	
+	public void putProperty(String key, Object value) {
+		properties.put(key, value);
+	}
+	
+	public Object getProperty(String key) {
+		return properties.get(key);
+	}
 	
 }

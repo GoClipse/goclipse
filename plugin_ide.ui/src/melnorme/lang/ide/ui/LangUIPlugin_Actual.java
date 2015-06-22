@@ -45,7 +45,6 @@ public final class LangUIPlugin_Actual {
 	
 	/* ----------------- UI messages:  ----------------- */
 	
-	public static final String LANGUAGE_NAME = "Lang";
 	public static final String DAEMON_TOOL_Name = "lang_daemon";
 	public static final String DAEMON_TOOL_ConsoleName = "lang_daemon log";
 	

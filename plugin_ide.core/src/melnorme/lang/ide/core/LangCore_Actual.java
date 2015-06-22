@@ -20,4 +20,6 @@ public class LangCore_Actual {
 		return new LANGUAGE_EngineClient();
 	}
 	
+	public static final String LANGUAGE_NAME = "Lang";
+	
 }
