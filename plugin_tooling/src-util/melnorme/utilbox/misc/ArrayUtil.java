@@ -40,7 +40,6 @@ public class ArrayUtil {
 	public static <T> T[] create(int length, Class<T> componentType) {
 		return (T[]) Array.newInstance(componentType, length);
 	}
-	
 	@SuppressWarnings("unchecked")
 	public static <T> T[] create(Class<T> componentType, int length) {
 		return (T[]) Array.newInstance(componentType, length);
@@ -76,6 +75,12 @@ public class ArrayUtil {
      * If given list is null, a zero-length array is created. */
 	public static Object[] createFrom(Collection<?> list) {
 		return createFrom(list, Object.class);
+	}
+	
+	public static <E> E[] copyFrom(E[] array, Class<E> componentType) {
+		E[] newArray = create(array.length, componentType);
+	    System.arraycopy(array, 0, newArray, 0, array.length);
+	    return newArray;
 	}
 	
     /** Create an array from the given list, with the given cpType as the run-time component type.

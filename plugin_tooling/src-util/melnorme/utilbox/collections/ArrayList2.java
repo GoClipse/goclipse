@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.misc.ArrayUtil;
 
 /**
  * Extension to {@link java.util.ArrayList}, with some helper methods,
@@ -80,8 +79,9 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		}
 	}
 	
-	public E[] toArray(Class<E> componentType) {
-		return ArrayUtil.createFrom(this, componentType);
+	@Override
+	public Object[] copyToArray(Object[] destArray) {
+		return toArray(destArray);
 	}
 	
 	@Override
