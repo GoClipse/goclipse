@@ -93,6 +93,12 @@ public class ArrayView<E> implements Indexable<E> {
 		}
 	}
 	
+	@Override
+	public Object[] copyToArray(Object[] destArray) {
+		System.arraycopy(array, 0, destArray, 0, array.length);
+		return destArray;
+	}
+	
 	/* -----------------  ----------------- */
 	
 	/** Accesses and returns the *internal* array backing this {@link ArrayView}, which must not be modified!
