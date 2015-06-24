@@ -65,6 +65,9 @@ public abstract class LangImages {
 	public static final ImageHandle TOOLS_CONSOLE_ICON = createManaged(CAT_VIEWS, "ToolsConsole.16.png");
 	public static final ImageHandle SOURCE_EDITOR_ICON = createManaged(CAT_VIEWS, "SourceEditor.png");
 	
+	public static final ImageHandle BUILD_TARGET = createManaged(CAT_VIEWS, "target.png");
+	public static final ImageHandle BUILD_TARGETS_ELEM = createManaged(CAT_VIEWS, "targets_elem.png");
+	
 	public static final ImageHandle IMG_LAUNCHTAB_MAIN = createManaged(T_TABS, "main_launch_tab.png");
 	public static final ImageHandle IMG_LAUNCHTAB_ARGUMENTS = createManaged(T_TABS, "arguments_tab.gif");
 	

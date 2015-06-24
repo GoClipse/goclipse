@@ -9,22 +9,32 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.navigator;
-import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
-
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
+import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
+
 public class LANGUAGE_NavigatorLabelProvider extends AbstractLangNavigatorLabelProvider implements IStyledLabelProvider {
 	
 	@Override
-	public StyledString getStyledText(Object element) {
-		return null;
+	protected DefaultGetStyledTextSwitcher getStyledText_switcher() {
+		return new DefaultGetStyledTextSwitcher() {
+			@Override
+			public StyledString visitOther(Object element) {
+				return null;
+			}
+		};
 	}
 	
 	@Override
-	protected Image getImageForCustomElements(Object element) {
-		return null;
+	protected DefaultGetImageSwitcher getBaseImage_switcher() {
+		return new DefaultGetImageSwitcher() {
+			@Override
+			public Image visitOther(Object element) {
+				return null;
+			}
+		};
 	}
 	
 }

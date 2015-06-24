@@ -27,6 +27,10 @@ public interface Indexable<E> extends Collection2<E>, RandomAccess {
 	
 	/* ----------------- Some array utils ----------------- */
 	
+	default ArrayList2<E> toArrayList() {
+		return new ArrayList2<>(this);
+	}
+	
 	default Object[] toArray() {
 		return this.<Object>upcastTypeParameter().toArray(Object.class);
 	}

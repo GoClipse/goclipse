@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
 
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;
@@ -97,16 +98,6 @@ public class CollectionUtil {
 		return list == null ? Collections.EMPTY_LIST : list;
 	}
 	
-	
-	public static <E, COLL extends Collection<E>> COLL addAll(COLL collection, Iterable<? extends E> iterable) {
-		if(iterable != null) {
-			for(E elem : iterable) {
-				collection.add(elem);
-			}
-		}
-		return collection;
-	}
-	
 	/* ----------------- query ----------------- */
 	
 	/** @return whether given coll contains given obj 
@@ -153,6 +144,37 @@ public class CollectionUtil {
 			}
 		}
 		return rejectedElements;
+	}
+	
+	@Deprecated
+	public static <ELEM, COLL extends Collection<ELEM>> COLL addAll(COLL collection, Iterable<? extends ELEM> iterable) {
+		if(iterable != null) {
+			for(ELEM elem : iterable) {
+				collection.add(elem);
+			}
+		}
+		return collection;
+	}
+	
+	public static <ELEM, COLL extends Collection<? super ELEM>> COLL addAll2(COLL dest, 
+			Iterable<? extends ELEM> source) {
+		return addAllFromIterator(dest, source.iterator());
+	}
+	
+	public static <ELEM, COLL extends Collection<? super ELEM>> COLL addAllFromIterator(COLL dest, 
+			Iterator<? extends ELEM> source) {
+		while(source.hasNext()) {
+			dest.add(source.next());
+		}
+		return dest;
+	}
+	
+	public static <ELEM, COLL extends Collection<? super ELEM>, SourceELEM> COLL addAll(COLL dest, 
+			Indexable<? extends SourceELEM> source, Function<SourceELEM, ELEM> mapper) {
+		for(SourceELEM elem : source) {
+			dest.add(mapper.apply(elem));
+		}
+		return dest;
 	}
 	
 	/** Remove from given list all elements that match given predicate. */

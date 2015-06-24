@@ -2,6 +2,8 @@ package melnorme.lang.ide.core;
 
 import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_EngineClient;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
+import melnorme.lang.ide.core.operations.BuildManager;
+import melnorme.utilbox.collections.ArrayList2;
 
 public class LangCore_Actual {
 	
@@ -12,6 +14,8 @@ public class LangCore_Actual {
 	public static final String BUILD_PROBLEM_ID = PLUGIN_ID + ".build_problem";
 	public static final String SOURCE_PROBLEM_ID = PLUGIN_ID + ".source_problem";
 	
+	public static final String LANGUAGE_NAME = "Lang";
+	
 	public static LANGUAGE_ToolManager createToolManagerSingleton() {
 		return new LANGUAGE_ToolManager();
 	}
@@ -20,6 +24,8 @@ public class LangCore_Actual {
 		return new LANGUAGE_EngineClient();
 	}
 	
-	public static final String LANGUAGE_NAME = "Lang";
+	public static BuildManager createBuildManager() {
+		return new BuildManager(new ArrayList2<>()); // TODO BuildManager
+	}
 	
 }

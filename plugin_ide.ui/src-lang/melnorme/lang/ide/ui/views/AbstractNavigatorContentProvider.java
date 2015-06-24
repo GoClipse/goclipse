@@ -12,9 +12,11 @@ package melnorme.lang.ide.ui.views;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.core.LangCore;
-import melnorme.util.swt.jface.AbstractTreeContentProvider;
 
+import java.util.ArrayList;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
@@ -24,8 +26,15 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.navigator.BuildTargetElement;
+import melnorme.lang.ide.ui.navigator.BuildTargetsContainer;
+import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
+import melnorme.util.swt.jface.AbstractTreeContentProvider;
+import melnorme.utilbox.misc.CollectionUtil;
+
 public abstract class AbstractNavigatorContentProvider extends AbstractTreeContentProvider 
-		implements ICommonContentProvider {
+	implements ICommonContentProvider {
 	
 	public AbstractNavigatorContentProvider() {
 		super();
@@ -118,6 +127,119 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		}
 		
 		protected abstract void runThrottledCode();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	
+	@Override
+	public boolean hasChildren(Object element) {
+		return hasChildren_switcher().switchElement(element);
+	}
+	
+	protected abstract LangNavigatorSwitcher_HasChildren hasChildren_switcher();
+	
+	protected static interface LangNavigatorSwitcher_HasChildren extends NavigatorElementsSwitcher<Boolean> {
+		@Override
+		default Boolean visitProject(IProject project) {
+			return project.isAccessible();
+		}
+		@Override
+		default Boolean visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
+			return true;
+		}
+		@Override
+		default Boolean visitBuildTarget(BuildTargetElement buildTarget) {
+			return false;
+		}
+		@Override
+		default Boolean visitOther(Object element) {
+			return false;
+		}
+	}
+	
+	@Override
+	public Object[] getChildren(Object parent) {
+		return getChildren_switcher().switchElement(parent);
+	}
+	
+	protected abstract LangNavigatorSwitcher_GetChildren getChildren_switcher();
+	
+	public abstract class LangNavigatorSwitcher_GetChildren implements NavigatorElementsSwitcher<Object[]> {
+		@Override
+		public Object[] visitProject(IProject project) {
+			return getProjectChildren(project);
+		}
+		@Override
+		public Object[] visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
+			return buildTargetsElement.getChildren_toArray();
+		}
+		
+		@Override
+		public Object[] visitBuildTarget(BuildTargetElement buildTarget) {
+			return null;
+		}
+		@Override
+		public Object[] visitOther(Object element) {
+			return null;
+		}
+		
+		public Object[] getProjectChildren(IProject project) {
+			ArrayList<Object> projectChildren = new ArrayList<>();
+			if(project.isAccessible()) {
+				addFirstProjectChildren(project, projectChildren);
+				addBuildTargetsContainer(project, projectChildren);
+				addProjectResourceChildren(project, projectChildren);
+			}
+			return projectChildren.toArray();
+		}
+		
+		protected void addProjectResourceChildren(IProject project, ArrayList<Object> projectChildren) {
+			// Add project children ourselves: this is so that children will be sorted by our own sorter. 
+			// (otherwise only Platform Navigator sorter will be used)
+			// Navigator ResourceExtension will also add this, but they will not appear duplicated because they
+			// are equal elements.
+			try {
+				projectChildren.addAll(CollectionUtil.createArrayList(project.members()));
+			} catch (CoreException e) {
+				// ignore, leave empty
+			}
+		}
+		
+		@SuppressWarnings("unused")
+		public void addFirstProjectChildren(IProject project, ArrayList<Object> projectChildren) { 
+		}
+		
+	}
+	
+	protected void addBuildTargetsContainer(IProject project, ArrayList<Object> projectChildren) {
+		projectChildren.add(new BuildTargetsContainer(project));
+	}
+	
+	@Override
+	public Object getParent(Object element) {
+		return getParent_switcher().switchElement(element);
+	}
+	
+	protected abstract LangNavigatorSwitcher_GetParent getParent_switcher();
+	
+	public static interface LangNavigatorSwitcher_GetParent extends NavigatorElementsSwitcher<Object> {
+		@Override
+		default Object visitProject(IProject project) {
+			return project.getParent();
+		}
+		@Override
+		default Object visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
+			return buildTargetsElement.getProject();
+		}
+		@Override
+		default Object visitBuildTarget(BuildTargetElement buildTarget) {
+			return buildTarget.getParent();
+		}
+		@Override
+		default Object visitOther(Object element) {
+			return null;
+		}
 	}
 	
 }

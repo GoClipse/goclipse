@@ -10,18 +10,23 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.views;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
-import melnorme.utilbox.collections.ArrayList2;
-
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import _org.eclipse.jdt.ui.ProblemsLabelDecorator;
+import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.navigator.BuildTargetElement;
+import melnorme.lang.ide.ui.navigator.BuildTargetsContainer;
+import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
+import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
+import melnorme.utilbox.collections.ArrayList2;
 
 
 
@@ -47,6 +52,36 @@ public abstract class AbstractLangNavigatorLabelProvider extends AbstractLangLab
 		}
 	}
 	
+	/* ----------------- text ----------------- */
+	
+	@Override
+	public StyledString getStyledText(Object element) {
+		return getStyledText_switcher().switchElement(element);
+	}
+	
+	protected abstract DefaultGetStyledTextSwitcher getStyledText_switcher();
+	
+	public static interface DefaultGetStyledTextSwitcher extends NavigatorElementsSwitcher<StyledString> {
+		
+		@Override
+		default StyledString visitProject(IProject project) {
+			return null;
+		}
+		
+		@Override
+		default StyledString visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
+			return new StyledString(buildTargetsElement.getText());
+		}
+		
+		@Override
+		default StyledString visitBuildTarget(BuildTargetElement buildTarget) {
+			return new StyledString(buildTarget.getTargetName());
+		}
+		
+	}
+	
+	/* ----------------- image ----------------- */
+	
 	@Override
 	public Image getImage(Object element) {
 		Image baseImage = getBaseImage(element);
@@ -54,7 +89,7 @@ public abstract class AbstractLangNavigatorLabelProvider extends AbstractLangLab
 	}
 	
 	public Image getBaseImage(Object element) {
-		Image baseImage = getImageForCustomElements(element);
+		Image baseImage = getBaseImage_switcher().switchElement(element);
 		if(baseImage != null) {
 			return baseImage;
 		}
@@ -66,9 +101,25 @@ public abstract class AbstractLangNavigatorLabelProvider extends AbstractLangLab
 		return null;
 	}
 	
-	@SuppressWarnings("unused")
-	protected Image getImageForCustomElements(Object element) {
-		return null;
+	protected abstract DefaultGetImageSwitcher getBaseImage_switcher();
+	
+	public static interface DefaultGetImageSwitcher extends NavigatorElementsSwitcher<Image> {
+		
+		@Override
+		default Image visitProject(IProject project) {
+			return null;
+		}
+		
+		@Override
+		default Image visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
+			return LangImages.BUILD_TARGETS_ELEM.getImage();
+		}
+		
+		@Override
+		default Image visitBuildTarget(BuildTargetElement buildTarget) {
+			return LangImages.BUILD_TARGET.getImage();
+		}
+		
 	}
 	
 	protected ImageDescriptor getWorkbenchImageDescriptor(IAdaptable adaptable) {

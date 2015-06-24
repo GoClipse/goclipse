@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,26 +8,26 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package LANG_PROJECT_ID.ide.ui.navigator;
+package melnorme.lang.ide.core.operations;
 
-import java.text.Collator;
+import melnorme.lang.ide.core.navigator.INavigatorElement;
 
-import melnorme.lang.ide.ui.navigator.LangNavigatorSorter;
-
-public class LANGUAGE_NavigatorSorter extends LangNavigatorSorter {
+public class BuildTarget implements INavigatorElement {
 	
-	public LANGUAGE_NavigatorSorter() {
-		super();
+	protected final boolean enabled;
+	protected final String targetName;
+	
+	public BuildTarget(boolean enabled, String targetName) {
+		this.enabled = enabled;
+		this.targetName = targetName;
 	}
 	
-	public LANGUAGE_NavigatorSorter(Collator collator) {
-		super(collator);
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
-	@Override
-	protected LangNavigatorSorter_Switcher switcher_Sorter() {
-		return new LangNavigatorSorter_Switcher() {
-		};
+	public String getTargetName() {
+		return targetName;
 	}
 	
 }

@@ -4,20 +4,22 @@ import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
 
 public class LANGUAGE_NavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
-	
 	@Override
-	public boolean hasChildren(Object element) {
-		return false;
+	protected LangNavigatorSwitcher_HasChildren hasChildren_switcher() {
+		return new LangNavigatorSwitcher_HasChildren() {
+		};
 	}
 	
 	@Override
-	public Object[] getChildren(Object parent) {
-		return null;
+	protected LangNavigatorSwitcher_GetChildren getChildren_switcher() {
+		return new LangNavigatorSwitcher_GetChildren() {
+		};
 	}
 	
 	@Override
-	public Object getParent(Object element) {
-		return null;
+	protected LangNavigatorSwitcher_GetParent getParent_switcher() {
+		return new LangNavigatorSwitcher_GetParent() {
+		};
 	}
 	
 }
