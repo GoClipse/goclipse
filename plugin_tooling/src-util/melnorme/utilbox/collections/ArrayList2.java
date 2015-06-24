@@ -12,8 +12,12 @@ package melnorme.utilbox.collections;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import melnorme.utilbox.core.CoreUtil;
+import melnorme.utilbox.misc.CollectionUtil;
 
 /**
  * Extension to {@link java.util.ArrayList}, with some helper methods,
@@ -61,16 +65,20 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		return this;
 	}
 	
-	@Deprecated
-	public final ArrayList2<E> addElements(Iterable<? extends E> elements) {
-		return addAll(elements);
+	public final ArrayList2<E> addAll(Iterable<? extends E> iterable) {
+		return iteratorAddAll(iterable.iterator());
 	}
 	
-	public final ArrayList2<E> addAll(Iterable<? extends E> elements) {
-		for(E element : elements) {
-			add(element);
-		}
-		return this;
+	public final ArrayList2<E> addAll(Stream<? extends E> stream) {
+		return iteratorAddAll(stream.iterator());
+	}
+	
+	public ArrayList2<E> iteratorAddAll(Iterator<? extends E> iterator) {
+		return CollectionUtil.addAllFromIterator(this, iterator);
+	}
+	
+	public <SOURCE> ArrayList2<E> addAll(Indexable<SOURCE> source, Function<SOURCE, E> mapper) {
+		return CollectionUtil.addAll(this, source, mapper);
 	}
 	
 	public void addIfNotNull(E element) {

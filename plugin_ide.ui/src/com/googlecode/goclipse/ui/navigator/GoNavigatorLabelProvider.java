@@ -10,14 +10,11 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.navigator;
 
+import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
 
 import java.nio.file.Path;
-
-import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
-import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
@@ -41,12 +38,24 @@ import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 import com.googlecode.goclipse.ui.navigator.elements.IGoProjectElement;
 
+import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
+import melnorme.utilbox.misc.MiscUtil;
+
 public class GoNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider  {
 	
 	protected static final RGB LOCATION_ANNOTATION_FG = new RGB(128, 128, 128);
 	
 	@Override
-	public StyledString getStyledText(Object element) {
+	protected DefaultGetStyledTextSwitcher getStyledText_switcher() {
+		return new DefaultGetStyledTextSwitcher() {
+			@Override
+			public StyledString visitOther(Object element) {
+				return getStyledText_other(element);
+			}
+		};
+	}
+	
+	public StyledString getStyledText_other(Object element) {
 		
 		if(element instanceof IGoProjectElement) {
 			IGoProjectElement goProjectElement = (IGoProjectElement) element;
@@ -88,7 +97,17 @@ public class GoNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider
 	}
 	
 	@Override
-	protected Image getImageForCustomElements(Object element) {
+	protected DefaultGetImageSwitcher getBaseImage_switcher() {
+		return new DefaultGetImageSwitcher() {
+			
+			@Override
+			public Image visitOther(Object element) {
+				return getBaseImage_Other(element);
+			}
+		};
+	}
+	
+	public Image getBaseImage_Other(Object element) {
 		
 		if(element instanceof IGoProjectElement) {
 			if(element instanceof GoRootElement) {

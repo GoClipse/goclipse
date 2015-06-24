@@ -1,10 +1,10 @@
 package melnorme.lang.ide.core;
 
-import org.eclipse.core.runtime.Plugin;
-
-import com.googlecode.goclipse.Activator;
 import com.googlecode.goclipse.core.engine.GoEngineClient;
 import com.googlecode.goclipse.core.operations.GoToolManager;
+
+import melnorme.lang.ide.core.operations.BuildManager;
+import melnorme.utilbox.collections.ArrayList2;
 
 public class LangCore_Actual {
 	
@@ -16,9 +16,7 @@ public class LangCore_Actual {
 	public static final String BUILD_PROBLEM_ID = PLUGIN_ID + ".goProblem";
 	public static final String SOURCE_PROBLEM_ID = PLUGIN_ID + ".source_problem";
 	
-	public static Plugin getInstance() {
-		return Activator.getDefault();
-	}
+	public static final String LANGUAGE_NAME = "Go";
 	
 	public static GoToolManager createToolManagerSingleton() {
 		return new GoToolManager();
@@ -28,6 +26,8 @@ public class LangCore_Actual {
 		return new GoEngineClient();
 	}
 	
-	public static final String LANGUAGE_NAME = "Go";
+	public static BuildManager createBuildManager() {
+		return new BuildManager(new ArrayList2<>()); // TODO BuildManager
+	}
 	
 }
