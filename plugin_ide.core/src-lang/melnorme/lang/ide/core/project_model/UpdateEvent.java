@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.bundlemodel;
+package melnorme.lang.ide.core.project_model;
 
-import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-public interface SDKPreferences {
+import org.eclipse.core.resources.IProject;
+
+public class UpdateEvent<INFO> {
 	
-	public static final StringPreference SDK_PATH = new StringPreference("sdk_path", "");
+	public final IProject project;
+	public final INFO newProjectInfo;
+	
+	public UpdateEvent(IProject project, INFO newProjectInfo) {
+		this.project = assertNotNull(project);
+		this.newProjectInfo = newProjectInfo;
+	}
 	
 }

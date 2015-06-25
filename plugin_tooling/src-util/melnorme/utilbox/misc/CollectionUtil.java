@@ -33,9 +33,7 @@ public class CollectionUtil {
 	public static final Indexable EMPTY_INDEXABLE = new ArrayList2<>();
 	
 	public static <T> Indexable<T> nullToEmpty(Indexable<T> indexable) {
-		@SuppressWarnings("unchecked")
-		Indexable<T> result = indexable == null ? EMPTY_INDEXABLE : indexable;
-		return result;
+		return Indexable.nullToEmpty(indexable);
 	}
 	
 	/** @return a new {@link ArrayList} from given collection 

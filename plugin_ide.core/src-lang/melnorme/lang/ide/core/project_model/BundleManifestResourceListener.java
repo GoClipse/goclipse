@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.bundlemodel;
+package melnorme.lang.ide.core.project_model;
 
 import melnorme.lang.ide.core.utils.DefaultProjectResourceListener;
 import melnorme.lang.tooling.IBundleInfo;

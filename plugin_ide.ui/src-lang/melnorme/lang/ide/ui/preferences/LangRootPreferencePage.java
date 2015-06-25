@@ -11,7 +11,7 @@
 package melnorme.lang.ide.ui.preferences;
 
 
-import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
+import melnorme.lang.ide.core.operations.SDKPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 import melnorme.lang.tooling.data.PathValidator;
