@@ -13,6 +13,7 @@ package melnorme.utilbox.collections;
 import java.util.RandomAccess;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.CollectionUtil;
 
 /**
  * interface for a read-only view of a random access collection
@@ -48,5 +49,14 @@ public interface Indexable<E> extends Collection2<E>, RandomAccess {
 		}
 		return destArray;
 	}
+	
+	/* -----------------  ----------------- */
+	
+	public static <T> Indexable<T> nullToEmpty(Indexable<T> indexable) {
+		return indexable == null ? CollectionUtil.EMPTY_INDEXABLE : indexable;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static final Indexable EMPTY_INDEXABLE = new ArrayList2<>();
 	
 }

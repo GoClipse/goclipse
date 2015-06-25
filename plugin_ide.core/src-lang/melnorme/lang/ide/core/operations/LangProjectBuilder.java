@@ -20,7 +20,6 @@ import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.SourceRange;

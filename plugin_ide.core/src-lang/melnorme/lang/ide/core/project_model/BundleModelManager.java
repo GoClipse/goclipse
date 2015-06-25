@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.bundlemodel;
+package melnorme.lang.ide.core.project_model;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.core.LangCore;

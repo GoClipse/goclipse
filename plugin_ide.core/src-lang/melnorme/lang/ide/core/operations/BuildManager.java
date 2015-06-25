@@ -11,18 +11,25 @@
 package melnorme.lang.ide.core.operations;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Platform;
 
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.project_model.IProjectModelListener;
+import melnorme.lang.ide.core.project_model.ProjectBasedModel;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.SimpleLogger;
 
 
-public class BuildManager {
+public class BuildManager 
+	extends ProjectBasedModel<Indexable<BuildTarget>, IProjectModelListener<Indexable<BuildTarget>>> {
 	
 	private static final BuildManager instance = LangCore_Actual.createBuildManager();
 	
 	public static BuildManager getInstance() {
 		return instance;
 	}
+	
+	protected final SimpleLogger log = new SimpleLogger(Platform.inDebugMode());
 	
 	/* -----------------  ----------------- */
 	
@@ -32,9 +39,13 @@ public class BuildManager {
 		this.buildConfigs = buildConfigs;
 	}
 	
+	@Override
+	protected SimpleLogger getLog() {
+		return log;
+	}
+	
 	public Indexable<BuildTarget> getTargets(IProject project) {
-		/* TODO */
-		return buildConfigs;
+		return getProjectInfo(project);
 	}
 	
 }
