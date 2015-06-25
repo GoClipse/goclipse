@@ -2,6 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed: PATH of external tools bungled if original PATH not set (Windows) 
+
  * Added: Show error message dialog if starting Eclipse with a Java version below the minimum.
  * Fixed: `Tab policy: "Spaces Only"` preference ignored when pressing TAB.
  * Added Content Assist preference page, with auto-activation options.
