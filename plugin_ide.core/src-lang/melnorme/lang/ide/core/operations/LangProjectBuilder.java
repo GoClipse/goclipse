@@ -89,7 +89,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected Path getBuildToolPath() throws CommonException {
-		String pathString = SDKPreferences.SDK_PATH.get();
+		String pathString = ToolchainPreferences.SDK_PATH.get();
 		return getBuildToolPath(pathString);
 	}
 	

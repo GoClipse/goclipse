@@ -20,9 +20,9 @@ import java.util.List;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ProcessStartInfo;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
@@ -246,7 +246,7 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 		
 		@Override
 		public void handle() {
-			if(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
+			if(ToolchainPreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
 				return;
 			}
 			handle(console);

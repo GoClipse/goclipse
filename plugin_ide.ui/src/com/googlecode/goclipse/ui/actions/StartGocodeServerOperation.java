@@ -10,17 +10,17 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
-import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
-import melnorme.lang.ide.ui.actions.AbstractUIOperation;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
+
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.ui.actions.AbstractUIOperation;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 public class StartGocodeServerOperation extends AbstractUIOperation {
 	
@@ -34,7 +34,7 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	
 	@Override
 	protected void prepareOperation() throws CoreException {
-		if (DaemonEnginePreferences.AUTO_START_SERVER.get() == false) {
+		if (ToolchainPreferences.AUTO_START_DAEMON.get() == false) {
 			throw new CoreException(Status.OK_STATUS); // stop operation
 		}
 		

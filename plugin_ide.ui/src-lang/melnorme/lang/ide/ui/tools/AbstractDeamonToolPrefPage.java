@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.tools;
 
-import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
@@ -57,10 +57,10 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create(), 
 			3);
 		
-		addBooleanComponent(DaemonEnginePreferences.AUTO_START_SERVER.key, toolGroup, new CheckBoxField(
+		addBooleanComponent(ToolchainPreferences.AUTO_START_DAEMON.key, toolGroup, new CheckBoxField(
 			"Start " + getDaemonToolName() + " server automatically"));
 		
-		addBooleanComponent(DaemonEnginePreferences.DAEMON_CONSOLE_ENABLE.key, toolGroup, new CheckBoxField(
+		addBooleanComponent(ToolchainPreferences.DAEMON_CONSOLE_ENABLE.key, toolGroup, new CheckBoxField(
 			"Enable " + getDaemonToolName() + " log console (requires restart)"));
 		
 		daemonPathEditor = createDaemonPathFieldEditor(toolGroup);
@@ -68,7 +68,7 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 	
 	protected ButtonTextField createDaemonPathFieldEditor(Group group) {
 		return createFileComponent(group, getDaemonToolName() + " path:", 
-			DaemonEnginePreferences.DAEMON_PATH.key, true);
+			ToolchainPreferences.DAEMON_PATH.key, true);
 	}
 	
 	protected String getDaemonToolName() {
