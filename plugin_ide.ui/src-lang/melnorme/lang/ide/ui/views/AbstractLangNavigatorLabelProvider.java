@@ -61,20 +61,20 @@ public abstract class AbstractLangNavigatorLabelProvider extends AbstractLangLab
 	
 	protected abstract DefaultGetStyledTextSwitcher getStyledText_switcher();
 	
-	public static interface DefaultGetStyledTextSwitcher extends NavigatorElementsSwitcher<StyledString> {
+	public static abstract class DefaultGetStyledTextSwitcher implements NavigatorElementsSwitcher<StyledString> {
 		
 		@Override
-		default StyledString visitProject(IProject project) {
+		public StyledString visitProject(IProject project) {
 			return null;
 		}
 		
 		@Override
-		default StyledString visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
+		public StyledString visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
 			return new StyledString(buildTargetsElement.getText());
 		}
 		
 		@Override
-		default StyledString visitBuildTarget(BuildTargetElement buildTarget) {
+		public StyledString visitBuildTarget(BuildTargetElement buildTarget) {
 			return new StyledString(buildTarget.getTargetName());
 		}
 		
@@ -103,20 +103,20 @@ public abstract class AbstractLangNavigatorLabelProvider extends AbstractLangLab
 	
 	protected abstract DefaultGetImageSwitcher getBaseImage_switcher();
 	
-	public static interface DefaultGetImageSwitcher extends NavigatorElementsSwitcher<Image> {
+	public static abstract class DefaultGetImageSwitcher implements NavigatorElementsSwitcher<Image> {
 		
 		@Override
-		default Image visitProject(IProject project) {
+		public Image visitProject(IProject project) {
 			return null;
 		}
 		
 		@Override
-		default Image visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
+		public Image visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
 			return LangImages.BUILD_TARGETS_ELEM.getImage();
 		}
 		
 		@Override
-		default Image visitBuildTarget(BuildTargetElement buildTarget) {
+		public Image visitBuildTarget(BuildTargetElement buildTarget) {
 			return LangImages.BUILD_TARGET.getImage();
 		}
 		

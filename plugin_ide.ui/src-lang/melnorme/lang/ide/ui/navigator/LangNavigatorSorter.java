@@ -40,26 +40,26 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 	
 	protected abstract LangNavigatorSorter_Switcher switcher_Sorter();
 	
-	protected static interface LangNavigatorSorter_Switcher extends NavigatorElementsSwitcher<Integer> {
-
+	protected static abstract class LangNavigatorSorter_Switcher implements NavigatorElementsSwitcher<Integer> {
+		
 		@Override
-		default Integer visitProject(IProject project) {
+		public Integer visitProject(IProject project) {
 			assertFail();
 			return null;
 		}
 		
 		@Override
-		default Integer visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
+		public Integer visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
 			return -8;
 		}
 		
 		@Override
-		default Integer visitBuildTarget(BuildTargetElement buildTarget) {
+		public Integer visitBuildTarget(BuildTargetElement buildTarget) {
 			return null;
 		}
 		
 		@Override
-		default Integer visitOther(Object element) {
+		public Integer visitOther(Object element) {
 			if(element instanceof IFolder) {
 				return -2;
 			}
