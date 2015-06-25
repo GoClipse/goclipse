@@ -1,5 +1,8 @@
 ## release ChangeLog
 
+### (NextVersion)
+ * Fixed: PATH of external tools bungled if original PATH not set (Windows) 
+
 ### 0.11.0
 Important changes:
 

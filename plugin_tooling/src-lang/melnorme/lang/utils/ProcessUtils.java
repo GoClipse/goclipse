@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
@@ -56,18 +57,48 @@ public class ProcessUtils {
 		return pb;
 	}
 	
+	/** 
+	 * Add given cmdExePath to the PATH. This helps with certain tool issues on certain OSes, 
+	 * like OS X 10.10. See for example: https://github.com/GoClipse/goclipse/issues/91#issuecomment-82555504
+	 */
 	public static void addDirToPathEnv(Path cmdExePath, ProcessBuilder pb) {
-		String pathEnv = pb.environment().get("PATH");
+		Map<String, String> environment = pb.environment();
+		
+		String pathEnv = getVarFromEnvMap(environment, "PATH");
 		
 		Path cmdDir = cmdExePath.getParent();
 		if(cmdDir == null || !cmdDir.isAbsolute()) {
 			return;
 		}
 		
-		// Add the command dir to the PATH. This helps with certain tool issues on certain OSes, 
-		// like OS X 10.10. See for example: https://github.com/GoClipse/goclipse/issues/91#issuecomment-82555504
-		pathEnv = pathEnv + File.pathSeparator + cmdDir.toString();
-		pb.environment().put("PATH", pathEnv);
+		pathEnv = (pathEnv == null) ? "" : pathEnv + File.pathSeparator;
+		pathEnv += cmdDir.toString();
+		
+		putVarInEnvMap(environment, "PATH", pathEnv);
+	}
+	
+	public static String getVarFromEnvMap(Map<String, String> envMap, String key) {
+		key = getCorrectEnvKey(envMap, key);
+		return envMap.get(key);
+	}
+	
+	public static void putVarInEnvMap(Map<String, String> envMap, String key, String value) {
+		key = getCorrectEnvKey(envMap, key);
+		envMap.put(key, value);
+	}
+	
+	public static String getCorrectEnvKey(Map<String, String> envMap, String key) {
+		boolean containsKey = envMap.containsKey(key);
+		
+		if(!containsKey && MiscUtil.OS_IS_WINDOWS) {
+			// Search for var under a different key, because in Windows its case-insensitive
+			for(String otherKey : envMap.keySet()) {
+				if(otherKey.equalsIgnoreCase(key)) {
+					return otherKey;
+				}
+			}
+		}
+		return key;
 	}
 	
 }
