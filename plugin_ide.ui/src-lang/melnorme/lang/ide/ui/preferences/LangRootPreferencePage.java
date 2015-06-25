@@ -11,7 +11,7 @@
 package melnorme.lang.ide.ui.preferences;
 
 
-import melnorme.lang.ide.core.operations.SDKPreferences;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 import melnorme.lang.tooling.data.PathValidator;
@@ -32,7 +32,7 @@ public abstract class LangRootPreferencePage extends AbstractComponentsPrefPage 
 	protected LangSDKConfigBlock createLangSDKConfigBlock() {
 		LangSDKConfigBlock langSDKConfigBlock = new LangSDKConfigBlock();
 		
-		connectStringField(SDKPreferences.SDK_PATH.key, langSDKConfigBlock.getLocationField(), 
+		connectStringField(ToolchainPreferences.SDK_PATH.key, langSDKConfigBlock.getLocationField(), 
 			getSDKValidator());
 		
 		return langSDKConfigBlock;

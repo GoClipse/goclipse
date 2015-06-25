@@ -11,7 +11,7 @@
 package LANG_PROJECT_ID.ide.ui.wizards;
 
 
-import melnorme.lang.ide.core.operations.SDKPreferences;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.WizardMessages_Actual;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
@@ -65,7 +65,7 @@ class LANGUAGE_ProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	
 	@Override
 	protected void validatePreferences() throws ValidationException {
-		new LANGUAGE_SDKLocationValidator().getValidatedField(SDKPreferences.SDK_PATH.get());
+		new LANGUAGE_SDKLocationValidator().getValidatedField(ToolchainPreferences.SDK_PATH.get());
 	}
 	
 }
