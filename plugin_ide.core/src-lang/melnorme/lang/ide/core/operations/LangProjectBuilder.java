@@ -21,6 +21,7 @@ import java.util.Map;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
@@ -28,9 +29,12 @@ import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
+import melnorme.lang.utils.ProcessUtils;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
@@ -52,10 +56,53 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	public LangProjectBuilder() {
 	}
 	
-	@Override
-	protected void startupOnInitialize() {
-		assertTrue(getProject() != null);
+	/* ----------------- Tool Manager helpers  ----------------- */
+	
+	protected AbstractToolsManager getToolManager() {
+		return LangCore.getToolManager();
 	}
+	
+	protected Location getProjectLocation() throws CoreException {
+		return ResourceUtils.getProjectLocation(getProject());
+	}
+	
+	protected ProcessBuilder createProcessBuilder(ArrayList2<String> toolCmdLine) throws CoreException {
+		return ProcessUtils.createProcessBuilder(toolCmdLine, getProjectLocation());
+	}
+	
+	protected ExternalProcessResult runBuildTool_2(IProgressMonitor monitor, ProcessBuilder pb) 
+			throws CommonException, OperationCancellation {
+		return getToolManager().newRunToolTask(pb, getProject(), monitor).runProcess();
+	}
+	
+	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ArrayList2<String> toolCmdLine)
+			throws CoreException, CommonException, OperationCancellation {
+		ProcessBuilder pb = createProcessBuilder(toolCmdLine);
+		return runBuildTool_2(monitor, pb);
+	}
+	
+	protected ProcessBuilder createSDKProcessBuilder(String... sdkOptions) throws CoreException, CommonException {
+		Location projectLocation = ResourceUtils.getProjectLocation(getProject());
+		
+		Path buildToolPath = getBuildToolPath();
+		
+		return getToolManager().createToolProcessBuilder(buildToolPath, projectLocation, sdkOptions);
+	}
+	
+	protected Path getBuildToolPath() throws CommonException {
+		String pathString = SDKPreferences.SDK_PATH.get();
+		return getBuildToolPath(pathString);
+	}
+	
+	protected Path getBuildToolPath(String pathString) throws ValidationException {
+		PathValidator buildToolPathValidator = getBuildToolPathValidator();
+		assertTrue(buildToolPathValidator.canBeEmpty == false);
+		return buildToolPathValidator.getValidatedPath(pathString);
+	}
+	
+	protected abstract PathValidator getBuildToolPathValidator();
+	
+	/* ----------------- helpers ----------------- */
 	
 	protected void deleteProjectBuildMarkers() {
 		try {
@@ -87,6 +134,13 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			}
 		}
 		return lastOfKind;
+	}
+	
+	/* ----------------- Build ----------------- */
+	
+	@Override
+	protected void startupOnInitialize() {
+		assertTrue(getProject() != null);
 	}
 	
 	@Override
@@ -131,41 +185,69 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected void handleBeginWorkspaceBuild() {
+		LangCore.getToolManager().notifyBuildStarting(null, true);
 	}
 	
 	protected void handleEndWorkspaceBuild() {
+		LangCore.getToolManager().notifyBuildTerminated(null);
 	}
 	
-	protected abstract IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor pm)
-			throws CoreException, OperationCancellation;
-	
-	
-	/* ----------------- Build processes ----------------- */
-	
-	protected AbstractToolsManager getToolManager() {
-		return LangCore.getToolManager();
+	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
+			throws CoreException, OperationCancellation {
+		try {
+			return createBuildOp().execute(project, kind, args, monitor);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
 	}
 	
-	protected ProcessBuilder createSDKProcessBuilder(String... sdkOptions) throws CoreException, CommonException {
-		Location projectLocation = ResourceUtils.getProjectLocation(getProject());
+	protected abstract IBuildTargetOperation createBuildOp();
+	
+	public abstract class AbstractRunBuildOperation implements IBuildTargetOperation {
 		
-		Path buildToolPath = getBuildToolPath();
+		@Override
+		public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) 
+				throws CoreException, CommonException, OperationCancellation {
+			LangCore.getToolManager().notifyBuildStarting(project, false);
+			
+			ProcessBuilder pb = createBuildPB();
+			
+			ExternalProcessResult buildAllResult = runBuildTool_2(monitor, pb);
+			doBuild_processBuildResult(buildAllResult);
+			
+			return null;
+		}
 		
-		return getToolManager().createToolProcessBuilder(buildToolPath, projectLocation, sdkOptions);
+		protected abstract ProcessBuilder createBuildPB() throws CoreException, CommonException;
+		
+		protected abstract void doBuild_processBuildResult(ExternalProcessResult buildAllResult) 
+				throws CoreException, CommonException;
+		
 	}
 	
-	protected Path getBuildToolPath() throws CommonException {
-		String pathString = SDKPreferences.SDK_PATH.get();
-		return getBuildToolPath(pathString);
+	/* ----------------- Clean ----------------- */
+	
+	@Override
+	protected void clean(IProgressMonitor monitor) throws CoreException {
+		deleteProjectBuildMarkers();
+		
+		try {
+			ProcessBuilder pb = createCleanPB();
+			EclipseUtils.checkMonitorCancelation(monitor);
+			doClean(monitor, pb);
+		} catch (OperationCancellation e) {
+			// return
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
 	}
 	
-	protected Path getBuildToolPath(String pathString) throws ValidationException {
-		PathValidator buildToolPathValidator = getBuildToolPathValidator();
-		assertTrue(buildToolPathValidator.canBeEmpty == false);
-		return buildToolPathValidator.getValidatedPath(pathString);
-	}
+	protected abstract ProcessBuilder createCleanPB() throws CoreException, CommonException;
 	
-	protected abstract PathValidator getBuildToolPathValidator();
+	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) 
+			throws CoreException, CommonException, OperationCancellation {
+		runBuildTool_2(monitor, pb);
+	}
 	
 	/* ----------------- Problem markers handling ----------------- */
 	
@@ -176,13 +258,14 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			
 			IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(loc.toUri());
 			for (IFile file : files) {
-				addErrorMarker(file, buildError);
+				addErrorMarker(file, buildError, getBuildProblemId());
 			}
 		}
 		
 	}
 	
-	protected void addErrorMarker(IResource resource, ToolSourceMessage buildmessage) throws CoreException {
+	protected static void addErrorMarker(IResource resource, ToolSourceMessage buildmessage, String markerType)
+			throws CoreException {
 		if(!resource.exists())
 			return;
 		
@@ -191,7 +274,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		}
 		
 		// TODO: check if marker already exists?
-		IMarker marker = resource.createMarker(getBuildProblemId());
+		IMarker marker = resource.createMarker(markerType);
 		
 		marker.setAttribute(IMarker.SEVERITY, severityFrom(buildmessage.getMessageKind()));
 		marker.setAttribute(IMarker.MESSAGE, buildmessage.getMessage());
@@ -232,7 +315,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 	}
 
-	protected SourceRange getMessageRangeUsingDocInfo(SourceLineColumnRange range, IDocument doc) {
+	protected static SourceRange getMessageRangeUsingDocInfo(SourceLineColumnRange range, IDocument doc) {
 		
 		int charStart;
 		int charEnd;

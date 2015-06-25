@@ -10,12 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import static melnorme.lang.ide.core.operations.TextMessageUtils.headerBIG;
-import static melnorme.lang.ide.core.operations.TextMessageUtils.headerSMALL;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+
+import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
+import static melnorme.lang.ide.core.utils.TextMessageUtils.headerSMALL;
 
 import org.eclipse.core.resources.IProject;
 

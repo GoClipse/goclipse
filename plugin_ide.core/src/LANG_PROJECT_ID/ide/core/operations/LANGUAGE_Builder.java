@@ -10,7 +10,9 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
-import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
+import org.eclipse.core.runtime.CoreException;
+
+import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.SDKLocationValidator;
@@ -20,9 +22,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import org.eclipse.core.runtime.CoreException;
-
-public class LANGUAGE_Builder extends LangProjectBuilderExt {
+public class LANGUAGE_Builder extends LangProjectBuilder {
 	
 	public static class LANGUAGE_SDKLocationValidator extends SDKLocationValidator {
 		
