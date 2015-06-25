@@ -13,18 +13,16 @@ package melnorme.lang.ide.core.operations;
 
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.operations.IBuildTargetOperation;
-import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
-import melnorme.utilbox.core.CommonException;
-
 import org.eclipse.core.resources.IProject;
 
-public abstract class CommonBuildOperation implements IBuildTargetOperation{
+import melnorme.utilbox.core.CommonException;
+
+public abstract class CommonBuildOperation implements IBuildTargetOperation {
 	
 	protected final IProject project;
-	protected final LangProjectBuilderExt langProjectBuilder;
+	protected final LangProjectBuilder langProjectBuilder;
 	
-	public CommonBuildOperation(IProject project, LangProjectBuilderExt langProjectBuilder) {
+	public CommonBuildOperation(IProject project, LangProjectBuilder langProjectBuilder) {
 		this.project = project;
 		this.langProjectBuilder = langProjectBuilder;
 	}

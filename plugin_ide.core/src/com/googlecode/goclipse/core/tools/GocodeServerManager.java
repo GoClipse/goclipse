@@ -2,7 +2,6 @@ package com.googlecode.goclipse.core.tools;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.DaemonEnginePreferences;
-import melnorme.lang.ide.core.operations.StartEngineDaemonOperation;
 import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -73,7 +72,7 @@ public class GocodeServerManager implements IDisposable {
 		ProcessBuilder pb = new ProcessBuilder(commandLine);
 		
 		try {
-			gocodeProcess = new StartEngineDaemonOperation(GoToolManager.getDefault(), pb, 
+			gocodeProcess = GoToolManager.getDefault().new StartEngineDaemonOperation(pb, 
 				new EclipseCancelMonitor(monitor)).startProcess();
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce.getMessage(), ce.getCause());

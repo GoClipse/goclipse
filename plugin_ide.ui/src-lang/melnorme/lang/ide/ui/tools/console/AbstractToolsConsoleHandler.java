@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.tools.console;
 
-import static melnorme.lang.ide.core.operations.TextMessageUtils.headerHASH;
+import static melnorme.lang.ide.core.utils.TextMessageUtils.headerHASH;
 import static melnorme.lang.ide.ui.LangUIPlugin_Actual.DAEMON_TOOL_Name;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;

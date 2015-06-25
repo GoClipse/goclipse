@@ -27,7 +27,7 @@ public class CompositeBuildOperation extends CommonBuildOperation {
 	
 	protected final Indexable<IBuildTargetOperation> operations;
 	
-	public CompositeBuildOperation(IProject project, LangProjectBuilderExt langProjectBuilder,
+	public CompositeBuildOperation(IProject project, LangProjectBuilder langProjectBuilder,
 			Indexable<IBuildTargetOperation> operations) {
 		super(project, langProjectBuilder);
 		this.operations = assertNotNull(operations);

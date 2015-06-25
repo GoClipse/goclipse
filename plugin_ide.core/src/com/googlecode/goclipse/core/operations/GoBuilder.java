@@ -15,16 +15,6 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Map;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
-import melnorme.lang.tooling.data.PathValidator;
-import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,11 +27,21 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.tooling.data.PathValidator;
+import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+
 
 /**
- * Go builder. TODO refactor to use {@link LangProjectBuilderExt}
+ * Go builder. 
  */
-public class GoBuilder extends LangProjectBuilderExt {
+public class GoBuilder extends LangProjectBuilder {
 	
 	public GoBuilder() {
 	}

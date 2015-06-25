@@ -10,9 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import melnorme.lang.ide.core.navigator.INavigatorElement;
-
-public class BuildTarget implements INavigatorElement {
+public class BuildTarget {
 	
 	protected final boolean enabled;
 	protected final String targetName;

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import static melnorme.lang.ide.core.operations.TextMessageUtils.headerBIG;
+import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
 
 import java.nio.file.Path;
 
@@ -159,6 +159,21 @@ public abstract class AbstractToolsManager extends ListenerListHelper<ILangOpera
 		protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 			for (ILangOperationsListener listener : AbstractToolsManager.this.getListeners()) {
 				listener.engineClientToolStart(pb, ce, processHelper);
+			}
+		}
+		
+	}
+	
+	public class StartEngineDaemonOperation extends AbstractRunProcessTask {
+		
+		public StartEngineDaemonOperation(ProcessBuilder pb, ICancelMonitor cancelMonitor) {
+			super(pb, cancelMonitor);
+		}
+		
+		@Override
+		protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+			for (ILangOperationsListener listener : getListeners()) {
+				listener.engineDaemonStart(pb, ce, processHelper);
 			}
 		}
 		
