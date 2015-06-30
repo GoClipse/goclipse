@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.utilbox.collections.ArrayList2;
 
 public abstract class LangBuildManagerProjectBuilder extends LangProjectBuilder {
@@ -31,6 +32,19 @@ public abstract class LangBuildManagerProjectBuilder extends LangProjectBuilder 
 		super();
 	}
 	
+	protected OperationInfo workspaceOpInfo;
+	
+	@Override
+	protected void handleBeginWorkspaceBuild() {
+		workspaceOpInfo = new OperationInfo(null, true, 
+			TextMessageUtils.headerHASH("Starting " + LangCore_Actual.LANGUAGE_NAME +" build"));
+		LangCore.getToolManager().notifyOperationStarted(workspaceOpInfo);
+	}
+	
+	@Override
+	protected void handleEndWorkspaceBuild() {
+	}
+	
 	/* ----------------- Build ----------------- */
 	
 	@Override
@@ -38,19 +52,19 @@ public abstract class LangBuildManagerProjectBuilder extends LangProjectBuilder 
 		return getCompositeBuildOperation(getProject(), this);
 	}
 	
-	protected abstract IBuildTargetOperation newBuildOperation(IProject project, LangProjectBuilder projectBuilder,
-			BuildTarget buildConfig);
+	protected abstract IBuildTargetOperation newBuildOperation(OperationInfo parentOpInfo, IProject project,
+			LangProjectBuilder projectBuilder, BuildTarget buildConfig);
 	
 	public IBuildTargetOperation getCompositeBuildOperation(IProject project, LangProjectBuilder projectBuilder) {
 		
 		ArrayList2<IBuildTargetOperation> operations = ArrayList2.create();
 		
 		String startMsg = headerBIG(" Building " + LangCore_Actual.LANGUAGE_NAME + " project: " + project.getName());
-		operations.add(newOperationMessageTask(startMsg, true));
+		operations.add(newOperationMessageTask(startMsg, false));
 		
 		for (BuildTarget buildConfig : buildMgr.getBuildTargets(project)) {
 			if(buildConfig.isEnabled()) {
-				operations.add(newBuildOperation(project, projectBuilder, buildConfig));
+				operations.add(newBuildOperation(workspaceOpInfo, project, projectBuilder, buildConfig));
 			}
 		}
 		
@@ -61,16 +75,19 @@ public abstract class LangBuildManagerProjectBuilder extends LangProjectBuilder 
 	}
 	
 	protected IBuildTargetOperation newOperationMessageTask(String msg, boolean clearConsole) {
-		return new BuildMessageOperation(clearConsole, msg);
+		return new BuildMessageOperation(workspaceOpInfo, clearConsole, msg);
 	}
 	
 	protected class BuildMessageOperation implements IBuildTargetOperation, Callable<OperationInfo> {
 		
+		protected final OperationInfo parentOperationInfo;
 		protected final boolean clearConsole;
 		protected final String msg;
+		
 		private IProject project;
 		
-		public BuildMessageOperation(boolean clearConsole, String msg) {
+		public BuildMessageOperation(OperationInfo workspaceOpInfo, boolean clearConsole, String msg) {
+			this.parentOperationInfo = workspaceOpInfo;
 			this.clearConsole = clearConsole;
 			this.msg = msg;
 		}
@@ -88,7 +105,7 @@ public abstract class LangBuildManagerProjectBuilder extends LangProjectBuilder 
 		
 		@Override
 		public OperationInfo call() throws RuntimeException {
-			OperationInfo opInfo = new OperationInfo(project, clearConsole, msg);
+			OperationInfo opInfo = parentOperationInfo.createSubOperation(project, clearConsole, msg);
 			LangCore.getToolManager().notifyOperationStarted(opInfo);
 			return opInfo;
 		}

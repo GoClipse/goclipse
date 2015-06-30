@@ -184,11 +184,9 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected void handleBeginWorkspaceBuild() {
-		LangCore.getToolManager().notifyBuildStarting(null, true);
 	}
 	
 	protected void handleEndWorkspaceBuild() {
-		LangCore.getToolManager().notifyBuildTerminated(null);
 	}
 	
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
@@ -207,7 +205,6 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		@Override
 		public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) 
 				throws CoreException, CommonException, OperationCancellation {
-			LangCore.getToolManager().notifyBuildStarting(project, false);
 			
 			ProcessBuilder pb = createBuildPB();
 			

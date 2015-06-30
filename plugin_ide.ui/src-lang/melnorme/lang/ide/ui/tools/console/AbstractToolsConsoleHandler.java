@@ -84,7 +84,7 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 		return getOrRecreateMessageConsole(operationConsoleName, clearConsole);
 	}
 	
-	protected String getOperationConsoleName(IProject project) {
+	protected final String getOperationConsoleName(IProject project) {
 		return useGlobalConsole() ? getGlobalConsoleName() : getProjectConsoleName(project);
 	}
 	
@@ -115,7 +115,13 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 	
 	@Override
 	public void handleToolOperationStart(OperationInfo opInfo) {
-		final ToolsConsole console = getOperationConsole(opInfo.getProject(), opInfo.clearConsole);
+		IProject project = opInfo.getProject();
+		
+		if(project == null && !useGlobalConsole()) {
+			return; // Ignore this message, valid only for global console use
+		}
+		
+		final ToolsConsole console = getOperationConsole(project, opInfo.clearConsole);
 		opInfo.putProperty(TOOL_INFO__KEY_CONSOLE, console);
 		console.writeOperationInfo(opInfo.operationMessage);
 	}

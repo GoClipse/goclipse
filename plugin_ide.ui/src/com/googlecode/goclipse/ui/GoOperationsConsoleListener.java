@@ -12,22 +12,21 @@ package com.googlecode.goclipse.ui;
 
 import java.io.IOException;
 
+import org.eclipse.ui.console.IOConsoleOutputStream;
+
+import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
+
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ProcessStartInfo;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.ui.console.IOConsoleOutputStream;
-
-import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
-
 public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 	
 	@Override
-	protected String getOperationConsoleName(IProject project) {
-		return BUILD_CONSOLE_NAME;
+	protected boolean useGlobalConsole() {
+		return true;
 	}
 	
 	@Override

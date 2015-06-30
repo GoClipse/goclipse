@@ -34,6 +34,7 @@ import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.operations.IBuildTargetOperation;
 import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
@@ -75,9 +76,9 @@ public class GoBuilder extends LangBuildManagerProjectBuilder {
 	/* ----------------- Build ----------------- */
 	
 	@Override
-	protected IBuildTargetOperation newBuildOperation(IProject project, LangProjectBuilder projectBuilder,
-			BuildTarget buildConfig) {
-		return new GoRunBuildOperation(buildConfig);
+	protected IBuildTargetOperation newBuildOperation(OperationInfo parentOpInfo, IProject project,
+			LangProjectBuilder projectBuilder, BuildTarget buildConfig) {
+		return new GoRunBuildOperation(parentOpInfo, buildConfig);
 	}
 	
 	protected class GoRunBuildOperation extends AbstractRunBuildOperation {
@@ -89,12 +90,14 @@ public class GoBuilder extends LangBuildManagerProjectBuilder {
 				"so that they will be part of a Go package. " + 
 				"This is so they can be built using the `./...` pattern, or imported by other Go files.";
 		
+		protected final OperationInfo parentOpInfo;
 		protected final BuildTarget buildConfig;
 		
 		protected GoEnvironment goEnv;
 		protected Location sourceRootDir;
 		
-		public GoRunBuildOperation(BuildTarget buildConfig) {
+		public GoRunBuildOperation(OperationInfo parentOpInfo, BuildTarget buildConfig) {
+			this.parentOpInfo = assertNotNull(parentOpInfo);
 			this.buildConfig = assertNotNull(buildConfig);
 		}
 		
