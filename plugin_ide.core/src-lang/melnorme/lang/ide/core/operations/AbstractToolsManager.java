@@ -38,6 +38,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public abstract class AbstractToolsManager extends ListenerListHelper<ILangOperationsListener> {
 	
+	public AbstractToolsManager() {
+	}
+	
+	public void shutdownNow() {
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public ProcessBuilder createToolProcessBuilder(Path buildToolCmdPath, Location workingDir, 
 			String... arguments) {
 		return ProcessUtils.createProcessBuilder(buildToolCmdPath, workingDir, true, arguments);

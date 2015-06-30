@@ -98,7 +98,7 @@ public class CommonTestUtils {
 		}
 	}
 	
-	public static void assertAreEqualLists(Indexable<?> list1, Indexable<?> list2) {
+	public static void assertAreEqual(Indexable<?> list1, Indexable<?> list2) {
 		if(list1 == null && list2 == null)
 			return;
 		

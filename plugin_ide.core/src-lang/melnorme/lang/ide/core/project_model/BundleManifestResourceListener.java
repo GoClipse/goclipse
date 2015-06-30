@@ -10,21 +10,28 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model;
 
-import melnorme.lang.ide.core.utils.DefaultProjectResourceListener;
-import melnorme.lang.tooling.IBundleInfo;
-
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.Path;
+
+import melnorme.lang.ide.core.utils.DefaultProjectResourceListener;
 
 public abstract class BundleManifestResourceListener extends DefaultProjectResourceListener {
+	
+	protected final Path manifestFile;
+	
+	public BundleManifestResourceListener(Path manifestFile) {
+		this.manifestFile = manifestFile;
+	}
 	
 	@Override
 	protected void processProjectDelta(IResourceDelta projectDelta) {
 		IProject project = (IProject) projectDelta.getResource();
 		
-		IBundleInfo existingProjectModel = getBundleInfo(project);
+		Object existingProjectModel = getProjectInfo(project);
 		
-		if(projectDelta.getKind() == IResourceDelta.REMOVED || !isEligibleForBundleModelWatch(project)) {
+		if(projectDelta.getKind() == IResourceDelta.REMOVED || !isEligibleForBundleManifestWatch(project)) {
 			// New bundle model status = removed. 
 			
 			if(existingProjectModel == null) {
@@ -62,13 +69,25 @@ public abstract class BundleManifestResourceListener extends DefaultProjectResou
 		}
 	}
 	
-	public abstract boolean isEligibleForBundleModelWatch(IProject project);
+	public abstract boolean isEligibleForBundleManifestWatch(IProject project);
 	
-	public abstract IBundleInfo getBundleInfo(IProject project);
+	public boolean projectHasBundleManifest(IProject project) {
+		IResource packageFile = project.findMember(manifestFile);
+		return packageFile != null && packageFile.getType() == IResource.FILE;
+	}
 	
-	public abstract boolean projectHasBundleManifest(IProject project);
+	public boolean resourceDeltaIsBundleManifestChange(IResourceDelta resourceDelta) {
+		return resourceIsManifest(resourceDelta.getResource());
+	}
 	
-	public abstract boolean resourceDeltaIsBundleManifestChange(IResourceDelta resourceDelta);
+	protected boolean resourceIsManifest(IResource resource) {
+		return resource != null &&
+				resource.getType() == IResource.FILE && 
+				resource.getProjectRelativePath().equals(manifestFile);
+	}
+	
+	
+	public abstract Object getProjectInfo(IProject project);
 	
 	public abstract void bundleProjectAdded(IProject project);
 	
