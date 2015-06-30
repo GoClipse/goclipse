@@ -59,18 +59,6 @@ public abstract class AbstractToolsManager extends ListenerListHelper<ILangOpera
 		}
 	}
 	
-	public void notifyBuildStarting(IProject project, boolean clearConsole) {
-		for(ILangOperationsListener listener : getListeners()) {
-			listener.handleBuildStarted(project, clearConsole);
-		}
-	}
-	
-	public void notifyBuildTerminated(IProject project) {
-		for(ILangOperationsListener listener : getListeners()) {
-			listener.handleBuildTerminated(project);
-		}
-	}
-	
 	public void notifyOperationStarted(OperationInfo opInfo) {
 		for(ILangOperationsListener processListener : getListeners()) {
 			processListener.handleToolOperationStart(opInfo);

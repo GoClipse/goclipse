@@ -40,4 +40,10 @@ public class OperationInfo {
 		return properties.get(key);
 	}
 	
+	public OperationInfo createSubOperation(IProject project, boolean clearConsole, String operationMessage) {
+		OperationInfo newOpInfo = new OperationInfo(project, clearConsole, operationMessage);
+		newOpInfo.properties.putAll(properties); // Copy the properties
+		return newOpInfo;
+	}
+	
 }

@@ -14,14 +14,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 public class CompositeBuildOperation extends CommonBuildOperation {
 	
