@@ -10,36 +10,22 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
+import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.operations.IBuildTargetOperation;
+import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.tooling.data.LocationValidator;
-import melnorme.lang.tooling.data.SDKLocationValidator;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class LANGUAGE_Builder extends LangProjectBuilder {
-	
-	public static class LANGUAGE_SDKLocationValidator extends SDKLocationValidator {
-		
-		public LANGUAGE_SDKLocationValidator() {
-			super("SDK path:");
-		}
-		
-		@Override
-		protected String getSDKExecutable_append() {
-			return "bin/ls"; // TODO: LANG 
-		}
-		
-		@Override
-		protected String getSDKExecutableErrorMessage(Location exeLocation) {
-			return "Foo executable not found."; // TODO: LANG
-		}
-	}
+public class LANGUAGE_Builder extends LangBuildManagerProjectBuilder {
 	
 	public LANGUAGE_Builder() {
 	}
@@ -50,7 +36,15 @@ public class LANGUAGE_Builder extends LangProjectBuilder {
 	}
 	
 	@Override
-	protected AbstractRunBuildOperation createBuildOp() {
+	protected ProcessBuilder createCleanPB() throws CoreException, CommonException {
+		return createSDKProcessBuilder("clean"); // TODO: Lang
+	}
+	
+	/* ----------------- Build ----------------- */
+	
+	@Override
+	protected IBuildTargetOperation newBuildOperation(IProject project, LangProjectBuilder projectBuilder,
+			BuildTarget buildConfig) {
 		return new AbstractRunBuildOperation() {
 			
 			@Override
@@ -65,11 +59,6 @@ public class LANGUAGE_Builder extends LangProjectBuilder {
 				addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(getProject()));
 			}
 		};
-	}
-	
-	@Override
-	protected ProcessBuilder createCleanPB() throws CoreException, CommonException {
-		return createSDKProcessBuilder("clean"); // TODO: Lang
 	}
 	
 }

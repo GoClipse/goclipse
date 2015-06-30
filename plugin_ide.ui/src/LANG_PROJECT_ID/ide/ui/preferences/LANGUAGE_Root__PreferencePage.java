@@ -10,8 +10,8 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.preferences;
 
-import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_Builder.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.ide.ui.preferences.LangRootPreferencePage;
+import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.tooling.data.SDKLocationValidator;
 
 
