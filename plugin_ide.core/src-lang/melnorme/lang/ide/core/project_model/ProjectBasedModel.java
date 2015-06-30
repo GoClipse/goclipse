@@ -37,22 +37,22 @@ public abstract class ProjectBasedModel<INFO, LISTENER extends IProjectModelList
 		listeners.removeListener(listener);
 	}
 	
-	protected synchronized INFO getProjectInfo(IProject project) {
+	public synchronized INFO getProjectInfo(IProject project) {
 		return projectInfos.get(project.getName());
 	}
 	
-	
-	protected synchronized INFO addProjectInfo(IProject project, INFO newProjectInfo) {
+	public synchronized INFO addProjectInfo(IProject project, INFO newProjectInfo) {
 		String projectName = project.getName();
 		projectInfos.put(projectName, newProjectInfo);
 		notifyProjectAdded(project, newProjectInfo);
 		return newProjectInfo;
 	}
 	
-	protected synchronized void removeProjectInfo(IProject project) {
+	public synchronized INFO removeProjectInfo(IProject project) {
 		INFO oldProjectInfo = projectInfos.remove(project.getName());
 		assertNotNull(oldProjectInfo);
 		notifyProjectRemoved(project, oldProjectInfo);
+		return oldProjectInfo;
 	}
 	
 	protected void notifyProjectAdded(IProject project, INFO newProjectInfo) {

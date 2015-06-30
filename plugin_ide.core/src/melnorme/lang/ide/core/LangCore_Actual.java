@@ -3,8 +3,8 @@ package melnorme.lang.ide.core;
 import com.googlecode.goclipse.core.engine.GoEngineClient;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 
-import melnorme.lang.ide.core.operations.BuildManager;
-import melnorme.utilbox.collections.ArrayList2;
+import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 
 public class LangCore_Actual {
 	
@@ -27,7 +27,12 @@ public class LangCore_Actual {
 	}
 	
 	public static BuildManager createBuildManager() {
-		return new BuildManager(new ArrayList2<>()); // TODO BuildManager
+		return new BuildManager() {
+			@Override
+			protected BundleManifestResourceListener init_createResourceListener() {
+				return new ManagerResourceListener(null);
+			}
+		};
 	}
 	
 }

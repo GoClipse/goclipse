@@ -74,7 +74,7 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		
 		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
 		SourceFileStructure expected = new SourceFileStructure(null, expectedStructure, (Indexable<ParserError>) null);
-		assertAreEqualLists(expected.getChildren(), structure.getChildren());
+		assertAreEqual(expected.getChildren(), structure.getChildren());
 		
 		assertEquals(structure, expected);
 	}

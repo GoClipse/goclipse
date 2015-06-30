@@ -10,6 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+
+import melnorme.utilbox.misc.HashcodeUtil;
+
 public class BuildTarget {
 	
 	protected final boolean enabled;
@@ -26,6 +30,23 @@ public class BuildTarget {
 	
 	public String getTargetName() {
 		return targetName;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(!(obj instanceof BuildTarget)) return false;
+		
+		BuildTarget other = (BuildTarget) obj;
+		
+		return 
+				areEqual(enabled, other.enabled) &&
+				areEqual(targetName, other.targetName);
+	}
+	
+	@Override
+	public int hashCode() {
+		return HashcodeUtil.combinedHashCode(enabled, targetName);
 	}
 	
 }

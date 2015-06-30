@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -28,6 +30,9 @@ import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.operations.IBuildTargetOperation;
+import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -38,10 +43,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 
-/**
- * Go builder. 
- */
-public class GoBuilder extends LangProjectBuilder {
+public class GoBuilder extends LangBuildManagerProjectBuilder {
 	
 	public GoBuilder() {
 	}
@@ -57,9 +59,25 @@ public class GoBuilder extends LangProjectBuilder {
 		return getBuildToolPathValidator().getValidatedPath(pathString);
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	protected AbstractRunBuildOperation createBuildOp() {
-		return new GoRunBuildOperation();
+	protected ProcessBuilder createCleanPB() throws CoreException, CommonException {
+		IProject project = getProject();
+		GoEnvironment goEnv = getValidGoEnvironment(project);
+		
+		ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
+		goBuildCmdLine.addElements("clean", "-i", "-x");
+		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
+		return goEnv.createProcessBuilder(goBuildCmdLine, getProjectLocation());
+	}
+	
+	/* ----------------- Build ----------------- */
+	
+	@Override
+	protected IBuildTargetOperation newBuildOperation(IProject project, LangProjectBuilder projectBuilder,
+			BuildTarget buildConfig) {
+		return new GoRunBuildOperation(buildConfig);
 	}
 	
 	protected class GoRunBuildOperation extends AbstractRunBuildOperation {
@@ -71,9 +89,14 @@ public class GoBuilder extends LangProjectBuilder {
 				"so that they will be part of a Go package. " + 
 				"This is so they can be built using the `./...` pattern, or imported by other Go files.";
 		
+		protected final BuildTarget buildConfig;
+		
 		protected GoEnvironment goEnv;
 		protected Location sourceRootDir;
 		
+		public GoRunBuildOperation(BuildTarget buildConfig) {
+			this.buildConfig = assertNotNull(buildConfig);
+		}
 		
 		@Override
 		public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
@@ -154,19 +177,6 @@ public class GoBuilder extends LangProjectBuilder {
 		for (GoPackageName goPackageName : sourcePackages) {
 			goBuildCmdLine.add(goPackageName.getFullNameAsString());
 		}
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Override
-	protected ProcessBuilder createCleanPB() throws CoreException, CommonException {
-		IProject project = getProject();
-		GoEnvironment goEnv = getValidGoEnvironment(project);
-		
-		ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
-		goBuildCmdLine.addElements("clean", "-i", "-x");
-		addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
-		return goEnv.createProcessBuilder(goBuildCmdLine, getProjectLocation());
 	}
 	
 }

@@ -12,6 +12,7 @@ package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
+import melnorme.lang.ide.core.project_model.BuildManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
@@ -30,25 +31,32 @@ public abstract class LangCore extends Plugin {
 	
 	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
 	
-	protected static final AbstractToolsManager toolManager = LangCore_Actual.createToolManagerSingleton();
-	protected static final EngineClient engineClient = LangCore_Actual.createEngineClient();
-	
 	protected static LangCore pluginInstance;
-	
-	protected boolean initializedAfterUI = false;
 	
 	/** Returns the singleton for this plugin instance. */
 	public static LangCore getInstance() {
 		return pluginInstance;
 	}
 	
+	/* ----------------- Owned singletons: ----------------- */
+	
+	protected static final AbstractToolsManager toolManager = LangCore_Actual.createToolManagerSingleton();
+	protected static final EngineClient engineClient = LangCore_Actual.createEngineClient();
+	protected static final BuildManager buildManager = LangCore_Actual.createBuildManager();
+	
 	public static AbstractToolsManager getToolManager() {
 		return toolManager;
 	}
-	
 	public static EngineClient getEngineClient() {
 		return engineClient;
 	}
+	public static BuildManager getBuildManager() {
+		return buildManager;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected boolean initializedAfterUI = false;
 	
 	@Override
 	public final void start(BundleContext context) throws Exception {
@@ -82,6 +90,8 @@ public abstract class LangCore extends Plugin {
 		doCustomStop(context);
 		
 		engineClient.dispose();
+		toolManager.shutdownNow();
+		buildManager.shutdownManager();
 		
 		super.stop(context);
 		pluginInstance = null;
@@ -167,6 +177,10 @@ public abstract class LangCore extends Plugin {
 	/** Logs an error status with given message and given throwable. */
 	public static void logError(String message, Throwable throwable) {
 		getInstance().getLog().log(createErrorStatus(message, throwable));
+	}
+	
+	public static void logError(CommonException ce) {
+		logError(ce.getMessage(), ce.getCause());
 	}
 	
 	/** Logs a warning status with given message */
