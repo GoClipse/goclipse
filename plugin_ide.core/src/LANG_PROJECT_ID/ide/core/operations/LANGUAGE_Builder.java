@@ -17,6 +17,7 @@ import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.operations.IBuildTargetOperation;
 import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.tooling.data.LocationValidator;
@@ -43,8 +44,8 @@ public class LANGUAGE_Builder extends LangBuildManagerProjectBuilder {
 	/* ----------------- Build ----------------- */
 	
 	@Override
-	protected IBuildTargetOperation newBuildOperation(IProject project, LangProjectBuilder projectBuilder,
-			BuildTarget buildConfig) {
+	protected IBuildTargetOperation newBuildOperation(OperationInfo parentOpInfo, IProject project,
+			LangProjectBuilder projectBuilder, BuildTarget buildConfig) {
 		return new AbstractRunBuildOperation() {
 			
 			@Override
