@@ -148,11 +148,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 		IProject project = assertNotNull(getProject());
 		
-		if(isFirstProjectOfKind()) {
-			handleBeginWorkspaceBuild();
-		}
-		
-		deleteProjectBuildMarkers();
+		prepareForBuild();
 		
 		try {
 			doBuild(project, kind, args, monitor);
@@ -181,6 +177,14 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 		// no project dependencies (yet)
 		return null;
+	}
+	
+	protected void prepareForBuild() throws CoreException {
+		if(isFirstProjectOfKind()) {
+			handleBeginWorkspaceBuild();
+		}
+		
+		deleteProjectBuildMarkers();
 	}
 	
 	protected void handleBeginWorkspaceBuild() {

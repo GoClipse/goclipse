@@ -10,19 +10,21 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
+import java.util.Map;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.IBuildTargetOperation;
 import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
-import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -44,16 +46,26 @@ public class LANGUAGE_Builder extends LangBuildManagerProjectBuilder {
 	/* ----------------- Build ----------------- */
 	
 	@Override
-	protected IBuildTargetOperation newBuildOperation(OperationInfo parentOpInfo, IProject project,
-			LangProjectBuilder projectBuilder, BuildTarget buildConfig) {
-		return new AbstractRunBuildOperation() {
+	protected CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+			BuildTarget buildTarget) {
+		return new CommonBuildTargetOperation(parentOpInfo, buildTarget) {
 			
 			@Override
+			public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
+					throws CoreException, CommonException, OperationCancellation {
+				ProcessBuilder pb = createBuildPB();
+				
+				ExternalProcessResult buildAllResult = runBuildTool_2(monitor, pb);
+				doBuild_processBuildResult(buildAllResult);
+				
+				return null;
+			}
+			
 			protected ProcessBuilder createBuildPB() throws CoreException, CommonException {
 				return createSDKProcessBuilder("build"); // TODO: Lang
 			}
 			
-			@Override
+			@SuppressWarnings("unused")
 			protected void doBuild_processBuildResult(ExternalProcessResult buildAllResult) throws CoreException {
 				ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); // TODO: Lang
 				
