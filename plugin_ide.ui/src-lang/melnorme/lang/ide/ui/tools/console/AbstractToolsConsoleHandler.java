@@ -121,7 +121,11 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 			return; // Ignore this message, valid only for global console use
 		}
 		
-		final ToolsConsole console = getOperationConsole(project, opInfo.clearConsole);
+		boolean clearConsole = useGlobalConsole() ? 
+				project == null :
+				opInfo.clearConsole;
+		
+		final ToolsConsole console = getOperationConsole(project, clearConsole);
 		opInfo.putProperty(TOOL_INFO__KEY_CONSOLE, console);
 		console.writeOperationInfo(opInfo.operationMessage);
 	}

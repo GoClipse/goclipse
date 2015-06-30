@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -31,9 +29,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.IBuildTargetOperation;
 import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
-import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -76,12 +72,12 @@ public class GoBuilder extends LangBuildManagerProjectBuilder {
 	/* ----------------- Build ----------------- */
 	
 	@Override
-	protected IBuildTargetOperation newBuildOperation(OperationInfo parentOpInfo, IProject project,
-			LangProjectBuilder projectBuilder, BuildTarget buildConfig) {
-		return new GoRunBuildOperation(parentOpInfo, buildConfig);
+	protected CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+			BuildTarget buildTarget) {
+		return new GoRunBuildOperation(parentOpInfo, buildTarget);
 	}
 	
-	protected class GoRunBuildOperation extends AbstractRunBuildOperation {
+	protected class GoRunBuildOperation extends CommonBuildTargetOperation {
 		
 		protected static final String ERROR_SrcRootContainsGoFiles = 
 				"The Go `src` directory at `{0}` contains .go files. " +
@@ -90,15 +86,11 @@ public class GoBuilder extends LangBuildManagerProjectBuilder {
 				"so that they will be part of a Go package. " + 
 				"This is so they can be built using the `./...` pattern, or imported by other Go files.";
 		
-		protected final OperationInfo parentOpInfo;
-		protected final BuildTarget buildConfig;
-		
 		protected GoEnvironment goEnv;
 		protected Location sourceRootDir;
 		
-		public GoRunBuildOperation(OperationInfo parentOpInfo, BuildTarget buildConfig) {
-			this.parentOpInfo = assertNotNull(parentOpInfo);
-			this.buildConfig = assertNotNull(buildConfig);
+		public GoRunBuildOperation(OperationInfo parentOpInfo, BuildTarget buildTarget) {
+			super(parentOpInfo, buildTarget);
 		}
 		
 		@Override
@@ -116,7 +108,12 @@ public class GoBuilder extends LangBuildManagerProjectBuilder {
 				checkGoFilesInSourceRoot();
 			}
 			
-			return super.execute(project, kind, args, monitor);
+			ProcessBuilder pb = createBuildPB();
+			
+			ExternalProcessResult buildAllResult = runBuildTool_2(monitor, pb);
+			doBuild_processBuildResult(buildAllResult);
+			
+			return null;
 		}
 		
 		protected void checkGoFilesInSourceRoot() throws CoreException {
@@ -130,7 +127,6 @@ public class GoBuilder extends LangBuildManagerProjectBuilder {
 			}
 		}
 		
-		@Override
 		protected ProcessBuilder createBuildPB() throws CoreException, CommonException {
 			IProject project = getProject();
 			
@@ -141,7 +137,6 @@ public class GoBuilder extends LangBuildManagerProjectBuilder {
 			return goEnv.createProcessBuilder(goBuildCmdLine, sourceRootDir);
 		}
 		
-		@Override
 		protected void doBuild_processBuildResult(ExternalProcessResult buildAllResult) 
 				throws CoreException, CommonException {
 			GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
