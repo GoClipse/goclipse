@@ -17,6 +17,7 @@ import melnorme.lang.ide.ui.actions.CalculateValueUIOperation;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,24 +50,26 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	}
 	
 	@Override
-	protected void performLongRunningComputation() throws OperationCancellation, CoreException {
+	protected void performBackgroundComputation() throws OperationCancellation, CoreException {
 		if(!structureInfo.isStale()) {
 			// No need for background computation
-			resultValue = structureInfo.getStoredStructure();
+			result = structureInfo.getStoredStructure();
 		} else {
-			super.performLongRunningComputation();
+			super.performBackgroundComputation();
 		}
 	}
 	
 	@Override
-	protected SourceFileStructure calculateValue(IProgressMonitor pm) throws OperationCancellation {
+	protected SourceFileStructure doBackgroundValueComputation(IProgressMonitor pm) throws OperationCancellation {
 		return structureInfo.getUpdatedStructure(pm);
 	}
 	
 	@Override
-	protected void handleNonCanceledNullResult() throws CoreException {
-		throw LangCore.createCoreException(
-			"Could not retrieve source file structure for: " + structureInfo.getKey(), null);
+	protected void handleComputationResult() throws CoreException, CommonException {
+		if(result == null) {
+			throw LangCore.createCoreException(
+				"Could not retrieve source file structure for: " + structureInfo.getKey(), null);
+		}
 	}
 	
 	/* ----------------- util ----------------- */

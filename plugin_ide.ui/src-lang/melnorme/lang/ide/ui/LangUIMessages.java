@@ -69,11 +69,6 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 	/* ----------------------------------- */
 	
 	
-	public static final String ScriptLaunchShortcut_Error0 = 
-			"Error";
-	public static final String ScriptLaunchShortcut_Error1 = 
-			"Error";
-	
 	public static final String LaunchShortcut_selectionContainsNoScript = 
 			"Selection contains no launchables";
 	

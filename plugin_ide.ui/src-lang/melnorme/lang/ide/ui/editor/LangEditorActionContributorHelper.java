@@ -11,11 +11,6 @@
 package melnorme.lang.ide.ui.editor;
 
 
-import melnorme.lang.ide.ui.actions.CommandsHelper;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
-import melnorme.utilbox.collections.ArrayList2;
-
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.editors.text.TextEditorActionContributor;
@@ -23,6 +18,11 @@ import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import melnorme.lang.ide.ui.actions.CommandsHelper;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
+import melnorme.utilbox.collections.ArrayList2;
 
 public class LangEditorActionContributorHelper extends TextEditorActionContributor {
 	
@@ -69,10 +69,10 @@ public class LangEditorActionContributorHelper extends TextEditorActionContribut
 		
 		@Override
 		protected void doRunWithEditor(AbstractLangEditor editor) {
-			createOperation(editor).executeAndHandleResult();
+			createOperation(editor).executeAndHandle();
 		}
 		
-		public abstract AbstractEditorOperation createOperation(ITextEditor editor);
+		public abstract AbstractEditorOperation2<?> createOperation(ITextEditor editor);
 		
 	}
 	

@@ -12,18 +12,6 @@ package melnorme.lang.ide.ui.editor.actions;
 
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ops.FindDefinitionResult;
-import melnorme.lang.tooling.ops.SourceLineColumnRange;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -37,7 +25,20 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public abstract class AbstractOpenElementOperation extends AbstractEditorOperation {
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+
+public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> {
 	
 	protected final String source;
 	protected final SourceRange range; // range of element to open. Usually only offset matters
@@ -50,7 +51,6 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	protected int col_0;
 	
 	protected String statusErrorMessage;
-	protected FindDefinitionResult findResult;
 	
 	public AbstractOpenElementOperation(String operationName, ITextEditor editor, SourceRange range,
 			OpenNewEditorMode openEditorMode) {
@@ -93,9 +93,9 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	}
 	
 	@Override
-	protected void performLongRunningComputation(IProgressMonitor monitor) 
+	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
-		findResult = performLongRunningComputation_doAndGetResult(monitor);
+		return performLongRunningComputation_doAndGetResult(monitor);
 	}
 	
 	protected abstract FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor) 
@@ -106,20 +106,20 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		if(statusErrorMessage != null) {
 			handleStatusErrorMessage();
 		}
-		if(findResult == null) {
+		if(result == null) {
 			return;
 		}
 		
-		if(findResult.getErrorMessage() != null) {
-			dialogError(findResult.getErrorMessage());
+		if(result.getErrorMessage() != null) {
+			dialogError(result.getErrorMessage());
 			return;
 		}
 		
-		if(findResult.getInfoMessage() != null) {
-			dialogInfo(findResult.getInfoMessage());
+		if(result.getInfoMessage() != null) {
+			dialogInfo(result.getInfoMessage());
 		}
 		
-		SourceLineColumnRange location = findResult.getLocation();
+		SourceLineColumnRange location = result.getLocation();
 		if(location == null) {
 			Display.getCurrent().beep();
 			return;
