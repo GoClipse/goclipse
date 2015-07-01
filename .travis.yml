@@ -12,5 +12,5 @@ install: ""
 
 script: 
   - "export MAVEN_OPTS=-Xmx1024m"
-  - "mvn clean integration-test"
+  - "echo $MAVEN_OPTS; mvn clean integration-test"
  
