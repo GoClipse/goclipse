@@ -12,11 +12,7 @@ package com.googlecode.goclipse.ui.editor.actions;
 
 
 import static melnorme.lang.ide.ui.editor.EditorUtils.getEditorDocument;
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,15 +25,19 @@ import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.ui.editor.GoEditor;
 
-public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperation {
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+
+public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperation2<String> {
 	
 	protected GoEditor goEditor;
 	protected String editorText;
 	protected String toolPath;
 	protected ProcessBuilder pb;
 	
-	protected String outputText;
-
 	public AbstractEditorGoToolOperation(String operationName, ITextEditor editor) {
 		super(operationName, editor);
 	}
@@ -62,19 +62,18 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	protected abstract void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException, CommonException;
 	
 	@Override
-	protected void performLongRunningComputation(IProgressMonitor monitor) throws CoreException, CommonException,
-			OperationCancellation {
-		
+	protected String doBackgroundValueComputation(IProgressMonitor monitor)
+			throws CoreException, CommonException, OperationCancellation {
 		ExternalProcessResult processResult = 
 				GoToolManager.getDefault().newRunToolTask(pb, null, monitor).runProcess(editorText, true);
 		
-		outputText = processResult.getStdOutBytes().toString();
+		return processResult.getStdOutBytes().toString();
 	}
 	
 	@Override
 	protected void handleComputationResult() throws CoreException {
-		if (!outputText.equals(editorText)) {
-			replaceText(goEditor.getSourceViewer_(), outputText);
+		if(!areEqual(result, editorText)) {
+			replaceText(goEditor.getSourceViewer_(), result);
 		}
 	}
 	

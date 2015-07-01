@@ -14,20 +14,20 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.actions.AbstractUIOperation;
-import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public abstract class AbstractEditorOperation extends AbstractUIOperation {
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.actions.CalculateValueUIOperation;
+import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+
+public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIOperation<RESULT> {
 	
 	protected final ITextEditor editor;
 	protected final IWorkbenchWindow window;
@@ -35,7 +35,7 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 	protected final Location inputLoc;
 	protected final IDocument doc;
 	
-	public AbstractEditorOperation(String operationName, ITextEditor editor) {
+	public AbstractEditorOperation2(String operationName, ITextEditor editor) {
 		super(operationName);
 		this.editor = assertNotNull(editor);
 		this.window = editor.getSite().getWorkbenchWindow();

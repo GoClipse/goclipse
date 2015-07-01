@@ -36,7 +36,7 @@ public class GoUIPlugin extends LangUIPlugin {
 	public static GocodeServerManager prepareGocodeManager_inUI() {
 		// This must run from UI thread, so that we can report errors if startup fails
 		
-		new StartGocodeServerOperation(gocodeServerManager).executeAndHandleResult();
+		new StartGocodeServerOperation(gocodeServerManager).executeAndHandle();
 		
 		return gocodeServerManager;
 	}

@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.ILaunchShortcut;
 
@@ -33,24 +34,20 @@ public class GoLaunchShortcut extends AbstractLaunchShortcut2 implements ILaunch
 		return LaunchConstants_Actual.LAUNCH_CONFIG_ID;
 	}
 	
-	protected void launch(IFile file, String mode) {
-		super.launch((IResource) file, mode);
-	}
-	
 	@Override
-	protected ResourceLaunchTarget resourceToLaunchTarget(IResource resource) {
+	protected ResourceLaunchTarget getLaunchTargetForResource(IResource resource) {
 		if(resource instanceof IFile) {
 			IFile file = (IFile) resource;
-			return resourceToLaunchTarget(file.getParent());
+			return getLaunchTargetForResource(file.getParent());
 		} else if(resource instanceof IContainer) {
 			IContainer container = (IContainer) resource;
-			return super.resourceToLaunchTarget(container);
+			return super.getLaunchTargetForResource(container);
 		}
-		return super.resourceToLaunchTarget(resource);
+		return super.getLaunchTargetForResource(resource);
 	}
 	
 	@Override
-	protected ILaunchConfiguration createConfiguration(ILaunchTarget launchable) {
+	protected ILaunchConfiguration createConfiguration(ILaunchTarget launchable) throws CoreException {
 		Location packageLocation = ResourceUtils.getResourceLocation(launchable.getAssociatedResource());
 		IProject project = launchable.getProject();
 		

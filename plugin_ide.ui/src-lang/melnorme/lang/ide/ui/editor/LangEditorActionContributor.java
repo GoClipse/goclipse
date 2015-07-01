@@ -11,19 +11,6 @@
 package melnorme.lang.ide.ui.editor;
 
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.EditorSettings_Actual.EditorCommandIds;
-import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
-import melnorme.lang.ide.ui.editor.actions.GoToMatchingBracketHandler;
-import melnorme.lang.ide.ui.editor.actions.OpenQuickOutlineHandler;
-import melnorme.lang.ide.ui.editor.actions.ToggleCommentHandler;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.utilbox.collections.ArrayList2;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
@@ -33,6 +20,19 @@ import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.EditorSettings_Actual.EditorCommandIds;
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
+import melnorme.lang.ide.ui.editor.actions.GoToMatchingBracketHandler;
+import melnorme.lang.ide.ui.editor.actions.OpenQuickOutlineHandler;
+import melnorme.lang.ide.ui.editor.actions.ToggleCommentHandler;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.ArrayList2;
 
 public abstract class LangEditorActionContributor extends LangEditorActionContributorHelper {
 	
@@ -88,7 +88,7 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 			}
 			
 			@Override
-			public AbstractEditorOperation createOperation(ITextEditor editor) {
+			public AbstractEditorOperation2<?> createOperation(ITextEditor editor) {
 				OpenNewEditorMode newEditorMode = OpenNewEditorMode.TRY_REUSING_EXISTING;
 				SourceRange selection = EditorUtils.getSelectionSR(editor);
 				return createOpenDefinitionOperation(editor, selection, newEditorMode);
@@ -96,7 +96,7 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 		};
 	}
 	
-	protected abstract AbstractEditorOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
+	protected abstract AbstractEditorOperation2<?> createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
 			OpenNewEditorMode newEditorMode);
 	
 	

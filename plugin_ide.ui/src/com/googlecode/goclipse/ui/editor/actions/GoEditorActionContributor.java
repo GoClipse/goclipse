@@ -10,15 +10,14 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.editor.actions;
 
-import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
-import melnorme.lang.tooling.ast.SourceRange;
-
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.ui.actions.GoOracleOpenDefinitionOperation;
+
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
+import melnorme.lang.tooling.ast.SourceRange;
 
 public class GoEditorActionContributor extends LangEditorActionContributor implements GoCommandConstants {
 	
@@ -26,7 +25,7 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 	}
 	
 	@Override
-	protected AbstractEditorOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
+	protected GoOracleOpenDefinitionOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
 			OpenNewEditorMode newEditorMode) {
 		return new GoOracleOpenDefinitionOperation(editor, range, newEditorMode);
 	}

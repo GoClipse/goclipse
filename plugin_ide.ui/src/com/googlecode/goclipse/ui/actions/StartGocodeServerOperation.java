@@ -46,8 +46,8 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void performLongRunningComputation(IProgressMonitor monitor) throws CoreException, CommonException,
-			OperationCancellation {
+	protected void doBackgroundComputation(IProgressMonitor monitor)
+			throws CoreException, CommonException, OperationCancellation {
 		gocodeServerManager.doStartServer(gocodePath, monitor);
 	}
 	

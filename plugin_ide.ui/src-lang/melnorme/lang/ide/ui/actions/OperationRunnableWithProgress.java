@@ -14,9 +14,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.lang.reflect.InvocationTargetException;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -63,7 +65,7 @@ public abstract class OperationRunnableWithProgress implements IRunnableWithProg
 	@Override
 	public final void run(IProgressMonitor monitor) {
 		try {
-			doRun(monitor);
+			doRun_toCoreException(monitor);
 		} catch(OperationCancellation oc) {
 			exceptionResult = new OperationCancellation();
 		} catch(CoreException ce) {
@@ -77,7 +79,15 @@ public abstract class OperationRunnableWithProgress implements IRunnableWithProg
 		}
 	}
 	
-	protected abstract void doRun(IProgressMonitor monitor) throws CoreException, OperationCancellation;
+	public void doRun_toCoreException(IProgressMonitor monitor) throws CoreException, OperationCancellation {
+		try {
+			doRun(monitor);
+		} catch(CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
+	}
 	
+	protected abstract void doRun(IProgressMonitor monitor) 
+			throws CoreException, CommonException, OperationCancellation;
 	
 }

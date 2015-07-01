@@ -16,45 +16,35 @@ import melnorme.utilbox.core.CommonException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public abstract class CalculateValueUIOperation<VALUE> extends AbstractUIOperation {
+public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperation {
 	
-	protected volatile VALUE resultValue;
+	protected volatile RESULT result;
 	
 	public CalculateValueUIOperation(String operationName) {
 		super(operationName);
 	}
 	
-	protected VALUE getResultValue() {
-		return resultValue;
+	public RESULT getResultValue() {
+		return result;
 	}
 	
-	public VALUE executeAndGetHandledResult() {
-		executeAndHandleResult();
+	public RESULT executeAndGetHandledResult() {
+		executeAndHandle();
 		return getResultValue();
 	}
 	
-	public VALUE executeAndGetValidatedResult() throws CoreException, CommonException {
-		executeOperation();
+	public RESULT executeAndGetValidatedResult() throws CoreException, CommonException {
+		execute();
 		return getResultValue();
 	}
 	
 	@Override
-	protected void performLongRunningComputation(IProgressMonitor monitor) throws CoreException, CommonException,
-			OperationCancellation {
-		resultValue = calculateValue(monitor);
+	protected final void doBackgroundComputation(IProgressMonitor monitor) 
+			throws CoreException, CommonException, OperationCancellation {
+		result = doBackgroundValueComputation(monitor);
 	}
 	
-	protected abstract VALUE calculateValue(IProgressMonitor monitor) throws CoreException, CommonException,
-		OperationCancellation;
-	
-	@Override
-	protected void validateComputationResult(boolean isCanceled) throws CoreException {
-		if(!isCanceled && resultValue == null) {
-			handleNonCanceledNullResult();
-		}
-	}
-	
-	protected void handleNonCanceledNullResult() throws CoreException {
-	}
+	protected abstract RESULT doBackgroundValueComputation(IProgressMonitor monitor) 
+			throws CoreException, CommonException, OperationCancellation;
 	
 }

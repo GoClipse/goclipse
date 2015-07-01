@@ -45,7 +45,7 @@ public class GoHyperlinkDetector2 extends LangHyperlinkDetector {
 			
 			SourceRange sr = new SourceRange(region.getOffset(), region.getLength());
 			new GoOracleOpenDefinitionOperation(textEditor, sr, OpenNewEditorMode.TRY_REUSING_EXISTING)
-				.executeAndHandleResult();
+				.executeAndHandle();
 		}
 		
 	}

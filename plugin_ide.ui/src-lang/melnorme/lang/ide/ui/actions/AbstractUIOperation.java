@@ -15,16 +15,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.text.MessageFormat;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 public abstract class AbstractUIOperation {
 	
@@ -46,15 +44,11 @@ public abstract class AbstractUIOperation {
 		return operationName;
 	}
 	
-	public final void executeAndHandleResult() {
-		executeAndHandle();
-	}
-	
-	protected void executeAndHandle() {
+	public void executeAndHandle() {
 		assertTrue(Display.getCurrent() != null);
 		
 		try {
-			executeOperation();
+			execute();
 		} catch (CommonException ce) {
 			UIOperationExceptionHandler.handleOperationStatus(
 				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName), ce);
@@ -67,46 +61,39 @@ public abstract class AbstractUIOperation {
 		}
 	}
 	
-	public final void executeOperation() throws CoreException, CommonException {
-		prepareOperation();
-		
+	public final void execute() throws CoreException, CommonException {
 		try {
-			performLongRunningComputation();
+			prepareOperation();
 			
-			validateComputationResult(false);
+			performBackgroundComputation();
 			
 			handleComputationResult();
 		} catch (OperationCancellation e) {
-			validateComputationResult(true);
+			handleOperationCancellation();
 		}
 	}
 	
-	protected void prepareOperation() throws CoreException, CommonException {
+	protected void handleOperationCancellation() throws CoreException, CommonException {
 	}
 	
-	protected void performLongRunningComputation() throws OperationCancellation, CoreException {
+	protected void prepareOperation() throws CoreException, CommonException, OperationCancellation {
+	}
+	
+	protected void performBackgroundComputation() throws OperationCancellation, CoreException {
 		if(Display.getCurrent() == null) {
-			performLongRunningComputation_inCurrentThread();
+			// Perform computation directly in this thread, cancellation won't be possible.
+			computationRunnable.doRun_toCoreException(new NullProgressMonitor());
 			return;
 		}
-		performLongRunningComputation_usingProgressService();
-	}
-	
-	protected void performLongRunningComputation_inCurrentThread() throws CoreException, OperationCancellation {
-		// Perform computation directly in this thread, cancellation won't be possible.
-		performLongRunningComputation_toCoreException(new NullProgressMonitor());
-	}
-	
-	protected void performLongRunningComputation_usingProgressService() throws OperationCancellation, CoreException {
 		computationRunnable.runUnderWorkbenchProgressService();
 	}
 	
 	protected final OperationRunnableWithProgress computationRunnable = new OperationRunnableWithProgress() {
 		@Override
-		public void doRun(IProgressMonitor monitor) throws CoreException, OperationCancellation {
+		public void doRun(IProgressMonitor monitor) throws CoreException, OperationCancellation, CommonException {
 			monitor.setTaskName(getTaskName());
 			
-			performLongRunningComputation_toCoreException(monitor);
+			doBackgroundComputation(monitor);
 		}
 	};
 	
@@ -115,25 +102,12 @@ public abstract class AbstractUIOperation {
 		return MessageFormat.format(MSG_EXECUTING_OPERATION, operationName);
 	}
 	
-	protected final void performLongRunningComputation_toCoreException(IProgressMonitor monitor) 
-			throws CoreException, OperationCancellation {
-		try {
-			performLongRunningComputation(monitor);
-		} catch(CommonException ce) {
-			throw LangCore.createCoreException(ce);
-		}
-	}
-	
 	/** Perform the long running computation. Runs in a background thread. */
-	protected abstract void performLongRunningComputation(IProgressMonitor monitor) 
+	protected abstract void doBackgroundComputation(IProgressMonitor monitor) 
 			throws CoreException, CommonException, OperationCancellation;
 	
-	@SuppressWarnings("unused")
-	protected void validateComputationResult(boolean isCanceled) throws CoreException {
-	}
-	
 	/** Handle long running computation result. This runs in UI thread. */
-	protected void handleComputationResult() throws CoreException {
+	protected void handleComputationResult() throws CoreException, CommonException, OperationCancellation {
 		// Default: do nothing
 	}
 	
