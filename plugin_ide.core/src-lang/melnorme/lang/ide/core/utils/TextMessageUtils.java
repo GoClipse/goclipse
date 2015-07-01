@@ -20,8 +20,8 @@ public interface TextMessageUtils {
 		return "-------  " + headerString + "  -------"+"\n";
 	}
 	
-	public static String headerHASH(String headerString) {
-		return "##########  " + headerString + "  ##########"+"\n";
+	public static String headerVeryBig(String headerString) {
+		return "====================  " + headerString + "  ===================="+"\n";
 	}
 	
 }

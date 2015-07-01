@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.tools.console;
 
-import static melnorme.lang.ide.core.utils.TextMessageUtils.headerHASH;
+import static melnorme.lang.ide.core.utils.TextMessageUtils.headerVeryBig;
 import static melnorme.lang.ide.ui.LangUIPlugin_Actual.DAEMON_TOOL_Name;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
@@ -139,7 +139,7 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 	
 	@Override
 	public void engineDaemonStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper ph) {
-		String prefixText = headerHASH("Starting " + DAEMON_TOOL_Name + " server:  ") + "   ";
+		String prefixText = headerVeryBig("Starting " + DAEMON_TOOL_Name + " server:  ") + "   ";
 		ProcessStartInfo processStartInfo = new ProcessStartInfo(pb, null, prefixText, true, ph, ce);
 		
 		new EngineServerProcessUIConsoleHandler(processStartInfo).handle();
