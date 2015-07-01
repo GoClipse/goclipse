@@ -26,34 +26,27 @@
    
    <!-- launch/debug UI -->
    
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+   <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             class="com.googlecode.goclipse.debug.ui.GoDebugTabGroup"
             description="Debug a Go application"
             id="com.googlecode.goclipse.debug.launchConfigurationTabGroup_debug"
             type="com.googlecode.goclipse.launch.goLaunchType">
-         <launchMode
-               mode="debug">
-         </launchMode>
+         <launchMode mode="debug" />
       </launchConfigurationTabGroup>
    </extension>
    
-   <extension
-         point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
+   <extension point="org.eclipse.debug.ui.toggleBreakpointsTargetFactories">
       <toggleTargetFactory
             class="melnorme.lang.ide.debug.ui.LangToggleBreakpointsTargetFactory"
             id="com.googlecode.goclipse.debug.toggleTargetFactory">
          <enablement>
-            <instanceof 
-            	value="com.googlecode.goclipse.editors.GoEditor">
-            </instanceof>
+            <instanceof value="com.googlecode.goclipse.ui.editor.GoEditor" />
          </enablement>
       </toggleTargetFactory>
    </extension>
 
-   <extension
-         point="org.eclipse.ui.editorActions">
+   <extension point="org.eclipse.ui.editorActions">
       <editorContribution
             targetID="com.googlecode.goclipse.editors.Editor"
             id="com.googlecode.goclipse.debug.breakpointActions">
@@ -178,7 +171,7 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             class="org.eclipse.cdt.debug.internal.ui.actions.RetargettableActionAdapterFactory"
-            adaptableType="com.googlecode.goclipse.editors.GoEditor">
+            adaptableType="com.googlecode.goclipse.ui.editor.GoEditor">
          <adapter type="org.eclipse.debug.ui.actions.IRunToLineTarget"/>
          <adapter type="org.eclipse.cdt.debug.internal.ui.actions.IResumeAtLineTarget"/>
          <adapter type="org.eclipse.cdt.debug.internal.ui.actions.IMoveToLineTarget"/>
