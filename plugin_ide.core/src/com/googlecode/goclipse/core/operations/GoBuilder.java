@@ -29,7 +29,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
+import melnorme.lang.ide.core.operations.BuildTargetsProjectBuilder;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -40,7 +40,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 
-public class GoBuilder extends LangBuildManagerProjectBuilder {
+public class GoBuilder extends BuildTargetsProjectBuilder {
 	
 	public GoBuilder() {
 	}

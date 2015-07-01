@@ -30,11 +30,11 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class LangBuildManagerProjectBuilder extends LangProjectBuilder {
+public abstract class BuildTargetsProjectBuilder extends LangProjectBuilder {
 	
 	protected final BuildManager buildMgr = LangCore.getBuildManager();
 	
-	public LangBuildManagerProjectBuilder() {
+	public BuildTargetsProjectBuilder() {
 		super();
 	}
 	
@@ -50,7 +50,7 @@ public abstract class LangBuildManagerProjectBuilder extends LangProjectBuilder 
 	@Override
 	protected void handleBeginWorkspaceBuild() {
 		LangCore.getToolManager().notifyOperationStarted(workspaceOpInfo.createSubOperation(null, false, 
-			TextMessageUtils.headerHASH("Starting " + LangCore_Actual.LANGUAGE_NAME +" build")));
+			TextMessageUtils.headerVeryBig("Starting " + LangCore_Actual.LANGUAGE_NAME +" build")));
 	}
 	
 	@Override
@@ -72,7 +72,7 @@ public abstract class LangBuildManagerProjectBuilder extends LangProjectBuilder 
 	protected ArrayList2<IBuildTargetOperation> createBuildOperations(IProject project) {
 		ArrayList2<IBuildTargetOperation> operations = ArrayList2.create();
 		
-		String startMsg = headerBIG(" Building " + LangCore_Actual.LANGUAGE_NAME + " project: " + project.getName());
+		String startMsg = headerBIG("Building " + LangCore_Actual.LANGUAGE_NAME + " project: " + project.getName());
 		operations.add(newOperationMessageTask(project, startMsg, true));
 		
 		Indexable<BuildTarget> buildTargets = buildMgr.getBuildTargets(project);
@@ -135,7 +135,7 @@ public abstract class LangBuildManagerProjectBuilder extends LangProjectBuilder 
 		}
 		
 		protected Path getBuildToolPath() throws CommonException {
-			return LangBuildManagerProjectBuilder.this.getBuildToolPath();
+			return BuildTargetsProjectBuilder.this.getBuildToolPath();
 		}
 		
 		protected String getBuildTargetName() {
