@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
+import melnorme.lang.ide.core.operations.BuildTargetsProjectBuilder;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
@@ -28,7 +28,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class LANGUAGE_Builder extends LangBuildManagerProjectBuilder {
+public class LANGUAGE_Builder extends BuildTargetsProjectBuilder {
 	
 	public LANGUAGE_Builder() {
 	}
