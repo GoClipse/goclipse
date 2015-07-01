@@ -11,6 +11,5 @@ before_install:
 install: ""
 
 script: 
-  - "export MAVEN_OPTS=-Xmx1m"
-  - "mvn clean integration-test"
+  - "export MAVEN_OPTS=-Xmx1028m; echo $MAVEN_OPTS; mvn clean integration-test"
  
