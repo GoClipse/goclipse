@@ -10,4 +10,7 @@ before_install:
 # Prevent Travis's default of: mvn install -DskipTests=true
 install: ""
 
-script: mvn clean integration-test
+script: 
+  - "export MAVEN_OPTS=-Xmx1024m"
+  - "mvn clean integration-test"
+ 
