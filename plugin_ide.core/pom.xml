@@ -11,7 +11,7 @@
 	</parent>
 
 	<artifactId>com.googlecode.goclipse.core</artifactId>
-	<version>0.11.0-SNAPSHOT</version>
+	<version>0.11.1-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 
 </project>
