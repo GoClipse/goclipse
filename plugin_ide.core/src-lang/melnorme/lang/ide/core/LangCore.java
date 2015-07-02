@@ -11,7 +11,7 @@
 package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.engine.EngineClient;
-import melnorme.lang.ide.core.operations.AbstractToolsManager;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.project_model.BuildManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.data.StatusException;
@@ -40,11 +40,11 @@ public abstract class LangCore extends Plugin {
 	
 	/* ----------------- Owned singletons: ----------------- */
 	
-	protected static final AbstractToolsManager toolManager = LangCore_Actual.createToolManagerSingleton();
+	protected static final AbstractToolManager toolManager = LangCore_Actual.createToolManagerSingleton();
 	protected static final EngineClient engineClient = LangCore_Actual.createEngineClient();
 	protected static final BuildManager buildManager = LangCore_Actual.createBuildManager();
 	
-	public static AbstractToolsManager getToolManager() {
+	public static AbstractToolManager getToolManager() {
 		return toolManager;
 	}
 	public static EngineClient getEngineClient() {

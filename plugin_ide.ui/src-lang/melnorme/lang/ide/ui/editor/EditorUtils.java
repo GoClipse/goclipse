@@ -142,7 +142,7 @@ public class EditorUtils {
 		} else {
 			uriEditorInput = (IURIEditorInput) editorInput.getAdapter(IURIEditorInput.class);
 		}
-		if(uriEditorInput != null) {
+		if(uriEditorInput != null && uriEditorInput.getURI() != null) {
 			try {
 				return Paths.get(uriEditorInput.getURI());
 			} catch (Exception e) {

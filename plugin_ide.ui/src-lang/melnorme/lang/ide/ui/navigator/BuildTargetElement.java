@@ -12,21 +12,30 @@ package melnorme.lang.ide.ui.navigator;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import org.eclipse.core.resources.IProject;
+
 import melnorme.lang.ide.core.navigator.ElementContainer;
 import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.project_model.BuildManager;
 
 public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 	
 	protected final BuildTarget buildTarget;
+	protected final IProject project;
 	
-	public BuildTargetElement(BuildTarget buildTarget) {
+	public BuildTargetElement(IProject project, BuildTarget buildTarget) {
 		super(null);
+		this.project = project;
 		this.buildTarget = assertNotNull(buildTarget);
 	}
 	
 	public String getTargetName() {
 		String targetName = buildTarget.getTargetName();
 		return targetName == null ? "<default>" : targetName;
+	}
+	
+	public BuildManager getBuildManager() {
+		return BuildManager.getInstance();
 	}
 	
 }

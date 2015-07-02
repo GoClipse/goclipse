@@ -18,27 +18,27 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.navigator.ElementContainer;
 import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 
 public class BuildTargetsContainer extends ElementContainer<BuildTargetElement> {
 	
 	protected final BuildManager buildManager = LangCore.getBuildManager();
-	protected final IProject project;
+	public final ProjectBuildInfo buildInfo;
 	
-	public BuildTargetsContainer(IProject project, Indexable<BuildTarget> buildTargets) {
-		super(toBuildTargetElements(buildTargets));
-		this.project = project;
+	public BuildTargetsContainer(ProjectBuildInfo buildInfo) {
+		super(toBuildTargetElements(buildInfo));
+		this.buildInfo = buildInfo;
 	}
 	
-	protected static ArrayList2<BuildTargetElement> toBuildTargetElements(Indexable<BuildTarget> targets) {
-		assertNotNull(targets);
+	protected static ArrayList2<BuildTargetElement> toBuildTargetElements(ProjectBuildInfo buildInfo) {
+		IProject project = buildInfo.getProject();
+		assertNotNull(buildInfo);
+		assertNotNull(project);
+		Indexable<BuildTarget> buildTargets = buildInfo.getBuildTargets();
 		return new ArrayList2<BuildTargetElement>()
-				.addAll(targets, buildTarget -> new BuildTargetElement(buildTarget));
-	}
-	
-	public IProject getProject() {
-		return project;
+				.addAll(buildTargets, buildTarget -> new BuildTargetElement(project, buildTarget));
 	}
 	
 	public String getText() {

@@ -27,12 +27,11 @@ import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.ui.navigator.BuildTargetElement;
 import melnorme.lang.ide.ui.navigator.BuildTargetsContainer;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
 import melnorme.util.swt.jface.AbstractTreeContentProvider;
-import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.CollectionUtil;
 
 public abstract class AbstractNavigatorContentProvider extends AbstractTreeContentProvider 
@@ -215,9 +214,9 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 	}
 	
 	protected void addBuildTargetsContainer(IProject project, ArrayList<Object> projectChildren) {
-		Indexable<BuildTarget> targets = LangCore.getBuildManager().getBuildTargets(project);
+		ProjectBuildInfo targets = LangCore.getBuildManager().getBuildInfo(project);
 		if(targets != null) {
-			projectChildren.add(new BuildTargetsContainer(project, targets));
+			projectChildren.add(new BuildTargetsContainer(targets));
 		}
 	}
 	
@@ -235,7 +234,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		}
 		@Override
 		default Object visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
-			return buildTargetsElement.getProject();
+			return buildTargetsElement.buildInfo.getProject();
 		}
 		@Override
 		default Object visitBuildTarget(BuildTargetElement buildTarget) {

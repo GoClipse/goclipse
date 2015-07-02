@@ -12,9 +12,16 @@ package melnorme.lang.ide.core.operations;
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
+import java.nio.file.Path;
+
+import org.eclipse.core.resources.IProject;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.BuildOperationCreator.CommonBuildTargetOperation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.HashcodeUtil;
 
-public class BuildTarget {
+public abstract class BuildTarget {
 	
 	protected final boolean enabled;
 	protected final String targetName;
@@ -48,5 +55,18 @@ public class BuildTarget {
 	public int hashCode() {
 		return HashcodeUtil.combinedHashCode(enabled, targetName);
 	}
+	
+	/* -----------------  ----------------- */
+	
+	protected Path getSDKToolPath() throws CommonException {
+		return getToolManager().getSDKToolPath();
+	}
+	
+	public AbstractToolManager getToolManager() {
+		return LangCore.getToolManager();
+	}
+	
+	public abstract CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+			boolean fullBuild) throws CommonException;
 	
 }
