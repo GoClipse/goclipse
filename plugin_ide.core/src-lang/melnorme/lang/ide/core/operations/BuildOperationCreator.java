@@ -14,11 +14,9 @@ import static java.text.MessageFormat.format;
 import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
@@ -27,7 +25,6 @@ import melnorme.lang.ide.core.project_model.BuildManager;
 import melnorme.lang.ide.core.project_model.BuildManagerMessages;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public class BuildOperationCreator implements BuildManagerMessages {
@@ -102,32 +99,6 @@ public class BuildOperationCreator implements BuildManagerMessages {
 			LangCore.getToolManager().notifyOperationStarted(opInfo);
 			return opInfo;
 		}
-	}
-	
-	public static abstract class CommonBuildTargetOperation implements IBuildTargetOperation {
-		
-		protected final OperationInfo parentOperationInfo;
-		protected final BuildTarget buildTarget;
-		protected final Path buildToolPath;
-		
-		public CommonBuildTargetOperation(OperationInfo parentOperationInfo, Path buildToolPath,
-				BuildTarget buildTarget) {
-			this.buildToolPath = buildToolPath;
-			this.parentOperationInfo = assertNotNull(parentOperationInfo);
-			this.buildTarget = assertNotNull(buildTarget);
-		}
-		
-		protected Path getBuildToolPath() throws CommonException {
-			return buildToolPath;
-		}
-		
-		protected String getBuildTargetName() {
-			return buildTarget.getTargetName();
-		}
-		
-		@Override
-		public abstract void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
-						
 	}
 	
 }

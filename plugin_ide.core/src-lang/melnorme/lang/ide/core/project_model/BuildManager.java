@@ -10,11 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model;
 
+import java.nio.file.Path;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Platform;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.operations.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -61,7 +65,12 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 		
 	}
 	
-	protected abstract BuildTarget createBuildTarget(boolean enabled, String targetName);
+	protected BuildTarget createBuildTarget(boolean enabled, String targetName) {
+		return new BuildTarget(enabled, targetName);
+	}
+	
+	public abstract CommonBuildTargetOperation createBuildTargetOperation(OperationInfo parentOpInfo, 
+			IProject project, Path buildToolPath, BuildTarget buildTarget, boolean fullBuild);
 	
 	/* -----------------  ----------------- */
 	

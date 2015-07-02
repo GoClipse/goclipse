@@ -17,11 +17,11 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.BuildOperationCreator.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.project_model.BuildManager;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.HashcodeUtil;
 
-public abstract class BuildTarget {
+public class BuildTarget {
 	
 	protected final boolean enabled;
 	protected final String targetName;
@@ -66,7 +66,11 @@ public abstract class BuildTarget {
 		return LangCore.getToolManager();
 	}
 	
-	public abstract CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
-			boolean fullBuild) throws CommonException;
+	public CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+			boolean fullBuild) throws CommonException {
+		Path buildToolPath = getToolManager().getSDKToolPath();
+		BuildManager buildMgr = LangCore.getBuildManager();
+		return buildMgr.createBuildTargetOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
+	}
 	
 }

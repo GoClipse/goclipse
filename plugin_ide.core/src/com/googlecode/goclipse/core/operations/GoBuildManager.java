@@ -13,8 +13,6 @@ package com.googlecode.goclipse.core.operations;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.Map;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,9 +25,10 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.BuildMarkersUtil;
 import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.operations.BuildOperationCreator.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.BuildManager;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -48,20 +47,14 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	@Override
-	protected BuildTarget createBuildTarget(boolean enabled, String targetName) {
-		return new BuildTarget(enabled, targetName) {
-			@Override
-			public CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
-					boolean fullBuild) throws CommonException {
-				Path buildToolPath = getSDKToolPath();
-				return new GoRunBuildOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
-			}
-		};
+	public CommonBuildTargetOperation createBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
+		return new GoBuildTargetOperation(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected class GoRunBuildOperation extends CommonBuildTargetOperation {
+	protected class GoBuildTargetOperation extends CommonBuildTargetOperation {
 		
 		protected static final String ERROR_SrcRootContainsGoFiles = 
 				"The Go `src` directory at `{0}` contains .go files. " +
@@ -70,15 +63,12 @@ public class GoBuildManager extends BuildManager {
 				"so that they will be part of a Go package. " + 
 				"This is so they can be built using the `./...` pattern, or imported by other Go files.";
 		
-		protected final IProject project;
-		
 		protected GoEnvironment goEnv;
 		protected Location sourceRootDir;
 		
-		public GoRunBuildOperation(OperationInfo parentOpInfo, IProject project, Path buildToolPath,
+		public GoBuildTargetOperation(OperationInfo parentOpInfo, IProject project, Path buildToolPath,
 				BuildTarget buildTarget, boolean fullBuild) {
-			super(parentOpInfo, buildToolPath, buildTarget);
-			this.project = project;
+			super(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 		}
 		
 		@Override
@@ -97,7 +87,7 @@ public class GoBuildManager extends BuildManager {
 			
 			ProcessBuilder pb = createBuildPB();
 			
-			ExternalProcessResult buildAllResult = runBuildTool_2(pm, pb);
+			ExternalProcessResult buildAllResult = runBuildTool(pm, pb);
 			doBuild_processBuildResult(buildAllResult);
 		}
 		
@@ -130,7 +120,7 @@ public class GoBuildManager extends BuildManager {
 			};
 			buildOutput.parseOutput(buildAllResult);
 			
-			addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir);
+			BuildMarkersUtil.addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir);
 		}
 		
 	}
