@@ -10,29 +10,39 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IProgressMonitor;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class CommonBuildOperation implements IBuildTargetOperation {
+public abstract class AbstractToolManagerOperation implements IBuildTargetOperation {
 	
 	protected final IProject project;
-	protected final LangProjectBuilder langProjectBuilder;
 	
-	public CommonBuildOperation(IProject project, LangProjectBuilder langProjectBuilder) {
+	public AbstractToolManagerOperation(IProject project) {
 		this.project = project;
-		this.langProjectBuilder = langProjectBuilder;
 	}
 	
 	public IProject getProject() {
 		return project;
 	}
 	
-	public Path getBuildToolPath() throws CommonException {
-		return langProjectBuilder.getBuildToolPath();
+	protected AbstractToolManager getToolManager() {
+		return LangCore.getToolManager();
+	}
+	
+	protected Path getBuildToolPath() throws CommonException {
+		return getToolManager().getSDKToolPath();
+	}
+	
+	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ProcessBuilder pb) 
+			throws CommonException, OperationCancellation {
+		return getToolManager().newRunToolTask(pb, getProject(), monitor).runProcess();
 	}
 	
 }

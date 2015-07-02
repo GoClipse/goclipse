@@ -12,41 +12,29 @@ package melnorme.lang.ide.core.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.util.Map;
-
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class CompositeBuildOperation extends CommonBuildOperation {
+public class CompositeBuildOperation implements IBuildTargetOperation {
 	
 	protected final Indexable<IBuildTargetOperation> operations;
 	
-	public CompositeBuildOperation(IProject project, LangProjectBuilder langProjectBuilder,
-			Indexable<IBuildTargetOperation> operations) {
-		super(project, langProjectBuilder);
+	public CompositeBuildOperation(Indexable<IBuildTargetOperation> operations) {
 		this.operations = assertNotNull(operations);
 	}
 	
 	@Override
-	public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
+	public void execute(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
 		
-		ArrayList2<IProject> combinedProjects = new ArrayList2<>();
-		
 		for (IBuildTargetOperation subOperation : operations) {
-			IProject[] projects = subOperation.execute(project, kind, args, monitor);
-			if(projects != null) {
-				combinedProjects.addElements(projects);
-			}
+			subOperation.execute(monitor);
 		}
 		
-		return combinedProjects.toArray(IProject.class);
 	}
 	
 }

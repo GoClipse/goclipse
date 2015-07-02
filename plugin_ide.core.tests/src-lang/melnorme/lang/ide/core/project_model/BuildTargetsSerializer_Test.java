@@ -37,7 +37,7 @@ public class BuildTargetsSerializer_Test extends CommonTest {
 	}
 	
 	protected BuildTarget createBuildTarget(boolean enabled, String name) {
-		return new BuildTarget(enabled, name);
+		return LangCore.getBuildManager().createBuildTarget(enabled, name);
 	}
 	
 	protected void testSerialize(ArrayList2<BuildTarget> buildTargets) {

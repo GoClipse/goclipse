@@ -10,27 +10,46 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
+import java.nio.file.Path;
 import java.util.List;
-
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolsManager;
-import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
+import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
+import melnorme.lang.tooling.data.PathValidator;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.fields.IValidatedField;
+import melnorme.utilbox.misc.Location;
 
 /**
  * Manager for running various go tools, usually for build.
  * Note that running such tools under this class will notify Eclipse console listeners.
  */
-public class GoToolManager extends AbstractToolsManager {
+public class GoToolManager extends AbstractToolManager {
 	
 	public static GoToolManager getDefault() {
 		return (GoToolManager) LangCore.getToolManager();
+	}
+	
+	@Override
+	protected PathValidator getSDKToolPathValidator() {
+		return new GoSDKLocationValidator();
+	}
+	
+	@Override
+	protected IValidatedField<Path> getSDKToolPathField() {
+		return new SDKToolPathField(getSDKToolPathValidator()) {
+			@Override
+			protected String getRawFieldValue() {
+				return GoEnvironmentPrefs.GO_ROOT.get();
+			}
+		};
 	}
 	
 	/* -----------------  ----------------- */

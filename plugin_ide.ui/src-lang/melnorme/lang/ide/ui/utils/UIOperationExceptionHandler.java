@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
@@ -29,6 +30,10 @@ import org.eclipse.swt.widgets.Shell;
  * Utility for handling exceptions during UI operations, by presenting an information dialog to the user.
  */
 public class UIOperationExceptionHandler {
+	
+	public static void handleStatusMessage(String title, StatusException se) {
+		handleStatusMessage(se.getStatusLevel(), title, se.getMessage());
+	}
 	
 	public static void handleStatusMessage(StatusLevel statusLevel, String title, String message) {
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();

@@ -14,35 +14,74 @@ import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
 
 import java.nio.file.Path;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
+import melnorme.lang.tooling.data.PathValidator;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.fields.IValidatedField;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-
 /**
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).
  */
-public abstract class AbstractToolsManager extends ListenerListHelper<ILangOperationsListener> {
+public abstract class AbstractToolManager extends ListenerListHelper<ILangOperationsListener> {
 	
-	public AbstractToolsManager() {
+	public AbstractToolManager() {
 	}
 	
 	public void shutdownNow() {
 	}
+	
+	/* -----------------  ----------------- */
+	
+	public Path getSDKToolPath() throws CommonException {
+		return getSDKToolPathField().getValidatedField();
+	}
+	
+	protected IValidatedField<Path> getSDKToolPathField() {
+		return new SDKToolPathField(getSDKToolPathValidator());
+	}
+	
+	public static class SDKToolPathField implements IValidatedField<Path> {
+		
+		protected final PathValidator pathValidator;
+		
+		public SDKToolPathField(PathValidator pathValidator) {
+			this.pathValidator = pathValidator;
+		}
+		
+		protected String getRawFieldValue() {
+			return ToolchainPreferences.SDK_PATH.get();
+		}
+		
+		@Override
+		public Path getValidatedField() throws StatusException {
+			String pathString = getRawFieldValue();
+			return getPathValidator().getValidatedPath(pathString);
+		}
+		
+		protected PathValidator getPathValidator() {
+			return pathValidator;
+		}
+		
+	}
+	
+	protected abstract PathValidator getSDKToolPathValidator();
 	
 	/* -----------------  ----------------- */
 	
@@ -153,7 +192,7 @@ public abstract class AbstractToolsManager extends ListenerListHelper<ILangOpera
 		
 		@Override
 		protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-			for (ILangOperationsListener listener : AbstractToolsManager.this.getListeners()) {
+			for (ILangOperationsListener listener : AbstractToolManager.this.getListeners()) {
 				listener.engineClientToolStart(pb, ce, processHelper);
 			}
 		}

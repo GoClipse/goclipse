@@ -11,29 +11,14 @@
 package melnorme.lang.ide.core.operations;
 
 
+import static melnorme.lang.ide.core.project_model.BuildManagerMessages.MSG_Starting_LANG_Build;
+import static melnorme.lang.ide.core.utils.TextMessageUtils.headerVeryBig;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.Map;
-
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
-import melnorme.lang.tooling.data.PathValidator;
-import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.lang.tooling.ops.SourceLineColumnRange;
-import melnorme.lang.tooling.ops.ToolSourceMessage;
-import melnorme.lang.utils.ProcessUtils;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
@@ -50,56 +35,27 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.lang.tooling.ops.ToolSourceMessage;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+
 public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	public LangProjectBuilder() {
 	}
 	
-	/* ----------------- Tool Manager helpers  ----------------- */
-	
-	protected AbstractToolsManager getToolManager() {
-		return LangCore.getToolManager();
-	}
-	
 	protected Location getProjectLocation() throws CoreException {
 		return ResourceUtils.getProjectLocation(getProject());
 	}
-	
-	protected ProcessBuilder createProcessBuilder(ArrayList2<String> toolCmdLine) throws CoreException {
-		return ProcessUtils.createProcessBuilder(toolCmdLine, getProjectLocation());
-	}
-	
-	protected ExternalProcessResult runBuildTool_2(IProgressMonitor monitor, ProcessBuilder pb) 
-			throws CommonException, OperationCancellation {
-		return getToolManager().newRunToolTask(pb, getProject(), monitor).runProcess();
-	}
-	
-	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ArrayList2<String> toolCmdLine)
-			throws CoreException, CommonException, OperationCancellation {
-		ProcessBuilder pb = createProcessBuilder(toolCmdLine);
-		return runBuildTool_2(monitor, pb);
-	}
-	
-	protected ProcessBuilder createSDKProcessBuilder(String... sdkOptions) throws CoreException, CommonException {
-		Location projectLocation = ResourceUtils.getProjectLocation(getProject());
-		
-		Path buildToolPath = getBuildToolPath();
-		
-		return getToolManager().createToolProcessBuilder(buildToolPath, projectLocation, sdkOptions);
-	}
-	
-	protected Path getBuildToolPath() throws CommonException {
-		String pathString = ToolchainPreferences.SDK_PATH.get();
-		return getBuildToolPath(pathString);
-	}
-	
-	protected Path getBuildToolPath(String pathString) throws ValidationException {
-		PathValidator buildToolPathValidator = getBuildToolPathValidator();
-		assertTrue(buildToolPathValidator.canBeEmpty == false);
-		return buildToolPathValidator.getValidatedPath(pathString);
-	}
-	
-	protected abstract PathValidator getBuildToolPathValidator();
 	
 	/* ----------------- helpers ----------------- */
 	
@@ -142,6 +98,24 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		assertTrue(getProject() != null);
 	}
 	
+	protected OperationInfo workspaceOpInfo;
+	
+	protected void prepareForBuild() throws CoreException {
+		workspaceOpInfo = new OperationInfo(null, true, "");
+		
+		if(isFirstProjectOfKind()) {
+			handleBeginWorkspaceBuild();
+		}
+		
+		deleteProjectBuildMarkers();
+	}
+	
+	protected void handleBeginWorkspaceBuild() {
+		LangCore.getToolManager().notifyOperationStarted(workspaceOpInfo.createSubOperation(null, false, 
+			headerVeryBig(MessageFormat.format(MSG_Starting_LANG_Build, LangCore_Actual.LANGUAGE_NAME))));
+	}
+	
+	
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		assertTrue(kind != CLEAN_BUILD);
@@ -151,7 +125,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		prepareForBuild();
 		
 		try {
-			doBuild(project, kind, args, monitor);
+			return doBuild(project, kind, args, monitor);
 		} 
 		catch (OperationCancellation cancel) {
 			forgetLastBuiltState();
@@ -175,54 +149,28 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			}
 		}
 		
-		// no project dependencies (yet)
-		return null;
-	}
-	
-	protected void prepareForBuild() throws CoreException {
-		if(isFirstProjectOfKind()) {
-			handleBeginWorkspaceBuild();
-		}
-		
-		deleteProjectBuildMarkers();
-	}
-	
-	protected void handleBeginWorkspaceBuild() {
 	}
 	
 	protected void handleEndWorkspaceBuild() {
 	}
 	
+	@SuppressWarnings("unused")
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
 			throws CoreException, OperationCancellation {
 		try {
-			return createBuildOp().execute(project, kind, args, monitor);
+			createBuildOp(kind == IncrementalProjectBuilder.FULL_BUILD).execute(monitor);
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
+		return null;
 	}
 	
-	protected abstract IBuildTargetOperation createBuildOp();
+	protected IBuildTargetOperation createBuildOp(boolean fullBuild) throws CommonException {
+		return createBuildOperationCreator(fullBuild).getBuildOperation();
+	}
 	
-	public abstract class AbstractRunBuildOperation implements IBuildTargetOperation {
-		
-		@Override
-		public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) 
-				throws CoreException, CommonException, OperationCancellation {
-			
-			ProcessBuilder pb = createBuildPB();
-			
-			ExternalProcessResult buildAllResult = runBuildTool_2(monitor, pb);
-			doBuild_processBuildResult(buildAllResult);
-			
-			return null;
-		}
-		
-		protected abstract ProcessBuilder createBuildPB() throws CoreException, CommonException;
-		
-		protected abstract void doBuild_processBuildResult(ExternalProcessResult buildAllResult) 
-				throws CoreException, CommonException;
-		
+	protected BuildOperationCreator createBuildOperationCreator(boolean fullBuild) {
+		return new BuildOperationCreator(getProject(), workspaceOpInfo, fullBuild);
 	}
 	
 	/* ----------------- Clean ----------------- */
@@ -246,7 +194,38 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) 
 			throws CoreException, CommonException, OperationCancellation {
-		runBuildTool_2(monitor, pb);
+		
+		new AbstractRunToolOperation(getProject()) {
+			@Override
+			protected ProcessBuilder createToolProcessBuilder() throws CoreException, CommonException {
+				return pb;
+			}
+		}.execute(monitor);
+	}
+	
+	public static abstract class AbstractRunToolOperation extends AbstractToolManagerOperation {
+		
+		public AbstractRunToolOperation(IProject project) {
+			super(project);
+		}
+		
+		@Override
+		public void execute(IProgressMonitor monitor) 
+				throws CoreException, CommonException, OperationCancellation {
+			
+			ProcessBuilder pb = createToolProcessBuilder();
+			ExternalProcessResult toolResult = runBuildTool(monitor, pb);
+			processToolResult(toolResult);
+		}
+		
+		protected abstract ProcessBuilder createToolProcessBuilder() throws CoreException, CommonException;
+		
+		@SuppressWarnings("unused") 
+		protected void processToolResult(ExternalProcessResult buildAllResult) 
+				throws CoreException, CommonException {
+			
+		}
+		
 	}
 	
 	/* ----------------- Problem markers handling ----------------- */

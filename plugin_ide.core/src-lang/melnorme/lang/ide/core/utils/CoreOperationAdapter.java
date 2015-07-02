@@ -30,21 +30,21 @@ public abstract class CoreOperationAdapter implements IRunnableWithProgress {
 			coreRun(monitor);
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
-		} catch (OperationCanceledException e) {
+		} catch (OperationCancellation e) {
 			throw new InterruptedException(e.getMessage());
 		}
 	}
 	
-	protected void coreRun(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
+	public void coreRun(IProgressMonitor monitor) throws CoreException, OperationCancellation {
 		try {
 			doRun(monitor);
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
-		} catch (OperationCancellation e) {
-			throw new OperationCanceledException();
+		} catch (OperationCanceledException e) {
+			throw new OperationCancellation();
 		} 
 	}
 	
-	public abstract void doRun(IProgressMonitor monitor) throws CommonException, CoreException, OperationCancellation;
+	public abstract void doRun(IProgressMonitor pm) throws CommonException, CoreException, OperationCancellation;
 	
 }

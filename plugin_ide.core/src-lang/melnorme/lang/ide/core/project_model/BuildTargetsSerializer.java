@@ -137,7 +137,7 @@ public class BuildTargetsSerializer {
 	
 	protected BuildTarget createBuildTarget(boolean enabled, String targetName, 
 			@SuppressWarnings("unused") Node targetElem) {
-		return new BuildTarget(enabled, targetName);
+		return LangCore.getBuildManager().createBuildTarget(enabled, targetName);
 	}
 	
 	protected String getAttribute(Node targetElem, String keyName, String defaultValue) {
