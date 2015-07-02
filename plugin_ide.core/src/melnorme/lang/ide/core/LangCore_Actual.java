@@ -1,11 +1,9 @@
 package melnorme.lang.ide.core;
 
-import org.eclipse.core.runtime.Path;
-
 import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_EngineClient;
+import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_BuildManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
 import melnorme.lang.ide.core.project_model.BuildManager;
-import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 
 public class LangCore_Actual {
 	
@@ -27,13 +25,7 @@ public class LangCore_Actual {
 	}
 	
 	public static BuildManager createBuildManager() {
-		return new BuildManager() {
-			// TODO: LANG BuildManager
-			@Override
-			protected BundleManifestResourceListener init_createResourceListener() {
-				return new ManagerResourceListener(new Path("lang.bundle"));
-			}
-		};
+		return new LANGUAGE_BuildManager();
 	}
 	
 }

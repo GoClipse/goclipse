@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.BuildTargetsProjectBuilder;
+import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
@@ -28,50 +28,14 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class LANGUAGE_Builder extends BuildTargetsProjectBuilder {
+public class LANGUAGE_Builder extends LangProjectBuilder {
 	
 	public LANGUAGE_Builder() {
 	}
 	
 	@Override
-	protected LocationValidator getBuildToolPathValidator() {
-		return new LANGUAGE_SDKLocationValidator();
-	}
-	
-	@Override
 	protected ProcessBuilder createCleanPB() throws CoreException, CommonException {
 		return createSDKProcessBuilder("clean"); // TODO: Lang
-	}
-	
-	/* ----------------- Build ----------------- */
-	
-	@Override
-	protected CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
-			BuildTarget buildTarget) {
-		return new CommonBuildTargetOperation(parentOpInfo, buildTarget) {
-			
-			@Override
-			public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
-					throws CoreException, CommonException, OperationCancellation {
-				ProcessBuilder pb = createBuildPB();
-				
-				ExternalProcessResult buildAllResult = runBuildTool_2(monitor, pb);
-				doBuild_processBuildResult(buildAllResult);
-				
-				return null;
-			}
-			
-			protected ProcessBuilder createBuildPB() throws CoreException, CommonException {
-				return createSDKProcessBuilder("build"); // TODO: Lang
-			}
-			
-			@SuppressWarnings("unused")
-			protected void doBuild_processBuildResult(ExternalProcessResult buildAllResult) throws CoreException {
-				ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); // TODO: Lang
-				
-				addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(getProject()));
-			}
-		};
 	}
 	
 }

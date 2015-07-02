@@ -10,8 +10,15 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
-import melnorme.lang.ide.core.operations.AbstractToolsManager;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
+import melnorme.lang.tooling.data.PathValidator;
 
-public class LANGUAGE_ToolManager extends AbstractToolsManager {
+public class LANGUAGE_ToolManager extends AbstractToolManager {
+	
+	@Override
+	protected PathValidator getSDKToolPathValidator() {
+		return new LANGUAGE_SDKLocationValidator();
+	}
 	
 }
