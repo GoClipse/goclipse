@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -34,10 +32,6 @@ public abstract class AbstractToolManagerOperation implements IBuildTargetOperat
 	
 	protected AbstractToolManager getToolManager() {
 		return LangCore.getToolManager();
-	}
-	
-	protected Path getBuildToolPath() throws CommonException {
-		return getToolManager().getSDKToolPath();
 	}
 	
 	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ProcessBuilder pb) 

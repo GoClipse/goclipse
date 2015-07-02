@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
 import melnorme.lang.tooling.data.PathValidator;
@@ -84,6 +85,13 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 	protected abstract PathValidator getSDKToolPathValidator();
 	
 	/* -----------------  ----------------- */
+	
+	public ProcessBuilder createSDKProcessBuilder(IProject project, String... sdkOptions)
+			throws CoreException, CommonException {
+		Location projectLocation = ResourceUtils.getProjectLocation(project);
+		Path sdkToolPath = getSDKToolPath();
+		return createToolProcessBuilder(sdkToolPath, projectLocation, sdkOptions);
+	}
 	
 	public ProcessBuilder createToolProcessBuilder(Path buildToolCmdPath, Location workingDir, 
 			String... arguments) {
