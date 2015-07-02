@@ -16,8 +16,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.lang.ide.core.operations.BuildOperationCreator.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.BuildMarkersUtil;
 import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.operations.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.BuildManager;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
@@ -30,53 +31,46 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public final class LANGUAGE_BuildManager extends BuildManager {
 	
-	// TODO: LANG BuildManager
 	@Override
 	protected BundleManifestResourceListener init_createResourceListener() {
 		return new ManagerResourceListener(new org.eclipse.core.runtime.Path("lang.bundle"));
 	}
 
 	@Override
-	protected BuildTarget createBuildTarget(boolean enabled, String targetName) {
-		return new BuildTarget(enabled, targetName) {
-			@Override
-			public CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
-					boolean fullBuild) throws CommonException {
-				Path buildToolPath = getSDKToolPath();
-				return new LANGUAGE_RunBuildOperationExtension(parentOpInfo, project, buildToolPath, this, fullBuild);
-			}
-		};
+	public CommonBuildTargetOperation createBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
+		return new LANGUAGE_BuildTargetOperation(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 	}
 	
 	/* ----------------- Build ----------------- */
 	
-	protected class LANGUAGE_RunBuildOperationExtension extends CommonBuildTargetOperation {
+	// TODO: LANG Build operation
+	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
-		protected final IProject project;
-		
-		public LANGUAGE_RunBuildOperationExtension(OperationInfo parentOpInfo, IProject project,
+		public LANGUAGE_BuildTargetOperation(OperationInfo parentOpInfo, IProject project,
 				Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
-			super(parentOpInfo, buildToolPath, buildTarget);
-			this.project = project;
+			super(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 		}
 		
 		@Override
 		public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 			ProcessBuilder pb = createBuildPB();
 			
-			ExternalProcessResult buildAllResult = runBuildTool_2(pm, pb);
-			doBuild_processBuildResult(buildAllResult);
+			ExternalProcessResult buildResult = runBuildTool(pm, pb);
+			doBuild_processBuildResult(buildResult);
 		}
 		
 		protected ProcessBuilder createBuildPB() throws CoreException, CommonException {
-			return createSDKProcessBuilder("build"); // TODO: Lang
+			return getToolManager().createSDKProcessBuilder(getProject(), "build"); // TODO: Lang
 		}
 		
 		@SuppressWarnings("unused")
-		protected void doBuild_processBuildResult(ExternalProcessResult buildAllResult) throws CoreException {
-			ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); // TODO: Lang
+		protected void doBuild_processBuildResult(ExternalProcessResult buildResult) throws CoreException {
+			ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); 
 			
-			addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project));
+			// TODO: Lang process result
+			
+			BuildMarkersUtil.addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project));
 		}
 	}
 	

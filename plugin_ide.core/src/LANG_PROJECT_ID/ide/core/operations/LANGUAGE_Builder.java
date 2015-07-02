@@ -10,23 +10,11 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
-import java.util.Map;
-
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
-import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
-import melnorme.lang.tooling.data.LocationValidator;
-import melnorme.lang.tooling.ops.ToolSourceMessage;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class LANGUAGE_Builder extends LangProjectBuilder {
 	
@@ -35,7 +23,8 @@ public class LANGUAGE_Builder extends LangProjectBuilder {
 	
 	@Override
 	protected ProcessBuilder createCleanPB() throws CoreException, CommonException {
-		return createSDKProcessBuilder("clean"); // TODO: Lang
+		// TODO: Lang clean command
+		return LangCore.getToolManager().createSDKProcessBuilder(getProject(), "clean");
 	}
 	
 }
