@@ -10,6 +10,8 @@ before_install:
 # Prevent Travis's default of: mvn install -DskipTests=true
 install: ""
 
-script: 
-  - "export MAVEN_OPTS=-Xmx1028m; echo $MAVEN_OPTS; mvn clean integration-test"
+script:
+  - sudo rm /etc/mavenrc
+  - export MAVEN_OPTS="-Xmx1500m"
+  - mvn clean integration-test
  
