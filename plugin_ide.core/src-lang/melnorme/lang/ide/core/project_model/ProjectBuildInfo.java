@@ -69,7 +69,7 @@ public class ProjectBuildInfo {
 		}
 		
 		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildManager, project, newBuildTargets);
-		buildManager.setBuildProjectInfo(project, newProjectBuildInfo);
+		buildManager.setProjectBuildInfo(project, newProjectBuildInfo);
 	}
 	
 }
