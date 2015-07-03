@@ -41,10 +41,10 @@ public abstract class ProjectBasedModel<INFO, LISTENER extends IProjectModelList
 		return projectInfos.get(project.getName());
 	}
 	
-	public synchronized INFO addProjectInfo(IProject project, INFO newProjectInfo) {
+	public synchronized INFO setProjectInfo(IProject project, INFO newProjectInfo) {
 		String projectName = project.getName();
 		projectInfos.put(projectName, newProjectInfo);
-		notifyProjectAdded(project, newProjectInfo);
+		notifyProjectInfoAdded(project, newProjectInfo);
 		return newProjectInfo;
 	}
 	
@@ -55,8 +55,8 @@ public abstract class ProjectBasedModel<INFO, LISTENER extends IProjectModelList
 		return oldProjectInfo;
 	}
 	
-	protected void notifyProjectAdded(IProject project, INFO newProjectInfo) {
-		getLog().println(getClass().getSimpleName() + " info added: " + project.getName());
+	protected void notifyProjectInfoAdded(IProject project, INFO newProjectInfo) {
+		getLog().println(getClass().getSimpleName() + " info set: " + project.getName());
 		fireUpdateEvent(new UpdateEvent<INFO>(project, newProjectInfo));
 	}
 	

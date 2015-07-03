@@ -214,7 +214,8 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		
 		@Override
 		public void notifyUpdateEvent(UpdateEvent<ProjectBuildInfo> updateEvent) {
-			getViewer().refresh(updateEvent.project);
+			Display.getDefault().asyncExec(
+				() -> getViewer().refresh(updateEvent.project));
 		}
 		
 	}

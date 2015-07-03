@@ -104,11 +104,11 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 				return;
 			}
 		}
-		setBuildProjectInfo(project, newProjectBuildInfo);
+		setProjectBuildInfo(project, newProjectBuildInfo);
 	}
 	
-	protected ProjectBuildInfo setBuildProjectInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
-		return buildModel.addProjectInfo(project, newProjectBuildInfo);
+	protected ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
+		return buildModel.setProjectInfo(project, newProjectBuildInfo);
 	}
 	
 	@Override
