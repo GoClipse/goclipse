@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.navigator;
 
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -22,18 +20,20 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 
-public class NavigatorActionProvider extends CommonActionProvider {
+import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+
+public class GoNavigatorActionProvider extends LangNavigatorActionProvider {
 	
 	protected NavigatorOpenAction navigatorOpenAction;
 	
-	public NavigatorActionProvider() {
+	public GoNavigatorActionProvider() {
 	}
 	
 	@Override
@@ -58,6 +58,8 @@ public class NavigatorActionProvider extends CommonActionProvider {
 	
 	@Override
 	public void fillContextMenu(IMenuManager menu) {
+		super.fillContextMenu(menu);
+		
 		if(navigatorOpenAction.isEnabled()) {
 			menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN, navigatorOpenAction);
 		}
