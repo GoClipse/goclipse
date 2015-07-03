@@ -9,13 +9,14 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.navigator;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.swt.graphics.Image;
 
-import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
+import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
 
-public class LANGUAGE_NavigatorLabelProvider extends AbstractLangNavigatorLabelProvider implements IStyledLabelProvider {
+public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider implements IStyledLabelProvider {
 	
 	@Override
 	protected DefaultGetStyledTextSwitcher getStyledText_switcher() {
@@ -31,7 +32,7 @@ public class LANGUAGE_NavigatorLabelProvider extends AbstractLangNavigatorLabelP
 	protected DefaultGetImageSwitcher getBaseImage_switcher() {
 		return new DefaultGetImageSwitcher() {
 			@Override
-			public Image visitOther(Object element) {
+			public ImageDescriptor visitOther(Object element) {
 				return null;
 			}
 		};

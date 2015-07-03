@@ -20,9 +20,18 @@ public abstract class AbstractContentProvider implements IStructuredContentProvi
 	protected Object input;
 	
 	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		this.viewer = viewer;
+	public void inputChanged(Viewer newViewer, Object oldInput, Object newInput) {
+		boolean isInitialization = (viewer == null && newViewer != null);
+		
+		this.viewer = newViewer;
 		this.input = newInput;
+		
+		if(isInitialization) {
+			viewerInitialized();
+		}
+	}
+	
+	protected void viewerInitialized() {
 	}
 	
 	@Override

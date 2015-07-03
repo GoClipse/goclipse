@@ -100,6 +100,8 @@ public abstract class LangImages {
 	public static final ImageDescriptor DESC_OVR_ALIAS = createUnmanaged(LANG_OVERLAYS, "ovr_alias_arrow.png");
 	
 	
+	public static final ImageDescriptor OVR_CHECKED = createUnmanaged(LANG_OVERLAYS, "ovr_checked.png");
+	
 	/* ----------------- Image cache keyed by ImageDescriptor ----------------- */
 	
 	public static ImageDescriptorRegistry getImageDescriptorRegistry() {

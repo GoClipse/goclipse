@@ -48,6 +48,10 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 		this.buildModel = buildModel;
 	}
 	
+	public BuildModel getBuildModel() {
+		return buildModel;
+	}
+	
 	public ProjectBuildInfo getBuildInfo(IProject project) {
 		return buildModel.getProjectInfo(project);
 	}
