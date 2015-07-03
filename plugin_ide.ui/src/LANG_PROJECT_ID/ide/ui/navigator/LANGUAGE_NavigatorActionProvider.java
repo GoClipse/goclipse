@@ -10,8 +10,8 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.navigator;
 
-import org.eclipse.ui.navigator.CommonActionProvider;
+import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
 
-public class LANGUAGE_NavigatorActionProvider extends CommonActionProvider {
+public class LANGUAGE_NavigatorActionProvider extends LangNavigatorActionProvider {
 	
 }
