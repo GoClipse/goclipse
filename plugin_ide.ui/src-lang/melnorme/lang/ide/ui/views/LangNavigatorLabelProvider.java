@@ -25,17 +25,18 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.navigator.BuildTargetElement;
 import melnorme.lang.ide.ui.navigator.BuildTargetsContainer;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
+import melnorme.util.swt.jface.resources.CompositeImageDescriptorExt.Corner;
+import melnorme.util.swt.jface.resources.DecoratedImageDescriptor;
 import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
 import melnorme.utilbox.collections.ArrayList2;
 
 
-
-public abstract class AbstractLangNavigatorLabelProvider extends AbstractLangLabelProvider {
+public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvider {
 	
 	protected final ArrayList2<ILabelDecorator> labelDecorators = new ArrayList2<>();
 	protected final ImageDescriptorRegistry registry;
 
-	public AbstractLangNavigatorLabelProvider() {
+	public LangNavigatorLabelProvider() {
 		super();
 		this.registry = init_getImageRegistry();
 		this.labelDecorators.add(new ProblemsLabelDecorator(registry));
@@ -89,9 +90,9 @@ public abstract class AbstractLangNavigatorLabelProvider extends AbstractLangLab
 	}
 	
 	public Image getBaseImage(Object element) {
-		Image baseImage = getBaseImage_switcher().switchElement(element);
+		ImageDescriptor baseImage = getBaseImage_switcher().switchElement(element);
 		if(baseImage != null) {
-			return baseImage;
+			return registry.get(baseImage);
 		}
 		
 		if(element instanceof IResource) {
@@ -103,21 +104,25 @@ public abstract class AbstractLangNavigatorLabelProvider extends AbstractLangLab
 	
 	protected abstract DefaultGetImageSwitcher getBaseImage_switcher();
 	
-	public static abstract class DefaultGetImageSwitcher implements NavigatorElementsSwitcher<Image> {
+	public static abstract class DefaultGetImageSwitcher implements NavigatorElementsSwitcher<ImageDescriptor> {
 		
 		@Override
-		public Image visitProject(IProject project) {
+		public ImageDescriptor visitProject(IProject project) {
 			return null;
 		}
 		
 		@Override
-		public Image visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
-			return LangImages.BUILD_TARGETS_ELEM.getImage();
+		public ImageDescriptor visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
+			return LangImages.BUILD_TARGETS_ELEM.getDescriptor();
 		}
 		
 		@Override
-		public Image visitBuildTarget(BuildTargetElement buildTarget) {
-			return LangImages.BUILD_TARGET.getImage();
+		public ImageDescriptor visitBuildTarget(BuildTargetElement buildTarget) {
+			ImageDescriptor baseImage = LangImages.BUILD_TARGET.getDescriptor();
+			if(buildTarget.getBuildTarget().isEnabled()) {
+				return new DecoratedImageDescriptor(baseImage, LangImages.OVR_CHECKED, Corner.BOTTOM_RIGHT);
+			}
+			return baseImage;
 		}
 		
 	}

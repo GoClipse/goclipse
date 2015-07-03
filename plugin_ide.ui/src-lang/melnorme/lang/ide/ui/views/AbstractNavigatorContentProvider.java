@@ -22,17 +22,25 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.project_model.BuildManager.BuildModel;
+import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.ui.navigator.BuildTargetElement;
 import melnorme.lang.ide.ui.navigator.BuildTargetsContainer;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
+import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.jface.AbstractTreeContentProvider;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.ownership.IDisposable;
 
 public abstract class AbstractNavigatorContentProvider extends AbstractTreeContentProvider 
 	implements ICommonContentProvider {
@@ -63,72 +71,24 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		return (StructuredViewer) viewer;
 	}
 	
-	// useful mostly to workaround bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=430005
-	/**
-	 * Helper to throttle some code, that is, to prevent some recorring code to run too soon after each other 
-	 * within a given a time interval.
-	 */
-	public abstract class ThrottleCodeJob extends Job {
-		
-		protected final int throttleDelayMillis;
-		protected long lastRequestMillis;
-		protected boolean isScheduled = false;
-		
-		public ThrottleCodeJob(int throttleDelayMillis) {
-			super("throttle job");
-			this.throttleDelayMillis = throttleDelayMillis;
-			setSystem(true);
-		}
-		
-		/** Schedule this job to run again. Will run throttled code immediatly if past time delay, 
-		 * schedule otherwise.
-		 * Multiple schedule requests within the delay period will be squashed into just one request. 
-		 */
-		public void scheduleRefreshJob() {
-			
-			synchronized (this) {
-				if(isScheduled) {
-					return;
-				}
-				assertTrue(getState() == Job.NONE || getState() == Job.RUNNING);
-				
-				isScheduled = true;
-				long runningTimeMillis = getRunningTimeMillis();
-				long nextPeriod = lastRequestMillis + throttleDelayMillis;
-				long deltaToNext = nextPeriod - runningTimeMillis;
-				if(deltaToNext > 0) {
-					//System.out.println(" schedule delta to next:" + deltaToNext);
-					schedule(deltaToNext);
-					return;
-				} else {
-					// continue and run immediately
-				}
-			}
-			
-			runThrottledCode();
-		}
-
-		protected long getRunningTimeMillis() {
-			return System.nanoTime() / 1000_000;
-		}
-		
-		@Override
-		protected final IStatus run(IProgressMonitor monitor) {
-			//System.out.println(getRunningTimeMillis() + " :job#run");
-			runThrottledCode();
-			return LangCore.createOkStatus("ok");
-		}
-		
-		public void markRequestFinished() {
-			synchronized (this) {
-				isScheduled = false;
-				lastRequestMillis = getRunningTimeMillis();
-			}
-			//System.out.println(lastRequestMillis + " lastRequestFinished");
-		}
-		
-		protected abstract void runThrottledCode();
+	protected BuildModel getBuildModel() {
+		return LangCore.getBuildManager().getBuildModel();
 	}
+	
+	@Override
+	protected void viewerInitialized() {
+		super.viewerInitialized();
+		
+		getBuildModel().addListener(listener);
+	}
+	
+	@Override
+	public void dispose() {
+		getBuildModel().removeListener(listener);
+		
+		super.dispose();
+	}
+	
 	
 	/* -----------------  ----------------- */
 	
@@ -244,6 +204,125 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		default Object visitOther(Object element) {
 			return null;
 		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected final BuildModelListener listener = new BuildModelListener();
+	
+	protected class BuildModelListener implements IProjectModelListener<ProjectBuildInfo> {
+		
+		@Override
+		public void notifyUpdateEvent(UpdateEvent<ProjectBuildInfo> updateEvent) {
+			getViewer().refresh(updateEvent.project);
+		}
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	// useful mostly to workaround bug: https://bugs.eclipse.org/bugs/show_bug.cgi?id=430005
+	/**
+	 * Helper to throttle some code, that is, to prevent some recorring code to run too soon after each other 
+	 * within a given a time interval.
+	 */
+	public abstract class ThrottleCodeJob extends Job {
+		
+		protected final int throttleDelayMillis;
+		protected long lastRequestMillis;
+		protected boolean isScheduled = false;
+		
+		public ThrottleCodeJob(int throttleDelayMillis) {
+			super("throttle job");
+			this.throttleDelayMillis = throttleDelayMillis;
+			setSystem(true);
+		}
+		
+		/** Schedule this job to run again. Will run throttled code immediatly if past time delay, 
+		 * schedule otherwise.
+		 * Multiple schedule requests within the delay period will be squashed into just one request. 
+		 */
+		public void scheduleRefreshJob() {
+			
+			synchronized (this) {
+				if(isScheduled) {
+					return;
+				}
+				assertTrue(getState() == Job.NONE || getState() == Job.RUNNING);
+				
+				isScheduled = true;
+				long runningTimeMillis = getRunningTimeMillis();
+				long nextPeriod = lastRequestMillis + throttleDelayMillis;
+				long deltaToNext = nextPeriod - runningTimeMillis;
+				if(deltaToNext > 0) {
+					//System.out.println(" schedule delta to next:" + deltaToNext);
+					schedule(deltaToNext);
+					return;
+				} else {
+					// continue and run immediately
+				}
+			}
+			
+			runThrottledCode();
+		}
+
+		protected long getRunningTimeMillis() {
+			return System.nanoTime() / 1000_000;
+		}
+		
+		@Override
+		protected final IStatus run(IProgressMonitor monitor) {
+			//System.out.println(getRunningTimeMillis() + " :job#run");
+			runThrottledCode();
+			return LangCore.createOkStatus("ok");
+		}
+		
+		public void markRequestFinished() {
+			synchronized (this) {
+				isScheduled = false;
+				lastRequestMillis = getRunningTimeMillis();
+			}
+			//System.out.println(lastRequestMillis + " lastRequestFinished");
+		}
+		
+		protected abstract void runThrottledCode();
+	}
+	
+	protected class NavigatorModelListener implements IDisposable {
+		
+		@Override
+		public void dispose() {
+		}
+		
+		// we use throttle Job as a workaround to to ensure label is updated, due to bug:
+		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=430005
+		protected final ThrottleCodeJob viewerRefreshThrottleJob = new ThrottleCodeJob(1200) {
+			@Override
+			protected void runThrottledCode() {
+				postRefreshEventToUI(this, getElementsToRefresh());
+			}
+		};
+		
+		protected Indexable<Object> getElementsToRefresh() {
+			return new ArrayList2<>();
+		};
+		
+		protected void postRefreshEventToUI(ThrottleCodeJob throttleCodeJob, Indexable<Object> elementsToRefresh) {
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					throttleCodeJob.markRequestFinished();
+					
+					if(SWTUtil.isOkToUse(getViewer().getControl())) {
+						for (Object element : elementsToRefresh) {
+							getViewer().refresh(element);
+						}
+					}
+				}
+			});
+			
+		}
+		
 	}
 	
 }

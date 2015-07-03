@@ -34,6 +34,10 @@ public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 		return targetName == null ? "<default>" : targetName;
 	}
 	
+	public BuildTarget getBuildTarget() {
+		return buildTarget;
+	}
+	
 	public BuildManager getBuildManager() {
 		return BuildManager.getInstance();
 	}

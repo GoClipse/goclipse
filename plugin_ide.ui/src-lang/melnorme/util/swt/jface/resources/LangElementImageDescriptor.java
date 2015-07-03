@@ -13,25 +13,22 @@ package melnorme.util.swt.jface.resources;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.LangImages;
-import melnorme.lang.tooling.EAttributeFlag;
-import melnorme.lang.tooling.EProtection;
-import melnorme.lang.tooling.ElementAttributes;
-import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.misc.HashcodeUtil;
 
-import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 
-public class LangElementImageDescriptor extends CompositeImageDescriptor {
+import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.tooling.EAttributeFlag;
+import melnorme.lang.tooling.EProtection;
+import melnorme.lang.tooling.ElementAttributes;
+import melnorme.utilbox.misc.HashcodeUtil;
+
+public class LangElementImageDescriptor extends CompositeImageDescriptorExt {
 	
 	public static final Point DEFAULT_SIZE = new Point(22, 16);
 	
 	protected final Point size;
-	protected final ImageDescriptor baseImage;
 	protected final ElementAttributes elementAttributes;
 	
 	
@@ -40,8 +37,7 @@ public class LangElementImageDescriptor extends CompositeImageDescriptor {
 	}
 	
 	public LangElementImageDescriptor(Point size, ImageDescriptor baseImage, ElementAttributes elementAttributes) {
-		super();
-		this.baseImage = assertNotNull(baseImage);
+		super(baseImage);
 		this.size = assertNotNull(size);
 		this.elementAttributes = assertNotNull(elementAttributes);
 	}
@@ -71,67 +67,23 @@ public class LangElementImageDescriptor extends CompositeImageDescriptor {
 	
 	/* -----------------  ----------------- */
 	
-	protected int xOffset;
-	protected int yOffset;
-	
 	@Override
 	protected void drawCompositeImage(int width, int height) {
 		ImageData bg = getImageData(baseImage);
 		drawImage(bg, 0, 0);
 		
 		
-		xOffset = 0;
-		yOffset = 0;
+		resetDrawPosition(Corner.TOP_LEFT);
 		drawTopLeftDecorations();
 		
-		xOffset = getSize().x;
-		yOffset = 0;
+		resetDrawPosition(Corner.TOP_RIGHT);
 		drawTopRightDecorations();
 		
-		xOffset = 0;
-		yOffset = getSize().y;
+		resetDrawPosition(Corner.BOTTOM_LEFT);
 		drawBottomLeftDecorations();
 		
-		xOffset = getSize().x;
-		yOffset = getSize().y;
+		resetDrawPosition(Corner.BOTTOM_RIGHT);
 		drawBottomRightDecorations();
-	}
-	
-	protected ImageData getImageData(ImageDescriptor desc) {
-		ImageData imageData = desc.getImageData();
-		if(imageData == null) {
-			LangCore.logError("Could not get ImageData.");
-			return new ImageData(1, 1, 32, DEFAULT_IMAGE_DATA.palette);
-		}
-		return imageData;
-	}
-	
-	protected void drawDecorationImage(ImageDescriptor desc, Direction direction, boolean drawBelow) {
-		ImageData imageData = getImageData(desc);
-		if(direction == Direction.LEFT) {
-			xOffset -= imageData.width;
-		}
-		int ypos = drawBelow ? yOffset : yOffset - imageData.height;
-		drawImage(imageData, xOffset, ypos);
-		
-		if(direction == Direction.RIGHT) {
-			xOffset += imageData.width;
-		}
-	}
-	
-	protected static enum Direction {
-		LEFT,
-		RIGHT,
-	}
-	
-	protected void drawImageSequence(Indexable<ImageDescriptor> images, Direction direction, boolean drawBelow, 
-			int xOffset, int yOffset) {
-		this.xOffset = xOffset;
-		this.yOffset = yOffset;
-		
-		for(ImageDescriptor desc : images) {
-			drawDecorationImage(desc, direction, drawBelow);
-		}
 	}
 	
 	/* -----------------  ----------------- */
@@ -139,34 +91,34 @@ public class LangElementImageDescriptor extends CompositeImageDescriptor {
 	protected void drawTopLeftDecorations() {
 		
 		if(elementAttributes.hasFlag(EAttributeFlag.TEMPLATED)) {
-			drawDecorationImage(LangImages.DESC_OVR_TEMPLATED, Direction.RIGHT, true);
+			drawOverlayAtCursor(LangImages.DESC_OVR_TEMPLATED, Corner.TOP_LEFT);
 		}
 	}
 	
 	protected void drawTopRightDecorations() {
 		
 		if(elementAttributes.hasFlag(EAttributeFlag.CONST)) {
-			drawDecorationImage(LangImages.DESC_OVR_CONST, Direction.LEFT, true);
+			drawOverlayAtCursor(LangImages.DESC_OVR_CONST, Corner.TOP_RIGHT);
 		}
 		if(elementAttributes.hasFlag(EAttributeFlag.IMMUTABLE)) {
-			drawDecorationImage(LangImages.DESC_OVR_IMMUTABLE, Direction.LEFT, true);
+			drawOverlayAtCursor(LangImages.DESC_OVR_IMMUTABLE, Corner.TOP_RIGHT);
 		}
 		
 		if(elementAttributes.hasFlag(EAttributeFlag.FINAL)) {
-			drawDecorationImage(LangImages.DESC_OVR_FINAL, Direction.LEFT, true);
+			drawOverlayAtCursor(LangImages.DESC_OVR_FINAL, Corner.TOP_RIGHT);
 		}
 		if(elementAttributes.hasFlag(EAttributeFlag.ABSTRACT)) {
-			drawDecorationImage(LangImages.DESC_OVR_ABSTRACT, Direction.LEFT, true);
+			drawOverlayAtCursor(LangImages.DESC_OVR_ABSTRACT, Corner.TOP_RIGHT);
 		}
 		if(elementAttributes.hasFlag(EAttributeFlag.STATIC)) {
-			drawDecorationImage(LangImages.DESC_OVR_STATIC, Direction.LEFT, true);
+			drawOverlayAtCursor(LangImages.DESC_OVR_STATIC, Corner.TOP_RIGHT);
 		}
 	}
 	
 	protected void drawBottomLeftDecorations() {
 		
 		if(elementAttributes.hasFlag(EAttributeFlag.ALIASED)) {
-			drawDecorationImage(LangImages.DESC_OVR_ALIAS, Direction.RIGHT, false);
+			drawOverlayAtCursor(LangImages.DESC_OVR_ALIAS, Corner.BOTTOM_LEFT);
 		}
 	}
 	
@@ -174,7 +126,7 @@ public class LangElementImageDescriptor extends CompositeImageDescriptor {
 		
 		ImageDescriptor protectionDecoration = getProtectionDecoration();
 		if(protectionDecoration != null) {
-			drawDecorationImage(protectionDecoration, Direction.LEFT, false);
+			drawOverlayAtCursor(protectionDecoration, Corner.BOTTOM_RIGHT);
 		}
 	}
 	

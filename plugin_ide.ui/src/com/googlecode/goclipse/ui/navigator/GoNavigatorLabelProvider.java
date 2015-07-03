@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.ISharedImages;
@@ -38,10 +37,10 @@ import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 import com.googlecode.goclipse.ui.navigator.elements.IGoProjectElement;
 
-import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
+import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
 import melnorme.utilbox.misc.MiscUtil;
 
-public class GoNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider  {
+public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 	
 	protected static final RGB LOCATION_ANNOTATION_FG = new RGB(128, 128, 128);
 	
@@ -101,20 +100,20 @@ public class GoNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider
 		return new DefaultGetImageSwitcher() {
 			
 			@Override
-			public Image visitOther(Object element) {
+			public ImageDescriptor visitOther(Object element) {
 				return getBaseImage_Other(element);
 			}
 		};
 	}
 	
-	public Image getBaseImage_Other(Object element) {
+	public ImageDescriptor getBaseImage_Other(Object element) {
 		
 		if(element instanceof IGoProjectElement) {
 			if(element instanceof GoRootElement) {
-				return GoPluginImages.NAVIGATOR_GOROOT_ENTRY.getImage();
+				return GoPluginImages.NAVIGATOR_GOROOT_ENTRY.getDescriptor();
 			}
 			if(element instanceof GoPathEntryElement) {
-				return GoPluginImages.NAVIGATOR_GOPATH_ENTRY.getImage();
+				return GoPluginImages.NAVIGATOR_GOPATH_ENTRY.getDescriptor();
 			}
 			assertFail();
 		}
@@ -124,17 +123,16 @@ public class GoNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider
 			
 			try {
 				if (fileStore.fetchInfo().isDirectory()) {
-					return GoPluginImages.NAVIGATOR_SOURCE_PACKAGE_FOLDER.getImage();
+					return GoPluginImages.NAVIGATOR_SOURCE_PACKAGE_FOLDER.getDescriptor();
 				}
 				
 				// TODO: should cleanup up this.
 				
 				IEditorDescriptor descriptor = IDE.getEditorDescriptor(fileStore.getName());
 				if (descriptor != null) {
-					return descriptor.getImageDescriptor().createImage();
+					return descriptor.getImageDescriptor();
 				} else {
-					return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-						ISharedImages.IMG_OBJ_FILE).createImage();
+					return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE);
 				}
 			} catch (PartInitException e) {
 				
@@ -144,10 +142,7 @@ public class GoNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider
 		if(element instanceof IResource) {
 			IResource resource = (IResource) element;
 			
-			ImageDescriptor decoratedImage = getResourceImageDescriptor(resource);
-			if(decoratedImage != null) {
-				return decoratedImage.createImage();
-			}
+			return getResourceImageDescriptor(resource);
 		}
 		
 		return null;

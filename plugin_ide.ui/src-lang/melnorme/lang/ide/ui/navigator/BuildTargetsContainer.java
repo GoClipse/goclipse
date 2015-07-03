@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.navigator;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import org.eclipse.core.resources.IProject;
 
@@ -21,6 +22,7 @@ import melnorme.lang.ide.core.project_model.BuildManager;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.HashcodeUtil;
 
 public class BuildTargetsContainer extends ElementContainer<BuildTargetElement> {
 	
@@ -43,6 +45,25 @@ public class BuildTargetsContainer extends ElementContainer<BuildTargetElement> 
 	
 	public String getText() {
 		return "Build Targets";
+	}
+	
+	public IProject getProject() {
+		return buildInfo.getProject();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(!(obj instanceof BuildTargetsContainer)) return false;
+		
+		BuildTargetsContainer other = (BuildTargetsContainer) obj;
+		
+		return areEqual(getProject(), other.getProject());
+	}
+	
+	@Override
+	public int hashCode() {
+		return HashcodeUtil.combinedHashCode(getProject());
 	}
 	
 }
