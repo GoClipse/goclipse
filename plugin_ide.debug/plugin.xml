@@ -188,21 +188,5 @@
          <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IColumnPresentationFactory"/>
 	  </factory>         
    </extension>	
-
-   
-   <extension point="org.eclipse.core.contenttype.contentTypes"> 
-      <content-type
-         id="com.googlecode.goclipse.debug.debugTextContentType"
-         name="Go debug files"
-         base-type="org.eclipse.core.runtime.text"
-         priority="low"
-         default-charset="UTF-8">
-      </content-type>
-      
-      <file-association
-            content-type="com.googlecode.goclipse.debug.debugTextContentType"
-            file-extensions="goc,s">
-      </file-association>
-   </extension>
    
 </plugin>

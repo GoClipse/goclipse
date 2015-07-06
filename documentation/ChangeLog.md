@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+  ▶ Recommended/tested CDT version is now 8.7.0
+
 
 ### 0.11.1
  * Fixed #135: Cannot set breakpoints in editor.
