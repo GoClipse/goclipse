@@ -12,6 +12,7 @@ package melnorme.lang.ide.debug.core;
 
 
 import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
+import org.eclipse.cdt.dsf.debug.service.IDsfDebugServicesFactory;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,7 +21,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ISourceLocator;
 
-import melnorme.lang.ide.debug.core.services.DebugServicesExtensions;
+import melnorme.lang.ide.debug.core.services.LangDebugServicesExtensions;
 import melnorme.lang.ide.launching.ProcessSpawnInfo;
 
 public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangLaunchConfigurationDelegate_Actual {
@@ -42,16 +43,16 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 		}
 		
 		@Override
-		protected DebugServicesExtensions createServicesExtensions() {
-			return doCreateServicesExtensions();
+		protected LangDebugServicesExtensions createServicesExtensions(IDsfDebugServicesFactory parentServiceFactory) {
+			return doCreateServicesExtensions(parentServiceFactory);
 		}
 	}
 	
 	protected abstract GdbLaunch doCreateGdbLaunch(ILaunchConfiguration configuration, String mode,
 			ISourceLocator locator);
 	
-	protected DebugServicesExtensions doCreateServicesExtensions() {
-		return new DebugServicesExtensions();
+	protected LangDebugServicesExtensions doCreateServicesExtensions(IDsfDebugServicesFactory parentServiceFactory) {
+		return new LangDebugServicesExtensions(parentServiceFactory);
 	}
 	
 	@Override
