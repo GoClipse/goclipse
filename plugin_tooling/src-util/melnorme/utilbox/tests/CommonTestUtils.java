@@ -31,6 +31,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
+import melnorme.utilbox.core.fntypes.ThrowingRunnable;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
@@ -127,6 +128,30 @@ public class CommonTestUtils {
 				StringUtil.collToString(expectedMissing, "\n") + "\n" +
 				"== -- =="
 		);
+	}
+	
+	public static <EXC extends Throwable> void verifyThrows(ThrowingRunnable<EXC> runnable) {
+		verifyThrows(runnable, null);
+	}
+	
+	public static <EXC extends Throwable> void verifyThrows(ThrowingRunnable<?> runnable, 
+			Class<EXC> klass) {
+		verifyThrows(runnable, klass, null);
+	}
+	
+	public static <EXC extends Throwable> void verifyThrows(ThrowingRunnable<?> runnable, 
+			Class<EXC> klass, String exceptionString) {
+		try {
+			runnable.run();
+			assertFail();
+		} catch(Throwable e) {
+			if(klass != null) {
+				assertTrue(klass.isInstance(e));
+			}
+			if(exceptionString != null) {
+				assertTrue(e.toString().contains(exceptionString));
+			}
+		}
 	}
 	
 	public static void assertExceptionContains(Exception exception, String string) {
