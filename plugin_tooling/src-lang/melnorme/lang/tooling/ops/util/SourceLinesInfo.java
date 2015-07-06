@@ -76,10 +76,9 @@ public class SourceLinesInfo {
 		
 		int offset = getOffsetForLine(lineIndex) + columnIndex;
 		
-		/* FIXME:  test*/
-//		if(offset >= source.length()) {
-//			throw new CommonException("Invalid line+column, out of bounds.");
-//		}
+		if(offset >= source.length()) {
+			throw new CommonException("Invalid line+column, out of bounds.");
+		}
 		return offset;
 	}
 
