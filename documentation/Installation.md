@@ -1,13 +1,13 @@
 ## Installation
 
 #### Requirements: 
- * Eclipse 4.4.1 (Luna SR1) or later.
+ * Eclipse 4.5 (Mars) or later.
  * Java VM version 8 or later.
  * Go development tools and libraries installed on target machine (http://golang.org/doc/install.html). Currently, only the plan 9 style compilers are supported. GCCGO may be supported in the future
 
 #### Instructions:
  1. Use your existing Eclipse, or download a new Eclipse package from http://www.eclipse.org/downloads/. 
-  * For an Eclipse package without any other IDEs or extras (such a VCS tools), download the ["Platform Runtime Binary"](http://archive.eclipse.org/eclipse/downloads/drops4/R-4.4.1-201409250400/#PlatformRuntime). 
+  * For an Eclipse package without any other IDEs or extras (such a VCS tools), download the ["Platform Runtime Binary"](http://archive.eclipse.org/eclipse/downloads/drops4/R-4.5-201506032000/#PlatformRuntime). 
  1. Start Eclipse, go to `Help -> Install New Software...`
  1. Click the `Add...` button, then enter the Update Site URL: **http://goclipse.github.io/releases/** in the Location field, click OK.
  1. Select the recently added update site in the `Work with:` dropdown. Type `GoClipse` in the filter box. Now the Goclipse feature should appear below.

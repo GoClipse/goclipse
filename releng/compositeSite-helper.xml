@@ -2,7 +2,7 @@
 <project name="project" >
 
 	<property name="repo.name" value="Goclipse Site" />
-	<property name="repo.dir" value="UpdateSite-skeleton" />
+	<property name="repo.dir" value="ProjectSite-skeleton/releases" />
 
 <!-- 
 ======================================================================
@@ -15,7 +15,7 @@ eclipse -application org.eclipse.ant.core.antRunner -consolelog createCompositeR
 		<p2.composite.repository failOnExists="true">
 			<repository location="${repo.dir}" name="${repo.name}" compressed="false" />
 			<add>
-				<repository location="http://download.eclipse.org/releases/luna" />
+				<repository location="http://download.eclipse.org/releases/mars" />
 				<repository location="local-repo" />
 			</add>
 		</p2.composite.repository>

@@ -7,7 +7,10 @@
 <repository location="http://archive.eclipse.org/tools/orbit/downloads/drops/R20130517111416/repository/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.platform.feature.group" version="4.4.0.v20140925-0400"/>
+<unit id="org.eclipse.platform.feature.group" version="4.5.0.v20150603-2358"/>
+<repository location="http://download.eclipse.org/releases/mars"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.cdt.platform.feature.group" version="8.7.0.201506070905"/>
 <unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.7.0.201506070905"/>
 <repository location="http://download.eclipse.org/releases/mars"/>
