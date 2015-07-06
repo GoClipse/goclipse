@@ -11,14 +11,15 @@
 package com.googlecode.goclipse.debug.core;
 
 
-import melnorme.lang.ide.debug.core.AbstractLangDebugLaunchConfigurationDelegate;
-import melnorme.lang.ide.debug.core.GdbLaunchDelegateExtension;
-import melnorme.lang.ide.debug.core.services.DebugServicesExtensions;
-
+import org.eclipse.cdt.dsf.debug.service.IDsfDebugServicesFactory;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ISourceLocator;
+
+import melnorme.lang.ide.debug.core.AbstractLangDebugLaunchConfigurationDelegate;
+import melnorme.lang.ide.debug.core.GdbLaunchDelegateExtension;
+import melnorme.lang.ide.debug.core.services.LangDebugServicesExtensions;
 
 public class GoDebugLaunchConfigurationDelegate extends AbstractLangDebugLaunchConfigurationDelegate {
 	
@@ -32,8 +33,9 @@ public class GoDebugLaunchConfigurationDelegate extends AbstractLangDebugLaunchC
 			}
 			
 			@Override
-			protected DebugServicesExtensions createServicesExtensions() {
-				return new GoDebugServicesExtensions();
+			protected LangDebugServicesExtensions createServicesExtensions(
+					IDsfDebugServicesFactory parentServiceFactory) {
+				return new GoDebugServicesExtensions(parentServiceFactory);
 			};
 		};
 	}
