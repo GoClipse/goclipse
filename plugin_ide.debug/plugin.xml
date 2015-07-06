@@ -19,7 +19,7 @@
             type="LANG_PROJECT_ID.ide.core.LaunchConfigurationType">
       </launchDelegate>
    </extension>
-
+   
 
    <!-- launch UI -->
 
@@ -183,6 +183,6 @@
          <adapter type="org.eclipse.debug.ui.contexts.ISuspendTrigger"/>
          <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IColumnPresentationFactory"/>
 	  </factory>         
-   </extension>	
-
+   </extension>
+   
 </plugin>

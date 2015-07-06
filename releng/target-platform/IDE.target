@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="LANG_IDE_NAME Target" sequenceNumber="32">
+<?pde version="3.8"?><target name="LANG_IDE_NAME Target" sequenceNumber="33">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.junit" version="4.11.0.v201303080030"/>
@@ -10,9 +10,9 @@
 <repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.cdt.platform.feature.group" version="8.6.0.201502131403"/>
-<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.6.0.201502131403"/>
-<repository location="http://download.eclipse.org/releases/luna/"/>
+<unit id="org.eclipse.cdt.platform.feature.group" version="8.7.0.201506070905"/>
+<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.7.0.201506070905"/>
+<repository location="http://download.eclipse.org/releases/mars"/>
 </location>
 </locations>
 </target>

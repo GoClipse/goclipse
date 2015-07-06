@@ -2,6 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
+  ▶ Recommended/tested CDT version is now 8.7.0
+
  * Fixed: PATH of external tools bungled if original PATH not set (Windows) 
 
  * Added: Show error message dialog if starting Eclipse with a Java version below the minimum.
