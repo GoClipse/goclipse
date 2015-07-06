@@ -15,7 +15,7 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import melnorme.lang.tests.CommonToolingTest;
-import melnorme.utilbox.core.fntypes.Function;
+import java.util.function.Function;
 import melnorme.utilbox.misc.Location;
 
 /**
@@ -119,10 +119,10 @@ public class MiscFileUtils {
 		
 		for (File file : children) {
 			if(file.isDirectory() && recurseDirs) {
-				fileVisitor.evaluate(file);
+				fileVisitor.apply(file);
 				traverseFiles(file, recurseDirs, fileVisitor, filter);
 			} else {
-				fileVisitor.evaluate(file);
+				fileVisitor.apply(file);
 			}
 		}
 	}

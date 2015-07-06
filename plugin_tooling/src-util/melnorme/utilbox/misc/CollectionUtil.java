@@ -22,7 +22,7 @@ import java.util.function.Function;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;
 import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Predicate;
 
 /**
  * Utils for creation, query, and modification of Collection classes.
@@ -179,7 +179,7 @@ public class CollectionUtil {
 	public static <E, L extends List<E>> L filter(L list, Predicate<E> predicate) {
 		for (Iterator<? extends E> iter = list.iterator(); iter.hasNext(); ) {
 			E obj = iter.next();
-			if(predicate.evaluate(obj)) {
+			if(predicate.test(obj)) {
 				iter.remove();
 			}
 		}
@@ -191,7 +191,7 @@ public class CollectionUtil {
 	public static <E> boolean removeElement(List<? extends E> list, Predicate<E> predicate) {
 		for (Iterator<? extends E> iter = list.iterator(); iter.hasNext(); ) {
 			E obj = iter.next();
-			if(predicate.evaluate(obj)) {
+			if(predicate.test(obj)) {
 				iter.remove();
 				return true;
 			}

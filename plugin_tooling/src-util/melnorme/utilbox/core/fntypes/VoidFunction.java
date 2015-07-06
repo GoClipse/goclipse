@@ -1,9 +1,9 @@
 package melnorme.utilbox.core.fntypes;
 
 
-public interface VoidFunction<T> extends Function<T, Void> {
+public interface VoidFunction<T> extends java.util.function.Function<T, Void> {
 	
 	@Override
-	Void evaluate(T obj);
+	Void apply(T obj);
 	
 }

@@ -21,7 +21,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Predicate;
 import melnorme.utilbox.ownership.IDisposable;
 
 public class MiscUtil extends PathUtil {
@@ -59,7 +59,7 @@ public class MiscUtil extends PathUtil {
 	
 	public static final class NotNullPredicate<T> implements Predicate<T> {
 		@Override
-		public boolean evaluate(T obj) {
+		public boolean test(T obj) {
 			return obj != null;
 		}
 	}
@@ -70,7 +70,7 @@ public class MiscUtil extends PathUtil {
 	
 	public static final class IsNullPredicate<T> implements Predicate<T> {
 		@Override
-		public boolean evaluate(T obj) {
+		public boolean test(T obj) {
 			return obj == null;
 		}
 	}

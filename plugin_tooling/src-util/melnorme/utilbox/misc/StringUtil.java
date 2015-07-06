@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.core.fntypes.Function;
+import java.util.function.Function;
 
 /**
  * Miscelleanous String utilities 
@@ -57,7 +57,7 @@ public final class StringUtil {
 		while(iter.hasNext()) {
 			T element = iter.next();
 			
-			sb.append(toStringFn == null ? element.toString() : toStringFn.evaluate(element));
+			sb.append(toStringFn == null ? element.toString() : toStringFn.apply(element));
 			
 			if(iter.hasNext()) {
 				sb.append(sep);

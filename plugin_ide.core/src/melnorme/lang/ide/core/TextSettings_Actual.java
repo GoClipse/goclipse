@@ -1,7 +1,7 @@
 package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-import melnorme.utilbox.core.fntypes.Function;
+import java.util.function.Function;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.jface.text.IDocument;
@@ -46,7 +46,7 @@ public class TextSettings_Actual {
 	public static final String[] PARTITION_TYPES = ArrayUtil.map(LangPartitionTypes.values(), 
 		new Function<LangPartitionTypes, String>() {
 			@Override
-			public String evaluate(LangPartitionTypes obj) {
+			public String apply(LangPartitionTypes obj) {
 				return obj.getId();
 			}
 		}, String.class

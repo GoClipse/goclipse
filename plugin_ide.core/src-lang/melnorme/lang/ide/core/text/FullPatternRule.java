@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.text;
 
-import melnorme.utilbox.core.fntypes.Function;
+import java.util.function.Function;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
@@ -86,7 +86,7 @@ public class FullPatternRule implements IRule {
 	
 	public static final Function<String, char[]> STRING_to_CHAR_ARRAY = new Function<String, char[]>() {
 		@Override
-		public char[] evaluate(String obj) {
+		public char[] apply(String obj) {
 			return obj.toCharArray();
 		}
 	};
