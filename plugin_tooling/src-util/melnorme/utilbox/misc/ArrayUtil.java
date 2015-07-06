@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.List;
 
 import melnorme.utilbox.collections.Collection2;
-import melnorme.utilbox.core.fntypes.Function;
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ArrayUtil {
 	
@@ -318,7 +318,7 @@ public class ArrayUtil {
 	/** @return true if array contains an element that matched given predicate. */
 	public static <T> boolean search(T[] array, Predicate<T> predicate) {
 		for(T elem: array) {
-			if(predicate.evaluate(elem))
+			if(predicate.test(elem))
 				return true;
 		}
 		return false;
@@ -334,7 +334,7 @@ public class ArrayUtil {
 	public static <T, R> R[] map(T[] array, Function<? super T, ? extends R> evalFunction, Class<R> klass) {
 		R[] newArray = create(array.length, klass);
 		for(int i = 0; i < newArray.length; i++) {
-			newArray[i] = evalFunction.evaluate(array[i]);
+			newArray[i] = evalFunction.apply(array[i]);
 		}
 		return newArray;
 	}
@@ -354,7 +354,7 @@ public class ArrayUtil {
 		R[] newArray = create(coll.size(), klass);
 		int i = 0;
 		for(T elem : coll) {
-			newArray[i] = evalFunction.evaluate(elem);
+			newArray[i] = evalFunction.apply(elem);
 			i++;
 		}
 		return newArray;
@@ -365,7 +365,7 @@ public class ArrayUtil {
 		R[] newArray = create(coll.size(), klass);
 		int i = 0;
 		for(T elem : coll) {
-			newArray[i] = evalFunction.evaluate(elem);
+			newArray[i] = evalFunction.apply(elem);
 			i++;
 		}
 		return newArray;
@@ -377,7 +377,7 @@ public class ArrayUtil {
 		assertTrue(newArray.length <= array.length);
 		int newIx = 0, arrayIx = 0;
 		while(arrayIx < array.length) {
-			if(predicate.evaluate(array[arrayIx])) {
+			if(predicate.test(array[arrayIx])) {
 				newArray[newIx] = array[arrayIx];
 				newIx++; arrayIx++;
 			} else {

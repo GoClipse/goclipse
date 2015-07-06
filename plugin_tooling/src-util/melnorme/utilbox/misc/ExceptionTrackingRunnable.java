@@ -12,8 +12,8 @@ package melnorme.utilbox.misc;
 
 
 /**
- * A helper {@link Runnable} that tracks an exception thrown during its main run method.
- * Also stores the result of the main run method, which can be retrieve after the main run has finished.
+ * A helper {@link Runnable} that tracks an exception thrown during its run method.
+ * Also stores the result of the run method, which can be retrieve after it has finished.
  * Retrieving the result will rethrow the original exception, if any was thrown.
  * The result can be accessed by other threads.
  */
