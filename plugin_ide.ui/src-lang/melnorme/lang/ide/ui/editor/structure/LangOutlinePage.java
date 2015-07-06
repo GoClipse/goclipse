@@ -113,10 +113,11 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 	
 	/* ----------------- Show in target ----------------- */
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class key) {
-		if (key == IShowInTarget.class) {
-			return getShowInTarget();
+	public <T> T getAdapter(Class<T> adapter) {
+		if(adapter == IShowInTarget.class) {
+			return (T) getShowInTarget();
 		}
 		
 		return null;
