@@ -16,11 +16,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.lang.ide.core.operations.BuildMarkersUtil;
-import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.ToolMarkersUtil;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
@@ -70,7 +70,7 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 			
 			// TODO: Lang process result
 			
-			BuildMarkersUtil.addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project));
+			ToolMarkersUtil.addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project));
 		}
 	}
 	

@@ -3,7 +3,7 @@ package melnorme.lang.ide.core;
 import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_EngineClient;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_BuildManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
-import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 
 public class LangCore_Actual {
 	
