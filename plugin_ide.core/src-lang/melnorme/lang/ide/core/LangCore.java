@@ -12,7 +12,7 @@ package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;

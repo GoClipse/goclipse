@@ -8,17 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.project_model;
+package melnorme.lang.ide.core.operations.build;
 
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Platform;
+import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.project_model.IProjectModelListener;
+import melnorme.lang.ide.core.project_model.ProjectBasedModel;
+import melnorme.lang.ide.core.project_model.ProjectBasedModelManager;
+import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -69,7 +72,7 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 		
 	}
 	
-	protected BuildTarget createBuildTarget(boolean enabled, String targetName) {
+	public BuildTarget createBuildTarget(boolean enabled, String targetName) {
 		return new BuildTarget(enabled, targetName);
 	}
 	
@@ -90,6 +93,10 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 	
 	@Override
 	protected void bundleProjectAdded(IProject project) {
+		loadProjectBuildInfo(project);
+	}
+	
+	protected void loadProjectBuildInfo(IProject project) {
 		ProjectBuildInfo newProjectBuildInfo;
 		
 		String targetsPrefValue = getBuildTargetsPref(project);
@@ -107,8 +114,21 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 		setProjectBuildInfo(project, newProjectBuildInfo);
 	}
 	
-	protected ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
+	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
 		return buildModel.setProjectInfo(project, newProjectBuildInfo);
+	}
+	
+	public ProjectBuildInfo setAndSaveProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
+		buildModel.setProjectInfo(project, newProjectBuildInfo);
+		
+		try {
+			String data = createSerializer().writeProjectBuildInfo(newProjectBuildInfo);
+			BUILD_TARGETS_PREF.set(project, data);
+		} catch(CommonException | BackingStoreException e) {
+			LangCore.logError("Error persisting project build info: ", e);
+		}
+		
+		return newProjectBuildInfo;
 	}
 	
 	@Override
@@ -121,7 +141,7 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 	protected static final StringPreference BUILD_TARGETS_PREF = new StringPreference("build_targets", "");
 	
 	protected BuildTargetsSerializer createSerializer() {
-		return new BuildTargetsSerializer();
+		return new BuildTargetsSerializer(this);
 	}
 	
 	protected String getBuildTargetsPref(IProject project) {

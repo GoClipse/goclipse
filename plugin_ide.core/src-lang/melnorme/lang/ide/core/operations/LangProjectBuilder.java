@@ -11,7 +11,7 @@
 package melnorme.lang.ide.core.operations;
 
 
-import static melnorme.lang.ide.core.project_model.BuildManagerMessages.MSG_Starting_LANG_Build;
+import static melnorme.lang.ide.core.operations.build.BuildManagerMessages.MSG_Starting_LANG_Build;
 import static melnorme.lang.ide.core.utils.TextMessageUtils.headerVeryBig;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -28,6 +28,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
+import melnorme.lang.ide.core.operations.build.IBuildTargetOperation;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;

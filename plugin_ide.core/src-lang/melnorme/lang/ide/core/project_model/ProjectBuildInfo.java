@@ -14,7 +14,9 @@ import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
@@ -69,7 +71,7 @@ public class ProjectBuildInfo {
 		}
 		
 		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildManager, project, newBuildTargets);
-		buildManager.setProjectBuildInfo(project, newProjectBuildInfo);
+		buildManager.setAndSaveProjectBuildInfo(project, newProjectBuildInfo);
 	}
 	
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations;
+package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
@@ -17,7 +17,8 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.HashcodeUtil;
 

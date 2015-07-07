@@ -28,7 +28,7 @@ import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.project_model.BuildManager.BuildModel;
+import melnorme.lang.ide.core.operations.build.BuildManager.BuildModel;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.project_model.UpdateEvent;

@@ -33,7 +33,7 @@ import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public class BuildMarkersUtil {
+public class ToolMarkersUtil {
 	
 	public static void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath) throws CoreException {
 		
