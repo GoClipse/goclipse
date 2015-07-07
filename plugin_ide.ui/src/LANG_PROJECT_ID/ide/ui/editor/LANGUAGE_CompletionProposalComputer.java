@@ -10,14 +10,14 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import melnorme.lang.ide.core.utils.TimeoutProgressMonitor;
+import org.eclipse.core.runtime.CoreException;
+
+import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-
-import org.eclipse.core.runtime.CoreException;
 
 public class LANGUAGE_CompletionProposalComputer extends LangCompletionProposalComputer {
 	

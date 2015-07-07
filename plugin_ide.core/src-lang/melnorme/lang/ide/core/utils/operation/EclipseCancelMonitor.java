@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.process;
+package melnorme.lang.ide.core.utils.operation;
 
 import melnorme.utilbox.concurrency.ICancelMonitor;
 

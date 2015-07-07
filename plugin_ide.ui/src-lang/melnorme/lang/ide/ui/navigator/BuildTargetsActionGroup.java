@@ -10,14 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.navigator;
 
-import java.text.MessageFormat;
+import static java.text.MessageFormat.format;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
@@ -25,13 +22,12 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.BuildManagerMessages;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
-import melnorme.lang.ide.core.utils.CoreOperationAdapter;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider.ViewPartActionGroup;
+import melnorme.lang.ide.ui.operations.EclipseJobUIOperation;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -129,39 +125,19 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		@Override
 		public void run() {
-			new Job(MessageFormat.format(BuildManagerMessages.INFO_BuildTargetAction, buildTarget.getTargetName())) {
-				
+			String opName = format(BuildManagerMessages.INFO_BuildTargetAction, buildTarget.getTargetName());
+			new EclipseJobUIOperation(opName) {
 				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						new CoreOperationAdapter() {
-							@Override
-							public void doRun(IProgressMonitor pm) 
-									throws CommonException, CoreException, OperationCancellation {
-								doOperation(pm);
-							}
-						}.coreRun(monitor);
-						
-					} catch(CoreException ce) {
-						/* FIXME: report error to user*/
-						LangCore.logStatus(ce);
-					} catch(OperationCancellation e) {
-						return Status.CANCEL_STATUS;
-					}
-					
-					return Status.OK_STATUS;
+				protected void doBackgroundComputation(IProgressMonitor pm)
+						throws CoreException, CommonException, OperationCancellation {
+					IProject project = getBuildInfo().getProject();
+					OperationInfo opInfo = new OperationInfo(project, true, "");
+					buildTarget.getToolManager().notifyOperationStarted(opInfo);
+					buildTarget.newBuildTargetOperation(opInfo, project, false)
+						.execute(pm);
 				}
-				
-			}
-			.schedule();
-		}
-		
-		protected void doOperation(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-			IProject project = getBuildInfo().getProject();
-			OperationInfo opInfo = new OperationInfo(project, true, "");
-			buildTarget.getToolManager().notifyOperationStarted(opInfo);
-			buildTarget.newBuildTargetOperation(opInfo, project, false)
-				.execute(pm);
+			}			
+			.executeAndHandle();
 		}
 		
 	}

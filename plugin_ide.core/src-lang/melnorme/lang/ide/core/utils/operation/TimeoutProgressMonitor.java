@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils;
+package melnorme.lang.ide.core.utils.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 

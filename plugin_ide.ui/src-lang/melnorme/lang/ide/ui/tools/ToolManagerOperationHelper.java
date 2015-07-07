@@ -11,7 +11,7 @@
 package melnorme.lang.ide.ui.tools;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
+import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.IOperationHelper;
 import melnorme.utilbox.concurrency.OperationCancellation;

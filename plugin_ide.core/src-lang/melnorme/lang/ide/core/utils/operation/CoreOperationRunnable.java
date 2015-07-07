@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils;
+package melnorme.lang.ide.core.utils.operation;
 
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,12 +22,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
-public abstract class CoreOperationAdapter implements IRunnableWithProgress {
+@FunctionalInterface
+public interface CoreOperationRunnable extends IRunnableWithProgress {
+	
+	public abstract void doRun(IProgressMonitor pm) throws CommonException, CoreException, OperationCancellation;
 	
 	@Override
-	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+	default void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		try {
-			coreRun(monitor);
+			coreAdaptedRun(monitor);
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
 		} catch (OperationCancellation e) {
@@ -35,7 +38,7 @@ public abstract class CoreOperationAdapter implements IRunnableWithProgress {
 		}
 	}
 	
-	public void coreRun(IProgressMonitor monitor) throws CoreException, OperationCancellation {
+	default void coreAdaptedRun(IProgressMonitor monitor) throws CoreException, OperationCancellation {
 		try {
 			doRun(monitor);
 		} catch (CommonException ce) {
@@ -44,7 +47,5 @@ public abstract class CoreOperationAdapter implements IRunnableWithProgress {
 			throw new OperationCancellation();
 		} 
 	}
-	
-	public abstract void doRun(IProgressMonitor pm) throws CommonException, CoreException, OperationCancellation;
 	
 }
