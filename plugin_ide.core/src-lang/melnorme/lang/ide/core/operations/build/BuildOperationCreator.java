@@ -17,13 +17,17 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.concurrent.Callable;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
 public class BuildOperationCreator implements BuildManagerMessages {
@@ -40,36 +44,56 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		this.parentOpInfo = assertNotNull(parentOpInfo);
 	}
 	
-	public IBuildTargetOperation getBuildOperation() throws CommonException {
-		return new CompositeBuildOperation(createBuildOperations());
+	public IBuildTargetOperation newProjectBuildOperation() throws CommonException {
+		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo_NonNull(project);
+		return newProjectBuildOperation(buildInfo.getEnabledTargets());
 	}
 	
-	protected ArrayList2<IBuildTargetOperation> createBuildOperations() throws CommonException {
-		ArrayList2<IBuildTargetOperation> operations = ArrayList2.create();
+	protected ArrayList2<IBuildTargetOperation> operations;
+	
+	public IBuildTargetOperation newProjectBuildOperation(Indexable<BuildTarget> targetsToBuild) 
+			throws CommonException {
+		operations = ArrayList2.create();
 		
 		String startMsg = headerBIG(format(MSG_BuildingProject, LangCore_Actual.LANGUAGE_NAME, project.getName()));
-		operations.add(newMessageOperation(project, startMsg, true));
+		addOperation(newMessageOperation(project, startMsg, true));
 		
-		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
-		if(buildInfo == null || buildInfo.getBuildTargets().isEmpty()) {
-			operations.add(newMessageOperation(project, headerBIG(MSG_NoBuildTargetsEnabled), false));
-			return operations;
+		addMarkerCleanOperation();
+		
+		if(targetsToBuild.isEmpty()) {
+			addOperation(newMessageOperation(project, 
+				TextMessageUtils.headerSMALL(MSG_NoBuildTargetsEnabled), false));
 		}
 		
-		for(BuildTarget buildTarget : buildInfo.getBuildTargets()) {
-			if(buildTarget.isEnabled()) {
-				operations.add(newBuildTargetOperation(project, buildTarget));
-			}
+		for(BuildTarget buildTarget : targetsToBuild) {
+			addOperation(newBuildTargetOperation(project, buildTarget));
 		}
 		
-		operations.add(newMessageOperation(project, headerBIG(MSG_BuildTerminated), false));
 		
-		return operations;
+		addOperation(newMessageOperation(project, headerBIG(MSG_BuildTerminated), false));
+		
+		return new CompositeBuildOperation(operations);
 	}
 	
-	protected CommonBuildTargetOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget) 
+	protected boolean addOperation(IBuildTargetOperation buildOp) {
+		return operations.add(buildOp);
+	}
+	
+	protected void addMarkerCleanOperation() {
+		addOperation((pm) -> deleteProjectMarkers(LangCore_Actual.BUILD_PROBLEM_ID));
+	}
+	
+	protected void deleteProjectMarkers(String markerType) {
+		try {
+			project.deleteMarkers(markerType, true, IResource.DEPTH_INFINITE);
+		} catch (CoreException ce) {
+			LangCore.logStatus(ce);
+		}
+	}
+	
+	protected IBuildTargetOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget) 
 			throws CommonException {
-		return buildTarget.newBuildTargetOperation(parentOpInfo, project, fullBuild);
+		return buildTarget.newBuildTargetSubOperation(parentOpInfo, project, fullBuild);
 	}
 	
 	protected IBuildTargetOperation newMessageOperation(IProject project, String msg, boolean clearConsole) {

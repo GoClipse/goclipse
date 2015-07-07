@@ -48,7 +48,7 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	@Override
-	public CommonBuildTargetOperation createBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo, IProject project,
 			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
 		return new GoBuildTargetOperation(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 	}

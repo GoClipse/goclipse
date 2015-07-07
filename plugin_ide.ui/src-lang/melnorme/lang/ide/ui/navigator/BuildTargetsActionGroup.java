@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.navigator;
 
 import static java.text.MessageFormat.format;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -22,7 +23,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 
-import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
@@ -30,6 +31,8 @@ import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider.ViewPartAction
 import melnorme.lang.ide.ui.operations.EclipseJobUIOperation;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -50,6 +53,13 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 			menu.add(new Separator("modify_BuildTarget"));
 			menu.add(new ToggleEnabledAction(buildTargetElement));
 		}
+		
+		if(firstSel instanceof BuildTargetsContainer) {
+			BuildTargetsContainer buildTargetsContainer = (BuildTargetsContainer) firstSel;
+			
+			menu.add(new BuildAllTargetsAction(buildTargetsContainer));
+			menu.add(new BuildEnabledTargetsAction(buildTargetsContainer));
+		}
 	}
 	
 	@Override
@@ -67,23 +77,37 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 		actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, new RunBuildTargetAction(buildTargetElement));
 	}
 	
-	public static abstract class AbstractBuildTargetAction extends Action {
-			
-		protected final BuildTargetElement buildTargetElement;
-		public final BuildTarget buildTarget;
+	public static abstract class AbstractBuildAction extends Action {
 		
-		public AbstractBuildTargetAction(BuildTargetElement buildTargetElement, String text) {
-			this(buildTargetElement, text, Action.AS_UNSPECIFIED);
+		protected final BuildManager buildManager;
+		protected final IProject project;
+		protected final String opName;
+		
+		public AbstractBuildAction(BuildTargetsContainer buildTargetContainer, String opName) {
+			this(buildTargetContainer, opName, Action.AS_UNSPECIFIED);
 		}
 		
-		public AbstractBuildTargetAction(BuildTargetElement buildTargetElement, String text, int style) {
-			super(text, style);
-			this.buildTargetElement = buildTargetElement;
-			this.buildTarget = buildTargetElement.buildTarget;
+		public AbstractBuildAction(BuildTargetsContainer buildTargetContainer, String opName, int style) {
+			this(buildTargetContainer.getBuildManager(), buildTargetContainer.getProject(), opName, style);
+		}
+		
+		public AbstractBuildAction(BuildManager buildManager, IProject project, String opName, int style) {
+			super(opName, style);
+			this.buildManager = buildManager;
+			this.project = project;
+			this.opName = opName;
+		}
+		
+		public IProject getProject() {
+			return project;
+		}
+		
+		public BuildManager getBuildManager() {
+			return buildManager;
 		}
 		
 		public ProjectBuildInfo getBuildInfo() {
-			return buildTargetElement.getBuildManager().getBuildInfo(buildTargetElement.project);
+			return getBuildManager().getBuildInfo(getProject());
 		}
 		
 		@Override
@@ -100,14 +124,74 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 		}
 		
 		public void doRun() throws StatusException {
+			new EclipseJobUIOperation(getJobTitle()) {
+				@Override
+				protected void doBackgroundComputation(IProgressMonitor pm)
+						throws CoreException, CommonException, OperationCancellation {
+					doJobRun(pm);
+				}
+			}.executeAndHandle();
+		}
+		
+		protected String getJobTitle() {
+			return opName;
+		}
+		
+		@SuppressWarnings("unused") 
+		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		}
 		
 	}
-	public static class ToggleEnabledAction extends BuildTargetsActionGroup.AbstractBuildTargetAction {
 	
+	public static class BuildAllTargetsAction extends AbstractBuildAction {
+		
+		public BuildAllTargetsAction(BuildTargetsContainer buildTargetContainer) {
+			super(buildTargetContainer, BuildManagerMessages.NAME_BuildAllTargetsAction);
+		}
+		
+		@Override
+		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+			Indexable<BuildTarget> enabledTargets = getBuildInfo().getBuildTargets();
+			getBuildManager().newBuildTargetOperation(getProject(), enabledTargets).execute(pm);
+		}
+	}
+	
+	public static class BuildEnabledTargetsAction extends AbstractBuildAction {
+		
+		public BuildEnabledTargetsAction(BuildTargetsContainer buildTargetContainer) {
+			super(buildTargetContainer, BuildManagerMessages.NAME_BuildEnabledTargetsAction);
+		}
+		
+		@Override
+		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+			ArrayList2<BuildTarget> enabledTargets = getBuildInfo().getEnabledTargets();
+			getBuildManager().newBuildTargetOperation(getProject(), enabledTargets).execute(pm);
+		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static abstract class AbstractBuildTargetAction extends AbstractBuildAction {
+		
+		protected final BuildTargetElement buildTargetElement;
+		protected final BuildTarget buildTarget;
+		
+		public AbstractBuildTargetAction(BuildTargetElement buildTargetElement, String text) {
+			this(buildTargetElement, text, Action.AS_UNSPECIFIED);
+		}
+		
+		public AbstractBuildTargetAction(BuildTargetElement buildTargetElement, String text, int style) {
+			super(buildTargetElement.getBuildManager(), buildTargetElement.project, text, style);
+			this.buildTargetElement = assertNotNull(buildTargetElement);
+			this.buildTarget = buildTargetElement.getBuildTarget();
+		}
+		
+	}
+	
+	public static class ToggleEnabledAction extends AbstractBuildTargetAction {
+		
 		public ToggleEnabledAction(BuildTargetElement buildTargetElement) {
-			super(buildTargetElement, BuildManagerMessages.TITLE_ToggleEnabledAction, Action.AS_CHECK_BOX);
-			
+			super(buildTargetElement, BuildManagerMessages.NAME_ToggleEnabledAction, Action.AS_CHECK_BOX);
 			setChecked(buildTarget.isEnabled());
 		}
 		
@@ -119,25 +203,20 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 	}
 	
 	public static class RunBuildTargetAction extends AbstractBuildTargetAction {
+		
 		public RunBuildTargetAction(BuildTargetElement buildTargetElement) {
-			super(buildTargetElement, BuildManagerMessages.TITLE_RunBuildTargetAction);
+			super(buildTargetElement, BuildManagerMessages.NAME_RunBuildTargetAction);
 		}
 		
 		@Override
-		public void run() {
-			String opName = format(BuildManagerMessages.INFO_BuildTargetAction, buildTarget.getTargetName());
-			new EclipseJobUIOperation(opName) {
-				@Override
-				protected void doBackgroundComputation(IProgressMonitor pm)
-						throws CoreException, CommonException, OperationCancellation {
-					IProject project = getBuildInfo().getProject();
-					OperationInfo opInfo = new OperationInfo(project, true, "");
-					buildTarget.getToolManager().notifyOperationStarted(opInfo);
-					buildTarget.newBuildTargetOperation(opInfo, project, false)
-						.execute(pm);
-				}
-			}			
-			.executeAndHandle();
+		protected String getJobTitle() {
+			return format(BuildManagerMessages.INFO_BuildTargetAction, 
+				getProject(), buildTargetElement.getTargetDisplayName());
+		}
+		
+		@Override
+		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+			buildTarget.newBuildTargetOperation(getProject()).execute(pm);
 		}
 		
 	}

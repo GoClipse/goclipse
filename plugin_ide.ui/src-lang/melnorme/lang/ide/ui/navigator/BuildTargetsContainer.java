@@ -51,6 +51,10 @@ public class BuildTargetsContainer extends ElementContainer<BuildTargetElement> 
 		return buildInfo.getProject();
 	}
 	
+	public BuildManager getBuildManager() {
+		return buildManager;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
