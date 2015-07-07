@@ -15,6 +15,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -39,7 +41,14 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 	public LangNavigatorLabelProvider() {
 		super();
 		this.registry = init_getImageRegistry();
-		this.labelDecorators.add(new ProblemsLabelDecorator(registry));
+		ProblemsLabelDecorator problemsLabelDecorator = new ProblemsLabelDecorator(registry);
+		problemsLabelDecorator.addListener(new ILabelProviderListener() {
+			@Override
+			public void labelProviderChanged(LabelProviderChangedEvent event) {
+				LangNavigatorLabelProvider.this.fireLabelProviderChanged(event);
+			}
+		});
+		this.labelDecorators.add(problemsLabelDecorator);
 	}
 	
 	protected ImageDescriptorRegistry init_getImageRegistry() {
@@ -76,7 +85,7 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 		
 		@Override
 		public StyledString visitBuildTarget(BuildTargetElement buildTarget) {
-			return new StyledString(buildTarget.getTargetName());
+			return new StyledString(buildTarget.getTargetDisplayName());
 		}
 		
 	}

@@ -46,6 +46,16 @@ public class ProjectBuildInfo {
 		return buildTargets;
 	}
 	
+	public ArrayList2<BuildTarget> getEnabledTargets() {
+		ArrayList2<BuildTarget> enabledTargets = ArrayList2.create();
+		for(BuildTarget buildTarget : nullToEmpty(getBuildTargets())) {
+			if(buildTarget.isEnabled()) {
+				enabledTargets.add(buildTarget);
+			}
+		}
+		return enabledTargets;
+	}
+	
 	/* -----------------  ----------------- */
 		
 	public void changeEnable(BuildTarget oldBuildTarget, boolean newEnabledValue) throws StatusException {

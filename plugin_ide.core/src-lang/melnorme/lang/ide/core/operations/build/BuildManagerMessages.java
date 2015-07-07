@@ -19,9 +19,12 @@ public interface BuildManagerMessages {
 	public String MSG_BuildTerminated = "Build terminated.";
 	public String MSG_NoBuildTargetsEnabled = "No build targets enabled.";
 	
-	public String TITLE_ToggleEnabledAction = "Enable for workspace build";
-	public String TITLE_RunBuildTargetAction = "Build target";
-	public String INFO_BuildTargetAction = "Building target: {0}";
+	public String NAME_BuildEnabledTargetsAction = "Build Enabled";
+	public String NAME_BuildAllTargetsAction = "Build All";
+	public String NAME_ToggleEnabledAction = "Enable for workspace build";
+	public String NAME_RunBuildTargetAction = "Build target";
+	
+	public String INFO_BuildTargetAction = "Building target `{1}` of project {0}";
 	
 	public String MSG_Starting_LANG_Build = "Starting {0} build";
 	

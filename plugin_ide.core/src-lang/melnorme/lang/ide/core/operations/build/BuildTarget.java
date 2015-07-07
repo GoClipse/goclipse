@@ -67,11 +67,19 @@ public class BuildTarget {
 		return LangCore.getToolManager();
 	}
 	
-	public CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+	protected BuildManager getBuildManager() {
+		return LangCore.getBuildManager();
+	}
+	
+	public IBuildTargetOperation newBuildTargetOperation(IProject project) 
+			throws CommonException {
+		return getBuildManager().newBuildTargetOperation(project, this);
+	}
+	
+	public IBuildTargetOperation newBuildTargetSubOperation(OperationInfo parentOpInfo, IProject project,
 			boolean fullBuild) throws CommonException {
 		Path buildToolPath = getToolManager().getSDKToolPath();
-		BuildManager buildMgr = LangCore.getBuildManager();
-		return buildMgr.createBuildTargetOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
+		return getBuildManager().createBuildTargetSubOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
 	}
 	
 }

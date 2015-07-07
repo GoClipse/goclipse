@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.IBuildTargetOperation;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -38,6 +38,8 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
+	
+	protected final BuildManager buildManager = LangCore.getBuildManager();
 	
 	public LangProjectBuilder() {
 	}
@@ -95,8 +97,6 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		if(isFirstProjectOfKind()) {
 			handleBeginWorkspaceBuild();
 		}
-		
-		deleteProjectBuildMarkers();
 	}
 	
 	protected void handleBeginWorkspaceBuild() {
@@ -155,11 +155,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected IBuildTargetOperation createBuildOp(boolean fullBuild) throws CommonException {
-		return createBuildOperationCreator(fullBuild).getBuildOperation();
-	}
-	
-	protected BuildOperationCreator createBuildOperationCreator(boolean fullBuild) {
-		return new BuildOperationCreator(getProject(), workspaceOpInfo, fullBuild);
+		return buildManager.newProjectBuildOperation(getProject(), workspaceOpInfo, fullBuild);
 	}
 	
 	/* ----------------- Clean ----------------- */

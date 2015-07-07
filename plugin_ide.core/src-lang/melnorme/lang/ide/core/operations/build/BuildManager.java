@@ -24,6 +24,7 @@ import melnorme.lang.ide.core.project_model.ProjectBasedModelManager;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
@@ -59,6 +60,14 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 		return buildModel.getProjectInfo(project);
 	}
 	
+	public ProjectBuildInfo getBuildInfo_NonNull(IProject project) throws CommonException {
+		ProjectBuildInfo buildInfo = getBuildInfo(project);
+		if(buildInfo == null) {
+			throw new CommonException("No project build targets information available.");
+		}
+		return buildInfo;
+	}
+	
 	public static class BuildModel 
 		extends ProjectBasedModel<ProjectBuildInfo, IProjectModelListener<ProjectBuildInfo>> {
 		
@@ -76,8 +85,31 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 		return new BuildTarget(enabled, targetName);
 	}
 	
-	public abstract CommonBuildTargetOperation createBuildTargetOperation(OperationInfo parentOpInfo, 
+	
+	public IBuildTargetOperation newProjectBuildOperation(IProject project, boolean fullBuild) throws CommonException {
+		OperationInfo parentOpInfo = new OperationInfo(project, true, "");
+		return newProjectBuildOperation(project, parentOpInfo, fullBuild);
+	}
+	
+	public IBuildTargetOperation newProjectBuildOperation(IProject project, OperationInfo parentOpInfo,
+			boolean fullBuild) throws CommonException {
+		return new BuildOperationCreator(project, parentOpInfo, fullBuild).newProjectBuildOperation();
+	}
+	
+	public IBuildTargetOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
+			throws CommonException {
+		return newBuildTargetOperation(project, ArrayList2.create(buildTarget));
+	}
+	
+	public IBuildTargetOperation newBuildTargetOperation(IProject project, Indexable<BuildTarget> targetsToBuild)
+			throws CommonException {
+		OperationInfo parentOpInfo = new OperationInfo(project, true, "");
+		return new BuildOperationCreator(project, parentOpInfo, false).newProjectBuildOperation(targetsToBuild);
+	}
+	
+	public abstract CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo, 
 			IProject project, Path buildToolPath, BuildTarget buildTarget, boolean fullBuild);
+	
 	
 	/* -----------------  ----------------- */
 	

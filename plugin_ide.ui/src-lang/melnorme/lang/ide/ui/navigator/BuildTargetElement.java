@@ -29,7 +29,7 @@ public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 		this.buildTarget = assertNotNull(buildTarget);
 	}
 	
-	public String getTargetName() {
+	public String getTargetDisplayName() {
 		String targetName = buildTarget.getTargetName();
 		return targetName == null ? "<default>" : targetName;
 	}

@@ -18,7 +18,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.runtime.CoreException;
 
-public interface IRunProcessTask extends Callable<ExternalProcessResult>{
+public interface IRunProcessTask extends Callable<ExternalProcessResult> {
 	
 	@Override
 	ExternalProcessResult call() throws CoreException, CommonException, OperationCancellation;
