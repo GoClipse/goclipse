@@ -10,14 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
-import melnorme.lang.ide.core.utils.CoreOperationAdapter;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.CollectionUtil;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.MiscUtil;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -25,7 +17,15 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 
-public class GetAndInstallGoPackageOperation extends CoreOperationAdapter {
+import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
+
+public class GetAndInstallGoPackageOperation implements CoreOperationRunnable {
 	
 	protected final String goPackage;
 	protected final String exeName;

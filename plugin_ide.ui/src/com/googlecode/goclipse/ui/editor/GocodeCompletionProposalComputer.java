@@ -5,23 +5,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.TimeoutProgressMonitor;
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
-import melnorme.lang.tooling.CompletionProposalKind;
-import melnorme.lang.tooling.EProtection;
-import melnorme.lang.tooling.ElementAttributes;
-import melnorme.lang.tooling.ToolCompletionProposal;
-import melnorme.lang.tooling.completion.LangCompletionResult;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -36,6 +19,23 @@ import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 import com.googlecode.goclipse.ui.GoUIPlugin;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
+import melnorme.lang.tooling.CompletionProposalKind;
+import melnorme.lang.tooling.EProtection;
+import melnorme.lang.tooling.ElementAttributes;
+import melnorme.lang.tooling.ToolCompletionProposal;
+import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
 	

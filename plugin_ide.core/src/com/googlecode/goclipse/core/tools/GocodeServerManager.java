@@ -11,7 +11,7 @@ import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
+import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.ownership.IDisposable;

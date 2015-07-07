@@ -32,6 +32,7 @@ Export-Package: com.googlecode.goclipse,
  melnorme.lang.ide.core.operations,
  melnorme.lang.ide.core.text,
  melnorme.lang.ide.core.utils,
+ melnorme.lang.ide.core.utils.operation,
  melnorme.lang.ide.core.utils.prefs,
  melnorme.lang.ide.core.utils.process,
  melnorme.lang.ide.launching

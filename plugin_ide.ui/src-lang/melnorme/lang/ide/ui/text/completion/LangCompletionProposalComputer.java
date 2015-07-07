@@ -13,7 +13,7 @@ package melnorme.lang.ide.ui.text.completion;
 
 import java.util.List;
 
-import melnorme.lang.ide.core.utils.TimeoutProgressMonitor;
+import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
