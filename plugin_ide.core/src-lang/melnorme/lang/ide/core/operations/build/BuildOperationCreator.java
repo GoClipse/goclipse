@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations;
+package melnorme.lang.ide.core.operations.build;
 
 import static java.text.MessageFormat.format;
 import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
@@ -21,8 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.project_model.BuildManager;
-import melnorme.lang.ide.core.project_model.BuildManagerMessages;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -52,7 +51,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		operations.add(newMessageOperation(project, startMsg, true));
 		
 		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
-		if(buildInfo == null) {
+		if(buildInfo == null || buildInfo.getBuildTargets().isEmpty()) {
 			operations.add(newMessageOperation(project, headerBIG(MSG_NoBuildTargetsEnabled), false));
 			return operations;
 		}

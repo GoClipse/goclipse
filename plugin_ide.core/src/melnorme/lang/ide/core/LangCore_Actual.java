@@ -4,7 +4,7 @@ import com.googlecode.goclipse.core.engine.GoEngineClient;
 import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 
-import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 
 public class LangCore_Actual {
 	

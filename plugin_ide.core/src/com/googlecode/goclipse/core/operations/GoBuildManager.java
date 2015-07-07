@@ -13,6 +13,7 @@ package com.googlecode.goclipse.core.operations;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Collection;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,11 +26,11 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.BuildMarkersUtil;
-import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.operations.CommonBuildTargetOperation;
-import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.operations.ToolMarkersUtil;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -120,7 +121,7 @@ public class GoBuildManager extends BuildManager {
 			};
 			buildOutput.parseOutput(buildAllResult);
 			
-			BuildMarkersUtil.addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir);
+			ToolMarkersUtil.addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir);
 		}
 		
 	}

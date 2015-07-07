@@ -8,14 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.project_model;
+package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import org.junit.Test;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTargetsSerializer;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.tests.CommonTest;
@@ -42,7 +43,7 @@ public class BuildTargetsSerializer_Test extends CommonTest {
 	
 	protected void testSerialize(ArrayList2<BuildTarget> buildTargets) {
 		try {
-			String xml = serializer.saveProjectBuildInfo(buildTargets);
+			String xml = serializer.writeProjectBuildInfo(buildTargets);
 			assertAreEqual(buildTargets, serializer.readProjectBuildInfo(xml));
 		} catch(CommonException e) {
 			assertFail();

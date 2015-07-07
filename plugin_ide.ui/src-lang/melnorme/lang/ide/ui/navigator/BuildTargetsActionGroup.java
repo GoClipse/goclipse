@@ -22,9 +22,9 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 
-import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.project_model.BuildManagerMessages;
+import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider.ViewPartActionGroup;
 import melnorme.lang.ide.ui.operations.EclipseJobUIOperation;

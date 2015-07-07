@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.project_model;
+package melnorme.lang.ide.core.operations.build;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -32,7 +32,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -46,6 +46,12 @@ public class BuildTargetsSerializer {
 	
 	/* -----------------  ----------------- */
 	
+	protected final BuildManager buildManager;
+	
+	public BuildTargetsSerializer(BuildManager buildManager) {
+		this.buildManager = buildManager;
+	}
+	
 	protected DocumentBuilder getDocumentBuilder() throws CommonException {
 		try {
 			return DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -54,7 +60,11 @@ public class BuildTargetsSerializer {
 		}
 	}
 	
-	protected String saveProjectBuildInfo(Indexable<BuildTarget> buildTargets) throws CommonException {
+	public String writeProjectBuildInfo(ProjectBuildInfo projectBuildInfo) throws CommonException {
+		return writeProjectBuildInfo(projectBuildInfo.getBuildTargets());
+	}
+	
+	public String writeProjectBuildInfo(Indexable<BuildTarget> buildTargets) throws CommonException {
 		
 		Document doc = getDocumentBuilder().newDocument();
 		writeDocument(doc, buildTargets);
@@ -97,7 +107,7 @@ public class BuildTargetsSerializer {
 	}
 	
 	
-	protected ArrayList2<BuildTarget> readProjectBuildInfo(String targetsXml) throws CommonException {
+	public ArrayList2<BuildTarget> readProjectBuildInfo(String targetsXml) throws CommonException {
 		Document doc;
 		try {
 			doc = getDocumentBuilder().parse(new InputSource(new StringReader(targetsXml)));
@@ -137,7 +147,7 @@ public class BuildTargetsSerializer {
 	
 	protected BuildTarget createBuildTarget(boolean enabled, String targetName, 
 			@SuppressWarnings("unused") Node targetElem) {
-		return LangCore.getBuildManager().createBuildTarget(enabled, targetName);
+		return buildManager.createBuildTarget(enabled, targetName);
 	}
 	
 	protected String getAttribute(Node targetElem, String keyName, String defaultValue) {

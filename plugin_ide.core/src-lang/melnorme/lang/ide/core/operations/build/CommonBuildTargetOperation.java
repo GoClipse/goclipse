@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations;
+package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -18,6 +18,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -47,5 +49,5 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	@Override
 	public abstract void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
-					
+	
 }

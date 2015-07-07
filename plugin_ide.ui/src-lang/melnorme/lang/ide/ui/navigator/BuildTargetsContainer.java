@@ -17,8 +17,8 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.navigator.ElementContainer;
-import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;

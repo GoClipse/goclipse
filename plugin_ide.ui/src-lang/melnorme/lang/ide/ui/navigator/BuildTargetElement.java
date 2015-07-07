@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.navigator.ElementContainer;
-import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 
 public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 	
