@@ -27,7 +27,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
-import com.googlecode.goclipse.Activator;
+import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.ui.wizards.NewSourceFileComposite.SourceFileType;
 
 /**
@@ -130,7 +130,7 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
         try {
           IDE.openEditor(page, file, true);
         } catch (PartInitException e) {
-          Activator.logError(e);
+          GoCore.logError("Error opening editor", e);
         }
       }
     });

@@ -68,6 +68,7 @@ import com.googlecode.goclipse.go.lang.parser.FunctionParser;
 /**
  * This view is used to run and see the results of tests.
  */
+@SuppressWarnings({ "deprecation", "unused" })
 public class GoTestView extends ViewPart {
 
 	/**
@@ -301,9 +302,8 @@ public class GoTestView extends ViewPart {
 			return name;
 		}
 
-		@SuppressWarnings("rawtypes")
 		@Override
-		public Object getAdapter(Class adapter) {
+		public <T> T getAdapter(Class<T> adapter) {
 			return null;
 		}
 	}
@@ -402,9 +402,8 @@ public class GoTestView extends ViewPart {
 			return getName();
 		}
 
-		@SuppressWarnings("rawtypes")
 		@Override
-		public Object getAdapter(Class key) {
+		public <T> T getAdapter(Class<T> adapter) {
 			return null;
 		}
 	}
@@ -434,9 +433,8 @@ public class GoTestView extends ViewPart {
 			return children.size() > 0;
 		}
 
-		@SuppressWarnings("rawtypes")
 		@Override
-		public Object getAdapter(Class adapter) {
+		public <T> T getAdapter(Class<T> adapter) {
 			// TODO Auto-generated method stub
 			return null;
 		}
