@@ -17,6 +17,8 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.navigator.ElementContainer;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.utilbox.misc.CollectionUtil;
 
 public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 	
@@ -31,7 +33,7 @@ public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 	
 	public String getTargetDisplayName() {
 		String targetName = buildTarget.getTargetName();
-		return targetName == null ? "<default>" : targetName;
+		return targetName.isEmpty() ? "<default>" : targetName;
 	}
 	
 	public BuildTarget getBuildTarget() {
@@ -40,6 +42,22 @@ public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 	
 	public BuildManager getBuildManager() {
 		return BuildManager.getInstance();
+	}
+	
+	protected ProjectBuildInfo getBuildInfoOrNull() {
+		if(getParent() instanceof BuildTargetsContainer) {
+			BuildTargetsContainer buildTargetsContainer = (BuildTargetsContainer) getParent();
+			return buildTargetsContainer.buildInfo;
+		}
+		return null;
+	}
+	
+	public int getOrder() {
+		ProjectBuildInfo buildInfo = getBuildInfoOrNull();
+		if(buildInfo == null) {
+			return 0;
+		}
+		return CollectionUtil.indexOf(buildInfo.getBuildTargets(), buildTarget);
 	}
 	
 }

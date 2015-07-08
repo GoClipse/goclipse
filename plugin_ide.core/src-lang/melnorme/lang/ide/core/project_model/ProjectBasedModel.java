@@ -19,10 +19,10 @@ import org.eclipse.core.resources.IProject;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.SimpleLogger;
 
-public abstract class ProjectBasedModel<INFO, LISTENER extends IProjectModelListener<INFO>> {
+public abstract class ProjectBasedModel<INFO> {
 	
 	protected final HashMap<String, INFO> projectInfos = new HashMap<>();
-	protected final ListenerListHelper<LISTENER> listeners = new ListenerListHelper<>();
+	protected final ListenerListHelper<IProjectModelListener<INFO>> listeners = new ListenerListHelper<>();
 	
 	public ProjectBasedModel() {
 		super();
@@ -30,11 +30,17 @@ public abstract class ProjectBasedModel<INFO, LISTENER extends IProjectModelList
 	
 	protected abstract SimpleLogger getLog();
 	
-	public void addListener(LISTENER listener) {
-		listeners.addListener(listener);
+	public void addListener(IProjectModelListener<? super INFO> listener) {
+		listeners.addListener(listener.castTypeParam());
 	}
-	public void removeListener(LISTENER listener) {
-		listeners.removeListener(listener);
+	public void removeListener(IProjectModelListener<? super INFO> listener) {
+		listeners.removeListener(listener.<INFO>castTypeParam());
+	}
+	
+	@SuppressWarnings("unchecked")
+	public synchronized HashMap<String, INFO> connectListener(IProjectModelListener<? super INFO> listener) {
+		addListener(listener);
+		return (HashMap<String, INFO>) projectInfos.clone();
 	}
 	
 	public synchronized INFO getProjectInfo(IProject project) {

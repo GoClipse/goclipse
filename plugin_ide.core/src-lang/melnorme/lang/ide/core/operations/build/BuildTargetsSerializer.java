@@ -32,9 +32,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
 public class BuildTargetsSerializer {
@@ -43,6 +43,8 @@ public class BuildTargetsSerializer {
 	private static final String TARGET_ElemName = "target";
 	private static final String PROP_NAME = "name";
 	private static final String PROP_ENABLED = "enabled";
+	
+	protected static final BuildConfiguration DUMMY_BUILD_CONFIG = new BuildConfiguration("", null);
 	
 	/* -----------------  ----------------- */
 	
@@ -64,7 +66,7 @@ public class BuildTargetsSerializer {
 		return writeProjectBuildInfo(projectBuildInfo.getBuildTargets());
 	}
 	
-	public String writeProjectBuildInfo(Indexable<BuildTarget> buildTargets) throws CommonException {
+	public String writeProjectBuildInfo(Iterable<BuildTarget> buildTargets) throws CommonException {
 		
 		Document doc = getDocumentBuilder().newDocument();
 		writeDocument(doc, buildTargets);
@@ -85,11 +87,11 @@ public class BuildTargetsSerializer {
 		return writer.toString();
 	}
 	
-	protected void writeDocument(Document doc, Indexable<BuildTarget> buildTargets) {
+	protected void writeDocument(Document doc, Iterable<BuildTarget> buildTargets) {
 		Element buildTargetsElem = doc.createElementNS(LangCore.PLUGIN_ID, BUILD_TARGETS_ElemName);
 		doc.appendChild(buildTargetsElem);
 		
-		for (BuildTarget buildTarget : buildTargets) {
+		for(BuildTarget buildTarget : buildTargets) {
 			buildTargetsElem.appendChild(createTargetElement(doc, buildTarget));
 		}
 		
@@ -100,9 +102,7 @@ public class BuildTargetsSerializer {
 		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(buildTarget.isEnabled()));
 		
 		String targetName = buildTarget.getTargetName();
-		if(targetName != null) {
-			targetElem.setAttribute(PROP_NAME, targetName);
-		}
+		targetElem.setAttribute(PROP_NAME, targetName);
 		return targetElem;
 	}
 	
@@ -147,7 +147,7 @@ public class BuildTargetsSerializer {
 	
 	protected BuildTarget createBuildTarget(boolean enabled, String targetName, 
 			@SuppressWarnings("unused") Node targetElem) {
-		return buildManager.createBuildTarget(enabled, targetName);
+		return buildManager.createBuildTarget(targetName, DUMMY_BUILD_CONFIG, enabled);
 	}
 	
 	protected String getAttribute(Node targetElem, String keyName, String defaultValue) {

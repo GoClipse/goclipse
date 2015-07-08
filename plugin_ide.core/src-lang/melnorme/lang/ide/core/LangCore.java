@@ -10,19 +10,21 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import melnorme.lang.ide.core.engine.EngineClient;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.tooling.data.StatusException;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.ILogHandler;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
+
+import melnorme.lang.ide.core.engine.EngineClient;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.project_model.BundleModelManager;
+import melnorme.lang.ide.core.project_model.LangBundleModel;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.tooling.data.StatusException;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.ILogHandler;
 
 public abstract class LangCore extends Plugin {
 	
@@ -42,6 +44,7 @@ public abstract class LangCore extends Plugin {
 	
 	protected static final AbstractToolManager toolManager = LangCore_Actual.createToolManagerSingleton();
 	protected static final EngineClient engineClient = LangCore_Actual.createEngineClient();
+	protected static final BundleModelManager bundleManager = LangCore_Actual.createBundleModelManager();
 	protected static final BuildManager buildManager = LangCore_Actual.createBuildManager();
 	
 	public static AbstractToolManager getToolManager() {
@@ -49,6 +52,12 @@ public abstract class LangCore extends Plugin {
 	}
 	public static EngineClient getEngineClient() {
 		return engineClient;
+	}
+	public static BundleModelManager getBundleModelManager() {
+		return bundleManager;
+	}
+	public static LangBundleModel<?> getBundleModel() {
+		return bundleManager.getModel();
 	}
 	public static BuildManager getBuildManager() {
 		return buildManager;
@@ -78,6 +87,7 @@ public abstract class LangCore extends Plugin {
 			LangCore.logError("Atempted initializeAfterUIStart more than once.");
 		} else {
 			initializedAfterUI = true;
+			bundleManager.startManager(); // Start this after UI, to allow UI listener to register.
 			doInitializeAfterUIStart();
 		}
 	}
@@ -89,9 +99,10 @@ public abstract class LangCore extends Plugin {
 	public final void stop(BundleContext context) throws Exception {
 		doCustomStop(context);
 		
+		buildManager.dispose();
+		bundleManager.shutdownManager();
 		engineClient.dispose();
 		toolManager.shutdownNow();
-		buildManager.shutdownManager();
 		
 		super.stop(context);
 		pluginInstance = null;

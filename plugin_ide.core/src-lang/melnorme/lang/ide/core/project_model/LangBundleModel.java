@@ -10,14 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model;
 
-
-public interface IProjectModelListener<INFO> {
+public abstract class LangBundleModel<INFO> extends ProjectBasedModel<INFO> {
 	
-	void notifyUpdateEvent(UpdateEvent<INFO> updateEvent);
-	
-	@SuppressWarnings("unchecked")
-	default <INFO_SUBTYPE extends INFO> IProjectModelListener<INFO_SUBTYPE> castTypeParam() {
-		return (IProjectModelListener<INFO_SUBTYPE>) this;
+	public LangBundleModel() {
+		super();
 	}
 	
 }

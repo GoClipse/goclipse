@@ -77,7 +77,7 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		return CollectionUtil.addAllFromIterator(this, iterator);
 	}
 	
-	public <SOURCE> ArrayList2<E> addAll(Indexable<SOURCE> source, Function<SOURCE, E> mapper) {
+	public <SOURCE> ArrayList2<E> addAll(Collection2<SOURCE> source, Function<SOURCE, E> mapper) {
 		return CollectionUtil.addAll(this, source, mapper);
 	}
 	

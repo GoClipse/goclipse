@@ -32,7 +32,7 @@ import melnorme.lang.ide.ui.operations.EclipseJobUIOperation;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -151,7 +151,7 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		@Override
 		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-			Indexable<BuildTarget> enabledTargets = getBuildInfo().getBuildTargets();
+			Collection2<BuildTarget> enabledTargets = getBuildInfo().getBuildTargets();
 			getBuildManager().newBuildTargetOperation(getProject(), enabledTargets).execute(pm);
 		}
 	}
@@ -216,7 +216,7 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		@Override
 		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-			buildTarget.newBuildTargetOperation(getProject()).execute(pm);
+			getBuildManager().newBuildTargetOperation(getProject(), buildTarget).execute(pm);
 		}
 		
 	}

@@ -20,18 +20,23 @@ import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Collection2;
+import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 
 public class ProjectBuildInfo {
 	
 	protected final BuildManager buildManager;
 	protected final IProject project;
-	protected final Indexable<BuildTarget> buildTargets;
+	protected final HashMap2<String, BuildTarget> buildTargets = new HashMap2<>();
 	
-	public ProjectBuildInfo(BuildManager buildManager, IProject project, Indexable<BuildTarget> buildTargets) {
+	public ProjectBuildInfo(BuildManager buildManager, IProject project, Indexable<BuildTarget> buildTargetsArray) {
 		this.buildManager = buildManager;
 		this.project = project;
-		this.buildTargets = nullToEmpty(buildTargets);
+		for(BuildTarget buildTarget : nullToEmpty(buildTargetsArray)) {
+			buildTargets.put(buildTarget.getTargetName(), buildTarget);
+		}
 	}
 	
 	public BuildManager getBuildManager() {
@@ -42,8 +47,19 @@ public class ProjectBuildInfo {
 		return project;
 	}
 	
-	public Indexable<BuildTarget> getBuildTargets() {
-		return buildTargets;
+	public Collection2<BuildTarget> getBuildTargets() {
+		return buildTargets.getValuesView();
+	}
+	
+	public BuildTarget getBuildTarget(String name) {
+		return buildTargets.get(name);
+	}
+	
+	public BuildTarget getDefaultBuildTarget() throws CommonException {
+		if(buildTargets.size() == 0) {
+			throw new CommonException("No targets available");
+		}
+		return buildTargets.iterator().next().getValue();
 	}
 	
 	public ArrayList2<BuildTarget> getEnabledTargets() {
@@ -59,7 +75,8 @@ public class ProjectBuildInfo {
 	/* -----------------  ----------------- */
 		
 	public void changeEnable(BuildTarget oldBuildTarget, boolean newEnabledValue) throws StatusException {
-		BuildTarget newBuildTarget = buildManager.createBuildTarget(newEnabledValue, oldBuildTarget.getTargetName());
+		BuildTarget newBuildTarget = buildManager.createBuildTarget(
+			oldBuildTarget.getTargetName(), oldBuildTarget.getBuildConfig(), newEnabledValue);
 		
 		changeBuildTarget(oldBuildTarget, newBuildTarget);
 	}
@@ -68,7 +85,7 @@ public class ProjectBuildInfo {
 		boolean mutated = false;
 		ArrayList2<BuildTarget> newBuildTargets = new ArrayList2<>(buildTargets.size());
 		
-		for(BuildTarget buildTargetCursor : buildTargets) {
+		for(BuildTarget buildTargetCursor : getBuildTargets()) {
 			if(buildTargetCursor == oldBuildTarget) {
 				newBuildTargets.add(newBuildTarget);
 				mutated = true;

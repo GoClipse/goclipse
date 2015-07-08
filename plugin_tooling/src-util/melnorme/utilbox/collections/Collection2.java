@@ -10,17 +10,10 @@
  *******************************************************************************/
 package melnorme.utilbox.collections;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.RandomAccess;
-
 /**
- * Alternative interface to {@link Collection}, that prevents modifications
+ * An {@link Iterable} with size information.
  */
-public interface Collection2<E> extends Iterable<E>, RandomAccess {
-	
-	@Override
-	Iterator<E> iterator();
+public interface Collection2<E> extends Iterable<E> {
 	
 	/** @return the number of elements in this collection */
 	int size();

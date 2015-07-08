@@ -14,6 +14,7 @@ import static java.text.MessageFormat.format;
 import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 import org.eclipse.core.resources.IProject;
@@ -27,7 +28,7 @@ import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.CommonException;
 
 public class BuildOperationCreator implements BuildManagerMessages {
@@ -51,7 +52,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	
 	protected ArrayList2<IBuildTargetOperation> operations;
 	
-	public IBuildTargetOperation newProjectBuildOperation(Indexable<BuildTarget> targetsToBuild) 
+	public IBuildTargetOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild) 
 			throws CommonException {
 		operations = ArrayList2.create();
 		
@@ -93,7 +94,8 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	
 	protected IBuildTargetOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget) 
 			throws CommonException {
-		return buildTarget.newBuildTargetSubOperation(parentOpInfo, project, fullBuild);
+		Path buildToolPath = LangCore.getToolManager().getSDKToolPath();
+		return buildMgr.createBuildTargetSubOperation(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 	}
 	
 	protected IBuildTargetOperation newMessageOperation(IProject project, String msg, boolean clearConsole) {

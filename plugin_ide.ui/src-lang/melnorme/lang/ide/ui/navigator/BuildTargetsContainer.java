@@ -21,7 +21,7 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.misc.HashcodeUtil;
 
 public class BuildTargetsContainer extends ElementContainer<BuildTargetElement> {
@@ -38,7 +38,7 @@ public class BuildTargetsContainer extends ElementContainer<BuildTargetElement> 
 		IProject project = buildInfo.getProject();
 		assertNotNull(buildInfo);
 		assertNotNull(project);
-		Indexable<BuildTarget> buildTargets = buildInfo.getBuildTargets();
+		Collection2<BuildTarget> buildTargets = buildInfo.getBuildTargets();
 		return new ArrayList2<BuildTargetElement>()
 				.addAll(buildTargets, buildTarget -> new BuildTargetElement(project, buildTarget));
 	}
