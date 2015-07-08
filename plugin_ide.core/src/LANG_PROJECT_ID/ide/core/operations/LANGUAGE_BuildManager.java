@@ -16,12 +16,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
-import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
+import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
@@ -31,11 +32,10 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public final class LANGUAGE_BuildManager extends BuildManager {
 	
-	@Override
-	protected BundleManifestResourceListener init_createResourceListener() {
-		return new ManagerResourceListener(new org.eclipse.core.runtime.Path("lang.bundle"));
+	public LANGUAGE_BuildManager(LangBundleModel<? extends AbstractBundleInfo> bundleModel) {
+		super(bundleModel);
 	}
-
+	
 	@Override
 	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo, IProject project,
 			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
