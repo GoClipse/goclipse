@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.misc;
 
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,11 +20,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;
 import melnorme.utilbox.collections.Indexable;
-import java.util.function.Predicate;
 
 /**
  * Utils for creation, query, and modification of Collection classes.
@@ -98,11 +100,37 @@ public class CollectionUtil {
 	
 	/* ----------------- query ----------------- */
 	
+	public static <T> int indexOfSame(Iterable<T> iterable, T obj) {
+		int ix = 0;
+		Iterator<? extends T> iterator = iterable.iterator();
+		while(iterator.hasNext()) {
+			T element = iterator.next();
+			if(element == obj)
+				return ix;
+			ix++;
+		}
+		return -1;
+	}
+	
+	public static <T> int indexOf(Iterable<T> iterable, T obj) {
+		int ix = 0;
+		Iterator<? extends T> iterator = iterable.iterator();
+		while(iterator.hasNext()) {
+			T element = iterator.next();
+			if(areEqual(element, obj))
+				return ix;
+			ix++;
+		}
+		return -1;
+	}
+	
+	
 	/** @return whether given coll contains given obj 
 	 * (obj must be the same as the one contained, not just equal). 
 	 */
-	public static boolean containsSame(Collection<?> coll, Object obj) {
-		for(Object element : coll) {
+	public static boolean containsSame(Iterable<?> coll, Object obj) {
+		for(Iterator<?> iterator = coll.iterator(); iterator.hasNext();) {
+			Object element = iterator.next();
 			if(element == obj)
 				return true;
 		}
@@ -168,7 +196,7 @@ public class CollectionUtil {
 	}
 	
 	public static <ELEM, COLL extends Collection<? super ELEM>, SourceELEM> COLL addAll(COLL dest, 
-			Indexable<? extends SourceELEM> source, Function<SourceELEM, ELEM> mapper) {
+			Iterable<? extends SourceELEM> source, Function<SourceELEM, ELEM> mapper) {
 		for(SourceELEM elem : source) {
 			dest.add(mapper.apply(elem));
 		}

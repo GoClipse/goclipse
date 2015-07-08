@@ -11,6 +11,8 @@
 package melnorme.lang.ide.core.operations.build;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Platform;
@@ -18,19 +20,24 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
+import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBasedModel;
-import melnorme.lang.ide.core.project_model.ProjectBasedModelManager;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.project_model.UpdateEvent;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
 
 
-public abstract class BuildManager extends ProjectBasedModelManager {
+public abstract class BuildManager {
 	
 	public static final SimpleLogger log = new SimpleLogger(Platform.inDebugMode());
 	
@@ -41,20 +48,52 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 	/* -----------------  ----------------- */
 	
 	protected final BuildModel buildModel;
+	protected final LangBundleModel<? extends AbstractBundleInfo> bundleModel;
 	
-	public BuildManager() {
-		this(new BuildModel());
-		
-		startManager();
+	public BuildManager(LangBundleModel<? extends AbstractBundleInfo> bundleModel) {
+		this(new BuildModel(), bundleModel);
 	}
 	
-	public BuildManager(BuildModel buildModel) {
+	public BuildManager(BuildModel buildModel, LangBundleModel<? extends AbstractBundleInfo> bundleModel) {
 		this.buildModel = buildModel;
+		this.bundleModel = bundleModel;
+		synchronized (init_Lock) { 
+			HashMap<String, ? extends AbstractBundleInfo> projectInfos = bundleModel.connectListener(listener);
+			
+			for(Entry<String, ? extends AbstractBundleInfo> entry : projectInfos.entrySet()) {
+				IProject project = EclipseUtils.getProject(entry.getKey());
+				AbstractBundleInfo bundleInfo = entry.getValue();
+				bundleProjectAdded(project, bundleInfo);
+			}
+		}
+	}
+	
+	protected Object init_Lock = new Object();
+	
+	protected final IProjectModelListener<AbstractBundleInfo> listener = 
+			new IProjectModelListener<AbstractBundleInfo>() {
+		
+		@Override
+		public void notifyUpdateEvent(UpdateEvent<AbstractBundleInfo> updateEvent) {
+			synchronized (init_Lock) {
+				if(updateEvent.newProjectInfo != null) {
+					bundleProjectAdded(updateEvent.project, updateEvent.newProjectInfo);
+				} else {
+					bundleProjectRemoved(updateEvent.project);
+				}
+			}
+		}
+	};
+	
+	public void dispose() {
+		bundleModel.removeListener(listener);
 	}
 	
 	public BuildModel getBuildModel() {
 		return buildModel;
 	}
+	
+	/* -----------------  ----------------- */
 	
 	public ProjectBuildInfo getBuildInfo(IProject project) {
 		return buildModel.getProjectInfo(project);
@@ -68,8 +107,7 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 		return buildInfo;
 	}
 	
-	public static class BuildModel 
-		extends ProjectBasedModel<ProjectBuildInfo, IProjectModelListener<ProjectBuildInfo>> {
+	public static class BuildModel extends ProjectBasedModel<ProjectBuildInfo> {
 		
 		public BuildModel() {
 		}
@@ -81,8 +119,8 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 		
 	}
 	
-	public BuildTarget createBuildTarget(boolean enabled, String targetName) {
-		return new BuildTarget(enabled, targetName);
+	public BuildTarget createBuildTarget(String targetName, BuildConfiguration buildConfig, boolean enabled) {
+		return new BuildTarget(targetName, buildConfig, enabled);
 	}
 	
 	
@@ -101,7 +139,7 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 		return newBuildTargetOperation(project, ArrayList2.create(buildTarget));
 	}
 	
-	public IBuildTargetOperation newBuildTargetOperation(IProject project, Indexable<BuildTarget> targetsToBuild)
+	public IBuildTargetOperation newBuildTargetOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
 			throws CommonException {
 		OperationInfo parentOpInfo = new OperationInfo(project, true, "");
 		return new BuildOperationCreator(project, parentOpInfo, false).newProjectBuildOperation(targetsToBuild);
@@ -113,37 +151,59 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 	
 	/* -----------------  ----------------- */
 	
-	@Override
-	protected void bundleManifestFileChanged(IProject project) {
-		// Do Nothing
+	protected void bundleProjectAdded(IProject project, AbstractBundleInfo bundleInfo) {
+		loadProjectBuildInfo(project, bundleInfo);
 	}
 	
-	@Override
-	protected Object getProjectInfo(IProject project) {
-		return getBuildInfo(project);
+	protected void bundleProjectRemoved(IProject project) {
+		buildModel.removeProjectInfo(project);
 	}
 	
-	@Override
-	protected void bundleProjectAdded(IProject project) {
-		loadProjectBuildInfo(project);
-	}
-	
-	protected void loadProjectBuildInfo(IProject project) {
-		ProjectBuildInfo newProjectBuildInfo;
+	protected void loadProjectBuildInfo(IProject project, AbstractBundleInfo bundleInfo) {
+		ProjectBuildInfo currentBuildInfo = buildModel.getProjectInfo(project);
 		
-		String targetsPrefValue = getBuildTargetsPref(project);
-		if(targetsPrefValue == null) {
-			newProjectBuildInfo = createDefaultProjectBuildInfo(project);
-		} else {
-			try {
-				ArrayList2<BuildTarget> buildTargets = createSerializer().readProjectBuildInfo(targetsPrefValue);
-				newProjectBuildInfo = new ProjectBuildInfo(this, project, buildTargets);
-			} catch(CommonException ce) {
-				LangCore.logError(ce);
-				return;
+		if(currentBuildInfo == null) {
+			String targetsPrefValue = getBuildTargetsPref(project);
+			if(targetsPrefValue != null) {
+				try {
+					ArrayList2<BuildTarget> buildTargets = createSerializer().readProjectBuildInfo(targetsPrefValue);
+					currentBuildInfo = new ProjectBuildInfo(this, project, buildTargets);
+				} catch(CommonException ce) {
+					LangCore.logError(ce);
+				}
 			}
 		}
-		setProjectBuildInfo(project, newProjectBuildInfo);
+		
+		Indexable<BuildConfiguration> buildConfigs = bundleInfo.getBuildConfigurations();
+		
+		ArrayList2<BuildTarget> buildTargets = new ArrayList2<>();
+		
+		boolean isFirstConfig = true;
+		for(BuildConfiguration buildConfig : buildConfigs) {
+			addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig);
+			isFirstConfig = false;
+		}
+		
+		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, buildTargets);
+		setProjectBuildInfo(project, newBuildInfo);
+	}
+	
+	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, BuildConfiguration buildConfig,
+			ProjectBuildInfo currentBuildInfo, boolean isFirstConfig) {
+		String name = buildConfig.getName();
+		addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig, name);
+	}
+	
+	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, BuildConfiguration buildConfig,
+			ProjectBuildInfo currentBuildInfo, boolean isFirstConfig, String name) {
+		boolean enabled = getIsEnabled(currentBuildInfo, isFirstConfig, name);
+		
+		buildTargets.add(createBuildTarget(name, buildConfig, enabled));
+	}
+	
+	protected boolean getIsEnabled(ProjectBuildInfo currentBuildInfo, boolean isFirstConfig, String name) {
+		BuildTarget oldBuildTarget = currentBuildInfo == null ? null : currentBuildInfo.getBuildTarget(name);
+		return oldBuildTarget == null ? isFirstConfig : oldBuildTarget.isEnabled();
 	}
 	
 	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
@@ -163,11 +223,6 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 		return newProjectBuildInfo;
 	}
 	
-	@Override
-	protected void bundleProjectRemoved(IProject project) {
-		buildModel.removeProjectInfo(project);
-	}
-	
 	/* -----------------  persistence  ----------------- */
 	
 	protected static final StringPreference BUILD_TARGETS_PREF = new StringPreference("build_targets", "");
@@ -178,12 +233,6 @@ public abstract class BuildManager extends ProjectBasedModelManager {
 	
 	protected String getBuildTargetsPref(IProject project) {
 		return StringUtil.emptyAsNull(BUILD_TARGETS_PREF.get(project));
-	}
-	
-	protected ProjectBuildInfo createDefaultProjectBuildInfo(IProject project) {
-		return new ProjectBuildInfo(this, project, ArrayList2.create(
-			createBuildTarget(true, null)
-		));
 	}
 	
 }

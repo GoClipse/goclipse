@@ -25,11 +25,18 @@ public abstract class BundleModelManager extends ProjectBasedModelManager {
 	
 	/* ----------------------------------- */
 	
+	protected final LangBundleModel<?> model;
+	
 	protected final ITaskAgent modelAgent = new CoreTaskAgent(getClass().getSimpleName());
 	
 	protected boolean started = false;
 	
-	public BundleModelManager() {
+	public BundleModelManager(LangBundleModel<?> model) {
+		this.model = model;
+	}
+	
+	public LangBundleModel<?> getModel() {
+		return model;
 	}
 	
 	public ITaskAgent getModelAgent() {

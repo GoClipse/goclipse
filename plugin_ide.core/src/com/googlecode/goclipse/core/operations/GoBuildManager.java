@@ -31,7 +31,8 @@ import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
-import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
+import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
@@ -42,9 +43,8 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class GoBuildManager extends BuildManager {
 	
-	@Override
-	protected BundleManifestResourceListener init_createResourceListener() {
-		return new ManagerResourceListener(null);
+	public GoBuildManager(LangBundleModel<? extends AbstractBundleInfo> bundleModel) {
+		super(bundleModel);
 	}
 	
 	@Override

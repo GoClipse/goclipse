@@ -10,34 +10,35 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import java.nio.file.Path;
-
-import org.eclipse.core.resources.IProject;
-
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.utilbox.core.CommonException;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo.BuildConfiguration;
 import melnorme.utilbox.misc.HashcodeUtil;
+import melnorme.utilbox.misc.StringUtil;
 
 public class BuildTarget {
 	
-	protected final boolean enabled;
 	protected final String targetName;
+	protected final BuildConfiguration buildConfig;
+	protected final boolean enabled;
 	
-	public BuildTarget(boolean enabled, String targetName) {
+	public BuildTarget(String targetName, BuildConfiguration buildConfig, boolean enabled) {
+		this.targetName = StringUtil.nullAsEmpty(targetName);
+		this.buildConfig = assertNotNull(buildConfig);
 		this.enabled = enabled;
-		this.targetName = targetName;
-	}
-	
-	public boolean isEnabled() {
-		return enabled;
 	}
 	
 	public String getTargetName() {
 		return targetName;
+	}
+	
+	public BuildConfiguration getBuildConfig() {
+		return buildConfig;
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
 	@Override
@@ -58,28 +59,5 @@ public class BuildTarget {
 	}
 	
 	/* -----------------  ----------------- */
-	
-	protected Path getSDKToolPath() throws CommonException {
-		return getToolManager().getSDKToolPath();
-	}
-	
-	public AbstractToolManager getToolManager() {
-		return LangCore.getToolManager();
-	}
-	
-	protected BuildManager getBuildManager() {
-		return LangCore.getBuildManager();
-	}
-	
-	public IBuildTargetOperation newBuildTargetOperation(IProject project) 
-			throws CommonException {
-		return getBuildManager().newBuildTargetOperation(project, this);
-	}
-	
-	public IBuildTargetOperation newBuildTargetSubOperation(OperationInfo parentOpInfo, IProject project,
-			boolean fullBuild) throws CommonException {
-		Path buildToolPath = getToolManager().getSDKToolPath();
-		return getBuildManager().createBuildTargetSubOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
-	}
 	
 }

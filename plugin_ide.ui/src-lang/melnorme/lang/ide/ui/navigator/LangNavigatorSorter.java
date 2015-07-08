@@ -54,8 +54,8 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 		}
 		
 		@Override
-		public Integer visitBuildTarget(BuildTargetElement buildTarget) {
-			return null;
+		public Integer visitBuildTarget(BuildTargetElement buildTargetElement) {
+			return buildTargetElement.getOrder();
 		}
 		
 		@Override
