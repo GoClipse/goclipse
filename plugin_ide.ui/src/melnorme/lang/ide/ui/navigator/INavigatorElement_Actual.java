@@ -10,8 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.navigator;
 
-import com.googlecode.goclipse.ui.navigator.elements.IGoNavigatorElement;
-
+import LANG_PROJECT_ID.ide.ui.navigator.ILANGUAGE_NavigatorElement;
 import melnorme.lang.tooling.LANG_SPECIFIC;
 
 /***
@@ -22,6 +21,6 @@ import melnorme.lang.tooling.LANG_SPECIFIC;
  * contained in the specific package namespace of the IDE (ie, the plugin name). 
  */
 @LANG_SPECIFIC
-public interface INavigatorElement_Actual extends IGoNavigatorElement {
+public interface INavigatorElement_Actual extends ILANGUAGE_NavigatorElement {
 	
 }

@@ -21,7 +21,7 @@ import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 
-public class LANGUAGE_BundleModelManager extends BundleModelManager<LANGUAGE_BundleModel> {
+public class LANGUAGE_BundleModelManager extends BundleModelManager<AbstractBundleInfo, LANGUAGE_BundleModel> {
 	
 	public LANGUAGE_BundleModelManager() {
 		super(new LANGUAGE_BundleModel());
@@ -33,13 +33,8 @@ public class LANGUAGE_BundleModelManager extends BundleModelManager<LANGUAGE_Bun
 	}
 	
 	@Override
-	protected void bundleProjectRemoved(IProject project) {
-		model.removeProjectInfo(project);
-	}
-	
-	@Override
-	protected void bundleProjectAdded(IProject project) {
-		getModel().setProjectInfo(project, new AbstractBundleInfo() {
+	protected AbstractBundleInfo createNewInfo(IProject project) {
+		return new AbstractBundleInfo() {
 			
 			protected final ArrayList2<BuildConfiguration> DEFAULT_BUILD_CONFIGs = ArrayList2.create(
 				new BuildConfiguration(null, null)
@@ -55,12 +50,7 @@ public class LANGUAGE_BundleModelManager extends BundleModelManager<LANGUAGE_Bun
 				return DEFAULT_BUILD_CONFIGs;
 			}
 			
-		});
-	}
-	
-	@Override
-	protected void bundleManifestFileChanged(IProject project) {
-		bundleProjectAdded(project);
+		};
 	}
 	
 }
