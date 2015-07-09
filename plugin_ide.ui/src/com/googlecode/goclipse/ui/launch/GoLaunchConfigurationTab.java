@@ -13,31 +13,23 @@ package com.googlecode.goclipse.ui.launch;
 
 import java.util.Collection;
 
-import melnorme.lang.ide.launching.LaunchConstants;
-import melnorme.lang.ide.ui.launch.LangArgumentsBlock2;
-import melnorme.lang.ide.ui.launch.LangWorkingDirectoryBlock;
-import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.StringUtil;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.ILaunchConfigurationDialog;
-import org.eclipse.debug.ui.WorkingDirectoryBlock;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
+
+import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.StringUtil;
 
 public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
@@ -54,78 +46,9 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		};
 	}
 	
-	protected final LangArgumentsBlock2 argumentsBlock = new LangArgumentsBlock2() {
-		@Override
-		protected void fireFieldValueChanged() {
-			updateLaunchConfigurationDialog();
-			super.fireFieldValueChanged();
-		};
-	};
-	protected final WorkingDirectoryBlock workingDirectoryBlock = new LangWorkingDirectoryBlock();
-	
-	@Override
-	protected void createCustomControls(Composite parent) {
-		super.createCustomControls(parent);
-		
-		argumentsBlock.createComponent(parent, new GridData(GridData.FILL_BOTH));
-		workingDirectoryBlock.createControl(parent);
-	}
-	
-	@Override
-	public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog) {
-		super.setLaunchConfigurationDialog(dialog);
-		workingDirectoryBlock.setLaunchConfigurationDialog(dialog);
-	}
-	
-	@Override
-	protected void setDefaults(IResource contextualResource, ILaunchConfigurationWorkingCopy config) {
-		super.setDefaults(contextualResource, config);
-		
-		config.setAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "");
-		workingDirectoryBlock.setDefaults(config);
-	}
-	
 	@Override
 	protected void programPathField_setDefaults(IResource contextualResource, ILaunchConfigurationWorkingCopy config) {
 		// TODO: figure out defaults for this field
-	}
-	
-	@Override
-	public void initializeFrom(ILaunchConfiguration config) {
-		super.initializeFrom(config);
-		
-		String programargs = getConfigAttribute(config, LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "");
-		
-		argumentsBlock.setFieldValue(programargs);
-		workingDirectoryBlock.initializeFrom(config);
-	}
-	
-	@Override
-	protected void doPerformApply(ILaunchConfigurationWorkingCopy config) {
-		super.doPerformApply(config);
-		
-		config.setAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, argumentsBlock.getFieldValue());
-		workingDirectoryBlock.performApply(config);
-	}
-	
-	
-	@Override
-	public boolean isValid(ILaunchConfiguration launchConfig) {
-		return super.isValid(launchConfig) && workingDirectoryBlock.isValid(launchConfig);
-	}
-	
-	@Override
-	public String getErrorMessage() {
-		if (super.getErrorMessage() != null) {
-			return super.getErrorMessage();
-		} else {
-			return workingDirectoryBlock.getErrorMessage();
-		}
-	}
-	
-	@Override
-	protected void doValidate() {
- 		super.doValidate();
 	}
 	
 	@Override

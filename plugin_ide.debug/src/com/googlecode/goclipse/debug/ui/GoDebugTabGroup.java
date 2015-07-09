@@ -11,6 +11,8 @@
 package com.googlecode.goclipse.debug.ui;
 
 import melnorme.lang.ide.debug.ui.AbstractLangDebugTabGroup;
+import melnorme.lang.ide.ui.launch.LangArgumentsTab;
+
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
@@ -25,7 +27,7 @@ public class GoDebugTabGroup extends AbstractLangDebugTabGroup {
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		setTabs(new ILaunchConfigurationTab[] {
 				createMainLaunchConfigTab(),
-				//new LangArgumentsTab(),
+				new LangArgumentsTab(),
 				new EnvironmentTab(),
 				new org.eclipse.cdt.dsf.gdb.internal.ui.launching.LocalApplicationCDebuggerTab(),
 				new SourceLookupTab(),

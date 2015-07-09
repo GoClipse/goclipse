@@ -11,6 +11,7 @@
 package com.googlecode.goclipse.ui.launch;
 
 import melnorme.lang.ide.ui.launch.AbstractLangTabGroup;
+import melnorme.lang.ide.ui.launch.LangArgumentsTab;
 
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
@@ -23,7 +24,7 @@ public class GoLaunchTabGroup extends AbstractLangTabGroup {
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		setTabs(new ILaunchConfigurationTab[] {
 			createMainLaunchConfigTab(),
-//			new LangArgumentsTab(),
+			new LangArgumentsTab(),
 			new EnvironmentTab(),
 			new CommonTab()
 		});
