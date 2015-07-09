@@ -1,10 +1,21 @@
-package melnorme.lang.ide.core;
+/*******************************************************************************
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+package com.googlecode.goclipse.core.env;
 
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.core.GoBundleModelManager.GoBundleModel;
+import com.googlecode.goclipse.core.env.GoBundleModelManager.GoBundleModel;
+
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
@@ -12,7 +23,7 @@ import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 
-public class GoBundleModelManager extends BundleModelManager<GoBundleModel> {
+public class GoBundleModelManager extends BundleModelManager<AbstractBundleInfo, GoBundleModel> {
 	
 	public static class GoBundleModel extends LangBundleModel<AbstractBundleInfo> {
 		
@@ -28,13 +39,8 @@ public class GoBundleModelManager extends BundleModelManager<GoBundleModel> {
 	}
 	
 	@Override
-	protected void bundleProjectRemoved(IProject project) {
-		model.removeProjectInfo(project);
-	}
-	
-	@Override
-	protected void bundleProjectAdded(IProject project) {
-		getModel().setProjectInfo(project, new AbstractBundleInfo() {
+	protected AbstractBundleInfo createNewInfo(IProject project) {
+		return new AbstractBundleInfo() {
 			
 			protected final ArrayList2<BuildConfiguration> DEFAULT_BUILD_CONFIGs = ArrayList2.create(
 				new BuildConfiguration("./...", null)
@@ -50,12 +56,7 @@ public class GoBundleModelManager extends BundleModelManager<GoBundleModel> {
 				return DEFAULT_BUILD_CONFIGs;
 			}
 			
-		});
-	}
-	
-	@Override
-	protected void bundleManifestFileChanged(IProject project) {
-		bundleProjectAdded(project);
+		};
 	}
 	
 }

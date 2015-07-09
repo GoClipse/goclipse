@@ -10,41 +10,41 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.navigator;
 
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.jface.viewers.ViewerSorter;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
+import org.eclipse.core.filesystem.IFileStore;
+
+import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
+
+import melnorme.lang.ide.ui.navigator.LangNavigatorSorter;
 
 /**
  * Sorter for the NCE extension
  */
-public class GoNavigatorSorter extends ViewerSorter {
+public class GoNavigatorSorter extends LangNavigatorSorter {
 	
 	@Override
-	public int category(Object element) {
-		
-		if(element instanceof GoRootElement) {
-			return -20;
-		}
-		if(element instanceof GoPathEntryElement) {
-			return -10;
-		}
-		
-		if(element instanceof IFolder) {
-			return -2;
-		}
-		if (element instanceof IResource) {
-			return 0;
-		}
-		
-		if (element instanceof IFileStore) {
-			IFileStore file = (IFileStore)element;
-			return file.fetchInfo().isDirectory() ? -2 : 0;
-		}
-		return 0;
+	protected LangNavigatorSorter_Switcher switcher_Sorter() {
+		return new LangNavigatorSorter_Switcher() {
+			
+			@Override
+			public Integer visitGoPathElement(GoPathElement goPathElement) {
+				if(goPathElement instanceof GoRootElement) {
+					return -20;
+				}
+				if(goPathElement instanceof GoPathEntryElement) {
+					return -10;
+				}
+				throw assertFail();
+			}
+			
+			@Override
+			public Integer visitFileStoreElement(IFileStore fileStore) {
+				return fileStore.fetchInfo().isDirectory() ? -2 : 0;
+			}
+		};
 	}
 	
 }

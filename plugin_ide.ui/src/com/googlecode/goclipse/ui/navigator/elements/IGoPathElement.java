@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.navigator.elements;
 
-public interface IGoProjectElement {
+import melnorme.lang.ide.ui.navigator.INavigatorElement_Actual;
+
+public interface IGoPathElement extends INavigatorElement_Actual {
 	
 	String getName();
 	

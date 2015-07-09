@@ -361,7 +361,7 @@
 			activeByDefault="true"
 			icon="icons/views/Perspective.png"
 			id="com.googlecode.goclipse.navigator.content"
-			contentProvider="com.googlecode.goclipse.navigator.NavigatorContentProvider2"
+			contentProvider="com.googlecode.goclipse.ui.navigator.GoNavigatorContentProvider"
 			labelProvider="com.googlecode.goclipse.ui.navigator.GoNavigatorLabelProvider"
 			name="Go Elements"
 			priority="highest">
@@ -388,7 +388,7 @@
 				<or>
 					<reference definitionId="com.googlecode.goclipse.core.expressions.isResourceInIDEProject"/>
 					<instanceof value="org.eclipse.core.filesystem.IFileStore"/>
-					<instanceof value="com.googlecode.goclipse.ui.navigator.elements.IGoProjectElement"/>
+					<instanceof value="com.googlecode.goclipse.ui.navigator.elements.IGoNavigatorElement" />
 				</or>
 			</possibleChildren>
 			

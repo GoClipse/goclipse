@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * A representation of top level root nodes, like GOROOT and GOPATH entries.
  */
-public abstract class GoPathElement implements IGoProjectElement {
+public abstract class GoPathElement implements IGoPathElement {
 	
 	protected String name;
 	protected File rootFolder;

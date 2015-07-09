@@ -1,10 +1,11 @@
 package melnorme.lang.ide.core;
 
 import com.googlecode.goclipse.core.engine.GoEngineClient;
+import com.googlecode.goclipse.core.env.GoBundleModelManager;
+import com.googlecode.goclipse.core.env.GoBundleModelManager.GoBundleModel;
 import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 
-import melnorme.lang.ide.core.GoBundleModelManager.GoBundleModel;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 
 public class LangCore_Actual {

@@ -27,15 +27,16 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.ui.GoPluginImages;
+import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
-import com.googlecode.goclipse.ui.navigator.elements.IGoProjectElement;
 
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
 import melnorme.utilbox.misc.MiscUtil;
@@ -49,50 +50,49 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 		return new DefaultGetStyledTextSwitcher() {
 			@Override
 			public StyledString visitOther(Object element) {
-				return getStyledText_other(element);
+				return null;
+			}
+			
+			@Override
+			public StyledString visitGoPathElement(GoPathElement goPathElement) {
+				return getStyledText_GoPathElement(goPathElement);
+			}
+			
+			@Override
+			public StyledString visitFileStoreElement(IFileStore fileStore) {
+				return new StyledString(fileStore.getName());
 			}
 		};
 	}
 	
-	public StyledString getStyledText_other(Object element) {
-		
-		if(element instanceof IGoProjectElement) {
-			IGoProjectElement goProjectElement = (IGoProjectElement) element;
+	public StyledString getStyledText_GoPathElement(GoPathElement goPathElement) {
 			
-			StyledString baseText = new StyledString(goProjectElement.getName());
+		StyledString baseText = new StyledString(goPathElement.getName());
+		
+		if(goPathElement instanceof GoRootElement) {
+			GoRootElement goRootElement = (GoRootElement) goPathElement;
+			baseText.append(" - " + goRootElement.getDirectory().toString(), fgColor(LOCATION_ANNOTATION_FG));
+			return baseText;
+		}
+		if(goPathElement instanceof GoPathEntryElement) {
+			GoPathEntryElement goPathEntryElement = (GoPathEntryElement) goPathElement;
 			
-			if(element instanceof GoRootElement) {
-				GoRootElement goRootElement = (GoRootElement) element;
-				baseText.append(" - " + goRootElement.getDirectory().toString(), fgColor(LOCATION_ANNOTATION_FG));
-				return baseText;
+			baseText.append(" - ", fgColor(LOCATION_ANNOTATION_FG));
+			
+			String goPathEntryLocation = goPathEntryElement.getDirectory().toString();
+			
+			StyledString suffix;
+			if(goPathEntryElement.isProjectInsideGoPath()) {
+				suffix = new StyledString(goPathEntryLocation, 
+					new ItalicStyler(fgColor(LOCATION_ANNOTATION_FG)));
+			} else {
+				suffix = new StyledString(goPathEntryLocation, fgColor(LOCATION_ANNOTATION_FG));
 			}
-			if(element instanceof GoPathEntryElement) {
-				GoPathEntryElement goPathEntryElement = (GoPathEntryElement) element;
-				
-				baseText.append(" - ", fgColor(LOCATION_ANNOTATION_FG));
-				
-				String goPathEntryLocation = goPathEntryElement.getDirectory().toString();
-				
-				StyledString suffix;
-				if(goPathEntryElement.isProjectInsideGoPath()) {
-					suffix = new StyledString(goPathEntryLocation, 
-						new ItalicStyler(fgColor(LOCATION_ANNOTATION_FG)));
-				} else {
-					suffix = new StyledString(goPathEntryLocation, fgColor(LOCATION_ANNOTATION_FG));
-				}
-				baseText.append(suffix);
-				
-				return baseText;
-			}
-			assertFail();
+			baseText.append(suffix);
+			
+			return baseText;
 		}
-		
-		if (element instanceof IFileStore) {
-			IFileStore fileStore = (IFileStore) element;
-			return new StyledString(fileStore.getName());
-		}
-		
-		return null;
+		throw assertFail();
 	}
 	
 	@Override
@@ -101,51 +101,45 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 			
 			@Override
 			public ImageDescriptor visitOther(Object element) {
-				return getBaseImage_Other(element);
+				if(element instanceof IResource) {
+					IResource resource = (IResource) element;
+					return getResourceImageDescriptor(resource);
+				}
+				return null;
+			}
+			
+			@Override
+			public ImageDescriptor visitGoPathElement(GoPathElement goPathElement) {
+				if(goPathElement instanceof GoRootElement) {
+					return GoPluginImages.NAVIGATOR_GOROOT_ENTRY.getDescriptor();
+				}
+				if(goPathElement instanceof GoPathEntryElement) {
+					return GoPluginImages.NAVIGATOR_GOPATH_ENTRY.getDescriptor();
+				}
+				throw assertFail();
+			}
+
+			@Override
+			public ImageDescriptor visitFileStoreElement(IFileStore fileStore) {
+				try {
+					if (fileStore.fetchInfo().isDirectory()) {
+						return GoPluginImages.NAVIGATOR_SOURCE_PACKAGE_FOLDER.getDescriptor();
+					}
+					
+					// TODO: should cleanup up this.
+					
+					IEditorDescriptor descriptor = IDE.getEditorDescriptor(fileStore.getName());
+					if (descriptor != null) {
+						return descriptor.getImageDescriptor();
+					} else {
+						IWorkbench workbench = PlatformUI.getWorkbench();
+						return workbench.getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE);
+					}
+				} catch (PartInitException e) {
+				}
+				return null;
 			}
 		};
-	}
-	
-	public ImageDescriptor getBaseImage_Other(Object element) {
-		
-		if(element instanceof IGoProjectElement) {
-			if(element instanceof GoRootElement) {
-				return GoPluginImages.NAVIGATOR_GOROOT_ENTRY.getDescriptor();
-			}
-			if(element instanceof GoPathEntryElement) {
-				return GoPluginImages.NAVIGATOR_GOPATH_ENTRY.getDescriptor();
-			}
-			assertFail();
-		}
-		
-		if (element instanceof IFileStore) {
-			IFileStore fileStore = (IFileStore) element;
-			
-			try {
-				if (fileStore.fetchInfo().isDirectory()) {
-					return GoPluginImages.NAVIGATOR_SOURCE_PACKAGE_FOLDER.getDescriptor();
-				}
-				
-				// TODO: should cleanup up this.
-				
-				IEditorDescriptor descriptor = IDE.getEditorDescriptor(fileStore.getName());
-				if (descriptor != null) {
-					return descriptor.getImageDescriptor();
-				} else {
-					return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_OBJ_FILE);
-				}
-			} catch (PartInitException e) {
-				
-			}
-		}
-		
-		if(element instanceof IResource) {
-			IResource resource = (IResource) element;
-			
-			return getResourceImageDescriptor(resource);
-		}
-		
-		return null;
 	}
 	
 	protected ImageDescriptor getResourceImageDescriptor(IResource resource) {

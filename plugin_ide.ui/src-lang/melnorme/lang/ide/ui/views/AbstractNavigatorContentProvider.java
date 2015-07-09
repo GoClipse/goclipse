@@ -13,8 +13,6 @@ package melnorme.lang.ide.ui.views;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.ArrayList;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -146,7 +144,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		}
 		
 		public Object[] getProjectChildren(IProject project) {
-			ArrayList<Object> projectChildren = new ArrayList<>();
+			ArrayList2<Object> projectChildren = new ArrayList2<>();
 			if(project.isAccessible()) {
 				addFirstProjectChildren(project, projectChildren);
 				addBuildTargetsContainer(project, projectChildren);
@@ -155,7 +153,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 			return projectChildren.toArray();
 		}
 		
-		protected void addProjectResourceChildren(IProject project, ArrayList<Object> projectChildren) {
+		protected void addProjectResourceChildren(IProject project, ArrayList2<Object> projectChildren) {
 			// Add project children ourselves: this is so that children will be sorted by our own sorter. 
 			// (otherwise only Platform Navigator sorter will be used)
 			// Navigator ResourceExtension will also add this, but they will not appear duplicated because they
@@ -168,12 +166,12 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		}
 		
 		@SuppressWarnings("unused")
-		public void addFirstProjectChildren(IProject project, ArrayList<Object> projectChildren) { 
+		public void addFirstProjectChildren(IProject project, ArrayList2<Object> projectChildren) { 
 		}
 		
 	}
 	
-	protected void addBuildTargetsContainer(IProject project, ArrayList<Object> projectChildren) {
+	protected void addBuildTargetsContainer(IProject project, ArrayList2<Object> projectChildren) {
 		ProjectBuildInfo targets = LangCore.getBuildManager().getBuildInfo(project);
 		if(targets != null) {
 			projectChildren.add(new BuildTargetsContainer(targets));
