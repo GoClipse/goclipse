@@ -2,6 +2,7 @@
 
 ### (NextVersion)
   ▶ Recommended/tested CDT version is now 8.7.0
+ & Fixed: NPE launching a Go launch with a Go package that doesn't exists.
 
 
 ### 0.11.1
