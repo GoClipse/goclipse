@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.navigator;
+package com.googlecode.goclipse.ui.navigator;
 
 import java.net.URI;
 

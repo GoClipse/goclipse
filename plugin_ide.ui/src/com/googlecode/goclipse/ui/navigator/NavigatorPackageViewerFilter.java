@@ -1,4 +1,4 @@
-package com.googlecode.goclipse.navigator;
+package com.googlecode.goclipse.ui.navigator;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;

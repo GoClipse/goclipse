@@ -419,7 +419,7 @@
 		
 		<commonFilter
 			activeByDefault="true"
-			class="com.googlecode.goclipse.navigator.NavigatorObjViewerFilter"
+			class="com.googlecode.goclipse.ui.navigator.NavigatorObjViewerFilter"
 			id="com.googlecode.goclipse.navigator.objFilter"
 			visibleInUI="true"
 			name="Go _obj folders">
@@ -427,7 +427,7 @@
 		
 		<commonFilter
 			activeByDefault="false"
-			class="com.googlecode.goclipse.navigator.NavigatorPackageViewerFilter"
+			class="com.googlecode.goclipse.ui.navigator.NavigatorPackageViewerFilter"
 			id="com.googlecode.goclipse.navigator.packageFilter"
 			visibleInUI="true"
 			name="Go bin, pkg folders">
@@ -437,7 +437,7 @@
 	
    <extension point="org.eclipse.ui.navigator.linkHelper">
       <linkHelper
-            class="com.googlecode.goclipse.navigator.NavigatorLinkHelper"
+            class="com.googlecode.goclipse.ui.navigator.NavigatorLinkHelper"
             id="com.googlecode.goclipse.navigator.linkHelper">          
          <editorInputEnablement>
             <or> 
