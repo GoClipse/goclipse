@@ -10,44 +10,41 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.CoreTaskAgent;
 import melnorme.utilbox.concurrency.ITaskAgent;
+import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.SimpleLogger;
 
-public abstract class BundleModelManager extends ProjectBasedModelManager {
-	
-	public static SimpleLogger log = new SimpleLogger(Platform.inDebugMode());
+public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel<? extends AbstractBundleInfo>> 
+	extends ProjectBasedModelManager implements IBundleModelManager {
 	
 	/* ----------------------------------- */
 	
-	protected final LangBundleModel<?> model;
+	protected final BUNDLE_MODEL model;
+	protected final SimpleLogger log;
 	
 	protected final ITaskAgent modelAgent = new CoreTaskAgent(getClass().getSimpleName());
+	protected final LatchRunnable startLatch = new LatchRunnable();
 	
-	protected boolean started = false;
-	
-	public BundleModelManager(LangBundleModel<?> model) {
-		this.model = model;
-	}
-	
-	public LangBundleModel<?> getModel() {
-		return model;
+	public BundleModelManager(BUNDLE_MODEL model) {
+		this.model = assertNotNull(model);
+		this.log = model.getLog();
+		
+		initializeModelManagerWithModelAgent();
 	}
 	
 	public ITaskAgent getModelAgent() {
 		return modelAgent;
 	}
 	
-	@Override
-	public void startManager() {
-		log.println("==> Starting: " + getClass().getSimpleName());
-		assertTrue(started == false); // start only once
-		started = true;
+	protected void initializeModelManagerWithModelAgent() {
+		// Put a latch runnable to prevent model from actually starting
+		// This is because typically we want model to start only after UI code is fully loaded 
+		modelAgent.submit(startLatch);
 		
 		// Run heavyweight initialization in executor thread.
 		// This is necessary so that we avoid running the initialization during plugin initialization.
@@ -62,21 +59,28 @@ public abstract class BundleModelManager extends ProjectBasedModelManager {
 	}
 	
 	@Override
-	public void shutdownManager() {
-		doShutdown();
-		
-		try {
-			modelAgent.awaitTermination();
-		} catch (InterruptedException e) {
-			LangCore.logInternalError(e);
-		}
+	public void startManager() {
+		log.println("==> Starting: " + getClass().getSimpleName());
+		startLatch.releaseAll();
 	}
 	
 	@Override
 	protected void doShutdown() {
 		super.doShutdown();
-		// shutdown model manager agent first, since model agent uses dub process agent
+		
 		modelAgent.shutdownNow();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public BUNDLE_MODEL getModel() {
+		return model;
+	}
+	
+	@Override
+	public AbstractBundleInfo getProjectInfo(IProject project) {
+		return model.getProjectInfo(project);
 	}
 	
 }

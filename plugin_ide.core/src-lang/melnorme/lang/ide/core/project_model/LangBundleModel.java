@@ -10,10 +10,21 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model;
 
-public abstract class LangBundleModel<INFO> extends ProjectBasedModel<INFO> {
+import org.eclipse.core.runtime.Platform;
+
+import melnorme.utilbox.misc.SimpleLogger;
+
+public class LangBundleModel<INFO extends AbstractBundleInfo> extends ProjectBasedModel<INFO> {
+	
+	public static SimpleLogger log = new SimpleLogger(Platform.inDebugMode());
 	
 	public LangBundleModel() {
 		super();
+	}
+	
+	@Override
+	protected SimpleLogger getLog() {
+		return log;
 	}
 	
 }

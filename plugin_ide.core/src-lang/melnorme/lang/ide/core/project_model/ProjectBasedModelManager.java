@@ -30,15 +30,6 @@ public abstract class ProjectBasedModelManager {
 	protected final BundleManifestResourceListener listener = init_createResourceListener();
 	
 	public ProjectBasedModelManager() {
-		super();
-	}
-	
-	public void startManager() {
-		initializeModelManager();
-	}
-	
-	public void shutdownManager() {
-		doShutdown();
 	}
 	
 	protected void initializeModelManager() {
@@ -59,9 +50,12 @@ public abstract class ProjectBasedModelManager {
 		}
 	}
 	
+	public final void shutdownManager() {
+		doShutdown();
+	}
 	
 	protected void doShutdown() {
-		// It is possible to shutdown the manager without having it started.
+		// It is allowed to shutdown the manager without having it started.
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(listener);
 	}
 	

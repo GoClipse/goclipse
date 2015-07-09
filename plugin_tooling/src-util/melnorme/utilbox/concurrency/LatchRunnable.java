@@ -23,7 +23,7 @@ public class LatchRunnable implements Runnable, AutoCloseable {
 	public final boolean retryAwait;
 	
 	public LatchRunnable() {
-		this(true);
+		this(false);
 	}
 	
 	public LatchRunnable(boolean retryAwait) {
