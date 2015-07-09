@@ -19,7 +19,7 @@ import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.SimpleLogger;
 
-public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel<? extends AbstractBundleInfo>> 
+public abstract class BundleModelManager<INFO extends AbstractBundleInfo, BUNDLE_MODEL extends LangBundleModel<INFO>> 
 	extends ProjectBasedModelManager implements IBundleModelManager {
 	
 	/* ----------------------------------- */
@@ -79,8 +79,25 @@ public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel<? 
 	}
 	
 	@Override
-	public AbstractBundleInfo getProjectInfo(IProject project) {
+	public INFO getProjectInfo(IProject project) {
 		return model.getProjectInfo(project);
 	}
+	
+	@Override
+	protected void bundleProjectRemoved(IProject project) {
+		model.removeProjectInfo(project);
+	}
+	
+	@Override
+	protected void bundleManifestFileChanged(IProject project) {
+		bundleProjectAdded(project);
+	}
+	
+	@Override
+	protected void bundleProjectAdded(IProject project) {
+		model.setProjectInfo(project, createNewInfo(project));
+	}
+	
+	protected abstract INFO createNewInfo(IProject project);
 	
 }

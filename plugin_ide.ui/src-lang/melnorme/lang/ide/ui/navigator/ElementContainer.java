@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.navigator;
+package melnorme.lang.ide.ui.navigator;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -16,7 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 
-public class ElementContainer<ELEM extends ElementContainer<?>> implements INavigatorElement {
+public class ElementContainer<ELEM extends ElementContainer<?>> implements INavigatorElement_Actual {
 	
 	protected final ArrayList2<ELEM> children;
 	

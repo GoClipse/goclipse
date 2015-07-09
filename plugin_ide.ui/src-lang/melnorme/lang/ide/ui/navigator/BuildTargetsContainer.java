@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.navigator.ElementContainer;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
