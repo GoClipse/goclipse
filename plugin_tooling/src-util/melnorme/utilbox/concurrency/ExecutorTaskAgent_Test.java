@@ -36,8 +36,8 @@ public class ExecutorTaskAgent_Test {
 	}
 	public void testBasic() throws Exception {
 		ExecutorTaskAgent agent = new ExecutorTaskAgent("testShutdownNow");
-		LatchRunnable firstTask = new LatchRunnable();
-		LatchRunnable secondTask = new LatchRunnable();
+		LatchRunnable firstTask = new LatchRunnable(true);
+		LatchRunnable secondTask = new LatchRunnable(true);
 		
 		agent.submit(firstTask);
 		assertTrue(agent.getSubmittedTaskCount() == 1);
@@ -70,7 +70,7 @@ public class ExecutorTaskAgent_Test {
 		LatchRunnable firstTask = new LatchRunnable(false);
 		agent.submit(firstTask);
 		
-		agent.submit(new LatchRunnable());
+		agent.submit(new LatchRunnable(true));
 		
 		firstTask.awaitTaskEntry();
 		
