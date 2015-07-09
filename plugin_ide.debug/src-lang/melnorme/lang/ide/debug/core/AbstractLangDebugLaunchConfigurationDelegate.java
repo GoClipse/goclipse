@@ -22,7 +22,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ISourceLocator;
 
 import melnorme.lang.ide.debug.core.services.LangDebugServicesExtensions;
-import melnorme.lang.ide.launching.ProcessSpawnInfo;
+import melnorme.lang.ide.launching.LangLaunchConfigurationValidator;
 
 public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangLaunchConfigurationDelegate_Actual {
 	
@@ -69,28 +69,31 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 		
 		workingCopy.doSave();
 		
-		ILaunch launch = gdbLaunchDelegate.getLaunch(configuration, mode);
-		return launch;
+		return gdbLaunchDelegate.getLaunch(configuration, mode);
 	}
 	
 	protected void setAttributes(ILaunchConfiguration configuration, ILaunchConfigurationWorkingCopy workingCopy)
 			throws CoreException {
-		// Setup CDT config parameters
-		String fullProgramPath = getProgramFullPath(configuration).toString();
-		String workingDirPath = getWorkingDirectoryOrDefault(configuration).toString();
-		// Need to pass raw args, because CDT will reevaluate variables.
-		String progArgs = getProgramArguments_Attribute(configuration);
 		
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME, fullProgramPath);
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, progArgs);
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, workingDirPath);
+		LangLaunchConfigurationValidator validator = getLaunchValidator(configuration);
+
+		// Setup CDT config parameters
+		
+		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME, 
+			launchInfo.programPath.toString());
+		// Need to pass raw args, because CDT will reevaluate variables.
+		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, 
+			validator.getProgramArguments_Attribute());
+		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, 
+			launchInfo.workingDir.toString());
+		
 		// Note, environment is already setup, because it uses standard attributes:
 		// ILaunchManager.ATTR_ENVIRONMENT_VARIABLES and ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES
 	}
 	
 	@Override
-	protected void launchProcess(ProcessSpawnInfo processSpawnInfo, ILaunchConfiguration configuration, 
-			ILaunch launch, IProgressMonitor monitor) throws CoreException {
+	protected void launchProcess(ILaunchConfiguration configuration, ILaunch launch, IProgressMonitor monitor)
+			throws CoreException {
 		String mode = launch.getLaunchMode();
 		gdbLaunchDelegate.launch(configuration, mode, launch, monitor);
 	}

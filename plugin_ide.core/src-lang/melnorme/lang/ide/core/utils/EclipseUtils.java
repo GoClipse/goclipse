@@ -29,6 +29,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
@@ -111,6 +112,12 @@ public class EclipseUtils extends ResourceUtils {
 	public static void checkMonitorCancelation(IProgressMonitor progressMonitor) throws OperationCancellation {
 		if(progressMonitor.isCanceled()) {
 			throw new OperationCancellation();
+		}
+	}
+	
+	public static void checkMonitorCancelation_OCE(IProgressMonitor progressMonitor) throws OperationCanceledException {
+		if(progressMonitor.isCanceled()) {
+			throw new OperationCanceledException();
 		}
 	}
 	
