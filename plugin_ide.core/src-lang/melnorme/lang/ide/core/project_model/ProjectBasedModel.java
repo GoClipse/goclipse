@@ -13,6 +13,8 @@ package melnorme.lang.ide.core.project_model;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 
@@ -59,6 +61,10 @@ public abstract class ProjectBasedModel<INFO> {
 		assertNotNull(oldProjectInfo);
 		notifyProjectRemoved(project, oldProjectInfo);
 		return oldProjectInfo;
+	}
+	
+	public synchronized Set<String> getModelProjects() {
+		return new HashSet<>(projectInfos.keySet());
 	}
 	
 	protected void notifyProjectInfoAdded(IProject project, INFO newProjectInfo) {

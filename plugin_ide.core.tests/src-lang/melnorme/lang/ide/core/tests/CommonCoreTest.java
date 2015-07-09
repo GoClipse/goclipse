@@ -21,16 +21,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.LangNature;
-import melnorme.lang.ide.core.tests.utils.ErrorLogListener;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.StreamUtil;
-import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.tests.CommonTest;
-import melnorme.utilbox.tests.TestsWorkingDir;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -50,6 +40,17 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.core.tests.utils.ErrorLogListener;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.StreamUtil;
+import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.tests.CommonTest;
+import melnorme.utilbox.tests.TestsWorkingDir;
+
 /** 
  * Base core test class that adds an exception listener to the platform log. 
  * The ErrorLogListener was the only way I found to detect UI exceptions in SafeRunnable's 
@@ -61,6 +62,8 @@ public abstract class CommonCoreTest extends CommonTest {
 		initializeWorkingDirToEclipseInstanceLocation();
 		
 		disableAutoBuild();
+		
+		LangCore.getInstance().initializeAfterUIStart();
 	}
 	
 	protected static void disableAutoBuild() {

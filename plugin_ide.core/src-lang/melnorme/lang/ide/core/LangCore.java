@@ -19,7 +19,8 @@ import org.osgi.framework.BundleContext;
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.project_model.BundleModelManager;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
+import melnorme.lang.ide.core.project_model.IBundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.data.StatusException;
@@ -44,7 +45,7 @@ public abstract class LangCore extends Plugin {
 	
 	protected static final AbstractToolManager toolManager = LangCore_Actual.createToolManagerSingleton();
 	protected static final EngineClient engineClient = LangCore_Actual.createEngineClient();
-	protected static final BundleModelManager bundleManager = LangCore_Actual.createBundleModelManager();
+	protected static final IBundleModelManager bundleManager = LangCore_Actual.createBundleModelManager();
 	protected static final BuildManager buildManager = LangCore_Actual.createBuildManager();
 	
 	public static AbstractToolManager getToolManager() {
@@ -53,10 +54,10 @@ public abstract class LangCore extends Plugin {
 	public static EngineClient getEngineClient() {
 		return engineClient;
 	}
-	public static BundleModelManager getBundleModelManager() {
+	public static IBundleModelManager getBundleModelManager() {
 		return bundleManager;
 	}
-	public static LangBundleModel<?> getBundleModel() {
+	public static LangBundleModel<? extends AbstractBundleInfo> getBundleModel() {
 		return bundleManager.getModel();
 	}
 	public static BuildManager getBuildManager() {
@@ -84,15 +85,19 @@ public abstract class LangCore extends Plugin {
 	 */
 	public final void initializeAfterUIStart() {
 		if(initializedAfterUI == true) {
-			LangCore.logError("Atempted initializeAfterUIStart more than once.");
+			LangCore.logWarning("Atempted initializeAfterUIStart more than once.");
 		} else {
 			initializedAfterUI = true;
-			bundleManager.startManager(); // Start this after UI, to allow UI listener to register.
-			doInitializeAfterUIStart();
+			
+			startAgentsAfterUIStart();
 		}
 	}
 	
-	public void doInitializeAfterUIStart() {
+	/** 
+	 * Start core agents, and do other initizaliation after UI is started.
+	 */
+	public void startAgentsAfterUIStart() {
+		bundleManager.startManager();
 	}
 	
 	@Override

@@ -13,6 +13,8 @@ package com.googlecode.goclipse.ui.launch;
 import melnorme.lang.ide.core.LaunchConstants_Actual;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IContainer;
@@ -35,7 +37,8 @@ public class GoLaunchShortcut extends AbstractLaunchShortcut2 implements ILaunch
 	}
 	
 	@Override
-	protected ResourceLaunchTarget getLaunchTargetForResource(IResource resource) {
+	protected ResourceLaunchTarget getLaunchTargetForResource(IResource resource)
+			throws CommonException, OperationCancellation {
 		if(resource instanceof IFile) {
 			IFile file = (IFile) resource;
 			return getLaunchTargetForResource(file.getParent());

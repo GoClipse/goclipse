@@ -13,6 +13,7 @@
 package melnorme.lang.ide.ui.launch;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,14 +94,10 @@ public abstract class AbstractLaunchShortcut2 implements ILaunchShortcut {
 	public void launch(IEditorPart editor, String mode) {
 		IFile editorFile = EditorUtils.findFileOfEditor(editor);
 		if(editorFile != null) {
-			launch(editorFile, mode);
+			launchElements(array(editorFile), mode);
 		} else {
 			UIOperationExceptionHandler.handleError("Don't know how to launch editor.", null);
 		}
-	}
-	
-	protected void launch(IResource resource, String mode) {
-		launchTarget(getLaunchTargetForResource(resource), mode);
 	}
 	
 	@Override
@@ -111,7 +108,8 @@ public abstract class AbstractLaunchShortcut2 implements ILaunchShortcut {
 		}
 	}
 	
-	protected ILaunchTarget[] doFindLaunchables(Object[] elements, @SuppressWarnings("unused") IProgressMonitor pm) {
+	protected ILaunchTarget[] doFindLaunchables(Object[] elements, @SuppressWarnings("unused") IProgressMonitor pm)
+			throws CommonException, OperationCancellation {
 		HashSet2<ILaunchTarget> launchTargets = new HashSet2<>(elements.length);
 		
 		for(Object element : elements) {
@@ -123,7 +121,8 @@ public abstract class AbstractLaunchShortcut2 implements ILaunchShortcut {
 		return launchTargets.toArray(ILaunchTarget.class);
 	}
 	
-	protected ResourceLaunchTarget getLaunchTargetForElement(Object element) {
+	protected ResourceLaunchTarget getLaunchTargetForElement(Object element) 
+			throws CommonException, OperationCancellation {
 		IResource resource;
 		if(element instanceof IResource) {
 			resource = (IResource) element;
@@ -137,7 +136,8 @@ public abstract class AbstractLaunchShortcut2 implements ILaunchShortcut {
 		return null;
 	}
 	
-	protected ResourceLaunchTarget getLaunchTargetForResource(IResource resource) {
+	protected ResourceLaunchTarget getLaunchTargetForResource(IResource resource)
+			throws CommonException, OperationCancellation {
 		return new ResourceLaunchTarget(resource);
 	}
 	

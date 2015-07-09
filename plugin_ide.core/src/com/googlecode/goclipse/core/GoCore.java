@@ -22,10 +22,6 @@ public class GoCore extends LangCore {
 	}
 	
 	@Override
-	public void doInitializeAfterUIStart() {
-	}
-	
-	@Override
 	protected void doCustomStop(BundleContext context) {
 	}
 	

@@ -13,11 +13,12 @@ package melnorme.lang.ide.core.project_model;
 import java.nio.file.Path;
 
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 
 public abstract class AbstractBundleInfo {
 	
-	public abstract Path getEffectiveTargetFullPath();
+	public abstract Path getEffectiveTargetFullPath() throws CommonException;
 	
 	public abstract Indexable<BuildConfiguration> getBuildConfigurations();
 	
@@ -36,7 +37,7 @@ public abstract class AbstractBundleInfo {
 			return name;
 		}
 		
-		public Path getArtifactPath() {
+		public Path getArtifactPath() throws CommonException {
 			return artifactPath;
 		}
 		
