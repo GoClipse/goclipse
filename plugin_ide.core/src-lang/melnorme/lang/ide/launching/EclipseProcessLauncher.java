@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -60,7 +61,7 @@ public class EclipseProcessLauncher {
 	}
 	
 	protected CoreException abort(String message, Throwable exception) throws CoreException {
-		throw LaunchingCore.createCoreException(exception, LaunchingCore.LAUNCHING_CONFIG_ERROR, message);
+		throw LangCore.createCoreException(message, exception);
 	}
 	
 	protected CoreException fail(String messagePattern, Object... arguments) throws CoreException {
