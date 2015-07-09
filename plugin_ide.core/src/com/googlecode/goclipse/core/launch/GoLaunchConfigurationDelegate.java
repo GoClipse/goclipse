@@ -11,59 +11,51 @@
 package com.googlecode.goclipse.core.launch;
 
 
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.launching.AbstractLangLaunchConfigurationDelegate;
-import melnorme.lang.utils.ProcessUtils;
-import melnorme.utilbox.misc.Location;
-
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.Launch;
 
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-public class GoLaunchConfigurationDelegate extends AbstractLangLaunchConfigurationDelegate {
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.launching.LangLaunchConfigurationDelegate;
+import melnorme.lang.ide.launching.ProcessLaunchInfoValidator;
+import melnorme.lang.utils.ProcessUtils;
+import melnorme.utilbox.misc.Location;
+
+public class GoLaunchConfigurationDelegate extends LangLaunchConfigurationDelegate {
 	
-	// Return the absolute path of the executable to launch.
 	@Override
-	protected IPath getProgramFullPath(ILaunchConfiguration configuration) throws CoreException {
-		IPath path = getLaunchablePath(configuration, false);
-		if(path.isAbsolute()) {
-			return path;
-		}
-		
-		IProject project = getProject(configuration);
-		IResource launchResource = project.findMember(path);
-		
-		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
-		
-		Location goPackageLocation = ResourceUtils.getResourceLocation(launchResource);
-		Location goPathEntry = goEnv.getGoPath().findGoPathEntryForSourcePath(goPackageLocation);
-		
-		if (goPathEntry == null) {
-			throw GoCore.createCoreException("Given Go package not found: " + path, null);
-		} else {
-			String cmdName = goPackageLocation.path.getFileName().toString(); // get last segment
-			String executableName = cmdName + ProcessUtils.getExecutableSuffix();
+	protected ProcessLaunchInfoValidator getLaunchValidator(ILaunchConfiguration config) {
+		return new LangLaunchConfigurationValidator(config) {
+			// Return the absolute path of the executable to launch.
 			
-			return GoProjectEnvironment.getBinFolder(goPathEntry).append(executableName);
-		}
-	}
-	
-	@Override
-	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
-		return new Launch(configuration, mode, null);
-	}
-	
-	@Override
-	protected ILaunch getLaunchForDebugMode(ILaunchConfiguration configuration, String mode) throws CoreException {
-		throw abort_UnsupportedMode(mode);
+			@Override
+			protected IPath getExecutableAbsolutePath() throws CoreException {
+				IPath path = getExecutablePath();
+				if(path.isAbsolute()) {
+					return path;
+				}
+				
+				IProject project = getProject_nonNull();
+				Location goPackageLocation = ResourceUtils.eloc(project.getLocation().append(path)); 
+				
+				GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
+				Location goPathEntry = goEnv.getGoPath().findGoPathEntryForSourcePath(goPackageLocation);
+				
+				if (goPathEntry == null) {
+					throw GoCore.createCoreException("Could not find specified Go package: " + path, null);
+				} else {
+					String cmdName = goPackageLocation.path.getFileName().toString(); // get last segment
+					String executableName = cmdName + ProcessUtils.getExecutableSuffix();
+					
+					return GoProjectEnvironment.getBinFolder(goPathEntry).append(executableName);
+				}
+			}
+		};
 	}
 	
 }

@@ -22,7 +22,7 @@ import org.eclipse.debug.core.DebugPlugin;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 
-public abstract class LangLaunchConfigurationValidator {
+public abstract class ProcessLaunchInfoValidator {
 	
 	protected CoreException error(String message) throws CoreException {
 		throw error(message, null);
@@ -79,7 +79,7 @@ public abstract class LangLaunchConfigurationValidator {
 		return new Path(exePath);
 	}
 	
-	protected IPath getProgramFullPath() throws CoreException {
+	protected IPath getExecutableAbsolutePath() throws CoreException {
 		IPath exePath = getExecutablePath();
 		if(exePath.isAbsolute()) {
 			return exePath;
@@ -120,7 +120,7 @@ public abstract class LangLaunchConfigurationValidator {
 	
 	protected ProcessLaunchInfo getValidateProcessLaunchInfo() throws CoreException {
 		
-		IPath processFullPath = getProgramFullPath();
+		IPath processFullPath = getExecutableAbsolutePath();
 		String[] processArgs = getProgramArguments();
 		IPath workingDirectory = getWorkingDirectory();
 		Map<String, String> configEnv = getEnvironmentVars();

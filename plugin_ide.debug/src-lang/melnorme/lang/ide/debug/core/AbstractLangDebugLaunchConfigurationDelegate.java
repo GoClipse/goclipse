@@ -22,7 +22,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ISourceLocator;
 
 import melnorme.lang.ide.debug.core.services.LangDebugServicesExtensions;
-import melnorme.lang.ide.launching.LangLaunchConfigurationValidator;
+import melnorme.lang.ide.launching.ProcessLaunchInfoValidator;
 
 public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangLaunchConfigurationDelegate_Actual {
 	
@@ -75,7 +75,7 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 	protected void setAttributes(ILaunchConfiguration configuration, ILaunchConfigurationWorkingCopy workingCopy)
 			throws CoreException {
 		
-		LangLaunchConfigurationValidator validator = getLaunchValidator(configuration);
+		ProcessLaunchInfoValidator validator = getLaunchValidator(configuration);
 
 		// Setup CDT config parameters
 		
