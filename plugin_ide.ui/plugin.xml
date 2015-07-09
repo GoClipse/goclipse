@@ -572,32 +572,30 @@
 		</menuContribution>
 	</extension>
 	
-
-
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-      <launchConfigurationTypeImage
-            configTypeID="com.googlecode.goclipse.launch.goLaunchType"
-            icon="icons/go-icon16.png"
-            id="com.googlecode.goclipse.debug.launch.launchConfigurationTypeImage">
-      </launchConfigurationTypeImage>
-   </extension>
-   
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup
-            class="com.googlecode.goclipse.ui.launch.GoLaunchTabGroup"
-            id="com.googlecode.goclipse.debug.launchConfigurationTabGroup"
-            type="com.googlecode.goclipse.launch.goLaunchType"
-            description="Run a Go application">
-      </launchConfigurationTabGroup>
-   </extension>
-
+	<!-- ============ Launch ============= -->
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+		<launchConfigurationTypeImage
+			configTypeID="com.googlecode.goclipse.launch.goLaunchType"
+			icon="icons/actions/application_launch.png"
+			id="com.googlecode.goclipse.debug.launch.launchConfigurationTypeImage">
+		</launchConfigurationTypeImage>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+		<launchConfigurationTabGroup
+			class="com.googlecode.goclipse.ui.launch.GoLaunchTabGroup"
+			id="com.googlecode.goclipse.debug.launchConfigurationTabGroup"
+			type="com.googlecode.goclipse.launch.goLaunchType"
+			description="Run a Go application">
+		</launchConfigurationTabGroup>
+	</extension>
+	
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             class="com.googlecode.goclipse.ui.launch.GoLaunchShortcut"
-            icon="icons/go-icon16.png"
+            icon="icons/actions/application_launch.png"
             id="com.googlecode.goclipse.debug.launch.ui.GoLaunchShortcut"
             label="Go Application"
             modes="run, debug">
