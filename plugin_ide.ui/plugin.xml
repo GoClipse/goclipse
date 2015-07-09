@@ -355,9 +355,9 @@
 	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
 		<launchConfigurationTabGroup
 			class="LANG_PROJECT_ID.ide.ui.launch.LANGUAGE_TabGroup"
-			description="%LangTabGroup.description"
 			id="LANG_PROJECT_ID.ide.ui.LANGUAGE_LaunchTabGroup"
-			type="LANG_PROJECT_ID.ide.core.LaunchConfigurationType">
+			type="LANG_PROJECT_ID.ide.core.LaunchConfigurationType"
+			description="%LangTabGroup.description">
 		</launchConfigurationTabGroup>
 	</extension>
 	
