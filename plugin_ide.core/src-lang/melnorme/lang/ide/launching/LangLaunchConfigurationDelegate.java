@@ -103,41 +103,48 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		return super.preLaunchCheck(configuration, mode, monitor);
 	}
 	
-	protected LangLaunchConfigurationValidator getLaunchValidator(ILaunchConfiguration config) {
-		return new LangLaunchConfigurationValidator() {
-			
-			@Override
-			public String getProject_Attribute() throws CoreException {
-				return evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROJECT_NAME, ""));
-			}
-
-			@Override
-			public String getExecutablePath_Attribute() throws CoreException {
-				return evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH, ""));
-			}
-			
-			@Override
-			public String getProgramArguments_Attribute() throws CoreException {
-				return evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, ""));
-			}
-			
-			@Override
-			public String getWorkingDirectory_Attribute() throws CoreException {
-				String rawValue = config.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, "");
-				return getVariableManager().performStringSubstitution(rawValue, false);
-			}
-			
-			@Override
-			public Map<String, String> getEnvironmentVars() throws CoreException {
-				return config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null);
-			}
-			
-			@Override
-			public boolean getAppendEnvironmentVars() throws CoreException {
-				return config.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true);
-			}
-			
-		};
+	protected ProcessLaunchInfoValidator getLaunchValidator(ILaunchConfiguration config) {
+		return new LangLaunchConfigurationValidator(config);
+	}
+	
+	protected class LangLaunchConfigurationValidator extends ProcessLaunchInfoValidator {
+		
+		protected final ILaunchConfiguration config;
+		
+		public LangLaunchConfigurationValidator(ILaunchConfiguration config) {
+			this.config = config;
+		}
+		
+		@Override
+		public String getProject_Attribute() throws CoreException {
+			return evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROJECT_NAME, ""));
+		}
+		
+		@Override
+		public String getExecutablePath_Attribute() throws CoreException {
+			return evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH, ""));
+		}
+		
+		@Override
+		public String getProgramArguments_Attribute() throws CoreException {
+			return evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, ""));
+		}
+		
+		@Override
+		public String getWorkingDirectory_Attribute() throws CoreException {
+			String rawValue = config.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, "");
+			return getVariableManager().performStringSubstitution(rawValue, false);
+		}
+		
+		@Override
+		public Map<String, String> getEnvironmentVars() throws CoreException {
+			return config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null);
+		}
+		
+		@Override
+		public boolean getAppendEnvironmentVars() throws CoreException {
+			return config.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true);
+		}
 	}
 	
 	@SuppressWarnings("unused")

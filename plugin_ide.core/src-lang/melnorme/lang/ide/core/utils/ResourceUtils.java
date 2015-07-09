@@ -54,6 +54,10 @@ public class ResourceUtils {
 		return new org.eclipse.core.runtime.Path(path.toString());
 	}
 	
+	public static Location eloc(IPath location) {
+		return Location.create_fromValid(location.toFile().toPath());
+	}
+	
 	public static URI toUri(IPath path) {
 		if(path == null) {
 			return null;
@@ -66,7 +70,7 @@ public class ResourceUtils {
 		if(location == null) {
 			return null;
 		}
-		return Location.create_fromValid(location.toFile().toPath());
+		return eloc(location);
 	}
 	
 	/* -----------------  ----------------- */ 
