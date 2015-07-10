@@ -1,5 +1,7 @@
 language: java
 
+sudo: false
+
 jdk:
   - oraclejdk8
 
@@ -11,7 +13,6 @@ before_install:
 install: ""
 
 script:
-  - sudo rm /etc/mavenrc
-  - export MAVEN_OPTS="-Xmx1500m"
+  - export MAVEN_OPTS="-Xmx2g"
   - mvn clean integration-test
  
