@@ -75,3 +75,6 @@ GDB debugger integration is achieved by using the CDT plugins. To configure glob
 **Note that for debugging to work**, the program must be compiled with debug symbols information, and those debug symbols must be on a format that GDB understands (DWARF3). Otherwise you will get GDB error messages such "(no debugging symbols found)" or "file format not recognized". 
 
 With Go, debugging information is already added by default when compiling, but certain inline optimizations might confuse the debugger. To disable the, use them `-gcflags "-N -l"` flags. For more info see: http://golang.org/doc/gdb.
+
+**Windows note:** Using Cygwin GDB doesn't work very well, if at all. The recommended way to debug in Windows is to use the GDB of [mingw-w64](http://mingw-w64.org/), or the one of [TDM-GCC](http://tdm-gcc.tdragon.net/).
+
