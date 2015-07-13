@@ -1,9 +1,12 @@
 ## release ChangeLog
 
 ### (NextVersion)
-  ▶ Recommended/tested CDT version is now 8.7.0
- & Fixed: NPE launching a Go launch with a Go package that doesn't exists.
 
+### 0.11.2
+  ▶ Recommended/tested CDT version is now 8.7
+ * Fixed: Debugging not working on Eclipse 4.5 Mars (CDT 8.7), for certain platform/GDB combinations.
+ * Fixed: NPE launching a Go launch with a Go package that doesn't exists.
+ * Doc: added note about Cygwin GDB not being recommended for debugging.
 
 ### 0.11.1
  * Fixed #135: Cannot set breakpoints in editor.
