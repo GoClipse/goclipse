@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.fields;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -20,19 +21,25 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.TextFieldComponent;
+import melnorme.util.swt.components.fields.TextFieldComponent;
 
 /**
  * Field for a program path relative to Eclipse project.
  */
+/* FIXME: use ButtonTextField */
 public class ProgramPathField extends TextFieldComponent {
 	
-	protected Button fSearchButton;
+	protected Button searchButton;
 	
 	@Override
 	protected Composite doCreateTopLevelControl(Composite parent) {
 		return SWTFactoryUtil.createGroup(parent, getGroupLabel(), SWT.NONE);
+	}
+	
+	protected String getGroupLabel() {
+		return LangUIMessages.ProgramPathField_title;
 	}
 	
 	@Override
@@ -45,18 +52,14 @@ public class ProgramPathField extends TextFieldComponent {
 		return 2;
 	}
 	
-	protected String getGroupLabel() {
-		return LangUIMessages.ProgramPathField_title;
-	}
-	
 	@Override
 	protected Text doCreateContents(Composite topControl) {
 		Text text = SWTFactoryUtil.createText(topControl, SWT.SINGLE | SWT.BORDER);
 		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
-		fSearchButton = SWTFactoryUtil.createPushButton(topControl, 
+		searchButton = SWTFactoryUtil.createPushButton(topControl, 
 				LangUIMessages.ProgramPathField__searchButton, null);
-		fSearchButton.addSelectionListener(new SelectionAdapter() {
+		searchButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleSearchButtonSelected();
@@ -66,6 +69,15 @@ public class ProgramPathField extends TextFieldComponent {
 	}
 	
 	protected void handleSearchButtonSelected() {
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected void openProgramPathDialog(IProject project) {
+		String result = ControlUtils.openProgramPathDialog(project, searchButton);
+		if(result != null) {
+			setFieldValue(result);
+		}
 	}
 	
 }

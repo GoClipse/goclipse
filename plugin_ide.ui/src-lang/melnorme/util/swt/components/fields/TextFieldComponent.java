@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.components;
+package melnorme.util.swt.components.fields;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import melnorme.util.swt.components.AbstractFieldComponent;
 
 public abstract class TextFieldComponent extends AbstractFieldComponent<String> {
 	
@@ -23,11 +24,6 @@ public abstract class TextFieldComponent extends AbstractFieldComponent<String> 
 	
 	public TextFieldComponent() {
 		super("");
-	}
-	
-	@Override
-	public String getDefaultFieldValue() {
-		return ""; /* FIXME: duplicate default*/
 	}
 	
 	@Override

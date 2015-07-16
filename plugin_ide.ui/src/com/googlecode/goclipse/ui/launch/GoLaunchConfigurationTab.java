@@ -13,6 +13,7 @@ package com.googlecode.goclipse.ui.launch;
 
 import java.util.Collection;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -27,6 +28,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -43,6 +45,11 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			protected String getGroupLabel() {
 				return "Go main package (path relative to project)";
 			}
+			
+			@Override
+			protected void openProgramPathDialog(IProject project) {
+				GoLaunchConfigurationTab.this.openProgramPathDialog(project);
+			}
 		};
 	}
 	
@@ -52,12 +59,12 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected void validateProgramPath() {
-		// Ignore validation
-		//super.validateProgramPath();
+	protected IFile getValidatedProgramFile() throws StatusException {
+		// Ignore file validation, just validate project.
+		validateProject();
+		return null;
 	}
 	
-	@Override
 	protected void openProgramPathDialog(IProject project) {
 		// TODO: this should be refactored to show only main packages
 		

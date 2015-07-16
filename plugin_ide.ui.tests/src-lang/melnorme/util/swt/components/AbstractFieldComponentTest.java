@@ -36,7 +36,7 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 	protected int controlsUpdateCount_expected;
 	protected int valueChangeCount;
 	protected int valueChangeCount_expected;
-	private AbstractFieldComponent<?> field;
+	private AbstractFieldExt2<?> field;
 	
 	protected void __checkUpdatesInvariant() {
 		assertTrue(valueChangeCount == valueChangeCount_expected);
@@ -117,7 +117,7 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 	
 	protected abstract Object getValueFromControl();
 	
-	protected abstract AbstractFieldComponent<?> createField();
+	protected abstract AbstractFieldExt2<?> createField();
 	
 	protected void runTestWithCreatedComponent_extra() {
 	}

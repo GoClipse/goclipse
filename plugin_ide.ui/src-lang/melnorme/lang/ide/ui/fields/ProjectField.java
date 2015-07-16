@@ -30,7 +30,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.TextFieldComponent;
+import melnorme.util.swt.components.fields.TextFieldComponent;
 
 /**
  * A field whose main value is a project name from the Eclipse workspace.

@@ -26,16 +26,24 @@ import melnorme.utilbox.fields.IFieldValueListener;
  * componented is not created.
  */
 public abstract class AbstractFieldComponent<VALUE> extends AbstractComponent 
-	implements IDomainField<VALUE>, IWidgetComponent {
+	implements IDomainField<VALUE> {
 	
-	private final DomainField<VALUE> domainField = new DomainField<>();
+	private final DomainField<VALUE> domainField;
 	
 	protected boolean listenersNeedNotify;
 	protected boolean settingValueFromControl;
 	
+	public AbstractFieldComponent() {
+		this(new DomainField<>(null));
+	}
+	
 	public AbstractFieldComponent(VALUE defaultFieldValue) {
-		domainField.setFieldValue(defaultFieldValue);
-		domainField.addValueChangedListener(new IFieldValueListener() {
+		this(new DomainField<>(defaultFieldValue));
+	}
+	
+	public AbstractFieldComponent(DomainField<VALUE> domainField) {
+		this.domainField = domainField;
+		this.domainField.addValueChangedListener(new IFieldValueListener() {
 			@Override
 			public void fieldValueChanged() {
 				if(!settingValueFromControl) {
@@ -45,8 +53,6 @@ public abstract class AbstractFieldComponent<VALUE> extends AbstractComponent
 		});
 	}
 	
-	public abstract VALUE getDefaultFieldValue();
-	
 	@Override
 	public VALUE getFieldValue() {
 		return domainField.getFieldValue();
@@ -54,9 +60,6 @@ public abstract class AbstractFieldComponent<VALUE> extends AbstractComponent
 	
 	@Override
 	public void setFieldValue(VALUE value) {
-		if(value == null) {
-			value = getDefaultFieldValue();
-		}
 		doSetFieldValue(value);
 	}
 	
