@@ -11,6 +11,7 @@
 package melnorme.util.swt.components.fields;
 
 import melnorme.util.swt.SWTFactory;
+import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.components.AbstractFieldExt2;
 
 import org.eclipse.jface.preference.ColorSelector;
@@ -82,7 +83,7 @@ public class ColorField extends AbstractFieldExt2<RGB> {
 	
 	@Override
 	protected void createContents_layout() {
-		layout2Controls_expandLast(label, colorSelector.getButton());
+		SWTLayoutUtil.layout2Controls_expandLast(label, colorSelector.getButton());
 	}
 	
 	public ColorSelector getColorSelector() {

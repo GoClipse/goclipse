@@ -11,9 +11,14 @@
 package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.components.AbstractFieldComponent;
 import melnorme.util.swt.components.AbstractFieldExt2;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -59,7 +64,7 @@ public class ComboBoxField extends AbstractFieldExt2<Integer> {
 	
 	@Override
 	protected void createContents_layout() {
-		layout2Controls_spanLast(label, combo);
+		SWTLayoutUtil.layout2Controls_spanLast(label, combo);
 	}
 	
 	@Override
@@ -100,6 +105,20 @@ public class ComboBoxField extends AbstractFieldExt2<Integer> {
 			}
 		}
 		return -1;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static Combo createFieldCombo(final AbstractFieldComponent<Integer> field, Composite parent, int style) {
+		final Combo combo = new Combo(parent, style);
+		combo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int selectionIndex = combo.getSelectionIndex();
+				field.setFieldValueFromControl(selectionIndex);
+			}
+		});
+		return combo;
 	}
 	
 }

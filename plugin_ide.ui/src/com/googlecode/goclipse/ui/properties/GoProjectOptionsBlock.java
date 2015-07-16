@@ -10,10 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.properties;
 
-import melnorme.lang.ide.ui.fields.ArgumentsGroupField;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.util.swt.components.AbstractComponentExt;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -22,7 +18,11 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.googlecode.goclipse.core.GoProjectPrefConstants;
 
-public class GoProjectOptionsBlock extends AbstractComponentExt {
+import melnorme.lang.ide.ui.fields.ArgumentsGroupField;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.util.swt.components.AbstractComponent;
+
+public class GoProjectOptionsBlock extends AbstractComponent {
 	
 	protected IProject project;
 	

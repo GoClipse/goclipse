@@ -10,25 +10,36 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.util.swt.SWTLayoutUtil;
+
 /**
- * Simple abstract class for a {@link IWidgetComponent}.
+ * Common class for UI components, or composite widgets, using SWT.
+ * Can be created in two ways: 
+ *  the standard way - only one child control is created under parent. 
+ *  inlined - many child controls created under parent control. This allows more flexibility for more complex layouts. 
  */
 public abstract class AbstractComponent implements IWidgetComponent {
+	
+	public AbstractComponent() {
+	}
 	
 	@Override
 	public Composite createComponent(Composite parent) {
 		Composite topControl = createTopLevelControl(parent);
 		createContents(topControl);
+		updateComponentFromInput();
 		return topControl;
 	}
 	
 	@Override
 	public void createComponentInlined(Composite parent) {
 		createContents(parent);
+		updateComponentFromInput();
 	}
 	
 	protected final Composite createTopLevelControl(Composite parent) {
@@ -54,8 +65,33 @@ public abstract class AbstractComponent implements IWidgetComponent {
 	/** Do {@link #createComponent(Composite)}, and also set the layout data of created Control.  */
  	public final Composite createComponent(Composite parent, Object layoutData) {
  		Composite control = createComponent(parent);
- 		control.setLayoutData(layoutData);
- 		return control;
+ 		return SWTLayoutUtil.setLayoutData(control, layoutData);
  	}
+ 	
+	/* -----------------  ----------------- */
+	
+	/** 
+	 * Update the controls of the components from whatever is considerd the input, or source, of the control.
+	 */
+	protected abstract void updateComponentFromInput();
+	
+ 	
+	/* ----------------- Shortcut utils ----------------- */
+	
+	protected static GridDataFactory gdSwtDefaults() {
+		return GridDataFactory.swtDefaults();
+	}
+	
+	protected static GridDataFactory gdFillDefaults() {
+		return GridDataFactory.fillDefaults();
+	}
+	
+	protected static GridLayoutFactory glSwtDefaults() {
+		return GridLayoutFactory.swtDefaults();
+	}
+	
+	protected static GridLayoutFactory glFillDefaults() {
+		return GridLayoutFactory.fillDefaults();
+	}
 	
 }

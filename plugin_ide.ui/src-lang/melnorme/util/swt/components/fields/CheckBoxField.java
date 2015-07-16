@@ -10,11 +10,15 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import melnorme.util.swt.components.AbstractFieldExt2;
-
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+
+import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.components.AbstractFieldComponent;
+import melnorme.util.swt.components.AbstractFieldExt2;
 
 public class CheckBoxField extends AbstractFieldExt2<Boolean> {
 	
@@ -41,7 +45,7 @@ public class CheckBoxField extends AbstractFieldExt2<Boolean> {
 	
 	@Override
 	protected void createContents_layout() {
-		layout1Control(checkBox);
+		SWTLayoutUtil.layout1Control(checkBox);
 	}
 	
 	@Override
@@ -56,6 +60,19 @@ public class CheckBoxField extends AbstractFieldExt2<Boolean> {
 	
 	public void setEnabled(boolean enabled) {
 		checkBox.setEnabled(enabled);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static Button createFieldCheckbox(AbstractFieldComponent<Boolean> field, Composite parent, int style) {
+		final Button checkBox = new Button(parent, SWT.CHECK | style);
+		checkBox.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				field.setFieldValueFromControl(checkBox.getSelection());
+			}
+		});
+		return checkBox;
 	}
 	
 }

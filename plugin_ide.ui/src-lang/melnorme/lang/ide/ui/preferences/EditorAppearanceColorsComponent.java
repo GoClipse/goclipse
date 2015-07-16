@@ -107,6 +107,11 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 	}
 	
 	@Override
+	protected void updateComponentFromInput() {
+		// Does nothing: need a store as input
+	}
+	
+	@Override
 	public void loadFromStore(IPreferenceStore store) {
 		for (EditorColorItem editorColorItem : editorColorItems) {
 			editorColorItem.loadFromStore(store);

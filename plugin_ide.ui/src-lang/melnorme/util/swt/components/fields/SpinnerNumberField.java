@@ -11,9 +11,13 @@
 package melnorme.util.swt.components.fields;
 
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.components.AbstractFieldComponent;
 import melnorme.util.swt.components.AbstractFieldExt2;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
@@ -48,7 +52,7 @@ public class SpinnerNumberField extends AbstractFieldExt2<Integer> {
 	
 	@Override
 	protected void createContents_layout() {
-		layout2Controls_spanLast(label, spinner);
+		SWTLayoutUtil.layout2Controls_spanLast(label, spinner);
 	}
 	
 	public Spinner getSpinner() {
@@ -83,6 +87,19 @@ public class SpinnerNumberField extends AbstractFieldExt2<Integer> {
 	public void setEnabled(boolean enabled) {
 		label.setEnabled(enabled);
 		spinner.setEnabled(enabled);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static Spinner createFieldSpinner(AbstractFieldComponent<Integer> field, Composite parent, int style) {
+		final Spinner spinner = new Spinner(parent, style);
+		spinner.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				field.setFieldValueFromControl(spinner.getSelection());
+			}
+		});
+		return spinner;
 	}
 	
 }

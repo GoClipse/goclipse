@@ -10,13 +10,15 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import melnorme.util.swt.SWTFactory;
-import melnorme.util.swt.components.AbstractFieldExt2;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
+import melnorme.util.swt.SWTFactory;
+import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.SWTUtil;
+import melnorme.util.swt.components.AbstractFieldExt2;
 
 public class TextField extends AbstractFieldExt2<String> {
 	
@@ -54,7 +56,7 @@ public class TextField extends AbstractFieldExt2<String> {
 	
 	@Override
 	protected void createContents_layout() {
-		layout2Controls_expandLast(label, text);
+		SWTLayoutUtil.layout2Controls_expandLast(label, text);
 	}
 	
 	@Override
@@ -68,8 +70,8 @@ public class TextField extends AbstractFieldExt2<String> {
 	}
 	
 	public void setEnabled(boolean enabled) {
-		label.setEnabled(enabled);
-		text.setEnabled(enabled);
+		SWTUtil.setEnabledIfOk(label, enabled);
+		SWTUtil.setEnabledIfOk(text, enabled);
 	}
 	
 }

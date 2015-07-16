@@ -17,6 +17,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.util.swt.SWTLayoutUtil;
+
 public class TextField2 extends TextField {
 	
 	protected final int textLimit;
@@ -34,7 +36,7 @@ public class TextField2 extends TextField {
 	
 	@Override
 	protected void createContents_layout() {
-		layoutControls(array(label, text), null, text);
+		SWTLayoutUtil.layoutControls(array(label, text), null, text);
 		
 		GridData textGD = (GridData) text.getLayoutData();
 		PixelConverter pixelConverter = new PixelConverter(text.getParent());

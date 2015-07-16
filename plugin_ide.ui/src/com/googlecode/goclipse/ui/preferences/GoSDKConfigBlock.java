@@ -15,16 +15,6 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.io.File;
 import java.util.List;
 
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.fields.ButtonTextField;
-import melnorme.util.swt.components.fields.ComboBoxField;
-import melnorme.util.swt.components.fields.DirectoryTextField;
-import melnorme.util.swt.components.fields.FileTextField;
-import melnorme.utilbox.fields.IFieldValueListener;
-import melnorme.utilbox.misc.ArrayUtil;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -38,7 +28,17 @@ import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 
-public class GoSDKConfigBlock extends AbstractComponentExt {
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.util.swt.components.fields.ComboBoxField;
+import melnorme.util.swt.components.fields.DirectoryTextField;
+import melnorme.util.swt.components.fields.FileTextField;
+import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.misc.ArrayUtil;
+
+public class GoSDKConfigBlock extends AbstractComponent {
 	
 	protected final AbstractComponentsPrefPage prefPage;
 	
