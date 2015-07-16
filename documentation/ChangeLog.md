@@ -2,6 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed: Arguments field in launch configuration is not multi-line.
+ 
   ▶ Recommended/tested CDT version is now 8.7.0
 
  * Fixed: PATH of external tools bungled if original PATH not set (Windows) 

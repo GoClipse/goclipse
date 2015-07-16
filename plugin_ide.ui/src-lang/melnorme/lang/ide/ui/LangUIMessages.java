@@ -61,8 +61,8 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 			"Program Arguments";
 	public static final String LangArgumentsTab_Variables = 
 			"Variables";
-	public static final String Launch_common_Exception_occurred_reading_configuration_EXCEPTION = 
-			"Exception occurred reading launch configuration";
+	public static final String Launch_ErrorReadingConfigurationAttribute = 
+			"Exception occurred reading launch configuration attribute";
 	public static final String LangArgumentsTab_Arguments = 
 			"Arguments";
 	

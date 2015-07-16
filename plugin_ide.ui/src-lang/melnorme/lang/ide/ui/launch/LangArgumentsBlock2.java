@@ -35,7 +35,7 @@ public class LangArgumentsBlock2 extends ArgumentsGroupField {
 		});
 		
 		// need to strip the mnemonic from buttons:
-		ControlAccessibleListener.addControlAccessibleListener(variablesButton, variablesButton.getText());
+		ControlAccessibleListener.addControlAccessibleListener(button, button.getText());
 	}
 	
 	/**

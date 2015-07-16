@@ -33,6 +33,12 @@ public class SWTUtil {
 		return control != null && !control.isDisposed();
 	}
 	
+	public static void setEnabledIfOk(Control control, boolean enabled) {
+		if(isOkToUse(control)) {
+			control.setEnabled(enabled);
+		}
+	}
+	
 	public static <T extends Resource> T dispose(T resource) {
 		if(resource != null) {
 			resource.dispose();

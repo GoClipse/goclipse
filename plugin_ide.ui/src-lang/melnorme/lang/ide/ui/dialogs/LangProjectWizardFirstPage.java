@@ -22,7 +22,7 @@ import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.TextField;
@@ -145,7 +145,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 	}
 	
-	public static class NameGroup extends AbstractComponentExt {
+	public static class NameGroup extends AbstractComponent{
 		
 		protected TextField textField = new TextField(WizardMessages.LangNewProject_NameGroup_label);
 		
@@ -207,7 +207,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 	
 	/* ----------------- Location ----------------- */
 	
-	public static class LocationGroup extends AbstractComponentExt {
+	public static class LocationGroup extends AbstractComponent {
 		
 		protected final NameGroup nameGroup;
 		
@@ -326,7 +326,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 	}
 	
-	public class ProjectValidationGroup extends AbstractComponentExt {
+	public class ProjectValidationGroup extends AbstractComponent {
 		
 		protected Label icon;
 		protected Link hintText;

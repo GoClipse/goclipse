@@ -11,20 +11,27 @@
 package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.util.swt.SWTFactoryUtil;
 
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.SWTLayoutUtil;
+
 public abstract class ButtonTextField extends TextField {
 	
 	protected final String buttonLabel;
 	protected Button button;
 	
-	public ButtonTextField(String label, String buttonlabel) {
-		super(label);
+	public ButtonTextField(String labelText, int textStyle, String buttonlabel) {
+		super(labelText, textStyle);
+		buttonLabel = buttonlabel;
+	}
+	
+	public ButtonTextField(String labelText, String buttonlabel) {
+		super(labelText);
 		buttonLabel = buttonlabel;
 	}
 	
@@ -37,22 +44,29 @@ public abstract class ButtonTextField extends TextField {
 	protected void createContents_do(Composite topControl) {
 		super.createContents_do(topControl);
 		
-		button = SWTFactoryUtil.createPushButton(topControl, getButtonLabel(), null);
+		button = createFieldButton(topControl);
+	}
+	
+	@Override
+	protected void createContents_layout() {
+		SWTLayoutUtil.layoutControls(array(label, text, button), text, text);
+	}
+	
+	/* -----------------  Button  ----------------- */
+	
+	protected Button createFieldButton(Composite topControl) {
+		Button button = SWTFactoryUtil.createPushButton(topControl, getButtonLabel(), null);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleButtonSelected();
 			}
 		});
+		return button;
 	}
 	
 	protected String getButtonLabel() {
 		return buttonLabel;
-	}
-	
-	@Override
-	protected void createContents_layout() {
-		layoutControls(array(label, text, button), text, text);
 	}
 	
 	protected void handleButtonSelected() {

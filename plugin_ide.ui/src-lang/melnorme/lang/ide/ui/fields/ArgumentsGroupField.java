@@ -10,32 +10,21 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.fields;
 
-import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.launch.AbstractLaunchConfigurationTabExt;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractFieldExt2;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 
-public class ArgumentsGroupField extends AbstractFieldExt2<String> {
-	
-	protected Text text;
-	protected int textStyle;
-	protected Button variablesButton;
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.utils.ControlUtils;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.fields.ButtonTextField;
+
+public class ArgumentsGroupField extends ButtonTextField {
 	
 	public ArgumentsGroupField(String labelText) {
-		this(labelText, SWT.BORDER);
-	}
-	
-	public ArgumentsGroupField(String labelText, int textStyle) {
-		super(labelText, "");
-		this.textStyle = textStyle;
+		super(labelText, SWT.MULTI | SWT.BORDER, LangUIMessages.LangArgumentsTab_Variables);
 	}
 	
 	@Override
@@ -45,7 +34,7 @@ public class ArgumentsGroupField extends AbstractFieldExt2<String> {
 	
 	@Override
 	protected GridLayoutFactory createTopLevelLayout() {
-		return glSwtDefaults().numColumns(getPreferredLayoutColumns());
+		return GridLayoutFactory.swtDefaults().numColumns(getPreferredLayoutColumns());
 	}
 	
 	@Override
@@ -54,27 +43,21 @@ public class ArgumentsGroupField extends AbstractFieldExt2<String> {
 	}
 	
 	@Override
-	protected void createContents_do(Composite topControl) {
-		text = createFieldText(this, topControl, textStyle);
-		
-		variablesButton = AbstractLaunchConfigurationTabExt.
-				createVariablesButton(topControl, LangUIMessages.LangArgumentsTab_Variables, text); 
+	protected void createLabel(Composite parent) {
+		// Do not create label
 	}
 	
 	@Override
 	protected void createContents_layout() {
 		text.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(40, 100).create());
-		variablesButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
+		button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 	}
 	
-	@Override
-	public Text getFieldControl() {
-		return text;
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	protected void doUpdateComponentFromValue() {
-		text.setText(getFieldValue());
+	protected String getNewValueFromButtonSelection() {
+		return getFieldValue() + ControlUtils.openStringVariableSelectionDialog(text.getShell());
 	}
 	
 }

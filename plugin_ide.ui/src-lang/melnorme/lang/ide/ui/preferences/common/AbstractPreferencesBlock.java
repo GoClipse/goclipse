@@ -23,12 +23,12 @@ import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.Combo
 import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.StringFieldAdapter;
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.AbstractFieldComponent;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
 
-public abstract class AbstractPreferencesBlock extends AbstractComponentExt {
+public abstract class AbstractPreferencesBlock extends AbstractComponent {
 	
 	protected final AbstractComponentsPrefPage prefPage;
 	protected final IPreferenceStore preferenceStore;

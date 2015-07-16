@@ -16,30 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
-import melnorme.lang.ide.ui.preferences.PreferencesMessages;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_Old.IPreferencesBlock_Old;
-import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.fields.CheckBoxField;
-import melnorme.util.swt.components.fields.ColorField;
-import melnorme.util.swt.jface.ElementContentProvider2;
-import melnorme.util.swt.jface.LabeledTreeElement;
-import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvider;
-import melnorme.util.swt.jface.TreeViewerExt;
-import melnorme.util.swt.jface.preference.OverlayPreferenceStore;
-import melnorme.util.swt.jface.preference.OverlayPreferenceStore.OverlayKey;
-import melnorme.utilbox.fields.IFieldValueListener;
-import melnorme.utilbox.misc.StreamUtil;
-import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.tree.IElement;
-import melnorme.utilbox.tree.SimpleTreeElement;
-import melnorme.utilbox.tree.TreeVisitor;
-
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -57,11 +33,35 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 import _org.eclipse.cdt.internal.ui.text.util.CColorManager;
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.ide.ui.preferences.PreferencesMessages;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_Old.IPreferencesBlock_Old;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.utils.ControlUtils;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.fields.CheckBoxField;
+import melnorme.util.swt.components.fields.ColorField;
+import melnorme.util.swt.jface.ElementContentProvider2;
+import melnorme.util.swt.jface.LabeledTreeElement;
+import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvider;
+import melnorme.util.swt.jface.TreeViewerExt;
+import melnorme.util.swt.jface.preference.OverlayPreferenceStore;
+import melnorme.util.swt.jface.preference.OverlayPreferenceStore.OverlayKey;
+import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.misc.StreamUtil;
+import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.tree.IElement;
+import melnorme.utilbox.tree.SimpleTreeElement;
+import melnorme.utilbox.tree.TreeVisitor;
 
 /**
  * A configuration component for syntax (and possibly semantic) source highlighting options.
  */
-public abstract class AbstractSourceColoringConfigurationBlock extends AbstractComponentExt 
+public abstract class AbstractSourceColoringConfigurationBlock extends AbstractComponent 
 	implements IPreferencesBlock_Old {
 		
 	protected final SourceColoringListRoot coloringOptionsList;
@@ -200,18 +200,18 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	protected void createContents(final Composite topControl) {
 		PixelConverter pc = new PixelConverter(topControl);
 		
-		Link openPrefsLink = createOpenPreferencesDialogLink(topControl, 
+		Link openPrefsLink = ControlUtils.createOpenPreferencesDialogLink(topControl, 
 			PreferencesMessages.DLTKEditorColoringConfigurationBlock_link);
 		openPrefsLink.setLayoutData(
 			gdFillDefaults().hint(pc.convertWidthInCharsToPixels(50), SWT.DEFAULT).create());
 		
-		createHorizontalSpacer(topControl, 1, pc);
+		ControlUtils.createHorizontalSpacer(topControl, 1, pc);
 		
 		SWTFactoryUtil.createLabel(topControl, SWT.LEFT, 
 			PreferencesMessages.DLTKEditorPreferencePage_coloring_element, 
 			gdFillDefaults().create());
 		
-		Composite editorComposite = createComposite(topControl);
+		Composite editorComposite = SWTFactoryUtil.createComposite(topControl);
 		editorComposite.setLayoutData(
 			gdFillDefaults().grab(true, false).create());
 		editorComposite.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());

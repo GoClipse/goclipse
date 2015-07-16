@@ -12,12 +12,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
-import melnorme.lang.ide.launching.LaunchConstants;
-import melnorme.lang.ide.ui.LangImages;
-import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.LangUIPlugin;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
@@ -26,6 +20,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+
+import melnorme.lang.ide.launching.LaunchConstants;
+import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.ide.ui.LangUIMessages;
 
 
 //BM: Original based on org.eclipse.cdt.launch.ui.CArgumentsTab
@@ -42,7 +40,7 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	protected final LangWorkingDirectoryBlock workingDirectoryBlock = new LangWorkingDirectoryBlock();
 	
 	public LangArgumentsTab() {
-		// TODO : add validation for fields above
+		argumentsBlock.addValueChangedListener(() -> updateLaunchConfigurationDialog());
 	}
 	
 	@Override
@@ -62,8 +60,7 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	}
 	
 	protected void setHelpContextId() {
-//		LangUIPlugin.getDefault().getWorkbench().getHelpSystem().setHelp(
-//				getControl(), 
+//		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), 
 //				ICDTLaunchHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMNETS_TAB);
 	}
 	
@@ -81,16 +78,8 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
-		try {
-			argumentsBlock.setFieldValue(configuration.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, ""));
-			workingDirectoryBlock.initializeFrom(configuration);
-		}
-		catch (CoreException ce) {
-			setErrorMessage(LangUIMessages.getFormattedString(
-					LangUIMessages.Launch_common_Exception_occurred_reading_configuration_EXCEPTION, 
-					ce.getStatus().getMessage()));
-			LangUIPlugin.logStatus(ce);
-		}
+		argumentsBlock.setFieldValue(getConfigAttribute(configuration, LaunchConstants.ATTR_PROGRAM_ARGUMENTS, ""));
+		workingDirectoryBlock.initializeFrom(configuration);
 	}
 	
 	@Override
