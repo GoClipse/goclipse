@@ -10,10 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.fields;
 
-import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.WidgetFieldComponent;
-
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -23,12 +19,15 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.TextFieldComponent;
+
 /**
  * Field for a program path relative to Eclipse project.
  */
-public class ProgramPathField extends WidgetFieldComponent<String> {
+public class ProgramPathField extends TextFieldComponent {
 	
-	protected Text fProgramText;
 	protected Button fSearchButton;
 	
 	@Override
@@ -51,9 +50,9 @@ public class ProgramPathField extends WidgetFieldComponent<String> {
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
-		fProgramText = createFieldText(topControl, SWT.SINGLE | SWT.BORDER);
-		fProgramText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	protected Text doCreateContents(Composite topControl) {
+		Text text = SWTFactoryUtil.createText(topControl, SWT.SINGLE | SWT.BORDER);
+		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		fSearchButton = SWTFactoryUtil.createPushButton(topControl, 
 				LangUIMessages.ProgramPathField__searchButton, null);
@@ -63,16 +62,7 @@ public class ProgramPathField extends WidgetFieldComponent<String> {
 				handleSearchButtonSelected();
 			}
 		});
-	}
-	
-	@Override
-	public void setFieldValue(String moduleName) {
-		fProgramText.setText(moduleName);
-	}
-	
-	@Override
-	public String getFieldValue() {
-		return fProgramText.getText();
+		return text;
 	}
 	
 	protected void handleSearchButtonSelected() {

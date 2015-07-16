@@ -18,6 +18,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+
 import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.BooleanFieldAdapter;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.ComboFieldAdapter;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.StringFieldAdapter;
@@ -28,29 +35,24 @@ import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractField;
+import melnorme.util.swt.components.AbstractFieldComponent;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.FileTextField;
+import melnorme.utilbox.fields.IDomainField;
 import melnorme.utilbox.fields.IFieldValueListener;
-
-import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 
 /**
  * This is the preferred way to create Preference pages (as of 2015-02).
  * 
- * This page delegates apply/cancel/revert to preference components (Usually connected to {@link AbstractField}).
+ * This page delegates apply/cancel/revert to preference components 
+ * (Usually connected to {@link AbstractFieldComponent}).
  */
 public abstract class AbstractComponentsPrefPage extends AbstractLangPreferencesPage 
 	implements IPreferencesDialog {
 	
 	private final ArrayList<IPreferencesDialogComponent> prefComponents = new ArrayList<>();
-	private final LinkedHashMap<AbstractField<String>, IFieldValidator> validators = new LinkedHashMap<>();
+	private final LinkedHashMap<IDomainField<String>, IFieldValidator> validators = new LinkedHashMap<>();
 	
 	private StatusException currentStatus = null;
 	
@@ -76,7 +78,7 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		}	
 	}
 	
-	public StatusLevel getFieldStatus(AbstractField<String> field) {
+	public StatusLevel getFieldStatus(IDomainField<String> field) {
 		IFieldValidator validator = validators.get(field);
 		StatusException fieldStatus = LocationValidator.getFieldStatus(validator, field.getFieldValue());
 		if(fieldStatus == null) {
@@ -85,7 +87,7 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		return fieldStatus.getStatusLevel();
 	}
 	
-	public void connectStringField(String prefKey, AbstractField<String> field, IFieldValidator validator) {
+	public void connectStringField(String prefKey, AbstractFieldComponent<String> field, IFieldValidator validator) {
 		addStringComponent(prefKey, field);
 		
 		validators.put(field, validator);
@@ -107,8 +109,8 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		setMessage(null);
 		setValid(true);
 		
-		for (Entry<AbstractField<String>, IFieldValidator> entry : validators.entrySet()) {
-			AbstractField<String> field = entry.getKey();
+		for (Entry<IDomainField<String>, IFieldValidator> entry : validators.entrySet()) {
+			IDomainField<String> field = entry.getKey();
 			IFieldValidator validator = entry.getValue();
 			
 			try {
@@ -174,21 +176,21 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		return group;
 	}
 	
-	public void addStringComponent(String prefKey, AbstractField<String> field) {
+	public void addStringComponent(String prefKey, AbstractFieldComponent<String> field) {
 		addComponent(new StringFieldAdapter(prefKey, field));
 	}
-	public void addBooleanComponent(String prefKey, AbstractField<Boolean> field) {
+	public void addBooleanComponent(String prefKey, AbstractFieldComponent<Boolean> field) {
 		addComponent(new BooleanFieldAdapter(prefKey, field));
 	}
 	public void addComboComponent(String prefKey, ComboBoxField field) {
 		addComponent(new ComboFieldAdapter(prefKey, field));
 	}
 	
-	public void addStringComponent(String prefKey, Composite parent, AbstractField<String> field) {
+	public void addStringComponent(String prefKey, Composite parent, AbstractFieldComponent<String> field) {
 		addStringComponent(prefKey, field);
 		field.createComponentInlined(parent);
 	}
-	public void addBooleanComponent(String prefKey, Composite parent, AbstractField<Boolean> field) {
+	public void addBooleanComponent(String prefKey, Composite parent, AbstractFieldComponent<Boolean> field) {
 		addBooleanComponent(prefKey, field);
 		field.createComponentInlined(parent);
 	}
@@ -197,15 +199,15 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		field.createComponentInlined(parent);
 	}
 	
-	public void connectFileField(String prefKey, AbstractField<String> stringField, boolean allowSinglePath, 
-			String fieldNamePrefix) {
+	public void connectFileField(String prefKey, AbstractFieldComponent<String> stringField, 
+			boolean allowSinglePath, String fieldNamePrefix) {
 		PathValidator validator = allowSinglePath ? 
 				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix);
 		validator.fileOnly = true;
 		connectStringField(prefKey, stringField, validator);
 	}
-	public void connectDirectoryField(String prefKey, AbstractField<String> stringField, boolean allowSinglePath, 
-			String fieldNamePrefix) {
+	public void connectDirectoryField(String prefKey, AbstractFieldComponent<String> stringField, 
+			boolean allowSinglePath, String fieldNamePrefix) {
 		PathValidator validator = allowSinglePath ? 
 				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix);
 		validator.directoryOnly = true;

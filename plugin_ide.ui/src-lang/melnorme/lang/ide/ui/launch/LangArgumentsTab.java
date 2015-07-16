@@ -38,14 +38,12 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
-	protected final LangArgumentsBlock2 argumentsBlock = new LangArgumentsBlock2() {
-		@Override
-		protected void fireFieldValueChanged() {
-			updateLaunchConfigurationDialog();
-			super.fireFieldValueChanged();
-		};
-	}; 
+	protected final LangArgumentsBlock2 argumentsBlock = new LangArgumentsBlock2(); 
 	protected final LangWorkingDirectoryBlock workingDirectoryBlock = new LangWorkingDirectoryBlock();
+	
+	public LangArgumentsTab() {
+		// TODO : add validation for fields above
+	}
 	
 	@Override
 	public void createControl(Composite parent) {

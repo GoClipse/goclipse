@@ -10,21 +10,24 @@
  *******************************************************************************/
 package melnorme.util.swt;
 
+import static melnorme.util.swt.SWTLayoutUtil.setLayoutData;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Text;
 
 public class SWTFactory {
 	
-	public static Composite createComposite(Composite parent, GridData layoutData) {
+	public static Composite createComposite(Composite parent, GridData gridData) {
 		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayoutData(layoutData);
-		return composite;
+		return setLayoutData(composite, gridData);
 	}
 	
 	public static Composite createComposite(Composite parent) {
@@ -34,8 +37,7 @@ public class SWTFactory {
 	
 	public static Group createGroup(Composite parent, String label, GridData gridData) {
 		Group group = createGroup(parent, label);
-		group.setLayoutData(gridData);
-		return group;
+		return setLayoutData(group, gridData);
 	}
 	
 	public static Group createGroup(Composite parent, String label) {
@@ -50,8 +52,7 @@ public class SWTFactory {
 	
 	public static Label createLabel(Composite parent, int style, String labelText, GridData gridData) {
 		Label label = createLabel(parent, style, labelText);
-		label.setLayoutData(gridData);
-		return label;
+		return setLayoutData(label, gridData);
 	}
 
 	public static Label createLabel(Composite parent, int style, String labelText) {
@@ -62,8 +63,7 @@ public class SWTFactory {
 	
 	public static Link createLink(Composite parent, int style, String labelText, GridData gridData) {
 		Link link = createLink(parent, style, labelText);
-		link.setLayoutData(gridData);
-		return link;
+		return setLayoutData(link, gridData);
 	}
 	
 	public static Link createLink(Composite parent, int style, String labelText) {
@@ -77,8 +77,7 @@ public class SWTFactory {
 	}
 	public static Button createButton(Composite parent, int style, String label, Image image, GridData gridData) {
 		Button button = createButton(parent, style, label, image);
-		button.setLayoutData(gridData);
-		return button;
+		return setLayoutData(button, gridData);
 	}
 	
 	public static Button createButton(Composite parent, int style, String label) {
@@ -93,6 +92,25 @@ public class SWTFactory {
 			button.setText(label);
 		}
 		return button;
+	}
+	
+	public static Text createText(Composite parent, int style) {
+		return new Text(parent, style);
+	}
+	
+	public static Text createText(Composite parent, int style, GridData gridData) {
+		Text text = createText(parent, style);
+		return setLayoutData(text, gridData);
+	}
+	
+	public static Combo createCombo(Composite parent, int style) {
+		Combo combo = new Combo(parent, style);
+		return combo;
+	}
+	
+	public static Combo createCombo(Composite parent, int style, GridData gridData) {
+		Combo combo = createCombo(parent, style);
+		return setLayoutData(combo, gridData);
 	}
 	
 }

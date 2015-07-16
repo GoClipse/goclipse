@@ -39,9 +39,9 @@ public abstract class MainLaunchConfigurationTab extends CommonMainLaunchConfigu
 		super();
 	}
 	
-	protected ProgramPathField programPathField = createProgramPathField();
+	protected ProgramPathField programPathField = createProgramPathField_2();
 	
-	protected Launch_ProgramPathField createProgramPathField() {
+	protected Launch_ProgramPathField createProgramPathField_2() {
 		return new Launch_ProgramPathField();
 	}
 	
@@ -52,16 +52,10 @@ public abstract class MainLaunchConfigurationTab extends CommonMainLaunchConfigu
 		}
 		
 		@Override
-		protected void fieldValueChanged() {
+		protected void handleFieldValueAndControlChanged() {
 			updateLaunchConfigurationDialog();
 		}
 	}
-	
-	@Override
-	protected void createCustomControls(Composite parent) {
-		programPathField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
-	}
-	
 	
 	protected void openProgramPathDialog() {
 		IProject project = getProject();
@@ -90,6 +84,11 @@ public abstract class MainLaunchConfigurationTab extends CommonMainLaunchConfigu
 			// check extension
 			programPathField.setFieldValue(arg);
 		}
+	}
+	
+	@Override
+	protected void createCustomControls(Composite parent) {
+		programPathField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
 	}
 	
 	@Override

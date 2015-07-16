@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
@@ -20,29 +21,32 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * Some extended functionality to {@link AbstractField}.
- * 
- * Compared to {@link AbstractFieldExt}, uses a different API to layout child controls.
+ * Some extended functionality to {@link AbstractFieldComponent}.
  * 
  */
-public abstract class AbstractFieldExt2<VALUE> extends AbstractField<VALUE>{
+public abstract class AbstractFieldExt2<VALUE> extends AbstractFieldComponent<VALUE>{
 	
-	protected String labelText;
 	protected final VALUE defaultFieldValue;
+	protected String labelText;
 	
 	public AbstractFieldExt2(String labelText, VALUE defaultFieldValue) {
-		super(defaultFieldValue);
+		super(assertNotNull(defaultFieldValue));
 		this.labelText = labelText;
 		this.defaultFieldValue = defaultFieldValue;
-	}
-	
-	public String getLabelText() {
-		return labelText;
 	}
 	
 	@Override
 	public final VALUE getDefaultFieldValue() {
 		return defaultFieldValue;
+	}
+	
+	@Override
+	public VALUE getFieldValue() {
+		return assertNotNull(super.getFieldValue());
+	}
+	
+	public String getLabelText() {
+		return labelText;
 	}
 	
 	@Override

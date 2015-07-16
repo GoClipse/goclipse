@@ -11,10 +11,11 @@
 package melnorme.lang.ide.ui.preferences.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.util.swt.components.AbstractField;
-import melnorme.util.swt.components.fields.ComboBoxField;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+
+import melnorme.util.swt.components.fields.ComboBoxField;
+import melnorme.utilbox.fields.IDomainField;
 
 
 public interface IPreferencesDialogComponent {
@@ -30,14 +31,14 @@ public interface IPreferencesDialogComponent {
 	public abstract class AbstractFieldAdapter<VALUE> implements IPreferencesDialogComponent {
 		
 		protected final String prefKey;
-		protected final AbstractField<VALUE> field;
+		protected final IDomainField<VALUE> field;
 		
-		public AbstractFieldAdapter(String prefKey, AbstractField<VALUE> field) {
+		public AbstractFieldAdapter(String prefKey, IDomainField<VALUE> field) {
 			this.prefKey = assertNotNull(prefKey);
 			this.field = assertNotNull(field);
 		}
 		
-		public AbstractField<VALUE> getField() {
+		public IDomainField<VALUE> getField() {
 			return field;
 		}
 		
@@ -45,7 +46,7 @@ public interface IPreferencesDialogComponent {
 	
 	public class StringFieldAdapter extends AbstractFieldAdapter<String> {
 		
-		public StringFieldAdapter(String prefKey, AbstractField<String> field) {
+		public StringFieldAdapter(String prefKey, IDomainField<String> field) {
 			super(prefKey, field);
 		}
 		
@@ -68,7 +69,7 @@ public interface IPreferencesDialogComponent {
 	
 	public class BooleanFieldAdapter extends AbstractFieldAdapter<Boolean> {
 		
-		public BooleanFieldAdapter(String label, AbstractField<Boolean> field) {
+		public BooleanFieldAdapter(String label, IDomainField<Boolean> field) {
 			super(label, field);
 		}
 		

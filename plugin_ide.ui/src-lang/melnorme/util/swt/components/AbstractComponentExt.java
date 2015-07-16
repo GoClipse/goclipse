@@ -43,7 +43,7 @@ public abstract class AbstractComponentExt extends AbstractComponent {
 	
 	/** 
 	 * Update the components controls from some intrinsic notion of a configured input.
-	 * Can do nothing if there is not configured input. 
+	 * Can do nothing if there is no configured input. 
 	 */
 	public abstract void updateComponentFromInput();
 	

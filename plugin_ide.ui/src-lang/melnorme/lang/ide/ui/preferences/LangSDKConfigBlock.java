@@ -10,14 +10,14 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.AbstractField;
-import melnorme.util.swt.components.fields.ButtonTextField;
-import melnorme.util.swt.components.fields.DirectoryTextField;
-
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
+
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.AbstractFieldComponent;
+import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.util.swt.components.fields.DirectoryTextField;
 
 public class LangSDKConfigBlock extends AbstractComponentExt {
 	
@@ -30,7 +30,7 @@ public class LangSDKConfigBlock extends AbstractComponentExt {
 		return new LanguageSDKLocationGroup();
 	}
 	
-	public AbstractField<String> getLocationField() {
+	public AbstractFieldComponent<String> getLocationField() {
 		return sdkLocationGroup.sdkLocation;
 	}
 	
