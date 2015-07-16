@@ -10,18 +10,27 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.utils;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.debug.ui.StringVariableSelectionDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.eclipse.ui.views.navigator.ResourceComparator;
 
+import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.util.swt.SWTFactoryUtil;
 
 public class ControlUtils {
@@ -55,6 +64,21 @@ public class ControlUtils {
 		StringVariableSelectionDialog dialog = new StringVariableSelectionDialog(shell);
 		dialog.open();
 		return dialog.getVariableExpression();
+	}
+	
+	public static String openProgramPathDialog(IProject project, Button button) {
+		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
+			button.getShell(), new WorkbenchLabelProvider(), new WorkbenchContentProvider());
+		dialog.setTitle(LangUIMessages.mainTab_ProgramPath_searchButton_title);
+		dialog.setMessage(LangUIMessages.mainTab_ProgramPath_searchButton_message);
+		
+		dialog.setInput(project);
+		dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
+		if (dialog.open() == IDialogConstants.OK_ID) {
+			IResource resource = (IResource) dialog.getFirstResult();
+			return resource.getProjectRelativePath().toPortableString();
+		}
+		return null;
 	}
 	
 }

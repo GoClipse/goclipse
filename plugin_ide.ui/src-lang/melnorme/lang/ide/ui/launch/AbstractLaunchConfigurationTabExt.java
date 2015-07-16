@@ -17,6 +17,7 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.tooling.data.StatusException;
 
 public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchConfigurationTab {
 	
@@ -28,5 +29,30 @@ public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchCo
 		}
 		return defaultValue;
 	}
+	
+	/* ---------- validation ---------- */
+	
+	@Override
+	public boolean isValid(ILaunchConfiguration launchConfig) {
+		setErrorMessage(null);
+		setMessage(null);
+		
+		try {
+			doValidate();
+		} catch(StatusException se) {
+			String message = se.getMessage();
+			
+			switch (se.getStatusLevel()) {
+			case ERROR: setErrorMessage(message); break;
+			case WARNING: setWarningMessage(message); break;
+			case INFO: 
+			case OK: setMessage(message);break;
+			}
+		}
+		
+		return getErrorMessage() == null;
+	}
+	
+	protected abstract void doValidate() throws StatusException;
 	
 }

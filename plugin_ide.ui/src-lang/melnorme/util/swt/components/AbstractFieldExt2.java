@@ -30,14 +30,23 @@ public abstract class AbstractFieldExt2<VALUE> extends AbstractFieldComponent<VA
 	}
 	
 	@Override
+	public VALUE getFieldValue() {
+		return assertNotNull(super.getFieldValue());
+	}
+	
+	@Override
+	public void setFieldValue(VALUE value) {
+		if(value == null) {
+			value = getDefaultFieldValue();
+		}
+		doSetFieldValue(value);
+	}
+	
 	public final VALUE getDefaultFieldValue() {
 		return defaultFieldValue;
 	}
 	
-	@Override
-	public VALUE getFieldValue() {
-		return assertNotNull(super.getFieldValue());
-	}
+	/* -----------------  ----------------- */
 	
 	public String getLabelText() {
 		return labelText;

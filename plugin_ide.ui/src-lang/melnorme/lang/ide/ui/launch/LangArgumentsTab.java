@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.tooling.data.StatusException;
 
 
 //BM: Original based on org.eclipse.cdt.launch.ui.CArgumentsTab
@@ -41,6 +42,24 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	
 	public LangArgumentsTab() {
 		argumentsBlock.addValueChangedListener(() -> updateLaunchConfigurationDialog());
+	}
+	
+	/* ----------------- Control creation ----------------- */
+	
+	@Override
+	public String getName() {
+		return LangUIMessages.LangArgumentsTab_Arguments;
+	}
+	
+	@Override
+	public Image getImage() {
+		return LangImages.IMG_LAUNCHTAB_ARGUMENTS.getImage();
+	}
+	
+	@Override
+	public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog) {
+		super.setLaunchConfigurationDialog(dialog);
+		workingDirectoryBlock.setLaunchConfigurationDialog(dialog);
 	}
 	
 	@Override
@@ -64,16 +83,16 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 //				ICDTLaunchHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMNETS_TAB);
 	}
 	
-	
 	@Override
-	public boolean isValid(ILaunchConfiguration config) {
-		return workingDirectoryBlock.isValid(config);
+	protected void doValidate() throws StatusException {
 	}
+	
+	/* ----------------- Bindings (Apply/Revert) ----------------- */
 	
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, (String) null);
-		config.setAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, (String) null);
+		config.setAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "");
+		config.setAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, "");
 	}
 	
 	@Override
@@ -88,49 +107,23 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 		workingDirectoryBlock.performApply(configuration);
 	}
 	
-	@Override
-	public String getId() {
-		return null;
-		//return TAB_ID;
-	}
+	/* ---------- validation ---------- */
 	
 	@Override
-	public String getName() {
-		return LangUIMessages.LangArgumentsTab_Arguments;
-	}
-	
-	@Override
-	public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog) {
-		super.setLaunchConfigurationDialog(dialog);
-		workingDirectoryBlock.setLaunchConfigurationDialog(dialog);
+	public boolean isValid(ILaunchConfiguration config) {
+		return super.isValid(config) && workingDirectoryBlock.isValid(config);
 	}
 	
 	@Override
 	public String getErrorMessage() {
-		String m = super.getErrorMessage();
-		if (m == null) {
-			return workingDirectoryBlock.getErrorMessage();
-		}
-		return m;
+		String msg = super.getErrorMessage();
+		return msg != null ? msg : workingDirectoryBlock.getErrorMessage();
 	}
 	
 	@Override
 	public String getMessage() {
-		String m = super.getMessage();
-		if (m == null) {
-			return workingDirectoryBlock.getMessage();
-		}
-		return m;
+		String msg = super.getMessage();
+		return msg != null ? msg : workingDirectoryBlock.getMessage();
 	}
-	
-	@Override
-	public Image getImage() {
-		return LangImages.IMG_LAUNCHTAB_ARGUMENTS.getImage();
-	}
-	
-	@Override
-	protected void updateLaunchConfigurationDialog() {
-		super.updateLaunchConfigurationDialog();
-	}
-	
+
 }

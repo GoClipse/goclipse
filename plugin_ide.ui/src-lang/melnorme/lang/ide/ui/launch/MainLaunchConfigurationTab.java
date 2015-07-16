@@ -11,85 +11,101 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
-import melnorme.lang.ide.launching.LaunchConstants;
-import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.fields.ProgramPathField;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.eclipse.ui.views.navigator.ResourceComparator;
+
+import melnorme.lang.ide.launching.LaunchConstants;
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.fields.ProgramPathField;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.util.swt.components.fields.ComboFieldComponent;
+import melnorme.utilbox.fields.IFieldValueListener;
 
 /**
  * A main LaunchConfigurationTa with project selection field, and program path selection field.
  */
-public abstract class MainLaunchConfigurationTab extends CommonMainLaunchConfigurationTab {
+public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfigurationTab {
+	
+	protected final BuildTargetField buildTargetField = new BuildTargetField();
+	protected final ProgramPathField programPathField = createProgramPathField_2();
 	
 	public MainLaunchConfigurationTab() {
 		super();
+		projectField.addValueChangedListener(projectFieldListener);
+		programPathField.addValueChangedListener(projectFieldListener);
 	}
-	
-	protected ProgramPathField programPathField = createProgramPathField_2();
 	
 	protected Launch_ProgramPathField createProgramPathField_2() {
 		return new Launch_ProgramPathField();
 	}
 	
-	protected class Launch_ProgramPathField extends ProgramPathField {
-		@Override
-		protected void handleSearchButtonSelected() {
-			openProgramPathDialog();
-		}
-		
-		@Override
-		protected void handleFieldValueAndControlChanged() {
-			updateLaunchConfigurationDialog();
-		}
+	protected String getProgramPathName() {
+		return programPathField.getFieldValue();
 	}
 	
-	protected void openProgramPathDialog() {
-		IProject project = getProject();
-		if (project == null || !isValidProject(project)) {
-			getShell().getDisplay().beep();
-			MessageDialog.openInformation(getShell(), 
-					LangUIMessages.error_CannotBrowse, LangUIMessages.error_notAValidProject);
-			return;
-		}
-		
-		openProgramPathDialog(project);
+	/* ---------- validation ---------- */
+	
+	@Override
+	protected void doValidate() throws StatusException {
+		getValidatedProgramFile();
 	}
 	
-	protected void openProgramPathDialog(IProject project) {
-		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
-				getShell(), new WorkbenchLabelProvider(),
-				new WorkbenchContentProvider());
-		dialog.setTitle(LangUIMessages.mainTab_ProgramPath_searchButton_title);
-		dialog.setMessage(LangUIMessages.mainTab_ProgramPath_searchButton_message);
+	protected IFile getValidatedProgramFile() throws StatusException {
+		IProject project = validateProject();
 		
-		dialog.setInput(project);
-		dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
-		if (dialog.open() == IDialogConstants.OK_ID) {
-			IResource resource = (IResource) dialog.getFirstResult();
-			String arg = resource.getProjectRelativePath().toPortableString();
-			// check extension
-			programPathField.setFieldValue(arg);
+		String programPathStr = getProgramPathName();
+		if(programPathStr == null || programPathStr.isEmpty()) {
+			throw new StatusException(StatusLevel.ERROR, LangUIMessages.error_ProgramPathNotValid);
 		}
+		
+		IFile file = project.getFile(programPathStr);
+		if(!file.exists()) {
+			throw new StatusException(StatusLevel.ERROR, LangUIMessages.error_ProgramPathNotExistingFile);
+		}
+		
+		return file;
 	}
+	
+	/* ----------------- Control creation ----------------- */
 	
 	@Override
 	protected void createCustomControls(Composite parent) {
+//		buildTargetField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
+//		new ComboFieldComponent().createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
 		programPathField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
 	}
+	
+	protected class Launch_ProgramPathField extends ProgramPathField {
+		@Override
+		protected void handleSearchButtonSelected() {
+			try {
+				openProgramPathDialog(validateProject());
+			} catch(StatusException se) {
+				UIOperationExceptionHandler.handleStatusMessage(LangUIMessages.error_CannotBrowse, se);
+			}
+		}
+	}
+	
+	/* ----------------- bindings ----------------- */
+	
+	protected final IFieldValueListener projectFieldListener = new IFieldValueListener() {
+		@Override
+		public void fieldValueChanged() {
+			IProject project = getValidProjectOrNull();
+			buildTargetField.handleProjectChanged(project);
+			updateLaunchConfigurationDialog();
+		}
+	};
+	
+	/* ----------------- Apply/Revert/Defaults ----------------- */
 	
 	@Override
 	protected void setDefaults(IResource contextualResource, ILaunchConfigurationWorkingCopy config) {
@@ -112,26 +128,6 @@ public abstract class MainLaunchConfigurationTab extends CommonMainLaunchConfigu
 		programPathField.setFieldValue(programPath);
 	}
 	
-	protected String getProgramPathName() {
-		return programPathField.getFieldValue();
-	}
-	
-	protected IFile getProgramFile() {
-		IProject project = getProject();
-		if (!project.exists()) {
-			return null;
-		}
-		String programPathStr = getProgramPathName();
-		if (programPathStr == null || programPathStr.isEmpty()) {
-			return null;
-		} else {
-			IFile programFile = project.getFile(programPathStr);
-			return programFile;
-		}
-	}
-	
-	/* ---------- save/apply ---------- */
-	
 	@Override
 	protected void doPerformApply(ILaunchConfigurationWorkingCopy config) {
 		super.doPerformApply(config);
@@ -140,38 +136,11 @@ public abstract class MainLaunchConfigurationTab extends CommonMainLaunchConfigu
 	
 	@Override
 	protected IResource getMappedResource() throws CoreException {
-		IResource programFile = getProgramFile();
-		if(programFile != null && programFile.exists()) {
-			return programFile;
+		try {
+			return getValidatedProgramFile();
+		} catch(StatusException e) {
+			return super.getMappedResource();
 		}
-		return getProject();
-	}
-	
-	/* ---------- validation ---------- */
-	
-	@Override
-	protected void doValidate() {
-		super.doValidate();
-		validateProgramPath();
-	}
-	
-	protected void validateProgramPath() {
-		IProject project = getProject();
-		if (project == null || !project.exists()) {
-			return;
-		}
-		
-		IFile programFile = getProgramFile();
-		if(programFile == null) {
-			setErrorMessage(LangUIMessages.error_ProgramPathNotValid);
-			return;
-		}
-		if(!programFile.exists()) {
-			setErrorMessage(LangUIMessages.error_ProgramPathNotExistingFile);
-			return;
-		}
-		
-		return;
 	}
 	
 }

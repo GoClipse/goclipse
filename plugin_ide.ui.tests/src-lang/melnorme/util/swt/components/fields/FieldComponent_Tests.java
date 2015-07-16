@@ -17,7 +17,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Shell;
 
-import melnorme.util.swt.components.AbstractFieldComponent;
 import melnorme.util.swt.components.AbstractFieldComponentTest;
 import melnorme.utilbox.tests.CommonTest;
 
@@ -127,7 +126,7 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		protected SpinnerNumberField field;
 		
 		@Override
-		public AbstractFieldComponent<?> createField() {
+		public SpinnerNumberField createField() {
 			return field = new SpinnerNumberField("blah") {
 				@Override
 				protected void doUpdateComponentFromValue() {
@@ -170,7 +169,7 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		protected TextField2 field;
 		
 		@Override
-		public AbstractFieldComponent<?> createField() {
+		public TextField2 createField() {
 			return field = new TextField2("blah", 20) {
 				@Override
 				protected void doUpdateComponentFromValue() {
@@ -207,7 +206,7 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		protected CheckBoxField field;
 		
 		@Override
-		public AbstractFieldComponent<?> createField() {
+		public CheckBoxField createField() {
 			return field = new CheckBoxField("blah") {
 				@Override
 				protected void doUpdateComponentFromValue() {
@@ -248,7 +247,7 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		protected static String[] LABELS = array("zero", "one", "two");
 		
 		@Override
-		public AbstractFieldComponent<?> createField() {
+		public ComboBoxField createField() {
 			return field = new ComboBoxField("blah", LABELS, VALUES) {
 				@Override
 				protected void doUpdateComponentFromValue() {
@@ -318,7 +317,7 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		}
 		
 		@Override
-		public AbstractFieldComponent<?> createField() {
+		public RadioSelectionField<Values> createField() {
 			return field = new RadioSelectionField<Values>(Values.values()) {
 				@Override
 				protected void doUpdateComponentFromValue() {
@@ -385,7 +384,7 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		protected ColorField field;
 		
 		@Override
-		public AbstractFieldComponent<?> createField() {
+		public ColorField createField() {
 			return field = new ColorField("blah") {
 				@Override
 				protected void doUpdateComponentFromValue() {
