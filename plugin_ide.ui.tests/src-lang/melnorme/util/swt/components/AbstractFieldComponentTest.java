@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
-public abstract class AbstractFieldTest extends CommonTest {
+public abstract class AbstractFieldComponentTest extends CommonTest {
 	
 	public class FieldListener implements IFieldValueListener {
 		@Override
@@ -36,7 +36,7 @@ public abstract class AbstractFieldTest extends CommonTest {
 	protected int controlsUpdateCount_expected;
 	protected int valueChangeCount;
 	protected int valueChangeCount_expected;
-	private AbstractField<?> field;
+	private AbstractFieldComponent<?> field;
 	
 	protected void __checkUpdatesInvariant() {
 		assertTrue(valueChangeCount == valueChangeCount_expected);
@@ -117,7 +117,7 @@ public abstract class AbstractFieldTest extends CommonTest {
 	
 	protected abstract Object getValueFromControl();
 	
-	protected abstract AbstractField<?> createField();
+	protected abstract AbstractFieldComponent<?> createField();
 	
 	protected void runTestWithCreatedComponent_extra() {
 	}

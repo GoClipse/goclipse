@@ -26,6 +26,11 @@ import org.eclipse.swt.widgets.Control;
  */
 public class SWTLayoutUtil {
 	
+	public static <CONTROL extends Control, DATA> CONTROL setLayoutData(CONTROL control, Object layoutData) {
+		control.setLayoutData(layoutData);
+		return control;
+	}
+	
 	public static FillLayout createFillLayout(int marginWidth, int marginHeight, int spacing) {
 		FillLayout fillLayout = new FillLayout();
 		fillLayout.marginWidth = marginWidth;

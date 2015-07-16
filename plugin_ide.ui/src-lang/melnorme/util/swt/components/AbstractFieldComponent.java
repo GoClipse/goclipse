@@ -10,12 +10,6 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.util.swt.SWTUtil;
-import melnorme.utilbox.fields.DomainField;
-import melnorme.utilbox.fields.IDomainField;
-import melnorme.utilbox.fields.IFieldValueListener;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -28,20 +22,25 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
+import melnorme.util.swt.SWTUtil;
+import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.IDomainField;
+import melnorme.utilbox.fields.IFieldValueListener;
+
 /**
  * Field component with a field value that can be manipulated (get/set) even if the 
  * componented is not created.
  */
-public abstract class AbstractField<VALUE> extends AbstractComponentExt 
-	implements IDomainField<VALUE>, IWidgetComponent{
+public abstract class AbstractFieldComponent<VALUE> extends AbstractComponentExt 
+	implements IDomainField<VALUE>, IWidgetComponent {
 	
 	private final DomainField<VALUE> domainField = new DomainField<>();
 	
 	protected boolean listenersNeedNotify;
 	protected boolean settingValueFromControl;
 	
-	public AbstractField(VALUE defaultFieldValue) {
-		domainField.setFieldValue(assertNotNull(defaultFieldValue));
+	public AbstractFieldComponent(VALUE defaultFieldValue) {
+		domainField.setFieldValue(defaultFieldValue);
 		domainField.addValueChangedListener(new IFieldValueListener() {
 			@Override
 			public void fieldValueChanged() {
@@ -56,7 +55,7 @@ public abstract class AbstractField<VALUE> extends AbstractComponentExt
 	
 	@Override
 	public VALUE getFieldValue() {
-		return assertNotNull(domainField.getFieldValue());
+		return domainField.getFieldValue();
 	}
 	
 	@Override
@@ -91,10 +90,6 @@ public abstract class AbstractField<VALUE> extends AbstractComponentExt
 		domainField.removeValueChangedListener(listener);
 	}
 	
-	protected void fireFieldValueChanged() {
-		domainField.fireFieldValueChanged();
-	}
-	
 	/* -----------------  ----------------- */
 	
 	@Override
@@ -121,7 +116,7 @@ public abstract class AbstractField<VALUE> extends AbstractComponentExt
 	
 	/* ----------------- create helpers ----------------- */
 	
-	protected static Text createFieldText(final AbstractField<String> field, Composite parent, int style) {
+	protected static Text createFieldText(final AbstractFieldComponent<String> field, Composite parent, int style) {
 		final Text text = new Text(parent, style);
 		text.addModifyListener(new ModifyListener() {
 			@Override
@@ -132,7 +127,7 @@ public abstract class AbstractField<VALUE> extends AbstractComponentExt
 		return text;
 	}
 	
-	protected static Button createFieldCheckbox(final AbstractField<Boolean> field, Composite parent, 
+	protected static Button createFieldCheckbox(final AbstractFieldComponent<Boolean> field, Composite parent, 
 			int style) {
 		final Button checkBox = new Button(parent, SWT.CHECK | style);
 		checkBox.addSelectionListener(new SelectionAdapter() {
@@ -144,7 +139,7 @@ public abstract class AbstractField<VALUE> extends AbstractComponentExt
 		return checkBox;
 	}
 	
-	protected static Spinner createFieldSpinner(final AbstractField<Integer> field, Composite parent, 
+	protected static Spinner createFieldSpinner(final AbstractFieldComponent<Integer> field, Composite parent, 
 			int style) {
 		final Spinner spinner = new Spinner(parent, style);
 		spinner.addModifyListener(new ModifyListener() {
@@ -156,7 +151,7 @@ public abstract class AbstractField<VALUE> extends AbstractComponentExt
 		return spinner;
 	}
 	
-	protected static Combo createFieldCombo(final AbstractField<Integer> field, Composite topControl, int style) {
+	protected static Combo createFieldCombo(final AbstractFieldComponent<Integer> field, Composite topControl, int style) {
 		final Combo combo = new Combo(topControl, style);
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override

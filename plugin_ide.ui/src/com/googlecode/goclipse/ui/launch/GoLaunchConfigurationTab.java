@@ -37,7 +37,7 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected Launch_ProgramPathField createProgramPathField() {
+	protected Launch_ProgramPathField createProgramPathField_2() {
 		return new Launch_ProgramPathField() {
 			@Override
 			protected String getGroupLabel() {

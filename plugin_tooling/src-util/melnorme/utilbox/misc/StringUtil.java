@@ -19,9 +19,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import melnorme.utilbox.collections.ArrayList2;
-import java.util.function.Function;
 
 /**
  * Miscelleanous String utilities 
@@ -32,6 +32,9 @@ public final class StringUtil {
 	public static final Charset UTF8 = Charset.forName("UTF-8");
 	public static final Charset UTF16 = Charset.forName("UTF-16");
 	
+	public static String asString(Object obj) {
+		return obj == null ? null : obj.toString();
+	}
 	
 	/** @return a String produced from the given coll with the given separator String, 
 	 * using the elements's toString() method. */

@@ -13,33 +13,49 @@ package melnorme.util.swt.components;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
-/**
- * A limited for of a field component.
- * Setting and getting the value only work *after* the field has been created.
- * BM: consider deprecating and replacing with {@link AbstractField} which does not have that limitation
- */
-public abstract class WidgetFieldComponent<VALUE> extends CommonFieldComponent<VALUE> {
+
+public abstract class TextFieldComponent extends AbstractFieldComponent<String> {
+	
+	protected Text text;
+	
+	public TextFieldComponent() {
+		super("");
+	}
 	
 	@Override
-	public void updateComponentFromInput() {
-		// Do nothing, by default, no notion of input
+	public String getDefaultFieldValue() {
+		return ""; /* FIXME: duplicate default*/
 	}
 	
-	/* ----------------- helper methods ----------------- */
+	@Override
+	protected void doUpdateComponentFromValue() {
+		text.setText(getFieldValue());
+	}
 	
-	protected Text createFieldText(Composite parent, int style) {
-		Text fieldText = new Text(parent, style);
-		fieldText.addModifyListener(new ModifyListener() {
+	@Override
+	protected Control getFieldControl() {
+		return text;
+	}
+	
+	@Override
+	protected void createContents(Composite topControl) {
+		text = doCreateContents(topControl);
+		text.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent evt) {
-				fireFieldValueChanged();
+				setFieldValueFromControl(text.getText());
+				
+				handleFieldValueAndControlChanged();
 			}
 		});
-		return fieldText;
 	}
 	
-	// TODO: needs more work
+	protected void handleFieldValueAndControlChanged() {
+	}
+	
+	protected abstract Text doCreateContents(Composite topControl);
 	
 }

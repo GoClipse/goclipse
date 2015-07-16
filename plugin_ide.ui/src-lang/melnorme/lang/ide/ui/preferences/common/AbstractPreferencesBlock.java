@@ -11,21 +11,22 @@
 package melnorme.lang.ide.ui.preferences.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.BooleanFieldAdapter;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.ComboFieldAdapter;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.StringFieldAdapter;
-import melnorme.lang.ide.ui.utils.DialogPageUtils;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.AbstractField;
-import melnorme.util.swt.components.fields.ComboBoxField;
-import melnorme.util.swt.components.fields.NumberField;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+
+import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.BooleanFieldAdapter;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.ComboFieldAdapter;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.StringFieldAdapter;
+import melnorme.lang.ide.ui.utils.DialogPageUtils;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.AbstractFieldComponent;
+import melnorme.util.swt.components.fields.ComboBoxField;
+import melnorme.util.swt.components.fields.NumberField;
 
 public abstract class AbstractPreferencesBlock extends AbstractComponentExt {
 	
@@ -49,12 +50,12 @@ public abstract class AbstractPreferencesBlock extends AbstractComponentExt {
 		prefPage.addComponent(prefComponent);
 	}
 	
-	protected void createStringField(Composite parent, String prefKey, AbstractField<String> field) {
+	protected void createStringField(Composite parent, String prefKey, AbstractFieldComponent<String> field) {
 		field.createComponentInlined(parent);
 		addPrefComponent(new StringFieldAdapter(prefKey, field));
 	}
 	
-	protected void createBooleanField(Composite parent, String prefKey, AbstractField<Boolean> field) {
+	protected void createBooleanField(Composite parent, String prefKey, AbstractFieldComponent<Boolean> field) {
 		field.createComponentInlined(parent);
 		addPrefComponent(new BooleanFieldAdapter(prefKey, field));
 	}

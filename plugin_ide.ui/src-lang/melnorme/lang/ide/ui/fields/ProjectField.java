@@ -11,12 +11,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.fields;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.WidgetFieldComponent;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -32,12 +26,17 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.TextFieldComponent;
+
 /**
  * A field whose main value is a project name from the Eclipse workspace.
  */
-public class ProjectField extends WidgetFieldComponent<String> {
+public class ProjectField extends TextFieldComponent {
 	
-	protected Text projectText;
 	protected Button projectSelectionButton;
 	
 	@Override
@@ -56,9 +55,9 @@ public class ProjectField extends WidgetFieldComponent<String> {
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
-		projectText = createFieldText(topControl, SWT.SINGLE | SWT.BORDER);
-		projectText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	protected Text doCreateContents(Composite topControl) {
+		Text text = SWTFactoryUtil.createText(topControl, SWT.SINGLE | SWT.BORDER);
+		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		projectSelectionButton = SWTFactoryUtil.createPushButton(topControl, 
 				LangUIMessages.mainTab_projectButton, null);
@@ -68,16 +67,7 @@ public class ProjectField extends WidgetFieldComponent<String> {
 				handleProjectButtonSelected();
 			}
 		});
-	}
-	
-	@Override
-	public String getFieldValue() {
-		return projectText.getText().trim();
-	}
-	
-	@Override
-	public void setFieldValue(String projectName) {
-		projectText.setText(projectName);
+		return text;
 	}
 	
 	protected IProject getProject() {

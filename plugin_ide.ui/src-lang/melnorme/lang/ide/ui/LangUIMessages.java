@@ -66,6 +66,9 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 	public static final String LangArgumentsTab_Arguments = 
 			"Arguments";
 	
+	public static final String BuildTargetField_title = 
+			"Target:";
+	
 	/* ----------------------------------- */
 	
 	
