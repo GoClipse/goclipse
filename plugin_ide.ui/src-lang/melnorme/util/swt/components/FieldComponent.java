@@ -10,11 +10,8 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.fields.DomainField;
@@ -25,7 +22,7 @@ import melnorme.utilbox.fields.IFieldValueListener;
  * Field component with a field value that can be manipulated (get/set) even if the 
  * componented is not created.
  */
-public abstract class AbstractFieldComponent<VALUE> extends AbstractComponent 
+public abstract class FieldComponent<VALUE> extends AbstractComponent 
 	implements IDomainField<VALUE> {
 	
 	private final DomainField<VALUE> domainField;
@@ -33,15 +30,15 @@ public abstract class AbstractFieldComponent<VALUE> extends AbstractComponent
 	protected boolean listenersNeedNotify;
 	protected boolean settingValueFromControl;
 	
-	public AbstractFieldComponent() {
+	public FieldComponent() {
 		this(new DomainField<>(null));
 	}
 	
-	public AbstractFieldComponent(VALUE defaultFieldValue) {
+	public FieldComponent(VALUE defaultFieldValue) {
 		this(new DomainField<>(defaultFieldValue));
 	}
 	
-	public AbstractFieldComponent(DomainField<VALUE> domainField) {
+	public FieldComponent(DomainField<VALUE> domainField) {
 		this.domainField = domainField;
 		this.domainField.addValueChangedListener(new IFieldValueListener() {
 			@Override
@@ -105,23 +102,10 @@ public abstract class AbstractFieldComponent<VALUE> extends AbstractComponent
 	
 	/* -----------------  ----------------- */
 	
-	protected abstract Control getFieldControl();
+	public abstract Control getFieldControl();
 	
 	public boolean isCreated() {
 		return SWTUtil.isOkToUse(getFieldControl());
-	}
-	
-	/* ----------------- create helpers ----------------- */
-	
-	public static Text createFieldText(AbstractFieldComponent<String> field, Composite parent, int style) {
-		final Text text = new Text(parent, style);
-		text.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				field.setFieldValueFromControl(text.getText());
-			}
-		});
-		return text;
 	}
 	
 }

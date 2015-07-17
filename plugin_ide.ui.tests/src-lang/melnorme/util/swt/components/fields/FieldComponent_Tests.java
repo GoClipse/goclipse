@@ -15,20 +15,23 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Shell;
 
 import melnorme.util.swt.components.AbstractFieldComponentTest;
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
 
 public abstract class FieldComponent_Tests extends CommonTest {
 	
 	public static class TextFieldTest extends AbstractFieldComponentTest {
 		
-		protected TextField field;
+		protected TextFieldComponent field;
 		
 		@Override
-		public TextField createField() {
-			return field = new TextField("") {
+		public TextFieldComponent createField() {
+			return field = new TextFieldComponent("") {
 				@Override
 				protected void doUpdateComponentFromValue() {
 					controlsUpdateCount++;
@@ -76,8 +79,8 @@ public abstract class FieldComponent_Tests extends CommonTest {
 	public static class TextField_ExtTest extends TextFieldTest {
 		
 		@Override
-		public TextField createField() {
-			return field = new TextField("") {
+		public TextFieldComponent createField() {
+			return field = new TextFieldComponent("") {
 				
 				@Override
 				protected void doSetFieldValue(String value) {
@@ -293,28 +296,28 @@ public abstract class FieldComponent_Tests extends CommonTest {
 	}
 	
 	
+	public static enum Values {
+		ZERO("0"),
+		ONE("One"),
+		TWO("Two"),
+		THREE("3");
+		
+		private String toString;
+		
+		Values(String toString) {
+			this.toString = toString;
+		}
+		
+		@Override
+		public String toString() {
+			return toString;
+		}
+		
+	}
+	
 	public static class RadioSelectionFieldTest extends AbstractFieldComponentTest {
 		
 		protected RadioSelectionField<Values> field;
-		
-		protected static enum Values {
-			ZERO("0"),
-			ONE("One"),
-			TWO("Two"),
-			THREE("3");
-			
-			private String toString;
-			
-			Values(String toString) {
-				this.toString = toString;
-			}
-			
-			@Override
-			public String toString() {
-				return toString;
-			}
-			
-		}
 		
 		@Override
 		public RadioSelectionField<Values> createField() {
@@ -375,6 +378,108 @@ public abstract class FieldComponent_Tests extends CommonTest {
 				}
 			}
 			assertTrue(count == selectionCount);
+		}
+		
+	}
+	
+	public static class ComboOptionsFieldComponentTest extends AbstractFieldComponentTest {
+		
+		protected ComboOptionsField field;
+		
+		@Override
+		public ComboOptionsField createField() {
+			field = new ComboOptionsField() {
+				@Override
+				protected void doUpdateComponentFromValue() {
+					controlsUpdateCount++;
+					super.doUpdateComponentFromValue();
+				}
+			};
+			field.setFieldOptions(
+				ArrayUtil.map(Values.values(), (Values value) -> value.toString(), String.class));
+			return field;
+		}
+		
+		@Override
+		protected void checkValueIsNotNull() {
+			// 
+		}
+		
+		@Override
+		protected void doRunTest(Shell shell) {
+			ComboOptionsField comboField = new ComboOptionsField();
+			comboField.setFieldOptions(array("1", "2", "3"));
+			comboField.setFieldValue("2");
+			comboField.createComponent(shell);
+			checkComboValues(comboField, "2");
+			
+			comboField.setFieldOptions(array("abc", "xxx"));
+			assertTrue(comboField.getFieldControl().getSelectionIndex() == 0);
+			assertTrue(comboField.getFieldControl().getText().equals("abc"));
+			
+			comboField.setFieldOptions(array());
+			assertTrue(comboField.getFieldControl().getSelectionIndex() == -1);
+			assertTrue(comboField.getFieldControl().getText().equals(""));
+			
+			testSetFieldValue(comboField, "Blah", null);
+			testSetFieldValue(comboField, null, null);
+			
+			// -----------
+			comboField.setFieldOptions("One", "Two"); 
+			
+			testSetFieldValue(comboField, "Blah", null);
+			testSetFieldValue(comboField, "One", "One");
+			testSetFieldValue(comboField, null, null);
+			
+			testSetValueFromControl(comboField, "One", "One");
+			testSetValueFromControl(comboField, "Blah", "One");
+			
+			super.doRunTest(shell);
+		}
+
+		public static void testSetValueFromControl(ComboOptionsField comboField, String newValue,
+				String expectedFieldValue) {
+			setFromControl(comboField.getFieldControl(), newValue);
+			checkComboValues(comboField, expectedFieldValue);
+		}
+		
+		public static void testSetFieldValue(ComboOptionsField comboField, String newValue,
+				String expectedFieldValue) {
+			comboField.setFieldValue(newValue);
+			checkComboValues(comboField, expectedFieldValue);
+		}
+		
+		public static void checkComboValues(ComboOptionsField comboField, String expectedFieldValue) {
+			assertEquals(expectedFieldValue == null, comboField.getFieldControl().getSelectionIndex() == -1);
+			String expectedControl = StringUtil.nullAsEmpty(expectedFieldValue);
+			
+			assertAreEqual(comboField.getFieldControl().getText(), expectedControl);
+			assertAreEqual(comboField.getFieldValue(), expectedFieldValue);
+		}
+		
+		@Override
+		public void setFirstFieldValue() {
+			field.setFieldValue(Values.TWO.toString());
+		}
+		
+		@Override
+		public void setSecondFieldValue() {
+			field.setFieldValue(Values.ZERO.toString());
+		}
+		
+		@Override
+		public void doChangeFromControl() {
+			setFromControl(field.getFieldControl(), field.getFieldValue());
+		}
+		
+		public static void setFromControl(Combo combo, String newText) {
+			combo.setText(newText);
+			combo.notifyListeners(SWT.Selection, null);
+		}
+		
+		@Override
+		protected Object getValueFromControl() {
+			return field.combo.getText();
 		}
 		
 	}

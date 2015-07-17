@@ -10,20 +10,17 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import melnorme.util.swt.SWTFactory;
-import melnorme.util.swt.SWTLayoutUtil;
-import melnorme.util.swt.components.AbstractFieldExt2;
-
 import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 
-public class ColorField extends AbstractFieldExt2<RGB> {
+import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.components.LabelledFieldComponent;
+
+public class ColorField extends LabelledFieldComponent<RGB> {
 	
 	public static class ColorSelectorExt extends ColorSelector {
 		
@@ -49,11 +46,10 @@ public class ColorField extends AbstractFieldExt2<RGB> {
 		}
 	}
 	
-	protected Label label;
 	protected ColorSelector colorSelector;
 	
 	public ColorField(String labelText) {
-		super(labelText, new RGB(0, 0, 0));
+		super(labelText, Option_AllowNull.NO, new RGB(0, 0, 0));
 	}
 	
 	@Override
@@ -62,16 +58,17 @@ public class ColorField extends AbstractFieldExt2<RGB> {
 	}
 	
 	@Override
-	protected void createContents_do(Composite topControl) {
-		createLabel(topControl);
-		createColorChooser(topControl);
+	protected void createContents_all(Composite topControl) {
+		createContents_Label(topControl);
+		createContents_ColorChooser(topControl);
 	}
 	
-	protected void createLabel(Composite parent) {
-		label = SWTFactory.createLabel(parent, SWT.LEFT, labelText);
+	@Override
+	protected void createContents_layout() {
+		SWTLayoutUtil.layout2Controls_expandLast(label, colorSelector.getButton());
 	}
 	
-	protected void createColorChooser(Composite parent) {
+	protected void createContents_ColorChooser(Composite parent) {
 		colorSelector = new ColorSelectorExt(parent);
 		colorSelector.addListener(new IPropertyChangeListener() {
 			@Override
@@ -79,11 +76,6 @@ public class ColorField extends AbstractFieldExt2<RGB> {
 				setFieldValueFromControl(colorSelector.getColorValue());
 			}
 		});
-	}
-	
-	@Override
-	protected void createContents_layout() {
-		SWTLayoutUtil.layout2Controls_expandLast(label, colorSelector.getButton());
 	}
 	
 	public ColorSelector getColorSelector() {

@@ -16,13 +16,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
@@ -30,18 +25,30 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.fields.TextFieldComponent;
+import melnorme.util.swt.components.fields.ButtonTextField;
 
 /**
  * A field whose main value is a project name from the Eclipse workspace.
  */
-public class ProjectField extends TextFieldComponent {
+public class ProjectField extends ButtonTextField {
 	
-	protected Button projectSelectionButton;
+	public ProjectField() {
+		super(LangUIMessages.mainTab_projectGroup, LangUIMessages.mainTab_projectButton);
+	}
+	
+	protected IProject getProject() {
+		String projectName = getFieldValue();
+		if (projectName == null || projectName.isEmpty()) {
+			return null;
+		}
+		return EclipseUtils.getWorkspaceRoot().getProject(projectName);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Override
 	protected Composite doCreateTopLevelControl(Composite parent) {
-		return SWTFactoryUtil.createGroup(parent, LangUIMessages.mainTab_projectGroup, SWT.NONE);
+		return SWTFactoryUtil.createGroup(parent, getLabelText(), SWT.NONE);
 	}
 	
 	@Override
@@ -55,45 +62,20 @@ public class ProjectField extends TextFieldComponent {
 	}
 	
 	@Override
-	protected Text doCreateContents(Composite topControl) {
-		Text text = SWTFactoryUtil.createText(topControl, SWT.SINGLE | SWT.BORDER);
-		text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
-		projectSelectionButton = SWTFactoryUtil.createPushButton(topControl, 
-				LangUIMessages.mainTab_projectButton, null);
-		projectSelectionButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				handleProjectButtonSelected();
-			}
-		});
-		return text;
+	protected void createContents_Label(Composite parent) {
+		// Don't create
 	}
 	
-	protected IProject getProject() {
-		String projectName = getFieldValue();
-		if (projectName == null || projectName.isEmpty()) {
-			return null;
-		}
-		return EclipseUtils.getWorkspaceRoot().getProject(projectName);
-	}
+	/* -----------------  ----------------- */
 	
-	/**
-	 * Show a dialog that lets the user select a project. This in turn provides
-	 * context for the main type, allowing the user to key a main type name, or
-	 * constraining the search for main types to the specified project.
-	 */
-	protected void handleProjectButtonSelected() {
+	@Override
+	protected String getNewValueFromButtonSelection() {
 		IProject project = chooseProject();
-		if (project == null) {
-			return;
-		}
-		
-		setFieldValue(project.getName());
+		return project == null ? null : project.getName();
 	}
 	
 	protected IProject chooseProject() {
-		Shell shell = projectSelectionButton.getShell();
+		Shell shell = button.getShell();
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(shell, new WorkbenchLabelProvider());
 		dialog.setTitle(LangUIMessages.projectField_chooseProject_title);
 		dialog.setMessage(LangUIMessages.projectField_chooseProject_message);

@@ -25,8 +25,9 @@ public class LangArgumentsBlock2 extends ArgumentsGroupField {
 	}
 	
 	@Override
-	protected void createContents_do(Composite topControl) {
-		super.createContents_do(topControl);
+	protected void createContents_all(Composite topControl) {
+		super.createContents_all(topControl);
+		
 		text.getAccessible().addAccessibleListener(new AccessibleAdapter() {
 			@Override
 			public void getName(AccessibleEvent e) {

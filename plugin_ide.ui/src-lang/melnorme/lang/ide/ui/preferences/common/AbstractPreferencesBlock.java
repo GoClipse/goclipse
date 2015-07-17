@@ -24,7 +24,7 @@ import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.Strin
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponent;
-import melnorme.util.swt.components.AbstractFieldComponent;
+import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
 
@@ -50,12 +50,12 @@ public abstract class AbstractPreferencesBlock extends AbstractComponent {
 		prefPage.addComponent(prefComponent);
 	}
 	
-	protected void createStringField(Composite parent, String prefKey, AbstractFieldComponent<String> field) {
+	protected void createStringField(Composite parent, String prefKey, FieldComponent<String> field) {
 		field.createComponentInlined(parent);
 		addPrefComponent(new StringFieldAdapter(prefKey, field));
 	}
 	
-	protected void createBooleanField(Composite parent, String prefKey, AbstractFieldComponent<Boolean> field) {
+	protected void createBooleanField(Composite parent, String prefKey, FieldComponent<Boolean> field) {
 		field.createComponentInlined(parent);
 		addPrefComponent(new BooleanFieldAdapter(prefKey, field));
 	}

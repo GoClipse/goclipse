@@ -36,7 +36,7 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 	protected int controlsUpdateCount_expected;
 	protected int valueChangeCount;
 	protected int valueChangeCount_expected;
-	private AbstractFieldExt2<?> field;
+	private FieldComponent<?> field;
 	
 	protected void __checkUpdatesInvariant() {
 		assertTrue(valueChangeCount == valueChangeCount_expected);
@@ -49,7 +49,7 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 		
 		field = createField();
 		assertTrue(field.isCreated() == false);
-		assertTrue(field.getFieldValue() != null);
+		checkValueIsNotNull();
 		
 		field.addValueChangedListener(new IFieldValueListener() {
 			@Override
@@ -68,6 +68,10 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 			shell.dispose();
 			assertTrue(field.isCreated() == false);
 		}	
+	}
+	
+	protected void checkValueIsNotNull() {
+		assertTrue(field.getFieldValue() != null);
 	}
 	
 	protected void doRunTest(Shell shell) {
@@ -101,7 +105,7 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 		__checkUpdatesInvariant();
 		
 		field.setFieldValue(null);
-		assertEquals(field.getFieldValue(), field.getDefaultFieldValue());
+//		assertEquals(field.getFieldValue(), field.getDefaultFieldValue());
 		valueChangeCount_expected++;
 		controlsUpdateCount_expected++;
 		__checkUpdatesInvariant();
@@ -117,7 +121,7 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 	
 	protected abstract Object getValueFromControl();
 	
-	protected abstract AbstractFieldExt2<?> createField();
+	protected abstract FieldComponent<?> createField();
 	
 	protected void runTestWithCreatedComponent_extra() {
 	}

@@ -19,8 +19,9 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.SWTUtil;
 
-public abstract class ButtonTextField extends TextField {
+public abstract class ButtonTextField extends TextFieldComponent {
 	
 	protected final String buttonLabel;
 	protected Button button;
@@ -41,10 +42,9 @@ public abstract class ButtonTextField extends TextField {
 	}
 	
 	@Override
-	protected void createContents_do(Composite topControl) {
-		super.createContents_do(topControl);
-		
-		button = createFieldButton(topControl);
+	protected void createContents_all(Composite topControl) {
+		super.createContents_all(topControl);
+		createContents_Button(topControl);
 	}
 	
 	@Override
@@ -54,15 +54,14 @@ public abstract class ButtonTextField extends TextField {
 	
 	/* -----------------  Button  ----------------- */
 	
-	protected Button createFieldButton(Composite topControl) {
-		Button button = SWTFactoryUtil.createPushButton(topControl, getButtonLabel(), null);
+	protected void createContents_Button(Composite topControl) {
+		button = SWTFactoryUtil.createPushButton(topControl, getButtonLabel(), null);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleButtonSelected();
 			}
 		});
-		return button;
 	}
 	
 	protected String getButtonLabel() {
@@ -78,5 +77,11 @@ public abstract class ButtonTextField extends TextField {
 	}
 	
 	protected abstract String getNewValueFromButtonSelection();
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		SWTUtil.setEnabledIfOk(button, enabled);
+	}
 	
 }

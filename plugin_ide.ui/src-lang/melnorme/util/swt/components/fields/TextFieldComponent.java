@@ -10,35 +10,53 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
-import melnorme.util.swt.components.AbstractFieldComponent;
+import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.SWTUtil;
+import melnorme.util.swt.components.LabelledFieldComponent;
+import melnorme.utilbox.fields.DomainField;
 
-public abstract class TextFieldComponent extends AbstractFieldComponent<String> {
+public class TextFieldComponent extends LabelledFieldComponent<String> {
 	
+	protected int defaultTextStyle = SWT.SINGLE | SWT.BORDER;
 	protected Text text;
 	
-	public TextFieldComponent() {
-		super("");
+	public TextFieldComponent(String labelText) {
+		this(labelText, SWT.SINGLE | SWT.BORDER);
+	}
+	
+	public TextFieldComponent(String labelText, int textStyle) {
+		super(labelText, Option_AllowNull.NO, "");
+		this.defaultTextStyle = textStyle;
+	}
+	
+	public TextFieldComponent(DomainField<String> domainField, String labelText) {
+		super(domainField, labelText);
 	}
 	
 	@Override
-	protected void doUpdateComponentFromValue() {
-		text.setText(getFieldValue());
+	public int getPreferredLayoutColumns() {
+		return 2;
 	}
 	
 	@Override
-	protected Control getFieldControl() {
-		return text;
+	protected void createContents_all(Composite topControl) {
+		createContents_Label(topControl);
+		createContents_Text(topControl);
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
-		text = doCreateContents(topControl);
+	protected void createContents_layout() {
+		SWTLayoutUtil.layout2Controls_expandLast(label, text);
+	}
+	
+	protected void createContents_Text(Composite topControl) {
+		text = createText_2(topControl);
 		text.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent evt) {
@@ -49,9 +67,26 @@ public abstract class TextFieldComponent extends AbstractFieldComponent<String> 
 		});
 	}
 	
+	protected Text createText_2(Composite topControl) {
+		return new Text(topControl, defaultTextStyle);
+	}
+	
 	protected void handleFieldValueAndControlChanged() {
 	}
 	
-	protected abstract Text doCreateContents(Composite topControl);
+	@Override
+	public Text getFieldControl() {
+		return text;
+	}
+	
+	@Override
+	protected void doUpdateComponentFromValue() {
+		text.setText(getFieldValue());
+	}
+	
+	public void setEnabled(boolean enabled) {
+		SWTUtil.setEnabledIfOk(label, enabled);
+		SWTUtil.setEnabledIfOk(text, enabled);
+	}
 	
 }

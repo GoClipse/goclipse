@@ -11,6 +11,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -22,11 +24,10 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.fields.ProgramPathField;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.util.swt.components.fields.ComboFieldComponent;
+import melnorme.util.swt.components.fields.ComboOptionsField;
 import melnorme.utilbox.fields.IFieldValueListener;
 
 /**
@@ -35,16 +36,15 @@ import melnorme.utilbox.fields.IFieldValueListener;
 public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfigurationTab {
 	
 	protected final BuildTargetField buildTargetField = new BuildTargetField();
-	protected final ProgramPathField programPathField = createProgramPathField_2();
+	protected final ProjectRelativePathField programPathField = createProgramPathField_2();
 	
 	public MainLaunchConfigurationTab() {
-		super();
 		projectField.addValueChangedListener(projectFieldListener);
 		programPathField.addValueChangedListener(projectFieldListener);
 	}
 	
-	protected Launch_ProgramPathField createProgramPathField_2() {
-		return new Launch_ProgramPathField();
+	protected ProjectRelativePathField createProgramPathField_2() {
+		return new ProjectRelativePathField(LangUIMessages.ProgramPathField_title, this::validateProject);
 	}
 	
 	protected String getProgramPathName() {
@@ -79,19 +79,10 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	@Override
 	protected void createCustomControls(Composite parent) {
 //		buildTargetField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
-//		new ComboFieldComponent().createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
+//		ComboOptionsFieldComponent field = new ComboOptionsFieldComponent();
+//		field.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
+//		field.getFieldControl().setItems(array("one", "Two", "3", "four"));
 		programPathField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
-	}
-	
-	protected class Launch_ProgramPathField extends ProgramPathField {
-		@Override
-		protected void handleSearchButtonSelected() {
-			try {
-				openProgramPathDialog(validateProject());
-			} catch(StatusException se) {
-				UIOperationExceptionHandler.handleStatusMessage(LangUIMessages.error_CannotBrowse, se);
-			}
-		}
 	}
 	
 	/* ----------------- bindings ----------------- */
