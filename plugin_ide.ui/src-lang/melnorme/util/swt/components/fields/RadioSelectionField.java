@@ -11,8 +11,6 @@
 package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractFieldExt2;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -21,14 +19,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.LabelledFieldComponent;
 
-public class RadioSelectionField<E extends Enum<?>> extends AbstractFieldExt2<E> {
+public class RadioSelectionField<E extends Enum<?>> extends LabelledFieldComponent<E> {
 	
 	protected final E[] values;
 	protected final Button[] radioButtons;
 	
 	public RadioSelectionField(E[] values) {
-		super(null, values[0]);
+		super(null, Option_AllowNull.NO, values[0]);
 		assertTrue(values != null && values.length > 0);
 		this.values = values;
 		
@@ -57,7 +57,11 @@ public class RadioSelectionField<E extends Enum<?>> extends AbstractFieldExt2<E>
 	}
 	
 	@Override
-	protected void createContents_do(Composite topControl) {
+	protected void createContents_all(Composite topControl) {
+		createContents_RadioButtons(topControl);
+	}
+	
+	protected void createContents_RadioButtons(Composite topControl) {
 		for (int i = 0; i < values.length; i++) {
 			final int index = i;
 			
@@ -85,7 +89,7 @@ public class RadioSelectionField<E extends Enum<?>> extends AbstractFieldExt2<E>
 		GridLayout gridLayout = (GridLayout) getFieldControl().getParent().getLayout();
 		int numColumns = gridLayout.numColumns;
 		
-		for (Button button : radioButtons) {
+		for(Button button : radioButtons) {
 			button.setLayoutData(gdFillDefaults().span(numColumns, 1).grab(true, false).create());
 		}
 	}

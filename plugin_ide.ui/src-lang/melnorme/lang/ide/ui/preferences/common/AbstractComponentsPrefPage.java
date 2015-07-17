@@ -35,7 +35,7 @@ import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractFieldComponent;
+import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.FileTextField;
@@ -46,7 +46,7 @@ import melnorme.utilbox.fields.IFieldValueListener;
  * This is the preferred way to create Preference pages (as of 2015-02).
  * 
  * This page delegates apply/cancel/revert to preference components 
- * (Usually connected to {@link AbstractFieldComponent}).
+ * (Usually connected to {@link FieldComponent}).
  */
 public abstract class AbstractComponentsPrefPage extends AbstractLangPreferencesPage 
 	implements IPreferencesDialog {
@@ -87,7 +87,7 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		return fieldStatus.getStatusLevel();
 	}
 	
-	public void connectStringField(String prefKey, AbstractFieldComponent<String> field, IFieldValidator validator) {
+	public void connectStringField(String prefKey, FieldComponent<String> field, IFieldValidator validator) {
 		addStringComponent(prefKey, field);
 		
 		validators.put(field, validator);
@@ -176,21 +176,21 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		return group;
 	}
 	
-	public void addStringComponent(String prefKey, AbstractFieldComponent<String> field) {
+	public void addStringComponent(String prefKey, FieldComponent<String> field) {
 		addComponent(new StringFieldAdapter(prefKey, field));
 	}
-	public void addBooleanComponent(String prefKey, AbstractFieldComponent<Boolean> field) {
+	public void addBooleanComponent(String prefKey, FieldComponent<Boolean> field) {
 		addComponent(new BooleanFieldAdapter(prefKey, field));
 	}
 	public void addComboComponent(String prefKey, ComboBoxField field) {
 		addComponent(new ComboFieldAdapter(prefKey, field));
 	}
 	
-	public void addStringComponent(String prefKey, Composite parent, AbstractFieldComponent<String> field) {
+	public void addStringComponent(String prefKey, Composite parent, FieldComponent<String> field) {
 		addStringComponent(prefKey, field);
 		field.createComponentInlined(parent);
 	}
-	public void addBooleanComponent(String prefKey, Composite parent, AbstractFieldComponent<Boolean> field) {
+	public void addBooleanComponent(String prefKey, Composite parent, FieldComponent<Boolean> field) {
 		addBooleanComponent(prefKey, field);
 		field.createComponentInlined(parent);
 	}
@@ -199,14 +199,14 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		field.createComponentInlined(parent);
 	}
 	
-	public void connectFileField(String prefKey, AbstractFieldComponent<String> stringField, 
+	public void connectFileField(String prefKey, FieldComponent<String> stringField, 
 			boolean allowSinglePath, String fieldNamePrefix) {
 		PathValidator validator = allowSinglePath ? 
 				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix);
 		validator.fileOnly = true;
 		connectStringField(prefKey, stringField, validator);
 	}
-	public void connectDirectoryField(String prefKey, AbstractFieldComponent<String> stringField, 
+	public void connectDirectoryField(String prefKey, FieldComponent<String> stringField, 
 			boolean allowSinglePath, String fieldNamePrefix) {
 		PathValidator validator = allowSinglePath ? 
 				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix);

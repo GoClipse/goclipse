@@ -10,25 +10,22 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.SWTLayoutUtil;
-import melnorme.util.swt.components.AbstractFieldComponent;
-import melnorme.util.swt.components.AbstractFieldExt2;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 
-public class SpinnerNumberField extends AbstractFieldExt2<Integer> {
+import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.components.FieldComponent;
+import melnorme.util.swt.components.LabelledFieldComponent;
+
+public class SpinnerNumberField extends LabelledFieldComponent<Integer> {
 	
-	protected Label label;
 	protected Spinner spinner;
 	
 	public SpinnerNumberField(String labelText) {
-		super(labelText, 0);
+		super(labelText, Option_AllowNull.NO, 0);
 	}
 	
 	@Override
@@ -37,17 +34,9 @@ public class SpinnerNumberField extends AbstractFieldExt2<Integer> {
 	}
 	
 	@Override
-	protected void createContents_do(Composite topControl) {
-		createLabel(topControl);
-		createSpinner(topControl);
-	}
-	
-	protected void createLabel(Composite parent) {
-		label = SWTFactoryUtil.createLabel(parent, SWT.NONE, labelText, null);
-	}
-	
-	protected void createSpinner(Composite parent) {
-		spinner = createFieldSpinner(this, parent, SWT.BORDER);
+	protected void createContents_all(Composite topControl) {
+		createContents_Label(topControl);
+		createContents_Spinner(topControl);
 	}
 	
 	@Override
@@ -55,12 +44,16 @@ public class SpinnerNumberField extends AbstractFieldExt2<Integer> {
 		SWTLayoutUtil.layout2Controls_spanLast(label, spinner);
 	}
 	
+	protected void createContents_Spinner(Composite parent) {
+		spinner = createFieldSpinner(this, parent, SWT.BORDER);
+	}
+	
 	public Spinner getSpinner() {
 		return spinner;
 	}
 	
 	@Override
-	protected Spinner getFieldControl() {
+	public Spinner getFieldControl() {
 		return spinner;
 	}
 	
@@ -91,7 +84,7 @@ public class SpinnerNumberField extends AbstractFieldExt2<Integer> {
 	
 	/* -----------------  ----------------- */
 	
-	public static Spinner createFieldSpinner(AbstractFieldComponent<Integer> field, Composite parent, int style) {
+	public static Spinner createFieldSpinner(FieldComponent<Integer> field, Composite parent, int style) {
 		final Spinner spinner = new Spinner(parent, style);
 		spinner.addModifyListener(new ModifyListener() {
 			@Override

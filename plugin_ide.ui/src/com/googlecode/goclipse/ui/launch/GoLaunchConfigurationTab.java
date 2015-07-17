@@ -26,6 +26,8 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusException;
@@ -39,16 +41,21 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected Launch_ProgramPathField createProgramPathField_2() {
-		return new Launch_ProgramPathField() {
+	protected ProjectRelativePathField createProgramPathField_2() {
+		return new ProjectRelativePathField("Go main package (path relative to project)", this::validateProject) {
+			
 			@Override
-			protected String getGroupLabel() {
-				return "Go main package (path relative to project)";
+			protected void handleButtonSelected() {
+				try {
+					GoLaunchConfigurationTab.this.openProgramPathDialog(projectGetter.call());
+				} catch(StatusException se) {
+					UIOperationExceptionHandler.handleStatusMessage(LangUIMessages.error_CannotBrowse, se);
+				}
 			}
 			
 			@Override
-			protected void openProgramPathDialog(IProject project) {
-				GoLaunchConfigurationTab.this.openProgramPathDialog(project);
+			protected String getNewValueFromButtonSelection() {
+				return null;
 			}
 		};
 	}

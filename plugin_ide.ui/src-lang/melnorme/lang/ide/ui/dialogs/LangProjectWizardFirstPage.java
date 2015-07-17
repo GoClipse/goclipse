@@ -15,20 +15,6 @@ import static org.eclipse.jface.layout.GridDataFactory.fillDefaults;
 
 import java.net.URI;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.AbstractComponent;
-import melnorme.util.swt.components.fields.CheckBoxField;
-import melnorme.util.swt.components.fields.DirectoryTextField;
-import melnorme.util.swt.components.fields.TextField;
-import melnorme.utilbox.fields.IFieldValueListener;
-import melnorme.utilbox.misc.StringUtil;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -51,6 +37,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.PreferencesUtil;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.SWTUtil;
+import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.fields.CheckBoxField;
+import melnorme.util.swt.components.fields.DirectoryTextField;
+import melnorme.util.swt.components.fields.TextFieldComponent;
+import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.misc.StringUtil;
 
 public abstract class LangProjectWizardFirstPage extends WizardPage {
 	
@@ -147,13 +147,13 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 	
 	public static class NameGroup extends AbstractComponent{
 		
-		protected TextField textField = new TextField(WizardMessages.LangNewProject_NameGroup_label);
+		protected TextFieldComponent textField = new TextFieldComponent(WizardMessages.LangNewProject_NameGroup_label);
 		
 		public String getName() {
 			return textField.getFieldValue();
 		}
 		
-		public TextField getNameField() {
+		public TextFieldComponent getNameField() {
 			return textField;
 		}
 		
@@ -227,7 +227,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			return selectionField;
 		}
 		
-		public TextField getLocationField() {
+		public TextFieldComponent getLocationField() {
 			return locationField;
 		}
 		

@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponent;
-import melnorme.util.swt.components.AbstractFieldComponent;
+import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 
@@ -30,7 +30,7 @@ public class LangSDKConfigBlock extends AbstractComponent {
 		return new LanguageSDKLocationGroup();
 	}
 	
-	public AbstractFieldComponent<String> getLocationField() {
+	public FieldComponent<String> getLocationField() {
 		return sdkLocationGroup.sdkLocation;
 	}
 	

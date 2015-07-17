@@ -10,13 +10,15 @@
  *******************************************************************************/
 package melnorme.util.swt;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
+
+import melnorme.utilbox.misc.ArrayUtil;
 
 public class SWTLayoutUtil {
 	
@@ -27,6 +29,10 @@ public class SWTLayoutUtil {
 
 	public static void layout1Control(Control lastControl) {
 		layoutControls(array(lastControl), lastControl, lastControl);
+	}
+	
+	public static void layout2Controls(Control firstControl, Control lastControl) {
+		layoutControls(array(firstControl, lastControl), null, null);
 	}
 	
 	public static void layout2Controls_expandLast(Control firstControl, Control lastControl) {
@@ -50,7 +56,13 @@ public class SWTLayoutUtil {
 	 * Optionally, given colSpanningControl will have a GridData spanning extra columns in parent layout. 
 	 */
 	public static void layoutControls(Control[] controls, Control grabbingControl, Control colSpanningControl) {
-		assertTrue(controls != null && controls.length > 0);
+		assertNotNull(controls);
+		
+		controls = ArrayUtil.removeAll(controls, null);
+		
+		if(controls.length == 0) {
+			return;
+		}
 		GridLayout gridLayout = (GridLayout) controls[0].getParent().getLayout();
 		
 		int extraColumns = gridLayout.numColumns - controls.length; 

@@ -16,16 +16,16 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
-import melnorme.util.swt.components.AbstractFieldComponent;
-import melnorme.util.swt.components.AbstractFieldExt2;
+import melnorme.util.swt.components.LabelledFieldComponent;
 
-public class CheckBoxField extends AbstractFieldExt2<Boolean> {
+public class CheckBoxField extends LabelledFieldComponent<Boolean> {
 	
 	protected Button checkBox;
 	
 	public CheckBoxField(String labelText) {
-		super(labelText, false);
+		super(labelText, Option_AllowNull.NO, false);
 	}
 	
 	public boolean getBooleanFieldValue() {
@@ -38,9 +38,8 @@ public class CheckBoxField extends AbstractFieldExt2<Boolean> {
 	}
 	
 	@Override
-	protected void createContents_do(Composite topControl) {
-		checkBox = createFieldCheckbox(this, topControl, SWT.NONE);
-		checkBox.setText(labelText);
+	protected void createContents_all(Composite topControl) {
+		createContents_CheckButton(topControl);
 	}
 	
 	@Override
@@ -53,6 +52,16 @@ public class CheckBoxField extends AbstractFieldExt2<Boolean> {
 		return checkBox;
 	}
 	
+	protected void createContents_CheckButton(Composite topControl) {
+		checkBox = SWTFactoryUtil.createButton(topControl, SWT.CHECK | SWT.NONE, labelText);
+		checkBox.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setFieldValueFromControl(checkBox.getSelection());
+			}
+		});
+	}
+	
 	@Override
 	protected void doUpdateComponentFromValue() {
 		checkBox.setSelection(getFieldValue());
@@ -60,19 +69,6 @@ public class CheckBoxField extends AbstractFieldExt2<Boolean> {
 	
 	public void setEnabled(boolean enabled) {
 		checkBox.setEnabled(enabled);
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static Button createFieldCheckbox(AbstractFieldComponent<Boolean> field, Composite parent, int style) {
-		final Button checkBox = new Button(parent, SWT.CHECK | style);
-		checkBox.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				field.setFieldValueFromControl(checkBox.getSelection());
-			}
-		});
-		return checkBox;
 	}
 	
 }

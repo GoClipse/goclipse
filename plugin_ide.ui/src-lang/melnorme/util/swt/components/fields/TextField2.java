@@ -16,10 +16,11 @@ import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 
 import melnorme.util.swt.SWTLayoutUtil;
 
-public class TextField2 extends TextField {
+public class TextField2 extends TextFieldComponent {
 	
 	protected final int textLimit;
 	
@@ -29,9 +30,10 @@ public class TextField2 extends TextField {
 	}
 	
 	@Override
-	protected void createText(Composite parent) {
-		super.createText(parent);
+	protected Text createText_2(Composite parent) {
+		Text text = super.createText_2(parent);
 		text.setTextLimit(textLimit);
+		return text;
 	}
 	
 	@Override

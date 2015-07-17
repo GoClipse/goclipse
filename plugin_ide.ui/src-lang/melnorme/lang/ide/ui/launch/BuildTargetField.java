@@ -19,13 +19,13 @@ import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.fields.ComboFieldComponent;
+import melnorme.util.swt.components.fields.ComboOptionsField;
 import melnorme.utilbox.misc.ArrayUtil;
 
 /**
  * Field for a program path relative to Eclipse project.
  */
-public class BuildTargetField extends ComboFieldComponent {
+public class BuildTargetField extends ComboOptionsField {
 	
 	public BuildTargetField() {
 		super();
@@ -42,9 +42,7 @@ public class BuildTargetField extends ComboFieldComponent {
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
-		super.createContents(topControl);
-		
+	protected void createContents_layout() {
 		combo.setLayoutData(gdFillDefaults().grab(false, false).hint(200, 1).create());
 	}
 	
@@ -62,7 +60,7 @@ public class BuildTargetField extends ComboFieldComponent {
 		String[] comboItems = ArrayUtil.map(buildInfo.getBuildTargets(), 
 			(BuildTarget buildTarget) -> buildTarget.getTargetName(), String.class);
 		
-		setComboItems(comboItems);
+		setFieldOptions(comboItems);
 	}
 	
 }
