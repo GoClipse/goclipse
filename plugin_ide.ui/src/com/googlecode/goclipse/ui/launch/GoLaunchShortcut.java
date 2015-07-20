@@ -10,14 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LaunchConstants_Actual;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -30,11 +22,20 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoPath;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+
 public class GoLaunchShortcut extends AbstractLaunchShortcut2 implements ILaunchShortcut {
+	
+	public static final String LAUNCH_CONFIG_ID = "com.googlecode.goclipse.launch.goLaunchType";
 	
 	@Override
 	protected String getLaunchTypeId() {
-		return LaunchConstants_Actual.LAUNCH_CONFIG_ID;
+		return LAUNCH_CONFIG_ID;
 	}
 	
 	@Override

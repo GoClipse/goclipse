@@ -31,7 +31,7 @@ import melnorme.utilbox.misc.StringUtil;
  * The user can only choose from the list of options in the combo,
  * but the available list of options can be changed during the lifetime of the component.
  *  
- * (Consistency)
+ * Canonicity: The field value can only be one of the values of the Combo options, or null.
  */
 public class ComboOptionsField extends LabelledFieldComponent<String> {
 	
@@ -40,8 +40,8 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 	protected int comboStyle = SWT.DROP_DOWN;
 	protected Combo combo;
 	
-	public ComboOptionsField() {
-		super("", Option_AllowNull.YES, null);
+	public ComboOptionsField(String labelText) {
+		super(labelText, Option_AllowNull.YES, null);
 	}
 	
 	public void setFieldOptions(Indexable<String> items) {
@@ -50,7 +50,15 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 	
 	protected void setFieldOptions(String... items) {
 		this.comboOptions = items;
+		 //This will force the value to only the possible options
+		String fieldValue = getEffectiveValue(getFieldValue());
+		
 		setComboItems(items);
+		
+		if(fieldValue == null && items.length > 0) {
+			fieldValue = items[0];
+		}
+		setFieldValue(fieldValue); 
 	}
 	
 	@Override
@@ -105,7 +113,6 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 	protected void setComboItems(String... items) {
 		if(SWTUtil.isOkToUse(combo)) {
 			combo.setItems(items);
-			combo.select(0);
 		}
 	}
 	

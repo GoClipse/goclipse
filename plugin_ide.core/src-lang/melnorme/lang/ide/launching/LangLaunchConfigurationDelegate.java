@@ -30,6 +30,9 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.LaunchMessages;
+import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
+import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -49,22 +52,17 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		throw error(MessageFormat.format(messagePattern, arguments), null);
 	}
 	
-	protected IStringVariableManager getVariableManager() {
-		return VariablesPlugin.getDefault().getStringVariableManager();
-	}
-	
-	protected String evaluateStringVars(String expression) throws CoreException {
-		return getVariableManager().performStringSubstitution(expression);
-	}
-	
-	
 	/* ----------------- Launch ----------------- */
 	
 	protected ProcessLaunchInfo launchInfo;
 	
 	@Override
 	public final ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
-		launchInfo = getLaunchValidator(configuration).getValidateProcessLaunchInfo();
+		try {
+			launchInfo = getLaunchValidator(configuration).getValidatedProcessLaunchInfo();
+		} catch(CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
 		
 		if(ILaunchManager.RUN_MODE.equals(mode)) {
 			return getLaunchForRunMode(configuration, mode);
@@ -107,12 +105,20 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		return new LangLaunchConfigurationValidator(config);
 	}
 	
-	protected class LangLaunchConfigurationValidator extends ProcessLaunchInfoValidator {
+	public static class LangLaunchConfigurationValidator extends ProcessLaunchInfoValidator {
 		
 		protected final ILaunchConfiguration config;
 		
 		public LangLaunchConfigurationValidator(ILaunchConfiguration config) {
 			this.config = config;
+		}
+		
+		protected IStringVariableManager getVariableManager() {
+			return VariablesPlugin.getDefault().getStringVariableManager();
+		}
+		
+		protected String evaluateStringVars(String expression) throws CoreException {
+			return getVariableManager().performStringSubstitution(expression);
 		}
 		
 		@Override
@@ -121,8 +127,14 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		}
 		
 		@Override
+		public String getBuildTarget_Attribute() throws CoreException {
+			return config.getAttribute(LaunchConstants.ATTR_BUILD_TARGET, (String) null);
+		}
+		
+		@Override
 		public String getExecutablePath_Attribute() throws CoreException {
-			return evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH, ""));
+			boolean useDefault = config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, true);
+			return useDefault ? null : evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH, ""));
 		}
 		
 		@Override
@@ -217,8 +229,8 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			throws CoreException {
 			
 		EclipseProcessLauncher processLauncher = new EclipseProcessLauncher(
+			launchInfo.programFileLocation,
 			launchInfo.workingDir,
-			launchInfo.programPath,
 			launchInfo.programArguments,
 			launchInfo.environment,
 			launchInfo.appendEnv,

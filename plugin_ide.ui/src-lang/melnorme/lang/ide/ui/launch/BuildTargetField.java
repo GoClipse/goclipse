@@ -28,12 +28,12 @@ import melnorme.utilbox.misc.ArrayUtil;
 public class BuildTargetField extends ComboOptionsField {
 	
 	public BuildTargetField() {
-		super();
+		super(LangUIMessages.BuildTargetField_title);
 	}
 	
 	@Override
 	protected Composite doCreateTopLevelControl(Composite parent) {
-		return SWTFactoryUtil.createGroup(parent, LangUIMessages.BuildTargetField_title);
+		return SWTFactoryUtil.createGroup(parent, getLabelText());
 	}
 	
 	@Override
@@ -42,8 +42,18 @@ public class BuildTargetField extends ComboOptionsField {
 	}
 	
 	@Override
+	public int getPreferredLayoutColumns() {
+		return 1;
+	}
+	
+	@Override
 	protected void createContents_layout() {
 		combo.setLayoutData(gdFillDefaults().grab(false, false).hint(200, 1).create());
+	}
+	
+	@Override
+	protected void createContents_Label(Composite parent) {
+		// Do not create
 	}
 	
 	/* ----------------- binding ----------------- */

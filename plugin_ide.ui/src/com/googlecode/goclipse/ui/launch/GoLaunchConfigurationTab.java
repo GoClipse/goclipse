@@ -11,9 +11,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
 
+import java.nio.file.Path;
 import java.util.Collection;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -26,11 +26,13 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -41,8 +43,22 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected ProjectRelativePathField createProgramPathField_2() {
-		return new ProjectRelativePathField("Go main package (path relative to project)", this::validateProject) {
+	protected ProjectRelativePathField createProgramPathField() {
+		return new ProjectRelativePathField(
+			"Go main package (path relative to project)",
+			LangUIMessages.LaunchTab_ProgramPathField_useDefault,
+			this::validateProject) {
+			
+			@Override
+			protected String getDefaultFieldValue() throws CommonException {
+				try {
+					BuildTarget buildTarget = getValidatedBuildTarget();
+					Path artifactPath = buildTarget.getBuildConfig().getArtifactPath();
+					return artifactPath == null ? "" : artifactPath.toString();
+				} catch(CoreException e) {
+					throw new CommonException(e.getMessage(), e.getCause());
+				}
+			}
 			
 			@Override
 			protected void handleButtonSelected() {
@@ -53,10 +69,6 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 				}
 			}
 			
-			@Override
-			protected String getNewValueFromButtonSelection() {
-				return null;
-			}
 		};
 	}
 	
@@ -66,10 +78,9 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected IFile getValidatedProgramFile() throws StatusException {
-		// Ignore file validation, just validate project.
-		validateProject();
-		return null;
+	protected MainLaunchTab_ExecutableFileValidator getValidator() {
+		/*FIXME: BUG here use GoLaunchConfigurationValidator*/
+		return super.getValidator();
 	}
 	
 	protected void openProgramPathDialog(IProject project) {

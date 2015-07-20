@@ -1,8 +1,16 @@
-package melnorme.lang.ide.launching;
+package melnorme.lang.ide.core.launch;
 
 import java.text.MessageFormat;
 
 public class LaunchMessages {
+	
+	public static final String PROCESS_LAUNCH_NoBuildTargetSpecified = 
+			"Build target not specified";
+	public static final String PROCESS_LAUNCH_NoSuchBuildTarget = 
+			"Build target does not exist";
+	public static final String PROCESS_LAUNCH_CouldNotDetermineExeLocation = 
+			"No build target or executable path specified.";
+	
 	
 	public static final String LCD_PreparingLaunch = 
 			"Preparing launch...";

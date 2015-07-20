@@ -16,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 import melnorme.util.swt.components.AbstractFieldComponentTest;
@@ -388,7 +389,7 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		
 		@Override
 		public ComboOptionsField createField() {
-			field = new ComboOptionsField() {
+			field = new ComboOptionsField("label") {
 				@Override
 				protected void doUpdateComponentFromValue() {
 					controlsUpdateCount++;
@@ -407,7 +408,10 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		
 		@Override
 		protected void doRunTest(Shell shell) {
-			ComboOptionsField comboField = new ComboOptionsField();
+			testSetComboOptions(shell, false);
+			testSetComboOptions(shell, true);
+			
+			ComboOptionsField comboField = new ComboOptionsField("blah");
 			comboField.setFieldOptions(array("1", "2", "3"));
 			comboField.setFieldValue("2");
 			comboField.createComponent(shell);
@@ -436,7 +440,22 @@ public abstract class FieldComponent_Tests extends CommonTest {
 			
 			super.doRunTest(shell);
 		}
-
+		
+		protected void testSetComboOptions(Composite parent, boolean createComponent) {
+			ComboOptionsField comboField = new ComboOptionsField("label");
+			if(createComponent) {
+				comboField.createComboControl(parent);
+			}
+			
+			assertAreEqual(comboField.getFieldValue(), null);
+			comboField.setFieldOptions(array("1", "2", "3"));
+			comboField.setFieldValue("2");
+			comboField.setFieldOptions(array("1", "xxx", "2", "b"));
+			assertAreEqual(comboField.getFieldValue(), "2");
+			comboField.setFieldOptions(array("a", "b", "c"));
+			assertAreEqual(comboField.getFieldValue(), "a");
+		}
+		
 		public static void testSetValueFromControl(ComboOptionsField comboField, String newValue,
 				String expectedFieldValue) {
 			setFromControl(comboField.getFieldControl(), newValue);

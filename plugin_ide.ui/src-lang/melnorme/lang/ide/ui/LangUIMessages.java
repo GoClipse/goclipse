@@ -39,19 +39,18 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 	public static String projectField_chooseProject_message = "Select a project";
 	
 	
-	public static final String ProgramPathField_title = 
+	public static final String LaunchTab_ProgramPathField_title = 
 			"Program path:";
-	public static String ProgramPathField__searchButton = 
+	public static final String LaunchTab_ProgramPathField_useDefault = 
+			"Use Build Target default";
+	public static String LaunchTab_ProgramPathField__searchButton = 
 			"Browse...";
-	public static String mainTab_ProgramPath_searchButton_title = 
+	
+	public static String ProgramPathDialog_title = 
 			"Program selection";
-	public static String mainTab_ProgramPath_searchButton_message =
+	public static String ProgramPathDialog_message =
 			"Select a binary to run";
 	
-	public static String error_ProgramPathNotValid =
-			"Program path not valid.";
-	public static String error_ProgramPathNotExistingFile =
-			"Program path does not point to an existing file.";
 	
 	public static String error_CannotBrowse =
 			"Cannot open browse dialog.";
@@ -67,7 +66,7 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 			"Arguments";
 	
 	public static final String BuildTargetField_title = 
-			"Target:";
+			"Build Target:";
 	
 	/* ----------------------------------- */
 	
