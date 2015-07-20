@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LaunchConstants_Actual;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
@@ -56,6 +57,9 @@ public class GoLaunchShortcut extends AbstractLaunchShortcut2 implements ILaunch
 		
 		GoPath goPath = GoProjectEnvironment.getEffectiveGoPath(project);
 		GoPackageName goPackage = goPath.findGoPackageForSourceFile(packageLocation.resolve_valid("dummy.go"));
+		if(goPackage == null) {
+			throw LangCore.createCoreException("Go file not path of a `src` folder of any GOPATH entry.", null);
+		}
 		String suggestedName = project.getName() + " - " + goPackage.getFullNameAsString();
 		return super.createConfiguration(launchable, suggestedName);
 	}
