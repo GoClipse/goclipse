@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.LangProjectValidator;
+import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
@@ -33,6 +33,7 @@ import melnorme.lang.ide.ui.fields.ProjectField;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.utilbox.core.CommonException;
 
 public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchConfigurationTabExt {
 	
@@ -55,12 +56,16 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 		}
 	}
 	
+	protected IProject getValidProject() throws StatusException {
+		return validateProject();
+	}
+	
 	protected IProject validateProject() throws StatusException {
-		return new LangProjectValidator().validateProject(getProjectName(), LangCore.NATURE_ID);
+		return new ProjectValidator(LangCore.NATURE_ID).getProject(getProjectName());
 	}
 	
 	@Override
-	protected void doValidate() throws StatusException {
+	protected void doValidate() throws StatusException, CommonException, CoreException {
 		validateProject();
 	}
 	

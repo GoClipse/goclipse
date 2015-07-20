@@ -15,29 +15,43 @@ import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
+import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
 
-public class LangProjectValidator {
+public class ProjectValidator extends AbstractValidator2 {
 	
-	public IProject validateProject(String projectName, String natureID) throws StatusException {
+	protected final String natureId;
+	
+	public ProjectValidator() {
+		this(null);
+	}
+	
+	public ProjectValidator(String natureId) {
+		this.natureId = natureId;
+	}
+	
+	public IProject getProject(String projectName) throws StatusException {
+		return getProject(projectName, natureId);
+	}
+	
+	public IProject getProject(String projectName, String natureID) throws StatusException {
 		if(projectName.isEmpty()) {
-			throw new StatusException(StatusLevel.ERROR, msg_NoProjectName());
+			throw error(msg_NoProjectName());
 		}
 		
 		IProject project = ResourceUtils.getWorkspaceRoot().getProject(projectName);
 		if(!project.exists()) {
-			throw new StatusException(StatusLevel.ERROR, msg_ProjectDoesNotExist());
+			throw error(msg_ProjectDoesNotExist());
 		}
 		try {
 			if(natureID != null && !project.hasNature(natureID)) {
-				throw new StatusException(StatusLevel.ERROR, msg_NotAValidLangProject());
+				throw error(msg_NotAValidLangProject());
 			}
 			
 			return project;
 		} catch (CoreException ce) {
 			LangCore.logStatus(ce);
-			throw new StatusException(StatusLevel.ERROR, ce.getMessage());
+			throw error(ce.getMessage());
 		}
 	}
 	

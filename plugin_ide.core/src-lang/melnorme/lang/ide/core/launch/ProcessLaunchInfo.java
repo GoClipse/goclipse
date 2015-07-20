@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.launching;
+package melnorme.lang.ide.core.launch;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -18,28 +18,36 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.utilbox.misc.Location;
 
 public class ProcessLaunchInfo {
 	
-	public final IPath programPath;
+	public final IProject project;
+	public final BuildTarget buildTarget;
+	public final Location programFileLocation;
 	public final String[] programArguments;
 	public final IPath workingDir;
 	public final Map<String, String> environment;
 	public final boolean appendEnv;
 	
-	public final IProject project;
-	public final BuildTarget buildTarget;
 	
-	public ProcessLaunchInfo(IPath programPath, String[] programArguments, IPath workingDir, 
-			Map<String, String> environment, boolean appendEnv, IProject project, BuildTarget buildTarget) {
-		this.programPath = assertNotNull(programPath);
+	public ProcessLaunchInfo(
+			IProject project, 
+			BuildTarget buildTarget, 
+			Location programLocation, 
+			String[] programArguments, 
+			IPath workingDir, 
+			Map<String, String> environment, 
+			boolean appendEnv
+	) {
+		this.project = assertNotNull(project);
+		this.buildTarget = buildTarget;
+		this.programFileLocation = assertNotNull(programLocation);
+		
 		this.programArguments = assertNotNull(programArguments);
 		this.workingDir = assertNotNull(workingDir);
 		this.environment = environment;
 		this.appendEnv = appendEnv;
-		
-		this.project = project;
-		this.buildTarget = buildTarget;
 	}
 	
 	public IProject getProject() {

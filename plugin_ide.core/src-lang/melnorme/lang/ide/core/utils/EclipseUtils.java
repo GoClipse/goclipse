@@ -15,13 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.tooling.data.StatusException;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.Location;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -35,15 +28,12 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.data.StatusException;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.misc.ArrayUtil;
+
 public class EclipseUtils extends ResourceUtils {
-	
-	public static Location location(java.nio.file.Path path) throws CoreException {
-		try {
-			return Location.create(path);
-		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
-		}
-	}
 	
 	/** Convenience method to get the WorkspaceRoot. */
 	public static IWorkspaceRoot getWorkspaceRoot() {

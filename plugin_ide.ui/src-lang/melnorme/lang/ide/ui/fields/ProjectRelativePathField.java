@@ -10,52 +10,29 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.fields;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.core.fntypes.ICallable;
 
 /**
  * Field for a program path relative to Eclipse project.
  */
-public class ProjectRelativePathField extends ButtonTextField {
+public abstract class ProjectRelativePathField extends EnablementButtonTextField {
 	
 	protected final ICallable<IProject, StatusException> projectGetter;
 	
-	public ProjectRelativePathField(String labelText, ICallable<IProject, StatusException> projectGetter) {
-		super(labelText, LangUIMessages.ProgramPathField__searchButton);
-		this.projectGetter = projectGetter;
+	public ProjectRelativePathField(String labelText, String enablementCheckBoxLabel, 
+			ICallable<IProject, StatusException> projectGetter) {
+		super(labelText, enablementCheckBoxLabel, LangUIMessages.LaunchTab_ProgramPathField__searchButton);
+		this.projectGetter = assertNotNull(projectGetter);
 	}
-	
-	@Override
-	protected Composite doCreateTopLevelControl(Composite parent) {
-		return SWTFactoryUtil.createGroup(parent, getLabelText(), SWT.NONE);
-	}
-	
-	@Override
-	protected GridLayoutFactory createTopLevelLayout() {
-		return glSwtDefaults().numColumns(getPreferredLayoutColumns());
-	}
-	
-	@Override
-	public int getPreferredLayoutColumns() {
-		return 2;
-	}
-	
-	@Override
-	protected void createContents_Label(Composite parent) {
-		// Don't create
-	}
-	
-	/* -----------------  ----------------- */
 	
 	@Override
 	protected String getNewValueFromButtonSelection() {

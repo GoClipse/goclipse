@@ -17,7 +17,11 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
 public class PathValidator extends AbstractValidator implements IFieldValidator {
-
+	
+	public static enum LocationKind { ANY, FILE_ONLY, DIR_ONLY }
+	
+	/* -----------------  ----------------- */
+	
 	public final String fieldNamePrefix;
 	
 	public boolean canBeEmpty;
@@ -27,6 +31,14 @@ public class PathValidator extends AbstractValidator implements IFieldValidator 
 	public PathValidator(String fieldNamePrefix) {
 		this.fieldNamePrefix = fieldNamePrefix;
 		canBeEmpty = false;
+	}
+	
+	protected LocationKind getLocationKind() {
+		return fileOnly ?
+				LocationKind.FILE_ONLY :
+				directoryOnly ? 
+				LocationKind.DIR_ONLY :
+				LocationKind.ANY;
 	}
 	
 	@Override
@@ -89,19 +101,23 @@ public class PathValidator extends AbstractValidator implements IFieldValidator 
 	}
 	
 	protected Location validateLocation(Location location) throws ValidationException {
+		validateLocation(location, getLocationKind());
+		return getValidatedField_rest(location);
+	}
+	
+	protected void validateLocation(Location location, LocationKind locKind) throws ValidationException {
 		if(!location.toFile().exists()) {
 			throw createException(StatusLevel.WARNING, ValidationMessages.Location_DoesntExist(location));
 		}
 		
-		validateType(location);
-		return getValidatedField_rest(location);
+		validateType(location, locKind);
 	}
 	
-	public void validateType(Location location) throws ValidationException {
-		if(fileOnly && !location.toFile().isFile()) {
+	public void validateType(Location location, LocationKind locKind) throws ValidationException {
+		if(locKind == LocationKind.FILE_ONLY && !location.toFile().isFile()) {
 			throw createException(StatusLevel.WARNING, ValidationMessages.Location_NotAFile(location));
 		}
-		if(directoryOnly && !location.toFile().isDirectory()) {
+		if(locKind == LocationKind.DIR_ONLY && !location.toFile().isDirectory()) {
 			throw createException(StatusLevel.WARNING, ValidationMessages.Location_NotADirectory(location));
 		}
 	}

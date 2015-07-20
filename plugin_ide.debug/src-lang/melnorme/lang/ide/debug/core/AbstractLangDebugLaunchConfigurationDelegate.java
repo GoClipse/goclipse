@@ -21,8 +21,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ISourceLocator;
 
+import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
 import melnorme.lang.ide.debug.core.services.LangDebugServicesExtensions;
-import melnorme.lang.ide.launching.ProcessLaunchInfoValidator;
 
 public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangLaunchConfigurationDelegate_Actual {
 	
@@ -80,7 +80,7 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 		// Setup CDT config parameters
 		
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME, 
-			launchInfo.programPath.toString());
+			launchInfo.programFileLocation.toString());
 		// Need to pass raw args, because CDT will reevaluate variables.
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, 
 			validator.getProgramArguments_Attribute());

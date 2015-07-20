@@ -26,7 +26,6 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
@@ -102,7 +101,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 			throws CoreException, CommonException, OperationCancellation;
 	
 	@Override
-	protected void handleComputationResult() throws CoreException {
+	protected void handleComputationResult() throws CoreException, CommonException {
 		if(statusErrorMessage != null) {
 			handleStatusErrorMessage();
 		}
@@ -136,8 +135,8 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		Display.getCurrent().beep();
 	}
 	
-	protected void openEditorForLocation(SourceLineColumnRange sourceLocation) throws CoreException {
-		Location loc = EclipseUtils.location(sourceLocation.path);
+	protected void openEditorForLocation(SourceLineColumnRange sourceLocation) throws CoreException, CommonException {
+		Location loc = Location.create(sourceLocation.path);
 		IEditorInput newInput = getNewEditorInput(loc);
 		
 		ITextEditor newEditor = EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, 

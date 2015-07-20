@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
@@ -34,6 +33,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -43,11 +43,11 @@ import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
+import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponent;
-import melnorme.util.swt.components.fields.CheckBoxField;
-import melnorme.util.swt.components.fields.DirectoryTextField;
+import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.TextFieldComponent;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.StringUtil;
@@ -131,8 +131,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			}
 		};
 		nameGroup.textField.addValueChangedListener(listener);
-		locationGroup.getSelectionField().addValueChangedListener(listener);
-		locationGroup.getLocationField().addValueChangedListener(listener);
+		locationGroup.addValueChangedListener(listener);
 		
 		validateDialog();
 	}
@@ -207,28 +206,20 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 	
 	/* ----------------- Location ----------------- */
 	
-	public static class LocationGroup extends AbstractComponent {
+	public static class LocationGroup extends EnablementButtonTextField {
 		
 		protected final NameGroup nameGroup;
 		
-		protected final CheckBoxField selectionField = new CheckBoxField(
-			WizardMessages.LangNewProject_Location_UseDefault_Label);
-		protected final DirectoryTextField locationField = new DirectoryTextField(
-			WizardMessages.LangNewProject_Location_Directory_label,
-			WizardMessages.LangNewProject_Location_Directory_buttonLabel);
-		
 		public LocationGroup(NameGroup nameGroup) {
+			super(
+				WizardMessages.LangNewProject_Location_Directory_label, 
+				WizardMessages.LangNewProject_Location_UseDefault_Label, 
+				WizardMessages.LangNewProject_Location_Directory_buttonLabel
+			);
+		
 			this.nameGroup = nameGroup;
 			
-			selectionField.setFieldValue(true);
-		}
-		
-		public CheckBoxField getSelectionField() {
-			return selectionField;
-		}
-		
-		public TextFieldComponent getLocationField() {
-			return locationField;
+			nameGroup.getNameField().addValueChangedListener(this::updateDefaultFieldValue);
 		}
 		
 		protected String getProjectName() {
@@ -236,12 +227,19 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 		
 		protected boolean isDefaultLocation() {
-			return selectionField.getFieldValue();
+			return isUseDefault();
 		}
 		
 		protected String getLocationString() {
-			return locationField.getFieldValue();
+			return getFieldValue();
 		}
+		
+		@Override
+		protected String getDefaultFieldValue() {
+			return Platform.getLocation().append(getProjectName()).toOSString();
+		}
+		
+		/* -----------------  ----------------- */
 		
 		public IPath getProjectLocation() {
 			String projectName = getProjectName();
@@ -285,43 +283,22 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 		
 		@Override
-		protected GridLayoutFactory createTopLevelLayout() {
-			return GridLayoutFactory.swtDefaults().numColumns(getPreferredLayoutColumns());
-		}
-		
-		@Override
 		public int getPreferredLayoutColumns() {
 			return 3;
 		}
 		
 		@Override
-		protected void createContents(Composite topControl) {
-			selectionField.createComponentInlined(topControl);
-			locationField.createComponentInlined(topControl);
-			
-			selectionField.addValueChangedListener(new IFieldValueListener() {
-				@Override
-				public void fieldValueChanged() {
-					updateComponentFromInput();
-				}
-			});
-			nameGroup.getNameField().addValueChangedListener(new IFieldValueListener() {
-				@Override
-				public void fieldValueChanged() {
-					updateComponentFromInput();
-				}
-			});
-			
+		protected void createContents_Label(Composite parent) {
+			label = SWTFactory.createLabel(parent, SWT.NONE, labelText);
 		}
 		
 		@Override
-		public void updateComponentFromInput() {
-			if(isDefaultLocation()) {
-				locationField.setEnabled(false);
-				locationField.setFieldValue(Platform.getLocation().append(getProjectName()).toOSString());
-			} else {
-				locationField.setEnabled(true);
+		protected String getNewValueFromButtonSelection() {
+			DirectoryDialog dialog = new DirectoryDialog(button.getShell());
+			if(!getFieldValue().isEmpty()) {
+				dialog.setFilterPath(getFieldValue());
 			}
+			return dialog.open();
 		}
 		
 	}

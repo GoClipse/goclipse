@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.runtime.CoreException;
@@ -40,19 +42,24 @@ import org.eclipse.debug.core.model.IProcess;
  */
 public class EclipseProcessLauncher {
 	
+	protected final Location programFileLocation;
 	protected final IPath workingDir;
-	protected final IPath processFile;
 	protected final String[] processArguments;
 	protected final Map<String, String> environment;
 	protected final boolean appendEnvironment;
-	
 	protected String processType;
 	
-	public EclipseProcessLauncher(IPath workingDir, IPath processFile, String[] processArgs,
-			Map<String, String> environment, boolean appendEnvironment, String processType) {
+	public EclipseProcessLauncher(
+			Location programFileLocation, 
+			IPath workingDir, 
+			String[] processArgs,
+			Map<String, 
+			String> environment, 
+			boolean appendEnvironment, 
+			String processType
+	) {
+		this.programFileLocation = assertNotNull(programFileLocation);
 		this.workingDir = workingDir;
-		this.processFile = processFile;
-		assertNotNull(processFile);
 		this.processArguments = processArgs;
 		this.environment = environment;
 		this.appendEnvironment = appendEnvironment;
@@ -72,8 +79,8 @@ public class EclipseProcessLauncher {
 		if(workingDir != null && !workingDir.toFile().exists()) {
 			fail(LaunchMessages.errWorkingDirectoryDoesntExist, workingDir);
 		}
-		if(!processFile.toFile().exists()) {
-			fail(LaunchMessages.errExecutableFileDoesntExist, processFile);
+		if(!programFileLocation.toFile().exists()) {
+			fail(LaunchMessages.errExecutableFileDoesntExist, programFileLocation);
 		}
 		
 		String[] cmdLine = getCommandLine();
@@ -127,7 +134,7 @@ public class EclipseProcessLauncher {
 	}
 	
 	protected void prepareCommandLine(List<String> commandLine) {
-		commandLine.add(processFile.toOSString());
+		commandLine.add(programFileLocation.toString());
 		commandLine.addAll(Arrays.asList(processArguments));
 	}
 	
@@ -162,7 +169,7 @@ public class EclipseProcessLauncher {
 	
 	protected String renderProcessLabel() {
 		String timestampLabel = PROCESS_LABEL_DATE_FORMAT.format(new Date(System.currentTimeMillis()));
-		String processFilePath = processFile.toOSString();
+		String processFilePath = programFileLocation.toString();
 		return MessageFormat.format("{0} ({1})", processFilePath, timestampLabel);
 	}
 	

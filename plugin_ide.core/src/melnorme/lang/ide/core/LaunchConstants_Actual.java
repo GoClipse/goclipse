@@ -1,12 +1,10 @@
 package melnorme.lang.ide.core;
 
+import melnorme.lang.ide.launching.LaunchConstants_Default;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 
-public interface LaunchConstants_Actual {
-	
-	public static final String ATTR_PROJECT_NAME = "PROJECT_NAME";
-	public static final String ATTR_PROGRAM_PATH = "MAIN_FILE";
-	public static final String ATTR_PROGRAM_ARGUMENTS = "PROGRAM_ARGS";
-	public static final String ATTR_WORKING_DIRECTORY = "WORKING_DIRECTORY";
+@LANG_SPECIFIC
+public interface LaunchConstants_Actual extends LaunchConstants_Default {
 	
 	public static final String PROCESS_TYPE_ID = "LANGUAGE_Process";
 

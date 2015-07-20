@@ -69,8 +69,8 @@ public class ControlUtils {
 	public static String openProgramPathDialog(IProject project, Button button) {
 		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
 			button.getShell(), new WorkbenchLabelProvider(), new WorkbenchContentProvider());
-		dialog.setTitle(LangUIMessages.mainTab_ProgramPath_searchButton_title);
-		dialog.setMessage(LangUIMessages.mainTab_ProgramPath_searchButton_message);
+		dialog.setTitle(LangUIMessages.ProgramPathDialog_title);
+		dialog.setMessage(LangUIMessages.ProgramPathDialog_message);
 		
 		dialog.setInput(project);
 		dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));

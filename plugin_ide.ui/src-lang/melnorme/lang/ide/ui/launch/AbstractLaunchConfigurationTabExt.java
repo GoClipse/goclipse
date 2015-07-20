@@ -18,10 +18,20 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.utilbox.core.CommonException;
 
 public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchConfigurationTab {
 	
 	public static String getConfigAttribute(ILaunchConfiguration config, String key, String defaultValue) {
+		try {
+			return config.getAttribute(key, defaultValue);
+		} catch (CoreException ce) {
+			LangUIPlugin.logError(LangUIMessages.Launch_ErrorReadingConfigurationAttribute, ce);
+		}
+		return defaultValue;
+	}
+	
+	public static boolean getConfigAttribute(ILaunchConfiguration config, String key, boolean defaultValue) {
 		try {
 			return config.getAttribute(key, defaultValue);
 		} catch (CoreException ce) {
@@ -48,11 +58,15 @@ public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchCo
 			case INFO: 
 			case OK: setMessage(message);break;
 			}
+		} catch(CommonException e) {
+			setErrorMessage(e.getMessage());
+		} catch(CoreException e) {
+			setErrorMessage(e.getMessage());
 		}
 		
 		return getErrorMessage() == null;
 	}
 	
-	protected abstract void doValidate() throws StatusException;
+	protected abstract void doValidate() throws StatusException, CommonException, CoreException;
 	
 }
