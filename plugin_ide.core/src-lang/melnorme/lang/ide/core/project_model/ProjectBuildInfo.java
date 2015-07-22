@@ -82,13 +82,24 @@ public class ProjectBuildInfo {
 	/* -----------------  ----------------- */
 		
 	public void changeEnable(BuildTarget oldBuildTarget, boolean newEnabledValue) throws StatusException {
-		BuildTarget newBuildTarget = buildManager.createBuildTarget(
-			oldBuildTarget.getTargetName(), oldBuildTarget.getBuildConfig(), newEnabledValue);
-		
-		changeBuildTarget(oldBuildTarget, newBuildTarget);
+		changeBuildTarget(oldBuildTarget, buildManager.createBuildTarget(
+			oldBuildTarget.getTargetName(), 
+			oldBuildTarget.getBuildConfig(), 
+			newEnabledValue,
+			oldBuildTarget.getBuildOptions()
+		));
 	}
 	
-	public void changeBuildTarget(BuildTarget oldBuildTarget, BuildTarget newBuildTarget) throws StatusException {
+	public void changeOptions(BuildTarget oldBuildTarget, String newOptionsValue) throws StatusException {
+		changeBuildTarget(oldBuildTarget, buildManager.createBuildTarget(
+			oldBuildTarget.getTargetName(), 
+			oldBuildTarget.getBuildConfig(), 
+			oldBuildTarget.isEnabled(),
+			newOptionsValue
+		));
+	}
+	
+	protected void changeBuildTarget(BuildTarget oldBuildTarget, BuildTarget newBuildTarget) throws StatusException {
 		boolean mutated = false;
 		ArrayList2<BuildTarget> newBuildTargets = new ArrayList2<>(buildTargets.size());
 		

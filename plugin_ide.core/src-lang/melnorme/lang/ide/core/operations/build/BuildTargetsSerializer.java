@@ -43,6 +43,7 @@ public class BuildTargetsSerializer {
 	private static final String TARGET_ElemName = "target";
 	private static final String PROP_NAME = "name";
 	private static final String PROP_ENABLED = "enabled";
+	private static final String PROP_OPTIONS = "options";
 	
 	protected static final BuildConfiguration DUMMY_BUILD_CONFIG = new BuildConfiguration("", null);
 	
@@ -92,20 +93,10 @@ public class BuildTargetsSerializer {
 		doc.appendChild(buildTargetsElem);
 		
 		for(BuildTarget buildTarget : buildTargets) {
-			buildTargetsElem.appendChild(createTargetElement(doc, buildTarget));
+			buildTargetsElem.appendChild(createBuildTargetElement(doc, buildTarget));
 		}
 		
 	}
-	
-	protected Element createTargetElement(Document doc, BuildTarget buildTarget) {
-		Element targetElem = doc.createElement(TARGET_ElemName);
-		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(buildTarget.isEnabled()));
-		
-		String targetName = buildTarget.getTargetName();
-		targetElem.setAttribute(PROP_NAME, targetName);
-		return targetElem;
-	}
-	
 	
 	public ArrayList2<BuildTarget> readProjectBuildInfo(String targetsXml) throws CommonException {
 		Document doc;
@@ -127,27 +118,38 @@ public class BuildTargetsSerializer {
 			if(targetElem.getNodeType() == Node.TEXT_NODE) {
 				continue;
 			}
-			buildTargets.add(readTargetElement(targetElem));
+			buildTargets.add(readBuildTargetElement(targetElem));
 		}
 		
 		return buildTargets;
 	}
 	
-	protected BuildTarget readTargetElement(Node targetElem) throws CommonException {
+	protected Element createBuildTargetElement(Document doc, BuildTarget buildTarget) {
+		Element targetElem = doc.createElement(TARGET_ElemName);
+		
+		targetElem.setAttribute(PROP_NAME, buildTarget.getTargetName());
+		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(buildTarget.isEnabled()));
+		targetElem.setAttribute(PROP_OPTIONS, buildTarget.getBuildOptions());
+		
+		return targetElem;
+	}
+	
+	protected BuildTarget readBuildTargetElement(Node targetElem) throws CommonException {
 		String nodeName = targetElem.getNodeName();
 		if(nodeName.equals(TARGET_ElemName)) {
 			boolean enabled = getBooleanAttribute(targetElem, PROP_ENABLED, false);
 			String targetName = getAttribute(targetElem, PROP_NAME, null);
+			String buildOptions = getAttribute(targetElem, PROP_OPTIONS, null);
 			
-			return createBuildTarget(enabled, targetName, targetElem);
+			return createBuildTarget(targetElem, targetName, enabled, buildOptions);
 		} else {
 			throw new CommonException("XML element not recognized : " + nodeName);
 		}
 	}
 	
-	protected BuildTarget createBuildTarget(boolean enabled, String targetName, 
-			@SuppressWarnings("unused") Node targetElem) {
-		return buildManager.createBuildTarget(targetName, DUMMY_BUILD_CONFIG, enabled);
+	protected BuildTarget createBuildTarget(@SuppressWarnings("unused") Node targetElem, 
+			String targetName, boolean enabled, String buildOptions) {
+		return buildManager.createBuildTarget(targetName, DUMMY_BUILD_CONFIG, enabled, buildOptions);
 	}
 	
 	protected String getAttribute(Node targetElem, String keyName, String defaultValue) {

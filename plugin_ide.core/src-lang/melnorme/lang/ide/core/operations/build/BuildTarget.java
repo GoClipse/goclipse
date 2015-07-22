@@ -12,21 +12,23 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo.BuildConfiguration;
 import melnorme.utilbox.misc.HashcodeUtil;
-import melnorme.utilbox.misc.StringUtil;
 
 public class BuildTarget {
 	
 	protected final String targetName;
 	protected final BuildConfiguration buildConfig;
 	protected final boolean enabled;
+	protected final String buildOptions;
 	
-	public BuildTarget(String targetName, BuildConfiguration buildConfig, boolean enabled) {
-		this.targetName = StringUtil.nullAsEmpty(targetName);
+	public BuildTarget(String targetName, BuildConfiguration buildConfig, boolean enabled, String buildOptions) {
+		this.targetName = nullAsEmpty(targetName);
 		this.buildConfig = assertNotNull(buildConfig);
 		this.enabled = enabled;
+		this.buildOptions = nullAsEmpty(buildOptions);
 	}
 	
 	public String getTargetName() {
@@ -41,6 +43,10 @@ public class BuildTarget {
 		return enabled;
 	}
 	
+	public String getBuildOptions() {
+		return buildOptions;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
@@ -49,13 +55,14 @@ public class BuildTarget {
 		BuildTarget other = (BuildTarget) obj;
 		
 		return 
+				areEqual(targetName, other.targetName) &&
 				areEqual(enabled, other.enabled) &&
-				areEqual(targetName, other.targetName);
+				areEqual(buildOptions, other.buildOptions);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(enabled, targetName);
+		return HashcodeUtil.combinedHashCode(targetName, enabled, buildOptions);
 	}
 	
 	/* -----------------  ----------------- */

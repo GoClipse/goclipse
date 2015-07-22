@@ -29,16 +29,17 @@ public class BuildTargetsSerializer_Test extends CommonTest {
 	public void testname() throws Exception { testname$(); }
 	public void testname$() throws Exception {
 		testSerialize(new ArrayList2<>());
-		testSerialize(new ArrayList2<>(createBuildTarget(true, null)));
+		testSerialize(new ArrayList2<>(createBuildTarget(true, null, "-opt")));
 		testSerialize(new ArrayList2<>(
-				createBuildTarget(false, null),
-				createBuildTarget(true, "blah"),
-				createBuildTarget(true, "xxx")
+				createBuildTarget(false, null, ""),
+				createBuildTarget(true, "blah", "-opt"),
+				createBuildTarget(true, "xxx", null)
 		));
 	}
 	
-	protected BuildTarget createBuildTarget(boolean enabled, String name) {
-		return LangCore.getBuildManager().createBuildTarget(name, BuildTargetsSerializer.DUMMY_BUILD_CONFIG, enabled);
+	protected BuildTarget createBuildTarget(boolean enabled, String name, String buildOptions) {
+		return LangCore.getBuildManager()
+				.createBuildTarget(name, BuildTargetsSerializer.DUMMY_BUILD_CONFIG, enabled, buildOptions);
 	}
 	
 	protected void testSerialize(ArrayList2<BuildTarget> buildTargets) {

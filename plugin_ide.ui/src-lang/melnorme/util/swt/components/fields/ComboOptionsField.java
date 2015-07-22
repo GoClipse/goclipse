@@ -45,7 +45,7 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 	}
 	
 	public void setFieldOptions(Indexable<String> items) {
-		setComboItems(items.toArray(String.class));
+		setFieldOptions(items.toArray(String.class));
 	}
 	
 	public void setFieldOptions(String... items) {
@@ -131,6 +131,10 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 				combo.deselect(combo.getSelectionIndex());
 			}
 		}
+	}
+	
+	public void setEnabled(boolean enabled) {
+		getFieldControl().setEnabled(enabled);
 	}
 	
 }

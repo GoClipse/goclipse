@@ -33,7 +33,6 @@ import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 
 /**
@@ -41,8 +40,8 @@ import melnorme.utilbox.misc.Location;
  */
 public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfigurationTab {
 	
-	protected final BuildTargetField buildTargetField = new BuildTargetField();
-	protected final ProjectRelativePathField programPathField = createProgramPathField();
+	protected final BuildTargetField buildTargetField = init_createBuildTargetField();
+	protected final ProjectRelativePathField programPathField = init_createProgramPathField();
 	
 	public MainLaunchConfigurationTab() {
 		this(false);
@@ -54,7 +53,10 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		}
 	}
 	
-	protected ProjectRelativePathField createProgramPathField() {
+	protected BuildTargetField init_createBuildTargetField() {
+		return new BuildTargetField();
+	}
+	protected ProjectRelativePathField init_createProgramPathField() {
 		return new MainLaunchTab_ProgramPathField();
 	}
 	
@@ -160,10 +162,8 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 			ProjectBuildInfo buildInfo = LangCore.getBuildManager().getBuildInfo(project);
 			if(buildInfo != null) {
 				
-				String[] comboItems = ArrayUtil.map(buildInfo.getBuildTargets(), 
-					(BuildTarget buildTarget) -> buildTarget.getTargetName(), String.class);
-				
-				buildTargetField.setFieldOptions(comboItems);
+				buildTargetField.setFieldOptions(
+					buildInfo.getBuildTargets().map((buildTarget) -> buildTarget.getTargetName()));
 			}
 		}
 		

@@ -11,14 +11,15 @@
 package melnorme.lang.ide.ui.dialogs;
 
 
-import melnorme.util.swt.SWTFactoryUtil;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
+
+import melnorme.lang.ide.ui.preferences.LangProjectOptionsBlock;
+import melnorme.util.swt.SWTFactoryUtil;
 
 /**
  * Abstract class for a project property page.
@@ -46,6 +47,23 @@ public abstract class AbstractProjectPropertyPage extends PropertyPage {
 		return createContents(parent, project);
 	}
 	
-	protected abstract Control createContents(Composite parent, IProject project);
+	protected LangProjectOptionsBlock buildOptionsComponent;
+	
+	protected Control createContents(Composite parent, IProject project) {
+		buildOptionsComponent = createProjectOptionsComponent(project);
+		return buildOptionsComponent.createComponent(parent);
+	}
+	
+	protected abstract LangProjectOptionsBlock createProjectOptionsComponent(IProject project);
+	
+	@Override
+	public boolean performOk() {
+		return buildOptionsComponent.performOk();
+	}
+	
+	@Override
+	protected void performDefaults() {
+		buildOptionsComponent.restoreDefaults();
+	}
 	
 }

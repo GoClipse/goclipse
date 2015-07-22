@@ -241,4 +241,22 @@ public class CollectionUtil {
 		list2 = sort(list2);
 	}
 	
+	/* ----------------- functional API ----------------- */
+	// We might want to modify this to use Java 8 Streams
+	
+	public static <E, R> ArrayList2<R> map(
+			Iterable<E> coll, Function<? super E, ? extends R> evalFunction) {
+		return mapTo(coll, evalFunction, new ArrayList2<R>());
+	}
+	
+	public static <E, R, DEST extends Collection<R>> DEST mapTo(
+			Iterable<E> coll, Function<? super E, ? extends R> evalFunction, DEST destCollection) {
+		for(E collElement : coll) {
+			R mappeElem = evalFunction.apply(collElement);
+			destCollection.add(mappeElem);
+		}
+		
+		return destCollection;
+	}
+	
 }

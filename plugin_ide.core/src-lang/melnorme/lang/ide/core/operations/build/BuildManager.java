@@ -111,10 +111,16 @@ public abstract class BuildManager {
 		return buildModel.getProjectInfo(project);
 	}
 	
-	public ProjectBuildInfo getBuildInfo_NonNull(IProject project) throws CommonException {
+	public ProjectBuildInfo getValidBuildInfo(IProject project) throws CommonException {
+		return getValidBuildInfo(project, true);
+	}
+	
+	public ProjectBuildInfo getValidBuildInfo(IProject project, boolean requireNonEmtpyTargets) 
+			throws CommonException {
 		ProjectBuildInfo buildInfo = getBuildInfo(project);
-		if(buildInfo == null) {
-			throw new CommonException("No project build targets information available.");
+		
+		if(buildInfo == null || (requireNonEmtpyTargets && buildInfo.getBuildTargets().isEmpty())) {
+			throw new CommonException("No build targets available for project.");
 		}
 		return buildInfo;
 	}
@@ -165,15 +171,28 @@ public abstract class BuildManager {
 	}
 	
 	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, BuildConfiguration buildConfig,
-			ProjectBuildInfo currentBuildInfo, boolean isFirstConfig, String name) {
-		boolean enabled = getIsEnabled(currentBuildInfo, isFirstConfig, name);
+			ProjectBuildInfo currentBuildInfo, boolean isFirstConfig, String targetName) {
+		BuildTarget oldBuildTarget = currentBuildInfo == null ? 
+				null : 
+				currentBuildInfo.getDefinedBuildTarget(targetName);
 		
-		buildTargets.add(createBuildTarget(name, buildConfig, enabled));
+		boolean enabled;
+		String buildOptions;
+		
+		if(oldBuildTarget == null) {
+			enabled = isFirstConfig;
+			buildOptions = getDefaultBuildOptions(targetName);
+		} else {
+			enabled = oldBuildTarget.isEnabled();
+			buildOptions = oldBuildTarget.getBuildOptions();
+		}
+		
+		buildTargets.add(createBuildTarget(targetName, buildConfig, enabled, buildOptions));
 	}
 	
-	protected boolean getIsEnabled(ProjectBuildInfo currentBuildInfo, boolean isFirstConfig, String name) {
-		BuildTarget oldBuildTarget = currentBuildInfo == null ? null : currentBuildInfo.getDefinedBuildTarget(name);
-		return oldBuildTarget == null ? isFirstConfig : oldBuildTarget.isEnabled();
+	@SuppressWarnings("unused") 
+	public String getDefaultBuildOptions(String buildTargetName) {
+		return "";
 	}
 	
 	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
@@ -197,8 +216,9 @@ public abstract class BuildManager {
 		return projectBuildInfo.getDefinedBuildTarget(targetName);
 	}
 	
-	public BuildTarget createBuildTarget(String targetName, BuildConfiguration buildConfig, boolean enabled) {
-		return new BuildTarget(targetName, buildConfig, enabled);
+	public BuildTarget createBuildTarget(String targetName, BuildConfiguration buildConfig, 
+			boolean enabled, String buildOptions) {
+		return new BuildTarget(targetName, buildConfig, enabled, buildOptions);
 	}
 	
 	/* ----------------- Build operations ----------------- */
