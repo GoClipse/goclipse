@@ -46,7 +46,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	}
 	
 	public IBuildTargetOperation newProjectBuildOperation() throws CommonException {
-		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo_NonNull(project);
+		ProjectBuildInfo buildInfo = buildMgr.getValidBuildInfo(project);
 		return newProjectBuildOperation(buildInfo.getEnabledTargets());
 	}
 	

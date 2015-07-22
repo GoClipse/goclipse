@@ -18,7 +18,7 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ComboOptionsField;
 
 /**
- * Field for a program path relative to Eclipse project.
+ * Field for selecting a Build Target
  */
 public class BuildTargetField extends ComboOptionsField {
 	

@@ -12,16 +12,10 @@ package com.googlecode.goclipse.core;
 
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
-import melnorme.lang.ide.core.utils.prefs.ProgramArgumentsPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 
 public interface GoProjectPrefConstants {
-	
-	ProgramArgumentsPreference GO_BUILD_OPTIONS = new ProgramArgumentsPreference(
-		"projectPrefs.build_extra_options", 
-		"install -v -gcflags \"-N -l\" ./...");
-	
 	
 	BooleanPreference ENABLE_AUTO_UNIT_TEST = 
 		new BooleanPreference("projectPrefs.auto_unit_test.enable" , false);

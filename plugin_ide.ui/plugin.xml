@@ -313,7 +313,7 @@
 	<extension point="org.eclipse.ui.propertyPages">
 		<page class="com.googlecode.goclipse.ui.properties.GoProjectBuildOptionsPage"
 			id="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
-			name="Go Project Configuration">
+			name="Build Targets">
 			<enabledWhen>
 				<reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
 			</enabledWhen>

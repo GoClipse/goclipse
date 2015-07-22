@@ -13,6 +13,7 @@ package melnorme.lang.ide.core.launch;
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.tooling.data.AbstractValidator2;
@@ -20,13 +21,14 @@ import melnorme.utilbox.core.CommonException;
 
 public class BuildTargetValidator extends AbstractValidator2 {
 	
-	public BuildTarget getBuildTarget_nonNull(IProject project, String buildTargetAttribute)
-			throws CommonException {
-		BuildTarget buildTarget = getBuildTarget(project, buildTargetAttribute);
-		if(buildTarget == null) {
-			throw error(LaunchMessages.PROCESS_LAUNCH_NoBuildTargetSpecified);
-		}
-		return buildTarget;
+	protected final BuildManager buildManager;
+
+	public BuildTargetValidator() {
+		this(LangCore.getBuildManager());
+	}
+	
+	public BuildTargetValidator(BuildManager buildManager) {
+		this.buildManager = buildManager;
 	}
 	
 	public BuildTarget getBuildTarget(IProject project, String buildTargetName) 
@@ -35,11 +37,20 @@ public class BuildTargetValidator extends AbstractValidator2 {
 			return null;
 		}
 		
-		ProjectBuildInfo buildInfo = LangCore.getBuildManager().getBuildInfo_NonNull(project);
+		ProjectBuildInfo buildInfo = buildManager.getValidBuildInfo(project);
 		
 		BuildTarget buildTarget = buildInfo.getBuildTarget(buildTargetName);
 		if(buildTarget == null) {
 			throw error(LaunchMessages.PROCESS_LAUNCH_NoSuchBuildTarget);
+		}
+		return buildTarget;
+	}
+	
+	public BuildTarget getBuildTarget_nonNull(IProject project, String buildTargetAttribute)
+			throws CommonException {
+		BuildTarget buildTarget = getBuildTarget(project, buildTargetAttribute);
+		if(buildTarget == null) {
+			throw error(LaunchMessages.PROCESS_LAUNCH_NoBuildTargetSpecified);
 		}
 		return buildTarget;
 	}

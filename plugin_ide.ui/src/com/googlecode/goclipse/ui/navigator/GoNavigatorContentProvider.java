@@ -116,8 +116,7 @@ public class GoNavigatorContentProvider extends AbstractNavigatorContentProvider
 	
 	@Override
 	protected void addBuildTargetsContainer(IProject project, ArrayList2<Object> projectChildren) {
-		// Temporarily disabled
-		//super.addBuildTargetsContainer(project, projectChildren);
+		super.addBuildTargetsContainer(project, projectChildren);
 	}
 	
 	@Override

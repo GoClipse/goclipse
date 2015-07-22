@@ -10,30 +10,29 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.properties;
 
-import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
-
 import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
+
+import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
+import melnorme.lang.ide.ui.preferences.LangProjectOptionsBlock;
 
 public class GoProjectBuildOptionsPage extends AbstractProjectPropertyPage {
 	
-	protected final GoProjectOptionsBlock prjBuildOptionsBlock = new GoProjectOptionsBlock();
-	
 	@Override
-	protected Control createContents(Composite parent, IProject project) {
-		prjBuildOptionsBlock.initializeFrom(getProject());
-		return prjBuildOptionsBlock.createComponent(parent);
+	protected LangProjectOptionsBlock createProjectOptionsComponent(IProject project) {
+		return new GoProjectOptionsBlock(project);
 	}
 	
-	@Override
-	public boolean performOk() {
-		return prjBuildOptionsBlock.performOk();
-	}
-	
-	@Override
-	protected void performDefaults() {
-		prjBuildOptionsBlock.restoreDefaults();
+	public class GoProjectOptionsBlock extends LangProjectOptionsBlock {
+		
+		public GoProjectOptionsBlock(IProject project) {
+			super(project);
+		}
+		
+		@Override
+		protected String init_getArgumentsField_Label() {
+			return "Arguments for 'go build'";
+		}
+		
 	}
 	
 }

@@ -43,7 +43,9 @@ public class GoBundleModelManager extends BundleModelManager<AbstractBundleInfo,
 		return new AbstractBundleInfo() {
 			
 			protected final ArrayList2<BuildConfiguration> DEFAULT_BUILD_CONFIGs = ArrayList2.create(
-				new BuildConfiguration("./...", null)
+				new BuildConfiguration("#build", null),
+				new BuildConfiguration("#install", null),
+				new BuildConfiguration("#test", null)
 			);
 			
 			@Override

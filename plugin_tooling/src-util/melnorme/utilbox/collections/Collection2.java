@@ -10,6 +10,10 @@
  *******************************************************************************/
 package melnorme.utilbox.collections;
 
+import java.util.function.Function;
+
+import melnorme.utilbox.misc.CollectionUtil;
+
 /**
  * An {@link Iterable} with size information.
  */
@@ -25,5 +29,10 @@ public interface Collection2<E> extends Iterable<E> {
 	 * WARNING: This operation is only safe if: 
 	 * - The bound T is a supertype of E, and the returned collection is used only for reading. */
 	public <T> Collection2<T> upcastTypeParameter();
+	
+	
+	public default <R> ArrayList2<R> map(Function<? super E, ? extends R> evalFunction) {
+		return CollectionUtil.map(this, evalFunction);
+	}
 	
 }

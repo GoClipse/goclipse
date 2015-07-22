@@ -74,6 +74,10 @@ public abstract class FieldComponent<VALUE> extends AbstractComponent
 		domainField.setFieldValue(newValue);
 	}
 	
+	public void fireFieldValueChanged() {
+		domainField.fireFieldValueChanged();
+	}
+	
 	@Override
 	public void addValueChangedListener(IFieldValueListener listener) {
 		domainField.addValueChangedListener(listener);

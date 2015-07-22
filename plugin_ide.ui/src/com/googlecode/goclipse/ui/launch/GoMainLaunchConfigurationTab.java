@@ -67,7 +67,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected ProjectRelativePathField createProgramPathField() {
+	protected ProjectRelativePathField init_createProgramPathField() {
 		return new MainLaunchTab_ProgramPathField() {
 			@Override
 			protected CheckBoxField createUseDefaultField(String enablementCheckBoxLabel) {

@@ -2,6 +2,11 @@
 
 ### (NextVersion)
  * Fixed: Arguments field in launch configuration is not multi-line.
+ * Added support for Build Configurations.
+   * Available build targets are displayed in the Project Explorer. 
+   You can configure which targets are enabled for a workspace build or not. Or run/debug a specific target.
+   * Default build targets for Go are: `build`, `install`, `test`.
+   * Project Build Configuration property page update to configure build targets.
  
 
 ### 0.11.2

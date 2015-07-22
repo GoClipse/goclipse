@@ -22,12 +22,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.core.GoProjectPrefConstants;
 import com.googlecode.goclipse.tooling.GoBuildOutputProcessor;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -65,7 +65,13 @@ public class GoBuildManager extends BuildManager {
 		Location goPackageFile = goEnv.getBinFileForGoPackage(loc(project.getLocation()), goPackage);
 		
 		BuildConfiguration buildConfig = new BuildConfiguration(targetName, goPackageFile.toPath());
-		return createBuildTarget(targetName, buildConfig, false);
+		return createBuildTarget(targetName, buildConfig, false, "");
+	}
+	
+	@Override
+	public String getDefaultBuildOptions(String targetName) {
+		/* FIXME: todo according to targetName*/
+		return "install -v -gcflags \"-N -l\" ./...";
 	}
 	
 	@Override
@@ -75,8 +81,6 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	/* -----------------  ----------------- */
-	
-	/* FIXME: to do build according to BuildTarget/GoPackage */
 	
 	protected class GoBuildTargetOperation extends CommonBuildTargetOperation {
 		
@@ -128,8 +132,8 @@ public class GoBuildManager extends BuildManager {
 		
 		protected ProcessBuilder createBuildPB() throws CoreException, CommonException {
 			ArrayList2<String> goBuildCmdLine = getGoToolCommandLine();
-			goBuildCmdLine.addElements();
-			goBuildCmdLine.addElements(GoProjectPrefConstants.GO_BUILD_OPTIONS.getParsedArguments(project));
+			goBuildCmdLine.addElements(
+				LaunchUtils.getParsedArguments(buildTarget.getBuildOptions()));
 			
 			return goEnv.createProcessBuilder(goBuildCmdLine, sourceRootDir);
 		}
