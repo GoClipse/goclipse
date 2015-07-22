@@ -10,17 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ComboOptionsField;
-import melnorme.utilbox.misc.ArrayUtil;
 
 /**
  * Field for a program path relative to Eclipse project.
@@ -54,23 +49,6 @@ public class BuildTargetField extends ComboOptionsField {
 	@Override
 	protected void createContents_Label(Composite parent) {
 		// Do not create
-	}
-	
-	/* ----------------- binding ----------------- */
-	
-	public void handleProjectChanged(IProject project) {
-		if(project == null) {
-			return;
-		}
-		ProjectBuildInfo buildInfo = LangCore.getBuildManager().getBuildInfo(project);
-		if(buildInfo == null) {
-			return;
-		}
-		
-		String[] comboItems = ArrayUtil.map(buildInfo.getBuildTargets(), 
-			(BuildTarget buildTarget) -> buildTarget.getTargetName(), String.class);
-		
-		setFieldOptions(comboItems);
 	}
 	
 }

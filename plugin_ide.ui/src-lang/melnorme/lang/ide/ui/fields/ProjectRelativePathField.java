@@ -28,9 +28,9 @@ public abstract class ProjectRelativePathField extends EnablementButtonTextField
 	
 	protected final ICallable<IProject, StatusException> projectGetter;
 	
-	public ProjectRelativePathField(String labelText, String enablementCheckBoxLabel, 
+	public ProjectRelativePathField(String labelText, String useDefaultField_Label, 
 			ICallable<IProject, StatusException> projectGetter) {
-		super(labelText, enablementCheckBoxLabel, LangUIMessages.LaunchTab_ProgramPathField__searchButton);
+		super(labelText, useDefaultField_Label, LangUIMessages.LaunchTab_ProgramPathField__searchButton);
 		this.projectGetter = assertNotNull(projectGetter);
 	}
 	

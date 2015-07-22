@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui.launch;
 
 import java.nio.file.Path;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -22,15 +21,19 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangNature;
-import melnorme.lang.ide.core.launch.ProjectBuildExecutableFileValidator;
+import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator;
+import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator.ProjectBuildExecutableSettings;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 
 /**
@@ -42,27 +45,17 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	protected final ProjectRelativePathField programPathField = createProgramPathField();
 	
 	public MainLaunchConfigurationTab() {
-		initBindings();
+		this(false);
+	}
+	
+	public MainLaunchConfigurationTab(boolean initialize) {
+		if(initialize) {
+			initBindings();
+		}
 	}
 	
 	protected ProjectRelativePathField createProgramPathField() {
-		return new ProjectRelativePathField(
-			LangUIMessages.LaunchTab_ProgramPathField_title,
-			LangUIMessages.LaunchTab_ProgramPathField_useDefault,
-			this::validateProject) {
-			
-			@Override
-			protected String getDefaultFieldValue() throws CommonException {
-				try {
-					BuildTarget buildTarget = getValidatedBuildTarget();
-					Path artifactPath = buildTarget.getBuildConfig().getArtifactPath();
-					return artifactPath == null ? "" : artifactPath.toString();
-				} catch(CoreException e) {
-					throw new CommonException(e.getMessage(), e.getCause());
-				}
-			}
-			
-		};
+		return new MainLaunchTab_ProgramPathField();
 	}
 	
 	protected String getProgramPathString() {
@@ -75,6 +68,26 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	protected boolean isDefaultProgramPath() {
 		return programPathField.isUseDefault();
+	}
+	
+	protected class MainLaunchTab_ProgramPathField extends ProjectRelativePathField {
+		public MainLaunchTab_ProgramPathField() {
+			super(
+				LangUIMessages.LaunchTab_ProgramPathField_title, 
+				LangUIMessages.LaunchTab_ProgramPathField_useDefault, 
+				MainLaunchConfigurationTab.this::validateProject);
+		}
+		
+		@Override
+		protected String getDefaultFieldValue() {
+			try {
+				BuildTarget buildTarget = getValidatedBuildTarget();
+				Path artifactPath = buildTarget.getBuildConfig().getArtifactPath();
+				return artifactPath == null ? "" : artifactPath.toString();
+			} catch(CoreException | CommonException e) {
+				return null;
+			}
+		}
 	}
 	
 	/* ---------- validation ---------- */
@@ -92,14 +105,13 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		return getValidator().getValidExecutableFileLocation();
 	}
 	
-	protected MainLaunchTab_ExecutableFileValidator getValidator() {
+	protected ProjectBuildArtifactValidator getValidator() {
 		return new MainLaunchTab_ExecutableFileValidator();
 	}
 	
-	protected class MainLaunchTab_ExecutableFileValidator extends ProjectBuildExecutableFileValidator {
-		@Override
-		protected String getProject_Attribute() throws CoreException {
-			return getProjectName();
+	protected class MainLaunchTab_ExecutableFileValidator extends ProjectBuildArtifactValidator {
+		public MainLaunchTab_ExecutableFileValidator() {
+			super(new MainLaunchTab_ProjectBuildExecutableSettings());
 		}
 		
 		@Override
@@ -107,13 +119,21 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 			return new ProjectValidator(LangNature.NATURE_ID);
 		}
 		
+	}
+	
+	public class MainLaunchTab_ProjectBuildExecutableSettings implements ProjectBuildExecutableSettings {
 		@Override
-		protected String getExecutablePath_Attribute() throws CoreException {
+		public String getProject_Attribute() throws CoreException {
+			return getProjectName();
+		}
+		
+		@Override
+		public String getExecutablePath_Attribute() throws CoreException {
 			return getProgramPathString();
 		}
 		
 		@Override
-		protected String getBuildTarget_Attribute() throws CoreException {
+		public String getBuildTarget_Attribute() throws CoreException {
 			return getBuildTargetName();
 		}
 	}
@@ -136,7 +156,17 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	public void projectFieldChanged() {
 		IProject project = getValidProjectOrNull();
-		buildTargetField.handleProjectChanged(project);
+		if(project != null) {
+			ProjectBuildInfo buildInfo = LangCore.getBuildManager().getBuildInfo(project);
+			if(buildInfo != null) {
+				
+				String[] comboItems = ArrayUtil.map(buildInfo.getBuildTargets(), 
+					(BuildTarget buildTarget) -> buildTarget.getTargetName(), String.class);
+				
+				buildTargetField.setFieldOptions(comboItems);
+			}
+		}
+		
 		updateLaunchConfigurationDialog();
 	}
 	
@@ -155,10 +185,9 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	protected void programPathField_setDefaults(IResource contextualResource, ILaunchConfigurationWorkingCopy config) {
-		if(contextualResource instanceof IFile) {
-			IFile file = (IFile) contextualResource;
-			String programPath = file.getProjectRelativePath().toString();
-			config.setAttribute(LaunchConstants.ATTR_PROGRAM_PATH, programPath);
+		if(contextualResource instanceof IResource) {
+			IResource resource = (IResource) contextualResource;
+			config.setAttribute(LaunchConstants.ATTR_PROJECT_NAME, resource.getProject().getName());
 		}
 	}
 	

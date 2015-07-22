@@ -24,14 +24,18 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 	protected final CheckBoxField useDefaultField;
 	protected final boolean createUseDefaultField;
 	
-	public EnablementButtonTextField(String labelText, String enablementCheckBoxLabel, String buttonlabel) {
+	public EnablementButtonTextField(String labelText, String useDefaultField_Label, String buttonlabel) {
 		super(labelText, buttonlabel);
 		
-		this.useDefaultField = new CheckBoxField(enablementCheckBoxLabel);
-		this.createUseDefaultField = enablementCheckBoxLabel != null;
+		this.useDefaultField = createUseDefaultField(useDefaultField_Label);
+		this.createUseDefaultField = useDefaultField_Label != null;
 		useDefaultField.setFieldValue(createUseDefaultField);
 		
 		useDefaultField.addValueChangedListener(this::updateDefaultFieldValue);
+	}
+	
+	protected CheckBoxField createUseDefaultField(String enablementCheckBoxLabel) {
+		return new CheckBoxField(enablementCheckBoxLabel);
 	}
 	
 	public CheckBoxField getUseDefaultField() {
