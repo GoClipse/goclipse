@@ -11,16 +11,8 @@
 	</extension>
 	
 	<extension point="org.eclipse.core.expressions.definitions">
-		<definition id="LANG_PROJECT_ID.ide.core.expressions.isLangProject">
+		<definition id="LANG_PROJECT_ID.ide.core.expressions.isNatureProject">
 			<adapt type="org.eclipse.core.resources.IProject">
-				<test
-					property="org.eclipse.core.resources.projectNature"
-					value="LANG_PROJECT_ID.ide.core.nature">
-				</test>
-			</adapt>
-		</definition>
-		<definition id="LANG_PROJECT_ID.ide.core.expressions.isLangNatureContainer">
-			<adapt type="org.eclipse.core.resources.IContainer">
 				<test
 					property="org.eclipse.core.resources.projectNature"
 					value="LANG_PROJECT_ID.ide.core.nature">

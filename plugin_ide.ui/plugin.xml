@@ -265,6 +265,17 @@
 	</extension>
 	
 	
+	<extension point="org.eclipse.ui.propertyPages">
+		<page
+			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_BuildConfigurationPropertyPage"
+			id="LANG_PROJECT_ID.ide.ui.properties.BuildConfigurationPage"
+			name="%LangBuildOptionsPropertyPage.name">
+			<enabledWhen> 
+				<reference definitionId="LANG_PROJECT_ID.ide.core.expressions.isNatureProject" />
+			</enabledWhen>
+		</page>
+	</extension>
+	
 	<!-- ============ Wizards ============= -->
 	
 	<extension point="org.eclipse.ui.newWizards">
