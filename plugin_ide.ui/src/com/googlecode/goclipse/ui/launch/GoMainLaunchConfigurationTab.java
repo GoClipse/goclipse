@@ -11,79 +11,100 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
 
-import java.nio.file.Path;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.util.swt.components.fields.CheckBoxField;
+import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.StringUtil;
 
-public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
+/**
+ * Go Launch config tab uses the BuildTarget field in a different way.
+ * In Go, the available targets are not predetermined by the Build model,
+ * rather the user can specify its own Go Package path as a build target. 
+ */
+public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
-	public GoLaunchConfigurationTab() {
+	protected final ButtonTextField goPackageField = createGoPackageField();
+	
+	public GoMainLaunchConfigurationTab() {
+		super(false);
+		initBindings();
 	}
 	
-	@Override
-	protected ProjectRelativePathField createProgramPathField() {
-		return new ProjectRelativePathField(
-			"Go main package (path relative to project)",
-			LangUIMessages.LaunchTab_ProgramPathField_useDefault,
-			this::validateProject) {
-			
+	protected ButtonTextField createGoPackageField() {
+		return new EnablementButtonTextField("Go package to build:", null, "Select...") {
 			@Override
 			protected String getDefaultFieldValue() throws CommonException {
-				try {
-					BuildTarget buildTarget = getValidatedBuildTarget();
-					Path artifactPath = buildTarget.getBuildConfig().getArtifactPath();
-					return artifactPath == null ? "" : artifactPath.toString();
-				} catch(CoreException e) {
-					throw new CommonException(e.getMessage(), e.getCause());
-				}
+				return null;
 			}
 			
 			@Override
-			protected void handleButtonSelected() {
-				try {
-					GoLaunchConfigurationTab.this.openProgramPathDialog(projectGetter.call());
-				} catch(StatusException se) {
-					UIOperationExceptionHandler.handleStatusMessage(LangUIMessages.error_CannotBrowse, se);
-				}
+			protected String getNewValueFromButtonSelection() throws StatusException {
+				return GoMainLaunchConfigurationTab.this.openProgramPathDialog(validateProject());
 			}
 			
 		};
 	}
 	
 	@Override
-	protected void programPathField_setDefaults(IResource contextualResource, ILaunchConfigurationWorkingCopy config) {
-		// TODO: figure out defaults for this field
+	protected ProjectRelativePathField createProgramPathField() {
+		return new MainLaunchTab_ProgramPathField() {
+			@Override
+			protected CheckBoxField createUseDefaultField(String enablementCheckBoxLabel) {
+				return super.createUseDefaultField("Use default:");
+			}
+		};
 	}
 	
 	@Override
-	protected MainLaunchTab_ExecutableFileValidator getValidator() {
-		/*FIXME: BUG here use GoLaunchConfigurationValidator*/
-		return super.getValidator();
+	protected void createCustomControls(Composite parent) {
+		goPackageField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
+//		buildTargetField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
+		programPathField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
 	}
 	
-	protected void openProgramPathDialog(IProject project) {
+	@Override
+	protected void initBindings() {
+		super.initBindings();
+		goPackageField.addValueChangedListener(this::buildTargetFieldChanged);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void initializeFrom(ILaunchConfiguration config) {
+		super.initializeFrom(config);
+		goPackageField.setFieldValue(getConfigAttribute(config, LaunchConstants.ATTR_BUILD_TARGET, ""));
+	}
+	
+	@Override
+	protected String getBuildTargetName() {
+		return goPackageField.getFieldValue();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected String openProgramPathDialog(IProject project) {
 		// TODO: this should be refactored to show only main packages
 		
 		try {
@@ -105,27 +126,13 @@ public class GoLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			
 			if (dialog.open() == IDialogConstants.OK_ID) {
 				GoPackageName goPackageName = (GoPackageName) dialog.getFirstResult();
-				String packageResourcePath = goPackageName.getFullNameAsString();
-				
-				if(!GoProjectEnvironment.isProjectInsideGoPath(project, goEnv.getGoPath())) {
-					packageResourcePath = "src/" + packageResourcePath;
-				} else {
-					Location projectLocation = Location.create_fromValid(project.getLocation().toFile().toPath());
-					GoPackageName projectGoPackage = 
-							goEnv.getGoPath().findGoPackageForSourceFile(projectLocation.resolve_valid("dummy.go"));
-					
-					// snip project base name.
-					packageResourcePath = StringUtil.segmentAfterMatch(packageResourcePath, 
-						projectGoPackage.getFullNameAsString() + "/");
-					
-				}
-				// check extension
-				programPathField.setFieldValue(packageResourcePath);
+				return goPackageName.getFullNameAsString();
 			}
 			
 		} catch (CoreException ce) {
 			UIOperationExceptionHandler.handleOperationStatus("Error selecting package from dialog: ", ce);
 		}
+		return null;
 	}
 	
 }

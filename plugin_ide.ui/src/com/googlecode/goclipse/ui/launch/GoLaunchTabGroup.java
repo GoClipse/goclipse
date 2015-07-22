@@ -32,7 +32,7 @@ public class GoLaunchTabGroup extends AbstractLangTabGroup {
 	
 	@Override
 	protected ILaunchConfigurationTab createMainLaunchConfigTab() {
-		return new GoLaunchConfigurationTab();
+		return new GoMainLaunchConfigurationTab();
 	}
 	
 }

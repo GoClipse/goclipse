@@ -19,7 +19,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
 
-import com.googlecode.goclipse.ui.launch.GoLaunchConfigurationTab;
+import com.googlecode.goclipse.ui.launch.GoMainLaunchConfigurationTab;
 
 public class GoDebugTabGroup extends AbstractLangDebugTabGroup {
 	
@@ -37,7 +37,7 @@ public class GoDebugTabGroup extends AbstractLangDebugTabGroup {
 	
 	@Override
 	protected ILaunchConfigurationTab createMainLaunchConfigTab() {
-		return new GoLaunchConfigurationTab();
+		return new GoMainLaunchConfigurationTab();
 	}
 	
 }

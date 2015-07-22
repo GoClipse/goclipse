@@ -13,6 +13,7 @@ package com.googlecode.goclipse.tooling.env;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -86,14 +87,81 @@ public class GoEnvironment {
 		return goPath.getGoPathWorkspaceString();
 	}
 	
-	public GoPackageName findGoPackageForSourceModule(Location goModuleLoc) throws CommonException {
-		GoPackageName goPackage = goRoot.findGoPackageForSourceModule(goModuleLoc);
+	
+	/* ----------------- validation: TODO could use cleanup ----------------- */
+	
+	public boolean isValid() {
+		if (isNullOrEmpty(goRoot.asString())) {
+			return false;
+		}
+		return true;
+	}
+	
+	public void validate() throws CommonException {
+		if(!isValid()) {
+			// TODO: more specific validation messages.
+			throw new CommonException("Go Environment settings are not valid");
+		}
+	}
+	
+	public static boolean isNullOrEmpty(String string) {
+		return string == null || string.isEmpty();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public GoPackageName findGoPackageForSourceFile(Location goSourceFileLoc) throws CommonException {
+		GoPackageName goPackage = goRoot.findGoPackageForSourceModule(goSourceFileLoc);
 		if(goPackage != null) {
 			return goPackage;
 		}
 		
-		return goPath.findGoPackageForSourceFile(goModuleLoc);
+		return goPath.findGoPackageForSourceFile(goSourceFileLoc);
 	}
+	
+	protected static GoPackageName getGoPackageForSourceFile(Location goSourceFileLoc, Location sourceRoot) {
+		if(!goSourceFileLoc.startsWith(sourceRoot)) {
+			return null;
+		}
+		Path sourceFilePath = sourceRoot.relativize(goSourceFileLoc);
+		return GoPackageName.fromPath(sourceFilePath.getParent()); // Discard file name
+	}
+	
+	public Location getBinFileForGoPackage(Location goPathSubLocation, String goPackageString) throws CommonException {
+		GoPackageName goPackage = GoPackageName.createValid(goPackageString);
+		return getBinFileForGoPackage(goPathSubLocation, goPackage);
+	}
+	
+	public Location getBinFileForGoPackage(Location goPathSubLocation, GoPackageName goPackage) 
+			throws CommonException {
+		Location goPathEntry = getGoPath().findGoPathEntry(goPathSubLocation);
+		
+		if(goPathEntry == null) {
+			throw new CommonException(
+				MessageFormat.format("Could not find path `{0}` in a GOPATH entry: ", goPathSubLocation));
+		} else {
+			Location binPath = goPathEntry.resolve_fromValid("bin").resolve(
+				goPackage.getLastSegment());
+			
+			return Location.create(binPath.toString() + ProcessUtils.getExecutableSuffix());
+		}
+	}
+	
+	protected String getGoOS_GoArch_segment() throws CommonException {
+		return getGoOs().asString() + "_" + getGoArch().asString();
+	}
+	
+	protected Path getGoOSGoArchSegmentPath() throws CommonException {
+		return PathUtil.createPath(getGoOS_GoArch_segment(), "Invalid GOOS-GOARCH: ");
+	}
+	
+	public Location getGoRootToolsDir() throws CommonException {
+		Path subPath = getGoOSGoArchSegmentPath();
+		return goRoot.asLocation().resolve_fromValid("pkg/tool/").resolve(subPath);
+	}
+	
+	
+	/* -----------------  process builder  ----------------- */
 	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine) throws CommonException {
 		return createProcessBuilder(commandLine, null);
@@ -131,43 +199,6 @@ public class GoEnvironment {
 		if(value != null) {
 			env.put(key, value);
 		}
-	}
-	
-	/* -----------------  ----------------- */
-	
-	protected String getGoOS_GoArch_segment() throws CommonException {
-		return getGoOs().asString() + "_" + getGoArch().asString();
-	}
-	
-	public Location getGoRootToolsDir() throws CommonException {
-		Path subPath = PathUtil.createPath(getGoOS_GoArch_segment(), "Invalid GOOS-GOARCH: ");
-		return goRoot.asLocation().resolve_fromValid("pkg/tool/").resolve(subPath);
-	}
-	
-	protected static GoPackageName getGoPackageForSourceFile(Location sourceFileLoc, Location sourceRoot) {
-		if(!sourceFileLoc.startsWith(sourceRoot)) {
-			return null;
-		}
-		Path sourceFilePath = sourceRoot.relativize(sourceFileLoc);
-		return GoPackageName.fromPath(sourceFilePath.getParent()); // Discard file name
-	}
-	
-	public boolean isValid() {
-		if (isNullOrEmpty(goRoot.asString())) {
-			return false;
-		}
-		return true;
-	}
-	
-	public void validate() throws CommonException {
-		if(!isValid()) {
-			// TODO: more specific validation messages.
-			throw new CommonException("Go Environment settings are not valid");
-		}
-	}
-	
-	public static boolean isNullOrEmpty(String string) {
-		return string == null || string.isEmpty();
 	}
 	
 }

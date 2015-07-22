@@ -15,8 +15,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.util.HashSet;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.PathUtil;
 
 import org.junit.Test;
 
@@ -30,6 +32,23 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 	
 	public static GoPackageName gopackage(String pathString) {
 		return GoPackageName.fromPath(MiscUtil.createPathOrNull(pathString));
+	}
+	
+	@Test
+	public void test_GoPackageName() throws Exception { test_GoPackageName$(); }
+	public void test_GoPackageName$() throws Exception {
+		GoPackageName.createValid("foo/bar");
+		GoPackageName.createValid("foo/bar.asdf");
+		GoPackageName.createValid("foo/bar..asdf");
+		GoPackageName.createValid("foo/bar...asdf");
+		
+		if(MiscUtil.OS_IS_WINDOWS) {
+			assertEquals(GoPackageName.createValid("foo\\bar").toString(), "foo/bar");
+		}
+		
+		verifyThrows(() -> GoPackageName.createValid("foo/.."), CommonException.class);
+		verifyThrows(() -> GoPackageName.createValid("./foo"), CommonException.class);
+		verifyThrows(() -> GoPackageName.createValid(""), CommonException.class);
 	}
 	
 	@Test
@@ -62,15 +81,15 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 		
 		GoEnvironment goEnv = SAMPLE_GOEnv_1;
 		
-		assertAreEqual(goEnv.getGoOS_GoArch_segment(), "windows_386");
+		assertAreEqual(goEnv.getGoOSGoArchSegmentPath(), PathUtil.createPath("windows_386"));
 		
 		Location goRootSrc = goEnv.getGoRoot_Location().resolve_valid("src");
 		
-		assertAreEqual(goEnv.findGoPackageForSourceModule(goRootSrc.resolve_valid("pack/m.go")), 
+		assertAreEqual(goEnv.findGoPackageForSourceFile(goRootSrc.resolve_valid("pack/m.go")), 
 			gopackage("pack"));
-		assertAreEqual(goEnv.findGoPackageForSourceModule(goRootSrc.resolve_valid("pack/foo/m.go")), 
+		assertAreEqual(goEnv.findGoPackageForSourceFile(goRootSrc.resolve_valid("pack/foo/m.go")), 
 			gopackage("pack/foo"));
-		assertAreEqual(goEnv.findGoPackageForSourceModule(goRootSrc.resolve_valid("../foo/m.go")), 
+		assertAreEqual(goEnv.findGoPackageForSourceFile(goRootSrc.resolve_valid("../foo/m.go")), 
 			null);
 	}
 	

@@ -71,14 +71,14 @@ public class GoPath {
 	}
 	
 	/** @return the full path of a GOPATH workspace entry (a workspace root) that contains the given path. */
-	public Location findGoPathEntry(Location path) {
-		if(path == null) {
+	public Location findGoPathEntry(Location goPathSubLocation) {
+		if(goPathSubLocation == null) {
 			return null;
 		}
 		for (String pathElement : goPathElements) {
 			Location pathElementLoc = Location.createValidOrNull(PathUtil.createPathOrNull(pathElement));
 			
-			if(pathElementLoc != null && path.startsWith(pathElementLoc)) {
+			if(pathElementLoc != null && goPathSubLocation.startsWith(pathElementLoc)) {
 				return pathElementLoc;
 			}
 		}

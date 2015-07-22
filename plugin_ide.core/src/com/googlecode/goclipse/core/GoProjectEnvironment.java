@@ -12,17 +12,8 @@ package com.googlecode.goclipse.core;
 
 import java.util.Collection;
 
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.core.utils.prefs.StringPreference;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
-
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoArch;
@@ -31,6 +22,12 @@ import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
 import com.googlecode.goclipse.tooling.env.GoOs;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
+
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
@@ -120,32 +117,6 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	public static Collection<GoPackageName> getSourcePackages(IProject project, GoEnvironment goEnvironment)
 			throws CoreException {
 		return goEnvironment.getGoPath().findSourcePackages(ResourceUtils.getProjectLocation(project));
-	}
-	
-	/* ----------------- ----------------- */
-	
-	@SuppressWarnings("unused") 
-	public static boolean isSourceModule(IProject prj, IPath programRelativePath) {
-		return Path.fromOSString("src").isPrefixOf(programRelativePath);
-	}
-	
-	public static IPath getBinFolder(IProject project) {
-		return project.getLocation().append("bin");
-	}
-	
-	public static IPath getPkgFolder(IProject project) {
-		return project.getLocation().append("pkg");
-	}
-	
-	public static IPath getBinFolder(Location goWorkspaceEntry) {
-		return Path.fromOSString(goWorkspaceEntry.resolve_valid("bin").toString());
-	}
-	
-	public static IContainer getSourceFolderRoot(IProject project) throws CoreException {
-		if(isProjectInsideGoPath(project)) {
-			return project;
-		}
-		return project.getFolder("src");
 	}
 	
 }

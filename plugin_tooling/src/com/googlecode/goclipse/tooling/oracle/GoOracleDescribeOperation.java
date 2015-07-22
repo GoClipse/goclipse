@@ -31,7 +31,7 @@ public class GoOracleDescribeOperation extends ToolOutputParseHelper {
 	
 	public ProcessBuilder createProcessBuilder(GoEnvironment goEnv, Location fileLoc, int offset) 
 			throws CommonException {
-		GoPackageName goPackage = goEnv.findGoPackageForSourceModule(fileLoc);
+		GoPackageName goPackage = goEnv.findGoPackageForSourceFile(fileLoc);
 		if(goPackage == null) {
 			throw new CommonException(MessageFormat.format(
 				"Could not determine Go package for Go file ({0}), file not in the Go environment.", fileLoc), 

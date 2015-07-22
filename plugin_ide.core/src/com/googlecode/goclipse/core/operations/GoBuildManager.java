@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
+import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
+
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -32,7 +34,9 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
+import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
@@ -48,12 +52,31 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	@Override
+	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) throws CommonException {
+		BuildTarget buildTarget = super.getBuildTargetFor(projectBuildInfo, targetName);
+		if(buildTarget != null) {
+			return buildTarget;
+		}
+		
+		IProject project = projectBuildInfo.getProject();
+		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
+		
+		GoPackageName goPackage = GoPackageName.createValid(targetName);
+		Location goPackageFile = goEnv.getBinFileForGoPackage(loc(project.getLocation()), goPackage);
+		
+		BuildConfiguration buildConfig = new BuildConfiguration(targetName, goPackageFile.toPath());
+		return createBuildTarget(targetName, buildConfig, false);
+	}
+	
+	@Override
 	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo, IProject project,
 			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
 		return new GoBuildTargetOperation(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 	}
 	
 	/* -----------------  ----------------- */
+	
+	/* FIXME: to do build according to BuildTarget/GoPackage */
 	
 	protected class GoBuildTargetOperation extends CommonBuildTargetOperation {
 		
