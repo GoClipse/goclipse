@@ -29,7 +29,7 @@ public abstract class LabelledFieldComponent<VALUE> extends FieldComponent<VALUE
 	
 	public static enum Option_AllowNull { YES, NO ; public boolean isTrue() { return this == YES; } };
 	
-	protected final String labelText;
+	protected String labelText;
 	
 	protected Label label; // Optional component! May be null even after creation
 	

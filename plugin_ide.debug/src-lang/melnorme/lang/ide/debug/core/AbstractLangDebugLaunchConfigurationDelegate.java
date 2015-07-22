@@ -79,12 +79,12 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 
 		// Setup CDT config parameters
 		
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME, 
+		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME,
 			launchInfo.programFileLocation.toString());
 		// Need to pass raw args, because CDT will reevaluate variables.
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, 
-			validator.getProgramArguments_Attribute());
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, 
+		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
+			validator.settings.getProgramArguments_Attribute());
+		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
 			launchInfo.workingDir.toString());
 		
 		// Note, environment is already setup, because it uses standard attributes:

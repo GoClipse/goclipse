@@ -93,6 +93,18 @@ public abstract class BuildManager {
 		return buildModel;
 	}
 	
+	public static class BuildModel extends ProjectBasedModel<ProjectBuildInfo> {
+		
+		public BuildModel() {
+		}
+		
+		@Override
+		protected SimpleLogger getLog() {
+			return BuildManager.log;
+		}
+		
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public ProjectBuildInfo getBuildInfo(IProject project) {
@@ -106,48 +118,6 @@ public abstract class BuildManager {
 		}
 		return buildInfo;
 	}
-	
-	public static class BuildModel extends ProjectBasedModel<ProjectBuildInfo> {
-		
-		public BuildModel() {
-		}
-		
-		@Override
-		protected SimpleLogger getLog() {
-			return BuildManager.log;
-		}
-		
-	}
-	
-	public BuildTarget createBuildTarget(String targetName, BuildConfiguration buildConfig, boolean enabled) {
-		return new BuildTarget(targetName, buildConfig, enabled);
-	}
-	
-	
-	public IBuildTargetOperation newProjectBuildOperation(IProject project, boolean fullBuild) throws CommonException {
-		OperationInfo parentOpInfo = new OperationInfo(project, true, "");
-		return newProjectBuildOperation(project, parentOpInfo, fullBuild);
-	}
-	
-	public IBuildTargetOperation newProjectBuildOperation(IProject project, OperationInfo parentOpInfo,
-			boolean fullBuild) throws CommonException {
-		return new BuildOperationCreator(project, parentOpInfo, fullBuild).newProjectBuildOperation();
-	}
-	
-	public IBuildTargetOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
-			throws CommonException {
-		return newBuildTargetOperation(project, ArrayList2.create(buildTarget));
-	}
-	
-	public IBuildTargetOperation newBuildTargetOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
-			throws CommonException {
-		OperationInfo parentOpInfo = new OperationInfo(project, true, "");
-		return new BuildOperationCreator(project, parentOpInfo, false).newProjectBuildOperation(targetsToBuild);
-	}
-	
-	public abstract CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo, 
-			IProject project, Path buildToolPath, BuildTarget buildTarget, boolean fullBuild);
-	
 	
 	/* -----------------  ----------------- */
 	
@@ -202,7 +172,7 @@ public abstract class BuildManager {
 	}
 	
 	protected boolean getIsEnabled(ProjectBuildInfo currentBuildInfo, boolean isFirstConfig, String name) {
-		BuildTarget oldBuildTarget = currentBuildInfo == null ? null : currentBuildInfo.getBuildTarget(name);
+		BuildTarget oldBuildTarget = currentBuildInfo == null ? null : currentBuildInfo.getDefinedBuildTarget(name);
 		return oldBuildTarget == null ? isFirstConfig : oldBuildTarget.isEnabled();
 	}
 	
@@ -223,7 +193,42 @@ public abstract class BuildManager {
 		return newProjectBuildInfo;
 	}
 	
-	/* -----------------  persistence  ----------------- */
+	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) throws CommonException {
+		return projectBuildInfo.getDefinedBuildTarget(targetName);
+	}
+	
+	public BuildTarget createBuildTarget(String targetName, BuildConfiguration buildConfig, boolean enabled) {
+		return new BuildTarget(targetName, buildConfig, enabled);
+	}
+	
+	/* ----------------- Build operations ----------------- */
+	
+	public IBuildTargetOperation newProjectBuildOperation(IProject project, boolean fullBuild) throws CommonException {
+		OperationInfo parentOpInfo = new OperationInfo(project, true, "");
+		return newProjectBuildOperation(project, parentOpInfo, fullBuild);
+	}
+	
+	public IBuildTargetOperation newProjectBuildOperation(IProject project, OperationInfo parentOpInfo,
+			boolean fullBuild) throws CommonException {
+		return new BuildOperationCreator(project, parentOpInfo, fullBuild).newProjectBuildOperation();
+	}
+	
+	public IBuildTargetOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
+			throws CommonException {
+		return newBuildTargetOperation(project, ArrayList2.create(buildTarget));
+	}
+	
+	public IBuildTargetOperation newBuildTargetOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
+			throws CommonException {
+		OperationInfo parentOpInfo = new OperationInfo(project, true, "");
+		return new BuildOperationCreator(project, parentOpInfo, false).newProjectBuildOperation(targetsToBuild);
+	}
+	
+	public abstract CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo, 
+			IProject project, Path buildToolPath, BuildTarget buildTarget, boolean fullBuild);
+	
+	
+	/* -----------------  Persistence  ----------------- */
 	
 	protected static final StringPreference BUILD_TARGETS_PREF = new StringPreference("build_targets", "");
 	

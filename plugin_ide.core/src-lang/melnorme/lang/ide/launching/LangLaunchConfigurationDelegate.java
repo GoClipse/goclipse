@@ -33,6 +33,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
+import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator.ProcessLaunchInfoSettings;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -102,14 +103,14 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	}
 	
 	protected ProcessLaunchInfoValidator getLaunchValidator(ILaunchConfiguration config) {
-		return new LangLaunchConfigurationValidator(config);
+		return new ProcessLaunchInfoValidator(new LaunchConfigLaunchInfoSettings(config));
 	}
 	
-	public static class LangLaunchConfigurationValidator extends ProcessLaunchInfoValidator {
+	public static class LaunchConfigLaunchInfoSettings implements ProcessLaunchInfoSettings {
 		
 		protected final ILaunchConfiguration config;
 		
-		public LangLaunchConfigurationValidator(ILaunchConfiguration config) {
+		public LaunchConfigLaunchInfoSettings(ILaunchConfiguration config) {
 			this.config = config;
 		}
 		

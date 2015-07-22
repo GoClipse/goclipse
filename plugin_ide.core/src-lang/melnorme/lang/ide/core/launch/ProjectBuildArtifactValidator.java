@@ -26,21 +26,30 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
-public abstract class ProjectBuildExecutableFileValidator extends AbstractValidator2 {
+public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 	
-	public ProjectBuildExecutableFileValidator() {
-		super();
+	protected final ProjectBuildExecutableSettings settings;
+	
+	public ProjectBuildArtifactValidator(ProjectBuildExecutableSettings settings) {
+		this.settings = settings;
 	}
 	
-	protected abstract String getProject_Attribute() throws CoreException;
-	protected abstract String getExecutablePath_Attribute() throws CoreException;
-	protected abstract String getBuildTarget_Attribute() throws CoreException;
-
+	public static interface ProjectBuildExecutableSettings {
+		
+		public abstract String getProject_Attribute() throws CoreException;
+		public abstract String getExecutablePath_Attribute() throws CoreException;
+		public abstract String getBuildTarget_Attribute() throws CoreException;
+		
+	}
 	
 	/* -----------------  ----------------- */
 	
 	public IProject getProject() throws StatusException, CoreException {
-		return getProjectValidator().getProject(getProject_Attribute());
+		return getProject(settings.getProject_Attribute());
+	}
+	
+	public IProject getProject(String projectName) throws StatusException, CoreException {
+		return getProjectValidator().getProject(projectName);
 	}
 	
 	protected ProjectValidator getProjectValidator() {
@@ -49,16 +58,24 @@ public abstract class ProjectBuildExecutableFileValidator extends AbstractValida
 	
 	/* -----------------  ----------------- */
 	
-	public BuildTarget getBuildTarget() throws CoreException, CommonException {
-		return new BuildTargetValidator().getBuildTarget(getProject(), getBuildTarget_Attribute());
+	public BuildTargetValidator getBuildTargetValidator() {
+		return new BuildTargetValidator();
 	}
 	
+	public BuildTarget getBuildTarget() throws CoreException, CommonException {
+		return getBuildTargetValidator().getBuildTarget(getProject(), settings.getBuildTarget_Attribute());
+	}
+
 	public BuildTarget getBuildTarget_NonNull() throws CoreException, CommonException {
-		return new BuildTargetValidator().getBuildTarget_nonNull(getProject(), getBuildTarget_Attribute());
+		return getBuildTargetValidator().getBuildTarget_nonNull(getProject(), settings.getBuildTarget_Attribute());
 	}
 	
 	public Path getExecutableFilePath(BuildTarget buildTarget) throws CoreException, CommonException {
-		String exePathString = getExecutablePath_Attribute();
+		return getExecutableFilePath(buildTarget, settings.getExecutablePath_Attribute());
+	}
+	
+	public Path getExecutableFilePath(BuildTarget buildTarget, String exePathString)
+			throws CommonException, CoreException {
 		if(exePathString != null) {
 			return PathUtil.createPath(exePathString);
 		}
@@ -74,9 +91,7 @@ public abstract class ProjectBuildExecutableFileValidator extends AbstractValida
 		}
 	}
 	
-	public Location getExecutableFileLocation(BuildTarget buildTarget) throws CoreException, CommonException {
-		Path exePath = getExecutableFilePath(buildTarget);
-		
+	public Location toAbsolute(Path exePath) throws StatusException, CoreException {
 		if(exePath.isAbsolute()) {
 			return Location.fromAbsolutePath(exePath);
 		}
@@ -85,8 +100,8 @@ public abstract class ProjectBuildExecutableFileValidator extends AbstractValida
 	}
 	
 	public Location getValidExecutableFileLocation() throws CoreException, CommonException {
-		Location location = getExecutableFileLocation(getBuildTarget());
-		if(!location.toFile().isFile()) {
+		Location location = toAbsolute(getExecutableFilePath(getBuildTarget()));
+		if(location.toFile().exists() && !location.toFile().isFile()) {
 			error(ValidationMessages.Location_NotAFile(location));
 		}
 		return location;

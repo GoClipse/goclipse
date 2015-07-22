@@ -48,7 +48,7 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 		setComboItems(items.toArray(String.class));
 	}
 	
-	protected void setFieldOptions(String... items) {
+	public void setFieldOptions(String... items) {
 		this.comboOptions = items;
 		 //This will force the value to only the possible options
 		String fieldValue = getEffectiveValue(getFieldValue());

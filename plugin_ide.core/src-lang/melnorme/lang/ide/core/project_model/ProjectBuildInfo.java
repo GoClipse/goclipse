@@ -51,8 +51,15 @@ public class ProjectBuildInfo {
 		return buildTargets.getValuesView();
 	}
 	
-	public BuildTarget getBuildTarget(String name) {
+	/**
+	 * @return a BuildTarget explicitly defined in this build info. 
+	 */
+	public BuildTarget getDefinedBuildTarget(String name) {
 		return buildTargets.get(name);
+	}
+	
+	public BuildTarget getBuildTarget(String name) throws CommonException {
+		return buildManager.getBuildTargetFor(this, name);
 	}
 	
 	public BuildTarget getDefaultBuildTarget() throws CommonException {

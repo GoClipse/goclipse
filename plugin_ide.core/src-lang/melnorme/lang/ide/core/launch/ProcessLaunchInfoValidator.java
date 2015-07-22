@@ -17,17 +17,47 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugPlugin;
 
+import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator.ProjectBuildExecutableSettings;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public abstract class ProcessLaunchInfoValidator extends ProjectBuildExecutableFileValidator {
+public class ProcessLaunchInfoValidator {
 	
-	public abstract String getProgramArguments_Attribute() throws CoreException;
-	public abstract String getWorkingDirectory_Attribute() throws CoreException;
-	public abstract Map<String, String> getEnvironmentVars() throws CoreException;
-	public abstract boolean getAppendEnvironmentVars() throws CoreException;
+	public final ProcessLaunchInfoSettings settings;
+	protected final ProjectBuildArtifactValidator buildExecutableValidator;
+
+	public ProcessLaunchInfoValidator(ProcessLaunchInfoSettings settings) {
+		this.settings = settings;
+		this.buildExecutableValidator = init_ProjectBuildExecutableFileValidator(settings);
+	}
+	
+	protected ProjectBuildArtifactValidator init_ProjectBuildExecutableFileValidator(
+			ProcessLaunchInfoSettings settings) {
+		return new ProjectBuildArtifactValidator(settings);
+	}
+	
+	public static interface ProcessLaunchInfoSettings extends ProjectBuildExecutableSettings {
+		
+		public abstract String getProgramArguments_Attribute() throws CoreException;
+		public abstract String getWorkingDirectory_Attribute() throws CoreException;
+		public abstract Map<String, String> getEnvironmentVars() throws CoreException;
+		public abstract boolean getAppendEnvironmentVars() throws CoreException;
+		
+	}
+	
+	protected IProject getProject() throws StatusException, CoreException {
+		return buildExecutableValidator.getProject();
+	}
+	
+	protected BuildTarget getBuildTarget() throws CoreException, CommonException {
+		return buildExecutableValidator.getBuildTarget();
+	}
+	
+	protected Location getValidExecutableFileLocation() throws CoreException, CommonException {
+		return buildExecutableValidator.getValidExecutableFileLocation();
+	}
 	
 	/* -----------------  ----------------- */
 	
@@ -40,7 +70,7 @@ public abstract class ProcessLaunchInfoValidator extends ProjectBuildExecutableF
 	}
 	
 	public IPath getDefinedWorkingDirectory() throws CoreException {
-		String path = getWorkingDirectory_Attribute();
+		String path = settings.getWorkingDirectory_Attribute();
 		return path.isEmpty() ? null : new org.eclipse.core.runtime.Path(path);
 	}
 	
@@ -51,7 +81,7 @@ public abstract class ProcessLaunchInfoValidator extends ProjectBuildExecutableF
 	/* -----------------  ----------------- */
 
 	public String[] getProgramArguments() throws CoreException {
-		return DebugPlugin.parseArguments(getProgramArguments_Attribute());
+		return DebugPlugin.parseArguments(settings.getProgramArguments_Attribute());
 	}
 	
 	
@@ -61,11 +91,11 @@ public abstract class ProcessLaunchInfoValidator extends ProjectBuildExecutableF
 		
 		IProject project = getProject();
 		BuildTarget buildTarget = getBuildTarget();
-		Location programLoc = getExecutableFileLocation(buildTarget);
+		Location programLoc = getValidExecutableFileLocation();
 		String[] processArgs = getProgramArguments();
 		IPath workingDirectory = getWorkingDirectory();
-		Map<String, String> configEnv = getEnvironmentVars();
-		boolean appendEnv = getAppendEnvironmentVars();
+		Map<String, String> configEnv = settings.getEnvironmentVars();
+		boolean appendEnv = settings.getAppendEnvironmentVars();
 		
 		return new ProcessLaunchInfo(
 			project, 

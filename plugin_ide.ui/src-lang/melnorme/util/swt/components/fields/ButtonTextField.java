@@ -12,18 +12,21 @@ package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
+import melnorme.utilbox.core.CommonException;
 
 public abstract class ButtonTextField extends TextFieldComponent {
 	
-	protected final String buttonLabel;
+	protected String buttonLabel;
 	protected Button button;
 	
 	public ButtonTextField(String labelText, int textStyle, String buttonlabel) {
@@ -35,6 +38,12 @@ public abstract class ButtonTextField extends TextFieldComponent {
 		super(labelText);
 		buttonLabel = buttonlabel;
 	}
+	
+	protected String getButtonLabel() {
+		return buttonLabel;
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Override
 	public int getPreferredLayoutColumns() {
@@ -64,19 +73,24 @@ public abstract class ButtonTextField extends TextFieldComponent {
 		});
 	}
 	
-	protected String getButtonLabel() {
-		return buttonLabel;
-	}
-	
 	protected void handleButtonSelected() {
-		String result = getNewValueFromButtonSelection();
-		
-		if(result != null) {
-			setFieldValue(result);
+		try {
+			String result = getNewValueFromButtonSelection();
+			if(result != null) {
+				setFieldValue(result);
+			}
+		} catch(CommonException e) {
+			UIOperationExceptionHandler.handleOperationStatus(getButtonOperationErrorMessage(), e);
+		} catch(CoreException e) {
+			UIOperationExceptionHandler.handleOperationStatus(getButtonOperationErrorMessage(), e);
 		}
 	}
 	
-	protected abstract String getNewValueFromButtonSelection();
+	protected String getButtonOperationErrorMessage() {
+		return "Error:";
+	}
+	
+	protected abstract String getNewValueFromButtonSelection() throws CoreException, CommonException;
 	
 	@Override
 	public void setEnabled(boolean enabled) {
