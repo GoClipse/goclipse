@@ -36,18 +36,14 @@ public class LANGUAGE_BundleModelManager extends BundleModelManager<AbstractBund
 	protected AbstractBundleInfo createNewInfo(IProject project) {
 		return new AbstractBundleInfo() {
 			
-			protected final ArrayList2<BuildConfiguration> DEFAULT_BUILD_CONFIGs = ArrayList2.create(
-				new BuildConfiguration(null, null)
-			);
-			
 			@Override
 			public Path getEffectiveTargetFullPath() {
 				return null;
 			}
 			
 			@Override
-			public Indexable<BuildConfiguration> getBuildConfigurations() {
-				return DEFAULT_BUILD_CONFIGs;
+			public Indexable<String> getBuildConfigurations() {
+				return ArrayList2.create("");
 			}
 			
 		};
