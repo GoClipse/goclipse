@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -44,7 +45,6 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 	
 	/* ----------------- Build ----------------- */
 	
-	// TODO: LANG Build operation
 	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
 		public LANGUAGE_BuildTargetOperation(OperationInfo parentOpInfo, IProject project,
@@ -61,14 +61,18 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		protected ProcessBuilder createBuildPB() throws CoreException, CommonException {
-			return getToolManager().createSDKProcessBuilder(getProject(), "build"); // TODO: Lang
+			ArrayList2<String> buildCmdLine = new ArrayList2<>();
+			buildCmdLine.addElements(buildTarget.getTargetName());
+			buildCmdLine.addElements(LaunchUtils.getParsedArguments(buildTarget.getBuildOptions()));
+			
+			return getToolManager().createSDKProcessBuilder(getProject(), buildCmdLine.toArray(String.class));
 		}
 		
 		@SuppressWarnings("unused")
 		protected void doBuild_processBuildResult(ExternalProcessResult buildResult) throws CoreException {
 			ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); 
 			
-			// TODO: Lang process result
+			// TODO: Lang process build result
 			
 			ToolMarkersUtil.addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project));
 		}
