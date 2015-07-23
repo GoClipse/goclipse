@@ -8,14 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.core.env;
+package com.googlecode.goclipse.core.engine;
 
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 
-import com.googlecode.goclipse.core.env.GoBundleModelManager.GoBundleModel;
-
+import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
@@ -38,15 +37,10 @@ public class GoBundleModelManager extends BundleModelManager<AbstractBundleInfo,
 		return new ManagerResourceListener(null);
 	}
 	
+	
 	@Override
 	protected AbstractBundleInfo createNewInfo(IProject project) {
 		return new AbstractBundleInfo() {
-			
-			protected final ArrayList2<BuildConfiguration> DEFAULT_BUILD_CONFIGs = ArrayList2.create(
-				new BuildConfiguration("#build", null),
-				new BuildConfiguration("#install", null),
-				new BuildConfiguration("#test", null)
-			);
 			
 			@Override
 			public Path getEffectiveTargetFullPath() {
@@ -54,8 +48,8 @@ public class GoBundleModelManager extends BundleModelManager<AbstractBundleInfo,
 			}
 			
 			@Override
-			public Indexable<BuildConfiguration> getBuildConfigurations() {
-				return DEFAULT_BUILD_CONFIGs;
+			public Indexable<String> getBuildConfigurations() {
+				return ArrayList2.<String>create("");
 			}
 			
 		};

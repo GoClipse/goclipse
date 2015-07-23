@@ -23,12 +23,12 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import com.googlecode.goclipse.tooling.GoPackageName;
+import com.googlecode.goclipse.tooling.GoPackagesVisitor;
+
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
-
-import com.googlecode.goclipse.tooling.GoPackageName;
-import com.googlecode.goclipse.tooling.GoPackagesVisitor;
 
 /**
  * Helper class to work with a GOPATH entry list.
@@ -96,16 +96,21 @@ public class GoPath {
 		return null;
 	}
 	
-	/** @return the Go package path for given goModulePath, if it's in a source package in some GOPATH entry. 
+	/** @return the Go package path for given goSourceFileLocation, if it's in a source package in some GOPATH entry. 
 	 * Return null otherwise. */
-	public GoPackageName findGoPackageForSourceFile(Location sourceFilePath) {
-		Location goPathEntry = findGoPathEntry(sourceFilePath);
+	public GoPackageName findGoPackageForSourceFile(Location goSourceFileLocation) {
+		Location goPackageLocation = goSourceFileLocation.getParent();
+		return findGoPackageForLocation(goPackageLocation);
+	}
+	
+	public GoPackageName findGoPackageForLocation(Location goPackageLocation) {
+		Location goPathEntry = findGoPathEntry(goPackageLocation);
 		if(goPathEntry == null) {
 			return null;
 		}
 		
 		Location sourceRoot = goPathEntry.resolve_fromValid(SRC_DIR);
-		return GoEnvironment.getGoPackageForSourceFile(sourceFilePath, sourceRoot);
+		return GoEnvironment.getGoPackageForLocation(goPackageLocation, sourceRoot);
 	}
 	
 	public static GoPackageName getGoPackageForPath(Location goPathEntry, Location packageLoc) {

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
+import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
+
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
@@ -117,6 +119,11 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	public static Collection<GoPackageName> getSourcePackages(IProject project, GoEnvironment goEnvironment)
 			throws CoreException {
 		return goEnvironment.getGoPath().findSourcePackages(ResourceUtils.getProjectLocation(project));
+	}
+	
+	public static Location getBinFolderLocation(IProject project) throws CommonException {
+		GoEnvironment goEnv = getGoEnvironment(project);
+		return goEnv.getBinFolderLocationForSubLocation(loc(project.getLocation()));
 	}
 	
 }

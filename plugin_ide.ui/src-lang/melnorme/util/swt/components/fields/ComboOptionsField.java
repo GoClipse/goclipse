@@ -11,8 +11,6 @@
 package melnorme.util.swt.components.fields;
 
 
-import static melnorme.utilbox.core.CoreUtil.array;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -23,6 +21,7 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.LabelledFieldComponent;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -35,7 +34,7 @@ import melnorme.utilbox.misc.StringUtil;
  */
 public class ComboOptionsField extends LabelledFieldComponent<String> {
 	
-	protected String[] comboOptions = array();
+	protected Indexable<String> fieldOptions = ArrayList2.create();
 	
 	protected int comboStyle = SWT.DROP_DOWN;
 	protected Combo combo;
@@ -44,21 +43,25 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 		super(labelText, Option_AllowNull.YES, null);
 	}
 	
-	public void setFieldOptions(Indexable<String> items) {
-		setFieldOptions(items.toArray(String.class));
+	public Indexable<String> getComboOptions() {
+		return fieldOptions;
 	}
 	
-	public void setFieldOptions(String... items) {
-		this.comboOptions = items;
+	public void setFieldOptions(String... fieldOptions) {
+		setFieldOptions(ArrayList2.create(fieldOptions));
+	}
+	
+	public void setFieldOptions(Indexable<String> fieldOptions) {
+		this.fieldOptions = fieldOptions;
 		 //This will force the value to only the possible options
 		String fieldValue = getEffectiveValue(getFieldValue());
 		
-		setComboItems(items);
+		setComboItems();
 		
-		if(fieldValue == null && items.length > 0) {
-			fieldValue = items[0];
+		if(fieldValue == null && !fieldOptions.isEmpty()) {
+			fieldValue = fieldOptions.get(0);
 		}
-		setFieldValue(fieldValue); 
+		setFieldValue(fieldValue);
 	}
 	
 	@Override
@@ -68,7 +71,7 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 	
 	public String getEffectiveValue(String newValue) {
 		if(newValue != null) {
-			for(String comboOption : comboOptions) {
+			for(String comboOption : fieldOptions) {
 				if(newValue.equals(comboOption)) {
 					return newValue;
 				}
@@ -103,16 +106,16 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 				setFieldValueFromControl(combo.getText());
 			}
 		});
-		setComboItems(comboOptions);
+		setComboItems();
 	}
 	
 	protected Combo createComboControl(Composite topControl) {
 		return SWTFactoryUtil.createCombo(topControl, comboStyle | SWT.READ_ONLY);
 	}
 	
-	protected void setComboItems(String... items) {
+	protected void setComboItems() {
 		if(SWTUtil.isOkToUse(combo)) {
-			combo.setItems(items);
+			combo.setItems(fieldOptions.toArray(String.class));
 		}
 	}
 	

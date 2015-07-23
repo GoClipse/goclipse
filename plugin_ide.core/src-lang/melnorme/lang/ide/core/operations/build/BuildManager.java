@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -20,8 +22,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildType;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBasedModel;
@@ -150,28 +152,52 @@ public abstract class BuildManager {
 			}
 		}
 		
-		Indexable<BuildConfiguration> buildConfigs = bundleInfo.getBuildConfigurations();
 		
 		ArrayList2<BuildTarget> buildTargets = new ArrayList2<>();
-		
 		boolean isFirstConfig = true;
-		for(BuildConfiguration buildConfig : buildConfigs) {
-			addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig);
-			isFirstConfig = false;
+		
+		Indexable<String> buildConfigs = bundleInfo.getBuildConfigurations();
+		for(String buildConfig : buildConfigs) {
+			
+			Indexable<BuildType> buildTypes = getBuildTypes();
+			for (BuildType buildType : buildTypes) {
+				
+				addBuildTargetFromConfig(buildTargets, buildConfig, buildType, currentBuildInfo, isFirstConfig);
+				isFirstConfig = false;
+			}
+			
 		}
 		
 		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, buildTargets);
 		setProjectBuildInfo(project, newBuildInfo);
 	}
 	
-	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, BuildConfiguration buildConfig,
-			ProjectBuildInfo currentBuildInfo, boolean isFirstConfig) {
-		String name = buildConfig.getName();
-		addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig, name);
+	protected final Indexable<BuildType> getBuildTypes() {
+		Indexable<BuildType> buildTypes = getBuildTypes_do();
+		assertTrue(buildTypes.size() > 0);
+		return buildTypes;
 	}
 	
-	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, BuildConfiguration buildConfig,
-			ProjectBuildInfo currentBuildInfo, boolean isFirstConfig, String targetName) {
+	protected abstract Indexable<BuildType> getBuildTypes_do();
+	
+	public BuildType getBuildType_NonNull(String buildTypeName) throws CommonException {
+		if(buildTypeName == null) {
+			return getBuildTypes().get(0);
+		}
+		
+		for(BuildType buildType : getBuildTypes()) {
+			if(buildType.getName().equals(buildTypeName)) {
+				return buildType;
+			}
+		}
+		throw new CommonException(BuildManagerMessages.Error_NoSuchBuildType(buildTypeName));
+	}
+	
+	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, String buildConfig,
+			BuildType buildType, ProjectBuildInfo currentBuildInfo, boolean isFirstConfig) {
+		
+		String targetName = buildConfig + BuildTarget.BUILD_TYPE_NAME_SEPARATOR + buildType.getName(); 
+		
 		BuildTarget oldBuildTarget = currentBuildInfo == null ? 
 				null : 
 				currentBuildInfo.getDefinedBuildTarget(targetName);
@@ -181,18 +207,17 @@ public abstract class BuildManager {
 		
 		if(oldBuildTarget == null) {
 			enabled = isFirstConfig;
-			buildOptions = getDefaultBuildOptions(targetName);
+			buildOptions = null;
 		} else {
 			enabled = oldBuildTarget.isEnabled();
 			buildOptions = oldBuildTarget.getBuildOptions();
 		}
 		
-		buildTargets.add(createBuildTarget(targetName, buildConfig, enabled, buildOptions));
+		buildTargets.add(createBuildTarget(targetName, enabled, buildOptions));
 	}
 	
-	@SuppressWarnings("unused") 
-	public String getDefaultBuildOptions(String buildTargetName) {
-		return "";
+	public BuildTarget createBuildTarget(String targetName, boolean enabled, String buildOptions) {
+		return new BuildTarget(targetName, enabled, buildOptions);
 	}
 	
 	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
@@ -214,11 +239,6 @@ public abstract class BuildManager {
 	
 	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) throws CommonException {
 		return projectBuildInfo.getDefinedBuildTarget(targetName);
-	}
-	
-	public BuildTarget createBuildTarget(String targetName, BuildConfiguration buildConfig, 
-			boolean enabled, String buildOptions) {
-		return new BuildTarget(targetName, buildConfig, enabled, buildOptions);
 	}
 	
 	/* ----------------- Build operations ----------------- */

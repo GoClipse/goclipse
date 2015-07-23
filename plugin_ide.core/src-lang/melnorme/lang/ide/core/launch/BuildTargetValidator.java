@@ -22,13 +22,19 @@ import melnorme.utilbox.core.CommonException;
 public class BuildTargetValidator extends AbstractValidator2 {
 	
 	protected final BuildManager buildManager;
+	protected boolean definedTargetsOnly;
 
 	public BuildTargetValidator() {
-		this(LangCore.getBuildManager());
+		this(true);
 	}
 	
-	public BuildTargetValidator(BuildManager buildManager) {
+	public BuildTargetValidator(boolean definedTargetsOnly) {
+		this(LangCore.getBuildManager(), definedTargetsOnly);
+	}
+	
+	public BuildTargetValidator(BuildManager buildManager, boolean definedTargetsOnly) {
 		this.buildManager = buildManager;
+		this.definedTargetsOnly = definedTargetsOnly;
 	}
 	
 	public BuildTarget getBuildTarget(IProject project, String buildTargetName) 
@@ -39,7 +45,11 @@ public class BuildTargetValidator extends AbstractValidator2 {
 		
 		ProjectBuildInfo buildInfo = buildManager.getValidBuildInfo(project);
 		
-		BuildTarget buildTarget = buildInfo.getBuildTarget(buildTargetName);
+		BuildTarget buildTarget = 
+				definedTargetsOnly ? 
+				buildInfo.getDefinedBuildTarget(buildTargetName) :
+				buildInfo.getBuildTargetFor(buildTargetName);
+		
 		if(buildTarget == null) {
 			throw error(LaunchMessages.PROCESS_LAUNCH_NoSuchBuildTarget);
 		}

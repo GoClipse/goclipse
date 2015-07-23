@@ -149,6 +149,14 @@ public abstract class CommonCoreTest extends CommonTest {
 		resource.delete(false, new NullProgressMonitor());
 	}
 	
+	/* -----------------  ----------------- */
+	
+	public static IProject createLangProject(String projectName, boolean overwrite) throws CoreException {
+		IProject project = ResourceUtils.createAndOpenProject(projectName, overwrite);
+		setupLangProject(project, false);
+		return project;
+	}
+	
 	public static void setupLangProject(IProject project) throws CoreException {
 		setupLangProject(project, true);
 	}

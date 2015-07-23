@@ -1,8 +1,8 @@
 package melnorme.lang.ide.core;
 
+import com.googlecode.goclipse.core.engine.GoBundleModelManager;
 import com.googlecode.goclipse.core.engine.GoEngineClient;
-import com.googlecode.goclipse.core.env.GoBundleModelManager;
-import com.googlecode.goclipse.core.env.GoBundleModelManager.GoBundleModel;
+import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
 import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 

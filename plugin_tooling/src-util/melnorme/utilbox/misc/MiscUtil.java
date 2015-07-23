@@ -34,6 +34,10 @@ public class MiscUtil extends PathUtil {
 	public static final boolean OS_IS_LINUX = OS_NAME.startsWith("Linux") || OS_NAME.startsWith("LINUX");
 	public static final boolean OS_IS_MAC = OS_NAME.startsWith("Mac");
 	
+	public static String getExecutableSuffix() {
+		return OS_IS_WINDOWS ? ".exe" : "";
+	}
+	
 	
 	public static String getSystemProperty(String propName, String defaultValue) {
 		String propValue = System.getProperty(propName);

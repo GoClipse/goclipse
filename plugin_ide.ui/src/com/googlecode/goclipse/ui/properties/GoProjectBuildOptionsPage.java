@@ -12,17 +12,17 @@ package com.googlecode.goclipse.ui.properties;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
-import melnorme.lang.ide.ui.preferences.LangProjectOptionsBlock;
+import melnorme.lang.ide.ui.dialogs.LangBuildConfigurationPropertyPage;
+import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
 
-public class GoProjectBuildOptionsPage extends AbstractProjectPropertyPage {
+public class GoProjectBuildOptionsPage extends LangBuildConfigurationPropertyPage {
 	
 	@Override
-	protected LangProjectOptionsBlock createProjectOptionsComponent(IProject project) {
+	protected LangProjectBuildConfigurationComponent createProjectBuildConfigComponent(IProject project) {
 		return new GoProjectOptionsBlock(project);
 	}
 	
-	public class GoProjectOptionsBlock extends LangProjectOptionsBlock {
+	public class GoProjectOptionsBlock extends LangProjectBuildConfigurationComponent {
 		
 		public GoProjectOptionsBlock(IProject project) {
 			super(project);
@@ -30,7 +30,7 @@ public class GoProjectBuildOptionsPage extends AbstractProjectPropertyPage {
 		
 		@Override
 		protected String init_getArgumentsField_Label() {
-			return "Arguments for 'go build'";
+			return "Target build arguments:";
 		}
 		
 	}

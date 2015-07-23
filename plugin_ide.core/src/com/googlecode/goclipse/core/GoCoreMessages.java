@@ -10,11 +10,20 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
+import java.text.MessageFormat;
+
+import melnorme.utilbox.misc.Location;
+
 public interface GoCoreMessages {
 	
-	public static final String INVALID_PREFERENCES_MESSAGE        = "Invalid Go language settings. Please adjust on the Go preferences page.";
-//	public static final String CYCLE_DETECTED_MESSAGE      		  = "Dependency cycle detected.";
-//	public static final String DECLARED_PACKAGE_INCORRECT_MESSAGE = "Declared package name does not match directory.";
-//	public static final String ONLY_PACKAGE_MAIN_MESSAGE          = "Only package main is allowed here.";
+	public static String ERROR_SrcRootContainsGoFiles(Location sourceRootDir) {
+		String pattern = 
+				"The Go `src` directory at `{0}` contains .go files. " +
+				"This is not allowed, these files will be ignored.\n" + 
+				"Instead, all .go files should be in a subdirectory of `src`, " + 
+				"so that they will be part of a Go package. " + 
+				"This is so they can be built using the `./...` pattern, or imported by other Go files.";
+		return MessageFormat.format(pattern, sourceRootDir);
+	}
 	
 }

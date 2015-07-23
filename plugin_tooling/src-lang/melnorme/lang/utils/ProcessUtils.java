@@ -38,10 +38,6 @@ public class ProcessUtils {
 		return pb;
 	}
 	
-	public static String getExecutableSuffix() {
-		return MiscUtil.OS_IS_WINDOWS ? ".exe" : "";
-	}
-	
 	public static ProcessBuilder createProcessBuilder(Path cmdExePath, Location workingDir, 
 			boolean addCmdDirToPath, String... arguments) {
 		

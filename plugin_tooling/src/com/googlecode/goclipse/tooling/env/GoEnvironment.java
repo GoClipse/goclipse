@@ -17,12 +17,12 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
+import com.googlecode.goclipse.tooling.GoPackageName;
+
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
-
-import com.googlecode.goclipse.tooling.GoPackageName;
 
 /**
  * Immutable description of a Go environment, under which Go operations and semantic analysis can be run.
@@ -111,40 +111,38 @@ public class GoEnvironment {
 	/* -----------------  ----------------- */
 	
 	public GoPackageName findGoPackageForSourceFile(Location goSourceFileLoc) throws CommonException {
-		GoPackageName goPackage = goRoot.findGoPackageForSourceModule(goSourceFileLoc);
+		Location goPackageLocation = goSourceFileLoc.getParent();
+		return findGoPackageForLocation(goPackageLocation);
+	}
+	
+	public GoPackageName findGoPackageForLocation(Location goPackageLocation) throws CommonException {
+		GoPackageName goPackage = goRoot.findGoPackageForLocation(goPackageLocation);
 		if(goPackage != null) {
 			return goPackage;
 		}
 		
-		return goPath.findGoPackageForSourceFile(goSourceFileLoc);
+		return goPath.findGoPackageForLocation(goPackageLocation);
 	}
 	
-	protected static GoPackageName getGoPackageForSourceFile(Location goSourceFileLoc, Location sourceRoot) {
-		if(!goSourceFileLoc.startsWith(sourceRoot)) {
+	protected static GoPackageName getGoPackageForLocation(Location goPackageLocation, Location sourceRoot) {
+		if(goPackageLocation == null || !goPackageLocation.startsWith(sourceRoot)) {
 			return null;
 		}
-		Path sourceFilePath = sourceRoot.relativize(goSourceFileLoc);
-		return GoPackageName.fromPath(sourceFilePath.getParent()); // Discard file name
+		Path goPackageRelPath = sourceRoot.relativize(goPackageLocation);
+		if(goPackageRelPath.toString().isEmpty()) {
+			return null;
+		}
+		return GoPackageName.fromPath(goPackageRelPath);
 	}
 	
-	public Location getBinFileForGoPackage(Location goPathSubLocation, String goPackageString) throws CommonException {
-		GoPackageName goPackage = GoPackageName.createValid(goPackageString);
-		return getBinFileForGoPackage(goPathSubLocation, goPackage);
-	}
-	
-	public Location getBinFileForGoPackage(Location goPathSubLocation, GoPackageName goPackage) 
-			throws CommonException {
+	public Location getBinFolderLocationForSubLocation(Location goPathSubLocation) throws CommonException {
 		Location goPathEntry = getGoPath().findGoPathEntry(goPathSubLocation);
 		
 		if(goPathEntry == null) {
 			throw new CommonException(
 				MessageFormat.format("Could not find path `{0}` in a GOPATH entry: ", goPathSubLocation));
-		} else {
-			Location binPath = goPathEntry.resolve_fromValid("bin").resolve(
-				goPackage.getLastSegment());
-			
-			return Location.create(binPath.toString() + ProcessUtils.getExecutableSuffix());
 		}
+		return goPathEntry.resolve_fromValid("bin");
 	}
 	
 	protected String getGoOS_GoArch_segment() throws CommonException {

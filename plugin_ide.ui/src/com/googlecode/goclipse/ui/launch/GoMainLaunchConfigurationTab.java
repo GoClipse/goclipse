@@ -23,9 +23,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
@@ -33,9 +36,12 @@ import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.CheckBoxField;
+import melnorme.util.swt.components.fields.ComboOptionsField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StringUtil;
 
 /**
  * Go Launch config tab uses the BuildTarget field in a different way.
@@ -44,18 +50,29 @@ import melnorme.utilbox.misc.ArrayUtil;
  */
 public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
-	protected final ButtonTextField goPackageField = createGoPackageField();
+	protected final ButtonTextField goPackageField = init_createGoPackageField();
+	protected final ComboOptionsField buildTypeField = init_createBuildTypeField();
 	
 	public GoMainLaunchConfigurationTab() {
 		super(false);
+		ArrayList2<String> fieldOptions = GoBuildManager.BUILD_TYPES_Names.toArrayList();
+		fieldOptions.remove(GoBuildManager.BUILD_TYPE_RunTests);
+		buildTypeField.setFieldOptions(fieldOptions);
 		initBindings();
 	}
 	
-	protected ButtonTextField createGoPackageField() {
+	protected ButtonTextField init_createGoPackageField() {
 		return new EnablementButtonTextField("Go package to build:", null, "Select...") {
 			@Override
 			protected String getDefaultFieldValue() throws CommonException {
 				return null;
+			}
+			
+			@Override
+			protected void createContents_all(Composite topControl) {
+				super.createContents_all(topControl);
+				
+				buildTypeField.createComponent(topControl, new GridData(GridData.FILL_HORIZONTAL));
 			}
 			
 			@Override
@@ -64,6 +81,10 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			}
 			
 		};
+	}
+	
+	protected ComboOptionsField init_createBuildTypeField() {
+		return new ComboOptionsField("Build type:");
 	}
 	
 	@Override
@@ -87,6 +108,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	protected void initBindings() {
 		super.initBindings();
 		goPackageField.addValueChangedListener(this::buildTargetFieldChanged);
+		buildTypeField.addValueChangedListener(this::buildTargetFieldChanged);
 	}
 	
 	/* -----------------  ----------------- */
@@ -94,12 +116,20 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	@Override
 	public void initializeFrom(ILaunchConfiguration config) {
 		super.initializeFrom(config);
-		goPackageField.setFieldValue(getConfigAttribute(config, LaunchConstants.ATTR_BUILD_TARGET, ""));
+		String buildTargetName = getConfigAttribute(config, LaunchConstants.ATTR_BUILD_TARGET, "");
+		BuildTarget tempBuildTarget = LangCore.getBuildManager().createBuildTarget(buildTargetName, false, "");
+		
+		goPackageField.setFieldValue(tempBuildTarget.getBuildConfiguration());
+		buildTypeField.setFieldValue(tempBuildTarget.getBuildTypeName());
+		if(buildTypeField.getFieldValue() == null) {
+			buildTypeField.setFieldValue(buildTypeField.getComboOptions().get(0));
+		}
 	}
 	
 	@Override
 	protected String getBuildTargetName() {
-		return goPackageField.getFieldValue();
+		String buildType = buildTypeField.getFieldValue();
+		return goPackageField.getFieldValue() + StringUtil.prefixStr("#", buildType); 
 	}
 	
 	/* -----------------  ----------------- */

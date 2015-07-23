@@ -59,7 +59,7 @@ public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 	/* -----------------  ----------------- */
 	
 	public BuildTargetValidator getBuildTargetValidator() {
-		return new BuildTargetValidator();
+		return new BuildTargetValidator(false);
 	}
 	
 	public BuildTarget getBuildTarget() throws CoreException, CommonException {
@@ -82,7 +82,7 @@ public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 		
 		Path artifactPath = null;
 		if(buildTarget != null) {
-			artifactPath = buildTarget.getBuildConfig().getArtifactPath();
+			artifactPath = buildTarget.getArtifactPath(getProject());
 		}
 		if(artifactPath == null) {
 			throw error(LaunchMessages.PROCESS_LAUNCH_CouldNotDetermineExeLocation);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,26 +25,32 @@ import melnorme.utilbox.core.CommonException;
 
 public abstract class CommonBuildTargetOperation extends AbstractToolManagerOperation {
 	
+	protected final BuildManager buildManager;
 	protected final OperationInfo parentOperationInfo;
 	protected final BuildTarget buildTarget;
 	protected final Path buildToolPath;
 	protected final boolean fullBuild;
 	
-	public CommonBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+	public CommonBuildTargetOperation(BuildManager buildManager, OperationInfo parentOpInfo, IProject project,
 			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
 		super(project);
+		this.buildManager = assertNotNull(buildManager);
 		this.buildToolPath = buildToolPath;
 		this.fullBuild = fullBuild;
 		this.parentOperationInfo = assertNotNull(parentOpInfo);
 		this.buildTarget = assertNotNull(buildTarget);
 	}
 	
-	protected Path getBuildToolPath2() throws CommonException {
+	protected Path getBuildToolPath() throws CommonException {
 		return buildToolPath;
 	}
 	
-	protected String getBuildTargetName() {
-		return buildTarget.getTargetName();
+	protected String getEffectiveBuildOptions() throws CommonException {
+		String buildOptions = buildTarget.getBuildOptions();
+		if(buildOptions != null) {
+			return buildOptions;
+		}
+		return buildTarget.getDefaultBuildOptions(project);
 	}
 	
 	@Override

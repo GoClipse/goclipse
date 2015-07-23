@@ -46,8 +46,8 @@ public class GoRoot {
 		return asLocation().resolve_fromValid("src");
 	}
 	
-	public GoPackageName findGoPackageForSourceModule(Location goModuleLoc) throws CommonException {
-		return GoEnvironment.getGoPackageForSourceFile(goModuleLoc, getSourceRootLocation());
+	public GoPackageName findGoPackageForLocation(Location goPackageLocation) throws CommonException {
+		return GoEnvironment.getGoPackageForLocation(goPackageLocation, getSourceRootLocation());
 	}
 	
 }

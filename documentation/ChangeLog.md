@@ -5,9 +5,10 @@
  * Added support for Build Configurations.
    * Available build targets are displayed in the Project Explorer. 
    You can configure which targets are enabled for a workspace build or not. Or run/debug a specific target.
-   * Default build targets for Go are: `build`, `install`, `test`.
+   * Default build targets for Go are: `build`, `build-tests`, `test`.
    * Project Build Configuration property page update to configure build targets.
- 
+   
+ * TODO: GoLaunchShortcut. Fix `build-tests` target.
 
 ### 0.11.2
   ▶ Recommended/tested CDT version is now 8.7

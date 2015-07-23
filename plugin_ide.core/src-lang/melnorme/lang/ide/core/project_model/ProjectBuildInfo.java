@@ -21,15 +21,15 @@ import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
-import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.collections.LinkedHashMap2;
 import melnorme.utilbox.core.CommonException;
 
 public class ProjectBuildInfo {
 	
 	protected final BuildManager buildManager;
 	protected final IProject project;
-	protected final HashMap2<String, BuildTarget> buildTargets = new HashMap2<>();
+	protected final LinkedHashMap2<String, BuildTarget> buildTargets = new LinkedHashMap2<>();
 	
 	public ProjectBuildInfo(BuildManager buildManager, IProject project, Indexable<BuildTarget> buildTargetsArray) {
 		this.buildManager = buildManager;
@@ -58,7 +58,7 @@ public class ProjectBuildInfo {
 		return buildTargets.get(name);
 	}
 	
-	public BuildTarget getBuildTarget(String name) throws CommonException {
+	public BuildTarget getBuildTargetFor(String name) throws CommonException {
 		return buildManager.getBuildTargetFor(this, name);
 	}
 	
@@ -84,7 +84,6 @@ public class ProjectBuildInfo {
 	public void changeEnable(BuildTarget oldBuildTarget, boolean newEnabledValue) throws StatusException {
 		changeBuildTarget(oldBuildTarget, buildManager.createBuildTarget(
 			oldBuildTarget.getTargetName(), 
-			oldBuildTarget.getBuildConfig(), 
 			newEnabledValue,
 			oldBuildTarget.getBuildOptions()
 		));
@@ -93,7 +92,6 @@ public class ProjectBuildInfo {
 	public void changeOptions(BuildTarget oldBuildTarget, String newOptionsValue) throws StatusException {
 		changeBuildTarget(oldBuildTarget, buildManager.createBuildTarget(
 			oldBuildTarget.getTargetName(), 
-			oldBuildTarget.getBuildConfig(), 
 			oldBuildTarget.isEnabled(),
 			newOptionsValue
 		));

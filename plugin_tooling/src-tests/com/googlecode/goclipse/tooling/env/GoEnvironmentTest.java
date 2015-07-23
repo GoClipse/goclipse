@@ -91,6 +91,9 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 			gopackage("pack/foo"));
 		assertAreEqual(goEnv.findGoPackageForSourceFile(goRootSrc.resolve_valid("../foo/m.go")), 
 			null);
+		
+		assertAreEqual(goEnv.findGoPackageForSourceFile(Location.create("D:/")), 
+			null);
 	}
 	
 	

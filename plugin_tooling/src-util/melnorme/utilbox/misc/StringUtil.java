@@ -36,6 +36,26 @@ public final class StringUtil {
 		return obj == null ? null : obj.toString();
 	}
 	
+	/** @return "" if given string is null, or the given string otherwise. */
+	public static String nullAsEmpty(String string) {
+		if(string == null)
+			return "";
+		return string;
+	}
+	
+	public static String nullAsEmpty(Object obj) {
+		if(obj == null)
+			return "";
+		return obj.toString();
+	}
+	
+	/** @return null if given string is empty, or the given string otherwise. */
+	public static String emptyAsNull(String string) {
+		if(string != null && string.isEmpty())
+			return null;
+		return string;
+	}
+	
 	/** @return a String produced from the given coll with the given separator String, 
 	 * using the elements's toString() method. */
 	public static String toString(Iterable<?> iterable, String separator) {
@@ -163,20 +183,6 @@ public final class StringUtil {
 		return false;
 	}
 
-	/** @return "" if given string is null, or the given string otherwise. */
-	public static String nullAsEmpty(String string) {
-		if(string == null)
-			return "";
-		return string;
-	}
-	
-	/** @return null if given string is empty, or the given string otherwise. */
-	public static String emptyAsNull(String string) {
-		if(string != null && string.isEmpty())
-			return null;
-		return string;
-	}
-	
 	/** @return a substring of given string up until the start of the first occurrence of given match, 
 	 * or the whole string if no match is found. */
 	public static String substringUntilMatch(String string, String match) {
@@ -318,7 +324,7 @@ public final class StringUtil {
 	}
 	
 	public static String prefixStr(String prefix, String string) {
-		return string != null ? prefix + string : "";
+		return string == null ? "" : prefix + string;
 	}
 	
 }

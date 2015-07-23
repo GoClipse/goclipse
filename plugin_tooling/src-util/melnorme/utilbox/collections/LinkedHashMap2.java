@@ -10,26 +10,26 @@
  *******************************************************************************/
 package melnorme.utilbox.collections;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import melnorme.utilbox.core.CoreUtil;
 
 /**
- * Extension to {@link java.util.HashMap}, with some helper methods,
+ * Extension to {@link java.util.LinkedHashMap}, with some helper methods,
  * and implementing the read-only interface {@link Collection2}.
  */
-public class HashMap2<K, V> extends HashMap<K, V> implements Collection2<Map.Entry<K, V>> {
+public class LinkedHashMap2<K, V> extends LinkedHashMap<K, V> implements Collection2<Map.Entry<K, V>> {
 	
 	private static final long serialVersionUID = -7612795787860334443L;
 	
-	public HashMap2() {
+	public LinkedHashMap2() {
 		super();
 	}
 	
 	/**
-	 * Possible problem here: modification through {@link Entry#setValue(Object)
+	 * Possible problem here: modification through Entry {@link Entry#setValue(Object) }
 	 */
 	@Override
 	public Iterator<Map.Entry<K, V>> iterator() {
