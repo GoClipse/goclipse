@@ -27,6 +27,8 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 
 public class GoEnvironmentTest extends CommonGoToolingTest {
 	
+	public static Location SAMPLE_ROOT_PATH = Location.create_fromValid(path(MiscUtil.OS_IS_WINDOWS ? "C:/" : "/"));
+	
 	private static final Location WS_BAR = TESTS_WORKDIR.resolve_valid("WorkspaceBar");
 	private static final Location WS_FOO = TESTS_WORKDIR.resolve_valid("WorkspaceFoo");
 	
@@ -92,8 +94,7 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 		assertAreEqual(goEnv.findGoPackageForSourceFile(goRootSrc.resolve_valid("../foo/m.go")), 
 			null);
 		
-		assertAreEqual(goEnv.findGoPackageForSourceFile(Location.create("D:/")), 
-			null);
+		assertAreEqual(goEnv.findGoPackageForSourceFile(SAMPLE_ROOT_PATH), null);
 	}
 	
 	
