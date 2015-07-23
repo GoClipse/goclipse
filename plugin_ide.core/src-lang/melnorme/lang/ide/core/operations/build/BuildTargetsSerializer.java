@@ -10,42 +10,24 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.utils.DocumentSerializerHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.StringUtil;
 
-public class BuildTargetsSerializer {
-	
+public class BuildTargetsSerializer extends DocumentSerializerHelper {
+
 	private static final String BUILD_TARGETS_ElemName = "build_targets";
 	private static final String TARGET_ElemName = "target";
-	private static final String PROP_NAME = "name";
+	private static final String PROP_NAME = "config";
 	private static final String PROP_ENABLED = "enabled";
 	private static final String PROP_OPTIONS = "options";
-	
-	protected static final BuildConfiguration DUMMY_BUILD_CONFIG = new BuildConfiguration("", null);
 	
 	/* -----------------  ----------------- */
 	
@@ -55,37 +37,15 @@ public class BuildTargetsSerializer {
 		this.buildManager = buildManager;
 	}
 	
-	protected DocumentBuilder getDocumentBuilder() throws CommonException {
-		try {
-			return DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		} catch(ParserConfigurationException e) {
-			throw new CommonException("Error obtaining XML DocumentBuilder: ", e);
-		}
-	}
-	
 	public String writeProjectBuildInfo(ProjectBuildInfo projectBuildInfo) throws CommonException {
 		return writeProjectBuildInfo(projectBuildInfo.getBuildTargets());
 	}
 	
 	public String writeProjectBuildInfo(Iterable<BuildTarget> buildTargets) throws CommonException {
-		
 		Document doc = getDocumentBuilder().newDocument();
 		writeDocument(doc, buildTargets);
 		
-		Transformer transformer;
-		try {
-			transformer = TransformerFactory.newInstance().newTransformer();
-		} catch(TransformerConfigurationException e) {
-			throw new CommonException("Error obtaining XML Transformer: ", e);
-		}
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		StringWriter writer = new StringWriter();
-		try {
-			transformer.transform(new DOMSource(doc), new StreamResult(writer));
-		} catch(TransformerException e) {
-			throw new CommonException("Error writing XML: ", e);
-		}
-		return writer.toString();
+		return documentToString(doc);
 	}
 	
 	protected void writeDocument(Document doc, Iterable<BuildTarget> buildTargets) {
@@ -99,12 +59,7 @@ public class BuildTargetsSerializer {
 	}
 	
 	public ArrayList2<BuildTarget> readProjectBuildInfo(String targetsXml) throws CommonException {
-		Document doc;
-		try {
-			doc = getDocumentBuilder().parse(new InputSource(new StringReader(targetsXml)));
-		} catch(SAXException | IOException e) {
-			throw new CommonException("Unable to parse XML", e);
-		}
+		Document doc = parseDocumentFromXml(targetsXml);
 		
 		Node buildTargetsElem = doc.getFirstChild();
 		if(buildTargetsElem == null || !buildTargetsElem.getNodeName().equals(BUILD_TARGETS_ElemName)) {
@@ -129,7 +84,7 @@ public class BuildTargetsSerializer {
 		
 		targetElem.setAttribute(PROP_NAME, buildTarget.getTargetName());
 		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(buildTarget.isEnabled()));
-		targetElem.setAttribute(PROP_OPTIONS, buildTarget.getBuildOptions());
+		setOptionalAttribute(targetElem, PROP_OPTIONS, buildTarget.getBuildOptions());
 		
 		return targetElem;
 	}
@@ -149,23 +104,7 @@ public class BuildTargetsSerializer {
 	
 	protected BuildTarget createBuildTarget(@SuppressWarnings("unused") Node targetElem, 
 			String targetName, boolean enabled, String buildOptions) {
-		return buildManager.createBuildTarget(targetName, DUMMY_BUILD_CONFIG, enabled, buildOptions);
-	}
-	
-	protected String getAttribute(Node targetElem, String keyName, String defaultValue) {
-		Node attribute = targetElem.getAttributes().getNamedItem(keyName);
-		if(attribute == null) {
-			return defaultValue;
-		}
-		return attribute.getTextContent();
-	}
-	
-	protected boolean getBooleanAttribute(Node targetElem, String keyName, boolean defaultValue) {
-		String enabledStr = getAttribute(targetElem, keyName, null);
-		if(enabledStr == null) {
-			return defaultValue;
-		}
-		return Boolean.parseBoolean(enabledStr);
+		return buildManager.createBuildTarget(StringUtil.nullAsEmpty(targetName), enabled, buildOptions);
 	}
 	
 }

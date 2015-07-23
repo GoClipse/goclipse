@@ -28,4 +28,8 @@ public interface BuildManagerMessages {
 	
 	public String MSG_Starting_LANG_Build = "Starting {0} build";
 	
+	public static String Error_NoSuchBuildType(String buildTypeString) {
+		return "No such build type: `" + buildTypeString + "`.";
+	}
+	
 }

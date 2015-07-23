@@ -18,15 +18,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
 
-import melnorme.lang.ide.ui.preferences.LangProjectOptionsBlock;
+import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
 import melnorme.util.swt.SWTFactoryUtil;
 
-/**
- * Abstract class for a project property page.
- */
-public abstract class AbstractProjectPropertyPage extends PropertyPage {
+public abstract class LangBuildConfigurationPropertyPage extends PropertyPage {
 	
-	public AbstractProjectPropertyPage() {
+	public LangBuildConfigurationPropertyPage() {
 		super();
 	}
 	
@@ -47,14 +44,16 @@ public abstract class AbstractProjectPropertyPage extends PropertyPage {
 		return createContents(parent, project);
 	}
 	
-	protected LangProjectOptionsBlock buildOptionsComponent;
+	/* -----------------  ----------------- */
+	
+	protected LangProjectBuildConfigurationComponent buildOptionsComponent;
 	
 	protected Control createContents(Composite parent, IProject project) {
-		buildOptionsComponent = createProjectOptionsComponent(project);
+		buildOptionsComponent = createProjectBuildConfigComponent(project);
 		return buildOptionsComponent.createComponent(parent);
 	}
 	
-	protected abstract LangProjectOptionsBlock createProjectOptionsComponent(IProject project);
+	protected abstract LangProjectBuildConfigurationComponent createProjectBuildConfigComponent(IProject project);
 	
 	@Override
 	public boolean performOk() {

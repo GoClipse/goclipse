@@ -44,7 +44,7 @@ public abstract class LangProjectWizardTest extends CommonUITest {
 	}
 	
 	@AfterClass
-	public static void classTeardon() throws CoreException {
+	public static void classTeardown() throws CoreException {
 		ResourceUtils.tryDeleteProject(EXISTING_PROJ_NAME);
 	}
 	

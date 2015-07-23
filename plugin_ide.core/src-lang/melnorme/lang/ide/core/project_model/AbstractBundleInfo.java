@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,33 +14,11 @@ import java.nio.file.Path;
 
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.StringUtil;
 
 public abstract class AbstractBundleInfo {
 	
 	public abstract Path getEffectiveTargetFullPath() throws CommonException;
 	
-	public abstract Indexable<BuildConfiguration> getBuildConfigurations();
-	
-	
-	public static class BuildConfiguration {
-		
-		protected final String name;
-		protected final Path artifactPath;
-		
-		public BuildConfiguration(String name, Path artifactPath) {
-			this.name = StringUtil.nullAsEmpty(name);
-			this.artifactPath = artifactPath;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		public Path getArtifactPath() throws CommonException {
-			return artifactPath;
-		}
-		
-	}
+	public abstract Indexable<String> getBuildConfigurations();
 	
 }

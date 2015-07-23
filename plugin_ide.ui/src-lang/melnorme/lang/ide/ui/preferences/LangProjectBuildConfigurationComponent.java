@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetValidator;
-import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.ui.fields.ArgumentsGroupField;
@@ -31,7 +30,7 @@ import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class LangProjectOptionsBlock extends AbstractComponent {
+public abstract class LangProjectBuildConfigurationComponent extends AbstractComponent {
 	
 	protected final IProject project;
 	protected final BuildTargetField buildTargetField = init_createBuildTargetField();
@@ -40,7 +39,7 @@ public abstract class LangProjectOptionsBlock extends AbstractComponent {
 	protected final HashMap2<BuildTarget, String> buildOptionsToChange = new HashMap2<>();
 	protected BuildTarget currentBuildTarget;
 	
-	public LangProjectOptionsBlock(IProject project) {
+	public LangProjectBuildConfigurationComponent(IProject project) {
 		this.project = project;
 		initBindings();
 	}
@@ -166,14 +165,15 @@ public abstract class LangProjectOptionsBlock extends AbstractComponent {
 	}
 	
 	public void restoreDefaults() {
-		BuildManager buildMgr = LangCore.getBuildManager();
+		if(project == null) {
+			return;
+		}
 		
 		buildOptionsToChange.clear();
 		try {
 			Collection2<BuildTarget> buildTargets = getBuildInfo().getBuildTargets();
 			for(BuildTarget buildTarget : buildTargets) {
-				String buildTargetName = buildTarget.getTargetName();
-				buildOptionsToChange.put(buildTarget, buildMgr.getDefaultBuildOptions(buildTargetName));
+				buildOptionsToChange.put(buildTarget, null);
 			}
 		} catch(CommonException e) {
 			return;
