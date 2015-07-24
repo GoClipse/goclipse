@@ -14,9 +14,7 @@ import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -33,6 +31,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public final class LANGUAGE_BuildManager extends BuildManager {
@@ -86,15 +85,22 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected ExternalProcessResult startProcess(IProgressMonitor pm, ArrayList2<String> commands)
-				throws CommonException, OperationCancellation {
-			ProcessBuilder pb = getToolManager().createSDKProcessBuilder(getProject(), commands.toArray(String.class));
-			return runBuildTool(pm, pb);
+		protected void addToolCommand(ArrayList2<String> commands)
+				throws CoreException, CommonException, OperationCancellation {
+			//super.addToolCommand(commands);
 		}
 		
 		@Override
 		protected void addMainArguments(ArrayList2<String> commands) {
 			commands.addElements(buildTarget.getBuildConfigName());
+		}
+		
+		@Override
+		protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands)
+				throws CommonException, OperationCancellation, CoreException {
+			Location projectLocation = ResourceUtils.getProjectLocation(getProject());
+			return getToolManager().createToolProcessBuilder(getBuildToolPath(), projectLocation, 
+				commands.toArray(String.class));
 		}
 		
 		@Override
