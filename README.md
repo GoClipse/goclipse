@@ -5,11 +5,20 @@ Developers Guide
 [![Build Status](https://travis-ci.org/GoClipse/goclipse.svg?branch=master)](https://travis-ci.org/GoClipse/goclipse)
 
 #### Setting up the development environment:
- * You need [Eclipse PDE](https://eclipse.org/pde/) to develop Eclipse plugins.
+ * You need [Eclipse PDE](https://eclipse.org/pde/) to develop Eclipse plugins. Download and start it.
  * Clone the Git repository.
- * In Eclipse, use the import existing projects wizard, navigate to the Git repository, and add all the  Eclipse projects that are present in the root of the Git repo. Java Compiler settings should automatically be configured, since each project has project-specific settings stored in source control.
- * Setup the target platform: Open the target platform file: `releng/target-platform/IDE.target` and set it as your target platform.
- 
+ * In Eclipse, click "File / Import... ", and then "General / Existing projects into workspace". Select the Git repository folder as the "root directory", and select all the Eclipse projects that show up. Click finish to import those projects.
+<div align="center">
+<a><img src="documentation/README_images/ImportPluginProjects.png" /><a/> 
+</div>
+ * Note: Java compiler settings will be automatically be configured, since Eclipse compiler settings stored in source control.
+ * Setup the target platform: Open the target platform file: `releng/target-platform/IDE.target` (You can use the Open Resource dialog to help find this file, press Ctrl-R and type `IDE.target` in the dialog). Then click "Set as Target Platform" once the file is opened, as seen here: 
+<div align="center">
+<a><img src="documentation/README_images/Set_As_Target_Platform.png" /><a/> 
+</div>
+ * Build the workspace ( "Project / Build All"). Everything should build fine now, there should be no errors.
+ * To start the IDE from your workspace: Open "Run / Run Configurations ...". Click on "Eclipse Application" to create a new launch for the plugins in your workspace. The default new configuration that is created should already be ready to be launched.
+
 #### Running the tests in Eclipse:
  * In `releng/launches` there is one or several Eclipse launch files for running the tests, so if this project is added to your Eclipse workspace, the launches will show up automatically in `Run Configurations...`, as "JUnit Plug-in Tests". 
 
