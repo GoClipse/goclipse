@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.LangCore_Actual.LANGUAGE_BundleModel;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
@@ -42,8 +43,8 @@ public class LANGUAGE_BundleModelManager extends BundleModelManager<AbstractBund
 			}
 			
 			@Override
-			public Indexable<String> getBuildConfigurations() {
-				return ArrayList2.create("");
+			public Indexable<BuildConfiguration> getBuildConfigurations() {
+				return ArrayList2.create(new BuildConfiguration("", null));
 			}
 			
 		};

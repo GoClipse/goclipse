@@ -21,7 +21,9 @@ import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildType;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildType;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -52,49 +54,51 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(BuildTarget buildTarget, IProject project) throws CommonException {
+		public String getDefaultBuildOptions(BuildTargetRunner buildTargetOp) throws CommonException {
 			return ".";
 		}
 		
 		@Override
-		public Path getArtifactPath(BuildTarget buildTarget, IProject project) throws CommonException {
+		public String getArtifactPath(BuildTargetRunner buildTargetOp) throws CommonException {
 			throw new CommonException("No default program path available");
 		}
 	}
-
+	
 	@Override
-	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo, IProject project,
-			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
-		return new LANGUAGE_BuildTargetOperation(this, parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
+	public BuildTargetRunner createBuildTargetOperation(IProject project, BuildConfiguration buildConfig,
+			String buildTypeName, BuildTarget buildTarget) {
+		return new BuildTargetRunner(project, buildConfig, buildTypeName, buildTarget.getBuildOptions()) {
+			@Override
+			public CommonBuildTargetOperation getBuildOperation(OperationInfo parentOpInfo, Path buildToolPath,
+					boolean fullBuild) {
+				return new LANGUAGE_BuildTargetOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
+			}
+		};
 	}
 	
 	/* ----------------- Build ----------------- */
 	
 	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public LANGUAGE_BuildTargetOperation(BuildManager buildManager, OperationInfo parentOpInfo, IProject project,
-				Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
-			super(buildManager, parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
+		public LANGUAGE_BuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+				Path buildToolPath, BuildTargetRunner buildTargetOp, boolean fullBuild) {
+			super(buildTargetOp.getBuildManager(), parentOpInfo, project, buildToolPath, buildTargetOp, fullBuild);
 		}
 		
 		@Override
-		public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-			ProcessBuilder pb = createBuildPB();
-			
-			ExternalProcessResult buildResult = runBuildTool(pm, pb);
-			doBuild_processBuildResult(buildResult);
+		protected ExternalProcessResult startProcess(IProgressMonitor pm, ArrayList2<String> commands)
+				throws CommonException, OperationCancellation {
+			ProcessBuilder pb = getToolManager().createSDKProcessBuilder(getProject(), commands.toArray(String.class));
+			return runBuildTool(pm, pb);
 		}
 		
-		protected ProcessBuilder createBuildPB() throws CoreException, CommonException {
-			ArrayList2<String> buildCmdLine = new ArrayList2<>();
-			buildCmdLine.addElements(buildTarget.getTargetName());
-			buildCmdLine.addElements(LaunchUtils.getParsedArguments(buildTarget.getBuildOptions()));
-			
-			return getToolManager().createSDKProcessBuilder(getProject(), buildCmdLine.toArray(String.class));
+		@Override
+		protected void addMainArguments(ArrayList2<String> commands) {
+			commands.addElements(buildTarget.getBuildConfigName());
 		}
 		
-		@SuppressWarnings("unused")
-		protected void doBuild_processBuildResult(ExternalProcessResult buildResult) throws CoreException {
+		@Override
+		protected void processBuildOutput(ExternalProcessResult processResult) throws CoreException {
 			ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); 
 			
 			// TODO: Lang process build result
