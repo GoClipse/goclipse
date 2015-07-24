@@ -161,10 +161,6 @@ public class GoEnvironment {
 	
 	/* -----------------  process builder  ----------------- */
 	
-	public ProcessBuilder createProcessBuilder(List<String> commandLine) throws CommonException {
-		return createProcessBuilder(commandLine, null);
-	}
-	
 	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir) throws CommonException {
 		return createProcessBuilder(commandLine, workingDir, true);
 	}
@@ -172,7 +168,11 @@ public class GoEnvironment {
 	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir, boolean goRootInPath) 
 			throws CommonException {
 		ProcessBuilder pb = ProcessUtils.createProcessBuilder(commandLine, workingDir);
-		
+		setupProcessEnv(pb, goRootInPath);
+		return pb;
+	}
+
+	public void setupProcessEnv(ProcessBuilder pb, boolean goRootInPath) throws CommonException {
 		Map<String, String> env = pb.environment();
 		
 		putMapEntry(env, GoEnvironmentConstants.GOROOT, goRoot.asString());
@@ -189,8 +189,6 @@ public class GoEnvironment {
 			// Add GoRoot to path. See #113 for rationale
 			ProcessUtils.addDirToPathEnv(getGoRoot_Location().toPath(), pb);
 		}
-		
-		return pb;
 	}
 	
 	protected void putMapEntry(Map<String, String> env, String key, String value) {

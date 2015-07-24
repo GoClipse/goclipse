@@ -28,6 +28,7 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
@@ -61,25 +62,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	protected ButtonTextField init_createGoPackageField() {
-		return new EnablementButtonTextField("Go package to build:", null, "Select...") {
-			@Override
-			protected String getDefaultFieldValue() throws CommonException {
-				return null;
-			}
-			
-			@Override
-			protected void createContents_all(Composite topControl) {
-				super.createContents_all(topControl);
-				
-				buildTypeField.createComponent(topControl, new GridData(GridData.FILL_HORIZONTAL));
-			}
-			
-			@Override
-			protected String getNewValueFromButtonSelection() throws StatusException {
-				return GoMainLaunchConfigurationTab.this.openProgramPathDialog(validateProject());
-			}
-			
-		};
+		return new GoPackageField("Go package to build:", null, "Select...");
 	}
 	
 	protected ComboOptionsField init_createBuildTypeField() {
@@ -97,41 +80,43 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected void createCustomControls(Composite parent) {
-		goPackageField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
-//		buildTargetField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
-		programPathField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
-	}
-	
-	@Override
 	protected void initBindings() {
 		super.initBindings();
 		goPackageField.addValueChangedListener(this::buildTargetFieldChanged);
 		buildTypeField.addValueChangedListener(this::buildTargetFieldChanged);
 	}
 	
-	/* -----------------  ----------------- */
+	/* -----------------  Control creation  ----------------- */
 	
 	@Override
-	public void initializeFrom(ILaunchConfiguration config) {
-		super.initializeFrom(config);
-		String buildTargetName = getConfigAttribute(config, LaunchConstants.ATTR_BUILD_TARGET, "");
-		String buildConfiguration = LangCore.getBuildManager().getBuildConfigString(buildTargetName);
-		String buildTypeName = LangCore.getBuildManager().getBuildTypeString(buildTargetName);
-		goPackageField.setFieldValue(buildConfiguration);
-		buildTypeField.setFieldValue(buildTypeName);
-		if(buildTypeField.getFieldValue() == null) {
-			buildTypeField.setFieldValue(buildTypeField.getComboOptions().get(0));
+	protected void createCustomControls(Composite parent) {
+		goPackageField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
+//		buildTargetField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
+		programPathField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
+	}
+	
+	protected class GoPackageField extends EnablementButtonTextField {
+		public GoPackageField(String labelText, String useDefaultField_Label, String buttonlabel) {
+			super(labelText, useDefaultField_Label, buttonlabel);
+		}
+		
+		@Override
+		protected String getDefaultFieldValue() throws CommonException {
+			return null;
+		}
+		
+		@Override
+		protected void createContents_all(Composite topControl) {
+			super.createContents_all(topControl);
+			
+			buildTypeField.createComponent(topControl, new GridData(GridData.FILL_HORIZONTAL));
+		}
+		
+		@Override
+		protected String getNewValueFromButtonSelection() throws StatusException {
+			return GoMainLaunchConfigurationTab.this.openProgramPathDialog(validateProject());
 		}
 	}
-	
-	@Override
-	protected String getBuildTargetName() {
-		String buildType = buildTypeField.getFieldValue();
-		return goPackageField.getFieldValue() + StringUtil.prefixStr("#", buildType); 
-	}
-	
-	/* -----------------  ----------------- */
 	
 	protected String openProgramPathDialog(IProject project) {
 		// TODO: this should be refactored to show only main packages
@@ -162,6 +147,27 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			UIOperationExceptionHandler.handleOperationStatus("Error selecting package from dialog: ", ce);
 		}
 		return null;
+	}
+	
+	/* -----------------  save/apply  ----------------- */
+	
+	@Override
+	public void initializeFrom(ILaunchConfiguration config) {
+		super.initializeFrom(config);
+		String buildTargetName = getConfigAttribute(config, LaunchConstants.ATTR_BUILD_TARGET, "");
+		String buildConfiguration = LangCore.getBuildManager().getBuildConfigString(buildTargetName);
+		String buildTypeName = LangCore.getBuildManager().getBuildTypeString(buildTargetName);
+		goPackageField.setFieldValue(buildConfiguration);
+		buildTypeField.setFieldValue(buildTypeName);
+		if(buildTypeField.getFieldValue() == null) {
+			buildTypeField.setFieldValue(buildTypeField.getComboOptions().get(0));
+		}
+	}
+	
+	@Override
+	protected String getBuildTargetName() {
+		String buildType = buildTypeField.getFieldValue();
+		return goPackageField.getFieldValue() + StringUtil.prefixStr("#", buildType); 
 	}
 	
 }

@@ -34,7 +34,7 @@ public class GoBuilder extends LangProjectBuilder {
 		ArrayList2<String> goBuildCmdLine = GoBuildManager.getToolCommandLine();
 		goBuildCmdLine.addElements("clean", "-i", "-x");
 		GoBuildManager.addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
-		return goEnv.createProcessBuilder(goBuildCmdLine, getProjectLocation());
+		return goEnv.createProcessBuilder(goBuildCmdLine, getProjectLocation(), true);
 	}
 	
 }

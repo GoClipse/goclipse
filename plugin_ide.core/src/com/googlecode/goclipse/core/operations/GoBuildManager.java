@@ -17,8 +17,6 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import com.googlecode.goclipse.core.GoCoreMessages;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
@@ -27,7 +25,6 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -41,6 +38,7 @@ import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -87,6 +85,19 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	@Override
+	public BuildTargetRunner getBuildTargetOperation(IProject project, BuildTarget buildTarget) 
+			throws CommonException {
+		String targetName = buildTarget.getTargetName();
+		String buildConfigName = getBuildConfigString(targetName);
+		String buildTypeName = getBuildTypeString(targetName);
+		
+		/* FIXME: adapt this code in parent */
+		BuildConfiguration buildConfiguration = new BuildConfiguration(buildConfigName, null);
+		
+		return createBuildTargetOperation(project, buildConfiguration, buildTypeName, buildTarget);
+	}
+	
+	@Override
 	public BuildTargetRunner createBuildTargetOperation(IProject project, BuildConfiguration buildConfig,
 			String buildTypeName, BuildTarget buildSettings) {
 		return new BuildTargetRunner(project, buildConfig, buildTypeName, buildSettings.getBuildOptions()) {
@@ -113,7 +124,7 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public String getDefaultBuildOptions(BuildTargetRunner buildTargetOp) throws CommonException {
-			String goPackageSpec = getGoPackageSpec(buildTargetOp.project, buildTargetOp.getBuildConfigName());
+			String goPackageSpec = getGoPackageSpec(buildTargetOp.getProject(), buildTargetOp.getBuildConfigName());
 			return getBuildCommand() + " -v -gcflags \"-N -l\" " + goPackageSpec;
 		}
 		
@@ -137,8 +148,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getArtifactPath(BuildTargetRunner buildTargetOp) {
-			Location binFolderLocation = GoProjectEnvironment.getBinFolderLocation(buildTargetOp.project);
+		public String getArtifactPath(BuildTargetRunner buildTargetOp) throws CommonException {
+			Location binFolderLocation = GoProjectEnvironment.getBinFolderLocation(buildTargetOp.getProject());
 			
 			String binFilePath = getBinFilePath(getValidGoPackageName(buildTargetOp.getBuildConfigName()));
 			return binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString();
@@ -214,8 +225,7 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected ExternalProcessResult startProcess(IProgressMonitor pm, ArrayList2<String> commands)
-				throws CommonException, OperationCancellation, CoreException {
+		protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands) throws CoreException, CommonException {
 			Location projectLocation = ResourceUtils.getProjectLocation(project);
 			
 			goEnv = getValidGoEnvironment(project);
@@ -226,10 +236,9 @@ public class GoBuildManager extends BuildManager {
 				
 				checkGoFilesInSourceRoot();
 			}
-			
-			ProcessBuilder pb = goEnv.createProcessBuilder(commands, sourceRootDir);
-			
-			return runBuildTool(pm, pb);
+			ProcessBuilder pb = ProcessUtils.createProcessBuilder(commands, sourceRootDir);
+			goEnv.setupProcessEnv(pb, true);
+			return pb;
 		}
 		
 		protected void checkGoFilesInSourceRoot() throws CoreException {
@@ -244,7 +253,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void processBuildOutput(ExternalProcessResult buildAllResult) throws CommonException {
+		protected void processBuildOutput(ExternalProcessResult buildAllResult) 
+				throws CoreException, CommonException, OperationCancellation {
 			GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 				@Override
 				protected void handleMessageParseError(CommonException ce) {

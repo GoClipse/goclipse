@@ -78,12 +78,12 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	}
 	
 	protected BuildTarget testGetBuildTargetFor(ProjectBuildInfo buildInfo, String targetName, String buildConfig, 
-			String buildType) throws CommonException {
+			String buildType) throws CommonException, CoreException {
 		return testGetBuildTargetFor(buildInfo, targetName, buildConfig, buildType, buildConfig);
 	}
 	
 	protected BuildTarget testGetBuildTargetFor(ProjectBuildInfo buildInfo, String targetName, String goPackageName, 
-			String buildType, String relArtifactPath) throws CommonException {
+			String buildType, String relArtifactPath) throws CommonException, CoreException {
 		BuildTarget buildTarget = buildInfo.getBuildTargetFor(targetName);
 		assertAreEqual(buildTarget.getTargetName(), targetName);
 
@@ -92,11 +92,11 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		assertAreEqual(buildTargetOp.getBuildTypeName(), buildType);
 		
 		if(relArtifactPath == null) {
-			verifyThrows(() -> buildTargetOp.getArtifactPath3(), CommonException.class);
+			verifyThrows(() -> buildTargetOp.getArtifactPath(), CommonException.class);
 		} else {
 			Location binLocation = getProjectLocation().resolve("bin");
-			assertAreEqual(buildTargetOp.getArtifactPath3(), 
-				binLocation.resolve(relArtifactPath + MiscUtil.getExecutableSuffix()).toPath());
+			assertAreEqual(buildTargetOp.getArtifactPath(), 
+				binLocation.resolve(relArtifactPath + MiscUtil.getExecutableSuffix()).toString());
 			
 		}
 		

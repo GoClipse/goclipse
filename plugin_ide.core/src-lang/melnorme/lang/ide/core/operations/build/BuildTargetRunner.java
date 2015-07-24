@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
@@ -41,6 +42,10 @@ public abstract class BuildTargetRunner {
 		return LangCore.getBuildManager();
 	}
 	
+	public IProject getProject() {
+		return project;
+	}
+	
 	public BuildConfiguration getBuildConfiguration() {
 		return buildConfiguration2;
 	}
@@ -57,7 +62,7 @@ public abstract class BuildTargetRunner {
 		return buildTypeName;
 	}
 	
-	public String getEffectiveBuildOptions() throws CommonException {
+	public String getEffectiveBuildOptions() throws CommonException, CoreException {
 		String buildOptions = getBuildOptions();
 		if(buildOptions != null) {
 			return buildOptions;
@@ -104,10 +109,11 @@ public abstract class BuildTargetRunner {
 		}
 		
 		public abstract String getDefaultBuildOptions(BuildTargetRunner buildTargetRunner)
-				throws CommonException;
+				throws CommonException, CoreException;
 		
-		public String getArtifactPath(BuildTargetRunner buildTargetRunner) {
-			return buildTargetRunner.getBuildConfiguration().getArtifactPath();
+		public String getArtifactPath(BuildTargetRunner buildTargetOp) 
+				throws CommonException, CoreException {
+			return buildTargetOp.getBuildConfiguration().getArtifactPath();
 		}
 		
 	}
@@ -118,21 +124,19 @@ public abstract class BuildTargetRunner {
 		return getBuildManager().getBuildType_NonNull(getBuildTypeName());
 	}
 	
-	public String getDefaultBuildOptions() throws CommonException {
+	public String getDefaultBuildOptions() throws CommonException, CoreException {
 		return getBuildType().getDefaultBuildOptions(this);
 	}
 	
-	/* FIXME: rename */
-	public String getArtifactPath3() throws CommonException {
+	public String getArtifactPath() throws CommonException, CoreException {
 		return getBuildType().getArtifactPath(this);
 	}
 	
-	public Path getValidArtifactPath3() throws CommonException {
-		String artifactPathStr = getArtifactPath3();
-		return getValidArtifactPath3(artifactPathStr);
+	public Path getValidArtifactPath() throws CommonException, CoreException {
+		return getValidArtifactPath(getArtifactPath());
 	}
 	
-	public Path getValidArtifactPath3(String artifactPathStr) throws CommonException {
+	public Path getValidArtifactPath(String artifactPathStr) throws CommonException {
 		if(artifactPathStr == null || artifactPathStr.isEmpty()) {
 			throw new CommonException(LaunchMessages.BuildTarget_NoArtifactPathSpecified);
 		}
