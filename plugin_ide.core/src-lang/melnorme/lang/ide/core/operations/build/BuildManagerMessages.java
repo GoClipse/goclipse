@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import java.text.MessageFormat;
+
 public interface BuildManagerMessages {
 
 	public String ERROR_MODEL_OUT_OF_DATE = 
@@ -28,8 +30,12 @@ public interface BuildManagerMessages {
 	
 	public String MSG_Starting_LANG_Build = "Starting {0} build";
 	
-	public static String Error_NoSuchBuildType(String buildTypeString) {
-		return "No such build type: `" + buildTypeString + "`.";
+	public static String BuildConfig_NotFound(String buildConfigName) {
+		return MessageFormat.format("Build configuration `{0}` not found.", buildConfigName);
+	}
+	
+	public static String BuildType_NotFound(String buildTypeString) {
+		return MessageFormat.format("No such build type: `{0}`.", buildTypeString);
 	}
 	
 }

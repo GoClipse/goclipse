@@ -32,7 +32,9 @@ import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildType;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildType;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -85,9 +87,16 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	@Override
-	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo, IProject project,
-			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
-		return new GoBuildTargetOperation(this, parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
+	public BuildTargetRunner createBuildTargetOperation(IProject project, BuildConfiguration buildConfig,
+			String buildTypeName, BuildTarget buildSettings) {
+		return new BuildTargetRunner(project, buildConfig, buildTypeName, buildSettings.getBuildOptions()) {
+			
+			@Override
+			public CommonBuildTargetOperation getBuildOperation(OperationInfo parentOpInfo, Path buildToolPath,
+					boolean fullBuild) {
+				return new GoBuildTargetOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
+			}
+		};
 	}
 	
 	/* -----------------  ----------------- */
@@ -103,8 +112,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(BuildTarget buildTarget, IProject project) throws CommonException {
-			String goPackageSpec = getGoPackageSpec(project, buildTarget.getBuildConfiguration());
+		public String getDefaultBuildOptions(BuildTargetRunner buildTargetOp) throws CommonException {
+			String goPackageSpec = getGoPackageSpec(buildTargetOp.project, buildTargetOp.getBuildConfigName());
 			return getBuildCommand() + " -v -gcflags \"-N -l\" " + goPackageSpec;
 		}
 		
@@ -128,11 +137,11 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Path getArtifactPath(BuildTarget buildTarget, IProject project) throws CommonException {
-			Location binFolderLocation = GoProjectEnvironment.getBinFolderLocation(project);
+		public String getArtifactPath(BuildTargetRunner buildTargetOp) {
+			Location binFolderLocation = GoProjectEnvironment.getBinFolderLocation(buildTargetOp.project);
 			
-			String binFilePath = getBinFilePath(getValidGoPackageName(buildTarget.getBuildConfiguration()));
-			return binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toPath();
+			String binFilePath = getBinFilePath(getValidGoPackageName(buildTargetOp.getBuildConfigName()));
+			return binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString();
 		}
 		
 		protected String getBinFilePath(GoPackageName goPackageName) throws CommonException {
@@ -184,7 +193,7 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Path getArtifactPath(BuildTarget buildTarget, IProject project) throws CommonException {
+		public String getArtifactPath(BuildTargetRunner buildTargetOp) throws CommonException {
 			throw new CommonException("This configuration does not produce executable artifacts.");
 		}
 		
@@ -192,20 +201,21 @@ public class GoBuildManager extends BuildManager {
 	
 	public static class GoBuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public GoBuildTargetOperation(BuildManager goBuildMgr, OperationInfo parentOpInfo, IProject project, 
-				Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
-			super(goBuildMgr, parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
+		public GoBuildTargetOperation(OperationInfo parentOpInfo, IProject project, 
+				Path buildToolPath, BuildTargetRunner buildTargetOp, boolean fullBuild) {
+			super(buildTargetOp.getBuildManager(), parentOpInfo, project, buildToolPath, buildTargetOp, fullBuild);
 		}
 		
 		protected GoEnvironment goEnv;
 		protected Location sourceRootDir;
 		
 		@Override
-		public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-			
-			ArrayList2<String> goBuildCmdLine = getToolCommandLine();
-			goBuildCmdLine.addElements(LaunchUtils.getParsedArguments(getEffectiveBuildOptions()));
-			
+		protected void addMainArguments(ArrayList2<String> commands) {
+		}
+		
+		@Override
+		protected ExternalProcessResult startProcess(IProgressMonitor pm, ArrayList2<String> commands)
+				throws CommonException, OperationCancellation, CoreException {
 			Location projectLocation = ResourceUtils.getProjectLocation(project);
 			
 			goEnv = getValidGoEnvironment(project);
@@ -217,10 +227,9 @@ public class GoBuildManager extends BuildManager {
 				checkGoFilesInSourceRoot();
 			}
 			
-			ProcessBuilder pb = goEnv.createProcessBuilder(goBuildCmdLine, sourceRootDir);
+			ProcessBuilder pb = goEnv.createProcessBuilder(commands, sourceRootDir);
 			
-			ExternalProcessResult buildAllResult = runBuildTool(pm, pb);
-			doBuild_processBuildResult(buildAllResult);
+			return runBuildTool(pm, pb);
 		}
 		
 		protected void checkGoFilesInSourceRoot() throws CoreException {
@@ -234,8 +243,8 @@ public class GoBuildManager extends BuildManager {
 			}
 		}
 		
-		protected void doBuild_processBuildResult(ExternalProcessResult buildAllResult) 
-				throws CoreException, CommonException {
+		@Override
+		protected void processBuildOutput(ExternalProcessResult buildAllResult) throws CommonException {
 			GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 				@Override
 				protected void handleMessageParseError(CommonException ce) {

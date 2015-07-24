@@ -51,6 +51,7 @@ import melnorme.utilbox.collections.HashSet2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
+/* FIXME: need to review this class. */
 public abstract class AbstractLaunchShortcut2 implements ILaunchShortcut {
 	
 	public static interface ILaunchTarget {

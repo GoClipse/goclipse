@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
@@ -27,24 +28,35 @@ import melnorme.utilbox.core.CommonException;
 
 public class ProjectBuildInfo {
 	
-	protected final BuildManager buildManager;
+	protected final BuildManager buildMgr;
 	protected final IProject project;
 	protected final LinkedHashMap2<String, BuildTarget> buildTargets = new LinkedHashMap2<>();
+	protected final AbstractBundleInfo bundleInfo;
 	
-	public ProjectBuildInfo(BuildManager buildManager, IProject project, Indexable<BuildTarget> buildTargetsArray) {
-		this.buildManager = buildManager;
+	public ProjectBuildInfo(BuildManager buildManager, IProject project, 
+			AbstractBundleInfo bundleInfo, Indexable<BuildTarget> buildTargets) {
+		this.buildMgr = buildManager;
 		this.project = project;
-		for(BuildTarget buildTarget : nullToEmpty(buildTargetsArray)) {
-			buildTargets.put(buildTarget.getTargetName(), buildTarget);
+		this.bundleInfo = bundleInfo;
+		for(BuildTarget buildTarget : nullToEmpty(buildTargets)) {
+			this.buildTargets.put(buildTarget.getTargetName(), buildTarget);
 		}
 	}
 	
 	public BuildManager getBuildManager() {
-		return buildManager;
+		return buildMgr;
 	}
 	
 	public IProject getProject() {
 		return project;
+	}
+	
+	public AbstractBundleInfo getBundleInfo() {
+		return bundleInfo;
+	}
+	
+	public Indexable<BuildConfiguration> getBuildConfigs() {
+		return getBundleInfo().getBuildConfigurations();
 	}
 	
 	public Collection2<BuildTarget> getBuildTargets() {
@@ -59,7 +71,7 @@ public class ProjectBuildInfo {
 	}
 	
 	public BuildTarget getBuildTargetFor(String name) throws CommonException {
-		return buildManager.getBuildTargetFor(this, name);
+		return buildMgr.getBuildTargetFor(this, name);
 	}
 	
 	public BuildTarget getDefaultBuildTarget() throws CommonException {
@@ -79,10 +91,19 @@ public class ProjectBuildInfo {
 		return enabledTargets;
 	}
 	
+	public BuildConfiguration getBuildConfiguration_nonNull(String buildConfigName) throws CommonException {
+		for(BuildConfiguration buildConfig : getBuildConfigs()) {
+			if(buildConfig.getName().equals(buildConfigName)) {
+				return buildConfig;
+			}
+		}
+		throw new CommonException(BuildManagerMessages.BuildConfig_NotFound(buildConfigName));
+	}
+	
 	/* -----------------  ----------------- */
 		
 	public void changeEnable(BuildTarget oldBuildTarget, boolean newEnabledValue) throws StatusException {
-		changeBuildTarget(oldBuildTarget, buildManager.createBuildTarget(
+		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget(
 			oldBuildTarget.getTargetName(), 
 			newEnabledValue,
 			oldBuildTarget.getBuildOptions()
@@ -90,8 +111,8 @@ public class ProjectBuildInfo {
 	}
 	
 	public void changeOptions(BuildTarget oldBuildTarget, String newOptionsValue) throws StatusException {
-		changeBuildTarget(oldBuildTarget, buildManager.createBuildTarget(
-			oldBuildTarget.getTargetName(), 
+		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget(
+			oldBuildTarget.getTargetName(),
 			oldBuildTarget.isEnabled(),
 			newOptionsValue
 		));
@@ -113,8 +134,8 @@ public class ProjectBuildInfo {
 			throw new StatusException(StatusLevel.WARNING, BuildManagerMessages.ERROR_MODEL_OUT_OF_DATE);
 		}
 		
-		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildManager, project, newBuildTargets);
-		buildManager.setAndSaveProjectBuildInfo(project, newProjectBuildInfo);
+		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargets);
+		buildMgr.setAndSaveProjectBuildInfo(project, newProjectBuildInfo);
 	}
 	
 }

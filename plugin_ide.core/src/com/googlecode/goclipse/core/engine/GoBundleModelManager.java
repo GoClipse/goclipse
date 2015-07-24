@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IProject;
 
 import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
+
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
@@ -48,8 +50,10 @@ public class GoBundleModelManager extends BundleModelManager<AbstractBundleInfo,
 			}
 			
 			@Override
-			public Indexable<String> getBuildConfigurations() {
-				return ArrayList2.<String>create("");
+			public Indexable<BuildConfiguration> getBuildConfigurations() {
+				return ArrayList2.create(
+					new BuildConfiguration("", null)
+				);
 			}
 			
 		};

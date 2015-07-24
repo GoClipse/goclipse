@@ -17,7 +17,7 @@ import org.eclipse.debug.core.DebugPlugin;
 
 public class LaunchUtils {
 	
-	public static String[] getParsedArguments(String extraOptionsString) throws CoreException {
+	public static String[] getEvaluatedAndParsedArguments(String extraOptionsString) throws CoreException {
 		IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
 		extraOptionsString = varMgr.performStringSubstitution(extraOptionsString, true);
 		return DebugPlugin.parseArguments(extraOptionsString);

@@ -12,6 +12,7 @@ package melnorme.lang.ide.core.project_model;
 
 import java.nio.file.Path;
 
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
@@ -19,6 +20,6 @@ public abstract class AbstractBundleInfo {
 	
 	public abstract Path getEffectiveTargetFullPath() throws CommonException;
 	
-	public abstract Indexable<String> getBuildConfigurations();
+	public abstract Indexable<BuildConfiguration> getBuildConfigurations();
 	
 }

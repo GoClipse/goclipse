@@ -15,8 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTargetsSerializer;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.tests.CommonTest;

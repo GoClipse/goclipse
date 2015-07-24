@@ -26,6 +26,7 @@ import com.googlecode.goclipse.core.operations.GoBuildManager;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -53,6 +54,10 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		return EclipseUtils.loc(project.getLocation());
 	}
 	
+	protected BuildManager getBuildManager() {
+		return LangCore.getBuildManager();
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Test
@@ -77,18 +82,20 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		return testGetBuildTargetFor(buildInfo, targetName, buildConfig, buildType, buildConfig);
 	}
 	
-	protected BuildTarget testGetBuildTargetFor(ProjectBuildInfo buildInfo, String targetName, String buildConfig, 
+	protected BuildTarget testGetBuildTargetFor(ProjectBuildInfo buildInfo, String targetName, String goPackageName, 
 			String buildType, String relArtifactPath) throws CommonException {
 		BuildTarget buildTarget = buildInfo.getBuildTargetFor(targetName);
 		assertAreEqual(buildTarget.getTargetName(), targetName);
-		assertAreEqual(buildTarget.getBuildConfiguration(), buildConfig);
-		assertAreEqual(buildTarget.getBuildTypeName(), buildType);
+
+		BuildTargetRunner buildTargetOp = getBuildManager().getBuildTargetOperation(project, buildTarget);
+		assertAreEqual(buildTargetOp.getBuildConfigName(), goPackageName);
+		assertAreEqual(buildTargetOp.getBuildTypeName(), buildType);
 		
 		if(relArtifactPath == null) {
-			verifyThrows(() -> buildTarget.getArtifactPath(project), CommonException.class);
+			verifyThrows(() -> buildTargetOp.getArtifactPath3(), CommonException.class);
 		} else {
 			Location binLocation = getProjectLocation().resolve("bin");
-			assertAreEqual(buildTarget.getArtifactPath(project), 
+			assertAreEqual(buildTargetOp.getArtifactPath3(), 
 				binLocation.resolve(relArtifactPath + MiscUtil.getExecutableSuffix()).toPath());
 			
 		}

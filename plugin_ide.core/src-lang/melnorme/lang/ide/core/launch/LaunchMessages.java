@@ -8,8 +8,8 @@ public class LaunchMessages {
 			"Build target not specified";
 	public static final String PROCESS_LAUNCH_NoSuchBuildTarget = 
 			"Build target does not exist";
-	public static final String PROCESS_LAUNCH_CouldNotDetermineExeLocation = 
-			"No build target or executable path specified.";
+	public static final String BuildTarget_NoArtifactPathSpecified = 
+			"No executable path specified for Build Target.";
 	
 	
 	public static final String LCD_PreparingLaunch = 

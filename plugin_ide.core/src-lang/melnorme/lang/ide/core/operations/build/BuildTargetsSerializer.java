@@ -104,7 +104,8 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 	
 	protected BuildTarget createBuildTarget(@SuppressWarnings("unused") Node targetElem, 
 			String targetName, boolean enabled, String buildOptions) {
-		return buildManager.createBuildTarget(StringUtil.nullAsEmpty(targetName), enabled, buildOptions);
+		targetName = StringUtil.nullAsEmpty(targetName);
+		return buildManager.createBuildTarget(targetName, enabled, buildOptions);
 	}
 	
 }

@@ -28,7 +28,6 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
@@ -117,10 +116,10 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	public void initializeFrom(ILaunchConfiguration config) {
 		super.initializeFrom(config);
 		String buildTargetName = getConfigAttribute(config, LaunchConstants.ATTR_BUILD_TARGET, "");
-		BuildTarget tempBuildTarget = LangCore.getBuildManager().createBuildTarget(buildTargetName, false, "");
-		
-		goPackageField.setFieldValue(tempBuildTarget.getBuildConfiguration());
-		buildTypeField.setFieldValue(tempBuildTarget.getBuildTypeName());
+		String buildConfiguration = LangCore.getBuildManager().getBuildConfigString(buildTargetName);
+		String buildTypeName = LangCore.getBuildManager().getBuildTypeString(buildTargetName);
+		goPackageField.setFieldValue(buildConfiguration);
+		buildTypeField.setFieldValue(buildTypeName);
 		if(buildTypeField.getFieldValue() == null) {
 			buildTypeField.setFieldValue(buildTypeField.getComboOptions().get(0));
 		}
