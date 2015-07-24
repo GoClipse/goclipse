@@ -226,11 +226,11 @@ public abstract class BuildManager {
 		return buildConfigName + StringUtil.prefixStr(BUILD_TYPE_NAME_SEPARATOR, buildType);
 	}
 	
-	public static String getBuildConfigString(String targetName) {
+	public String getBuildConfigString(String targetName) {
 		return StringUtil.substringUntilMatch(targetName, BUILD_TYPE_NAME_SEPARATOR);
 	}
 	
-	public static String getBuildTypeString(String targetName) {
+	public String getBuildTypeString(String targetName) {
 		return StringUtil.segmentAfterMatch(targetName, BUILD_TYPE_NAME_SEPARATOR);
 	}
 	

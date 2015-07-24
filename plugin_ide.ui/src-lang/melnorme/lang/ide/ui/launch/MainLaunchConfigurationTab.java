@@ -87,7 +87,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		@Override
 		protected String getDefaultFieldValue() {
 			try {
-				return getValidatedBuildTargetRunner().getArtifactPath3();
+				return getValidatedBuildTargetRunner().getArtifactPath();
 			} catch(CoreException | CommonException e) {
 				return null;
 			}

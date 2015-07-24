@@ -84,9 +84,9 @@ public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 		
 		String exePathString = settings.getExecutablePath_Attribute();
 		if(exePathString != null) {
-			return buildTargetOperation.getValidArtifactPath3(exePathString);
+			return buildTargetOperation.getValidArtifactPath(exePathString);
 		}
-		return buildTargetOperation.getValidArtifactPath3();
+		return buildTargetOperation.getValidArtifactPath();
 	}
 	
 	public Location toAbsolute(Path exePath) throws StatusException, CoreException {

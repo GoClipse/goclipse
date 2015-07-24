@@ -57,7 +57,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		return StringUtil.nullAsEmpty(buildTarget.getBuildTypeName());
 	}
 	
-	protected String getEffectiveBuildOptions() throws CommonException {
+	protected String getEffectiveBuildOptions() throws CommonException, CoreException {
 		return buildTarget.getEffectiveBuildOptions();
 	}
 	
@@ -67,27 +67,33 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	@Override
 	public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+		ProcessBuilder pb = getToolProcessBuilder();
+		ExternalProcessResult processResult = runBuildTool(pm, pb);
+		processBuildOutput(processResult);
+	}
+	
+	protected ProcessBuilder getToolProcessBuilder() throws CoreException, CommonException, OperationCancellation {
 		ArrayList2<String> commands = new ArrayList2<String>();
 		addToolCommand(commands);
 		
 		addMainArguments(commands);
 		
 		commands.addElements(getEvaluatedAndParserArguments());
-		
-		ExternalProcessResult processResult = startProcess(pm, commands);
-		processBuildOutput(processResult);
+		return getProcessBuilder(commands);
 	}
 	
-	protected void addToolCommand(ArrayList2<String> commands) throws CommonException {
+	protected void addToolCommand(ArrayList2<String> commands) 
+			throws CoreException, CommonException, OperationCancellation {
 		commands.add(getBuildToolPath().toString());
 	}
 	
-	protected abstract void addMainArguments(ArrayList2<String> commands);
+	protected abstract void addMainArguments(ArrayList2<String> commands)
+			throws CoreException, CommonException, OperationCancellation;
 	
-	// TODO: write some default for this method, refactor associated code.
-	protected abstract ExternalProcessResult startProcess(IProgressMonitor pm, ArrayList2<String> commands)
-			throws CommonException, OperationCancellation;
+	protected abstract ProcessBuilder getProcessBuilder(ArrayList2<String> commands) 
+			throws CommonException, OperationCancellation, CoreException;
 	
-	protected abstract void processBuildOutput(ExternalProcessResult processResult) throws CoreException;
-	
+	protected abstract void processBuildOutput(ExternalProcessResult processResult)
+			throws CoreException, CommonException, OperationCancellation;
+			
 }
