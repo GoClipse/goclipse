@@ -11,8 +11,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -25,6 +23,8 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator;
 import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator.ProjectBuildExecutableSettings;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
@@ -44,7 +44,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	protected final ProjectRelativePathField programPathField = init_createProgramPathField();
 	
 	public MainLaunchConfigurationTab() {
-		this(false);
+		this(true);
 	}
 	
 	public MainLaunchConfigurationTab(boolean initialize) {
@@ -58,6 +58,10 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	protected ProjectRelativePathField init_createProgramPathField() {
 		return new MainLaunchTab_ProgramPathField();
+	}
+	
+	protected BuildManager getBuildManager() {
+		return LangCore.getBuildManager();
 	}
 	
 	protected String getProgramPathString() {
@@ -83,21 +87,20 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		@Override
 		protected String getDefaultFieldValue() {
 			try {
-				IProject project = validateProject();
-				BuildTarget buildTarget = getValidatedBuildTarget();
-				Path artifactPath = buildTarget.getArtifactPath(project);
-				return artifactPath == null ? "" : artifactPath.toString();
+				return getValidatedBuildTargetRunner().getArtifactPath3();
 			} catch(CoreException | CommonException e) {
 				return null;
 			}
 		}
 	}
 	
-	/* ---------- validation ---------- */
-	
 	@Override
 	protected void doValidate() throws CommonException, CoreException {
 		getValidatedProgramFileLocation();
+	}
+	
+	protected BuildTargetRunner getValidatedBuildTargetRunner() throws CommonException, CoreException {
+		return getBuildManager().getBuildTargetOperation(validateProject(), getValidatedBuildTarget());
 	}
 	
 	protected BuildTarget getValidatedBuildTarget() throws CommonException, CoreException {
@@ -132,7 +135,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		
 		@Override
 		public String getExecutablePath_Attribute() throws CoreException {
-			return getProgramPathString();
+			return programPathField.getEffectiveFieldValue();
 		}
 		
 		@Override
@@ -160,7 +163,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	public void projectFieldChanged() {
 		IProject project = getValidProjectOrNull();
 		if(project != null) {
-			ProjectBuildInfo buildInfo = LangCore.getBuildManager().getBuildInfo(project);
+			ProjectBuildInfo buildInfo = getBuildManager().getBuildInfo(project);
 			if(buildInfo != null) {
 				
 				buildTargetField.setFieldOptions(

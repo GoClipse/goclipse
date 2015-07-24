@@ -76,7 +76,11 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 					return newValue;
 				}
 			}
-		}	
+		}
+		// If newValue is not valid, try to set a valid value from possible options:
+		if(!fieldOptions.isEmpty()) {
+			return fieldOptions.get(0);
+		}
 		return null;
 	}
 	

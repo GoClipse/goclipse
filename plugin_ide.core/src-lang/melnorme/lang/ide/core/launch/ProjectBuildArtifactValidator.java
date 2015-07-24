@@ -16,7 +16,10 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator2;
@@ -24,7 +27,6 @@ import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.ValidationMessages;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.PathUtil;
 
 public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 	
@@ -32,6 +34,10 @@ public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 	
 	public ProjectBuildArtifactValidator(ProjectBuildExecutableSettings settings) {
 		this.settings = settings;
+	}
+	
+	protected BuildManager getBuildManager() {
+		return LangCore.getBuildManager();
 	}
 	
 	public static interface ProjectBuildExecutableSettings {
@@ -70,25 +76,17 @@ public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 		return getBuildTargetValidator().getBuildTarget_nonNull(getProject(), settings.getBuildTarget_Attribute());
 	}
 	
-	public Path getExecutableFilePath(BuildTarget buildTarget) throws CoreException, CommonException {
-		return getExecutableFilePath(buildTarget, settings.getExecutablePath_Attribute());
-	}
+	/* -----------------  ----------------- */ 
 	
-	public Path getExecutableFilePath(BuildTarget buildTarget, String exePathString)
-			throws CommonException, CoreException {
-		if(exePathString != null) {
-			return PathUtil.createPath(exePathString);
-		}
+	protected Path getValidExecutableFilePath2() throws CoreException, CommonException {
+		BuildTarget buildTarget = getBuildTarget_NonNull();
+		BuildTargetRunner buildTargetOperation = getBuildManager().getBuildTargetOperation(getProject(), buildTarget);
 		
-		Path artifactPath = null;
-		if(buildTarget != null) {
-			artifactPath = buildTarget.getArtifactPath(getProject());
+		String exePathString = settings.getExecutablePath_Attribute();
+		if(exePathString != null) {
+			return buildTargetOperation.getValidArtifactPath3(exePathString);
 		}
-		if(artifactPath == null) {
-			throw error(LaunchMessages.PROCESS_LAUNCH_CouldNotDetermineExeLocation);
-		} else {
-			return artifactPath;
-		}
+		return buildTargetOperation.getValidArtifactPath3();
 	}
 	
 	public Location toAbsolute(Path exePath) throws StatusException, CoreException {
@@ -100,7 +98,7 @@ public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 	}
 	
 	public Location getValidExecutableFileLocation() throws CoreException, CommonException {
-		Location location = toAbsolute(getExecutableFilePath(getBuildTarget()));
+		Location location = toAbsolute(getValidExecutableFilePath2());
 		if(location.toFile().exists() && !location.toFile().isFile()) {
 			error(ValidationMessages.Location_NotAFile(location));
 		}

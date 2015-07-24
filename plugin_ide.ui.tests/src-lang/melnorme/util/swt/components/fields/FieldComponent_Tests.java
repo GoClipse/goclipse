@@ -425,15 +425,15 @@ public abstract class FieldComponent_Tests extends CommonTest {
 			assertTrue(comboField.getFieldControl().getSelectionIndex() == -1);
 			assertTrue(comboField.getFieldControl().getText().equals(""));
 			
-			testSetFieldValue(comboField, "Blah", null);
+			testSetFieldValue(comboField, "InvalidValue", null);
 			testSetFieldValue(comboField, null, null);
 			
 			// -----------
 			comboField.setFieldOptions("One", "Two"); 
 			
-			testSetFieldValue(comboField, "Blah", null);
+			testSetFieldValue(comboField, "InvalidValue", "One");
 			testSetFieldValue(comboField, "One", "One");
-			testSetFieldValue(comboField, null, null);
+			testSetFieldValue(comboField, null, "One");
 			
 			testSetValueFromControl(comboField, "One", "One");
 			testSetValueFromControl(comboField, "Blah", "One");
