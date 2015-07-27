@@ -30,18 +30,18 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public abstract class CommonBuildTargetOperation extends AbstractToolManagerOperation {
 	
 	protected final BuildManager buildManager;
-	protected final OperationInfo parentOperationInfo;
+	protected final OperationInfo opInfo;
 	protected final BuildTargetRunner buildTarget;
 	protected final Path buildToolPath;
 	protected final boolean fullBuild;
 	
-	public CommonBuildTargetOperation(BuildManager buildManager, OperationInfo parentOpInfo, IProject project,
+	public CommonBuildTargetOperation(BuildManager buildManager, OperationInfo opInfo, IProject project,
 			Path buildToolPath, BuildTargetRunner buildTarget, boolean fullBuild) {
 		super(project);
 		this.buildManager = assertNotNull(buildManager);
 		this.buildToolPath = buildToolPath;
 		this.fullBuild = fullBuild;
-		this.parentOperationInfo = assertNotNull(parentOpInfo);
+		this.opInfo = assertNotNull(opInfo);
 		this.buildTarget = assertNotNull(buildTarget);
 	}
 	
@@ -68,7 +68,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	@Override
 	public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		ProcessBuilder pb = getToolProcessBuilder();
-		ExternalProcessResult processResult = runBuildTool(pm, pb);
+		ExternalProcessResult processResult = runBuildTool(opInfo, pb, pm);
 		processBuildOutput(processResult);
 	}
 	

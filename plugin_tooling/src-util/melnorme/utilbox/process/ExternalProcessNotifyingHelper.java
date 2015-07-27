@@ -25,6 +25,7 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	protected final ILogHandler logHandler;
 	
+	/*FIXME: BUG here: adding listeners only makes sense before reader threads are started. */
 	public ExternalProcessNotifyingHelper(Process process, boolean readStdErr, boolean startReaders,
 			ICancelMonitor cancelMonitor, ILogHandler logHandler) {
 		super(process, readStdErr, startReaders, cancelMonitor);

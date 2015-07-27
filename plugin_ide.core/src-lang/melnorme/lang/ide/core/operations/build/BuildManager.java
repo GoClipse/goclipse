@@ -276,14 +276,9 @@ public abstract class BuildManager {
 	
 	/* ----------------- Build operations ----------------- */
 	
-	public IBuildTargetOperation newProjectBuildOperation(IProject project, boolean fullBuild) throws CommonException {
-		OperationInfo parentOpInfo = new OperationInfo(project, true, "");
-		return newProjectBuildOperation(project, parentOpInfo, fullBuild);
-	}
-	
-	public IBuildTargetOperation newProjectBuildOperation(IProject project, OperationInfo parentOpInfo,
+	public IBuildTargetOperation newProjectBuildOperation(OperationInfo opInfo, IProject project,
 			boolean fullBuild) throws CommonException {
-		return new BuildOperationCreator(project, parentOpInfo, fullBuild).newProjectBuildOperation();
+		return new BuildOperationCreator(project, opInfo, fullBuild).newProjectBuildOperation();
 	}
 	
 	public IBuildTargetOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
@@ -293,15 +288,20 @@ public abstract class BuildManager {
 	
 	public IBuildTargetOperation newBuildTargetOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
 			throws CommonException {
-		OperationInfo parentOpInfo = new OperationInfo(project, true, "");
-		return new BuildOperationCreator(project, parentOpInfo, false).newProjectBuildOperation(targetsToBuild);
+		OperationInfo operationInfo = LangCore.getToolManager().startNewToolOperation();
+		return newBuildTargetOperation(operationInfo, project, targetsToBuild);
 	}
 	
-	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo,
+	public IBuildTargetOperation newBuildTargetOperation(OperationInfo opInfo, IProject project, 
+			Collection2<BuildTarget> targetsToBuild) throws CommonException {
+		return new BuildOperationCreator(project, opInfo, false).newProjectBuildOperation(targetsToBuild);
+	}
+	
+	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo opInfo,
 			IProject project, Path buildToolPath, BuildTarget buildTarget, boolean fullBuild)
 					throws CommonException {
 		BuildTargetRunner buildTargetOp = getBuildTargetOperation(project, buildTarget);
-		return buildTargetOp.getBuildOperation(parentOpInfo, buildToolPath, fullBuild);
+		return buildTargetOp.getBuildOperation(opInfo, buildToolPath, fullBuild);
 	}
 	
 	/* -----------------  Persistence preference ----------------- */

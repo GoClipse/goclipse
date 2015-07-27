@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,26 +10,33 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import static melnorme.utilbox.core.CoreUtil.assertCast;
+
 import org.eclipse.core.resources.IProject;
 
 import melnorme.utilbox.collections.HashMap2;
 
 public class OperationInfo {
 	
-	protected final HashMap2<String, Object> properties = new HashMap2<>();
-	
 	public final IProject project; // can be null
-	public final boolean clearConsole;
-	public final String operationMessage;
+	public final HashMap2<String, Object> properties = new HashMap2<>();
 	
-	public OperationInfo(IProject project, boolean clearConsole, String operationMessage) {
+	protected boolean started = false;
+	
+	protected OperationInfo(IProject project) {
 		this.project = project;
-		this.clearConsole = clearConsole;
-		this.operationMessage = operationMessage;
 	}
 	
 	public IProject getProject() {
 		return project;
+	}
+	
+	public boolean isStarted() {
+		return started;
+	}
+	
+	public void setStarted(boolean started) {
+		this.started = started;
 	}
 	
 	public void putProperty(String key, Object value) {
@@ -40,10 +47,8 @@ public class OperationInfo {
 		return properties.get(key);
 	}
 	
-	public OperationInfo createSubOperation(IProject project, boolean clearConsole, String operationMessage) {
-		OperationInfo newOpInfo = new OperationInfo(project, clearConsole, operationMessage);
-		newOpInfo.properties.putAll(properties); // Copy the properties
-		return newOpInfo;
+	public <T> T getProperty(String key, Class<T> klass) {
+		return assertCast(properties.get(key), klass);
 	}
 	
 }

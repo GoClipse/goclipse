@@ -19,11 +19,13 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.file.CopyOption;
+import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.EnumSet;
 
 /**
  * Miscellaneous file utilities.
@@ -127,20 +129,23 @@ public final class FileUtil {
 			return;
 		}
 		
-		Files.walkFileTree(directory.toPath(), new SimpleFileVisitor<Path>() {
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				Files.deleteIfExists(file);
-				return FileVisitResult.CONTINUE;
-			}
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				if(!dir.equals(directory) || deleteDirectory) {
-					Files.deleteIfExists(dir);
+		Files.walkFileTree(directory.toPath(),
+			EnumSet.noneOf(FileVisitOption.class),
+			Integer.MAX_VALUE,
+			new SimpleFileVisitor<Path>() {
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					Files.deleteIfExists(file);
+					return FileVisitResult.CONTINUE;
 				}
-				return FileVisitResult.CONTINUE;
-			}
-		});
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					if(!dir.equals(directory) || deleteDirectory) {
+						Files.deleteIfExists(dir);
+					}
+					return FileVisitResult.CONTINUE;
+				}
+			});
 		
 	}
 	

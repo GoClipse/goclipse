@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,9 @@ public abstract class AbstractToolManagerOperation implements IBuildTargetOperat
 		return LangCore.getToolManager();
 	}
 	
-	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ProcessBuilder pb) 
+	protected ExternalProcessResult runBuildTool(OperationInfo opInfo, ProcessBuilder pb, IProgressMonitor pm) 
 			throws CommonException, OperationCancellation {
-		return getToolManager().newRunToolTask(pb, getProject(), monitor).runProcess();
+		return getToolManager().newRunToolTask(opInfo, pb, pm).runProcess();
 	}
 	
 }
