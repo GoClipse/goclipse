@@ -16,7 +16,6 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
 
-import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ProcessStartInfo;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
 import melnorme.utilbox.core.CommonException;
@@ -30,11 +29,11 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 	}
 	
 	@Override
-	public void handleProcessStart(ProcessStartInfo processStartInfo, OperationInfo opInfo) {
-		new ProcessUIConsoleHandler(processStartInfo, opInfo) {
+	public void handleProcessStart(ProcessStartInfo processStartInfo) {
+		new ProcessUIConsoleHandler(processStartInfo) {
 			@Override
-			protected void printProcessStartResult(IOConsoleOutputStream outStream) {
-				super.printProcessStartResult(outStream);
+			protected void printProcessStart(IOConsoleOutputStream outStream) {
+				super.printProcessStart(outStream);
 				printGoPathString(outStream, processStartInfo.pb);
 			}
 			
@@ -49,12 +48,12 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 	@Override
 	public void engineClientToolStart(ProcessBuilder pb, CommonException ce, 
 			ExternalProcessNotifyingHelper ph) {
-		ProcessStartInfo processStartInfo = new ProcessStartInfo(pb, null, ">> Running: ", false, ph, ce);
+		ProcessStartInfo processStartInfo = new ProcessStartInfo(null, pb, ">> Running: ", ph, ce);
 		
 		new EngineClientProcessUIConsoleHandler(processStartInfo) {
 			@Override
-			protected void printProcessStartResult(IOConsoleOutputStream outStream) {
-				super.printProcessStartResult(outStream);
+			protected void printProcessStart(IOConsoleOutputStream outStream) {
+				super.printProcessStart(outStream);
 				printGoPathString(outStream, pb);
 			}
 		}.handle();

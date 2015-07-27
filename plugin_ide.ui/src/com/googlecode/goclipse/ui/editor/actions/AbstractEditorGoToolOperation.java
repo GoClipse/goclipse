@@ -65,7 +65,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	protected String doBackgroundValueComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
 		ExternalProcessResult processResult = 
-				GoToolManager.getDefault().newRunToolTask(pb, null, monitor).runProcess(editorText, true);
+				GoToolManager.getDefault().newRunToolOperation2(pb, monitor).runProcess(editorText, true);
 		
 		return processResult.getStdOutBytes().toString();
 	}

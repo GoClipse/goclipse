@@ -12,27 +12,21 @@ package melnorme.lang.ide.core.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import org.eclipse.core.resources.IProject;
 
-public class ProcessStartInfo {
+public class MessageEventInfo {
 	
 	public final OperationInfo opInfo;
+	public final String operationMessage;
 	
-	public final ProcessBuilder pb;
-	public final String prefixText;
-	public final ExternalProcessNotifyingHelper processHelper;
-	public final CommonException ce;
-	
-	public ProcessStartInfo(OperationInfo opInfo, ProcessBuilder pb, String prefixText, 
-			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+	public MessageEventInfo(OperationInfo opInfo, String operationMessage) {
 		this.opInfo = opInfo;
-		this.pb = pb;
-		this.prefixText = prefixText;
-		this.processHelper = processHelper;
-		this.ce = ce;
-		
-		assertTrue(opInfo == null || opInfo.isStarted());
+		this.operationMessage = operationMessage;
+		assertTrue(opInfo != null && opInfo.isStarted());
+	}
+	
+	public IProject getProject() {
+		return opInfo.getProject();
 	}
 	
 }

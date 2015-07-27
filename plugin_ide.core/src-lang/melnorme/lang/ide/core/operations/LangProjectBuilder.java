@@ -35,7 +35,6 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
@@ -46,6 +45,10 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected Location getProjectLocation() throws CoreException {
 		return ResourceUtils.getProjectLocation(getProject());
+	}
+	
+	protected AbstractToolManager getToolManager() {
+		return LangCore.getToolManager();
 	}
 	
 	/* ----------------- helpers ----------------- */
@@ -63,23 +66,21 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected boolean isFirstProjectOfKind() throws CoreException {
-		boolean firstOfKind = true;
 		for (IBuildConfiguration buildConfig : getContext().getAllReferencedBuildConfigs()) {
 			if(buildConfig.getProject().hasNature(LangCore.NATURE_ID)) {
-				firstOfKind = false;
+				return false;
 			}
 		}
-		return firstOfKind;
+		return true;
 	}
 	
 	protected boolean isLastProjectOfKind() throws CoreException {
-		boolean lastOfKind = true;
 		for (IBuildConfiguration buildConfig : getContext().getAllReferencingBuildConfigs()) {
 			if(buildConfig.getProject().hasNature(LangCore.NATURE_ID)) {
-				lastOfKind = false;
+				return false;
 			}
 		}
-		return lastOfKind;
+		return true;
 	}
 	
 	/* ----------------- Build ----------------- */
@@ -89,21 +90,26 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		assertTrue(getProject() != null);
 	}
 	
-	protected OperationInfo workspaceOpInfo;
+	protected static OperationInfo workspaceOpInfo;
 	
 	protected void prepareForBuild() throws CoreException {
-		workspaceOpInfo = new OperationInfo(null, true, "");
-		
 		if(isFirstProjectOfKind()) {
 			handleBeginWorkspaceBuild();
+		} else {
+			assertTrue(workspaceOpInfo != null && workspaceOpInfo.isStarted());
 		}
 	}
 	
 	protected void handleBeginWorkspaceBuild() {
-		LangCore.getToolManager().notifyOperationStarted(workspaceOpInfo.createSubOperation(null, false, 
+		workspaceOpInfo = getToolManager().startNewToolOperation();
+		
+		getToolManager().notifyMessageEvent(new MessageEventInfo(workspaceOpInfo, 
 			headerVeryBig(MessageFormat.format(MSG_Starting_LANG_Build, LangCore_Actual.LANGUAGE_NAME))));
 	}
 	
+	protected void handleEndWorkspaceBuild2() {
+		workspaceOpInfo = null;
+	}
 	
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
@@ -134,13 +140,10 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
 			
 			if(isLastProjectOfKind()) {
-				handleEndWorkspaceBuild();
+				handleEndWorkspaceBuild2();
 			}
 		}
 		
-	}
-	
-	protected void handleEndWorkspaceBuild() {
 	}
 	
 	@SuppressWarnings("unused")
@@ -155,7 +158,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected IBuildTargetOperation createBuildOp(boolean fullBuild) throws CommonException {
-		return buildManager.newProjectBuildOperation(getProject(), workspaceOpInfo, fullBuild);
+		return buildManager.newProjectBuildOperation(workspaceOpInfo, getProject(), fullBuild);
 	}
 	
 	/* ----------------- Clean ----------------- */
@@ -177,40 +180,9 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected abstract ProcessBuilder createCleanPB() throws CoreException, CommonException;
 	
-	protected void doClean(IProgressMonitor monitor, ProcessBuilder pb) 
+	protected void doClean(IProgressMonitor pm, ProcessBuilder pb) 
 			throws CoreException, CommonException, OperationCancellation {
-		
-		new AbstractRunToolOperation(getProject()) {
-			@Override
-			protected ProcessBuilder createToolProcessBuilder() throws CoreException, CommonException {
-				return pb;
-			}
-		}.execute(monitor);
-	}
-	
-	public static abstract class AbstractRunToolOperation extends AbstractToolManagerOperation {
-		
-		public AbstractRunToolOperation(IProject project) {
-			super(project);
-		}
-		
-		@Override
-		public void execute(IProgressMonitor monitor) 
-				throws CoreException, CommonException, OperationCancellation {
-			
-			ProcessBuilder pb = createToolProcessBuilder();
-			ExternalProcessResult toolResult = runBuildTool(monitor, pb);
-			processToolResult(toolResult);
-		}
-		
-		protected abstract ProcessBuilder createToolProcessBuilder() throws CoreException, CommonException;
-		
-		@SuppressWarnings("unused") 
-		protected void processToolResult(ExternalProcessResult buildAllResult) 
-				throws CoreException, CommonException {
-			
-		}
-		
+		getToolManager().newRunToolOperation2(pb, pm).runProcess();
 	}
 	
 }

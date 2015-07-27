@@ -143,7 +143,7 @@ public abstract class BuildTargetRunner {
 		return PathUtil.createPath(artifactPathStr);
 	}
 	
-	public abstract CommonBuildTargetOperation getBuildOperation(OperationInfo parentOpInfo, Path buildToolPath, 
+	public abstract CommonBuildTargetOperation getBuildOperation(OperationInfo opInfo, Path buildToolPath, 
 			boolean fullBuild);
 	
 }

@@ -75,7 +75,8 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	@Override
-	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) throws CommonException {
+	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) 
+			throws CommonException {
 		BuildTarget buildTarget = super.getBuildTargetFor(projectBuildInfo, targetName);
 		if(buildTarget != null) {
 			return buildTarget;
@@ -103,9 +104,9 @@ public class GoBuildManager extends BuildManager {
 		return new BuildTargetRunner(project, buildConfig, buildTypeName, buildSettings.getBuildOptions()) {
 			
 			@Override
-			public CommonBuildTargetOperation getBuildOperation(OperationInfo parentOpInfo, Path buildToolPath,
+			public CommonBuildTargetOperation getBuildOperation(OperationInfo opInfo, Path buildToolPath,
 					boolean fullBuild) {
-				return new GoBuildTargetOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
+				return new GoBuildTargetOperation(opInfo, project, buildToolPath, this, fullBuild);
 			}
 		};
 	}
@@ -124,7 +125,8 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public String getDefaultBuildOptions(BuildTargetRunner buildTargetOp) throws CommonException {
-			String goPackageSpec = getGoPackageSpec(buildTargetOp.getProject(), buildTargetOp.getBuildConfigName());
+			String goPackageSpec = getGoPackageSpec(buildTargetOp.getProject(), 
+				buildTargetOp.getBuildConfigName());
 			return getBuildCommand() + " -v -gcflags \"-N -l\" " + goPackageSpec;
 		}
 		
@@ -212,9 +214,9 @@ public class GoBuildManager extends BuildManager {
 	
 	public static class GoBuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public GoBuildTargetOperation(OperationInfo parentOpInfo, IProject project, 
+		public GoBuildTargetOperation(OperationInfo opInfo, IProject project, 
 				Path buildToolPath, BuildTargetRunner buildTargetOp, boolean fullBuild) {
-			super(buildTargetOp.getBuildManager(), parentOpInfo, project, buildToolPath, buildTargetOp, fullBuild);
+			super(buildTargetOp.getBuildManager(), opInfo, project, buildToolPath, buildTargetOp, fullBuild);
 		}
 		
 		protected GoEnvironment goEnv;
@@ -225,7 +227,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands) throws CoreException, CommonException {
+		protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands) 
+				throws CoreException, CommonException {
 			Location projectLocation = ResourceUtils.getProjectLocation(project);
 			
 			goEnv = getValidGoEnvironment(project);

@@ -13,7 +13,6 @@ package melnorme.lang.ide.core.utils.process;
 import melnorme.lang.ide.core.operations.ProcessStartInfo;
 
 
-
 public interface IStartProcessListener {
 	
 	void handleProcessStart(ProcessStartInfo processStartInfo);
