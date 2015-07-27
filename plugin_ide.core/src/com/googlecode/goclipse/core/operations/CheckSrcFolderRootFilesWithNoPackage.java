@@ -1,11 +1,23 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.EnumSet;
 
 import org.eclipse.core.runtime.CoreException;
 
@@ -19,7 +31,7 @@ public class CheckSrcFolderRootFilesWithNoPackage extends SimpleFileVisitor<Path
 	
 	public void checkDir(Location dir) throws CoreException {
 		try {
-			Files.walkFileTree(dir.path, this);
+			Files.walkFileTree(dir.path, EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, this);
 		} catch (IOException e) {
 			throw LangCore.createCoreException("Error walking file tree", e);
 		}

@@ -28,7 +28,6 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
