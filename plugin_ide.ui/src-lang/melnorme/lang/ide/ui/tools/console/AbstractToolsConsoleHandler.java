@@ -29,6 +29,7 @@ import melnorme.lang.ide.core.operations.MessageEventInfo;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ProcessStartInfo;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
@@ -36,7 +37,6 @@ import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
 
@@ -157,16 +157,16 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 	}
 	
 	@Override
-	public void engineDaemonStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper ph) {
+	public void engineDaemonStart(ProcessBuilder pb, ProcessStartHelper psh) {
 		String prefixText = headerVeryBig("Starting " + DAEMON_TOOL_Name + " server:  ") + "   ";
-		ProcessStartInfo processStartInfo = new ProcessStartInfo(null, pb, prefixText, ph, ce);
+		ProcessStartInfo processStartInfo = new ProcessStartInfo(null, pb, prefixText, psh);
 		
 		new EngineServerProcessUIConsoleHandler(processStartInfo).handle();
 	}
 	
 	@Override
-	public void engineClientToolStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper ph) {
-		ProcessStartInfo processStartInfo = new ProcessStartInfo(null, pb, ">> Running: ", ph, ce);
+	public void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper psh) {
+		ProcessStartInfo processStartInfo = new ProcessStartInfo(null, pb, ">> Running: ", psh);
 		new EngineClientProcessUIConsoleHandler(processStartInfo).handle();
 	}
 	
@@ -197,34 +197,39 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 		
 		public void handle() {
 			printProcessStart(console.infoOut);
-			
-			if(processStartInfo.processHelper != null) {
-				processStartInfo.processHelper.getOutputListenersHelper().addListener(createOutputListener(console));
-			}
 		}
 		
 		protected void printProcessStart(IOConsoleOutputStream outStream) {
-			handleProcessStart(outStream, processStartInfo.prefixText, processStartInfo.pb, processStartInfo.ce);
+			handleProcessStart(outStream, processStartInfo.prefixText, processStartInfo.pb, 
+				processStartInfo.processStartHelper);
 		}
 		
-		protected void handleProcessStart(IOConsoleOutputStream outStream, String prefix, 
-				ProcessBuilder pb, CommonException ce) {
+		protected final void handleProcessStart(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb, 
+				ProcessStartHelper psh) {
 			List<String> commandLine = pb.command();
-			String text = prefix + StringUtil.collToString(commandLine, " ") + "\n";
+			try {
+				outStream.write(prefix + StringUtil.collToString(commandLine, " ") + "\n");
+			} catch (IOException e) {
+				// Do nothing
+			}
 			
-			if(ce != null) {
-				text += "  FAILED: " + ce.getMessage();
+			try {
+				psh.addProcessListener(createOutputListener(console));
+			} catch(CommonException ce) {
+				
+				String text = "  FAILED: " + ce.getMessage();
 				Throwable cause = ce.getCause();
 				if(cause != null) {
 					text += "   Reason: " + cause.getMessage() + "\n";
 				}
+				try {
+					outStream.write(text);
+				} catch (IOException e) {
+					// Do nothing
+				}
+				
 			}
 			
-			try {
-				outStream.write(text);
-			} catch (IOException e) {
-				// Do nothing
-			}
 		}
 		
 		protected IProcessOutputListener createOutputListener(final ToolsConsole console) {

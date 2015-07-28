@@ -178,24 +178,28 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 	}
 	
-	public void tryStrictAwaitTermination(int timeoutMs) throws InterruptedException, TimeoutException, IOException {
-		awaitTermination(timeoutMs);
-		mainReader.getResult();
-		stderrReader.getResult();
+	public ExternalProcessResult awaitTerminationAndResult() 
+			throws InterruptedException, TimeoutException, IOException {
+		return awaitTerminationAndResult(NO_TIMEOUT);
 	}
 	
 	/** 
 	 * Awaits for successful process termination, as well as successful termination of reader threads,
 	 * throws an exception otherwise (and destroys the process).
-	 * @return the process result encapsulated in data class {@link ExternalProcessResult}. 
+	 * @param timeoutMs the timeout in milliseconds to wait for (or -1 for no TIMEOUT).
+	 * @return the process output result in an {@link ExternalProcessResult}. 
 	 * @throws InterruptedException if interrupted
 	 * @throws TimeoutException if timeout occurs, or cancel requested.
 	 * @throws IOException if an IO error occured in the reader threads.
 	 */
-	public ExternalProcessResult strictAwaitTermination(int timeoutMs) 
+	public ExternalProcessResult awaitTerminationAndResult(int timeoutMs) 
 			throws InterruptedException, TimeoutException, IOException {
 		try {
-			tryStrictAwaitTermination(timeoutMs);
+			awaitTermination(timeoutMs);
+			
+			// Check for IOExceptions (although I'm not sure this scenario is possible)
+			mainReader.getResult();
+			stderrReader.getResult();
 		} catch (Exception e) {
 			process.destroy();
 			throw e;
@@ -203,44 +207,26 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		return new ExternalProcessResult(process.exitValue(), getStdOutBytes(), getStdErrBytes());
 	}
 	
-	public ExternalProcessResult strictAwaitTermination() throws InterruptedException, TimeoutException, IOException {
-		return strictAwaitTermination(NO_TIMEOUT);
+	public ExternalProcessResult awaitTerminationAndResult_ce() throws CommonException, OperationCancellation {
+		return awaitTerminationAndResult_ce(NO_TIMEOUT);
 	}
 	
-	public ExternalProcessResult strictAwaitTermination_(int timeout) 
+	public ExternalProcessResult awaitTerminationAndResult_ce(int timeout) 
 			throws CommonException, OperationCancellation 
 	{
 		try {
-			return strictAwaitTermination(timeout);
-		} catch (InterruptedException e) {
-			throw createCommonException(ProcessHelperMessages.ExternalProcess_InterruptedAwaitingTermination, e);
+			return awaitTerminationAndResult(timeout);
 		} catch (IOException e) {
 			throw createCommonException(ProcessHelperMessages.ExternalProcess_ErrorStreamReaderIOException, e);
 		} catch (TimeoutException te) {
-			// at this point a TimeoutException can be one of two things, an actual timeout, or a cancellation.
+			// at this point a TimeoutException can be one of two things, an actual timeout, 
+			// or an explicit cancellation. In both case we throw OperationCancellation
 			
-			if(isCanceled()) {
-				throw new OperationCancellation();
-			} else {
-				throw createCommonException(ProcessHelperMessages.ExternalProcess_ProcessTimeout, te);
-			}
+			throw new OperationCancellation();
+		} catch (InterruptedException e) {
+			// InterrruptedException also threated as OperationCancellation
+			throw new OperationCancellation();
 		}
-	}
-	
-	public ExternalProcessResult strictAwaitTermination_() 
-			throws CommonException, OperationCancellation {
-		return strictAwaitTermination_(false);
-	}
-	
-	public ExternalProcessResult strictAwaitTermination_(boolean throwOnNonZeroStatus) 
-			throws CommonException, OperationCancellation 
-	{
-		ExternalProcessResult processResult = strictAwaitTermination_(NO_TIMEOUT);
-		
-		if(throwOnNonZeroStatus && processResult.exitValue != 0) {
-			throw new CommonException("Process completed with non-zero exit value (" + processResult.exitValue + ")");
-		}
-		return processResult;
 	}
 	
 }

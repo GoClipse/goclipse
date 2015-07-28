@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,11 +11,16 @@
 package melnorme.utilbox.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeoutException;
+
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.misc.ILogHandler;
-import melnorme.utilbox.misc.ListenerListHelper;
 
 /**
  * Extends {@link ExternalProcessHelper} to allow optional listeners to be notified
@@ -24,12 +29,29 @@ import melnorme.utilbox.misc.ListenerListHelper;
 public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	protected final ILogHandler logHandler;
+	protected final Indexable<IProcessOutputListener> listeners;
+	protected final FAwaitListeners awaitListeners;
 	
-	/*FIXME: BUG here: adding listeners only makes sense before reader threads are started. */
-	public ExternalProcessNotifyingHelper(Process process, boolean readStdErr, boolean startReaders,
-			ICancelMonitor cancelMonitor, ILogHandler logHandler) {
-		super(process, readStdErr, startReaders, cancelMonitor);
+	public static enum FAwaitListeners { YES, NO ; boolean isTrue() { return this == YES; } }
+	public static enum FStartReaders { YES, NO ; boolean isTrue() { return this == YES; } }
+	
+	public ExternalProcessNotifyingHelper(Process process, boolean readStdErr, 
+			ICancelMonitor cancelMonitor, Indexable<IProcessOutputListener> listeners, ILogHandler logHandler) {
+		this(process, readStdErr, FStartReaders.YES, FAwaitListeners.YES, cancelMonitor, listeners, logHandler);
+	}
+	
+	protected ExternalProcessNotifyingHelper(Process process, boolean readStdErr, 
+			FStartReaders startReaders, FAwaitListeners awaitListeners, 
+			ICancelMonitor cancelMonitor, Indexable<IProcessOutputListener> listeners, ILogHandler logHandler) {
+		super(process, readStdErr, false, cancelMonitor);
+		this.awaitListeners = awaitListeners;
+		
+		this.listeners = assertNotNull(listeners).toArrayList().addElements(listenersTerminatedSentinel);
 		this.logHandler = assertNotNull(logHandler);
+		
+		if(startReaders.isTrue()) {
+			startReaderThreads();
+		}
 	}
 	
 	public static interface IProcessOutputListener {
@@ -43,11 +65,6 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 		
 	}
 	
-	protected final ListenerListHelper<IProcessOutputListener> outputListeners = new ListenerListHelper<>();
-	
-	public ListenerListHelper<IProcessOutputListener> getOutputListenersHelper() {
-		return outputListeners;
-	}
 	
 	@Override
 	protected ReadAllBytesTask createMainReaderTask() {
@@ -70,7 +87,7 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	}
 	
 	protected void notifyDataRead(byte[] buffer, int offset, int readCount, boolean stdOut) {
-		for (IProcessOutputListener pol : outputListeners.getListeners()) {
+		for (IProcessOutputListener pol : listeners) {
 			try {
 				if(stdOut) 
 					pol.notifyStdOutListeners(buffer, offset, readCount);
@@ -98,7 +115,7 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	
 	protected void notifyProcessTerminatedAndRead(int exitCode) {
-		for (IProcessOutputListener pol : outputListeners.getListeners()) {
+		for (IProcessOutputListener pol : listeners) {
 			try {
 				pol.notifyProcessTerminatedAndRead(exitCode);
 			} catch (RuntimeException e) {
@@ -109,6 +126,38 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
 	protected void handleListenerException(String message, RuntimeException e) {
 		logHandler.logStatus(new StatusException(StatusLevel.ERROR, message, e));
+	}
+	
+	@Override
+	public ExternalProcessResult awaitTerminationAndResult(int timeoutMs)
+			throws InterruptedException, TimeoutException, IOException {
+		try {
+			return super.awaitTerminationAndResult(timeoutMs);
+		} finally {
+			if(awaitListeners.isTrue()) {
+				listenersTerminatedSentinel.terminationLatch.await();
+			}
+		}
+	}
+	
+	// A listener to notify that all other listeners have terminated
+	protected final ListenersTerminatedSentinel listenersTerminatedSentinel = new ListenersTerminatedSentinel();
+	
+	protected final class ListenersTerminatedSentinel implements IProcessOutputListener {
+		
+		protected final CountDownLatch terminationLatch = new CountDownLatch(1);
+		
+		@Override
+		public void notifyStdOutListeners(byte[] buffer, int offset, int readCount) {
+		}
+		@Override
+		public void notifyStdErrListeners(byte[] buffer, int offset, int readCount) {
+		}
+		
+		@Override
+		public void notifyProcessTerminatedAndRead(int exitCode) {
+			terminationLatch.countDown();
+		}
 	}
 	
 }

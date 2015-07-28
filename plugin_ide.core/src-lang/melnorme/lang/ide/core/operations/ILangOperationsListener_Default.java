@@ -10,9 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 public interface ILangOperationsListener_Default {
 	
@@ -25,8 +24,8 @@ public interface ILangOperationsListener_Default {
 	
 	void handleProcessStart(ProcessStartInfo processStartInfo);
 	
-	void engineDaemonStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper processHelper);
+	void engineDaemonStart(ProcessBuilder pb, ProcessStartHelper processStartHelper);
 	
-	void engineClientToolStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper processHelper);
+	void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper processStartHelper);
 	
 }

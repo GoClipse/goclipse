@@ -11,13 +11,16 @@
 package melnorme.lang.ide.core.utils.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
 
 /**
@@ -28,6 +31,7 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 	
 	protected final ProcessBuilder pb;
 	protected final ICancelMonitor cancelMonitor;
+	protected ArrayList2<IProcessOutputListener> processListeners = new ArrayList2<>();
 	
 	public AbstractRunProcessTask(ProcessBuilder pb, ICancelMonitor cancelMonitor) {
 		this.pb = assertNotNull(pb);
@@ -43,7 +47,12 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 		try {
 			process = ExternalProcessNotifyingHelper.startProcess(pb);
 		} catch (CommonException ce) {
-			handleProcessStartResult(null, ce);
+			handleProcessStartResult(new ProcessStartHelper() {
+				@Override
+				public void addProcessListener(IProcessOutputListener listener) throws CommonException {
+					throw ce;
+				}
+			});
 			throw ce;
 		}
 		
@@ -51,15 +60,33 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 	}
 	
 	protected ExternalProcessNotifyingHelper readFromStartedProcess(Process process, ICancelMonitor pm) {
-		ExternalProcessNotifyingHelper processHelper = 
-				new ExternalProcessNotifyingHelper(process, true, false, pm, LangCore.LOG_HANDLER);
-		handleProcessStartResult(processHelper, null);
-		processHelper.startReaderThreads();
-		return processHelper;
+		handleProcessStartResult(new ProcessStartHelper() {
+			@Override
+			public void addProcessListener(IProcessOutputListener listener) throws CommonException {
+				assertNotNull(processListeners);
+				processListeners.add(listener);
+			}
+		});
+		
+		try {
+			return new ExternalProcessNotifyingHelper(process, true, pm, processListeners, LangCore.LOG_HANDLER);
+		} finally {
+			processListeners = null; // Set to null to fail fast if anyone else tries to modify afterward.
+		}
 	}
 	
-	protected abstract void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce);
+	protected abstract void handleProcessStartResult(ProcessStartHelper psh);
 	
+	
+	public static interface ProcessStartHelper {
+		
+		/**
+		 * Add given process listener to a process that is about to have its output read. 
+		 * @throws CommonException if process was unable to be started.
+		 */
+		void addProcessListener(IProcessOutputListener listener) throws CommonException;
+		
+	}
 	
 	@Override
 	public ExternalProcessResult call() throws CommonException, OperationCancellation {
@@ -87,7 +114,12 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 		
 		ExternalProcessNotifyingHelper processHelper = startProcess(cancelMonitor);
 		processHelper.writeInput_(input, StringUtil.UTF8);
-		return processHelper.strictAwaitTermination_(throwOnNonZeroStatus);
+		ExternalProcessResult processResult = processHelper.awaitTerminationAndResult_ce();
+		
+		if(throwOnNonZeroStatus && processResult.exitValue != 0) {
+			throw new CommonException("Process completed with non-zero exit value (" + processResult.exitValue + ")");
+		}
+		return processResult;
 	}
 	
 }

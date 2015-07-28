@@ -17,9 +17,8 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
 import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
 
 import melnorme.lang.ide.core.operations.ProcessStartInfo;
+import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 	
@@ -46,9 +45,8 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 	}
 	
 	@Override
-	public void engineClientToolStart(ProcessBuilder pb, CommonException ce, 
-			ExternalProcessNotifyingHelper ph) {
-		ProcessStartInfo processStartInfo = new ProcessStartInfo(null, pb, ">> Running: ", ph, ce);
+	public void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper processStartHelper) {
+		ProcessStartInfo processStartInfo = new ProcessStartInfo(null, pb, ">> Running: ", processStartHelper);
 		
 		new EngineClientProcessUIConsoleHandler(processStartInfo) {
 			@Override
