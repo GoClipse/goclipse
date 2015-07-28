@@ -242,16 +242,16 @@ public abstract class BuildManager {
 			return name;
 		}
 		
-		public abstract String getDefaultBuildOptions(BuildTargetValidator3 buildTargetValidator)
+		public abstract String getDefaultBuildOptions(BuildTargetValidator buildTargetValidator)
 				throws CommonException, CoreException;
 		
-		public String getArtifactPath(BuildTargetValidator3 buildTargetValidator) 
+		public String getArtifactPath(BuildTargetValidator buildTargetValidator) 
 				throws CommonException, CoreException {
 			return buildTargetValidator.getBuildConfiguration().getArtifactPath();
 		}
 		
-		public abstract CommonBuildTargetOperation getBuildOperation(BuildTargetValidator3 buildTargetValidator, 
-				OperationInfo opInfo, Path buildToolPath, boolean fullBuild);
+		public abstract CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator, 
+				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException;
 		
 	}
 	
@@ -298,7 +298,7 @@ public abstract class BuildManager {
 		
 	}
 	
-	protected BuildConfiguration getBuildConfiguration(IProject project, String buildConfigName) 
+	protected BuildConfiguration getValidBuildConfiguration(IProject project, String buildConfigName) 
 			throws CommonException {
 		ProjectBuildInfo currentBuildInfo = getValidBuildInfo(project);
 		return currentBuildInfo.getBuildConfiguration_nonNull(buildConfigName);
@@ -355,7 +355,7 @@ public abstract class BuildManager {
 	
 	/* -----------------  ----------------- */
 	
-	public BuildTargetValidator3 createBuildTargetValidator(IProject project, BuildTarget buildTarget) 
+	public BuildTargetValidator createBuildTargetValidator(IProject project, BuildTarget buildTarget) 
 			throws CommonException {
 		String targetName = buildTarget.getTargetName();
 		String buildOptions = buildTarget.getBuildOptions();
@@ -363,18 +363,15 @@ public abstract class BuildManager {
 		return createBuildTargetValidator(project, targetName, buildOptions);
 	}
 	
-	public BuildTargetValidator3 createBuildTargetValidator(IProject project, String targetName, String buildOptions)
+	public BuildTargetValidator createBuildTargetValidator(IProject project, String targetName, String buildOptions)
 			throws CommonException {
 		String buildConfigName = getBuildConfigString(targetName);
 		String buildTypeName = getBuildTypeString(targetName);
-		
-		BuildConfiguration buildConfiguration = getBuildConfiguration(project, buildConfigName);
-		
-		return createBuildTargetValidator(project, buildConfiguration, buildTypeName, buildOptions);
+		return createBuildTargetValidator(project, buildConfigName, buildTypeName, buildOptions);
 	}
 	
-	public abstract BuildTargetValidator3 createBuildTargetValidator(IProject project, BuildConfiguration buildConfig,
-			String buildTypeName, String buildOptions);
+	public abstract BuildTargetValidator createBuildTargetValidator(IProject project, String buildConfigName,
+			String buildTypeName, String buildOptions) throws CommonException;
 	
 	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) throws CommonException {
 		return projectBuildInfo.getDefinedBuildTarget(targetName);
@@ -382,33 +379,33 @@ public abstract class BuildManager {
 	
 	/* ----------------- Build operations ----------------- */
 	
-	public IBuildTargetOperation newProjectBuildOperation(OperationInfo opInfo, IProject project,
+	public IToolOperation newProjectBuildOperation(OperationInfo opInfo, IProject project,
 			boolean fullBuild) throws CommonException {
 		return new BuildOperationCreator(project, opInfo, fullBuild).newProjectBuildOperation();
 	}
 	
-	public IBuildTargetOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
+	public IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
 			throws CommonException {
 		return newBuildTargetOperation(project, ArrayList2.create(buildTarget));
 	}
 	
-	public IBuildTargetOperation newBuildTargetOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
+	public IToolOperation newBuildTargetOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
 			throws CommonException {
 		OperationInfo operationInfo = LangCore.getToolManager().startNewToolOperation();
 		return newBuildTargetOperation(operationInfo, project, targetsToBuild);
 	}
 	
-	public IBuildTargetOperation newBuildTargetOperation(OperationInfo opInfo, IProject project, 
+	public IToolOperation newBuildTargetOperation(OperationInfo opInfo, IProject project, 
 			Collection2<BuildTarget> targetsToBuild) throws CommonException {
 		return new BuildOperationCreator(project, opInfo, false).newProjectBuildOperation(targetsToBuild);
 	}
 	
-	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo opInfo,
-			IProject project, Path buildToolPath, BuildTarget buildTarget, boolean fullBuild)
-					throws CommonException {
-		BuildTargetValidator3 buildTargetRunner = createBuildTargetValidator(project, buildTarget);
-		BuildType buildType = buildTargetRunner.getBuildType();
-		return buildType.getBuildOperation(buildTargetRunner, opInfo, buildToolPath, fullBuild);
+	public CommonBuildTargetOperation createBuildTargetOperation(OperationInfo opInfo,
+			IProject project, Path buildToolPath, BuildTarget buildTarget, boolean fullBuild
+	) throws CommonException, CoreException {
+		BuildTargetValidator buildTargetValidator = createBuildTargetValidator(project, buildTarget);
+		BuildType buildType = buildTargetValidator.getBuildType();
+		return buildType.getBuildOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild);
 	}
 	
 }

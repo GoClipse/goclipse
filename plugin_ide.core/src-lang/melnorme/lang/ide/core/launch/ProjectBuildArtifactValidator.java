@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTargetValidator3;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator2;
@@ -84,7 +84,7 @@ public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 	/* -----------------  ----------------- */ 
 	
 	protected Path getValidExecutableFilePath2() throws CoreException, CommonException {
-		BuildTargetValidator3 buildTargetValidator = getBuildManager()
+		BuildTargetValidator buildTargetValidator = getBuildManager()
 				.createBuildTargetValidator(getValidProject(), getValidBuildTarget());
 		
 		return buildTargetValidator.getValidArtifactPath3(settings.getExecutablePath_Attribute());

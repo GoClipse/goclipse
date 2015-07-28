@@ -24,7 +24,7 @@ import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator;
 import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator.ProjectBuildExecutableSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildTargetValidator3;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
@@ -100,7 +100,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	/* FIXME: review ProjectBuildArtifactValidator */
-	protected BuildTargetValidator3 getValidatedBuildTargetRunner() throws CommonException, CoreException {
+	protected BuildTargetValidator getValidatedBuildTargetRunner() throws CommonException, CoreException {
 		return getBuildManager().createBuildTargetValidator(validateProject(), getValidatedBuildTarget());
 	}
 	

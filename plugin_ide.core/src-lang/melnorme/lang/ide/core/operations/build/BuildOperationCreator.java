@@ -46,14 +46,14 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		this.opInfo = assertNotNull(opInfo);
 	}
 	
-	public IBuildTargetOperation newProjectBuildOperation() throws CommonException {
+	public IToolOperation newProjectBuildOperation() throws CommonException {
 		ProjectBuildInfo buildInfo = buildMgr.getValidBuildInfo(project);
 		return newProjectBuildOperation(buildInfo.getEnabledTargets());
 	}
 	
-	protected ArrayList2<IBuildTargetOperation> operations;
+	protected ArrayList2<IToolOperation> operations;
 	
-	public IBuildTargetOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild) 
+	public IToolOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild) 
 			throws CommonException {
 		operations = ArrayList2.create();
 		
@@ -77,8 +77,8 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return new CompositeBuildOperation(operations);
 	}
 	
-	protected boolean addOperation(IBuildTargetOperation buildOp) {
-		return operations.add(buildOp);
+	protected boolean addOperation(IToolOperation toolOp) {
+		return operations.add(toolOp);
 	}
 	
 	protected void addMarkerCleanOperation() {
@@ -93,17 +93,21 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		}
 	}
 	
-	protected IBuildTargetOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget) 
+	protected IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget) 
 			throws CommonException {
 		Path buildToolPath = LangCore.getToolManager().getSDKToolPath();
-		return buildMgr.createBuildTargetSubOperation(opInfo, project, buildToolPath, buildTarget, fullBuild);
+		try {
+			return buildMgr.createBuildTargetOperation(opInfo, project, buildToolPath, buildTarget, fullBuild);
+		} catch(CoreException e) {
+			throw new CommonException(e.getMessage(), e.getCause());
+		}
 	}
 	
-	protected IBuildTargetOperation newMessageOperation(OperationInfo opInfo, String msg) {
+	protected IToolOperation newMessageOperation(OperationInfo opInfo, String msg) {
 		return new BuildMessageOperation(new MessageEventInfo(opInfo, msg));
 	}
 	
-	protected class BuildMessageOperation implements IBuildTargetOperation, Callable<MessageEventInfo> {
+	protected class BuildMessageOperation implements IToolOperation, Callable<MessageEventInfo> {
 		
 		protected final MessageEventInfo msgInfo;
 		

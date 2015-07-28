@@ -25,20 +25,20 @@ import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.PathUtil;
 
-public class BuildTargetValidator3 extends AbstractValidator2 {
+public class BuildTargetValidator extends AbstractValidator2 {
 	
-	public final BuildManager buildMgr =LangCore.getBuildManager();
+	public final BuildManager buildMgr = LangCore.getBuildManager();
 	
 	protected final IProject project;
-	protected final BuildConfiguration buildConfiguration2;
+	protected final String buildConfigName;
 	protected final String buildTypeName;
 	protected final String buildOptions;
 	
-	public BuildTargetValidator3(IProject project, BuildConfiguration buildConfig, String buildTypeName,
+	public BuildTargetValidator(IProject project, String buildConfigName, String buildTypeName,
 			String buildOptions) {
 		this.project = project;
-		this.buildConfiguration2 = assertNotNull(buildConfig);
-		this.buildTypeName = buildTypeName;
+		this.buildConfigName = assertNotNull(buildConfigName);
+		this.buildTypeName = assertNotNull(buildTypeName);
 		this.buildOptions = buildOptions;
 	}
 	
@@ -50,20 +50,24 @@ public class BuildTargetValidator3 extends AbstractValidator2 {
 		return project;
 	}
 	
-	public BuildConfiguration getBuildConfiguration() {
-		return buildConfiguration2;
+	public String getBuildConfigName() {
+		return buildConfigName;
 	}
 	
-	public String getBuildConfigName() {
-		return buildConfiguration2.getName();
+	public String getBuildTypeName() {
+		return buildTypeName;
 	}
 	
 	public String getBuildOptions() {
 		return buildOptions;
 	}
 	
-	public String getBuildTypeName() {
-		return buildTypeName;
+	public BuildConfiguration getBuildConfiguration() throws CommonException {
+		return buildMgr.getValidBuildConfiguration(project, buildConfigName);
+	}
+	
+	public BuildType getBuildType() throws CommonException {
+		return buildMgr.getBuildType_NonNull(buildTypeName);
 	}
 	
 	public String getEffectiveBuildOptions() throws CommonException, CoreException {
@@ -74,13 +78,11 @@ public class BuildTargetValidator3 extends AbstractValidator2 {
 		return getDefaultBuildOptions();
 	}
 	
-	protected BuildType getBuildType() throws CommonException {
-		return getBuildManager().getBuildType_NonNull(getBuildTypeName());
-	}
-	
 	public String getDefaultBuildOptions() throws CommonException, CoreException {
 		return getBuildType().getDefaultBuildOptions(this);
 	}
+	
+	/* -----------------  ----------------- */
 	
 	public String getArtifactPath() throws CommonException, CoreException {
 		return getBuildType().getArtifactPath(this);

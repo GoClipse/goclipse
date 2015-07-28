@@ -19,11 +19,11 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class CompositeBuildOperation implements IBuildTargetOperation {
+public class CompositeBuildOperation implements IToolOperation {
 	
-	protected final Indexable<IBuildTargetOperation> operations;
+	protected final Indexable<IToolOperation> operations;
 	
-	public CompositeBuildOperation(Indexable<IBuildTargetOperation> operations) {
+	public CompositeBuildOperation(Indexable<IToolOperation> operations) {
 		this.operations = assertNotNull(operations);
 	}
 	
@@ -31,7 +31,7 @@ public class CompositeBuildOperation implements IBuildTargetOperation {
 	public void execute(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
 		
-		for (IBuildTargetOperation subOperation : operations) {
+		for (IToolOperation subOperation : operations) {
 			subOperation.execute(monitor);
 		}
 		

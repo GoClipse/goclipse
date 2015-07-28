@@ -14,12 +14,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.IBuildTargetOperation;
+import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class AbstractToolManagerOperation implements IBuildTargetOperation {
+public abstract class AbstractToolManagerOperation implements IToolOperation {
 	
 	protected final IProject project;
 	

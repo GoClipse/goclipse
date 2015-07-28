@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.IBuildTargetOperation;
+import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -157,7 +157,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 	
-	protected IBuildTargetOperation createBuildOp(boolean fullBuild) throws CommonException {
+	protected IToolOperation createBuildOp(boolean fullBuild) throws CommonException {
 		return buildManager.newProjectBuildOperation(workspaceOpInfo, getProject(), fullBuild);
 	}
 	
