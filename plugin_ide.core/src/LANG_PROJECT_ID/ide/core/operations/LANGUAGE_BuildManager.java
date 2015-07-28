@@ -18,10 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildType;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator3;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -53,35 +50,35 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(BuildTargetRunner buildTargetOp) throws CommonException {
+		public String getDefaultBuildOptions(BuildTargetValidator3 buildTargetValidator) throws CommonException {
 			return ".";
 		}
 		
 		@Override
-		public String getArtifactPath(BuildTargetRunner buildTargetOp) throws CommonException {
+		public String getArtifactPath(BuildTargetValidator3 buildTargetValidator) throws CommonException {
 			throw new CommonException("No default program path available");
+		}
+		
+		@Override
+		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator3 buildTargetValidator,
+				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) {
+			return new LANGUAGE_BuildTargetOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild);
 		}
 	}
 	
 	@Override
-	public BuildTargetRunner createBuildTargetOperation(IProject project, BuildConfiguration buildConfig,
-			String buildTypeName, BuildTarget buildTarget) {
-		return new BuildTargetRunner(project, buildConfig, buildTypeName, buildTarget.getBuildOptions()) {
-			@Override
-			public CommonBuildTargetOperation getBuildOperation(OperationInfo parentOpInfo, Path buildToolPath,
-					boolean fullBuild) {
-				return new LANGUAGE_BuildTargetOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
-			}
-		};
+	public BuildTargetValidator3 createBuildTargetValidator(IProject project, BuildConfiguration buildConfig,
+			String buildTypeName, String buildOptions) {
+		return new BuildTargetValidator3(project, buildConfig, buildTypeName, buildOptions);
 	}
 	
 	/* ----------------- Build ----------------- */
 	
 	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public LANGUAGE_BuildTargetOperation(OperationInfo parentOpInfo, IProject project,
-				Path buildToolPath, BuildTargetRunner buildTargetOp, boolean fullBuild) {
-			super(buildTargetOp.getBuildManager(), parentOpInfo, project, buildToolPath, buildTargetOp, fullBuild);
+		public LANGUAGE_BuildTargetOperation(BuildTargetValidator3 buildTargetValidator, 
+				OperationInfo parentOpInfo, Path buildToolPath, boolean fullBuild) {
+			super(buildTargetValidator.buildMgr, buildTargetValidator, parentOpInfo, buildToolPath, fullBuild);
 		}
 		
 		@Override
@@ -92,7 +89,7 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		
 		@Override
 		protected void addMainArguments(ArrayList2<String> commands) {
-			commands.addElements(buildTarget.getBuildConfigName());
+			commands.addElements(buildTargetValidator.getBuildConfigName());
 		}
 		
 		@Override
