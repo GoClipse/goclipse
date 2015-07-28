@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -17,13 +18,13 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildType;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -32,6 +33,7 @@ import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
@@ -128,6 +130,18 @@ public abstract class BuildManager {
 		return buildInfo;
 	}
 	
+	/* -----------------  Persistence preference ----------------- */
+	
+	protected static final StringPreference BUILD_TARGETS_PREF = new StringPreference("build_targets", "");
+	
+	protected BuildTargetsSerializer createSerializer() {
+		return new BuildTargetsSerializer(this);
+	}
+	
+	protected String getBuildTargetsPref(IProject project) {
+		return StringUtil.emptyAsNull(BUILD_TARGETS_PREF.get(project));
+	}
+	
 	/* -----------------  ----------------- */
 	
 	protected void bundleProjectAdded(IProject project, AbstractBundleInfo bundleInfo) {
@@ -163,7 +177,9 @@ public abstract class BuildManager {
 			Indexable<BuildType> buildTypes = getBuildTypes();
 			for (BuildType buildType : buildTypes) {
 				
-				addBuildTargetFromConfig(buildTargets, buildConfig, buildType, currentBuildInfo, isFirstConfig);
+				String targetName = getBuildTargetName(buildConfig.getName(), buildType.getName()); 
+				
+				addBuildTargetFromConfig(buildTargets, currentBuildInfo, isFirstConfig, targetName);
 				isFirstConfig = false;
 			}
 			
@@ -171,6 +187,72 @@ public abstract class BuildManager {
 		
 		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, bundleInfo, buildTargets);
 		setProjectBuildInfo(project, newBuildInfo);
+	}
+	
+	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, ProjectBuildInfo currentBuildInfo,
+			boolean isFirstConfig, String targetName) {
+		BuildTarget oldBuildTarget = currentBuildInfo == null ? 
+				null : 
+				currentBuildInfo.getDefinedBuildTarget(targetName);
+		
+		boolean enabled;
+		String buildOptions;
+		
+		if(oldBuildTarget == null) {
+			enabled = isFirstConfig;
+			buildOptions = null;
+		} else {
+			enabled = oldBuildTarget.isEnabled();
+			buildOptions = oldBuildTarget.getBuildOptions();
+		}
+		
+		buildTargets.add(createBuildTarget(targetName, enabled, buildOptions));
+	}
+	
+	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
+		return buildModel.setProjectInfo(project, newProjectBuildInfo);
+	}
+	
+	public ProjectBuildInfo setAndSaveProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
+		buildModel.setProjectInfo(project, newProjectBuildInfo);
+		
+		try {
+			String data = createSerializer().writeProjectBuildInfo(newProjectBuildInfo);
+			BUILD_TARGETS_PREF.set(project, data);
+		} catch(CommonException | BackingStoreException e) {
+			LangCore.logError("Error persisting project build info: ", e);
+		}
+		
+		return newProjectBuildInfo;
+	}
+	
+	/* ----------------- Build Types ----------------- */
+	
+	public static abstract class BuildType {
+		
+		protected final String name;
+		
+		public BuildType(String name) {
+			this.name = assertNotNull(name);
+		}
+		
+		/* -----------------  ----------------- */
+		
+		public String getName() {
+			return name;
+		}
+		
+		public abstract String getDefaultBuildOptions(BuildTargetValidator3 buildTargetValidator)
+				throws CommonException, CoreException;
+		
+		public String getArtifactPath(BuildTargetValidator3 buildTargetValidator) 
+				throws CommonException, CoreException {
+			return buildTargetValidator.getBuildConfiguration().getArtifactPath();
+		}
+		
+		public abstract CommonBuildTargetOperation getBuildOperation(BuildTargetValidator3 buildTargetValidator, 
+				OperationInfo opInfo, Path buildToolPath, boolean fullBuild);
+		
 	}
 	
 	protected final Indexable<BuildType> getBuildTypes() {
@@ -194,28 +276,32 @@ public abstract class BuildManager {
 		throw new CommonException(BuildManagerMessages.BuildType_NotFound(buildTypeName));
 	}
 	
-	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, 
-			BuildConfiguration buildConfig, BuildType buildType, ProjectBuildInfo currentBuildInfo, 
-			boolean isFirstConfig) {
+	/* ----------------- Build Configuration ----------------- */
+	
+	public static class BuildConfiguration {
 		
-		String targetName = getBuildTargetName(buildConfig.getName(), buildType.getName()); 
+		protected final String name;
+		protected final String artifactPath;
 		
-		BuildTarget oldBuildTarget = currentBuildInfo == null ? 
-				null : 
-				currentBuildInfo.getDefinedBuildTarget(targetName);
-		
-		boolean enabled;
-		String buildOptions;
-		
-		if(oldBuildTarget == null) {
-			enabled = isFirstConfig;
-			buildOptions = null;
-		} else {
-			enabled = oldBuildTarget.isEnabled();
-			buildOptions = oldBuildTarget.getBuildOptions();
+		public BuildConfiguration(String name, String artifactPath) {
+			this.name = assertNotNull(name);
+			this.artifactPath = artifactPath;
 		}
 		
-		buildTargets.add(createBuildTarget(targetName, enabled, buildOptions));
+		public String getName() {
+			return name;
+		}
+		
+		public String getArtifactPath() {
+			return artifactPath;
+		}
+		
+	}
+	
+	protected BuildConfiguration getBuildConfiguration(IProject project, String buildConfigName) 
+			throws CommonException {
+		ProjectBuildInfo currentBuildInfo = getValidBuildInfo(project);
+		return currentBuildInfo.getBuildConfiguration_nonNull(buildConfigName);
 	}
 	
 	/* ----------------- Build Target ----------------- */
@@ -238,37 +324,57 @@ public abstract class BuildManager {
 		return new BuildTarget(targetName, enabled, buildOptions);
 	}
 	
-	public BuildTargetRunner getBuildTargetOperation(IProject project, BuildTarget buildTarget) 
+	public BuildTarget getValidDefinedBuildTarget(IProject project, String buildTargetName) 
+			throws CommonException, StatusException {
+		return getValidBuildTarget(project, buildTargetName, false, true);
+	}
+	
+	public BuildTarget getValidBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly) 
+			throws CommonException, StatusException {
+		return getValidBuildTarget(project, buildTargetName, definedTargetsOnly, true);
+	}
+	
+	public BuildTarget getValidBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly, 
+			boolean requireNonNull) throws CommonException {
+		ProjectBuildInfo buildInfo = getValidBuildInfo(project);
+		
+		if(buildTargetName == null || buildTargetName.isEmpty()) {
+			throw new CommonException(LaunchMessages.PROCESS_LAUNCH_NoBuildTargetSpecified);
+		}
+		
+		BuildTarget buildTarget = 
+				definedTargetsOnly ? 
+				buildInfo.getDefinedBuildTarget(buildTargetName) :
+				buildInfo.getBuildTargetFor(buildTargetName);
+		
+		if(buildTarget == null && requireNonNull) {
+			throw new CommonException(LaunchMessages.PROCESS_LAUNCH_NoSuchBuildTarget);
+		}
+		return buildTarget;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public BuildTargetValidator3 createBuildTargetValidator(IProject project, BuildTarget buildTarget) 
 			throws CommonException {
 		String targetName = buildTarget.getTargetName();
+		String buildOptions = buildTarget.getBuildOptions();
+		
+		return createBuildTargetValidator(project, targetName, buildOptions);
+	}
+	
+	public BuildTargetValidator3 createBuildTargetValidator(IProject project, String targetName, String buildOptions)
+			throws CommonException {
 		String buildConfigName = getBuildConfigString(targetName);
 		String buildTypeName = getBuildTypeString(targetName);
 		
-		ProjectBuildInfo currentBuildInfo = buildModel.getProjectInfo(project);
-		BuildConfiguration buildConfiguration = currentBuildInfo.getBuildConfiguration_nonNull(buildConfigName);
+		BuildConfiguration buildConfiguration = getBuildConfiguration(project, buildConfigName);
 		
-		return createBuildTargetOperation(project, buildConfiguration, buildTypeName, buildTarget);
+		return createBuildTargetValidator(project, buildConfiguration, buildTypeName, buildOptions);
 	}
 	
-	public abstract BuildTargetRunner createBuildTargetOperation(IProject project, BuildConfiguration buildConfig,
-			String buildTypeName, BuildTarget buildSettings);
-			
-	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
-		return buildModel.setProjectInfo(project, newProjectBuildInfo);
-	}
-	
-	public ProjectBuildInfo setAndSaveProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
-		buildModel.setProjectInfo(project, newProjectBuildInfo);
-		
-		try {
-			String data = createSerializer().writeProjectBuildInfo(newProjectBuildInfo);
-			BUILD_TARGETS_PREF.set(project, data);
-		} catch(CommonException | BackingStoreException e) {
-			LangCore.logError("Error persisting project build info: ", e);
-		}
-		
-		return newProjectBuildInfo;
-	}
+	public abstract BuildTargetValidator3 createBuildTargetValidator(IProject project, BuildConfiguration buildConfig,
+			String buildTypeName, String buildOptions);
 	
 	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) throws CommonException {
 		return projectBuildInfo.getDefinedBuildTarget(targetName);
@@ -300,20 +406,9 @@ public abstract class BuildManager {
 	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo opInfo,
 			IProject project, Path buildToolPath, BuildTarget buildTarget, boolean fullBuild)
 					throws CommonException {
-		BuildTargetRunner buildTargetOp = getBuildTargetOperation(project, buildTarget);
-		return buildTargetOp.getBuildOperation(opInfo, buildToolPath, fullBuild);
-	}
-	
-	/* -----------------  Persistence preference ----------------- */
-	
-	protected static final StringPreference BUILD_TARGETS_PREF = new StringPreference("build_targets", "");
-	
-	protected BuildTargetsSerializer createSerializer() {
-		return new BuildTargetsSerializer(this);
-	}
-	
-	protected String getBuildTargetsPref(IProject project) {
-		return StringUtil.emptyAsNull(BUILD_TARGETS_PREF.get(project));
+		BuildTargetValidator3 buildTargetRunner = createBuildTargetValidator(project, buildTarget);
+		BuildType buildType = buildTargetRunner.getBuildType();
+		return buildType.getBuildOperation(buildTargetRunner, opInfo, buildToolPath, fullBuild);
 	}
 	
 }

@@ -19,18 +19,22 @@ import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
+import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
+import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.PathUtil;
 
-public abstract class BuildTargetRunner {
+public class BuildTargetValidator3 extends AbstractValidator2 {
+	
+	public final BuildManager buildMgr =LangCore.getBuildManager();
 	
 	protected final IProject project;
 	protected final BuildConfiguration buildConfiguration2;
 	protected final String buildTypeName;
 	protected final String buildOptions;
 	
-	public BuildTargetRunner(IProject project, BuildConfiguration buildConfig, String buildTypeName,
+	public BuildTargetValidator3(IProject project, BuildConfiguration buildConfig, String buildTypeName,
 			String buildOptions) {
 		this.project = project;
 		this.buildConfiguration2 = assertNotNull(buildConfig);
@@ -39,7 +43,7 @@ public abstract class BuildTargetRunner {
 	}
 	
 	public BuildManager getBuildManager() {
-		return LangCore.getBuildManager();
+		return buildMgr;
 	}
 	
 	public IProject getProject() {
@@ -70,56 +74,6 @@ public abstract class BuildTargetRunner {
 		return getDefaultBuildOptions();
 	}
 	
-	/* ----------------- Build Configuration ----------------- */
-	
-	public static class BuildConfiguration {
-		
-		protected final String name;
-		protected final String artifactPath;
-		
-		public BuildConfiguration(String name, String artifactPath) {
-			this.name = assertNotNull(name);
-			this.artifactPath = artifactPath;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		public String getArtifactPath() {
-			return artifactPath;
-		}
-		
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static abstract class BuildType {
-		
-		protected final String name;
-		
-		public BuildType(String name) {
-			this.name = assertNotNull(name);
-		}
-		
-		/* -----------------  ----------------- */
-		
-		public String getName() {
-			return name;
-		}
-		
-		public abstract String getDefaultBuildOptions(BuildTargetRunner buildTargetRunner)
-				throws CommonException, CoreException;
-		
-		public String getArtifactPath(BuildTargetRunner buildTargetOp) 
-				throws CommonException, CoreException {
-			return buildTargetOp.getBuildConfiguration().getArtifactPath();
-		}
-		
-	}
-	
-	/* -----------------  ----------------- */
-	
 	protected BuildType getBuildType() throws CommonException {
 		return getBuildManager().getBuildType_NonNull(getBuildTypeName());
 	}
@@ -132,10 +86,6 @@ public abstract class BuildTargetRunner {
 		return getBuildType().getArtifactPath(this);
 	}
 	
-	public Path getValidArtifactPath() throws CommonException, CoreException {
-		return getValidArtifactPath(getArtifactPath());
-	}
-	
 	public Path getValidArtifactPath(String artifactPathStr) throws CommonException {
 		if(artifactPathStr == null || artifactPathStr.isEmpty()) {
 			throw new CommonException(LaunchMessages.BuildTarget_NoArtifactPathSpecified);
@@ -143,7 +93,9 @@ public abstract class BuildTargetRunner {
 		return PathUtil.createPath(artifactPathStr);
 	}
 	
-	public abstract CommonBuildTargetOperation getBuildOperation(OperationInfo opInfo, Path buildToolPath, 
-			boolean fullBuild);
+	public Path getValidArtifactPath3(String artifactPathOverride) throws CommonException, CoreException {
+		String effectiveArtifactPath = artifactPathOverride != null ? artifactPathOverride : getArtifactPath();
+		return getValidArtifactPath(effectiveArtifactPath);
+	}
 	
 }

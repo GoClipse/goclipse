@@ -18,9 +18,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.launch.BuildTargetValidator;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.fields.ArgumentsGroupField;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
@@ -55,6 +56,10 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 	
 	/* -----------------  ----------------- */
 	
+	protected BuildManager getBuildManager() {
+		return LangCore.getBuildManager();
+	}
+	
 	protected String getBuildTargetName() {
 		return buildTargetField.getFieldValue();
 	}
@@ -64,12 +69,19 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 		buildOptionsField.addValueChangedListener(() -> handleBuildOptionsChanged());
 	}
 	
+	protected IProject getValidProject() throws CommonException {
+		if(project == null) {
+			throw new CommonException(new ProjectValidator().msg_ProjectNotSpecified());
+		}
+		return project;
+	}
+	
 	protected ProjectBuildInfo getBuildInfo() throws CommonException {
-		return LangCore.getBuildManager().getValidBuildInfo(project);
+		return getBuildManager().getValidBuildInfo(project);
 	}
 	
 	protected BuildTarget getSelectedBuildTarget() throws CommonException {
-		return new BuildTargetValidator().getBuildTarget_nonNull(project, getBuildTargetName());
+		return getBuildManager().getValidDefinedBuildTarget(getValidProject(), getBuildTargetName());
 	}
 	
 	protected void handleBuildTargetChanged() {
