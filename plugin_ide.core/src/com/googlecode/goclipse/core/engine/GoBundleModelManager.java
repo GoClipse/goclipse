@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IProject;
 
 import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
 
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
+import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.project_model.BundleModelManager;

@@ -19,26 +19,15 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator3;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator2;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.ValidationMessages;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 public class ProjectBuildArtifactValidator extends AbstractValidator2 {
-	
-	protected final ProjectBuildExecutableSettings settings;
-	
-	public ProjectBuildArtifactValidator(ProjectBuildExecutableSettings settings) {
-		this.settings = settings;
-	}
-	
-	protected BuildManager getBuildManager() {
-		return LangCore.getBuildManager();
-	}
 	
 	public static interface ProjectBuildExecutableSettings {
 		
@@ -50,12 +39,29 @@ public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 	
 	/* -----------------  ----------------- */
 	
-	public IProject getProject() throws StatusException, CoreException {
-		return getProject(settings.getProject_Attribute());
+	protected final ProjectBuildExecutableSettings settings;
+	
+	public ProjectBuildArtifactValidator(ProjectBuildExecutableSettings settings) {
+		this.settings = settings;
 	}
 	
-	public IProject getProject(String projectName) throws StatusException, CoreException {
-		return getProjectValidator().getProject(projectName);
+	protected BuildManager getBuildManager() {
+		return LangCore.getBuildManager();
+	}
+	
+	protected String getProjectName() throws CoreException {
+		return settings.getProject_Attribute();
+	}
+	
+	/** @return BuildTargetName. Can be null */
+	protected String getBuildTargetName() throws CoreException {
+		return settings.getBuildTarget_Attribute();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public IProject getValidProject() throws CommonException, CoreException {
+		return getProjectValidator().getProject(getProjectName());
 	}
 	
 	protected ProjectValidator getProjectValidator() {
@@ -64,37 +70,32 @@ public class ProjectBuildArtifactValidator extends AbstractValidator2 {
 	
 	/* -----------------  ----------------- */
 	
-	public BuildTargetValidator getBuildTargetValidator() {
-		return new BuildTargetValidator(false);
+	public BuildTarget getBuildTarget() throws CoreException, CommonException {
+		if(getBuildTargetName() == null){
+			return null;
+		}
+		return getValidBuildTarget();
 	}
 	
-	public BuildTarget getBuildTarget() throws CoreException, CommonException {
-		return getBuildTargetValidator().getBuildTarget(getProject(), settings.getBuildTarget_Attribute());
-	}
-
-	public BuildTarget getBuildTarget_NonNull() throws CoreException, CommonException {
-		return getBuildTargetValidator().getBuildTarget_nonNull(getProject(), settings.getBuildTarget_Attribute());
+	public BuildTarget getValidBuildTarget() throws CoreException, CommonException {
+		return getBuildManager().getValidBuildTarget(getValidProject(), getBuildTargetName(), false);
 	}
 	
 	/* -----------------  ----------------- */ 
 	
 	protected Path getValidExecutableFilePath2() throws CoreException, CommonException {
-		BuildTarget buildTarget = getBuildTarget_NonNull();
-		BuildTargetRunner buildTargetOperation = getBuildManager().getBuildTargetOperation(getProject(), buildTarget);
+		BuildTargetValidator3 buildTargetValidator = getBuildManager()
+				.createBuildTargetValidator(getValidProject(), getValidBuildTarget());
 		
-		String exePathString = settings.getExecutablePath_Attribute();
-		if(exePathString != null) {
-			return buildTargetOperation.getValidArtifactPath(exePathString);
-		}
-		return buildTargetOperation.getValidArtifactPath();
+		return buildTargetValidator.getValidArtifactPath3(settings.getExecutablePath_Attribute());
 	}
 	
-	public Location toAbsolute(Path exePath) throws StatusException, CoreException {
+	public Location toAbsolute(Path exePath) throws CommonException, CoreException {
 		if(exePath.isAbsolute()) {
 			return Location.fromAbsolutePath(exePath);
 		}
 		// Otherwise path is relative to project location
-		return ResourceUtils.loc(getProject().getLocation()).resolve(exePath);
+		return ResourceUtils.loc(getValidProject().getLocation()).resolve(exePath);
 	}
 	
 	public Location getValidExecutableFileLocation() throws CoreException, CommonException {

@@ -19,7 +19,6 @@ import org.eclipse.debug.core.DebugPlugin;
 
 import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator.ProjectBuildExecutableSettings;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -47,8 +46,8 @@ public class ProcessLaunchInfoValidator {
 		
 	}
 	
-	protected IProject getProject() throws StatusException, CoreException {
-		return buildExecutableValidator.getProject();
+	protected IProject getProject() throws CommonException, CoreException {
+		return buildExecutableValidator.getValidProject();
 	}
 	
 	protected BuildTarget getBuildTarget() throws CoreException, CommonException {
@@ -61,7 +60,7 @@ public class ProcessLaunchInfoValidator {
 	
 	/* -----------------  ----------------- */
 	
-	public IPath getWorkingDirectory() throws CoreException, StatusException {
+	public IPath getWorkingDirectory() throws CommonException, CoreException {
 		IPath path = getDefinedWorkingDirectory();
 		if(path == null) {
 			return getDefaultWorkingDirectory();
@@ -74,7 +73,7 @@ public class ProcessLaunchInfoValidator {
 		return path.isEmpty() ? null : new org.eclipse.core.runtime.Path(path);
 	}
 	
-	public IPath getDefaultWorkingDirectory() throws CoreException, StatusException {
+	public IPath getDefaultWorkingDirectory() throws CommonException, CoreException {
 		return getProject().getLocation();
 	}
 	

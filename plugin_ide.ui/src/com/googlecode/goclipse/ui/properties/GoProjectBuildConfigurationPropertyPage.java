@@ -15,7 +15,7 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.ui.dialogs.LangBuildConfigurationPropertyPage;
 import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
 
-public class GoProjectBuildOptionsPage extends LangBuildConfigurationPropertyPage {
+public class GoProjectBuildConfigurationPropertyPage extends LangBuildConfigurationPropertyPage {
 	
 	@Override
 	protected LangProjectBuildConfigurationComponent createProjectBuildConfigComponent(IProject project) {

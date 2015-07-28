@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -24,41 +23,32 @@ import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class CommonBuildTargetOperation extends AbstractToolManagerOperation {
 	
 	protected final BuildManager buildManager;
 	protected final OperationInfo opInfo;
-	protected final BuildTargetRunner buildTarget;
+	protected final BuildTargetValidator3 buildTargetValidator;
 	protected final Path buildToolPath;
 	protected final boolean fullBuild;
 	
-	public CommonBuildTargetOperation(BuildManager buildManager, OperationInfo opInfo, IProject project,
-			Path buildToolPath, BuildTargetRunner buildTarget, boolean fullBuild) {
-		super(project);
+	public CommonBuildTargetOperation(BuildManager buildManager, BuildTargetValidator3 buildTargetValidator, 
+			OperationInfo opInfo, Path buildToolPath, boolean fullBuild) {
+		super(assertNotNull(buildTargetValidator).getProject());
 		this.buildManager = assertNotNull(buildManager);
 		this.buildToolPath = buildToolPath;
 		this.fullBuild = fullBuild;
 		this.opInfo = assertNotNull(opInfo);
-		this.buildTarget = assertNotNull(buildTarget);
+		this.buildTargetValidator = assertNotNull(buildTargetValidator);
 	}
 	
 	protected Path getBuildToolPath() throws CommonException {
 		return buildToolPath;
 	}
 	
-	protected String getConfiguration() {
-		return StringUtil.nullAsEmpty(buildTarget.getBuildConfigName());
-	}
-	
-	public String getBuildType() {
-		return StringUtil.nullAsEmpty(buildTarget.getBuildTypeName());
-	}
-	
 	protected String getEffectiveBuildOptions() throws CommonException, CoreException {
-		return buildTarget.getEffectiveBuildOptions();
+		return buildTargetValidator.getEffectiveBuildOptions();
 	}
 	
 	protected String[] getEvaluatedAndParserArguments() throws CoreException, CommonException {

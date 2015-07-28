@@ -12,7 +12,7 @@ package melnorme.lang.ide.core.project_model;
 
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
+import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 

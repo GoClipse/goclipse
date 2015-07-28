@@ -26,7 +26,7 @@ import com.googlecode.goclipse.core.operations.GoBuildManager;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator3;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -87,15 +87,15 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		BuildTarget buildTarget = buildInfo.getBuildTargetFor(targetName);
 		assertAreEqual(buildTarget.getTargetName(), targetName);
 
-		BuildTargetRunner buildTargetOp = getBuildManager().getBuildTargetOperation(project, buildTarget);
-		assertAreEqual(buildTargetOp.getBuildConfigName(), goPackageName);
-		assertAreEqual(buildTargetOp.getBuildTypeName(), buildType);
+		BuildTargetValidator3 validator = getBuildManager().createBuildTargetValidator(project, buildTarget);
+		assertAreEqual(validator.getBuildConfigName(), goPackageName);
+		assertAreEqual(validator.getBuildTypeName(), buildType);
 		
 		if(relArtifactPath == null) {
-			verifyThrows(() -> buildTargetOp.getArtifactPath(), CommonException.class);
+			verifyThrows(() -> validator.getArtifactPath(), CommonException.class);
 		} else {
 			Location binLocation = getProjectLocation().resolve("bin");
-			assertAreEqual(buildTargetOp.getArtifactPath(), 
+			assertAreEqual(validator.getArtifactPath(), 
 				binLocation.resolve(relArtifactPath + MiscUtil.getExecutableSuffix()).toString());
 			
 		}

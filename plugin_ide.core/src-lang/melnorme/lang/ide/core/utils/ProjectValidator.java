@@ -35,8 +35,8 @@ public class ProjectValidator extends AbstractValidator2 {
 	}
 	
 	public IProject getProject(String projectName, String natureID) throws StatusException {
-		if(projectName.isEmpty()) {
-			throw error(msg_NoProjectName());
+		if(projectName == null || projectName.isEmpty()) {
+			throw error(msg_ProjectNotSpecified());
 		}
 		
 		IProject project = ResourceUtils.getWorkspaceRoot().getProject(projectName);
@@ -55,15 +55,15 @@ public class ProjectValidator extends AbstractValidator2 {
 		}
 	}
 	
-	protected String msg_NoProjectName(){
+	public String msg_ProjectNotSpecified(){
 		return LangCoreMessages.error_selectProject;
 	}
 	
-	protected String msg_ProjectDoesNotExist() {
+	public String msg_ProjectDoesNotExist() {
 		return LangCoreMessages.error_projectDoesNotExist;
 	}
 	
-	protected String msg_NotAValidLangProject() {
+	public String msg_NotAValidLangProject() {
 		return LangCoreMessages.error_notAValidProject;
 	}
 	

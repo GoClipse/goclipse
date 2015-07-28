@@ -311,7 +311,7 @@
 	
 		
 	<extension point="org.eclipse.ui.propertyPages">
-		<page class="com.googlecode.goclipse.ui.properties.GoProjectBuildOptionsPage"
+		<page class="com.googlecode.goclipse.ui.properties.GoProjectBuildConfigurationPropertyPage"
 			id="com.googlecode.goclipse.properties.ProjectBuildConfiguration"
 			name="Build Targets">
 			<enabledWhen>

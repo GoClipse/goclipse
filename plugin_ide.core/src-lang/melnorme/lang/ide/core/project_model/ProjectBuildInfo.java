@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,9 @@ import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
