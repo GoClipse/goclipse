@@ -29,9 +29,9 @@ public abstract class AbstractExternalProcessHelper {
 	protected final Process process;
 	protected final boolean readStdErr;
 	
-	/** This latch exists to signal that the process has terminated, and also that the reader threads 
+	/** This latch exists to signal that the process has terminated, and also that both reader threads 
 	 * have finished reading all input. This last aspect is very important. */
-	protected final CountDownLatch fullTerminationLatch;
+	protected final CountDownLatch readersTerminationLatch;
 	
 	protected final Thread mainReaderThread;
 	protected final Thread stderrReaderThread; // Can be null
@@ -44,14 +44,14 @@ public abstract class AbstractExternalProcessHelper {
 		this.process = process;
 		this.readStdErr = readStdErr;
 		
-		fullTerminationLatch = new CountDownLatch(2);
+		readersTerminationLatch = new CountDownLatch(2);
 		
 		mainReaderThread = new ProcessHelperMainThread(createMainReaderTask());
 		
 		if(readStdErr) {
 			stderrReaderThread = new ProcessHelperStdErrThread(createStdErrReaderTask());
 		} else {
-			fullTerminationLatch.countDown(); // dont start stderr thread, so update latch
+			readersTerminationLatch.countDown(); // dont start stderr thread, so update latch
 			stderrReaderThread = null;
 		}
 		if(startReaders) {
@@ -74,8 +74,8 @@ public abstract class AbstractExternalProcessHelper {
 		return readStdErr;
 	}
 	
-	public boolean isFullyTerminated() {
-		return fullTerminationLatch.getCount() == 0;
+	public boolean areReadersTerminated() {
+		return readersTerminationLatch.getCount() == 0;
 	}
 	
 	protected abstract Runnable createMainReaderTask();
@@ -99,7 +99,7 @@ public abstract class AbstractExternalProcessHelper {
 				super.run();
 			} finally {
 				waitForProcessIndefinitely();
-				fullTerminationLatch.countDown();
+				readersTerminationLatch.countDown();
 				
 				mainReaderThread_Terminated();
 			}
@@ -134,7 +134,7 @@ public abstract class AbstractExternalProcessHelper {
 			try {
 				super.run();
 			} finally {
-				fullTerminationLatch.countDown();
+				readersTerminationLatch.countDown();
 			}
 		}
 		
@@ -143,28 +143,33 @@ public abstract class AbstractExternalProcessHelper {
 	/*----------  Waiting functionality ----------*/
 	
 	/**
-	 * Await termination of process, with given timeoutMs timeout. Can use -1 for no timeout.
-	 * Periodically polls cancel monitor, if one exists.
-	 * @return true if termination reached, false if timeout reached, or cancel requested.
-	 * @throws InterruptedException if interrupted.
+	 * Await termination of process, with given timeoutMs timeout in milliseconds (-1 for no timeout).
+	 * Periodically polls for cancellation.
+	 * @return the process exit value.
+	 * @throws InterruptedException if thread interrupted, or if cancellation is polled.
+	 * @throws TimeoutException if timeout reached.
 	 */
-	protected boolean tryAwaitTermination(int timeoutMs) throws InterruptedException {
+	protected int awaitTermination(int timeoutMs) throws InterruptedException, TimeoutException {
 		int waitedTime = 0;
 		
 		while(true) {
 			int cancelPollPeriodMs = getCancelPollingPeriodMs();
-			boolean latchSuccess = fullTerminationLatch.await(cancelPollPeriodMs, TimeUnit.MILLISECONDS);
+			boolean latchSuccess = doAwaitTermination(cancelPollPeriodMs);
 			if(latchSuccess) {
-				return true;
+				return process.exitValue();
 			}
 			if(isCanceled()) {
-				return false;
+				throw new InterruptedException();
 			}
 			if(timeoutMs != NO_TIMEOUT && waitedTime >= timeoutMs) {
-				return false;
+				throw new TimeoutException();
 			}
 			waitedTime += cancelPollPeriodMs;
 		}
+	}
+	
+	protected boolean doAwaitTermination(int cancelPollPeriodMs) throws InterruptedException {
+		return readersTerminationLatch.await(cancelPollPeriodMs, TimeUnit.MILLISECONDS);
 	}
 	
 	protected int getCancelPollingPeriodMs() {
@@ -172,17 +177,5 @@ public abstract class AbstractExternalProcessHelper {
 	}
 	
 	protected abstract boolean isCanceled();
-	
-	/** 
-	 * Same as {@link #tryAwaitTermination(int)} but throws TimeoutException if timeout occurs, or cancel is requested.
-	 * @return The process exit value.
-	 */
-	public int awaitTermination(int timeoutMs) throws InterruptedException, TimeoutException {
-		boolean success = tryAwaitTermination(timeoutMs);
-		if(!success) {
-			throw new TimeoutException();
-		}
-		return process.exitValue();
-	}
 	
 }

@@ -12,9 +12,8 @@ package melnorme.utilbox.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.TimeUnit;
 
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -28,12 +27,13 @@ import melnorme.utilbox.misc.ILogHandler;
  */
 public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	
+	public static enum FAwaitListeners { YES, NO ; public boolean isTrue() { return this == YES; } }
+	public static enum FStartReaders { YES, NO ; public boolean isTrue() { return this == YES; } }
+	
 	protected final ILogHandler logHandler;
 	protected final Indexable<IProcessOutputListener> listeners;
 	protected final FAwaitListeners awaitListeners;
-	
-	public static enum FAwaitListeners { YES, NO ; boolean isTrue() { return this == YES; } }
-	public static enum FStartReaders { YES, NO ; boolean isTrue() { return this == YES; } }
+	protected final CountDownLatch listenersTerminationLatch = new CountDownLatch(1);
 	
 	public ExternalProcessNotifyingHelper(Process process, boolean readStdErr, 
 			ICancelMonitor cancelMonitor, Indexable<IProcessOutputListener> listeners, ILogHandler logHandler) {
@@ -44,9 +44,9 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 			FStartReaders startReaders, FAwaitListeners awaitListeners, 
 			ICancelMonitor cancelMonitor, Indexable<IProcessOutputListener> listeners, ILogHandler logHandler) {
 		super(process, readStdErr, false, cancelMonitor);
-		this.awaitListeners = awaitListeners;
 		
-		this.listeners = assertNotNull(listeners).toArrayList().addElements(listenersTerminatedSentinel);
+		this.awaitListeners = assertNotNull(awaitListeners);
+		this.listeners = assertNotNull(listeners);
 		this.logHandler = assertNotNull(logHandler);
 		
 		if(startReaders.isTrue()) {
@@ -104,17 +104,21 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	public void mainReaderThread_Terminated() {
 		while(true) {
 			try {
-				fullTerminationLatch.await();
+				readersTerminationLatch.await();
 				break;
 			} catch (InterruptedException e) {
 				// retry await
 			}
 		}
-		notifyProcessTerminatedAndRead(process.exitValue());
+		try {
+			// Notify listeners
+			mainReaderThread_notifyProcessTerminatedAndRead(process.exitValue());
+		} finally {
+			listenersTerminationLatch.countDown();
+		}
 	}
 	
-	
-	protected void notifyProcessTerminatedAndRead(int exitCode) {
+	protected void mainReaderThread_notifyProcessTerminatedAndRead(int exitCode) {
 		for (IProcessOutputListener pol : listeners) {
 			try {
 				pol.notifyProcessTerminatedAndRead(exitCode);
@@ -129,34 +133,11 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	}
 	
 	@Override
-	public ExternalProcessResult awaitTerminationAndResult(int timeoutMs)
-			throws InterruptedException, TimeoutException, IOException {
-		try {
-			return super.awaitTerminationAndResult(timeoutMs);
-		} finally {
-			if(awaitListeners.isTrue()) {
-				listenersTerminatedSentinel.terminationLatch.await();
-			}
-		}
-	}
-	
-	// A listener to notify that all other listeners have terminated
-	protected final ListenersTerminatedSentinel listenersTerminatedSentinel = new ListenersTerminatedSentinel();
-	
-	protected final class ListenersTerminatedSentinel implements IProcessOutputListener {
-		
-		protected final CountDownLatch terminationLatch = new CountDownLatch(1);
-		
-		@Override
-		public void notifyStdOutListeners(byte[] buffer, int offset, int readCount) {
-		}
-		@Override
-		public void notifyStdErrListeners(byte[] buffer, int offset, int readCount) {
-		}
-		
-		@Override
-		public void notifyProcessTerminatedAndRead(int exitCode) {
-			terminationLatch.countDown();
+	protected boolean doAwaitTermination(int cancelPollPeriodMs) throws InterruptedException {
+		if(awaitListeners.isTrue()) {
+			return listenersTerminationLatch.await(cancelPollPeriodMs, TimeUnit.MILLISECONDS);
+		} else {
+			return super.doAwaitTermination(cancelPollPeriodMs);
 		}
 	}
 	
