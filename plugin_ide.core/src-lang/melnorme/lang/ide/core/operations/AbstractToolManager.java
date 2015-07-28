@@ -22,6 +22,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
+import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -33,7 +34,6 @@ import melnorme.utilbox.fields.IValidatedField;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
 /**
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).
@@ -156,17 +156,16 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 		}
 		
 		@Override
-		protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+		protected void handleProcessStartResult(ProcessStartHelper psh) {
 			for(ILangOperationsListener processListener : getListeners()) {
-				processListener.handleProcessStart(newProcessStartInfo(opInfo, pb, processHelper, ce));
+				processListener.handleProcessStart(newProcessStartInfo(opInfo, pb, psh));
 			}
 		}
 		
 	}
 	
-	protected ProcessStartInfo newProcessStartInfo(OperationInfo opInfo, ProcessBuilder pb, 
-			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-		return new ProcessStartInfo(opInfo, pb, ">> Running: ", processHelper, ce);
+	protected ProcessStartInfo newProcessStartInfo(OperationInfo opInfo, ProcessBuilder pb, ProcessStartHelper psh) {
+		return new ProcessStartInfo(opInfo, pb, ">> Running: ", psh);
 	}
 	
 	/* ----------------- ----------------- */
@@ -192,9 +191,9 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 		}
 		
 		@Override
-		protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+		protected void handleProcessStartResult(ProcessStartHelper psh) {
 			for (ILangOperationsListener listener : AbstractToolManager.this.getListeners()) {
-				listener.engineClientToolStart(pb, ce, processHelper);
+				listener.engineClientToolStart(pb, psh);
 			}
 		}
 		
@@ -207,9 +206,9 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 		}
 		
 		@Override
-		protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+		protected void handleProcessStartResult(ProcessStartHelper psh) {
 			for (ILangOperationsListener listener : getListeners()) {
-				listener.engineDaemonStart(pb, ce, processHelper);
+				listener.engineDaemonStart(pb, psh);
 			}
 		}
 		

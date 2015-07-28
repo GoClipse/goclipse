@@ -10,10 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
+import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 
 public class ProcessStartInfo {
 	
@@ -21,18 +21,15 @@ public class ProcessStartInfo {
 	
 	public final ProcessBuilder pb;
 	public final String prefixText;
-	public final ExternalProcessNotifyingHelper processHelper;
-	public final CommonException ce;
+	public final ProcessStartHelper processStartHelper;
 	
-	public ProcessStartInfo(OperationInfo opInfo, ProcessBuilder pb, String prefixText, 
-			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+	public ProcessStartInfo(OperationInfo opInfo, ProcessBuilder pb, String prefixText, ProcessStartHelper psh) {
 		this.opInfo = opInfo;
+		assertTrue(opInfo == null || opInfo.isStarted());
+		
 		this.pb = pb;
 		this.prefixText = prefixText;
-		this.processHelper = processHelper;
-		this.ce = ce;
-		
-		assertTrue(opInfo == null || opInfo.isStarted());
+		this.processStartHelper = assertNotNull(psh);
 	}
 	
 }

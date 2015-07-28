@@ -14,8 +14,6 @@ public interface ProcessHelperMessages {
 	
 	public static final String ExternalProcess_CouldNotStart =
 			"Could not start process: ";
-	public static final String ExternalProcess_InterruptedAwaitingTermination =
-			"Interrupted awaiting process termination.";
 	public static final String ExternalProcess_ErrorStreamReaderIOException =
 			"Error reading process stream.";
 	public static final String ExternalProcess_TaskCancelled =
