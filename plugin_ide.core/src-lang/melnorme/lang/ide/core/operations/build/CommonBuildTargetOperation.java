@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
+import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -29,18 +31,41 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	protected final BuildManager buildManager;
 	protected final OperationInfo opInfo;
-	protected final BuildTargetValidator3 buildTargetValidator;
 	protected final Path buildToolPath;
 	protected final boolean fullBuild;
 	
-	public CommonBuildTargetOperation(BuildManager buildManager, BuildTargetValidator3 buildTargetValidator, 
-			OperationInfo opInfo, Path buildToolPath, boolean fullBuild) {
+	protected final BuildConfiguration buildConfiguration;
+	protected final BuildType buildType;
+	protected final String effectiveBuildOptions;
+	
+	public CommonBuildTargetOperation(BuildManager buildManager, BuildTargetValidator buildTargetValidator, 
+			OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
 		super(assertNotNull(buildTargetValidator).getProject());
 		this.buildManager = assertNotNull(buildManager);
 		this.buildToolPath = buildToolPath;
 		this.fullBuild = fullBuild;
 		this.opInfo = assertNotNull(opInfo);
-		this.buildTargetValidator = assertNotNull(buildTargetValidator);
+		
+		assertNotNull(buildTargetValidator);
+		this.buildConfiguration = buildTargetValidator.getBuildConfiguration();
+		this.buildType = buildTargetValidator.getBuildType();
+		this.effectiveBuildOptions = buildTargetValidator.getEffectiveBuildOptions();
+	}
+	
+	protected BuildConfiguration getConfiguration() {
+		return buildConfiguration;
+	}
+	
+	protected String getConfigurationName() {
+		return buildConfiguration.getName();
+	}
+	
+	protected BuildType getBuildType() {
+		return buildType;
+	}
+	
+	protected String getBuildTypeName() {
+		return buildType.getName();
 	}
 	
 	protected Path getBuildToolPath() throws CommonException {
@@ -48,7 +73,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	}
 	
 	protected String getEffectiveBuildOptions() throws CommonException, CoreException {
-		return buildTargetValidator.getEffectiveBuildOptions();
+		return effectiveBuildOptions;
 	}
 	
 	protected String[] getEvaluatedAndParserArguments() throws CoreException, CommonException {

@@ -30,7 +30,7 @@ import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTargetValidator3;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -85,15 +85,15 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	@Override
-	protected BuildConfiguration getBuildConfiguration(IProject project, String buildConfigName)
+	protected BuildConfiguration getValidBuildConfiguration(IProject project, String buildConfigName)
 			throws CommonException {
 		return new BuildConfiguration(buildConfigName, null);
 	}
 	
 	@Override
-	public BuildTargetValidator3 createBuildTargetValidator(IProject project, BuildConfiguration buildConfig,
-			String buildTypeName, String buildOptions) {
-		return new BuildTargetValidator3(project, buildConfig, buildTypeName, buildOptions);
+	public BuildTargetValidator createBuildTargetValidator(IProject project, String buildConfigName,
+			String buildTypeName, String buildOptions) throws CommonException {
+		return new BuildTargetValidator(project, buildConfigName, buildTypeName, buildOptions);
 	}
 	
 	/* -----------------  ----------------- */
@@ -109,7 +109,7 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(BuildTargetValidator3 buildTargetValidator) throws CommonException {
+		public String getDefaultBuildOptions(BuildTargetValidator buildTargetValidator) throws CommonException {
 			String goPackageSpec = getGoPackageSpec(buildTargetValidator.getProject(), 
 				buildTargetValidator.getBuildConfigName());
 			return getBuildCommand() + " -v -gcflags \"-N -l\" " + goPackageSpec;
@@ -135,7 +135,7 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getArtifactPath(BuildTargetValidator3 buildTargetValidator) throws CommonException {
+		public String getArtifactPath(BuildTargetValidator buildTargetValidator) throws CommonException {
 			Location binFolderLocation = GoProjectEnvironment.getBinFolderLocation(buildTargetValidator.getProject());
 			
 			String binFilePath = getBinFilePath(getValidGoPackageName(buildTargetValidator.getBuildConfigName()));
@@ -147,8 +147,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator3 buildTargetValidator, 
-				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) {
+		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator, 
+				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
 			return new GoBuildTargetOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild);
 		}
 		
@@ -197,7 +197,7 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getArtifactPath(BuildTargetValidator3 buildTargetValidator) throws CommonException {
+		public String getArtifactPath(BuildTargetValidator buildTargetValidator) throws CommonException {
 			throw new CommonException("This configuration does not produce executable artifacts.");
 		}
 		
@@ -205,8 +205,8 @@ public class GoBuildManager extends BuildManager {
 	
 	public static class GoBuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public GoBuildTargetOperation(BuildTargetValidator3 buildTargetValidator, OperationInfo opInfo, 
-				Path buildToolPath, boolean fullBuild) {
+		public GoBuildTargetOperation(BuildTargetValidator buildTargetValidator, OperationInfo opInfo, 
+				Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
 			super(buildTargetValidator.buildMgr, buildTargetValidator, opInfo, buildToolPath, fullBuild);
 		}
 		
