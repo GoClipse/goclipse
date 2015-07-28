@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.utilbox.process;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
@@ -146,12 +147,12 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	/* ----------------- result helpers ----------------- */
 	
 	protected ByteArrayOutputStreamExt getStdOutBytes() {
-		assertTrue(isFullyTerminated());
+		assertTrue(areReadersTerminated());
 		return mainReader.byteArray;
 	}
 	
 	protected ByteArrayOutputStreamExt getStdErrBytes() {
-		assertTrue(isFullyTerminated());
+		assertTrue(areReadersTerminated());
 		assertTrue(readStdErr);
 		return stderrReader.byteArray;
 	}
@@ -178,9 +179,15 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 	}
 	
+	/* ----------------- Await termination ----------------- */
+	
 	public ExternalProcessResult awaitTerminationAndResult() 
-			throws InterruptedException, TimeoutException, IOException {
-		return awaitTerminationAndResult(NO_TIMEOUT);
+			throws InterruptedException, IOException {
+		try {
+			return awaitTerminationAndResult(NO_TIMEOUT);
+		} catch (TimeoutException e) {
+			throw assertFail(); // Cannot happen
+		}
 	}
 	
 	/** 
@@ -188,8 +195,8 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	 * throws an exception otherwise (and destroys the process).
 	 * @param timeoutMs the timeout in milliseconds to wait for (or -1 for no TIMEOUT).
 	 * @return the process output result in an {@link ExternalProcessResult}. 
-	 * @throws InterruptedException if interrupted
-	 * @throws TimeoutException if timeout occurs, or cancel requested.
+	 * @throws InterruptedException if thread interrupted, or if cancellation is polled.
+	 * @throws TimeoutException if timeout reached.
 	 * @throws IOException if an IO error occured in the reader threads.
 	 */
 	public ExternalProcessResult awaitTerminationAndResult(int timeoutMs) 
