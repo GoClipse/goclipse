@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,45 +17,40 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugPlugin;
 
-import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator.ProjectBuildExecutableSettings;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 public class ProcessLaunchInfoValidator {
 	
-	public final ProcessLaunchInfoSettings settings;
-	protected final ProjectBuildArtifactValidator buildExecutableValidator;
-
-	public ProcessLaunchInfoValidator(ProcessLaunchInfoSettings settings) {
-		this.settings = settings;
-		this.buildExecutableValidator = init_ProjectBuildExecutableFileValidator(settings);
+	protected final LaunchExecutableValidator launchExecutableValidator;
+	
+	protected final String programArguments;
+	protected final String workingDirectory;
+	protected final Map<String, String> environmentVars;
+	protected final boolean appendEnvironmentVars;
+	
+	public ProcessLaunchInfoValidator(LaunchExecutableValidator launchExecutableValidator, String programArguments,
+			String workingDirectory, Map<String, String> environmentVars, boolean appendEnvironmentVars) {
+		this.launchExecutableValidator = launchExecutableValidator;
+		this.programArguments = programArguments;
+		this.workingDirectory = workingDirectory;
+		this.environmentVars = environmentVars;
+		this.appendEnvironmentVars = appendEnvironmentVars;
 	}
 	
-	protected ProjectBuildArtifactValidator init_ProjectBuildExecutableFileValidator(
-			ProcessLaunchInfoSettings settings) {
-		return new ProjectBuildArtifactValidator(settings);
-	}
-	
-	public static interface ProcessLaunchInfoSettings extends ProjectBuildExecutableSettings {
-		
-		public abstract String getProgramArguments_Attribute() throws CoreException;
-		public abstract String getWorkingDirectory_Attribute() throws CoreException;
-		public abstract Map<String, String> getEnvironmentVars() throws CoreException;
-		public abstract boolean getAppendEnvironmentVars() throws CoreException;
-		
-	}
+	/* -----------------  ----------------- */
 	
 	protected IProject getProject() throws CommonException, CoreException {
-		return buildExecutableValidator.getValidProject();
+		return launchExecutableValidator.validProject;
 	}
 	
 	protected BuildTarget getBuildTarget() throws CoreException, CommonException {
-		return buildExecutableValidator.getBuildTarget();
+		return launchExecutableValidator.getBuildTarget();
 	}
 	
 	protected Location getValidExecutableFileLocation() throws CoreException, CommonException {
-		return buildExecutableValidator.getValidExecutableFileLocation();
+		return launchExecutableValidator.getValidExecutableLocation();
 	}
 	
 	/* -----------------  ----------------- */
@@ -69,8 +64,7 @@ public class ProcessLaunchInfoValidator {
 	}
 	
 	public IPath getDefinedWorkingDirectory() throws CoreException {
-		String path = settings.getWorkingDirectory_Attribute();
-		return path.isEmpty() ? null : new org.eclipse.core.runtime.Path(path);
+		return workingDirectory.isEmpty() ? null : new org.eclipse.core.runtime.Path(workingDirectory);
 	}
 	
 	public IPath getDefaultWorkingDirectory() throws CommonException, CoreException {
@@ -80,21 +74,25 @@ public class ProcessLaunchInfoValidator {
 	/* -----------------  ----------------- */
 
 	public String[] getProgramArguments() throws CoreException {
-		return DebugPlugin.parseArguments(settings.getProgramArguments_Attribute());
+		return DebugPlugin.parseArguments(programArguments);
 	}
 	
+	/* -----------------  ----------------- */
+	
+	public Map<String, String> getValidEnvironmentVars() throws CoreException {
+		return environmentVars;
+	}
 	
 	/* ======================   ====================== */
 	
-	public ProcessLaunchInfo getValidatedProcessLaunchInfo() throws CoreException, CommonException {
+	public ProcessLaunchInfo getValidProcessLaunchInfo() throws CommonException, CoreException {
 		
 		IProject project = getProject();
 		BuildTarget buildTarget = getBuildTarget();
 		Location programLoc = getValidExecutableFileLocation();
 		String[] processArgs = getProgramArguments();
 		IPath workingDirectory = getWorkingDirectory();
-		Map<String, String> configEnv = settings.getEnvironmentVars();
-		boolean appendEnv = settings.getAppendEnvironmentVars();
+		Map<String, String> configEnv = getValidEnvironmentVars();
 		
 		return new ProcessLaunchInfo(
 			project, 
@@ -103,7 +101,7 @@ public class ProcessLaunchInfoValidator {
 			processArgs, 
 			workingDirectory, 
 			configEnv, 
-			appendEnv);
+			appendEnvironmentVars);
 	}
 	
 }

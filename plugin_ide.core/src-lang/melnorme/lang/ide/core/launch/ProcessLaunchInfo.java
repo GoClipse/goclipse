@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.debug.core.DebugPlugin;
 
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.utilbox.misc.Location;
@@ -56,6 +57,10 @@ public class ProcessLaunchInfo {
 	
 	public BuildTarget getBuildTarget() {
 		return buildTarget;
+	}
+	
+	public String getProgramArgumentsString() {
+		return DebugPlugin.renderArguments(programArguments, null);
 	}
 	
 }

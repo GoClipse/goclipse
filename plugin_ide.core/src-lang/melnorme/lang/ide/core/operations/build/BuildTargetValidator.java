@@ -12,18 +12,14 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.PathUtil;
 
 public class BuildTargetValidator extends AbstractValidator2 {
 	
@@ -86,18 +82,6 @@ public class BuildTargetValidator extends AbstractValidator2 {
 	
 	public String getArtifactPath() throws CommonException, CoreException {
 		return getBuildType().getArtifactPath(this);
-	}
-	
-	public Path getValidArtifactPath(String artifactPathStr) throws CommonException {
-		if(artifactPathStr == null || artifactPathStr.isEmpty()) {
-			throw new CommonException(LaunchMessages.BuildTarget_NoArtifactPathSpecified);
-		}
-		return PathUtil.createPath(artifactPathStr);
-	}
-	
-	public Path getValidArtifactPath3(String artifactPathOverride) throws CommonException, CoreException {
-		String effectiveArtifactPath = artifactPathOverride != null ? artifactPathOverride : getArtifactPath();
-		return getValidArtifactPath(effectiveArtifactPath);
 	}
 	
 }
