@@ -11,8 +11,6 @@
 package melnorme.lang.ide.ui.navigator;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.text.Collator;
 
 import org.eclipse.core.resources.IFolder;
@@ -44,8 +42,7 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 		
 		@Override
 		public Integer visitProject(IProject project) {
-			assertFail(); /*FIXME: BUG here*/
-			return null;
+			return visitFolder();
 		}
 		
 		@Override
@@ -61,9 +58,13 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 		@Override
 		public Integer visitOther(Object element) {
 			if(element instanceof IFolder) {
-				return -2;
+				return visitFolder();
 			}
 			return 0;
+		}
+		
+		protected int visitFolder() {
+			return -2;
 		}
 	}
 	

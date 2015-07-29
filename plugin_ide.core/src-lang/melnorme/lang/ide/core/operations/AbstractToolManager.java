@@ -127,6 +127,7 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 	public OperationInfo startNewToolOperation() {
 		OperationInfo opInfo = new OperationInfo(null);
 		notifyOperationStarted(opInfo);
+		opInfo.setStarted(true);
 		return opInfo;
 	}
 	
