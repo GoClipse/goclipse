@@ -30,12 +30,13 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.LaunchExecutableValidator;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
-import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator.ProcessLaunchInfoSettings;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -60,7 +61,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	@Override
 	public final ILaunch getLaunch(ILaunchConfiguration configuration, String mode) throws CoreException {
 		try {
-			launchInfo = getLaunchValidator(configuration).getValidatedProcessLaunchInfo();
+			launchInfo = getLaunchValidator(configuration).getValidProcessLaunchInfo();
 		} catch(CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
@@ -102,62 +103,41 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		return super.preLaunchCheck(configuration, mode, monitor);
 	}
 	
-	protected ProcessLaunchInfoValidator getLaunchValidator(ILaunchConfiguration config) {
-		return new ProcessLaunchInfoValidator(new LaunchConfigLaunchInfoSettings(config));
+	protected ProcessLaunchInfoValidator getLaunchValidator(ILaunchConfiguration config) 
+			throws CommonException, CoreException {
+		
+		LaunchExecutableValidator launchExecutableValidator = new LaunchExecutableValidator(
+			new ProjectValidator(),
+			config.getAttribute(LaunchConstants.ATTR_PROJECT_NAME, ""),
+			config.getAttribute(LaunchConstants.ATTR_BUILD_TARGET, (String) null),
+			evaluateStringVars(getArtifactPathOverride(config))
+		);
+		
+		return new ProcessLaunchInfoValidator(
+			launchExecutableValidator, 
+			evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "")),
+			evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, "")),
+			config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null),
+			config.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true)
+		);
 	}
 	
-	public static class LaunchConfigLaunchInfoSettings implements ProcessLaunchInfoSettings {
-		
-		protected final ILaunchConfiguration config;
-		
-		public LaunchConfigLaunchInfoSettings(ILaunchConfiguration config) {
-			this.config = config;
+	public static String getArtifactPathOverride(ILaunchConfiguration config) throws CoreException {
+		boolean useDefault = config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, true);
+		return useDefault 
+				? null : 
+				config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH, "");
+	}
+	
+	protected IStringVariableManager getVariableManager() {
+		return VariablesPlugin.getDefault().getStringVariableManager();
+	}
+	
+	protected String evaluateStringVars(String expression) throws CoreException {
+		if(expression == null) {
+			return null;
 		}
-		
-		protected IStringVariableManager getVariableManager() {
-			return VariablesPlugin.getDefault().getStringVariableManager();
-		}
-		
-		protected String evaluateStringVars(String expression) throws CoreException {
-			return getVariableManager().performStringSubstitution(expression);
-		}
-		
-		@Override
-		public String getProject_Attribute() throws CoreException {
-			return evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROJECT_NAME, ""));
-		}
-		
-		@Override
-		public String getBuildTarget_Attribute() throws CoreException {
-			return config.getAttribute(LaunchConstants.ATTR_BUILD_TARGET, (String) null);
-		}
-		
-		@Override
-		public String getExecutablePath_Attribute() throws CoreException {
-			boolean useDefault = config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, true);
-			return useDefault ? null : evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH, ""));
-		}
-		
-		@Override
-		public String getProgramArguments_Attribute() throws CoreException {
-			return evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, ""));
-		}
-		
-		@Override
-		public String getWorkingDirectory_Attribute() throws CoreException {
-			String rawValue = config.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, "");
-			return getVariableManager().performStringSubstitution(rawValue, false);
-		}
-		
-		@Override
-		public Map<String, String> getEnvironmentVars() throws CoreException {
-			return config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null);
-		}
-		
-		@Override
-		public boolean getAppendEnvironmentVars() throws CoreException {
-			return config.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true);
-		}
+		return getVariableManager().performStringSubstitution(expression);
 	}
 	
 	@SuppressWarnings("unused")

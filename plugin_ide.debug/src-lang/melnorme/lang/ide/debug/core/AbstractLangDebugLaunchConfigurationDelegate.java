@@ -21,7 +21,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ISourceLocator;
 
-import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
 import melnorme.lang.ide.debug.core.services.LangDebugServicesExtensions;
 
 public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangLaunchConfigurationDelegate_Actual {
@@ -65,25 +64,22 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 		
 		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
 		
-		setAttributes(configuration, workingCopy);
+		setAttributes(workingCopy);
 		
 		workingCopy.doSave();
 		
 		return gdbLaunchDelegate.getLaunch(configuration, mode);
 	}
 	
-	protected void setAttributes(ILaunchConfiguration configuration, ILaunchConfigurationWorkingCopy workingCopy)
-			throws CoreException {
+	protected void setAttributes(ILaunchConfigurationWorkingCopy workingCopy) throws CoreException {
 		
-		ProcessLaunchInfoValidator validator = getLaunchValidator(configuration);
-
 		// Setup CDT config parameters
 		
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME,
 			launchInfo.programFileLocation.toString());
 		// Need to pass raw args, because CDT will reevaluate variables.
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
-			validator.settings.getProgramArguments_Attribute());
+			launchInfo.getProgramArgumentsString());
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
 			launchInfo.workingDir.toString());
 		

@@ -20,20 +20,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangNature;
-import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator;
-import melnorme.lang.ide.core.launch.ProjectBuildArtifactValidator.ProjectBuildExecutableSettings;
+import melnorme.lang.ide.core.launch.LaunchExecutableValidator;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
-import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
-import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 
 /**
  * A main LaunchConfigurationTa with project selection field, and program path selection field.
@@ -81,13 +75,14 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 			super(
 				LangUIMessages.LaunchTab_ProgramPathField_title, 
 				LangUIMessages.LaunchTab_ProgramPathField_useDefault, 
-				MainLaunchConfigurationTab.this::validateProject);
+				MainLaunchConfigurationTab.this::validateProject
+			);
 		}
 		
 		@Override
 		protected String getDefaultFieldValue() {
 			try {
-				return getValidatedBuildTargetRunner().getArtifactPath();
+				return getValidator().getDefaultArtifactPath();
 			} catch(CoreException | CommonException e) {
 				return null;
 			}
@@ -96,53 +91,23 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	@Override
 	protected void doValidate() throws CommonException, CoreException {
-		getValidatedProgramFileLocation();
+		getValidator().getBuildTarget();
+		getValidator().getValidExecutableLocation();
 	}
 	
-	/* FIXME: review ProjectBuildArtifactValidator */
-	protected BuildTargetValidator getValidatedBuildTargetRunner() throws CommonException, CoreException {
-		return getBuildManager().createBuildTargetValidator(validateProject(), getValidatedBuildTarget());
+	protected LaunchExecutableValidator getValidator() throws CommonException {
+		return new MainLaunchTab_LaunchExecutableValidator();
 	}
 	
-	protected BuildTarget getValidatedBuildTarget() throws CommonException, CoreException {
-		return getValidator().getValidBuildTarget();
-	}
-	
-	protected Location getValidatedProgramFileLocation() throws CoreException, CommonException {
-		return getValidator().getValidExecutableFileLocation();
-	}
-	
-	protected ProjectBuildArtifactValidator getValidator() {
-		return new MainLaunchTab_ExecutableFileValidator();
-	}
-	
-	protected class MainLaunchTab_ExecutableFileValidator extends ProjectBuildArtifactValidator {
-		public MainLaunchTab_ExecutableFileValidator() {
-			super(new MainLaunchTab_ProjectBuildExecutableSettings());
+	protected class MainLaunchTab_LaunchExecutableValidator extends LaunchExecutableValidator {
+		public MainLaunchTab_LaunchExecutableValidator() throws CommonException {
+			super(
+				MainLaunchConfigurationTab.this.getValidProject(),
+				MainLaunchConfigurationTab.this.getBuildTargetName(),
+				MainLaunchConfigurationTab.this.programPathField.getEffectiveFieldValue()
+			);
 		}
 		
-		@Override
-		protected ProjectValidator getProjectValidator() {
-			return new ProjectValidator(LangNature.NATURE_ID);
-		}
-		
-	}
-	
-	public class MainLaunchTab_ProjectBuildExecutableSettings implements ProjectBuildExecutableSettings {
-		@Override
-		public String getProject_Attribute() throws CoreException {
-			return getProjectName();
-		}
-		
-		@Override
-		public String getExecutablePath_Attribute() throws CoreException {
-			return programPathField.getEffectiveFieldValue();
-		}
-		
-		@Override
-		public String getBuildTarget_Attribute() throws CoreException {
-			return getBuildTargetName();
-		}
 	}
 	
 	/* ----------------- Control creation ----------------- */
@@ -199,8 +164,8 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	@Override
 	public void initializeFrom(ILaunchConfiguration config) {
 		super.initializeFrom(config);
-		buildTargetField.setFieldValue(getConfigAttribute(config, LaunchConstants.ATTR_BUILD_TARGET, ""));
 		CheckBoxField enablementField = programPathField.getUseDefaultField();
+		buildTargetField.setFieldValue(getConfigAttribute(config, LaunchConstants.ATTR_BUILD_TARGET, ""));
 		enablementField.setFieldValue(getConfigAttribute(config, LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, true));
 		programPathField.setFieldValue(getConfigAttribute(config, LaunchConstants.ATTR_PROGRAM_PATH, ""));
 	}

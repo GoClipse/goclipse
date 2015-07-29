@@ -61,7 +61,11 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	}
 	
 	protected IProject validateProject() throws StatusException {
-		return new ProjectValidator(LangCore.NATURE_ID).getProject(getProjectName());
+		return getProjectValidator().getProject(getProjectName());
+	}
+	
+	protected ProjectValidator getProjectValidator() {
+		return new ProjectValidator(LangCore.NATURE_ID);
 	}
 	
 	@Override
