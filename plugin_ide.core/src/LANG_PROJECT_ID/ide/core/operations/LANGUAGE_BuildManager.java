@@ -10,6 +10,8 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
+import static melnorme.utilbox.core.CoreUtil.array;
+
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
@@ -88,8 +90,8 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void addMainArguments(ArrayList2<String> commands) {
-			commands.addElements(getConfigurationName());
+		protected String[] getMainArguments() throws CoreException, CommonException, OperationCancellation {
+			return array(getConfigurationName());
 		}
 		
 		@Override
