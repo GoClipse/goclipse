@@ -11,21 +11,16 @@
 package com.googlecode.goclipse.tooling.env;
 
 import static java.util.Collections.unmodifiableList;
-import static melnorme.utilbox.core.CoreUtil.listFrom;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
-import com.googlecode.goclipse.tooling.GoPackagesVisitor;
 
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -70,8 +65,8 @@ public class GoPath {
 		return StringUtil.collToString(goPathElements, File.pathSeparator);
 	}
 	
-	/** @return the full path of a GOPATH workspace entry (a workspace root) that contains the given path. */
-	public Location findGoPathEntry(Location goPathSubLocation) {
+	/** @return the GoWorkspaceLocation from the GOPATH entries that contains the given goPathSubLocation. */
+	public GoWorkspaceLocation findGoPathEntry(Location goPathSubLocation) {
 		if(goPathSubLocation == null) {
 			return null;
 		}
@@ -79,7 +74,7 @@ public class GoPath {
 			Location pathElementLoc = Location.createValidOrNull(PathUtil.createPathOrNull(pathElement));
 			
 			if(pathElementLoc != null && goPathSubLocation.startsWith(pathElementLoc)) {
-				return pathElementLoc;
+				return new GoWorkspaceLocation(pathElementLoc);
 			}
 		}
 		return null;
@@ -87,11 +82,11 @@ public class GoPath {
 	
 	/** @return the GOPATH entry that contains the given sourcePath, if it's in the "src" folder of that entry. 
 	 * Return null otherwise. */
-	public Location findGoPathEntryForSourcePath(Location sourcePath) {
-		Location workspaceEntry = findGoPathEntry(sourcePath);
+	public GoWorkspaceLocation findGoPathEntryForSourcePath(Location sourcePath) {
+		GoWorkspaceLocation goWorkspace = findGoPathEntry(sourcePath);
 		
-		if(workspaceEntry != null && sourcePath.startsWith(workspaceEntry.resolve_valid(SRC_DIR))) {
-			return workspaceEntry;
+		if(goWorkspace != null && sourcePath.startsWith(goWorkspace.getSrcLocation())) {
+			return goWorkspace;
 		}
 		return null;
 	}
@@ -104,12 +99,12 @@ public class GoPath {
 	}
 	
 	public GoPackageName findGoPackageForLocation(Location goPackageLocation) {
-		Location goPathEntry = findGoPathEntry(goPackageLocation);
+		GoWorkspaceLocation goPathEntry = findGoPathEntry(goPackageLocation);
 		if(goPathEntry == null) {
 			return null;
 		}
 		
-		Location sourceRoot = goPathEntry.resolve_fromValid(SRC_DIR);
+		Location sourceRoot = goPathEntry.getSrcLocation();
 		return GoEnvironment.getGoPackageForLocation(goPackageLocation, sourceRoot);
 	}
 	
@@ -121,22 +116,17 @@ public class GoPath {
 		return GoPackageName.fromPath(sourceRoot.relativize(packageLoc));
 	}
 	
-	public Collection<GoPackageName> findSourcePackages(Location loc) {
-		Location goPathEntry = findGoPathEntry(loc);
-		if(goPathEntry == null) {
-			return new HashSet<>();
+	public ArrayList2<GoPackageName> findGoSourcePackages(Location subLocation) {
+		GoWorkspaceLocation workspaceEntry = findGoPathEntry(subLocation);
+		if(workspaceEntry == null) {
+			return new ArrayList2<>();
 		}
 		
-		GoPackagesVisitor goPackagesVisitor = new GoPackagesVisitor(goPathEntry, listFrom(loc)) {
-			
-			@Override
-			protected FileVisitResult handleFileVisitException(Path file, IOException exc) {
-				// TODO: some sort of logging
-				return FileVisitResult.CONTINUE;
-			}
-		};
+		if(subLocation.equals(workspaceEntry.getLocation())) {
+			subLocation = workspaceEntry.getSrcLocation();
+		}
 		
-		return goPackagesVisitor.getModuleNames();
+		return workspaceEntry.findSourcePackages(subLocation);
 	}
 	
 }

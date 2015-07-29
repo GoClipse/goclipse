@@ -367,6 +367,9 @@ public abstract class BuildManager {
 			throws CommonException {
 		String buildConfigName = getBuildConfigString(targetName);
 		String buildTypeName = getBuildTypeString(targetName);
+		if(buildTypeName == null) {
+			buildTypeName = getBuildTypes().get(0).getName();
+		}
 		return createBuildTargetValidator(project, buildConfigName, buildTypeName, buildOptions);
 	}
 	

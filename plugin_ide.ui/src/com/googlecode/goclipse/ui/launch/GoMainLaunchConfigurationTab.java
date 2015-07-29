@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  * 		Bruno Medeiros - rewrite using lang code
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
-
-import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -38,8 +36,8 @@ import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ComboOptionsField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 /**
@@ -133,9 +131,8 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			dialog.setMessage("Select Go main package");
 			
 			GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
-			Collection<GoPackageName> sourcePackages = GoProjectEnvironment.getSourcePackages(project, goEnv);
-			
-			dialog.setElements(ArrayUtil.createFrom(sourcePackages));
+			Collection2<GoPackageName> sourcePackages = GoProjectEnvironment.findSourcePackages(project, goEnv);
+			dialog.setElements(sourcePackages.toArray());
 			
 			if (dialog.open() == IDialogConstants.OK_ID) {
 				GoPackageName goPackageName = (GoPackageName) dialog.getFirstResult();

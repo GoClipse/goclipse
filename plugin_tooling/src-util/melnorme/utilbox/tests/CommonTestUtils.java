@@ -13,7 +13,6 @@ package melnorme.utilbox.tests;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.misc.CollectionUtil.createHashSet;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,11 +22,11 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.HashSet2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
@@ -118,8 +117,8 @@ public class CommonTestUtils {
 		if(equals) {
 			return;
 		}
-		HashSet<?> resultExtra = removeAllCopy(result, expected);
-		HashSet<?> expectedMissing = removeAllCopy(expected, result);
+		HashSet2<?> resultExtra = new HashSet2<Object>(result).removeAll2(expected);
+		HashSet2<?> expectedMissing = new HashSet2<Object>(expected).removeAll2(result);
 		assertTrue(equals,
 				"Obtained result set not equal to expected set. \n" +
 				"--- Extra elements in result set ("+resultExtra.size()+") : --- \n" +
@@ -179,10 +178,6 @@ public class CommonTestUtils {
 	
 	/* ---- */
 	
-	public static <T> HashSet<T> removeAllCopy(Set<T> set, Collection<?> removeColl) {
-		return removeAll(createHashSet(set), removeColl);
-	}
-	
 	public static <E, T extends Set<E>> T removeAll(T set, Collection<?> removeColl) {
 		set.removeAll(removeColl);
 		return set;
@@ -207,8 +202,8 @@ public class CommonTestUtils {
 	}
 	
 	@SafeVarargs
-	public static <T> HashSet<T> hashSet(T... elems) {
-		return new HashSet<T>(Arrays.asList(elems));
+	public static <T> HashSet2<T> hashSet(T... elems) {
+		return new HashSet2<T>(Arrays.asList(elems));
 	}
 	
 	public static <T> Set<T> unmodifiable(Set<T> set) {

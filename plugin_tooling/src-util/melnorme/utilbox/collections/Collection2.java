@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,11 @@
  *******************************************************************************/
 package melnorme.utilbox.collections;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.function.Function;
 
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 
 /**
@@ -33,6 +36,32 @@ public interface Collection2<E> extends Iterable<E> {
 	
 	public default <R> ArrayList2<R> map(Function<? super E, ? extends R> evalFunction) {
 		return CollectionUtil.map(this, evalFunction);
+	}
+	
+	/* ----------------- Some array utils ----------------- */
+	
+	default ArrayList2<E> toArrayList() {
+		return new ArrayList2<>(this);
+	}
+	
+	default Object[] toArray() {
+		return this.<Object>upcastTypeParameter().toArray(Object.class);
+	}
+	
+	default E[] toArray(Class<E> componentType) {
+		E[] newArray = ArrayUtil.create(size(), componentType);
+		copyToArray(newArray);
+	    return newArray;
+	}
+	
+	// Subclasses can reimplement with more optimized versions (ie, array lists for example)
+	default Object[] copyToArray(Object[] destArray) {
+		assertTrue(destArray.length == size());
+		int i = 0;
+		for(E element : this) {
+			destArray[i++] = element;
+		}
+		return destArray;
 	}
 	
 }

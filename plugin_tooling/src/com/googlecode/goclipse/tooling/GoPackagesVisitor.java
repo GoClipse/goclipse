@@ -22,34 +22,30 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-import com.googlecode.goclipse.tooling.env.GoPath;
+import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
+import melnorme.utilbox.collections.Collection2;
+import melnorme.utilbox.collections.HashSet2;
+import melnorme.utilbox.collections.LinkedHashMap2;
 import melnorme.utilbox.misc.Location;
 
 public abstract class GoPackagesVisitor {
 	
-	protected final Location goPathEntry;
-	protected final HashMap<GoPackageName, Path> modules = new HashMap<>();
-	protected final HashSet<Path> moduleFiles = new HashSet<>();
+	protected final Location sourceRoot;
+	protected final LinkedHashMap2<GoPackageName, Path> modules = new LinkedHashMap2<>();
+	protected final HashSet2<Path> moduleFiles = new HashSet2<>();
 	
-	public GoPackagesVisitor(Location goPathEntry, List<Location> directoriesToVisit) {
-		this.goPathEntry = goPathEntry;
-		assertNotNull(goPathEntry);
+	public GoPackagesVisitor(GoWorkspaceLocation goWorkspace, Location directoryToVisit) {
+		this.sourceRoot = goWorkspace.getSrcLocation();
+		if(!directoryToVisit.startsWith(sourceRoot)) {
+			return;
+		}
 		
-		for (Location directoryToVisit : directoriesToVisit) {
-			try {
-				if(directoryToVisit.equals(goPathEntry)) {
-					directoryToVisit = directoryToVisit.resolve_fromValid(GoPath.SRC_DIR);
-				}
-				visitFolder(directoryToVisit);
-			} catch (IOException e) {
-				throw assertFail("Should not happen, file visit should not throw exception");
-			}
+		try {
+			visitFolder(directoryToVisit);
+		} catch (IOException e) {
+			throw assertFail("Should not happen, file visit should not throw exception");
 		}
 	}
 	
@@ -74,7 +70,8 @@ public abstract class GoPackagesVisitor {
 					}
 					
 					if(isDirectoryAValidGoPackage(dir)) {
-						addEntry(GoPath.getGoPackageForPath(goPathEntry, dirLoc), dir);
+						GoPackageName goPackageName = GoPackageName.fromPath(sourceRoot.relativize(dirLoc));
+						addEntry(goPackageName, dir);
 					}
 					
 					return FileVisitResult.CONTINUE;
@@ -133,12 +130,12 @@ public abstract class GoPackagesVisitor {
 		moduleFiles.add(fullPath);
 	}
 	
-	public HashSet<Path> getModuleFiles() {
+	public HashSet2<Path> getModuleFiles() {
 		return moduleFiles;
 	}
 	
-	public Set<GoPackageName> getModuleNames() {
-		return modules.keySet();
+	public Collection2<GoPackageName> getModuleNames() {
+		return modules.getKeysView();
 	}
 	
 }

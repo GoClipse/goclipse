@@ -52,7 +52,7 @@ public class GoProjectWizard extends LangNewProjectWizard {
 	protected void configureCreatedProject(ProjectCreator_ForWizard projectCreator, IProgressMonitor monitor)
 			throws CoreException {
 		IProject project = getProject();
-		if(!GoProjectEnvironment.isProjectInsideGoPath(project)) {
+		if(!GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project)) {
 			projectCreator.createFolder(project.getFolder("src"), monitor);
 			projectCreator.createFolder(project.getFolder("bin"), monitor);
 			projectCreator.createFolder(project.getFolder("pkg"), monitor);

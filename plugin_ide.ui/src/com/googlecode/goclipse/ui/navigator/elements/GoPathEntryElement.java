@@ -29,7 +29,7 @@ public class GoPathEntryElement extends GoPathElement {
 		this.goPathEntryPath = goPathEntryPath;
 		this.project = project;
 		
-		this.projectInsideGoPath = GoProjectEnvironment.isProjectInsideGoPath(project, goPath);
+		this.projectInsideGoPath = GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project, goPath);
 	}
 	
 	public IProject getProject() {

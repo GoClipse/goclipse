@@ -11,12 +11,12 @@
 package com.googlecode.goclipse.core.operations;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
+import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.nio.file.Path;
-import java.util.Collection;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.googlecode.goclipse.core.GoCoreMessages;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
@@ -24,6 +24,7 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoBuildOutputProcessor;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
+import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
@@ -35,15 +36,16 @@ import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
-import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class GoBuildManager extends BuildManager {
@@ -136,20 +138,18 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public String getArtifactPath(BuildTargetValidator buildTargetValidator) throws CommonException {
-			Location binFolderLocation = GoProjectEnvironment.getBinFolderLocation(buildTargetValidator.getProject());
+			Location binFolderLocation = getBinFolderLocation(buildTargetValidator);
 			
 			String binFilePath = getBinFilePath(getValidGoPackageName(buildTargetValidator.getBuildConfigName()));
 			return binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString();
 		}
 		
-		protected String getBinFilePath(GoPackageName goPackageName) throws CommonException {
-			return goPackageName.getLastSegment();
+		protected Location getBinFolderLocation(BuildTargetValidator buildTargetValidator) throws CommonException {
+			return GoProjectEnvironment.getBinFolderLocation(buildTargetValidator.getProject());
 		}
 		
-		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator, 
-				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
-			return new GoBuildTargetOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild);
+		protected String getBinFilePath(GoPackageName goPackageName) throws CommonException {
+			return goPackageName.getLastSegment();
 		}
 		
 	}
@@ -165,71 +165,43 @@ public class GoBuildManager extends BuildManager {
 			return "install";
 		}
 		
-	}
-	
-	public static class GoTestBuildType extends AbstractGoBuildType {
-		
-		public GoTestBuildType() {
-			super(BUILD_TYPE_BuildTests);
-		}
-		
 		@Override
-		protected String getBuildCommand() {
-			return "test -c";
-		}
-		
-		@Override
-		protected String getBinFilePath(GoPackageName goPackageName) throws CommonException {
-			return super.getBinFilePath(goPackageName) + ".test";
-		}
-		
-	}
-	
-	public static class GoRunTestsBuildType extends AbstractGoBuildType {
-		
-		public GoRunTestsBuildType() {
-			super(BUILD_TYPE_RunTests);
-		}
-		
-		@Override
-		protected String getBuildCommand() {
-			return "test";
-		}
-		
-		@Override
-		public String getArtifactPath(BuildTargetValidator buildTargetValidator) throws CommonException {
-			throw new CommonException("This configuration does not produce executable artifacts.");
+		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator, 
+				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
+			return new GoBuildTargetOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild);
 		}
 		
 	}
 	
 	public static class GoBuildTargetOperation extends CommonBuildTargetOperation {
 		
+		protected final GoEnvironment goEnv;
+		protected final Location sourceRootDir;
+		
 		public GoBuildTargetOperation(BuildTargetValidator buildTargetValidator, OperationInfo opInfo, 
 				Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
 			super(buildTargetValidator.buildMgr, buildTargetValidator, opInfo, buildToolPath, fullBuild);
-		}
-		
-		protected GoEnvironment goEnv;
-		protected Location sourceRootDir;
-		
-		@Override
-		protected void addMainArguments(ArrayList2<String> commands) {
-		}
-		
-		@Override
-		protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands) 
-				throws CoreException, CommonException {
-			Location projectLocation = ResourceUtils.getProjectLocation(project);
+			
+			Location projectLocation = getProjectLocation();
 			
 			goEnv = getValidGoEnvironment(project);
-			if(GoProjectEnvironment.isProjectInsideGoPath(project, goEnv.getGoPath())) {
+			if(GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project, goEnv.getGoPath())) {
 				sourceRootDir = projectLocation;
 			} else {
 				sourceRootDir = projectLocation.resolve_valid("src");
 				
 				checkGoFilesInSourceRoot();
 			}
+		}
+		
+		@Override
+		protected String[] getMainArguments() throws CoreException, CommonException, OperationCancellation {
+			return array();
+		}
+		
+		@Override
+		protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands) 
+				throws CoreException, CommonException {
 			ProcessBuilder pb = ProcessUtils.createProcessBuilder(commands, sourceRootDir);
 			goEnv.setupProcessEnv(pb, true);
 			return pb;
@@ -262,6 +234,107 @@ public class GoBuildManager extends BuildManager {
 		
 	}
 	
+	public static class GoTestBuildType extends AbstractGoBuildType {
+		
+		public GoTestBuildType() {
+			super(BUILD_TYPE_BuildTests);
+		}
+		
+		@Override
+		protected String getBuildCommand() {
+			return "test -c";
+		}
+		
+		@Override
+		protected String getBinFilePath(GoPackageName goPackageName) throws CommonException {
+			if(isMultipleGoPackages(goPackageName.getFullNameAsString())){
+				throw new CommonException("Cannot use multiple packages spec `...` when building for a launch.");
+			}
+			
+			return super.getBinFilePath(goPackageName) + ".test";
+		}
+		
+		protected boolean isMultipleGoPackages(String goPackageName) {
+			return goPackageName.endsWith("/...") || goPackageName.equals("...");
+		}
+		
+		protected boolean isMultipleGoPackagesArguments(String[] arguments) {
+			if(arguments.length == 0) {
+				return false;
+			}
+			String lastArg = arguments[arguments.length-1];
+			return isMultipleGoPackages(lastArg);
+		}
+		
+		@Override
+		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator,
+				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
+			return new GoBuildTargetOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild) {
+				@Override
+				protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands)
+						throws CoreException, CommonException {
+					ProcessBuilder pb = super.getProcessBuilder(commands);
+					pb.directory(getBinFolderLocation(buildTargetValidator).toFile());
+					return pb;
+				}
+				
+				@Override
+				public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+					String[] extraArgumentsOriginal = getEvaluatedAndParsedArguments();
+					
+					if(!isMultipleGoPackagesArguments(extraArgumentsOriginal)) {
+						runBuildToolAndProcessOutput(
+							getToolProcessBuilder(getMainArguments(), extraArgumentsOriginal), pm);
+						return;
+					}
+					
+					ArrayList2<String> argumentsTemplate = new ArrayList2<>(extraArgumentsOriginal);
+					int lastArgIx = extraArgumentsOriginal.length - 1;
+					String parentGoPackage = StringUtil.trimEnd(argumentsTemplate.get(lastArgIx), "...");
+					
+					GoWorkspaceLocation goWorkspace = goEnv.getGoPath().findGoPathEntry(getProjectLocation());
+					Collection2<GoPackageName> sourcePackages = goWorkspace.findSubPackages(parentGoPackage);
+					
+					for (GoPackageName goPackage : sourcePackages) {
+						argumentsTemplate.set(lastArgIx, goPackage.getFullNameAsString());
+						
+						String[] extraArguments = argumentsTemplate.toArray(String.class);
+						runBuildToolAndProcessOutput(
+							getToolProcessBuilder(getMainArguments(), extraArguments), pm);
+					}
+					
+				}
+
+			};
+			
+		}
+		
+	}
+	
+	public static class GoRunTestsBuildType extends AbstractGoBuildType {
+		
+		public GoRunTestsBuildType() {
+			super(BUILD_TYPE_RunTests);
+		}
+		
+		@Override
+		protected String getBuildCommand() {
+			return "test";
+		}
+		
+		@Override
+		public String getArtifactPath(BuildTargetValidator buildTargetValidator) throws CommonException {
+			throw new CommonException("This configuration does not produce executable artifacts.");
+		}
+		
+		@Override
+		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator, 
+				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
+			return new GoBuildTargetOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild);
+		}
+		
+	}
+	
 	protected static GoEnvironment getValidGoEnvironment(IProject project) throws CoreException {
 		try {
 			return GoProjectEnvironment.getValidatedGoEnvironment(project);
@@ -281,7 +354,7 @@ public class GoBuildManager extends BuildManager {
 	
 	protected static void addSourcePackagesToCmdLine(final IProject project, ArrayList2<String> goBuildCmdLine,
 			GoEnvironment goEnvironment) throws CoreException {
-		Collection<GoPackageName> sourcePackages = GoProjectEnvironment.getSourcePackages(project, goEnvironment);
+		Collection2<GoPackageName> sourcePackages = GoProjectEnvironment.findSourcePackages(project, goEnvironment);
 		for (GoPackageName goPackageName : sourcePackages) {
 			goBuildCmdLine.add(goPackageName.getFullNameAsString());
 		}

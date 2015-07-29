@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class StructureElementContentProvider extends AbstractTreeContentProvider
 	}
 	
 	public static <T> Object[] toArray(Indexable<T> indexable) {
-		return new ArrayList2<>().addAll(indexable).toArray();
+		return new ArrayList2<>().addAll2(indexable).toArray();
 	}
 	
 	@Override

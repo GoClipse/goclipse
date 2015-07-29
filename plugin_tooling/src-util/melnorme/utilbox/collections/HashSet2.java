@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,18 @@ public class HashSet2<E> extends HashSet<E> implements Collection2<E> {
 		super();
 	}
 	
-	public HashSet2(Collection<? extends E> c) {
-		super(c);
+	public HashSet2(Collection<? extends E> coll) {
+		super(coll);
+	}
+	
+	public HashSet2(Indexable<? extends E> coll) {
+		super(coll.size());
+		addAll2(coll);
+	}
+	
+	public HashSet2(Iterable<? extends E> coll) {
+		super();
+		addAll2(coll);
 	}
 	
 	public HashSet2(int initialCapacity) {
@@ -52,13 +62,21 @@ public class HashSet2<E> extends HashSet<E> implements Collection2<E> {
 		return this;
 	}
 	
-	public final HashSet2<E> addElements(Collection<? extends E> elements) {
+	public final HashSet2<E> addAll2(Iterable<? extends E> elements) {
 		for (E element : elements) {
 			add(element);
 		}
 		return this;
 	}
 	
+	public final HashSet2<E> removeAll2(Iterable<? extends E> elements) {
+		for (E element : elements) {
+			remove(element);
+		}
+		return this;
+	}
+	
+	@Override
 	public E[] toArray(Class<E> componentType) {
 		return ArrayUtil.createFrom(this, componentType);
 	}

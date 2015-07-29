@@ -149,7 +149,7 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 			IProject project = resource.getProject();
 			boolean isProjecInsideGoPath;
 			try {
-				isProjecInsideGoPath = GoProjectEnvironment.isProjectInsideGoPath(project);
+				isProjecInsideGoPath = GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project);
 			} catch (CoreException e) {
 				return null;
 			}

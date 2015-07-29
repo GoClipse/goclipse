@@ -75,7 +75,9 @@ public class LaunchExecutableValidator extends AbstractValidator2 {
 	}
 	
 	public Location getValidExecutableLocation() throws CoreException, CommonException {
-		String effectiveArtifactPath = artifactPathOverride != null ? artifactPathOverride : getDefaultArtifactPath();
+		// Note we want to validate the default artifact path, even if it's not used because of the override.
+		String defaultArtifactPath = getDefaultArtifactPath();
+		String effectiveArtifactPath = artifactPathOverride != null ? artifactPathOverride : defaultArtifactPath;
 		return getValidExecutableLocation(effectiveArtifactPath);
 	}
 	

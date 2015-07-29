@@ -136,13 +136,13 @@ public class GoEnvironment {
 	}
 	
 	public Location getBinFolderLocationForSubLocation(Location goPathSubLocation) throws CommonException {
-		Location goPathEntry = getGoPath().findGoPathEntry(goPathSubLocation);
+		GoWorkspaceLocation goWorkspace = getGoPath().findGoPathEntry(goPathSubLocation);
 		
-		if(goPathEntry == null) {
+		if(goWorkspace == null) {
 			throw new CommonException(
 				MessageFormat.format("Could not find path `{0}` in a GOPATH entry: ", goPathSubLocation));
 		}
-		return goPathEntry.resolve_fromValid("bin");
+		return goWorkspace.getBinLocation();
 	}
 	
 	protected String getGoOS_GoArch_segment() throws CommonException {
