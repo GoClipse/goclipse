@@ -23,11 +23,6 @@ import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
 public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 	
 	@Override
-	protected boolean useGlobalConsole() {
-		return true;
-	}
-	
-	@Override
 	public void handleProcessStart(ProcessStartInfo processStartInfo) {
 		new ProcessUIConsoleHandler(processStartInfo) {
 			@Override

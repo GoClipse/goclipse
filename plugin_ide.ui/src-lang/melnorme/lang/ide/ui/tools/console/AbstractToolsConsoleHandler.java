@@ -86,20 +86,13 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 		return getOrRecreateMessageConsole(operationConsoleName, clearConsole);
 	}
 	
+	@SuppressWarnings("unused")
 	protected final String getOperationConsoleName(IProject project) {
-		return useGlobalConsole() ? getGlobalConsoleName() : getProjectConsoleName(project);
-	}
-	
-	protected boolean useGlobalConsole() {
-		return true;
+		return getGlobalConsoleName();
 	}
 	
 	protected String getGlobalConsoleName() {
 		return BUILD_CONSOLE_NAME;
-	}
-	
-	protected String getProjectConsoleName(IProject project) {
-		return getGlobalConsoleName() + getProjectNameSuffix(project);
 	}
 	
 	protected String getProjectNameSuffix(IProject project) {
@@ -129,13 +122,9 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 			boolean clearConsole = true;
 			
 			console = getOperationConsole(opInfo.getProject(), clearConsole);
-//			if(!clearConsole) {
-//				// FIXME add option
-//				console.activate();
-//			}
+			console.activate();
 			
 			opInfo.putProperty(TOOL_INFO__KEY_CONSOLE, console);
-			opInfo.setStarted(true);
 		}
 	}
 	
