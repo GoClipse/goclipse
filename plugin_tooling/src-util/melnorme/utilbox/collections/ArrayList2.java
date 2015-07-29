@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,14 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		super(coll);
 	}
 	
-	public ArrayList2(Indexable<? extends E> coll) {
+	public ArrayList2(Collection2<? extends E> coll) {
 		super(coll.size());
-		addAll(coll);
+		addAll2(coll);
+	}
+	
+	public ArrayList2(Iterable<? extends E> coll) {
+		super();
+		addAll2(coll);
 	}
 	
 	public ArrayList2(int initialCapacity) {
@@ -65,11 +70,11 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		return this;
 	}
 	
-	public final ArrayList2<E> addAll(Iterable<? extends E> iterable) {
+	public final ArrayList2<E> addAll2(Iterable<? extends E> iterable) {
 		return iteratorAddAll(iterable.iterator());
 	}
 	
-	public final ArrayList2<E> addAll(Stream<? extends E> stream) {
+	public final ArrayList2<E> addAll2(Stream<? extends E> stream) {
 		return iteratorAddAll(stream.iterator());
 	}
 	

@@ -44,7 +44,7 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 		
 		@Override
 		public Integer visitProject(IProject project) {
-			assertFail();
+			assertFail(); /*FIXME: BUG here*/
 			return null;
 		}
 		

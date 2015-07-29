@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package melnorme.utilbox.collections;
+
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -20,7 +22,7 @@ public class CollectionView<K> implements Collection2<K> {
 	protected final Collection<K> coll;
 	
 	public CollectionView(Collection<K> coll) {
-		this.coll = coll;
+		this.coll = assertNotNull(coll);
 	}
 
 	@Override

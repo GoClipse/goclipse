@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package melnorme.utilbox.collections;
 
 import java.util.RandomAccess;
 
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 
 /**
@@ -25,30 +24,6 @@ public interface Indexable<E> extends Collection2<E>, RandomAccess {
 	
 	@Override
 	public <T> Indexable<T> upcastTypeParameter();
-	
-	/* ----------------- Some array utils ----------------- */
-	
-	default ArrayList2<E> toArrayList() {
-		return new ArrayList2<>(this);
-	}
-	
-	default Object[] toArray() {
-		return this.<Object>upcastTypeParameter().toArray(Object.class);
-	}
-	
-	default E[] toArray(Class<E> componentType) {
-		E[] newArray = ArrayUtil.create(size(), componentType);
-		copyToArray(newArray);
-	    return newArray;
-	}
-	
-	// Subclasses can reimplement with more optimized versions (ie, array lists for example)
-	default Object[] copyToArray(Object[] destArray) {
-		for (int i = 0; i < destArray.length; i++) {
-			destArray[i] = get(i);
-		}
-		return destArray;
-	}
 	
 	/* -----------------  ----------------- */
 	

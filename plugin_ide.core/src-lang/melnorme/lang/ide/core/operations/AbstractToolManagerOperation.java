@@ -11,12 +11,15 @@
 package melnorme.lang.ide.core.operations;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class AbstractToolManagerOperation implements IToolOperation {
@@ -29,6 +32,10 @@ public abstract class AbstractToolManagerOperation implements IToolOperation {
 	
 	public IProject getProject() {
 		return project;
+	}
+	
+	protected Location getProjectLocation() throws CoreException {
+		return ResourceUtils.getProjectLocation(project);
 	}
 	
 	protected AbstractToolManager getToolManager() {

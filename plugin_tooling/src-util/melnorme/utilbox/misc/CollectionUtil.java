@@ -41,17 +41,17 @@ public class CollectionUtil {
 	/** @return a new {@link ArrayList} from given collection 
 	 * (a null collection is considered as if it's an empty one). */
 	public static <E> ArrayList2<E> createArrayList(Iterable<? extends E> iterable) {
-		return addAll(new ArrayList2<E>(), iterable);
+		return new ArrayList2<>(nullToEmpty(iterable));
 	}
 	/** @return a new {@link LinkedList} from given collection 
 	 * (a null collection is considered as if it's an empty one). */
 	public static <E> LinkedList<E> createLinkedList(Iterable<? extends E> iterable) {
-		return addAll(new LinkedList<E>(), iterable);
+		return addAll2(new LinkedList<E>(), nullToEmpty(iterable));
 	}
 	/** @return a new {@link HashSet} from given collection 
 	 * (a null collection is considered as if it's an empty one). */
 	public static <E> HashSet2<E> createHashSet(Iterable<? extends E> iterable) {
-		return addAll(new HashSet2<E>(), iterable);
+		return new HashSet2<>(nullToEmpty(iterable));
 	}
 	
 	
@@ -172,18 +172,7 @@ public class CollectionUtil {
 		return rejectedElements;
 	}
 	
-	@Deprecated
-	public static <ELEM, COLL extends Collection<ELEM>> COLL addAll(COLL collection, Iterable<? extends ELEM> iterable) {
-		if(iterable != null) {
-			for(ELEM elem : iterable) {
-				collection.add(elem);
-			}
-		}
-		return collection;
-	}
-	
-	public static <ELEM, COLL extends Collection<? super ELEM>> COLL addAll2(COLL dest, 
-			Iterable<? extends ELEM> source) {
+	public static <ELEM, COLL extends Collection<? super ELEM>> COLL addAll2(COLL dest, Iterable<? extends ELEM> source) {
 		return addAllFromIterator(dest, source.iterator());
 	}
 	
