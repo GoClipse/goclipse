@@ -10,6 +10,7 @@
    * Project Build Configuration property page update to configure build targets.
    
  * TODO: GoLaunchShortcut documentation. Build targets doc.
+ Fixes #108 Closes #5
 
 ### 0.11.2
   ▶ Recommended/tested CDT version is now 8.7
