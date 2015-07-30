@@ -16,7 +16,6 @@ import static org.eclipse.jface.layout.GridDataFactory.fillDefaults;
 import java.net.URI;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -40,15 +39,19 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.TextFieldComponent;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -156,26 +159,12 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			return textField;
 		}
 		
-		public IProject getProjectHandle() {
-			String name = getName();
-			return name.isEmpty() ? null : ResourceUtils.getProject(name);
+		public IProject getProjectHandle2() throws StatusException {
+			return new ProjectValidator().getProjectHandle(getName());
 		}
 		
-		protected IStatus getValidationStatus() {
-			
-			final String name = getName();
-			if(name.isEmpty()) {
-				return LangCore.createErrorStatus(
-					WizardMessages.LangNewProject_Name_error_emptyProjectName);
-			}
-			
-			// Check name validity
-			final IStatus nameStatus = ResourceUtils.getWorkspace().validateName(name, IResource.PROJECT);
-			if(!nameStatus.isOK()) {
-				return nameStatus;
-			}
-			
-			return Status.OK_STATUS;
+		protected void validate() throws StatusException {
+			getProjectHandle2();
 		}
 		
 		/* -----------------  ----------------- */
@@ -200,8 +189,8 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 	}
 	
-	public IProject getProjectHandle() {
-		return nameGroup.getProjectHandle();
+	public IProject getProjectHandle2() throws CommonException {
+		return nameGroup.getProjectHandle2();
 	}
 	
 	/* ----------------- Location ----------------- */
@@ -252,27 +241,22 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			return Path.fromOSString(getLocationString());
 		}
 		
-		public IStatus getValidationStatus() {
+		public void validate() throws CommonException {
+			IProject project = nameGroup.getProjectHandle2();
+			
+			if(project.exists() && !isDefaultLocation()) {
+				throw new CommonException(WizardMessages.LangNewProject_Location_projectExistsCannotChangeLocation);
+			}
 			
 			IPath projectLocation = getProjectLocation();
-			
 			if(projectLocation == null) {
-				return LangCore.createErrorStatus(
-					WizardMessages.LangNewProject_Location_invalidLocation);
+				throw new CommonException(WizardMessages.LangNewProject_Location_invalidLocation);
 			}
 			
-			if(nameGroup.getProjectHandle().exists() && !isDefaultLocation()) {
-				return LangCore.createErrorStatus(
-					WizardMessages.LangNewProject_Location_projectExistsCannotChangeLocation);
-			}
-			
-			IProject project = nameGroup.getProjectHandle();
 			IStatus locationStatus = ResourceUtils.getWorkspace().validateProjectLocation(project, projectLocation);
 			if(!locationStatus.isOK()) {
-				return locationStatus;
+				throw EclipseUtils.statusToStatusException(locationStatus);
 			}
-			
-			return Status.OK_STATUS;
 		}
 		
 		/* -----------------  ----------------- */
@@ -333,7 +317,12 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 		@Override
 		public void updateComponentFromInput() {
-			IProject projectHandle = getProjectHandle();
+			IProject projectHandle;
+			try {
+				projectHandle = getProjectHandle2();
+			} catch(CommonException e) {
+				projectHandle = null;
+			}
 			
 			IPath projectLoc = getProjectLocation();
 			
@@ -425,20 +414,13 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 	}
 	
 	protected IStatus getValidationStatus() {
-		IStatus status = nameGroup.getValidationStatus();
-		
-		if(status.getSeverity() == IStatus.ERROR)
-			return status;
-		
-		IStatus locationStatus = locationGroup.getValidationStatus();
-		if(locationStatus.getSeverity() > status.getSeverity()) {
-			status = locationStatus;
+		try {
+			nameGroup.validate();
+			locationGroup.validate();
+			return Status.OK_STATUS;
+		} catch(CommonException e) {
+			return LangCore.createErrorStatus(e.getMessage(), e.getCause());
 		}
-		
-		if(!status.isOK())
-			return status;
-		
-		return Status.OK_STATUS;
 	}
 	
 }

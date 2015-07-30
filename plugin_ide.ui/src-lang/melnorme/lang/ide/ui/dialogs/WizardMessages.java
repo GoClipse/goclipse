@@ -27,8 +27,6 @@ public final class WizardMessages extends WizardMessages_Actual {
 	
 	public static final String LangNewProject_NameGroup_label = 
 			"&Project name:";
-	public static final String LangNewProject_Name_error_emptyProjectName = 
-			"Enter a project name.";
 	public static final String LangNewProject_Name_error_projectAlreadyExists = 
 			"A project with given name already exists.";
 	

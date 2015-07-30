@@ -16,12 +16,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangNature;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.ui.utils.UIOperationsHelper;
-import melnorme.utilbox.collections.ArrayList2;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,21 +23,29 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.utils.UIOperationsHelper;
+import melnorme.utilbox.collections.ArrayList2;
+
 /**
  * Component to create (and removed) new Lang projects, usually used by New Project wizards.
  */
 public abstract class ProjectCreationOperation {
-	
-	protected final IRunnableContext context;
-	
-	protected final ArrayList2<IRevertAction> revertActions = new ArrayList2<>();
-	protected final ArrayList2<Runnable> finishActions = new ArrayList2<>();
 	
 	public static interface IRevertAction {
 		
 		public void run(IProgressMonitor monitor) throws CoreException;
 		
 	}
+	
+	protected final IRunnableContext context;
+	
+	protected final ArrayList2<IRevertAction> revertActions = new ArrayList2<>();
+	protected final ArrayList2<Runnable> finishActions = new ArrayList2<>();
+	
+	protected IProject createdProject;
 	
 	public ProjectCreationOperation(IRunnableContext context) {
 		this.context = context;
@@ -53,7 +55,11 @@ public abstract class ProjectCreationOperation {
 		return context;
 	}
 	
-	public abstract IProject getProject();
+	public IProject getCreatedProject() {
+		return createdProject;
+	}
+	
+	public abstract IProject getProject() throws CoreException;
 	
 	public abstract URI getProjectLocation();
 	
@@ -72,6 +78,8 @@ public abstract class ProjectCreationOperation {
 	}
 	
 	protected void doCreateProject(IProgressMonitor monitor) throws CoreException {
+		createdProject = null;
+		
 		if(getProject() == null) {
 			throw LangCore.createCoreException("No project name specified.", null);
 		}
@@ -97,6 +105,7 @@ public abstract class ProjectCreationOperation {
 				}
 			});
 		}
+		createdProject = getProject();
 		configureCreatedProject(monitor);
 	}
 	

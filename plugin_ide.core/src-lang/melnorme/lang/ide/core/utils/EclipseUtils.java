@@ -30,6 +30,7 @@ import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.ArrayUtil;
 
@@ -119,6 +120,21 @@ public class EclipseUtils extends ResourceUtils {
 		case ERROR: return IStatus.ERROR;
 		}
 		throw assertUnreachable();
+	}
+	
+	public static StatusLevel eclipseSeverityToStatusLevel(IStatus status) {
+		switch (status.getSeverity()) {
+		case IStatus.CANCEL: return null;
+		case IStatus.OK: return StatusLevel.OK;
+		case IStatus.INFO: return StatusLevel.INFO;
+		case IStatus.WARNING: return StatusLevel.WARNING;
+		case IStatus.ERROR: return StatusLevel.ERROR;
+		}
+		throw assertUnreachable();
+	}
+	
+	public static StatusException statusToStatusException(IStatus status) {
+		return new StatusException(eclipseSeverityToStatusLevel(status), status.getMessage(), status.getException());
 	}
 	
 }
