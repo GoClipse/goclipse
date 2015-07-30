@@ -58,7 +58,7 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		
 		@Override
 		public String getArtifactPath(BuildTargetValidator buildTargetValidator) throws CommonException {
-			throw new CommonException("No default program path available");
+			return "default_artifact.exe"; // TODO: LANG
 		}
 		
 		@Override
