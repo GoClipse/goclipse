@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.launching.LaunchConstants;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.WorkingDirectoryBlock;
+
+import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
+import melnorme.lang.ide.launching.LaunchConstants;
 
 public class LangWorkingDirectoryBlock extends WorkingDirectoryBlock {
 	
@@ -26,18 +26,7 @@ public class LangWorkingDirectoryBlock extends WorkingDirectoryBlock {
 	
 	@Override
 	protected IProject getProject(ILaunchConfiguration configuration) throws CoreException {
-		String projectName = getProjectAttribute(configuration);
-		if (projectName != null) {
-			projectName = projectName.trim();
-			if (projectName.length() > 0) {
-				return EclipseUtils.getWorkspaceRoot().getProject(projectName);
-			}
-		}
-		return null;
-	}
-	
-	protected String getProjectAttribute(ILaunchConfiguration config) throws CoreException {
-		return config.getAttribute(LaunchConstants.ATTR_PROJECT_NAME, (String) null);
+		return new ProjectLaunchSettings(configuration).getProject();
 	}
 	
 }

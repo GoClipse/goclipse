@@ -64,10 +64,6 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		return buildType;
 	}
 	
-	protected String getBuildTypeName() {
-		return buildType.getName();
-	}
-	
 	protected Path getBuildToolPath() throws CommonException {
 		return buildToolPath;
 	}

@@ -26,7 +26,6 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.MessageEventInfo;
 import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -46,19 +45,13 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		this.opInfo = assertNotNull(opInfo);
 	}
 	
-	public IToolOperation newProjectBuildOperation() throws CommonException {
-		ProjectBuildInfo buildInfo = buildMgr.getValidBuildInfo(project);
-		return newProjectBuildOperation(buildInfo.getEnabledTargets());
-	}
-	
 	protected ArrayList2<IToolOperation> operations;
 	
 	public IToolOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild) 
 			throws CommonException {
 		operations = ArrayList2.create();
 		
-		String startMsg = headerBIG(format(MSG_BuildingProject, LangCore_Actual.LANGUAGE_NAME, project.getName()));
-		addOperation(newMessageOperation(opInfo, startMsg));
+		addCompositeBuildOperationMessage();
 		
 		addMarkerCleanOperation();
 		
@@ -75,6 +68,11 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		addOperation(newMessageOperation(opInfo, headerBIG(MSG_BuildTerminated)));
 		
 		return new CompositeBuildOperation(operations);
+	}
+	
+	protected void addCompositeBuildOperationMessage() {
+		String startMsg = headerBIG(format(MSG_BuildingProject, LangCore_Actual.LANGUAGE_NAME, project.getName()));
+		addOperation(newMessageOperation(opInfo, startMsg));
 	}
 	
 	protected boolean addOperation(IToolOperation toolOp) {

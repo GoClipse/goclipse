@@ -50,6 +50,14 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 		return isUseDefault() ? null : super.getFieldValue();
 	}
 	
+	public void setEffectiveFieldValue(String effectiveFieldValue) {
+		getUseDefaultField().setFieldValue(effectiveFieldValue == null);
+		
+		if(effectiveFieldValue != null) {
+			setFieldValue(effectiveFieldValue);
+		}
+	}
+	
 	public void updateDefaultFieldValue() {
 		if(isUseDefault()) {
 			try {
