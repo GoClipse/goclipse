@@ -372,4 +372,34 @@
 		</launchConfigurationTabGroup>
 	</extension>
 	
+<extension point="org.eclipse.debug.ui.launchShortcuts">
+	<shortcut
+		class="LANG_PROJECT_ID.ide.ui.launch.LANGUAGE_LaunchShortcut"
+		id="LANG_PROJECT_ID.ide.ui.launch.LaunchShortcut"
+		icon="icons/actions/application_launch.png"
+		label="%LangLaunchShortcut.name"
+		modes="run, debug">
+		
+		<description mode="run" description="%LangLaunchShortcut.runDescription"/>
+		<description mode="debug" description="%LangLaunchShortcut.debugDescription"/>
+		
+		<configurationType id="LANG_PROJECT_ID.ide.core.LaunchConfigurationType" />
+		
+		<contextualLaunch>
+			<enablement>
+				<with variable="selection">
+					<count value="1" />
+					<iterate>
+						<or>
+							<adapt type="org.eclipse.core.resources.IProject">
+								<reference definitionId="LANG_PROJECT_ID.ide.core.expressions.isNatureProject" />
+							</adapt>
+						</or>
+					</iterate>
+				</with>
+			</enablement>
+		</contextualLaunch>
+	</shortcut>
+</extension>
+	
 </plugin>
