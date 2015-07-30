@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.ILaunchShortcut;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -85,7 +86,10 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 				return false;
 			}
 			
-			if(areEqual(getBuildTarget(), launchSettings.buildTargetName)) {
+			if(areEqual(
+				LangCore.getBuildManager().getFullBuildTargetName(getBuildTarget()),
+				LangCore.getBuildManager().getFullBuildTargetName(launchSettings.buildTargetName)
+			)) {
 				return true;
 			}
 			return false;

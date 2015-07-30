@@ -13,6 +13,7 @@ package melnorme.lang.ide.core.operations.build;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -143,7 +144,7 @@ public abstract class BuildManager {
 		return StringUtil.emptyAsNull(BUILD_TARGETS_PREF.get(project));
 	}
 	
-	/* -----------------  ----------------- */
+	/* ----------------- ProjectBuildInfo ----------------- */
 	
 	protected void bundleProjectAdded(IProject project, AbstractBundleInfo bundleInfo) {
 		loadProjectBuildInfo(project, bundleInfo);
@@ -305,13 +306,47 @@ public abstract class BuildManager {
 		return currentBuildInfo.getBuildConfiguration_nonNull(buildConfigName);
 	}
 	
-	/* ----------------- Build Target ----------------- */
+	/* ----------------- Build Target name ----------------- */
 	
 	public static final String BUILD_TYPE_NAME_SEPARATOR = "#";
 	
-	public String getBuildTargetName(String buildConfigName, String buildType) {
-		buildType = StringUtil.emptyAsNull(buildType);
-		return buildConfigName + StringUtil.prefixStr(BUILD_TYPE_NAME_SEPARATOR, buildType);
+	public class BuildTargetName {
+		
+		protected final String buildConfig;
+		protected final String buildType;
+		
+		public BuildTargetName(String buildConfig, String buildTypeName) {
+			this.buildConfig = buildConfig;
+			this.buildType = buildTypeName;
+		}
+		
+		public BuildTargetName(String buildTargetName) {
+			this(getBuildConfigString(buildTargetName), getBuildTypeString(buildTargetName));
+		}
+		
+		public String getBuildConfig() {
+			return buildConfig;
+		}
+		
+		public String getBuildType() {
+			return buildType;
+		}
+		
+		public String getEffectiveBuildType() {
+			if(buildType == null) {
+				return getDefaultBuildTypeName();
+			}
+			return buildType;
+		}
+		
+		public String getRawName() {
+			return buildConfig + StringUtil.prefixStr(BUILD_TYPE_NAME_SEPARATOR, emptyAsNull(buildType));
+		}
+		
+		public String getResolvedName() {
+			return buildConfig + StringUtil.prefixStr(BUILD_TYPE_NAME_SEPARATOR, getEffectiveBuildType());
+		}
+		
 	}
 	
 	public String getBuildConfigString(String targetName) {
@@ -321,6 +356,45 @@ public abstract class BuildManager {
 	public String getBuildTypeString(String targetName) {
 		return StringUtil.segmentAfterMatch(targetName, BUILD_TYPE_NAME_SEPARATOR);
 	}
+	
+	public String getDefaultBuildTypeName() {
+		return getBuildTypes().get(0).getName();
+	}
+	
+	public String getBuildTargetName(String buildConfigName, String buildTypeName) {
+		return new BuildTargetName(buildConfigName, buildTypeName).getRawName();
+	}
+	
+	public String getFullBuildTargetName(String buildTargetName) {
+		return new BuildTargetName(buildTargetName).getResolvedName();
+	}
+	
+	/* -----------------  Build Target Validator  ----------------- */
+	
+	public BuildTargetValidator createBuildTargetValidator(IProject project, BuildTarget buildTarget) 
+			throws CommonException {
+		String targetName = buildTarget.getTargetName();
+		String buildOptions = buildTarget.getBuildOptions();
+		
+		return createBuildTargetValidator(project, targetName, buildOptions);
+	}
+	
+	public BuildTargetValidator createBuildTargetValidator(IProject project, String targetName, String buildOptions)
+			throws CommonException {
+		BuildTargetName nameRef = new BuildTargetName(targetName);
+		
+		return createBuildTargetValidator(project, 
+			nameRef.getBuildConfig(), nameRef.getEffectiveBuildType(), buildOptions);
+	}
+	
+	public abstract BuildTargetValidator createBuildTargetValidator(IProject project, String buildConfigName,
+			String buildTypeName, String buildOptions) throws CommonException;
+	
+	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) throws CommonException {
+		return projectBuildInfo.getDefinedBuildTarget(targetName);
+	}
+	
+	/* -----------------  Build Target  ----------------- */
 	
 	public BuildTarget createBuildTarget(String targetName, boolean enabled, String buildOptions) {
 		return new BuildTarget(targetName, enabled, buildOptions);
@@ -353,33 +427,6 @@ public abstract class BuildManager {
 			throw new CommonException(LaunchMessages.PROCESS_LAUNCH_NoSuchBuildTarget);
 		}
 		return buildTarget;
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public BuildTargetValidator createBuildTargetValidator(IProject project, BuildTarget buildTarget) 
-			throws CommonException {
-		String targetName = buildTarget.getTargetName();
-		String buildOptions = buildTarget.getBuildOptions();
-		
-		return createBuildTargetValidator(project, targetName, buildOptions);
-	}
-	
-	public BuildTargetValidator createBuildTargetValidator(IProject project, String targetName, String buildOptions)
-			throws CommonException {
-		String buildConfigName = getBuildConfigString(targetName);
-		String buildTypeName = getBuildTypeString(targetName);
-		if(buildTypeName == null) {
-			buildTypeName = getBuildTypes().get(0).getName();
-		}
-		return createBuildTargetValidator(project, buildConfigName, buildTypeName, buildOptions);
-	}
-	
-	public abstract BuildTargetValidator createBuildTargetValidator(IProject project, String buildConfigName,
-			String buildTypeName, String buildOptions) throws CommonException;
-	
-	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) throws CommonException {
-		return projectBuildInfo.getDefinedBuildTarget(targetName);
 	}
 	
 	/* ----------------- Build operations ----------------- */

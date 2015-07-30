@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.launch;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.eclipse.core.resources.IFile;
@@ -191,7 +192,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	/* -----------------  Find existing config  ----------------- */
 	
 	protected ILaunchConfigurationType getLaunchConfigType() {
-		return getLaunchManager().getLaunchConfigurationType(getLaunchTypeId());
+		return assertNotNull(getLaunchManager().getLaunchConfigurationType(getLaunchTypeId()));
 	}
 	
 	protected abstract String getLaunchTypeId();

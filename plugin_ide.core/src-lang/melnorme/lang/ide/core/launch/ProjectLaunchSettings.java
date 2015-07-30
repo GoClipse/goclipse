@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core.launch;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -22,13 +23,15 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.launching.LaunchConstants;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.StringUtil;
 
 public class ProjectLaunchSettings {
 	
+	public ProjectValidator projectValidator = new ProjectValidator(LangCore.NATURE_ID);
 	public String projectName = "";
 	
 	public ProjectLaunchSettings() {
@@ -54,12 +57,16 @@ public class ProjectLaunchSettings {
 			return this;
 		}
 		IProject project = contextualResource.getProject();
-		if(project != null) {
-			try {
-				initFromProject(project);
-			} catch(CommonException e) {
-				LangCore.logError("Error initializing launch settings from context resource: ", e);
-			}
+		IProject validProject;
+		try {
+			validProject = projectValidator.getProject(project.getName());
+		} catch(StatusException e) {
+			return this;
+		}
+		try {
+			initFromProject(validProject);
+		} catch(CommonException e) {
+			LangCore.logError("Error initializing launch settings from context resource: ", e);
 		}
 		
 		return this;
@@ -84,8 +91,17 @@ public class ProjectLaunchSettings {
 		return wc.doSave();
 	}
 	
-	protected String getSuggestedConfigName() {
-		return StringUtil.nullAsEmpty(projectName);
+	public final String getSuggestedConfigName() {
+		// Suggested name should be trimmed, because it will be used as a file name
+		String suggestedName = nullAsEmpty(getSuggestedConfigName_do()).trim();
+		if(suggestedName.isEmpty()) {
+			return "New Launch";
+		}
+		return suggestedName;
+	}
+
+	protected String getSuggestedConfigName_do() {
+		return nullAsEmpty(projectName);
 	}
 	
 	public void saveToConfig(ILaunchConfigurationWorkingCopy config) {
@@ -98,7 +114,8 @@ public class ProjectLaunchSettings {
 		config.setMappedResources(array(getProject()));
 		
 		if(rename) {
-			String newName = getLaunchManager().generateLaunchConfigurationName(getSuggestedConfigName());
+			String suggestedName = getSuggestedConfigName();
+			String newName = getLaunchManager().generateLaunchConfigurationName(suggestedName);
 			config.rename(newName);
 		}
 		

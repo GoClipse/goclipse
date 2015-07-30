@@ -115,7 +115,11 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
 		IResource contextResource = WorkbenchUtils.getContextResource();
-		getDefaultProjectLaunchSettings().initFrom(contextResource).saveToConfig(config, true);
+		getDefaultProjectSettings(contextResource).saveToConfig(config, true);
+	}
+	
+	protected ProjectLaunchSettings getDefaultProjectSettings(IResource contextResource) {
+		return getDefaultProjectLaunchSettings().initFrom(contextResource);
 	}
 	
 	protected ProjectLaunchSettings getDefaultProjectLaunchSettings() {
