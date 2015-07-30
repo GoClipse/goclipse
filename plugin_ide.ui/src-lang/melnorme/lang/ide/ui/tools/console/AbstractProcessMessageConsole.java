@@ -11,14 +11,14 @@
 package melnorme.lang.ide.ui.tools.console;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.jface.text.ColorManager;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
+
+import melnorme.util.swt.jface.text.ColorManager;
 
 public abstract class AbstractProcessMessageConsole extends IOConsole {
 	
@@ -68,8 +68,8 @@ public abstract class AbstractProcessMessageConsole extends IOConsole {
 	 */
 	@Override
 	protected final void dispose() {
-		// Diposing in UI thread is one way to solve certain concurrency issues arising with the use of this class. 
-		SWTUtil.runInSWTThread(new Runnable() {
+		// Disposing in UI thread is one way to solve certain concurrency issues arising with the use of this class. 
+		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				disposed = true;
