@@ -131,10 +131,14 @@ public class LangElementImageDescriptor extends CompositeImageDescriptorExt {
 	}
 	
 	protected ImageDescriptor getProtectionDecoration() {
-		return getProtectionDecoration(elementAttributes.getProtection());
+		return getProtectionDecoration2(elementAttributes.getProtection());
 	}
 	
-	public static ImageDescriptor getProtectionDecoration(EProtection protection) {
+	public static ImageDescriptor getProtectionDecoration2(EProtection protection) {
+		return getProtectionDecoration_Small(protection);
+	}
+	
+	public static ImageDescriptor getProtectionDecoration_Big(EProtection protection) {
 		if(protection == null)
 			return null;
 		

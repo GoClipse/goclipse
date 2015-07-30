@@ -18,6 +18,7 @@ import java.net.URI;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -66,8 +67,12 @@ public abstract class LangNewProjectWizard extends Wizard
 	/** @return the second page of the wizard. Can be null if wizard has no second page. */
 	public abstract WizardPage getSecondPage();
 	
-	public IProject getProject() {
-		return getFirstPage().getProjectHandle();
+	public IProject getProject() throws CoreException {
+		try {
+			return getFirstPage().getProjectHandle2();
+		} catch(CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
 	}
 	
 	public URI getProjectLocation() {
@@ -159,7 +164,7 @@ public abstract class LangNewProjectWizard extends Wizard
 		}
 		
 		@Override
-		public IProject getProject() {
+		public IProject getProject() throws CoreException {
 			return LangNewProjectWizard.this.getProject();
 		}
 		
@@ -236,11 +241,12 @@ public abstract class LangNewProjectWizard extends Wizard
 	
 	@Override
 	public boolean performFinish() {
-		boolean success = getProjectCreator().performCreateProject();
+		ProjectCreationOperation projectCreator = getProjectCreator();
+		boolean success = projectCreator.performCreateProject();
 		if(success) {
 			BasicNewProjectResourceWizard.updatePerspective(fConfigElement);
-			selectAndReveal(getProject());
-			getProjectCreator().performFinishActions();
+			selectAndReveal(projectCreator.getCreatedProject());
+			projectCreator.performFinishActions();
 		}
 		return success;
 	}
