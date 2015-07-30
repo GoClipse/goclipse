@@ -12,6 +12,7 @@
 package com.googlecode.goclipse.ui.launch;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -26,6 +27,8 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
+import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
@@ -146,6 +149,18 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	/* -----------------  save/apply  ----------------- */
+	
+	@Override
+	protected ProjectLaunchSettings getDefaultProjectLaunchSettings() {
+		return new BuildTargetLaunchSettings() {
+			@Override
+			public ProjectLaunchSettings initFrom(IResource contextualResource) {
+				ProjectLaunchSettings initFrom = super.initFrom(contextualResource);
+				buildTargetName = "";
+				return initFrom;
+			}
+		};
+	}
 	
 	@Override
 	public void initializeFrom(ILaunchConfiguration config) {

@@ -16,6 +16,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.launching.LaunchConstants;
@@ -51,11 +52,15 @@ public class BuildTargetLaunchSettings extends ProjectLaunchSettings {
 		return isDefaultProgramPath ? null : programPath;
 	}
 	
+	protected BuildManager getBuildManager() {
+		return LangCore.getBuildManager();
+	}
+	
 	@Override
 	public BuildTargetLaunchSettings initFromProject(IProject project) throws CommonException {
 		super.initFromProject(project);
 		
-		ProjectBuildInfo buildInfo = LangCore.getBuildManager().getBuildInfo(project);
+		ProjectBuildInfo buildInfo = getBuildManager().getBuildInfo(project);
 		if(buildInfo == null) {
 			return null;
 		}
@@ -69,8 +74,9 @@ public class BuildTargetLaunchSettings extends ProjectLaunchSettings {
 	}
 	
 	@Override
-	protected String getSuggestedConfigName() {
-		return StringUtil.nullAsEmpty(projectName) +  StringUtil.prefixStr(" - ", buildTargetName);
+	protected String getSuggestedConfigName_do() {
+		return StringUtil.nullAsEmpty(projectName) + 
+				StringUtil.prefixStr(" - ", StringUtil.emptyAsNull(buildTargetName));
 	}
 	
 	@Override
