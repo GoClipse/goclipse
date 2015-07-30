@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,6 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
-
-import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -23,12 +21,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
-import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.fields.ProjectField;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.tooling.data.StatusException;
@@ -117,48 +114,38 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
-		setDefaults(WorkbenchUtils.getContextResource(), config);
+		IResource contextResource = WorkbenchUtils.getContextResource();
+		getDefaultProjectLaunchSettings().initFrom(contextResource).saveToConfig(config, true);
 	}
 	
-	protected void setDefaults(IResource contextualResource, ILaunchConfigurationWorkingCopy config) {
-		if(contextualResource == null) {
-			return;
-		}
-		IProject project = contextualResource.getProject();
-		if(project != null) {
-			config.setAttribute(LaunchConstants.ATTR_PROJECT_NAME, project.getName());
-		}
+	protected ProjectLaunchSettings getDefaultProjectLaunchSettings() {
+		return new ProjectLaunchSettings();
 	}
 	
 	@Override
 	public void initializeFrom(ILaunchConfiguration config) {
-		projectField.setFieldValue(getConfigAttribute(config, LaunchConstants.ATTR_PROJECT_NAME, ""));
+		try {
+			doInitializeFrom(config);
+		} catch(CoreException ce) {
+			LangCore.logStatus(ce);
+		}
+	}
+	
+	public void doInitializeFrom(ILaunchConfiguration config) throws CoreException {
+		initializeFrom(new ProjectLaunchSettings(config));
+	}
+	
+	protected void initializeFrom(ProjectLaunchSettings projectSettings) {
+		projectField.setFieldValue(projectSettings.projectName);
 	}
 	
 	@Override
 	public final void performApply(ILaunchConfigurationWorkingCopy config) {
-		doPerformApply(config);
-		try {
-			mapResources(config);
-		} catch (CoreException ce) {
-			LangUIPlugin.logStatus(ce);
-		}
+		getLaunchSettingsFromTab().saveToConfig(config);
 	}
 	
-	protected void doPerformApply(ILaunchConfigurationWorkingCopy config) {
-		String projectName = getProjectName();
-		config.setAttribute(LaunchConstants.ATTR_PROJECT_NAME, projectName);
-	}
-	
-	/* ---------- apply  - mapResources  ---------- */
-	
-	protected void mapResources(ILaunchConfigurationWorkingCopy config) throws CoreException {
-		IResource resource = getMappedResource();
-		config.setMappedResources(resource == null ? null : array(resource));
-	}
-	
-	protected IResource getMappedResource() throws CoreException {
-		return getValidProjectOrNull();
+	protected ProjectLaunchSettings getLaunchSettingsFromTab() {
+		return new ProjectLaunchSettings(getProjectName());
 	}
 	
 }

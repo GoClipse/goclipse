@@ -12,6 +12,7 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -175,7 +176,7 @@ public abstract class BuildManager {
 		for(BuildConfiguration buildConfig : buildConfigs) {
 			
 			Indexable<BuildType> buildTypes = getBuildTypes();
-			for (BuildType buildType : buildTypes) {
+			for(BuildType buildType : buildTypes) {
 				
 				String targetName = getBuildTargetName(buildConfig.getName(), buildType.getName()); 
 				
@@ -269,7 +270,7 @@ public abstract class BuildManager {
 		}
 		
 		for(BuildType buildType : getBuildTypes()) {
-			if(buildType.getName().equals(buildTypeName)) {
+			if(areEqual(buildType.getName(), buildTypeName)) {
 				return buildType;
 			}
 		}
@@ -309,6 +310,7 @@ public abstract class BuildManager {
 	public static final String BUILD_TYPE_NAME_SEPARATOR = "#";
 	
 	public String getBuildTargetName(String buildConfigName, String buildType) {
+		buildType = StringUtil.emptyAsNull(buildType);
 		return buildConfigName + StringUtil.prefixStr(BUILD_TYPE_NAME_SEPARATOR, buildType);
 	}
 	
@@ -382,12 +384,13 @@ public abstract class BuildManager {
 	
 	/* ----------------- Build operations ----------------- */
 	
-	public IToolOperation newProjectBuildOperation(OperationInfo opInfo, IProject project,
+	public final IToolOperation newProjectBuildOperation(OperationInfo opInfo, IProject project,
 			boolean fullBuild) throws CommonException {
-		return new BuildOperationCreator(project, opInfo, fullBuild).newProjectBuildOperation();
+		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets();
+		return createBuildOperationCreator(opInfo, project, fullBuild).newProjectBuildOperation(enabledTargets);
 	}
 	
-	public IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
+	public final IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
 			throws CommonException {
 		return newBuildTargetOperation(project, ArrayList2.create(buildTarget));
 	}
@@ -400,7 +403,12 @@ public abstract class BuildManager {
 	
 	public IToolOperation newBuildTargetOperation(OperationInfo opInfo, IProject project, 
 			Collection2<BuildTarget> targetsToBuild) throws CommonException {
-		return new BuildOperationCreator(project, opInfo, false).newProjectBuildOperation(targetsToBuild);
+		return createBuildOperationCreator(opInfo, project, false).newProjectBuildOperation(targetsToBuild);
+	}
+	
+	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project,
+			boolean fullBuild) {
+		return new BuildOperationCreator(project, opInfo, fullBuild);
 	}
 	
 	public CommonBuildTargetOperation createBuildTargetOperation(OperationInfo opInfo,

@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.lang.tooling.data.ValidationMessages;
@@ -35,16 +34,14 @@ public class LaunchExecutableValidator extends AbstractValidator2 {
 	protected final String buildTargetName; // can be null
 	protected final String artifactPathOverride; // can be null
 	
-	public LaunchExecutableValidator(ProjectValidator projectValidator, String projectName, 
-			String buildTargetName, String artifactPathOverride)
-			throws CommonException {
-		this(projectValidator.getProject(projectName), buildTargetName, artifactPathOverride);
-	}
-	
 	public LaunchExecutableValidator(IProject validProject, String buildTargetName, String artifactPathOverride) {
 		this.validProject = assertNotNull(validProject);
 		this.buildTargetName = buildTargetName;
 		this.artifactPathOverride = artifactPathOverride;
+	}
+	
+	public IProject getValidProject() {
+		return validProject;
 	}
 	
 	protected BuildManager getBuildManager() {
@@ -61,7 +58,7 @@ public class LaunchExecutableValidator extends AbstractValidator2 {
 	}
 	
 	public BuildTarget getValidBuildTarget() throws CoreException, CommonException {
-		return getBuildManager().getValidBuildTarget(validProject, buildTargetName, false);
+		return getBuildManager().getValidBuildTarget(getValidProject(), buildTargetName, false);
 	}
 	
 	/* -----------------  ----------------- */ 
@@ -71,7 +68,7 @@ public class LaunchExecutableValidator extends AbstractValidator2 {
 		if(buildTarget == null) {
 			return null;
 		}
-		return getBuildManager().createBuildTargetValidator(validProject, buildTarget).getArtifactPath();
+		return getBuildManager().createBuildTargetValidator(getValidProject(), buildTarget).getArtifactPath();
 	}
 	
 	public Location getValidExecutableLocation() throws CoreException, CommonException {
@@ -99,7 +96,7 @@ public class LaunchExecutableValidator extends AbstractValidator2 {
 			return Location.fromAbsolutePath(exePath);
 		}
 		// Otherwise path is relative to project location
-		return ResourceUtils.loc(validProject.getLocation()).resolve(exePath);
+		return ResourceUtils.loc(getValidProject().getLocation()).resolve(exePath);
 	}
 	
 }

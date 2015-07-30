@@ -83,6 +83,18 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 //				ICDTLaunchHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMNETS_TAB);
 	}
 	
+	/* ---------- validation ---------- */
+	
+	@Override
+	public boolean isValid(ILaunchConfiguration config) {
+		if(!workingDirectoryBlock.isValid(config)) {
+			setErrorMessage(workingDirectoryBlock.getErrorMessage());
+			setMessage(workingDirectoryBlock.getMessage());
+			return false;
+		}
+		return super.isValid(config);
+	}
+	
 	@Override
 	protected void doValidate() throws StatusException {
 	}
@@ -92,7 +104,7 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "");
-		config.setAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, "");
+		workingDirectoryBlock.setDefaults(config);
 	}
 	
 	@Override
@@ -107,23 +119,4 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 		workingDirectoryBlock.performApply(configuration);
 	}
 	
-	/* ---------- validation ---------- */
-	
-	@Override
-	public boolean isValid(ILaunchConfiguration config) {
-		return super.isValid(config) && workingDirectoryBlock.isValid(config);
-	}
-	
-	@Override
-	public String getErrorMessage() {
-		String msg = super.getErrorMessage();
-		return msg != null ? msg : workingDirectoryBlock.getErrorMessage();
-	}
-	
-	@Override
-	public String getMessage() {
-		String msg = super.getMessage();
-		return msg != null ? msg : workingDirectoryBlock.getMessage();
-	}
-
 }

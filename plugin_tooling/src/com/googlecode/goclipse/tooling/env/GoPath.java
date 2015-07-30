@@ -91,13 +91,8 @@ public class GoPath {
 		return null;
 	}
 	
-	/** @return the Go package path for given goSourceFileLocation, if it's in a source package in some GOPATH entry. 
-	 * Return null otherwise. */
-	public GoPackageName findGoPackageForSourceFile(Location goSourceFileLocation) {
-		Location goPackageLocation = goSourceFileLocation.getParent();
-		return findGoPackageForLocation(goPackageLocation);
-	}
-	
+	/** @return the Go package name for given goPackageLocation, if it's within a source folder of a GOPATH entry, 
+	 * null otherwise. */
 	public GoPackageName findGoPackageForLocation(Location goPackageLocation) {
 		GoWorkspaceLocation goPathEntry = findGoPathEntry(goPackageLocation);
 		if(goPathEntry == null) {

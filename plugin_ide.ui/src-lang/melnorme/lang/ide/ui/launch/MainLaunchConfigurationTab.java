@@ -12,21 +12,19 @@
 package melnorme.lang.ide.ui.launch;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.core.launch.LaunchExecutableValidator;
+import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
-import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
-import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.utilbox.core.CommonException;
 
 /**
@@ -107,7 +105,6 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 				MainLaunchConfigurationTab.this.programPathField.getEffectiveFieldValue()
 			);
 		}
-		
 	}
 	
 	/* ----------------- Control creation ----------------- */
@@ -148,34 +145,27 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	/* ----------------- Apply/Revert/Defaults ----------------- */
 	
 	@Override
-	protected void setDefaults(IResource contextualResource, ILaunchConfigurationWorkingCopy config) {
-		super.setDefaults(contextualResource, config);
-		programPathField_setDefaults(contextualResource, config);
-		config.setAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, true);
-	}
-	
-	protected void programPathField_setDefaults(IResource contextualResource, ILaunchConfigurationWorkingCopy config) {
-		if(contextualResource instanceof IResource) {
-			IResource resource = (IResource) contextualResource;
-			config.setAttribute(LaunchConstants.ATTR_PROJECT_NAME, resource.getProject().getName());
-		}
+	protected ProjectLaunchSettings getDefaultProjectLaunchSettings() {
+		return new BuildTargetLaunchSettings();
 	}
 	
 	@Override
-	public void initializeFrom(ILaunchConfiguration config) {
-		super.initializeFrom(config);
-		CheckBoxField enablementField = programPathField.getUseDefaultField();
-		buildTargetField.setFieldValue(getConfigAttribute(config, LaunchConstants.ATTR_BUILD_TARGET, ""));
-		enablementField.setFieldValue(getConfigAttribute(config, LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, true));
-		programPathField.setFieldValue(getConfigAttribute(config, LaunchConstants.ATTR_PROGRAM_PATH, ""));
+	public void doInitializeFrom(ILaunchConfiguration config) throws CoreException {
+		BuildTargetLaunchSettings projectLaunchSettings = new BuildTargetLaunchSettings(config);
+		
+		super.initializeFrom(projectLaunchSettings);
+		buildTargetField.setFieldValue(projectLaunchSettings.buildTargetName);
+		programPathField.setEffectiveFieldValue(projectLaunchSettings.getEffectiveProgramPath());
 	}
 	
 	@Override
-	protected void doPerformApply(ILaunchConfigurationWorkingCopy config) {
-		super.doPerformApply(config);
-		config.setAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, isDefaultProgramPath());
-		config.setAttribute(LaunchConstants.ATTR_PROGRAM_PATH, getProgramPathString());
-		config.setAttribute(LaunchConstants.ATTR_BUILD_TARGET, getBuildTargetName());
+	protected ProjectLaunchSettings getLaunchSettingsFromTab() {
+		return new BuildTargetLaunchSettings(
+			getProjectName(),
+			getBuildTargetName(),
+			isDefaultProgramPath(),
+			getProgramPathString()
+		);
 	}
 	
 }

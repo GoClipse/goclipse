@@ -62,13 +62,13 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 		assertAreEqual(goPath.findGoPathEntry(WS_BAR.resolve_valid("xxx")), new GoWorkspaceLocation(WS_BAR));
 		assertAreEqual(goPath.findGoPathEntry(TESTS_WORKDIR.resolve_valid("xxx")), null);
 		
-		assertAreEqual(goPath.findGoPackageForSourceFile(WS_FOO.resolve_valid("xxx/m.go")), null);
-		assertAreEqual(goPath.findGoPackageForSourceFile(WS_FOO.resolve_valid("src/xxx/m.go")), goPkg("xxx"));
-		assertAreEqual(goPath.findGoPackageForSourceFile(WS_FOO.resolve_valid("src/xxx/zzz/m.go")), goPkg("xxx/zzz"));
-		assertAreEqual(goPath.findGoPackageForSourceFile(WS_FOO.resolve_valid("src/m.go")), null);
-		assertAreEqual(goPath.findGoPackageForSourceFile(WS_BAR.resolve_valid("src/xxx/m.go")), goPkg("xxx"));
-		assertAreEqual(goPath.findGoPackageForSourceFile(WS_BAR.resolve_valid("src/src/src/m.go")), goPkg("src/src"));
-		assertAreEqual(goPath.findGoPackageForSourceFile(TESTS_WORKDIR.resolve_valid("src/xxx/m.go")), null);
+		assertAreEqual(goPath.findGoPackageForLocation(WS_FOO.resolve_valid("xxx/")), null);
+		assertAreEqual(goPath.findGoPackageForLocation(WS_FOO.resolve_valid("src/xxx/")), goPkg("xxx"));
+		assertAreEqual(goPath.findGoPackageForLocation(WS_FOO.resolve_valid("src/xxx/zzz")), goPkg("xxx/zzz"));
+		assertAreEqual(goPath.findGoPackageForLocation(WS_FOO.resolve_valid("src")), null);
+		assertAreEqual(goPath.findGoPackageForLocation(WS_BAR.resolve_valid("src/xxx")), goPkg("xxx"));
+		assertAreEqual(goPath.findGoPackageForLocation(WS_BAR.resolve_valid("src/src/src")), goPkg("src/src"));
+		assertAreEqual(goPath.findGoPackageForLocation(TESTS_WORKDIR.resolve_valid("src/xxx")), null);
 		
 		// Test empty case
 		goPath = new GoPath("");

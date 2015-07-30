@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,26 +10,26 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.launch;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.ui.ILaunchShortcut;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoPackageName;
-import com.googlecode.goclipse.tooling.env.GoPath;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
+import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public class GoLaunchShortcut extends AbstractLaunchShortcut2 implements ILaunchShortcut {
+public class GoLaunchShortcut extends LangLaunchShortcut implements ILaunchShortcut {
 	
 	public static final String LAUNCH_CONFIG_ID = "com.googlecode.goclipse.launch.goLaunchType";
 	
@@ -39,30 +39,37 @@ public class GoLaunchShortcut extends AbstractLaunchShortcut2 implements ILaunch
 	}
 	
 	@Override
-	protected ResourceLaunchTarget getLaunchTargetForResource(IResource resource)
-			throws CommonException, OperationCancellation {
-		if(resource instanceof IFile) {
-			IFile file = (IFile) resource;
-			return getLaunchTargetForResource(file.getParent());
-		} else if(resource instanceof IContainer) {
-			IContainer container = (IContainer) resource;
-			return super.getLaunchTargetForResource(container);
+	protected ILaunchable getLaunchTargetForElement(Object element, IProgressMonitor pm)
+			throws CoreException, CommonException, OperationCancellation {
+		
+		IResource resource;
+		if(element instanceof IResource) {
+			resource = (IResource) element;
+		} else {
+			resource = EclipseUtils.getAdapter(element, IResource.class);
 		}
-		return super.getLaunchTargetForResource(resource);
+		
+		if(resource instanceof IFile) {
+			return getLaunchableForGoPackage(resource.getParent());
+		} else if(resource instanceof IFolder) { 
+			return getLaunchableForGoPackage(resource);
+		}
+		return null;
 	}
 	
-	@Override
-	protected ILaunchConfiguration createConfiguration(ILaunchTarget launchable) throws CoreException {
-		Location packageLocation = ResourceUtils.getResourceLocation(launchable.getAssociatedResource());
-		IProject project = launchable.getProject();
-		
-		GoPath goPath = GoProjectEnvironment.getEffectiveGoPath(project);
-		GoPackageName goPackage = goPath.findGoPackageForSourceFile(packageLocation.resolve_valid("dummy.go"));
-		if(goPackage == null) {
-			throw LangCore.createCoreException("Go file not path of a `src` folder of any GOPATH entry.", null);
+	protected ILaunchable getLaunchableForGoPackage(IResource goPackageResource) throws CommonException {
+		IProject project = goPackageResource.getProject();
+		if(project == null) {
+			return null;
 		}
-		String suggestedName = project.getName() + " - " + goPackage.getFullNameAsString();
-		return super.createConfiguration(launchable, suggestedName);
+		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
+		Location goPackageLocation = ResourceUtils.getResourceLocation(goPackageResource);
+		GoPackageName goPackageName = goEnv.findGoPackageForLocation(goPackageLocation);
+		if(goPackageName == null) {
+			throw CommonException.fromMsgFormat("Resource doesn't have a corresponding Go package.");
+		}
+		
+		return new BuildTargetLaunchable(project, goPackageName.getFullNameAsString());
 	}
 	
 }

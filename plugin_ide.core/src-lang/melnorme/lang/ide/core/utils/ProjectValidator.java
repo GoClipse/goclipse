@@ -30,21 +30,22 @@ public class ProjectValidator extends AbstractValidator2 {
 		this.natureId = natureId;
 	}
 	
-	public IProject getProject(String projectName) throws StatusException {
-		return getProject(projectName, natureId);
-	}
-	
-	public IProject getProject(String projectName, String natureID) throws StatusException {
+	public IProject getProjectHandle(String projectName) throws StatusException {
 		if(projectName == null || projectName.isEmpty()) {
 			throw error(msg_ProjectNotSpecified());
 		}
 		
-		IProject project = ResourceUtils.getWorkspaceRoot().getProject(projectName);
+		return ResourceUtils.getWorkspaceRoot().getProject(projectName);
+	}
+	
+	public IProject getProject(String projectName) throws StatusException {
+		IProject project = getProjectHandle(projectName);
+		
 		if(!project.exists()) {
 			throw error(msg_ProjectDoesNotExist());
 		}
 		try {
-			if(natureID != null && !project.hasNature(natureID)) {
+			if(natureId != null && !project.hasNature(natureId)) {
 				throw error(msg_NotAValidLangProject());
 			}
 			

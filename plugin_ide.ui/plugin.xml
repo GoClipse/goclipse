@@ -591,33 +591,37 @@
 		</launchConfigurationTabGroup>
 	</extension>
 	
-   <extension
-         point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
-            class="com.googlecode.goclipse.ui.launch.GoLaunchShortcut"
-            icon="icons/actions/application_launch.png"
-            id="com.googlecode.goclipse.debug.launch.ui.GoLaunchShortcut"
-            label="Go Application"
-            modes="run, debug">
-            <description
-               description="executes Go Program"
-               mode="run">
-         	</description>
-	         <contextualLaunch>
-	           <enablement>
-	             <with variable="selection">
-	               <count value="1"/>
-	               <iterate>
-	                 <or>
-	                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.go"/>
-	                 </or>
-	               </iterate>
-	             </with>
-	           </enablement>
-	  		 </contextualLaunch>
-	  		 <configurationType id="com.googlecode.goclipse.launch.goLaunchType">
-	  		 </configurationType>  		 
-      </shortcut>
-   </extension>
-
+<extension point="org.eclipse.debug.ui.launchShortcuts">
+	<shortcut
+		class="com.googlecode.goclipse.ui.launch.GoLaunchShortcut"
+		icon="icons/actions/application_launch.png"
+		id="com.googlecode.goclipse.debug.launch.ui.GoLaunchShortcut"
+		label="Go Application"
+		modes="run, debug">
+		
+		<description mode="run" description="Run a Go package"/>
+		<description mode="debug" description="Debug a Go package"/>
+		
+		<configurationType id="com.googlecode.goclipse.launch.goLaunchType"/>
+		
+		<contextualLaunch>
+			<enablement>
+				<with variable="selection">
+					<count value="1"/>
+					<iterate>
+						<or>
+							<adapt type="org.eclipse.core.resources.IResource">
+								<reference definitionId="com.googlecode.goclipse.core.expressions.isResourceInIDEProject"/>
+							</adapt>
+							<adapt type="org.eclipse.core.resources.IFile">
+								<test property="org.eclipse.core.resources.name" value="*.go" />
+							</adapt>
+						</or>
+					</iterate>
+				</with>
+			</enablement>
+		</contextualLaunch>
+	</shortcut>
+</extension>
+	
 </plugin>

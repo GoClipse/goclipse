@@ -71,11 +71,8 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 	/* ----------------------------------- */
 	
 	
-	public static final String LaunchShortcut_selectionContainsNoScript = 
+	public static final String LaunchShortcut_selectionContainsNoLaunchables = 
 			"Selection contains no launchables";
-	
-	public static final String LaunchShortcut_searchingForScripts = 
-			"Searching for launchables...";
 	
 	public static final String LaunchShortcut_selectLaunchableToLaunch = 
 			"Select a launchable resource to launch";

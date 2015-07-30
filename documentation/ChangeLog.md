@@ -9,7 +9,7 @@
    * Default build targets for Go are: `build`, `build-tests`, `test`.
    * Project Build Configuration property page update to configure build targets.
    
- * TODO: GoLaunchShortcut. Fix `build-tests` target.
+ * TODO: GoLaunchShortcut documentation. Build targets doc.
 
 ### 0.11.2
   ▶ Recommended/tested CDT version is now 8.7

@@ -34,6 +34,7 @@ import melnorme.lang.ide.core.launch.LaunchExecutableValidator;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
+import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
@@ -106,11 +107,12 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	protected ProcessLaunchInfoValidator getLaunchValidator(ILaunchConfiguration config) 
 			throws CommonException, CoreException {
 		
+		BuildTargetLaunchSettings launchSettings = new BuildTargetLaunchSettings(config);
+		
 		LaunchExecutableValidator launchExecutableValidator = new LaunchExecutableValidator(
-			new ProjectValidator(),
-			config.getAttribute(LaunchConstants.ATTR_PROJECT_NAME, ""),
-			config.getAttribute(LaunchConstants.ATTR_BUILD_TARGET, (String) null),
-			evaluateStringVars(getArtifactPathOverride(config))
+			new ProjectValidator().getProject(launchSettings.projectName),
+			launchSettings.buildTargetName,
+			evaluateStringVars(launchSettings.getEffectiveProgramPath())
 		);
 		
 		return new ProcessLaunchInfoValidator(
@@ -120,13 +122,6 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null),
 			config.getAttribute(ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES, true)
 		);
-	}
-	
-	public static String getArtifactPathOverride(ILaunchConfiguration config) throws CoreException {
-		boolean useDefault = config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, true);
-		return useDefault 
-				? null : 
-				config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH, "");
 	}
 	
 	protected IStringVariableManager getVariableManager() {
