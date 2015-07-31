@@ -30,6 +30,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
@@ -358,6 +359,21 @@ public class GoBuildManager extends BuildManager {
 		for (GoPackageName goPackageName : sourcePackages) {
 			goBuildCmdLine.add(goPackageName.getFullNameAsString());
 		}
+	}
+	
+	@Override
+	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project,
+			boolean fullBuild) {
+		return new BuildOperationCreator(project, opInfo, fullBuild) {
+			@Override
+			protected void addCompositeBuildOperationMessage() {
+				super.addCompositeBuildOperationMessage();
+				
+				GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
+				
+				addOperation(newMessageOperation(opInfo, "   with GOPATH: " + goEnv.getGoPathString() + "\n"));
+			}
+		};
 	}
 	
 }

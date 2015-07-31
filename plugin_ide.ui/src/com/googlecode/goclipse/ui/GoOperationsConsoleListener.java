@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
-import java.io.IOException;
-
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
-import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
-
 import melnorme.lang.ide.core.operations.ProcessStartInfo;
-import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
 
 public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
@@ -28,7 +23,6 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 			@Override
 			protected void printProcessStart(IOConsoleOutputStream outStream) {
 				super.printProcessStart(outStream);
-				printGoPathString(outStream, processStartInfo.pb);
 			}
 			
 			@Override
@@ -37,31 +31,6 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 			};
 			
 		}.handle();
-	}
-	
-	@Override
-	public void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper processStartHelper) {
-		ProcessStartInfo processStartInfo = new ProcessStartInfo(null, pb, ">> Running: ", processStartHelper);
-		
-		new EngineClientProcessUIConsoleHandler(processStartInfo) {
-			@Override
-			protected void printProcessStart(IOConsoleOutputStream outStream) {
-				super.printProcessStart(outStream);
-				printGoPathString(outStream, pb);
-			}
-		}.handle();
-		
-	}
-	
-	protected void printGoPathString(IOConsoleOutputStream outStream, ProcessBuilder pb) {
-		String gopathString = pb.environment().get(GoEnvironmentConstants.GOPATH);
-		if(gopathString != null) {
-			try {
-				outStream.write("   with GOPATH: " + gopathString + "\n");
-			} catch (IOException e) {
-				// Do nothing
-			}
-		}
 	}
 	
 }
