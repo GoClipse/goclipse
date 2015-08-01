@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.LabelledFieldComponent;
 
 public class CheckBoxField extends LabelledFieldComponent<Boolean> {
@@ -68,7 +69,7 @@ public class CheckBoxField extends LabelledFieldComponent<Boolean> {
 	}
 	
 	public void setEnabled(boolean enabled) {
-		checkBox.setEnabled(enabled);
+		SWTUtil.setEnabledIfOk(checkBox, enabled);
 	}
 	
 }

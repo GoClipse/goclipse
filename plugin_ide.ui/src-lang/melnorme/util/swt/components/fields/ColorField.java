@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.LabelledFieldComponent;
 
 public class ColorField extends LabelledFieldComponent<RGB> {
@@ -93,8 +94,8 @@ public class ColorField extends LabelledFieldComponent<RGB> {
 	}
 	
 	public void setEnabled(boolean enabled) {
-		label.setEnabled(enabled);
-		colorSelector.setEnabled(enabled);
+		SWTUtil.setEnabledIfOk(label, enabled);
+		SWTUtil.setEnabledIfOk(colorSelector.getButton(), enabled);
 	}
 	
 }

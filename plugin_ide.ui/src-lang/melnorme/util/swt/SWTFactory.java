@@ -13,6 +13,9 @@ package melnorme.util.swt;
 import static melnorme.util.swt.SWTLayoutUtil.setLayoutData;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -24,6 +27,22 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 
 public class SWTFactory {
+	
+	/** A version of {@link SelectionAdapter} that works better for Java 8 lambdas */
+	public static interface WidgetSelectedListener extends SelectionListener {
+		@Override
+		default void widgetDefaultSelected(SelectionEvent e) {
+		}
+	}
+	
+	/** A version of {@link SelectionAdapter} that works better for Java 8 lambdas */
+	public static interface WidgetDefaultSelectedListener extends SelectionListener {
+		@Override
+		default void widgetSelected(SelectionEvent e) {
+		}
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public static Composite createComposite(Composite parent, GridData gridData) {
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -93,6 +112,24 @@ public class SWTFactory {
 		}
 		return button;
 	}
+	
+	public static Button createPushButton2(Composite parent, String label, Image image) {
+		return createButton(parent, SWT.PUSH, label, image, new GridData());	
+	}
+	
+	public static Button createPushButton2(Composite parent, String label, Image image, GridData gridData) {
+		Button button = createPushButton2(parent, label, image);
+		return setLayoutData(button, gridData);
+	}
+	
+	public static Button createPushButton2(Composite parent, String label, Image image, GridData gridData, 
+			WidgetSelectedListener listener) {
+		Button button = createPushButton2(parent, label, image);
+		button.addSelectionListener(listener);
+		return setLayoutData(button, gridData);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public static Text createText(Composite parent, int style) {
 		return new Text(parent, style);

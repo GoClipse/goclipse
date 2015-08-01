@@ -17,15 +17,39 @@ import melnorme.utilbox.misc.StringUtil;
 
 public class BuildTarget {
 	
+	public static class BuildTargetData {
+		
+		public String targetName;
+		public boolean enabled;
+		public String buildArguments;
+		public String artifactPath;
+		
+		public BuildTargetData() {
+		}
+		
+		public BuildTargetData(String targetName, boolean enabled, String buildOptions, String artifactPath) {
+			this.targetName = targetName;
+			this.enabled = enabled;
+			this.buildArguments = buildOptions;
+			this.artifactPath = artifactPath;
+		}
+		
+	}
+	
 	protected final String targetName;
 	protected final boolean enabled;
-	protected final String buildOptions;
+	protected final String buildArguments;
+	protected final String artifactPath;
 	
+	public BuildTarget(BuildTargetData data) {
+		this(data.targetName, data.enabled, data.buildArguments, data.artifactPath);
+	}
 	
-	public BuildTarget(String targetName, boolean enabled, String buildOptions) {
+	public BuildTarget(String targetName, boolean enabled, String buildArguments, String artifactPath) {
 		this.targetName = StringUtil.nullAsEmpty(targetName);
 		this.enabled = enabled;
-		this.buildOptions = buildOptions;
+		this.buildArguments = buildArguments;
+		this.artifactPath = artifactPath;
 	}
 	
 	@Override
@@ -38,12 +62,18 @@ public class BuildTarget {
 		return 
 				areEqual(targetName, other.targetName) &&
 				areEqual(enabled, other.enabled) &&
-				areEqual(buildOptions, other.buildOptions);
+				areEqual(buildArguments, other.buildArguments) &&
+				areEqual(artifactPath, other.artifactPath);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(targetName, enabled, buildOptions);
+		return HashcodeUtil.combinedHashCode(targetName, enabled, buildArguments);
+	}
+	
+	@Override
+	public String toString() {
+		return targetName + (enabled ? " [ENABLED]" : "");
 	}
 	
 	/* -----------------  ----------------- */
@@ -52,12 +82,25 @@ public class BuildTarget {
 		return enabled;
 	}
 	
-	public String getBuildOptions() {
-		return buildOptions;
+	public String getBuildArguments() {
+		return buildArguments;
 	}
 	
 	public String getTargetName() {
 		return targetName;
+	}
+	
+	public String getArtifactPath() {
+		return artifactPath;
+	}
+	
+	public BuildTargetData getDataCopy() {
+		return new BuildTargetData(
+			getTargetName(),
+			isEnabled(),
+			getBuildArguments(),
+			getArtifactPath()
+		);
 	}
 	
 }

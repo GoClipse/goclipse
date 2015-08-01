@@ -24,7 +24,7 @@ import melnorme.util.swt.components.fields.ButtonTextField;
 public class ArgumentsGroupField extends ButtonTextField {
 	
 	public ArgumentsGroupField(String labelText) {
-		super(labelText, SWT.MULTI | SWT.BORDER, LangUIMessages.LangArgumentsTab_Variables);
+		super(labelText, SWT.MULTI | SWT.BORDER, LangUIMessages.Fields_VariablesButtonLabel);
 	}
 	
 	@Override

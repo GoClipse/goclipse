@@ -11,6 +11,7 @@
 package melnorme.util.swt.components;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -51,6 +52,11 @@ public abstract class LabelledFieldComponent<VALUE> extends FieldComponent<VALUE
 	
 	public String getLabelText() {
 		return labelText;
+	}
+	
+	public void setLabelText(String newLabelText) {
+		assertTrue(!isCreated());
+		labelText = newLabelText;
 	}
 	
 	/* -----------------  ----------------- */

@@ -18,6 +18,7 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
@@ -103,19 +104,20 @@ public class ProjectBuildInfo {
 	/* -----------------  ----------------- */
 		
 	public void changeEnable(BuildTarget oldBuildTarget, boolean newEnabledValue) throws StatusException {
-		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget(
-			oldBuildTarget.getTargetName(), 
-			newEnabledValue,
-			oldBuildTarget.getBuildOptions()
-		));
+		BuildTargetData buildTargetData = oldBuildTarget.getDataCopy();
+		buildTargetData.enabled = newEnabledValue;
+		changeBuildTarget(oldBuildTarget, buildTargetData);
 	}
 	
-	public void changeOptions(BuildTarget oldBuildTarget, String newOptionsValue) throws StatusException {
-		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget(
-			oldBuildTarget.getTargetName(),
-			oldBuildTarget.isEnabled(),
-			newOptionsValue
-		));
+	public void changeBuildArguments(BuildTarget oldBuildTarget, String newBuildArgumentsValue) throws StatusException {
+		BuildTargetData buildTargetData = oldBuildTarget.getDataCopy();
+		buildTargetData.buildArguments = newBuildArgumentsValue;
+		changeBuildTarget(oldBuildTarget, buildTargetData);
+	}
+	
+	public void changeBuildTarget(BuildTarget oldBuildTarget, BuildTargetData buildTargetData)
+			throws StatusException {
+		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget(buildTargetData));
 	}
 	
 	protected void changeBuildTarget(BuildTarget oldBuildTarget, BuildTarget newBuildTarget) throws StatusException {

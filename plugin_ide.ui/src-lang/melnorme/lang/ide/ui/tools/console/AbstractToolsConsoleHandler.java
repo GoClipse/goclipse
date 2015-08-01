@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
@@ -36,7 +37,7 @@ import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
 
@@ -197,7 +198,9 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 				ProcessStartHelper psh) {
 			List<String> commandLine = pb.command();
 			try {
-				outStream.write(prefix + StringUtil.collToString(commandLine, " ") + "\n");
+				
+				String argsLabel = DebugPlugin.renderArguments(ArrayUtil.createFrom(commandLine, String.class), null);
+				outStream.write(prefix + argsLabel + "\n");
 			} catch (IOException e) {
 				// Do nothing
 			}

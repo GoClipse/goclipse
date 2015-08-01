@@ -11,8 +11,6 @@
 package melnorme.lang.ide.core.launch;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
@@ -21,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.lang.tooling.data.ValidationMessages;
@@ -28,20 +27,17 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
-public class LaunchExecutableValidator extends AbstractValidator2 {
+public abstract class BuildTargetSettingsValidator extends AbstractValidator2 implements LaunchExecutableSettingsInput {
 	
-	protected final IProject validProject;
-	protected final String buildTargetName; // can be null
-	protected final String artifactPathOverride; // can be null
-	
-	public LaunchExecutableValidator(IProject validProject, String buildTargetName, String artifactPathOverride) {
-		this.validProject = assertNotNull(validProject);
-		this.buildTargetName = buildTargetName;
-		this.artifactPathOverride = artifactPathOverride;
+	public BuildTargetSettingsValidator() {
 	}
 	
-	public IProject getValidProject() {
-		return validProject;
+	public ProjectValidator getProjectValidator() {
+		return new ProjectValidator(LangCore.NATURE_ID);
+	}
+	
+	public IProject getValidProject() throws CommonException {
+		return getProjectValidator().getProject(getProjectName());
 	}
 	
 	protected BuildManager getBuildManager() {
@@ -50,20 +46,22 @@ public class LaunchExecutableValidator extends AbstractValidator2 {
 	
 	/* -----------------  ----------------- */
 	
-	public BuildTarget getBuildTarget() throws CoreException, CommonException {
-		if(buildTargetName == null){
+	/* FIXME: need to create a BuildTarget based on the LaunchExecutableSettingsInput */
+	
+	public BuildTarget getBuildTarget() throws CommonException {
+		if(getBuildTargetName() == null){
 			return null;
 		}
 		return getValidBuildTarget();
 	}
 	
-	public BuildTarget getValidBuildTarget() throws CoreException, CommonException {
-		return getBuildManager().getValidBuildTarget(getValidProject(), buildTargetName, false);
+	public BuildTarget getValidBuildTarget() throws CommonException {
+		return getBuildManager().getValidBuildTarget(getValidProject(), getBuildTargetName(), false);
 	}
 	
 	/* -----------------  ----------------- */ 
 	
-	public String getDefaultArtifactPath() throws CommonException, CoreException {
+	public String getDefaultArtifactPath() throws CommonException {
 		BuildTarget buildTarget = getBuildTarget();
 		if(buildTarget == null) {
 			return null;
@@ -74,7 +72,7 @@ public class LaunchExecutableValidator extends AbstractValidator2 {
 	public Location getValidExecutableLocation() throws CoreException, CommonException {
 		// Note we want to validate the default artifact path, even if it's not used because of the override.
 		String defaultArtifactPath = getDefaultArtifactPath();
-		String effectiveArtifactPath = artifactPathOverride != null ? artifactPathOverride : defaultArtifactPath;
+		String effectiveArtifactPath = getArtifactPath() != null ? getArtifactPath() : defaultArtifactPath;
 		return getValidExecutableLocation(effectiveArtifactPath);
 	}
 	
@@ -97,6 +95,21 @@ public class LaunchExecutableValidator extends AbstractValidator2 {
 		}
 		// Otherwise path is relative to project location
 		return ResourceUtils.loc(getValidProject().getLocation()).resolve(exePath);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public String getDefaultBuildArguments() throws CommonException {
+		BuildTarget buildTarget = getBuildTarget();
+		return getBuildManager().createBuildTargetValidator(getValidProject(), buildTarget).getDefaultBuildArguments();
+	}
+	
+	public String getEffectiveBuildArguments() throws CommonException {
+		String buildArguments = getBuildArguments();
+		if(buildArguments == null) {
+			buildArguments = getDefaultBuildArguments();
+		}
+		return buildArguments;
 	}
 	
 }

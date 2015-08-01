@@ -47,17 +47,13 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	
 	protected IProject getValidProjectOrNull() {
 		try {
-			return validateProject();
+			return getValidProject();
 		} catch(StatusException e) {
 			return null;
 		}
 	}
 	
 	protected IProject getValidProject() throws StatusException {
-		return validateProject();
-	}
-	
-	protected IProject validateProject() throws StatusException {
 		return getProjectValidator().getProject(getProjectName());
 	}
 	
@@ -67,7 +63,7 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	
 	@Override
 	protected void doValidate() throws StatusException, CommonException, CoreException {
-		validateProject();
+		getValidProject();
 	}
 	
 	/* ----------------- Control creation ----------------- */
