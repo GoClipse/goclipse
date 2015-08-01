@@ -21,10 +21,6 @@ public class LANGUAGE_BuildConfigurationPropertyPage extends LangBuildConfigurat
 	@Override
 	protected LangProjectBuildConfigurationComponent createProjectBuildConfigComponent(IProject project) {
 		return new LangProjectBuildConfigurationComponent(project) {
-			@Override
-			protected String init_getArgumentsField_Label() {
-				return "Build Target options:";
-			}
 		};
 	}
 	
