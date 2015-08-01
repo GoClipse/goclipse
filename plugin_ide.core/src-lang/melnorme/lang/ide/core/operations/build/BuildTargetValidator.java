@@ -28,14 +28,14 @@ public class BuildTargetValidator extends AbstractValidator2 {
 	protected final IProject project;
 	protected final String buildConfigName;
 	protected final String buildTypeName;
-	protected final String buildOptions;
+	protected final String buildArguments;
 	
 	public BuildTargetValidator(IProject project, String buildConfigName, String buildTypeName,
-			String buildOptions) {
+			String buildArguments) {
 		this.project = project;
 		this.buildConfigName = assertNotNull(buildConfigName);
 		this.buildTypeName = assertNotNull(buildTypeName);
-		this.buildOptions = buildOptions;
+		this.buildArguments = buildArguments;
 	}
 	
 	public BuildManager getBuildManager() {
@@ -54,8 +54,8 @@ public class BuildTargetValidator extends AbstractValidator2 {
 		return buildTypeName;
 	}
 	
-	public String getBuildOptions() {
-		return buildOptions;
+	public String getBuildArguments() {
+		return buildArguments;
 	}
 	
 	public BuildConfiguration getBuildConfiguration() throws CommonException {
@@ -66,21 +66,21 @@ public class BuildTargetValidator extends AbstractValidator2 {
 		return buildMgr.getBuildType_NonNull(buildTypeName);
 	}
 	
-	public String getEffectiveBuildOptions() throws CommonException, CoreException {
-		String buildOptions = getBuildOptions();
+	public String getEffectiveBuildArguments() throws CommonException, CoreException {
+		String buildOptions = getBuildArguments();
 		if(buildOptions != null) {
 			return buildOptions;
 		}
-		return getDefaultBuildOptions();
+		return getDefaultBuildArguments();
 	}
 	
-	public String getDefaultBuildOptions() throws CommonException, CoreException {
+	public String getDefaultBuildArguments() throws CommonException {
 		return getBuildType().getDefaultBuildOptions(this);
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public String getArtifactPath() throws CommonException, CoreException {
+	public String getArtifactPath() throws CommonException {
 		return getBuildType().getArtifactPath(this);
 	}
 	

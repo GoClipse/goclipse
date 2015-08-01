@@ -14,6 +14,7 @@ package melnorme.lang.ide.ui.launch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.swt.widgets.Display;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -68,5 +69,23 @@ public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchCo
 	}
 	
 	protected abstract void doValidate() throws StatusException, CommonException, CoreException;
+	
+	
+	protected boolean needsDialogUpdate = false;
+	
+	@Override
+	protected final void updateLaunchConfigurationDialog() {
+		needsDialogUpdate = true;
+		Display.getCurrent().asyncExec(() -> {
+			if(needsDialogUpdate) {
+				needsDialogUpdate = false;
+				doUpdateLaunchConfigurationDialog();
+			}
+		});
+	}
+	
+	protected void doUpdateLaunchConfigurationDialog() {
+		super.updateLaunchConfigurationDialog();
+	}
 	
 }

@@ -32,6 +32,7 @@ import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
@@ -84,7 +85,7 @@ public class GoBuildManager extends BuildManager {
 			return buildTarget;
 		}
 		
-		return createBuildTarget(targetName, false, null);
+		return createBuildTarget(new BuildTargetData(targetName, false, null, null));
 	}
 	
 	@Override
@@ -94,9 +95,9 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	@Override
-	public BuildTargetValidator createBuildTargetValidator(IProject project, String buildConfigName,
-			String buildTypeName, String buildOptions) throws CommonException {
-		return new BuildTargetValidator(project, buildConfigName, buildTypeName, buildOptions);
+	public BuildTargetValidator createBuildTargetValidator2(IProject project, String buildConfigName,
+			String buildTypeName, String buildArguments) throws CommonException {
+		return new BuildTargetValidator(project, buildConfigName, buildTypeName, buildArguments);
 	}
 	
 	/* -----------------  ----------------- */

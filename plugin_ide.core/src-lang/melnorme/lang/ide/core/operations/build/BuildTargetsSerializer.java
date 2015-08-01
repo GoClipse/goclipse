@@ -15,11 +15,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.utils.DocumentSerializerHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.StringUtil;
 
 public class BuildTargetsSerializer extends DocumentSerializerHelper {
 
@@ -27,7 +27,8 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 	private static final String TARGET_ElemName = "target";
 	private static final String PROP_NAME = "config";
 	private static final String PROP_ENABLED = "enabled";
-	private static final String PROP_OPTIONS = "options";
+	private static final String PROP_ARGUMENTS = "options";
+	private static final String PROP_EXE_PATH = "exe_path";
 	
 	/* -----------------  ----------------- */
 	
@@ -84,7 +85,8 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		
 		targetElem.setAttribute(PROP_NAME, buildTarget.getTargetName());
 		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(buildTarget.isEnabled()));
-		setOptionalAttribute(targetElem, PROP_OPTIONS, buildTarget.getBuildOptions());
+		setOptionalAttribute(targetElem, PROP_ARGUMENTS, buildTarget.getBuildArguments());
+		setOptionalAttribute(targetElem, PROP_EXE_PATH, buildTarget.getArtifactPath());
 		
 		return targetElem;
 	}
@@ -92,20 +94,22 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 	protected BuildTarget readBuildTargetElement(Node targetElem) throws CommonException {
 		String nodeName = targetElem.getNodeName();
 		if(nodeName.equals(TARGET_ElemName)) {
-			boolean enabled = getBooleanAttribute(targetElem, PROP_ENABLED, false);
-			String targetName = getAttribute(targetElem, PROP_NAME, null);
-			String buildOptions = getAttribute(targetElem, PROP_OPTIONS, null);
 			
-			return createBuildTarget(targetElem, targetName, enabled, buildOptions);
+			BuildTargetData buildTargetData = new BuildTargetData();
+			buildTargetData.enabled = getBooleanAttribute(targetElem, PROP_ENABLED, false);
+			buildTargetData.targetName = getAttribute(targetElem, PROP_NAME, "");
+			buildTargetData.buildArguments = getAttribute(targetElem, PROP_ARGUMENTS, null);
+			buildTargetData.artifactPath = getAttribute(targetElem, PROP_EXE_PATH, null);
+			
+			return createBuildTarget(targetElem, buildTargetData);
 		} else {
 			throw new CommonException("XML element not recognized : " + nodeName);
 		}
 	}
 	
 	protected BuildTarget createBuildTarget(@SuppressWarnings("unused") Node targetElem, 
-			String targetName, boolean enabled, String buildOptions) {
-		targetName = StringUtil.nullAsEmpty(targetName);
-		return buildManager.createBuildTarget(targetName, enabled, buildOptions);
+			BuildTargetData buildTargetData) {
+		return buildManager.createBuildTarget(buildTargetData);
 	}
 	
 }

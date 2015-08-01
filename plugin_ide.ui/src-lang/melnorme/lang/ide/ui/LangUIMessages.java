@@ -39,6 +39,9 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 	public static String projectField_chooseProject_message = "Select a project";
 	
 	
+	public static final String Fields_VariablesButtonLabel = 
+			"Variables";
+	
 	public static final String LaunchTab_ProgramPathField_title = 
 			"Program path:";
 	public static final String LaunchTab_ProgramPathField_useDefault = 
@@ -58,8 +61,6 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 	
 	public static final String LangArgumentsTab_Program_Arguments = 
 			"Program Arguments";
-	public static final String LangArgumentsTab_Variables = 
-			"Variables";
 	public static final String Launch_ErrorReadingConfigurationAttribute = 
 			"Exception occurred reading launch configuration attribute";
 	public static final String LangArgumentsTab_Arguments = 
@@ -67,6 +68,9 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 	
 	public static final String BuildTargetField_title = 
 			"Build Target:";
+	
+	public static final String BuildTargetSettings_ProgramPathField_title = 
+			"Program path (for launches):";
 	
 	/* ----------------------------------- */
 	

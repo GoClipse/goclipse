@@ -46,18 +46,33 @@ public class ProjectValidator extends AbstractValidator2 {
 	public IProject getProject(String projectName) throws StatusException {
 		IProject project = getProjectHandle(projectName);
 		
-		if(!project.exists()) {
-			throw error(msg_ProjectDoesNotExist());
-		}
+		return validateProject(project);
+	}
+	
+	public IProject validateProject(IProject project) throws StatusException {
+		checkProjectNotNull(project);
+		checkProjectExists(project);
 		try {
 			if(natureId != null && !project.hasNature(natureId)) {
 				throw error(msg_NotAValidLangProject());
 			}
 			
 			return project;
-		} catch (CoreException ce) {
+		} catch(CoreException ce) {
 			LangCore.logStatus(ce);
 			throw error(ce.getMessage());
+		}
+	}
+	
+	public void checkProjectNotNull(IProject project) throws StatusException {
+		if(project == null) {
+			throw error(msg_ProjectNotSpecified());
+		}
+	}
+	
+	public void checkProjectExists(IProject project) throws StatusException {
+		if(!project.exists()) {
+			throw error(msg_ProjectDoesNotExist());
 		}
 	}
 	

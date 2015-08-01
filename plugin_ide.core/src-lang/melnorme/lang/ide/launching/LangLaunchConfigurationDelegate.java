@@ -30,11 +30,11 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.launch.LaunchExecutableValidator;
+import melnorme.lang.ide.core.launch.BuildTargetSettingsValidator;
+import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
-import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
@@ -109,14 +109,36 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		
 		BuildTargetLaunchSettings launchSettings = new BuildTargetLaunchSettings(config);
 		
-		LaunchExecutableValidator launchExecutableValidator = new LaunchExecutableValidator(
-			new ProjectValidator().getProject(launchSettings.projectName),
-			launchSettings.buildTargetName,
-			evaluateStringVars(launchSettings.getEffectiveProgramPath())
-		);
+		BuildTargetSettingsValidator buildSettingsValidator = new BuildTargetSettingsValidator() {
+				
+			@Override
+			public ProjectValidator getProjectValidator() {
+				return new ProjectValidator();
+			};
+			
+			@Override
+			public String getProjectName() throws CommonException {
+				return launchSettings.projectName;
+			};
+			
+			@Override
+			public String getBuildTargetName() {
+				return launchSettings.buildTargetName;
+			}
+			
+			@Override
+			public String getArtifactPath() {
+				return launchSettings.getEffectiveProgramPath();
+			}
+			
+			@Override
+			public String getBuildArguments() {
+				return launchSettings.getEffectiveBuildArguments();
+			}
+		};
 		
 		return new ProcessLaunchInfoValidator(
-			launchExecutableValidator, 
+			buildSettingsValidator, 
 			evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "")),
 			evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, "")),
 			config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null),

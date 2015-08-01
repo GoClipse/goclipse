@@ -28,11 +28,6 @@ public class GoProjectBuildConfigurationPropertyPage extends LangBuildConfigurat
 			super(project);
 		}
 		
-		@Override
-		protected String init_getArgumentsField_Label() {
-			return "Target build arguments:";
-		}
-		
 	}
 	
 }

@@ -23,16 +23,16 @@ import melnorme.utilbox.misc.Location;
 
 public class ProcessLaunchInfoValidator {
 	
-	protected final LaunchExecutableValidator launchExecutableValidator;
+	protected final BuildTargetSettingsValidator buildSettingsValidator;
 	
 	protected final String programArguments;
 	protected final String workingDirectory;
 	protected final Map<String, String> environmentVars;
 	protected final boolean appendEnvironmentVars;
 	
-	public ProcessLaunchInfoValidator(LaunchExecutableValidator launchExecutableValidator, String programArguments,
+	public ProcessLaunchInfoValidator(BuildTargetSettingsValidator buildSettingsValidator, String programArguments,
 			String workingDirectory, Map<String, String> environmentVars, boolean appendEnvironmentVars) {
-		this.launchExecutableValidator = launchExecutableValidator;
+		this.buildSettingsValidator = buildSettingsValidator;
 		this.programArguments = programArguments;
 		this.workingDirectory = workingDirectory;
 		this.environmentVars = environmentVars;
@@ -42,15 +42,15 @@ public class ProcessLaunchInfoValidator {
 	/* -----------------  ----------------- */
 	
 	protected IProject getProject() throws CommonException, CoreException {
-		return launchExecutableValidator.validProject;
+		return buildSettingsValidator.getValidProject();
 	}
 	
 	protected BuildTarget getBuildTarget() throws CoreException, CommonException {
-		return launchExecutableValidator.getBuildTarget();
+		return buildSettingsValidator.getBuildTarget();
 	}
 	
 	protected Location getValidExecutableFileLocation() throws CoreException, CommonException {
-		return launchExecutableValidator.getValidExecutableLocation();
+		return buildSettingsValidator.getValidExecutableLocation();
 	}
 	
 	/* -----------------  ----------------- */
@@ -90,6 +90,7 @@ public class ProcessLaunchInfoValidator {
 		IProject project = getProject();
 		BuildTarget buildTarget = getBuildTarget();
 		Location programLoc = getValidExecutableFileLocation();
+		
 		String[] processArgs = getProgramArguments();
 		IPath workingDirectory = getWorkingDirectory();
 		Map<String, String> configEnv = getValidEnvironmentVars();

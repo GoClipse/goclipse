@@ -25,6 +25,7 @@ public abstract class LangBuildConfigurationPropertyPage extends PropertyPage {
 	
 	public LangBuildConfigurationPropertyPage() {
 		super();
+		noDefaultAndApplyButton();
 	}
 	
 	protected IProject getProject() {

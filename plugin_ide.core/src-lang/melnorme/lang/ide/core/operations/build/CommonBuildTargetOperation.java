@@ -36,7 +36,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	protected final BuildConfiguration buildConfiguration;
 	protected final BuildType buildType;
-	protected final String effectiveBuildOptions;
+	protected final String effectiveBuildArguments;
 	
 	public CommonBuildTargetOperation(BuildManager buildManager, BuildTargetValidator buildTargetValidator, 
 			OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
@@ -49,7 +49,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		assertNotNull(buildTargetValidator);
 		this.buildConfiguration = buildTargetValidator.getBuildConfiguration();
 		this.buildType = buildTargetValidator.getBuildType();
-		this.effectiveBuildOptions = buildTargetValidator.getEffectiveBuildOptions();
+		this.effectiveBuildArguments = buildTargetValidator.getEffectiveBuildArguments();
 	}
 	
 	protected BuildConfiguration getConfiguration() {
@@ -68,8 +68,8 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		return buildToolPath;
 	}
 	
-	protected String getEffectiveBuildOptions() throws CommonException, CoreException {
-		return effectiveBuildOptions;
+	protected String getEffectiveBuildArguments() throws CommonException, CoreException {
+		return effectiveBuildArguments;
 	}
 	
 	@Override
@@ -100,7 +100,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 			throws CoreException, CommonException, OperationCancellation;
 	
 	protected String[] getEvaluatedAndParsedArguments() throws CoreException, CommonException {
-		return LaunchUtils.getEvaluatedAndParsedArguments(getEffectiveBuildOptions());
+		return LaunchUtils.getEvaluatedAndParsedArguments(getEffectiveBuildArguments());
 	}
 	
 	protected abstract ProcessBuilder getProcessBuilder(ArrayList2<String> commands) 

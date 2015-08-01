@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,32 +16,35 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
-import melnorme.utilbox.core.fntypes.ICallable;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.CommonGetter;
 
 /**
  * Field for a program path relative to Eclipse project.
  */
-public abstract class ProjectRelativePathField extends EnablementButtonTextField {
+public class ProjectRelativePathField extends EnablementButtonTextField {
 	
-	protected final ICallable<IProject, StatusException> projectGetter;
+	protected final CommonGetter<IProject> projectGetter;
+	protected final CommonGetter<String> defaultFieldValueGetter;
 	
 	public ProjectRelativePathField(String labelText, String useDefaultField_Label, 
-			ICallable<IProject, StatusException> projectGetter) {
+			CommonGetter<IProject> projectGetter,
+			CommonGetter<String> defaultFieldValueGetter
+	) {
 		super(labelText, useDefaultField_Label, LangUIMessages.LaunchTab_ProgramPathField__searchButton);
 		this.projectGetter = assertNotNull(projectGetter);
+		this.defaultFieldValueGetter = defaultFieldValueGetter;
 	}
 	
 	@Override
-	protected String getNewValueFromButtonSelection() {
-		try {
-			return ControlUtils.openProgramPathDialog(projectGetter.call(), button);
-		} catch(StatusException se) {
-			UIOperationExceptionHandler.handleStatusMessage(LangUIMessages.error_CannotBrowse, se);
-			return null;
-		}
+	protected String getNewValueFromButtonSelection() throws CommonException {
+		return ControlUtils.openProgramPathDialog(projectGetter.get(), button);
+	}
+	
+	@Override
+	protected String getDefaultFieldValue() throws CommonException {
+		return defaultFieldValueGetter.get();
 	}
 	
 }

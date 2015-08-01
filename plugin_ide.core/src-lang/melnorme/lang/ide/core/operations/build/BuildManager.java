@@ -27,6 +27,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -34,6 +35,7 @@ import melnorme.lang.ide.core.project_model.ProjectBasedModel;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
@@ -115,7 +117,7 @@ public abstract class BuildManager {
 	/* -----------------  ----------------- */
 	
 	public ProjectBuildInfo getBuildInfo(IProject project) {
-		return buildModel.getProjectInfo(project);
+		return buildModel.getProjectInfo(assertNotNull(project));
 	}
 	
 	public ProjectBuildInfo getValidBuildInfo(IProject project) throws CommonException {
@@ -124,6 +126,7 @@ public abstract class BuildManager {
 	
 	public ProjectBuildInfo getValidBuildInfo(IProject project, boolean requireNonEmtpyTargets) 
 			throws CommonException {
+		new ProjectValidator().checkProjectNotNull(project); 
 		ProjectBuildInfo buildInfo = getBuildInfo(project);
 		
 		if(buildInfo == null || (requireNonEmtpyTargets && buildInfo.getBuildTargets().isEmpty())) {
@@ -197,18 +200,15 @@ public abstract class BuildManager {
 				null : 
 				currentBuildInfo.getDefinedBuildTarget(targetName);
 		
-		boolean enabled;
-		String buildOptions;
+		BuildTargetData data = new BuildTargetData(targetName, isFirstConfig, null, null);
 		
-		if(oldBuildTarget == null) {
-			enabled = isFirstConfig;
-			buildOptions = null;
-		} else {
-			enabled = oldBuildTarget.isEnabled();
-			buildOptions = oldBuildTarget.getBuildOptions();
+		if(oldBuildTarget != null) {
+			data.enabled = oldBuildTarget.isEnabled();
+			data.buildArguments = oldBuildTarget.getBuildArguments();
+			data.artifactPath = oldBuildTarget.getArtifactPath();
 		}
 		
-		buildTargets.add(createBuildTarget(targetName, enabled, buildOptions));
+		buildTargets.add(createBuildTarget(data));
 	}
 	
 	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
@@ -244,17 +244,17 @@ public abstract class BuildManager {
 			return name;
 		}
 		
-		public abstract String getDefaultBuildOptions(BuildTargetValidator buildTargetValidator)
-				throws CommonException, CoreException;
+		public abstract String getDefaultBuildOptions(BuildTargetValidator buildTargetValidator) 
+				throws CommonException;
 		
-		public String getArtifactPath(BuildTargetValidator buildTargetValidator) 
-				throws CommonException, CoreException {
+		public String getArtifactPath(BuildTargetValidator buildTargetValidator) throws CommonException {
 			return buildTargetValidator.getBuildConfiguration().getArtifactPath();
 		}
 		
-		public abstract CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator, 
-				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException;
-		
+		public abstract CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator,
+				OperationInfo opInfo, Path buildToolPath, boolean fullBuild)
+				throws CommonException, CoreException;
+				
 	}
 	
 	protected final Indexable<BuildType> getBuildTypes() {
@@ -374,21 +374,21 @@ public abstract class BuildManager {
 	public BuildTargetValidator createBuildTargetValidator(IProject project, BuildTarget buildTarget) 
 			throws CommonException {
 		String targetName = buildTarget.getTargetName();
-		String buildOptions = buildTarget.getBuildOptions();
+		String buildArguments = buildTarget.getBuildArguments();
 		
-		return createBuildTargetValidator(project, targetName, buildOptions);
+		return createBuildTargetValidator(project, targetName, buildArguments);
 	}
 	
-	public BuildTargetValidator createBuildTargetValidator(IProject project, String targetName, String buildOptions)
+	public BuildTargetValidator createBuildTargetValidator(IProject project, String targetName, String buildArguments)
 			throws CommonException {
 		BuildTargetName nameRef = new BuildTargetName(targetName);
 		
-		return createBuildTargetValidator(project, 
-			nameRef.getBuildConfig(), nameRef.getEffectiveBuildType(), buildOptions);
+		return createBuildTargetValidator2(project, 
+			nameRef.getBuildConfig(), nameRef.getEffectiveBuildType(), buildArguments);
 	}
 	
-	public abstract BuildTargetValidator createBuildTargetValidator(IProject project, String buildConfigName,
-			String buildTypeName, String buildOptions) throws CommonException;
+	public abstract BuildTargetValidator createBuildTargetValidator2(IProject project, String buildConfigName,
+			String buildTypeName, String buildArguments) throws CommonException;
 	
 	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) throws CommonException {
 		return projectBuildInfo.getDefinedBuildTarget(targetName);
@@ -396,13 +396,13 @@ public abstract class BuildManager {
 	
 	/* -----------------  Build Target  ----------------- */
 	
-	public BuildTarget createBuildTarget(String targetName, boolean enabled, String buildOptions) {
-		return new BuildTarget(targetName, enabled, buildOptions);
+	public BuildTarget createBuildTarget(BuildTargetData buildTargetData) {
+		return new BuildTarget(buildTargetData);
 	}
 	
 	public BuildTarget getValidDefinedBuildTarget(IProject project, String buildTargetName) 
 			throws CommonException, StatusException {
-		return getValidBuildTarget(project, buildTargetName, false, true);
+		return getValidBuildTarget(project, buildTargetName, true, true);
 	}
 	
 	public BuildTarget getValidBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly) 

@@ -14,7 +14,6 @@ package com.googlecode.goclipse.ui.launch;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.layout.GridData;
@@ -29,13 +28,10 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
-import melnorme.lang.ide.launching.LaunchConstants;
-import melnorme.lang.ide.ui.fields.ProjectRelativePathField;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.components.fields.ButtonTextField;
-import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ComboOptionsField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.collections.ArrayList2;
@@ -70,13 +66,9 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected ProjectRelativePathField init_createProgramPathField() {
-		return new MainLaunchTab_ProgramPathField() {
-			@Override
-			protected CheckBoxField createUseDefaultField(String enablementCheckBoxLabel) {
-				return super.createUseDefaultField("Use default:");
-			}
-		};
+	protected String getBuildTargetName() {
+		String buildType = buildTypeField.getFieldValue();
+		return goPackageField.getFieldValue() + StringUtil.prefixStr("#", buildType); 
 	}
 	
 	@Override
@@ -92,7 +84,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	protected void createCustomControls(Composite parent) {
 		goPackageField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
 //		buildTargetField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
-		programPathField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
+		buildTargetSettings.createComponent(parent, new GridData(GridData.FILL_BOTH));
 	}
 	
 	protected class GoPackageField extends EnablementButtonTextField {
@@ -114,7 +106,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		
 		@Override
 		protected String getNewValueFromButtonSelection() throws StatusException {
-			return GoMainLaunchConfigurationTab.this.openProgramPathDialog(validateProject());
+			return GoMainLaunchConfigurationTab.this.openProgramPathDialog(getValidProject());
 		}
 	}
 	
@@ -163,9 +155,10 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	public void initializeFrom(ILaunchConfiguration config) {
-		super.initializeFrom(config);
-		String buildTargetName = getConfigAttribute(config, LaunchConstants.ATTR_BUILD_TARGET, "");
+	protected void initializeBuildTargetField(BuildTargetLaunchSettings buildSettings) {
+		//super.initializeBuildTargetField(buildSettings);
+		
+		String buildTargetName = buildSettings.buildTargetName;
 		String buildConfiguration = LangCore.getBuildManager().getBuildConfigString(buildTargetName);
 		String buildTypeName = LangCore.getBuildManager().getBuildTypeString(buildTargetName);
 		goPackageField.setFieldValue(buildConfiguration);
@@ -173,12 +166,6 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		if(buildTypeField.getFieldValue() == null) {
 			buildTypeField.setFieldValue(buildTypeField.getComboOptions().get(0));
 		}
-	}
-	
-	@Override
-	protected String getBuildTargetName() {
-		String buildType = buildTypeField.getFieldValue();
-		return goPackageField.getFieldValue() + StringUtil.prefixStr("#", buildType); 
 	}
 	
 }

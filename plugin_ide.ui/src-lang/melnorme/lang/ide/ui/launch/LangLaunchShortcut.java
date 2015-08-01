@@ -100,8 +100,7 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 			return new BuildTargetLaunchSettings(
 				getProjectName(),
 				getBuildTarget(),
-				true,
-				null
+				null, null
 			).createNewConfiguration(getLaunchConfigType());
 		}
 		

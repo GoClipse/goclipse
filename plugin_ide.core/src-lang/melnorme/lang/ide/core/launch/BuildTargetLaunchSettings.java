@@ -26,30 +26,40 @@ import melnorme.utilbox.misc.StringUtil;
 public class BuildTargetLaunchSettings extends ProjectLaunchSettings {
 	
 	public String buildTargetName = null;
-	public boolean isDefaultProgramPath = true;
-	public String programPath = "";
+	public boolean buildArguments_isDefault = true;
+	public String buildArguments = null;
+	public boolean programPath_isDefault = true;
+	public String programPath = null;
 
 	public BuildTargetLaunchSettings() {
 	}
 	
-	public BuildTargetLaunchSettings(String projectName, String buildTargetName, 
-			boolean isDefaultProgramPath, String programPath) {
+	public BuildTargetLaunchSettings(String projectName, 
+			String buildTargetName, String buildArguments, String programPath) {
 		super(projectName);
 		this.buildTargetName = buildTargetName;
-		this.isDefaultProgramPath = isDefaultProgramPath;
+		this.buildArguments = buildArguments;
+		this.buildArguments_isDefault = buildArguments == null;
 		this.programPath = programPath;
+		this.programPath_isDefault = programPath == null;
 	}
 	
 	public BuildTargetLaunchSettings(ILaunchConfiguration config) throws CoreException {
 		super(config);
 		
 		buildTargetName = config.getAttribute(LaunchConstants.ATTR_BUILD_TARGET, "");
-		isDefaultProgramPath = config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, true);
+		programPath_isDefault = config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, true);
 		programPath = config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH, "");
+		buildArguments_isDefault = config.getAttribute(LaunchConstants.ATTR_BUILD_ARGUMENTS_USE_DEFAULT, true);
+		buildArguments = config.getAttribute(LaunchConstants.ATTR_BUILD_ARGUMENTS, "");
+	}
+	
+	public String getEffectiveBuildArguments() {
+		return buildArguments_isDefault ? null : buildArguments;
 	}
 	
 	public String getEffectiveProgramPath() {
-		return isDefaultProgramPath ? null : programPath;
+		return programPath_isDefault ? null : programPath;
 	}
 	
 	protected BuildManager getBuildManager() {
@@ -67,8 +77,10 @@ public class BuildTargetLaunchSettings extends ProjectLaunchSettings {
 		
 		BuildTarget defaultBuildTarget = buildInfo.getDefaultBuildTarget();
 		buildTargetName = defaultBuildTarget.getTargetName(); 
-		isDefaultProgramPath = true;
-		programPath  = null;
+		programPath_isDefault = true;
+		programPath = null;
+		buildArguments_isDefault = true;
+		buildArguments = null;
 		
 		return this;
 	}
@@ -82,7 +94,9 @@ public class BuildTargetLaunchSettings extends ProjectLaunchSettings {
 	@Override
 	protected void saveToConfig_rest(ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(LaunchConstants.ATTR_BUILD_TARGET, buildTargetName);
-		config.setAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, isDefaultProgramPath);
+		config.setAttribute(LaunchConstants.ATTR_BUILD_ARGUMENTS_USE_DEFAULT, buildArguments_isDefault);
+		config.setAttribute(LaunchConstants.ATTR_BUILD_ARGUMENTS, buildArguments);
+		config.setAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, programPath_isDefault);
 		config.setAttribute(LaunchConstants.ATTR_PROGRAM_PATH, programPath);
 	}
 	

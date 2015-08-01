@@ -21,16 +21,18 @@ import melnorme.utilbox.core.CommonException;
 
 public abstract class EnablementButtonTextField extends ButtonTextField {
 	
-	protected final CheckBoxField useDefaultField;
-	protected final boolean createUseDefaultField;
+	public static final String LABEL_UseDefault = "Use default:";
 	
-	public EnablementButtonTextField(String labelText, String useDefaultField_Label, String buttonlabel) {
+	protected final CheckBoxField useDefaultField;
+	protected final boolean createUseDefaultComponent;
+	
+	public EnablementButtonTextField(String labelText, String useDefaultCheckboxLabel, String buttonlabel) {
 		super(labelText, buttonlabel);
 		
-		this.useDefaultField = createUseDefaultField(useDefaultField_Label);
-		this.createUseDefaultField = useDefaultField_Label != null;
-		useDefaultField.setFieldValue(createUseDefaultField);
+		this.useDefaultField = createUseDefaultField(useDefaultCheckboxLabel);
+		this.createUseDefaultComponent = useDefaultCheckboxLabel != null;
 		
+		useDefaultField.setFieldValue(createUseDefaultComponent);
 		useDefaultField.addValueChangedListener(this::updateDefaultFieldValue);
 	}
 	
@@ -94,7 +96,7 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 	}
 	
 	protected void createContents_EnablementCheckBox(Composite topControl) {
-		if(createUseDefaultField) {
+		if(createUseDefaultComponent) {
 			Composite enablementTopControl = useDefaultField.createComponent(topControl);
 			GridDataFactory.swtDefaults().span(getPreferredLayoutColumns(), 1).applyTo(enablementTopControl);
 			useDefaultField.addValueChangedListener(this::updateComponentFromInput);
@@ -106,12 +108,18 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 		// Don't create
 	}
 	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled && !isUseDefault());
+		useDefaultField.setEnabled(enabled);
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override
 	public void updateComponentFromInput() {
 		super.updateComponentFromInput();
-		setEnabled(!isUseDefault());
+		super.setEnabled(!isUseDefault());
 	}
 	
 }

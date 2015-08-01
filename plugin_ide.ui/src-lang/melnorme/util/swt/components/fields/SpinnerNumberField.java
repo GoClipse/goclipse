@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Spinner;
 
 import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.LabelledFieldComponent;
 
@@ -78,8 +79,8 @@ public class SpinnerNumberField extends LabelledFieldComponent<Integer> {
 	}
 	
 	public void setEnabled(boolean enabled) {
-		label.setEnabled(enabled);
-		spinner.setEnabled(enabled);
+		SWTUtil.setEnabledIfOk(label, enabled);
+		SWTUtil.setEnabledIfOk(spinner, enabled);
 	}
 	
 	/* -----------------  ----------------- */
