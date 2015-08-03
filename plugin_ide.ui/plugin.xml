@@ -143,12 +143,6 @@
             categoryId="com.googlecode.goclipse.ui.commands.Category"
             id="com.googlecode.goclipse.editors.GofmtShortcut.run">
       </command>
-      <command
-            name="Fix (go fix)"
-            description="Run the &apos;go fix&apos; command on the current file."
-            categoryId="com.googlecode.goclipse.ui.commands.Category"
-            id="com.googlecode.goclipse.editors.GofixShortcut.run">
-      </command>
 	</extension>
 	
 	<extension point="org.eclipse.ui.bindings">

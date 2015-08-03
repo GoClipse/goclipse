@@ -38,7 +38,6 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 	protected void contributeSourceMenu(IMenuManager sourceMenu) {
 		super.contributeSourceMenu(sourceMenu);
 		
-		activateHandler(COMMAND_RunGoFix, RunGoFixOperation.getHandler(getPage()));
 		activateHandler(COMMAND_RunGoFmt, RunGoFmtOperation.getHandler(getPage()));
 	}
 	

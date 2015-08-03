@@ -11,6 +11,8 @@
 package com.googlecode.goclipse.core;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
+import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
+import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -37,11 +39,13 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	}
 	
 	public static GoArch getEffectiveGoArch(IProject project) {
-		return new GoArch(getEffectiveValue_NonNull(GoEnvironmentPrefs.GO_ARCH, project, GOARCH));
+		String strValue = emptyAsNull(getEffectiveValue(GoEnvironmentPrefs.GO_ARCH, project, GOARCH));
+		return strValue == null ? null : new GoArch(strValue);
 	}
 	
 	public static GoOs getEffectiveGoOs(IProject project) {
-		return new GoOs(getEffectiveValue_NonNull(GoEnvironmentPrefs.GO_OS, project, GOOS));
+		String strValue = emptyAsNull(getEffectiveValue(GoEnvironmentPrefs.GO_OS, project, GOOS));
+		return strValue == null ? null : new GoOs(strValue);
 	}
 	
 	public static GoPath getEffectiveGoPath(IProject project) {
@@ -79,10 +83,13 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
 	protected static String getEffectiveValue_NonNull(StringPreference stringPref, IProject project, 
 			String envAlternative) {
+		return nullAsEmpty(getEffectiveValue(stringPref, project, envAlternative));
+	}
+	
+	protected static String getEffectiveValue(StringPreference stringPref, IProject project, String envAlternative) {
 		String prefValue = stringPref.get(project);
 		if(prefValue == null || prefValue.isEmpty()) {
-			String envValue = System.getenv(envAlternative);
-			return envValue == null ? "" : envValue;
+			return System.getenv(envAlternative);
 		}
 		return prefValue;
 	}

@@ -17,7 +17,6 @@ public interface GoCommandConstants {
 	static String COMMAND_GoToMatchingBracket = EditorCommandIds.GoToMatchingBracket;
 	static String COMMAND_ToggleLineComment = EditorCommandIds.ToggleComment;
 	
-	static String COMMAND_RunGoFix = "com.googlecode.goclipse.editors.GofixShortcut.run";
 	static String COMMAND_RunGoFmt = "com.googlecode.goclipse.editors.GofmtShortcut.run";
 	
 }

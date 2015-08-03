@@ -22,7 +22,6 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.PathUtil;
 
 /**
  * Immutable description of a Go environment, under which Go operations and semantic analysis can be run.
@@ -57,22 +56,23 @@ public class GoEnvironment {
 		return goRoot.asLocation();
 	}
 	
-	public GoArch getGoArch() throws CommonException{
-		validateGoArch();
+	public GoArch getGoArch() {
 		return goArch;
 	}
-	public void validateGoArch() throws CommonException {
-		if(goArch == null || goArch.asString().isEmpty()) 
-			throw new CommonException("GOARCH is undefined");
-	}
-	
-	public GoOs getGoOs() throws CommonException {
-		validateGoOs();
+	public GoOs getGoOs() {
 		return goOs;
 	}
-	public void validateGoOs() throws CommonException {
-		if(goOs == null || goOs.asString().isEmpty()) 
+	
+	public GoArch getGoArch_NonNull() throws CommonException {
+		if(goArch == null) 
+			throw new CommonException("GOARCH is undefined");
+		return goArch;
+	}
+	
+	public GoOs getGoOs_NonNull() throws CommonException {
+		if(goOs == null) 
 			throw new CommonException("GOOS is undefined");
+		return goOs;
 	}
 	
 	public GoPath getGoPath() {
@@ -145,18 +145,18 @@ public class GoEnvironment {
 		return goWorkspace.getBinLocation();
 	}
 	
-	protected String getGoOS_GoArch_segment() throws CommonException {
-		return getGoOs().asString() + "_" + getGoArch().asString();
-	}
-	
-	protected Path getGoOSGoArchSegmentPath() throws CommonException {
-		return PathUtil.createPath(getGoOS_GoArch_segment(), "Invalid GOOS-GOARCH: ");
-	}
-	
-	public Location getGoRootToolsDir() throws CommonException {
-		Path subPath = getGoOSGoArchSegmentPath();
-		return goRoot.asLocation().resolve_fromValid("pkg/tool/").resolve(subPath);
-	}
+//	protected String getGoOS_GoArch_segment() throws CommonException {
+//		return getGoOs().asString() + "_" + getGoArch().asString();
+//	}
+//	
+//	protected Path getGoOSGoArchSegmentPath() throws CommonException {
+//		return PathUtil.createPath(getGoOS_GoArch_segment(), "Invalid GOOS-GOARCH: ");
+//	}
+//	
+//	public Location getGoRootToolsDir() throws CommonException {
+//		Path subPath = getGoOSGoArchSegmentPath();
+//		return goRoot.asLocation().resolve_fromValid("pkg/tool/").resolve(subPath);
+//	}
 	
 	
 	/* -----------------  process builder  ----------------- */

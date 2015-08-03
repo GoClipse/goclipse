@@ -11,6 +11,7 @@
 package com.googlecode.goclipse.tooling.env;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 
 public class GoArch {
 	
@@ -21,7 +22,7 @@ public class GoArch {
 	protected final String goArch;
 	
 	public GoArch(String goArch) {
-		this.goArch = assertNotNull(goArch);
+		this.goArch = assertNotNull(emptyAsNull(goArch));
 	}
 	
 	public String asString() {

@@ -23,7 +23,6 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.PathUtil;
 
 public class GoEnvironmentTest extends CommonGoToolingTest {
 	
@@ -82,8 +81,6 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 	public void test$() throws Exception {
 		
 		GoEnvironment goEnv = SAMPLE_GOEnv_1;
-		
-		assertAreEqual(goEnv.getGoOSGoArchSegmentPath(), PathUtil.createPath("windows_386"));
 		
 		Location goRootSrc = goEnv.getGoRoot_Location().resolve_valid("src");
 		

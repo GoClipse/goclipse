@@ -38,9 +38,12 @@ public class GoOracleDescribeOperation extends ToolOutputParseHelper {
 				null);
 		}
 		
-		// go oracle requires these variables are properly set
-		goEnv.validateGoArch();
-		goEnv.validateGoOs();
+		// BM: I thought go oracle required these variables to be set, but it seems its not the case anymore?
+		boolean requireNonNullGoOSGoArch = false;
+		if(requireNonNullGoOSGoArch) {
+			goEnv.getGoArch_NonNull();
+			goEnv.getGoOs_NonNull();
+		}
 		
 		String goPackageString = goPackage.getFullNameAsString();
 		

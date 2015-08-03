@@ -11,9 +11,9 @@
 package com.googlecode.goclipse.ui.editor.actions;
 
 import static melnorme.utilbox.core.CoreUtil.listFrom;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
-import melnorme.utilbox.core.CommonException;
+
+import java.nio.file.Path;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchPage;
@@ -21,6 +21,10 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
+
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
+import melnorme.utilbox.core.CommonException;
 
 public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	
@@ -45,9 +49,10 @@ public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	}
 	
 	@Override
-	protected void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException, CommonException {
-		toolPath = GoEnvironmentPrefs.FORMATTER_PATH.get();
-		pb = goEnv.createProcessBuilder(listFrom(toolPath), null, true);
+	protected ProcessBuilder prepareProcessBuilder(Path goSDKPath, GoEnvironment goEnv)
+			throws CoreException, CommonException {
+		List<String> cmd = listFrom(GoEnvironmentPrefs.FORMATTER_PATH.get());
+		return goEnv.createProcessBuilder(cmd, null, true);
 	}
 	
 }

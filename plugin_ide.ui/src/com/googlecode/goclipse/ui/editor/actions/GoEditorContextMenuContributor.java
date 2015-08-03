@@ -26,8 +26,6 @@ public class GoEditorContextMenuContributor extends LangEditorContextMenuContrib
 		super.contributeSourceMenu(sourceMenu);
 		
 		sourceMenu.appendToGroup(SOURCE_MENU_GroupFormat, pushItem(svcLocator, COMMAND_RunGoFmt));
-		
-		sourceMenu.appendToGroup(SOURCE_MENU_GroupAdditions, pushItem(svcLocator, COMMAND_RunGoFix));
 	}
 	
 }

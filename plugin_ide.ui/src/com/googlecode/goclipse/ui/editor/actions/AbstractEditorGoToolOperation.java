@@ -14,6 +14,9 @@ package com.googlecode.goclipse.ui.editor.actions;
 import static melnorme.lang.ide.ui.editor.EditorUtils.getEditorDocument;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
+import java.nio.file.Path;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -26,6 +29,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.ui.editor.GoEditor;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -35,7 +39,6 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	
 	protected GoEditor goEditor;
 	protected String editorText;
-	protected String toolPath;
 	protected ProcessBuilder pb;
 	
 	public AbstractEditorGoToolOperation(String operationName, ITextEditor editor) {
@@ -50,16 +53,20 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 		goEditor = (GoEditor) editor;
 		editorText = getEditorDocument(editor).get();
 		
-		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(null);
+		IProject project = EditorUtils.getAssociatedProject(editorInput);
+		
+		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
 		try {
-			prepareProcessBuilder(goEnv);
+			Path goSDKPath = GoToolManager.getDefault().getSDKToolPath();
+			pb = prepareProcessBuilder(goSDKPath, goEnv);
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
 	}
 	
-	protected abstract void prepareProcessBuilder(GoEnvironment goEnv) throws CoreException, CommonException;
+	protected abstract ProcessBuilder prepareProcessBuilder(Path goSDKPath, GoEnvironment goEnv) 
+			throws CoreException, CommonException;
 	
 	@Override
 	protected String doBackgroundValueComputation(IProgressMonitor monitor)
