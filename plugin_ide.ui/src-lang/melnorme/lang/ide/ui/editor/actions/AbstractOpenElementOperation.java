@@ -26,6 +26,7 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
@@ -77,6 +78,10 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	
 	public SourceOperationContext getContext() {
 		return context;
+	}
+	
+	protected AbstractToolManager getToolManager() {
+		return LangCore.getToolManager();
 	}
 	
 	@Override

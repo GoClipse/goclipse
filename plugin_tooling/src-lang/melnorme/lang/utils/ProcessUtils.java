@@ -17,7 +17,9 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import melnorme.lang.tooling.ToolingMessages;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -95,6 +97,14 @@ public class ProcessUtils {
 			}
 		}
 		return key;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static void validateNonZeroExitValue(int exitValue) throws CommonException {
+		if(exitValue != 0) {
+			throw new CommonException(ToolingMessages.PROCESS_CompletedWithNonZeroVAlue("Process", exitValue));
+		}
 	}
 	
 }

@@ -10,21 +10,20 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.completion;
 
-import java.util.List;
-
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.utilbox.core.CommonException;
-
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
+
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 
 public interface ILangCompletionProposalComputer {
 	
 	void sessionStarted();
 	
-	List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) throws CommonException;
+	Indexable<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) throws CommonException;
 	
-	List<IContextInformation> computeContextInformation(SourceOperationContext context);
+	Indexable<IContextInformation> computeContextInformation(SourceOperationContext context);
 	
 	void sessionEnded();
 	

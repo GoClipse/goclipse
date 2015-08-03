@@ -10,15 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.completion;
 
-import java.util.List;
-
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
-import melnorme.utilbox.core.CommonException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 
 
 public abstract class AbstractCompletionProposalComputer implements ILangCompletionProposalComputer {
@@ -44,27 +44,27 @@ public abstract class AbstractCompletionProposalComputer implements ILangComplet
 	/* -----------------  ----------------- */
 	
 	@Override
-	public List<IContextInformation> computeContextInformation(SourceOperationContext context) {
+	public Indexable<IContextInformation> computeContextInformation(SourceOperationContext context) {
 		return null;
 	}
 	
 	@Override
-	public List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) 
+	public Indexable<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) 
 		throws CommonException 
-		{
+	{
 		errorMessage = null;
 		
 		try {
 			return doComputeCompletionProposals(context, context.getInvocationOffset());
 		} catch (CoreException ce) {
-			throw new CommonException(ce.getMessage(), ce.getCause());
+			throw LangCore.createCommonException(ce);
 		} catch (OperationSoftFailure e) {
 			errorMessage = e.getMessage();
 		}
 		return null;
 	}
 	
-	protected abstract List<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context,
+	protected abstract Indexable<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context,
 			int offset) throws CoreException, CommonException, OperationSoftFailure;
 	
 }
