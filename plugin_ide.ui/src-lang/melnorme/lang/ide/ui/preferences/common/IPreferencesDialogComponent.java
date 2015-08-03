@@ -15,7 +15,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import melnorme.util.swt.components.fields.ComboBoxField;
+import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.fields.IDomainField;
+import melnorme.utilbox.misc.StringUtil;
 
 
 public interface IPreferencesDialogComponent {
@@ -86,6 +88,32 @@ public interface IPreferencesDialogComponent {
 		@Override
 		public void saveToStore(IPreferenceStore store) {
 			store.setValue(prefKey, field.getFieldValue());
+		}
+		
+	}
+	
+	public class EnablementButtonFieldPrefAdapter extends AbstractFieldAdapter<String> {
+		
+		protected final EnablementButtonTextField field;
+		
+		public EnablementButtonFieldPrefAdapter(String prefKey, EnablementButtonTextField field) {
+			super(prefKey, field);
+			this.field = field;
+		}
+		
+		@Override
+		public void loadFromStore(IPreferenceStore store) {
+			field.setEffectiveFieldValue(StringUtil.emptyAsNull(store.getString(prefKey)));
+		}
+		
+		@Override
+		public void loadStoreDefaults(IPreferenceStore store) {
+			field.setEffectiveFieldValue(StringUtil.emptyAsNull(store.getDefaultString(prefKey)));
+		}
+		
+		@Override
+		public void saveToStore(IPreferenceStore store) {
+			store.setValue(prefKey, StringUtil.nullAsEmpty(field.getEffectiveFieldValue()));
 		}
 		
 	}

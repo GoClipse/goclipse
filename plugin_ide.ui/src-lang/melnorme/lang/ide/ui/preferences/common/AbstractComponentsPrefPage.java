@@ -87,7 +87,7 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		return fieldStatus.getStatusLevel();
 	}
 	
-	public void connectStringField(String prefKey, FieldComponent<String> field, IFieldValidator validator) {
+	public void connectStringField(String prefKey, IDomainField<String> field, IFieldValidator validator) {
 		addStringComponent(prefKey, field);
 		
 		validators.put(field, validator);
@@ -176,10 +176,10 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		return group;
 	}
 	
-	public void addStringComponent(String prefKey, FieldComponent<String> field) {
+	public void addStringComponent(String prefKey, IDomainField<String> field) {
 		addComponent(new StringFieldAdapter(prefKey, field));
 	}
-	public void addBooleanComponent(String prefKey, FieldComponent<Boolean> field) {
+	public void addBooleanComponent(String prefKey, IDomainField<Boolean> field) {
 		addComponent(new BooleanFieldAdapter(prefKey, field));
 	}
 	public void addComboComponent(String prefKey, ComboBoxField field) {
@@ -199,14 +199,14 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		field.createComponentInlined(parent);
 	}
 	
-	public void connectFileField(String prefKey, FieldComponent<String> stringField, 
+	public void connectFileField(String prefKey, IDomainField<String> stringField, 
 			boolean allowSinglePath, String fieldNamePrefix) {
 		PathValidator validator = allowSinglePath ? 
 				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix);
 		validator.fileOnly = true;
 		connectStringField(prefKey, stringField, validator);
 	}
-	public void connectDirectoryField(String prefKey, FieldComponent<String> stringField, 
+	public void connectDirectoryField(String prefKey, IDomainField<String> stringField, 
 			boolean allowSinglePath, String fieldNamePrefix) {
 		PathValidator validator = allowSinglePath ? 
 				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix);
