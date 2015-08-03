@@ -3,7 +3,6 @@
 #### Requirements: 
  * Eclipse 4.5 (Mars) or later.
  * Java VM version 8 or later.
- * Go development tools and libraries installed on target machine (http://golang.org/doc/install.html). Currently, only the plan 9 style compilers are supported. GCCGO may be supported in the future
 
 #### Instructions:
  1. Use your existing Eclipse, or download a new Eclipse package from http://www.eclipse.org/downloads/. 
@@ -13,8 +12,8 @@
  1. Select the recently added update site in the `Work with:` dropdown. Type `GoClipse` in the filter box. Now the Goclipse feature should appear below.
  1. Select the `GoClipse` feature, and complete the wizard. 
   * Dependencies such as CDT will automatically be added during installation.
- 1. Restart Eclipse. After that take a look at the configuration section in the [User Guide](UserGuide.md#user-guide).
-  
+ 1. Restart Eclipse. 
+ 1. For initial setup, follow the instructions at the configuration section in the [User Guide](UserGuide.md). It is recommended you read the rest of the guide too.  
 
 #### Updating:
 If you already have GoClipse installed, and want to update it to a newer release, click `Help -> Check for Updates...`.

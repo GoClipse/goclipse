@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Updated [Configuration](UserGuide.md#configuration) section in the User Guide.
+ * Setting an explicit GOOS and GOARCH is no longer required for running tools such as Go Oracle. You can just leave those fields at the default setting.
  * Removed `go fix` command.
  * Fixed: Occasional AssertionFailure when creating new projects in nested locations (project would not show up in Explorer).
  * Fixed: Arguments field in launch configuration is not multi-line.
