@@ -10,16 +10,14 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.completion;
 
-import java.util.List;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.contentassist.IContextInformation;
 
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.contentassist.IContextInformation;
 
 public class CompletionProposalsGrouping implements ILangCompletionProposalComputer {
 	
@@ -89,16 +87,16 @@ public class CompletionProposalsGrouping implements ILangCompletionProposalCompu
 	}
 	
 	@Override
-	public List<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) 
+	public Indexable<ICompletionProposal> computeCompletionProposals(SourceOperationContext context) 
 			throws CommonException {
 		clearErrorMessage();
 		
 		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
 		
 		for (ILangCompletionProposalComputer computer : computers) {
-			List<ICompletionProposal> computerProposals = computer.computeCompletionProposals(context);
+			Indexable<ICompletionProposal> computerProposals = computer.computeCompletionProposals(context);
 			if(computerProposals != null) {
-				proposals.addAll(computerProposals);
+				proposals.addAll2(computerProposals);
 			}
 			
 			updateErrorMessage(computer.getErrorMessage());
@@ -107,15 +105,15 @@ public class CompletionProposalsGrouping implements ILangCompletionProposalCompu
 	}
 	
 	@Override
-	public List<IContextInformation> computeContextInformation(SourceOperationContext context) {
+	public Indexable<IContextInformation> computeContextInformation(SourceOperationContext context) {
 		clearErrorMessage();
 		
 		ArrayList2<IContextInformation> proposals = new ArrayList2<>();
 		
 		for (ILangCompletionProposalComputer computer : computers) {
-			List<IContextInformation> computerProposals = computer.computeContextInformation(context);
+			Indexable<IContextInformation> computerProposals = computer.computeContextInformation(context);
 			if(computerProposals != null) {
-				proposals.addAll(computerProposals);
+				proposals.addAll2(computerProposals);
 			}
 			
 			updateErrorMessage(computer.getErrorMessage());

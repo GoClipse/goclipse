@@ -12,18 +12,19 @@ package melnorme.lang.ide.ui.templates;
 
 import java.util.List;
 
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.lang.ide.ui.text.completion.AbstractCompletionProposalComputer;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
-import melnorme.utilbox.core.CommonException;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.templates.TemplateContextType;
 
 import _org.eclipse.jdt.internal.ui.text.template.contentassist.TemplateEngine;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.text.completion.AbstractCompletionProposalComputer;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.collections.ListView;
+import melnorme.utilbox.core.CommonException;
 
 
 /**
@@ -52,7 +53,7 @@ public class LangTemplateCompletionProposalComputer extends AbstractCompletionPr
 	}
 	
 	@Override
-	protected List<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context, int offset)
+	protected Indexable<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context, int offset)
 			throws CoreException, CommonException, OperationSoftFailure {
 		
 		fEngine= computeCompletionEngine(context);
@@ -84,7 +85,7 @@ public class LangTemplateCompletionProposalComputer extends AbstractCompletionPr
 //				}
 //			}
 //		}
-		return result;
+		return new ListView<>(result);
 	}
 	
 	protected String getContextTypeId() {

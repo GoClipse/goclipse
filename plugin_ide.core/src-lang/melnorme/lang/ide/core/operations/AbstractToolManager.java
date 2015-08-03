@@ -26,6 +26,7 @@ import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartH
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.ops.IOperationHelper;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -211,6 +212,34 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 			for (ILangOperationsListener listener : getListeners()) {
 				listener.engineDaemonStart(pb, psh);
 			}
+		}
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	/** 
+	 * Helper to start engine client processes in the tool manager. 
+	 */
+	public class ToolManagerEngineToolRunner implements IOperationHelper {
+		
+		protected final boolean throwOnNonZeroStatus;
+		protected final EclipseCancelMonitor cm;
+		
+		public ToolManagerEngineToolRunner(IProgressMonitor monitor, boolean throwOnNonZeroStatus) {
+			this.throwOnNonZeroStatus = throwOnNonZeroStatus;
+			this.cm = new EclipseCancelMonitor(monitor);
+		}
+		
+		@Override
+		public ExternalProcessResult runProcess(ProcessBuilder pb, String input) throws CommonException,
+				OperationCancellation {
+			return new RunEngineClientOperation(pb, cm).runProcess(input, throwOnNonZeroStatus);
+		}
+		
+		@Override
+		public void logStatus(StatusException statusException) {
+			LangCore.logStatusException(statusException);
 		}
 		
 	}

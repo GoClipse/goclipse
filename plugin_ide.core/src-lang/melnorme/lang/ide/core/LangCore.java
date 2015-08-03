@@ -167,6 +167,10 @@ public abstract class LangCore extends Plugin {
 		return createCoreException(ce.getMessage(), ce.getCause());
 	}
 	
+	public static CommonException createCommonException(CoreException ce) {
+		return new CommonException(ce.getMessage(), ce.getCause());
+	}
+	
 	/* ----------------- Logging ----------------- */
 	
 	/** Logs given status. */

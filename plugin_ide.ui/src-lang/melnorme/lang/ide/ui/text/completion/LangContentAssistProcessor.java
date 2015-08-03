@@ -15,17 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.text.MessageFormat;
-import java.util.List;
-
-import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.jface.bindings.keys.KeySequence;
@@ -44,6 +33,15 @@ import org.eclipse.ui.keys.IBindingService;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
+
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 
 public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
@@ -212,7 +210,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;
 		
-		List<ICompletionProposal> proposals;
+		Indexable<ICompletionProposal> proposals;
 		try {
 			proposals = cat.computeCompletionProposals(context);
 		} catch(CommonException ce) {
@@ -222,7 +220,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		}
 		setAndDisplayErrorMessage(cat.getErrorMessage());
 		
-		return ArrayUtil.createFrom(proposals, ICompletionProposal.class);
+		return proposals.toArray(ICompletionProposal.class);
 	}
 	
 	protected void handleExceptionInUI(CommonException ce) {
@@ -236,10 +234,10 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		CompletionProposalsGrouping cat = getCurrentCategory();
 		invocationIteration++;
 		
-		List<IContextInformation> proposals = cat.computeContextInformation(context);
+		Indexable<IContextInformation> proposals = cat.computeContextInformation(context);
 		setAndDisplayErrorMessage(cat.getErrorMessage());
 
-		return ArrayUtil.createFrom(proposals, IContextInformation.class);
+		return proposals.toArray(IContextInformation.class);
 	}
 	
 	@Override

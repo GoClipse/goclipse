@@ -13,6 +13,7 @@ package melnorme.lang.ide.core.utils.process;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -116,8 +117,8 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 		processHelper.writeInput_(input, StringUtil.UTF8);
 		ExternalProcessResult processResult = processHelper.awaitTerminationAndResult_ce();
 		
-		if(throwOnNonZeroStatus && processResult.exitValue != 0) {
-			throw new CommonException("Process completed with non-zero exit value (" + processResult.exitValue + ")");
+		if(throwOnNonZeroStatus) {
+			ProcessUtils.validateNonZeroExitValue(processResult.exitValue);
 		}
 		return processResult;
 	}
