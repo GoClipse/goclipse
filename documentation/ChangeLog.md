@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Don't show error dialog when gocode fails. Only the editor status line is updated now. 
  * Added: Explicit GOPATH preference option to use the same as GOPATH environment variable.
  * Updated [Configuration](UserGuide.md#configuration) section in the User Guide.
  * Setting an explicit GOOS and GOARCH is no longer required for running tools such as Go Oracle. You can just leave those fields at the default setting.

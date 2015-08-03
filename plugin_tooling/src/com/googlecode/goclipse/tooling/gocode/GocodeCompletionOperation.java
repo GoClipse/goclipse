@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import melnorme.lang.tooling.ops.AbstractToolOperation;
 import melnorme.lang.tooling.ops.IOperationHelper;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -35,6 +36,11 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 		this.gocodePath = gocodePath;
 	}
 	
+	@Override
+	protected String getToolProcessName() {
+		return "gocode";
+	}
+	
 	protected void setLibPathForEnvironment() throws CommonException, OperationCancellation {
 		
 		ArrayList2<String> arguments = new ArrayList2<>(gocodePath);
@@ -48,11 +54,11 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 		
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
-		runToolProcess(pb, null);
+		runToolProcess2(pb, null);
 	}
 	
 	public ExternalProcessResult execute(String filePath, String bufferText, int offset) 
-			throws CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		
 		setLibPathForEnvironment();
 		
@@ -68,7 +74,7 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 		
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
-		ExternalProcessResult processResult = runToolProcess(pb, bufferText);
+		ExternalProcessResult processResult = runToolProcess_validateExitValue(pb, bufferText);
 		
 		if(processResult.exitValue != 0) {
 			throw new CommonException("Error, gocode returned non-zero status: " + processResult.exitValue);

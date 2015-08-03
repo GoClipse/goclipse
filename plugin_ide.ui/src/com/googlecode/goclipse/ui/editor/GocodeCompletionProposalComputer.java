@@ -30,7 +30,9 @@ import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -40,8 +42,9 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
 	@Override
-	protected List<ICompletionProposal> computeProposals(SourceOperationContext context, int offset,
-			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+	protected Indexable<ICompletionProposal> computeProposals(SourceOperationContext context, int offset,
+			TimeoutProgressMonitor pm) 
+			throws CoreException, CommonException, OperationCancellation, OperationSoftFailure {
 		
 		IEditorPart editor = context.getEditor_nonNull();
 		Location fileLoc = context.getEditorInputLocation();
@@ -60,13 +63,13 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		
 		// TODO: we should run this operation outside the UI thread.
 		GocodeCompletionOperation client = new GocodeCompletionOperation(
-			getProcessRunner(pm), goEnvironment, gocodePath.toOSString());
+			getEngineToolRunner(pm), goEnvironment, gocodePath.toOSString());
 		
 		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), document.get(), offset);
 		String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
 		List<String> completions = new ArrayList2<>(GocodeCompletionOperation.LINE_SPLITTER.split(stdout));
 		
-		ArrayList<ICompletionProposal> results = new ArrayList<ICompletionProposal>();
+		ArrayList2<ICompletionProposal> results = new ArrayList2<>();
 		
 		for (String completionEntry : completions) {
 			handleResult(offset, /*codeContext,*/ results, prefix, completionEntry);
