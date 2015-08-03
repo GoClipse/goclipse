@@ -13,7 +13,8 @@
  1. Select the `LANG_IDE_NAME` feature, and complete the wizard. 
   * LANG_IDE_NAME dependencies such as CDT will automatically be added during installation.
  1. Restart Eclipse. After that take a look at the setup section in the [User Guide](UserGuide.md#user-guide).
-  
+ 1. Restart Eclipse. 
+ 1. For initial setup, follow the instructions at the configuration section in the [User Guide](UserGuide.md#configuration). It is recommended you read the rest of the guide too.  
 
 #### Updating:
 If you already have LANG_IDE_NAME installed, and want to update it to a newer release, click `Help -> Check for Updates...`.

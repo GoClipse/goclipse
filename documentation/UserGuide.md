@@ -1,7 +1,15 @@
 ## User Guide
 
-*Note:* For an overview of LANG_IDE_NAME features, see [Features](Features.md#ddt-features). This also serves to document 
-the major functionalities available.
+*Note:* For an overview of LANG_IDE_NAME features, see [Features](Features.md#ddt-features). This also serves to document what overall functionalities are available.
+
+### Configuration
+
+A [LANGUAGE installation](https://LANG TODO) is required for most IDE functionality. Access Eclipse preferences from the menu `Window / Preferences`, navigate to the `LANGUAGE` preference page, and configure the LANGUAGE installation path under the appropriate field.
+
+For functionality such as code completion, open definition, and editor outline, you will need:
+ * The LANG TODO tool. 
+ 
+The path to the executable of these two tools should be configured in the `LANGUAGE / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
 
 ### Eclipse basics
 
