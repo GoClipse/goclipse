@@ -26,6 +26,11 @@ public interface BuildManagerMessages {
 	public String NAME_ToggleEnabledAction = "Enable for workspace build";
 	public String NAME_RunBuildTargetAction = "Build target";
 	
+	public String NAME_ConfigureTargetsAction = "Configure targets...";
+	public String NAME_ConfigureTargetAction = "Configure target...";
+	public String NAME_RunTargetAction = "Run target";
+	public String NAME_DebugTargetAction = "Debug target";
+	
 	public String INFO_BuildTargetAction = "Building target `{1}` of project {0}";
 	
 	public String MSG_Starting_LANG_Build = "Starting {0} build";

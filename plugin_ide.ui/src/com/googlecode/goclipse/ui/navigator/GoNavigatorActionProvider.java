@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
@@ -26,6 +27,9 @@ import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 
+import com.googlecode.goclipse.ui.launch.GoLaunchShortcut;
+
+import melnorme.lang.ide.ui.navigator.BuildTargetsActionGroup;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 
@@ -106,6 +110,16 @@ public class GoNavigatorActionProvider extends LangNavigatorActionProvider {
 			}
 		}
 		
+	}
+	
+	@Override
+	protected BuildTargetsActionGroup createBuildTargetsActionGroup(IViewPart viewPart) {
+		return new BuildTargetsActionGroup(viewPart) {
+			@Override
+			protected GoLaunchShortcut createLaunchShortcut() {
+				return new GoLaunchShortcut();
+			}
+		};
 	}
 	
 }

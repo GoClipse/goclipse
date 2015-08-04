@@ -35,12 +35,16 @@ public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 		return targetName.isEmpty() ? "<default>" : targetName;
 	}
 	
+	public BuildManager getBuildManager() {
+		return BuildManager.getInstance();
+	}
+	
 	public BuildTarget getBuildTarget() {
 		return buildTarget;
 	}
 	
-	public BuildManager getBuildManager() {
-		return BuildManager.getInstance();
+	public IProject getProject() {
+		return project;
 	}
 	
 	protected ProjectBuildInfo getBuildInfoOrNull() {

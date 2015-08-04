@@ -308,7 +308,9 @@ public abstract class BuildManager {
 	
 	/* ----------------- Build Target name ----------------- */
 	
-	public static final String BUILD_TYPE_NAME_SEPARATOR = "#";
+	protected String getBuildTypeNameSeparator() {
+		return " #";
+	}
 	
 	public class BuildTargetName {
 		
@@ -340,21 +342,21 @@ public abstract class BuildManager {
 		}
 		
 		public String getRawName() {
-			return buildConfig + StringUtil.prefixStr(BUILD_TYPE_NAME_SEPARATOR, emptyAsNull(buildType));
+			return buildConfig + StringUtil.prefixStr(getBuildTypeNameSeparator(), emptyAsNull(buildType));
 		}
 		
 		public String getResolvedName() {
-			return buildConfig + StringUtil.prefixStr(BUILD_TYPE_NAME_SEPARATOR, getEffectiveBuildType());
+			return buildConfig + StringUtil.prefixStr(getBuildTypeNameSeparator(), getEffectiveBuildType());
 		}
 		
 	}
 	
 	public String getBuildConfigString(String targetName) {
-		return StringUtil.substringUntilMatch(targetName, BUILD_TYPE_NAME_SEPARATOR);
+		return StringUtil.substringUntilMatch(targetName, getBuildTypeNameSeparator());
 	}
 	
 	public String getBuildTypeString(String targetName) {
-		return StringUtil.segmentAfterMatch(targetName, BUILD_TYPE_NAME_SEPARATOR);
+		return StringUtil.segmentAfterMatch(targetName, getBuildTypeNameSeparator());
 	}
 	
 	public String getDefaultBuildTypeName() {

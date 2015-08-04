@@ -37,7 +37,6 @@ import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.StringUtil;
 
 /**
  * Go Launch config tab uses the BuildTarget field in a different way.
@@ -68,7 +67,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	@Override
 	protected String getBuildTargetName() {
 		String buildType = buildTypeField.getFieldValue();
-		return goPackageField.getFieldValue() + StringUtil.prefixStr("#", buildType); 
+		return getBuildManager().new BuildTargetName(goPackageField.getFieldValue(), buildType).getResolvedName();
 	}
 	
 	@Override

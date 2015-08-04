@@ -46,8 +46,10 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 	}
 	
 	protected void initActionGroups(IViewPart viewPart) {
-		actionGroups.add(new BuildTargetsActionGroup(viewPart));
+		actionGroups.add(createBuildTargetsActionGroup(viewPart));
 	}
+	
+	protected abstract BuildTargetsActionGroup createBuildTargetsActionGroup(IViewPart viewPart);
 	
 	@Override
 	public void setContext(ActionContext context) {

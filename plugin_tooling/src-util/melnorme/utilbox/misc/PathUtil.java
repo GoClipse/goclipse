@@ -48,6 +48,10 @@ public class PathUtil {
 		return createPath(pathString, "Invalid path: ");
 	}
 	
+	public static Path createResolvedPath(String basePath, String subPath) throws CommonException {
+		return createPath(basePath).resolve(createPath(subPath)).normalize();
+	}
+	
 	/** @return a valid path from given pathString. 
 	 * @throws CommonException if a valid path could not be created. 
 	 * Given errorMessagePrefix will be used as a prefix in {@link CommonException}'s message. */

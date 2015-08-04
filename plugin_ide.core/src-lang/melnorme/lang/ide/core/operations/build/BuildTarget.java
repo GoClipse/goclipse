@@ -12,6 +12,8 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
+import org.eclipse.core.resources.IProject;
+
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -101,6 +103,11 @@ public class BuildTarget {
 			getBuildArguments(),
 			getArtifactPath()
 		);
+	}
+	
+	@SuppressWarnings("unused")
+	public boolean isLaunchable(IProject project) {
+		return true;
 	}
 	
 }

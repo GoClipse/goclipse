@@ -12,8 +12,10 @@ package com.googlecode.goclipse.core.operations;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
 import static melnorme.utilbox.core.CoreUtil.array;
+import static melnorme.utilbox.misc.PathUtil.createResolvedPath;
 
 import java.nio.file.Path;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -47,6 +49,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -86,6 +89,27 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		return createBuildTarget(new BuildTargetData(targetName, false, null, null));
+	}
+	
+	@Override
+	public BuildTarget createBuildTarget(BuildTargetData buildTargetData) {
+		return new BuildTarget(buildTargetData) {
+			@Override
+			public boolean isLaunchable(IProject project) {
+				try {
+					BuildTargetValidator validator = createBuildTargetValidator(project, this);
+					String buildConfigName = validator.getBuildConfigName();
+					
+					Path path = PathUtil.createPath(buildConfigName);
+					if(path.getNameCount() == 0 || path.endsWith("..."))
+						return false;
+					
+					return true;
+				} catch(CommonException e) {
+					return false;
+				}
+			}
+		};
 	}
 	
 	@Override
@@ -292,10 +316,14 @@ public class GoBuildManager extends BuildManager {
 					
 					ArrayList2<String> argumentsTemplate = new ArrayList2<>(extraArgumentsOriginal);
 					int lastArgIx = extraArgumentsOriginal.length - 1;
-					String parentGoPackage = StringUtil.trimEnd(argumentsTemplate.get(lastArgIx), "...");
+					String goPackageToBuild = StringUtil.trimEnd(argumentsTemplate.get(lastArgIx), "...");
 					
 					GoWorkspaceLocation goWorkspace = goEnv.getGoPath().findGoPathEntry(getProjectLocation());
-					Collection2<GoPackageName> sourcePackages = goWorkspace.findSubPackages(parentGoPackage);
+					GoPackageName baseGoPackage = goEnv.getGoPath().findGoPackageForLocation(getProjectLocation());
+					if(baseGoPackage != null) {
+						goPackageToBuild = createResolvedPath(baseGoPackage.toString(), goPackageToBuild).toString(); 
+					}
+					Collection2<GoPackageName> sourcePackages = goWorkspace.findSubPackages(goPackageToBuild);
 					
 					for (GoPackageName goPackage : sourcePackages) {
 						argumentsTemplate.set(lastArgIx, goPackage.getFullNameAsString());
@@ -306,7 +334,7 @@ public class GoBuildManager extends BuildManager {
 					}
 					
 				}
-
+				
 			};
 			
 		}

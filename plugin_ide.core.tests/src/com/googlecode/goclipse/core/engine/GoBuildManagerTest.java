@@ -70,11 +70,11 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		assertTrue(pbi.getBuildTargets().size() == GoBuildManager.BUILD_TYPES.size());
 		
 		testGetBuildTargetFor(pbi, "go_package", "go_package", "build");
-		testGetBuildTargetFor(pbi, "go_package#build", "go_package", "build");
-		testGetBuildTargetFor(pbi, "foo/go_package#build", "foo/go_package", "build", "go_package");
+		testGetBuildTargetFor(pbi, "go_package #build", "go_package", "build");
+		testGetBuildTargetFor(pbi, "foo/go_package #build", "foo/go_package", "build", "go_package");
 		
-		testGetBuildTargetFor(pbi, "go_foo#"+BUILD_TYPE_BuildTests, "go_foo", BUILD_TYPE_BuildTests, "go_foo.test");
-		testGetBuildTargetFor(pbi, "go_foo#"+BUILD_TYPE_RunTests, "go_foo", BUILD_TYPE_RunTests, null);
+		testGetBuildTargetFor(pbi, "go_foo #"+BUILD_TYPE_BuildTests, "go_foo", BUILD_TYPE_BuildTests, "go_foo.test");
+		testGetBuildTargetFor(pbi, "go_foo #"+BUILD_TYPE_RunTests, "go_foo", BUILD_TYPE_RunTests, null);
 	}
 	
 	protected BuildTarget testGetBuildTargetFor(ProjectBuildInfo buildInfo, String targetName, String buildConfig, 
