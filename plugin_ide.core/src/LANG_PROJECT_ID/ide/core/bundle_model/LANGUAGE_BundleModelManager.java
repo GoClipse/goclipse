@@ -10,8 +10,6 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.bundle_model;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.LangCore_Actual.LANGUAGE_BundleModel;
@@ -36,11 +34,6 @@ public class LANGUAGE_BundleModelManager extends BundleModelManager<AbstractBund
 	@Override
 	protected AbstractBundleInfo createNewInfo(IProject project) {
 		return new AbstractBundleInfo() {
-			
-			@Override
-			public Path getEffectiveTargetFullPath() {
-				return null;
-			}
 			
 			@Override
 			public Indexable<BuildConfiguration> getBuildConfigurations() {
