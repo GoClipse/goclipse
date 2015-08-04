@@ -35,7 +35,7 @@ A Goclipse project can work in two ways:
  > In the `src` folder you can create Go source files that will be compiled into a library package (and placed into `pkg`), or into an executable (and placed in `bin`). See http://golang.org/doc/code.html for more information on the organization of a Go workspace.
 
 ##### Build:
-The `go` tool will be used to build the project. The output of this tool will be displayed in a console. Additionally, error markers resulting from the build will be collected and displayed in the the Go editor and Problems view.
+The `go` tool will be used to build the project. The output of this tool will be displayed in a console. Additionally, error markers resulting from the build will be collected and displayed in the the Go editor and the Problems view.
 
 Note that if the `Project / Build Automatically` option in the main menu is enabled (the default), a workspace build will be requested whenever any file is saved. Turn this on or off as desired.
 
@@ -51,7 +51,7 @@ The modes are:
  * `./... #build-tests`: Builds all Go test packages present in the project. 
  * `./... #[run-tests]`: Builds all and *runs* Go tests.
 
-Each target can be enabled or disabled when for Eclipse project builds. (There is not much point to have both `#build-tests` and `#[run-tests]` enabled though.)
+Each target can be enabled or disabled individually when performing Eclipse project builds. (There is not much point to have both `#build-tests` and `#[run-tests]` enabled though.)
 
 
 ### Editor and Navigation
@@ -73,7 +73,7 @@ Open Definition is also available in the editor context menu and by means of edi
 > This functionality is provided by the [Go Oracle](http://golang.org/s/oracle-user-manual) tool. If there is a problem with this operation, a diagnostics log with the output of oracle can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
 
 ### Launch and Debug:
-To run a Go project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open `Run / Run Configurations...`. Then double click `Go Application` to create a new launch, and configure it accordingly. You can run these launches from the `Run Configurations...`, or for quicker access, from the Launch button in the Eclipse toolbar.
+To run a Go project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open `Run / Run Configurations...`. Then double click `Go Application` to create a new launch, and configure it accordingly. You can run these launches from the `Run Configurations...`, or for quicker access, from the Launch button in the Eclipse toolbar. You will need to specify a Go package as the build target for the launch.
 
 Alternatively, you can start a launch by selecting a Go package folder in the Project Explorer, opening the context menu, and selecting `Run As... / Go Application`. (or `Debug As...` for debugging instead). If a matching launch configuration exists already, that one will be run.
 
