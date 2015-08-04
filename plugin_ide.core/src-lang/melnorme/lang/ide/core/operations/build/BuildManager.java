@@ -294,7 +294,7 @@ public abstract class BuildManager {
 			return name;
 		}
 		
-		public String getArtifactPath() {
+		public String getArtifactPath() throws CommonException {
 			return artifactPath;
 		}
 		

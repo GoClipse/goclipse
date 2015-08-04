@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.engine;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.resources.IProject;
 
 import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
@@ -43,11 +41,6 @@ public class GoBundleModelManager extends BundleModelManager<AbstractBundleInfo,
 	@Override
 	protected AbstractBundleInfo createNewInfo(IProject project) {
 		return new AbstractBundleInfo() {
-			
-			@Override
-			public Path getEffectiveTargetFullPath() {
-				return null;
-			}
 			
 			@Override
 			public Indexable<BuildConfiguration> getBuildConfigurations() {
