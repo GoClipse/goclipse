@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,17 @@ import melnorme.util.swt.SWTFactoryUtil;
 
 public abstract class LangBuildConfigurationPropertyPage extends PropertyPage {
 	
+	protected LangProjectBuildConfigurationComponent buildOptionsComponent;
+	
 	public LangBuildConfigurationPropertyPage() {
 		super();
 		noDefaultAndApplyButton();
+	}
+	
+	@Override
+	public void setElement(IAdaptable element) {
+		super.setElement(element);
+		buildOptionsComponent = createProjectBuildConfigComponent(getProject());
 	}
 	
 	protected IProject getProject() {
@@ -42,17 +50,10 @@ public abstract class LangBuildConfigurationPropertyPage extends PropertyPage {
 		if(project == null) {
 			return SWTFactoryUtil.createLabel(parent, SWT.LEFT, "No project available", null);
 		}
-		return createContents(parent, project);
+		return buildOptionsComponent.createComponent(parent);
 	}
 	
 	/* -----------------  ----------------- */
-	
-	protected LangProjectBuildConfigurationComponent buildOptionsComponent;
-	
-	protected Control createContents(Composite parent, IProject project) {
-		buildOptionsComponent = createProjectBuildConfigComponent(project);
-		return buildOptionsComponent.createComponent(parent);
-	}
 	
 	protected abstract LangProjectBuildConfigurationComponent createProjectBuildConfigComponent(IProject project);
 	
