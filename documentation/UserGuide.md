@@ -8,7 +8,7 @@ what overall functionalities are available.
 A [Go installation](https://golang.org/doc/install) is required for most IDE functionality. Access Eclipse preferences from the menu `Window / Preferences`, navigate to the `Go` preference page, and configure the Go installation path under the `GOROOT` field. The other fields (such as `GOOS` or `GOARCH`) can remain at the default settings.
 
 For functionality such as code completion, open definition, and editor outline, you will need:
- * The [gocode](https://github.com/nsf/gocode) tool. 
+ * The [gocode](https://github.com/nsf/gocode) tool. It is recommended to use the latest gocode version.
  * The [Go Oracle](http://golang.org/s/oracle-user-manual) tool. 
  
 The path to the executable of these two tools should be configured in the `Go / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
@@ -39,6 +39,21 @@ The `go` tool will be used to build the project. The output of this tool will be
 
 Note that if the `Project / Build Automatically` option in the main menu is enabled (the default), a workspace build will be requested whenever any file is saved. Turn this on or off as desired.
 
+Each Go project has 3 built-in Build Targets, which are ways in how the project can be built. 
+These can be viewed and configured in the Project Explorer:
+
+<div align="center">
+<a href="screenshots/UserGuide_BuildTargets.png?raw=true"><img src="screenshots/UserGuide_BuildTargets.png" /><a/> 
+</div>
+
+The modes are:
+ * `./... #build`: The default build. Builds all Go packages present in the project (excluding test packages).
+ * `./... #build-tests`: Builds all Go test packages present in the project. 
+ * `./... #[run-tests]`: Builds all and *runs* Go tests.
+
+Each target can be enabled or disabled when for Eclipse project builds. (There is not much point to have both `#build-tests` and `#[run-tests]` enabled though.)
+
+
 ### Editor and Navigation
 
 ##### Editor newline auto-indentation:
@@ -46,26 +61,21 @@ The editor will auto-indent new lines after an Enter is pressed. Pressing Backsp
 This is unlike most source editors - if instead you want to just remove one level of indent (or delete the preceding Tab), press Shift-Tab. 
 
 ##### Code-Completion/Auto-Complete:
-Invoked with Ctrl-Space. This functionality is generally called Content Assist in Eclipse. 
+Invoked with Ctrl-Space. This functionality is called Content Assist in Eclipse. 
 
-Code completion is provided by means of the [gocode tool](http://github.com/nsf/gocode). You must install this tool (see info [here](https://github.com/nsf/gocode#setup)), and then configuring its location in the `Go / Tools` preference page. It is recommended to use the latest gocode version (the "Download gocode" button here will do just that). 
-
-> If there is a problem with this operation, and you need a diagnostics log, the output of gocode can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
+> This functionality is provided by the [gocode](https://github.com/nsf/gocode) tool. If there is a problem with this operation, a diagnostics log with the output of gocode can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
 
 ##### Open Definition:
 The Open Definition functionality is invoked by pressing F3 in the source editor. 
 Open Definition is also available in the editor context menu and by means of editor *hyper-linking* 
 (hold Ctrl and click on a reference with the mouse cursor). 
-The [Go Oracle](http://golang.org/s/oracle-user-manual) tool is used to resolve the symbol references. 
 
-> If there is a problem with this operation, and you need a diagnostics log, the output of oracle can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
+> This functionality is provided by the [Go Oracle](http://golang.org/s/oracle-user-manual) tool. If there is a problem with this operation, a diagnostics log with the output of oracle can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
 
 ### Launch and Debug:
-To run a Go project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open 'Run' / 'Run Configurations...'. Then double click 'Go Application" to create a new launch, and configure it accordingly. You can run these launches from the 'Run Configurations...', or for quicker access, from the Launch button in the Eclipse toolbar.
+To run a Go project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open `Run / Run Configurations...`. Then double click `Go Application` to create a new launch, and configure it accordingly. You can run these launches from the `Run Configurations...`, or for quicker access, from the Launch button in the Eclipse toolbar.
 
-Alternatively, to automatically create and run a launch configuration, you can select a Go project in the workspace explorer, open the context menu, and do 'Run As...' / 'Go Application'. (or 'Debug As...' for debugging instead). If a matching configuration exists already, that one will be run.
-
-Whenever a launch is requested, a build will be performed beforehand. This behavior can be configured under general Eclipse settings, or in the launch configuration.
+Alternatively, you can start a launch by selecting a Go package folder in the Project Explorer, opening the context menu, and selecting `Run As... / Go Application`. (or `Debug As...` for debugging instead). If a matching launch configuration exists already, that one will be run.
 
 ##### Debugging
 
