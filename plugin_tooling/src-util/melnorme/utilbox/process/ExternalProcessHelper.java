@@ -11,6 +11,7 @@
 package melnorme.utilbox.process;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
@@ -151,10 +152,12 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		return mainReader.byteArray;
 	}
 	
-	protected ByteArrayOutputStreamExt getStdErrBytes() {
+	protected ByteArrayOutputStreamExt getStdErrBytes2() {
 		assertTrue(areReadersTerminated());
-		assertTrue(readStdErr);
-		return stderrReader.byteArray;
+		if(readStdErr) {
+			return stderrReader.byteArray;
+		}
+		return null;
 	}
 	
 	public class ExternalProcessResult {
@@ -165,8 +168,8 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 		
 		public ExternalProcessResult(int exitValue, ByteArrayOutputStreamExt stdout, ByteArrayOutputStreamExt stderr) {
 			this.exitValue = exitValue;
-			this.stdout = stdout;
-			this.stderr = stderr;
+			this.stdout = assertNotNull(stdout);
+			this.stderr = stderr != null ? stderr : new ByteArrayOutputStreamExt();
 		}
 		
 		public IByteSequence getStdOutBytes() {
@@ -206,12 +209,14 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 			
 			// Check for IOExceptions (although I'm not sure this scenario is possible)
 			mainReader.getResult();
-			stderrReader.getResult();
+			if(stderrReader != null) {
+				stderrReader.getResult();
+			}
 		} catch (Exception e) {
 			process.destroy();
 			throw e;
 		}
-		return new ExternalProcessResult(process.exitValue(), getStdOutBytes(), getStdErrBytes());
+		return new ExternalProcessResult(process.exitValue(), getStdOutBytes(), getStdErrBytes2());
 	}
 	
 	public ExternalProcessResult awaitTerminationAndResult_ce() throws CommonException, OperationCancellation {
