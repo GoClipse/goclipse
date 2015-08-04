@@ -11,14 +11,8 @@
 package melnorme.lang.ide.ui.dialogs;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.CoreUtil.assertInstance;
 
 import java.net.URI;
-
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -34,7 +28,6 @@ import org.eclipse.jface.dialogs.PageChangingEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -43,6 +36,11 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.utilbox.core.CommonException;
 
 public abstract class LangNewProjectWizard extends Wizard 
 	implements INewWizard, IExecutableExtension, IPageChangingListener {
@@ -111,10 +109,10 @@ public abstract class LangNewProjectWizard extends Wizard
 	public void setContainer(IWizardContainer wizardContainer) {
 		super.setContainer(wizardContainer);
 		
-		if(wizardContainer != null) {
-			WizardDialog wizardDialog = assertInstance(wizardContainer, WizardDialog.class);
-			wizardDialog.addPageChangingListener(this);
-		}
+//		if(wizardContainer != null) {
+//			WizardDialog wizardDialog = assertInstance(wizardContainer, WizardDialog.class);
+//			wizardDialog.addPageChangingListener(this);
+//		}
 	}
 	
 	/* -----------------  ----------------- */
