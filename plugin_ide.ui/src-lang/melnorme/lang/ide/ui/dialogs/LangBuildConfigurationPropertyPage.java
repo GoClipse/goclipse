@@ -57,6 +57,14 @@ public abstract class LangBuildConfigurationPropertyPage extends PropertyPage {
 	protected abstract LangProjectBuildConfigurationComponent createProjectBuildConfigComponent(IProject project);
 	
 	@Override
+	public void applyData(Object data) {
+		if(data instanceof String) {
+			String targetName = (String) data;
+			buildOptionsComponent.getBuildTargetField().setFieldValue(targetName);
+		}
+	}
+	
+	@Override
 	public boolean performOk() {
 		return buildOptionsComponent.performOk();
 	}

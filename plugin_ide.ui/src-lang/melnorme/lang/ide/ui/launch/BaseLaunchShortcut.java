@@ -172,7 +172,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	
 	/* ----------------- Launch launchable ----------------- */
 	
-	protected void launchTarget(ILaunchable launchTarget, String mode) {
+	public void launchTarget(ILaunchable launchTarget, String mode) {
 		new SimpleUIOperation("Preparing launch") {
 			@Override
 			protected void handleComputationResult() throws CoreException, CommonException, OperationCancellation {

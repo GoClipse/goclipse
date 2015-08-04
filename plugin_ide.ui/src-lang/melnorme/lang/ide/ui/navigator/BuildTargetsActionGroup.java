@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,14 +19,19 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
+import melnorme.lang.ide.ui.launch.LangLaunchShortcut.BuildTargetLaunchable;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider.ViewPartActionGroup;
 import melnorme.lang.ide.ui.operations.EclipseJobUIOperation;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
@@ -36,7 +41,7 @@ import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class BuildTargetsActionGroup extends ViewPartActionGroup {
+public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	
 	public BuildTargetsActionGroup(IViewPart viewPart) {
 		super(viewPart);
@@ -49,9 +54,15 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 		if(firstSel instanceof BuildTargetElement) {
 			BuildTargetElement buildTargetElement = (BuildTargetElement) firstSel;
 			
-			menu.add(new RunBuildTargetAction(buildTargetElement));
-			menu.add(new Separator("modify_BuildTarget"));
+			menu.add(new BuildSingleTargetAction(buildTargetElement));
+			
+			if(buildTargetElement.getBuildTarget().isLaunchable(buildTargetElement.project)) {
+				addLaunchActions(menu, buildTargetElement);
+			}
+			
+			menu.add(new Separator("configure_BuildTarget"));
 			menu.add(new ToggleEnabledAction(buildTargetElement));
+			menu.add(new ConfigureBuildTargetAction(buildTargetElement));
 		}
 		
 		if(firstSel instanceof BuildTargetsContainer) {
@@ -59,7 +70,14 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 			
 			menu.add(new BuildAllTargetsAction(buildTargetsContainer));
 			menu.add(new BuildEnabledTargetsAction(buildTargetsContainer));
+			menu.add(new Separator("additions"));
+			menu.add(new ConfigureBuildTargetAction(buildTargetsContainer));
 		}
+	}
+	
+	protected void addLaunchActions(IMenuManager menu, BuildTargetElement buildTargetElement) {
+		menu.add(new LaunchBuildTargetAction(buildTargetElement, true));
+		menu.add(new LaunchBuildTargetAction(buildTargetElement, false));
 	}
 	
 	@Override
@@ -74,27 +92,27 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 	}
 	
 	protected void fillActionBars(IActionBars actionBars, BuildTargetElement buildTargetElement) {
-		actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, new RunBuildTargetAction(buildTargetElement));
+		actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, new BuildSingleTargetAction(buildTargetElement));
 	}
 	
-	public static abstract class AbstractBuildAction extends Action {
+	public static abstract class AbstractBuildElementAction extends Action {
 		
 		protected final BuildManager buildManager;
 		protected final IProject project;
 		protected final String opName;
 		
-		public AbstractBuildAction(BuildTargetsContainer buildTargetContainer, String opName) {
+		public AbstractBuildElementAction(BuildTargetsContainer buildTargetContainer, String opName) {
 			this(buildTargetContainer, opName, Action.AS_UNSPECIFIED);
 		}
 		
-		public AbstractBuildAction(BuildTargetsContainer buildTargetContainer, String opName, int style) {
+		public AbstractBuildElementAction(BuildTargetsContainer buildTargetContainer, String opName, int style) {
 			this(buildTargetContainer.getBuildManager(), buildTargetContainer.getProject(), opName, style);
 		}
 		
-		public AbstractBuildAction(BuildManager buildManager, IProject project, String opName, int style) {
+		public AbstractBuildElementAction(BuildManager buildManager, IProject project, String opName, int style) {
 			super(opName, style);
-			this.buildManager = buildManager;
-			this.project = project;
+			this.buildManager = assertNotNull(buildManager);
+			this.project = assertNotNull(project);
 			this.opName = opName;
 		}
 		
@@ -143,7 +161,7 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 	}
 	
-	public static class BuildAllTargetsAction extends AbstractBuildAction {
+	public static class BuildAllTargetsAction extends AbstractBuildElementAction {
 		
 		public BuildAllTargetsAction(BuildTargetsContainer buildTargetContainer) {
 			super(buildTargetContainer, BuildManagerMessages.NAME_BuildAllTargetsAction);
@@ -156,7 +174,7 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 		}
 	}
 	
-	public static class BuildEnabledTargetsAction extends AbstractBuildAction {
+	public static class BuildEnabledTargetsAction extends AbstractBuildElementAction {
 		
 		public BuildEnabledTargetsAction(BuildTargetsContainer buildTargetContainer) {
 			super(buildTargetContainer, BuildManagerMessages.NAME_BuildEnabledTargetsAction);
@@ -171,7 +189,7 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 	
 	/* -----------------  ----------------- */
 	
-	public static abstract class AbstractBuildTargetAction extends AbstractBuildAction {
+	public static abstract class AbstractBuildTargetAction extends AbstractBuildElementAction {
 		
 		protected final BuildTargetElement buildTargetElement;
 		protected final BuildTarget buildTarget;
@@ -202,9 +220,9 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 	}
 	
-	public static class RunBuildTargetAction extends AbstractBuildTargetAction {
+	public static class BuildSingleTargetAction extends AbstractBuildTargetAction {
 		
-		public RunBuildTargetAction(BuildTargetElement buildTargetElement) {
+		public BuildSingleTargetAction(BuildTargetElement buildTargetElement) {
 			super(buildTargetElement, BuildManagerMessages.NAME_RunBuildTargetAction);
 		}
 		
@@ -219,6 +237,59 @@ public class BuildTargetsActionGroup extends ViewPartActionGroup {
 			getBuildManager().newBuildTargetOperation(getProject(), buildTarget).execute(pm);
 		}
 		
+	}
+	
+	public class LaunchBuildTargetAction extends AbstractBuildTargetAction {
+		
+		public String mode;
+		
+		public LaunchBuildTargetAction(BuildTargetElement buildTargetElement, boolean isRun) {
+			super(buildTargetElement, isRun ?
+				BuildManagerMessages.NAME_RunTargetAction :
+				BuildManagerMessages.NAME_DebugTargetAction
+			);
+			mode = isRun ? "run" : "debug";
+		}
+		
+		@Override
+		public void doRun() throws StatusException {
+			LangLaunchShortcut launchShortcut = createLaunchShortcut();
+			String targetName = buildTargetElement.getBuildTarget().getTargetName();
+			BuildTargetLaunchable launchable = launchShortcut.new BuildTargetLaunchable(project, targetName);
+			launchShortcut.launchTarget(launchable, mode);
+		}
+		
+	}
+	
+	protected abstract LangLaunchShortcut createLaunchShortcut();
+	
+	public class ConfigureBuildTargetAction extends AbstractBuildElementAction {
+		
+		protected String targetName;
+		
+		public ConfigureBuildTargetAction(BuildTargetsContainer buildTargetContainer) {
+			super(buildTargetContainer.getBuildManager(), buildTargetContainer.getProject(), 
+				BuildManagerMessages.NAME_ConfigureTargetsAction, Action.AS_UNSPECIFIED);
+		}
+		
+		public ConfigureBuildTargetAction(BuildTargetElement buildTargetElement) {
+			super(buildTargetElement.getBuildManager(), buildTargetElement.getProject(), 
+				BuildManagerMessages.NAME_ConfigureTargetAction, Action.AS_UNSPECIFIED);
+			
+			targetName = buildTargetElement.getBuildTarget().getTargetName();
+		}
+		
+		@Override
+		public void doRun() throws StatusException {
+			PreferenceDialog dialog = PreferencesUtil.createPropertyDialogOn(getShell(), getProject(), 
+				getProjectConfigPropertyPage(), null, targetName);
+			dialog.open();
+		}
+		
+	}
+	
+	protected String getProjectConfigPropertyPage() {
+		return LangUIPlugin_Actual.PLUGIN_ID + ".properties.ProjectBuildConfiguration";
 	}
 	
 }

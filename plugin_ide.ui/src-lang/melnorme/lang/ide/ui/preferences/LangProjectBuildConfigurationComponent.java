@@ -56,6 +56,14 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 			getValidator()::getDefaultBuildArguments, getValidator()::getDefaultArtifactPath);
 	}
 	
+	public BuildTargetField getBuildTargetField() {
+		return buildTargetField;
+	}
+	
+	public BuildTargetSettingsComponent getBuildTargetSettings() {
+		return buildTargetSettings;
+	}
+	
 	/* -----------------  ----------------- */
 	
 	protected BuildManager getBuildManager() {
