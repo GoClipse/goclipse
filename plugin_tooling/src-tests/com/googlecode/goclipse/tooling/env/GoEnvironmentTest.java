@@ -20,7 +20,9 @@ import com.googlecode.goclipse.tooling.CommonGoToolingTest;
 import com.googlecode.goclipse.tooling.GoPackageName;
 
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -110,32 +112,37 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 			goPkg("samplePackage2/xxx")
 		);
 		
-		ArrayList2<GoPackageName> expectedPackages = new ArrayList2<GoPackageName>()
+		ArrayList2<GoPackageName> PackagesAll = new ArrayList2<GoPackageName>()
 				.addAll2(Packages_foo)
 				.addAll2(Packages_foobar);
 		
 		GoWorkspaceLocation goWorkspace = new GoWorkspaceLocation(TR_SAMPLE_GOPATH_ENTRY);
 		
-		assertAreEqual(goWorkspace.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src")), expectedPackages);
-		assertAreEqual(goWorkspace.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("..")), list());
-		assertAreEqual(goWorkspace.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY), list());
-		assertAreEqual(goWorkspace.findSubPackages(""), expectedPackages);
-		assertAreEqual(goWorkspace.findSubPackages("."), expectedPackages);
-		assertAreEqual(goWorkspace.findSubPackages("samplePackage"), Packages_foo);
-		assertAreEqual(goWorkspace.findSubPackages("samplePackage/."), Packages_foo);
-		assertAreEqual(goWorkspace.findSubPackages("samplePackage2/."), Packages_foobar);
+		assertEqualSorted(goWorkspace.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src")), PackagesAll);
+		assertEqualSorted(goWorkspace.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("..")), list());
+		assertEqualSorted(goWorkspace.findSourcePackages(TR_SAMPLE_GOPATH_ENTRY), list());
+		assertEqualSorted(goWorkspace.findSubPackages(""), PackagesAll);
+		assertEqualSorted(goWorkspace.findSubPackages("."), PackagesAll);
+		assertEqualSorted(goWorkspace.findSubPackages("samplePackage"), Packages_foo);
+		assertEqualSorted(goWorkspace.findSubPackages("samplePackage/."), Packages_foo);
+		assertEqualSorted(goWorkspace.findSubPackages("samplePackage2/."), Packages_foobar);
 		
 		
-		assertAreEqual(goPath.findGoSourcePackages(TR_SAMPLE_GOPATH_ENTRY), expectedPackages);
-		assertAreEqual(goPath.findGoSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src")), 
-			expectedPackages);
-		assertAreEqual(goPath.findGoSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src/samplePackage")), 
+		assertEqualSorted(goPath.findGoSourcePackages(TR_SAMPLE_GOPATH_ENTRY), PackagesAll);
+		assertEqualSorted(goPath.findGoSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src")), 
+			PackagesAll);
+		assertEqualSorted(goPath.findGoSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src/samplePackage")), 
 			Packages_foo);
-		assertAreEqual(goPath.findGoSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src/samplePackage2")), 
+		assertEqualSorted(goPath.findGoSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src/samplePackage2")), 
 			Packages_foobar);
 		
 		 // Test no results
 		assertAreEqual(goPath.findGoSourcePackages(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("..")), list());
+	}
+	
+	protected <T extends Comparable<T>> void assertEqualSorted(ArrayList2<T> list1, Indexable<?> list2) {
+		CollectionUtil.sort(list1);
+		assertAreEqual(list1, list2);
 	}
 	
 }

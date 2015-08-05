@@ -21,7 +21,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.PathUtil;
 
-public class GoPackageName extends AbstractElementName {
+public class GoPackageName extends AbstractElementName implements Comparable<GoPackageName> {
 	
 	public static final String NAME_SEP = "/";
 	
@@ -72,6 +72,11 @@ public class GoPackageName extends AbstractElementName {
 	@Override
 	public String toString() {
 		return elementName;
+	}
+	
+	@Override
+	public int compareTo(GoPackageName other) {
+		return elementName.compareTo(other.elementName);
 	}
 	
 }
