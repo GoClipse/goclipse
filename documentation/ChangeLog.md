@@ -1,18 +1,21 @@
 ## release ChangeLog
 
 ### (NextVersion)
- * Don't show error dialog when gocode fails. Only the editor status line is updated now. 
- * Added: Explicit GOPATH preference option to use the same as GOPATH environment variable.
- * Updated [Configuration](UserGuide.md#configuration) section in the User Guide.
- * Setting an explicit GOOS and GOARCH is no longer required for running tools such as Go Oracle. You can just leave those fields at the default setting.
- * Removed `go fix` command.
- * Fixed: Occasional AssertionFailure when creating new projects in nested locations (project would not show up in Explorer).
+
+### 0.12.0
+ * Added: support for Build Targets:
+   * Build Targets are displayed in the Project Explorer.  Here you can also configure which targets are enabled for a workspace build.
+   * Predefined Build Targets for Go are: `./... #build`, `./... #build-tests`, `./... #[run-tests]`. See the updated [Build section](documentation/UserGuide.md#build) in the UserGuide for more information.
+   * Project Build Configuration property page updated to support configuring Build Targets.
+   * Note that a `./...` Build Target is not launchable. To run a Go launch, you need to specify a specific Go package.
+ * Added: Explicit GOPATH preference option to use the same value as the GOPATH environment variable.
+ * No longer required to set an explicit value for the GOOS and GOARCH preference for running tools such as Go Oracle. You can just leave those fields at the default setting.
+ * No longer showing error dialog when gocode fails. Now, only the editor status line is updated. 
+ * Removed `go fix` menu operation.
+ * Updated [Configuration](documentation/UserGuide.md#configuration) section in the User Guide.
+
+ * Fixed: Occasional AssertionFailure when creating new projects in nested locations (the project would not show up in Explorer).
  * Fixed: Arguments field in launch configuration is not multi-line.
- * Added support for Build Configurations.
-   * Available build targets are displayed in the Project Explorer. 
-   You can configure which targets are enabled for a workspace build or not. Or run/debug a specific target.
-   * Default build targets for Go are: `./... #build`, `./... #build-tests`, `./... #[run-tests]`.
-   * Project Build Configuration property page update to configure build targets.
 
 ### 0.11.2
   ▶ Recommended/tested CDT version is now 8.7
