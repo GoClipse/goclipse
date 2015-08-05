@@ -13,6 +13,7 @@ package melnorme.lang.tooling;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+
 import melnorme.utilbox.misc.StringUtil;
 
 /**
@@ -34,9 +35,9 @@ public class AbstractElementName {
 	}
 	
 	protected AbstractElementName(String elementName, String separator, String[] segments) {
-		this.separator = separator;
-		this.elementName = elementName;
-		this.segments = segments;
+		this.elementName = assertNotNull(elementName);
+		this.separator = assertNotNull(separator);
+		this.segments = assertNotNull(segments);
 		
 		assertTrue(segments.length > 0);
 		for (String segment : segments) {
@@ -62,19 +63,19 @@ public class AbstractElementName {
 		return elementName.hashCode();
 	}
 	
+	@Override
+	public String toString() {
+		return "[" + elementName + "]";
+	}
+	
+	/* ----------------- ----------------- */
+	
 	public String getLastSegment() {
 		return segments[segments.length - 1];
 	}
 	
 	public String getFullNameAsString() {
 		return elementName;
-	}
-	
-	/* ----------------- ----------------- */
-	
-	@Override
-	public String toString() {
-		return "[" + elementName + "]";
 	}
 	
 }
