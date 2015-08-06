@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.actions.CalculateValueUIOperation;
-import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -50,18 +49,6 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 		if(inputLoc == null) {
 			throw LangCore.createCoreException("Could not determine filesystem path from editor input", null); 
 		}
-	}
-	
-	protected void dialogError(String msg) {
-		UIUserInteractionsHelper.openError(window.getShell(), operationName, msg);
-	}
-	
-	protected void dialogWarning(String msg) {
-		UIUserInteractionsHelper.openWarning(window.getShell(), operationName, msg);
-	}
-	
-	protected void dialogInfo(String msg) {
-		UIUserInteractionsHelper.openInfo(window.getShell(), operationName, msg);
 	}
 	
 }

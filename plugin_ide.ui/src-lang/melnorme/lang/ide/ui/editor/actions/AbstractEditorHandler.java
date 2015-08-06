@@ -12,12 +12,6 @@ package melnorme.lang.ide.ui.editor.actions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -29,6 +23,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.editors.text.TextEditorActionContributor;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.core.CommonException;
 
 /**
  * This is a an editor handler that manages its enablement state so as to be restricted to a certaint type
@@ -88,11 +87,7 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 	}
 	
 	protected void handleInternalError(String message) {
-		handleError(LangUIMessages.InternalError + ": " + message);
-	}
-	
-	protected void handleError(String message) {
-		UIUserInteractionsHelper.openError(getShell(), getOperationName(), message);
+		UIOperationExceptionHandler.handleError(true, getOperationName(), message, null);
 	}
 	
 	/** editor: not null */
