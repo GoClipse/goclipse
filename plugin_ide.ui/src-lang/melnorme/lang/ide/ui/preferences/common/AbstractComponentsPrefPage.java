@@ -80,7 +80,7 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 	
 	public StatusLevel getFieldStatus(IDomainField<String> field) {
 		IFieldValidator validator = validators.get(field);
-		StatusException fieldStatus = LocationValidator.getFieldStatus(validator, field.getFieldValue());
+		StatusException fieldStatus = IFieldValidator.getFieldStatus(validator, field.getFieldValue());
 		if(fieldStatus == null) {
 			return StatusLevel.OK;
 		}

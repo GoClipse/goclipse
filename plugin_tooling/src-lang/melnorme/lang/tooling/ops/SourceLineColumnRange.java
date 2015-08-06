@@ -10,32 +10,55 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.CoreUtil.areEqual;
-
-import java.nio.file.Path;
-
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.HashcodeUtil;
 
 public class SourceLineColumnRange {
 	
-	public final Path path;
 	public final int line; // 1-based index
 	public final int column; // 1-based index
 	public final int endLine; // 1-based index
 	public final int endColumn; // 1-based index
 	
-	public SourceLineColumnRange(Path path, int line_1, int column_1, int endLine, int endColumn) {
-		this.path = assertNotNull(path);
+	public SourceLineColumnRange(int line_1, int column_1, int endLine, int endColumn) {
 		this.line = line_1;
 		this.column = column_1;
 		this.endLine = endLine;
 		this.endColumn = endColumn;
 	}
 	
-	public SourceLineColumnRange(Path path, int line_1, int column_1) {
-		this(path, line_1, column_1, -1, -1);
+	public SourceLineColumnRange(int line_1, int column_1) {
+		this(line_1, column_1, -1, -1);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) {
+			return true;
+		}
+		if(obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
+		SourceLineColumnRange other = (SourceLineColumnRange) obj;
+		return 
+				line == other.line &&
+				column == other.column &&
+				endLine == other.endLine &&
+				endColumn == other.endColumn
+		;
+	}
+	
+	@Override
+	public int hashCode() {
+		return HashcodeUtil.combineHashCodes(column, line);
+	}
+	
+	@Override
+	public String toString() {
+		String startStr = line  + (column == -1 ? "" : ":" + column);
+		String endStr = endLine == - 1 ? "" : 
+			(" " + endLine + (endColumn == -1 ? "" : ":" + endColumn));
+		return "[" + startStr + endStr + "]";
 	}
 	
 	public int getLineIndex() {
@@ -71,37 +94,6 @@ public class SourceLineColumnRange {
 	
 	public int getValidEndColumnIndex() throws CommonException {
 		return toValidIndex(endColumn);
-	}
-	
-	@Override
-	public int hashCode() {
-		return HashcodeUtil.combineHashCodes(path.hashCode(), column, line);
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(this == obj) {
-			return true;
-		}
-		if(obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-		SourceLineColumnRange other = (SourceLineColumnRange) obj;
-		return 
-				line == other.line &&
-				column == other.column &&
-				endLine == other.endLine &&
-				endColumn == other.endColumn &&
-				areEqual(path, other.path)
-		;
-	}
-	
-	@Override
-	public String toString() {
-		String startStr = line  + (column == -1 ? "" : ":" + column);
-		String endStr = endLine == - 1 ? "" : 
-			(" " + endLine + (endColumn == -1 ? "" : ":" + endColumn));
-		return "[" + startStr + endStr + "]";
 	}
 	
 }

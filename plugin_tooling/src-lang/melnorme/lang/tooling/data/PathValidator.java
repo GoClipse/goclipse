@@ -16,7 +16,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
-public class PathValidator extends AbstractValidator implements IFieldValidator {
+public class PathValidator extends AbstractValidatorExt implements IFieldValidator {
 	
 	public static enum LocationKind { ANY, FILE_ONLY, DIR_ONLY }
 	

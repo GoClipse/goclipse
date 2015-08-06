@@ -116,8 +116,8 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 		StatusLevel msgKind = StatusLevel.fromString(msgdata.messageTypeString);
 		assertNotNull(msgKind);
 		
-		SourceLineColumnRange location = new SourceLineColumnRange(filePath, lineNo, column, endline, endColumn);
-		return new ToolSourceMessage(location, msgKind, msgdata.messageText);
+		SourceLineColumnRange sourceRange = new SourceLineColumnRange(lineNo, column, endline, endColumn);
+		return new ToolSourceMessage(filePath, sourceRange, msgKind, msgdata.messageText);
 	}
 	
 	protected StatusLevel parseMessageKind(String messageTypeString) throws CommonException {
