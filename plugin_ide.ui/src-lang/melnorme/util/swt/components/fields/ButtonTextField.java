@@ -18,8 +18,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
@@ -81,10 +80,9 @@ public abstract class ButtonTextField extends TextFieldComponent {
 				setFieldValue(result);
 			}
 		} catch(CommonException ce) {
-			UIOperationExceptionHandler.handleStatusMessage(getButtonOperationErrorMessage(), 
-				ce.toStatusException(StatusLevel.ERROR));
-		} catch(CoreException e) {
-			UIOperationExceptionHandler.handleOperationStatus(getButtonOperationErrorMessage(), e);
+			UIOperationsStatusHandler.handleOperationError(getButtonOperationErrorMessage(), ce);
+		} catch(CoreException ce) {
+			UIOperationsStatusHandler.handleOperationStatus(getButtonOperationErrorMessage(), ce);
 		}
 	}
 	

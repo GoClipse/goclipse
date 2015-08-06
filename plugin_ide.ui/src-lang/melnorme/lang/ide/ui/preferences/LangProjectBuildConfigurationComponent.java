@@ -26,7 +26,7 @@ import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponent;
@@ -157,7 +157,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 	}
 	
 	protected void handleStatusException(CommonException ce) {
-		UIOperationExceptionHandler.handleStatusMessage("Error", ce.toStatusException(StatusLevel.ERROR));
+		UIOperationsStatusHandler.handleStatus(true, "Error", ce.toStatusException(StatusLevel.ERROR));
 	}
 	
 	/* -----------------  ----------------- */

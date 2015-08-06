@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Display;
 
 import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
 import melnorme.lang.ide.ui.actions.AbstractUIOperation;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.utilbox.concurrency.OperationCancellation;
 
 public abstract class EclipseJobUIOperation extends AbstractUIOperation {
@@ -39,7 +39,7 @@ public abstract class EclipseJobUIOperation extends AbstractUIOperation {
 					((CoreOperationRunnable) (pm) -> doBackgroundComputation(pm)).coreAdaptedRun(monitor);
 				} catch(CoreException ce) {
 					Display.getDefault().asyncExec(
-						() -> UIOperationExceptionHandler.handleOperationStatus(getOperationName(), ce));
+						() -> UIOperationsStatusHandler.handleOperationStatus(getOperationName(), ce));
 				} catch(OperationCancellation e) {
 					return Status.CANCEL_STATUS;
 				}

@@ -26,7 +26,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.utilbox.core.CommonException;
 
 /**
@@ -71,9 +71,9 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 				try {
 					doRunWithEditor(editor);
 				} catch(CoreException ce) {
-					UIOperationExceptionHandler.handleOperationStatus(getOperationName(), ce);
+					UIOperationsStatusHandler.handleOperationStatus(getOperationName(), ce);
 				} catch(CommonException ce) {
-					UIOperationExceptionHandler.handleOperationStatus(getOperationName(), ce);
+					UIOperationsStatusHandler.handleOperationError(getOperationName(), ce);
 				}
 			}
 			
@@ -87,7 +87,8 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 	}
 	
 	protected void handleInternalError(String message) {
-		UIOperationExceptionHandler.handleError(true, getOperationName(), message, null);
+		assertNotNull(message);
+		UIOperationsStatusHandler.handleStatus(true, getShell(), getOperationName(), message, null);
 	}
 	
 	/** editor: not null */

@@ -31,9 +31,7 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -117,7 +115,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		}
 		
 		if(result.getInfoMessage() != null) {
-			UIOperationExceptionHandler.handleStatusMessage(StatusLevel.INFO, operationName, result.getInfoMessage());
+			dialogInfo(result.getInfoMessage());
 		}
 		
 		SourceLineColumnRange sourceRange = result.getLocation();

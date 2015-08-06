@@ -34,7 +34,7 @@ import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut.BuildTargetLaunchable;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider.ViewPartActionGroup;
 import melnorme.lang.ide.ui.operations.EclipseJobUIOperation;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -133,7 +133,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			try {
 				doRun();
 			} catch(StatusException se) {
-				UIOperationExceptionHandler.handleStatusMessage(getStatusDialogTitle(), se);
+				UIOperationsStatusHandler.handleStatus(getStatusDialogTitle(), se);
 			}
 		}
 		

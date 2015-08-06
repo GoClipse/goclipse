@@ -37,7 +37,7 @@ import melnorme.lang.ide.ui.actions.CalculateValueUIOperation;
 import melnorme.lang.ide.ui.actions.SimpleUIOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.ControlUtils;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;
@@ -87,7 +87,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 		if(editorFile != null) {
 			launchElements(array(editorFile), mode);
 		} else {
-			UIOperationExceptionHandler.handleError("Don't know how to launch editor.", null);
+			UIOperationsStatusHandler.handleInternalError("Don't know how to launch editor.", null);
 		}
 	}
 	

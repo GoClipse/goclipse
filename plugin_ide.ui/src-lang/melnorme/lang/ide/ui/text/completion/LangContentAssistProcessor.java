@@ -38,7 +38,7 @@ import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -224,7 +224,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	}
 	
 	protected void handleExceptionInUI(CommonException ce) {
-		UIOperationExceptionHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
+		UIOperationsStatusHandler.handleOperationError(LangUIMessages.ContentAssistProcessor_opName, ce);
 	}
 	
 	@Override

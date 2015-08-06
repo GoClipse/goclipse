@@ -14,6 +14,7 @@ package melnorme.lang.ide.ui.tests;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.core.tests.CommonCoreTest_ActualClass;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.util.swt.SWTTestUtils;
 
@@ -51,6 +52,8 @@ public abstract class CommonUITest extends CommonCoreTest_ActualClass {
 		} catch (Throwable e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
+		
+		UIOperationsStatusHandler.handler = new UIOperationsStatusHandler.Null_UIOperationErrorHandlerImpl();
 	}
 	
 	@AfterClass

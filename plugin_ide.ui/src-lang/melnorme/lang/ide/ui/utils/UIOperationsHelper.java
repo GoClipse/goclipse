@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
-public class UIOperationsHelper extends UIOperationExceptionHandler {
+public class UIOperationsHelper extends UIOperationsStatusHandler {
 
 	public static boolean runAndHandle(IRunnableContext runnableContext, IRunnableWithProgress op, 
 			boolean isCancellable, String errorTitle) {
@@ -39,7 +39,7 @@ public class UIOperationsHelper extends UIOperationExceptionHandler {
 			} else {
 				ce = LangCore.createCoreException("Internal error: ", targetException);
 			}
-			UIOperationExceptionHandler.handleOperationStatus(errorTitle, ce);
+			UIOperationsStatusHandler.handleOperationStatus(errorTitle, ce);
 			return false;
 		} catch (InterruptedException e) {
 			return false;
