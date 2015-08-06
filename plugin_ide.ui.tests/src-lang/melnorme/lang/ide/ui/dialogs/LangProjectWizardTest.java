@@ -81,6 +81,10 @@ public abstract class LangProjectWizardTest extends CommonUITest {
 				}
 			}
 		}, null);
+		
+		if(wizDialog != null) {
+			wizDialog.close();
+		}
 	}
 	
 	protected abstract LangNewProjectWizard createNewProjectWizard();
@@ -91,10 +95,12 @@ public abstract class LangProjectWizardTest extends CommonUITest {
 	
 	protected void simulatePressCancel() {
 		wizDialog.cancelPressed();
+		wizDialog = null;
 	}
 	
 	protected void simulatePressFinish() {
 		wizDialog.finishPressed();
+		wizDialog = null;
 	}
 	
 	protected void simulateEnterPage2() {

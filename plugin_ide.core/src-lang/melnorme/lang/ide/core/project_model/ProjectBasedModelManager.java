@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Path;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 
 /**
  * Abstract class for a manager for a project-based model.
@@ -34,10 +35,10 @@ public abstract class ProjectBasedModelManager {
 	
 	protected void initializeModelManager() {
 		try {
-			EclipseUtils.getWorkspace().run(new IWorkspaceRunnable() {
+			ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
 				@Override
 				public void run(IProgressMonitor monitor) {
-					EclipseUtils.getWorkspace().addResourceChangeListener(
+					ResourceUtils.getWorkspace().addResourceChangeListener(
 						listener, IResourceChangeEvent.POST_CHANGE);
 					initializeProjectsInfo(monitor);
 				}
@@ -45,7 +46,7 @@ public abstract class ProjectBasedModelManager {
 		} catch (CoreException ce) {
 			LangCore.logStatus(ce);
 			// This really should not happen, but still try to recover by registering listener.
-			EclipseUtils.getWorkspace().addResourceChangeListener(
+			ResourceUtils.getWorkspace().addResourceChangeListener(
 				listener, IResourceChangeEvent.POST_CHANGE);
 		}
 	}

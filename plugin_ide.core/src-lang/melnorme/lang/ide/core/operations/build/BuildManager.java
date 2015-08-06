@@ -34,8 +34,8 @@ import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBasedModel;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
@@ -70,7 +70,7 @@ public abstract class BuildManager {
 			HashMap<String, ? extends AbstractBundleInfo> projectInfos = bundleModel.connectListener(listener);
 			
 			for(Entry<String, ? extends AbstractBundleInfo> entry : projectInfos.entrySet()) {
-				IProject project = EclipseUtils.getProject(entry.getKey());
+				IProject project = ResourceUtils.getProject(entry.getKey());
 				AbstractBundleInfo bundleInfo = entry.getValue();
 				bundleProjectAdded(project, bundleInfo);
 			}

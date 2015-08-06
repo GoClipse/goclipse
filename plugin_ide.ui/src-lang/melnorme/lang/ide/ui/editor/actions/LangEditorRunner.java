@@ -16,9 +16,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 
-import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 
 public abstract class LangEditorRunner implements Runnable {
 	
@@ -56,7 +55,7 @@ public abstract class LangEditorRunner implements Runnable {
 	}
 	
 	protected void handleInternalError(String message) {
-		UIOperationExceptionHandler.handleError(true, shell, LangUIMessages.InternalError, message, null);
+		UIOperationsStatusHandler.handleInternalError(shell, message, null);
 	}
 	
 	protected abstract void runWithLangEditor(AbstractLangEditor langEditor);

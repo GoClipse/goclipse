@@ -26,6 +26,7 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.utils.UIOperationsHelper;
 import melnorme.utilbox.collections.ArrayList2;
 
@@ -86,7 +87,7 @@ public abstract class ProjectCreationOperation {
 		
 		if(!getProject().exists()) {
 			String projectName = getProject().getName();
-			EclipseUtils.createAndOpenProject(projectName, getProjectLocation(), false, monitor);
+			ResourceUtils.createAndOpenProject(projectName, getProjectLocation(), false, monitor);
 			
 			revertActions.add(new IRevertAction() {
 				@Override

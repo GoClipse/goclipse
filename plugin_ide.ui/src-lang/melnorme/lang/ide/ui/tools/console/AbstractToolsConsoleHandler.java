@@ -33,7 +33,7 @@ import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
@@ -54,7 +54,7 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 		SWTUtil.runInSWTThread(new Runnable() {
 			@Override
 			public void run() {
-				UIOperationExceptionHandler.handleStatusMessage(statusLevel, title, message);
+				UIOperationsStatusHandler.displayStatusMessage(title, statusLevel, message);
 			}
 		});
 	}

@@ -11,13 +11,14 @@
 package melnorme.lang.ide.core.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.core.LangNature;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
+
+import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.misc.Location;
 
 
 public class AbstractSampleProject implements AutoCloseable {
@@ -51,7 +52,7 @@ public class AbstractSampleProject implements AutoCloseable {
 	
 	public void moveToLocation(Location packageLocation) throws CoreException {
 		IProjectDescription description = project.getDescription();
-		description.setLocation(EclipseUtils.epath(packageLocation));
+		description.setLocation(ResourceUtils.epath(packageLocation));
 		project.move(description, false, null);
 	}
 	

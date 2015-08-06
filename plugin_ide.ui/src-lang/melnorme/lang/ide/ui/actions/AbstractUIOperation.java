@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -50,13 +50,13 @@ public abstract class AbstractUIOperation {
 		try {
 			execute();
 		} catch (CommonException ce) {
-			UIOperationExceptionHandler.handleOperationStatus(
+			UIOperationsStatusHandler.handleOperationError(
 				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName), ce);
 		} catch (CoreException ce) {
-			UIOperationExceptionHandler.handleOperationStatus(
+			UIOperationsStatusHandler.handleOperationStatus(
 				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName), ce);
 		} catch (RuntimeException re) {
-			UIOperationExceptionHandler.handleError(
+			UIOperationsStatusHandler.handleInternalError(
 				MessageFormat.format(MSG_INTERNAL_ERROR_EXECUTING_OPERATION, operationName), re);
 		}
 	}

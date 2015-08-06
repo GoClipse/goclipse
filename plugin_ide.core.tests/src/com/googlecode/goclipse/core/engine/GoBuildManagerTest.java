@@ -28,7 +28,6 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -51,7 +50,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	}
 	
 	protected static Location getProjectLocation() {
-		return EclipseUtils.loc(project.getLocation());
+		return ResourceUtils.loc(project.getLocation());
 	}
 	
 	protected BuildManager getBuildManager() {

@@ -31,7 +31,7 @@ import com.googlecode.goclipse.ui.launch.GoLaunchShortcut;
 
 import melnorme.lang.ide.ui.navigator.BuildTargetsActionGroup;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 
 public class GoNavigatorActionProvider extends LangNavigatorActionProvider {
 	
@@ -105,7 +105,7 @@ public class GoNavigatorActionProvider extends LangNavigatorActionProvider {
 				try {
 					IDE.openEditorOnFileStore(page, fileStore);
 				} catch (PartInitException exception) {
-					UIOperationExceptionHandler.handleError("Error Opening File", exception);
+					UIOperationsStatusHandler.handleInternalError("Error Opening File", exception);
 				}
 			}
 		}

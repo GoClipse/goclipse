@@ -29,7 +29,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.ComboOptionsField;
@@ -134,7 +134,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			}
 			
 		} catch (CoreException ce) {
-			UIOperationExceptionHandler.handleOperationStatus("Error selecting package from dialog: ", ce);
+			UIOperationsStatusHandler.handleOperationStatus("Error selecting package from dialog: ", ce);
 		}
 		return null;
 	}
