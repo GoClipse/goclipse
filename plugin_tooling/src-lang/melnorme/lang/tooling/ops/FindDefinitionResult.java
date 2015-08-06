@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,48 +16,12 @@ import melnorme.utilbox.misc.HashcodeUtil;
 
 public class FindDefinitionResult {
 	
-	protected final String errorMessage;
 	protected final String infoMessage;
 	protected final SourceLineColumnRange location;
 	
 	public FindDefinitionResult(String infoMessage, SourceLineColumnRange location) {
-		this.errorMessage = null;
 		this.infoMessage = infoMessage;
 		this.location = location;
-	}
-	
-	public FindDefinitionResult(String errorMessage) {
-		this.errorMessage = errorMessage;
-		this.infoMessage = null;
-		this.location = null;
-	}
-	
-	protected boolean isError() {
-		return errorMessage != null;
-	}
-	
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-	
-	public String getInfoMessage() {
-		return infoMessage;
-	}
-	
-	public SourceLineColumnRange getLocation() {
-		return location;
-	}
-	
-	@Override
-	public String toString() {
-		if(errorMessage != null) {
-			return "ResolveResult["+errorMessage+"]";
-		}
-		
-		return "ResolveResult[" + 
-			(infoMessage != null ? infoMessage +"," : "") +
-			location.toString() + 
-			"]";
 	}
 	
 	@Override
@@ -68,14 +32,31 @@ public class FindDefinitionResult {
 		FindDefinitionResult other = (FindDefinitionResult) obj;
 		
 		return 
-				areEqual(errorMessage, other.errorMessage) &&
 				areEqual(infoMessage, other.infoMessage) &&
 				areEqual(location, other.location);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(errorMessage, infoMessage, location);
+		return HashcodeUtil.combinedHashCode(infoMessage, location);
+	}
+	
+	@Override
+	public String toString() {
+		return "ResolveResult[" + 
+			(infoMessage != null ? infoMessage +"," : "") +
+			location.toString() + 
+			"]";
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public String getInfoMessage() {
+		return infoMessage;
+	}
+	
+	public SourceLineColumnRange getLocation() {
+		return location;
 	}
 	
 }

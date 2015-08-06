@@ -15,17 +15,6 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
-import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ops.FindDefinitionResult;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-
 import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,6 +26,16 @@ import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation;
+
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
+import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperation {
 	
@@ -76,25 +75,21 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	
 	@Override
 	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor) 
-			throws CoreException, OperationCancellation {
+			throws CoreException, CommonException, OperationCancellation {
 		String goOraclePath = GoToolPreferences.GO_ORACLE_Path.get();
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
-		try {
-			GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation(goOraclePath);
-			ProcessBuilder pb = op.createProcessBuilder(goEnv, inputLoc, byteOffset);
-			
-			ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, monitor);
-			if(result.exitValue != 0) {
-				statusErrorMessage = "Go oracle did not complete successfully.";
-				return null;
-			}
-			
-			return op.parseToolResult(result);
-		} catch (CommonException se) {
-			throw LangCore.createCoreException(se.getMessage(), se.getCause());
+		GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation(goOraclePath);
+		ProcessBuilder pb = op.createProcessBuilder(goEnv, inputLoc, byteOffset);
+		
+		ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, monitor);
+		if(result.exitValue != 0) {
+			statusErrorMessage = "Go oracle did not complete successfully.";
+			return null;
 		}
+		
+		return op.parseToolResult(result);
 	}
 	
 	@Override

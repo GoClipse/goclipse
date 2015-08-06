@@ -58,13 +58,16 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 	}
 	
 	protected void testParseResult(String toolOutput, SourceLineColumnRange expectedRange) throws JSONException,
-			CommonException{
+			CommonException {
 		GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation("gopath");
 		
-		FindDefinitionResult result = op.parseJsonResult(toolOutput);
+		try {
+			FindDefinitionResult result = op.parseJsonResult(toolOutput);
+			assertAreEqual(result.getLocation(), expectedRange);
+		} catch(CommonException ce) {
+			assertTrue(expectedRange == null);
+		}
 		
-		assertAreEqual(result.getLocation(), expectedRange);
-		assertEquals(result.getErrorMessage() == null, expectedRange != null);
 	}
 	
 }

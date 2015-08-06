@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 		} catch (JSONException e) {
 			throw new CommonException("Error parsing JSON output: ", e);
 		} catch (OperationSoftFailure sf) {
-			return new FindDefinitionResult(sf.getMessage());
+			throw new CommonException(sf.getMessage());
 		}
 	}
 	
@@ -67,14 +67,14 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 			
 			if(desc != null && desc.startsWith(DEFINITION_OF)) {
 				desc = StringUtil.segmentAfterMatch(desc, DEFINITION_OF);
-				return new FindDefinitionResult("Already at a definition: " + desc);
+				throw new CommonException("Already at a definition: " + desc);
 			}
 			JSONObject value = describe.getJSONObject("type");
 			String pathStr = getString(value, "namepos", "Definition not available.");
 			return new FindDefinitionResult(null, parsePathLineColumn(pathStr, ":"));
 		}
 		
-		return new FindDefinitionResult(
+		throw new CommonException(
 				"Selected position does not refer to a definition. Rather, it's a:\n" + desc);
 		
 	}
