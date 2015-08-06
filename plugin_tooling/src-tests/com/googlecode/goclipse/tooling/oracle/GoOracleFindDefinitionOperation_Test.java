@@ -44,13 +44,11 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 		}
 	}
 	
-	protected final String ROOT_DEFAULT = "D:\\devel\\";
-	
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		
-		String LOC_ROOT = MiscUtil.OS_IS_WINDOWS ? ROOT_DEFAULT : "/devel/";
+		String LOC_ROOT = MiscUtil.OS_IS_WINDOWS ? "D:\\devel/" : "/devel/";
 		
 		testParseResult(fixPaths(getClassResourceAsString("oracle_result.var_ref.json"), LOC_ROOT),
 			new FindDefinitionResult(loc(LOC_ROOT+"go-workspace\\src\\github.com\\user\\newmath\\sqrt.go"), 
@@ -70,7 +68,7 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 	}
 	
 	protected String fixPaths(String string, String pathRpl) {
-		return string.replaceAll(Pattern.quote(ROOT_DEFAULT), pathRpl);
+		return string.replaceAll(Pattern.quote("##ROOT_LOC##"), pathRpl);
 	}
 	
 	protected void testParseResult(String toolOutput, FindDefinitionResult expectedResult) throws JSONException,

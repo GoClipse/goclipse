@@ -2,11 +2,11 @@
 	"mode": "describe",
 	"describe": {
 		"desc": "identifier",
-		"pos": "D:\\devel\\go-workspace\\src\\github.com\\user\\newmath\\sqrt.go:5:6",
+		"pos": "##ROOT_LOC##go-workspace\\src\\github.com\\user\\newmath\\sqrt.go:5:6",
 		"detail": "value",
 		"value": {
 			"type": "func(x float64) float64",
-			"objpos": "D:\\devel\\go-workspace\\src\\github.com\\user\\newmath\\sqrt.go:5:6"
+			"objpos": "##ROOT_LOC##go-workspace\\src\\github.com\\user\\newmath\\sqrt.go:5:6"
 		}
 	}
 }
