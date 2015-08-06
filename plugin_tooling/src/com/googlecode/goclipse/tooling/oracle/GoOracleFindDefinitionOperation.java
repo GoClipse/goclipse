@@ -11,14 +11,15 @@
 package com.googlecode.goclipse.tooling.oracle;
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 	
@@ -54,13 +55,13 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 		String detail = describe.getString("detail");
 		
 		if(areEqual(desc, "source file")) {
-			return new FindDefinitionResult(null, null);
+			return null;
 		}
 		
 		if(areEqual(desc, "identifier")) {
 			JSONObject value = describe.getJSONObject("value");
-			String pathStr = getString(value, "objpos", "Definition not available.");
-			return new FindDefinitionResult(null, parsePathLineColumn(pathStr, ":"));
+			String sourceLocStr = getString(value, "objpos", "Definition not available.");
+			return parsePathLineColumn(sourceLocStr, ":");
 		}
 		if(areEqual(detail, "type")) {
 			final String DEFINITION_OF = "definition of ";
@@ -70,8 +71,8 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 				throw new CommonException("Already at a definition: " + desc);
 			}
 			JSONObject value = describe.getJSONObject("type");
-			String pathStr = getString(value, "namepos", "Definition not available.");
-			return new FindDefinitionResult(null, parsePathLineColumn(pathStr, ":"));
+			String sourceLocStr = getString(value, "namepos", "Definition not available.");
+			return parsePathLineColumn(sourceLocStr, ":");
 		}
 		
 		throw new CommonException(

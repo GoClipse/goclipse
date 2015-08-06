@@ -32,7 +32,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	protected static final Path BUILD_OUTPUT_TestResources = getTestResourcePath("buildOutput");
 	
 	protected static ToolSourceMessage error(Path path, int line, int column, String errorMessage) {
-		return new ToolSourceMessage(new SourceLineColumnRange(path, line, column), StatusLevel.ERROR, errorMessage);
+		return new ToolSourceMessage(path, new SourceLineColumnRange(line, column), StatusLevel.ERROR, errorMessage);
 	}
 	
 	@Test

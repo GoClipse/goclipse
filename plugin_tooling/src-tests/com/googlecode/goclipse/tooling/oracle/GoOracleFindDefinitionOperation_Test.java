@@ -12,14 +12,18 @@ package com.googlecode.goclipse.tooling.oracle;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ops.FindDefinitionResult;
-import melnorme.lang.tooling.ops.SourceLineColumnRange;
-import melnorme.utilbox.core.CommonException;
+
+import java.util.regex.Pattern;
 
 import org.json.JSONException;
 import org.junit.Test;
 
 import com.googlecode.goclipse.tooling.CommonGoToolingTest;
+
+import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.MiscUtil;
 
 public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 	
@@ -40,15 +44,23 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 		}
 	}
 	
+	protected final String ROOT_DEFAULT = "D:\\devel\\";
+	
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		
-		testParseResult(getClassResourceAsString("oracle_result.var_ref.json"), 
-			new SourceLineColumnRange(path("D:\\go-workspace\\src\\github.com\\user\\newmath\\sqrt.go"), 5, 6));
+		String LOC_ROOT = MiscUtil.OS_IS_WINDOWS ? ROOT_DEFAULT : "/devel/";
 		
-		testParseResult(getClassResourceAsString("oracle_result.type1_ref.json"), 
-			new SourceLineColumnRange(path("D:\\devel\\DDT\\_runtime\\GoTest\\src\\other\\blah.go"), 16, 6));
+		testParseResult(fixPaths(getClassResourceAsString("oracle_result.var_ref.json"), LOC_ROOT),
+			new FindDefinitionResult(loc(LOC_ROOT+"go-workspace\\src\\github.com\\user\\newmath\\sqrt.go"), 
+				new SourceLineColumnRange(5, 6), null)
+			);
+		
+		testParseResult(fixPaths(getClassResourceAsString("oracle_result.type1_ref.json"), LOC_ROOT),
+			new FindDefinitionResult(loc(LOC_ROOT+"DDT\\_runtime\\GoTest\\src\\other\\blah.go"),
+				new SourceLineColumnRange(16, 6), null)
+			);
 		
 		testParseResult(getClassResourceAsString("oracle_result.type2_def.json"), 
 			null);
@@ -57,15 +69,19 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 			null);
 	}
 	
-	protected void testParseResult(String toolOutput, SourceLineColumnRange expectedRange) throws JSONException,
+	protected String fixPaths(String string, String pathRpl) {
+		return string.replaceAll(Pattern.quote(ROOT_DEFAULT), pathRpl);
+	}
+	
+	protected void testParseResult(String toolOutput, FindDefinitionResult expectedResult) throws JSONException,
 			CommonException {
 		GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation("gopath");
 		
 		try {
 			FindDefinitionResult result = op.parseJsonResult(toolOutput);
-			assertAreEqual(result.getLocation(), expectedRange);
+			assertAreEqual(result, expectedResult);
 		} catch(CommonException ce) {
-			assertTrue(expectedRange == null);
+			assertTrue(expectedResult == null);
 		}
 		
 	}

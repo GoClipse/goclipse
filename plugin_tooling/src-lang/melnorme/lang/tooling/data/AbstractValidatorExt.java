@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,21 +10,20 @@
  *******************************************************************************/
 package melnorme.lang.tooling.data;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-public interface IFieldValidator {
+public class AbstractValidatorExt extends AbstractValidator2 {
 	
-	public Object getValidatedField(String stringValue) throws StatusException;
+	public AbstractValidatorExt() {
+	}
 	
-	static StatusException getFieldStatus(IFieldValidator validator, String value) {
-		if(validator == null) {
-			return null;
-		}
-		try {
-			validator.getValidatedField(value);
-		} catch (StatusException e) {
-			return e;
-		}
-		return null;
-	} 
+	protected ValidationException createException(StatusLevel statusLevel, String message) {
+		assertNotNull(statusLevel);
+		return new ValidationException(statusLevel, getFullMessage(message), message, null);
+	}
+	
+	protected String getFullMessage(String simpleMessage) {
+		return simpleMessage;
+	}
 	
 }

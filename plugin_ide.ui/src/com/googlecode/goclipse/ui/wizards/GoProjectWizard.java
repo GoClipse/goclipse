@@ -14,7 +14,7 @@ package com.googlecode.goclipse.ui.wizards;
 import melnorme.lang.ide.ui.WizardMessages_Actual;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
-import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
+import melnorme.lang.tooling.data.ValidationException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;

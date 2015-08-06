@@ -18,16 +18,16 @@ public class AbstractValidator2 {
 		super();
 	}
 	
-	protected static StatusException error(String message) throws StatusException {
+	protected StatusException errorMsg(String messagePattern, Object... arguments) throws StatusException {
+		throw error(MessageFormat.format(messagePattern, arguments), null);
+	}
+	
+	protected StatusException error(String message) throws StatusException {
 		throw error(message, null);
 	}
 	
-	protected static StatusException error(String message, Throwable exception) throws StatusException {
+	protected StatusException error(String message, Throwable exception) throws StatusException {
 		throw new StatusException(StatusLevel.ERROR, message, exception);
 	}
 	
-	protected static StatusException errorMsg(String messagePattern, Object... arguments) throws StatusException {
-		throw error(MessageFormat.format(messagePattern, arguments), null);
-	}
-
 }

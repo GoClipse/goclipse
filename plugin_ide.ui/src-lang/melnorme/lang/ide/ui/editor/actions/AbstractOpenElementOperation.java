@@ -111,6 +111,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 			handleStatusErrorMessage();
 		}
 		if(result == null) {
+			Display.getCurrent().beep();
 			return;
 		}
 		
@@ -118,13 +119,9 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 			dialogInfo(result.getInfoMessage());
 		}
 		
-		SourceLineColumnRange sourceRange = result.getLocation();
-		if(sourceRange == null) {
-			Display.getCurrent().beep();
-			return;
-		}
+		SourceLineColumnRange sourceRange = result.getSourceRange();
 		
-		openEditorForLocation(Location.create(sourceRange.path), sourceRange);
+		openEditorForLocation(result.getFileLocation(), sourceRange);
 	}
 	
 	protected void handleStatusErrorMessage() {

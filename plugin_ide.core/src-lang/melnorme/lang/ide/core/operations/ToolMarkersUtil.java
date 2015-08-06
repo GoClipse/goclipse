@@ -35,7 +35,8 @@ import melnorme.utilbox.misc.Location;
 
 public class ToolMarkersUtil {
 	
-	public static void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath) throws CoreException {
+	public static void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath) 
+			throws CoreException {
 		
 		for (ToolSourceMessage buildError : buildErrors) {
 			Location loc = rootPath.resolve(buildError.getFilePath()); // Absolute paths will remain unchanged.

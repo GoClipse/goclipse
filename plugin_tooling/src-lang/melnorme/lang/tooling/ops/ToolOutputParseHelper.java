@@ -51,7 +51,7 @@ public class ToolOutputParseHelper {
 	 * Parse a path+line+column from given string, which are expected to be separated by given separator.
 	 * Example sourceString: <code>D:\foo\bar\xpto.go:22:12</code> 
 	 */
-	public static SourceLineColumnRange parsePathLineColumn(String sourceString, String separator) 
+	public static FindDefinitionResult parsePathLineColumn(String sourceString, String separator) 
 			throws CommonException {
 		
 		// We need to parse sourceLocationString starting from the end, 
@@ -70,9 +70,9 @@ public class ToolOutputParseHelper {
 		int line = NumberUtil.parseInt(lineStr, "Invalid number for line: " + lineStr);
 		int column = NumberUtil.parseInt(columnStr, "Invalid number for column: " + columnStr);
 		
-		Path path = MiscUtil.createPath(sourceString);
+		Location loc = Location.create(sourceString);
 		
-		return new SourceLineColumnRange(path, line, column);
+		return new FindDefinitionResult(loc, new SourceLineColumnRange(line, column), null);
 	}
 	
 }
