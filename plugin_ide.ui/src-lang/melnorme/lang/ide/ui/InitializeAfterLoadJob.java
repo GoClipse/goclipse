@@ -34,8 +34,8 @@ public class InitializeAfterLoadJob extends UIJob {
 	public IStatus runInUIThread(IProgressMonitor monitor) {
 		try {
 			langUIPlugin.doInitializeAfterLoad(monitor);
-		} catch (CoreException ce) {
-			UIOperationsStatusHandler.handleOperationStatus("Error during UI initialization.", ce);
+		} catch(CoreException ce) {
+			UIOperationsStatusHandler.handleInternalError("Error during UI initialization.", ce);
 		}
 		monitor.done();
 		return Status.OK_STATUS;

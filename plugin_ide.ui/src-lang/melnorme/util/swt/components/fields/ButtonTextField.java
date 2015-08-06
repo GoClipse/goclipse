@@ -80,9 +80,9 @@ public abstract class ButtonTextField extends TextFieldComponent {
 				setFieldValue(result);
 			}
 		} catch(CommonException ce) {
-			UIOperationsStatusHandler.handleOperationError(getButtonOperationErrorMessage(), ce);
+			UIOperationsStatusHandler.handleOperationStatus2(getButtonOperationErrorMessage(), ce);
 		} catch(CoreException ce) {
-			UIOperationsStatusHandler.handleOperationStatus(getButtonOperationErrorMessage(), ce);
+			UIOperationsStatusHandler.handleOperationStatus2(getButtonOperationErrorMessage(), ce);
 		}
 	}
 	

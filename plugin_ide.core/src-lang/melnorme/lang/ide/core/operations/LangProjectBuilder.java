@@ -22,6 +22,8 @@ import java.util.Map;
 import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,6 +34,7 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -90,18 +93,35 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		assertTrue(getProject() != null);
 	}
 	
-	protected static OperationInfo workspaceOpInfo;
+	protected static HashMap2<String, OperationInfo> workspaceOpInfoMap = new HashMap2<>();
+	protected OperationInfo workspaceOpInfo;
 	
 	protected void prepareForBuild() throws CoreException {
-		if(isFirstProjectOfKind()) {
-			handleBeginWorkspaceBuild();
-		} else {
-			assertTrue(workspaceOpInfo != null && workspaceOpInfo.isStarted());
-		}
+		handleBeginWorkspaceBuild();
+		
+		assertTrue(workspaceOpInfo.isStarted());
 	}
 	
 	protected void handleBeginWorkspaceBuild() {
+		workspaceOpInfo = workspaceOpInfoMap.get(LangCore.NATURE_ID);
+		
+		if(workspaceOpInfo != null) {
+			return;
+		}
 		workspaceOpInfo = getToolManager().startNewToolOperation();
+		workspaceOpInfoMap.put(LangCore.NATURE_ID, workspaceOpInfo);
+		
+		ResourceUtils.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
+			@Override
+			public void resourceChanged(IResourceChangeEvent event) {
+				int type = event.getType();
+				if(type == IResourceChangeEvent.POST_BUILD || type == IResourceChangeEvent.PRE_BUILD) {
+					workspaceOpInfo = null;
+					workspaceOpInfoMap.remove(LangCore.NATURE_ID);
+					ResourceUtils.getWorkspace().removeResourceChangeListener(this);
+				}
+			}
+		}, IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.PRE_BUILD);
 		
 		getToolManager().notifyMessageEvent(new MessageEventInfo(workspaceOpInfo, 
 			headerVeryBig(MessageFormat.format(MSG_Starting_LANG_Build, LangCore_Actual.LANGUAGE_NAME))));

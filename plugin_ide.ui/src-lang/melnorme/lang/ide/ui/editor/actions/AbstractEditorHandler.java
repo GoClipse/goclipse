@@ -24,6 +24,7 @@ import org.eclipse.ui.editors.text.TextEditorActionContributor;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
@@ -69,11 +70,13 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 			@Override
 			protected void runWithLangEditor(AbstractLangEditor editor) {
 				try {
-					doRunWithEditor(editor);
-				} catch(CoreException ce) {
-					UIOperationsStatusHandler.handleOperationStatus(getOperationName(), ce);
-				} catch(CommonException ce) {
-					UIOperationsStatusHandler.handleOperationError(getOperationName(), ce);
+					try {
+						doRunWithEditor(editor);
+					} catch(CoreException ce) {
+						throw LangCore.createCommonException(ce);
+					}
+				}catch(CommonException ce) {
+					UIOperationsStatusHandler.handleOperationStatus2(getOperationName(), ce);
 				}
 			}
 			

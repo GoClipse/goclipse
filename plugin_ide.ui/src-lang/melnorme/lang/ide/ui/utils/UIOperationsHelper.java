@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,11 @@ public class UIOperationsHelper extends UIOperationsStatusHandler {
 
 	public static boolean runAndHandle(IRunnableContext runnableContext, IRunnableWithProgress op, 
 			boolean isCancellable, String errorTitle) {
+		return runAndHandle(runnableContext, op, isCancellable, false, errorTitle);
+	}
+	
+	public static boolean runAndHandle(IRunnableContext runnableContext, IRunnableWithProgress op, 
+			boolean isCancellable, boolean logError, String errorTitle) {
 		
 		try {
 			runnableContext.run(true, isCancellable, op);
@@ -39,7 +44,7 @@ public class UIOperationsHelper extends UIOperationsStatusHandler {
 			} else {
 				ce = LangCore.createCoreException("Internal error: ", targetException);
 			}
-			UIOperationsStatusHandler.handleOperationStatus(errorTitle, ce);
+			UIOperationsStatusHandler.handleOperationStatus2(logError, errorTitle, LangCore.createCommonException(ce));
 			return false;
 		} catch (InterruptedException e) {
 			return false;
