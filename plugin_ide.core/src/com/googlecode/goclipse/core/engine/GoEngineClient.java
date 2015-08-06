@@ -69,6 +69,7 @@ public class GoEngineClient extends EngineClient {
 			Location tempDir = null;
 			Location describeTempFile = null;
 			
+			ExternalProcessResult describeResult;
 			try {
 				tempDir = Location.create_fromValid(Files.createTempDirectory("_goclipse"));
 				Location tempDir_src = tempDir.resolve_fromValid("src/describe_temp");
@@ -80,14 +81,15 @@ public class GoEngineClient extends EngineClient {
 				goEnv = new GoEnvironment(goEnv.getGoRoot(), goEnv.getGoArch(), goEnv.getGoOs(), 
 					new GoPath(tempDir.toString()));
 				
-				return createSourceFileStructure(goEnv, describeTempFile);
-				
+				describeResult = runGoOracle(goEnv, describeTempFile);
 			} catch(IOException e) {
 				LangCore.logError("Error creating temporary file for oracle describe: ", e);
 				return null;
 			} catch(OperationCancellation e) {
+				return null;
 			} catch(CommonException | CoreException e) {
 				LangCore.logError("Error running oracle describe for source structure update", e);
+				return null;
 			} finally {
 				if(describeTempFile != null) {
 					try {
@@ -99,12 +101,27 @@ public class GoEngineClient extends EngineClient {
 				}
 			}
 			
-			return null;
+			try {
+				if(describeResult.exitValue != 0) {
+					return null; // Don't log this error 
+				}
+				
+				return new OraclePackageDescribeParser(fileLocation).parse(describeResult, source);
+			} catch(CommonException e) {
+				LangCore.logWarning("Error parsing oracle describe result, for source structure update. ", e);
+				return null;
+			}
 		}
 		
 		protected SourceFileStructure createSourceFileStructure(GoEnvironment goEnv, Location opTempFile)
 				throws CommonException, CoreException, OperationCancellation {
 
+			ExternalProcessResult describeResult = runGoOracle(goEnv, opTempFile);
+			return new OraclePackageDescribeParser(fileLocation).parse(describeResult, source);
+		}
+		
+		protected ExternalProcessResult runGoOracle(GoEnvironment goEnv, Location opTempFile)
+				throws CommonException, CoreException, OperationCancellation {
 			GoOracleDescribeOperation oracleOp = new GoOracleDescribeOperation(GoToolPreferences.GO_ORACLE_Path.get());
 			
 			int offset = GoSourceFileUtil.findPackageDeclaration_NameStart(source);
@@ -112,7 +129,7 @@ public class GoEngineClient extends EngineClient {
 			ProcessBuilder pb = oracleOp.createProcessBuilder(goEnv, opTempFile, offset);
 			
 			ExternalProcessResult describeResult = LangCore.getToolManager().runEngineTool(pb, null, cm);
-			return new OraclePackageDescribeParser(fileLocation).parse(describeResult, source);
+			return describeResult;
 		}
 		
 	}

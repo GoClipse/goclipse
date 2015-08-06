@@ -310,7 +310,7 @@ public abstract class StructureModelManager {
 				currentThread.setName(originalName + " " + structureInfo.key);
 				
 				doRun();
-			} catch(Exception e) {
+			} catch(RuntimeException e) {
 				LangCore.logInternalError(e);
 				structureInfo.setNewStructure(null, this);
 			} finally {

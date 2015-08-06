@@ -37,9 +37,9 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 	protected FindDefinitionResult parseJsonResult(String output) throws CommonException {
 		try {
 			return doParseJsonResult(output);
-		} catch (JSONException e) {
+		} catch(JSONException e) {
 			throw new CommonException("Error parsing JSON output: ", e);
-		} catch (OperationSoftFailure sf) {
+		} catch(OperationSoftFailure sf) {
 			throw new CommonException(sf.getMessage());
 		}
 	}
@@ -75,8 +75,7 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 		}
 		
 		throw new CommonException(
-				"Selected position does not refer to a definition. Rather, it's a:\n" + desc);
-		
+			"Selected position does not refer to a definition. Rather, it's a:\n" + desc);
 	}
 	
 	protected String getString(JSONObject value, String key, String resultErrorMessage) throws OperationSoftFailure {
@@ -91,7 +90,7 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 		if(value.has(key)) {
 			try {
 				return value.getString(key);
-			} catch (JSONException e) {
+			} catch(JSONException e) {
 				return null;
 			}
 		}

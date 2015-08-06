@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -85,19 +84,8 @@ public class UIOperationErrorHandlerImpl {
 		handleStatus(true, shell, LangUIMessages.InternalError, message, exception);
 	}
 	
-	public void handleOperationStatus(String dialogTitle, CoreException ce) {
-		IStatus status = ce.getStatus();
-		if(status.isOK() || status.matches(IStatus.CANCEL)) {
-			return;
-		}
-		
-		boolean logError = status.matches(IStatus.ERROR);
-		
-		handleStatus(logError, null, dialogTitle, EclipseUtils.statusToStatusException(status));
-	}
-	
-	public final void handleOperationError(String dialogTitle, CommonException ce) {
-		handleStatus(true, null, dialogTitle, ce.toStatusException(StatusLevel.ERROR));
+	public void handleOperationStatus(boolean logError, String dialogTitle, CommonException ce) {
+		handleStatus(logError, null, dialogTitle, ce.toStatusException(StatusLevel.ERROR));
 	}
 	
 	/* -----------------  ----------------- */
