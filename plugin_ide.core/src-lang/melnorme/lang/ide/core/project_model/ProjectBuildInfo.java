@@ -72,7 +72,7 @@ public class ProjectBuildInfo {
 	}
 	
 	public BuildTarget getBuildTargetFor(String name) throws CommonException {
-		return buildMgr.getBuildTargetFor(this, name);
+		return buildMgr.getBuildTargetFor2(this, name);
 	}
 	
 	public BuildTarget getDefaultBuildTarget() throws CommonException {

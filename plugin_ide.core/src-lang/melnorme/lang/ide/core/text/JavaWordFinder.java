@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text.util;
+package melnorme.lang.ide.core.text;
 
 
 import org.eclipse.jface.text.BadLocationException;

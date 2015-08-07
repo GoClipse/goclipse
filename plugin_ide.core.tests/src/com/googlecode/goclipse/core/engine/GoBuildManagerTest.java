@@ -91,10 +91,10 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		assertAreEqual(validator.getBuildTypeName(), buildType);
 		
 		if(relArtifactPath == null) {
-			verifyThrows(() -> validator.getArtifactPath(), CommonException.class);
+			verifyThrows(() -> validator.getDefaultArtifactPath(), CommonException.class);
 		} else {
 			Location binLocation = getProjectLocation().resolve("bin");
-			assertAreEqual(validator.getArtifactPath(), 
+			assertAreEqual(validator.getDefaultArtifactPath(), 
 				binLocation.resolve(relArtifactPath + MiscUtil.getExecutableSuffix()).toString());
 			
 		}

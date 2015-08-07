@@ -10,12 +10,12 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
-import melnorme.lang.ide.core.tests.AbstractSampleProject;
+import melnorme.lang.ide.core.tests.SampleProject;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 
 import org.eclipse.core.runtime.CoreException;
 
-public class SampleGoProject extends AbstractSampleProject {
+public class SampleGoProject extends SampleProject {
 	
 	public SampleGoProject(String name) throws CoreException {
 		super(name);

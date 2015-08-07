@@ -11,8 +11,8 @@
  *******************************************************************************/
 package _org.eclipse.jdt.internal.ui.text.java.hover;
 
+import melnorme.lang.ide.core.text.JavaWordFinder;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
-import melnorme.lang.ide.ui.text.util.JavaWordFinder;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;

@@ -373,6 +373,14 @@ public abstract class BuildManager {
 	
 	/* -----------------  Build Target Validator  ----------------- */
 	
+	public BuildTargetValidator getValidatedBuildTarget(IProject project, BuildTarget buildTarget) 
+			throws CommonException {
+		BuildTargetValidator validatedBuildTarget = createBuildTargetValidator(project, buildTarget);
+		validatedBuildTarget.getBuildConfiguration();
+		validatedBuildTarget.getBuildType();
+		return validatedBuildTarget;
+	}
+	
 	public BuildTargetValidator createBuildTargetValidator(IProject project, BuildTarget buildTarget) 
 			throws CommonException {
 		String targetName = buildTarget.getTargetName();
@@ -385,15 +393,23 @@ public abstract class BuildManager {
 			throws CommonException {
 		BuildTargetName nameRef = new BuildTargetName(targetName);
 		
-		return createBuildTargetValidator2(project, 
+		return createBuildTargetValidator(project, 
 			nameRef.getBuildConfig(), nameRef.getEffectiveBuildType(), buildArguments);
 	}
 	
-	public abstract BuildTargetValidator createBuildTargetValidator2(IProject project, String buildConfigName,
-			String buildTypeName, String buildArguments) throws CommonException;
+	public BuildTargetValidator createBuildTargetValidator(IProject project, String buildConfigName,
+			String buildTypeName, String buildArguments) throws CommonException {
+		return new BuildTargetValidator(project, buildConfigName, buildTypeName, buildArguments);
+	}
 	
-	public BuildTarget getBuildTargetFor(ProjectBuildInfo projectBuildInfo, String targetName) throws CommonException {
-		return projectBuildInfo.getDefinedBuildTarget(targetName);
+	public BuildTarget getBuildTargetFor2(ProjectBuildInfo projectBuildInfo, String targetName)
+			throws CommonException {
+		BuildTarget buildTarget = projectBuildInfo.getDefinedBuildTarget(targetName);
+		if(buildTarget != null) {
+			return buildTarget;
+		}
+		
+		return createBuildTarget(new BuildTargetData(targetName, false, null, null));
 	}
 	
 	/* -----------------  Build Target  ----------------- */
@@ -414,7 +430,7 @@ public abstract class BuildManager {
 	
 	public BuildTarget getValidBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly, 
 			boolean requireNonNull) throws CommonException {
-		ProjectBuildInfo buildInfo = getValidBuildInfo(project);
+		ProjectBuildInfo buildInfo = getValidBuildInfo(project, false);
 		
 		if(buildTargetName == null || buildTargetName.isEmpty()) {
 			throw new CommonException(LaunchMessages.PROCESS_LAUNCH_NoBuildTargetSpecified);
@@ -463,7 +479,7 @@ public abstract class BuildManager {
 	public CommonBuildTargetOperation createBuildTargetOperation(OperationInfo opInfo,
 			IProject project, Path buildToolPath, BuildTarget buildTarget, boolean fullBuild
 	) throws CommonException, CoreException {
-		BuildTargetValidator buildTargetValidator = createBuildTargetValidator(project, buildTarget);
+		BuildTargetValidator buildTargetValidator = getValidatedBuildTarget(project, buildTarget);
 		BuildType buildType = buildTargetValidator.getBuildType();
 		return buildType.getBuildOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild);
 	}
