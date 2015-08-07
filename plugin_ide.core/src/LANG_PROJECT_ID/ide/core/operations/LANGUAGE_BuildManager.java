@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.nio.file.Path;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.operations.OperationInfo;
@@ -68,12 +67,6 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 	}
 	
-	@Override
-	public BuildTargetValidator createBuildTargetValidator2(IProject project, String buildConfigName,
-			String buildTypeName, String buildArguments) throws CommonException {
-		return new BuildTargetValidator(project, buildConfigName, buildTypeName, buildArguments);
-	}
-	
 	/* ----------------- Build ----------------- */
 	
 	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
@@ -108,7 +101,7 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 			
 			// TODO: Lang process build result
 			
-			ToolMarkersUtil.addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project));
+			new ToolMarkersUtil().addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project));
 		}
 	}
 	
