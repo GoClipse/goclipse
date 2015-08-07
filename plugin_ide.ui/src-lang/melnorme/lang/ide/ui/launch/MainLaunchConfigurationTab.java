@@ -71,7 +71,12 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	protected BuildTargetSettingsComponent init_BuildTargetSettingsComponent() {
 		BuildTargetSettingsComponent component = new BuildTargetSettingsComponent(
 			this::getDefaultBuildTargetArguments, this::getDefaultProgramPath);
-		component.programPathField.setLabelText(LangUIMessages.LaunchTab_ProgramPathField_useDefault);
+		component.programPathField.setLabelText(LangUIMessages.LaunchTab_ProgramPathField_title);
+		
+		component.buildArgumentsField.getUseDefaultField().setLabelText(
+			LangUIMessages.LaunchTab_Fields_useBuildTargetSettings);
+		component.programPathField.getUseDefaultField().setLabelText(
+			LangUIMessages.LaunchTab_Fields_useBuildTargetSettings);
 		return component;
 	}
 	
@@ -82,7 +87,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	protected String getDefaultProgramPath() throws CommonException {
-		return getValidator().getDefaultArtifactPath2();
+		return getValidator().getDefaultArtifactPath();
 	}
 	
 	protected BuildTargetSettingsValidator getValidator() throws CommonException {

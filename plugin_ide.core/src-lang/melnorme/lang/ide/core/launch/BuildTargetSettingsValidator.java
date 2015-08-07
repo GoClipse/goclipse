@@ -27,7 +27,6 @@ import melnorme.utilbox.misc.Location;
 
 /**
  * This is similar in nature to {@link BuildTargetValidator}, maybe these two could be merged?
- *
  */
 public abstract class BuildTargetSettingsValidator extends AbstractValidator2 
 	implements IBuildTargetSettings {
@@ -54,8 +53,7 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 	/* -----------------  ----------------- */
 	
 	public BuildTarget getValidBuildTarget() throws CommonException {
-		BuildTarget originalBuildTarget = getBuildManager().getValidBuildTarget(
-			getValidProject(), getBuildTargetName(), false, true);
+		BuildTarget originalBuildTarget = getOriginalBuildTarget();
 		
 		BuildTargetData data = originalBuildTarget.getDataCopy();
 		if(getBuildArguments() != null) {
@@ -67,20 +65,40 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 		return getBuildManager().createBuildTarget(data);
 	}
 	
-	/* -----------------  ----------------- */ 
-	
-	public String getDefaultArtifactPath2() throws CommonException {
-		return getValidatedBuildTarget().getDefaultArtifactPath();
+	protected BuildTarget getOriginalBuildTarget() throws CommonException {
+		return getBuildManager().getValidBuildTarget(
+			getValidProject(), getBuildTargetName(), false, true);
 	}
 	
 	protected ValidatedBuildTarget getValidatedBuildTarget() throws CommonException {
-		BuildTarget buildTarget = getValidBuildTarget();
-		return getBuildManager().getValidatedBuildTarget(getValidProject(), buildTarget);
+		return getBuildManager().getValidatedBuildTarget(getValidProject(), getValidBuildTarget());
+	}
+	
+	protected ValidatedBuildTarget getValidatedOriginalBuildTarget() throws CommonException {
+		return getBuildManager().getValidatedBuildTarget(getValidProject(), getOriginalBuildTarget());
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public String getDefaultBuildArguments() throws CommonException {
+		return getValidatedOriginalBuildTarget().getEffectiveBuildArguments();
+	}
+	
+	public String getDefaultArtifactPath() throws CommonException {
+		return getValidatedOriginalBuildTarget().getEffectiveArtifactPath();
+	}
+	
+	/* -----------------  ----------------- */ 
+	
+	public String getEffectiveBuildArguments() throws CommonException {
+		return getValidatedBuildTarget().getEffectiveBuildArguments();
 	}
 	
 	public Location getValidExecutableLocation() throws CoreException, CommonException {
 		return getValidExecutableLocation(getValidatedBuildTarget().getEffectiveArtifactPath());
 	}
+	
+	/* -----------------  ----------------- */ 
 	
 	public Location getValidExecutableLocation(String exeFilePathString) throws CommonException, CoreException {
 		if(exeFilePathString == null || exeFilePathString.isEmpty()) {
@@ -93,16 +111,6 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 			error(ValidationMessages.Location_NotAFile(exeFileLocation));
 		}
 		return exeFileLocation;
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public String getDefaultBuildArguments() throws CommonException {
-		return getValidatedBuildTarget().getDefaultBuildArguments();
-	}
-	
-	public String getEffectiveBuildArguments() throws CommonException {
-		return getValidatedBuildTarget().getEffectiveBuildArguments();
 	}
 	
 }

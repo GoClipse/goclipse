@@ -44,11 +44,7 @@ public class BuildTargetSettingsComponent extends AbstractComponent {
 	}
 	
 	protected BuildArgumentsField init_createArgumentsField() {
-		return new BuildArgumentsField(init_getArgumentsField_Label());
-	}
-	
-	protected String init_getArgumentsField_Label() {
-		return "Target build arguments:";
+		return new BuildArgumentsField();
 	}
 	
 	protected EnablementButtonTextField init_createProgramPathField() {	
@@ -101,8 +97,8 @@ public class BuildTargetSettingsComponent extends AbstractComponent {
 
 	public class BuildArgumentsField extends EnablementButtonTextField {
 		
-		public BuildArgumentsField(String labelText) {
-			super(labelText, LABEL_UseDefault, LangUIMessages.Fields_VariablesButtonLabel);
+		public BuildArgumentsField() {
+			super(LangUIMessages.Fields_BuildArguments, LABEL_UseDefault, LangUIMessages.Fields_VariablesButtonLabel);
 			defaultTextStyle = SWT.MULTI | SWT.BORDER;
 		}
 		
