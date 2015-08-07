@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.launch;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
@@ -19,21 +17,20 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
-import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
+import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.lang.tooling.data.ValidationMessages;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.PathUtil;
 
 /**
  * This is similar in nature to {@link BuildTargetValidator}, maybe these two could be merged?
  *
  */
 public abstract class BuildTargetSettingsValidator extends AbstractValidator2 
-	implements LaunchExecutableSettingsInput {
+	implements IBuildTargetSettings {
 	
 	public BuildTargetSettingsValidator() {
 	}
@@ -48,6 +45,10 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 	
 	protected BuildManager getBuildManager() {
 		return LangCore.getBuildManager();
+	}
+	
+	protected Location getProjectLocation() throws CommonException {
+		return ResourceUtils.loc(getValidProject().getLocation());
 	}
 	
 	/* -----------------  ----------------- */
@@ -69,54 +70,39 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 	/* -----------------  ----------------- */ 
 	
 	public String getDefaultArtifactPath2() throws CommonException {
-		return getBuildTargetValidator().getDefaultArtifactPath();
+		return getValidatedBuildTarget().getDefaultArtifactPath();
 	}
 	
-	protected BuildTargetValidator getBuildTargetValidator() throws CommonException {
+	protected ValidatedBuildTarget getValidatedBuildTarget() throws CommonException {
 		BuildTarget buildTarget = getValidBuildTarget();
 		return getBuildManager().getValidatedBuildTarget(getValidProject(), buildTarget);
 	}
 	
 	public Location getValidExecutableLocation() throws CoreException, CommonException {
-		// Note we want to validate the default artifact path, even if it's not used because of the override.
-		String defaultArtifactPath = getDefaultArtifactPath2();
-		String effectiveArtifactPath = getArtifactPath() != null ? getArtifactPath() : defaultArtifactPath;
-		return getValidExecutableLocation(effectiveArtifactPath);
+		return getValidExecutableLocation(getValidatedBuildTarget().getEffectiveArtifactPath());
 	}
 	
 	public Location getValidExecutableLocation(String exeFilePathString) throws CommonException, CoreException {
 		if(exeFilePathString == null || exeFilePathString.isEmpty()) {
 			throw new CommonException(LaunchMessages.BuildTarget_NoArtifactPathSpecified);
 		}
-		Path exeFilePath = PathUtil.createPath(exeFilePathString);
 		
-		Location exeFileLocation = toAbsolute(exeFilePath);
+		Location exeFileLocation = Location.create(getProjectLocation(), exeFilePathString);
+		
 		if(exeFileLocation.toFile().exists() && !exeFileLocation.toFile().isFile()) {
 			error(ValidationMessages.Location_NotAFile(exeFileLocation));
 		}
 		return exeFileLocation;
 	}
 	
-	public Location toAbsolute(Path exePath) throws CommonException, CoreException {
-		if(exePath.isAbsolute()) {
-			return Location.fromAbsolutePath(exePath);
-		}
-		// Otherwise path is relative to project location
-		return ResourceUtils.loc(getValidProject().getLocation()).resolve(exePath);
-	}
-	
 	/* -----------------  ----------------- */
 	
 	public String getDefaultBuildArguments() throws CommonException {
-		return getBuildTargetValidator().getDefaultBuildArguments();
+		return getValidatedBuildTarget().getDefaultBuildArguments();
 	}
 	
 	public String getEffectiveBuildArguments() throws CommonException {
-		String buildArguments = getBuildArguments();
-		if(buildArguments == null) {
-			buildArguments = getDefaultBuildArguments();
-		}
-		return buildArguments;
+		return getValidatedBuildTarget().getEffectiveBuildArguments();
 	}
 	
 }
