@@ -29,6 +29,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
+import melnorme.lang.ide.ui.preferences.BuildTargetSettingsComponent;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.components.fields.ButtonTextField;
@@ -62,6 +63,18 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
 	protected ComboOptionsField init_createBuildTypeField() {
 		return new ComboOptionsField("Build type:");
+	}
+	
+	@Override
+	protected BuildTargetSettingsComponent init_BuildTargetSettingsComponent() {
+		BuildTargetSettingsComponent component = super.init_BuildTargetSettingsComponent();
+		
+		component.buildArgumentsField.getUseDefaultField().setLabelText(
+			EnablementButtonTextField.LABEL_UseDefault);
+		component.programPathField.getUseDefaultField().setLabelText(
+			EnablementButtonTextField.LABEL_UseDefault);
+		
+		return component;
 	}
 	
 	@Override
