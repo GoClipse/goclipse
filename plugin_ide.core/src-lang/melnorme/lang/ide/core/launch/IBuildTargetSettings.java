@@ -12,7 +12,7 @@ package melnorme.lang.ide.core.launch;
 
 import melnorme.utilbox.core.CommonException;
 
-public interface LaunchExecutableSettingsInput {
+public interface IBuildTargetSettings {
 	
 	// can be null
 	String getProjectName() throws CommonException;

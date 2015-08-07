@@ -71,6 +71,15 @@ public class Location {
 		}
 	}
 	
+	/**
+	 * @return Create a location based on given baseLocation if given pathString is a relative path,
+	 * otherwise return the pathString location.
+	 */
+	public static Location create(Location baseLocation, String pathString) throws CommonException {
+		Path path = PathUtil.createPath(pathString);
+		return baseLocation.resolve(path);
+	}
+	
 	public static Location validateLocation(Path filePath, boolean isRequired, String descText) 
 			throws CommonException {
 		if(filePath == null) {
