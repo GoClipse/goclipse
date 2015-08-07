@@ -29,10 +29,11 @@ public class BuildTargetValidatorTest extends CommonTest {
 		
 		public SampleBuildProject(String name) throws CoreException {
 			super(name);
+			
+			setSampleProjectInfo();
 		}
 		
-		@Override
-		protected void fillProject() throws org.eclipse.core.runtime.CoreException {
+		protected void setSampleProjectInfo() throws org.eclipse.core.runtime.CoreException {
 			
 			ArrayList2<BuildTarget> buildTargets = new ArrayList2<>();
 			buildTargets.addElements(
