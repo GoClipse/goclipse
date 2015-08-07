@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -51,19 +51,19 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(BuildTargetValidator buildTargetValidator) throws CommonException {
+		public String getDefaultBuildOptions(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
 			return ".";
 		}
 		
 		@Override
-		public String getArtifactPath(BuildTargetValidator buildTargetValidator) throws CommonException {
+		public String getArtifactPath(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
 			return "default_artifact.exe"; // TODO: LANG
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator,
+		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
 				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
-			return new LANGUAGE_BuildTargetOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild);
+			return new LANGUAGE_BuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath, fullBuild);
 		}
 	}
 	
@@ -71,9 +71,9 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 	
 	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public LANGUAGE_BuildTargetOperation(BuildTargetValidator buildTargetValidator, OperationInfo parentOpInfo, 
+		public LANGUAGE_BuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, OperationInfo parentOpInfo, 
 				Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
-			super(buildTargetValidator.buildMgr, buildTargetValidator, parentOpInfo, buildToolPath, fullBuild);
+			super(validatedBuildTarget.buildMgr, validatedBuildTarget, parentOpInfo, buildToolPath, fullBuild);
 		}
 		
 		@Override
