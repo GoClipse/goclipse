@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,16 @@ import melnorme.utilbox.misc.Location;
 
 public class ToolMarkersUtil {
 	
-	public static void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath) 
+	protected boolean readWordForCharEnd;
+	
+	public ToolMarkersUtil() {
+		this(false);
+	}
+	public ToolMarkersUtil(boolean readWordForCharEnd) {
+		this.readWordForCharEnd = readWordForCharEnd;
+	}
+	
+	public void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath) 
 			throws CoreException {
 		
 		for (ToolSourceMessage buildError : buildErrors) {
@@ -49,7 +58,7 @@ public class ToolMarkersUtil {
 		
 	}
 	
-	public static void addErrorMarker(IResource resource, ToolSourceMessage buildmessage, String markerType)
+	public void addErrorMarker(IResource resource, ToolSourceMessage buildmessage, String markerType)
 			throws CoreException {
 		if(!resource.exists())
 			return;
@@ -100,7 +109,7 @@ public class ToolMarkersUtil {
 		
 	}
 	
-	protected static SourceRange getMessageRangeUsingDocInfo(SourceLineColumnRange range, IDocument doc) {
+	protected SourceRange getMessageRangeUsingDocInfo(SourceLineColumnRange range, IDocument doc) {
 		
 		int charStart;
 		int charEnd;
@@ -127,13 +136,43 @@ public class ToolMarkersUtil {
 				charEnd = doc.getLineOffset(endLine) + endColumn;
 				
 			} catch (CommonException e) {
-				charEnd = charStart + 1;
+				charEnd = getCharEnd(charStart, doc);
 			}
 		} catch(BadLocationException e ) {
 			return null;
 		}
 		
 		return SourceRange.srStartToEnd(charStart, charEnd);
+	}
+	
+	protected int getCharEnd(int charStart, IDocument doc) {
+		if(!readWordForCharEnd) {
+			return charStart + 1;
+		}
+		
+		int ix = charStart;
+		try {
+			ix++;
+			char ch = doc.getChar(ix-1);
+			
+			if(Character.isDigit(ch)) {
+				
+				while(Character.isDigit(doc.getChar(ix))) {
+					ix++;
+				}
+				
+			} if(Character.isAlphabetic(ch)) {
+				
+				while(Character.isJavaIdentifierPart(doc.getChar(ix))) {
+					ix++;
+				}
+				
+			}
+		} catch(BadLocationException e) {
+			
+		}
+		
+		return ix;
 	}
 	
 	public static int severityFrom(StatusLevel statusLevel) {

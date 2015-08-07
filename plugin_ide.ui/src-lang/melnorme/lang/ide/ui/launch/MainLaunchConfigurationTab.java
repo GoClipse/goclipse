@@ -82,7 +82,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	protected String getDefaultProgramPath() throws CommonException {
-		return getValidator().getDefaultArtifactPath();
+		return getValidator().getDefaultArtifactPath2();
 	}
 	
 	protected BuildTargetSettingsValidator getValidator() throws CommonException {
@@ -113,7 +113,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	@Override
 	protected void doValidate() throws CommonException, CoreException {
-		getValidator().getBuildTarget();
+		getValidator().getValidBuildTarget();
 		getValidator().getEffectiveBuildArguments();
 		getValidator().getValidExecutableLocation();
 	}
@@ -148,7 +148,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		if(project != null) {
 			BuildTarget buildTarget;
 			try {
-				buildTarget = getValidator().getBuildTarget();
+				buildTarget = getValidator().getValidBuildTarget();
 			} catch(CommonException e) {
 				// Should not be possible;
 				return;

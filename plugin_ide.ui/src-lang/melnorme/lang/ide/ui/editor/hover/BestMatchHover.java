@@ -15,9 +15,9 @@ package melnorme.lang.ide.ui.editor.hover;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.core.text.JavaWordFinder;
 import melnorme.lang.ide.ui.LangEditorTextHoversRegistry;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.text.util.JavaWordFinder;
 
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;

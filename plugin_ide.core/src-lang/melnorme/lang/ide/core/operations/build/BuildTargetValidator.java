@@ -80,7 +80,7 @@ public class BuildTargetValidator extends AbstractValidator2 {
 	
 	/* -----------------  ----------------- */
 	
-	public String getArtifactPath() throws CommonException {
+	public String getDefaultArtifactPath() throws CommonException {
 		return getBuildType().getArtifactPath(this);
 	}
 	

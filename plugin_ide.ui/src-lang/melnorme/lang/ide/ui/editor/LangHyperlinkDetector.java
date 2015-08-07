@@ -12,8 +12,9 @@ package melnorme.lang.ide.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
+
+import melnorme.lang.ide.core.text.JavaWordFinder;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.text.util.JavaWordFinder;
 import melnorme.lang.tooling.ast.SourceRange;
 
 import org.eclipse.jface.text.IDocument;

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.launch;
 
-
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
@@ -19,6 +18,8 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator2;
@@ -27,7 +28,12 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
-public abstract class BuildTargetSettingsValidator extends AbstractValidator2 implements LaunchExecutableSettingsInput {
+/**
+ * This is similar in nature to {@link BuildTargetValidator}, maybe these two could be merged?
+ *
+ */
+public abstract class BuildTargetSettingsValidator extends AbstractValidator2 
+	implements LaunchExecutableSettingsInput {
 	
 	public BuildTargetSettingsValidator() {
 	}
@@ -46,32 +52,34 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2 im
 	
 	/* -----------------  ----------------- */
 	
-	/* FIXME: need to create a BuildTarget based on the LaunchExecutableSettingsInput */
-	
-	public BuildTarget getBuildTarget() throws CommonException {
-		if(getBuildTargetName() == null){
-			return null;
-		}
-		return getValidBuildTarget();
-	}
-	
 	public BuildTarget getValidBuildTarget() throws CommonException {
-		return getBuildManager().getValidBuildTarget(getValidProject(), getBuildTargetName(), false);
+		BuildTarget originalBuildTarget = getBuildManager().getValidBuildTarget(
+			getValidProject(), getBuildTargetName(), false, true);
+		
+		BuildTargetData data = originalBuildTarget.getDataCopy();
+		if(getBuildArguments() != null) {
+			data.buildArguments = getBuildArguments();
+		}
+		if(getArtifactPath() != null) {
+			data.artifactPath = getArtifactPath();
+		}
+		return getBuildManager().createBuildTarget(data);
 	}
 	
 	/* -----------------  ----------------- */ 
 	
-	public String getDefaultArtifactPath() throws CommonException {
-		BuildTarget buildTarget = getBuildTarget();
-		if(buildTarget == null) {
-			return null;
-		}
-		return getBuildManager().createBuildTargetValidator(getValidProject(), buildTarget).getArtifactPath();
+	public String getDefaultArtifactPath2() throws CommonException {
+		return getBuildTargetValidator().getDefaultArtifactPath();
+	}
+	
+	protected BuildTargetValidator getBuildTargetValidator() throws CommonException {
+		BuildTarget buildTarget = getValidBuildTarget();
+		return getBuildManager().getValidatedBuildTarget(getValidProject(), buildTarget);
 	}
 	
 	public Location getValidExecutableLocation() throws CoreException, CommonException {
 		// Note we want to validate the default artifact path, even if it's not used because of the override.
-		String defaultArtifactPath = getDefaultArtifactPath();
+		String defaultArtifactPath = getDefaultArtifactPath2();
 		String effectiveArtifactPath = getArtifactPath() != null ? getArtifactPath() : defaultArtifactPath;
 		return getValidExecutableLocation(effectiveArtifactPath);
 	}
@@ -100,8 +108,7 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2 im
 	/* -----------------  ----------------- */
 	
 	public String getDefaultBuildArguments() throws CommonException {
-		BuildTarget buildTarget = getBuildTarget();
-		return getBuildManager().createBuildTargetValidator(getValidProject(), buildTarget).getDefaultBuildArguments();
+		return getBuildTargetValidator().getDefaultBuildArguments();
 	}
 	
 	public String getEffectiveBuildArguments() throws CommonException {

@@ -46,7 +46,10 @@ public class ProcessLaunchInfoValidator {
 	}
 	
 	protected BuildTarget getBuildTarget() throws CoreException, CommonException {
-		return buildSettingsValidator.getBuildTarget();
+		if(buildSettingsValidator.getBuildTargetName() == null){
+			return null;
+		}
+		return buildSettingsValidator.getValidBuildTarget();
 	}
 	
 	protected Location getValidExecutableFileLocation() throws CoreException, CommonException {

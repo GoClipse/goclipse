@@ -21,31 +21,35 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.misc.Location;
 
 
-public class AbstractSampleProject implements AutoCloseable {
+public class SampleProject implements AutoCloseable {
 	
 	public final IProject project;
 	
-	public AbstractSampleProject(String name) throws CoreException {
+	public SampleProject(String name) throws CoreException {
 		project = CommonCoreTest.createAndOpenProject(name, true);
 		fillProject();
 		CommonCoreTest.setupLangProject(project, false);
 		assertTrue(project.getNature(LangNature.NATURE_ID) != null);
 	}
 	
+	public void cleanUp() throws CoreException {
+		project.delete(true, null);
+	}
+	
 	protected void fillProject() throws CoreException {
+	}
+	
+	@Override
+	public void close() throws CoreException {
+		cleanUp();
 	}
 	
 	public IProject getProject() {
 		return project;
 	}
 	
-	public void cleanUp() throws CoreException {
-		project.delete(true, null);
-	}
-	
-	@Override
-	public void close() throws CoreException {
-		cleanUp();
+	public String getName() {
+		return getProject().getName();
 	}
 	
 	/* ----------------- helpers ----------------- */
