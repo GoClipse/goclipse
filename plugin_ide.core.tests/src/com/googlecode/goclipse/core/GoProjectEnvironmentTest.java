@@ -55,7 +55,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 		}
 		
 		// Test with sample project.
-		try (SampleProject sampleProject = new SampleProject(getClass().getSimpleName())){
+		try (SampleGoProject sampleProject = new SampleGoProject(getClass().getSimpleName())){
 			IProject project = sampleProject.getProject();
 			IPath location = project.getLocation();
 			
@@ -70,7 +70,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 			checkEnvGoPath(project, list(location.toOSString(), goPathEntryOther), false);
 		}
 		
-		try (SampleProject sampleProject = new SampleProject(getClass().getSimpleName())){
+		try (SampleGoProject sampleProject = new SampleGoProject(getClass().getSimpleName())){
 			IProject project = sampleProject.getProject();
 			
 			GoEnvironmentPrefs.GO_PATH.set(SAMPLE_GO_PATH.asString());

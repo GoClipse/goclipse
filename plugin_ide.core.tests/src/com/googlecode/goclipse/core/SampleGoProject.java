@@ -15,9 +15,9 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 
 import org.eclipse.core.runtime.CoreException;
 
-public class SampleProject extends AbstractSampleProject {
+public class SampleGoProject extends AbstractSampleProject {
 	
-	public SampleProject(String name) throws CoreException {
+	public SampleGoProject(String name) throws CoreException {
 		super(name);
 	}
 	
