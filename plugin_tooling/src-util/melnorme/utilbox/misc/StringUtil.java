@@ -171,6 +171,28 @@ public final class StringUtil {
 	public static String replaceStr(String str, int repOffset, int repLen, String repStr) {
 		return str.substring(0, repOffset) + repStr + str.substring(repOffset + repLen, str.length());
 	}
+	
+	/**
+	 * @return replace all occurrences of given matchStr with repStr, in given string.
+	 * Similar to {@link String#replaceAll(String, String)} but doesn't use regexps, 
+	 * therefore doesn't require any quoting.
+	 */
+	public static String replaceAll(String string, String matchStr, String repStr) {
+		StringBuilder sb = new StringBuilder();
+		int startIx = 0;
+		while(true) {
+			int matchIx = string.indexOf(matchStr, startIx);
+			if(matchIx == -1) {
+				sb.append(string, startIx, string.length());
+				break;
+			}
+			
+			sb.append(string, startIx, matchIx);
+			sb.append(repStr);
+			startIx = matchIx + matchStr.length();
+		}
+		return sb.toString();
+	}
 
 	/** Replace str with strRep in the given strb StringBuilder, if str occurs.
 	 * @return true if str occurs in strb. */
