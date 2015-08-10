@@ -48,30 +48,37 @@ public class ToolMarkersUtil {
 			throws CoreException {
 		
 		for (ToolSourceMessage buildError : buildErrors) {
-			Location loc = rootPath.resolve(buildError.getFilePath()); // Absolute paths will remain unchanged.
-			
-			IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(loc.toUri());
-			for (IFile file : files) {
-				addErrorMarker(file, buildError, LangCore_Actual.BUILD_PROBLEM_ID);
-			}
+			addErrorMarkers(buildError, rootPath);
 		}
-		
 	}
 	
-	public void addErrorMarker(IResource resource, ToolSourceMessage buildmessage, String markerType)
+	public void addErrorMarkers(ToolSourceMessage toolMessage, Location rootPath) throws CoreException {
+		Location loc = rootPath.resolve(toolMessage.getFilePath()); // Absolute paths will remain unchanged.
+		
+		IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(loc.toUri());
+		for(IFile file : files) {
+			addErrorMarker(file, toolMessage, getMarkerType());
+		}
+	}
+	
+	protected String getMarkerType() {
+		return LangCore_Actual.BUILD_PROBLEM_ID;
+	}
+	
+	public void addErrorMarker(IResource resource, ToolSourceMessage toolMessage, String markerType)
 			throws CoreException {
 		if(!resource.exists())
 			return;
 		
-		if(buildmessage.getMessageKind() == StatusLevel.OK) {
+		if(toolMessage.getMessageKind() == StatusLevel.OK) {
 			return; // Don't add message as a marker.
 		}
 		
 		// TODO: check if marker already exists?
 		IMarker marker = resource.createMarker(markerType);
 		
-		marker.setAttribute(IMarker.SEVERITY, severityFrom(buildmessage.getMessageKind()));
-		marker.setAttribute(IMarker.MESSAGE, buildmessage.getMessage());
+		marker.setAttribute(IMarker.SEVERITY, severityFrom(toolMessage.getMessageKind()));
+		marker.setAttribute(IMarker.MESSAGE, toolMessage.getMessage());
 		
 		if(!(resource instanceof IFile)) {
 			return;
@@ -79,12 +86,12 @@ public class ToolMarkersUtil {
 		
 		IFile file = (IFile) resource;
 		
-		int line = buildmessage.getFileLineNumber();
+		int line = toolMessage.getFileLineNumber();
 		if(line >= 0) {
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 		}
 		
-		SourceLineColumnRange range = buildmessage.range;
+		SourceLineColumnRange range = toolMessage.range;
 		
 		SourceRange messageSR;
 		

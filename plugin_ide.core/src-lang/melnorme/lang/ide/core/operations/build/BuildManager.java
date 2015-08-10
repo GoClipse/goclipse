@@ -426,25 +426,26 @@ public abstract class BuildManager {
 	/* ----------------- Build operations ----------------- */
 	
 	public final IToolOperation newProjectBuildOperation(OperationInfo opInfo, IProject project,
-			boolean fullBuild) throws CommonException {
+			boolean fullBuild, boolean clearMarkers) throws CommonException {
 		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets();
-		return createBuildOperationCreator(opInfo, project, fullBuild).newProjectBuildOperation(enabledTargets);
+		return createBuildOperationCreator(opInfo, project, fullBuild)
+				.newProjectBuildOperation(enabledTargets, clearMarkers);
+	}
+	
+	public final IToolOperation newProjectClearMarkersOperation(OperationInfo opInfo, IProject project) {
+		return createBuildOperationCreator(opInfo, project, false).newClearBuildMarkersOperation();
 	}
 	
 	public final IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
 			throws CommonException {
-		return newBuildTargetOperation(project, ArrayList2.create(buildTarget));
+		return newBuildTargetsOperation(project, ArrayList2.create(buildTarget));
 	}
 	
-	public IToolOperation newBuildTargetOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
+	public IToolOperation newBuildTargetsOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
 			throws CommonException {
 		OperationInfo operationInfo = LangCore.getToolManager().startNewToolOperation();
-		return newBuildTargetOperation(operationInfo, project, targetsToBuild);
-	}
-	
-	public IToolOperation newBuildTargetOperation(OperationInfo opInfo, IProject project, 
-			Collection2<BuildTarget> targetsToBuild) throws CommonException {
-		return createBuildOperationCreator(opInfo, project, false).newProjectBuildOperation(targetsToBuild);
+		return createBuildOperationCreator(operationInfo, project, false)
+				.newProjectBuildOperation(targetsToBuild, true);
 	}
 	
 	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project,

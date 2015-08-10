@@ -96,13 +96,13 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	protected static HashMap2<String, OperationInfo> workspaceOpInfoMap = new HashMap2<>();
 	protected OperationInfo workspaceOpInfo;
 	
-	protected void prepareForBuild() throws CoreException {
-		handleBeginWorkspaceBuild();
+	protected void prepareForBuild(IProgressMonitor pm) throws CoreException, OperationCancellation {
+		handleBeginWorkspaceBuild(pm);
 		
 		assertTrue(workspaceOpInfo.isStarted());
 	}
 	
-	protected void handleBeginWorkspaceBuild() {
+	protected void handleBeginWorkspaceBuild(IProgressMonitor pm) throws CoreException, OperationCancellation {
 		workspaceOpInfo = workspaceOpInfoMap.get(LangCore.NATURE_ID);
 		
 		if(workspaceOpInfo != null) {
@@ -125,6 +125,26 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 		getToolManager().notifyMessageEvent(new MessageEventInfo(workspaceOpInfo, 
 			headerVeryBig(MessageFormat.format(MSG_Starting_LANG_Build, LangCore_Actual.LANGUAGE_NAME))));
+		
+		clearWorkspaceErrorMarkers(pm);
+	}
+	
+	protected void clearWorkspaceErrorMarkers(IProgressMonitor pm) throws CoreException, OperationCancellation {
+		clearErrorMarkers(getProject(), pm);
+		
+		for(IBuildConfiguration buildConfig : getContext().getAllReferencingBuildConfigs()) {
+			clearErrorMarkers(buildConfig.getProject(), pm);
+		}
+	}
+	
+	protected void clearErrorMarkers(IProject project, IProgressMonitor pm) 
+			throws CoreException, OperationCancellation {
+		IToolOperation clearMarkersOp = buildManager.newProjectClearMarkersOperation(workspaceOpInfo, project);
+		try {
+			clearMarkersOp.execute(pm);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
 	}
 	
 	protected void handleEndWorkspaceBuild2() {
@@ -137,15 +157,15 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 		IProject project = assertNotNull(getProject());
 		
-		prepareForBuild();
-		
 		try {
+			prepareForBuild(monitor);
+			
 			return doBuild(project, kind, args, monitor);
 		} 
-		catch (OperationCancellation cancel) {
+		catch(OperationCancellation cancel) {
 			forgetLastBuiltState();
 			return null;
-		} catch (CoreException ce) {
+		} catch(CoreException ce) {
 			forgetLastBuiltState();
 			
 			if(monitor.isCanceled()) {
@@ -178,7 +198,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected IToolOperation createBuildOp(boolean fullBuild) throws CommonException {
-		return buildManager.newProjectBuildOperation(workspaceOpInfo, getProject(), fullBuild);
+		return buildManager.newProjectBuildOperation(workspaceOpInfo, getProject(), fullBuild, false);
 	}
 	
 	/* ----------------- Clean ----------------- */

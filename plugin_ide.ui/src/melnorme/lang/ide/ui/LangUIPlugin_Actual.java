@@ -2,6 +2,7 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 
@@ -44,6 +45,8 @@ public final class LangUIPlugin_Actual {
 	}
 	
 	/* ----------------- UI messages:  ----------------- */
+	
+	public static final String TOOLS_CONSOLE_NAME = LangCore_Actual.LANGUAGE_NAME + " build";
 	
 	public static final String DAEMON_TOOL_Name = "lang_daemon";
 	public static final String DAEMON_TOOL_ConsoleName = "lang_daemon log";

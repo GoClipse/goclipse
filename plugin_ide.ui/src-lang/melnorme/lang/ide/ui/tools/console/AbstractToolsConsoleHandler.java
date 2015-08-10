@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,13 @@ import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
-import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.MessageEventInfo;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ProcessStartInfo;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -42,8 +42,6 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputLis
 
 
 public abstract class AbstractToolsConsoleHandler implements ILangOperationsListener {
-	
-	protected static final String BUILD_CONSOLE_NAME = LangCore_Actual.LANGUAGE_NAME + " build";
 	
 	public AbstractToolsConsoleHandler() {
 		super();
@@ -93,7 +91,7 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 	}
 	
 	protected String getGlobalConsoleName() {
-		return BUILD_CONSOLE_NAME;
+		return LangUIPlugin_Actual.TOOLS_CONSOLE_NAME;
 	}
 	
 	protected String getProjectNameSuffix(IProject project) {
