@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -34,6 +35,7 @@ import melnorme.utilbox.core.CommonException;
 public class BuildOperationCreator implements BuildManagerMessages {
 	
 	protected final BuildManager buildMgr = LangCore.getBuildManager();
+	protected final String buildProblemId = LangCore_Actual.BUILD_PROBLEM_ID;
 	
 	protected final IProject project;
 	protected final OperationInfo opInfo;
@@ -47,13 +49,19 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	
 	protected ArrayList2<IToolOperation> operations;
 	
-	public IToolOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild) 
+	public IToolOperation newClearBuildMarkersOperation() {
+		return doCreateClearBuildMarkersOperation();
+	}
+	
+	public IToolOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild, boolean clearMarkers) 
 			throws CommonException {
 		operations = ArrayList2.create();
 		
 		addCompositeBuildOperationMessage();
 		
-		addMarkerCleanOperation();
+		if(clearMarkers) {
+			addOperation(newClearBuildMarkersOperation());
+		}
 		
 		if(targetsToBuild.isEmpty()) {
 			addOperation(newMessageOperation(opInfo, 
@@ -70,25 +78,37 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return new CompositeBuildOperation(operations);
 	}
 	
+	protected boolean addOperation(IToolOperation toolOp) {
+		return operations.add(toolOp);
+	}
+	
 	protected void addCompositeBuildOperationMessage() {
 		String startMsg = headerBIG(format(MSG_BuildingProject, LangCore_Actual.LANGUAGE_NAME, project.getName()));
 		addOperation(newMessageOperation(opInfo, startMsg));
 	}
 	
-	protected boolean addOperation(IToolOperation toolOp) {
-		return operations.add(toolOp);
+	protected IToolOperation doCreateClearBuildMarkersOperation() {
+		return (pm) -> {
+			boolean hadDeletedMarkers = doDeleteProjectMarkers(buildProblemId, pm);
+			if(hadDeletedMarkers) {
+				LangCore.getToolManager().notifyMessageEvent(new MessageEventInfo(opInfo, 
+					format(MSG_ClearingMarkers, project.getName()) + "\n"));
+			}
+		};
 	}
 	
-	protected void addMarkerCleanOperation() {
-		addOperation((pm) -> deleteProjectMarkers(LangCore_Actual.BUILD_PROBLEM_ID));
-	}
-	
-	protected void deleteProjectMarkers(String markerType) {
+	@SuppressWarnings("unused")
+	protected boolean doDeleteProjectMarkers(String markerType, IProgressMonitor pm) {
 		try {
-			project.deleteMarkers(markerType, true, IResource.DEPTH_INFINITE);
+			IMarker[] findMarkers = project.findMarkers(markerType, true, IResource.DEPTH_INFINITE);
+			if(findMarkers.length != 0) {
+				project.deleteMarkers(markerType, true, IResource.DEPTH_INFINITE);
+				return true;
+			}
 		} catch (CoreException ce) {
 			LangCore.logStatus(ce);
 		}
+		return false;
 	}
 	
 	protected IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget) 

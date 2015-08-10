@@ -18,6 +18,7 @@ public interface BuildManagerMessages {
 			"Could not perform operation, target has changed in the meanwhile";
 	
 	public String MSG_BuildingProject = "Building {0} project: {1}";
+	public String MSG_ClearingMarkers = "Cleared problem markers for {0}.";
 	public String MSG_BuildTerminated = "Build terminated.";
 	public String MSG_NoBuildTargetsEnabled = "No build targets enabled.";
 	

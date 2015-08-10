@@ -170,7 +170,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		@Override
 		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 			Collection2<BuildTarget> enabledTargets = getBuildInfo().getBuildTargets();
-			getBuildManager().newBuildTargetOperation(getProject(), enabledTargets).execute(pm);
+			getBuildManager().newBuildTargetsOperation(getProject(), enabledTargets).execute(pm);
 		}
 	}
 	
@@ -183,7 +183,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		@Override
 		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 			ArrayList2<BuildTarget> enabledTargets = getBuildInfo().getEnabledTargets();
-			getBuildManager().newBuildTargetOperation(getProject(), enabledTargets).execute(pm);
+			getBuildManager().newBuildTargetsOperation(getProject(), enabledTargets).execute(pm);
 		}
 	}
 	

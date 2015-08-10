@@ -136,23 +136,23 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 		return new EclipseCancelMonitor(pm);
 	}
 	
-	public RunProcessTask2 newRunToolOperation2(ProcessBuilder pb, IProgressMonitor pm) {
+	public RunProcessTask newRunToolOperation2(ProcessBuilder pb, IProgressMonitor pm) {
 		OperationInfo opInfo = startNewToolOperation();
 		return newRunToolTask(opInfo, pb, cm(pm));
 	}
 	
-	public RunProcessTask2 newRunToolTask(OperationInfo opInfo, ProcessBuilder pb, IProgressMonitor pm) {
+	public RunProcessTask newRunToolTask(OperationInfo opInfo, ProcessBuilder pb, IProgressMonitor pm) {
 		return newRunToolTask(opInfo, pb, cm(pm));
 	}
-	public RunProcessTask2 newRunToolTask(OperationInfo opInfo, ProcessBuilder pb, ICancelMonitor cm) {
-		return new RunProcessTask2(opInfo, pb, cm);
+	public RunProcessTask newRunToolTask(OperationInfo opInfo, ProcessBuilder pb, ICancelMonitor cm) {
+		return new RunProcessTask(opInfo, pb, cm);
 	}
 	
-	public class RunProcessTask2 extends AbstractRunProcessTask {
+	public class RunProcessTask extends AbstractRunProcessTask {
 		
 		protected final OperationInfo opInfo;
 		
-		public RunProcessTask2(OperationInfo opInfo, ProcessBuilder pb, ICancelMonitor cancelMonitor) {
+		public RunProcessTask(OperationInfo opInfo, ProcessBuilder pb, ICancelMonitor cancelMonitor) {
 			super(pb, cancelMonitor);
 			this.opInfo = opInfo;
 		}
