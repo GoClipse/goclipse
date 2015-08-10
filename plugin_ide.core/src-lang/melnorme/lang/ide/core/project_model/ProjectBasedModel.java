@@ -51,6 +51,7 @@ public abstract class ProjectBasedModel<INFO> {
 	
 	public synchronized INFO setProjectInfo(IProject project, INFO newProjectInfo) {
 		String projectName = project.getName();
+		assertNotNull(newProjectInfo);
 		projectInfos.put(projectName, newProjectInfo);
 		notifyProjectInfoAdded(project, newProjectInfo);
 		return newProjectInfo;
@@ -61,6 +62,7 @@ public abstract class ProjectBasedModel<INFO> {
 	 */
 	public synchronized INFO updateProjectInfo(IProject project, INFO oldProjectInfo, INFO newProjectInfo) {
 		String projectName = project.getName();
+		assertNotNull(newProjectInfo);
 		if(projectInfos.get(projectName) == oldProjectInfo) {
 			return setProjectInfo(project, newProjectInfo);
 		}
@@ -69,8 +71,9 @@ public abstract class ProjectBasedModel<INFO> {
 	
 	public synchronized INFO removeProjectInfo(IProject project) {
 		INFO oldProjectInfo = projectInfos.remove(project.getName());
-		assertNotNull(oldProjectInfo);
-		notifyProjectRemoved(project, oldProjectInfo);
+		if(oldProjectInfo != null) {
+			notifyProjectRemoved(project, oldProjectInfo);
+		}
 		return oldProjectInfo;
 	}
 	
