@@ -56,6 +56,17 @@ public abstract class ProjectBasedModel<INFO> {
 		return newProjectInfo;
 	}
 	
+	/**
+	 * Set a new project info, but only if the current info is the same as given oldProjectInfo
+	 */
+	public synchronized INFO updateProjectInfo(IProject project, INFO oldProjectInfo, INFO newProjectInfo) {
+		String projectName = project.getName();
+		if(projectInfos.get(projectName) == oldProjectInfo) {
+			return setProjectInfo(project, newProjectInfo);
+		}
+		return null;
+	}
+	
 	public synchronized INFO removeProjectInfo(IProject project) {
 		INFO oldProjectInfo = projectInfos.remove(project.getName());
 		assertNotNull(oldProjectInfo);
@@ -72,9 +83,10 @@ public abstract class ProjectBasedModel<INFO> {
 		fireUpdateEvent(new UpdateEvent<INFO>(project, newProjectInfo));
 	}
 	
+	@SuppressWarnings("unused")
 	protected void notifyProjectRemoved(IProject project, INFO oldProjectInfo) {
 		getLog().println(getClass().getSimpleName() + " info removed: " + project.getName());
-		fireUpdateEvent(new UpdateEvent<INFO>(project, oldProjectInfo));
+		fireUpdateEvent(new UpdateEvent<INFO>(project, null));
 	}
 	
 	protected void fireUpdateEvent(UpdateEvent<INFO> updateEvent) {
