@@ -85,8 +85,8 @@ public abstract class BuildManager {
 		@Override
 		public void notifyUpdateEvent(UpdateEvent<AbstractBundleInfo> updateEvent) {
 			synchronized (init_Lock) {
-				if(updateEvent.newProjectInfo != null) {
-					bundleProjectAdded(updateEvent.project, updateEvent.newProjectInfo);
+				if(updateEvent.newProjectInfo2 != null) {
+					bundleProjectAdded(updateEvent.project, updateEvent.newProjectInfo2);
 				} else {
 					bundleProjectRemoved(updateEvent.project);
 				}

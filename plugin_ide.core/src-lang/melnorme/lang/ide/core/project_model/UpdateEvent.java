@@ -17,11 +17,11 @@ import org.eclipse.core.resources.IProject;
 public class UpdateEvent<INFO> {
 	
 	public final IProject project;
-	public final INFO newProjectInfo;
+	public final INFO newProjectInfo2;
 	
 	public UpdateEvent(IProject project, INFO newProjectInfo) {
 		this.project = assertNotNull(project);
-		this.newProjectInfo = newProjectInfo;
+		this.newProjectInfo2 = newProjectInfo;
 	}
 	
 }
