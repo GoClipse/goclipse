@@ -11,29 +11,8 @@
 package melnorme.lang.tests;
 
 
-import java.io.PrintStream;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.Before;
-
-import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.tests.CommonTestExt;
 
 public class CommonToolingTest extends CommonTestExt {
-	
-	public static PrintStream testsLogger = System.out;
-	public static SimpleLogger testsLogVerbose = SimpleLogger.create("verbose");
-	
-	public static Set<String> executedTests = new HashSet<String>();
-	
-	@Before
-	public void printSeparator() throws Exception {
-		String simpleName = getClass().getSimpleName();
-		if(!executedTests.contains(simpleName)) {
-			testsLogger.println("===============================  "+simpleName+"  ===============================");
-			executedTests.add(simpleName);
-		}
-	}
 	
 }
