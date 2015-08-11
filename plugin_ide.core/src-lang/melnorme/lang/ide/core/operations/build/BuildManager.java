@@ -252,7 +252,7 @@ public abstract class BuildManager {
 		}
 		
 		public abstract CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
-				OperationInfo opInfo, Path buildToolPath, boolean fullBuild)
+				OperationInfo opInfo, Path buildToolPath)
 				throws CommonException, CoreException;
 				
 	}
@@ -425,15 +425,12 @@ public abstract class BuildManager {
 	
 	/* ----------------- Build operations ----------------- */
 	
-	public final IToolOperation newProjectBuildOperation(OperationInfo opInfo, IProject project,
-			boolean fullBuild, boolean clearMarkers) throws CommonException {
-		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets();
-		return createBuildOperationCreator(opInfo, project, fullBuild)
-				.newProjectBuildOperation(enabledTargets, clearMarkers);
+	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project) {
+		return new BuildOperationCreator(project, opInfo);
 	}
 	
-	public final IToolOperation newProjectClearMarkersOperation(OperationInfo opInfo, IProject project) {
-		return createBuildOperationCreator(opInfo, project, false).newClearBuildMarkersOperation();
+	public IToolOperation newProjectClearMarkersOperation(OperationInfo opInfo, IProject project) {
+		return createBuildOperationCreator(opInfo, project).newClearBuildMarkersOperation();
 	}
 	
 	public final IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
@@ -444,21 +441,18 @@ public abstract class BuildManager {
 	public IToolOperation newBuildTargetsOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
 			throws CommonException {
 		OperationInfo operationInfo = LangCore.getToolManager().startNewToolOperation();
-		return createBuildOperationCreator(operationInfo, project, false)
-				.newProjectBuildOperation(targetsToBuild, true);
+		return newBuildOperation(operationInfo, project, true, targetsToBuild);
 	}
 	
-	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project,
-			boolean fullBuild) {
-		return new BuildOperationCreator(project, opInfo, fullBuild);
+	public final IToolOperation newProjectBuildOperation(OperationInfo opInfo, IProject project,
+			boolean clearMarkers) throws CommonException {
+		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets();
+		return newBuildOperation(opInfo, project, clearMarkers, enabledTargets);
 	}
 	
-	public CommonBuildTargetOperation createBuildTargetOperation(OperationInfo opInfo,
-			IProject project, Path buildToolPath, BuildTarget buildTarget, boolean fullBuild
-	) throws CommonException, CoreException {
-		ValidatedBuildTarget validatedBuildTarget = getValidatedBuildTarget(project, buildTarget);
-		BuildType buildType = validatedBuildTarget.getBuildType();
-		return buildType.getBuildOperation(validatedBuildTarget, opInfo, buildToolPath, fullBuild);
+	public IToolOperation newBuildOperation(OperationInfo opInfo, IProject project, boolean clearMarkers,
+			Collection2<BuildTarget> targetsToBuild) throws CommonException {
+		return createBuildOperationCreator(opInfo, project).newProjectBuildOperation(targetsToBuild, clearMarkers);
 	}
 	
 }

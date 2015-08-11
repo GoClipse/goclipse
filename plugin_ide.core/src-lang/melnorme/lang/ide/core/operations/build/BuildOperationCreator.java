@@ -27,6 +27,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.MessageEventInfo;
 import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -39,11 +40,9 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	
 	protected final IProject project;
 	protected final OperationInfo opInfo;
-	protected final boolean fullBuild;
 	
-	public BuildOperationCreator(IProject project, OperationInfo opInfo, boolean fullBuild) {
+	public BuildOperationCreator(IProject project, OperationInfo opInfo) {
 		this.project = project;
-		this.fullBuild = fullBuild;
 		this.opInfo = assertNotNull(opInfo);
 	}
 	
@@ -115,10 +114,18 @@ public class BuildOperationCreator implements BuildManagerMessages {
 			throws CommonException {
 		Path buildToolPath = LangCore.getToolManager().getSDKToolPath();
 		try {
-			return buildMgr.createBuildTargetOperation(opInfo, project, buildToolPath, buildTarget, fullBuild);
+			return createBuildTargetOperation(opInfo, project, buildToolPath, buildTarget);
 		} catch(CoreException e) {
 			throw new CommonException(e.getMessage(), e.getCause());
 		}
+	}
+	
+	public CommonBuildTargetOperation createBuildTargetOperation(OperationInfo opInfo,
+			IProject project, Path buildToolPath, BuildTarget buildTarget
+	) throws CommonException, CoreException {
+		ValidatedBuildTarget validatedBuildTarget = buildMgr.getValidatedBuildTarget(project, buildTarget);
+		BuildType buildType = validatedBuildTarget.getBuildType();
+		return buildType.getBuildOperation(validatedBuildTarget, opInfo, buildToolPath);
 	}
 	
 	protected IToolOperation newMessageOperation(OperationInfo opInfo, String msg) {
