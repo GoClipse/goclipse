@@ -32,18 +32,16 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	protected final BuildManager buildManager;
 	protected final OperationInfo opInfo;
 	protected final Path buildToolPath;
-	protected final boolean fullBuild;
 	
 	protected final BuildConfiguration buildConfiguration;
 	protected final BuildType buildType;
 	protected final String effectiveBuildArguments;
 	
 	public CommonBuildTargetOperation(BuildManager buildManager, ValidatedBuildTarget validatedBuildTarget, 
-			OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
+			OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
 		super(assertNotNull(validatedBuildTarget).getProject());
 		this.buildManager = assertNotNull(buildManager);
 		this.buildToolPath = buildToolPath;
-		this.fullBuild = fullBuild;
 		this.opInfo = assertNotNull(opInfo);
 		
 		assertNotNull(validatedBuildTarget);

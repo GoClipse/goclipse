@@ -190,15 +190,15 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
 			throws CoreException, OperationCancellation {
 		try {
-			createBuildOp(kind == IncrementalProjectBuilder.FULL_BUILD).execute(monitor);
+			createBuildOp().execute(monitor);
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
 		return null;
 	}
 	
-	protected IToolOperation createBuildOp(boolean fullBuild) throws CommonException {
-		return buildManager.newProjectBuildOperation(workspaceOpInfo, getProject(), fullBuild, false);
+	protected IToolOperation createBuildOp() throws CommonException {
+		return buildManager.newProjectBuildOperation(workspaceOpInfo, getProject(), false);
 	}
 	
 	/* ----------------- Clean ----------------- */
