@@ -57,7 +57,7 @@ public class ArgumentsGroupField extends ButtonTextField {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected String getNewValueFromButtonSelection() throws OperationCancellation {
+	protected String getNewValueFromButtonSelection2() throws OperationCancellation {
 		return getFieldValue() + ControlUtils.openStringVariableSelectionDialog(text.getShell());
 	}
 	

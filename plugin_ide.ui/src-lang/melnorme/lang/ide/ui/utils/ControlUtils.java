@@ -22,6 +22,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -44,6 +45,19 @@ public class ControlUtils {
 			GridDataFactory.fillDefaults().hint(pc.convertHeightInCharsToPixels(charHeight), SWT.DEFAULT).create());
 	}
 
+	
+	public static String openFileDialog(String initialValue, Shell shell) throws OperationCancellation {
+		FileDialog dialog = new FileDialog(shell);
+		if(!initialValue.isEmpty()) {
+			dialog.setFilterPath(initialValue);
+		}
+		String result = dialog.open();
+		if(result == null) {
+			throw new OperationCancellation();
+		}
+		return result;
+	}
+	
 	public static Link createOpenPreferencesDialogLink(final Composite topControl, String linkText) {
 		Link link = new Link(topControl, SWT.NONE);
 		link.setText(linkText);
@@ -76,7 +90,7 @@ public class ControlUtils {
 		return result;
 	}
 	
-	public static String openProgramPathDialog(IProject project, Button button) {
+	public static String openProgramPathDialog(IProject project, Button button) throws OperationCancellation {
 		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
 			button.getShell(), new WorkbenchLabelProvider(), new WorkbenchContentProvider());
 		dialog.setTitle(LangUIMessages.ProgramPathDialog_title);
@@ -84,11 +98,11 @@ public class ControlUtils {
 		
 		dialog.setInput(project);
 		dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
-		if (dialog.open() == IDialogConstants.OK_ID) {
+		if(dialog.open() == IDialogConstants.OK_ID) {
 			IResource resource = (IResource) dialog.getFirstResult();
 			return resource.getProjectRelativePath().toPortableString();
 		}
-		return null;
+		throw new OperationCancellation();
 	}
 	
 	public static <T> T setElementsAndOpenDialog(ElementListSelectionDialog elementListDialog, Indexable<T> configs) 

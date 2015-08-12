@@ -76,7 +76,7 @@ public abstract class ButtonTextField extends TextFieldComponent {
 	
 	protected void handleButtonSelected() {
 		try {
-			String result = getNewValueFromButtonSelection();
+			String result = getNewValueFromButtonSelection2();
 			if(result != null) {
 				setFieldValue(result);
 			}
@@ -93,7 +93,7 @@ public abstract class ButtonTextField extends TextFieldComponent {
 		return "Error:";
 	}
 	
-	protected abstract String getNewValueFromButtonSelection() 
+	protected abstract String getNewValueFromButtonSelection2() 
 			throws CoreException, CommonException, OperationCancellation;
 	
 	@Override

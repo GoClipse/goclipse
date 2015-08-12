@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,8 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
+import melnorme.lang.ide.ui.utils.ControlUtils;
+import melnorme.utilbox.concurrency.OperationCancellation;
 
 public class FileTextField extends ButtonTextField {
 	
@@ -26,16 +26,8 @@ public class FileTextField extends ButtonTextField {
 	}
 	
 	@Override
-	protected String getNewValueFromButtonSelection() {
-		return openFileDialog(getFieldValue(), button.getShell());
-	}
-	
-	public String openFileDialog(String initialValue, Shell shell) {
-		FileDialog dialog = new FileDialog(shell);
-		if(!initialValue.isEmpty()) {
-			dialog.setFilterPath(initialValue);
-		}
-		return dialog.open();
+	protected String getNewValueFromButtonSelection2() throws OperationCancellation {
+		return ControlUtils.openFileDialog(getFieldValue(), button.getShell());
 	}
 	
 }
