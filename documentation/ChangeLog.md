@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed: project not being refreshed when Build Target build invoked directly from Project Explorer.
  * Fixed: "null" text inserted when cancel pressed in Variables dialog.
  * Fixed: Occasional AssertionFailure when creating new projects in nested locations (project would not show up in Explorer).
  * Fixed: Arguments field in launch configuration is not multi-line.
