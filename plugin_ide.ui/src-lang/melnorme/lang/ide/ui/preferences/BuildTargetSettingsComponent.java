@@ -127,7 +127,7 @@ public class BuildTargetSettingsComponent extends AbstractComponent {
 		}
 		
 		@Override
-		protected String getNewValueFromButtonSelection() throws OperationCancellation {
+		protected String getNewValueFromButtonSelection2() throws OperationCancellation {
 			return getFieldValue() + ControlUtils.openStringVariableSelectionDialog(text.getShell());
 		}
 		
@@ -149,7 +149,7 @@ public class BuildTargetSettingsComponent extends AbstractComponent {
 		}
 		
 		@Override
-		protected String getNewValueFromButtonSelection() throws CommonException, OperationCancellation {
+		protected String getNewValueFromButtonSelection2() throws CommonException, OperationCancellation {
 			return getFieldValue() + ControlUtils.openStringVariableSelectionDialog(text.getShell());
 		}
 		

@@ -37,6 +37,7 @@ import melnorme.util.swt.components.fields.ComboOptionsField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 /**
@@ -117,12 +118,12 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		}
 		
 		@Override
-		protected String getNewValueFromButtonSelection() throws StatusException {
+		protected String getNewValueFromButtonSelection2() throws StatusException, OperationCancellation {
 			return GoMainLaunchConfigurationTab.this.openProgramPathDialog(getValidProject());
 		}
 	}
 	
-	protected String openProgramPathDialog(IProject project) {
+	protected String openProgramPathDialog(IProject project) throws OperationCancellation {
 		// TODO: this should be refactored to show only main packages
 		
 		try {
@@ -149,7 +150,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		} catch (CoreException ce) {
 			UIOperationsStatusHandler.handleOperationStatus2("Error selecting package from dialog: ", ce);
 		}
-		return null;
+		throw new OperationCancellation();
 	}
 	
 	/* -----------------  save/apply  ----------------- */

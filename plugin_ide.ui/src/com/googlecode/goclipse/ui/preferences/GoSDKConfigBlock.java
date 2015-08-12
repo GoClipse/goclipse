@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.io.File;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -39,6 +38,7 @@ import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.FileTextField;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -179,7 +179,7 @@ public class GoSDKConfigBlock extends AbstractComponent {
 		}
 		
 		@Override
-		protected String getNewValueFromButtonSelection() throws CoreException, CommonException {
+		protected String getNewValueFromButtonSelection2() throws CommonException, OperationCancellation {
 			String newValue = DirectoryTextField.openDirectoryDialog("", text.getShell());
 			return getFieldValue() + File.pathSeparator + newValue;
 		}

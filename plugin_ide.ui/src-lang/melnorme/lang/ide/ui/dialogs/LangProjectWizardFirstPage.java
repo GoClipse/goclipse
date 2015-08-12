@@ -32,7 +32,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -49,8 +48,10 @@ import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.TextFieldComponent;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.StringUtil;
@@ -277,12 +278,8 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 		
 		@Override
-		protected String getNewValueFromButtonSelection() {
-			DirectoryDialog dialog = new DirectoryDialog(button.getShell());
-			if(!getFieldValue().isEmpty()) {
-				dialog.setFilterPath(getFieldValue());
-			}
-			return dialog.open();
+		protected String getNewValueFromButtonSelection2() throws OperationCancellation {
+			return DirectoryTextField.openDirectoryDialog(getFieldValue(), button.getShell());
 		}
 		
 	}

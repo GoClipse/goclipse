@@ -13,6 +13,8 @@ package melnorme.util.swt.components.fields;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import melnorme.utilbox.concurrency.OperationCancellation;
+
 public class DirectoryTextField extends ButtonTextField {
 	
 	public DirectoryTextField(String label) {
@@ -24,16 +26,20 @@ public class DirectoryTextField extends ButtonTextField {
 	}
 	
 	@Override
-	protected String getNewValueFromButtonSelection() {
+	protected String getNewValueFromButtonSelection2() throws OperationCancellation {
 		return openDirectoryDialog(getFieldValue(), button.getShell());
 	}
 	
-	public static String openDirectoryDialog(String initialValue, Shell shell) {
+	public static String openDirectoryDialog(String initialValue, Shell shell) throws OperationCancellation {
 		DirectoryDialog dialog = new DirectoryDialog(shell);
 		if(!initialValue.isEmpty()) {
 			dialog.setFilterPath(initialValue);
 		}
-		return dialog.open();
+		String result = dialog.open();
+		if(result == null) {
+			throw new OperationCancellation();
+		}
+		return result;
 	}
 	
 }

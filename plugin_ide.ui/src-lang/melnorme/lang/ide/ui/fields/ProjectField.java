@@ -26,6 +26,7 @@ import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.utilbox.concurrency.OperationCancellation;
 
 /**
  * A field whose main value is a project name from the Eclipse workspace.
@@ -69,12 +70,12 @@ public class ProjectField extends ButtonTextField {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected String getNewValueFromButtonSelection() {
+	protected String getNewValueFromButtonSelection2() throws OperationCancellation {
 		IProject project = chooseProject();
 		return project == null ? null : project.getName();
 	}
 	
-	protected IProject chooseProject() {
+	protected IProject chooseProject() throws OperationCancellation {
 		Shell shell = button.getShell();
 		ElementListSelectionDialog dialog = new ElementListSelectionDialog(shell, new WorkbenchLabelProvider());
 		dialog.setTitle(LangUIMessages.projectField_chooseProject_title);
@@ -95,8 +96,7 @@ public class ProjectField extends ButtonTextField {
 		if (dialog.open() == Window.OK) {
 			return (IProject) dialog.getFirstResult();
 		}
-		
-		return null;
+		throw new OperationCancellation();
 	}
 	
 	protected IProject[] getDialogChooseElements() throws CoreException {

@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
 
@@ -38,7 +39,7 @@ public class ProjectRelativePathField extends EnablementButtonTextField {
 	}
 	
 	@Override
-	protected String getNewValueFromButtonSelection() throws CommonException {
+	protected String getNewValueFromButtonSelection2() throws CommonException, OperationCancellation {
 		return ControlUtils.openProgramPathDialog(projectGetter.get(), button);
 	}
 	
