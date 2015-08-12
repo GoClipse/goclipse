@@ -31,6 +31,7 @@ import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public class BuildOperationCreator implements BuildManagerMessages {
@@ -71,6 +72,13 @@ public class BuildOperationCreator implements BuildManagerMessages {
 			addOperation(newBuildTargetOperation(project, buildTarget));
 		}
 		
+		// refresh project
+		addOperation(new IToolOperation() {
+			@Override
+			public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+				project.refreshLocal(IResource.DEPTH_INFINITE, pm);
+			}
+		});
 		
 		addOperation(newMessageOperation(opInfo, headerBIG(MSG_BuildTerminated)));
 		
@@ -114,13 +122,13 @@ public class BuildOperationCreator implements BuildManagerMessages {
 			throws CommonException {
 		Path buildToolPath = LangCore.getToolManager().getSDKToolPath();
 		try {
-			return createBuildTargetOperation(opInfo, project, buildToolPath, buildTarget);
+			return doCreateBuildTargetOperation(opInfo, project, buildToolPath, buildTarget);
 		} catch(CoreException e) {
 			throw new CommonException(e.getMessage(), e.getCause());
 		}
 	}
 	
-	public CommonBuildTargetOperation createBuildTargetOperation(OperationInfo opInfo,
+	public IToolOperation doCreateBuildTargetOperation(OperationInfo opInfo,
 			IProject project, Path buildToolPath, BuildTarget buildTarget
 	) throws CommonException, CoreException {
 		ValidatedBuildTarget validatedBuildTarget = buildMgr.getValidatedBuildTarget(project, buildTarget);

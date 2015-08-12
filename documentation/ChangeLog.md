@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed: project not being refreshed when Build Target build invoked directly from Project Explorer.
  * Fixed: "null" text inserted when cancel pressed in Variables dialog.
 
 ### 0.12.0
