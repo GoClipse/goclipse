@@ -24,10 +24,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.MessageEventInfo;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
+import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -104,16 +106,20 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		};
 	}
 	
-	@SuppressWarnings("unused")
-	protected boolean doDeleteProjectMarkers(String markerType, IProgressMonitor pm) {
-		try {
-			IMarker[] findMarkers = project.findMarkers(markerType, true, IResource.DEPTH_INFINITE);
-			if(findMarkers.length != 0) {
-				project.deleteMarkers(markerType, true, IResource.DEPTH_INFINITE);
-				return true;
+	protected boolean doDeleteProjectMarkers(String markerType, IProgressMonitor parentPM) {
+		
+		try(ProgressSubTaskHelper pm 
+				= new ProgressSubTaskHelper(parentPM, LangCoreMessages.BUILD_ClearingProblemMarkers)) {
+			
+			try {
+				IMarker[] findMarkers = project.findMarkers(markerType, true, IResource.DEPTH_INFINITE);
+				if(findMarkers.length != 0) {
+					project.deleteMarkers(markerType, true, IResource.DEPTH_INFINITE);
+					return true;
+				}
+			} catch (CoreException ce) {
+				LangCore.logStatus(ce);
 			}
-		} catch (CoreException ce) {
-			LangCore.logStatus(ce);
 		}
 		return false;
 	}

@@ -22,6 +22,7 @@ import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
+import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -45,21 +46,29 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		this.opInfo = assertNotNull(opInfo);
 		
 		assertNotNull(validatedBuildTarget);
-		this.buildConfiguration = validatedBuildTarget.getBuildConfiguration();
-		this.buildType = validatedBuildTarget.getBuildType();
+		this.buildConfiguration = assertNotNull(validatedBuildTarget.getBuildConfiguration());
+		this.buildType = assertNotNull(validatedBuildTarget.getBuildType());
 		this.effectiveBuildArguments = validatedBuildTarget.getEffectiveBuildArguments();
 	}
 	
-	protected BuildConfiguration getConfiguration() {
+	public BuildConfiguration getConfiguration() {
 		return buildConfiguration;
 	}
 	
-	protected String getConfigurationName() {
+	public String getConfigurationName() {
 		return buildConfiguration.getName();
 	}
 	
-	protected BuildType getBuildType() {
+	public BuildType getBuildType() {
 		return buildType;
+	}
+	
+	public String getBuildTypeName() {
+		return buildType.getName();
+	}
+	
+	public String getBuildTargetName() {
+		return buildManager.getBuildTargetName(getConfigurationName(), getBuildTypeName());
 	}
 	
 	protected Path getBuildToolPath() throws CommonException {
@@ -71,9 +80,15 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	}
 	
 	@Override
-	public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		ProcessBuilder pb = getToolProcessBuilder();
-		runBuildToolAndProcessOutput(pb, pm);
+	public void execute(IProgressMonitor parentPM) throws CoreException, CommonException, OperationCancellation {
+		try(ProgressSubTaskHelper pm = new ProgressSubTaskHelper(parentPM, getBuildOperationName())) {
+			ProcessBuilder pb = getToolProcessBuilder();
+			runBuildToolAndProcessOutput(pb, pm);
+		}
+	}
+	
+	protected String getBuildOperationName() {
+		return "Building " + getBuildTargetName();
 	}
 	
 	protected ProcessBuilder getToolProcessBuilder() throws CoreException, CommonException, OperationCancellation {
