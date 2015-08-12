@@ -50,7 +50,7 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 
 	
 	public static final String Fields_VariablesButtonLabel = 
-			"Variables";
+			"Variables...";
 	public static final String LaunchTab_Fields_useBuildTargetSettings = 
 			"Use Build Target settings";
 	

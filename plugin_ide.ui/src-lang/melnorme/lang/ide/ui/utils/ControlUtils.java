@@ -58,16 +58,22 @@ public class ControlUtils {
 	
 	public static void openStringVariableSelectionDialog_ForText(Text text) {
 		Shell shell = text.getShell();
-		String variable = openStringVariableSelectionDialog(shell);
-		if (variable != null) {
+		try {
+			String variable = openStringVariableSelectionDialog(shell);
 			text.insert(variable);
+		} catch(OperationCancellation e) {
+			return;
 		}
 	}
 	
-	public static String openStringVariableSelectionDialog(final Shell shell) {
+	public static String openStringVariableSelectionDialog(final Shell shell) throws OperationCancellation {
 		StringVariableSelectionDialog dialog = new StringVariableSelectionDialog(shell);
 		dialog.open();
-		return dialog.getVariableExpression();
+		String result = dialog.getVariableExpression();
+		if(result == null) {
+			throw new OperationCancellation();
+		}
+		return result;
 	}
 	
 	public static String openProgramPathDialog(IProject project, Button button) {
