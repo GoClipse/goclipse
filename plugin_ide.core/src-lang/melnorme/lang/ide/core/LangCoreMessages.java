@@ -16,4 +16,8 @@ public class LangCoreMessages implements ProcessHelperMessages {
 	public static String error_notAValidProject 
 		= "Not a valid project.";
 	
+	/* ----------------- Build ----------------- */
+	
+	public static final String BUILD_ClearingProblemMarkers = "Clearing problem markers";
+	
 }

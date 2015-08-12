@@ -26,6 +26,7 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 	public static String ExceptionDialog_seeErrorLogMessage = 
 			"See error log for more details.";
 	
+	/* -----------------  Fields  ----------------- */
 	
 	public static String mainLaunchTab_title = 
 			"Main";
@@ -37,8 +38,6 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 	
 	public static String projectField_chooseProject_title = "Project selection";
 	public static String projectField_chooseProject_message = "Select a project";
-	
-	/* -----------------  ----------------- */
 	
 	public static final String BuildTargetField_title = 
 			"Build Target:";
