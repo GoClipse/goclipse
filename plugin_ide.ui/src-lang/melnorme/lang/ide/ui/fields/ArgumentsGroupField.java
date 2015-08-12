@@ -20,6 +20,7 @@ import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.utilbox.concurrency.OperationCancellation;
 
 public class ArgumentsGroupField extends ButtonTextField {
 	
@@ -56,7 +57,7 @@ public class ArgumentsGroupField extends ButtonTextField {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected String getNewValueFromButtonSelection() {
+	protected String getNewValueFromButtonSelection() throws OperationCancellation {
 		return getFieldValue() + ControlUtils.openStringVariableSelectionDialog(text.getShell());
 	}
 	

@@ -22,6 +22,7 @@ import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public abstract class ButtonTextField extends TextFieldComponent {
@@ -83,6 +84,8 @@ public abstract class ButtonTextField extends TextFieldComponent {
 			UIOperationsStatusHandler.handleOperationStatus2(getButtonOperationErrorMessage(), ce);
 		} catch(CoreException ce) {
 			UIOperationsStatusHandler.handleOperationStatus2(getButtonOperationErrorMessage(), ce);
+		} catch(OperationCancellation e) {
+			return;
 		}
 	}
 	
@@ -90,7 +93,8 @@ public abstract class ButtonTextField extends TextFieldComponent {
 		return "Error:";
 	}
 	
-	protected abstract String getNewValueFromButtonSelection() throws CoreException, CommonException;
+	protected abstract String getNewValueFromButtonSelection() 
+			throws CoreException, CommonException, OperationCancellation;
 	
 	@Override
 	public void setEnabled(boolean enabled) {

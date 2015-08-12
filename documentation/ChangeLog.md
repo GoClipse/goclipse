@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed: "null" text inserted when cancel pressed in Variables dialog.
 
 ### 0.12.0
  * Added: support for Build Targets:
