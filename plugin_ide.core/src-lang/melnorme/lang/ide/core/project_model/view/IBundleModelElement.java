@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.ui.navigator.elements;
+package melnorme.lang.ide.core.project_model.view;
 
+import melnorme.lang.ide.core.BundleModelElementKind;
 import melnorme.lang.ide.core.INavigatorElement_Actual;
 
-public interface IGoPathElement extends INavigatorElement_Actual {
+public interface IBundleModelElement extends INavigatorElement_Actual {
 	
-	String getName();
+	Object getParent();
 	
+	boolean hasChildren();
+	
+	/** Returns the node's children. */
+	Object[] getChildren();
+	
+	public String getElementName();
+	
+	public BundleModelElementKind getElementType();
+	
+	public String getPathString();
+
 }

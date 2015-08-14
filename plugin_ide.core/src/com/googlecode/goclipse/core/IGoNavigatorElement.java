@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.ui.navigator.elements;
+package com.googlecode.goclipse.core;
 
 
 public interface IGoNavigatorElement {

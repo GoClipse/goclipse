@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.navigator;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import melnorme.lang.ide.core.INavigatorElement_Actual;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 

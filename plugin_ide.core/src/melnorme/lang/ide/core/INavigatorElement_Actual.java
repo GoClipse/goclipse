@@ -8,9 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.navigator;
+package melnorme.lang.ide.core;
 
-import com.googlecode.goclipse.ui.navigator.elements.IGoNavigatorElement;
+import com.googlecode.goclipse.core.IGoNavigatorElement;
 
 import melnorme.lang.tooling.LANG_SPECIFIC;
 

@@ -12,21 +12,31 @@ package melnorme.lang.ide.ui.navigator;
 
 import org.eclipse.core.resources.IProject;
 
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
+
 interface NavigatorElementsSwitcher_Default<RET> {
 	
 	default RET switchElement(Object element) {
 		if(element instanceof IProject) {
 			return visitProject((IProject) element);
-		} else if(element instanceof BuildTargetsContainer) {
+		} 
+		else if(element instanceof BuildTargetsContainer) {
 			return visitBuildTargetsElement((BuildTargetsContainer) element);
-		} else if(element instanceof BuildTargetElement) {
+		} 
+		else if(element instanceof BuildTargetElement) {
 			return visitBuildTarget((BuildTargetElement) element);
-		} else {
+		} 
+		else if(element instanceof IBundleModelElement) {
+			return visitBundleElement((IBundleModelElement) element);
+		} 
+		else {
 			return visitOther(element);
 		}
 	}
 	
 	public abstract RET visitProject(IProject project);
+	
+	public abstract RET visitBundleElement(IBundleModelElement bundleElement);
 	
 	public abstract RET visitBuildTargetsElement(BuildTargetsContainer buildTargetsContainer);
 	
