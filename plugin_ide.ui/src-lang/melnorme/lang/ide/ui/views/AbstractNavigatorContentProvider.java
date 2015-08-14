@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,10 +26,14 @@ import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonContentProvider;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildModel;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
+import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.navigator.BuildTargetElement;
 import melnorme.lang.ide.ui.navigator.BuildTargetsContainer;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
@@ -73,20 +77,27 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		return LangCore.getBuildManager().getBuildModel();
 	}
 	
+	public LangBundleModel<? extends AbstractBundleInfo> getBundleModel() {
+		return LangCore_Actual.getBundleModel();
+	}
+	
 	@Override
 	protected void viewerInitialized() {
 		super.viewerInitialized();
 		
-		getBuildModel().addListener(listener);
+		getBuildModel().addListener(buildModelListener);
+		getBundleModel().addListener(bundleModelListener);
 	}
 	
 	@Override
 	public void dispose() {
-		getBuildModel().removeListener(listener);
+		getBundleModel().removeListener(bundleModelListener);
+		getBuildModel().removeListener(buildModelListener);
 		
 		super.dispose();
 	}
 	
+	protected final NavigatorBundleModelListener bundleModelListener = new NavigatorBundleModelListener();
 	
 	/* -----------------  ----------------- */
 	
@@ -206,7 +217,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 	
 	/* -----------------  ----------------- */
 	
-	protected final BuildModelListener listener = new BuildModelListener();
+	protected final BuildModelListener buildModelListener = new BuildModelListener();
 	
 	protected class BuildModelListener implements IProjectModelListener<ProjectBuildInfo> {
 		
@@ -287,7 +298,12 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		protected abstract void runThrottledCode();
 	}
 	
-	protected class NavigatorModelListener implements IDisposable {
+	public class NavigatorBundleModelListener implements IDisposable, IProjectModelListener<AbstractBundleInfo> {
+		
+		@Override
+		public void notifyUpdateEvent(UpdateEvent<AbstractBundleInfo> updateEvent) {
+			viewerRefreshThrottleJob.scheduleRefreshJob();
+		}
 		
 		@Override
 		public void dispose() {
@@ -303,8 +319,13 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		};
 		
 		protected Indexable<Object> getElementsToRefresh() {
-			return new ArrayList2<>();
-		};
+			ArrayList2<Object> elementsToRefresh = new ArrayList2<>();
+			for(String projectName : getBundleModel().getModelProjects()) {
+				IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
+				elementsToRefresh.add(project);
+			}
+			return elementsToRefresh;
+		}
 		
 		protected void postRefreshEventToUI(ThrottleCodeJob throttleCodeJob, Indexable<Object> elementsToRefresh) {
 			Display.getDefault().asyncExec(new Runnable() {

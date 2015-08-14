@@ -12,6 +12,7 @@ Bundle-ClassPath: .
 Export-Package: melnorme.lang.tests,
  melnorme.lang.tooling,
  melnorme.lang.tooling.ast,
+ melnorme.lang.tooling.bundle,
  melnorme.lang.tooling.completion,
  melnorme.lang.tooling.data,
  melnorme.lang.tooling.ops,
