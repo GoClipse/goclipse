@@ -38,9 +38,7 @@ public final class StringUtil {
 	
 	/** @return "" if given string is null, or the given string otherwise. */
 	public static String nullAsEmpty(String string) {
-		if(string == null)
-			return "";
-		return string;
+		return string == null ? "" : string;
 	}
 	
 	public static String nullAsEmpty(Object obj) {

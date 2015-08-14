@@ -17,14 +17,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 public class GoPluginImages extends LangImages {
 	
-	public static final ImageHandle NAVIGATOR_GOROOT_ENTRY = createManaged("", "navigator/goroot_entry.png");
 	public static final ImageHandle NAVIGATOR_GOPATH_ENTRY = createManaged("", "navigator/gopath_entry.gif");
 	
-	public static final ImageHandle NAVIGATOR_SRC_FOLDER = createManaged("", "navigator/src-folder.png");
 	public static final ImageHandle NAVIGATOR_PKG_FOLDER = createManaged("", "navigator/pkg_folder.gif");
-	public static final ImageHandle NAVIGATOR_BIN_FOLDER = createManaged("", "navigator/bin_folder.gif");
 	public static final ImageHandle NAVIGATOR_GO_PACKAGE_FILE = createManaged("", "navigator/package_file.png");
-	public static final ImageHandle NAVIGATOR_SOURCE_PACKAGE_FOLDER = createManaged("", "navigator/source_package.gif");
 	
 	
 	

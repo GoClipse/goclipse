@@ -27,6 +27,9 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.EnumSet;
 
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.Getter;
+
 /**
  * Miscellaneous file utilities.
  * See also: {@link Files} (Some code has been superceded by it).
@@ -64,6 +67,15 @@ public final class FileUtil {
 	 * @return a String created from those bytes, with given charset. */
 	public static String readStringFromFile(Path file, Charset charset) throws IOException {
 		return readBytesFromFile(file.toFile()).toString(charset);
+	}
+	
+	public static String readStringFromFile(Location loc, Charset charset, Getter<String, RuntimeException> errorMsg) 
+			throws CommonException {
+		try {
+			return readStringFromFile(loc.toFile(), charset);
+		} catch(IOException e) {
+			throw new CommonException(errorMsg.get(), e);
+		}
 	}
 	
 	

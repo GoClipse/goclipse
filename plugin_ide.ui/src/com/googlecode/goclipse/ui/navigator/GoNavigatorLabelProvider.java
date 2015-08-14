@@ -111,7 +111,7 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 			@Override
 			public ImageDescriptor visitGoPathElement(GoPathElement goPathElement) {
 				if(goPathElement instanceof GoRootElement) {
-					return GoPluginImages.NAVIGATOR_GOROOT_ENTRY.getDescriptor();
+					return GoPluginImages.NAV_LibraryNative;
 				}
 				if(goPathElement instanceof GoPathEntryElement) {
 					return GoPluginImages.NAVIGATOR_GOPATH_ENTRY.getDescriptor();
@@ -123,7 +123,7 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 			public ImageDescriptor visitFileStoreElement(IFileStore fileStore) {
 				try {
 					if (fileStore.fetchInfo().isDirectory()) {
-						return GoPluginImages.NAVIGATOR_SOURCE_PACKAGE_FOLDER.getDescriptor();
+						return GoPluginImages.NAV_SourceFolder;
 					}
 					
 					// TODO: should cleanup up this.
@@ -156,14 +156,14 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 			
 			if(resource.getParent() instanceof IProject && !isProjecInsideGoPath) {
 				if("src".equals(resource.getName())) {
-					return GoPluginImages.NAVIGATOR_SRC_FOLDER.getDescriptor();
+					return GoPluginImages.NAV_SourceFolder;
 				} else if("pkg".equals(resource.getName())) {
 					return GoPluginImages.NAVIGATOR_PKG_FOLDER.getDescriptor();
 				} else if("bin".equals(resource.getName())) {
-					return GoPluginImages.NAVIGATOR_BIN_FOLDER.getDescriptor();
+					return GoPluginImages.NAV_OutputFolder;
 				}
 			} else if(isSourcePackageFolder(folder, isProjecInsideGoPath)) {
-				return GoPluginImages.NAVIGATOR_SOURCE_PACKAGE_FOLDER.getDescriptor();
+				return GoPluginImages.NAV_SourceFolder;
 			}
 		} else if(resource instanceof IFile) {
 			IFile file = (IFile) resource;

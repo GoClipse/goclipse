@@ -56,6 +56,7 @@ public abstract class LangImages {
 	
 	public static final String LANG_ACTIONS = "icons-lang/actions/";
 	public static final String LANG_OVERLAYS = "icons-lang/overlays/";
+	public static final String LANG_NAVIGATOR = "icons-lang/navigator/";
 	
 	public static final String CAT_VIEWS = "views";
 	protected static final String T_TABS = "view16";
@@ -101,6 +102,20 @@ public abstract class LangImages {
 	
 	
 	public static final ImageDescriptor OVR_CHECKED = createUnmanaged(LANG_OVERLAYS, "ovr_checked.png");
+	
+	/* ----------------- Navigator ----------------- */
+	
+	public static final ImageDescriptor NAV_Library = createUnmanaged(LANG_NAVIGATOR, "Library.png");
+	public static final ImageDescriptor NAV_LibraryNative = createUnmanaged(LANG_NAVIGATOR, "LibraryNative.png");
+	
+	public static final ImageDescriptor NAV_OutputFolder = createUnmanaged(LANG_NAVIGATOR, "OutputFolder.png");
+	public static final ImageDescriptor NAV_OutputFolder2 = createUnmanaged(LANG_NAVIGATOR, "OutputFolder2.png");
+	
+	public static final ImageDescriptor NAV_Package = createUnmanaged(LANG_NAVIGATOR, "Package.png");
+	public static final ImageDescriptor NAV_PackageManifest = createUnmanaged(LANG_NAVIGATOR, "PackageManifest.png");
+	
+	public static final ImageDescriptor NAV_SourceFolder = createUnmanaged(LANG_NAVIGATOR, "SourceFolder.png");
+	public static final ImageDescriptor NAV_SourceFolderTests = createUnmanaged(LANG_NAVIGATOR, "SourceFolder_Tests.png");
 	
 	/* ----------------- Image cache keyed by ImageDescriptor ----------------- */
 	
