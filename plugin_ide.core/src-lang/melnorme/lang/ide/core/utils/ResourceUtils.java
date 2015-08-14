@@ -108,15 +108,19 @@ public class ResourceUtils {
 	}
 	
 	public static Location getProjectLocation(IProject project) throws CoreException {
-		IPath location = project.getLocation();
-		if(location == null) {
-			throw LangCore.createCoreException("Invalid project location: " + project.getLocationURI(), null);
-		}
 		try {
-			return Location.create(location.toFile().toPath());
+			return getProjectLocation2(project);
 		} catch (CommonException e) {
 			throw LangCore.createCoreException(e);
 		}
+	}
+	
+	public static Location getProjectLocation2(IProject project) throws CommonException {
+		IPath location = project.getLocation();
+		if(location == null) {
+			throw new CommonException("Invalid project location: " + project.getLocationURI());
+		}
+		return Location.create(location.toFile().toPath());
 	}
 	
 	/* ----------------- File read/write ----------------- */
