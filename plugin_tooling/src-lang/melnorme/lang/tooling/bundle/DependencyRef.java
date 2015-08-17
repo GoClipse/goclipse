@@ -16,8 +16,6 @@ import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import java.text.MessageFormat;
 
-import com.github.rustdt.tooling.cargo.CrateManifest.CrateDependencyRef;
-
 import melnorme.utilbox.misc.HashcodeUtil;
 
 public class DependencyRef {
@@ -39,9 +37,9 @@ public class DependencyRef {
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
-		if(!(obj instanceof CrateDependencyRef)) return false;
+		if(!(obj instanceof DependencyRef)) return false;
 		
-		CrateDependencyRef other = (CrateDependencyRef) obj;
+		DependencyRef other = (DependencyRef) obj;
 		
 		return 
 			areEqual(bundleName, other.bundleName) &&

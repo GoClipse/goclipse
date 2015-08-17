@@ -116,7 +116,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 			return project.isAccessible();
 		}
 		@Override
-		default Boolean visitBundleElement(IBundleModelElement bundleElement) {
+		default Boolean visitBundleElement2(IBundleModelElement bundleElement) {
 			return bundleElement.hasChildren();
 		}
 		@Override
@@ -146,7 +146,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 			return getProjectChildren(project);
 		}
 		@Override
-		public Object[] visitBundleElement(IBundleModelElement bundleElement) {
+		public Object[] visitBundleElement2(IBundleModelElement bundleElement) {
 			return bundleElement.getChildren();
 		}
 		@Override
@@ -211,7 +211,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 			return project.getParent();
 		}
 		@Override
-		default Object visitBundleElement(IBundleModelElement dubElement) {
+		default Object visitBundleElement2(IBundleModelElement dubElement) {
 			return dubElement.getParent();
 		}
 		@Override
