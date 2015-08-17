@@ -14,18 +14,22 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 
-import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
 
 public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider implements IStyledLabelProvider {
 	
 	@Override
-	protected DefaultGetStyledTextSwitcher getStyledText_switcher() {
-		return new DefaultGetStyledTextSwitcher() {
+	protected DefaultGetStyledStringSwitcher getStyledString_switcher() {
+		return new DefaultGetStyledStringSwitcher() {
 			@Override
 			public StyledString visitBundleElement(IBundleModelElement bundleElement) {
-				return new BundleModelGetStyledTextSwitcher() { }.switchBundleElement(bundleElement);
+				return new BundleModelGetStyledStringSwitcher() { }.switchBundleElement(bundleElement);
+			}
+			
+			@Override
+			public StyledString visitOther(Object element) {
+				return null;
 			}
 		};
 	}
@@ -37,13 +41,12 @@ public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider 
 			public ImageDescriptor visitBundleElement(IBundleModelElement bundleElement) {
 				return new BundleModelGetImageSwitcher() {
 					
-					@Override
-					public ImageDescriptor visitErrorElement(BundleErrorElement element) {
-						/* FIXME: */
-						return null;
-					}
-					
 				}.switchBundleElement(bundleElement);
+			}
+			
+			@Override
+			public ImageDescriptor visitOther(Object element) {
+				return null;
 			}
 		};
 	}

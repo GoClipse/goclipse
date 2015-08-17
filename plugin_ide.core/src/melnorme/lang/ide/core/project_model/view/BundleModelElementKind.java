@@ -29,14 +29,14 @@ public enum BundleModelElementKind {
 			switch (element.getElementType()) {
 			case DEP_CONTAINER: return visitDepContainer((DependenciesContainer) element);
 			case DEP_REFERENCE: return visitRawDepElement((RawDependencyElement) element);
-			case ERROR_ELEMENT: return visitErrorElement((BundleErrorElement) element);
+			case ERROR_ELEMENT: return visitErrorElement2((BundleErrorElement) element);
 			}
 			throw assertUnreachable();
 		}
 		
 		public abstract RET visitDepContainer(DependenciesContainer element);
 		public abstract RET visitRawDepElement(RawDependencyElement element);
-		public abstract RET visitErrorElement(BundleErrorElement element);
+		public abstract RET visitErrorElement2(BundleErrorElement element);
 		
 	}
 }
