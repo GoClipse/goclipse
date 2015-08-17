@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.views;
 
+import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -19,6 +21,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import _org.eclipse.jdt.ui.ProblemsLabelDecorator;
@@ -70,12 +73,12 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 	
 	@Override
 	public StyledString getStyledText(Object element) {
-		return getStyledText_switcher().switchElement(element);
+		return getStyledString_switcher().switchElement(element);
 	}
 	
-	protected abstract DefaultGetStyledTextSwitcher getStyledText_switcher();
+	protected abstract DefaultGetStyledStringSwitcher getStyledString_switcher();
 	
-	public static abstract class DefaultGetStyledTextSwitcher implements NavigatorElementsSwitcher<StyledString> {
+	public abstract class DefaultGetStyledStringSwitcher implements NavigatorElementsSwitcher<StyledString> {
 		
 		@Override
 		public StyledString visitProject(IProject project) {
@@ -92,19 +95,13 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 			return new StyledString(buildTarget.getTargetDisplayName());
 		}
 		
-		@Override
-		public StyledString visitOther(Object element) {
-			return null;
-		}
-		
 	}
 	
-	public static abstract class BundleModelGetStyledTextSwitcher
+	public abstract class BundleModelGetStyledStringSwitcher
 		implements BundleModelElementsSwitcher<StyledString> {
 		
-		
 		@Override
-		public StyledString visitErrorElement(BundleErrorElement element) {
+		public StyledString visitErrorElement2(BundleErrorElement element) {
 			return new StyledString(element.errorDescription);
 		}
 		
@@ -115,9 +112,20 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 		
 		@Override
 		public StyledString visitRawDepElement(RawDependencyElement element) {
-			return new StyledString(element.getElementName());
+			StyledString baseString = new StyledString(element.getElementName());
+			appendBundleRef(baseString, null, element.getDependencyRef().getVersion());
+			return baseString;
 		}
 		
+	}
+	
+	protected RGB ANNOTATION_FG = new RGB(120, 120, 200);
+	
+	protected StyledString appendBundleRef(StyledString baseString, String bundleName, String bundleVersion) {
+		String bundleNameString = bundleName == null ? "" :  bundleName + " ";
+		String versionString = bundleVersion == null ? "?" : bundleVersion;
+		String bundleRefString = " [" + bundleNameString + versionString + "]";
+		return baseString.append(bundleRefString, fgColor(ANNOTATION_FG));
 	}
 	
 	/* ----------------- image ----------------- */
@@ -164,11 +172,6 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 			return baseImage;
 		}
 		
-		@Override
-		public ImageDescriptor visitOther(Object element) {
-			return null;
-		}
-		
 	}
 	
 	public static abstract class BundleModelGetImageSwitcher
@@ -182,6 +185,11 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 		@Override
 		public ImageDescriptor visitRawDepElement(RawDependencyElement element) {
 			return LangImages.NAV_Package;
+		}
+		
+		@Override
+		public ImageDescriptor visitErrorElement2(BundleErrorElement element) {
+			return LangImages.NAV_Error;
 		}
 		
 	}

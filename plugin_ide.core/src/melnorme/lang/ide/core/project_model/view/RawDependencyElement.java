@@ -11,8 +11,10 @@
 package melnorme.lang.ide.core.project_model.view;
 
 import melnorme.lang.ide.core.project_model.view.AbstractRawDependencyElement;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.lang.tooling.bundle.DependencyRef;
 
+@LANG_SPECIFIC
 public class RawDependencyElement extends AbstractRawDependencyElement<DependenciesContainer> {
 	
 	public RawDependencyElement(DependenciesContainer parent, DependencyRef dependencyRef) {

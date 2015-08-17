@@ -17,8 +17,10 @@ import java.util.ArrayList;
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.utilbox.misc.ArrayUtil;
 
+@LANG_SPECIFIC
 public class DependenciesContainer extends AbstractDependenciesContainer<AbstractBundleInfo> {
 	
 	public DependenciesContainer(AbstractBundleInfo bundleInfo, IProject project) {

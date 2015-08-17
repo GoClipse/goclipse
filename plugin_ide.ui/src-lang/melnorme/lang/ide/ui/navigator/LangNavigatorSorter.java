@@ -18,9 +18,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ViewerSorter;
 
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
-import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
-import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 import melnorme.lang.ide.core.project_model.view.BundleModelElementKind.BundleModelElementsSwitcher;
+import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
+import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 
 public abstract class LangNavigatorSorter extends ViewerSorter {
 	
@@ -48,6 +49,13 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 		@Override
 		public Integer visitProject(IProject project) {
 			return visitFolder();
+		}
+		
+		@Override
+		public Integer visitBundleElement(IBundleModelElement bundleElement) {
+			return new BundleModelElementsSorterSwitcher() {
+				
+			}.switchBundleElement(bundleElement);
 		}
 		
 		@Override
@@ -87,7 +95,7 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 		}
 		
 		@Override
-		public Integer visitErrorElement(BundleErrorElement element) {
+		public Integer visitErrorElement2(BundleErrorElement element) {
 			return -10;
 		}
 		

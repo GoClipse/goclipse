@@ -186,7 +186,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		}
 		
 		@SuppressWarnings("unused")
-		public void addFirstProjectChildren(IProject project, ArrayList2<Object> projectChildren) { 
+		public void addFirstProjectChildren(IProject project, ArrayList2<Object> projectChildren) {
 		}
 		
 	}
