@@ -52,10 +52,8 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 		}
 		
 		@Override
-		public Integer visitBundleElement(IBundleModelElement bundleElement) {
-			return new BundleModelElementsSorterSwitcher() {
-				
-			}.switchBundleElement(bundleElement);
+		public Integer visitBundleElement2(IBundleModelElement bundleElement) {
+			return new BundleModelElementsSorterSwitcher().switchBundleElement(bundleElement);
 		}
 		
 		@Override
@@ -81,7 +79,7 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 		}
 	}
 	
-	protected static abstract class BundleModelElementsSorterSwitcher 
+	public static abstract class BundleModelElementsSorterSwitcher_Default 
 		implements BundleModelElementsSwitcher<Integer> {
 		
 		@Override

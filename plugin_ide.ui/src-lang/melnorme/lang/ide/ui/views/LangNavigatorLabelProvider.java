@@ -78,7 +78,7 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 	
 	protected abstract DefaultGetStyledStringSwitcher getStyledString_switcher();
 	
-	public abstract class DefaultGetStyledStringSwitcher implements NavigatorElementsSwitcher<StyledString> {
+	public static abstract class DefaultGetStyledStringSwitcher implements NavigatorElementsSwitcher<StyledString> {
 		
 		@Override
 		public StyledString visitProject(IProject project) {

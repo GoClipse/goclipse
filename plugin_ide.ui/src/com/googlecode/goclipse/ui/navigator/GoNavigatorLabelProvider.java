@@ -65,7 +65,7 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 			}
 			
 			@Override
-			public StyledString visitBundleElement(IBundleModelElement bundleElement) {
+			public StyledString visitBundleElement2(IBundleModelElement bundleElement) {
 				return new BundleModelGetStyledStringSwitcher() {
 					
 				}.switchBundleElement(bundleElement);
@@ -150,7 +150,7 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 			}
 			
 			@Override
-			public ImageDescriptor visitBundleElement(IBundleModelElement bundleElement) {
+			public ImageDescriptor visitBundleElement2(IBundleModelElement bundleElement) {
 				return new BundleModelGetImageSwitcher() {
 					
 				}.switchBundleElement(bundleElement);
