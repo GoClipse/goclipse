@@ -382,7 +382,7 @@
 				<or>
 					<reference definitionId="com.googlecode.goclipse.core.expressions.isResourceInIDEProject"/>
 					<instanceof value="org.eclipse.core.filesystem.IFileStore"/>
-					<instanceof value="com.googlecode.goclipse.ui.navigator.elements.IGoNavigatorElement" />
+					<instanceof value="com.googlecode.goclipse.core.IGoNavigatorElement" />
 				</or>
 			</possibleChildren>
 			
