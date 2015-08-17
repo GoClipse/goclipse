@@ -33,6 +33,7 @@ import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.navigator.BuildTargetElement;
 import melnorme.lang.ide.ui.navigator.BuildTargetsContainer;
@@ -115,6 +116,10 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 			return project.isAccessible();
 		}
 		@Override
+		default Boolean visitBundleElement(IBundleModelElement bundleElement) {
+			return bundleElement.hasChildren();
+		}
+		@Override
 		default Boolean visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
 			return true;
 		}
@@ -139,6 +144,10 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		@Override
 		public Object[] visitProject(IProject project) {
 			return getProjectChildren(project);
+		}
+		@Override
+		public Object[] visitBundleElement(IBundleModelElement bundleElement) {
+			return bundleElement.getChildren();
 		}
 		@Override
 		public Object[] visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
@@ -200,6 +209,10 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		@Override
 		default Object visitProject(IProject project) {
 			return project.getParent();
+		}
+		@Override
+		default Object visitBundleElement(IBundleModelElement dubElement) {
+			return dubElement.getParent();
 		}
 		@Override
 		default Object visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {

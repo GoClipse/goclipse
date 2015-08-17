@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,11 @@ import java.text.Collator;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ViewerSorter;
+
+import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
+import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
+import melnorme.lang.ide.core.project_model.view.BundleModelElementKind.BundleModelElementsSwitcher;
 
 public abstract class LangNavigatorSorter extends ViewerSorter {
 	
@@ -66,6 +71,26 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 		protected int visitFolder() {
 			return -2;
 		}
+	}
+	
+	protected static abstract class BundleModelElementsSorterSwitcher 
+		implements BundleModelElementsSwitcher<Integer> {
+		
+		@Override
+		public Integer visitDepContainer(DependenciesContainer element) {
+			return -10;
+		}
+		
+		@Override
+		public Integer visitRawDepElement(RawDependencyElement element) {
+			return 0;
+		}
+		
+		@Override
+		public Integer visitErrorElement(BundleErrorElement element) {
+			return -10;
+		}
+		
 	}
 	
 }
