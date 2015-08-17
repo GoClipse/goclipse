@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 
+import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
 
 public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider implements IStyledLabelProvider {
@@ -22,8 +24,8 @@ public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider 
 	protected DefaultGetStyledTextSwitcher getStyledText_switcher() {
 		return new DefaultGetStyledTextSwitcher() {
 			@Override
-			public StyledString visitOther(Object element) {
-				return null;
+			public StyledString visitBundleElement(IBundleModelElement bundleElement) {
+				return new BundleModelGetStyledTextSwitcher() { }.switchBundleElement(bundleElement);
 			}
 		};
 	}
@@ -32,8 +34,16 @@ public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider 
 	protected DefaultGetImageSwitcher getBaseImage_switcher() {
 		return new DefaultGetImageSwitcher() {
 			@Override
-			public ImageDescriptor visitOther(Object element) {
-				return null;
+			public ImageDescriptor visitBundleElement(IBundleModelElement bundleElement) {
+				return new BundleModelGetImageSwitcher() {
+					
+					@Override
+					public ImageDescriptor visitErrorElement(BundleErrorElement element) {
+						/* FIXME: */
+						return null;
+					}
+					
+				}.switchBundleElement(bundleElement);
 			}
 		};
 	}
