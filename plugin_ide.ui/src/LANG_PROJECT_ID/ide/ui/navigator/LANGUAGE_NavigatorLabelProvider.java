@@ -23,7 +23,7 @@ public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider 
 	protected DefaultGetStyledStringSwitcher getStyledString_switcher() {
 		return new DefaultGetStyledStringSwitcher() {
 			@Override
-			public StyledString visitBundleElement(IBundleModelElement bundleElement) {
+			public StyledString visitBundleElement2(IBundleModelElement bundleElement) {
 				return new BundleModelGetStyledStringSwitcher() { }.switchBundleElement(bundleElement);
 			}
 			
@@ -38,7 +38,7 @@ public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider 
 	protected DefaultGetImageSwitcher getBaseImage_switcher() {
 		return new DefaultGetImageSwitcher() {
 			@Override
-			public ImageDescriptor visitBundleElement(IBundleModelElement bundleElement) {
+			public ImageDescriptor visitBundleElement2(IBundleModelElement bundleElement) {
 				return new BundleModelGetImageSwitcher() {
 					
 				}.switchBundleElement(bundleElement);
