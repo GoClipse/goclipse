@@ -24,7 +24,11 @@ public abstract class AbstractRawDependencyElement<PARENT extends IBundleModelEl
 	}
 	
 	public String getBundleName() {
-		return dependencyRef.bundleName;
+		return dependencyRef.getBundleName();
+	}
+	
+	public DependencyRef getDependencyRef() {
+		return dependencyRef;
 	}
 	
 	@Override

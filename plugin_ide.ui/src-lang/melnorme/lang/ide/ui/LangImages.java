@@ -105,6 +105,8 @@ public abstract class LangImages {
 	
 	/* ----------------- Navigator ----------------- */
 	
+	public static final ImageDescriptor NAV_Error = createUnmanaged(LANG_NAVIGATOR, "Error.png");
+	
 	public static final ImageDescriptor NAV_Library = createUnmanaged(LANG_NAVIGATOR, "Library.png");
 	public static final ImageDescriptor NAV_LibraryNative = createUnmanaged(LANG_NAVIGATOR, "LibraryNative.png");
 	
@@ -115,7 +117,7 @@ public abstract class LangImages {
 	public static final ImageDescriptor NAV_PackageManifest = createUnmanaged(LANG_NAVIGATOR, "PackageManifest.png");
 	
 	public static final ImageDescriptor NAV_SourceFolder = createUnmanaged(LANG_NAVIGATOR, "SourceFolder.png");
-	public static final ImageDescriptor NAV_SourceFolderTests = createUnmanaged(LANG_NAVIGATOR, "SourceFolder_Tests.png");
+	public static final ImageDescriptor NAV_SourceFolderTests = createUnmanaged(LANG_NAVIGATOR, "SourceFolder_Tests2.png");
 	
 	/* ----------------- Image cache keyed by ImageDescriptor ----------------- */
 	
