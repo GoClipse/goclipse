@@ -328,7 +328,7 @@
 			<possibleChildren>
 				<or>
 					<reference definitionId="LANG_PROJECT_ID.ide.core.expressions.isResourceInLangProject" />
-					<instanceof value="LANG_PROJECT_ID.ide.ui.navigator.ILANGUAGE_NavigatorElement" />
+					<instanceof value="LANG_PROJECT_ID.ide.core.bundle_model.ILANGUAGE_NavigatorElement" />
 				</or>
 			</possibleChildren>
 			
@@ -336,7 +336,7 @@
 				<parentExpression>
 					<or>
 						<reference definitionId="LANG_PROJECT_ID.ide.core.expressions.isResourceInLangProject"/>
-						<instanceof value="LANG_PROJECT_ID.ide.ui.navigator.ILANGUAGE_NavigatorElement" />
+						<instanceof value="LANG_PROJECT_ID.ide.core.bundle_model.ILANGUAGE_NavigatorElement" />
 					</or>
 				</parentExpression>
 			</commonSorter>
