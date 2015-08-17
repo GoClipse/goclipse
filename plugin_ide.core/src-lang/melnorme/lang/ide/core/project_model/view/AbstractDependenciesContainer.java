@@ -15,8 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.core.BundleModelElementKind;
-
 public abstract class AbstractDependenciesContainer<BUNDLEINFO> extends AbstractBundleModelElement<IProject> {
 	
 	protected final BUNDLEINFO bundleInfo;

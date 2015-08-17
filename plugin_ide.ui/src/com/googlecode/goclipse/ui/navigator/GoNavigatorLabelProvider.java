@@ -38,6 +38,8 @@ import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 
+import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -62,6 +64,13 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 			public StyledString visitFileStoreElement(IFileStore fileStore) {
 				return new StyledString(fileStore.getName());
 			}
+			
+			@Override
+			public StyledString visitBundleElement(IBundleModelElement bundleElement) {
+				return new BundleModelGetStyledTextSwitcher() {
+				}.switchBundleElement(bundleElement);
+			}
+			
 		};
 	}
 	
@@ -139,6 +148,17 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 				}
 				return null;
 			}
+			
+			@Override
+			public ImageDescriptor visitBundleElement(IBundleModelElement bundleElement) {
+				return new BundleModelGetImageSwitcher() {
+					@Override
+					public ImageDescriptor visitErrorElement(BundleErrorElement element) {
+						return null;
+					}
+				}.switchBundleElement(bundleElement);
+			}
+			
 		};
 	}
 	

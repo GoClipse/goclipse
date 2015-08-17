@@ -18,6 +18,7 @@ import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.ui.navigator.LangNavigatorSorter;
 
 /**
@@ -28,6 +29,13 @@ public class GoNavigatorSorter extends LangNavigatorSorter {
 	@Override
 	protected LangNavigatorSorter_Switcher switcher_Sorter() {
 		return new LangNavigatorSorter_Switcher() {
+			
+			@Override
+			public Integer visitBundleElement(IBundleModelElement bundleElement) {
+				return new BundleModelElementsSorterSwitcher() {
+					
+				}.switchBundleElement(bundleElement);
+			}
 			
 			@Override
 			public Integer visitGoPathElement(GoPathElement goPathElement) {

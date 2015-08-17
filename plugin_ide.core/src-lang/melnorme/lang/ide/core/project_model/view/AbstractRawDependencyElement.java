@@ -11,7 +11,6 @@
 package melnorme.lang.ide.core.project_model.view;
 
 
-import melnorme.lang.ide.core.BundleModelElementKind;
 import melnorme.lang.tooling.bundle.DependencyRef;
 
 public abstract class AbstractRawDependencyElement<PARENT extends IBundleModelElement> 

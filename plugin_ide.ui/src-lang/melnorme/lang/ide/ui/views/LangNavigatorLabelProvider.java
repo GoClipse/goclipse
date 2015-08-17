@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import _org.eclipse.jdt.ui.ProblemsLabelDecorator;
+import melnorme.lang.ide.core.project_model.view.BundleModelElementKind.BundleModelElementsSwitcher;
+import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
+import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.navigator.BuildTargetElement;
@@ -88,6 +92,32 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 			return new StyledString(buildTarget.getTargetDisplayName());
 		}
 		
+		@Override
+		public StyledString visitOther(Object element) {
+			return null;
+		}
+		
+	}
+	
+	public static abstract class BundleModelGetStyledTextSwitcher
+		implements BundleModelElementsSwitcher<StyledString> {
+		
+		
+		@Override
+		public StyledString visitErrorElement(BundleErrorElement element) {
+			return new StyledString(element.errorDescription);
+		}
+		
+		@Override
+		public StyledString visitDepContainer(DependenciesContainer element) {
+			return new StyledString("Dependencies");
+		}
+		
+		@Override
+		public StyledString visitRawDepElement(RawDependencyElement element) {
+			return new StyledString(element.getElementName());
+		}
+		
 	}
 	
 	/* ----------------- image ----------------- */
@@ -132,6 +162,26 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 				return new DecoratedImageDescriptor(baseImage, LangImages.OVR_CHECKED, Corner.BOTTOM_RIGHT);
 			}
 			return baseImage;
+		}
+		
+		@Override
+		public ImageDescriptor visitOther(Object element) {
+			return null;
+		}
+		
+	}
+	
+	public static abstract class BundleModelGetImageSwitcher
+			implements BundleModelElementsSwitcher<ImageDescriptor> {
+		
+		@Override
+		public ImageDescriptor visitDepContainer(DependenciesContainer element) {
+			return LangImages.NAV_Library;
+		}
+		
+		@Override
+		public ImageDescriptor visitRawDepElement(RawDependencyElement element) {
+			return LangImages.NAV_Package;
 		}
 		
 	}

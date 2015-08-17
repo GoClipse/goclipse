@@ -12,8 +12,6 @@ package melnorme.lang.ide.core.project_model.view;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.lang.ide.core.BundleModelElementKind;
-
 public class BundleErrorElement extends AbstractBundleModelElement<IBundleModelElement> {
 	
 	public final String errorDescription;
@@ -37,4 +35,5 @@ public class BundleErrorElement extends AbstractBundleModelElement<IBundleModelE
 	public String getPathString() {
 		return getParent().getPathString() + "/" + getElementName();
 	}
+	
 }
