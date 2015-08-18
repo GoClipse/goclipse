@@ -13,7 +13,6 @@ package melnorme.lang.ide.core.operations.build;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -24,11 +23,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.service.prefs.BackingStoreException;
 
+import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBasedModel;
@@ -37,6 +36,7 @@ import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -57,21 +57,21 @@ public abstract class BuildManager {
 	/* -----------------  ----------------- */
 	
 	protected final BuildModel buildModel;
-	protected final LangBundleModel<? extends AbstractBundleInfo> bundleModel;
+	protected final LangBundleModel bundleModel;
 	
-	public BuildManager(LangBundleModel<? extends AbstractBundleInfo> bundleModel) {
+	public BuildManager(LangBundleModel bundleModel) {
 		this(new BuildModel(), bundleModel);
 	}
 	
-	public BuildManager(BuildModel buildModel, LangBundleModel<? extends AbstractBundleInfo> bundleModel) {
+	public BuildManager(BuildModel buildModel, LangBundleModel bundleModel) {
 		this.buildModel = buildModel;
 		this.bundleModel = bundleModel;
 		synchronized (init_Lock) { 
-			HashMap<String, ? extends AbstractBundleInfo> projectInfos = bundleModel.connectListener(listener);
+			HashMap<String, BundleInfo> projectInfos = bundleModel.connectListener(listener);
 			
-			for(Entry<String, ? extends AbstractBundleInfo> entry : projectInfos.entrySet()) {
+			for(Entry<String, BundleInfo> entry : projectInfos.entrySet()) {
 				IProject project = ResourceUtils.getProject(entry.getKey());
-				AbstractBundleInfo bundleInfo = entry.getValue();
+				BundleInfo bundleInfo = entry.getValue();
 				bundleProjectAdded(project, bundleInfo);
 			}
 		}
@@ -79,11 +79,10 @@ public abstract class BuildManager {
 	
 	protected Object init_Lock = new Object();
 	
-	protected final IProjectModelListener<AbstractBundleInfo> listener = 
-			new IProjectModelListener<AbstractBundleInfo>() {
+	protected final IProjectModelListener<BundleInfo> listener = new IProjectModelListener<BundleInfo>() {
 		
 		@Override
-		public void notifyUpdateEvent(UpdateEvent<AbstractBundleInfo> updateEvent) {
+		public void notifyUpdateEvent(UpdateEvent<BundleInfo> updateEvent) {
 			synchronized (init_Lock) {
 				if(updateEvent.newProjectInfo2 != null) {
 					bundleProjectAdded(updateEvent.project, updateEvent.newProjectInfo2);
@@ -149,15 +148,15 @@ public abstract class BuildManager {
 	
 	/* ----------------- ProjectBuildInfo ----------------- */
 	
-	protected void bundleProjectAdded(IProject project, AbstractBundleInfo bundleInfo) {
-		loadProjectBuildInfo(project, bundleInfo);
+	protected void bundleProjectAdded(IProject project, BundleInfo newBundleInfo) {
+		loadProjectBuildInfo(project, newBundleInfo);
 	}
 	
 	protected void bundleProjectRemoved(IProject project) {
 		buildModel.removeProjectInfo(project);
 	}
 	
-	protected void loadProjectBuildInfo(IProject project, AbstractBundleInfo bundleInfo) {
+	protected void loadProjectBuildInfo(IProject project, BundleInfo newBundleInfo) {
 		ProjectBuildInfo currentBuildInfo = buildModel.getProjectInfo(project);
 		
 		if(currentBuildInfo == null) {
@@ -165,42 +164,47 @@ public abstract class BuildManager {
 			if(targetsPrefValue != null) {
 				try {
 					ArrayList2<BuildTarget> buildTargets = createSerializer().readProjectBuildInfo(targetsPrefValue);
-					currentBuildInfo = new ProjectBuildInfo(this, project, bundleInfo, buildTargets);
+					currentBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
 				} catch(CommonException ce) {
 					LangCore.logError(ce);
 				}
 			}
 		}
 		
-		
+		// Create new build info
+		ArrayList2<BuildTarget> buildTargets = createBuildTargetsForNewInfo(newBundleInfo, currentBuildInfo);
+		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
+		setProjectBuildInfo(project, newBuildInfo);
+	}
+	
+	protected ArrayList2<BuildTarget> createBuildTargetsForNewInfo(BundleInfo newBundleInfo, 
+			ProjectBuildInfo currentBuildInfo) {
 		ArrayList2<BuildTarget> buildTargets = new ArrayList2<>();
 		boolean isFirstConfig = true;
 		
-		Indexable<BuildConfiguration> buildConfigs = bundleInfo.getBuildConfigurations();
+		Indexable<BuildConfiguration> buildConfigs = newBundleInfo.getBuildConfigurations();
 		for(BuildConfiguration buildConfig : buildConfigs) {
 			
 			Indexable<BuildType> buildTypes = getBuildTypes();
 			for(BuildType buildType : buildTypes) {
 				
-				String targetName = getBuildTargetName(buildConfig.getName(), buildType.getName()); 
+				String targetName = getBuildTargetName2(buildConfig.getName(), buildType.getName()); 
 				
-				addBuildTargetFromConfig(buildTargets, currentBuildInfo, isFirstConfig, targetName);
+				buildTargets.add(createBuildTargetFromConfig(currentBuildInfo, isFirstConfig, targetName));
 				isFirstConfig = false;
 			}
 			
 		}
-		
-		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, bundleInfo, buildTargets);
-		setProjectBuildInfo(project, newBuildInfo);
+		return buildTargets;
 	}
 	
-	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, ProjectBuildInfo currentBuildInfo,
-			boolean isFirstConfig, String targetName) {
+	protected BuildTarget createBuildTargetFromConfig(ProjectBuildInfo currentBuildInfo, boolean isEnabled,
+			String targetName) {
 		BuildTarget oldBuildTarget = currentBuildInfo == null ? 
 				null : 
 				currentBuildInfo.getDefinedBuildTarget(targetName);
 		
-		BuildTargetData data = new BuildTargetData(targetName, isFirstConfig, null, null);
+		BuildTargetData data = new BuildTargetData(targetName, isEnabled, null, null);
 		
 		if(oldBuildTarget != null) {
 			data.enabled = oldBuildTarget.isEnabled();
@@ -208,7 +212,7 @@ public abstract class BuildManager {
 			data.artifactPath = oldBuildTarget.getArtifactPath();
 		}
 		
-		buildTargets.add(createBuildTarget(data));
+		return createBuildTarget(data);
 	}
 	
 	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
@@ -308,67 +312,29 @@ public abstract class BuildManager {
 	
 	/* ----------------- Build Target name ----------------- */
 	
-	protected String getBuildTypeNameSeparator() {
-		return " #";
-	}
-	
-	public class BuildTargetName {
-		
-		protected final String buildConfig;
-		protected final String buildType;
-		
-		public BuildTargetName(String buildConfig, String buildTypeName) {
-			this.buildConfig = buildConfig;
-			this.buildType = buildTypeName;
-		}
-		
-		public BuildTargetName(String buildTargetName) {
-			this(getBuildConfigString(buildTargetName), getBuildTypeString(buildTargetName));
-		}
-		
-		public String getBuildConfig() {
-			return buildConfig;
-		}
-		
-		public String getBuildType() {
-			return buildType;
-		}
-		
-		public String getEffectiveBuildType() {
-			if(buildType == null) {
-				return getDefaultBuildTypeName();
-			}
-			return buildType;
-		}
-		
-		public String getRawName() {
-			return buildConfig + StringUtil.prefixStr(getBuildTypeNameSeparator(), emptyAsNull(buildType));
-		}
-		
-		public String getResolvedName() {
-			return buildConfig + StringUtil.prefixStr(getBuildTypeNameSeparator(), getEffectiveBuildType());
-		}
-		
-	}
-	
-	public String getBuildConfigString(String targetName) {
-		return StringUtil.substringUntilMatch(targetName, getBuildTypeNameSeparator());
-	}
-	
-	public String getBuildTypeString(String targetName) {
-		return StringUtil.segmentAfterMatch(targetName, getBuildTypeNameSeparator());
+	public BuildTargetNameParser getBuildTargetNameParser() {
+		return new BuildTargetNameParser();
 	}
 	
 	public String getDefaultBuildTypeName() {
 		return getBuildTypes().get(0).getName();
 	}
 	
-	public String getBuildTargetName(String buildConfigName, String buildTypeName) {
-		return new BuildTargetName(buildConfigName, buildTypeName).getRawName();
+	public String getBuildTargetName2(String buildConfigName, String buildTypeName) {
+		assertNotNull(buildConfigName);
+		return getBuildTargetNameParser().getFullName(buildConfigName, buildTypeName);
 	}
 	
-	public String getFullBuildTargetName(String buildTargetName) {
-		return new BuildTargetName(buildTargetName).getResolvedName();
+	public String getResolvedBuildTargetName(String buildTargetName) {
+		BuildTargetNameParser nameParser = getBuildTargetNameParser();
+		
+		String buildConfig = nameParser.getBuildConfig(buildTargetName);
+		String buildType = nameParser.getBuildType(buildTargetName);
+		if(buildType == null) {
+			buildType = getDefaultBuildTypeName();
+		}
+		
+		return nameParser.getFullName(buildConfig, buildType);
 	}
 	
 	/* -----------------  Build Target Validator  ----------------- */

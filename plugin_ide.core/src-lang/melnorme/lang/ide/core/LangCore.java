@@ -19,7 +19,6 @@ import org.osgi.framework.BundleContext;
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.IBundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -57,7 +56,7 @@ public abstract class LangCore extends Plugin {
 	public static IBundleModelManager getBundleModelManager() {
 		return bundleManager;
 	}
-	public static LangBundleModel<? extends AbstractBundleInfo> getBundleModel() {
+	public static LangBundleModel getBundleModel() {
 		return bundleManager.getModel();
 	}
 	public static BuildManager getBuildManager() {

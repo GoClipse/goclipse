@@ -21,7 +21,7 @@ public class BundleModelManagerTest extends CommonCoreTest {
 	@Test
 	public void testShutdown() throws Exception { testShutdown$(); }
 	public void testShutdown$() throws Exception {
-		BundleModelManager<?, ?> bundleMgr = LangCore_Actual.createBundleModelManager();
+		BundleModelManager<?> bundleMgr = LangCore_Actual.createBundleModelManager();
 		bundleMgr.startManager();
 		
 		final LatchRunnable latchRunnable = new LatchRunnable();

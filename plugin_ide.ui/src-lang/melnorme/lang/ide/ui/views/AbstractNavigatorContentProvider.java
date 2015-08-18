@@ -78,7 +78,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		return LangCore.getBuildManager().getBuildModel();
 	}
 	
-	public LangBundleModel<? extends AbstractBundleInfo> getBundleModel() {
+	public LangBundleModel getBundleModel() {
 		return LangCore_Actual.getBundleModel();
 	}
 	
