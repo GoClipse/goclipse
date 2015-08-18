@@ -37,7 +37,6 @@ import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.ProcessUtils;
@@ -54,7 +53,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class GoBuildManager extends BuildManager {
 	
-	public GoBuildManager(LangBundleModel<? extends AbstractBundleInfo> bundleModel) {
+	public GoBuildManager(LangBundleModel bundleModel) {
 		super(bundleModel);
 	}
 	

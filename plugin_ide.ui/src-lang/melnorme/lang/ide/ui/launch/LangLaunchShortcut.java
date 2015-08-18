@@ -87,8 +87,8 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 			}
 			
 			if(areEqual(
-				LangCore.getBuildManager().getFullBuildTargetName(getBuildTarget()),
-				LangCore.getBuildManager().getFullBuildTargetName(launchSettings.buildTargetName)
+				LangCore.getBuildManager().getResolvedBuildTargetName(getBuildTarget()),
+				LangCore.getBuildManager().getResolvedBuildTargetName(launchSettings.buildTargetName)
 			)) {
 				return true;
 			}

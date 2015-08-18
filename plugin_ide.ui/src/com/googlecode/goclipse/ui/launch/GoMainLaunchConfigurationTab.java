@@ -25,12 +25,12 @@ import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 import melnorme.lang.ide.ui.preferences.BuildTargetSettingsComponent;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.ComboOptionsField;
@@ -81,7 +81,11 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	@Override
 	protected String getBuildTargetName() {
 		String buildType = buildTypeField.getFieldValue();
-		return getBuildManager().new BuildTargetName(goPackageField.getFieldValue(), buildType).getResolvedName();
+		return getBuildTargetNameParser().getFullName(goPackageField.getFieldValue(), buildType);
+	}
+	
+	protected BuildTargetNameParser getBuildTargetNameParser() {
+		return getBuildManager().getBuildTargetNameParser();
 	}
 	
 	@Override
@@ -172,8 +176,8 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		//super.initializeBuildTargetField(buildSettings);
 		
 		String buildTargetName = buildSettings.buildTargetName;
-		String buildConfiguration = LangCore.getBuildManager().getBuildConfigString(buildTargetName);
-		String buildTypeName = LangCore.getBuildManager().getBuildTypeString(buildTargetName);
+		String buildConfiguration = getBuildTargetNameParser().getBuildConfigName(buildTargetName);
+		String buildTypeName = getBuildTargetNameParser().getBuildTypeName(buildTargetName);
 		goPackageField.setFieldValue(buildConfiguration);
 		buildTypeField.setFieldValue(buildTypeName);
 		if(buildTypeField.getFieldValue() == null) {

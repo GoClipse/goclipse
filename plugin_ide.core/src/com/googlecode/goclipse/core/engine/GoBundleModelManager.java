@@ -14,17 +14,14 @@ import org.eclipse.core.resources.IProject;
 
 import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
 
-import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
+import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
 
-public class GoBundleModelManager extends BundleModelManager<AbstractBundleInfo, GoBundleModel> {
+public class GoBundleModelManager extends BundleModelManager<GoBundleModel> {
 	
-	public static class GoBundleModel extends LangBundleModel<AbstractBundleInfo> {
+	public static class GoBundleModel extends LangBundleModel {
 		
 	}
 	
@@ -39,17 +36,8 @@ public class GoBundleModelManager extends BundleModelManager<AbstractBundleInfo,
 	
 	
 	@Override
-	protected AbstractBundleInfo createNewInfo(IProject project) {
-		return new AbstractBundleInfo() {
-			
-			@Override
-			public Indexable<BuildConfiguration> getBuildConfigurations() {
-				return ArrayList2.create(
-					new BuildConfiguration("./...", null)
-				);
-			}
-			
-		};
+	protected BundleInfo createNewInfo(IProject project) {
+		return new BundleInfo();
 	}
 	
 }

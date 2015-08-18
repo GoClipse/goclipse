@@ -18,7 +18,7 @@ public interface IBundleModelManager {
 	void startManager();
 	void shutdownManager();
 	
-	LangBundleModel<?> getModel();
+	LangBundleModel getModel();
 	
 	AbstractBundleInfo getProjectInfo(IProject project);
 	

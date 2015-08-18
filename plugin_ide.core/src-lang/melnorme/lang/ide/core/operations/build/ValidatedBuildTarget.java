@@ -13,8 +13,8 @@ package melnorme.lang.ide.core.operations.build;
 import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
-import melnorme.lang.ide.core.operations.build.BuildManager.BuildTargetName;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
+import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.utilbox.core.CommonException;
 
@@ -32,9 +32,9 @@ public class ValidatedBuildTarget extends AbstractValidator2 {
 		this.buildTarget = buildTarget;
 		
 		String targetName = buildTarget.getTargetName();
-		BuildTargetName nameRef = buildMgr.new BuildTargetName(targetName);
-		this.buildConfiguration = buildMgr.getValidBuildConfiguration(project, nameRef.getBuildConfig());
-		this.buildType = buildMgr.getBuildType_NonNull(nameRef.getBuildType());
+		BuildTargetNameParser nameParser = buildMgr.getBuildTargetNameParser();
+		this.buildConfiguration = buildMgr.getValidBuildConfiguration(project, nameParser.getBuildConfig(targetName));
+		this.buildType = buildMgr.getBuildType_NonNull(nameParser.getBuildType(targetName));
 	}
 	
 	public BuildManager getBuildManager() {
