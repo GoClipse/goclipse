@@ -12,15 +12,12 @@ package LANG_PROJECT_ID.ide.core.bundle_model;
 
 import org.eclipse.core.resources.IProject;
 
+import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore_Actual.LANGUAGE_BundleModel;
-import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
 
-public class LANGUAGE_BundleModelManager extends BundleModelManager<AbstractBundleInfo, LANGUAGE_BundleModel> {
+public class LANGUAGE_BundleModelManager extends BundleModelManager<LANGUAGE_BundleModel> {
 	
 	public LANGUAGE_BundleModelManager() {
 		super(new LANGUAGE_BundleModel());
@@ -32,15 +29,8 @@ public class LANGUAGE_BundleModelManager extends BundleModelManager<AbstractBund
 	}
 	
 	@Override
-	protected AbstractBundleInfo createNewInfo(IProject project) {
-		return new AbstractBundleInfo() {
-			
-			@Override
-			public Indexable<BuildConfiguration> getBuildConfigurations() {
-				return ArrayList2.create(new BuildConfiguration("", null));
-			}
-			
-		};
+	protected BundleInfo createNewInfo(IProject project) {
+		return new BundleInfo();
 	}
 	
 }

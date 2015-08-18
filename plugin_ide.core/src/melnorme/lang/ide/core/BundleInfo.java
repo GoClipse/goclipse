@@ -10,10 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import com.github.rustdt.tooling.cargo.CargoManifest;
-
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.utilbox.collections.ArrayList2;
@@ -21,23 +17,12 @@ import melnorme.utilbox.collections.Indexable;
 
 public class BundleInfo extends AbstractBundleInfo {
 	
-	protected final CargoManifest manifest;
-	
-	public BundleInfo(CargoManifest manifest) {
-		this.manifest = assertNotNull(manifest);
-	}
-	
-	public CargoManifest getManifest() {
-		return manifest;
-	}
-	
-	public String getCrateName() {
-		return getManifest().getName();
+	public BundleInfo() {
 	}
 	
 	@Override
 	public Indexable<BuildConfiguration> getBuildConfigurations() {
-		return new ArrayList2<>();
+		return ArrayList2.create(new BuildConfiguration("", null));
 	}
 	
 }

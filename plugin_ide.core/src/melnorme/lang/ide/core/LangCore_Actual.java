@@ -5,7 +5,6 @@ import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_EngineClient;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_BuildManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 
 public class LangCore_Actual {
@@ -38,7 +37,7 @@ public class LangCore_Actual {
 	}
 	
 	
-	public static class LANGUAGE_BundleModel extends LangBundleModel<AbstractBundleInfo> {
+	public static class LANGUAGE_BundleModel extends LangBundleModel {
 		
 	}
 	

@@ -21,7 +21,6 @@ import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
@@ -34,7 +33,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public final class LANGUAGE_BuildManager extends BuildManager {
 	
-	public LANGUAGE_BuildManager(LangBundleModel<? extends AbstractBundleInfo> bundleModel) {
+	public LANGUAGE_BuildManager(LangBundleModel bundleModel) {
 		super(bundleModel);
 	}
 	
