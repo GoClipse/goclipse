@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.ui.IActionBars;
@@ -25,9 +26,12 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 
+import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
@@ -38,6 +42,7 @@ import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -51,20 +56,6 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	public void fillContextMenu(IMenuManager menu) {
 		Object firstSel = getSelectionFirstElement();
 		
-		if(firstSel instanceof BuildTargetElement) {
-			BuildTargetElement buildTargetElement = (BuildTargetElement) firstSel;
-			
-			menu.add(new BuildSingleTargetAction(buildTargetElement));
-			
-			if(buildTargetElement.getBuildTarget().isLaunchable(buildTargetElement.project)) {
-				addLaunchActions(menu, buildTargetElement);
-			}
-			
-			menu.add(new Separator("configure_BuildTarget"));
-			menu.add(new ToggleEnabledAction(buildTargetElement));
-			menu.add(new ConfigureBuildTargetAction(buildTargetElement));
-		}
-		
 		if(firstSel instanceof BuildTargetsContainer) {
 			BuildTargetsContainer buildTargetsContainer = (BuildTargetsContainer) firstSel;
 			
@@ -73,11 +64,65 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			menu.add(new Separator("additions"));
 			menu.add(new ConfigureBuildTargetAction(buildTargetsContainer));
 		}
+		
+		if(firstSel instanceof BuildTargetElement) {
+			BuildTargetElement buildTargetElement = (BuildTargetElement) firstSel;
+			
+			menu.add(new BuildSingleTargetAction(buildTargetElement));
+			
+			addLaunchActions(menu, buildTargetElement);
+			
+			menu.add(new Separator("configure_BuildTarget"));
+			menu.add(new ToggleEnabledAction(buildTargetElement));
+			menu.add(new ConfigureBuildTargetAction(buildTargetElement));
+		}
+		
 	}
 	
 	protected void addLaunchActions(IMenuManager menu, BuildTargetElement buildTargetElement) {
-		menu.add(new LaunchBuildTargetAction(buildTargetElement, true));
-		menu.add(new LaunchBuildTargetAction(buildTargetElement, false));
+		if(!buildTargetElement.getBuildTarget().isLaunchable(buildTargetElement.project)) {
+			return;
+		}
+		
+		LaunchBuildTargetAction runTargetAction = new LaunchBuildTargetAction(buildTargetElement, true);
+		LaunchBuildTargetAction debugTargetAction = new LaunchBuildTargetAction(buildTargetElement, false);
+		try {
+			ValidatedBuildTarget validatedBuildTarget = buildTargetElement.getValidatedBuildTarget();
+			
+			Indexable<String> childrenBuildTargets = validatedBuildTarget.getEffectiveArtifactPaths();
+			if(childrenBuildTargets.size() > 1) {
+				
+				addRunDebugMenu(menu, buildTargetElement, childrenBuildTargets);
+				return;
+			}
+			
+		} catch(CommonException e) {
+			runTargetAction.setEnabled(false);
+			debugTargetAction.setEnabled(false);
+		}
+		
+		menu.add(runTargetAction);
+		menu.add(debugTargetAction);
+	}
+	
+	protected void addRunDebugMenu(IMenuManager menu, BuildTargetElement buildTargetElement, 
+			Indexable<String> executablePaths) {
+		MenuManager runMenu = new MenuManager("Run");
+		MenuManager debugMenu = new MenuManager("Debug");
+		
+		for(String executable : executablePaths) {
+			
+			BuildTargetData childrenBuildData = buildTargetElement.getBuildTarget().getDataCopy();
+			childrenBuildData.artifactPath = executable;
+			BuildTarget childBuildTarget = new BuildTarget(childrenBuildData);
+			BuildTargetElement childElement = new BuildTargetElement(buildTargetElement.project, childBuildTarget);
+			
+			runMenu.add(new LaunchBuildTargetAction(childElement, "Run `" + executable + "`", true)); 
+			debugMenu.add(new LaunchBuildTargetAction(childElement, "Debug `" + executable + "`", false));
+		}
+		
+		menu.add(runMenu);
+		menu.add(debugMenu);
 	}
 	
 	@Override
@@ -244,18 +289,28 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		public String mode;
 		
 		public LaunchBuildTargetAction(BuildTargetElement buildTargetElement, boolean isRun) {
-			super(buildTargetElement, isRun ?
+			this(buildTargetElement, isRun ?
 				BuildManagerMessages.NAME_RunTargetAction :
-				BuildManagerMessages.NAME_DebugTargetAction
+				BuildManagerMessages.NAME_DebugTargetAction,
+				isRun
 			);
+		}
+		
+		public LaunchBuildTargetAction(BuildTargetElement buildTargetElement, String text, boolean isRun) {
+			super(buildTargetElement, text);
 			mode = isRun ? "run" : "debug";
+		}
+		
+		protected String getTargetName() {
+			return buildTarget.getTargetName();
 		}
 		
 		@Override
 		public void doRun() throws StatusException {
+			BuildTargetLaunchSettings btSettings = new BuildTargetLaunchSettings(project.getName(), 
+				buildTarget.getTargetName(), buildTarget.getBuildArguments(), buildTarget.getArtifactPath());
 			LangLaunchShortcut launchShortcut = createLaunchShortcut();
-			String targetName = buildTargetElement.getBuildTarget().getTargetName();
-			BuildTargetLaunchable launchable = launchShortcut.new BuildTargetLaunchable(project, targetName);
+			BuildTargetLaunchable launchable = launchShortcut.new BuildTargetLaunchable(project, btSettings);
 			launchShortcut.launchTarget(launchable, mode);
 		}
 		

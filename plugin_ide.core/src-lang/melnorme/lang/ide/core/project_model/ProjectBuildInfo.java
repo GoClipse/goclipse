@@ -10,10 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 
 import org.eclipse.core.resources.IProject;
 
+import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
@@ -32,13 +34,13 @@ public class ProjectBuildInfo {
 	protected final BuildManager buildMgr;
 	protected final IProject project;
 	protected final LinkedHashMap2<String, BuildTarget> buildTargets = new LinkedHashMap2<>();
-	protected final AbstractBundleInfo bundleInfo;
+	protected final BundleInfo bundleInfo;
 	
 	public ProjectBuildInfo(BuildManager buildManager, IProject project, 
-			AbstractBundleInfo bundleInfo, Indexable<BuildTarget> buildTargets) {
+			BundleInfo bundleInfo, Indexable<BuildTarget> buildTargets, Void dummy /* FIXME: */) {
 		this.buildMgr = buildManager;
 		this.project = project;
-		this.bundleInfo = bundleInfo;
+		this.bundleInfo = assertNotNull(bundleInfo);
 		for(BuildTarget buildTarget : nullToEmpty(buildTargets)) {
 			this.buildTargets.put(buildTarget.getTargetName(), buildTarget);
 		}
@@ -52,7 +54,7 @@ public class ProjectBuildInfo {
 		return project;
 	}
 	
-	public AbstractBundleInfo getBundleInfo() {
+	public BundleInfo getBundleInfo() {
 		return bundleInfo;
 	}
 	
@@ -136,7 +138,7 @@ public class ProjectBuildInfo {
 			throw new StatusException(StatusLevel.WARNING, BuildManagerMessages.ERROR_MODEL_OUT_OF_DATE);
 		}
 		
-		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargets);
+		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargets, null);
 		buildMgr.setAndSaveProjectBuildInfo(project, newProjectBuildInfo);
 	}
 	

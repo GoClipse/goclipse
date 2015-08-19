@@ -40,7 +40,8 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		BuildTargetLaunchSettings launchSettings = new BuildTargetLaunchSettings();
 		launchSettings.initFromProject(project);
 		
-		return new BuildTargetLaunchable(project, launchSettings.buildTargetName);
+		/* FIXME: build target with references */
+		return new BuildTargetLaunchable(project, launchSettings);
 	}
 	
 	protected IProject getAssociatedProject(Object element) {
@@ -57,11 +58,12 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 	public class BuildTargetLaunchable implements ILaunchable {
 		
 		protected final IProject project;
-		protected final String buildTargetName;
+		protected final BuildTargetLaunchSettings buildTargetSettings;
 		
-		public BuildTargetLaunchable(IProject project, String buildTargetName) {
+		public BuildTargetLaunchable(IProject project, BuildTargetLaunchSettings buildTargetSettings) {
 			this.project = project;
-			this.buildTargetName = assertNotNull(buildTargetName);
+			this.buildTargetSettings = buildTargetSettings;
+			assertNotNull(buildTargetSettings.buildTargetName);
 		}
 		
 		@Override
@@ -71,24 +73,25 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		
 		@Override
 		public String getLabel() {
-			return buildTargetName;
+			return getBuildTargetName();
 		}
 		
-		public String getBuildTarget() {
-			return buildTargetName;
+		public String getBuildTargetName() {
+			return buildTargetSettings.buildTargetName;
 		}
 		
 		@Override
 		public boolean matchesLaunchConfiguration(ILaunchConfiguration config) throws CoreException {
-			BuildTargetLaunchSettings launchSettings = new BuildTargetLaunchSettings(config);
+			BuildTargetLaunchSettings otherLaunchSettings = new BuildTargetLaunchSettings(config);
 			
-			if(!areEqual(getProjectName(), launchSettings.projectName)) {
+			/* FIXME: match other settings parameters. */
+			if(!areEqual(getProjectName(), otherLaunchSettings.projectName)) {
 				return false;
 			}
 			
 			if(areEqual(
-				LangCore.getBuildManager().getResolvedBuildTargetName(getBuildTarget()),
-				LangCore.getBuildManager().getResolvedBuildTargetName(launchSettings.buildTargetName)
+				LangCore.getBuildManager().getResolvedBuildTargetName(getBuildTargetName()),
+				LangCore.getBuildManager().getResolvedBuildTargetName(otherLaunchSettings.buildTargetName)
 			)) {
 				return true;
 			}
@@ -97,11 +100,7 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		
 		@Override
 		public ILaunchConfiguration createNewConfiguration() throws CoreException {
-			return new BuildTargetLaunchSettings(
-				getProjectName(),
-				getBuildTarget(),
-				null, null
-			).createNewConfiguration(getLaunchConfigType());
+			return buildTargetSettings.createNewConfiguration(getLaunchConfigType());
 		}
 		
 	}

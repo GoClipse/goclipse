@@ -10,16 +10,20 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import java.nio.file.Path;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
+import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.launch.BuildTargetSettingsValidator;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.tests.BuildTestsHelper;
 import melnorme.lang.ide.core.tests.SampleProject;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.tests.CommonTest;
 
@@ -41,15 +45,10 @@ public class BuildTargetValidatorTest extends CommonTest {
 				new BuildTarget("SampleTarget2", true, "sample args", "sample path")
 			);
 			
-			buildMgr.setProjectBuildInfo(project, 
-				new ProjectBuildInfo(buildMgr, project, new AbstractBundleInfo() {
-					@Override
-					public Indexable<BuildConfiguration> getBuildConfigurations() {
-						return new ArrayList2<>();
-					}
-				}, buildTargets)
-			);
+			BundleInfo bundleInfo = BuildTestsHelper.createSampleBundleInfoA("foo", null);
+			buildMgr.setProjectBuildInfo(project, new ProjectBuildInfo(buildMgr, project, bundleInfo, buildTargets, null));
 		}
+		
 	}
 	
 	protected final BuildManager buildMgr = BuildManager.getInstance();
@@ -117,6 +116,55 @@ public class BuildTargetValidatorTest extends CommonTest {
 			}
 		};
 		return btProcessor;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Test
+	public void testType() throws Exception { testType$(); }
+	public void testType$() throws Exception {
+		
+		BuildManager.BuildType buildType = new BuildManager.BuildType("default") {
+			
+			@Override
+			protected void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) {
+			}
+			
+			@Override
+			protected BuildConfiguration getValidBuildconfiguration(String buildConfigName, ProjectBuildInfo buildInfo)
+					throws CommonException {
+				return new BuildConfiguration(buildConfigName, null);
+			}
+			
+			@Override
+			public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget, OperationInfo opInfo,
+					Path buildToolPath) throws CommonException, CoreException {
+				return null;
+			}
+		};
+		
+		
+		try(SampleProject sampleProj = initSampleProject()){
+			
+			IProject project = sampleProj.getProject();
+			
+			BuildTarget targetA = new BuildTarget("SampleTarget", true, null, null);
+			assertAreEqual(buildType.getDefaultArtifactPaths(buildType.getValidatedBuildTarget(project, targetA, "")), 
+				new ArrayList2<>(
+			));
+			
+			BuildTarget target2 = new BuildTarget("SampleTarget2", true, "sample args", "sample path");
+			ValidatedBuildTarget validatedTarget2 = buildType.getValidatedBuildTarget(project, target2, "");
+			assertAreEqual(buildType.getDefaultArtifactPaths(validatedTarget2), 
+				new ArrayList2<>(
+			));
+			
+			assertAreEqual(validatedTarget2.getEffectiveArtifactPaths(), 
+				new ArrayList2<>(
+					"sample path"
+			));
+			
+		}
 	}
 	
 }

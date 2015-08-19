@@ -11,7 +11,6 @@
 package melnorme.lang.ide.core.launch;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -22,6 +21,7 @@ import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.lang.tooling.data.ValidationMessages;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -84,8 +84,18 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 		return getValidatedOriginalBuildTarget().getEffectiveBuildArguments();
 	}
 	
-	public String getDefaultArtifactPath() throws CommonException {
-		return getValidatedOriginalBuildTarget().getEffectiveArtifactPath();
+	public String getDefaultExecutablePath() throws CommonException {
+		return getSingleExecutable(getValidatedOriginalBuildTarget().getEffectiveArtifactPaths());
+	}
+	
+	public String getSingleExecutable(Indexable<String> executablePaths) throws CommonException {
+		if(executablePaths.isEmpty()) {
+			throw new CommonException(LaunchMessages.MSG_NoExecutablesAvailable());
+		}
+		if(executablePaths.size() > 1) {
+			throw new CommonException(LaunchMessages.MSG_MultipleExecutablesAvailable());
+		}
+		return executablePaths.get(0);
 	}
 	
 	/* -----------------  ----------------- */ 
@@ -94,13 +104,17 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 		return getValidatedBuildTarget().getEffectiveBuildArguments();
 	}
 	
-	public Location getValidExecutableLocation() throws CoreException, CommonException {
-		return getValidExecutableLocation(getValidatedBuildTarget().getEffectiveArtifactPath());
+	public Location getValidExecutableLocation() throws CommonException {
+		return getValidExecutableLocation(getSingleExecutable(getEffectiveExecutablePaths()));
+	}
+	
+	public Indexable<String> getEffectiveExecutablePaths() throws CommonException {
+		return getValidatedBuildTarget().getEffectiveArtifactPaths();
 	}
 	
 	/* -----------------  ----------------- */ 
 	
-	public Location getValidExecutableLocation(String exeFilePathString) throws CommonException, CoreException {
+	public Location getValidExecutableLocation(String exeFilePathString) throws CommonException {
 		if(exeFilePathString == null || exeFilePathString.isEmpty()) {
 			throw new CommonException(LaunchMessages.BuildTarget_NoArtifactPathSpecified);
 		}

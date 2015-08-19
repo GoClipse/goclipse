@@ -25,6 +25,8 @@ import melnorme.utilbox.misc.StringUtil;
 
 public class BuildTargetLaunchSettings extends ProjectLaunchSettings {
 	
+	/* FIXME: perhaps we can use BuildTargetData? */
+	
 	public String buildTargetName = null;
 	public boolean buildArguments_isDefault = true;
 	public String buildArguments = null;
