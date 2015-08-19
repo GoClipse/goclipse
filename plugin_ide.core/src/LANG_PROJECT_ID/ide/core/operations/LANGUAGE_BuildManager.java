@@ -10,8 +10,6 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
-import static melnorme.utilbox.core.CoreUtil.array;
-
 import java.nio.file.Path;
 
 import org.eclipse.core.runtime.CoreException;
@@ -50,13 +48,14 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
-			return ".";
+		protected void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) {
+			buildArgs.add(".");
 		}
 		
 		@Override
-		public String getArtifactPath(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
-			return "default_artifact.exe"; // TODO: LANG
+		public Indexable<String> getDefaultArtifactPaths(ValidatedBuildTarget validatedBuildTarget)
+				throws CommonException {
+			return new ArrayList2<>("default_artifact.exe"); // TODO: LANG
 		}
 		
 		@Override
@@ -79,11 +78,6 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		protected void addToolCommand(ArrayList2<String> commands)
 				throws CoreException, CommonException, OperationCancellation {
 			//super.addToolCommand(commands);
-		}
-		
-		@Override
-		protected String[] getMainArguments() throws CoreException, CommonException, OperationCancellation {
-			return array(getConfigurationName());
 		}
 		
 		@Override

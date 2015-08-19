@@ -10,22 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.tests;
 
-import com.github.rustdt.tooling.cargo.CargoManifest;
-
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.tooling.LANG_SPECIFIC;
-import melnorme.lang.tooling.bundle.FileRef;
-import melnorme.utilbox.collections.ArrayList2;
 
 @LANG_SPECIFIC
 public class BuildTestsHelper {
 	
+	@SuppressWarnings("unused")
 	public static BundleInfo createSampleBundleInfoA(String name, String version) {
-		return new BundleInfo(new CargoManifest(name, version, null, 
-			new ArrayList2<>(
-				new FileRef("sampleConfig", null)
-			)
-		));
+		return new BundleInfo();
 	}
 	
 }
