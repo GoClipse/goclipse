@@ -53,7 +53,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 	}
 	protected BuildTargetSettingsComponent init_createBuildTargetSettingsComponent() {
 		return new BuildTargetSettingsComponent(
-			getValidator()::getDefaultBuildArguments, getValidator()::getDefaultArtifactPath);
+			getValidator()::getDefaultBuildArguments, getValidator()::getDefaultExecutablePath);
 	}
 	
 	public BuildTargetField getBuildTargetField() {

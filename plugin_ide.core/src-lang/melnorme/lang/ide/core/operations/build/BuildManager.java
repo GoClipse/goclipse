@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.Map.Entry;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.debug.core.DebugPlugin;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.BundleInfo;
@@ -157,6 +158,8 @@ public abstract class BuildManager {
 	}
 	
 	protected void loadProjectBuildInfo(IProject project, BundleInfo newBundleInfo) {
+		assertNotNull(newBundleInfo);
+		
 		ProjectBuildInfo currentBuildInfo = buildModel.getProjectInfo(project);
 		
 		if(currentBuildInfo == null) {
@@ -164,7 +167,7 @@ public abstract class BuildManager {
 			if(targetsPrefValue != null) {
 				try {
 					ArrayList2<BuildTarget> buildTargets = createSerializer().readProjectBuildInfo(targetsPrefValue);
-					currentBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
+					currentBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets, null);
 				} catch(CommonException ce) {
 					LangCore.logError(ce);
 				}
@@ -173,7 +176,7 @@ public abstract class BuildManager {
 		
 		// Create new build info
 		ArrayList2<BuildTarget> buildTargets = createBuildTargetsForNewInfo(newBundleInfo, currentBuildInfo);
-		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
+		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets, null);
 		setProjectBuildInfo(project, newBuildInfo);
 	}
 	
@@ -248,17 +251,35 @@ public abstract class BuildManager {
 			return name;
 		}
 		
-		public abstract String getDefaultBuildOptions(ValidatedBuildTarget validatedBuildTarget) 
+		public ValidatedBuildTarget getValidatedBuildTarget(IProject project, BuildTarget buildTarget,
+				String buildConfigName) throws CommonException {
+			return new ValidatedBuildTarget(project, buildTarget, this, buildConfigName);
+		}
+		
+		protected BuildConfiguration getValidBuildconfiguration(String buildConfigName, ProjectBuildInfo buildInfo)
+				throws CommonException {
+			return buildInfo.getBuildConfiguration_nonNull(buildConfigName);
+		}
+		
+		public String getDefaultBuildOptions(ValidatedBuildTarget validatedBuildTarget) 
+				throws CommonException {
+			ArrayList2<String> arguments = new ArrayList2<>();
+			getDefaultBuildOptions(validatedBuildTarget, arguments);
+			return DebugPlugin.renderArguments(arguments.toArray(String.class), null);
+		}
+		
+		protected abstract void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) 
 				throws CommonException;
 		
-		public String getArtifactPath(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
-			return validatedBuildTarget.getBuildConfiguration().getArtifactPath();
+		public Indexable<String> getDefaultArtifactPaths(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
+			String artifactPath = validatedBuildTarget.getBuildConfiguration().getArtifactPath();
+			return artifactPath == null ? new ArrayList2<>() : new ArrayList2<>(artifactPath);
 		}
 		
 		public abstract CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
 				OperationInfo opInfo, Path buildToolPath)
 				throws CommonException, CoreException;
-				
+		
 	}
 	
 	protected final Indexable<BuildType> getBuildTypes() {
@@ -304,12 +325,6 @@ public abstract class BuildManager {
 		
 	}
 	
-	protected BuildConfiguration getValidBuildConfiguration(IProject project, String buildConfigName) 
-			throws CommonException {
-		ProjectBuildInfo currentBuildInfo = getValidBuildInfo(project);
-		return currentBuildInfo.getBuildConfiguration_nonNull(buildConfigName);
-	}
-	
 	/* ----------------- Build Target name ----------------- */
 	
 	public BuildTargetNameParser getBuildTargetNameParser() {
@@ -341,7 +356,14 @@ public abstract class BuildManager {
 	
 	public ValidatedBuildTarget getValidatedBuildTarget(IProject project, BuildTarget buildTarget) 
 			throws CommonException {
-		return new ValidatedBuildTarget(project, buildTarget);
+		
+		String targetName = buildTarget.getTargetName();
+		BuildTargetNameParser nameParser = getBuildTargetNameParser();
+		String buildConfigName = nameParser.getBuildConfig(targetName);
+		
+		BuildType buildType = getBuildType_NonNull(nameParser.getBuildType(targetName));
+		
+		return buildType.getValidatedBuildTarget(project, buildTarget, buildConfigName);
 	}
 	
 	public BuildTarget getBuildTargetFor2(ProjectBuildInfo projectBuildInfo, String targetName)

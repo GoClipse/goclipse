@@ -15,11 +15,18 @@ import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.core.CommonException;
+
 public class LaunchUtils {
 	
-	public static String[] getEvaluatedAndParsedArguments(String extraOptionsString) throws CoreException {
-		IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
-		extraOptionsString = varMgr.performStringSubstitution(extraOptionsString, true);
+	public static String[] getEvaluatedAndParsedArguments(String extraOptionsString) throws CommonException {
+		try {
+			IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
+			extraOptionsString = varMgr.performStringSubstitution(extraOptionsString, true);
+		} catch(CoreException ce) {
+			throw LangCore.createCommonException(ce);
+		}
 		return DebugPlugin.parseArguments(extraOptionsString);
 	}
 	

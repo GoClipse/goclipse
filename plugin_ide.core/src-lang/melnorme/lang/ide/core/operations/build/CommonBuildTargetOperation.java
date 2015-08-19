@@ -92,15 +92,14 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	}
 	
 	protected ProcessBuilder getToolProcessBuilder() throws CoreException, CommonException, OperationCancellation {
-		return getToolProcessBuilder(getMainArguments(), getEvaluatedAndParsedArguments());
+		return getToolProcessBuilder(getEvaluatedAndParsedArguments());
 	}
 	
-	protected ProcessBuilder getToolProcessBuilder(String[] mainArguments, String[] extraArguments) 
+	protected ProcessBuilder getToolProcessBuilder(String[] buildArguments) 
 			throws CoreException, CommonException, OperationCancellation {
 		ArrayList2<String> commands = new ArrayList2<String>();
 		addToolCommand(commands);
-		commands.addElements(mainArguments);
-		commands.addElements(extraArguments);
+		commands.addElements(buildArguments);
 		return getProcessBuilder(commands);
 	}
 	
@@ -108,9 +107,6 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 			throws CoreException, CommonException, OperationCancellation {
 		commands.add(getBuildToolPath().toString());
 	}
-	
-	protected abstract String[] getMainArguments()
-			throws CoreException, CommonException, OperationCancellation;
 	
 	protected String[] getEvaluatedAndParsedArguments() throws CoreException, CommonException {
 		return LaunchUtils.getEvaluatedAndParsedArguments(getEffectiveBuildArguments());

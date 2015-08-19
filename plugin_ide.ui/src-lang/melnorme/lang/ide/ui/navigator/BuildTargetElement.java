@@ -16,7 +16,9 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
 
 public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
@@ -61,6 +63,12 @@ public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 			return 0;
 		}
 		return CollectionUtil.indexOf(buildInfo.getBuildTargets(), buildTarget);
+	}
+	
+	/* -----------------  helpers  ----------------- */
+	
+	public ValidatedBuildTarget getValidatedBuildTarget() throws CommonException {
+		return getBuildManager().getValidatedBuildTarget(project, buildTarget);
 	}
 	
 }

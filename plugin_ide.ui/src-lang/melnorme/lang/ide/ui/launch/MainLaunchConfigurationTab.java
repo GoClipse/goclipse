@@ -87,7 +87,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	protected String getDefaultProgramPath() throws CommonException {
-		return getValidator().getDefaultArtifactPath();
+		return getValidator().getDefaultExecutablePath();
 	}
 	
 	protected BuildTargetSettingsValidator getValidator() throws CommonException {

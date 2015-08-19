@@ -38,6 +38,7 @@ import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
+import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
@@ -99,12 +100,6 @@ public class GoBuildManager extends BuildManager {
 		};
 	}
 	
-	@Override
-	protected BuildConfiguration getValidBuildConfiguration(IProject project, String buildConfigName)
-			throws CommonException {
-		return new BuildConfiguration(buildConfigName, null);
-	}
-	
 	/* -----------------  ----------------- */
 	
 	public static abstract class AbstractGoBuildType extends BuildType {
@@ -113,19 +108,27 @@ public class GoBuildManager extends BuildManager {
 			super(name);
 		}
 		
+		@Override
+		protected BuildConfiguration getValidBuildconfiguration(String buildConfigName, ProjectBuildInfo buildInfo)
+				throws CommonException {
+			return new BuildConfiguration(buildConfigName, null);
+		}
+		
 		protected GoPackageName getValidGoPackageName(String goPackageString) throws CommonException {
 			return GoPackageName.createValid(goPackageString);
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
+		protected void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) 
+				throws CommonException {
 			String goPackageSpec = getGoPackageSpec(
-				validatedBuildTarget.getProject(), 
-				validatedBuildTarget.getBuildConfigName());
-			return getBuildCommand() + " -v -gcflags \"-N -l\" " + goPackageSpec;
+				vbt.getProject(), 
+				vbt.getBuildConfigName());
+			buildArgs.addElements(getBuildCommand());
+			buildArgs.addElements("-v", "-gcflags", "-N -l", goPackageSpec);
 		}
 		
-		protected abstract String getBuildCommand();
+		protected abstract String[] getBuildCommand();
 		
 		protected String getGoPackageSpec(IProject project, String goPackageSpec) throws CommonException {
 			
@@ -145,11 +148,14 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getArtifactPath(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
+		public Indexable<String> getDefaultArtifactPaths(ValidatedBuildTarget validatedBuildTarget)
+				throws CommonException {
 			Location binFolderLocation = getBinFolderLocation(validatedBuildTarget);
 			
 			String binFilePath = getBinFilePath(getValidGoPackageName(validatedBuildTarget.getBuildConfigName()));
-			return binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString();
+			return new ArrayList2<>(	
+				binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString()
+			);
 		}
 		
 		protected Location getBinFolderLocation(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
@@ -169,8 +175,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected String getBuildCommand() {
-			return "install";
+		protected String[] getBuildCommand() {
+			return array("install");
 		}
 		
 		@Override
@@ -200,11 +206,6 @@ public class GoBuildManager extends BuildManager {
 				
 				checkGoFilesInSourceRoot();
 			}
-		}
-		
-		@Override
-		protected String[] getMainArguments() throws CoreException, CommonException, OperationCancellation {
-			return array();
 		}
 		
 		@Override
@@ -249,8 +250,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected String getBuildCommand() {
-			return "test -c";
+		protected String[] getBuildCommand() {
+			return array("test", "-c");
 		}
 		
 		@Override
@@ -288,16 +289,15 @@ public class GoBuildManager extends BuildManager {
 				
 				@Override
 				public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-					String[] extraArgumentsOriginal = getEvaluatedAndParsedArguments();
+					String[] argumentsOriginal = getEvaluatedAndParsedArguments();
 					
-					if(!isMultipleGoPackagesArguments(extraArgumentsOriginal)) {
-						runBuildToolAndProcessOutput(
-							getToolProcessBuilder(getMainArguments(), extraArgumentsOriginal), pm);
+					if(!isMultipleGoPackagesArguments(argumentsOriginal)) {
+						runBuildToolAndProcessOutput(getToolProcessBuilder(argumentsOriginal), pm);
 						return;
 					}
 					
-					ArrayList2<String> argumentsTemplate = new ArrayList2<>(extraArgumentsOriginal);
-					int lastArgIx = extraArgumentsOriginal.length - 1;
+					ArrayList2<String> argumentsTemplate = new ArrayList2<>(argumentsOriginal);
+					int lastArgIx = argumentsOriginal.length - 1;
 					String goPackageToBuild = StringUtil.trimEnd(argumentsTemplate.get(lastArgIx), "...");
 					
 					GoWorkspaceLocation goWorkspace = goEnv.getGoPath().findGoPathEntry(getProjectLocation());
@@ -310,9 +310,8 @@ public class GoBuildManager extends BuildManager {
 					for (GoPackageName goPackage : sourcePackages) {
 						argumentsTemplate.set(lastArgIx, goPackage.getFullNameAsString());
 						
-						String[] extraArguments = argumentsTemplate.toArray(String.class);
-						runBuildToolAndProcessOutput(
-							getToolProcessBuilder(getMainArguments(), extraArguments), pm);
+						String[] arguments = argumentsTemplate.toArray(String.class);
+						runBuildToolAndProcessOutput(getToolProcessBuilder(arguments), pm);
 					}
 					
 				}
@@ -330,12 +329,13 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected String getBuildCommand() {
-			return "test";
+		protected String[] getBuildCommand() {
+			return array("test");
 		}
 		
 		@Override
-		public String getArtifactPath(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
+		public Indexable<String> getDefaultArtifactPaths(ValidatedBuildTarget validatedBuildTarget)
+				throws CommonException {
 			throw new CommonException("This configuration does not produce executable artifacts.");
 		}
 		

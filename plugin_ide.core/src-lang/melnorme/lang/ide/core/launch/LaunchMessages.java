@@ -11,6 +11,16 @@ public class LaunchMessages {
 	public static final String BuildTarget_NoArtifactPathSpecified = 
 			"No executable path specified for Build Target.";
 	
+	public static String MSG_NoExecutablesAvailable() {
+		return "No executables available.";
+	}
+	
+	public static String MSG_MultipleExecutablesAvailable() {
+		return "Multiple executables available.";
+	}
+	
+	/* -----------------  ----------------- */
+	
 	
 	public static final String LCD_PreparingLaunch = 
 			"Preparing launch...";
