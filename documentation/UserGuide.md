@@ -85,6 +85,10 @@ Alternatively, you can start a launch by selecting a Go package folder in the Pr
 | **Windows Note:** _Even with the above, the Go toolchain does not seem to fully support debugging in Windows. While setting breakpoints and step/continue seems to work, inspecting variables doesn't work - garbage values are displayed._ |
 |----|
 
+| **OS X note:** _The GDB that is included with OS X doesn't work properly. You'll need to install the latest GDB from Homebrew. See [this article](http://ntraft.com/installing-gdb-on-os-x-mavericks/) for details._ |
+|----|
+
+
 You can debug a Go program by running a launch in debug mode. You will need a GDB debugger. To configure debug options (in particular, the path to the debugger to use), open the launch under 'Run' / 'Debug Configurations...', and then navigate to the 'Debugger' tab in the desired launch configuration:
 
 <div align="center">
