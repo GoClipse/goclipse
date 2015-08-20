@@ -53,9 +53,10 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Indexable<String> getDefaultArtifactPaths(ValidatedBuildTarget validatedBuildTarget)
-				throws CommonException {
-			return new ArrayList2<>("default_artifact.exe"); // TODO: LANG
+		public Indexable<BuildConfiguration> getSubConfigurations_do(ValidatedBuildTarget vbt) throws CommonException {
+			return new ArrayList2<>(
+				new BuildConfiguration(vbt.getBuildConfigName(), "default_artifact.exe") // TODO: LANG
+			);
 		}
 		
 		@Override
