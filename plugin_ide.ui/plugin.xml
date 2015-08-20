@@ -268,7 +268,7 @@
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
 			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_BuildConfigurationPropertyPage"
-			id="LANG_PROJECT_ID.ide.ui.properties.BuildConfigurationPage"
+			id="LANG_PROJECT_ID.ide.ui.propertyPages.ProjectBuildConfiguration"
 			name="%LangBuildOptionsPropertyPage.name">
 			<enabledWhen> 
 				<reference definitionId="LANG_PROJECT_ID.ide.core.expressions.isNatureProject" />
