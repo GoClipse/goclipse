@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Added UserGuide note about using Homebrew GDB in OS X.
  * Fixed: "Run As"/"Debug As" launch shortcut incorrectly matching pre-existing launch configurations.
  * Fixed: project not being refreshed when Build Target build invoked directly from Project Explorer.
  * Fixed: "null" text inserted when cancel pressed in Variables dialog.
