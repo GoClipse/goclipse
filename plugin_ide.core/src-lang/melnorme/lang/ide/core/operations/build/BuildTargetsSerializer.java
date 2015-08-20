@@ -86,7 +86,7 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		targetElem.setAttribute(PROP_NAME, buildTarget.getTargetName());
 		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(buildTarget.isEnabled()));
 		setOptionalAttribute(targetElem, PROP_ARGUMENTS, buildTarget.getBuildArguments());
-		setOptionalAttribute(targetElem, PROP_EXE_PATH, buildTarget.getArtifactPath());
+		setOptionalAttribute(targetElem, PROP_EXE_PATH, buildTarget.getExecutablePath());
 		
 		return targetElem;
 	}
@@ -99,7 +99,7 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 			buildTargetData.enabled = getBooleanAttribute(targetElem, PROP_ENABLED, false);
 			buildTargetData.targetName = getAttribute(targetElem, PROP_NAME, "");
 			buildTargetData.buildArguments = getAttribute(targetElem, PROP_ARGUMENTS, null);
-			buildTargetData.artifactPath = getAttribute(targetElem, PROP_EXE_PATH, null);
+			buildTargetData.executablePath = getAttribute(targetElem, PROP_EXE_PATH, null);
 			
 			return createBuildTarget(targetElem, buildTargetData);
 		} else {

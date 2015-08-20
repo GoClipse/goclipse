@@ -24,6 +24,6 @@ public interface IBuildTargetSettings {
 	String getBuildArguments();
 	
 	// can be null
-	String getArtifactPath();
+	String getExecutablePath();
 	
 }

@@ -115,7 +115,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 		buildTargetSettings.buildArgumentsField.addValueChangedListener(() -> 
 			buildTargetData.buildArguments = buildTargetSettings.getEffectiveArgumentsValue());
 		buildTargetSettings.programPathField.addValueChangedListener(() -> 
-			buildTargetData.artifactPath = buildTargetSettings.getEffectiveProgramPathValue());
+			buildTargetData.executablePath = buildTargetSettings.getEffectiveProgramPathValue());
 	}
 	
 	protected BuildTargetSettingsValidator getValidator() {
@@ -137,7 +137,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 			}
 			
 			@Override
-			public String getArtifactPath() {
+			public String getExecutablePath() {
 				return buildTargetSettings.getEffectiveProgramPathValue();
 			}
 		};
@@ -225,7 +225,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 		
 		for(BuildTargetData data : buildOptionsToChange2.values()) {
 			data.buildArguments = null;
-			data.artifactPath = null;
+			data.executablePath = null;
 		}
 		handleBuildTargetChanged();
 	}
