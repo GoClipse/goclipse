@@ -46,7 +46,7 @@ public class BuildTargetValidatorTest extends CommonTest {
 			);
 			
 			BundleInfo bundleInfo = BuildTestsHelper.createSampleBundleInfoA("foo", null);
-			buildMgr.setProjectBuildInfo(project, new ProjectBuildInfo(buildMgr, project, bundleInfo, buildTargets, null));
+			buildMgr.setProjectBuildInfo(project, new ProjectBuildInfo(buildMgr, project, bundleInfo, buildTargets));
 		}
 		
 	}
@@ -70,7 +70,7 @@ public class BuildTargetValidatorTest extends CommonTest {
 			assertEquals(target1Validator.getValidBuildTarget(), 
 				new BuildTarget("SampleTarget", true, null, null));
 			
-			target1Validator.getArtifactPath();
+			target1Validator.getExecutablePath();
 			
 			BuildTargetSettingsValidator target2Validator = getBuiltTargetSettingsValidator(
 				sampleProj.getName(), "SampleTarget2", null, null);
@@ -111,7 +111,7 @@ public class BuildTargetValidatorTest extends CommonTest {
 			}
 			
 			@Override
-			public String getArtifactPath() {
+			public String getExecutablePath() {
 				return artifactPath;
 			}
 		};
@@ -149,20 +149,14 @@ public class BuildTargetValidatorTest extends CommonTest {
 			IProject project = sampleProj.getProject();
 			
 			BuildTarget targetA = new BuildTarget("SampleTarget", true, null, null);
-			assertAreEqual(buildType.getDefaultArtifactPaths(buildType.getValidatedBuildTarget(project, targetA, "")), 
-				new ArrayList2<>(
-			));
+			ValidatedBuildTarget validatedTargetA = buildType.getValidatedBuildTarget(project, targetA, "");
+			verifyThrows(() -> validatedTargetA.getEffectiveValidExecutablePath(), CommonException.class, 
+				"No executables available");
 			
 			BuildTarget target2 = new BuildTarget("SampleTarget2", true, "sample args", "sample path");
 			ValidatedBuildTarget validatedTarget2 = buildType.getValidatedBuildTarget(project, target2, "");
-			assertAreEqual(buildType.getDefaultArtifactPaths(validatedTarget2), 
-				new ArrayList2<>(
-			));
 			
-			assertAreEqual(validatedTarget2.getEffectiveArtifactPaths(), 
-				new ArrayList2<>(
-					"sample path"
-			));
+			assertAreEqual(validatedTarget2.getEffectiveValidExecutablePath(), "sample path");
 			
 		}
 	}

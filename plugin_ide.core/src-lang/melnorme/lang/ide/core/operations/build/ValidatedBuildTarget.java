@@ -16,11 +16,11 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.tooling.data.AbstractValidator2;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
@@ -102,20 +102,29 @@ public class ValidatedBuildTarget extends AbstractValidator2 {
 	
 	/* -----------------  ----------------- */
 	
-	protected String getArtifactPath2() {
-		return buildTarget.getArtifactPath();
+	protected String getExecutablePath() {
+		return buildTarget.getExecutablePath();
 	}
 	
-	public Indexable<String> getEffectiveArtifactPaths() throws CommonException {
-		String artifactPath = getArtifactPath2();
-		if(artifactPath != null) {
-			return new ArrayList2<>(artifactPath);
+	public String getEffectiveValidExecutablePath() throws CommonException {
+		String executablePath = getExecutablePath();
+		if(executablePath != null) {
+			return executablePath;
 		}
-		return getDefaultArtifactPaths();
+		
+		Indexable<BuildConfiguration> subConfigurations = getBuildType().getSubConfigurations(this);
+		if(subConfigurations.size() > 1) {
+			throw new CommonException(LaunchMessages.MSG_MultipleExecutablesAvailable());
+		}
+		executablePath = subConfigurations.get(0).artifactPath;
+		if(executablePath == null) {
+			throw new CommonException(LaunchMessages.MSG_NoExecutablesAvailable());
+		}
+		return executablePath;
 	}
 	
-	public Indexable<String> getDefaultArtifactPaths() throws CommonException {
-		return getBuildType().getDefaultArtifactPaths(this);
+	public Indexable<BuildConfiguration> getSubConfigurations() throws CommonException {
+		return getBuildType().getSubConfigurations(this);
 	}
 	
 }

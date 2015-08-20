@@ -37,7 +37,7 @@ public class ProjectBuildInfo {
 	protected final BundleInfo bundleInfo;
 	
 	public ProjectBuildInfo(BuildManager buildManager, IProject project, 
-			BundleInfo bundleInfo, Indexable<BuildTarget> buildTargets, Void dummy /* FIXME: */) {
+			BundleInfo bundleInfo, Indexable<BuildTarget> buildTargets) {
 		this.buildMgr = buildManager;
 		this.project = project;
 		this.bundleInfo = assertNotNull(bundleInfo);
@@ -138,7 +138,7 @@ public class ProjectBuildInfo {
 			throw new StatusException(StatusLevel.WARNING, BuildManagerMessages.ERROR_MODEL_OUT_OF_DATE);
 		}
 		
-		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargets, null);
+		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargets);
 		buildMgr.setAndSaveProjectBuildInfo(project, newProjectBuildInfo);
 	}
 	

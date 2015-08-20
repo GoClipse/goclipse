@@ -24,34 +24,50 @@ public class BuildTarget {
 		public String targetName;
 		public boolean enabled;
 		public String buildArguments;
-		public String artifactPath;
+		public String executablePath;
 		
 		public BuildTargetData() {
 		}
 		
-		public BuildTargetData(String targetName, boolean enabled, String buildOptions, String artifactPath) {
+		public BuildTargetData(String targetName, boolean enabled, String buildArguments, String executablePath) {
 			this.targetName = targetName;
 			this.enabled = enabled;
-			this.buildArguments = buildOptions;
-			this.artifactPath = artifactPath;
+			this.buildArguments = buildArguments;
+			this.executablePath = executablePath;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if(this == obj) return true;
+			if(!(obj instanceof BuildTargetData)) return false;
+			
+			BuildTargetData other = (BuildTargetData) obj;
+			
+			return 
+					areEqual(targetName, other.targetName) &&
+					areEqual(enabled, other.enabled) &&
+					areEqual(buildArguments, other.buildArguments) &&
+					areEqual(executablePath, other.executablePath);
+		}
+		
+		@Override
+		public int hashCode() {
+			return HashcodeUtil.combinedHashCode(targetName, enabled, buildArguments);
 		}
 		
 	}
 	
-	protected final String targetName;
-	protected final boolean enabled;
-	protected final String buildArguments;
-	protected final String artifactPath;
+	protected final BuildTargetData data = new BuildTargetData();
 	
 	public BuildTarget(BuildTargetData data) {
-		this(data.targetName, data.enabled, data.buildArguments, data.artifactPath);
+		this(data.targetName, data.enabled, data.buildArguments, data.executablePath);
 	}
 	
-	public BuildTarget(String targetName, boolean enabled, String buildArguments, String artifactPath) {
-		this.targetName = StringUtil.nullAsEmpty(targetName);
-		this.enabled = enabled;
-		this.buildArguments = buildArguments;
-		this.artifactPath = artifactPath;
+	public BuildTarget(String targetName, boolean enabled, String buildArguments, String executablePath) {
+		data.targetName = StringUtil.nullAsEmpty(targetName);
+		data.enabled = enabled;
+		data.buildArguments = buildArguments;
+		data.executablePath = executablePath;
 	}
 	
 	@Override
@@ -61,39 +77,35 @@ public class BuildTarget {
 		
 		BuildTarget other = (BuildTarget) obj;
 		
-		return 
-				areEqual(targetName, other.targetName) &&
-				areEqual(enabled, other.enabled) &&
-				areEqual(buildArguments, other.buildArguments) &&
-				areEqual(artifactPath, other.artifactPath);
+		return areEqual(data, other.data);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(targetName, enabled, buildArguments);
+		return HashcodeUtil.combinedHashCode(data);
 	}
 	
 	@Override
 	public String toString() {
-		return targetName + (enabled ? " [ENABLED]" : "");
+		return data.targetName + (data.enabled ? " [ENABLED]" : "");
 	}
 	
 	/* -----------------  ----------------- */
 	
 	public boolean isEnabled() {
-		return enabled;
+		return data.enabled;
 	}
 	
 	public String getBuildArguments() {
-		return buildArguments;
+		return data.buildArguments;
 	}
 	
 	public String getTargetName() {
-		return targetName;
+		return data.targetName;
 	}
 	
-	public String getArtifactPath() {
-		return artifactPath;
+	public String getExecutablePath() {
+		return data.executablePath;
 	}
 	
 	public BuildTargetData getDataCopy() {
@@ -101,7 +113,7 @@ public class BuildTarget {
 			getTargetName(),
 			isEnabled(),
 			getBuildArguments(),
-			getArtifactPath()
+			getExecutablePath()
 		);
 	}
 	

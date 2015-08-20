@@ -71,7 +71,7 @@ public class GoLaunchShortcut extends LangLaunchShortcut implements ILaunchShort
 		}
 		
 		BuildTargetLaunchSettings btSettings = new BuildTargetLaunchSettings();
-		btSettings.buildTargetName = goPackageName.getFullNameAsString();
+		btSettings.data.targetName = goPackageName.getFullNameAsString();
 		return new BuildTargetLaunchable(project, btSettings);
 	}
 	

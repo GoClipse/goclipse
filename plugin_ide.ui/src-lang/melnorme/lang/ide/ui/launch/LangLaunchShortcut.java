@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.ILaunchShortcut;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -40,7 +40,6 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		BuildTargetLaunchSettings launchSettings = new BuildTargetLaunchSettings();
 		launchSettings.initFromProject(project);
 		
-		/* FIXME: build target with references */
 		return new BuildTargetLaunchable(project, launchSettings);
 	}
 	
@@ -63,7 +62,7 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		public BuildTargetLaunchable(IProject project, BuildTargetLaunchSettings buildTargetSettings) {
 			this.project = project;
 			this.buildTargetSettings = buildTargetSettings;
-			assertNotNull(buildTargetSettings.buildTargetName);
+			assertNotNull(buildTargetSettings.getTargetName());
 		}
 		
 		@Override
@@ -77,25 +76,21 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		}
 		
 		public String getBuildTargetName() {
-			return buildTargetSettings.buildTargetName;
+			return buildTargetSettings.getTargetName();
 		}
 		
 		@Override
 		public boolean matchesLaunchConfiguration(ILaunchConfiguration config) throws CoreException {
 			BuildTargetLaunchSettings otherLaunchSettings = new BuildTargetLaunchSettings(config);
 			
-			/* FIXME: match other settings parameters. */
-			if(!areEqual(getProjectName(), otherLaunchSettings.projectName)) {
-				return false;
-			}
-			
-			if(areEqual(
-				LangCore.getBuildManager().getResolvedBuildTargetName(getBuildTargetName()),
-				LangCore.getBuildManager().getResolvedBuildTargetName(otherLaunchSettings.buildTargetName)
-			)) {
-				return true;
-			}
-			return false;
+			BuildTargetData data = buildTargetSettings.data;
+			BuildTargetData otherData = otherLaunchSettings.data;
+			return 
+				areEqual(getProjectName(), otherLaunchSettings.projectName) &&
+				areEqual(data.targetName, otherData.targetName) &&
+				areEqual(data.buildArguments, otherData.buildArguments) &&
+				areEqual(data.executablePath, otherData.executablePath)
+				;
 		}
 		
 		@Override

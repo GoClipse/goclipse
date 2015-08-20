@@ -29,7 +29,6 @@ import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
@@ -92,12 +91,12 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		assertAreEqual(bt.getBuildTypeName(), buildType);
 		
 		if(relArtifactPath == null) {
-			verifyThrows(() -> bt.getDefaultArtifactPaths(), CommonException.class);
+			verifyThrows(() -> bt.getEffectiveValidExecutablePath(), CommonException.class);
 		} else {
 			Location binLocation = getProjectLocation().resolve("bin");
 			assertAreEqual(
-				bt.getDefaultArtifactPaths(), 
-				new ArrayList2<>(binLocation.resolve(relArtifactPath + MiscUtil.getExecutableSuffix()).toString())
+				bt.getEffectiveValidExecutablePath(), 
+				binLocation.resolve(relArtifactPath + MiscUtil.getExecutableSuffix()).toString()
 			);
 			
 		}

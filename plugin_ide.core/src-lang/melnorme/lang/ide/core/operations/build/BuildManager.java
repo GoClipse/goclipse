@@ -167,7 +167,7 @@ public abstract class BuildManager {
 			if(targetsPrefValue != null) {
 				try {
 					ArrayList2<BuildTarget> buildTargets = createSerializer().readProjectBuildInfo(targetsPrefValue);
-					currentBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets, null);
+					currentBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
 				} catch(CommonException ce) {
 					LangCore.logError(ce);
 				}
@@ -176,7 +176,7 @@ public abstract class BuildManager {
 		
 		// Create new build info
 		ArrayList2<BuildTarget> buildTargets = createBuildTargetsForNewInfo(newBundleInfo, currentBuildInfo);
-		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets, null);
+		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
 		setProjectBuildInfo(project, newBuildInfo);
 	}
 	
@@ -212,7 +212,7 @@ public abstract class BuildManager {
 		if(oldBuildTarget != null) {
 			data.enabled = oldBuildTarget.isEnabled();
 			data.buildArguments = oldBuildTarget.getBuildArguments();
-			data.artifactPath = oldBuildTarget.getArtifactPath();
+			data.executablePath = oldBuildTarget.getExecutablePath();
 		}
 		
 		return createBuildTarget(data);
@@ -271,9 +271,15 @@ public abstract class BuildManager {
 		protected abstract void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) 
 				throws CommonException;
 		
-		public Indexable<String> getDefaultArtifactPaths(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
-			String artifactPath = validatedBuildTarget.getBuildConfiguration().getArtifactPath();
-			return artifactPath == null ? new ArrayList2<>() : new ArrayList2<>(artifactPath);
+		public final Indexable<BuildConfiguration> getSubConfigurations(ValidatedBuildTarget vbt) 
+				throws CommonException {
+			Indexable<BuildConfiguration> subConfigurations = getSubConfigurations_do(vbt);
+			assertTrue(subConfigurations.size() >= 1);
+			return subConfigurations;
+		}
+		
+		public Indexable<BuildConfiguration> getSubConfigurations_do(ValidatedBuildTarget vbt) throws CommonException {
+			return new ArrayList2<>(vbt.getBuildConfiguration());
 		}
 		
 		public abstract CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
@@ -319,6 +325,7 @@ public abstract class BuildManager {
 			return name;
 		}
 		
+		/* FIXME: remove exception */
 		public String getArtifactPath() throws CommonException {
 			return artifactPath;
 		}

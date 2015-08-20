@@ -10,6 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.launch;
 
+import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
+import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -18,6 +21,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.utilbox.core.CommonException;
@@ -25,43 +29,41 @@ import melnorme.utilbox.misc.StringUtil;
 
 public class BuildTargetLaunchSettings extends ProjectLaunchSettings {
 	
-	/* FIXME: perhaps we can use BuildTargetData? */
+	public BuildTargetData data = new BuildTargetData();
 	
-	public String buildTargetName = null;
-	public boolean buildArguments_isDefault = true;
-	public String buildArguments = null;
-	public boolean programPath_isDefault = true;
-	public String programPath = null;
-
 	public BuildTargetLaunchSettings() {
 	}
 	
 	public BuildTargetLaunchSettings(String projectName, 
-			String buildTargetName, String buildArguments, String programPath) {
+			String targetName, String buildArguments, String executablePath) {
+		this(projectName, new BuildTargetData(targetName, true, buildArguments, executablePath));
+	}
+	
+	public BuildTargetLaunchSettings(String projectName, BuildTargetData data) {
 		super(projectName);
-		this.buildTargetName = buildTargetName;
-		this.buildArguments = buildArguments;
-		this.buildArguments_isDefault = buildArguments == null;
-		this.programPath = programPath;
-		this.programPath_isDefault = programPath == null;
+		this.data = data;
 	}
 	
 	public BuildTargetLaunchSettings(ILaunchConfiguration config) throws CoreException {
 		super(config);
 		
-		buildTargetName = config.getAttribute(LaunchConstants.ATTR_BUILD_TARGET, "");
-		programPath_isDefault = config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, true);
-		programPath = config.getAttribute(LaunchConstants.ATTR_PROGRAM_PATH, "");
-		buildArguments_isDefault = config.getAttribute(LaunchConstants.ATTR_BUILD_ARGUMENTS_USE_DEFAULT, true);
-		buildArguments = config.getAttribute(LaunchConstants.ATTR_BUILD_ARGUMENTS, "");
+		data.targetName = config.getAttribute(LaunchConstants.ATTR_BUILD_TARGET, "");
+		data.executablePath = LaunchUtils.getOptionalAttribute(config, 
+			LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, LaunchConstants.ATTR_PROGRAM_PATH);
+		data.buildArguments = LaunchUtils.getOptionalAttribute(config, 
+			LaunchConstants.ATTR_BUILD_ARGUMENTS_USE_DEFAULT, LaunchConstants.ATTR_BUILD_ARGUMENTS);
 	}
 	
-	public String getEffectiveBuildArguments() {
-		return buildArguments_isDefault ? null : buildArguments;
+	public String getTargetName() {
+		return data.targetName;
 	}
 	
-	public String getEffectiveProgramPath() {
-		return programPath_isDefault ? null : programPath;
+	public String getBuildArguments() {
+		return data.buildArguments;
+	}
+	
+	public String getExecutablePath() {
+		return data.executablePath;
 	}
 	
 	protected BuildManager getBuildManager() {
@@ -78,28 +80,31 @@ public class BuildTargetLaunchSettings extends ProjectLaunchSettings {
 		}
 		
 		BuildTarget defaultBuildTarget = buildInfo.getDefaultBuildTarget();
-		buildTargetName = defaultBuildTarget.getTargetName(); 
-		programPath_isDefault = true;
-		programPath = null;
-		buildArguments_isDefault = true;
-		buildArguments = null;
+		data.targetName = defaultBuildTarget.getTargetName(); 
+		data.buildArguments = null;
+		data.executablePath = null;
 		
 		return this;
 	}
 	
 	@Override
 	protected String getSuggestedConfigName_do() {
-		return StringUtil.nullAsEmpty(projectName) + 
-				StringUtil.prefixStr(" - ", StringUtil.emptyAsNull(buildTargetName));
+		String launchName = nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(data.targetName));
+		if(data.executablePath != null) {
+			launchName += "["+data.executablePath+"]";	
+		}
+		return launchName;
 	}
 	
 	@Override
 	protected void saveToConfig_rest(ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(LaunchConstants.ATTR_BUILD_TARGET, buildTargetName);
-		config.setAttribute(LaunchConstants.ATTR_BUILD_ARGUMENTS_USE_DEFAULT, buildArguments_isDefault);
-		config.setAttribute(LaunchConstants.ATTR_BUILD_ARGUMENTS, buildArguments);
-		config.setAttribute(LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, programPath_isDefault);
-		config.setAttribute(LaunchConstants.ATTR_PROGRAM_PATH, programPath);
+		config.setAttribute(LaunchConstants.ATTR_BUILD_TARGET, getTargetName());
+		LaunchUtils.setOptionalValue(config, 
+			LaunchConstants.ATTR_BUILD_ARGUMENTS_USE_DEFAULT, 
+			LaunchConstants.ATTR_BUILD_ARGUMENTS, data.buildArguments);
+		LaunchUtils.setOptionalValue(config, 
+			LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, 
+			LaunchConstants.ATTR_PROGRAM_PATH, data.executablePath);
 	}
 	
 }

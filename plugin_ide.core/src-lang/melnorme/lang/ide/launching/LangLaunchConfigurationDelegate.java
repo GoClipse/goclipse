@@ -123,17 +123,17 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			
 			@Override
 			public String getBuildTargetName() {
-				return launchSettings.buildTargetName;
+				return launchSettings.getTargetName();
 			}
 			
 			@Override
-			public String getArtifactPath() {
-				return launchSettings.getEffectiveProgramPath();
+			public String getExecutablePath() {
+				return launchSettings.getExecutablePath();
 			}
 			
 			@Override
 			public String getBuildArguments() {
-				return launchSettings.getEffectiveBuildArguments();
+				return launchSettings.getBuildArguments();
 			}
 		};
 		

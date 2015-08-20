@@ -23,7 +23,6 @@ import melnorme.lang.ide.core.launch.BuildTargetSettingsValidator;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.preferences.BuildTargetSettingsComponent;
@@ -109,7 +108,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 			}
 			
 			@Override
-			public String getArtifactPath() {
+			public String getExecutablePath() {
 				return buildTargetSettings.getEffectiveProgramPathValue();
 			}
 			
@@ -130,6 +129,8 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		buildTargetField.addValueChangedListener(this::buildTargetFieldChanged);
 		
 		buildTargetSettings.buildArgumentsField.addValueChangedListener(() -> updateLaunchConfigurationDialog());
+		buildTargetSettings.buildArgumentsField.addValueChangedListener(() -> 
+			buildTargetSettings.programPathField.updateDefaultFieldValue());
 		buildTargetSettings.programPathField.addValueChangedListener(() -> updateLaunchConfigurationDialog());
 	}
 	
@@ -151,23 +152,12 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	public void buildTargetFieldChanged() {
 		IProject project = getValidProjectOrNull();
 		if(project != null) {
-			BuildTarget buildTarget;
-			try {
-				buildTarget = getValidator().getValidBuildTarget();
-			} catch(CommonException e) {
-				// Should not be possible;
-				return;
-			}
-			doBuildTargetChanged(buildTarget);
+			buildTargetSettings.buildArgumentsField.updateDefaultFieldValue();
+			buildTargetSettings.programPathField.updateDefaultFieldValue();
 			updateLaunchConfigurationDialog();
 		}
 	}
 	
-	protected void doBuildTargetChanged(BuildTarget buildTarget) {
-		BuildTargetData buildTargetData = buildTarget.getDataCopy();
-		buildTargetSettings.buildArgumentsField.setEffectiveFieldValue(buildTargetData.buildArguments);
-		buildTargetSettings.programPathField.setEffectiveFieldValue(buildTargetData.artifactPath);
-	}
 	
 	/* ----------------- Control creation ----------------- */
 	
@@ -194,12 +184,12 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	protected void initializeBuildTargetField(BuildTargetLaunchSettings buildSettings) {
-		buildTargetField.setFieldValue(buildSettings.buildTargetName);
+		buildTargetField.setFieldValue(buildSettings.getTargetName());
 	}
 	
 	protected void initializeBuildTargetSettings(BuildTargetLaunchSettings buildSettings) {
-		buildTargetSettings.buildArgumentsField.setEffectiveFieldValue(buildSettings.getEffectiveBuildArguments());
-		buildTargetSettings.programPathField.setEffectiveFieldValue(buildSettings.getEffectiveProgramPath());
+		buildTargetSettings.buildArgumentsField.setEffectiveFieldValue(buildSettings.getBuildArguments());
+		buildTargetSettings.programPathField.setEffectiveFieldValue(buildSettings.getExecutablePath());
 	}
 	
 	@Override

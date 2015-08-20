@@ -148,13 +148,13 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Indexable<String> getDefaultArtifactPaths(ValidatedBuildTarget validatedBuildTarget)
-				throws CommonException {
-			Location binFolderLocation = getBinFolderLocation(validatedBuildTarget);
+		public Indexable<BuildConfiguration> getSubConfigurations_do(ValidatedBuildTarget vbt) throws CommonException {
+			Location binFolderLocation = getBinFolderLocation(vbt);
 			
-			String binFilePath = getBinFilePath(getValidGoPackageName(validatedBuildTarget.getBuildConfigName()));
-			return new ArrayList2<>(	
-				binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString()
+			String binFilePath = getBinFilePath(getValidGoPackageName(vbt.getBuildConfigName()));
+			String exePath = binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString();
+			return new ArrayList2<>(
+				new BuildConfiguration(vbt.getBuildConfigName(), exePath)
 			);
 		}
 		
@@ -334,8 +334,7 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Indexable<String> getDefaultArtifactPaths(ValidatedBuildTarget validatedBuildTarget)
-				throws CommonException {
+		public Indexable<BuildConfiguration> getSubConfigurations_do(ValidatedBuildTarget vbt) throws CommonException {
 			throw new CommonException("This configuration does not produce executable artifacts.");
 		}
 		

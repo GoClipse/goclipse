@@ -165,7 +165,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			@Override
 			public ProjectLaunchSettings initFrom(IResource contextualResource) {
 				ProjectLaunchSettings initFrom = super.initFrom(contextualResource);
-				buildTargetName = "";
+				data.targetName = "";
 				return initFrom;
 			}
 		};
@@ -175,7 +175,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	protected void initializeBuildTargetField(BuildTargetLaunchSettings buildSettings) {
 		//super.initializeBuildTargetField(buildSettings);
 		
-		String buildTargetName = buildSettings.buildTargetName;
+		String buildTargetName = buildSettings.data.targetName;
 		String buildConfiguration = getBuildTargetNameParser().getBuildConfigName(buildTargetName);
 		String buildTypeName = getBuildTargetNameParser().getBuildTypeName(buildTargetName);
 		goPackageField.setFieldValue(buildConfiguration);

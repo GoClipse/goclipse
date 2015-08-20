@@ -12,6 +12,8 @@ package melnorme.lang.ide.ui.navigator;
 
 import static java.text.MessageFormat.format;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
+import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -28,6 +30,7 @@ import org.eclipse.ui.navigator.ICommonActionConstants;
 
 import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
@@ -45,6 +48,7 @@ import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.StringUtil;
 
 public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	
@@ -86,13 +90,13 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		LaunchBuildTargetAction runTargetAction = new LaunchBuildTargetAction(buildTargetElement, true);
 		LaunchBuildTargetAction debugTargetAction = new LaunchBuildTargetAction(buildTargetElement, false);
+		
 		try {
 			ValidatedBuildTarget validatedBuildTarget = buildTargetElement.getValidatedBuildTarget();
 			
-			Indexable<String> childrenBuildTargets = validatedBuildTarget.getEffectiveArtifactPaths();
-			if(childrenBuildTargets.size() > 1) {
-				
-				addRunDebugMenu(menu, buildTargetElement, childrenBuildTargets);
+			Indexable<BuildConfiguration> subConfigurations = validatedBuildTarget.getSubConfigurations();
+			if(subConfigurations.size() > 1) {
+				addRunDebugMenu(menu, buildTargetElement, subConfigurations);
 				return;
 			}
 			
@@ -106,19 +110,21 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	}
 	
 	protected void addRunDebugMenu(IMenuManager menu, BuildTargetElement buildTargetElement, 
-			Indexable<String> executablePaths) {
+			Indexable<BuildConfiguration> subConfigurations) {
 		MenuManager runMenu = new MenuManager("Run");
 		MenuManager debugMenu = new MenuManager("Debug");
 		
-		for(String executable : executablePaths) {
+		for(BuildConfiguration subConfig : subConfigurations) {
 			
-			BuildTargetData childrenBuildData = buildTargetElement.getBuildTarget().getDataCopy();
-			childrenBuildData.artifactPath = executable;
-			BuildTarget childBuildTarget = new BuildTarget(childrenBuildData);
-			BuildTargetElement childElement = new BuildTargetElement(buildTargetElement.project, childBuildTarget);
+			String artifactPath;
+			try {
+				artifactPath = subConfig.getArtifactPath();
+			} catch(CommonException e) {
+				continue;
+			}
 			
-			runMenu.add(new LaunchBuildTargetAction(childElement, "Run `" + executable + "`", true)); 
-			debugMenu.add(new LaunchBuildTargetAction(childElement, "Debug `" + executable + "`", false));
+			runMenu.add(new LaunchBuildTargetAction(buildTargetElement, true, artifactPath, subConfig.getName())); 
+			debugMenu.add(new LaunchBuildTargetAction(buildTargetElement, false, artifactPath, subConfig.getName()));
 		}
 		
 		menu.add(runMenu);
@@ -287,18 +293,42 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	public class LaunchBuildTargetAction extends AbstractBuildTargetAction {
 		
 		public String mode;
+		public BuildTargetLaunchSettings btSettings;
 		
 		public LaunchBuildTargetAction(BuildTargetElement buildTargetElement, boolean isRun) {
-			this(buildTargetElement, isRun ?
-				BuildManagerMessages.NAME_RunTargetAction :
-				BuildManagerMessages.NAME_DebugTargetAction,
-				isRun
-			);
+			this(buildTargetElement, isRun, null, null);
 		}
 		
-		public LaunchBuildTargetAction(BuildTargetElement buildTargetElement, String text, boolean isRun) {
-			super(buildTargetElement, text);
+		public LaunchBuildTargetAction(BuildTargetElement buildTargetElement, boolean isRun, 
+				String exePathOverride, String projectPostfixOverride) {
+			super(buildTargetElement, "");
 			mode = isRun ? "run" : "debug";
+			
+			if(exePathOverride != null) {
+				setText(isRun ? 
+					"Run `" + exePathOverride + "`" : 
+					"Debug `" + exePathOverride + "`");
+			} else {
+				setText(isRun ? 
+					BuildManagerMessages.NAME_RunTargetAction : 
+					BuildManagerMessages.NAME_DebugTargetAction);
+			}
+			
+			BuildTargetData buildTargetData = buildTarget.getDataCopy();
+			// reset build target launch attributes, so that Build Target defaults will be used
+			buildTargetData.buildArguments = null;
+			buildTargetData.executablePath = exePathOverride;
+			
+			String projectPostfix = projectPostfixOverride == null ? 
+					buildTargetData.targetName : 
+					projectPostfixOverride;
+			
+			btSettings = new BuildTargetLaunchSettings(project.getName(), buildTargetData) {
+				@Override
+				protected String getSuggestedConfigName_do() {
+					return nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(projectPostfix));
+				}
+			};
 		}
 		
 		protected String getTargetName() {
@@ -307,8 +337,6 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		@Override
 		public void doRun() throws StatusException {
-			BuildTargetLaunchSettings btSettings = new BuildTargetLaunchSettings(project.getName(), 
-				buildTarget.getTargetName(), buildTarget.getBuildArguments(), buildTarget.getArtifactPath());
 			LangLaunchShortcut launchShortcut = createLaunchShortcut();
 			BuildTargetLaunchable launchable = launchShortcut.new BuildTargetLaunchable(project, btSettings);
 			launchShortcut.launchTarget(launchable, mode);

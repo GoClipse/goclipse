@@ -68,7 +68,7 @@ public class BuildTargetSettingsComponent extends AbstractComponent {
 	
 	public void inputChanged(BuildTargetData buildTargetData) {
 		buildArgumentsField.setEffectiveFieldValue(buildTargetData.buildArguments);
-		programPathField.setEffectiveFieldValue(buildTargetData.artifactPath);
+		programPathField.setEffectiveFieldValue(buildTargetData.executablePath);
 	}
 	
 	@Override

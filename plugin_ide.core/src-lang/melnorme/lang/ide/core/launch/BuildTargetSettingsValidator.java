@@ -21,7 +21,6 @@ import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.lang.tooling.data.ValidationMessages;
-import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -59,8 +58,8 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 		if(getBuildArguments() != null) {
 			data.buildArguments = getBuildArguments();
 		}
-		if(getArtifactPath() != null) {
-			data.artifactPath = getArtifactPath();
+		if(getExecutablePath() != null) {
+			data.executablePath = getExecutablePath();
 		}
 		return getBuildManager().createBuildTarget(data);
 	}
@@ -85,17 +84,7 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 	}
 	
 	public String getDefaultExecutablePath() throws CommonException {
-		return getSingleExecutable(getValidatedOriginalBuildTarget().getEffectiveArtifactPaths());
-	}
-	
-	public String getSingleExecutable(Indexable<String> executablePaths) throws CommonException {
-		if(executablePaths.isEmpty()) {
-			throw new CommonException(LaunchMessages.MSG_NoExecutablesAvailable());
-		}
-		if(executablePaths.size() > 1) {
-			throw new CommonException(LaunchMessages.MSG_MultipleExecutablesAvailable());
-		}
-		return executablePaths.get(0);
+		return getValidatedBuildTarget().getEffectiveValidExecutablePath();
 	}
 	
 	/* -----------------  ----------------- */ 
@@ -105,11 +94,7 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 	}
 	
 	public Location getValidExecutableLocation() throws CommonException {
-		return getValidExecutableLocation(getSingleExecutable(getEffectiveExecutablePaths()));
-	}
-	
-	public Indexable<String> getEffectiveExecutablePaths() throws CommonException {
-		return getValidatedBuildTarget().getEffectiveArtifactPaths();
+		return getValidExecutableLocation(getValidatedBuildTarget().getEffectiveValidExecutablePath());
 	}
 	
 	/* -----------------  ----------------- */ 
