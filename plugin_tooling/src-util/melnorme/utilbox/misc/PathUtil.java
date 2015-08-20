@@ -12,6 +12,7 @@ package melnorme.utilbox.misc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
+import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -74,6 +75,24 @@ public class PathUtil {
 	
 	public static Path toPath(Location location) {
 		return location == null ? null : location.toPath();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static String concatenatePath(String basePath, String subPath) {
+		return concatenatePath(basePath, subPath, File.separator);
+	}
+	
+	/** Concatenate a basepath with a subpath. 
+	 * This method is notable for not using the {@link Path} API, therefore it works even on invalid paths. */
+	public static String concatenatePath(String basePath, String subPath, String separator) {
+		if(basePath.isEmpty()) {
+			return subPath;
+		}
+		if(!basePath.endsWith(separator)) {
+			basePath += separator;
+		}
+		return basePath + subPath;
 	}
 	
 }

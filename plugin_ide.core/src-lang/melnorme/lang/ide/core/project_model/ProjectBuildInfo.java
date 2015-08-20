@@ -17,10 +17,10 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
+import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
@@ -58,10 +58,6 @@ public class ProjectBuildInfo {
 		return bundleInfo;
 	}
 	
-	public Indexable<BuildConfiguration> getBuildConfigs() {
-		return getBundleInfo().getBuildConfigurations();
-	}
-	
 	public Collection2<BuildTarget> getBuildTargets() {
 		return buildTargets.getValuesView();
 	}
@@ -92,6 +88,10 @@ public class ProjectBuildInfo {
 			}
 		}
 		return enabledTargets;
+	}
+	
+	public Indexable<BuildConfiguration> getBuildConfigs() {
+		return getBundleInfo().getBuildConfigurations();
 	}
 	
 	public BuildConfiguration getBuildConfiguration_nonNull(String buildConfigName) throws CommonException {

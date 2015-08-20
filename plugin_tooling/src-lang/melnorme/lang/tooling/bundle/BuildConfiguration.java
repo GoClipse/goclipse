@@ -8,13 +8,26 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.project_model;
+package melnorme.lang.tooling.bundle;
 
-import melnorme.lang.tooling.bundle.BuildConfiguration;
-import melnorme.utilbox.collections.Indexable;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-public abstract class AbstractBundleInfo {
+public class BuildConfiguration {
 	
-	public abstract Indexable<BuildConfiguration> getBuildConfigurations();
+	protected final String name;
+	protected final String artifactPath;
+	
+	public BuildConfiguration(String name, String artifactPath) {
+		this.name = assertNotNull(name);
+		this.artifactPath = artifactPath;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public String getArtifactPath() {
+		return artifactPath;
+	}
 	
 }

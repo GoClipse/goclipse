@@ -30,7 +30,6 @@ import org.eclipse.ui.navigator.ICommonActionConstants;
 
 import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
@@ -42,6 +41,7 @@ import melnorme.lang.ide.ui.launch.LangLaunchShortcut.BuildTargetLaunchable;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider.ViewPartActionGroup;
 import melnorme.lang.ide.ui.operations.EclipseJobUIOperation;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -94,9 +94,12 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		try {
 			ValidatedBuildTarget validatedBuildTarget = buildTargetElement.getValidatedBuildTarget();
 			
-			Indexable<BuildConfiguration> subConfigurations = validatedBuildTarget.getSubConfigurations();
-			if(subConfigurations.size() > 1) {
-				addRunDebugMenu(menu, buildTargetElement, subConfigurations);
+			Indexable<LaunchArtifact> launchArtifacts = validatedBuildTarget.getLaunchArtifacts();
+			if(launchArtifacts.size() == 0) {
+				return;
+			}
+			if(launchArtifacts.size() > 1) {
+				addRunDebugMenu(menu, buildTargetElement, launchArtifacts);
 				return;
 			}
 			
@@ -110,21 +113,17 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	}
 	
 	protected void addRunDebugMenu(IMenuManager menu, BuildTargetElement buildTargetElement, 
-			Indexable<BuildConfiguration> subConfigurations) {
+			Indexable<LaunchArtifact> launchArtifacts) {
 		MenuManager runMenu = new MenuManager("Run");
 		MenuManager debugMenu = new MenuManager("Debug");
 		
-		for(BuildConfiguration subConfig : subConfigurations) {
+		for(LaunchArtifact launchArtifact : launchArtifacts) {
 			
-			String artifactPath;
-			try {
-				artifactPath = subConfig.getArtifactPath();
-			} catch(CommonException e) {
-				continue;
-			}
+			String label = launchArtifact.getName();
+			String artifactPath = launchArtifact.getArtifactPath();
 			
-			runMenu.add(new LaunchBuildTargetAction(buildTargetElement, true, artifactPath, subConfig.getName())); 
-			debugMenu.add(new LaunchBuildTargetAction(buildTargetElement, false, artifactPath, subConfig.getName()));
+			runMenu.add(new LaunchBuildTargetAction(buildTargetElement, true, artifactPath, label)); 
+			debugMenu.add(new LaunchBuildTargetAction(buildTargetElement, false, artifactPath, label));
 		}
 		
 		menu.add(runMenu);

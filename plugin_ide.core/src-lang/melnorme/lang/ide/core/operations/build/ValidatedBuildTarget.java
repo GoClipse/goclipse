@@ -17,9 +17,10 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.tooling.bundle.BuildConfiguration;
+import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -112,19 +113,18 @@ public class ValidatedBuildTarget extends AbstractValidator2 {
 			return executablePath;
 		}
 		
-		Indexable<BuildConfiguration> subConfigurations = getBuildType().getSubConfigurations(this);
-		if(subConfigurations.size() > 1) {
-			throw new CommonException(LaunchMessages.MSG_MultipleExecutablesAvailable());
+		Indexable<LaunchArtifact> launchArtifacts = getLaunchArtifacts();
+		if(launchArtifacts.size() > 1) {
+			throw new CommonException(LaunchMessages.MSG_BuildTarget_MultipleExecutablesAvailable());
 		}
-		executablePath = subConfigurations.get(0).artifactPath;
-		if(executablePath == null) {
-			throw new CommonException(LaunchMessages.MSG_NoExecutablesAvailable());
+		if(launchArtifacts.size() == 0) {
+			throw new CommonException(LaunchMessages.MSG_BuildTarget_NoExecutablesAvailable());
 		}
-		return executablePath;
+		return launchArtifacts.get(0).getArtifactPath();
 	}
 	
-	public Indexable<BuildConfiguration> getSubConfigurations() throws CommonException {
-		return getBuildType().getSubConfigurations(this);
+	public Indexable<LaunchArtifact> getLaunchArtifacts() throws CommonException {
+		return getBuildType().getLaunchArtifacts(this);
 	}
 	
 }
