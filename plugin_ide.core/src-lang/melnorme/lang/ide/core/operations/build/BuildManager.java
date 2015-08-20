@@ -177,12 +177,13 @@ public abstract class BuildManager {
 		}
 		
 		// Create new build info
-		ArrayList2<BuildTarget> buildTargets = createBuildTargetsForNewInfo(newBundleInfo, currentBuildInfo);
+		ArrayList2<BuildTarget> buildTargets = createBuildTargetsForNewInfo(project, newBundleInfo, currentBuildInfo);
 		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
 		setProjectBuildInfo(project, newBuildInfo);
 	}
 	
-	protected ArrayList2<BuildTarget> createBuildTargetsForNewInfo(BundleInfo newBundleInfo, 
+	@SuppressWarnings("unused")
+	protected ArrayList2<BuildTarget> createBuildTargetsForNewInfo(IProject project, BundleInfo newBundleInfo, 
 			ProjectBuildInfo currentBuildInfo) {
 		ArrayList2<BuildTarget> buildTargets = new ArrayList2<>();
 		boolean isFirstConfig = true;
