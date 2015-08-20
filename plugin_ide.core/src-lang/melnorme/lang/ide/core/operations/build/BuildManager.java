@@ -275,9 +275,7 @@ public abstract class BuildManager {
 		
 		public final Indexable<LaunchArtifact> getLaunchArtifacts(ValidatedBuildTarget vbt) 
 				throws CommonException {
-			Indexable<LaunchArtifact> launchArtifacts = getLaunchArtifacts_do(vbt);
-			assertTrue(launchArtifacts.size() >= 1);
-			return launchArtifacts;
+			return getLaunchArtifacts_do(vbt);
 		}
 		
 		public Indexable<LaunchArtifact> getLaunchArtifacts_do(ValidatedBuildTarget vbt) throws CommonException {

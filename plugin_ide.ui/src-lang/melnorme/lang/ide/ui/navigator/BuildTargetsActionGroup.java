@@ -371,7 +371,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	}
 	
 	protected String getProjectConfigPropertyPage() {
-		return LangUIPlugin_Actual.PLUGIN_ID + ".properties.ProjectBuildConfiguration";
+		return LangUIPlugin_Actual.PLUGIN_ID + ".propertyPages.ProjectBuildConfiguration";
 	}
 	
 }
