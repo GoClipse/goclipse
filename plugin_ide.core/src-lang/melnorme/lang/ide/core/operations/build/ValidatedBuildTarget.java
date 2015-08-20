@@ -113,6 +113,10 @@ public class ValidatedBuildTarget extends AbstractValidator2 {
 			return executablePath;
 		}
 		
+		return getDefaultExecutablePath();
+	}
+	
+	public String getDefaultExecutablePath() throws CommonException {
 		Indexable<LaunchArtifact> launchArtifacts = getLaunchArtifacts();
 		if(launchArtifacts.size() > 1) {
 			throw new CommonException(LaunchMessages.MSG_BuildTarget_MultipleExecutablesAvailable());

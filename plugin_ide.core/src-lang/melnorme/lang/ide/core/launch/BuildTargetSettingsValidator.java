@@ -79,12 +79,20 @@ public abstract class BuildTargetSettingsValidator extends AbstractValidator2
 	
 	/* -----------------  ----------------- */
 	
-	public String getDefaultBuildArguments() throws CommonException {
+	public String getOriginalBuildArguments() throws CommonException {
 		return getValidatedOriginalBuildTarget().getEffectiveBuildArguments();
 	}
 	
-	public String getDefaultExecutablePath() throws CommonException {
-		return getValidatedBuildTarget().getEffectiveValidExecutablePath();
+	public String getOriginalExecutablePath() throws CommonException {
+		return getValidatedOriginalBuildTarget().getEffectiveValidExecutablePath();
+	}
+	
+	public String getDefaultBuildArguments2() throws CommonException {
+		return getValidatedOriginalBuildTarget().getDefaultBuildArguments();
+	}
+	
+	public String getDefaultExecutablePath2() throws CommonException {
+		return getValidatedOriginalBuildTarget().getDefaultExecutablePath();
 	}
 	
 	/* -----------------  ----------------- */ 
