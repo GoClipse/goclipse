@@ -29,4 +29,9 @@ public class GoArch {
 		return goArch;
 	}
 	
+	@Override
+	public String toString() {
+		return goArch;
+	}
+	
 }

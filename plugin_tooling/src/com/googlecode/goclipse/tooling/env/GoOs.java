@@ -48,4 +48,9 @@ public class GoOs {
 		return goOs;
 	}
 	
+	@Override
+	public String toString() {
+		return goOs;
+	}
+	
 }

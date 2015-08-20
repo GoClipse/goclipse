@@ -3,6 +3,7 @@
 ### (NextVersion)
  * Fixed: project not being refreshed when Build Target build invoked directly from Project Explorer.
  * Fixed: "null" text inserted when cancel pressed in "Variables..." and other dialogs.
+ * Go build now displays GOOS and GOARCH environment variables, if a non-default value is set.
 
 ### 0.12.0
  * Added: support for Build Targets:
