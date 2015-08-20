@@ -21,6 +21,7 @@ import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -53,9 +54,9 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Indexable<BuildConfiguration> getSubConfigurations_do(ValidatedBuildTarget vbt) throws CommonException {
+		public Indexable<LaunchArtifact> getLaunchArtifacts_do(ValidatedBuildTarget vbt) throws CommonException {
 			return new ArrayList2<>(
-				new BuildConfiguration(vbt.getBuildConfigName(), "default_artifact.exe") // TODO: LANG
+				new LaunchArtifact(vbt.getBuildConfigName(), "default_artifact.exe") // TODO: LANG
 			);
 		}
 		
