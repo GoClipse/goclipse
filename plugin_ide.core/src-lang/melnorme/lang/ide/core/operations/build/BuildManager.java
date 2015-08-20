@@ -37,7 +37,9 @@ import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
+import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -271,15 +273,20 @@ public abstract class BuildManager {
 		protected abstract void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) 
 				throws CommonException;
 		
-		public final Indexable<BuildConfiguration> getSubConfigurations(ValidatedBuildTarget vbt) 
+		public final Indexable<LaunchArtifact> getLaunchArtifacts(ValidatedBuildTarget vbt) 
 				throws CommonException {
-			Indexable<BuildConfiguration> subConfigurations = getSubConfigurations_do(vbt);
-			assertTrue(subConfigurations.size() >= 1);
-			return subConfigurations;
+			Indexable<LaunchArtifact> launchArtifacts = getLaunchArtifacts_do(vbt);
+			assertTrue(launchArtifacts.size() >= 1);
+			return launchArtifacts;
 		}
 		
-		public Indexable<BuildConfiguration> getSubConfigurations_do(ValidatedBuildTarget vbt) throws CommonException {
-			return new ArrayList2<>(vbt.getBuildConfiguration());
+		public Indexable<LaunchArtifact> getLaunchArtifacts_do(ValidatedBuildTarget vbt) throws CommonException {
+			BuildConfiguration buildConfig = vbt.getBuildConfiguration();
+			String artifactPath = buildConfig.getArtifactPath();
+			if(artifactPath == null) {
+				return new ArrayList2<>();
+			}
+			return new ArrayList2<>(new LaunchArtifact(buildConfig.getName(), artifactPath));
 		}
 		
 		public abstract CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
@@ -307,29 +314,6 @@ public abstract class BuildManager {
 			}
 		}
 		throw new CommonException(BuildManagerMessages.BuildType_NotFound(buildTypeName));
-	}
-	
-	/* ----------------- Build Configuration ----------------- */
-	
-	public static class BuildConfiguration {
-		
-		protected final String name;
-		protected final String artifactPath;
-		
-		public BuildConfiguration(String name, String artifactPath) {
-			this.name = assertNotNull(name);
-			this.artifactPath = artifactPath;
-		}
-		
-		public String getName() {
-			return name;
-		}
-		
-		/* FIXME: remove exception */
-		public String getArtifactPath() throws CommonException {
-			return artifactPath;
-		}
-		
 	}
 	
 	/* ----------------- Build Target name ----------------- */

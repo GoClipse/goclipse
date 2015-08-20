@@ -39,6 +39,8 @@ import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.tooling.bundle.BuildConfiguration;
+import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
@@ -148,13 +150,13 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Indexable<BuildConfiguration> getSubConfigurations_do(ValidatedBuildTarget vbt) throws CommonException {
+		public Indexable<LaunchArtifact> getLaunchArtifacts_do(ValidatedBuildTarget vbt) throws CommonException {
 			Location binFolderLocation = getBinFolderLocation(vbt);
 			
 			String binFilePath = getBinFilePath(getValidGoPackageName(vbt.getBuildConfigName()));
 			String exePath = binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString();
 			return new ArrayList2<>(
-				new BuildConfiguration(vbt.getBuildConfigName(), exePath)
+				new LaunchArtifact(vbt.getBuildConfigName(), exePath)
 			);
 		}
 		
@@ -334,8 +336,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Indexable<BuildConfiguration> getSubConfigurations_do(ValidatedBuildTarget vbt) throws CommonException {
-			throw new CommonException("This configuration does not produce executable artifacts.");
+		public Indexable<LaunchArtifact> getLaunchArtifacts_do(ValidatedBuildTarget vbt) throws CommonException {
+			return new ArrayList2<>();
 		}
 		
 		@Override
