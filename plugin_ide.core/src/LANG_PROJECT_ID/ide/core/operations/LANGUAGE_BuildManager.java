@@ -13,6 +13,7 @@ package LANG_PROJECT_ID.ide.core.operations;
 import java.nio.file.Path;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
@@ -91,12 +92,13 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void processBuildOutput(ExternalProcessResult processResult) throws CoreException {
+		protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm) 
+				throws CoreException {
 			ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); 
 			
 			// TODO: Lang process build result
 			
-			new ToolMarkersUtil().addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project));
+			new ToolMarkersUtil().addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project), pm);
 		}
 	}
 	
