@@ -230,7 +230,7 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void processBuildOutput(ExternalProcessResult buildAllResult) 
+		protected void processBuildOutput(ExternalProcessResult buildAllResult, IProgressMonitor pm) 
 				throws CoreException, CommonException, OperationCancellation {
 			GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 				@Override
@@ -240,7 +240,7 @@ public class GoBuildManager extends BuildManager {
 			};
 			buildOutput.parseOutput(buildAllResult);
 			
-			new ToolMarkersUtil().addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir);
+			new ToolMarkersUtil().addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir, pm);
 		}
 		
 	}

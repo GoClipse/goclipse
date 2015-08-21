@@ -12,15 +12,18 @@ package melnorme.lang.ide.core.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
-import org.eclipse.core.filebuffers.FileBuffers;
-import org.eclipse.core.filebuffers.ITextFileBuffer;
-import org.eclipse.core.filebuffers.ITextFileBufferManager;
-import org.eclipse.core.filebuffers.LocationKind;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 
 import melnorme.lang.ide.core.LangCore;
@@ -30,8 +33,11 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
+import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.StringUtil;
 
 public class ToolMarkersUtil {
 	
@@ -44,12 +50,25 @@ public class ToolMarkersUtil {
 		this.readWordForCharEnd = readWordForCharEnd;
 	}
 	
-	public void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath) 
+	protected final HashMap2<Path, Document> documents = new HashMap2<>();
+	
+	public void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath, IProgressMonitor pm) 
 			throws CoreException {
 		
-		for (ToolSourceMessage buildError : buildErrors) {
-			addErrorMarkers(buildError, rootPath);
-		}
+		documents.clear();
+		
+		ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
+			@Override
+			public void run(IProgressMonitor monitor) throws CoreException {
+				for(ToolSourceMessage buildError : buildErrors) {
+					if(pm.isCanceled()) {
+						return;
+					}
+					addErrorMarkers(buildError, rootPath);
+				}
+			}
+		}, ResourceUtils.getWorkspaceRoot(), IWorkspace.AVOID_UPDATE, pm);
+		
 	}
 	
 	public void addErrorMarkers(ToolSourceMessage toolMessage, Location rootPath) throws CoreException {
@@ -95,14 +114,11 @@ public class ToolMarkersUtil {
 		
 		SourceRange messageSR;
 		
-		ITextFileBufferManager fileBufferManager = FileBuffers.getTextFileBufferManager();
-		fileBufferManager.connect(file.getFullPath(), LocationKind.IFILE, null);
-		
 		try {
-			ITextFileBuffer tfb = fileBufferManager.getTextFileBuffer(file.getFullPath(), LocationKind.IFILE);
-			messageSR = getMessageRangeUsingDocInfo(range, tfb.getDocument());
-		} finally {
-			fileBufferManager.disconnect(file.getFullPath(), LocationKind.IFILE, null);
+			Document doc = getDocumentForLocation(file);
+			messageSR = getMessageRangeUsingDocInfo(range, doc);
+		} catch(IOException e) {
+			return;
 		}
 		
 		if(messageSR != null) {
@@ -114,6 +130,17 @@ public class ToolMarkersUtil {
 			}
 		}
 		
+	}
+	
+	protected Document getDocumentForLocation(IFile file) throws IOException {
+		Path filePath = file.getLocation().toFile().toPath();
+		if(documents.containsKey(filePath)) {
+			return documents.get(filePath);
+		}
+		String fileContents = FileUtil.readStringFromFile(filePath, StringUtil.UTF8);
+		Document document = new Document(fileContents);
+		documents.put(filePath, document);
+		return document;
 	}
 	
 	protected SourceRange getMessageRangeUsingDocInfo(SourceLineColumnRange range, IDocument doc) {
