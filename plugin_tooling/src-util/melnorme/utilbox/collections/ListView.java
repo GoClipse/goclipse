@@ -16,14 +16,32 @@ import java.util.List;
 
 import melnorme.utilbox.core.CoreUtil;
 
-public class ListView<K> extends CollectionView<K> implements Indexable<K> {
+public abstract class ListView<E> extends CollectionView<E> implements Indexable<E> {
 	
-	protected final List<K> list;
+	public static <E> ListView<E> create(List<E> list) {
+		return new ListViewImpl<>(list);
+	}
 	
-	public ListView(List<K> list) {
+	/* -----------------  ----------------- */
+	
+	protected final List<E> list;
+	
+	protected ListView(List<E> list) {
 		super(list);
 		this.list = assertNotNull(list);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return Indexable.equals(this, obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Indexable.hashCode(this);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Override
 	public <T> ListView<T> upcastTypeParameter() {
@@ -31,8 +49,16 @@ public class ListView<K> extends CollectionView<K> implements Indexable<K> {
 	}
 
 	@Override
-	public K get(int index) {
+	public E get(int index) {
 		return list.get(index);
+	}
+	
+}
+
+class ListViewImpl<E> extends ListView<E> implements ImmutableList<E> {
+	
+	public ListViewImpl(List<E> list) {
+		super(list);
 	}
 	
 }

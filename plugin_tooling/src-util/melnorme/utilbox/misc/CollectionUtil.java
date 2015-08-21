@@ -248,4 +248,27 @@ public class CollectionUtil {
 		return destCollection;
 	}
 	
+	public static boolean listEquals(Indexable<?> coll1, Indexable<?> coll2) {
+		return Indexable.indexableEquals(coll1, coll2);
+	}
+	
+	public static boolean listEquals(List<?> coll1, List<?> coll2) {
+		if(coll1.size() != coll2.size()) {
+			return false;
+		}
+		
+		return iterationEquals(coll1.iterator(), coll2.iterator());
+	}
+	
+	public static boolean iterationEquals(Iterator<?> iter1, Iterator<?> iter2) {
+		while(iter1.hasNext() && iter2.hasNext()) {
+	        Object o1 = iter1.next();
+	        Object o2 = iter2.next();
+	        if(!areEqual(o1, o2)) {
+				return false;
+			}
+	    }
+	    return !(iter1.hasNext() || iter2.hasNext());
+	}
+	
 }

@@ -25,6 +25,19 @@ import melnorme.utilbox.misc.CollectionUtil;
  */
 public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 	
+	public static <E> ArrayList2<E> create() {
+		return new ArrayList2<>();
+	}
+	
+	@SafeVarargs
+	public static <E> ArrayList2<E> createFrom(E... elements) {
+		ArrayList2<E> arrayList = new ArrayList2<>(elements.length);
+		arrayList.addElements(elements);
+		return arrayList;
+	}
+	
+	/* -----------------  ----------------- */
+	
 	private static final long serialVersionUID = -9212035453691203439L;
 	
 	public ArrayList2() {
@@ -58,6 +71,18 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 	@SafeVarargs
 	public static <E> ArrayList2<E> create(E... elements) {
 		return new ArrayList2<E>(elements.length).addElements(elements);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public boolean equals(Object obj) {
+		return Indexable.equals(this, obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Indexable.hashCode(this);
 	}
 	
 	/* -----------------  ----------------- */

@@ -16,22 +16,21 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import melnorme.utilbox.core.CoreUtil;
-import melnorme.utilbox.misc.ArrayUtil;
 
 /**
  * A simple immutable array collection (RandomAccess, Iterable). 
  */
-public class ArrayView<E> implements Indexable<E> {
+public abstract class ArrayView<E> implements Indexable<E> {
 	
-	public static final ArrayView<?> EMPTY_ARRAYVIEW = new ArrayView<Object>(new Object[0]);
+	public static final ArrayView<?> EMPTY_ARRAYVIEW = new ArrayViewImpl<Object>(new Object[0]);
 	
 	@SafeVarargs
 	public static <T> ArrayView<T> createFrom(T... arr){
-		return new ArrayView<T>(arr);
+		return new ArrayViewImpl<T>(arr);
 	}
 	
 	public static <T> ArrayView<T> create(T[] arr){
-		return new ArrayView<T>(arr);
+		return new ArrayViewImpl<T>(arr);
 	}
 	
 	protected final E[] array;
@@ -40,6 +39,18 @@ public class ArrayView<E> implements Indexable<E> {
 		assertNotNull(array);
 		this.array = array;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return Indexable.equals(this, obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Indexable.hashCode(this);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Override
 	public <T> ArrayView<T> upcastTypeParameter() {
@@ -59,10 +70,6 @@ public class ArrayView<E> implements Indexable<E> {
 	@Override
 	public final E get(int index) {
 		return array[index];
-	}
-	
-	public final boolean contains(Object o) {
-		return ArrayUtil.contains(array, o);
 	}
 	
 	@Override
@@ -111,6 +118,14 @@ public class ArrayView<E> implements Indexable<E> {
 	@SuppressWarnings("unchecked")
 	public final <T> T[] _getInternalArray(@SuppressWarnings("unused") Class<T> componentType) {
 		return (T[]) array;
+	}
+	
+}
+
+class ArrayViewImpl<E> extends ArrayView<E>implements ImmutableList<E> {
+	
+	public ArrayViewImpl(E[] array) {
+		super(array);
 	}
 	
 }
