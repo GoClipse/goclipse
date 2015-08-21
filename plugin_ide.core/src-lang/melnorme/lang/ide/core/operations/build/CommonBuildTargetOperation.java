@@ -113,10 +113,10 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IProgressMonitor pm)
 			throws CoreException, CommonException, OperationCancellation {
-		processBuildOutput(runBuildTool(opInfo, pb, pm));
+		processBuildOutput(runBuildTool(opInfo, pb, pm), pm);
 	}
 	
-	protected abstract void processBuildOutput(ExternalProcessResult processResult)
+	protected abstract void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
 			throws CoreException, CommonException, OperationCancellation;
 			
 }
