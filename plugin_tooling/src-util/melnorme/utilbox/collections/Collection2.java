@@ -48,6 +48,12 @@ public interface Collection2<E> extends Iterable<E> {
 		return this.<Object>upcastTypeParameter().toArray(Object.class);
 	}
 	
+	@SuppressWarnings("unchecked")
+	default <T> T[] toArray(T[] a) {
+		Class<T> componentType = (Class<T>) a.getClass().getComponentType();
+		return this.<T>upcastTypeParameter().toArray(componentType);
+	}
+	
 	default E[] toArray(Class<E> componentType) {
 		E[] newArray = ArrayUtil.create(size(), componentType);
 		copyToArray(newArray);

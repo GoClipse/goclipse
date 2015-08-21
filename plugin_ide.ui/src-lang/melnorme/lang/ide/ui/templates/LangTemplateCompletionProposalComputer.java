@@ -85,7 +85,7 @@ public class LangTemplateCompletionProposalComputer extends AbstractCompletionPr
 //				}
 //			}
 //		}
-		return new ListView<>(result);
+		return ListView.create(result);
 	}
 	
 	protected String getContextTypeId() {
