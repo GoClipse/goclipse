@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
+import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
@@ -99,6 +100,10 @@ public class ValidatedBuildTarget extends AbstractValidator2 {
 	
 	public String getDefaultBuildArguments() throws CommonException {
 		return getBuildType().getDefaultBuildOptions(this);
+	}
+	
+	public String[] getEffectiveEvaluatedBuildArguments() throws CommonException {
+		return LaunchUtils.getEvaluatedArguments(getEffectiveBuildArguments());
 	}
 	
 	/* -----------------  ----------------- */

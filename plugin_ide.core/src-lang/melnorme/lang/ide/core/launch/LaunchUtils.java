@@ -22,7 +22,7 @@ import melnorme.utilbox.core.CommonException;
 
 public class LaunchUtils {
 	
-	public static String[] getEvaluatedAndParsedArguments(String extraOptionsString) throws CommonException {
+	public static String[] getEvaluatedArguments(String extraOptionsString) throws CommonException {
 		try {
 			IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
 			extraOptionsString = varMgr.performStringSubstitution(extraOptionsString, true);

@@ -291,7 +291,7 @@ public class GoBuildManager extends BuildManager {
 				
 				@Override
 				public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-					String[] argumentsOriginal = getEvaluatedAndParsedArguments();
+					String[] argumentsOriginal = getEffectiveEvaluatedArguments();
 					
 					if(!isMultipleGoPackagesArguments(argumentsOriginal)) {
 						runBuildToolAndProcessOutput(getToolProcessBuilder(argumentsOriginal), pm);

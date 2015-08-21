@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
@@ -36,7 +35,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	protected final BuildConfiguration buildConfiguration;
 	protected final BuildType buildType;
-	protected final String effectiveBuildArguments;
+	protected final String[] evaluatedBuildArguments;
 	
 	public CommonBuildTargetOperation(BuildManager buildManager, ValidatedBuildTarget validatedBuildTarget, 
 			OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
@@ -48,7 +47,8 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		assertNotNull(validatedBuildTarget);
 		this.buildConfiguration = assertNotNull(validatedBuildTarget.getBuildConfiguration());
 		this.buildType = assertNotNull(validatedBuildTarget.getBuildType());
-		this.effectiveBuildArguments = validatedBuildTarget.getEffectiveBuildArguments();
+		
+		this.evaluatedBuildArguments = validatedBuildTarget.getEffectiveEvaluatedBuildArguments();
 	}
 	
 	public BuildConfiguration getConfiguration() {
@@ -75,10 +75,6 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		return buildToolPath;
 	}
 	
-	protected String getEffectiveBuildArguments() throws CommonException, CoreException {
-		return effectiveBuildArguments;
-	}
-	
 	@Override
 	public void execute(IProgressMonitor parentPM) throws CoreException, CommonException, OperationCancellation {
 		try(ProgressSubTaskHelper pm = new ProgressSubTaskHelper(parentPM, getBuildOperationName())) {
@@ -92,7 +88,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	}
 	
 	protected ProcessBuilder getToolProcessBuilder() throws CoreException, CommonException, OperationCancellation {
-		return getToolProcessBuilder(getEvaluatedAndParsedArguments());
+		return getToolProcessBuilder(getEffectiveEvaluatedArguments());
 	}
 	
 	protected ProcessBuilder getToolProcessBuilder(String[] buildArguments) 
@@ -108,8 +104,8 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		commands.add(getBuildToolPath().toString());
 	}
 	
-	protected String[] getEvaluatedAndParsedArguments() throws CoreException, CommonException {
-		return LaunchUtils.getEvaluatedAndParsedArguments(getEffectiveBuildArguments());
+	protected String[] getEffectiveEvaluatedArguments() throws CoreException, CommonException {
+		return evaluatedBuildArguments;
 	}
 	
 	protected abstract ProcessBuilder getProcessBuilder(ArrayList2<String> commands) 
