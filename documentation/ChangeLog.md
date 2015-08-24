@@ -1,14 +1,16 @@
 ## release ChangeLog
 
 ### (NextVersion)
- * Fixed: when invoking toolchain programs, add tool directory to beginning of PATH, not end.
+
+### 0.12.1
+ * Go build now displays GOOS and GOARCH environment variables, if a non-default value is set.
+ * Added UserGuide note about using Homebrew GDB in OS X.
+ * Fixed: when invoking Go toolchain programs, add tool directory to beginning of PATH, not end.
  * Fixed: In Linux, the "Build Target" group UI widget height is broken, too short. (#150)
  * Fixed: if build tool reports many error messages, the Eclipse project build will take too long to finish.
- * Added UserGuide note about using Homebrew GDB in OS X.
  * Fixed: "Run As"/"Debug As" launch shortcut incorrectly matching pre-existing launch configurations.
  * Fixed: project not being refreshed when Build Target build invoked directly from Project Explorer.
  * Fixed: "null" text inserted when cancel pressed in "Variables..." and other dialogs.
- * Go build now displays GOOS and GOARCH environment variables, if a non-default value is set.
  * Fixed: Launch Configuration Main tab fields incorrectly modified when a new Build Target is selected (if Build Target is not using defaults)
  
 

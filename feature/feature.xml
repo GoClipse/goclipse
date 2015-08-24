@@ -2,7 +2,7 @@
 <feature
       id="goclipse_feature"
       label="GoClipse"
-      version="0.12.0.qualifier"
+      version="0.12.1.qualifier"
       provider-name="The GoClipse Development Team"
       plugin="com.googlecode.goclipse.ui">
 
