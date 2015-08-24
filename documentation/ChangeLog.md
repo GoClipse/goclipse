@@ -2,7 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
- * Fixed: if build tool reports many error messages, the Eclipse project build will take too long to finish. (#26)
+ * Fixed: In Linux, the "Build Target" group UI widget height is broken, too short.
+ * Fixed: if build tool reports many error messages, the Eclipse project build will take too long to finish.
  * Added UserGuide note about using Homebrew GDB in OS X.
  * Fixed: "Run As"/"Debug As" launch shortcut incorrectly matching pre-existing launch configurations.
  * Fixed: project not being refreshed when Build Target build invoked directly from Project Explorer.

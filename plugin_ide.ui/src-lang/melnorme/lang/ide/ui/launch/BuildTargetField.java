@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.launch;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.ui.LangUIMessages;
@@ -43,7 +44,7 @@ public class BuildTargetField extends ComboOptionsField {
 	
 	@Override
 	protected void createContents_layout() {
-		combo.setLayoutData(gdFillDefaults().grab(false, false).hint(200, 1).create());
+		combo.setLayoutData(gdFillDefaults().grab(false, false).hint(200, SWT.DEFAULT).create());
 	}
 	
 	@Override
