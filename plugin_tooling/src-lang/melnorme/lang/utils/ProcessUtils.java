@@ -22,6 +22,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.StringUtil;
 
 public class ProcessUtils {
 	
@@ -69,10 +70,9 @@ public class ProcessUtils {
 			return;
 		}
 		
-		pathEnv = (pathEnv == null) ? "" : pathEnv + File.pathSeparator;
-		pathEnv += cmdDir.toString();
+		String newPathEnv = cmdDir.toString() + File.pathSeparator + StringUtil.nullAsEmpty(pathEnv);
 		
-		putVarInEnvMap(environment, "PATH", pathEnv);
+		putVarInEnvMap(environment, "PATH", newPathEnv);
 	}
 	
 	public static String getVarFromEnvMap(Map<String, String> envMap, String key) {
