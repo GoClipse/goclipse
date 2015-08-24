@@ -3,7 +3,7 @@
 ### (NextVersion)
 
 ### 0.12.1
- * Go build now displays GOOS and GOARCH environment variables, if a non-default value is set.
+ * Go build now displays GOOS and GOARCH environment variables in build/tools console, if a non-default value is set.
  * Added UserGuide note about using Homebrew GDB in OS X.
  * Fixed: when invoking Go toolchain programs, add tool directory to beginning of PATH, not end.
  * Fixed: In Linux, the "Build Target" group UI widget height is broken, too short. (#150)
