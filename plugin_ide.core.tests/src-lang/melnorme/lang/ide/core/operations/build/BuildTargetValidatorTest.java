@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.launch.BuildTargetSettingsValidator;
+import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.tests.BuildTestsHelper;
@@ -151,7 +152,7 @@ public class BuildTargetValidatorTest extends CommonTest {
 			BuildTarget targetA = new BuildTarget("SampleTarget", true, null, null);
 			ValidatedBuildTarget validatedTargetA = buildType.getValidatedBuildTarget(project, targetA, "");
 			verifyThrows(() -> validatedTargetA.getEffectiveValidExecutablePath(), CommonException.class, 
-				"No executables available");
+				LaunchMessages.MSG_BuildTarget_NoExecutableAvailable());
 			
 			BuildTarget target2 = new BuildTarget("SampleTarget2", true, "sample args", "sample path");
 			ValidatedBuildTarget validatedTarget2 = buildType.getValidatedBuildTarget(project, target2, "");
