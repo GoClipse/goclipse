@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Bruno Medeiros - initial API and implementation
- *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.operations;
 
 import java.nio.file.Path;
@@ -55,10 +45,8 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Indexable<LaunchArtifact> getLaunchArtifacts_do(ValidatedBuildTarget vbt) throws CommonException {
-			return new ArrayList2<>(
-				new LaunchArtifact(vbt.getBuildConfigName(), "default_artifact.exe") // TODO: LANG
-			);
+		public LaunchArtifact getMainLaunchArtifact(ValidatedBuildTarget vbt) throws CommonException {
+			return new LaunchArtifact(vbt.getBuildConfigName(), "default_artifact.exe"); // TODO: LANG
 		}
 		
 		@Override
