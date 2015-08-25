@@ -12,8 +12,11 @@ package melnorme.lang.ide.ui.navigator;
 
 import static java.text.MessageFormat.format;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.fntypes.CommonGetter.getOrNull;
 import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
+
+import java.text.MessageFormat;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -84,50 +87,58 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	}
 	
 	protected void addLaunchActions(IMenuManager menu, BuildTargetElement buildTargetElement) {
-		if(!buildTargetElement.getBuildTarget().isLaunchable(buildTargetElement.project)) {
+		
+		ValidatedBuildTarget validatedBuildTarget;
+		try {
+			validatedBuildTarget = buildTargetElement.getValidatedBuildTarget();
+		} catch(CommonException e) {
 			return;
 		}
 		
-		LaunchBuildTargetAction runTargetAction = new LaunchBuildTargetAction(buildTargetElement, true);
-		LaunchBuildTargetAction debugTargetAction = new LaunchBuildTargetAction(buildTargetElement, false);
+		LaunchArtifact mainLaunchArtifact = getOrNull(validatedBuildTarget::getMainLaunchArtifact);
+		Indexable<LaunchArtifact> launchSubArtifacts = getOrNull(validatedBuildTarget::getSubLaunchArtifacts);
 		
-		try {
-			ValidatedBuildTarget validatedBuildTarget = buildTargetElement.getValidatedBuildTarget();
-			
-			Indexable<LaunchArtifact> launchArtifacts = validatedBuildTarget.getLaunchArtifacts();
-			if(launchArtifacts.size() == 0) {
-				return;
+		String buildTargetName = buildTargetElement.getTargetDisplayName();
+		LaunchBuildTargetAction runTargetAction = new LaunchBuildTargetAction(buildTargetElement, true, null, 
+			buildTargetName, 
+			MessageFormat.format("Run {0}", buildTargetName));
+		LaunchBuildTargetAction debugTargetAction = new LaunchBuildTargetAction(buildTargetElement, false, null, 
+			buildTargetName, 
+			MessageFormat.format("Debug {0}", buildTargetName));
+		
+		
+		if(launchSubArtifacts == null) {
+			if(mainLaunchArtifact != null) {
+				menu.add(runTargetAction);
+				menu.add(debugTargetAction);
 			}
-			if(launchArtifacts.size() > 1) {
-				addRunDebugMenu(menu, buildTargetElement, launchArtifacts);
-				return;
-			}
 			
-		} catch(CommonException e) {
-			runTargetAction.setEnabled(false);
-			debugTargetAction.setEnabled(false);
+			return;
 		}
 		
-		menu.add(runTargetAction);
-		menu.add(debugTargetAction);
-	}
-	
-	protected void addRunDebugMenu(IMenuManager menu, BuildTargetElement buildTargetElement, 
-			Indexable<LaunchArtifact> launchArtifacts) {
-		MenuManager runMenu = new MenuManager("Run");
-		MenuManager debugMenu = new MenuManager("Debug");
+		MenuManager runSubTargetsMenu = new MenuManager("Run ");
+		MenuManager debugSubTargetsMenu = new MenuManager("Debug ");
 		
-		for(LaunchArtifact launchArtifact : launchArtifacts) {
+		if(mainLaunchArtifact != null) {
+			runSubTargetsMenu.add(runTargetAction);
+			runSubTargetsMenu.add(new Separator());
+			debugSubTargetsMenu.add(debugTargetAction);
+			debugSubTargetsMenu.add(new Separator());
+		}
+		
+		for(LaunchArtifact launchArtifact : launchSubArtifacts) {
 			
-			String label = launchArtifact.getName();
+			String launchName = "[" + launchArtifact.getName() + "]";
 			String artifactPath = launchArtifact.getArtifactPath();
 			
-			runMenu.add(new LaunchBuildTargetAction(buildTargetElement, true, artifactPath, label)); 
-			debugMenu.add(new LaunchBuildTargetAction(buildTargetElement, false, artifactPath, label));
+			runSubTargetsMenu.add(new LaunchBuildTargetAction(buildTargetElement, true, artifactPath, launchName, 
+				"Run " + launchName + " - " + artifactPath + "")); 
+			debugSubTargetsMenu.add(new LaunchBuildTargetAction(buildTargetElement, false, artifactPath, launchName, 
+				"Debug " + launchName + " - " + artifactPath + ""));
 		}
-		
-		menu.add(runMenu);
-		menu.add(debugMenu);
+			
+		menu.add(runSubTargetsMenu);
+		menu.add(debugSubTargetsMenu);
 	}
 	
 	@Override
@@ -294,38 +305,22 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		public String mode;
 		public BuildTargetLaunchSettings btSettings;
 		
-		public LaunchBuildTargetAction(BuildTargetElement buildTargetElement, boolean isRun) {
-			this(buildTargetElement, isRun, null, null);
-		}
-		
 		public LaunchBuildTargetAction(BuildTargetElement buildTargetElement, boolean isRun, 
-				String exePathOverride, String projectPostfixOverride) {
+				String exePathOverride, String launchNameSuggestion, String actionText) {
 			super(buildTargetElement, "");
 			mode = isRun ? "run" : "debug";
 			
-			if(exePathOverride != null) {
-				setText(isRun ? 
-					"Run `" + exePathOverride + "`" : 
-					"Debug `" + exePathOverride + "`");
-			} else {
-				setText(isRun ? 
-					BuildManagerMessages.NAME_RunTargetAction : 
-					BuildManagerMessages.NAME_DebugTargetAction);
-			}
+			setText(actionText);
 			
 			BuildTargetData buildTargetData = buildTarget.getDataCopy();
 			// reset build target launch attributes, so that Build Target defaults will be used
 			buildTargetData.buildArguments = null;
 			buildTargetData.executablePath = exePathOverride;
 			
-			String projectPostfix = projectPostfixOverride == null ? 
-					buildTargetData.targetName : 
-					projectPostfixOverride;
-			
 			btSettings = new BuildTargetLaunchSettings(project.getName(), buildTargetData) {
 				@Override
 				protected String getSuggestedConfigName_do() {
-					return nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(projectPostfix));
+					return nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(launchNameSuggestion));
 				}
 			};
 		}

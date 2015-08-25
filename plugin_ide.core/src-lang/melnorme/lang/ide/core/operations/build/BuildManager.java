@@ -274,18 +274,14 @@ public abstract class BuildManager {
 		protected abstract void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) 
 				throws CommonException;
 		
-		public final Indexable<LaunchArtifact> getLaunchArtifacts(ValidatedBuildTarget vbt) 
-				throws CommonException {
-			return getLaunchArtifacts_do(vbt);
+		public LaunchArtifact getMainLaunchArtifact(ValidatedBuildTarget vbt) throws CommonException {
+			BuildConfiguration buildConfig = vbt.getBuildConfiguration();
+			return new LaunchArtifact(buildConfig.getName(), buildConfig.getArtifactPath());
 		}
 		
-		public Indexable<LaunchArtifact> getLaunchArtifacts_do(ValidatedBuildTarget vbt) throws CommonException {
-			BuildConfiguration buildConfig = vbt.getBuildConfiguration();
-			String artifactPath = buildConfig.getArtifactPath();
-			if(artifactPath == null) {
-				return new ArrayList2<>();
-			}
-			return new ArrayList2<>(new LaunchArtifact(buildConfig.getName(), artifactPath));
+		@SuppressWarnings("unused")
+		public Indexable<LaunchArtifact> getSubTargetLaunchArtifacts(ValidatedBuildTarget vbt) throws CommonException {
+			return null;
 		}
 		
 		public abstract CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
