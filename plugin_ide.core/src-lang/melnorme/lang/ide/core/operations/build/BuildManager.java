@@ -293,7 +293,9 @@ public abstract class BuildManager {
 		
 	}
 	
-	protected final Indexable<BuildType> getBuildTypes() {
+	protected final Indexable<BuildType> buildTypes = initBuildTypes();
+	
+	protected final Indexable<BuildType> initBuildTypes() {
 		Indexable<BuildType> buildTypes = getBuildTypes_do();
 		assertTrue(buildTypes.size() > 0);
 		return buildTypes;
@@ -301,17 +303,25 @@ public abstract class BuildManager {
 	
 	protected abstract Indexable<BuildType> getBuildTypes_do();
 	
+	public Indexable<BuildType> getBuildTypes() {
+		return buildTypes;
+	}
+	
 	public BuildType getBuildType_NonNull(String buildTypeName) throws CommonException {
 		if(buildTypeName == null) {
-			return getBuildTypes().get(0);
+			return getDefaultBuildType();
 		}
 		
-		for(BuildType buildType : getBuildTypes()) {
+		for(BuildType buildType : buildTypes) {
 			if(areEqual(buildType.getName(), buildTypeName)) {
 				return buildType;
 			}
 		}
 		throw new CommonException(BuildManagerMessages.BuildType_NotFound(buildTypeName));
+	}
+	
+	public BuildType getDefaultBuildType() {
+		return getBuildTypes().get(0);
 	}
 	
 	/* ----------------- Build Target name ----------------- */
@@ -320,8 +330,8 @@ public abstract class BuildManager {
 		return new BuildTargetNameParser();
 	}
 	
-	public String getDefaultBuildTypeName() {
-		return getBuildTypes().get(0).getName();
+	public final String getDefaultBuildTypeName() {
+		return getDefaultBuildType().getName();
 	}
 	
 	public String getBuildTargetName2(String buildConfigName, String buildTypeName) {

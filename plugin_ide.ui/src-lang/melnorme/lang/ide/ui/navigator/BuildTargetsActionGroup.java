@@ -98,13 +98,17 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		LaunchArtifact mainLaunchArtifact = getOrNull(validatedBuildTarget::getMainLaunchArtifact);
 		Indexable<LaunchArtifact> launchSubArtifacts = getOrNull(validatedBuildTarget::getSubLaunchArtifacts);
 		
-		String buildTargetName = buildTargetElement.getTargetDisplayName();
+		String suggestedLaunchSuffix = buildTargetElement.getTargetDisplayName();
+		if(validatedBuildTarget.isDefaultBuildType()) {
+			suggestedLaunchSuffix = null;
+		}
+		
 		LaunchBuildTargetAction runTargetAction = new LaunchBuildTargetAction(buildTargetElement, true, null, 
-			buildTargetName, 
-			MessageFormat.format("Run {0}", buildTargetName));
+			suggestedLaunchSuffix, 
+			MessageFormat.format("Run {0}", buildTargetElement.getTargetDisplayName()));
 		LaunchBuildTargetAction debugTargetAction = new LaunchBuildTargetAction(buildTargetElement, false, null, 
-			buildTargetName, 
-			MessageFormat.format("Debug {0}", buildTargetName));
+			suggestedLaunchSuffix, 
+			MessageFormat.format("Debug {0}", buildTargetElement.getTargetDisplayName()));
 		
 		
 		if(launchSubArtifacts == null) {
@@ -120,15 +124,14 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		MenuManager debugSubTargetsMenu = new MenuManager("Debug ");
 		
 		if(mainLaunchArtifact != null) {
-			runSubTargetsMenu.add(runTargetAction);
-			runSubTargetsMenu.add(new Separator());
-			debugSubTargetsMenu.add(debugTargetAction);
-			debugSubTargetsMenu.add(new Separator());
+			addMainArtifactAction(validatedBuildTarget, 
+				runTargetAction, debugTargetAction, 
+				runSubTargetsMenu, debugSubTargetsMenu);
 		}
 		
 		for(LaunchArtifact launchArtifact : launchSubArtifacts) {
 			
-			String launchName = "[" + launchArtifact.getName() + "]";
+			String launchName = getLaunchNameFor(launchArtifact);
 			String artifactPath = launchArtifact.getArtifactPath();
 			
 			runSubTargetsMenu.add(new LaunchBuildTargetAction(buildTargetElement, true, artifactPath, launchName, 
@@ -139,6 +142,28 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			
 		menu.add(runSubTargetsMenu);
 		menu.add(debugSubTargetsMenu);
+	}
+	
+	protected String getLaunchNameFor(LaunchArtifact launchArtifact) {
+		return "[" + launchArtifact.getName() + "]";
+	}
+	
+	protected void addMainArtifactAction(
+			ValidatedBuildTarget validatedBuildTarget, 
+			LaunchBuildTargetAction runTargetAction,
+			LaunchBuildTargetAction debugTargetAction, 
+			MenuManager runSubTargetsMenu, 
+			MenuManager debugSubTargetsMenu) 
+	{
+		if(validatedBuildTarget.isDefaultBuildType()) {
+			runTargetAction.setText("Run default executable");
+			debugTargetAction.setText("Debug default executable");
+		}
+		
+		runSubTargetsMenu.add(runTargetAction);
+		runSubTargetsMenu.add(new Separator());
+		debugSubTargetsMenu.add(debugTargetAction);
+		debugSubTargetsMenu.add(new Separator());
 	}
 	
 	@Override
