@@ -16,9 +16,7 @@ import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public final class LANGUAGE_BuildManager extends BuildManager {
@@ -63,20 +61,6 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		public LANGUAGE_BuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, OperationInfo parentOpInfo, 
 				Path buildToolPath) throws CommonException, CoreException {
 			super(validatedBuildTarget.buildMgr, validatedBuildTarget, parentOpInfo, buildToolPath);
-		}
-		
-		@Override
-		protected void addToolCommand(ArrayList2<String> commands)
-				throws CoreException, CommonException, OperationCancellation {
-			//super.addToolCommand(commands);
-		}
-		
-		@Override
-		protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands)
-				throws CommonException, OperationCancellation, CoreException {
-			Location projectLocation = ResourceUtils.getProjectLocation(getProject());
-			return getToolManager().createToolProcessBuilder(getBuildToolPath(), projectLocation, 
-				commands.toArray(String.class));
 		}
 		
 		@Override
