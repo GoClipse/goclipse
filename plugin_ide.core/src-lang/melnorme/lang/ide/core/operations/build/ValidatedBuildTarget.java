@@ -137,4 +137,8 @@ public class ValidatedBuildTarget extends AbstractValidator2 {
 		return getBuildType().getMainLaunchArtifact(this);
 	}
 	
+	public boolean isDefaultBuildType() {
+		return getBuildType() == buildMgr.getDefaultBuildType();
+	}
+	
 }
