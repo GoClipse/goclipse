@@ -11,7 +11,6 @@
 package melnorme.lang.ide.core.operations;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
@@ -34,8 +33,8 @@ public abstract class AbstractToolManagerOperation implements IToolOperation {
 		return project;
 	}
 	
-	protected Location getProjectLocation() throws CoreException {
-		return ResourceUtils.getProjectLocation(project);
+	protected Location getProjectLocation() throws CommonException {
+		return ResourceUtils.getProjectLocation2(project);
 	}
 	
 	protected AbstractToolManager getToolManager() {

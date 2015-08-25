@@ -276,6 +276,9 @@ public abstract class BuildManager {
 		
 		public LaunchArtifact getMainLaunchArtifact(ValidatedBuildTarget vbt) throws CommonException {
 			BuildConfiguration buildConfig = vbt.getBuildConfiguration();
+			if(buildConfig.getArtifactPath() == null) {
+				return null;
+			}
 			return new LaunchArtifact(buildConfig.getName(), buildConfig.getArtifactPath());
 		}
 		

@@ -22,7 +22,6 @@ import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -93,23 +92,17 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	protected ProcessBuilder getToolProcessBuilder(String[] buildArguments) 
 			throws CoreException, CommonException, OperationCancellation {
-		ArrayList2<String> commands = new ArrayList2<String>();
-		addToolCommand(commands);
-		commands.addElements(buildArguments);
-		return getProcessBuilder(commands);
-	}
-	
-	protected void addToolCommand(ArrayList2<String> commands) 
-			throws CoreException, CommonException, OperationCancellation {
-		commands.add(getBuildToolPath().toString());
+		return getProcessBuilder2(buildArguments);
 	}
 	
 	protected String[] getEffectiveEvaluatedArguments() throws CoreException, CommonException {
 		return evaluatedBuildArguments;
 	}
 	
-	protected abstract ProcessBuilder getProcessBuilder(ArrayList2<String> commands) 
-			throws CommonException, OperationCancellation, CoreException;
+	protected ProcessBuilder getProcessBuilder2(String[] toolArguments) 
+			throws CommonException, OperationCancellation, CoreException {
+		return getToolManager().createToolProcessBuilder(getBuildToolPath(), getProjectLocation(), toolArguments);
+	}
 	
 	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IProgressMonitor pm)
 			throws CoreException, CommonException, OperationCancellation {
