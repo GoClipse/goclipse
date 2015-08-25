@@ -70,7 +70,7 @@ public class GoLaunchShortcut extends LangLaunchShortcut implements ILaunchShort
 			throw CommonException.fromMsgFormat("Resource doesn't have a corresponding Go package.");
 		}
 		
-		BuildTargetLaunchSettings btSettings = new BuildTargetLaunchSettings();
+		BuildTargetLaunchSettings btSettings = new BuildTargetLaunchSettings().initFromProject(project);
 		btSettings.data.targetName = goPackageName.getFullNameAsString();
 		return new BuildTargetLaunchable(project, btSettings);
 	}

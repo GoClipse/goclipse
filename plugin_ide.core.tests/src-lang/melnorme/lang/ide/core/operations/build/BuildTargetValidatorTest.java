@@ -137,8 +137,8 @@ public class BuildTargetValidatorTest extends CommonTest {
 			}
 			
 			@Override
-			public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget, OperationInfo opInfo,
-					Path buildToolPath) throws CommonException, CoreException {
+			public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget, 
+					OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
 				return null;
 			}
 		};

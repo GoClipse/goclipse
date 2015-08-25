@@ -152,10 +152,12 @@ public class CollectionUtil {
 	/**
 	 * @return the first element of given coll, if collection is non-null and non-empty. Otherwise null. 
 	 */
-	public static <T> T getFirstElementOrNull(Collection<T> coll) {
-		if(coll == null || coll.isEmpty())
+	public static <T> T getSingleElementOrNull(Iterable<T> coll) {
+		if(coll == null)
 			return null;
-		return coll.iterator().next();
+		Iterator<T> iterator = coll.iterator();
+		T firstElement = iterator.next();
+		return iterator.hasNext() ? null : firstElement;
 	}
 	
 	/* ----------------- modifications ----------------- */

@@ -33,8 +33,6 @@ import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
-import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -79,27 +77,6 @@ public class GoBuildManager extends BuildManager {
 	@Override
 	protected Indexable<BuildType> getBuildTypes_do() {
 		return BUILD_TYPES;
-	}
-	
-	@Override
-	public BuildTarget createBuildTarget(BuildTargetData buildTargetData) {
-		return new BuildTarget(buildTargetData) {
-			@Override
-			public boolean isLaunchable(IProject project) {
-				try {
-					ValidatedBuildTarget bt = getValidatedBuildTarget(project, this);
-					String buildConfigName = bt.getBuildConfigName();
-					
-					Path path = PathUtil.createPath(buildConfigName);
-					if(path.getNameCount() == 0 || path.endsWith("..."))
-						return false;
-					
-					return true;
-				} catch(CommonException e) {
-					return false;
-				}
-			}
-		};
 	}
 	
 	/* -----------------  ----------------- */
@@ -150,14 +127,24 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Indexable<LaunchArtifact> getLaunchArtifacts_do(ValidatedBuildTarget vbt) throws CommonException {
+		public LaunchArtifact getMainLaunchArtifact(ValidatedBuildTarget vbt) throws CommonException {
+			try {
+				String buildConfigName = vbt.getBuildConfigName();
+				
+				Path path = PathUtil.createPath(buildConfigName);
+				if(path.getNameCount() == 0 || path.endsWith("...")) {
+					return null;
+				}
+				
+			} catch(CommonException e) {
+				return null;
+			}
+			
 			Location binFolderLocation = getBinFolderLocation(vbt);
 			
 			String binFilePath = getBinFilePath(getValidGoPackageName(vbt.getBuildConfigName()));
 			String exePath = binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString();
-			return new ArrayList2<>(
-				new LaunchArtifact(vbt.getBuildConfigName(), exePath)
-			);
+			return new LaunchArtifact(vbt.getBuildConfigName(), exePath);
 		}
 		
 		protected Location getBinFolderLocation(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
@@ -336,8 +323,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public Indexable<LaunchArtifact> getLaunchArtifacts_do(ValidatedBuildTarget vbt) throws CommonException {
-			return new ArrayList2<>();
+		public LaunchArtifact getMainLaunchArtifact(ValidatedBuildTarget vbt) throws CommonException {
+			return null;
 		}
 		
 		@Override

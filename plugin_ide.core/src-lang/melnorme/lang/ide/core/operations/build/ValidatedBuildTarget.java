@@ -122,18 +122,19 @@ public class ValidatedBuildTarget extends AbstractValidator2 {
 	}
 	
 	public String getDefaultExecutablePath() throws CommonException {
-		Indexable<LaunchArtifact> launchArtifacts = getLaunchArtifacts();
-		if(launchArtifacts.size() > 1) {
-			throw new CommonException(LaunchMessages.MSG_BuildTarget_MultipleExecutablesAvailable());
+		LaunchArtifact mainLaunchArtifact = getMainLaunchArtifact();
+		if(mainLaunchArtifact == null) {
+			throw new CommonException(LaunchMessages.MSG_BuildTarget_NoExecutableAvailable());
 		}
-		if(launchArtifacts.size() == 0) {
-			throw new CommonException(LaunchMessages.MSG_BuildTarget_NoExecutablesAvailable());
-		}
-		return launchArtifacts.get(0).getArtifactPath();
+		return mainLaunchArtifact.getArtifactPath();
 	}
 	
-	public Indexable<LaunchArtifact> getLaunchArtifacts() throws CommonException {
-		return getBuildType().getLaunchArtifacts(this);
+	public Indexable<LaunchArtifact> getSubLaunchArtifacts() throws CommonException {
+		return getBuildType().getSubTargetLaunchArtifacts(this);
+	}
+	
+	public LaunchArtifact getMainLaunchArtifact() throws CommonException {
+		return getBuildType().getMainLaunchArtifact(this);
 	}
 	
 }
