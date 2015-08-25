@@ -29,6 +29,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -40,7 +41,6 @@ import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
@@ -198,9 +198,10 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands) 
-				throws CoreException, CommonException {
-			ProcessBuilder pb = ProcessUtils.createProcessBuilder(commands, sourceRootDir);
+		protected ProcessBuilder getProcessBuilder2(String[] toolArguments) throws CommonException {
+			AbstractToolManager toolMgr = getToolManager();
+			ProcessBuilder pb = toolMgr.createToolProcessBuilder(getBuildToolPath(), sourceRootDir, toolArguments);
+			
 			goEnv.setupProcessEnv(pb, true);
 			return pb;
 		}
@@ -268,10 +269,10 @@ public class GoBuildManager extends BuildManager {
 		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
 				OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
 			return new GoBuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath) {
+				
 				@Override
-				protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands)
-						throws CoreException, CommonException {
-					ProcessBuilder pb = super.getProcessBuilder(commands);
+				protected ProcessBuilder getProcessBuilder2(String[] toolArguments) throws CommonException {
+					ProcessBuilder pb = super.getProcessBuilder2(toolArguments);
 					pb.directory(getBinFolderLocation(validatedBuildTarget).toFile());
 					return pb;
 				}
