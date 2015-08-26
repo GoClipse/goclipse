@@ -22,7 +22,7 @@ import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
+import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
@@ -70,9 +70,9 @@ public class GoLaunchShortcut extends LangLaunchShortcut implements ILaunchShort
 			throw CommonException.fromMsgFormat("Resource doesn't have a corresponding Go package.");
 		}
 		
-		BuildTargetLaunchSettings btSettings = new BuildTargetLaunchSettings().initFromProject(project);
-		btSettings.data.targetName = goPackageName.getFullNameAsString();
-		return new BuildTargetLaunchable(project, btSettings);
+		BuildTargetLaunchCreator btLaunchCreator = new BuildTargetLaunchCreator().initFromProject(project);
+		btLaunchCreator.data.targetName = goPackageName.getFullNameAsString();
+		return new BuildTargetLaunchable(project, btLaunchCreator);
 	}
 	
 }

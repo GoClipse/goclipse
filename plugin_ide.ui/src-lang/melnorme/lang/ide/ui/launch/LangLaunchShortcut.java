@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.ILaunchShortcut;
 
-import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
+import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -41,18 +41,18 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 			return null;
 		}
 		
-		BuildTargetLaunchSettings launchSettings = new BuildTargetLaunchSettings();
-		launchSettings.initFromProject(project);
+		BuildTargetLaunchCreator btLaunchCreator = new BuildTargetLaunchCreator();
+		btLaunchCreator.initFromProject(project);
 		
-		return getLaunchableForElement(element, project, launchSettings, pm);
+		return getLaunchableForElement(element, project, btLaunchCreator, pm);
 	}
 	
 	@SuppressWarnings("unused")
 	protected BuildTargetLaunchable getLaunchableForElement(Object element, IProject project,
-			BuildTargetLaunchSettings launchSettings, IProgressMonitor pm) 
+			BuildTargetLaunchCreator btLaunchCreator, IProgressMonitor pm) 
 		throws CoreException, CommonException, OperationCancellation 
 	{
-		return new BuildTargetLaunchable(project, launchSettings);
+		return new BuildTargetLaunchable(project, btLaunchCreator);
 	}
 	
 	protected IProject getAssociatedProject(Object element) {
@@ -69,12 +69,12 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 	public class BuildTargetLaunchable implements ILaunchable {
 		
 		protected final IProject project;
-		protected final BuildTargetLaunchSettings buildTargetSettings;
+		protected final BuildTargetLaunchCreator btLaunchCreator;
 		
-		public BuildTargetLaunchable(IProject project, BuildTargetLaunchSettings buildTargetSettings) {
+		public BuildTargetLaunchable(IProject project, BuildTargetLaunchCreator btLaunchCreator) {
 			this.project = project;
-			this.buildTargetSettings = buildTargetSettings;
-			assertNotNull(buildTargetSettings.getTargetName());
+			this.btLaunchCreator = btLaunchCreator;
+			assertNotNull(btLaunchCreator.getTargetName());
 		}
 		
 		@Override
@@ -88,14 +88,14 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		}
 		
 		public String getBuildTargetName() {
-			return buildTargetSettings.getTargetName();
+			return btLaunchCreator.getTargetName();
 		}
 		
 		@Override
 		public boolean matchesLaunchConfiguration(ILaunchConfiguration config) throws CoreException {
-			BuildTargetLaunchSettings otherLaunchSettings = new BuildTargetLaunchSettings(config);
+			BuildTargetLaunchCreator otherLaunchSettings = new BuildTargetLaunchCreator(config);
 			
-			BuildTargetData data = buildTargetSettings.data;
+			BuildTargetData data = btLaunchCreator.data;
 			BuildTargetData otherData = otherLaunchSettings.data;
 			return 
 				areEqual(getProjectName(), otherLaunchSettings.projectName) &&
@@ -107,7 +107,7 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		
 		@Override
 		public ILaunchConfiguration createNewConfiguration() throws CoreException {
-			return buildTargetSettings.createNewConfiguration(getLaunchConfigType());
+			return btLaunchCreator.createNewConfiguration(getLaunchConfigType());
 		}
 		
 	}

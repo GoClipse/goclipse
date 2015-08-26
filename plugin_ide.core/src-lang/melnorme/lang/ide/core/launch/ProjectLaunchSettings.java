@@ -29,7 +29,7 @@ import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
 
-public class ProjectLaunchSettings {
+public class ProjectLaunchSettings implements ILaunchConfigSerializer {
 	
 	public ProjectValidator projectValidator = new ProjectValidator(LangCore.NATURE_ID);
 	public String projectName = "";
@@ -52,6 +52,7 @@ public class ProjectLaunchSettings {
 		return ResourceUtils.getProject(projectName);
 	}
 	
+	@Override
 	public ProjectLaunchSettings initFrom(IResource contextualResource) {
 		if(contextualResource == null) {
 			return this;
@@ -104,10 +105,7 @@ public class ProjectLaunchSettings {
 		return nullAsEmpty(projectName);
 	}
 	
-	public void saveToConfig(ILaunchConfigurationWorkingCopy config) {
-		saveToConfig(config, false);
-	}
-	
+	@Override
 	public void saveToConfig(ILaunchConfigurationWorkingCopy config, boolean rename) {
 		config.setAttribute(LaunchConstants.ATTR_PROJECT_NAME, projectName);
 		

@@ -31,7 +31,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.navigator.ICommonActionConstants;
 
-import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
+import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -324,7 +324,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	public class LaunchBuildTargetAction extends AbstractBuildTargetAction {
 		
 		public String mode;
-		public BuildTargetLaunchSettings btSettings;
+		public BuildTargetLaunchCreator launchCreator;
 		
 		public LaunchBuildTargetAction(BuildTargetElement buildTargetElement, boolean isRun, 
 				String exePathOverride, String launchNameSuggestion, String actionText) {
@@ -334,7 +334,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			setText(actionText);
 			
 			String targetName = buildTarget.getTargetName();
-			btSettings = buildTargetSettings(project, targetName, exePathOverride, launchNameSuggestion);
+			launchCreator = buildTargetLaunchCreator(project, targetName, exePathOverride, launchNameSuggestion);
 		}
 		
 		protected String getTargetName() {
@@ -344,13 +344,13 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		@Override
 		public void doRun() throws StatusException {
 			LangLaunchShortcut launchShortcut = createLaunchShortcut();
-			BuildTargetLaunchable launchable = launchShortcut.new BuildTargetLaunchable(project, btSettings);
+			BuildTargetLaunchable launchable = launchShortcut.new BuildTargetLaunchable(project, launchCreator);
 			launchShortcut.launchTarget(launchable, mode);
 		}
 		
 	}
 	
-	public static BuildTargetLaunchSettings buildTargetSettings(IProject project, 
+	public static BuildTargetLaunchCreator buildTargetLaunchCreator(IProject project, 
 			String targetName, String executablePath, String launchNameSuggestion) {
 		
 		BuildTargetData buildTargetData = new BuildTargetData(
@@ -360,7 +360,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			executablePath
 		);
 		
-		return new BuildTargetLaunchSettings(project.getName(), buildTargetData) {
+		return new BuildTargetLaunchCreator(project.getName(), buildTargetData) {
 			@Override
 			protected String getSuggestedConfigName_do() {
 				return nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(launchNameSuggestion));

@@ -25,7 +25,7 @@ import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
+import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 import melnorme.lang.ide.ui.preferences.BuildTargetSettingsComponent;
@@ -161,7 +161,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	
 	@Override
 	protected ProjectLaunchSettings getDefaultProjectLaunchSettings() {
-		return new BuildTargetLaunchSettings() {
+		return new BuildTargetLaunchCreator() {
 			@Override
 			public ProjectLaunchSettings initFrom(IResource contextualResource) {
 				ProjectLaunchSettings initFrom = super.initFrom(contextualResource);
@@ -172,10 +172,10 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected void initializeBuildTargetField(BuildTargetLaunchSettings buildSettings) {
+	protected void initializeBuildTargetField(BuildTargetLaunchCreator btLaunchCreator) {
 		//super.initializeBuildTargetField(buildSettings);
 		
-		String buildTargetName = buildSettings.data.targetName;
+		String buildTargetName = btLaunchCreator.data.targetName;
 		String buildConfiguration = getBuildTargetNameParser().getBuildConfigName(buildTargetName);
 		String buildTypeName = getBuildTargetNameParser().getBuildTypeName(buildTargetName);
 		goPackageField.setFieldValue(buildConfiguration);

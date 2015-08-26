@@ -31,7 +31,7 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetValidator;
-import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
+import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
@@ -107,7 +107,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	protected ProcessLaunchInfoValidator getLaunchValidator(ILaunchConfiguration config) 
 			throws CommonException, CoreException {
 		
-		BuildTargetLaunchSettings launchSettings = new BuildTargetLaunchSettings(config);
+		BuildTargetLaunchCreator launchSettings = new BuildTargetLaunchCreator(config);
 		
 		BuildTargetValidator buildTargetValidator = new BuildTargetValidator() {
 				
