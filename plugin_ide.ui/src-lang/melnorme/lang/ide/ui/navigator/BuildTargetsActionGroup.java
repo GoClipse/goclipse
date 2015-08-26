@@ -131,7 +131,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		for(LaunchArtifact launchArtifact : launchSubArtifacts) {
 			
-			String launchName = getLaunchNameFor(launchArtifact);
+			String launchName = createLaunchShortcut().getLaunchNameForSubTarget(launchArtifact.getName());
 			String artifactPath = launchArtifact.getArtifactPath();
 			
 			runSubTargetsMenu.add(new LaunchBuildTargetAction(buildTargetElement, true, artifactPath, launchName, 
@@ -142,10 +142,6 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			
 		menu.add(runSubTargetsMenu);
 		menu.add(debugSubTargetsMenu);
-	}
-	
-	protected String getLaunchNameFor(LaunchArtifact launchArtifact) {
-		return "[" + launchArtifact.getName() + "]";
 	}
 	
 	protected void addMainArtifactAction(
@@ -337,17 +333,8 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			
 			setText(actionText);
 			
-			BuildTargetData buildTargetData = buildTarget.getDataCopy();
-			// reset build target launch attributes, so that Build Target defaults will be used
-			buildTargetData.buildArguments = null;
-			buildTargetData.executablePath = exePathOverride;
-			
-			btSettings = new BuildTargetLaunchSettings(project.getName(), buildTargetData) {
-				@Override
-				protected String getSuggestedConfigName_do() {
-					return nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(launchNameSuggestion));
-				}
-			};
+			String targetName = buildTarget.getTargetName();
+			btSettings = buildTargetSettings(project, targetName, exePathOverride, launchNameSuggestion);
 		}
 		
 		protected String getTargetName() {
@@ -361,6 +348,24 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			launchShortcut.launchTarget(launchable, mode);
 		}
 		
+	}
+	
+	public static BuildTargetLaunchSettings buildTargetSettings(IProject project, 
+			String targetName, String executablePath, String launchNameSuggestion) {
+		
+		BuildTargetData buildTargetData = new BuildTargetData(
+			targetName,
+			false,
+			null,
+			executablePath
+		);
+		
+		return new BuildTargetLaunchSettings(project.getName(), buildTargetData) {
+			@Override
+			protected String getSuggestedConfigName_do() {
+				return nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(launchNameSuggestion));
+			}
+		};
 	}
 	
 	protected abstract LangLaunchShortcut createLaunchShortcut();

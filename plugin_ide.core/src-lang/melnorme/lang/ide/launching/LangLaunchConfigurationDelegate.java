@@ -30,7 +30,7 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.launch.BuildTargetSettingsValidator;
+import melnorme.lang.ide.core.launch.BuildTargetValidator;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
@@ -109,7 +109,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		
 		BuildTargetLaunchSettings launchSettings = new BuildTargetLaunchSettings(config);
 		
-		BuildTargetSettingsValidator buildSettingsValidator = new BuildTargetSettingsValidator() {
+		BuildTargetValidator buildTargetValidator = new BuildTargetValidator() {
 				
 			@Override
 			public ProjectValidator getProjectValidator() {
@@ -138,7 +138,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		};
 		
 		return new ProcessLaunchInfoValidator(
-			buildSettingsValidator, 
+			buildTargetValidator, 
 			evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, "")),
 			evaluateStringVars(config.getAttribute(LaunchConstants.ATTR_WORKING_DIRECTORY, "")),
 			config.getAttribute(ILaunchManager.ATTR_ENVIRONMENT_VARIABLES, (Map<String, String>) null),

@@ -19,7 +19,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.launch.BuildTargetSettingsValidator;
+import melnorme.lang.ide.core.launch.BuildTargetValidator;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
@@ -118,8 +118,8 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 			buildTargetData.executablePath = buildTargetSettings.getEffectiveProgramPathValue());
 	}
 	
-	protected BuildTargetSettingsValidator getValidator() {
-		return new BuildTargetSettingsValidator() {
+	protected BuildTargetValidator getValidator() {
+		return new BuildTargetValidator() {
 			
 			@Override
 			public String getProjectName() throws CommonException {

@@ -24,13 +24,10 @@ import melnorme.lang.tooling.data.ValidationMessages;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-/**
- * This is similar in nature to {@link BuildTargetValidator}, maybe these two could be merged?
- */
-public abstract class BuildTargetSettingsValidator extends AbstractValidator2 
+public abstract class BuildTargetValidator extends AbstractValidator2 
 	implements IBuildTargetSettings {
 	
-	public BuildTargetSettingsValidator() {
+	public BuildTargetValidator() {
 	}
 	
 	public ProjectValidator getProjectValidator() {

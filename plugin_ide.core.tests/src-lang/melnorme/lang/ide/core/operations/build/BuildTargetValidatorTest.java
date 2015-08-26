@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.BundleInfo;
-import melnorme.lang.ide.core.launch.BuildTargetSettingsValidator;
+import melnorme.lang.ide.core.launch.BuildTargetValidator;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
@@ -67,13 +67,13 @@ public class BuildTargetValidatorTest extends CommonTest {
 		
 		try(SampleProject sampleProj = initSampleProject()){
 			
-			BuildTargetSettingsValidator target1Validator = btsValidator("SampleTarget", null, null);
+			BuildTargetValidator target1Validator = btsValidator("SampleTarget", null, null);
 			assertEquals(target1Validator.getValidBuildTarget(), 
 				new BuildTarget("SampleTarget", true, null, null));
 			
 			target1Validator.getExecutablePath();
 			
-			BuildTargetSettingsValidator target2Validator = getBuiltTargetSettingsValidator(
+			BuildTargetValidator target2Validator = getBuiltTargetSettingsValidator(
 				sampleProj.getName(), "SampleTarget2", null, null);
 			assertEquals(target2Validator.getValidBuildTarget(), 
 				new BuildTarget("SampleTarget2", true, "sample args", "sample path"));
@@ -87,14 +87,14 @@ public class BuildTargetValidatorTest extends CommonTest {
 		
 	}
 	
-	protected BuildTargetSettingsValidator btsValidator(
+	protected BuildTargetValidator btsValidator(
 			String buildTargetName, String buildArguments, String artifactPath) {
 		return getBuiltTargetSettingsValidator(sampleProject.getName(), buildTargetName, buildArguments, artifactPath);
 	}
 	
-	protected BuildTargetSettingsValidator getBuiltTargetSettingsValidator(
+	protected BuildTargetValidator getBuiltTargetSettingsValidator(
 			String projectName, String buildTargetName, String buildArguments, String artifactPath) {
-		BuildTargetSettingsValidator btProcessor = new BuildTargetSettingsValidator() {
+		BuildTargetValidator btProcessor = new BuildTargetValidator() {
 			
 			@Override
 			public String getProjectName() throws CommonException {
