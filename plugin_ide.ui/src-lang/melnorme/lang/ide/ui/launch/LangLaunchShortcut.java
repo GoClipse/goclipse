@@ -28,6 +28,10 @@ import melnorme.utilbox.core.CommonException;
 
 public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements ILaunchShortcut {
 	
+	public String getLaunchNameForSubTarget(String subTargetName) {
+		return "[" + subTargetName + "]";
+	}
+	
 	@Override
 	protected ILaunchable getLaunchTargetForElement(Object element, IProgressMonitor pm)
 			throws CoreException, CommonException, OperationCancellation {
@@ -40,6 +44,14 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		BuildTargetLaunchSettings launchSettings = new BuildTargetLaunchSettings();
 		launchSettings.initFromProject(project);
 		
+		return getLaunchableForElement(element, project, launchSettings, pm);
+	}
+	
+	@SuppressWarnings("unused")
+	protected BuildTargetLaunchable getLaunchableForElement(Object element, IProject project,
+			BuildTargetLaunchSettings launchSettings, IProgressMonitor pm) 
+		throws CoreException, CommonException, OperationCancellation 
+	{
 		return new BuildTargetLaunchable(project, launchSettings);
 	}
 	

@@ -20,11 +20,13 @@ import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.AbstractValidator2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 public class ValidatedBuildTarget extends AbstractValidator2 {
 	
@@ -54,6 +56,10 @@ public class ValidatedBuildTarget extends AbstractValidator2 {
 		return project;
 	}
 	
+	public Location getProjectLocation() throws CommonException {
+		return ResourceUtils.getProjectLocation2(project);
+	}	
+	
 	public String getBuildConfigName() {
 		return buildConfiguration.getName();
 	}
@@ -72,6 +78,10 @@ public class ValidatedBuildTarget extends AbstractValidator2 {
 	
 	public BuildTarget getBuildTarget() {
 		return buildTarget;
+	}
+	
+	public boolean isDefaultBuildType() {
+		return getBuildType() == buildMgr.getDefaultBuildType();
 	}
 	
 	/* -----------------  ----------------- */
@@ -135,10 +145,6 @@ public class ValidatedBuildTarget extends AbstractValidator2 {
 	
 	public LaunchArtifact getMainLaunchArtifact() throws CommonException {
 		return getBuildType().getMainLaunchArtifact(this);
-	}
-	
-	public boolean isDefaultBuildType() {
-		return getBuildType() == buildMgr.getDefaultBuildType();
 	}
 	
 }

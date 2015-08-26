@@ -23,14 +23,14 @@ import melnorme.utilbox.misc.Location;
 
 public class ProcessLaunchInfoValidator {
 	
-	protected final BuildTargetSettingsValidator buildSettingsValidator;
+	protected final BuildTargetValidator buildSettingsValidator;
 	
 	protected final String programArguments;
 	protected final String workingDirectory;
 	protected final Map<String, String> environmentVars;
 	protected final boolean appendEnvironmentVars;
 	
-	public ProcessLaunchInfoValidator(BuildTargetSettingsValidator buildSettingsValidator, String programArguments,
+	public ProcessLaunchInfoValidator(BuildTargetValidator buildSettingsValidator, String programArguments,
 			String workingDirectory, Map<String, String> environmentVars, boolean appendEnvironmentVars) {
 		this.buildSettingsValidator = buildSettingsValidator;
 		this.programArguments = programArguments;

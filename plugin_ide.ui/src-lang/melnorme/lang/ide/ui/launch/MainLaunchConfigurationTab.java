@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
-import melnorme.lang.ide.core.launch.BuildTargetSettingsValidator;
+import melnorme.lang.ide.core.launch.BuildTargetValidator;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -89,8 +89,8 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		return getValidator().getOriginalExecutablePath();
 	}
 	
-	protected BuildTargetSettingsValidator getValidator() throws CommonException {
-		return new BuildTargetSettingsValidator() {
+	protected BuildTargetValidator getValidator() throws CommonException {
+		return new BuildTargetValidator() {
 			
 			@Override
 			public String getProjectName() throws CommonException {

@@ -351,30 +351,6 @@ public abstract class BuildManager {
 		return nameParser.getFullName(buildConfig, buildType);
 	}
 	
-	/* -----------------  Build Target Validator  ----------------- */
-	
-	public ValidatedBuildTarget getValidatedBuildTarget(IProject project, BuildTarget buildTarget) 
-			throws CommonException {
-		
-		String targetName = buildTarget.getTargetName();
-		BuildTargetNameParser nameParser = getBuildTargetNameParser();
-		String buildConfigName = nameParser.getBuildConfig(targetName);
-		
-		BuildType buildType = getBuildType_NonNull(nameParser.getBuildType(targetName));
-		
-		return buildType.getValidatedBuildTarget(project, buildTarget, buildConfigName);
-	}
-	
-	public BuildTarget getBuildTargetFor2(ProjectBuildInfo projectBuildInfo, String targetName)
-			throws CommonException {
-		BuildTarget buildTarget = projectBuildInfo.getDefinedBuildTarget(targetName);
-		if(buildTarget != null) {
-			return buildTarget;
-		}
-		
-		return createBuildTarget(new BuildTargetData(targetName, false, null, null));
-	}
-	
 	/* -----------------  Build Target  ----------------- */
 	
 	public BuildTarget createBuildTarget(BuildTargetData buildTargetData) {
@@ -408,6 +384,37 @@ public abstract class BuildManager {
 			throw new CommonException(LaunchMessages.PROCESS_LAUNCH_NoSuchBuildTarget);
 		}
 		return buildTarget;
+	}
+	
+	public BuildTarget getBuildTargetFor2(ProjectBuildInfo projectBuildInfo, String targetName)
+			throws CommonException {
+		BuildTarget buildTarget = projectBuildInfo.getDefinedBuildTarget(targetName);
+		if(buildTarget != null) {
+			return buildTarget;
+		}
+		
+		return createBuildTarget(new BuildTargetData(targetName, false, null, null));
+	}
+	
+	/* -----------------  Build Target Validator  ----------------- */
+	
+	public ValidatedBuildTarget getValidatedBuildTarget(IProject project, BuildTarget buildTarget) 
+			throws CommonException {
+		
+		String targetName = buildTarget.getTargetName();
+		BuildTargetNameParser nameParser = getBuildTargetNameParser();
+		String buildConfigName = nameParser.getBuildConfig(targetName);
+		
+		BuildType buildType = getBuildType_NonNull(nameParser.getBuildType(targetName));
+		
+		return buildType.getValidatedBuildTarget(project, buildTarget, buildConfigName);
+	}
+	
+	public ValidatedBuildTarget getValidatedBuildTarget(IProject project, String buildTypeName, String buildConfigName)
+			throws CommonException {
+		String buildTargetName = getBuildTargetName2(buildConfigName, buildTypeName);
+		BuildTarget buildTarget = getValidDefinedBuildTarget(project, buildTargetName);
+		return getValidatedBuildTarget(project, buildTarget);
 	}
 	
 	/* ----------------- Build operations ----------------- */
