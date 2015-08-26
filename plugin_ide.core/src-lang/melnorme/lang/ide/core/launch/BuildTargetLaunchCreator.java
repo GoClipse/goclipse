@@ -27,24 +27,24 @@ import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 
-public class BuildTargetLaunchSettings extends ProjectLaunchSettings {
+public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	
 	public BuildTargetData data = new BuildTargetData();
 	
-	public BuildTargetLaunchSettings() {
+	public BuildTargetLaunchCreator() {
 	}
 	
-	public BuildTargetLaunchSettings(String projectName, 
+	public BuildTargetLaunchCreator(String projectName, 
 			String targetName, String buildArguments, String executablePath) {
 		this(projectName, new BuildTargetData(targetName, true, buildArguments, executablePath));
 	}
 	
-	public BuildTargetLaunchSettings(String projectName, BuildTargetData data) {
+	public BuildTargetLaunchCreator(String projectName, BuildTargetData data) {
 		super(projectName);
 		this.data = data;
 	}
 	
-	public BuildTargetLaunchSettings(ILaunchConfiguration config) throws CoreException {
+	public BuildTargetLaunchCreator(ILaunchConfiguration config) throws CoreException {
 		super(config);
 		
 		data.targetName = config.getAttribute(LaunchConstants.ATTR_BUILD_TARGET, "");
@@ -71,7 +71,7 @@ public class BuildTargetLaunchSettings extends ProjectLaunchSettings {
 	}
 	
 	@Override
-	public BuildTargetLaunchSettings initFromProject(IProject project) throws CommonException {
+	public BuildTargetLaunchCreator initFromProject(IProject project) throws CommonException {
 		super.initFromProject(project);
 		
 		ProjectBuildInfo buildInfo = getBuildManager().getBuildInfo(project);

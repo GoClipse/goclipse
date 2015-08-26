@@ -18,7 +18,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.launch.BuildTargetLaunchSettings;
+import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.launch.BuildTargetValidator;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -171,30 +171,36 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	@Override
 	protected ProjectLaunchSettings getDefaultProjectLaunchSettings() {
-		return new BuildTargetLaunchSettings();
+		return new BuildTargetLaunchCreator();
+	}
+	
+	@Override
+	protected BuildTargetLaunchCreator doInitializeFrom_createSettings(ILaunchConfiguration config) 
+			throws CoreException {
+		return new BuildTargetLaunchCreator(config);
 	}
 	
 	@Override
 	public void doInitializeFrom(ILaunchConfiguration config) throws CoreException {
-		BuildTargetLaunchSettings buildSettings = new BuildTargetLaunchSettings(config);
+		BuildTargetLaunchCreator buildSettings = doInitializeFrom_createSettings(config);
 		
 		super.initializeFrom(buildSettings);
 		initializeBuildTargetField(buildSettings);
 		initializeBuildTargetSettings(buildSettings);
 	}
 	
-	protected void initializeBuildTargetField(BuildTargetLaunchSettings buildSettings) {
-		buildTargetField.setFieldValue(buildSettings.getTargetName());
+	protected void initializeBuildTargetField(BuildTargetLaunchCreator btLaunchCreator) {
+		buildTargetField.setFieldValue(btLaunchCreator.getTargetName());
 	}
 	
-	protected void initializeBuildTargetSettings(BuildTargetLaunchSettings buildSettings) {
-		buildTargetSettings.buildArgumentsField.setEffectiveFieldValue(buildSettings.getBuildArguments());
-		buildTargetSettings.programPathField.setEffectiveFieldValue(buildSettings.getExecutablePath());
+	protected void initializeBuildTargetSettings(BuildTargetLaunchCreator btLaunchCreator) {
+		buildTargetSettings.buildArgumentsField.setEffectiveFieldValue(btLaunchCreator.getBuildArguments());
+		buildTargetSettings.programPathField.setEffectiveFieldValue(btLaunchCreator.getExecutablePath());
 	}
 	
 	@Override
 	protected ProjectLaunchSettings getLaunchSettingsFromTab() {
-		return new BuildTargetLaunchSettings(
+		return new BuildTargetLaunchCreator(
 			getProjectName(),
 			getBuildTargetName(),
 			buildTargetSettings.buildArgumentsField.getEffectiveFieldValue(),

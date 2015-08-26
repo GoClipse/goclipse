@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.ILaunchConfigSerializer;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
@@ -114,13 +115,11 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 		getDefaultProjectSettings(contextResource).saveToConfig(config, true);
 	}
 	
-	protected ProjectLaunchSettings getDefaultProjectSettings(IResource contextResource) {
+	protected ILaunchConfigSerializer getDefaultProjectSettings(IResource contextResource) {
 		return getDefaultProjectLaunchSettings().initFrom(contextResource);
 	}
 	
-	protected ProjectLaunchSettings getDefaultProjectLaunchSettings() {
-		return new ProjectLaunchSettings();
-	}
+	protected abstract ILaunchConfigSerializer getDefaultProjectLaunchSettings();
 	
 	@Override
 	public void initializeFrom(ILaunchConfiguration config) {
@@ -132,8 +131,11 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	}
 	
 	public void doInitializeFrom(ILaunchConfiguration config) throws CoreException {
-		initializeFrom(new ProjectLaunchSettings(config));
+		initializeFrom(doInitializeFrom_createSettings(config));
 	}
+	
+	protected abstract ProjectLaunchSettings doInitializeFrom_createSettings(ILaunchConfiguration config) 
+			throws CoreException;
 	
 	protected void initializeFrom(ProjectLaunchSettings projectSettings) {
 		projectField.setFieldValue(projectSettings.projectName);
@@ -144,8 +146,6 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 		getLaunchSettingsFromTab().saveToConfig(config);
 	}
 	
-	protected ProjectLaunchSettings getLaunchSettingsFromTab() {
-		return new ProjectLaunchSettings(getProjectName());
-	}
+	protected abstract ProjectLaunchSettings getLaunchSettingsFromTab();
 	
 }
