@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed: Unindent (Shift-Tab) broken, does nothing after empty lines in selection.
+ 
 
 ### 0.12.1
  * Go build now displays GOOS and GOARCH environment variables in build/tools console, if a non-default value is set.
