@@ -198,9 +198,11 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 		int spaceIndentationSize = CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.get();
 		String spaceIndent = AutoEditUtils.getNSpaces(spaceIndentationSize);
 		
+		// An empty string must be part of IndentPrefixes, so that empty lines do not fail the unindent operation.
+		// for indent operation, only first element will be used, I believe 
 		switch (indentMode) {
-		case TAB: return array("\t", spaceIndent); // return getIndentPrefixesForTab(spaceIndent); 
-		case SPACES: return array(spaceIndent, "\t"); // return getIndentPrefixesForSpaces(spaceIndent);
+		case TAB: return array("\t", spaceIndent, ""); // return getIndentPrefixesForTab(spaceIndent); 
+		case SPACES: return array(spaceIndent, "\t", ""); // return getIndentPrefixesForSpaces(spaceIndent);
 		}
 		
 		throw assertUnreachable();

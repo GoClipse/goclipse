@@ -2,6 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed: Unindent (Shift-Tab) broken, does nothing after empty lines in selection.
+ 
  * Fixed: when invoking toolchain programs, add tool directory to beginning of PATH, not end.
  * Fixed: In Linux, the "Build Target" group UI widget height is broken, too short.
  * Fixed: if build tool reports many error messages, the Eclipse project build will take too long to finish.
