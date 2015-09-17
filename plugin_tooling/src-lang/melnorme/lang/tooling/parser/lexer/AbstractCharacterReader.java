@@ -12,66 +12,42 @@ package melnorme.lang.tooling.parser.lexer;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-public class StringCharacterReader implements ICharacterReader {
+public abstract class AbstractCharacterReader implements ICharacterReader {
 	
-	protected final String source;
-	protected int offset = 0;
+	protected int readCount;
 	
-	public StringCharacterReader(String source) {
-		this.source = source;
-	}
-	
-	public String getSource() {
-		return source;
-	}
-	
-	public int getOffset() {
-		return offset;
-	}
-	
-	protected void invariant() {
-		assertTrue(offset >= 0);
+	public AbstractCharacterReader() {
+		super();
 	}
 	
 	@Override
 	public int lookahead() {
-		invariant();
-		
-		if(offset >= source.length()) {
-			return -1;
-		}
-		return source.charAt(offset);
-	}
-	
-	public boolean lookaheadIsEOF() {
-		return lookahead() == -1;
-	}
-	
-	@Override
-	public int read() {
-		int ch = lookahead();
-		offset++;
+		int ch = read();
+		unread();
 		return ch;
 	}
 	
 	@Override
-	public void unread() {
-		offset--;
-		invariant();
+	public int read() {
+		readCount++;
+		return doRead();
 	}
+	
+	protected abstract int doRead();
+	
+	@Override
+	public void unread() {
+		readCount--;
+		assertTrue(readCount >= 0);
+		doUnread();
+	}
+	
+	protected abstract void doUnread();
 	
 	@Override
 	public void reset() {
-		offset = 0;
-	}
-	
-	@Override
-	public boolean consume(int character) {
-		if(lookahead() == character) {
-			read();
-			return true;
-		}
-		return false;
+		// Note: we reset according to our own read count
+		unread(readCount);
 	}
 	
 }
