@@ -8,32 +8,39 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.text;
+package melnorme.lang.tooling.parser.lexer;
 
-import org.eclipse.jface.text.rules.ICharacterScanner;
+public class CharacterReaderWrapper extends AbstractCharacterReader {
 
-import melnorme.lang.tooling.parser.lexer.AbstractCharacterReader;
-import melnorme.lang.tooling.parser.lexer.ICharacterReader;
-
-/**
- * Adapt {@link ICharacterReader} over a {@link ICharacterScanner}
- */
-public class CharacterScannerHelper extends AbstractCharacterReader {
-
-	protected final ICharacterScanner scanner;
+	protected final ICharacterReader reader;
 	
-	public CharacterScannerHelper(ICharacterScanner scanner) {
-		this.scanner = scanner;
+	public CharacterReaderWrapper(ICharacterReader reader) {
+		this.reader = reader;
+	}
+	
+	public ICharacterReader getParentReader() {
+		return reader;
+	}
+	
+	@Override
+	public int lookahead() {
+		return reader.lookahead();
 	}
 	
 	@Override
 	protected int doRead() {
-		return scanner.read();
+		return reader.read();
 	}
 	
 	@Override
 	protected void doUnread() {
-		scanner.unread();
+		reader.unread();
+	}
+	
+	/** Resets the number of reads called on this CharacterReaderWrapper instance, not the parent. */
+	@Override
+	public void reset() {
+		super.reset();
 	}
 	
 }
