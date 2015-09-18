@@ -11,6 +11,8 @@
 package melnorme.lang.tooling.ops.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import melnorme.lang.tooling.parser.lexer.LexingUtils;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -36,14 +38,14 @@ public class SourceLinesInfo {
 			consumeNewLine(parser);
 			
 			lines.add(lineStartOffset);
-			lineStartOffset = parser.getOffset();
+			lineStartOffset = parser.getReadOffset();
 		}
 		
 	}
 	
 	protected void consumeNewLine(StringParseSource parser) {
 		while(true) {
-			String newlineSequence = parser.determineNewlineSequenceAt(0);
+			String newlineSequence = LexingUtils.determineNewlineSequenceAt(parser, 0);
 			if(newlineSequence != null) {
 				parser.consumeAhead(newlineSequence);
 				return;
@@ -85,7 +87,7 @@ public class SourceLinesInfo {
 	public int getIdentifierAt(int validatedOffset) {
 		StringParseSource parser = new StringParseSource(source);
 		parser.consume(validatedOffset);
-		return parser.matchJavaIdentifier();
+		return LexingUtils.matchJavaIdentifier(parser);
 	}
 	
 }

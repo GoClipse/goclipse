@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.BuildOutputParser;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
+import melnorme.lang.tooling.parser.lexer.LexingUtils;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -40,7 +41,7 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	
 	@Override
 	protected ToolMessageData parseMessageData(StringParseSource output) throws CommonException {
-		String outputLine = output.consumeLine();
+		String outputLine = LexingUtils.consumeLine(output);
 		
 		if(outputLine.startsWith("# ")) {
 			// Not necessary for now
@@ -74,7 +75,7 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 		while(true) {
 			int readChar = output.lookahead();
 			if(readChar == '\t') {
-				String nextLine = output.consumeLine();
+				String nextLine = LexingUtils.consumeLine(output);
 				msgData.messageText += "\n" + nextLine;
 			} else {
 				break;

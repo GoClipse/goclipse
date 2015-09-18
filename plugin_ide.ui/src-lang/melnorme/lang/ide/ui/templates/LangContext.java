@@ -127,7 +127,7 @@ public class LangContext extends JavaContext {
 				break;
 			}
 			
-			changes.add(new DocumentModification(parser.getOffset(), 0, indent));
+			changes.add(new DocumentModification(parser.getReadOffset(), 0, indent));
 			
 			parser.consumeUntil(delimeter);
 		}

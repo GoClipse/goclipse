@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,19 +10,23 @@
  *******************************************************************************/
 package melnorme.lang.utils.parse;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-
-public interface ICharSource<EXC extends Exception> {
+public interface ICharSource<EXC extends Exception> extends IBasicCharSource<EXC> {
 	
-	int consume() throws EXC;
-
+	@Override
+	default int lookahead() throws EXC {
+		return lookahead(0);
+	}
+	
 	int lookahead(int offset) throws EXC;
 	
-	/** @return number of characters available to consume without having to wait for a stream input, 
-	 * and with no risk of IOException if consume() is called.
+	/** @return number of characters available that can be consumed without having to wait for external input, 
+	 * and with no risk exceptions being thrown.
 	 * 
-	 * Use intended for tests or performance optimizations */
+	 * Use intended for tests or performance optimizations 
+	 */
 	int bufferedCharCount();
 	
 	/** Return a substring from the source, starting at given offset, with given length.
@@ -30,25 +34,10 @@ public interface ICharSource<EXC extends Exception> {
 	 * so that an optimized version can be defined. */
 	String lookaheadString(int offset, int length) throws EXC;
 	
+	/* -----------------  Some common helpers  ----------------- */
 	
-	default int lookahead() throws EXC {
-		return lookahead(0);
-	}
-	
-	default char lookaheadChar() throws EXC {
-		int la = lookahead();
-		assertTrue(la != -1);
-		return (char) la;
-	}
-	
-	default boolean hasCharAhead() throws EXC {
-		return lookahead() != -1;
-	}
-	
-	default char consumeNonEOF() throws EXC {
-		int ch = consume();
-		assertTrue(ch != -1);
-		return (char) ch;
+	default boolean lookaheadIsEOF() throws EXC {
+		return !hasCharAhead();
 	}
 	
 	default void consume(int amount) throws EXC {
@@ -57,10 +46,26 @@ public interface ICharSource<EXC extends Exception> {
 		}
 	}
 	
+	default boolean tryConsume(String string) throws EXC {
+		for(int ix = 0; ix < string.length(); ix++) {
+			if(lookahead(ix) != string.charAt(ix)) {
+				return false;
+			}
+		}
+		consume(string.length());
+		return true;
+	}
+	
 	default String consumeString(int length) throws EXC {
 		String string = lookaheadString(0, length);
 		consume(length);
 		return string;
+	}
+	
+	default void consumeAhead(String string) throws EXC {
+		assertNotNull(string);
+		assertTrue(lookaheadMatches(string));
+		consume(string.length());
 	}
 	
 	default boolean lookaheadMatches(String string) throws EXC {
@@ -74,6 +79,40 @@ public interface ICharSource<EXC extends Exception> {
 			}
 		}
 		return true;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	default String stringUntil(String string) throws EXC {
+		int length = 0;
+		while(true) {
+			int charAtIx = lookahead(length);
+			if(charAtIx == -1 || lookaheadMatches(string, length)) {
+				break;
+			}
+			length++;
+		}
+		return lookaheadString(0, length);
+	}
+	
+	default String consumeUntil(String string) throws EXC {
+		String stringUntil = stringUntil(string);
+		consume(stringUntil.length());
+		return stringUntil;
+	}
+	
+	/**
+	 * Consume characters until lookhead position matches given endString
+	 * If consumeEndString, also consume endString from source (although this is not included in result)
+	 * 
+	 * @return the consumed characters until endString 
+	 */
+	default String consumeUntil(String endString, boolean consumeEndString) throws EXC {
+		String firstString = consumeUntil(endString);
+		if(consumeEndString) {
+			tryConsume(endString);
+		}
+		return firstString;
 	}
 	
 }

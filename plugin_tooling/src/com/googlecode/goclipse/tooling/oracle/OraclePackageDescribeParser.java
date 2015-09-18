@@ -21,6 +21,7 @@ import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolingMessages;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.util.SourceLinesInfo;
+import melnorme.lang.tooling.parser.lexer.LexingUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
@@ -181,7 +182,7 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 
 	protected int parseIdentifierStart(String source) {
 		StringParseSource parser = new StringParseSource(source);
-		return parser.matchJavaIdentifier();
+		return LexingUtils.matchJavaIdentifier(parser);
 	}
 	
 	protected SourceRange parseSourceRange(String positionString) throws CommonException {

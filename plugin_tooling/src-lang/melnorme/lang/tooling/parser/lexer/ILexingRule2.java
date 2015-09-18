@@ -12,42 +12,23 @@ package melnorme.lang.tooling.parser.lexer;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-public abstract class AbstractCharacterReader implements ICharacterReader {
+import melnorme.lang.utils.parse.ICharacterReader;
+
+public interface ILexingRule2<TOKEN> {
 	
-	protected int readCount;
-	
-	public AbstractCharacterReader() {
-		super();
+	default TOKEN evaluateToken(ICharacterReader reader) {
+		CharacterReader_SubReader subReader = new CharacterReader_SubReader(reader);
+		
+		TOKEN result = doEvaluate(subReader);
+		if(subReader.getReadOffset() == 0) {
+			assertTrue(result == null);
+		}
+		if(result != null) {
+			subReader.consumeInParentReader();
+		}
+		return result;
 	}
 	
-	@Override
-	public int lookahead() {
-		int ch = read();
-		unread();
-		return ch;
-	}
-	
-	@Override
-	public int read() {
-		readCount++;
-		return doRead();
-	}
-	
-	protected abstract int doRead();
-	
-	@Override
-	public void unread() {
-		readCount--;
-		assertTrue(readCount >= 0);
-		doUnread();
-	}
-	
-	protected abstract void doUnread();
-	
-	@Override
-	public void reset() {
-		// Note: we reset according to our own read count
-		unread(readCount);
-	}
+	TOKEN doEvaluate(ICharacterReader subReader);
 	
 }

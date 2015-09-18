@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ package melnorme.lang.tooling.parser.lexer;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
+
+import melnorme.lang.utils.parse.StringParseSource;
 
 public class CharacterLexingRule_Test {
 	
@@ -50,12 +52,12 @@ public class CharacterLexingRule_Test {
 	}
 	
 	protected void testRule(CharacterLexingRule rule, String source, int expectedMatchLength) {
-		StringCharacterReader reader = new StringCharacterReader(source);
+		StringParseSource reader = new StringParseSource(source);
 		boolean expectedMatches = expectedMatchLength > 0;
 		
-		assertTrue(rule.evaluate(reader) == expectedMatches);
+		assertTrue(rule.tryMatch(reader) == expectedMatches);
 		if(expectedMatches) {
-			assertTrue(reader.offset == expectedMatchLength);
+			assertTrue(reader.getReadOffset() == expectedMatchLength);
 		}
 	}
 	

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,8 @@ package melnorme.lang.utils.parse;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.StringReader;
-
 import melnorme.lang.tests.CommonToolingTest;
+import melnorme.lang.tooling.parser.lexer.LexingUtils;
 
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 	
 	protected final String TEST_SOURCE = "abcdef";
 	
-	protected ParseSource<?> parseSource;
+	protected ICharSource<?> parseSource;
 	protected String source;
 	protected int sourceIx;
 	protected int lookahead;
@@ -33,7 +32,7 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		this.sourceIx = 0;
 	}
 	
-	protected abstract ParseSource<?> createParseSource(String source);
+	protected abstract ICharSource<?> createParseSource(String source);
 	
 	@Test
 	public void test() throws Exception { test$(); }
@@ -59,6 +58,10 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		testCharSource();
 		
 		init(TEST_SOURCE);
+		assertTrue(parseSource.tryConsume("abc"));
+		assertTrue(parseSource.lookaheadMatches("def"));
+		
+		init(TEST_SOURCE);
 		assertTrue(parseSource.stringUntil("z").equals("abcdef"));
 		assertTrue(parseSource.stringUntil("a").equals(""));
 		assertTrue(parseSource.stringUntil("def").equals("abc"));
@@ -72,6 +75,7 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		
 		init(TEST_SOURCE);
 		assertTrue(parseSource.consumeUntil("de", true).equals("abc"));
+		assertTrue(parseSource.lookahead() == 'f');
 		assertTrue(parseSource.lookaheadMatches("f"));
 	}
 	
@@ -136,42 +140,35 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 	public void test_consumeDelimited$() throws Exception {
 		
 		init("blah");
-		assertEquals(parseSource.consumeDelimitedString('|', '#'), "blah");
+		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "blah");
 		
 		init("one|two|three##|four#|xxx|###|five");
-		assertEquals(parseSource.consumeDelimitedString('|', '#'), "one");
-		assertEquals(parseSource.consumeDelimitedString('|', '#'), "two");
-		assertEquals(parseSource.consumeDelimitedString('|', '#'), "three#");
-		assertEquals(parseSource.consumeDelimitedString('|', '#'), "four|xxx");
-		assertEquals(parseSource.consumeDelimitedString('|', '#'), "#|five");
+		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "one");
+		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "two");
+		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "three#");
+		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "four|xxx");
+		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "#|five");
 	}
 	
 	@Test
 	public void testConsumeNewline() throws Exception { testConsumeNewline$(); }
 	public void testConsumeNewline$() throws Exception {
 		init("abc\ndef\r\nzzz");
-		assertAreEqual(parseSource.stringUntilNewline(0), "abc");
-		assertAreEqual(parseSource.stringUntilNewline(1), "bc");
-		assertAreEqual(parseSource.stringUntilNewline(3), "");
-		assertAreEqual(parseSource.consumeLine(), "abc");
-		assertAreEqual(parseSource.consumeLine(), "def");
-		assertAreEqual(parseSource.consumeLine(), "zzz");
-		assertAreEqual(parseSource.consumeLine(), null);
+		assertAreEqual(LexingUtils.stringUntilNewline(parseSource, 0), "abc");
+		assertAreEqual(LexingUtils.stringUntilNewline(parseSource, 1), "bc");
+		assertAreEqual(LexingUtils.stringUntilNewline(parseSource, 3), "");
+		assertAreEqual(LexingUtils.consumeLine(parseSource), "abc");
+		assertAreEqual(LexingUtils.consumeLine(parseSource), "def");
+		assertAreEqual(LexingUtils.consumeLine(parseSource), "zzz");
+		assertAreEqual(LexingUtils.consumeLine(parseSource), null);
 	}
 	
 	
 	/* ----------------- Actual tests ----------------- */
 	
-	public static class ReaderParseSource_Test extends ParseSource_Test {
-		@Override
-		protected ParseSource<?> createParseSource(String source) {
-			return new ReaderParseSource(new StringReader(source));
-		}
-	}
-	
 	public static class StringParseSource_Test extends ParseSource_Test {
 		@Override
-		protected ParseSource<?> createParseSource(String source) {
+		protected ICharSource<?> createParseSource(String source) {
 			return new StringParseSource(source);
 		}
 		

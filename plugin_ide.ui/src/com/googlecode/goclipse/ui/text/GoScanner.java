@@ -1,11 +1,5 @@
 package com.googlecode.goclipse.ui.text;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import melnorme.lang.ide.core.text.DefaultPredicateRule;
-import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
-
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -13,9 +7,12 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
-import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
-
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
+
+import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
+import melnorme.lang.ide.core.text.DefaultPredicateRule;
+import melnorme.lang.ide.ui.text.AbstractLangScanner;
+import melnorme.utilbox.collections.ArrayList2;
 
 public class GoScanner extends AbstractLangScanner {
 	
@@ -31,8 +28,10 @@ public class GoScanner extends AbstractLangScanner {
 	
 	public GoScanner(ITokenStoreFactory tokenStoreFactory) {
 		super(tokenStoreFactory.createTokenStore(tokenPrefProperties));
-		
-		final List<IRule> rules = new ArrayList<IRule>();
+	}
+	
+	@Override
+	protected void initRules(ArrayList2<IRule> rules) {
 		
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
@@ -123,8 +122,6 @@ public class GoScanner extends AbstractLangScanner {
 		
 		rules.add(new GoOperatorRule(getToken(GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key)));
 		rules.add(new GoControlCharactersRule(getToken(GoUIPreferenceConstants.SYNTAX_COLORING__STRUCTURAL_SYMBOLS.key)));
-		
-		setRules(rules);
 	}
 	
 	public static class GoOperatorRule extends DefaultPredicateRule {

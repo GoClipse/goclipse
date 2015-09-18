@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
+import melnorme.lang.tooling.parser.lexer.LexingUtils;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.core.CommonException;
 
@@ -25,7 +26,7 @@ public class GoSourceFileUtil {
 		while(parser.hasCharAhead()) {
 			
 			if(parser.lookaheadMatches("//")) {
-				parser.consumeLine();
+				LexingUtils.consumeLine(parser);
 				continue;
 			}
 			
@@ -36,9 +37,9 @@ public class GoSourceFileUtil {
 			if(parser.tryConsume("package ")) {
 				
 				consumeSpaces(parser);
-				return parser.getOffset();
+				return parser.getReadOffset();
 			} else {
-				String line = parser.consumeLine();
+				String line = LexingUtils.consumeLine(parser);
 				if(line.trim().isEmpty()) {
 					continue;
 				}
