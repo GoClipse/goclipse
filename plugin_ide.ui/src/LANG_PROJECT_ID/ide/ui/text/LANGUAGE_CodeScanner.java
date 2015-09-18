@@ -10,17 +10,14 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.text;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
-
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
 import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
+import melnorme.lang.ide.ui.text.AbstractLangScanner;
+import melnorme.utilbox.collections.ArrayList2;
 
 /**
  * Sample LANGUAGE code scanner
@@ -35,11 +32,10 @@ public class LANGUAGE_CodeScanner extends AbstractLangScanner {
 	
 	public LANGUAGE_CodeScanner(ITokenStoreFactory factory) {
 		super(factory.createTokenStore(tokenPrefProperties));
-		setRules(createRules());
 	}
 	
-	protected List<IRule> createRules() {
-		List<IRule> rules = new ArrayList<IRule>();
+	@Override
+	protected void initRules(ArrayList2<IRule> rules) {
 		
 		IToken tkOther = getToken(LANGUAGE_ColorPreferences.DEFAULT.key);
 		IToken tkKeywords = getToken(LANGUAGE_ColorPreferences.KEYWORDS.key);
@@ -60,7 +56,6 @@ public class LANGUAGE_CodeScanner extends AbstractLangScanner {
 		rules.add(wordRule);
 		
 		setDefaultReturnToken(tkOther);
-		return rules;
 	}
 	
 }

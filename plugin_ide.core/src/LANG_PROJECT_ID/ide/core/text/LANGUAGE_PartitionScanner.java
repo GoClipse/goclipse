@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,22 +10,21 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.text;
 
+import org.eclipse.jface.text.rules.IPredicateRule;
+
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
-import melnorme.lang.ide.core.text.LexingRulePredicateRule;
-import melnorme.lang.ide.core.text.RuleBasedPartitionScannerExt;
+import melnorme.lang.ide.core.text.LangPartitionScanner;
 import melnorme.lang.tooling.parser.lexer.CharacterLexingRule;
 import melnorme.utilbox.collections.ArrayList2;
 
-import org.eclipse.jface.text.rules.IPredicateRule;
-
-public class LANGUAGE_PartitionScanner extends RuleBasedPartitionScannerExt {
+public class LANGUAGE_PartitionScanner extends LangPartitionScanner {
 	
 	public LANGUAGE_PartitionScanner() {
 		super();
 	}
 	
 	@Override
-	protected void addRules(ArrayList2<IPredicateRule> rules) {
+	protected void initPredicateRules(ArrayList2<IPredicateRule> rules) {
 		addStandardRules(rules, 
 			LangPartitionTypes.LINE_COMMENT.getId(), 
 			LangPartitionTypes.BLOCK_COMMENT.getId(), 
