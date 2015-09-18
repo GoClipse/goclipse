@@ -12,7 +12,11 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.coloring;
 
+import org.eclipse.jface.text.rules.IRule;
+
 import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
+import melnorme.lang.ide.ui.text.AbstractLangScanner;
+import melnorme.utilbox.collections.ArrayList2;
 
 /**
  * 
@@ -20,8 +24,12 @@ import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
 public final class SingleTokenScanner extends AbstractLangScanner {
 	
 	public SingleTokenScanner(ITokenStoreFactory factory, String property) {
-		super(factory.createTokenStore(new String[] {property}), 20);
+		super(factory.createTokenStore(new String[] {property}));
 		setDefaultReturnToken(getToken(property));
 	}
-
+	
+	@Override
+	protected void initRules(ArrayList2<IRule> rules) {
+	}
+	
 }

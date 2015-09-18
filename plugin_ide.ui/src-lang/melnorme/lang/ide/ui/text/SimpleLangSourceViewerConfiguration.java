@@ -20,14 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import melnorme.lang.ide.core.TextSettings_Actual;
-import melnorme.lang.ide.ui.CodeFormatterConstants;
-import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
-import melnorme.lang.ide.ui.editor.ViewerColorUpdater;
-import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
-import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -54,6 +46,12 @@ import _org.eclipse.cdt.internal.ui.text.TokenStore;
 import _org.eclipse.cdt.ui.text.IColorManager;
 import _org.eclipse.cdt.ui.text.ITokenStore;
 import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
+import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.ui.CodeFormatterConstants;
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
+import melnorme.lang.ide.ui.editor.ViewerColorUpdater;
+import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
 
 /**
  * Abstract SourceViewConfiguration
