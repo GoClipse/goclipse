@@ -28,11 +28,11 @@ public class EditorStructureUtil {
 			StructureElement structureElement = (StructureElement) selectedElement;
 			
 			ISourceFileStructure fileStructure = structureElement.getContainingFileStructure();
-			if(fileStructure == null || fileStructure.getLocation2() == null) {
+			if(fileStructure == null || fileStructure.getLocation() == null) {
 				return;
 			}
 			
-			IEditorInput newInput = EditorUtils.getBestEditorInputForLoc(fileStructure.getLocation2());
+			IEditorInput newInput = EditorUtils.getBestEditorInputForLoc(fileStructure.getLocation());
 			
 			IEditorPart part = EditorUtils.openEditor(newInput, EDITOR_ID, true);
 			revealInEditor(part, structureElement);

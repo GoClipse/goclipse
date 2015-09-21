@@ -73,7 +73,8 @@ public class SourceLinesInfo {
 		int columnIndex = column_1 - 1;
 		
 		if(lineIndex >= lines.size()) {
-			throw new CommonException("Invalid line, out of bounds.");
+			throw CommonException.fromMsgFormat("Invalid line: {0} is over the max bound: {1}.", 
+				line_1, lines.size() + 1);
 		}
 		
 		int offset = getOffsetForLine(lineIndex) + columnIndex;
