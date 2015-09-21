@@ -38,6 +38,11 @@ import melnorme.utilbox.misc.Location;
 
 public class OraclePackageDescribeParser_Test extends CommonGoToolingTest {
 	
+	@Override
+	protected String getClassResourceAsString(String resourceName) {
+		return fixTestsPaths(super.getClassResourceAsString(resourceName));
+	}
+	
 	public static ElementAttributes attrib(EProtection protection, EAttributeFlag... flags) {
 		return new ElementAttributes(protection, flags);
 	}
@@ -139,7 +144,7 @@ public class OraclePackageDescribeParser_Test extends CommonGoToolingTest {
 		}
 		
 		goSource = getClassResourceAsString("oracle_describe.2_Test.go");
-		testParseStructure(fixTestsPaths(getClassResourceAsString("oracle_describe.2_Test.json")), goSource,
+		testParseStructure(getClassResourceAsString("oracle_describe.2_Test.json"), goSource,
 			Location.create(fixTestsPaths("D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go")),
 			
 			elem("encodeFragment", sr("encodeFragment"), CONST, attPriv(), "util.encoding", null),
