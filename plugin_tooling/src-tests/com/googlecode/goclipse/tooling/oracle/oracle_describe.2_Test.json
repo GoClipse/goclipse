@@ -2,7 +2,7 @@
 	"mode": "describe",
 	"describe": {
 		"desc": "definition of package \"util/MyUtilFoo/libfoo\"",
-		"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:1:9",
+		"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:1:9",
 		"detail": "package",
 		"package": {
 			"path": "util/MyUtilFoo/libfoo",
@@ -10,58 +10,62 @@
 				{
 					"name": "Hello2",
 					"type": "func()",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:3:2",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:3:2",
 					"kind": "func"
 				},
 				{
 					"name": "encodeFragment",
 					"type": "util.encoding",
 					"value": "4",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:2:1",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:2:1",
 					"kind": "const"
 				},
 				{
 					"name": "User",
 					"type": "func(username string) *util.Userinfo",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:10:4",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:10:4",
 					"kind": "func"
 				},
 				{
 					"name": "geometry",
 					"type": "interface{area() float64; perim() float64}",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:12:3",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:12:3",
 					"kind": "type",
 					"methods": [
 						{
 							"name": "method (geometry) perim() float64",
-							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:15:6"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:15:6"
 						},
 						{
 							"name": "method (geometry) area() float64",
-							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:14:6"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:14:6"
 						}
 					]
 				},
 				{
 					"name": "URL",
 					"type": "struct{Scheme string; Opaque string;}",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:20:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:20:6",
 					"kind": "type",
 					"methods": [
 						{
 							"name": "method (*URL) IsAbs() bool",
-							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:21:15"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:21:15"
 						},
 						{
 							"name": "method (*URL) Parse(ref string) (*URL, error)",
-							"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\url.go:22:15"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:22:15"
+						},
+						{
+							"name": "method (*URL) ParseXXX_THIS_METHOD_SHOULD_NOT_APPEAR_IN_STRUCTURE() float64",
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/SOME_EXTERNAL_FILE.go:222131:1123213"
 						}
 					]
 				},
 				{
 					"name": "xxx",
 					"type": "int",
-					"pos": "D:\\devel\\tools.Go\\go-workspace\\src\\util\\MyUtilFoo\\libfoo\\libfoo.go:5:2",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go:5:2",
 					"kind": "var"
 				}				
 			]

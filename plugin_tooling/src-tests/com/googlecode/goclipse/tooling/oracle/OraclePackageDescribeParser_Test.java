@@ -18,11 +18,13 @@ import static melnorme.lang.tooling.structure.StructureElementKind.STRUCT;
 import static melnorme.lang.tooling.structure.StructureElementKind.VARIABLE;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import org.junit.Test;
+
 import melnorme.lang.tests.CommonToolingTest;
 import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
-import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
@@ -31,8 +33,8 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
-
-import org.junit.Test;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
 
 public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 	
@@ -69,11 +71,17 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 	
 	protected void testParseStructure(String describeOutput, String goSource, StructureElement... expectedElements)
 			throws CommonException {
-		OraclePackageDescribeParser parser = new OraclePackageDescribeParser(null);
+		testParseStructure(describeOutput, goSource, null, expectedElements);
+	}
+	
+	protected void testParseStructure(String describeOutput, String goSource, Location location, 
+			StructureElement... expectedElements)
+			throws CommonException {
+		OraclePackageDescribeParser parser = new OraclePackageDescribeParser(location);
 		SourceFileStructure structure = parser.parse(describeOutput, goSource);
 		
 		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
-		SourceFileStructure expected = new SourceFileStructure(null, expectedStructure, (Indexable<ParserError>) null);
+		SourceFileStructure expected = new SourceFileStructure(location, expectedStructure, null);
 		assertAreEqual(expected.getChildren(), structure.getChildren());
 		
 		assertEquals(structure, expected);
@@ -127,11 +135,12 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 			testParseStructure(getClassResourceAsString("oracle_describe.2_Error2b.json"), "");
 			assertFail();
 		} catch (CommonException e) { 
-			assertTrue(e.toString().contains("Invalid line, out of bounds."));
+			assertTrue(e.toString().contains("Invalid line: 10 is over the max bound: 1."));
 		}
 		
 		goSource = getClassResourceAsString("oracle_describe.2_Test.go");
-		testParseStructure(getClassResourceAsString("oracle_describe.2_Test.json"), goSource,
+		testParseStructure(fixTestsSamplePath(getClassResourceAsString("oracle_describe.2_Test.json")), goSource,
+			Location.create(fixTestsSamplePath("D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go")),
 			
 			elem("encodeFragment", sr("encodeFragment"), CONST, attPriv(), "util.encoding", null),
 			elem("Hello2", sr("Hello2"), FUNCTION, att(), "func()", null),
@@ -151,6 +160,13 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		new OraclePackageDescribeParser(null).parse(
 			getClassResourceAsString("oracle_describe.A_std_url.json"), goSource);
 		
+	}
+	
+	protected String fixTestsSamplePath(String originalSource) {
+		if(!MiscUtil.OS_IS_WINDOWS) {
+			return originalSource.replaceAll("D:/devel/tools", "/devel/tools");
+		}
+		return originalSource;
 	}
 	
 }

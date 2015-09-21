@@ -2,7 +2,7 @@
 
 ### (NextVersion)
  * Fixed: Unindent (Shift-Tab) broken, does nothing after empty lines in selection.
- 
+ * Fixed Outline broken, due to error "CommonException: Invalid line, out of bounds". (#156) 
 
 ### 0.12.1
  * Go build now displays GOOS and GOARCH environment variables in build/tools console, if a non-default value is set.

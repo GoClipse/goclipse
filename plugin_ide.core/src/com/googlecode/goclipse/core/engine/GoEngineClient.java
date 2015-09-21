@@ -67,7 +67,7 @@ public class GoEngineClient extends EngineClient {
 			
 			GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironmentFromLocation(fileLocation);
 			Location tempDir = null;
-			Location describeTempFile = null;
+			Location describeTempFile;
 			
 			ExternalProcessResult describeResult;
 			try {
@@ -76,12 +76,25 @@ public class GoEngineClient extends EngineClient {
 				Files.createDirectories(tempDir_src.toPath());
 				
 				describeTempFile = tempDir_src.resolve_fromValid("describe.go");
-				FileUtil.writeStringToFile(describeTempFile.toFile(), source, StringUtil.UTF8);
-				
-				goEnv = new GoEnvironment(goEnv.getGoRoot(), goEnv.getGoArch(), goEnv.getGoOs(), 
-					new GoPath(tempDir.toString()));
-				
-				describeResult = runGoOracle(goEnv, describeTempFile);
+				try {
+					
+					FileUtil.writeStringToFile(describeTempFile.toFile(), source, StringUtil.UTF8);
+					
+					goEnv = new GoEnvironment(goEnv.getGoRoot(), goEnv.getGoArch(), goEnv.getGoOs(), 
+						new GoPath(tempDir.toString()));
+					
+					describeResult = runGoOracle(goEnv, describeTempFile);
+					
+				} finally {
+					if(describeTempFile != null) {
+						try {
+							Files.deleteIfExists(describeTempFile.toPath());
+							FileUtil.deleteDir(tempDir);
+						} catch(IOException e) {
+							LangCore.logError("Could not delete temp files", e);
+						}
+					}
+				}
 			} catch(IOException e) {
 				LangCore.logError("Error creating temporary file for oracle describe: ", e);
 				return null;
@@ -90,15 +103,6 @@ public class GoEngineClient extends EngineClient {
 			} catch(CommonException | CoreException e) {
 				LangCore.logError("Error running oracle describe for source structure update", e);
 				return null;
-			} finally {
-				if(describeTempFile != null) {
-					try {
-						Files.deleteIfExists(describeTempFile.toPath());
-						FileUtil.deleteDir(tempDir);
-					} catch(IOException e) {
-						LangCore.logError("Could not delete temp files", e);
-					}
-				}
 			}
 			
 			try {
@@ -106,7 +110,12 @@ public class GoEngineClient extends EngineClient {
 					return null; // Don't log this error 
 				}
 				
-				return new OraclePackageDescribeParser(fileLocation).parse(describeResult, source);
+				return new OraclePackageDescribeParser(fileLocation) {
+					@Override
+					protected boolean isSourceElementLocation(Location sourceFileLoc) throws CommonException {
+						return describeTempFile.equals(sourceFileLoc);
+					};
+				}.parse(describeResult, source);
 			} catch(CommonException e) {
 				LangCore.logWarning("Error parsing oracle describe result, for source structure update. ", e);
 				return null;

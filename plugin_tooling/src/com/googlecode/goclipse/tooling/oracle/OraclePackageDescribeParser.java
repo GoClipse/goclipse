@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,15 @@ import static melnorme.lang.tooling.structure.StructureElementKind.STRUCT;
 import java.util.Collections;
 import java.util.Comparator;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolingMessages;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.SourceFileLocation;
 import melnorme.lang.tooling.ops.util.SourceLinesInfo;
 import melnorme.lang.tooling.parser.lexer.LexingUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
@@ -30,13 +35,8 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.NumberUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class OraclePackageDescribeParser extends JSONParseHelpers {
 	
@@ -98,7 +98,11 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 				Object object = members.get(i);
 				if(object instanceof JSONObject) {
 					JSONObject jsonObject = (JSONObject) object;
-					elements.add(parseStructureElement(jsonObject, parsingMethods));	
+					StructureElement element = parseStructureElement(jsonObject, parsingMethods);
+					if(element == null) {
+						continue; // Can happen for external elements
+					}
+					elements.add(element);	
 				} else {
 					throw new CommonException("'members' element is not a JSONObject: " + object);
 				}
@@ -126,7 +130,11 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 		String name = readString(object, "name");
 		
 		String posString = readString(object, "pos");
-		SourceRange nameSourceRange = parseSourceRange(posString);
+		SourceFileLocation elementSourceFileLoc = SourceFileLocation.parseSourceRange(posString, ':');
+		if(!isSourceElementLocation(elementSourceFileLoc.getFileLocation())) {
+			return null;
+		}
+		SourceRange nameSourceRange = elementSourceFileLoc.parseSourceRangeFrom1BasedIndex(sourceLineInfo);
 		SourceRange sourceRange  = nameSourceRange;
 		
 		String type = readOptionalString(object, "type");
@@ -179,44 +187,14 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 		return new StructureElement(name, nameSourceRange, sourceRange, 
 			elementKind, elementAttributes, type, children);
 	}
-
+	
+	protected boolean isSourceElementLocation(Location sourceFileLoc) throws CommonException {
+		return location == null || location.equals(sourceFileLoc);
+	}
+	
 	protected int parseIdentifierStart(String source) {
 		StringParseSource parser = new StringParseSource(source);
 		return LexingUtils.matchJavaIdentifier(parser);
-	}
-	
-	protected SourceRange parseSourceRange(String positionString) throws CommonException {
-		int i = positionString.length();
-
-		String sourceRangeString = getSourceRangeString(positionString, i);
-		if(sourceRangeString == null) {
-			throw new CommonException("Source range not available in `" + positionString + "`");
-		}
-		
-		String lineStr = StringUtil.segmentUntilMatch(sourceRangeString, ":");
-		String columnStr = StringUtil.segmentAfterMatch(sourceRangeString, ":");
-		
-		int line = NumberUtil.parsePositiveInt(lineStr);
-		int column = NumberUtil.parsePositiveInt(columnStr);
-		
-		int validatedOffset = sourceLineInfo.getValidatedOffset(line, column);
-		int length = sourceLineInfo.getIdentifierAt(validatedOffset);
-		
-		return new SourceRange(validatedOffset, length);
-	}
-	
-	protected String getSourceRangeString(String posString, int i) {
-		int count = 0;
-		
-		while(--i >= 0) {
-			if(posString.charAt(i) == ':') {
-				
-				if(++count == 2) {
-					return posString.substring(i + 1, posString.length());  
-				}
-			}
-		}
-		return null;
 	}
 	
 	protected StructureElementKind parseKind(String kind, String type) {
