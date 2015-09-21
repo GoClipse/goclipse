@@ -55,7 +55,7 @@ public class SourceFileStructure_Default extends StructureContainer implements I
 	/* -----------------  ----------------- */
 	
 	@Override
-	public Location getLocation2() {
+	public Location getLocation() {
 		return location;
 	}
 	
