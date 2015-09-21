@@ -2,11 +2,11 @@
 	"mode": "describe",
 	"describe": {
 		"desc": "reference to type Foo (size 32, align 8)",
-		"pos": "##ROOT_LOC##DDT\\_runtime\\GoTest\\src\\other\\blah.go:22:12",
+		"pos": "D:/devel/tools.Go/GoTest/src/other/blah.go:22:12",
 		"detail": "type",
 		"type": {
 			"type": "Foo",
-			"namepos": "##ROOT_LOC##DDT\\_runtime\\GoTest\\src\\other\\blah.go:16:6",
+			"namepos": "D:/devel/tools.Go/GoTest/src/other/blah.go:16:6",
 			"namedef": "struct{A string; B string}"
 		}
 	}

@@ -21,7 +21,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
-import melnorme.lang.tests.CommonToolingTest;
+import com.googlecode.goclipse.tooling.CommonGoToolingTest;
+
 import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
@@ -34,9 +35,8 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.MiscUtil;
 
-public class OraclePackageDescribeParser_Test extends CommonToolingTest {
+public class OraclePackageDescribeParser_Test extends CommonGoToolingTest {
 	
 	public static ElementAttributes attrib(EProtection protection, EAttributeFlag... flags) {
 		return new ElementAttributes(protection, flags);
@@ -139,8 +139,8 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		}
 		
 		goSource = getClassResourceAsString("oracle_describe.2_Test.go");
-		testParseStructure(fixTestsSamplePath(getClassResourceAsString("oracle_describe.2_Test.json")), goSource,
-			Location.create(fixTestsSamplePath("D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go")),
+		testParseStructure(fixTestsPaths(getClassResourceAsString("oracle_describe.2_Test.json")), goSource,
+			Location.create(fixTestsPaths("D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go")),
 			
 			elem("encodeFragment", sr("encodeFragment"), CONST, attPriv(), "util.encoding", null),
 			elem("Hello2", sr("Hello2"), FUNCTION, att(), "func()", null),
@@ -160,13 +160,6 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		new OraclePackageDescribeParser(null).parse(
 			getClassResourceAsString("oracle_describe.A_std_url.json"), goSource);
 		
-	}
-	
-	protected String fixTestsSamplePath(String originalSource) {
-		if(!MiscUtil.OS_IS_WINDOWS) {
-			return originalSource.replaceAll("D:/devel/tools", "/devel/tools");
-		}
-		return originalSource;
 	}
 	
 }

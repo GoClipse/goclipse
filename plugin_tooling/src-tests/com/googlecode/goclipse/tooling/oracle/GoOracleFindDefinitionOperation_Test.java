@@ -21,8 +21,6 @@ import com.googlecode.goclipse.tooling.CommonGoToolingTest;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.StringUtil;
 
 public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 	
@@ -47,15 +45,13 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		
-		String LOC_ROOT = MiscUtil.OS_IS_WINDOWS ? "D:\\devel/" : "/devel/";
-		
-		testParseResult(fixPaths(getClassResourceAsString("oracle_result.var_ref.json")),
-			new FindDefinitionResult(loc(LOC_ROOT+"go-workspace\\src\\github.com\\user\\newmath\\sqrt.go"), 
+		testParseResult(fixTestsPaths(getClassResourceAsString("oracle_result.var_ref.json")),
+			new FindDefinitionResult(loc(fixTestsPaths("D:/devel/tools.Go/go-workspace/src/newmath/sqrt.go")), 
 				new SourceLineColumnRange(5, 6), null)
 			);
 		
-		testParseResult(fixPaths(getClassResourceAsString("oracle_result.type1_ref.json")),
-			new FindDefinitionResult(loc(LOC_ROOT+"DDT\\_runtime\\GoTest\\src\\other\\blah.go"),
+		testParseResult(fixTestsPaths(getClassResourceAsString("oracle_result.type1_ref.json")),
+			new FindDefinitionResult(loc(fixTestsPaths("D:/devel/tools.Go/GoTest/src/other/blah.go")),
 				new SourceLineColumnRange(16, 6), null)
 			);
 		
@@ -64,11 +60,6 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 		
 		testParseResult(getClassResourceAsString("oracle_result.type3_anon.json"), 
 			null);
-	}
-	
-	protected String fixPaths(String string) {
-		String pathRpl = MiscUtil.OS_IS_WINDOWS ? "D:\\\\devel/" : "/devel/";
-		return StringUtil.replaceAll(string, "##ROOT_LOC##", pathRpl);
 	}
 	
 	protected void testParseResult(String toolOutput, FindDefinitionResult expectedResult) throws JSONException,

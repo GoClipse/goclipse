@@ -2,7 +2,7 @@
 	"mode": "describe",
 	"describe": {
 		"desc": "type struct{A string; B string} (size 32, align 8)",
-		"pos": "D:\\devel\\DDT\\_runtime\\GoTest\\src\\other\\blah.go:16:10",
+		"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:16:10",
 		"detail": "type",
 		"type": {
 			"type": "struct{A string; B string}"

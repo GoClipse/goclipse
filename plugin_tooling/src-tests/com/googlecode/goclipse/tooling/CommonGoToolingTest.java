@@ -13,6 +13,7 @@ package com.googlecode.goclipse.tooling;
 import static melnorme.lang.tests.LangToolingTestResources.getTestResourceLoc;
 import melnorme.lang.tests.CommonToolingTest;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import com.googlecode.goclipse.tooling.env.GoArch;
@@ -37,5 +38,12 @@ public class CommonGoToolingTest extends CommonToolingTest {
 	);
 	
 	public static final Location TR_SAMPLE_GOPATH_ENTRY = getTestResourceLoc("sampleGoPathEntry");
+	
+	protected String fixTestsPaths(String originalSource) {
+		if(!MiscUtil.OS_IS_WINDOWS) {
+			return originalSource.replaceAll("D:/devel/tools", "/devel/tools");
+		}
+		return originalSource;
+	}
 	
 }
