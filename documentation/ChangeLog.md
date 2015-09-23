@@ -1,4 +1,4 @@
-## LANG_IDE_NAME release ChangeLog
+## release ChangeLog
 [Latest features on top]
 
 ### (NextVersion)
