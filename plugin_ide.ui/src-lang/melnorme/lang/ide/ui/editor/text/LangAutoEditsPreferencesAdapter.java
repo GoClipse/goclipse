@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.editor.text;
 
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
+import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
 import melnorme.lang.ide.ui.text.util.AutoEditUtils;
 
 // Originally was RubyPreferencesInterpreter from DLTK

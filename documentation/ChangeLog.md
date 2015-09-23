@@ -2,6 +2,10 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Added support for Eclipse dark theme. Namely:  
+   * Syntax/source coloring now have different settings for dark theme.
+   * Fixed tools console colors, as well as content assist pop-up colors.   
+ 
  * Fixed: Unindent (Shift-Tab) broken, does nothing after empty lines in selection.
  
  * Fixed: when invoking toolchain programs, add tool directory to beginning of PATH, not end.

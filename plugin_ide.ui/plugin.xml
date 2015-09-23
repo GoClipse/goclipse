@@ -402,4 +402,12 @@
 	</shortcut>
 </extension>
 	
+	<!-- ============ Dark Theme ============= -->
+	
+	<extension point="org.eclipse.e4.ui.css.swt.theme">
+		<stylesheet uri="/resources/e4-dark_sourcehighlighting.css">
+			<themeid refid="org.eclipse.e4.ui.css.theme.e4_dark" />
+		</stylesheet>
+	</extension>
+	
 </plugin>

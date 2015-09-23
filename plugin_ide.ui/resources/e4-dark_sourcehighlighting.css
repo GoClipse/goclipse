@@ -1,0 +1,43 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+
+IEclipsePreferences#LANG_PROJECT_ID-ide-ui {
+	preferences:
+		'editor.coloring.comment=63,217,95'
+		'editor.coloring.doccomment=63,95,191'
+		
+		'editor.coloring.default=255,255,255'
+		'editor.coloring.keyword=150,190,220'
+		'editor.coloring.basictypes=102,217,239'
+		'editor.coloring.annotations=100,100,100'
+		'editor.coloring.literals=127,64,64'
+		'editor.coloring.operators=255,255,255'
+		
+		'editor.coloring.string=164,176,0'
+		'editor.coloring.delimstring=164,176,0'
+		'editor.coloring.character=164,176,0'
+		
+		'matchingBracketsColor=102,112,125'
+				
+		'content_assist_proposals_background=52,57,61'
+		'content_assist_proposals_foreground=238,238,238'
+		'content_assist_parameters_background=52,57,61'
+		'content_assist_parameters_foreground=238,238,238'
+		
+		
+		/* Console colors */
+		
+		'console.info_color=150,190,220'
+		'console.stderr_color=255,0,0'
+		'console.stdout_color=255,255,255'
+		'console.background_color=0,215,0' /* Not actually used */
+		
+}

@@ -11,12 +11,12 @@
 package melnorme.lang.ide.ui;
 
 
-import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
-
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
+
+import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 
 public abstract class LangUIPreferencesInitializer extends AbstractPreferenceInitializer  
 implements EditorPrefConstants, ContentAssistConstants {

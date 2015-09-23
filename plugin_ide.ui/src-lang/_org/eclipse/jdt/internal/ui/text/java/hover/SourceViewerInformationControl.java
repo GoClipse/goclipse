@@ -10,12 +10,6 @@
  *******************************************************************************/
 package _org.eclipse.jdt.internal.ui.text.java.hover;
 
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-import melnorme.lang.ide.ui.EditorPreferences;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -52,6 +46,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
 
 /**
  * Source viewer based implementation of <code>IInformationControl</code>.
@@ -249,10 +248,10 @@ public class SourceViewerInformationControl
 	protected void initializeColors() {
 		IPreferenceStore store= LangUIPlugin.getInstance().getPreferenceStore();
 		RGB bgRGB;
-		if (store.getBoolean(EditorPreferences.SOURCE_HOVER_BACKGROUND_COLOR_UseSystemDefault.key)) {
+		if (store.getBoolean(EditorPrefConstants.SOURCE_HOVER_BACKGROUND_COLOR_UseSystemDefault.key)) {
 			bgRGB= getVisibleBackgroundColor(fShell.getDisplay());
 		} else {
-			bgRGB= PreferenceConverter.getColor(store, EditorPreferences.SOURCE_HOVER_BACKGROUND_COLOR_rgb.key);
+			bgRGB= PreferenceConverter.getColor(store, EditorPrefConstants.SOURCE_HOVER_BACKGROUND_COLOR_rgb.key);
 		}
 		if (bgRGB != null) {
 			fBackgroundColor= new Color(fShell.getDisplay(), bgRGB);
