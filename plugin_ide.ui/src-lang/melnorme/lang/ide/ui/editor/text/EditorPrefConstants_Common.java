@@ -10,7 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.text;
 
+import org.eclipse.swt.graphics.RGB;
+
+import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
+import melnorme.lang.ide.ui.preferences.ColorPreference;
 
 /** 
  * This interface should not be accessed by name directly, 
@@ -19,15 +24,16 @@ import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
  */
 public interface EditorPrefConstants_Common {
 	
-	String MATCHING_BRACKETS=  "matchingBrackets";
-	String MATCHING_BRACKETS_COLOR=  "matchingBracketsColor";
-	String HIGHLIGHT_BRACKET_AT_CARET_LOCATION= "highlightBracketAtCaretLocation";
+	String MATCHING_BRACKETS = "editor.matchingBrackets";
+	String MATCHING_BRACKETS_COLOR = "editor.matchingBracketsColor";
+	String HIGHLIGHT_BRACKET_AT_CARET_LOCATION = "editor.highlightBracketAtCaretLocation";
+	String ENCLOSING_BRACKETS = "editor.enclosingBrackets";
 	
-	/**
-	 * Preference key for enclosing brackets.
-	 * 
-	 * @since 3.8
-	 */
-	String ENCLOSING_BRACKETS= "enclosingBrackets";
+	
+	BooleanPreference SOURCE_HOVER_BACKGROUND_COLOR_UseSystemDefault = 
+			new BooleanPreference(LangUIPlugin.PLUGIN_ID, "SourceHover.bg_color.useSystemDefault", true); 
+	
+	ColorPreference SOURCE_HOVER_BACKGROUND_COLOR_rgb = 
+			new ColorPreference(LangUIPlugin.PLUGIN_ID, "SourceHover.bg_color.rgb", new RGB(255, 255, 255));
 	
 }

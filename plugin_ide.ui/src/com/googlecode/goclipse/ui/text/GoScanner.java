@@ -19,7 +19,7 @@ public class GoScanner extends AbstractLangScanner {
 	private static String tokenPrefProperties[] = new String[] {
 		GoUIPreferenceConstants.SYNTAX_COLORING__TEXT.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD.key,
-		GoUIPreferenceConstants.SYNTAX_COLORING__VALUE.key,
+		GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD_LITERAL.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION.key,
 		GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key,
@@ -42,7 +42,7 @@ public class GoScanner extends AbstractLangScanner {
 		WordRule wordRule = new WordRule(new JavaWordDetector(), tkDefault);
 		
 		final IToken keyword         = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD.key);
-		final IToken value           = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__VALUE.key);
+		final IToken value           = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD_LITERAL.key);
 		final IToken primitive       = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE.key);
 		final IToken builtinFunction = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION.key);
 		final IToken textToken       = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__TEXT.key);

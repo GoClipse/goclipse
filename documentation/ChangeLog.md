@@ -1,6 +1,10 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Added support for Eclipse dark theme (#131). Namely:  
+   * Syntax/source coloring now have different settings for dark theme.
+   * Fixed tools console colors, as well as content assist pop-up colors.   
+ 
  * Fixed: Unindent (Shift-Tab) broken, does nothing after empty lines in selection.
  * Fixed Outline broken, due to error "CommonException: Invalid line, out of bounds". (#156) 
 

@@ -21,7 +21,7 @@ public class GoSourceColoringConfigurationBlock extends AbstractSourceColoringCo
 			
 			new SourceColoringElement("Text", GoColorPreferences.SYNTAX_COLORING__TEXT.key),
 			new SourceColoringElement("Keyword", GoColorPreferences.SYNTAX_COLORING__KEYWORD.key),
-			new SourceColoringElement("Keyword - Literal", GoColorPreferences.SYNTAX_COLORING__VALUE.key),
+			new SourceColoringElement("Keyword - Literal", GoColorPreferences.SYNTAX_COLORING__KEYWORD_LITERAL.key),
 			new SourceColoringElement("Primitive", GoColorPreferences.SYNTAX_COLORING__PRIMITIVE.key),
 			new SourceColoringElement("Built-in function", GoColorPreferences.SYNTAX_COLORING__BUILTIN_FUNCTION.key),
 			new SourceColoringElement("Operator", GoColorPreferences.SYNTAX_COLORING__OPERATOR.key),

@@ -10,14 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
-import melnorme.lang.ide.core.utils.prefs.PreferencesLookupHelper;
-import melnorme.util.swt.jface.text.ColorManager;
-
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+
+import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
+import melnorme.lang.ide.core.utils.prefs.PreferencesLookupHelper;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.util.swt.jface.text.ColorManager;
 
 /**
  * Helper to work with a color preference.
@@ -25,7 +26,7 @@ import org.eclipse.swt.graphics.RGB;
 public class ColorPreference extends PreferenceHelper<RGB> {
 	
 	public ColorPreference(String key, RGB defaultValue) {
-		super(key, defaultValue);
+		super(LangUIPlugin.PLUGIN_ID, key, defaultValue);
 	}
 	public ColorPreference(String pluginId, String key, RGB defaultValue) {
 		super(pluginId, key, defaultValue);

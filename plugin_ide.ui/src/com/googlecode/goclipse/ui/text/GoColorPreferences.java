@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package com.googlecode.goclipse.ui.text;
 
 import org.eclipse.swt.graphics.RGB;
@@ -11,7 +21,7 @@ public interface GoColorPreferences {
     		new ColoringItemPreference("syntax_highlighting_text", true, new RGB(0, 0, 0), false, false, false);
 	public static final ColoringItemPreference SYNTAX_COLORING__KEYWORD = 
 			new ColoringItemPreference("syntax_highlighting_keyword", true, new RGB(127, 0, 85), true, false, false);
-	public static final ColoringItemPreference SYNTAX_COLORING__VALUE = 
+	public static final ColoringItemPreference SYNTAX_COLORING__KEYWORD_LITERAL = 
 			new ColoringItemPreference("syntax_highlighting_value", true, new RGB(127, 0, 85), true, true, false);
 	public static final ColoringItemPreference SYNTAX_COLORING__PRIMITIVE = 
 			new ColoringItemPreference("syntax_highlighting_primitive", true, new RGB(127, 0, 85), false, true, false);

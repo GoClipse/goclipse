@@ -1,0 +1,45 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+
+IEclipsePreferences#com-googlecode-goclipse-ui {
+	preferences:
+		
+		'syntax_highlighting_text=255,255,255'
+		'syntax_highlighting_keyword=127,0,85'
+		'syntax_highlighting_value=127,0,85'
+		'syntax_highlighting_primitive=127,0,85'
+		'syntax_highlighting_builtin_function=255,255,255'
+		'syntax_highlighting_operator=255,255,255'
+		'syntax_highlighting_syntax_chars=255,255,255'
+		
+		'syntax_highlighting_character=0,75,200'
+		'syntax_highlighting_string=0,75,200'
+		'syntax_highlighting_multiline_string=230,75,0'
+		
+		'syntax_highlighting_comment=63,127,95'
+		
+		
+		'matchingBracketsColor=102,112,125'
+				
+		'content_assist_proposals_background=52,57,61'
+		'content_assist_proposals_foreground=238,238,238'
+		'content_assist_parameters_background=52,57,61'
+		'content_assist_parameters_foreground=238,238,238'
+		
+		
+		/* Console colors */
+		
+		'console.info_color=150,190,220'
+		'console.stderr_color=255,0,0'
+		'console.stdout_color=255,255,255'
+		'console.background_color=0,215,0' /* Not actually used */
+		
+}
