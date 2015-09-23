@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed: AssertionFailureException pressing Enter after source with more closing braces than opening ones.
  * Added support for Eclipse dark theme. Namely:  
    * Syntax/source coloring now have different settings for dark theme.
    * Fixed tools console colors, as well as content assist pop-up colors.   

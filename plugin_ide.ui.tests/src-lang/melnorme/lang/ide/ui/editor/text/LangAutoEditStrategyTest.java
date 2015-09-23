@@ -438,6 +438,12 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 			mkline(indent+7, "{func{")+ // (corrected on '{' superblock )
 			mklast(indent, "aaa})");    
 		testEnterAutoEdit(s, NL+NEUTRAL_SRC1, expectInd(indent+7+1));
+		
+		// A boundary case, unbalanced close
+		s = mkline(0, "func}");
+		testEnterAutoEdit(s, ""+ NEUTRAL_SRC1, expectInd(0));
+		s = mkline(2, "func}");
+		testEnterAutoEdit(s, ""+ NEUTRAL_SRC1, expectInd(0));
 	}
 	
 	/* ---------------------------------------*/
@@ -445,8 +451,8 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	@Test
 	public void testSmartDeIndent() throws Exception { testSmartDeIndent$(); }
 	public void testSmartDeIndent$() throws Exception {
-		testSmartDeIndent$(NL);
 		testSmartDeIndent$("\n");
+		testSmartDeIndent$(NL);
 	}
 	
 	protected void testSmartDeIndent$(String pNL) {
@@ -489,6 +495,8 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 			mklast(indent, "void main{{)(");
 		testDeIndentAutoEdit(s, expectInd(pNL, indent+3), "");
 		
+		s = mklast(0, "void main() }");
+		testBackSpaceDeindent(s + NL, TAB, pNL);
 		
 		// Some boundary cases
 		testDeIndentAutoEdit("", pNL+"", ""); 

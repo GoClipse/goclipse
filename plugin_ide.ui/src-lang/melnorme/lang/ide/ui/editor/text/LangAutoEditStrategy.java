@@ -204,10 +204,10 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		
 		if(blockInfo.unbalancedOpens == 0 && blockInfo.unbalancedCloses > 0) {
 			int blockStartOffset = bhscanner.findBlockStart(blockInfo.rightmostUnbalancedBlockCloseOffset);
-			int blockStartLine = doc.getLineOfOffset(blockStartOffset);
+			assertTrue(doc.getLineOfOffset(blockStartOffset) <= doc.getLineOfOffset(lineStart));
+			
 			IRegion blockStartLineInfo = doc.getLineInformationOfOffset(blockStartOffset);
 			
-			assertTrue(blockStartLine < doc.getLineOfOffset(lineStart));
 			String startLineIndent = getLineIndent(doc, blockStartLineInfo);
 			
 			// Now calculate the balance for the block start line, before the block start
