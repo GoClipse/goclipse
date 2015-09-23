@@ -101,6 +101,7 @@ public class BufferedRuleBasedScannerExt extends RuleBasedScanner {
 
 	@Override
 	public void setRange(IDocument document, int offset, int length) {
+//		System.out.println("#setRange : " + offset + " " + length);
 
 		super.setRange(document, offset, length);
 
