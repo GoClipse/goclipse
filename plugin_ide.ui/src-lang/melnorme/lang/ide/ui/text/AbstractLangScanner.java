@@ -84,7 +84,6 @@ public abstract class AbstractLangScanner extends BufferedRuleBasedScannerExt im
 			if(!token.isUndefined()) {
 				return token; 
 			}
-			read();
 		}
 		
 		if (read() == EOF)
