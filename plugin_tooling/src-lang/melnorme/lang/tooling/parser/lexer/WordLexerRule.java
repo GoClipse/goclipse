@@ -35,7 +35,7 @@ public class WordLexerRule<TOKEN> implements ILexingRule2<TOKEN> {
 	}
 	
 	@Override
-	public TOKEN doEvaluate(ICharacterReader reader) {
+	public TOKEN doEvaluateToken(ICharacterReader reader) {
 		if(LexingUtils.skipWhitespace(reader) > 0) {
 			return whitespaceToken;
 		}
