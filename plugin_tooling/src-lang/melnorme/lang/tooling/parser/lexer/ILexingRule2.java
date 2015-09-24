@@ -14,12 +14,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import melnorme.lang.utils.parse.ICharacterReader;
 
-public interface ILexingRule2<TOKEN> {
+public interface ILexingRule2<TOKEN> extends ILexingRule {
 	
 	default TOKEN evaluateToken(ICharacterReader reader) {
 		CharacterReader_SubReader subReader = new CharacterReader_SubReader(reader);
 		
-		TOKEN result = doEvaluate(subReader);
+		TOKEN result = doEvaluateToken(subReader);
 		if(subReader.getReadOffset() == 0) {
 			assertTrue(result == null);
 		}
@@ -29,6 +29,11 @@ public interface ILexingRule2<TOKEN> {
 		return result;
 	}
 	
-	TOKEN doEvaluate(ICharacterReader subReader);
+	TOKEN doEvaluateToken(ICharacterReader subReader);
+	
+	@Override
+	default boolean doEvaluate(ICharacterReader reader) {
+		return evaluateToken(reader) != null;
+	}
 	
 }
