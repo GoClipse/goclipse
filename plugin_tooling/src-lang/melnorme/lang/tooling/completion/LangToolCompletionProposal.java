@@ -28,7 +28,7 @@ public abstract class LangToolCompletionProposal {
 	
 	protected final int replaceOffset;
 	protected final int replaceLength;
-	protected final String replaceString;
+	protected final String baseReplaceString;
 	protected final String label;
 	protected final CompletionProposalKind kind;
 	protected final ElementAttributes attributes;
@@ -38,7 +38,7 @@ public abstract class LangToolCompletionProposal {
 	protected final String fullReplaceString;
 	protected final Indexable<SourceRange> sourceSubElements;
 	
-	public LangToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, 
+	public LangToolCompletionProposal(int replaceOffset, int replaceLength, String baseReplaceString, 
 			String label, CompletionProposalKind kind, ElementAttributes attributes, 
 			String moduleName, String description,
 			String fullReplaceString, Indexable<SourceRange> sourceSubElements) {
@@ -46,7 +46,7 @@ public abstract class LangToolCompletionProposal {
 		assertTrue(replaceLength >= 0);
 		this.replaceOffset = replaceOffset;
 		this.replaceLength = replaceLength;
-		this.replaceString = assertNotNull(replaceString);
+		this.baseReplaceString = assertNotNull(baseReplaceString);
 		this.label = assertNotNull(label);
 		this.kind = kind != null ? kind : CompletionProposalKind.UNKNOWN;
 		this.attributes = assertNotNull(attributes);
@@ -65,8 +65,8 @@ public abstract class LangToolCompletionProposal {
 		return replaceLength;
 	}
 	
-	public String getReplaceString() {
-		return replaceString;
+	public String getBaseReplaceString() {
+		return baseReplaceString;
 	}
 	
 	public String getLabel() {
@@ -119,7 +119,7 @@ public abstract class LangToolCompletionProposal {
 		return 
 				areEqual(replaceOffset, other.replaceOffset) &&
 				areEqual(replaceLength, other.replaceLength) &&
-				areEqual(replaceString, other.replaceString) &&
+				areEqual(baseReplaceString, other.baseReplaceString) &&
 				areEqual(label, other.label) &&
 				areEqual(kind, other.kind) &&
 				areEqual(moduleName, other.moduleName) &&
@@ -133,7 +133,8 @@ public abstract class LangToolCompletionProposal {
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(replaceOffset, replaceLength, replaceString, label, kind, moduleName);
+		return HashcodeUtil.combinedHashCode(
+			replaceOffset, replaceLength, baseReplaceString, label, kind, moduleName);
 	}
 	
 }

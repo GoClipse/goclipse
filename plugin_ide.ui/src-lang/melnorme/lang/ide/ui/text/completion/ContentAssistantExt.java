@@ -11,17 +11,23 @@
 package melnorme.lang.ide.ui.text.completion;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
-import melnorme.lang.ide.ui.templates.LangTemplateProposal;
+import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposalSorter;
 
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.ide.ui.templates.LangTemplateProposal;
+import melnorme.utilbox.misc.StringUtil;
+
 public class ContentAssistantExt extends ContentAssistant {
 	
 	protected final IPreferenceStore prefStore;
+	
+	protected String statusMessage;
+	protected String additionalStatusMessage;
 	
 	public ContentAssistantExt(IPreferenceStore prefStore) {
 		this.prefStore = assertNotNull(prefStore);
@@ -30,6 +36,25 @@ public class ContentAssistantExt extends ContentAssistant {
 	
 	public void configure(IPreferenceStore prefStore, LangSourceViewer langSourceViewer) {
 		new ContentAssistPreferenceHandler(this, prefStore, langSourceViewer).configureViewer();
+	}
+	
+	@Override
+	public void setStatusMessage(String message) {
+		this.statusMessage = message;
+		super.setStatusMessage(message);
+	}
+	
+	public String getStatusMessage_() {
+		return statusMessage;
+	}
+	
+	public void setAdditionalStatusMessage(String additionalMessage) {
+		this.additionalStatusMessage = additionalMessage;
+		super.setStatusMessage(nullAsEmpty(additionalMessage) + StringUtil.prefixStr(" ", statusMessage));
+	}
+	
+	public String getAdditionalStatusMessage() {
+		return additionalStatusMessage;
 	}
 	
 	/* -----------------  ----------------- */

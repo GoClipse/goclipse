@@ -11,12 +11,13 @@
 package melnorme.lang.ide.ui.text.completion;
 
 
-import melnorme.lang.ide.ui.LangUIMessages;
-
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContextInformation;
+
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
 
 public abstract class ContenAssistProcessorExt implements IContentAssistProcessor {
 	
@@ -60,6 +61,17 @@ public abstract class ContenAssistProcessorExt implements IContentAssistProcesso
 	@Override
 	public final ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int offset) {
 		resetComputeState();
+		if(viewer instanceof LangSourceViewer) {
+			LangSourceViewer sourceViewer = (LangSourceViewer) viewer;
+			if(sourceViewer.getSelectedRange().y > 0) {
+				// Correct the invocation offset for content assist. 
+				// The issue is that if text is selected, the cursor can either be on the left, or the right
+				// but the offset used will always be the left side of the selection, unless we correct it.
+				
+				int caretOffset = sourceViewer.getTextWidget().getCaretOffset();
+				offset = sourceViewer.widgetOffset2ModelOffset(caretOffset);
+			}
+		}
 		
 		return doComputeCompletionProposals(viewer, offset);
 	}

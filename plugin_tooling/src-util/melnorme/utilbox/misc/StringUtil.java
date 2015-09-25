@@ -11,6 +11,7 @@
 package melnorme.utilbox.misc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import melnorme.utilbox.collections.ArrayList2;
 /**
  * Miscelleanous String utilities 
  */
-public final class StringUtil {
+public class StringUtil {
 	
 	public static final Charset ASCII = Charset.forName("ASCII");
 	public static final Charset UTF8 = Charset.forName("UTF-8");
@@ -345,6 +346,37 @@ public final class StringUtil {
 	
 	public static String prefixStr(String prefix, String string) {
 		return string == null ? "" : prefix + string;
+	}
+	
+	public static String commonPrefix(String... strings) {
+		assertTrue(strings.length > 0);
+		String firstString = strings[0];
+		
+		int ix = 0;
+		boolean finished = false;
+		while(!finished) {
+			if(ix >= firstString.length()) {
+				break;
+			}
+			
+			char ch = firstString.charAt(ix);
+			
+			for(int othersIx = 1; othersIx < strings.length; othersIx++) {
+				String string = strings[othersIx];
+				if(ix >= string.length() || string.charAt(ix) != ch) {
+					finished = true;
+					break;
+				}
+			}
+			
+			if(finished) {
+				break;
+			} else {
+				ix++;
+			}
+			
+		}
+		return firstString.substring(0, ix);
 	}
 	
 }

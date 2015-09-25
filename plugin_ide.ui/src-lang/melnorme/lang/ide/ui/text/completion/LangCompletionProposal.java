@@ -11,13 +11,6 @@
 package melnorme.lang.ide.ui.text.completion;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.text.TextUtils;
-import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
-import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
-import melnorme.lang.tooling.ToolCompletionProposal;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.utilbox.collections.Indexable;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -30,16 +23,18 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension2;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension3;
+import org.eclipse.jface.text.contentassist.ICompletionProposalExtension4;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension5;
 import org.eclipse.jface.text.contentassist.ICompletionProposalExtension6;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.link.ILinkedModeListener;
 import org.eclipse.jface.text.link.LinkedModeModel;
 import org.eclipse.jface.text.link.LinkedModeUI;
-import org.eclipse.jface.text.link.LinkedPosition;
-import org.eclipse.jface.text.link.LinkedPositionGroup;
 import org.eclipse.jface.text.link.LinkedModeUI.ExitFlags;
 import org.eclipse.jface.text.link.LinkedModeUI.IExitPolicy;
+import org.eclipse.jface.text.link.LinkedPosition;
+import org.eclipse.jface.text.link.LinkedPositionGroup;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.VerifyEvent;
@@ -47,11 +42,21 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.text.TextUtils;
+import melnorme.lang.ide.ui.editor.ISourceViewerExt;
+import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
+import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
+import melnorme.lang.tooling.ToolCompletionProposal;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.Indexable;
+
 public class LangCompletionProposal implements 
 	ICompletionProposal, 
 	ICompletionProposalExtension,
 	ICompletionProposalExtension2,
 	ICompletionProposalExtension3,
+	ICompletionProposalExtension4,
 	ICompletionProposalExtension5,
 	ICompletionProposalExtension6 
 {
@@ -64,7 +69,6 @@ public class LangCompletionProposal implements
 	
 	protected int relevance = 0;
 	protected int replaceLength;
-	protected int cursorPosition;
 	protected StyledString styledDisplayString;
 	
 	public LangCompletionProposal(ToolCompletionProposal proposal,
@@ -78,7 +82,6 @@ public class LangCompletionProposal implements
 		
 		this.relevance = getDefaultRelevance();
 		this.replaceLength = proposal.getReplaceLength();
-		this.cursorPosition = getReplacementStringEndOffset();
 	}
 	
 	protected int getReplaceOffset() {
@@ -90,10 +93,13 @@ public class LangCompletionProposal implements
 	}
 	
 	public String getBaseReplaceString() {
-		return proposal.getReplaceString();
+		return proposal.getBaseReplaceString();
 	}
 	
-	public String getEffectiveReplaceString() {
+	public String getEffectiveReplaceString(boolean nameOnly) {
+		if(nameOnly) {
+			return proposal.getBaseReplaceString();
+		}
 		return proposal.getFullReplaceString();
 	}
 	
@@ -158,12 +164,30 @@ public class LangCompletionProposal implements
 		return -1;
 	}
 	
+	protected ContentAssistantExt caext;
+	
 	@Override
 	public void selected(ITextViewer viewer, boolean smartToggle) {
+		if(viewer instanceof ISourceViewerExt) {
+			ISourceViewerExt sourceViewer = (ISourceViewerExt) viewer;
+			IContentAssistant ca = sourceViewer.getContentAssistant();
+			if(ca instanceof ContentAssistantExt) {
+				caext = (ContentAssistantExt) ca;
+				if(!isAutoInsertable()) {
+					caext.setAdditionalStatusMessage("Press 'Ctrl+Enter' for name-only insertion;");
+				} else {
+					caext.setAdditionalStatusMessage(null);
+					caext = null;
+				}
+			}
+		}
 	}
 	
 	@Override
 	public void unselected(ITextViewer viewer) {
+		if(caext != null) {
+			caext.setAdditionalStatusMessage(null);
+		}
 	}
 	
 	protected IInformationControlCreator informationControlCreator;
@@ -193,14 +217,6 @@ public class LangCompletionProposal implements
 	@Override
 	public char[] getTriggerCharacters() {
 		return null;
-	}
-	
-	protected int getCursorPosition() {
-		return cursorPosition;
-	}
-	
-	protected int getReplacementStringEndOffset() {
-		return getReplaceOffset() + getEffectiveReplaceString().length();
 	}
 	
 	@Override
@@ -251,22 +267,60 @@ public class LangCompletionProposal implements
 	}
 	
 	@Override
+	public boolean isAutoInsertable() {
+		return proposal.getBaseReplaceString().equals(proposal.getFullReplaceString());
+	}
+	
+	@Override
 	public void apply(IDocument document) {
 		apply(document, (char) 0, 0);
 	}
 	
 	@Override
 	public void apply(IDocument document, char trigger, int offset) {
+		doApply(document, getReplaceOffset(), false);
+	}
+	
+	protected int endPositionAfterApply;
+	protected Point positionAfterApply; 
+	
+	public void doApply(IDocument document, int invocationOffset, boolean nameOnly) {
+		int replaceOffset = getReplaceOffset();
+		String effectiveReplaceString = getEffectiveReplaceString(nameOnly);
+		int replaceLength = getReplaceLength();
+		
+		endPositionAfterApply = replaceOffset + effectiveReplaceString.length();
+		positionAfterApply = new Point(endPositionAfterApply, 0);
+		
+		int delta = Math.min(invocationOffset, endPositionAfterApply) - replaceOffset;
+		replaceOffset += delta;
+		replaceLength -= delta;
+		effectiveReplaceString = effectiveReplaceString.substring(delta);
+		
 		try {
-			document.replace(getReplaceOffset(), getReplaceLength(), getEffectiveReplaceString());
+			document.replace(replaceOffset, replaceLength, effectiveReplaceString);
 		} catch (BadLocationException x) {
 			// ignore
 		}
 	}
 	
 	@Override
+	public Point getSelection(IDocument document) {
+		return positionAfterApply;
+	}
+	
+	@Override
 	public void apply(ITextViewer viewer, char trigger, int stateMask, int offset) {
-		apply(viewer.getDocument(), trigger, offset);
+		boolean nameOnly = false;
+		if((stateMask & SWT.CTRL) != 0) {
+			nameOnly = true;
+		}
+		
+		doApply(viewer.getDocument(), viewer.getSelectedRange().x, nameOnly);
+		
+		if(nameOnly) {
+			return;
+		}
 		
 		try {
 			applyLinkedMode(viewer);
@@ -284,14 +338,13 @@ public class LangCompletionProposal implements
 		
 		LinkedModeUI ui = new EditorLinkedModeUI(model, viewer);
 		ui.setExitPolicy(new CompletionProposalExitPolicy());
-		ui.setExitPosition(viewer, getCursorPosition(), 0, Integer.MAX_VALUE);
+		ui.setExitPosition(viewer, endPositionAfterApply, 0, Integer.MAX_VALUE);
 		if(firstLinkedModeGroupPosition != -1) {
-			cursorPosition = firstLinkedModeGroupPosition;
+			positionAfterApply = null;
 		}
 		ui.setCyclingMode(LinkedModeUI.CYCLE_WHEN_NO_PARENT);
 		ui.setDoContextInfo(true);
-		
-//		ui.enableColoredLabels(true);
+		ui.enableColoredLabels(true);
 		
 		ui.enter();
 	}
@@ -324,17 +377,13 @@ public class LangCompletionProposal implements
 		return model;
 	}
 	
-	@Override
-	public Point getSelection(IDocument document) {
-		return new Point(getCursorPosition(), 0);
-	}
-	
 	protected class CompletionProposalExitPolicy implements IExitPolicy {
 		@Override
 		public ExitFlags doExit(LinkedModeModel model, VerifyEvent event, int offset, int length) {
 			switch (event.character) {
 			case SWT.CR:
-				if(offset == getReplacementStringEndOffset()) {
+				int endOfReplacement = getReplaceOffset() + getEffectiveReplaceString(false).length();
+				if(offset == endOfReplacement) {
 					return new ExitFlags(ILinkedModeListener.EXIT_ALL, true);
 				}
 				return new ExitFlags(ILinkedModeListener.UPDATE_CARET, false);
