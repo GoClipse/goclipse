@@ -83,6 +83,11 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
 			launchInfo.workingDir.toString());
 		
+		
+		if(!workingCopy.hasAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_STOP_AT_MAIN)) {
+			workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_STOP_AT_MAIN, false);
+		}
+		
 		// Note, environment is already setup, because it uses standard attributes:
 		// ILaunchManager.ATTR_ENVIRONMENT_VARIABLES and ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES
 	}
