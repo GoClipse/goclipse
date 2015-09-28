@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
@@ -97,8 +98,8 @@ public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock
 				FormatterMessages.IndentationGroup_tab_policy_SPACE 
 		};
 		final String[] INDENT_MODE__VALUES = array(
-			CodeFormatterConstants.TAB, 
-			CodeFormatterConstants.SPACES 
+			FormatterIndentMode.TAB.toString(), 
+			FormatterIndentMode.SPACES.toString() 
 		);
 		
 		final ComboBoxField indentModeField = new ComboBoxField(
@@ -124,7 +125,8 @@ public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock
 		IFieldValueListener indentModeValueListener = new IFieldValueListener() {
 			@Override
 			public void fieldValueChanged() {
-				boolean enabled = !areEqual(indentModeField.getFieldValue(), CodeFormatterConstants.TAB);
+				boolean enabled = areEqual(indentModeField.getFieldStringValue(), 
+					FormatterIndentMode.SPACES.toString());
 				indentationSizeField.setEnabled(enabled);
 			}
 		};

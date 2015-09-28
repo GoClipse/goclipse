@@ -10,8 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.text;
 
-import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
-import melnorme.lang.ide.ui.text.util.AutoEditUtils;
+import melnorme.lang.ide.core.text.format.AutoEditUtils;
+import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 
 
 public interface ILangAutoEditsPreferencesAccess {
@@ -26,12 +26,12 @@ public interface ILangAutoEditsPreferencesAccess {
 	
 	boolean isSmartPaste();
 	
-	IndentMode getTabStyle();
+	FormatterIndentMode getTabStyle();
 	
 	int getIndentSize();
 	
 	default String getIndentUnit() {
-		if (getTabStyle() == IndentMode.SPACES) {
+		if (getTabStyle() == FormatterIndentMode.SPACES) {
 			return AutoEditUtils.getNSpaces(getIndentSize());
 		} else {
 			return "\t";

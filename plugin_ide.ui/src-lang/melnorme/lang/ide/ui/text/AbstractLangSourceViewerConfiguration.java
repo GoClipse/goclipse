@@ -16,8 +16,9 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.util.Map;
 
+import melnorme.lang.ide.core.text.format.AutoEditUtils;
+import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
-import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
@@ -33,7 +34,6 @@ import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
-import melnorme.lang.ide.ui.text.util.AutoEditUtils;
 import melnorme.utilbox.collections.Indexable;
 
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -194,7 +194,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSo
 	@Override
 	public String[] getIndentPrefixes(ISourceViewer sourceViewer, String contentType) {
 		
-		IndentMode indentMode = CodeFormatterConstants.IndentMode.fromPrefStore();
+		FormatterIndentMode indentMode = CodeFormatterConstants.fromPrefStore();
 		int spaceIndentationSize = CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.get();
 		String spaceIndent = AutoEditUtils.getNSpaces(spaceIndentationSize);
 		

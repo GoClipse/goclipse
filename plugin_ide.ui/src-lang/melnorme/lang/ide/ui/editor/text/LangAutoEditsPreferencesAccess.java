@@ -11,8 +11,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.text;
 
+import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
-import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
 import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
 
 public class LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccess {
@@ -45,10 +45,9 @@ public class LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferences
 		return LangAutoEditPreferenceConstants.AE_SMART_PASTE.get();
 	}
 	
-
 	@Override
-	public IndentMode getTabStyle() {
-		return IndentMode.fromPrefStore();
+	public FormatterIndentMode getTabStyle() {
+		return CodeFormatterConstants.fromPrefStore();
 	}
 	
 	@Override

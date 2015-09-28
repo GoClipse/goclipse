@@ -7,16 +7,16 @@ public interface FormatterMessages {
 			"Indentation";
 	
 	public static String IndentationGroup_tab_policy =
-			"Tab polic&y:";
+			"Indentation mode:";
 	public static String IndentationGroup_tab_policy_SPACE =
-			"Spaces only";
+			"Spaces";
 	public static String IndentationGroup_tab_policy_TAB =
-			"Tabs Only";
+			"Tabs";
 	public static String IndentationGroup_tab_policy_MIXED =
 			"Mixed";
 	public static String IndentationGroup_tab_size =
 			"Displayed tab &size:";
 	public static String IndentationGroup_indent_size = 
-			"&Indentation size (for spaces):";
+			"&Indentation size (for spaces policy):";
 	
 }

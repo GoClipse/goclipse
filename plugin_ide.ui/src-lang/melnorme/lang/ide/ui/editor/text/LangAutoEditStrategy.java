@@ -14,11 +14,12 @@ package melnorme.lang.ide.ui.editor.text;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockBalanceResult;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.lang.ide.core.text.format.AutoEditUtils;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.text.util.AutoEditUtils;
 import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
 
 import org.eclipse.jface.text.BadLocationException;

@@ -23,7 +23,7 @@ import org.junit.Test;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.SamplePartitionScanner;
 import melnorme.lang.ide.core.text.Scanner_BaseTest;
-import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
+import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -68,8 +68,8 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 				}
 				
 				@Override
-				public IndentMode getTabStyle() {
-					return IndentMode.TAB;
+				public FormatterIndentMode getTabStyle() {
+					return FormatterIndentMode.TAB;
 				}
 				@Override
 				public int getIndentSize() {
