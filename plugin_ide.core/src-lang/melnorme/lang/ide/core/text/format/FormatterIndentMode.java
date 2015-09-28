@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text.util;
+package melnorme.lang.ide.core.text.format;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-public class LangAutoEditUtils {
+// helper for tab indent mode
+public enum FormatterIndentMode {
 	
-	public static String stringNTimes(String string, int count) {
-		assertTrue(count >=0);
-		StringBuffer result = new StringBuffer(string.length() * count);
-		for (int i = 0; i < count; i++) {
-			result.append(string);
-		}
-		return result.toString();
+	TAB(),
+	SPACES();
+	
+	public String getPrefValue() {
+		return toString();
 	}
 	
 }

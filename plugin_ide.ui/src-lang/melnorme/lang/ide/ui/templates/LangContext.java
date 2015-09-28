@@ -17,7 +17,7 @@ import java.util.Collections;
 
 import melnorme.lang.ide.core.ISourceFile;
 import melnorme.lang.ide.core.text.DocumentModification;
-import melnorme.lang.ide.ui.text.util.AutoEditUtils;
+import melnorme.lang.ide.core.text.format.AutoEditUtils;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 

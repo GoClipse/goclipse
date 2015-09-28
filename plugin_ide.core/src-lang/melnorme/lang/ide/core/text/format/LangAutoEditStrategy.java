@@ -8,17 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor.text;
+package melnorme.lang.ide.core.text.format;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockBalanceResult;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
-import melnorme.lang.ide.ui.text.util.AutoEditUtils;
-import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
@@ -35,6 +30,11 @@ import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.widgets.Event;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockBalanceResult;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
+
 /**
  * LangAutoEditStrategy provides a common auto-edit strategy of smart indenting and de-indenting, 
  * for block based languages (like C-style languages)
@@ -46,15 +46,13 @@ import org.eclipse.swt.widgets.Event;
  */
 public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
-	protected final LangAutoEditsPreferencesAdapter fPreferences;
-
-	protected boolean fIsSmartMode;
-	protected boolean fCloseBlocks;
+	protected final ILangAutoEditsPreferencesAccess preferences;
 	
 	protected Event lastKeyEvent;
 	
-	public LangAutoEditStrategy(ITextViewer viewer) {
-		this.fPreferences = new LangAutoEditsPreferencesAdapter();
+	
+	public LangAutoEditStrategy(ITextViewer viewer, ILangAutoEditsPreferencesAccess preferences) {
+		this.preferences = preferences;
 		
 		lastKeyEvent = new Event();
 		if (viewer instanceof ITextViewerExtension) {
@@ -83,45 +81,32 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		return lastKeyEvent.character == SWT.DEL;
 	}
 	
-	/* ------------------------------------- */
-	
-	protected void clearCachedValues() {
-		fCloseBlocks = fPreferences.closeBlocks();
-		fIsSmartMode = fPreferences.isSmartMode();
-	}
-	
-	protected boolean isSmartMode() {
-		return fIsSmartMode;
-	}
+	protected String indentUnit;
 	
 	@Override
 	public void customizeDocumentCommand(IDocument doc, DocumentCommand cmd) {
 		if (cmd.doit == false)
 			return;
 		
-		clearCachedValues();
-		if(!isSmartMode()) {
-			super.customizeDocumentCommand(doc, cmd); 
-			return;
-		}
+		boolean isSmartIndent = preferences.isSmartIndent();
+		indentUnit = preferences.getIndentUnit();
 		
 		try {
-			if(AutoEditUtils.isNewLineInsertionCommand(doc, cmd)) {
+			if(isSmartIndent && AutoEditUtils.isNewLineInsertionCommand(doc, cmd)) {
 				smartIndentAfterNewLine(doc, cmd);
 			} else if(smartDeIndentAfterDeletion(doc, cmd)) {
 				return;
 			} else if(lastKeyEvent.character == SWT.TAB && areEqual(cmd.text, "\t")) {
 				smartTab(doc, cmd);
-			} else if(AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(cmd)) {
+			} else if(isSmartIndent && AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(cmd)) {
 				smartIndentOnKeypress(doc, cmd);
-			} else if(cmd.text.length() > 1 && fPreferences.isSmartPaste()) {
+			} else if(preferences.isSmartPaste() && cmd.text.length() > 1) {
 				smartPaste(doc, cmd); // no smart backspace for paste
 			} else {
 				super.customizeDocumentCommand(doc, cmd);
 			}
 		} catch (BadLocationException e) {
-			//DLTKUIPlugin.log(e);
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			LangCore.logError("Error in LangAutoEditStrategy", e);
 		}
 	}
 	
@@ -151,7 +136,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			
 			int postWsEndPos = AutoEditUtils.findEndOfWhiteSpace(doc, cmd.offset, lineEnd); 
 			boolean hasPendingTextAfterEdit = postWsEndPos != lineEnd;
-			if (fCloseBlocks && !hasPendingTextAfterEdit){
+			if(preferences.closeBlocks() && !hasPendingTextAfterEdit){
 				if(bhscanner.shouldCloseBlock(blockInfo.rightmostUnbalancedBlockOpenOffset)) {
 					//close block
 					cmd.caretOffset = cmd.offset + cmd.text.length();
@@ -254,13 +239,13 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 	
 	protected String addIndent(String indentStr, int indentDelta) {
-		return indentStr + LangAutoEditUtils.stringNTimes(fPreferences.getIndentUnit(), indentDelta);
+		return indentStr + LangAutoEditUtils.stringNTimes(indentUnit, indentDelta);
 	}
 	
 	/* ------------------------------------- */
 	
 	protected boolean smartDeIndentAfterDeletion(IDocument doc, DocumentCommand cmd) throws BadLocationException {
-		if(!fPreferences.isSmartDeIndent())
+		if(!preferences.isSmartDeIndent())
 			return false;
 		
 		if(!cmd.text.isEmpty())
@@ -370,7 +355,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 	
 	protected void smartTab(IDocument doc, DocumentCommand cmd) {
-		cmd.text = fPreferences.getIndentUnit();
+		cmd.text = preferences.getIndentUnit();
 		super.customizeDocumentCommand(doc, cmd);
 	}
 	

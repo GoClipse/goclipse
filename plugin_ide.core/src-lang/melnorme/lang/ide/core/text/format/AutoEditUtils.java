@@ -9,7 +9,7 @@
  * 		Andrey Tarantsov ?
  *******************************************************************************/
 
-package melnorme.lang.ide.ui.text.util;
+package melnorme.lang.ide.core.text.format;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentCommand;

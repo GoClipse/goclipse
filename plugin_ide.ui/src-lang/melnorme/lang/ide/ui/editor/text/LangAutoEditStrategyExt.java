@@ -14,6 +14,7 @@ package melnorme.lang.ide.ui.editor.text;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
 import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
 import melnorme.utilbox.misc.ArrayUtil;
 
@@ -29,7 +30,7 @@ public class LangAutoEditStrategyExt extends LangAutoEditStrategy {
 	protected boolean parenthesesAsBlocks;
 	
 	public LangAutoEditStrategyExt(String partitioning, String contentType, ITextViewer viewer) {
-		super(viewer);
+		super(viewer, new LangAutoEditsPreferencesAccess());
 		this.partitioning = partitioning;
 		this.contentType = contentType;
 	}
