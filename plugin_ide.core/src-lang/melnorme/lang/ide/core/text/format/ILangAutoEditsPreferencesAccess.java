@@ -8,11 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor.text;
-
-import melnorme.lang.ide.core.text.format.AutoEditUtils;
-import melnorme.lang.ide.core.text.format.FormatterIndentMode;
-
+package melnorme.lang.ide.core.text.format;
 
 public interface ILangAutoEditsPreferencesAccess {
 	

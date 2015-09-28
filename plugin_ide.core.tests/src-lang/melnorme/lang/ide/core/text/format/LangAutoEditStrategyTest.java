@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor.text;
+package melnorme.lang.ide.core.text.format;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -24,7 +24,9 @@ import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.SamplePartitionScanner;
 import melnorme.lang.ide.core.text.Scanner_BaseTest;
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
-import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
+import melnorme.lang.ide.core.text.format.ILangAutoEditsPreferencesAccess;
+import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
+import melnorme.lang.ide.core.text.format.LangAutoEditUtils;
 import melnorme.utilbox.misc.MiscUtil;
 
 public class LangAutoEditStrategyTest extends Scanner_BaseTest {
@@ -44,7 +46,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
 			
-			ILangAutoEditsPreferencesAccess preferences = new LangAutoEditsPreferencesAccess() {
+			ILangAutoEditsPreferencesAccess preferences = new ILangAutoEditsPreferencesAccess() {
 				@Override
 				public boolean isSmartIndent() {
 					return true;

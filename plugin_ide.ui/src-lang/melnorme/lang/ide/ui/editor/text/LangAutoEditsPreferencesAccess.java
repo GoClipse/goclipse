@@ -12,6 +12,7 @@
 package melnorme.lang.ide.ui.editor.text;
 
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
+import melnorme.lang.ide.core.text.format.ILangAutoEditsPreferencesAccess;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
 

@@ -8,19 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor.text;
+package melnorme.lang.ide.core.text.format;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockBalanceResult;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
-import melnorme.lang.ide.core.text.format.AutoEditUtils;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
@@ -37,6 +30,11 @@ import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.widgets.Event;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockBalanceResult;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
+
 /**
  * LangAutoEditStrategy provides a common auto-edit strategy of smart indenting and de-indenting, 
  * for block based languages (like C-style languages)
@@ -52,9 +50,6 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
 	protected Event lastKeyEvent;
 	
-	public LangAutoEditStrategy(ITextViewer viewer) {
-		this(viewer, new LangAutoEditsPreferencesAccess());
-	}
 	
 	public LangAutoEditStrategy(ITextViewer viewer, ILangAutoEditsPreferencesAccess preferences) {
 		this.preferences = preferences;
@@ -111,7 +106,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 				super.customizeDocumentCommand(doc, cmd);
 			}
 		} catch (BadLocationException e) {
-			LangUIPlugin.logError("Error in LangAutoEditStrategy", e);
+			LangCore.logError("Error in LangAutoEditStrategy", e);
 		}
 	}
 	

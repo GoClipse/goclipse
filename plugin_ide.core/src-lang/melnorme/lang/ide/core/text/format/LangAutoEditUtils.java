@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text.util;
+package melnorme.lang.ide.core.text.format;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
