@@ -23,9 +23,7 @@ import org.junit.Test;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.SamplePartitionScanner;
 import melnorme.lang.ide.core.text.Scanner_BaseTest;
-import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
-import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
 import melnorme.lang.ide.ui.text.util.LangAutoEditUtils;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -45,8 +43,41 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
-			setPreferences();
-			autoEditStrategy = new LangAutoEditStrategy(null) {
+			
+			ILangAutoEditsPreferencesAccess preferences = new LangAutoEditsPreferencesAccess() {
+				@Override
+				public boolean isSmartIndent() {
+					return true;
+				}
+				@Override
+				public boolean isSmartDeIndent() {
+					return true;
+				}
+				@Override
+				public boolean closeBraces() {
+					return true;
+				}
+				@Override
+				public boolean closeBlocks() {
+					return true;
+				}
+				
+				@Override
+				public boolean isSmartPaste() {
+					return true;
+				}
+				
+				@Override
+				public IndentMode getTabStyle() {
+					return IndentMode.TAB;
+				}
+				@Override
+				public int getIndentSize() {
+					return 4;
+				}
+			};
+			
+			autoEditStrategy = new LangAutoEditStrategy(null, preferences) {
 				@Override
 				protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
 					return Scanner_BaseTest.createBlockHeuristicScannerWithSamplePartitioning(doc);
@@ -54,19 +85,6 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 			};
 		}
 		return autoEditStrategy;
-	}
-	
-	protected void setPreferences() {
-		LangAutoEditPreferenceConstants.AE_SMART_INDENT.set(true);
-		LangAutoEditPreferenceConstants.AE_SMART_DEINDENT.set(true);
-		LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS.set(true);
-		LangAutoEditPreferenceConstants.AE_CLOSE_BRACES.set(true);
-		LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS.set(true);
-		LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS.set(true);
-		LangAutoEditPreferenceConstants.AE_SMART_PASTE.set(true);
-		
-		CodeFormatterConstants.FORMATTER_TAB_SIZE.set(4);
-		CodeFormatterConstants.FORMATTER_INDENT_MODE.set(IndentMode.TAB.getPrefValue());
 	}
 	
 	protected DocumentCommand createDocumentCommand(int start, int length, String text) {

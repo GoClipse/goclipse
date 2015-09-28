@@ -14,47 +14,44 @@ package melnorme.lang.ide.ui.editor.text;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.CodeFormatterConstants.IndentMode;
 import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
-import melnorme.lang.ide.ui.text.util.AutoEditUtils;
 
-// Originally was RubyPreferencesInterpreter from DLTK
-public class LangAutoEditsPreferencesAdapter {
+public class LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccess {
 	
-	public LangAutoEditsPreferencesAdapter() {
+	public LangAutoEditsPreferencesAccess() {
 	}
 	
-	public boolean isSmartMode() {
+	@Override
+	public boolean isSmartIndent() {
 		return LangAutoEditPreferenceConstants.AE_SMART_INDENT.get();
 	}
 	
+	@Override
 	public boolean isSmartDeIndent() {
 		return LangAutoEditPreferenceConstants.AE_SMART_DEINDENT.get();
 	}
 	
+	@Override
 	public boolean closeBlocks() {
 		return closeBraces();
 	}
 
+	@Override
 	public boolean closeBraces() {
 		return LangAutoEditPreferenceConstants.AE_CLOSE_BRACES.get();
 	}
 	
+	@Override
 	public boolean isSmartPaste() {
 		return LangAutoEditPreferenceConstants.AE_SMART_PASTE.get();
 	}
 	
 
+	@Override
 	public IndentMode getTabStyle() {
 		return IndentMode.fromPrefStore();
 	}
 	
-	public String getIndentUnit() {
-		if (getTabStyle() == IndentMode.SPACES) {
-			return AutoEditUtils.getNSpaces(getIndentSize());
-		} else {
-			return "\t";
-		}
-	}
-	
+	@Override
 	public int getIndentSize() {
 		return CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.get();
 	}
