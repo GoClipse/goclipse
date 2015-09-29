@@ -27,9 +27,52 @@ import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.core.text.format.ILangAutoEditsPreferencesAccess;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
 import melnorme.lang.ide.core.text.format.LangAutoEditUtils;
+import melnorme.lang.ide.core.text.format.LangAutoEditStrategyExt.ILangAutoEditsPreferencesAccessExt;
 import melnorme.utilbox.misc.MiscUtil;
 
 public class LangAutoEditStrategyTest extends Scanner_BaseTest {
+	
+	public static class Mock_LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccessExt {
+		@Override
+		public boolean isSmartIndent() {
+			return true;
+		}
+		
+		@Override
+		public boolean isSmartDeIndent() {
+			return true;
+		}
+		
+		@Override
+		public boolean closeBraces() {
+			return true;
+		}
+		
+		@Override
+		public boolean closeBlocks() {
+			return true;
+		}
+		
+		@Override
+		public boolean isSmartPaste() {
+			return true;
+		}
+		
+		@Override
+		public FormatterIndentMode getTabStyle() {
+			return FormatterIndentMode.TAB;
+		}
+		
+		@Override
+		public int getIndentSize() {
+			return 4;
+		}
+		
+		@Override
+		public boolean parenthesesAsBlocks() {
+			return true;
+		}
+	}
 	
 	public static final String NEUTRAL_SRCX; 
 	
@@ -46,38 +89,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
 			
-			ILangAutoEditsPreferencesAccess preferences = new ILangAutoEditsPreferencesAccess() {
-				@Override
-				public boolean isSmartIndent() {
-					return true;
-				}
-				@Override
-				public boolean isSmartDeIndent() {
-					return true;
-				}
-				@Override
-				public boolean closeBraces() {
-					return true;
-				}
-				@Override
-				public boolean closeBlocks() {
-					return true;
-				}
-				
-				@Override
-				public boolean isSmartPaste() {
-					return true;
-				}
-				
-				@Override
-				public FormatterIndentMode getTabStyle() {
-					return FormatterIndentMode.TAB;
-				}
-				@Override
-				public int getIndentSize() {
-					return 4;
-				}
-			};
+			ILangAutoEditsPreferencesAccess preferences = new Mock_LangAutoEditsPreferencesAccess();
 			
 			autoEditStrategy = new LangAutoEditStrategy(null, preferences) {
 				@Override
