@@ -8,17 +8,18 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package LANG_PROJECT_ID.ide.ui.editor;
-
-import melnorme.lang.ide.core.TextSettings_Actual;
-import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyExt;
+package LANG_PROJECT_ID.ide.core.text;
 
 import org.eclipse.jface.text.ITextViewer;
 
+import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core.text.format.LangAutoEditStrategyExt;
+
 public class LANGUAGE_AutoEditStrategy extends LangAutoEditStrategyExt {
 	
-	public LANGUAGE_AutoEditStrategy(String contentType, ITextViewer viewer) {
-		super(TextSettings_Actual.PARTITIONING_ID, contentType, viewer);
+	public LANGUAGE_AutoEditStrategy(String contentType, ITextViewer viewer, 
+			ILangAutoEditsPreferencesAccessExt preferences) {
+		super(TextSettings_Actual.PARTITIONING_ID, contentType, viewer, preferences);
 	}
 	
 }
