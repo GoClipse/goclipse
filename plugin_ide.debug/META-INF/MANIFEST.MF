@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.googlecode.goclipse.debug;singleton:=true
 Bundle-Version: 0.12.1.qualifier
 Bundle-Localization: plugin
 Bundle-Activator: com.googlecode.goclipse.debug.ui.GoDebugUI
-Bundle-Vendor: The GoClipse Development Team
+Bundle-Vendor: github.com/Goclipse
 Require-Bundle: org.eclipse.jface;bundle-version="3.9.0",
  org.eclipse.core.variables;bundle-version="3.2.0",
  com.googlecode.goclipse.core,
