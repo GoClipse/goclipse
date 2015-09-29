@@ -8,36 +8,45 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor.text;
+package melnorme.lang.ide.core.text.format;
 
 
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
-import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
-import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
-import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
-import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
+import melnorme.utilbox.misc.ArrayUtil;
+
 public class LangAutoEditStrategyExt extends LangAutoEditStrategy {
 	
 	protected final String partitioning;
 	protected final String contentType;
-	protected boolean parenthesesAsBlocks;
+	protected final ILangAutoEditsPreferencesAccessExt preferences;
 	
-	public LangAutoEditStrategyExt(String partitioning, String contentType, ITextViewer viewer) {
-		super(viewer, new LangAutoEditsPreferencesAccess());
+	public LangAutoEditStrategyExt(String partitioning, String contentType, ITextViewer viewer,
+			ILangAutoEditsPreferencesAccessExt preferences) {
+		super(viewer, preferences);
 		this.partitioning = partitioning;
 		this.contentType = contentType;
+		this.preferences = preferences;
 	}
+	
+	public static interface ILangAutoEditsPreferencesAccessExt extends ILangAutoEditsPreferencesAccess {
+		
+		public boolean parenthesesAsBlocks();
+		
+	}
+	
+	protected boolean parenthesesAsBlocks;
 	
 	@Override
 	public void customizeDocumentCommand(IDocument doc, DocumentCommand cmd) {
-		parenthesesAsBlocks = LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS.get();
+		parenthesesAsBlocks = preferences.parenthesesAsBlocks();
 		
 		super.customizeDocumentCommand(doc, cmd);
 	}

@@ -12,11 +12,11 @@
 package melnorme.lang.ide.ui.editor.text;
 
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
-import melnorme.lang.ide.core.text.format.ILangAutoEditsPreferencesAccess;
+import melnorme.lang.ide.core.text.format.LangAutoEditStrategyExt.ILangAutoEditsPreferencesAccessExt;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
 
-public class LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccess {
+public class LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccessExt {
 	
 	public LangAutoEditsPreferencesAccess() {
 	}
@@ -54,6 +54,11 @@ public class LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferences
 	@Override
 	public int getIndentSize() {
 		return CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.get();
+	}
+	
+	@Override
+	public boolean parenthesesAsBlocks() {
+		return LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS.get();
 	}
 	
 }
