@@ -33,6 +33,9 @@ public class GoRoot {
 	}
 	
 	public Location asLocation() throws CommonException {
+		if(isEmpty()) {
+			throw new CommonException("GOROOT is not defined.");
+		}
 		return Location.createValidLocation(goRootString, "Invalid GOROOT: ");
 	}
 	
