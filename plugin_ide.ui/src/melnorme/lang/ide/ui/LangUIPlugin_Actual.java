@@ -4,6 +4,7 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -40,7 +41,7 @@ public final class LangUIPlugin_Actual {
 	}
 	
 	public static GoAutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {
-		return new GoAutoEditStrategy(contentType, sourceViewer);
+		return new GoAutoEditStrategy(contentType, sourceViewer, new LangAutoEditsPreferencesAccess());
 	}
 	
 	public static StructureElementLabelProvider getStructureElementLabelProvider() {
