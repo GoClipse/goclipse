@@ -11,21 +11,22 @@
 package melnorme.lang.ide.ui.tools.console;
 
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.OperationsConsolePrefDefaults_Actual;
 import melnorme.lang.ide.ui.preferences.ColorPreference;
 
 public interface ToolsConsolePrefs extends OperationsConsolePrefDefaults_Actual {
 	
 	BooleanPreference ACTIVATE_ON_ERROR_MESSAGES = 
-			new BooleanPreference("console.do_activate", false); 
+			new BooleanPreference(LangUIPlugin.PLUGIN_ID, "console.do_activate", false); 
 	
 	ColorPreference INFO_COLOR = 
-			new ColorPreference("console.info_color", INFO_COLOR_DEFAULT); 
+			new ColorPreference(LangUIPlugin.PLUGIN_ID, "console.info_color", INFO_COLOR_DEFAULT); 
 	ColorPreference STDERR_COLOR = 
-			new ColorPreference("console.stderr_color", STDERR_COLOR_DEFAULT);
+			new ColorPreference(LangUIPlugin.PLUGIN_ID, "console.stderr_color", STDERR_COLOR_DEFAULT);
 	ColorPreference STDOUT_COLOR = 
-			new ColorPreference("console.stdout_color", STDOUT_COLOR_DEFAULT);
+			new ColorPreference(LangUIPlugin.PLUGIN_ID, "console.stdout_color", STDOUT_COLOR_DEFAULT);
 	ColorPreference BACKGROUND_COLOR = 
-			new ColorPreference("console.background_color", BACKGROUND_COLOR_DEFAULT);
+			new ColorPreference(LangUIPlugin.PLUGIN_ID, "console.background_color", BACKGROUND_COLOR_DEFAULT);
 	
 }
