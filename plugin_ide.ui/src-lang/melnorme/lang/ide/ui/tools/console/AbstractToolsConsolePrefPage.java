@@ -27,7 +27,7 @@ public abstract class AbstractToolsConsolePrefPage extends FieldEditorPreference
 	
 	public AbstractToolsConsolePrefPage() {
 		super(GRID);
-		setPreferenceStore(LangUIPlugin.getCorePrefStore());
+		setPreferenceStore(LangUIPlugin.getPrefStore());
 	}
 	
 	@Override
