@@ -19,7 +19,7 @@ public class GoSourceColoringConfigurationBlock extends AbstractSourceColoringCo
 		new SourceColoringCategory("Source", array(
 			new SourceColoringElement("Comment", GoColorPreferences.SC__COMMENT.key),
 			
-			new SourceColoringElement("Text", GoColorPreferences.SC__TEXT.key),
+			new SourceColoringElement("Text", GoColorPreferences.SC__DEFAULT.key),
 			new SourceColoringElement("Keywords", GoColorPreferences.SC__KEYWORD.key),
 			new SourceColoringElement("Keyword - Literals", GoColorPreferences.SC__KW_LITERAL.key),
 			new SourceColoringElement("Keyword - Primitives", GoColorPreferences.SC__KW_PRIMITIVE.key),

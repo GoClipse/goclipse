@@ -17,7 +17,7 @@ import melnorme.utilbox.collections.ArrayList2;
 public class GoScanner extends AbstractLangScanner {
 	
 	private static String tokenPrefProperties[] = new String[] {
-		GoUIPreferenceConstants.SC__TEXT.key,
+		GoUIPreferenceConstants.SC__DEFAULT.key,
 		GoUIPreferenceConstants.SC__KEYWORD.key,
 		GoUIPreferenceConstants.SC__KW_LITERAL.key,
 		GoUIPreferenceConstants.SC__KW_PRIMITIVE.key,
@@ -37,7 +37,7 @@ public class GoScanner extends AbstractLangScanner {
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
 		
 		
-		final IToken tkDefault = getToken(GoUIPreferenceConstants.SC__TEXT.key);
+		final IToken tkDefault = getToken(GoUIPreferenceConstants.SC__DEFAULT.key);
 		
 		WordRule wordRule = new WordRule(new JavaWordDetector(), tkDefault);
 		
@@ -45,7 +45,7 @@ public class GoScanner extends AbstractLangScanner {
 		final IToken value           = getToken(GoUIPreferenceConstants.SC__KW_LITERAL.key);
 		final IToken primitive       = getToken(GoUIPreferenceConstants.SC__KW_PRIMITIVE.key);
 		final IToken builtinFunction = getToken(GoUIPreferenceConstants.SC__BUILTIN_FUNCTION.key);
-		final IToken textToken       = getToken(GoUIPreferenceConstants.SC__TEXT.key);
+		final IToken textToken       = getToken(GoUIPreferenceConstants.SC__DEFAULT.key);
 		setDefaultReturnToken(textToken);
 		
 		// add tokens for each reserved word

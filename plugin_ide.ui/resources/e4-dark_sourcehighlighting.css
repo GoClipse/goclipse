@@ -12,19 +12,20 @@
 IEclipsePreferences#com-googlecode-goclipse-ui {
 	preferences:
 		
-		'syntax_highlighting_text=255,255,255'
-		'syntax_highlighting_keyword=127,0,85'
-		'syntax_highlighting_value=127,0,85'
-		'syntax_highlighting_primitive=127,0,85'
-		'syntax_highlighting_builtin_function=255,255,255'
-		'syntax_highlighting_operator=255,255,255'
-		'syntax_highlighting_syntax_chars=255,255,255'
+		'editor.coloring.default=230,230,230'
 		
-		'syntax_highlighting_character=0,75,200'
-		'syntax_highlighting_string=0,75,200'
-		'syntax_highlighting_multiline_string=230,75,0'
+		'editor.coloring.comment=107, 127, 147'
 		
-		'syntax_highlighting_comment=63,127,95'
+		'editor.coloring.keyword=127, 0, 85'
+		'editor.coloring.primitive=50, 130, 160'
+		'editor.coloring.value=160, 120, 70'
+		'editor.coloring.builtin_function=230,230,230'
+		'editor.coloring.operator=230,230,230'
+		'editor.coloring.syntax_chars=230,230,230'
+		
+		'editor.coloring.character=0, 170, 10'
+		'editor.coloring.string=126, 164, 0'
+		'editor.coloring.multiline_string=175, 175, 0'
 		
 		
 		'matchingBracketsColor=102,112,125'

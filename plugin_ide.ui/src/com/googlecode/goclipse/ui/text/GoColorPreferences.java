@@ -14,32 +14,37 @@ import org.eclipse.swt.graphics.RGB;
 
 import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
 
+//Note: the file /resources/e4-dark_sourcehighlighting.css needs to updated with changes made here, 
+//such as key name changes, or the color defaults
 public interface GoColorPreferences {
 	
-	public static final ColoringItemPreference SC__COMMENT = 
-		new ColoringItemPreference("coloring.comment", true, new RGB(107, 127, 147), false, false, false);
+	String PREFIX = "editor.coloring.";
 	
-    public static final ColoringItemPreference SC__TEXT = 
-    	new ColoringItemPreference("coloring.text", true, new RGB(0, 0, 0), false, false, false);
+    public static final ColoringItemPreference SC__DEFAULT = 
+        new ColoringItemPreference(PREFIX + "default", true, new RGB(0, 0, 0), false, false, false);
+    
+	public static final ColoringItemPreference SC__COMMENT = 
+		new ColoringItemPreference(PREFIX + "comment", true, new RGB(107, 127, 147), false, false, false);
+	
 	public static final ColoringItemPreference SC__KEYWORD = 
-		new ColoringItemPreference("coloring.keyword", true, new RGB(127, 0, 85), true, false, false);
+		new ColoringItemPreference(PREFIX + "keyword", true, new RGB(127, 0, 85), true, false, false);
 	public static final ColoringItemPreference SC__KW_PRIMITIVE = 
-		new ColoringItemPreference("coloring.primitive", true, new RGB(50, 130, 160), true, false, false);
+		new ColoringItemPreference(PREFIX + "primitive", true, new RGB(50, 130, 160), true, false, false);
 	public static final ColoringItemPreference SC__KW_LITERAL = 
-		new ColoringItemPreference("coloring.value", true, new RGB(160, 120, 70), false, false, false);
+		new ColoringItemPreference(PREFIX + "value", true, new RGB(160, 120, 70), false, false, false);
 	public static final ColoringItemPreference SC__BUILTIN_FUNCTION = 
-		new ColoringItemPreference("coloring.builtin_function", true, new RGB(0, 0, 0), true, false, false);
+		new ColoringItemPreference(PREFIX + "builtin_function", true, new RGB(0, 0, 0), true, false, false);
 	public static final ColoringItemPreference SC__OPERATOR = 
-		new ColoringItemPreference("coloring.operator", true, new RGB(0, 0, 0), false, false, false);
+		new ColoringItemPreference(PREFIX + "operator", true, new RGB(0, 0, 0), false, false, false);
 	public static final ColoringItemPreference SC__STRUCTURAL_SYMBOLS = 
-		new ColoringItemPreference("coloring.syntax_chars", true, new RGB(0, 0, 0), false, false, false);
+		new ColoringItemPreference(PREFIX + "syntax_chars", true, new RGB(0, 0, 0), false, false, false);
 	
 	public static final ColoringItemPreference SC__CHARACTER = 
-		new ColoringItemPreference("coloring.character", true, new RGB(0, 170, 10), false, false, false);
+		new ColoringItemPreference(PREFIX + "character", true, new RGB(0, 170, 10), false, false, false);
 	public static final ColoringItemPreference SC__STRING = 
-		new ColoringItemPreference("coloring.string", true, new RGB(126, 164, 0), false, false, false);
+		new ColoringItemPreference(PREFIX + "string", true, new RGB(126, 164, 0), false, false, false);
 	public static final ColoringItemPreference SC__MULTILINE_STRING = 
-		new ColoringItemPreference("coloring.multiline_string", true, new RGB(175, 175, 0), false, false, false);
+		new ColoringItemPreference(PREFIX + "multiline_string", true, new RGB(175, 175, 0), false, false, false);
 	// 230, 125, 105
 	
 }
