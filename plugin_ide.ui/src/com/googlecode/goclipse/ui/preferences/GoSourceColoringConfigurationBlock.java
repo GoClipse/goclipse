@@ -17,18 +17,18 @@ public class GoSourceColoringConfigurationBlock extends AbstractSourceColoringCo
 	
 	protected static final LabeledTreeElement[] treeElements = array(
 		new SourceColoringCategory("Source", array(
-			new SourceColoringElement("Comment", GoColorPreferences.SYNTAX_COLORING__COMMENT.key),
+			new SourceColoringElement("Comment", GoColorPreferences.SC__COMMENT.key),
 			
-			new SourceColoringElement("Text", GoColorPreferences.SYNTAX_COLORING__TEXT.key),
-			new SourceColoringElement("Keyword", GoColorPreferences.SYNTAX_COLORING__KEYWORD.key),
-			new SourceColoringElement("Keyword - Literal", GoColorPreferences.SYNTAX_COLORING__KEYWORD_LITERAL.key),
-			new SourceColoringElement("Primitive", GoColorPreferences.SYNTAX_COLORING__PRIMITIVE.key),
-			new SourceColoringElement("Built-in function", GoColorPreferences.SYNTAX_COLORING__BUILTIN_FUNCTION.key),
-			new SourceColoringElement("Operator", GoColorPreferences.SYNTAX_COLORING__OPERATOR.key),
-			new SourceColoringElement("Structural Symbols", GoColorPreferences.SYNTAX_COLORING__STRUCTURAL_SYMBOLS.key),
-			new SourceColoringElement("Character", GoColorPreferences.SYNTAX_COLORING__CHARACTER.key),
-			new SourceColoringElement("String", GoColorPreferences.SYNTAX_COLORING__STRING.key),
-			new SourceColoringElement("Multi-line string", GoColorPreferences.SYNTAX_COLORING__MULTILINE_STRING.key)
+			new SourceColoringElement("Text", GoColorPreferences.SC__TEXT.key),
+			new SourceColoringElement("Keywords", GoColorPreferences.SC__KEYWORD.key),
+			new SourceColoringElement("Keyword - Literals", GoColorPreferences.SC__KW_LITERAL.key),
+			new SourceColoringElement("Keyword - Primitives", GoColorPreferences.SC__KW_PRIMITIVE.key),
+			new SourceColoringElement("Built-in functions", GoColorPreferences.SC__BUILTIN_FUNCTION.key),
+			new SourceColoringElement("Operators", GoColorPreferences.SC__OPERATOR.key),
+			new SourceColoringElement("Structural symbols", GoColorPreferences.SC__STRUCTURAL_SYMBOLS.key),
+			new SourceColoringElement("Characters", GoColorPreferences.SC__CHARACTER.key),
+			new SourceColoringElement("Strings", GoColorPreferences.SC__STRING.key),
+			new SourceColoringElement("Multi-line strings", GoColorPreferences.SC__MULTILINE_STRING.key)
 
 		))
 	);

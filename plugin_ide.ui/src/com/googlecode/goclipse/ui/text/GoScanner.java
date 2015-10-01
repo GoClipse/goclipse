@@ -17,13 +17,13 @@ import melnorme.utilbox.collections.ArrayList2;
 public class GoScanner extends AbstractLangScanner {
 	
 	private static String tokenPrefProperties[] = new String[] {
-		GoUIPreferenceConstants.SYNTAX_COLORING__TEXT.key,
-		GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD.key,
-		GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD_LITERAL.key,
-		GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE.key,
-		GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION.key,
-		GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key,
-		GoUIPreferenceConstants.SYNTAX_COLORING__STRUCTURAL_SYMBOLS.key
+		GoUIPreferenceConstants.SC__TEXT.key,
+		GoUIPreferenceConstants.SC__KEYWORD.key,
+		GoUIPreferenceConstants.SC__KW_LITERAL.key,
+		GoUIPreferenceConstants.SC__KW_PRIMITIVE.key,
+		GoUIPreferenceConstants.SC__BUILTIN_FUNCTION.key,
+		GoUIPreferenceConstants.SC__OPERATOR.key,
+		GoUIPreferenceConstants.SC__STRUCTURAL_SYMBOLS.key
 	};
 	
 	public GoScanner(ITokenStoreFactory tokenStoreFactory) {
@@ -37,15 +37,15 @@ public class GoScanner extends AbstractLangScanner {
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
 		
 		
-		final IToken tkDefault = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__TEXT.key);
+		final IToken tkDefault = getToken(GoUIPreferenceConstants.SC__TEXT.key);
 		
 		WordRule wordRule = new WordRule(new JavaWordDetector(), tkDefault);
 		
-		final IToken keyword         = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD.key);
-		final IToken value           = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__KEYWORD_LITERAL.key);
-		final IToken primitive       = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__PRIMITIVE.key);
-		final IToken builtinFunction = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__BUILTIN_FUNCTION.key);
-		final IToken textToken       = getToken(GoUIPreferenceConstants.SYNTAX_COLORING__TEXT.key);
+		final IToken keyword         = getToken(GoUIPreferenceConstants.SC__KEYWORD.key);
+		final IToken value           = getToken(GoUIPreferenceConstants.SC__KW_LITERAL.key);
+		final IToken primitive       = getToken(GoUIPreferenceConstants.SC__KW_PRIMITIVE.key);
+		final IToken builtinFunction = getToken(GoUIPreferenceConstants.SC__BUILTIN_FUNCTION.key);
+		final IToken textToken       = getToken(GoUIPreferenceConstants.SC__TEXT.key);
 		setDefaultReturnToken(textToken);
 		
 		// add tokens for each reserved word
@@ -120,8 +120,8 @@ public class GoScanner extends AbstractLangScanner {
 		
 		rules.add(wordRule);
 		
-		rules.add(new GoOperatorRule(getToken(GoUIPreferenceConstants.SYNTAX_COLORING__OPERATOR.key)));
-		rules.add(new GoControlCharactersRule(getToken(GoUIPreferenceConstants.SYNTAX_COLORING__STRUCTURAL_SYMBOLS.key)));
+		rules.add(new GoOperatorRule(getToken(GoUIPreferenceConstants.SC__OPERATOR.key)));
+		rules.add(new GoControlCharactersRule(getToken(GoUIPreferenceConstants.SC__STRUCTURAL_SYMBOLS.key)));
 	}
 	
 	public static class GoOperatorRule extends DefaultPredicateRule {

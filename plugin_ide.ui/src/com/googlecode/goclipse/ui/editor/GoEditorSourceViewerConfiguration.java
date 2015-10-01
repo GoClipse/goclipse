@@ -31,16 +31,16 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 	protected void createScanners() {
 		addScanner(new GoScanner(getTokenStoreFactory()), IDocument.DEFAULT_CONTENT_TYPE);
 	
-		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT.key), 
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SC__COMMENT.key), 
 			GoPartitionScanner.LINE_COMMENT);
-		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__COMMENT.key), 
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SC__COMMENT.key), 
 			GoPartitionScanner.BLOCK_COMMENT);
 		
-		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__CHARACTER.key), 
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SC__CHARACTER.key), 
 			GoPartitionScanner.CHARACTER);
-		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__STRING.key), 
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SC__STRING.key), 
 			GoPartitionScanner.STRING);
-		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SYNTAX_COLORING__MULTILINE_STRING.key), 
+		addScanner(createSingleTokenScanner(GoUIPreferenceConstants.SC__MULTILINE_STRING.key), 
 			GoPartitionScanner.MULTILINE_STRING);
 	}
 	

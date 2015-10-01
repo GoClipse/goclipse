@@ -52,7 +52,7 @@ public class EditorSettings_Actual {
 	
 	public static final String TEMPLATE_CONTEXT_TYPE_ID = LangUIPlugin.PLUGIN_ID + ".TemplateContextType";
 	
-	public static final String CODE_DEFAULT_COLOR = GoColorPreferences.SYNTAX_COLORING__TEXT.key;
+	public static final String CODE_DEFAULT_COLOR = GoColorPreferences.SC__TEXT.key;
 	
 	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {

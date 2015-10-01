@@ -276,7 +276,7 @@
 			category="com.googlecode.goclipse.ui.PreferencePages.Editor"
 			id="com.googlecode.goclipse.ui.PreferencePages.Editor.Highlighting"
 			class="com.googlecode.goclipse.ui.preferences.GoSyntaxHighlightingPreferencePage"
-			name="Syntax Highlighting">
+			name="%EditorSyntaxColoringPreferencePage.name">
 			<keywordReference id="com.googlecode.goclipse.ui.EditorSyntaxColoringPreferencePage"/>
 		</page>
 		<page

@@ -16,30 +16,30 @@ import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
 
 public interface GoColorPreferences {
 	
+	public static final ColoringItemPreference SC__COMMENT = 
+		new ColoringItemPreference("coloring.comment", true, new RGB(107, 127, 147), false, false, false);
 	
-    public static final ColoringItemPreference SYNTAX_COLORING__TEXT = 
-    		new ColoringItemPreference("syntax_highlighting_text", true, new RGB(0, 0, 0), false, false, false);
-	public static final ColoringItemPreference SYNTAX_COLORING__KEYWORD = 
-			new ColoringItemPreference("syntax_highlighting_keyword", true, new RGB(127, 0, 85), true, false, false);
-	public static final ColoringItemPreference SYNTAX_COLORING__KEYWORD_LITERAL = 
-			new ColoringItemPreference("syntax_highlighting_value", true, new RGB(127, 0, 85), true, true, false);
-	public static final ColoringItemPreference SYNTAX_COLORING__PRIMITIVE = 
-			new ColoringItemPreference("syntax_highlighting_primitive", true, new RGB(127, 0, 85), false, true, false);
-	public static final ColoringItemPreference SYNTAX_COLORING__BUILTIN_FUNCTION = 
-			new ColoringItemPreference("syntax_highlighting_builtin_function", true, new RGB(0, 0, 0), true, false, false);
-	public static final ColoringItemPreference SYNTAX_COLORING__OPERATOR = 
-			new ColoringItemPreference("syntax_highlighting_operator", true, new RGB(0, 0, 0), false, false, false);
-	public static final ColoringItemPreference SYNTAX_COLORING__STRUCTURAL_SYMBOLS = 
-			new ColoringItemPreference("syntax_highlighting_syntax_chars", true, new RGB(0, 0, 0), false, false, false);
+    public static final ColoringItemPreference SC__TEXT = 
+    	new ColoringItemPreference("coloring.text", true, new RGB(0, 0, 0), false, false, false);
+	public static final ColoringItemPreference SC__KEYWORD = 
+		new ColoringItemPreference("coloring.keyword", true, new RGB(127, 0, 85), true, false, false);
+	public static final ColoringItemPreference SC__KW_PRIMITIVE = 
+		new ColoringItemPreference("coloring.primitive", true, new RGB(50, 130, 160), true, false, false);
+	public static final ColoringItemPreference SC__KW_LITERAL = 
+		new ColoringItemPreference("coloring.value", true, new RGB(160, 120, 70), false, false, false);
+	public static final ColoringItemPreference SC__BUILTIN_FUNCTION = 
+		new ColoringItemPreference("coloring.builtin_function", true, new RGB(0, 0, 0), true, false, false);
+	public static final ColoringItemPreference SC__OPERATOR = 
+		new ColoringItemPreference("coloring.operator", true, new RGB(0, 0, 0), false, false, false);
+	public static final ColoringItemPreference SC__STRUCTURAL_SYMBOLS = 
+		new ColoringItemPreference("coloring.syntax_chars", true, new RGB(0, 0, 0), false, false, false);
 	
-	public static final ColoringItemPreference SYNTAX_COLORING__CHARACTER = 
-			new ColoringItemPreference("syntax_highlighting_character", true, new RGB(0, 75, 200), false, false, false);
-	public static final ColoringItemPreference SYNTAX_COLORING__STRING = 
-			new ColoringItemPreference("syntax_highlighting_string", true, new RGB(0, 75, 200), false, false, false);
-	public static final ColoringItemPreference SYNTAX_COLORING__MULTILINE_STRING = 
-			new ColoringItemPreference("syntax_highlighting_multiline_string", true, new RGB(230, 75, 0), false, false, false);
-
-	public static final ColoringItemPreference SYNTAX_COLORING__COMMENT = 
-			new ColoringItemPreference("syntax_highlighting_comment", true, new RGB(63, 127, 95), false, false, false);
-
+	public static final ColoringItemPreference SC__CHARACTER = 
+		new ColoringItemPreference("coloring.character", true, new RGB(0, 170, 10), false, false, false);
+	public static final ColoringItemPreference SC__STRING = 
+		new ColoringItemPreference("coloring.string", true, new RGB(126, 164, 0), false, false, false);
+	public static final ColoringItemPreference SC__MULTILINE_STRING = 
+		new ColoringItemPreference("coloring.multiline_string", true, new RGB(175, 175, 0), false, false, false);
+	// 230, 125, 105
+	
 }
