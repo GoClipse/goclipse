@@ -11,19 +11,22 @@
 
 IEclipsePreferences#LANG_PROJECT_ID-ide-ui {
 	preferences:
-		'editor.coloring.comment=63,217,95'
-		'editor.coloring.doccomment=63,95,191'
+	
+		'editor.coloring.default=230,230,230'
 		
-		'editor.coloring.default=255,255,255'
+		'editor.coloring.comment=144,144,144'
+		'editor.coloring.doc_comment=110,135,205'
+		
 		'editor.coloring.keyword=150,190,220'
 		'editor.coloring.basictypes=102,217,239'
 		'editor.coloring.annotations=100,100,100'
 		'editor.coloring.literals=127,64,64'
 		'editor.coloring.operators=255,255,255'
 		
-		'editor.coloring.string=164,176,0'
-		'editor.coloring.delimstring=164,176,0'
-		'editor.coloring.character=164,176,0'
+		'editor.coloring.number=113, 140, 0'
+		'editor.coloring.character=113, 140, 0'
+		'editor.coloring.string=113, 140, 0'
+		'editor.coloring.delimstring=175, 175, 0'
 		
 		'matchingBracketsColor=102,112,125'
 				

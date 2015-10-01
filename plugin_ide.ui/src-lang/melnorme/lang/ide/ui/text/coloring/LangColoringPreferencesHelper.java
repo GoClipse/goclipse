@@ -14,6 +14,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
+//Note: the file /resources/e4-dark_sourcehighlighting.css needs to updated with changes made here, 
+//such as key name changes, or the color defaults
 public class LangColoringPreferencesHelper {
 	
 	public static String getColorKey(String key) {
