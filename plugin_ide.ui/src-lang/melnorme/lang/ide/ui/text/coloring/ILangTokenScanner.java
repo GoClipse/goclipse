@@ -12,8 +12,6 @@ package melnorme.lang.ide.ui.text.coloring;
 
 import org.eclipse.jface.text.rules.ITokenScanner;
 
-import _org.eclipse.cdt.ui.IPropertyChangeParticipant;
-
 /**
  * Interface for CDT Scanners. Scanners used in CDT must additionally be
  * IPropertyChangeParticipant's.
@@ -23,5 +21,5 @@ import _org.eclipse.cdt.ui.IPropertyChangeParticipant;
  *
  * @since 5.0
  */
-public interface ILangTokenScanner extends ITokenScanner, IPropertyChangeParticipant {
+public interface ILangTokenScanner extends ITokenScanner {
 }

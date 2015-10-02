@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -22,18 +21,19 @@ import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
-import _org.eclipse.cdt.ui.text.ITokenStore;
+import _org.eclipse.cdt.internal.ui.text.TokenStore;
 import melnorme.lang.ide.core.text.BufferedRuleBasedScannerExt;
 import melnorme.lang.ide.core.text.CharacterScanner_ReaderHelper;
+import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
 import melnorme.lang.ide.ui.text.coloring.ILangTokenScanner;
 import melnorme.lang.tooling.parser.lexer.ILexingRule2;
 import melnorme.utilbox.collections.ArrayList2;
 
 public abstract class AbstractLangScanner extends BufferedRuleBasedScannerExt implements ILangTokenScanner {
 	
-	protected final ITokenStore tokenStore;
+	protected final TokenStore tokenStore;
 	
-	public AbstractLangScanner(ITokenStore tokenStore) {
+	public AbstractLangScanner(TokenStore tokenStore) {
 		this.tokenStore = tokenStore;
 		
 		ArrayList2<IRule> arrayList2 = new ArrayList2<>();
@@ -41,22 +41,16 @@ public abstract class AbstractLangScanner extends BufferedRuleBasedScannerExt im
 		setRules(arrayList2.toArray(IRule.class));
 	}
 	
-	public IToken getToken(String key) {
-		return tokenStore.getToken(key);
+	public IToken getToken(ColoringItemPreference coloringPref) {
+		return tokenStore.getToken(coloringPref);
 	}
 	
-	public IPreferenceStore getPreferenceStore() {
-		return tokenStore.getPreferenceStore();
-	}
-	
-	@Override
 	public void adaptToPreferenceChange(PropertyChangeEvent event) {
 		if(tokenStore.affectsBehavior(event)) {
 			tokenStore.adaptToPreferenceChange(event);
 		}
 	}
 	
-	@Override
 	public boolean affectsBehavior(PropertyChangeEvent event) {
 		return tokenStore.affectsBehavior(event);
 	}
@@ -69,7 +63,7 @@ public abstract class AbstractLangScanner extends BufferedRuleBasedScannerExt im
 	
 	@Override
 	public IToken nextToken() {
-		tokenStore.ensureTokensInitialised();
+//		tokenStore.ensureTokensInitialised();
 		return doNextToken();
 	}
 	

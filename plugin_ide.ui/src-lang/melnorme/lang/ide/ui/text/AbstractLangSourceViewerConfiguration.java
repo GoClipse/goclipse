@@ -16,26 +16,6 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.util.Map;
 
-import melnorme.lang.ide.core.text.format.AutoEditUtils;
-import melnorme.lang.ide.core.text.format.FormatterIndentMode;
-import melnorme.lang.ide.ui.CodeFormatterConstants;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
-import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
-import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
-import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
-import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
-import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
-import melnorme.lang.ide.ui.editor.text.LangReconciler;
-import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
-import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
-import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
-import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
-import melnorme.utilbox.collections.Indexable;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -60,15 +40,34 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import _org.eclipse.cdt.ui.text.IColorManager;
 import _org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy;
 import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
+import melnorme.lang.ide.core.text.format.AutoEditUtils;
+import melnorme.lang.ide.core.text.format.FormatterIndentMode;
+import melnorme.lang.ide.ui.CodeFormatterConstants;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
+import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
+import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
+import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
+import melnorme.lang.ide.ui.editor.text.LangReconciler;
+import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
+import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
+import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
+import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
+import melnorme.util.swt.jface.text.ColorManager2;
+import melnorme.utilbox.collections.Indexable;
 
 public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSourceViewerConfiguration {
 	
 	protected final AbstractLangStructureEditor editor;
 	
-	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager,
+	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager,
 			AbstractLangStructureEditor editor) {
 		super(preferenceStore, colorManager);
 		this.editor = editor;
