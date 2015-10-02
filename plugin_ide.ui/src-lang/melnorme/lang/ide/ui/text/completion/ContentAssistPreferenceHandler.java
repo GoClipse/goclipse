@@ -11,11 +11,6 @@
 package melnorme.lang.ide.ui.text.completion;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.ui.ContentAssistConstants;
-import melnorme.lang.ide.ui.ContentAssistPreferences;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
-import melnorme.lang.ide.ui.editor.SourceViewerConfigurer;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -26,7 +21,12 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
-import _org.eclipse.cdt.ui.text.IColorManager;
+import melnorme.lang.ide.ui.ContentAssistConstants;
+import melnorme.lang.ide.ui.ContentAssistPreferences;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
+import melnorme.lang.ide.ui.editor.SourceViewerConfigurer;
+import melnorme.util.swt.jface.text.ColorManager2;
 
 
 public class ContentAssistPreferenceHandler extends SourceViewerConfigurer 
@@ -40,7 +40,7 @@ public class ContentAssistPreferenceHandler extends SourceViewerConfigurer
 		this.assistant = assertNotNull(contentAssistantExt);
 	}
 	
-	protected IColorManager getColorManager() {
+	protected ColorManager2 getColorManager() {
 		return LangUIPlugin.getInstance().getColorManager();
 	}
 	

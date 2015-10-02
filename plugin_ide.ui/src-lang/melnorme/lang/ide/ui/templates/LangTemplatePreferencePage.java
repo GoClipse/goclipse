@@ -11,12 +11,6 @@
 package melnorme.lang.ide.ui.templates;
 
 
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -34,7 +28,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.texteditor.templates.TemplatePreferencePage;
 
-import _org.eclipse.cdt.ui.text.IColorManager;
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.util.swt.jface.text.ColorManager2;
 
 public abstract class LangTemplatePreferencePage extends TemplatePreferencePage implements IWorkbenchPreferencePage {
 	
@@ -52,7 +51,7 @@ public abstract class LangTemplatePreferencePage extends TemplatePreferencePage 
 		super.setTitle(LangUIMessages.TemplatePreferencePage_title);
 	}
 	
-	public static IColorManager getColorManager() {
+	public static ColorManager2 getColorManager() {
 		return LangUIPlugin.getInstance().getColorManager();
 	}
 	

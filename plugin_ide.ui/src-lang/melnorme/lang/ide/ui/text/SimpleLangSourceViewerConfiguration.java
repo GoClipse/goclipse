@@ -37,21 +37,21 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import _org.eclipse.cdt.internal.ui.text.TokenStore;
-import _org.eclipse.cdt.ui.text.IColorManager;
-import _org.eclipse.cdt.ui.text.ITokenStore;
-import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.ViewerColorUpdater;
+import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
+import melnorme.util.swt.jface.text.ColorManager2;
 
 /**
  * Abstract SourceViewConfiguration
@@ -59,23 +59,28 @@ import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
  */
 public abstract class SimpleLangSourceViewerConfiguration extends TextSourceViewerConfiguration {
 	
-	protected final IColorManager colorManager;
+	protected final ColorManager2 colorManager;
 	protected final IPreferenceStore preferenceStore;
+	protected final TokenStore tokenStore;
+	
 	protected Map<String, AbstractLangScanner> scannersByContentType;
 	
-	
-	public SimpleLangSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager) {
+	public SimpleLangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager) {
 		super(assertNotNull(preferenceStore));
 		this.colorManager = colorManager;
 		this.preferenceStore = preferenceStore;
+		this.tokenStore = new TokenStore(getPreferenceStore(), colorManager);
+		
+		// Must be called from UI thread
+		assertTrue(Display.getCurrent() != null);
 		
 		scannersByContentType = new HashMap<>();
-		createScanners();
+		createScanners(Display.getCurrent());
 		assertTrue(scannersByContentType.size() == getConfiguredContentTypes(null).length);
 		scannersByContentType = Collections.unmodifiableMap(scannersByContentType);
 	}
 	
-	protected IColorManager getColorManager2() {
+	protected ColorManager2 getColorManager() {
 		return colorManager;
 	}
 	
@@ -104,7 +109,7 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		return TextSettings_Actual.PARTITION_TYPES;
 	}
 	
-	protected abstract void createScanners();
+	protected abstract void createScanners(Display currentDisplay);
 	
 	protected void addScanner(AbstractLangScanner scanner, String... contentTypes) {
 		assertNotNull(scanner);
@@ -113,17 +118,12 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		}
 	}
 	
-	protected SingleTokenScanner createSingleTokenScanner(String tokenProperty) {
-		return new SingleTokenScanner(getTokenStoreFactory(), tokenProperty);
+	protected SingleTokenScanner createSingleTokenScanner(ColoringItemPreference coloringPref) {
+		return new SingleTokenScanner(getTokenStore(), coloringPref);
 	}
 	
-	protected ITokenStoreFactory getTokenStoreFactory() {
-		return new ITokenStoreFactory() {
-			@Override
-			public ITokenStore createTokenStore(String[] propertyColorNames) {
-				return new TokenStore(getColorManager2(), getPreferenceStore(), propertyColorNames);
-			}
-		};
+	protected TokenStore getTokenStore() {
+		return tokenStore;
 	}
 	
 	public Collection<AbstractLangScanner> getScanners() {

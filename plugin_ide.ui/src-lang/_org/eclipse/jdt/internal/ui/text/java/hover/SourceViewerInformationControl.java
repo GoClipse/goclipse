@@ -45,12 +45,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
-import _org.eclipse.cdt.ui.text.IColorManager;
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.util.swt.jface.text.ColorManager2;
 
 /**
  * Source viewer based implementation of <code>IInformationControl</code>.
@@ -262,10 +262,10 @@ public class SourceViewerInformationControl
 		}
 	}
 	
-	protected static IColorManager getColorManager() {
+	protected static ColorManager2 getColorManager() {
 		return LangUIPlugin.getInstance().getColorManager();
 	}
-
+	
 	/**
 	 * Returns <code>null</code> if {@link SWT#COLOR_INFO_BACKGROUND} is visibly distinct from the
 	 * default Java source text color. Otherwise, returns the editor background color.

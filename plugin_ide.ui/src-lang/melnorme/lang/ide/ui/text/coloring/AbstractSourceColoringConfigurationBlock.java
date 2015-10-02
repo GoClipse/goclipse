@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
-import _org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -51,6 +50,7 @@ import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvide
 import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.preference.OverlayPreferenceStore;
 import melnorme.util.swt.jface.preference.OverlayPreferenceStore.OverlayKey;
+import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -65,7 +65,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	implements IPreferencesBlock_Old {
 		
 	protected final SourceColoringListRoot coloringOptionsList;
-	protected final CColorManager colorManager = new CColorManager();
+	protected final ColorManager2 colorManager = new ColorManager2();
 	
 	protected TreeViewerExt treeViewer;
 	

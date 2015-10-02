@@ -20,11 +20,11 @@ import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import _org.eclipse.cdt.ui.text.IColorManager;
+import melnorme.util.swt.jface.text.ColorManager2;
 
 public class GoSimpleSourceViewerConfiguration extends GoEditorSourceViewerConfiguration {
 	
-	public GoSimpleSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager, 
+	public GoSimpleSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager, 
 			GoEditor editor) {
 		super(preferenceStore, colorManager, editor);
 	}

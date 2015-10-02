@@ -12,13 +12,6 @@ package melnorme.lang.ide.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.lang.ide.core.ILangOperationsListener;
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCore.StatusExt;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.ui.templates.TemplateRegistry;
-import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
-import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,8 +31,15 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.prefs.BackingStoreException;
 
-import _org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import _org.eclipse.jdt.internal.ui.viewsupport.ProblemMarkerManager;
+import melnorme.lang.ide.core.ILangOperationsListener;
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore.StatusExt;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.templates.TemplateRegistry;
+import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
+import melnorme.util.swt.jface.text.ColorManager2;
+import melnorme.utilbox.misc.MiscUtil;
 
 public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
@@ -197,10 +197,10 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
     
     /* ----------------- other singletons ----------------- */
 	
-	protected CColorManager fColorManager = new CColorManager(true);
+	protected ColorManager2 colorManager = new ColorManager2();
 	
-	public _org.eclipse.cdt.ui.text.IColorManager getColorManager() {
-		return fColorManager;
+	public ColorManager2 getColorManager() {
+		return colorManager;
 	}
 	
 	protected ImageDescriptorRegistry fImageDescriptorRegistry;

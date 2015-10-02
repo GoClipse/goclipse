@@ -11,8 +11,6 @@
 package melnorme.lang.ide.ui;
 
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
-import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
@@ -22,13 +20,15 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.services.IServiceLocator;
 
-import _org.eclipse.cdt.ui.text.IColorManager;
-
 import com.googlecode.goclipse.core.text.GoPartitions;
 import com.googlecode.goclipse.ui.editor.GoEditor;
 import com.googlecode.goclipse.ui.editor.GoSimpleSourceViewerConfiguration;
 import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
 import com.googlecode.goclipse.ui.text.GoColorPreferences;
+
+import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
+import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
+import melnorme.util.swt.jface.text.ColorManager2;
 
 public class EditorSettings_Actual {
 	
@@ -38,7 +38,7 @@ public class EditorSettings_Actual {
 	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".Editor.CodeTarget";
 	
 	public static GoSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration(
-			IPreferenceStore preferenceStore, IColorManager colorManager) {
+			IPreferenceStore preferenceStore, ColorManager2 colorManager) {
 		return new GoSimpleSourceViewerConfiguration(preferenceStore, colorManager, null);
 	}
 	
@@ -56,7 +56,7 @@ public class EditorSettings_Actual {
 	
 	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
-		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
 		return new GoSimpleSourceViewerConfiguration(store, colorManager, null) {
 			@Override
 			public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {

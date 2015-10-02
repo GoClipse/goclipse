@@ -1,14 +1,13 @@
 package com.googlecode.goclipse.ui.editor;
 
+import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
+
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
-
-import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
-
-import _org.eclipse.cdt.ui.text.IColorManager;
+import melnorme.util.swt.jface.text.ColorManager2;
 
 public class GoEditor extends AbstractLangStructureEditor {
 	
@@ -33,7 +32,7 @@ public class GoEditor extends AbstractLangStructureEditor {
 	
 	@Override
 	protected AbstractLangSourceViewerConfiguration createSourceViewerConfiguration() {
-		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
 		return new GoEditorSourceViewerConfiguration(getPreferenceStore(), colorManager, this);
 	}
 	
