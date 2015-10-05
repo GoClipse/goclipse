@@ -12,14 +12,13 @@ package com.googlecode.goclipse.ui.editor.text;
 
 import org.eclipse.jface.text.ITextViewer;
 
-import com.googlecode.goclipse.core.text.GoPartitions;
-
+import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategyExt;
 
 public class GoAutoEditStrategy extends LangAutoEditStrategyExt {
 	
 	public GoAutoEditStrategy(String contentType, ITextViewer viewer, ILangAutoEditsPreferencesAccessExt preferences) {
-		super(GoPartitions.PARTITIONING_ID, contentType, viewer, preferences);
+		super(TextSettings_Actual.PARTITIONING_ID, contentType, viewer, preferences);
 	}
 	
 }

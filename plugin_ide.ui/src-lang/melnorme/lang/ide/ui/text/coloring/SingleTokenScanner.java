@@ -19,7 +19,7 @@ import melnorme.utilbox.collections.ArrayList2;
 
 public final class SingleTokenScanner extends AbstractLangScanner {
 	
-	public SingleTokenScanner(TokenRegistry tokenStore, ColoringItemPreference coloringItem) {
+	public SingleTokenScanner(TokenRegistry tokenStore, TextStylingPreference coloringItem) {
 		super(tokenStore);
 		setDefaultReturnToken(getToken(coloringItem));
 	}

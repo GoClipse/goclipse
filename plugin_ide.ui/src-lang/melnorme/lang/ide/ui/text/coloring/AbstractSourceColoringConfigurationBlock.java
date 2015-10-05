@@ -145,10 +145,10 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	
 	public static class SourceColoringElement extends LabeledTreeElement {
 		
-		protected final ColoringItemPreference coloringPref;
+		protected final TextStylingPreference coloringPref;
 		protected final String prefKey;
 		
-		public SourceColoringElement(String labelText, ColoringItemPreference coloringPref) {
+		public SourceColoringElement(String labelText, TextStylingPreference coloringPref) {
 			super(null, null, labelText);
 			this.coloringPref = coloringPref;
 			this.prefKey = coloringPref.key;
@@ -159,23 +159,23 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		}
 		
 		public String getEnableKey() {
-			return ColoringItemPreference.getEnabledKey(prefKey);
+			return TextStylingPreference.getEnabledKey(prefKey);
 		}
 		
 		public String getBoldKey() {
-			return ColoringItemPreference.getBoldKey(prefKey);
+			return TextStylingPreference.getBoldKey(prefKey);
 		}
 		
 		public String getItalicKey() {
-			return ColoringItemPreference.getItalicKey(prefKey);
+			return TextStylingPreference.getItalicKey(prefKey);
 		}
 		
 		public String getStrikethroughKey() {
-			return ColoringItemPreference.getStrikethroughKey(prefKey);
+			return TextStylingPreference.getStrikethroughKey(prefKey);
 		}
 		
 		public String getUnderlineKey() {
-			return ColoringItemPreference.getUnderlineKey(prefKey);
+			return TextStylingPreference.getUnderlineKey(prefKey);
 		}
 		
 	}
@@ -393,7 +393,6 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		
 		AbstractLangSourceViewerConfiguration configuration = createSimpleSourceViewerConfiguration(store);
 		sourceViewer.configure(configuration);
-		configuration.setupViewerForTextPresentationPrefChanges(sourceViewer);
 		return sourceViewer;
 	}
 	

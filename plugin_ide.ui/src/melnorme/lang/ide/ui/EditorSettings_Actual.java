@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,19 +13,18 @@ package melnorme.lang.ide.ui;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.services.IServiceLocator;
 
-import com.googlecode.goclipse.core.text.GoPartitions;
 import com.googlecode.goclipse.ui.editor.GoEditor;
 import com.googlecode.goclipse.ui.editor.GoSimpleSourceViewerConfiguration;
 import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
 import com.googlecode.goclipse.ui.text.GoColorPreferences;
 
+import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 import melnorme.util.swt.jface.text.ColorManager2;
@@ -61,10 +60,10 @@ public class EditorSettings_Actual {
 			@Override
 			public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 				return setupSimpleContentAssistant(templateCAP, array(
-					IDocument.DEFAULT_CONTENT_TYPE, 
-					GoPartitions.LINE_COMMENT, 
-					GoPartitions.STRING,
-					GoPartitions.BLOCK_COMMENT 
+					LangPartitionTypes.CODE.getId(), 
+					LangPartitionTypes.LINE_COMMENT.getId(), 
+					LangPartitionTypes.STRING.getId(),
+					LangPartitionTypes.BLOCK_COMMENT.getId() 
 				));
 			}
 		};

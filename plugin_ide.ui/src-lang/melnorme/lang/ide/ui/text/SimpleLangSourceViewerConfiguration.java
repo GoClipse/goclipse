@@ -14,12 +14,6 @@ package melnorme.lang.ide.ui.text;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -30,13 +24,11 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
+import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
@@ -44,14 +36,16 @@ import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.ViewerColorUpdater;
-import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
-import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.util.swt.jface.text.ColorManager2;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.ownership.IDisposable;
 
 /**
  * Abstract SourceViewConfiguration
@@ -61,23 +55,11 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 	
 	protected final ColorManager2 colorManager;
 	protected final IPreferenceStore preferenceStore;
-	protected final TokenRegistry tokenStore;
-	
-	protected Map<String, AbstractLangScanner> scannersByContentType;
 	
 	public SimpleLangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager) {
 		super(assertNotNull(preferenceStore));
 		this.colorManager = colorManager;
 		this.preferenceStore = preferenceStore;
-		this.tokenStore = new TokenRegistry(getPreferenceStore(), colorManager);
-		
-		// Must be called from UI thread
-		assertTrue(Display.getCurrent() != null);
-		
-		scannersByContentType = new HashMap<>();
-		createScanners(Display.getCurrent());
-		assertTrue(scannersByContentType.size() == getConfiguredContentTypes(null).length);
-		scannersByContentType = Collections.unmodifiableMap(scannersByContentType);
 	}
 	
 	protected ColorManager2 getColorManager() {
@@ -90,8 +72,6 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 	
 	public void handlePropertyChange(PropertyChangeEvent event, IPreferenceStore prefStore,
 			SourceViewer sourceViewer) {
-		handleTextPresentationPropertyChangeEvent(event, sourceViewer);
-		
 		assertTrue(prefStore == getPreferenceStore());
 		String property = event.getProperty();
 		updateIndentationSettings(sourceViewer, property);
@@ -106,36 +86,18 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 	
 	@Override
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		return TextSettings_Actual.PARTITION_TYPES;
+		return ArrayUtil.map(getPartitionTypes(), obj -> obj.getId(), String.class);
 	}
 	
-	protected abstract void createScanners(Display currentDisplay);
-	
-	protected void addScanner(AbstractLangScanner scanner, String... contentTypes) {
-		assertNotNull(scanner);
-		for (String contentType : contentTypes) {
-			scannersByContentType.put(contentType, scanner);
-		}
+	public LangPartitionTypes[] getPartitionTypes() {
+		return TextSettings_Actual.LangPartitionTypes.values();
 	}
-	
-	protected SingleTokenScanner createSingleTokenScanner(ColoringItemPreference coloringPref) {
-		return new SingleTokenScanner(getTokenStore(), coloringPref);
-	}
-	
-	protected TokenRegistry getTokenStore() {
-		return tokenStore;
-	}
-	
-	public Collection<AbstractLangScanner> getScanners() {
-		return scannersByContentType.values();
-	}
-	
 	
 	@Override
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 		PresentationReconciler reconciler = createPresentationReconciler();
 		reconciler.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-		setupPresentationReconciler(reconciler);
+		setupPresentationReconciler(reconciler, sourceViewer);
 		return reconciler;
 	}
 	
@@ -143,46 +105,45 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		return new PresentationReconciler();
 	}
 	
-	protected void setupPresentationReconciler(PresentationReconciler reconciler) {
-		for (Entry<String, AbstractLangScanner> entry : scannersByContentType.entrySet()) {
-			String contentType = entry.getKey();
-			AbstractLangScanner scanner = entry.getValue();
+	protected void setupPresentationReconciler(PresentationReconciler reconciler, ISourceViewer sourceViewer) {
+		// Must be called from UI thread
+		assertTrue(Display.getCurrent() != null);
+		
+		// Create a token registry for given sourceViewer
+		TokenRegistry tokenRegistry = new TokenRegistry(getPreferenceStore(), colorManager) {
+			@Override
+			protected void handleTokenModified(Token token) {
+				sourceViewer.invalidateTextPresentation();
+			}
+		};
+		addConfigurationScopedOwned(sourceViewer, tokenRegistry);
+		
+		ArrayList2<AbstractLangScanner> scanners = new ArrayList2<>();
+		
+		for(LangPartitionTypes partitionType : getPartitionTypes()) {
+			
+			String contentType = partitionType.getId();
+			AbstractLangScanner scanner = createScannerFor(Display.getCurrent(), partitionType, tokenRegistry);
+			scanners.add(scanner);
+			
 			DefaultDamagerRepairer dr = new DefaultDamagerRepairer(scanner);
 			reconciler.setDamager(dr, contentType);
 			reconciler.setRepairer(dr, contentType);
 		}
+		
 	}
 	
-	public void handleTextPresentationPropertyChangeEvent(PropertyChangeEvent event, SourceViewer sourceViewer) {
-		boolean affectsTextPresentation = false;
-		
-		for(AbstractLangScanner scanner : getScanners()) {
-			if(scanner.handlePreferenceChange(event)) {
-				affectsTextPresentation = true;
-			}
-		}
-		
-		if(affectsTextPresentation) {
-			sourceViewer.invalidateTextPresentation();
+	protected void addConfigurationScopedOwned(ISourceViewer sourceViewer, IDisposable tokenStore) {
+		if(sourceViewer instanceof ProjectionViewerExt) {
+			ProjectionViewerExt viewerExt = (ProjectionViewerExt) sourceViewer;
+			viewerExt.addConfigurationOwned(tokenStore);
+		} else {
+			sourceViewer.getTextWidget().addDisposeListener(e -> tokenStore.dispose());
 		}
 	}
 	
-	public void setupViewerForTextPresentationPrefChanges(final SourceViewer viewer) {
-		final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				handleTextPresentationPropertyChangeEvent(event, viewer);
-			}
-		};
-		viewer.getTextWidget().addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				preferenceStore.removePropertyChangeListener(propertyChangeListener);
-			}
-		});
-		
-		preferenceStore.addPropertyChangeListener(propertyChangeListener);
-	}
+	protected abstract AbstractLangScanner createScannerFor(Display current, LangPartitionTypes partitionType, 
+			TokenRegistry tokenStore);
 	
 	public String getFontPropertyPreferenceKey() {
 		return JFaceResources.TEXT_FONT;
