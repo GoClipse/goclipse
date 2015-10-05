@@ -16,7 +16,7 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
-import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
+import melnorme.lang.ide.ui.text.coloring.TextStylingPreference;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.utilbox.collections.ArrayList2;
 
@@ -25,7 +25,7 @@ import melnorme.utilbox.collections.ArrayList2;
  */
 public class LANGUAGE_CodeScanner extends AbstractLangScanner {
 	
-	public static ColoringItemPreference tokenPrefProperties[] = new ColoringItemPreference[] {
+	public static TextStylingPreference tokenPrefProperties[] = new TextStylingPreference[] {
 		LANGUAGE_ColorPreferences.DEFAULT,
 		LANGUAGE_ColorPreferences.KEYWORDS,
 		LANGUAGE_ColorPreferences.KEYWORDS_VALUES,

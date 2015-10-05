@@ -12,27 +12,27 @@ package LANG_PROJECT_ID.ide.ui.text;
 import org.eclipse.swt.graphics.RGB;
 
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
-import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
+import melnorme.lang.ide.ui.text.coloring.TextStylingPreference;
 
 public interface LANGUAGE_ColorPreferences {
 	
 	String PREFIX = "editor.coloring."; 
 	
-	ColoringItemPreference DEFAULT = new ColoringItemPreference(PREFIX + "default",
+	TextStylingPreference DEFAULT = new TextStylingPreference(PREFIX + "default",
 		new RGB(0, 0, 0), false, false);
-	ColoringItemPreference KEYWORDS = new ColoringItemPreference(PREFIX + "keyword",
+	TextStylingPreference KEYWORDS = new TextStylingPreference(PREFIX + "keyword",
 		new RGB(0, 0, 127), true, false);
-	ColoringItemPreference KEYWORDS_VALUES = new ColoringItemPreference(PREFIX + "keyword_literals",
+	TextStylingPreference KEYWORDS_VALUES = new TextStylingPreference(PREFIX + "keyword_literals",
 		new RGB(0, 0, 127), false, false);
 	
-	ColoringItemPreference STRINGS = new ColoringItemPreference(PREFIX + LangPartitionTypes.STRING,
+	TextStylingPreference STRINGS = new TextStylingPreference(PREFIX + LangPartitionTypes.STRING,
 		new RGB(0x71, 0x8C, 0x00), false, false);
-	ColoringItemPreference CHARACTER = new ColoringItemPreference(PREFIX + LangPartitionTypes.CHARACTER,
+	TextStylingPreference CHARACTER = new TextStylingPreference(PREFIX + LangPartitionTypes.CHARACTER,
 		new RGB(0x71, 0x8C, 0x00), false, false);
 	
-	ColoringItemPreference COMMENTS = new ColoringItemPreference(PREFIX + "comment",
+	TextStylingPreference COMMENTS = new TextStylingPreference(PREFIX + "comment",
 		new RGB(100, 100, 100), false, false);
-	ColoringItemPreference DOC_COMMENTS = new ColoringItemPreference(PREFIX + "doc_comment",
+	TextStylingPreference DOC_COMMENTS = new TextStylingPreference(PREFIX + "doc_comment",
 		new RGB(80, 100, 150), false, false);
 	
 }

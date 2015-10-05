@@ -1,30 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Bruno Medeiros - initial API and implementation
- *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import static melnorme.utilbox.core.CoreUtil.array;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IAutoEditStrategy;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.information.IInformationProvider;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Display;
 
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_CodeScanner;
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
+import melnorme.lang.ide.ui.text.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
+import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 import melnorme.util.swt.jface.text.ColorManager2;
@@ -37,25 +26,27 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 	}
 	
 	@Override
-	protected void createScanners(Display currentDisplay) {
-		addScanner(new LANGUAGE_CodeScanner(getTokenStore()), 
-			IDocument.DEFAULT_CONTENT_TYPE);
+	protected AbstractLangScanner createScannerFor(Display current, LangPartitionTypes partitionType, 
+			TokenRegistry tokenStore) {
+		switch (partitionType) {
+		case CODE: 
+			return new LANGUAGE_CodeScanner(tokenStore);
 		
-		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.COMMENTS), 
-			LangPartitionTypes.LINE_COMMENT.getId());
-		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.COMMENTS), 
-			LangPartitionTypes.BLOCK_COMMENT.getId());
+		case LINE_COMMENT: 
+		case BLOCK_COMMENT: 
+			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.COMMENTS);
 		
-		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.DOC_COMMENTS), 
-			LangPartitionTypes.DOC_LINE_COMMENT.getId());
-		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.DOC_COMMENTS), 
-			LangPartitionTypes.DOC_BLOCK_COMMENT.getId());
+		case DOC_LINE_COMMENT:
+		case DOC_BLOCK_COMMENT:
+			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.DOC_COMMENTS);
 		
-		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.STRINGS), 
-			LangPartitionTypes.STRING.getId());
+		case STRING:
+			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.STRINGS);
 		
-		addScanner(createSingleTokenScanner(LANGUAGE_ColorPreferences.CHARACTER), 
-			LangPartitionTypes.CHARACTER.getId());
+		case CHARACTER:
+			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.CHARACTER);
+		}
+		throw assertUnreachable();
 	}
 	
 	@Override
@@ -66,15 +57,6 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 	@Override
 	protected IInformationProvider getInformationProvider(String contentType) {
 		return null;
-	}
-	
-	@Override
-	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
-		if(IDocument.DEFAULT_CONTENT_TYPE.equals(contentType)) {
-			return array(LangUIPlugin_Actual.createAutoEditStrategy(sourceViewer, contentType));
-		} else {
-			return super.getAutoEditStrategies(sourceViewer, contentType);
-		}
 	}
 	
 	@Override
