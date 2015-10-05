@@ -19,20 +19,20 @@ public interface LANGUAGE_ColorPreferences {
 	String PREFIX = "editor.coloring."; 
 	
 	ColoringItemPreference DEFAULT = new ColoringItemPreference(PREFIX + "default",
-		true, new RGB(0, 0, 0), false, false, false);
+		new RGB(0, 0, 0), false, false);
 	ColoringItemPreference KEYWORDS = new ColoringItemPreference(PREFIX + "keyword",
-		true, new RGB(0, 0, 127), true, false, false);
+		new RGB(0, 0, 127), true, false);
 	ColoringItemPreference KEYWORDS_VALUES = new ColoringItemPreference(PREFIX + "keyword_literals",
-		true, new RGB(0, 0, 127), false, false, false);
+		new RGB(0, 0, 127), false, false);
 	
 	ColoringItemPreference STRINGS = new ColoringItemPreference(PREFIX + LangPartitionTypes.STRING,
-		true, new RGB(0x71, 0x8C, 0x00), false, false, false);
+		new RGB(0x71, 0x8C, 0x00), false, false);
 	ColoringItemPreference CHARACTER = new ColoringItemPreference(PREFIX + LangPartitionTypes.CHARACTER,
-		true, new RGB(0x71, 0x8C, 0x00), false, false, false);
+		new RGB(0x71, 0x8C, 0x00), false, false);
 	
 	ColoringItemPreference COMMENTS = new ColoringItemPreference(PREFIX + "comment",
-		true, new RGB(100, 100, 100), false, false, false);
+		new RGB(100, 100, 100), false, false);
 	ColoringItemPreference DOC_COMMENTS = new ColoringItemPreference(PREFIX + "doc_comment",
-		true, new RGB(80, 100, 150), false, false, false);
+		new RGB(80, 100, 150), false, false);
 	
 }

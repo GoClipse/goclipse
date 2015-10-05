@@ -15,9 +15,9 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
-import _org.eclipse.cdt.internal.ui.text.TokenStore;
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
+import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.utilbox.collections.ArrayList2;
 
 /**
@@ -31,7 +31,7 @@ public class LANGUAGE_CodeScanner extends AbstractLangScanner {
 		LANGUAGE_ColorPreferences.KEYWORDS_VALUES,
 	};
 	
-	public LANGUAGE_CodeScanner(TokenStore tokenStore) {
+	public LANGUAGE_CodeScanner(TokenRegistry tokenStore) {
 		super(tokenStore);
 	}
 	

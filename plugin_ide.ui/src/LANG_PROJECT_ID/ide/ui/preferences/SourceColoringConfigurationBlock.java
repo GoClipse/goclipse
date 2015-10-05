@@ -25,15 +25,15 @@ public class SourceColoringConfigurationBlock extends AbstractSourceColoringConf
 	
 	protected static final LabeledTreeElement[] treeElements = array(
 		new SourceColoringCategory("Source", array(
-			new SourceColoringElement("Default", LANGUAGE_ColorPreferences.DEFAULT.key),
-			new SourceColoringElement("Keywords", LANGUAGE_ColorPreferences.KEYWORDS.key),
-			new SourceColoringElement("Keywords - Literals", LANGUAGE_ColorPreferences.KEYWORDS_VALUES.key),
-			new SourceColoringElement("Strings", LANGUAGE_ColorPreferences.STRINGS.key),
-			new SourceColoringElement("Characters", LANGUAGE_ColorPreferences.CHARACTER.key)
+			new SourceColoringElement("Default", LANGUAGE_ColorPreferences.DEFAULT),
+			new SourceColoringElement("Keywords", LANGUAGE_ColorPreferences.KEYWORDS),
+			new SourceColoringElement("Keywords - Literals", LANGUAGE_ColorPreferences.KEYWORDS_VALUES),
+			new SourceColoringElement("Strings", LANGUAGE_ColorPreferences.STRINGS),
+			new SourceColoringElement("Characters", LANGUAGE_ColorPreferences.CHARACTER)
 		)),
 		new SourceColoringCategory("Comments", array(
-			new SourceColoringElement("Comment", LANGUAGE_ColorPreferences.COMMENTS.key),
-			new SourceColoringElement("Doc Comment", LANGUAGE_ColorPreferences.DOC_COMMENTS.key)
+			new SourceColoringElement("Comment", LANGUAGE_ColorPreferences.COMMENTS),
+			new SourceColoringElement("Doc Comment", LANGUAGE_ColorPreferences.DOC_COMMENTS)
 		))
 	);
 	
