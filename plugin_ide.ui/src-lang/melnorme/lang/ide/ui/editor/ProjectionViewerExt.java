@@ -15,10 +15,12 @@ import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
 import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.ownership.OwnedArraylist;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.widgets.Composite;
 
 public class ProjectionViewerExt extends ProjectionViewer {
@@ -73,6 +75,23 @@ public class ProjectionViewerExt extends ProjectionViewer {
 		owned.disposeAll();
 		
 		super.handleDispose();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	/**
+	 * Add given {@link IPropertyChangeListener} to given store.
+	 * The listener will be automatically removed if viewer is unconfigured or disposed.
+	 */
+	public void addConfigurationScoped_PrefStoreListener(IPreferenceStore prefStore, IPropertyChangeListener propertyChangeListener) {
+		prefStore.addPropertyChangeListener(propertyChangeListener);
+		
+		addConfigurationOwned(new IDisposable() {
+			@Override
+			public void dispose() {
+				prefStore.removePropertyChangeListener(propertyChangeListener);
+			}
+		});
 	}
 	
 	/* -----------------  ----------------- */

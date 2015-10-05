@@ -22,35 +22,49 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
+import melnorme.lang.ide.core.utils.prefs.PrefStoreListener;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.Pair;
+import melnorme.utilbox.ownership.IDisposable;
+import melnorme.utilbox.ownership.OwnedArraylist;
 
-public class TokenRegistry {
+public class TokenRegistry implements IDisposable {
 	
-	protected final HashMap2<String, Pair<ColoringItemPreference, Token>> tokens = new HashMap2<>();
+	protected final HashMap2<String, Pair<TextStylingPreference, Token>> tokens = new HashMap2<>();
 	
 	protected final IPreferenceStore prefStore;
 	protected final ColorManager2 colorManager;
+	protected final OwnedArraylist owned = new OwnedArraylist();
 	
 	public TokenRegistry(IPreferenceStore preferenceSore, ColorManager2 colorManager) {
 		this.colorManager = assertNotNull(colorManager);
 		this.prefStore= assertNotNull(preferenceSore);
+		
+		PrefStoreListener.addBoundPrefStoreListener(prefStore, owned, 
+			(event) -> handlePreferenceChange(event));
 	}
 	
-	public IToken getToken(ColoringItemPreference coloringItem) {
+	@Override
+	public void dispose() {
+		owned.disposeAll();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public IToken getToken(TextStylingPreference coloringItem) {
 		return doGetToken(coloringItem);
 	}
 	
-	protected Token doGetToken(ColoringItemPreference coloringPref) {
+	protected Token doGetToken(TextStylingPreference coloringPref) {
 		assertNotNull(coloringPref);
 		assertTrue(SWTUtil.isUIThread());
 		
 		String key = coloringPref.key;
 		
-		Pair<ColoringItemPreference,Token> pair = tokens.get(key);
+		Pair<TextStylingPreference,Token> pair = tokens.get(key);
 		Token token;
 		if(pair == null) {
 			token = new Token(createTextAttribute(coloringPref));
@@ -65,7 +79,7 @@ public class TokenRegistry {
 		return token;
 	}
 	
-	protected TextAttribute createTextAttribute(ColoringItemPreference stylingPref) {
+	protected TextAttribute createTextAttribute(TextStylingPreference stylingPref) {
 		TextStyling textStyle = stylingPref.getFrom(prefStore);
 		
 		String registryKey = TokenRegistry.class.getSimpleName() + "/" + stylingPref.key;
@@ -83,7 +97,7 @@ public class TokenRegistry {
 		TextColoringConstants.EDITOR_ENABLED_SUFFIX
 	);
 	
-	protected ColoringItemPreference getRelatedColorKey(String property) {
+	protected TextStylingPreference getRelatedColorKey(String property) {
 		assertNotNull(property);
 		
 		if(!SWTUtil.isUIThread()) {
@@ -91,7 +105,7 @@ public class TokenRegistry {
 			return null;
 		}
 		
-		for(Entry<String, Pair<ColoringItemPreference, Token>> entry : tokens.entrySet()) {
+		for(Entry<String, Pair<TextStylingPreference, Token>> entry : tokens.entrySet()) {
 			String colorKey = entry.getKey();
 			if(property.startsWith(colorKey)) {
 				String suffix = property.substring(colorKey.length());
@@ -104,8 +118,8 @@ public class TokenRegistry {
 		return null;
 	}
 	
-	public boolean handlePreferenceChange(PropertyChangeEvent event) {
-		ColoringItemPreference coloringPref = getRelatedColorKey(event.getProperty());
+	protected boolean handlePreferenceChange(PropertyChangeEvent event) {
+		TextStylingPreference coloringPref = getRelatedColorKey(event.getProperty());
 		
 		if(coloringPref == null) {
 			return false;
@@ -114,7 +128,12 @@ public class TokenRegistry {
 		Token token = doGetToken(coloringPref);
 		token.setData(createTextAttribute(coloringPref));
 		
+		handleTokenModified(token);
 		return true;
+	}
+	
+	@SuppressWarnings("unused")
+	protected void handleTokenModified(Token token) {
 	}
 	
 }

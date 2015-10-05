@@ -19,19 +19,19 @@ import melnorme.lang.ide.core.utils.prefs.IPreferencesAccess;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.LangUIPlugin;
 
-public class ColoringItemPreference extends PreferenceHelper<TextStyling> {
+public class TextStylingPreference extends PreferenceHelper<TextStyling> {
 	
-	public ColoringItemPreference(String key, 
+	public TextStylingPreference(String key, 
 			RGB color, boolean bold, boolean italic) {
 		this(LangUIPlugin.PLUGIN_ID, key, true, color, bold, italic, false, false);
 	}
 	
-	public ColoringItemPreference(String key, 
+	public TextStylingPreference(String key, 
 			boolean enabled, RGB color, boolean bold, boolean italic, boolean isStrikethrough, boolean underline) {
 		this(LangUIPlugin.PLUGIN_ID, key, enabled, color, bold, italic, isStrikethrough, underline);
 	}
 	
-	public ColoringItemPreference(String qualifer, String key, 
+	public TextStylingPreference(String qualifer, String key, 
 			boolean enabled, RGB rgb, boolean isBold, boolean isItalic, boolean isStrikethrough, boolean isUnderline) {
 		super(qualifer, key, new TextStyling(enabled, rgb, isBold, isItalic, isStrikethrough, isUnderline));
 	}
