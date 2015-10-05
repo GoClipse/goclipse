@@ -43,7 +43,6 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
-import _org.eclipse.cdt.internal.ui.text.TokenStore;
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
@@ -51,6 +50,7 @@ import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.ViewerColorUpdater;
 import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
+import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.util.swt.jface.text.ColorManager2;
 
 /**
@@ -61,7 +61,7 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 	
 	protected final ColorManager2 colorManager;
 	protected final IPreferenceStore preferenceStore;
-	protected final TokenStore tokenStore;
+	protected final TokenRegistry tokenStore;
 	
 	protected Map<String, AbstractLangScanner> scannersByContentType;
 	
@@ -69,7 +69,7 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		super(assertNotNull(preferenceStore));
 		this.colorManager = colorManager;
 		this.preferenceStore = preferenceStore;
-		this.tokenStore = new TokenStore(getPreferenceStore(), colorManager);
+		this.tokenStore = new TokenRegistry(getPreferenceStore(), colorManager);
 		
 		// Must be called from UI thread
 		assertTrue(Display.getCurrent() != null);
@@ -90,7 +90,7 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 	
 	public void handlePropertyChange(PropertyChangeEvent event, IPreferenceStore prefStore,
 			SourceViewer sourceViewer) {
-		handleTextPresentationPropertyChangeEvent(event);
+		handleTextPresentationPropertyChangeEvent(event, sourceViewer);
 		
 		assertTrue(prefStore == getPreferenceStore());
 		String property = event.getProperty();
@@ -122,7 +122,7 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		return new SingleTokenScanner(getTokenStore(), coloringPref);
 	}
 	
-	protected TokenStore getTokenStore() {
+	protected TokenRegistry getTokenStore() {
 		return tokenStore;
 	}
 	
@@ -153,19 +153,17 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		}
 	}
 	
-	public boolean affectsTextPresentation(PropertyChangeEvent event) {
-		for (AbstractLangScanner scanner : getScanners()) {
-			if(scanner.affectsBehavior(event))
-				return true;
-		}
-		return false;
-	}
-	
-	public void handleTextPresentationPropertyChangeEvent(PropertyChangeEvent event) {
-		for (AbstractLangScanner scanner : getScanners()) {
-			if (scanner.affectsBehavior(event)) {
-				scanner.adaptToPreferenceChange(event);
+	public void handleTextPresentationPropertyChangeEvent(PropertyChangeEvent event, SourceViewer sourceViewer) {
+		boolean affectsTextPresentation = false;
+		
+		for(AbstractLangScanner scanner : getScanners()) {
+			if(scanner.handlePreferenceChange(event)) {
+				affectsTextPresentation = true;
 			}
+		}
+		
+		if(affectsTextPresentation) {
+			sourceViewer.invalidateTextPresentation();
 		}
 	}
 	
@@ -173,10 +171,7 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if(affectsTextPresentation(event)) {
-					handleTextPresentationPropertyChangeEvent(event);
-					viewer.invalidateTextPresentation();
-				}
+				handleTextPresentationPropertyChangeEvent(event, viewer);
 			}
 		};
 		viewer.getTextWidget().addDisposeListener(new DisposeListener() {

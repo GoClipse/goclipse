@@ -26,8 +26,8 @@ public class IntPreference extends PreferenceHelper<Integer> {
 	}
 	
 	@Override
-	protected Integer doGet(PreferencesLookupHelper combinedPrefs) {
-		return combinedPrefs.getInt(key);
+	protected Integer doGet(IPreferencesAccess prefsAccess) {
+		return prefsAccess.getInt(key);
 	}
 	
 	@Override

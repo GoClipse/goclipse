@@ -15,8 +15,8 @@ import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
+import melnorme.lang.ide.core.utils.prefs.IPreferencesAccess;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
-import melnorme.lang.ide.core.utils.prefs.PreferencesLookupHelper;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.jface.text.ColorManager;
 
@@ -33,8 +33,8 @@ public class ColorPreference extends PreferenceHelper<RGB> {
 	}
 	
 	@Override
-	protected RGB doGet(PreferencesLookupHelper combinedPrefs) {
-		String stringValue = combinedPrefs.getString(key);
+	protected RGB doGet(IPreferencesAccess prefsAccess) {
+		String stringValue = prefsAccess.getString(key);
 		return stringValue == null ? null : StringConverter.asRGB(stringValue);
 	}
 	

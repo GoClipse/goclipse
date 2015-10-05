@@ -145,11 +145,13 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	
 	public static class SourceColoringElement extends LabeledTreeElement {
 		
+		protected final ColoringItemPreference coloringPref;
 		protected final String prefKey;
 		
-		public SourceColoringElement(String labelText, String prefKey) {
+		public SourceColoringElement(String labelText, ColoringItemPreference coloringPref) {
 			super(null, null, labelText);
-			this.prefKey = prefKey;
+			this.coloringPref = coloringPref;
+			this.prefKey = coloringPref.key;
 		}
 		
 		public String getColorKey() {
@@ -157,23 +159,23 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		}
 		
 		public String getEnableKey() {
-			return prefKey + TextColoringConstants.EDITOR_SEMANTIC_HIGHLIGHTING_ENABLED_SUFFIX;
+			return ColoringItemPreference.getEnabledKey(prefKey);
 		}
 		
 		public String getBoldKey() {
-			return prefKey + TextColoringConstants.EDITOR_BOLD_SUFFIX;
+			return ColoringItemPreference.getBoldKey(prefKey);
 		}
 		
 		public String getItalicKey() {
-			return prefKey + TextColoringConstants.EDITOR_ITALIC_SUFFIX;
+			return ColoringItemPreference.getItalicKey(prefKey);
 		}
 		
 		public String getStrikethroughKey() {
-			return prefKey + TextColoringConstants.EDITOR_STRIKETHROUGH_SUFFIX;
+			return ColoringItemPreference.getStrikethroughKey(prefKey);
 		}
 		
 		public String getUnderlineKey() {
-			return prefKey + TextColoringConstants.EDITOR_UNDERLINE_SUFFIX;
+			return ColoringItemPreference.getUnderlineKey(prefKey);
 		}
 		
 	}
