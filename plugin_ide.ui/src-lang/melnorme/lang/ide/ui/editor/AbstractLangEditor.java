@@ -149,11 +149,11 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	@Override
 	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
-		AbstractLangSourceViewerConfiguration langSVC = getSourceViewerConfiguration_asLang();
-		if(langSVC != null && langSVC.affectsTextPresentation(event)) {
-			return true;
-		}
-		
+//		AbstractLangSourceViewerConfiguration langSVC = getSourceViewerConfiguration_asLang();
+//		if(langSVC != null && langSVC.affectsTextPresentation(event)) {
+//			return true;
+//		}
+//		
 		return super.affectsTextPresentation(event);
 	}
 	

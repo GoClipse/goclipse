@@ -161,4 +161,10 @@ public class CoreUtil /* extends Assert */ {
 		return Collections.unmodifiableList(CollectionUtil.createArrayList(array));
 	}
 	
+	/** @return a new read-only {@link List} from given array (a null array is considered like an empty one). */
+	@SafeVarargs
+	public static <T> Indexable<T> list(T... array) {
+		return CollectionUtil.createArrayList(array);
+	}
+	
 }

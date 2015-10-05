@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text.coloring;
+package melnorme.lang.ide.core.utils.prefs;
 
 
-public interface TextColoringConstants {
+public interface IPreferencesAccess {
 	
-	public static final String EDITOR_BOLD_SUFFIX = "_bold";
-	public static final String EDITOR_ITALIC_SUFFIX = "_italic";
-	public static final String EDITOR_STRIKETHROUGH_SUFFIX = "_strikethrough";
-	public static final String EDITOR_UNDERLINE_SUFFIX = "_underline";
+	public String getString(String key);
 	
-	public static final String EDITOR_ENABLED_SUFFIX = "_enabled";
+	public int getInt(String key);
+	
+	public boolean getBoolean(String key);
 	
 }

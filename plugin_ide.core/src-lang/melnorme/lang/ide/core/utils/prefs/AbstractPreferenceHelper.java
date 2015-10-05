@@ -25,7 +25,7 @@ public class AbstractPreferenceHelper {
 		this.key = assertNotNull(key);
 		
 		synchronized (instances) {
-			// Allow only one instance of a preference helper per key.
+			// Ensure uniqueness: allow only one instance of a preference helper per key.
 			assertTrue(instances.containsKey(key) == false);
 			instances.put(key, this);
 		}

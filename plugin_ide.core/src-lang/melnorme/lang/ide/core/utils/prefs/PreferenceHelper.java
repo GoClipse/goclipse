@@ -11,8 +11,6 @@
 package melnorme.lang.ide.core.utils.prefs;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.core.LangCore;
-import melnorme.utilbox.ownership.IDisposable;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -21,7 +19,11 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.ownership.IDisposable;
 
 public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 	
@@ -38,6 +40,8 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 		this.defaultValue = assertNotNull(defaultValue);
 		
 		initializeDefaultValueInDefaultScope();
+		
+		get(); // called just to check assertions
 	}
 	
 	public final String getQualifier() {
@@ -48,11 +52,11 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 		return defaultValue;
 	}
 	
-	protected PreferencesLookupHelper combinedScopes() {
+	protected IPreferencesAccess combinedScopes() {
 		return new PreferencesLookupHelper(getQualifier());
 	}
 	
-	protected PreferencesLookupHelper combinedScopes(IProject project) {
+	protected IPreferencesAccess combinedScopes(IProject project) {
 		return new PreferencesLookupHelper(getQualifier(), project);
 	}
 	
@@ -74,7 +78,11 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 		return assertNotNull(doGet(combinedScopes(project)));
 	}
 	
-	protected abstract T doGet(PreferencesLookupHelper combinedPrefs);
+	public final T getFrom(IPreferenceStore prefStore) {
+		return doGet(new PreferenceStoreAccess(prefStore));
+	}
+	
+	protected abstract T doGet(IPreferencesAccess prefsAccess);
 	
 	public final void set(T value) {
 		doSet(InstanceScope.INSTANCE.getNode(getQualifier()), value);
@@ -98,8 +106,12 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 	
 	/* ----------------- listeners ----------------- */
 	
+	public IPreferenceChangeListener_Ext addPrefChangeListener(final IPrefChangeListener listener) {
+		return addPrefChangeListener(false, listener);
+	}
+	
 	public IPreferenceChangeListener_Ext addPrefChangeListener(boolean initializeChange, 
-			final IPrefChangeListener listener) {
+			IPrefChangeListener listener) {
 		final IEclipsePreferences node = InstanceScope.INSTANCE.getNode(getQualifier());
 		IPreferenceChangeListener_Ext prefListener = new IPreferenceChangeListener_Ext() {
 			

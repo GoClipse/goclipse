@@ -27,8 +27,8 @@ public class BooleanPreference extends PreferenceHelper<Boolean> {
 	}
 	
 	@Override
-	protected Boolean doGet(PreferencesLookupHelper combinedPrefs) {
-		return combinedPrefs.getBoolean(key);
+	protected Boolean doGet(IPreferencesAccess prefsAccess) {
+		return prefsAccess.getBoolean(key);
 	}
 	
 	@Override

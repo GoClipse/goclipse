@@ -9,14 +9,14 @@ import org.eclipse.jface.text.rules.WordRule;
 
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 
-import _org.eclipse.cdt.internal.ui.text.TokenStore;
 import melnorme.lang.ide.core.text.DefaultPredicateRule;
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
+import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class GoScanner extends AbstractLangScanner {
 	
-	public GoScanner(TokenStore tokenStore) {
+	public GoScanner(TokenRegistry tokenStore) {
 		super(tokenStore);
 	}
 	

@@ -21,19 +21,19 @@ import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
-import _org.eclipse.cdt.internal.ui.text.TokenStore;
 import melnorme.lang.ide.core.text.BufferedRuleBasedScannerExt;
 import melnorme.lang.ide.core.text.CharacterScanner_ReaderHelper;
 import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
 import melnorme.lang.ide.ui.text.coloring.ILangTokenScanner;
+import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.lang.tooling.parser.lexer.ILexingRule2;
 import melnorme.utilbox.collections.ArrayList2;
 
 public abstract class AbstractLangScanner extends BufferedRuleBasedScannerExt implements ILangTokenScanner {
 	
-	protected final TokenStore tokenStore;
+	protected final TokenRegistry tokenStore;
 	
-	public AbstractLangScanner(TokenStore tokenStore) {
+	public AbstractLangScanner(TokenRegistry tokenStore) {
 		this.tokenStore = tokenStore;
 		
 		ArrayList2<IRule> arrayList2 = new ArrayList2<>();
@@ -45,14 +45,8 @@ public abstract class AbstractLangScanner extends BufferedRuleBasedScannerExt im
 		return tokenStore.getToken(coloringPref);
 	}
 	
-	public void adaptToPreferenceChange(PropertyChangeEvent event) {
-		if(tokenStore.affectsBehavior(event)) {
-			tokenStore.adaptToPreferenceChange(event);
-		}
-	}
-	
-	public boolean affectsBehavior(PropertyChangeEvent event) {
-		return tokenStore.affectsBehavior(event);
+	public boolean handlePreferenceChange(PropertyChangeEvent event) {
+		return tokenStore.handlePreferenceChange(event);
 	}
 	
 	/* -----------------  ----------------- */

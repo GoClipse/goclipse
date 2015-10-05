@@ -26,8 +26,8 @@ public class StringPreference extends PreferenceHelper<String> {
 	
 	
 	@Override
-	protected String doGet(PreferencesLookupHelper combinedPrefs) {
-		return combinedPrefs.getString(key);
+	protected String doGet(IPreferencesAccess prefsAccess) {
+		return prefsAccess.getString(key);
 	}
 	
 	@Override

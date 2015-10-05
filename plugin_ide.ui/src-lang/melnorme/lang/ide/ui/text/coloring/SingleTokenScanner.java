@@ -14,13 +14,12 @@ package melnorme.lang.ide.ui.text.coloring;
 
 import org.eclipse.jface.text.rules.IRule;
 
-import _org.eclipse.cdt.internal.ui.text.TokenStore;
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
 import melnorme.utilbox.collections.ArrayList2;
 
 public final class SingleTokenScanner extends AbstractLangScanner {
 	
-	public SingleTokenScanner(TokenStore tokenStore, ColoringItemPreference coloringItem) {
+	public SingleTokenScanner(TokenRegistry tokenStore, ColoringItemPreference coloringItem) {
 		super(tokenStore);
 		setDefaultReturnToken(getToken(coloringItem));
 	}

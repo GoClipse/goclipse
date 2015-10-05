@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
-public class PreferencesLookupHelper {
+public class PreferencesLookupHelper implements IPreferencesAccess {
 	
 	public final String qualifier;
 	protected final IScopeContext[] contexts;
@@ -48,27 +48,30 @@ public class PreferencesLookupHelper {
 		return assertNotNull(DefaultScope.INSTANCE.getNode(qualifier).get(key, null));
 	}
 	
+	@Override
 	public String getString(String key) {
 		assertKeyHasDefault(key);
 		return getString(key, "");
+	}
+	
+	@Override
+	public int getInt(String key) {
+		assertKeyHasDefault(key);
+		return getInt(key, 0);
+	}
+	
+	@Override
+	public boolean getBoolean(String key) {
+		assertKeyHasDefault(key);
+		return getBoolean(key, false);
 	}
 	
 	public String getString(String key, String defaultValue) {
 		return preferences().getString(qualifier, key, defaultValue, contexts);
 	}
 	
-	public int getInt(String key) {
-		assertKeyHasDefault(key);
-		return getInt(key, 0);
-	}
-	
 	public int getInt(String key, int defaultValue) {
 		return preferences().getInt(qualifier, key, defaultValue, contexts);
-	}
-	
-	public boolean getBoolean(String key) {
-		assertKeyHasDefault(key);
-		return getBoolean(key, false);
 	}
 	
 	public boolean getBoolean(String key, boolean defaultValue) {
