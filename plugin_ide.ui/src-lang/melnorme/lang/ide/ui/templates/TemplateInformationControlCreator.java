@@ -19,8 +19,8 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Shell;
 
-import _org.eclipse.jdt.internal.ui.JavaPlugin;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
+import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
 
 
 public class TemplateInformationControlCreator 
@@ -64,6 +64,16 @@ public class TemplateInformationControlCreator
 	@Override
 	public boolean canReplace(IInformationControlCreator creator) {
 		return (creator != null && getClass() == creator.getClass());
+	}
+	
+}
+
+/* -----------------  ----------------- */
+
+class JavaPlugin {
+
+	public static String getAdditionalInfoAffordanceString() {
+		return AbstractSimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
 	}
 	
 }

@@ -51,12 +51,13 @@ import melnorme.utilbox.ownership.IDisposable;
  * Abstract SourceViewConfiguration
  * Has code to help manage the configured scanners, and let respond to preference changes.
  */
-public abstract class SimpleLangSourceViewerConfiguration extends TextSourceViewerConfiguration {
+public abstract class AbstractSimpleLangSourceViewerConfiguration extends TextSourceViewerConfiguration {
 	
 	protected final ColorManager2 colorManager;
 	protected final IPreferenceStore preferenceStore;
 	
-	public SimpleLangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager) {
+	public AbstractSimpleLangSourceViewerConfiguration(IPreferenceStore preferenceStore, 
+			ColorManager2 colorManager) {
 		super(assertNotNull(preferenceStore));
 		this.colorManager = colorManager;
 		this.preferenceStore = preferenceStore;
@@ -110,7 +111,7 @@ public abstract class SimpleLangSourceViewerConfiguration extends TextSourceView
 		assertTrue(Display.getCurrent() != null);
 		
 		// Create a token registry for given sourceViewer
-		TokenRegistry tokenRegistry = new TokenRegistry(getPreferenceStore(), colorManager) {
+		TokenRegistry tokenRegistry = new TokenRegistry(colorManager) {
 			@Override
 			protected void handleTokenModified(Token token) {
 				sourceViewer.invalidateTextPresentation();

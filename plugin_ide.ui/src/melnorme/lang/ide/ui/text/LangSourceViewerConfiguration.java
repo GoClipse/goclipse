@@ -1,4 +1,14 @@
-package com.googlecode.goclipse.ui.editor;
+/*******************************************************************************
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+package melnorme.lang.ide.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
@@ -7,28 +17,28 @@ import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.swt.widgets.Display;
 
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
+import com.googlecode.goclipse.ui.editor.GocodeCompletionProposalComputer;
 import com.googlecode.goclipse.ui.text.GoScanner;
 
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
-import melnorme.lang.ide.ui.text.AbstractLangScanner;
-import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.util.swt.jface.text.ColorManager2;
 
-/**
- * @author steel
- */
-public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
+@LANG_SPECIFIC
+public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
-	protected final GoEditor	        editor;
-
-	public GoEditorSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager, 
-			GoEditor editor) {
+	protected final StylingPreferences stylingPrefs;
+	
+	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager, 
+			AbstractLangStructureEditor editor, StylingPreferences stylingPrefs) {
 		super(preferenceStore, colorManager, editor);
-		this.editor = editor;
+		this.stylingPrefs = stylingPrefs;
 	}
 	
 	@Override
@@ -36,7 +46,7 @@ public class GoEditorSourceViewerConfiguration extends AbstractLangSourceViewerC
 			TokenRegistry tokenStore) {
 		switch (partitionType) {
 		case CODE:
-			return new GoScanner(tokenStore);
+			return new GoScanner(tokenStore, stylingPrefs);
 					
 		case LINE_COMMENT:
 		case BLOCK_COMMENT:

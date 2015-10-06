@@ -8,14 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package _org.eclipse.jdt.internal.ui;
+package melnorme.lang.ide.ui.text.coloring;
 
-import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
+import melnorme.utilbox.fields.IDomainField;
 
-public class JavaPlugin {
-
-	public static String getAdditionalInfoAffordanceString() {
-		return SimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
-	}
+public interface ITextStylingPref extends IDomainField<TextStyling> {
+	
+	String getKey();
 	
 }

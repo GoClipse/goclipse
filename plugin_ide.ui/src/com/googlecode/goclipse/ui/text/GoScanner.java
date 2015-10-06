@@ -11,13 +11,14 @@ import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 
 import melnorme.lang.ide.core.text.DefaultPredicateRule;
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class GoScanner extends AbstractLangScanner {
 	
-	public GoScanner(TokenRegistry tokenStore) {
-		super(tokenStore);
+	public GoScanner(TokenRegistry tokenStore, StylingPreferences stylingPrefs) {
+		super(tokenStore, stylingPrefs);
 	}
 	
 	@Override

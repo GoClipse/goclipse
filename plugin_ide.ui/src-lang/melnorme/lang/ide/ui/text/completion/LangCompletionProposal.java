@@ -46,7 +46,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.TextUtils;
 import melnorme.lang.ide.ui.editor.ISourceViewerExt;
 import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
-import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.Indexable;
@@ -195,7 +195,7 @@ public class LangCompletionProposal implements
 	@Override
 	public IInformationControlCreator getInformationControlCreator() {
 		if(informationControlCreator == null) {
-			String statusFieldText = SimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
+			String statusFieldText = AbstractSimpleLangSourceViewerConfiguration.getAdditionalInfoAffordanceString();
 			informationControlCreator = BrowserControlHover.createEnrichableBrowserControlCreator(statusFieldText);
 		}
 		return informationControlCreator;

@@ -33,6 +33,9 @@ public abstract class TreeVisitor {
 	protected abstract boolean enterNode(IElement node);
 	
 	/** Performs the specific work on this node, on exit. */
-	protected abstract void leaveNode(IElement node);
+	@SuppressWarnings("unused")
+	protected void leaveNode(IElement node) {
+		
+	}
 	
 }

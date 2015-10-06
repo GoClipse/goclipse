@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.text;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
@@ -23,7 +24,8 @@ import org.eclipse.jface.text.rules.Token;
 import melnorme.lang.ide.core.text.BufferedRuleBasedScannerExt;
 import melnorme.lang.ide.core.text.CharacterScanner_ReaderHelper;
 import melnorme.lang.ide.ui.text.coloring.ILangTokenScanner;
-import melnorme.lang.ide.ui.text.coloring.TextStylingPreference;
+import melnorme.lang.ide.ui.text.coloring.ITextStylingPref;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.lang.tooling.parser.lexer.ILexingRule2;
 import melnorme.utilbox.collections.ArrayList2;
@@ -31,17 +33,19 @@ import melnorme.utilbox.collections.ArrayList2;
 public abstract class AbstractLangScanner extends BufferedRuleBasedScannerExt implements ILangTokenScanner {
 	
 	protected final TokenRegistry tokenStore;
+	protected final StylingPreferences stylingPrefs;
 	
-	public AbstractLangScanner(TokenRegistry tokenStore) {
-		this.tokenStore = tokenStore;
+	public AbstractLangScanner(TokenRegistry tokenStore, StylingPreferences stylingPrefs) {
+		this.tokenStore = assertNotNull(tokenStore);
+		this.stylingPrefs = stylingPrefs;
 		
 		ArrayList2<IRule> arrayList2 = new ArrayList2<>();
 		initRules(arrayList2);
 		setRules(arrayList2.toArray(IRule.class));
 	}
 	
-	public IToken getToken(TextStylingPreference coloringPref) {
-		return tokenStore.getToken(coloringPref);
+	public IToken getToken(ITextStylingPref stylingPref) {
+		return tokenStore.getToken(stylingPref);
 	}
 	
 	/* -----------------  ----------------- */

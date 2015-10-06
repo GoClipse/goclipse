@@ -16,7 +16,7 @@ public class GoSyntaxHighlightingPreferencePage extends AbstractPreferencesBlock
 	
 	@Override
 	protected GoSourceColoringConfigurationBlock createPreferencesComponent() {
-		return new GoSourceColoringConfigurationBlock(getPreferenceStore());
+		return new GoSourceColoringConfigurationBlock();
 	}
 	
 }

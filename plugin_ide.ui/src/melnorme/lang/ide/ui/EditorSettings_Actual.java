@@ -20,13 +20,14 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.services.IServiceLocator;
 
 import com.googlecode.goclipse.ui.editor.GoEditor;
-import com.googlecode.goclipse.ui.editor.GoSimpleSourceViewerConfiguration;
 import com.googlecode.goclipse.ui.editor.actions.GoEditorContextMenuContributor;
 import com.googlecode.goclipse.ui.text.GoColorPreferences;
 
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
+import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.util.swt.jface.text.ColorManager2;
 
 public class EditorSettings_Actual {
@@ -36,17 +37,31 @@ public class EditorSettings_Actual {
 	
 	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".Editor.CodeTarget";
 	
-	public static GoSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration(
-			IPreferenceStore preferenceStore, ColorManager2 colorManager) {
-		return new GoSimpleSourceViewerConfiguration(preferenceStore, colorManager, null);
-	}
-	
 	public static Class<GoEditor> editorKlass() {
 		return GoEditor.class;
 	}
 	
 	public static interface EditorPrefConstants extends EditorPrefConstants_Common {
 		
+	}
+	
+	public static StylingPreferences getStylingPreferences() {
+		return new StylingPreferences(
+			GoColorPreferences.SC__DEFAULT,
+			
+			GoColorPreferences.SC__COMMENT,
+			
+			GoColorPreferences.SC__KEYWORD,
+			GoColorPreferences.SC__KW_PRIMITIVE,
+			GoColorPreferences.SC__KW_LITERAL,
+			GoColorPreferences.SC__BUILTIN_FUNCTION,
+			GoColorPreferences.SC__OPERATOR,
+			GoColorPreferences.SC__STRUCTURAL_SYMBOLS,
+			
+			GoColorPreferences.SC__CHARACTER,
+			GoColorPreferences.SC__STRING,
+			GoColorPreferences.SC__MULTILINE_STRING
+		);
 	}
 	
 	public static final String TEMPLATE_CONTEXT_TYPE_ID = LangUIPlugin.PLUGIN_ID + ".TemplateContextType";
@@ -56,7 +71,7 @@ public class EditorSettings_Actual {
 	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
 		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new GoSimpleSourceViewerConfiguration(store, colorManager, null) {
+		return new SimpleSourceViewerConfiguration(store, colorManager) {
 			@Override
 			public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 				return setupSimpleContentAssistant(templateCAP, array(

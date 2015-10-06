@@ -10,16 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.coloring;
 
-import static melnorme.utilbox.core.CoreUtil.array;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
@@ -29,8 +28,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
@@ -39,6 +36,8 @@ import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_Old.IPreferencesBlock_Old;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences.OverlayStylingPreferences;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponent;
@@ -48,9 +47,8 @@ import melnorme.util.swt.jface.ElementContentProvider2;
 import melnorme.util.swt.jface.LabeledTreeElement;
 import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvider;
 import melnorme.util.swt.jface.TreeViewerExt;
-import melnorme.util.swt.jface.preference.OverlayPreferenceStore;
-import melnorme.util.swt.jface.preference.OverlayPreferenceStore.OverlayKey;
 import melnorme.util.swt.jface.text.ColorManager2;
+import melnorme.utilbox.fields.IDomainField;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -67,6 +65,9 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	protected final SourceColoringListRoot coloringOptionsList;
 	protected final ColorManager2 colorManager = new ColorManager2();
 	
+	protected final OverlayStylingPreferences overlayStylingPrefs = new OverlayStylingPreferences(
+		EditorSettings_Actual.getStylingPreferences()); 
+	
 	protected TreeViewerExt treeViewer;
 	
 	protected CheckBoxField enableField;
@@ -76,63 +77,38 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	protected CheckBoxField striketroughCheckboxField;
 	protected CheckBoxField underlineCheckboxField;
 
-	protected OverlayPreferenceStore overlayPreferenceStore;
-	
-	public AbstractSourceColoringConfigurationBlock(IPreferenceStore store) {
+	public AbstractSourceColoringConfigurationBlock() {
 		this.coloringOptionsList = new SourceColoringListRoot();
-		
-		final ArrayList<OverlayKey> prefKeys = new ArrayList<>();	
-		new TreeVisitor() {
-			
-			@Override
-			protected boolean enterNode(IElement node) {
-				if(node instanceof SourceColoringElement) {
-					SourceColoringElement item = (SourceColoringElement) node;
-					prefKeys.add(new OverlayKey(OverlayPreferenceStore.STRING, item.getColorKey()));
-					prefKeys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, item.getEnableKey()));
-					prefKeys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, item.getBoldKey()));
-					prefKeys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, item.getItalicKey()));
-					prefKeys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, item.getStrikethroughKey()));
-					prefKeys.add(new OverlayKey(OverlayPreferenceStore.BOOLEAN, item.getUnderlineKey()));
-				}
-				return true;
-			}
-			@Override
-			protected void leaveNode(IElement node) {
-			}
-			
-		}.traverse(coloringOptionsList);
-		
-		overlayPreferenceStore = new OverlayPreferenceStore(store, prefKeys);
-		overlayPreferenceStore.load();
 	}
 	
 	@Override
 	public void dispose() {
-		if(overlayPreferenceStore != null) {
-			overlayPreferenceStore.stop();
-		}
 		colorManager.dispose();
 	}
 	
 	@Override
-	public void loadFromStore() {
-		handleAppearanceColorListSelectionChanged();
+	public void loadDefaults() {
+		visitColoringItems(item -> item.loadDefaults());
+		
+		updateComponentFromInput();
 	}
 	
 	@Override
-	public void loadStoreDefaults() {
-		overlayPreferenceStore.loadDefaults();
-		handleAppearanceColorListSelectionChanged();
+	public void saveSettings() {
+		visitColoringItems(item -> item.saveToGlobalPreferences());
 	}
 	
-	@Override
-	public void saveToStore() {
-		overlayPreferenceStore.propagate();
-	}
-	
-	public OverlayPreferenceStore getOverlayPrefStore() {
-		return overlayPreferenceStore;
+	protected void visitColoringItems(Consumer<SourceColoringElement> consumer) {
+		new TreeVisitor() {
+			@Override
+			protected boolean enterNode(IElement node) {
+				if(SourceColoringElement.class.isInstance(node)) {
+					SourceColoringElement item = (SourceColoringElement) node;
+					consumer.accept(item);
+				}
+				return true;
+			}
+		}.traverse(coloringOptionsList);
 	}
 	
 	public static class SourceColoringCategory extends LabeledTreeElement {
@@ -143,39 +119,30 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		
 	}
 	
-	public static class SourceColoringElement extends LabeledTreeElement {
+	public class SourceColoringElement extends LabeledTreeElement {
 		
-		protected final TextStylingPreference coloringPref;
+		protected final TextStylingPreference stylingPref;
 		protected final String prefKey;
+		protected final IDomainField<TextStyling> workingCopy;
 		
-		public SourceColoringElement(String labelText, TextStylingPreference coloringPref) {
+		public SourceColoringElement(String labelText, TextStylingPreference stylingPref) {
 			super(null, null, labelText);
-			this.coloringPref = coloringPref;
-			this.prefKey = coloringPref.key;
+			this.stylingPref = stylingPref;
+			this.prefKey = stylingPref.getKey();
+			this.workingCopy = overlayStylingPrefs.get(prefKey);
+			this.workingCopy.setFieldValue(stylingPref.getFieldValue());
 		}
 		
-		public String getColorKey() {
-			return prefKey;
+		public TextStyling getWorkingValue() {
+			return workingCopy.getFieldValue();
 		}
 		
-		public String getEnableKey() {
-			return TextStylingPreference.getEnabledKey(prefKey);
+		public void loadDefaults() {
+			workingCopy.setFieldValue(stylingPref.getDefault());
 		}
 		
-		public String getBoldKey() {
-			return TextStylingPreference.getBoldKey(prefKey);
-		}
-		
-		public String getItalicKey() {
-			return TextStylingPreference.getItalicKey(prefKey);
-		}
-		
-		public String getStrikethroughKey() {
-			return TextStylingPreference.getStrikethroughKey(prefKey);
-		}
-		
-		public String getUnderlineKey() {
-			return TextStylingPreference.getUnderlineKey(prefKey);
+		public void saveToGlobalPreferences() {
+			stylingPref.setFieldValue(workingCopy.getFieldValue());
 		}
 		
 	}
@@ -183,6 +150,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	public class SourceColoringListRoot extends SimpleTreeElement {
 		public SourceColoringListRoot() {
 			super(null, getTreeElements());
+			assertTrue(children != null);
 		}
 	}
 	
@@ -252,51 +220,42 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		underlineCheckboxField = new CheckBoxField(PreferencesMessages.DLTKEditorPreferencePage_underline);
 		underlineCheckboxField.createComponent(itemEditorComposite, gdFillDefaults().indent(20, 0).create());
 		
-		enableField.addValueChangedListener(new IFieldValueListener() {
+		enableField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			public void fieldValueChanged() {
-				SourceColoringElement item = getSelectedColoringItem();
-				boolean enabled = enableField.getBooleanFieldValue();
-				getOverlayPrefStore().setValue(item.getEnableKey(), enabled);
-				
-				setColoringEditorControlsEnabled(enabled);
+			protected void changeStylingValue(TextStyling textStyling) {
+				textStyling.isEnabled = enableField.getBooleanFieldValue();
+				setColoringEditorControlsEnabled(textStyling.isEnabled);
 			}
 		});
 		
-		colorField.addValueChangedListener(new IFieldValueListener() {
+		colorField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			public void fieldValueChanged() {
-				SourceColoringElement item = getSelectedColoringItem();
-				PreferenceConverter.setValue(getOverlayPrefStore(), item.getColorKey(), colorField.getFieldValue());
+			protected void changeStylingValue(TextStyling textStyling) {
+				textStyling.rgb = colorField.getFieldValue();
 			}
 		});
-		boldCheckboxField.addValueChangedListener(new IFieldValueListener() {
+		boldCheckboxField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			public void fieldValueChanged() {
-				SourceColoringElement item = getSelectedColoringItem();
-				getOverlayPrefStore().setValue(item.getBoldKey(), boldCheckboxField.getBooleanFieldValue());
+			protected void changeStylingValue(TextStyling textStyling) {
+				textStyling.isBold = boldCheckboxField.getBooleanFieldValue();
 			}
 		});
-		italicCheckboxField.addValueChangedListener(new IFieldValueListener() {
+		italicCheckboxField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			public void fieldValueChanged() {
-				SourceColoringElement item = getSelectedColoringItem();
-				getOverlayPrefStore().setValue(item.getItalicKey(), italicCheckboxField.getBooleanFieldValue());
+			protected void changeStylingValue(TextStyling textStyling) {
+				textStyling.isItalic = italicCheckboxField.getBooleanFieldValue();
 			}
 		});
-		striketroughCheckboxField.addValueChangedListener(new IFieldValueListener() {
+		striketroughCheckboxField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			public void fieldValueChanged() {
-				SourceColoringElement item = getSelectedColoringItem();
-				getOverlayPrefStore().setValue(item.getStrikethroughKey(), 
-					striketroughCheckboxField.getBooleanFieldValue());
+			protected void changeStylingValue(TextStyling textStyling) {
+				textStyling.isStrikethrough = striketroughCheckboxField.getBooleanFieldValue();
 			}
 		});
-		underlineCheckboxField.addValueChangedListener(new IFieldValueListener() {
+		underlineCheckboxField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			public void fieldValueChanged() {
-				SourceColoringElement item = getSelectedColoringItem();
-				getOverlayPrefStore().setValue(item.getUnderlineKey(), underlineCheckboxField.getBooleanFieldValue());
+			protected void changeStylingValue(TextStyling textStyling) {
+				textStyling.isUnderline = underlineCheckboxField.getBooleanFieldValue();
 			}
 		});
 		
@@ -317,6 +276,18 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		handleAppearanceColorListSelectionChanged();
 	}
 	
+	protected abstract class ChangeStylingField implements IFieldValueListener {
+		@Override
+		public void fieldValueChanged() {
+			IDomainField<TextStyling> field = getSelectedColoringItem().workingCopy;
+			TextStyling newStyling = field.getFieldValue(); // If were being strict, we should create a copy
+			changeStylingValue(newStyling);
+			field.setFieldValue(newStyling);
+		}
+		
+		protected abstract void changeStylingValue(TextStyling textStyling);
+	}
+	
 	public SourceColoringElement getSelectedColoringItem() {
 		Object element = treeViewer.getSelectionFirstElement();
 		
@@ -333,18 +304,12 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 			setColoringEditorControlsEnabled(false);
 		} else {
 			enableField.setEnabled(false);
-			enableField.setFieldValue(
-				getOverlayPrefStore().getBoolean(selectedItem.getEnableKey()));
-			colorField.setFieldValue(
-				PreferenceConverter.getColor(getOverlayPrefStore(), selectedItem.getColorKey()));
-			boldCheckboxField.setFieldValue(
-				getOverlayPrefStore().getBoolean(selectedItem.getBoldKey()));
-			italicCheckboxField.setFieldValue(
-				getOverlayPrefStore().getBoolean(selectedItem.getItalicKey()));
-			striketroughCheckboxField.setFieldValue(
-				getOverlayPrefStore().getBoolean(selectedItem.getStrikethroughKey()));
-			underlineCheckboxField.setFieldValue(
-				getOverlayPrefStore().getBoolean(selectedItem.getUnderlineKey()));
+			enableField.setFieldValue(selectedItem.getWorkingValue().isEnabled);
+			colorField.setFieldValue(selectedItem.getWorkingValue().rgb);
+			boldCheckboxField.setFieldValue(selectedItem.getWorkingValue().isBold);
+			italicCheckboxField.setFieldValue(selectedItem.getWorkingValue().isItalic);
+			striketroughCheckboxField.setFieldValue(selectedItem.getWorkingValue().isStrikethrough);
+			underlineCheckboxField.setFieldValue(selectedItem.getWorkingValue().isUnderline);
 		}
 	}
 	
@@ -359,11 +324,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	/* ----------------- Preview viewer ----------------- */
 	
 	protected Control createPreviewViewer(Composite topControl) {
-		IPreferenceStore store = new ChainedPreferenceStore(array(
-			getOverlayPrefStore(),
-			LangUIPlugin.getPrefStore(),
-			EditorsUI.getPreferenceStore()
-		));
+		IPreferenceStore store = LangUIPlugin.getInstance().getCombinedPreferenceStore();
 		ProjectionViewer fPreviewViewer = this.createPreviewViewer(topControl, false, 
 			SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER, store);
 		fPreviewViewer.setEditable(false);
@@ -398,7 +359,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	
 	protected AbstractLangSourceViewerConfiguration createSimpleSourceViewerConfiguration( 
 			IPreferenceStore preferenceStore) {
-		return EditorSettings_Actual.createSimpleSourceViewerConfiguration(preferenceStore, colorManager);
+		return new SimpleSourceViewerConfiguration(preferenceStore, colorManager, overlayStylingPrefs);
 	}
 	
 }
