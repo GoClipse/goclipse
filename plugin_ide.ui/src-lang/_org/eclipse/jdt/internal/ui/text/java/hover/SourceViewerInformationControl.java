@@ -50,6 +50,7 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.util.swt.jface.text.ColorManager2;
 
 /**
@@ -166,7 +167,7 @@ public class SourceViewerInformationControl
 		IPreferenceStore store= LangUIPlugin.getInstance().getCombinedPreferenceStore();
 		
 		fViewer= new LangSourceViewer(composite, null, null, false, textStyle);
-		fViewer.configure(EditorSettings_Actual.createSimpleSourceViewerConfiguration(store, getColorManager()));
+		fViewer.configure(new SimpleSourceViewerConfiguration(store, getColorManager()));
 		
 		fViewer.setEditable(false);
 

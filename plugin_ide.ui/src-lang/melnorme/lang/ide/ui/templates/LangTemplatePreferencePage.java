@@ -33,6 +33,7 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.util.swt.jface.text.ColorManager2;
 
 public abstract class LangTemplatePreferencePage extends TemplatePreferencePage implements IWorkbenchPreferencePage {
@@ -89,7 +90,7 @@ public abstract class LangTemplatePreferencePage extends TemplatePreferencePage 
 	}
 	
 	protected SourceViewerConfiguration createPreviewerSourceViewerConfiguration() {
-		return EditorSettings_Actual.createSimpleSourceViewerConfiguration(getPreferenceStore(), getColorManager());
+		return new SimpleSourceViewerConfiguration(getPreferenceStore(), getColorManager());
 	}
 	
 	// Note: Mostly copied from parent, in the future we might need to modify this code.

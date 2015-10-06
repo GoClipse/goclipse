@@ -27,11 +27,9 @@ public abstract class AbstractPreferencesBlockPrefPage_Old extends AbstractCompo
 	
 	public interface IPreferencesBlock_Old extends IWidgetComponent, IDisposable {
 		
-		public void loadFromStore();
+		public void saveSettings();
 		
-		public void saveToStore();
-		
-		public void loadStoreDefaults();
+		public void loadDefaults();
 		
 	}
 	
@@ -46,17 +44,14 @@ public abstract class AbstractPreferencesBlockPrefPage_Old extends AbstractCompo
 	
 	@Override
 	protected Control createContents(Composite parent) {
-		Control body = fConfigurationBlock.createComponent(parent);
-		
-		fConfigurationBlock.loadFromStore();
-		return body;
+		return fConfigurationBlock.createComponent(parent);
 	}
 	
 	@Override
 	public boolean performOk() {
 		super.performOk();
 		
-		fConfigurationBlock.saveToStore();
+		fConfigurationBlock.saveSettings();
 		LangUIPlugin.flushInstanceScope();
 		
 		return true;
@@ -66,7 +61,7 @@ public abstract class AbstractPreferencesBlockPrefPage_Old extends AbstractCompo
 	public void performDefaults() {
 		super.performDefaults();
 		
-		fConfigurationBlock.loadStoreDefaults();
+		fConfigurationBlock.loadDefaults();
 	}
 	
 	@Override

@@ -11,7 +11,7 @@
 package melnorme.lang.ide.ui.editor;
 
 
-import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
 import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.ownership.OwnedArraylist;
 
@@ -55,8 +55,8 @@ public class ProjectionViewerExt extends ProjectionViewer {
 	public void doConfigure(SourceViewerConfiguration configuration) {
 		super.configure(configuration);
 		
-		if(configuration instanceof SimpleLangSourceViewerConfiguration) {
-			SimpleLangSourceViewerConfiguration svc = (SimpleLangSourceViewerConfiguration) configuration;
+		if(configuration instanceof AbstractSimpleLangSourceViewerConfiguration) {
+			AbstractSimpleLangSourceViewerConfiguration svc = (AbstractSimpleLangSourceViewerConfiguration) configuration;
 			svc.configureViewer(this);
 		}
 	}

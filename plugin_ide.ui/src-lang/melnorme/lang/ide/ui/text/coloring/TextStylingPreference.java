@@ -10,7 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.coloring;
 
+import static melnorme.utilbox.core.CoreUtil.list;
+
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
@@ -18,8 +21,10 @@ import org.eclipse.swt.graphics.RGB;
 import melnorme.lang.ide.core.utils.prefs.IPreferencesAccess;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.fields.IFieldValueListener;
 
-public class TextStylingPreference extends PreferenceHelper<TextStyling> {
+public class TextStylingPreference extends PreferenceHelper<TextStyling> implements ITextStylingPref {
 	
 	public TextStylingPreference(String key, 
 			RGB color, boolean bold, boolean italic) {
@@ -95,6 +100,55 @@ public class TextStylingPreference extends PreferenceHelper<TextStyling> {
 	
 	public static RGB getRgb(IPreferencesAccess prefsHelper, String key) {
 		return StringConverter.asRGB(prefsHelper.getString(key), PreferenceConverter.COLOR_DEFAULT_DEFAULT);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected static final Indexable<String> suffixes = list(
+		TextColoringConstants.EDITOR_BOLD_SUFFIX,
+		TextColoringConstants.EDITOR_ITALIC_SUFFIX,
+		TextColoringConstants.EDITOR_STRIKETHROUGH_SUFFIX,
+		TextColoringConstants.EDITOR_UNDERLINE_SUFFIX,
+		TextColoringConstants.EDITOR_ENABLED_SUFFIX
+	);
+	
+	@Override
+	protected void handlePreferenceChange(PreferenceChangeEvent event) {
+		String changedKey = event.getKey();
+		
+		if(changedKey.startsWith(key)) {
+			String suffix = changedKey.substring(key.length());
+			if(suffixes.contains(suffix)) {
+				field.setFieldValue(get());
+			}
+		}
+	}
+	
+	/* -----------------  ----------------- */
+
+	@Override
+	public TextStyling getFieldValue() {
+		return getPrefField().getFieldValue();
+	}
+
+	@Override
+	public void setFieldValue(TextStyling value) {
+		getPrefField().setFieldValue(value);
+	}
+
+	@Override
+	public void addValueChangedListener(IFieldValueListener listener) {
+		getPrefField().addValueChangedListener(listener);
+	}
+
+	@Override
+	public void removeValueChangedListener(IFieldValueListener listener) {
+		getPrefField().removeValueChangedListener(listener);
+	}
+	
+	@Override
+	public String getKey() {
+		return key;
 	}
 	
 }

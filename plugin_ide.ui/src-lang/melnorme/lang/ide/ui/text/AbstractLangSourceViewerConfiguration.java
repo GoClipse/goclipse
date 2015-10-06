@@ -63,7 +63,7 @@ import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAs
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.collections.Indexable;
 
-public abstract class AbstractLangSourceViewerConfiguration extends SimpleLangSourceViewerConfiguration {
+public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimpleLangSourceViewerConfiguration {
 	
 	protected final AbstractLangStructureEditor editor;
 	

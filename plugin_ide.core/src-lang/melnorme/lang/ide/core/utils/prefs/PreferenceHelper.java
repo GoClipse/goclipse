@@ -23,12 +23,15 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.ownership.IDisposable;
 
 public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 	
 	public final String qualifier;
 	protected final T defaultValue;
+	
+	protected final DomainField<T> field = new DomainField<>();
 	
 	public PreferenceHelper(String key, T defaultValue) {
 		this(LangCore.PLUGIN_ID, key, defaultValue);
@@ -41,7 +44,9 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 		
 		initializeDefaultValueInDefaultScope();
 		
-		get(); // called just to check assertions
+		InstanceScope.INSTANCE.getNode(qualifier).addPreferenceChangeListener(event -> handlePreferenceChange(event));
+		
+		field.setFieldValue(get());
 	}
 	
 	public final String getQualifier() {
@@ -50,6 +55,10 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 	
 	public T getDefault() {
 		return defaultValue;
+	}
+	
+	public DomainField<T> getPrefField() {
+		return field;
 	}
 	
 	protected IPreferencesAccess combinedScopes() {
@@ -87,6 +96,14 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 	public final void set(T value) {
 		doSet(InstanceScope.INSTANCE.getNode(getQualifier()), value);
 	}
+	
+	protected void handlePreferenceChange(PreferenceChangeEvent event) {
+		if(event.getKey().equals(key)) {
+			field.setFieldValue(get());
+		}
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public final void set(IProject project, T value) throws BackingStoreException {
 		IEclipsePreferences projectPreferences = getProjectNode(project);

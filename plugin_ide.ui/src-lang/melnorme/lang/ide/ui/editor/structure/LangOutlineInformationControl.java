@@ -12,7 +12,7 @@ package melnorme.lang.ide.ui.editor.structure;
 
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.views.AbstractFilteredTreePopupControl;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.structure.ISourceFileStructure;
@@ -104,9 +104,9 @@ public abstract class LangOutlineInformationControl extends AbstractFilteredTree
 	
 	public static class OutlineInformationControlCreator implements IInformationControlCreator {
 		
-		protected final SimpleLangSourceViewerConfiguration svc;
+		protected final AbstractSimpleLangSourceViewerConfiguration svc;
 		
-		public OutlineInformationControlCreator(SimpleLangSourceViewerConfiguration svc) {
+		public OutlineInformationControlCreator(AbstractSimpleLangSourceViewerConfiguration svc) {
 			this.svc = svc;
 		}
 		
