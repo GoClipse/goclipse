@@ -14,36 +14,31 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.InputStream;
 
+import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
 import melnorme.lang.ide.ui.text.coloring.AbstractSourceColoringConfigurationBlock;
 import melnorme.util.swt.jface.LabeledTreeElement;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-
-import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
-
 public class SourceColoringConfigurationBlock extends AbstractSourceColoringConfigurationBlock {
 	
-	protected static final LabeledTreeElement[] treeElements = array(
-		new SourceColoringCategory("Source", array(
-			new SourceColoringElement("Default", LANGUAGE_ColorPreferences.DEFAULT),
-			new SourceColoringElement("Keywords", LANGUAGE_ColorPreferences.KEYWORDS),
-			new SourceColoringElement("Keywords - Literals", LANGUAGE_ColorPreferences.KEYWORDS_VALUES),
-			new SourceColoringElement("Strings", LANGUAGE_ColorPreferences.STRINGS),
-			new SourceColoringElement("Characters", LANGUAGE_ColorPreferences.CHARACTER)
-		)),
-		new SourceColoringCategory("Comments", array(
-			new SourceColoringElement("Comment", LANGUAGE_ColorPreferences.COMMENTS),
-			new SourceColoringElement("Doc Comment", LANGUAGE_ColorPreferences.DOC_COMMENTS)
-		))
-	);
-	
-	public SourceColoringConfigurationBlock(IPreferenceStore store) {
-		super(store);
+	public SourceColoringConfigurationBlock() {
+		super();
 	}
 	
 	@Override
 	protected LabeledTreeElement[] getTreeElements() {
-		return treeElements;
+		return array(
+			new SourceColoringCategory("Source", array(
+				new SourceColoringElement("Default", LANGUAGE_ColorPreferences.DEFAULT),
+				new SourceColoringElement("Keywords", LANGUAGE_ColorPreferences.KEYWORDS),
+				new SourceColoringElement("Keywords - Literals", LANGUAGE_ColorPreferences.KEYWORDS_VALUES),
+				new SourceColoringElement("Strings", LANGUAGE_ColorPreferences.STRINGS),
+				new SourceColoringElement("Characters", LANGUAGE_ColorPreferences.CHARACTER)
+			)),
+			new SourceColoringCategory("Comments", array(
+				new SourceColoringElement("Comment", LANGUAGE_ColorPreferences.COMMENTS),
+				new SourceColoringElement("Doc Comment", LANGUAGE_ColorPreferences.DOC_COMMENTS)
+			))
+		);
 	}
 	
 	private static final String PREVIEW_FILE_NAME = "SourceColoringPreviewFile.lang";

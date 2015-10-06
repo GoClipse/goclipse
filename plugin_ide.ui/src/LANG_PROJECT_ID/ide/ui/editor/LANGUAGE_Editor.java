@@ -10,10 +10,12 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.LangSourceViewerConfiguration;
 import melnorme.util.swt.jface.text.ColorManager2;
 
 public class LANGUAGE_Editor extends AbstractLangStructureEditor {
@@ -26,7 +28,8 @@ public class LANGUAGE_Editor extends AbstractLangStructureEditor {
 	@Override
 	protected AbstractLangSourceViewerConfiguration createSourceViewerConfiguration() {
 		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new LANGUAGE_SourceViewerConfiguration(getPreferenceStore(), colorManager, this);
+		return new LangSourceViewerConfiguration(getPreferenceStore(), colorManager, this, 
+			EditorSettings_Actual.getStylingPreferences());
 	}
 	
 }

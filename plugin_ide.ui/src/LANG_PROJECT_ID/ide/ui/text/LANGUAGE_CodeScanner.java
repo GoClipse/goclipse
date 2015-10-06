@@ -16,7 +16,7 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
-import melnorme.lang.ide.ui.text.coloring.TextStylingPreference;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.utilbox.collections.ArrayList2;
 
@@ -25,22 +25,16 @@ import melnorme.utilbox.collections.ArrayList2;
  */
 public class LANGUAGE_CodeScanner extends AbstractLangScanner {
 	
-	public static TextStylingPreference tokenPrefProperties[] = new TextStylingPreference[] {
-		LANGUAGE_ColorPreferences.DEFAULT,
-		LANGUAGE_ColorPreferences.KEYWORDS,
-		LANGUAGE_ColorPreferences.KEYWORDS_VALUES,
-	};
-	
-	public LANGUAGE_CodeScanner(TokenRegistry tokenStore) {
-		super(tokenStore);
+	public LANGUAGE_CodeScanner(TokenRegistry tokenStore, StylingPreferences stylingPrefs) {
+		super(tokenStore, stylingPrefs);
 	}
 	
 	@Override
 	protected void initRules(ArrayList2<IRule> rules) {
 		
-		IToken tkOther = getToken(LANGUAGE_ColorPreferences.DEFAULT);
-		IToken tkKeywords = getToken(LANGUAGE_ColorPreferences.KEYWORDS);
-		IToken tkKeywordValues = getToken(LANGUAGE_ColorPreferences.KEYWORDS_VALUES);
+		IToken tkOther = getToken(stylingPrefs.get(LANGUAGE_ColorPreferences.DEFAULT));
+		IToken tkKeywords = getToken(stylingPrefs.get(LANGUAGE_ColorPreferences.KEYWORDS));
+		IToken tkKeywordValues = getToken(stylingPrefs.get(LANGUAGE_ColorPreferences.KEYWORDS_VALUES));
 		
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));

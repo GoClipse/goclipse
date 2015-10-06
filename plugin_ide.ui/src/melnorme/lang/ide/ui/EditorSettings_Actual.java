@@ -20,11 +20,12 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.services.IServiceLocator;
 
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_Editor;
-import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_SimpleSourceViewerConfiguration;
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
+import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.util.swt.jface.text.ColorManager2;
 
 public class EditorSettings_Actual {
@@ -34,17 +35,25 @@ public class EditorSettings_Actual {
 	
 	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".Editor.HyperlinkCodeTarget";
 	
-	public static LANGUAGE_SimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration(
-			IPreferenceStore preferenceStore, ColorManager2 colorManager) {
-		return new LANGUAGE_SimpleSourceViewerConfiguration(preferenceStore, colorManager);
-	}
-	
 	public static Class<LANGUAGE_Editor> editorKlass() {
 		return LANGUAGE_Editor.class;
 	}
 	
 	public static interface EditorPrefConstants extends EditorPrefConstants_Common {
 		
+	}
+	
+	public static StylingPreferences getStylingPreferences() {
+		return new StylingPreferences(
+			LANGUAGE_ColorPreferences.COMMENTS,
+			LANGUAGE_ColorPreferences.DOC_COMMENTS,
+			LANGUAGE_ColorPreferences.STRINGS,
+			LANGUAGE_ColorPreferences.CHARACTER,
+			
+			LANGUAGE_ColorPreferences.DEFAULT,
+			LANGUAGE_ColorPreferences.KEYWORDS,
+			LANGUAGE_ColorPreferences.KEYWORDS_VALUES
+		);
 	}
 	
 	public static final String TEMPLATE_CONTEXT_TYPE_ID = LangUIPlugin.PLUGIN_ID + ".TemplateContextType";
@@ -54,7 +63,7 @@ public class EditorSettings_Actual {
 	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
 		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new LANGUAGE_SimpleSourceViewerConfiguration(store, colorManager) {
+		return new SimpleSourceViewerConfiguration(store, colorManager) {
 			@Override
 			public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 				return setupSimpleContentAssistant(templateCAP, array(

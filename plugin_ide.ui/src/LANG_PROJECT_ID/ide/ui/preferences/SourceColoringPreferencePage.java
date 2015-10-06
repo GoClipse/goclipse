@@ -29,7 +29,7 @@ public class SourceColoringPreferencePage extends AbstractPreferencesBlockPrefPa
 	
 	@Override
 	protected SourceColoringConfigurationBlock createPreferencesComponent() {
-		return new SourceColoringConfigurationBlock(getPreferenceStore());
+		return new SourceColoringConfigurationBlock();
 	}
 	
 }

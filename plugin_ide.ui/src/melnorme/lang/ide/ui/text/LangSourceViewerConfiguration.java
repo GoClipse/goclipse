@@ -1,4 +1,4 @@
-package LANG_PROJECT_ID.ide.ui.editor;
+package melnorme.lang.ide.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
@@ -6,23 +6,28 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.swt.widgets.Display;
 
+import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_CompletionProposalComputer;
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_CodeScanner;
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
-import melnorme.lang.ide.ui.text.AbstractLangScanner;
-import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.util.swt.jface.text.ColorManager2;
 
-public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
+@LANG_SPECIFIC
+public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
-	public LANGUAGE_SourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager,
-			AbstractLangStructureEditor editor) {
+	protected final StylingPreferences stylingPrefs;
+	
+	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager,
+			AbstractLangStructureEditor editor, StylingPreferences stylingPrefs) {
 		super(preferenceStore, colorManager, editor);
+		this.stylingPrefs = stylingPrefs;
 	}
 	
 	@Override
@@ -30,21 +35,21 @@ public class LANGUAGE_SourceViewerConfiguration extends AbstractLangSourceViewer
 			TokenRegistry tokenStore) {
 		switch (partitionType) {
 		case CODE: 
-			return new LANGUAGE_CodeScanner(tokenStore);
+			return new LANGUAGE_CodeScanner(tokenStore, stylingPrefs);
 		
 		case LINE_COMMENT: 
 		case BLOCK_COMMENT: 
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.COMMENTS);
+			return new SingleTokenScanner(tokenStore, stylingPrefs.get(LANGUAGE_ColorPreferences.COMMENTS));
 		
 		case DOC_LINE_COMMENT:
 		case DOC_BLOCK_COMMENT:
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.DOC_COMMENTS);
+			return new SingleTokenScanner(tokenStore, stylingPrefs.get(LANGUAGE_ColorPreferences.DOC_COMMENTS));
 		
 		case STRING:
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.STRINGS);
+			return new SingleTokenScanner(tokenStore, stylingPrefs.get(LANGUAGE_ColorPreferences.STRINGS));
 		
 		case CHARACTER:
-			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.CHARACTER);
+			return new SingleTokenScanner(tokenStore, stylingPrefs.get(LANGUAGE_ColorPreferences.CHARACTER));
 		}
 		throw assertUnreachable();
 	}

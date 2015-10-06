@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package LANG_PROJECT_ID.ide.ui.editor;
+package melnorme.lang.ide.ui.text;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
@@ -20,12 +20,21 @@ import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.util.swt.jface.text.ColorManager2;
 
-public class LANGUAGE_SimpleSourceViewerConfiguration extends LANGUAGE_SourceViewerConfiguration {
+@LANG_SPECIFIC
+public class SimpleSourceViewerConfiguration extends LangSourceViewerConfiguration {
 	
-	public LANGUAGE_SimpleSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager) {
-		super(preferenceStore, colorManager, null);
+	public SimpleSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager) {
+		super(preferenceStore, colorManager, null, EditorSettings_Actual.getStylingPreferences());
+	}
+	
+	public SimpleSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager, 
+			StylingPreferences stylingPrefs) {
+		super(preferenceStore, colorManager, null, stylingPrefs);
 	}
 	
 	@Override
