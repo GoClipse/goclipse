@@ -60,13 +60,13 @@ public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
 		return new EditorColorItem[] { 
 			new EditorColorItem(
 				PreferencesMessages.EditorPreferencePage_matchingBracketsHighlightColor,
-				EditorPrefConstants.MATCHING_BRACKETS_COLOR2),
+				EditorPrefConstants.MATCHING_BRACKETS_COLOR2.getActiveKey(), null, 0),
 			new EditorColorItem(
 				PreferencesMessages.EditorPreferencePage_backgroundForMethodParameters,
-				ContentAssistConstants.PARAMETERS_BACKGROUND_2),
+				ContentAssistConstants.PARAMETERS_BACKGROUND_2.getActiveKey(), null, 0),
 			new EditorColorItem(
 				PreferencesMessages.EditorPreferencePage_foregroundForMethodParameters,
-				ContentAssistConstants.PARAMETERS_FOREGROUND_2),
+				ContentAssistConstants.PARAMETERS_FOREGROUND_2.getActiveKey(), null, 0),
 			new EditorColorItem(
 				PreferencesMessages.EditorPreferencePage_sourceHoverBackgroundColor,
 				EditorPrefConstants.SOURCE_HOVER_BACKGROUND_COLOR_rgb.key,

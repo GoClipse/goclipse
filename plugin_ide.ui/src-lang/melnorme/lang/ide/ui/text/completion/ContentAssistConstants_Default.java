@@ -13,7 +13,7 @@ package melnorme.lang.ide.ui.text.completion;
 import org.eclipse.swt.graphics.RGB;
 
 import melnorme.lang.ide.ui.ContentAssistConstants;
-import melnorme.lang.ide.ui.preferences.ColorPreference;
+import melnorme.lang.ide.ui.text.coloring.ThemedColorPreference;
 
 /**
  * Only {@link ContentAssistConstants} should refer to this class, no one else, 
@@ -21,13 +21,13 @@ import melnorme.lang.ide.ui.preferences.ColorPreference;
  */
 public interface ContentAssistConstants_Default {
 	
-	ColorPreference PROPOSALS_FOREGROUND_2 = new ColorPreference("content_assist_proposals_foreground", 
-		new RGB(0, 0, 0));
-	ColorPreference PROPOSALS_BACKGROUND_2 = new ColorPreference("content_assist_proposals_background",
-		new RGB(255, 255, 255));
-	ColorPreference PARAMETERS_FOREGROUND_2 = new ColorPreference("content_assist_parameters_foreground",
-		new RGB(0, 0, 0));
-	ColorPreference PARAMETERS_BACKGROUND_2 = new ColorPreference("content_assist_parameters_background",
-		new RGB(255, 255, 255));
+	ThemedColorPreference PROPOSALS_FOREGROUND_2 = new ThemedColorPreference("content_assist_proposals_foreground", 
+		new RGB(  0,   0,   0), new RGB(230,230,230));
+	ThemedColorPreference PROPOSALS_BACKGROUND_2 = new ThemedColorPreference("content_assist_proposals_background",
+		new RGB(255, 255, 255), new RGB(52,57,61));
+	ThemedColorPreference PARAMETERS_FOREGROUND_2 = new ThemedColorPreference("content_assist_parameters_foreground",
+		new RGB(  0,   0,   0), new RGB(230,230,230));
+	ThemedColorPreference PARAMETERS_BACKGROUND_2 = new ThemedColorPreference("content_assist_parameters_background",
+		new RGB(255, 255, 255), new RGB(52,57,61));
 	
 }

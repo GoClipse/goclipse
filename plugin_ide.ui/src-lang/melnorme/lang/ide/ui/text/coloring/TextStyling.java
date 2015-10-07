@@ -28,6 +28,10 @@ public class TextStyling {
 	public final boolean isStrikethrough;
 	public final boolean isUnderline;
 	
+	public TextStyling(RGB rgb) {
+		this(rgb, false, false);
+	}
+	
 	public TextStyling(RGB rgb, boolean bold, boolean italic) {
 		this.isEnabled = true;
 		this.rgb = assertNotNull(rgb);

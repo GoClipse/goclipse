@@ -10,6 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.coloring;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import org.eclipse.swt.widgets.Display;
 import org.osgi.service.event.Event;
 
 import melnorme.lang.ide.ui.LangUI;
@@ -20,39 +23,87 @@ import melnorme.utilbox.fields.IFieldValueListener;
 public class ThemedTextStylingPreference implements ITextStylingPref {
 	
 	protected final String key;
+	protected final String key_Dark;
 	
-	protected final TextStylingPreference defaultPref;
+	protected final TextStylingPreference defaultThemePref;
 	protected final TextStylingPreference darkPref;
 	
 	protected final DomainField<TextStyling> effectiveValue = new DomainField<>();
 	
-	public ThemedTextStylingPreference(String key, TextStyling styling, TextStyling defaultValueDark) {
-		this(LangUIPlugin.PLUGIN_ID, key, styling, defaultValueDark);
+	public ThemedTextStylingPreference(String key, TextStyling defaultValue, TextStyling defaultValueDark) {
+		this(LangUIPlugin.PLUGIN_ID, key, defaultValue, defaultValueDark);
 	}
 	
 	public ThemedTextStylingPreference(String qualifer, String key, TextStyling defaultValue, 
 			TextStyling defaultValueDark) {
 		
 		this.key = key;
+		this.key_Dark = key + "#dark#";
 		
-		this.defaultPref = new TextStylingPreference(qualifer, key, defaultValue);
-		this.darkPref = new TextStylingPreference(qualifer, key + "#dark#", defaultValueDark);
+		this.defaultThemePref = new TextStylingPreference(qualifer, key, defaultValue);
+		this.darkPref = new TextStylingPreference(qualifer, key_Dark, defaultValueDark);
 		
 		LangUI.getInstance().getThemeHelper().new ThemeChangeListener() {
 			@Override
 			public void handleEvent(Event event) {
-				effectiveValue.setFieldValue(getEffectiveValue());
+				updateEffectiveValue();
 			}
 		};
 		
+		defaultThemePref.getGlobalField().addListener(() -> updateEffectiveValue());
+		darkPref.getGlobalField().addListener(() -> updateEffectiveValue());
+		
+		updateEffectiveValue();
+	}
+	
+	public TextStylingPreference getDefaultThemePref() {
+		return defaultThemePref;
+	}
+	
+	public TextStylingPreference getDarkPref() {
+		return darkPref;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected void updateEffectiveValue() {
 		effectiveValue.setFieldValue(getEffectiveValue());
 	}
 	
+	protected TextStyling getEffectiveValue() {
+		if(isOverridingThemeActive()) {
+			return darkPref.get();
+		}
+		return defaultThemePref.get();
+	}
+	
+	protected boolean isOverridingThemeActive() {
+		assertTrue(Display.getCurrent() != null);
+		return LangUI.getInstance().getThemeHelper().getIdOfActiveThemeForCurrentDisplay().contains("dark");
+	}
+	
+	public TextStyling getDefault() {
+		if(isOverridingThemeActive()) {
+			return darkPref.getDefault();
+		}
+		return defaultThemePref.getDefault();
+	}
+	
+	public String getActiveKey() {
+		if(isOverridingThemeActive()) {
+			return key_Dark;
+		}
+		return key;
+	}
 	
 	/* -----------------  ----------------- */
 	
 	protected DomainField<TextStyling> getGlobalField() {
 		return effectiveValue;
+	}
+	
+	public TextStyling getValue() {
+		return getFieldValue();
 	}
 	
 	@Override
@@ -78,26 +129,6 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 	@Override
 	public String getPrefId() {
 		return key; // Must return same value all the time, can't use getEffectiveBaseKey
-	}
-	
-	/* -----------------  ----------------- */
-	
-	protected TextStyling getEffectiveValue() {
-		if(isOverridingThemeActive()) {
-			return darkPref.get();
-		}
-		return defaultPref.get();
-	}
-	
-	protected boolean isOverridingThemeActive() {
-		return LangUI.getInstance().getThemeHelper().getIdOfActiveThemeForCurrentDisplay().contains("dark");
-	}
-	
-	public TextStyling getDefault() {
-		if(isOverridingThemeActive()) {
-			return darkPref.getDefault();
-		}
-		return defaultPref.getDefault();
 	}
 	
 }

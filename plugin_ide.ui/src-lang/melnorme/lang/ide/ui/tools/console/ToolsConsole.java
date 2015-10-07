@@ -15,11 +15,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.IOException;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.part.IPageBookViewPage;
 
+import melnorme.lang.ide.ui.text.coloring.ThemedColorPreference;
+import melnorme.util.swt.jface.text.ColorManager;
 import melnorme.utilbox.ownership.OwnedObjects;
 
 public class ToolsConsole extends AbstractProcessMessageConsole {
@@ -36,31 +39,31 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 		
 		infoOut = newOutputStream();
 		
-		initialize_ActivateOnErrorMessages();
-		
 		if(initializeColors) {
 			postToUI_initOutputStreamColors();
 		}
-	}
-	
-	protected void initialize_ActivateOnErrorMessages() {
-		ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.getGlobalField().addOwnedListener(owned, true,
-			() -> stdErr.setActivateOnWrite(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get())
-		);
 	}
 	
 	@Override
 	protected void ui_initStreamColors() {
 		super.ui_initStreamColors();
 		
+		ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.getGlobalField().addOwnedListener(owned, true,
+			() -> stdErr.setActivateOnWrite(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get())
+		);
+		
 		ToolsConsolePrefs.INFO_COLOR.getGlobalField().addOwnedListener(owned, true, 
-			() -> infoOut.setColor(ToolsConsolePrefs.INFO_COLOR.getManagedColor()));
+			() -> infoOut.setColor(getManagedColor(ToolsConsolePrefs.INFO_COLOR)));
 		ToolsConsolePrefs.STDERR_COLOR.getGlobalField().addOwnedListener(owned, true, 
-			() -> stdErr.setColor(ToolsConsolePrefs.STDERR_COLOR.getManagedColor()));
+			() -> stdErr.setColor(getManagedColor(ToolsConsolePrefs.STDERR_COLOR)));
 		ToolsConsolePrefs.STDOUT_COLOR.getGlobalField().addOwnedListener(owned, true, 
-			() -> stdOut.setColor(ToolsConsolePrefs.STDOUT_COLOR.getManagedColor()));
+			() -> stdOut.setColor(getManagedColor(ToolsConsolePrefs.STDOUT_COLOR)));
 		ToolsConsolePrefs.BACKGROUND_COLOR.getGlobalField().addOwnedListener(owned, true, 
-			() -> setBackground(ToolsConsolePrefs.BACKGROUND_COLOR.getManagedColor()));
+			() -> setBackground(getManagedColor(ToolsConsolePrefs.BACKGROUND_COLOR)));
+	}
+	
+	protected static Color getManagedColor(ThemedColorPreference colorPref) {
+		return ColorManager.getDefault().getColor(colorPref.getValue().rgb);
 	}
 	
 	@Override

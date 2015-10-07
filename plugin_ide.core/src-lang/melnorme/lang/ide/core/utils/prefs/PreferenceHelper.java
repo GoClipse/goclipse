@@ -24,7 +24,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.fields.DomainField;
 
-public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
+public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper implements IGlobalPreference<T> {
 	
 	public final String qualifier;
 	protected final T defaultValue;
@@ -58,6 +58,7 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 		return defaultValue;
 	}
 	
+	@Override
 	public DomainField<T> getGlobalField() {
 		return field;
 	}
