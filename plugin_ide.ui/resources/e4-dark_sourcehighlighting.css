@@ -12,22 +12,6 @@
 IEclipsePreferences#com-googlecode-goclipse-ui {
 	preferences:
 		
-		'editor.coloring.default=230,230,230'
-		
-		'editor.coloring.comment=107, 127, 147'
-		
-		'editor.coloring.keyword=127, 0, 85'
-		'editor.coloring.primitive=50, 130, 160'
-		'editor.coloring.value=160, 120, 70'
-		'editor.coloring.builtin_function=230,230,230'
-		'editor.coloring.operator=230,230,230'
-		'editor.coloring.syntax_chars=230,230,230'
-		
-		'editor.coloring.character=0, 170, 10'
-		'editor.coloring.string=126, 164, 0'
-		'editor.coloring.multiline_string=175, 175, 0'
-		
-		
 		'matchingBracketsColor=102,112,125'
 				
 		'content_assist_proposals_background=52,57,61'

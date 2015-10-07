@@ -212,8 +212,8 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 		super.updateIndentationSettings(sourceViewer, property);
 		
 		if(
-			CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.keyEquals(property) ||
-			CodeFormatterConstants.FORMATTER_INDENT_MODE.keyEquals(property)) {
+			CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.key.equals(property) ||
+			CodeFormatterConstants.FORMATTER_INDENT_MODE.key.equals(property)) {
 			
 			for(String contentType : getConfiguredContentTypes(sourceViewer)) {
 				String[] prefixes= getIndentPrefixes(sourceViewer, contentType);

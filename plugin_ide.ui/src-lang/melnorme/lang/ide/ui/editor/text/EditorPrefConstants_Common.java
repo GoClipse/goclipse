@@ -13,8 +13,8 @@ package melnorme.lang.ide.ui.editor.text;
 import org.eclipse.swt.graphics.RGB;
 
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.ColorPreference;
 
 /** 
@@ -24,8 +24,10 @@ import melnorme.lang.ide.ui.preferences.ColorPreference;
  */
 public interface EditorPrefConstants_Common {
 	
-	String MATCHING_BRACKETS = "editor.matchingBrackets";
-	String MATCHING_BRACKETS_COLOR = "editor.matchingBracketsColor";
+	BooleanPreference MATCHING_BRACKETS_ = new BooleanPreference("editor.matchingBrackets", true);
+	ColorPreference MATCHING_BRACKETS_COLOR2 = new ColorPreference("editor.matchingBracketsColor", 
+		new RGB(192, 192, 192));
+	
 	String HIGHLIGHT_BRACKET_AT_CARET_LOCATION = "editor.highlightBracketAtCaretLocation";
 	String ENCLOSING_BRACKETS = "editor.enclosingBrackets";
 	

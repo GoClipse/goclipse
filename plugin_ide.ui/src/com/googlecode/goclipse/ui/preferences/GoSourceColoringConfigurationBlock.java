@@ -18,7 +18,7 @@ public class GoSourceColoringConfigurationBlock extends AbstractSourceColoringCo
 	}
 	
 	@Override
-	protected LabeledTreeElement[] getTreeElements() {
+	protected LabeledTreeElement[] createTreeElements() {
 		return array(
 			new SourceColoringCategory("Source", array(
 				new SourceColoringElement("Comment", GoColorPreferences.SC__COMMENT),

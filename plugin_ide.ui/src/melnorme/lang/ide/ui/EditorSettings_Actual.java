@@ -28,6 +28,7 @@ import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
+import melnorme.lang.ide.ui.text.coloring.ThemedTextStylingPreference;
 import melnorme.util.swt.jface.text.ColorManager2;
 
 public class EditorSettings_Actual {
@@ -66,7 +67,7 @@ public class EditorSettings_Actual {
 	
 	public static final String TEMPLATE_CONTEXT_TYPE_ID = LangUIPlugin.PLUGIN_ID + ".TemplateContextType";
 	
-	public static final String CODE_DEFAULT_COLOR = GoColorPreferences.SC__DEFAULT.key;
+	public static final ThemedTextStylingPreference CODE_DEFAULT_COLOR = GoColorPreferences.SC__DEFAULT;
 	
 	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {

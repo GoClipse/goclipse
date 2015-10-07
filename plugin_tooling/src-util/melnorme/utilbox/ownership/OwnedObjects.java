@@ -12,15 +12,23 @@ package melnorme.utilbox.ownership;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.ArrayList;
+import melnorme.utilbox.collections.ArrayList2;
 
 @SuppressWarnings("serial")
-public class OwnedObjects extends ArrayList<IDisposable> implements IDisposable {
+public class OwnedObjects extends ArrayList2<IDisposable> implements IOwner, IDisposable {
 	
 	protected boolean disposed = false;
 	
+	public OwnedObjects() {
+	}
+	
 	protected void checkDisposed() {
 		assertTrue(disposed == false);
+	}
+	
+	@Override
+	public void bind(IDisposable disposable) {
+		add(disposable);
 	}
 	
 	@Override
@@ -43,9 +51,14 @@ public class OwnedObjects extends ArrayList<IDisposable> implements IDisposable 
 	
 	@Override
 	public void dispose() {
-		for (IDisposable disposable : this) {
+		disposeAll();
+	}
+	
+	public void disposeAll() {
+		for(IDisposable disposable : this) {
 			disposable.dispose();
 		}
+		this.clear();
 		disposed = true;
 	}
 	

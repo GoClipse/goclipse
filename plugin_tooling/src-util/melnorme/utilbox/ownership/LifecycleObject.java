@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,23 @@
  *******************************************************************************/
 package melnorme.utilbox.ownership;
 
-import java.util.List;
+import melnorme.utilbox.collections.Indexable;
 
-/**
- * The owner of this list owns all the elements in the list. 
- */
-public interface IOwnedList<T extends IDisposable> extends List<T> {
+public class LifecycleObject implements IDisposable {
 	
-	default void disposeAll() {
-		for(IDisposable disposable : this) {
-			disposable.dispose();
-		}
-		this.clear();
+	protected final OwnedObjects owned = new OwnedObjects(); 
+	
+	public LifecycleObject() {
+		super();
+	}
+	
+	@Override
+	public void dispose() {
+		owned.disposeAll();
+	}
+	
+	public Indexable<IDisposable> getOwned() {
+		return owned;
 	}
 	
 }

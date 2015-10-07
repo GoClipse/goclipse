@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -24,7 +23,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.fields.DomainField;
-import melnorme.utilbox.ownership.IDisposable;
 
 public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 	
@@ -44,9 +42,12 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 		
 		initializeDefaultValueInDefaultScope();
 		
-		InstanceScope.INSTANCE.getNode(qualifier).addPreferenceChangeListener(event -> handlePreferenceChange(event));
-		
+		initializeListener();
 		field.setFieldValue(get());
+	}
+	
+	protected void initializeListener() {
+		InstanceScope.INSTANCE.getNode(qualifier).addPreferenceChangeListener(event -> handlePreferenceChange(event));
 	}
 	
 	public final String getQualifier() {
@@ -57,7 +58,7 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 		return defaultValue;
 	}
 	
-	public DomainField<T> getPrefField() {
+	public DomainField<T> getGlobalField() {
 		return field;
 	}
 	
@@ -113,48 +114,6 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper {
 	
 	public IEclipsePreferences getProjectNode(IProject project) {
 		return new ProjectScope(project).getNode(getQualifier());
-	}
-	
-	/* ----------------- util ----------------- */
-	
-	public boolean keyEquals(String otherKey) {
-		return otherKey!= null && key.equals(otherKey);
-	}
-	
-	/* ----------------- listeners ----------------- */
-	
-	public IPreferenceChangeListener_Ext addPrefChangeListener(final IPrefChangeListener listener) {
-		return addPrefChangeListener(false, listener);
-	}
-	
-	public IPreferenceChangeListener_Ext addPrefChangeListener(boolean initializeChange, 
-			IPrefChangeListener listener) {
-		final IEclipsePreferences node = InstanceScope.INSTANCE.getNode(getQualifier());
-		IPreferenceChangeListener_Ext prefListener = new IPreferenceChangeListener_Ext() {
-			
-			@Override
-			public void preferenceChange(PreferenceChangeEvent event) {
-				if(event.getKey().equals(key)) {
-					listener.handleChange();
-				}
-			}
-			
-			@Override
-			public void dispose() {
-				node.removePreferenceChangeListener(this);
-			}
-		};
-		node.addPreferenceChangeListener(prefListener);
-		
-		if(initializeChange) {
-			listener.handleChange();
-		}
-		
-		return prefListener;
-	}
-	
-	public static interface IPreferenceChangeListener_Ext extends IPreferenceChangeListener, IDisposable {
-		
 	}
 	
 }

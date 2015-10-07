@@ -11,10 +11,6 @@
 package melnorme.lang.ide.ui.editor;
 
 
-import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
-import melnorme.utilbox.ownership.IDisposable;
-import melnorme.utilbox.ownership.OwnedArraylist;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
@@ -23,10 +19,15 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
+import melnorme.utilbox.ownership.IDisposable;
+import melnorme.utilbox.ownership.IOwner;
+import melnorme.utilbox.ownership.OwnedObjects;
+
 public class ProjectionViewerExt extends ProjectionViewer {
 	
-	protected final OwnedArraylist owned = new OwnedArraylist();
-	protected final OwnedArraylist configurationDisposables = new OwnedArraylist();
+	protected final OwnedObjects owned = new OwnedObjects();
+	protected OwnedObjects configurationOwned = new OwnedObjects();
 	
 	protected boolean isConfigured;
 	
@@ -36,13 +37,17 @@ public class ProjectionViewerExt extends ProjectionViewer {
 	}
 	
 	public <T extends IDisposable> T addConfigurationOwned(T ownedObject) {
-		configurationDisposables.add(ownedObject);
+		configurationOwned.add(ownedObject);
 		return ownedObject;
 	}
 	
 	public <T extends IDisposable> T addOwned(T ownedObject) {
 		owned.add(ownedObject);
 		return ownedObject;
+	}
+	
+	public IOwner getConfigurationOwned() {
+		return configurationOwned;
 	}
 	
 	@Override
@@ -63,7 +68,8 @@ public class ProjectionViewerExt extends ProjectionViewer {
 	
 	@Override
 	public void unconfigure() {
-		configurationDisposables.disposeAll();
+		configurationOwned.disposeAll();
+		configurationOwned = new OwnedObjects(); 
 		
 		super.unconfigure();
 		
@@ -73,7 +79,7 @@ public class ProjectionViewerExt extends ProjectionViewer {
 	@Override
 	protected void handleDispose() {
 		owned.disposeAll();
-		
+		// Note: super.handleDispose will call unconfigure
 		super.handleDispose();
 	}
 	

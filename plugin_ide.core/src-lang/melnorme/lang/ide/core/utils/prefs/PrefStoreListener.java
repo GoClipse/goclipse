@@ -10,16 +10,17 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import java.util.List;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
 import melnorme.utilbox.ownership.IDisposable;
-import melnorme.utilbox.ownership.IOwnedList;
 
 public abstract class PrefStoreListener implements IPropertyChangeListener, IDisposable {
 	
-	public static void addBoundPrefStoreListener(IPreferenceStore preferenceStore, IOwnedList<IDisposable> owned,
+	public static void addBoundPrefStoreListener(IPreferenceStore preferenceStore, List<IDisposable> owned,
 			IPropertyChangeListener listener) {
 		PrefStoreListener boundListener = new PrefStoreListener(preferenceStore) {
 			@Override

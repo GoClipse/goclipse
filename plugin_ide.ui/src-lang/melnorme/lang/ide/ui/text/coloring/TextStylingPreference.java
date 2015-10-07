@@ -22,27 +22,48 @@ import melnorme.lang.ide.core.utils.prefs.IPreferencesAccess;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.fields.IFieldValueListener;
 
-public class TextStylingPreference extends PreferenceHelper<TextStyling> implements ITextStylingPref {
+public class TextStylingPreference extends PreferenceHelper<TextStyling> {
 	
-	public TextStylingPreference(String key, 
-			RGB color, boolean bold, boolean italic) {
-		this(LangUIPlugin.PLUGIN_ID, key, true, color, bold, italic, false, false);
+	public TextStylingPreference(String key, TextStyling styling) {
+		this(LangUIPlugin.PLUGIN_ID, key, styling);
 	}
 	
-	public TextStylingPreference(String key, 
-			boolean enabled, RGB color, boolean bold, boolean italic, boolean isStrikethrough, boolean underline) {
-		this(LangUIPlugin.PLUGIN_ID, key, enabled, color, bold, italic, isStrikethrough, underline);
+	public TextStylingPreference(String qualifer, String key, TextStyling defaultValue) {
+		super(qualifer, key, defaultValue);
 	}
-	
-	public TextStylingPreference(String qualifer, String key, 
-			boolean enabled, RGB rgb, boolean isBold, boolean isItalic, boolean isStrikethrough, boolean isUnderline) {
-		super(qualifer, key, new TextStyling(enabled, rgb, isBold, isItalic, isStrikethrough, isUnderline));
-	}
-	
 	
 	/* -----------------  ----------------- */
+	
+	@Override
+	protected TextStyling doGet(IPreferencesAccess prefsAccess) {
+		return getFromStore(prefsAccess, key);
+	}
+	
+	@Override
+	protected void doSet(IEclipsePreferences projectPreferences, TextStyling textStyle) {
+		setToStore(projectPreferences, key, textStyle);
+	}
+	
+	public static void setToStore(IEclipsePreferences store, String key, TextStyling textStyle) {
+		store.putBoolean(getEnabledKey(key), textStyle.isEnabled);
+		store.put(getColorKey(key), StringConverter.asString(textStyle.rgb));
+		store.putBoolean(getBoldKey(key), textStyle.isBold);
+		store.putBoolean(getItalicKey(key), textStyle.isItalic);
+		store.putBoolean(getStrikethroughKey(key), textStyle.isStrikethrough);
+		store.putBoolean(getUnderlineKey(key), textStyle.isUnderline);
+	}
+	
+	public static TextStyling getFromStore(IPreferencesAccess prefsHelper, String colorKey) {
+		RGB rgb = getRgb(prefsHelper, getColorKey(colorKey));
+		boolean isEnabled = prefsHelper.getBoolean(getEnabledKey(colorKey));
+		boolean isBold = prefsHelper.getBoolean(getBoldKey(colorKey));
+		boolean isItalic = prefsHelper.getBoolean(getItalicKey(colorKey));
+		boolean isStrikethrough = prefsHelper.getBoolean(getStrikethroughKey(colorKey));
+		boolean isUnderline = prefsHelper.getBoolean(getUnderlineKey(colorKey));
+		
+		return new TextStyling(isEnabled, rgb, isBold, isItalic, isStrikethrough, isUnderline);
+	}
 	
 	public static String getColorKey(String key) {
 		return key + "";
@@ -68,36 +89,6 @@ public class TextStylingPreference extends PreferenceHelper<TextStyling> impleme
 		return key + TextColoringConstants.EDITOR_UNDERLINE_SUFFIX;
 	}
 	
-	@Override
-	protected void doSet(IEclipsePreferences projectPreferences, TextStyling textStyle) {
-		setToStore(projectPreferences, key, textStyle);
-	}
-	
-	@Override
-	protected TextStyling doGet(IPreferencesAccess prefsAccess) {
-		return getFromStore(prefsAccess, key);
-	}
-	
-	public static void setToStore(IEclipsePreferences store, String key, TextStyling textStyle) {
-		store.putBoolean(getEnabledKey(key), textStyle.isEnabled);
-		store.put(getColorKey(key), StringConverter.asString(textStyle.rgb));
-		store.putBoolean(getBoldKey(key), textStyle.isBold);
-		store.putBoolean(getItalicKey(key), textStyle.isItalic);
-		store.putBoolean(getStrikethroughKey(key), textStyle.isStrikethrough);
-		store.putBoolean(getUnderlineKey(key), textStyle.isUnderline);
-	}
-	
-	public static TextStyling getFromStore(IPreferencesAccess prefsHelper, String colorKey) {
-		RGB rgb = getRgb(prefsHelper, getColorKey(colorKey));
-		boolean isEnabled = prefsHelper.getBoolean(getEnabledKey(colorKey));
-		boolean isBold = prefsHelper.getBoolean(getBoldKey(colorKey));
-		boolean isItalic = prefsHelper.getBoolean(getItalicKey(colorKey));
-		boolean isStrikethrough = prefsHelper.getBoolean(getStrikethroughKey(colorKey));
-		boolean isUnderline = prefsHelper.getBoolean(getUnderlineKey(colorKey));
-		
-		return new TextStyling(isEnabled, rgb, isBold, isItalic, isStrikethrough, isUnderline);
-	}
-	
 	public static RGB getRgb(IPreferencesAccess prefsHelper, String key) {
 		return StringConverter.asRGB(prefsHelper.getString(key), PreferenceConverter.COLOR_DEFAULT_DEFAULT);
 	}
@@ -116,39 +107,13 @@ public class TextStylingPreference extends PreferenceHelper<TextStyling> impleme
 	protected void handlePreferenceChange(PreferenceChangeEvent event) {
 		String changedKey = event.getKey();
 		
-		if(changedKey.startsWith(key)) {
-			String suffix = changedKey.substring(key.length());
+		String baseKey = key;
+		if(changedKey.startsWith(baseKey)) {
+			String suffix = changedKey.substring(baseKey.length());
 			if(suffixes.contains(suffix)) {
 				field.setFieldValue(get());
 			}
 		}
-	}
-	
-	/* -----------------  ----------------- */
-
-	@Override
-	public TextStyling getFieldValue() {
-		return getPrefField().getFieldValue();
-	}
-
-	@Override
-	public void setFieldValue(TextStyling value) {
-		getPrefField().setFieldValue(value);
-	}
-
-	@Override
-	public void addValueChangedListener(IFieldValueListener listener) {
-		getPrefField().addValueChangedListener(listener);
-	}
-
-	@Override
-	public void removeValueChangedListener(IFieldValueListener listener) {
-		getPrefField().removeValueChangedListener(listener);
-	}
-	
-	@Override
-	public String getKey() {
-		return key;
 	}
 	
 }

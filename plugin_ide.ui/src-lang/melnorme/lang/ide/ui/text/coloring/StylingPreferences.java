@@ -21,14 +21,14 @@ public class StylingPreferences {
 	
 	protected final ITextStylingPref DUMMY = null;
 	
-	public StylingPreferences(TextStylingPreference... stylingPreferences) {
-		for (TextStylingPreference stylingPreference : stylingPreferences) {
+	public StylingPreferences(ThemedTextStylingPreference... stylingPreferences) {
+		for (ThemedTextStylingPreference stylingPreference : stylingPreferences) {
 			put(stylingPreference);
 		}
 	}
 	
-	public ITextStylingPref get(TextStylingPreference pref) {
-		return get(pref.key);
+	public ITextStylingPref get(ITextStylingPref pref) {
+		return get(pref.getPrefId());
 	}
 	
 	public ITextStylingPref get(String key) {
@@ -36,7 +36,7 @@ public class StylingPreferences {
 	}
 	
 	public void put(ITextStylingPref pref) {
-		stylingPrefsMap.put(pref.getKey(), pref);
+		stylingPrefsMap.put(pref.getPrefId(), pref);
 	}
 	
 	public static class OverlayStylingPreferences extends StylingPreferences {
@@ -62,15 +62,15 @@ public class StylingPreferences {
 	
 	protected static class SimpleTextStylingPref extends DomainField<TextStyling> implements ITextStylingPref {
 		
-		protected final String key;
+		protected final String id;
 		
-		public SimpleTextStylingPref(String key) {
-			this.key = key;
+		public SimpleTextStylingPref(String id) {
+			this.id = id;
 		}
 		
 		@Override
-		public String getKey() {
-			return key;
+		public String getPrefId() {
+			return id;
 		}
 		
 	}

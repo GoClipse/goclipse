@@ -210,7 +210,7 @@ public class SourceViewerInformationControl
 			GridData gd2= new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 			fStatusField.setLayoutData(gd2);
 			
-			RGB javaDefaultColor= getColorManager().getColor(EditorSettings_Actual.CODE_DEFAULT_COLOR).getRGB();
+			RGB javaDefaultColor= EditorSettings_Actual.CODE_DEFAULT_COLOR.getFieldValue().rgb;
 			fStatusTextForegroundColor= new Color(fStatusField.getDisplay(), blend(fBackgroundColor.getRGB(), 
 				javaDefaultColor, 0.56f));
 			fStatusField.setForeground(fStatusTextForegroundColor);
@@ -278,8 +278,7 @@ public class SourceViewerInformationControl
 	public static RGB getVisibleBackgroundColor(Display display) {
 		float[] infoBgHSB= display.getSystemColor(SWT.COLOR_INFO_BACKGROUND).getRGB().getHSB();
 		
-		Color javaDefaultColor= getColorManager().getColor(EditorSettings_Actual.CODE_DEFAULT_COLOR);
-		RGB javaDefaultRGB= javaDefaultColor != null ? javaDefaultColor.getRGB() : new RGB(255, 255, 255);
+		RGB javaDefaultRGB = EditorSettings_Actual.CODE_DEFAULT_COLOR.getFieldValue().rgb;
 		float[] javaDefaultHSB= javaDefaultRGB.getHSB();
 		
 		if (Math.abs(infoBgHSB[2] - javaDefaultHSB[2]) < 0.5f) {

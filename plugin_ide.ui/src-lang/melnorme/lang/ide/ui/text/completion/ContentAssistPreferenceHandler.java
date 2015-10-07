@@ -13,20 +13,22 @@ package melnorme.lang.ide.ui.text.completion;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 
+import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.ContentAssistConstants;
 import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.SourceViewerConfigurer;
+import melnorme.lang.ide.ui.preferences.ColorPreference;
 import melnorme.util.swt.jface.text.ColorManager2;
+import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.ownership.IOwner;
 
 
 public class ContentAssistPreferenceHandler extends SourceViewerConfigurer 
@@ -44,14 +46,8 @@ public class ContentAssistPreferenceHandler extends SourceViewerConfigurer
 		return LangUIPlugin.getInstance().getColorManager();
 	}
 	
-	protected Color getColor(IPreferenceStore store, String key) {
-		RGB rgb = PreferenceConverter.getColor(store, key);
-		return getColorManager().getColor(rgb);
-	}
-	
-	@Override
-	protected void handlePropertyChange(PropertyChangeEvent event) {
-		setConfigurationOption(assistant, store, event.getProperty());
+	protected Color getColor(ColorPreference colorPref) {
+		return getColorManager().getColor(colorPref.get());
 	}
 	
 	/* -----------------  ----------------- */
@@ -60,67 +56,63 @@ public class ContentAssistPreferenceHandler extends SourceViewerConfigurer
 	protected void doConfigureViewer() {
 		assistant.enableAutoActivation(true);
 		
-		setConfigurationOption(assistant, store, AUTO_INSERT__SingleProposals.key);
-		setConfigurationOption(assistant, store, AUTO_INSERT__CommonPrefixes.key);
+		listenToField(AUTO_INSERT__SingleProposals, () -> {
+			assistant.enableAutoInsert(AUTO_INSERT__SingleProposals.get());
+		});
 		
-		setConfigurationOption(assistant, store, AUTO_ACTIVATE__DotTrigger.key);
-		setConfigurationOption(assistant, store, AUTO_ACTIVATE__DoubleColonTrigger.key);
-		setConfigurationOption(assistant, store, AUTO_ACTIVATE__AlphaNumericTrigger.key);
-		setConfigurationOption(assistant, store, AUTO_ACTIVATE__Delay.key);
+		listenToField(AUTO_INSERT__CommonPrefixes, () -> {
+			assistant.enablePrefixCompletion(AUTO_INSERT__CommonPrefixes.get());
+		});
 		
-		setConfigurationOption(assistant, store, PROPOSALS_FOREGROUND);
-		setConfigurationOption(assistant, store, PROPOSALS_BACKGROUND);
-		setConfigurationOption(assistant, store, PARAMETERS_FOREGROUND);
-		setConfigurationOption(assistant, store, PARAMETERS_BACKGROUND);
+		listenToField(AUTO_ACTIVATE__DotTrigger, () -> {
+			setAutoActivationTriggers(assistant, store);
+		});
+		listenToField(AUTO_ACTIVATE__DoubleColonTrigger, () -> {
+			setAutoActivationTriggers(assistant, store);
+		});
+		listenToField(AUTO_ACTIVATE__AlphaNumericTrigger, () -> {
+			setAutoActivationTriggers(assistant, store);
+		});
+		
+		listenToField(AUTO_ACTIVATE__Delay, () -> {
+			assistant.setAutoActivationDelay(AUTO_ACTIVATE__Delay.get());
+		});
+		
+		
+		listenToField(PROPOSALS_FOREGROUND_2, () -> {
+			assistant.setProposalSelectorForeground(getColor(PROPOSALS_FOREGROUND_2));
+		});
+		
+		listenToField(PROPOSALS_BACKGROUND_2, () -> {
+			assistant.setProposalSelectorBackground(getColor(PROPOSALS_BACKGROUND_2));
+		});
+		
+		listenToField(PARAMETERS_BACKGROUND_2, () -> {
+			Color paramsFg = getColor(PARAMETERS_FOREGROUND_2);
+			assistant.setContextInformationPopupForeground(paramsFg);
+			assistant.setContextSelectorForeground(paramsFg);
+		});
+		
+		listenToField(PROPOSALS_FOREGROUND_2, () -> {
+			Color paramsBg = getColor(PARAMETERS_BACKGROUND_2);
+			assistant.setContextInformationPopupBackground(paramsBg);
+			assistant.setContextSelectorBackground(paramsBg);
+		});
+		
+	}
+	
+	public <T> void listenToField(PreferenceHelper<T> colorPreference, IFieldValueListener listener) {
+		IOwner configurationOwned = sourceViewer.getConfigurationOwned();
+		
+		colorPreference.getGlobalField().addOwnedListener(configurationOwned, true, listener);
+	}
+	
+	@Override
+	protected void handlePropertyChange(PropertyChangeEvent event) {
 	}
 	
 	@Override
 	protected void doUnconfigureViewer() {
-		// No need to do anything
-	}
-	
-	protected void setConfigurationOption(ContentAssistant assistant, IPreferenceStore store, String key) {
-		// store is not used for most pref keys, in any case it should be the standard UI pref store.
-		// TODO: this store usage/non-usage is not very elegant/safe, best if this could be cleaned up.
-		
-		if(equalsKey(AUTO_INSERT__SingleProposals.key, key)) {
-			assistant.enableAutoInsert(AUTO_INSERT__SingleProposals.get());
-		}
-		else if(equalsKey(AUTO_INSERT__CommonPrefixes.key, key)) {
-			assistant.enablePrefixCompletion(AUTO_INSERT__CommonPrefixes.get());
-		}
-		
-		else if(
-				equalsKey(AUTO_ACTIVATE__DotTrigger.key, key) ||
-				equalsKey(AUTO_ACTIVATE__DoubleColonTrigger.key, key) ||
-				equalsKey(AUTO_ACTIVATE__AlphaNumericTrigger.key, key)) {
-			setAutoActivationTriggers(assistant, store);
-		}
-		else if(equalsKey(AUTO_ACTIVATE__Delay.key, key)) {
-			assistant.setAutoActivationDelay(AUTO_ACTIVATE__Delay.get());
-		}
-		
-		else if(equalsKey(PROPOSALS_FOREGROUND, key)) {
-			assistant.setProposalSelectorForeground(getColor(store, PROPOSALS_FOREGROUND));
-		}
-		else if(equalsKey(PROPOSALS_BACKGROUND, key)) {
-			assistant.setProposalSelectorBackground(getColor(store, PROPOSALS_BACKGROUND));
-		}
-		else if(equalsKey(PARAMETERS_FOREGROUND, key)) {
-			Color paramsFg = getColor(store, PARAMETERS_FOREGROUND);
-			assistant.setContextInformationPopupForeground(paramsFg);
-			assistant.setContextSelectorForeground(paramsFg);
-		}
-		else if(equalsKey(PARAMETERS_BACKGROUND, key)) {
-			Color paramsBg = getColor(store, PARAMETERS_BACKGROUND);
-			assistant.setContextInformationPopupBackground(paramsBg);
-			assistant.setContextSelectorBackground(paramsBg);
-		}
-		
-	}
-	
-	protected static boolean equalsKey(String keyA, String keyB) {
-		return keyA.equals(keyB);
 	}
 	
 	protected void setAutoActivationTriggers(ContentAssistant assistant, 

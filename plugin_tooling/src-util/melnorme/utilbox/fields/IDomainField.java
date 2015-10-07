@@ -11,7 +11,7 @@
 package melnorme.utilbox.fields;
 
 import melnorme.utilbox.ownership.IDisposable;
-import melnorme.utilbox.ownership.IOwnedList;
+import melnorme.utilbox.ownership.IOwner;
 
 public interface IDomainField<VALUE> {
 	
@@ -45,8 +45,8 @@ public interface IDomainField<VALUE> {
 			field.removeValueChangedListener(listener);
 		}
 		
-		public void bindLifetime(IOwnedList<IDisposable> ownedList) {
-			ownedList.add(this);
+		public void bindLifetime(IOwner owner) {
+			owner.bind(this);
 		}
 		
 	}
@@ -54,8 +54,15 @@ public interface IDomainField<VALUE> {
 	/**
 	 * Register a value changed listener, that automatically get unregistered when given ownedList is disposed.
 	 */
-	default void addOwnedListener(IOwnedList<IDisposable> ownedList, IFieldValueListener listener) {
-		addValueChangedListener2(listener).bindLifetime(ownedList);
+	default void addOwnedListener(IOwner owner, IFieldValueListener listener) {
+		addValueChangedListener2(listener).bindLifetime(owner);
+	}
+	
+	default void addOwnedListener(IOwner owner, boolean init, IFieldValueListener listener) {
+		addValueChangedListener2(listener).bindLifetime(owner);
+		if(init) {
+			listener.fieldValueChanged();
+		}
 	}
 	
 }

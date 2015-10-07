@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,11 @@
  *******************************************************************************/
 package melnorme.utilbox.ownership;
 
-import melnorme.utilbox.collections.ArrayList2;
-
-public class OwnedArraylist extends ArrayList2<IDisposable> implements IOwnedList<IDisposable> {
+public interface IOwner {
 	
-	private static final long serialVersionUID = 8056073985418947624L;
+	/**
+	 * Bind given disposable to the lifecycle of this owner.
+	 */
+	void bind(IDisposable disposable);
 	
 }
