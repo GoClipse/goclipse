@@ -278,24 +278,19 @@ public class LangCompletionProposal implements
 	
 	@Override
 	public void apply(IDocument document, char trigger, int offset) {
-		doApply(document, getReplaceOffset(), false);
+		doApply(document, false);
 	}
 	
 	protected int endPositionAfterApply;
 	protected Point positionAfterApply; 
 	
-	public void doApply(IDocument document, int invocationOffset, boolean nameOnly) {
+	public void doApply(IDocument document, boolean nameOnly) {
 		int replaceOffset = getReplaceOffset();
 		String effectiveReplaceString = getEffectiveReplaceString(nameOnly);
 		int replaceLength = getReplaceLength();
 		
 		endPositionAfterApply = replaceOffset + effectiveReplaceString.length();
 		positionAfterApply = new Point(endPositionAfterApply, 0);
-		
-		int delta = Math.min(invocationOffset, endPositionAfterApply) - replaceOffset;
-		replaceOffset += delta;
-		replaceLength -= delta;
-		effectiveReplaceString = effectiveReplaceString.substring(delta);
 		
 		try {
 			document.replace(replaceOffset, replaceLength, effectiveReplaceString);
@@ -316,7 +311,7 @@ public class LangCompletionProposal implements
 			nameOnly = true;
 		}
 		
-		doApply(viewer.getDocument(), viewer.getSelectedRange().x, nameOnly);
+		doApply(viewer.getDocument(), nameOnly);
 		
 		if(nameOnly) {
 			return;
