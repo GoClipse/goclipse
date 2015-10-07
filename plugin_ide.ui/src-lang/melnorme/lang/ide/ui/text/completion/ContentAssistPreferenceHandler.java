@@ -19,13 +19,13 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
 
-import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
+import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.ui.ContentAssistConstants;
 import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.SourceViewerConfigurer;
-import melnorme.lang.ide.ui.preferences.ColorPreference;
+import melnorme.lang.ide.ui.text.coloring.ThemedColorPreference;
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.ownership.IOwner;
@@ -46,8 +46,8 @@ public class ContentAssistPreferenceHandler extends SourceViewerConfigurer
 		return LangUIPlugin.getInstance().getColorManager();
 	}
 	
-	protected Color getColor(ColorPreference colorPref) {
-		return getColorManager().getColor(colorPref.get());
+	protected Color getColor(ThemedColorPreference colorPref) {
+		return getColorManager().getColor(colorPref.getValue().rgb);
 	}
 	
 	/* -----------------  ----------------- */
@@ -101,10 +101,10 @@ public class ContentAssistPreferenceHandler extends SourceViewerConfigurer
 		
 	}
 	
-	public <T> void listenToField(PreferenceHelper<T> colorPreference, IFieldValueListener listener) {
+	public <T> void listenToField(IGlobalPreference<T> preference, IFieldValueListener listener) {
 		IOwner configurationOwned = sourceViewer.getConfigurationOwned();
 		
-		colorPreference.getGlobalField().addOwnedListener(configurationOwned, true, listener);
+		preference.getGlobalField().addOwnedListener(configurationOwned, true, listener);
 	}
 	
 	@Override

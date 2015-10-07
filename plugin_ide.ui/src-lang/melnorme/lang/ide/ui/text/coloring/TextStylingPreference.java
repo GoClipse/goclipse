@@ -110,7 +110,7 @@ public class TextStylingPreference extends PreferenceHelper<TextStyling> {
 		String baseKey = key;
 		if(changedKey.startsWith(baseKey)) {
 			String suffix = changedKey.substring(baseKey.length());
-			if(suffixes.contains(suffix)) {
+			if(suffix.isEmpty() || suffixes.contains(suffix)) {
 				field.setFieldValue(get());
 			}
 		}

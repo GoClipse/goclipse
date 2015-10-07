@@ -35,17 +35,14 @@ public class DaemonToolMessageConsole extends ToolsConsole {
 	}
 	
 	@Override
-	protected void initialize_ActivateOnErrorMessages() {
-		stdErr.setActivateOnWrite(false);
-	}
-	
-	@Override
 	protected void ui_initStreamColors() {
 		super.ui_initStreamColors();
 		
 		serverStdOut.setColor(getColorManager().getColor(new RGB(128, 0, 128)));
 		serverStdErr.setColor(getColorManager().getColor(new RGB(255, 0, 200)));
 		serverStdErr.setFontStyle(SWT.BOLD);
+		
+		stdErr.setActivateOnWrite(false);
 	}
 	
 	public static DaemonToolMessageConsole getConsole() {

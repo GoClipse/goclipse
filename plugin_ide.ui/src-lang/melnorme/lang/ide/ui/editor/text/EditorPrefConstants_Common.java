@@ -16,6 +16,7 @@ import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.ColorPreference;
+import melnorme.lang.ide.ui.text.coloring.ThemedColorPreference;
 
 /** 
  * This interface should not be accessed by name directly, 
@@ -25,8 +26,8 @@ import melnorme.lang.ide.ui.preferences.ColorPreference;
 public interface EditorPrefConstants_Common {
 	
 	BooleanPreference MATCHING_BRACKETS_ = new BooleanPreference("editor.matchingBrackets", true);
-	ColorPreference MATCHING_BRACKETS_COLOR2 = new ColorPreference("editor.matchingBracketsColor", 
-		new RGB(192, 192, 192));
+	ThemedColorPreference MATCHING_BRACKETS_COLOR2 = new ThemedColorPreference("editor.matchingBracketsColor", 
+		new RGB(192, 192, 192), new RGB(102,112,125));
 	
 	String HIGHLIGHT_BRACKET_AT_CARET_LOCATION = "editor.highlightBracketAtCaretLocation";
 	String ENCLOSING_BRACKETS = "editor.enclosingBrackets";

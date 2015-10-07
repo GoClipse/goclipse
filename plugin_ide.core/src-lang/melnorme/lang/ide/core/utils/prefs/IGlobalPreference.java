@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui;
+package melnorme.lang.ide.core.utils.prefs;
 
-import org.eclipse.swt.graphics.RGB;
+import melnorme.utilbox.fields.DomainField;
 
-public interface OperationsConsolePrefDefaults_Actual {
+
+public interface IGlobalPreference<T> {
 	
-	static RGB INFO_COLOR_Default = new RGB(0, 0, 200);
-	static RGB BACKGROUND_COLOR_Default = new RGB(244, 252, 252);
-	
-	static RGB INFO_COLOR_DefaultDark = new RGB(150,190,220);
-	static RGB BACKGROUND_COLOR_DefaultDark = new RGB(20, 20, 20);
+	DomainField<T> getGlobalField();
 	
 }

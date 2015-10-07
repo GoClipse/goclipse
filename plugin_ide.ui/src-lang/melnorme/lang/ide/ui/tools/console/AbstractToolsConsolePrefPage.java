@@ -44,13 +44,13 @@ public abstract class AbstractToolsConsolePrefPage extends FieldEditorPreference
 		SWTFactoryUtil.createLabel(parent, SWT.LEFT, "Console color settings:", 
 			GridDataFactory.fillDefaults().span(2, 1).create());
 		
-		addField(new ColorFieldEditor(INFO_COLOR.key,
+		addField(new ColorFieldEditor(INFO_COLOR.getActiveKey(),
 			"Information text color:", parent));
-		addField(new ColorFieldEditor(STDOUT_COLOR.key,
+		addField(new ColorFieldEditor(STDOUT_COLOR.getActiveKey(),
 			"Program standard output text color:", parent));
-		addField(new ColorFieldEditor(STDERR_COLOR.key,
+		addField(new ColorFieldEditor(STDERR_COLOR.getActiveKey(),
 			"Program error output text color:", parent));
-		addField(new ColorFieldEditor(BACKGROUND_COLOR.key,
+		addField(new ColorFieldEditor(BACKGROUND_COLOR.getActiveKey(),
 			"Console background color:", parent));
 	}
 	
