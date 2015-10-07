@@ -10,11 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.completion;
 
-import melnorme.lang.ide.ui.ContentAssistConstants;
-
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
+
+import melnorme.lang.ide.ui.ContentAssistConstants;
+import melnorme.lang.ide.ui.preferences.ColorPreference;
 
 /**
  * Only {@link ContentAssistConstants} should refer to this class, no one else, 
@@ -22,25 +21,13 @@ import org.eclipse.swt.graphics.RGB;
  */
 public interface ContentAssistConstants_Default {
 	
-	String PROPOSALS_FOREGROUND = "content_assist_proposals_foreground";
-	String PROPOSALS_BACKGROUND = "content_assist_proposals_background";
-	String PARAMETERS_FOREGROUND = "content_assist_parameters_foreground";
-	String PARAMETERS_BACKGROUND = "content_assist_parameters_background";
-	
-	
-	public class _PrefInitializer 
-		implements ContentAssistConstants // We need to import this constant, to use the overridable namespace 
-	{
-		
-		public static void initializeDefaults(final IPreferenceStore store) {
-			
-			store.setDefault(PROPOSALS_BACKGROUND, StringConverter.asString(new RGB(255, 255, 255)));
-			store.setDefault(PROPOSALS_FOREGROUND, StringConverter.asString(new RGB(0, 0, 0)));
-			store.setDefault(PARAMETERS_BACKGROUND, StringConverter.asString(new RGB(255, 255, 255)));
-			store.setDefault(PARAMETERS_FOREGROUND, StringConverter.asString(new RGB(0, 0, 0)));
-			
-		}
-		
-	}
+	ColorPreference PROPOSALS_FOREGROUND_2 = new ColorPreference("content_assist_proposals_foreground", 
+		new RGB(0, 0, 0));
+	ColorPreference PROPOSALS_BACKGROUND_2 = new ColorPreference("content_assist_proposals_background",
+		new RGB(255, 255, 255));
+	ColorPreference PARAMETERS_FOREGROUND_2 = new ColorPreference("content_assist_parameters_foreground",
+		new RGB(0, 0, 0));
+	ColorPreference PARAMETERS_BACKGROUND_2 = new ColorPreference("content_assist_parameters_background",
+		new RGB(255, 255, 255));
 	
 }

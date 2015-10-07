@@ -252,8 +252,8 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	protected void configureBracketMatcher(SourceViewerDecorationSupport support) {
 		support.setCharacterPairMatcher(fBracketMatcher);
 		support.setMatchingCharacterPainterPreferenceKeys(
-			EditorPrefConstants.MATCHING_BRACKETS, 
-			EditorPrefConstants.MATCHING_BRACKETS_COLOR, 
+			EditorPrefConstants.MATCHING_BRACKETS_.key, 
+			EditorPrefConstants.MATCHING_BRACKETS_COLOR2.key, 
 			EditorPrefConstants.HIGHLIGHT_BRACKET_AT_CARET_LOCATION, 
 			EditorPrefConstants.ENCLOSING_BRACKETS);
 	}

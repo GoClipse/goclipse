@@ -14,6 +14,6 @@ import melnorme.utilbox.fields.IDomainField;
 
 public interface ITextStylingPref extends IDomainField<TextStyling> {
 	
-	String getKey();
+	String getPrefId();
 	
 }

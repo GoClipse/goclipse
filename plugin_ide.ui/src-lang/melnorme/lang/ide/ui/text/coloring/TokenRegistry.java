@@ -20,23 +20,16 @@ import org.eclipse.jface.text.rules.Token;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.collections.HashMap2;
-import melnorme.utilbox.ownership.IDisposable;
-import melnorme.utilbox.ownership.OwnedArraylist;
+import melnorme.utilbox.ownership.LifecycleObject;
 
-public class TokenRegistry implements IDisposable {
+public class TokenRegistry extends LifecycleObject {
 	
 	protected final HashMap2<String, Token> tokens = new HashMap2<>();
 	
 	protected final ColorManager2 colorManager;
-	protected final OwnedArraylist owned = new OwnedArraylist();
 	
 	public TokenRegistry(ColorManager2 colorManager) {
 		this.colorManager = assertNotNull(colorManager);
-	}
-	
-	@Override
-	public void dispose() {
-		owned.disposeAll();
 	}
 	
 	/* -----------------  ----------------- */
@@ -49,15 +42,15 @@ public class TokenRegistry implements IDisposable {
 		assertNotNull(stylingPref);
 		assertTrue(SWTUtil.isUIThread());
 		
-		String key = stylingPref.getKey();
+		String id = stylingPref.getPrefId();
 		
-		Token token = tokens.get(key);
+		Token token = tokens.get(id);
 		if(token == null) {
 			Token newToken = new Token(createTextAttribute(stylingPref));
 			
 			stylingPref.addOwnedListener(owned, () -> updateToken(newToken, stylingPref));
 			
-			tokens.put(key, newToken);
+			tokens.put(id, newToken);
 			token = newToken;
 		}
 		
@@ -67,9 +60,7 @@ public class TokenRegistry implements IDisposable {
 	protected TextAttribute createTextAttribute(ITextStylingPref stylingPref) {
 		TextStyling textStyle = stylingPref.getFieldValue();
 		
-		String registryKey = TokenRegistry.class.getSimpleName() + "/" + stylingPref.getKey();
-		
-		return textStyle.getTextAttribute(registryKey, colorManager);
+		return textStyle.getTextAttribute(colorManager);
 	}
 	
 	

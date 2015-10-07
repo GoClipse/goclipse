@@ -160,7 +160,7 @@ public abstract class AbstractSimpleLangSourceViewerConfiguration extends TextSo
 	}
 	
 	protected void updateIndentationSettings(SourceViewer sourceViewer, String property) {
-		if(CodeFormatterConstants.FORMATTER_TAB_SIZE.keyEquals(property)) {
+		if(CodeFormatterConstants.FORMATTER_TAB_SIZE.key.equals(property)) {
 			StyledText textWidget = sourceViewer.getTextWidget();
 			int tabWidth = getTabWidth(sourceViewer);
 			textWidget.setTabs(tabWidth);

@@ -46,8 +46,8 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 		public final int systemColor;
 		public boolean useSystemDefault;
 		
-		public EditorColorItem(String name, String colorKey) {
-			this(name, colorKey, null, 0);
+		public EditorColorItem(String name, ColorPreference colorPref) {
+			this(name, colorPref.key, null, 0);
 		}
 		
 		public EditorColorItem(String label, String colorKey, String systemDefaultKey, int systemColor) {
@@ -175,7 +175,7 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 		colorList.select(0);
 	}
 	
-	protected final EditorColorItem NULL_ELEMENT = new EditorColorItem("", "");
+	protected final EditorColorItem NULL_ELEMENT = new EditorColorItem("", "", null, 0);
 	
 	protected EditorColorItem getSelectedItem() {
 		int i = colorList.getSelectionIndex();

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.eclipse.core.runtime.CoreException;
@@ -23,7 +22,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.templates.ContextTypeRegistry;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -65,6 +63,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		pluginInstance = this;
+		LangUI.instance = new LangUI(context);
 		super.start(context);
 		
 		doCustomStart_initialStage(context);
@@ -114,6 +113,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 		
 		doCustomStop(context);
 		super.stop(context);
+		LangUI.instance.dispose();
 		pluginInstance = null;
 	}
 	
@@ -197,20 +197,12 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
     
     /* ----------------- other singletons ----------------- */
 	
-	protected ColorManager2 colorManager = new ColorManager2();
-	
 	public ColorManager2 getColorManager() {
-		return colorManager;
+		return LangUI.getInstance().getColorManager();
 	}
 	
-	protected ImageDescriptorRegistry fImageDescriptorRegistry;
-	
 	public ImageDescriptorRegistry getImageDescriptorRegistry() {
-		assertTrue(getStandardDisplay() != null);
-		if (fImageDescriptorRegistry == null) {
-			fImageDescriptorRegistry = new ImageDescriptorRegistry();
-		}
-		return fImageDescriptorRegistry;
+		return LangUI.getInstance().getImageDescriptorRegistry();
 	}
 	
 	protected static TemplateRegistry instance;
@@ -233,7 +225,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	/* -------- JDT/DLTK copied stuff -------- */
 	
 	public static Display getStandardDisplay() {
-		return PlatformUI.getWorkbench().getDisplay();
+		return LangUI.getStandardDisplay();
 	}
 	
 	public static IDialogSettings getDialogSettings(String sectionName) {

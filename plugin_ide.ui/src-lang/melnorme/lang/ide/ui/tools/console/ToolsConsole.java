@@ -14,14 +14,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 
-import melnorme.lang.ide.core.utils.prefs.IPrefChangeListener;
-import melnorme.utilbox.ownership.OwnedObjects;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.part.IPageBookViewPage;
+
+import melnorme.utilbox.ownership.OwnedObjects;
 
 public class ToolsConsole extends AbstractProcessMessageConsole {
 	
@@ -45,45 +44,23 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 	}
 	
 	protected void initialize_ActivateOnErrorMessages() {
-		owned.add(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.addPrefChangeListener(true, 
-			new IPrefChangeListener() {
-				@Override
-				public void handleChange() {
-					stdErr.setActivateOnWrite(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get());
-				}
-			}
-		));
+		ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.getGlobalField().addOwnedListener(owned, true,
+			() -> stdErr.setActivateOnWrite(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get())
+		);
 	}
 	
 	@Override
 	protected void ui_initStreamColors() {
 		super.ui_initStreamColors();
 		
-		owned.add(ToolsConsolePrefs.INFO_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
-			@Override
-			public void handleChange() {
-				infoOut.setColor(ToolsConsolePrefs.INFO_COLOR.getManagedColor());
-			}
-		}));
-		owned.add(ToolsConsolePrefs.STDERR_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
-			@Override
-			public void handleChange() {
-				stdErr.setColor(ToolsConsolePrefs.STDERR_COLOR.getManagedColor());
-			}
-		}));
-		owned.add(ToolsConsolePrefs.STDOUT_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
-			@Override
-			public void handleChange() {
-				stdOut.setColor(ToolsConsolePrefs.STDOUT_COLOR.getManagedColor());
-			}
-		}));
-		owned.add(ToolsConsolePrefs.BACKGROUND_COLOR.addPrefChangeListener(true, new IPrefChangeListener() {
-			@Override
-			public void handleChange() {
-				setBackground(ToolsConsolePrefs.BACKGROUND_COLOR.getManagedColor());
-			}
-		}));
-		
+		ToolsConsolePrefs.INFO_COLOR.getGlobalField().addOwnedListener(owned, true, 
+			() -> infoOut.setColor(ToolsConsolePrefs.INFO_COLOR.getManagedColor()));
+		ToolsConsolePrefs.STDERR_COLOR.getGlobalField().addOwnedListener(owned, true, 
+			() -> stdErr.setColor(ToolsConsolePrefs.STDERR_COLOR.getManagedColor()));
+		ToolsConsolePrefs.STDOUT_COLOR.getGlobalField().addOwnedListener(owned, true, 
+			() -> stdOut.setColor(ToolsConsolePrefs.STDOUT_COLOR.getManagedColor()));
+		ToolsConsolePrefs.BACKGROUND_COLOR.getGlobalField().addOwnedListener(owned, true, 
+			() -> setBackground(ToolsConsolePrefs.BACKGROUND_COLOR.getManagedColor()));
 	}
 	
 	@Override

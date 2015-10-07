@@ -40,7 +40,7 @@ public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
 	
 	protected void createAppearanceGroup(Composite parent) {
 		createBooleanField(parent,
-			EditorPrefConstants.MATCHING_BRACKETS,
+			EditorPrefConstants.MATCHING_BRACKETS_.key,
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_matchingBrackets));
 		
 		createEditorAppearanceColorsComponent(parent);
@@ -60,13 +60,13 @@ public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
 		return new EditorColorItem[] { 
 			new EditorColorItem(
 				PreferencesMessages.EditorPreferencePage_matchingBracketsHighlightColor,
-				EditorPrefConstants.MATCHING_BRACKETS_COLOR),
+				EditorPrefConstants.MATCHING_BRACKETS_COLOR2),
 			new EditorColorItem(
 				PreferencesMessages.EditorPreferencePage_backgroundForMethodParameters,
-				ContentAssistConstants.PARAMETERS_BACKGROUND),
+				ContentAssistConstants.PARAMETERS_BACKGROUND_2),
 			new EditorColorItem(
 				PreferencesMessages.EditorPreferencePage_foregroundForMethodParameters,
-				ContentAssistConstants.PARAMETERS_FOREGROUND),
+				ContentAssistConstants.PARAMETERS_FOREGROUND_2),
 			new EditorColorItem(
 				PreferencesMessages.EditorPreferencePage_sourceHoverBackgroundColor,
 				EditorPrefConstants.SOURCE_HOVER_BACKGROUND_COLOR_rgb.key,

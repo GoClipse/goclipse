@@ -13,10 +13,9 @@ package melnorme.lang.ide.ui;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.StringConverter;
-import org.eclipse.swt.graphics.RGB;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
+import melnorme.utilbox.misc.MiscUtil;
 
 public abstract class LangUIPreferencesInitializer extends AbstractPreferenceInitializer  
 implements EditorPrefConstants, ContentAssistConstants {
@@ -29,10 +28,9 @@ implements EditorPrefConstants, ContentAssistConstants {
 	public final void initializeDefaultPreferences() {
 		final IPreferenceStore store = LangUIPlugin.getInstance().getPreferenceStore();
 		
-		store.setDefault(MATCHING_BRACKETS, true);
-		store.setDefault(MATCHING_BRACKETS_COLOR, StringConverter.asString(new RGB(192, 192, 192)));
+		MiscUtil.loadClass(EditorPrefConstants.class);
+		MiscUtil.loadClass(ContentAssistConstants.class);
 		
-		_PrefInitializer.initializeDefaults(store);
 		initializeDefaultPreferences_other(store);
 	}
 	

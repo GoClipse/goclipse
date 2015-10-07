@@ -38,6 +38,7 @@ import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences.OverlayStylingPreferences;
+import melnorme.lang.ide.ui.text.coloring.TextStyling.TextStylingData;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponent;
@@ -86,18 +87,6 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		colorManager.dispose();
 	}
 	
-	@Override
-	public void loadDefaults() {
-		visitColoringItems(item -> item.loadDefaults());
-		
-		updateComponentFromInput();
-	}
-	
-	@Override
-	public void saveSettings() {
-		visitColoringItems(item -> item.saveToGlobalPreferences());
-	}
-	
 	protected void visitColoringItems(Consumer<SourceColoringElement> consumer) {
 		new TreeVisitor() {
 			@Override
@@ -121,15 +110,15 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	
 	public class SourceColoringElement extends LabeledTreeElement {
 		
-		protected final TextStylingPreference stylingPref;
-		protected final String prefKey;
+		protected final ThemedTextStylingPreference stylingPref;
+		protected final String prefId;
 		protected final IDomainField<TextStyling> workingCopy;
 		
-		public SourceColoringElement(String labelText, TextStylingPreference stylingPref) {
+		public SourceColoringElement(String labelText, ThemedTextStylingPreference stylingPref) {
 			super(null, null, labelText);
 			this.stylingPref = stylingPref;
-			this.prefKey = stylingPref.getKey();
-			this.workingCopy = overlayStylingPrefs.get(prefKey);
+			this.prefId = stylingPref.getPrefId();
+			this.workingCopy = overlayStylingPrefs.get(prefId);
 			this.workingCopy.setFieldValue(stylingPref.getFieldValue());
 		}
 		
@@ -149,12 +138,24 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	
 	public class SourceColoringListRoot extends SimpleTreeElement {
 		public SourceColoringListRoot() {
-			super(null, getTreeElements());
+			super(null, createTreeElements());
 			assertTrue(children != null);
 		}
 	}
 	
-	protected abstract LabeledTreeElement[] getTreeElements();
+	protected abstract LabeledTreeElement[] createTreeElements();
+	
+	@Override
+	public void loadDefaults() {
+		visitColoringItems(item -> item.loadDefaults());
+		
+		updateComponentFromInput();
+	}
+	
+	@Override
+	public void saveSettings() {
+		visitColoringItems(item -> item.saveToGlobalPreferences());
+	}
 	
 	@Override
 	protected GridLayoutFactory createTopLevelLayout() {
@@ -198,7 +199,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 			}
 		});
 		treeViewer.setInput(coloringOptionsList);
-		treeViewer.setExpandedElements(getTreeElements());
+		treeViewer.setExpandedElements(coloringOptionsList.getChildren());
 		
 		
 		Composite itemEditorComposite = new Composite(editorComposite, SWT.NONE);
@@ -222,40 +223,40 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		
 		enableField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			protected void changeStylingValue(TextStyling textStyling) {
-				textStyling.isEnabled = enableField.getBooleanFieldValue();
-				setColoringEditorControlsEnabled(textStyling.isEnabled);
+			protected void changeStylingValue(TextStylingData data) {
+				data.isEnabled = enableField.getBooleanFieldValue();
+				setColoringEditorControlsEnabled(data.isEnabled);
 			}
 		});
 		
 		colorField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			protected void changeStylingValue(TextStyling textStyling) {
-				textStyling.rgb = colorField.getFieldValue();
+			protected void changeStylingValue(TextStylingData data) {
+				data.rgb = colorField.getFieldValue();
 			}
 		});
 		boldCheckboxField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			protected void changeStylingValue(TextStyling textStyling) {
-				textStyling.isBold = boldCheckboxField.getBooleanFieldValue();
+			protected void changeStylingValue(TextStylingData data) {
+				data.isBold = boldCheckboxField.getBooleanFieldValue();
 			}
 		});
 		italicCheckboxField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			protected void changeStylingValue(TextStyling textStyling) {
-				textStyling.isItalic = italicCheckboxField.getBooleanFieldValue();
+			protected void changeStylingValue(TextStylingData data) {
+				data.isItalic = italicCheckboxField.getBooleanFieldValue();
 			}
 		});
 		striketroughCheckboxField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			protected void changeStylingValue(TextStyling textStyling) {
-				textStyling.isStrikethrough = striketroughCheckboxField.getBooleanFieldValue();
+			protected void changeStylingValue(TextStylingData data) {
+				data.isStrikethrough = striketroughCheckboxField.getBooleanFieldValue();
 			}
 		});
 		underlineCheckboxField.addValueChangedListener(new ChangeStylingField() {
 			@Override
-			protected void changeStylingValue(TextStyling textStyling) {
-				textStyling.isUnderline = underlineCheckboxField.getBooleanFieldValue();
+			protected void changeStylingValue(TextStylingData data) {
+				data.isUnderline = underlineCheckboxField.getBooleanFieldValue();
 			}
 		});
 		
@@ -281,11 +282,12 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		public void fieldValueChanged() {
 			IDomainField<TextStyling> field = getSelectedColoringItem().workingCopy;
 			TextStyling newStyling = field.getFieldValue(); // If were being strict, we should create a copy
-			changeStylingValue(newStyling);
-			field.setFieldValue(newStyling);
+			TextStylingData data = newStyling.getData();
+			changeStylingValue(data);
+			field.setFieldValue(new TextStyling(data));
 		}
 		
-		protected abstract void changeStylingValue(TextStyling textStyling);
+		protected abstract void changeStylingValue(TextStylingData data);
 	}
 	
 	public SourceColoringElement getSelectedColoringItem() {
