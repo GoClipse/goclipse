@@ -13,18 +13,10 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 
-import org.eclipse.swt.widgets.Composite;
-
 public class EditorConfigurationBlock extends LangEditorConfigurationBlock {
 	
 	public EditorConfigurationBlock(AbstractComponentsPrefPage mainPreferencePage) {
 		super(mainPreferencePage);
-	}
-	
-	@Override
-	protected void createAppearanceGroup(Composite parent) {
-		//super.createAppearanceGroup(parent);
-		// return, don't create appearance group
 	}
 	
 }
