@@ -13,18 +13,10 @@ package com.googlecode.goclipse.ui.preferences;
 import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 
-import org.eclipse.swt.widgets.Composite;
-
 public class GoEditorConfigurationBlock extends LangEditorConfigurationBlock {
 	
 	public GoEditorConfigurationBlock(AbstractComponentsPrefPage mainPreferencePage) {
 		super(mainPreferencePage);
-	}
-	
-	@Override
-	protected void createAppearanceGroup(Composite parent) {
-		//super.createAppearanceGroup(parent);
-		// return, don't create appearance group
 	}
 	
 }
