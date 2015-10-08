@@ -11,6 +11,7 @@
 package com.googlecode.goclipse.ui.preferences;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.tools.AbstractDeamonToolPrefPage;
 import melnorme.lang.ide.ui.utils.UIOperationsHelper;
@@ -61,8 +62,8 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 	
 	@Override
 	protected ButtonTextField createDaemonPathFieldEditor(Group daemonGroup) {
-		daemonPathEditor = super.createDaemonPathFieldEditor(daemonGroup);
-		
+		daemonPathEditor = createFileComponent(daemonGroup, getDaemonToolName() + " path:",
+				GoToolPreferences.GO_CODE_Path.key, true);
 		createInstallPackageButton(daemonGroup, "Download gocode", "github.com/nsf/gocode", "gocode", 
 			daemonPathEditor);
 		
