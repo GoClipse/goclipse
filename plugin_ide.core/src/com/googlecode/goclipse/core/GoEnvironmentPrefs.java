@@ -10,11 +10,15 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
+import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
+
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import melnorme.utilbox.misc.StringUtil;
 
 public interface GoEnvironmentPrefs {
 	
-	static StringPreference GO_ROOT = new StringPreference("com.googlecode.goclipse.goroot", "");
+	static StringPreference GO_ROOT = new StringPreference("com.googlecode.goclipse.goroot",
+			StringUtil.nullAsEmpty(System.getenv(GoEnvironmentConstants.GOROOT)));
 	static StringPreference GO_PATH = new StringPreference("com.googlecode.goclipse.gopath", "");
 	static StringPreference GO_OS = new StringPreference("com.googlecode.goclipse.goos", "");
 	static StringPreference GO_ARCH = new StringPreference("com.googlecode.goclipse.goarch", "");
