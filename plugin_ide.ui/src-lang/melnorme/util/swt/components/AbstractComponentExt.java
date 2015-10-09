@@ -29,7 +29,7 @@ public abstract class AbstractComponentExt extends AbstractComponent {
 	
 	/* -----------------  ----------------- */
 	
-	public abstract void setEnabled(boolean readOnly);
+	public abstract void setEnabled(boolean enabled);
 	
 	protected void _verify_setEnabled() {
 		_verify_setEnabled(getClass());

@@ -11,6 +11,7 @@
 package LANG_PROJECT_ID.ide.ui.preferences;
 
 import melnorme.lang.ide.ui.preferences.LangRootPreferencePage;
+import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.tooling.data.SDKLocationValidator;
 
@@ -32,6 +33,11 @@ public class LANGUAGE_Root__PreferencePage extends LangRootPreferencePage {
 	@Override
 	protected SDKLocationValidator getSDKValidator() {
 		return new LANGUAGE_SDKLocationValidator();
+	}
+	
+	@Override
+	public LangSDKConfigBlock doCreateLangSDKConfigBlock() {
+		return new LangSDKConfigBlock() { };
 	}
 	
 }

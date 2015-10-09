@@ -48,6 +48,7 @@ import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.TextFieldComponent;
@@ -148,7 +149,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 	}
 	
-	public static class NameGroup extends AbstractComponent{
+	public static class NameGroup extends AbstractComponentExt {
 		
 		protected TextFieldComponent textField = new TextFieldComponent(WizardMessages.LangNewProject_NameGroup_label);
 		
@@ -178,6 +179,11 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		@Override
 		protected void createContents(Composite topControl) {
 			textField.createComponentInlined(topControl);
+		}
+		
+		@Override
+		public void setEnabled(boolean enabled) {
+			textField.setEnabled(enabled);
 		}
 		
 		@Override
@@ -214,6 +220,12 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 		protected String getProjectName() {
 			return nameGroup.getName();
+		}
+		
+		@Override
+		public void setEnabled(boolean enabled) {
+			super.setEnabled(enabled);
+			nameGroup.setEnabled(enabled);
 		}
 		
 		protected boolean isDefaultLocation() {
