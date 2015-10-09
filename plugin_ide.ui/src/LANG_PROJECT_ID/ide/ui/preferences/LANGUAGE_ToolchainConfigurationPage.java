@@ -12,16 +12,19 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.ui.dialogs.LangBuildConfigurationPropertyPage;
-import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
+import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
 
 
-public class LANGUAGE_BuildConfigurationPropertyPage extends LangBuildConfigurationPropertyPage {
+public class LANGUAGE_ToolchainConfigurationPage extends AbstractLangPropertyPage {
 	
 	@Override
-	protected LangProjectBuildConfigurationComponent createProjectConfigComponent(IProject project) {
-		return new LangProjectBuildConfigurationComponent(project) {
-		};
+	protected IPreferencesWidgetComponent createProjectConfigComponent(IProject project) {
+		return new ProjectSDKSettingsBlock(project, 
+			ToolchainPreferences.USE_PROJECT_SETTINGS, 
+			ToolchainPreferences.SDK_PATH2.getProjectPreference());
 	}
 	
 }

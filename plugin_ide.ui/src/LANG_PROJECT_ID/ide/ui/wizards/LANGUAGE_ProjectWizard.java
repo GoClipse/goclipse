@@ -64,7 +64,7 @@ class LANGUAGE_ProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	
 	@Override
 	protected void validatePreferences() throws ValidationException {
-		new LANGUAGE_SDKLocationValidator().getValidatedField(ToolchainPreferences.SDK_PATH.get());
+		new LANGUAGE_SDKLocationValidator().getValidatedField(ToolchainPreferences.SDK_PATH2.get());
 	}
 	
 }
