@@ -11,7 +11,6 @@
 package melnorme.lang.ide.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
-import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.util.swt.components.AbstractComponentExt;
@@ -30,6 +29,8 @@ public abstract class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock
 			IProjectPreference<String> sdkLocationPref) {
 		super(project, useProjectSettingsPref);
 		this.sdkLocationPref = sdkLocationPref;
+		
+		addFieldBinding(sdkLocationField, sdkLocationPref);
 	}
 	
 	protected abstract LangSDKConfigBlock init_createSDKLocationGroup();
@@ -37,21 +38,6 @@ public abstract class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock
 	@Override
 	public AbstractComponentExt getParentSettingsBlock() {
 		return langSDKConfigBlock;
-	}
-	
-	@Override
-	protected void updateComponentFromInput_do() {
-		sdkLocationField.setFieldValue(sdkLocationPref.getStoredValue(project));
-	}
-	
-	@Override
-	protected void loadDefaults_do() {
-		sdkLocationField.setFieldValue(sdkLocationPref.getGlobalPreference().get());
-	}
-	
-	@Override
-	protected void saveSettings_do() throws BackingStoreException {
-		sdkLocationPref.setValue(project, sdkLocationField.getFieldValue());
 	}
 	
 }

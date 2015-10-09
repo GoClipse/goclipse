@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.utils;
 
+import java.util.function.Consumer;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.debug.ui.StringVariableSelectionDialog;
@@ -59,20 +61,27 @@ public class ControlUtils {
 	}
 	
 	public static Link createOpenPreferencesDialogLinkedText(final Composite topControl, String linkText) {
+		return createOpenPreferencesDialogLinkedText(topControl, linkText, null);
+	}
+	
+	public static Link createOpenPreferencesDialogLinkedText(final Composite topControl, String linkText,
+			Consumer<Link> afterDialogOpen) {
 		Link link = new Link(topControl, SWT.NONE);
 		link.setText(linkText);
 		link.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				PreferencesUtil.createPreferenceDialogOn(topControl.getShell(),e.text, null, null).open();
+				afterDialogOpen.accept(link);
 			}
 		});
 		return link;
 	}
 	
-	public static Link createOpenPreferencesDialogLink(Composite topControl, String prefPageId, String linkLabel) {
+	public static Link createOpenPreferencesDialogLink(Composite topControl, String prefPageId, String linkLabel,
+			Consumer<Link> afterDialogOpen) {
 		return createOpenPreferencesDialogLinkedText(topControl, 
-			"<a href=\"" + prefPageId + "\">" + linkLabel + "</a>");
+			"<a href=\"" + prefPageId + "\">" + linkLabel + "</a>", afterDialogOpen);
 	}
 	
 	public static void openStringVariableSelectionDialog_ForText(Text text) {

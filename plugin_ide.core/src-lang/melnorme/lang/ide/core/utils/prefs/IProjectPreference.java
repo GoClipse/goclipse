@@ -18,6 +18,10 @@ public interface IProjectPreference<T> {
 	
 	PreferenceHelper<T> getGlobalPreference();
 	
+	default String getKey() {
+		return getGlobalPreference().key;
+	}
+	
 	T getDefault();
 	
 	T getStoredValue(IProject project);
@@ -25,5 +29,7 @@ public interface IProjectPreference<T> {
 	void setValue(IProject project, T value) throws BackingStoreException;
 	
 	T getEffectiveValue(IProject project);
+	
+	IProjectPreference<Boolean> getEnableProjectSettingPref();
 	
 }

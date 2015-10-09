@@ -17,7 +17,8 @@ import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface ToolchainPreferences {
 	
-	IProjectPreference<Boolean> USE_PROJECT_SETTINGS = new BooleanPreference("key", false).getProjectPreference();
+	IProjectPreference<Boolean> USE_PROJECT_SETTINGS = new BooleanPreference(
+		"toolchain_prefs.use_project_settings", false).getProjectPreference();
 	
 	public static final StringPreference SDK_PATH = new StringPreference(LangCore.PLUGIN_ID, "sdk_path", "", 
 		USE_PROJECT_SETTINGS);
