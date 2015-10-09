@@ -72,7 +72,9 @@ public class ControlUtils {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				PreferencesUtil.createPreferenceDialogOn(topControl.getShell(),e.text, null, null).open();
-				afterDialogOpen.accept(link);
+				if(afterDialogOpen != null) {
+					afterDialogOpen.accept(link);
+				}
 			}
 		});
 		return link;
