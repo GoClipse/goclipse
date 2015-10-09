@@ -48,7 +48,7 @@ public class GoToolManager extends AbstractToolManager {
 	protected IValidatedField<Path> getSDKToolPathField(IProject project) {
 		return new ValidatedSDKToolPath(project, getSDKToolPathValidator()) {
 			@Override
-			protected String getRawFieldValue() {
+			protected String getRawFieldValue2() {
 				return GoEnvironmentPrefs.GO_ROOT.getProjectPreference().getEffectiveValue(project);
 			}
 		};

@@ -8,7 +8,8 @@ import melnorme.lang.ide.ui.PreferencesMessages_Actual;
  */
 public class PreferencesMessages implements PreferencesMessages_Actual {
 	
-	public static final String USE_PROJECT_SPECIFIC_SETTINGS = "Use project specific settings";
+	public static final String LABEL_UseProjectSpecificSettings = "Use project specific settings";
+	public static final String LABEL_ConfigureWorkspaceSettings = "Configure workspace settings";
 	
 	/* -----------------  ----------------- */
 	

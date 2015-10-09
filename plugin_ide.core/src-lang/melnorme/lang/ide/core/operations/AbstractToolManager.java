@@ -69,13 +69,13 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 			this.pathValidator = assertNotNull(pathValidator);
 		}
 		
-		protected String getRawFieldValue() {
+		protected String getRawFieldValue2() {
 			return ToolchainPreferences.SDK_PATH2.getProjectPreference().getEffectiveValue(project);
 		}
 		
 		@Override
 		public Path getValidatedField() throws StatusException {
-			String pathString = getRawFieldValue();
+			String pathString = getRawFieldValue2();
 			return getPathValidator().getValidatedPath(pathString);
 		}
 		

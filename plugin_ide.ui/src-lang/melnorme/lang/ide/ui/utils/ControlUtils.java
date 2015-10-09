@@ -58,16 +58,21 @@ public class ControlUtils {
 		return result;
 	}
 	
-	public static Link createOpenPreferencesDialogLink(final Composite topControl, String linkText) {
+	public static Link createOpenPreferencesDialogLinkedText(final Composite topControl, String linkText) {
 		Link link = new Link(topControl, SWT.NONE);
 		link.setText(linkText);
 		link.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				PreferencesUtil.createPreferenceDialogOn(topControl.getShell(), e.text, null, null);
+				PreferencesUtil.createPreferenceDialogOn(topControl.getShell(),e.text, null, null).open();
 			}
 		});
 		return link;
+	}
+	
+	public static Link createOpenPreferencesDialogLink(Composite topControl, String prefPageId, String linkLabel) {
+		return createOpenPreferencesDialogLinkedText(topControl, 
+			"<a href=\"" + prefPageId + "\">" + linkLabel + "</a>");
 	}
 	
 	public static void openStringVariableSelectionDialog_ForText(Text text) {
