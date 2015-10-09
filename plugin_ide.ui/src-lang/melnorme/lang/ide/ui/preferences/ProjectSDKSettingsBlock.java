@@ -10,72 +10,51 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import static melnorme.lang.ide.ui.preferences.PreferencesMessages.USE_PROJECT_SPECIFIC_SETTINGS;
-
 import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.widgets.Composite;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock.LanguageSDKLocationGroup;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
-import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.fields.ButtonTextField;
-import melnorme.util.swt.components.fields.CheckBoxField;
 
-public class ProjectSDKSettingsBlock extends AbstractComponent implements IPreferencesWidgetComponent {
+public class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock {
 	
-	protected final CheckBoxField useProjectSettingsField = new CheckBoxField(USE_PROJECT_SPECIFIC_SETTINGS);
-	protected final LanguageSDKLocationGroup langSDKGroup = new LanguageSDKLocationGroup();
+	protected final LanguageSDKLocationGroup langSDKGroup = init_createSDKLocationGroup();
+
 	protected final ButtonTextField sdkLocationField = langSDKGroup.sdkLocationField;
 	
-	protected final IProject project;
-	protected final IProjectPreference<Boolean> useProjectPref;
 	protected final IProjectPreference<String> sdkLocationPref;
 	
 	public ProjectSDKSettingsBlock(IProject project, 
-			IProjectPreference<Boolean> useProjectSettings, 
+			IProjectPreference<Boolean> useProjectSettingsPref, 
 			IProjectPreference<String> sdkLocationPref) {
-		this.project = project;
-		this.useProjectPref = useProjectSettings;
+		super(project, useProjectSettingsPref);
 		this.sdkLocationPref = sdkLocationPref;
-		
-		useProjectSettingsField.addValueChangedListener2(
-			() -> langSDKGroup.setEnabled(useProjectSettingsField.getFieldValue()));
+	}
+	
+	protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
+		return new LanguageSDKLocationGroup();
 	}
 	
 	@Override
-	public int getPreferredLayoutColumns() {
-		return 1;
+	public AbstractComponentExt getParentSettingsBlock() {
+		return langSDKGroup;
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
-		useProjectSettingsField.createComponentInlined(topControl);
-		langSDKGroup.createComponent(topControl, gdFillDefaults().grab(true, false).create());
-	}
-	
-	@Override
-	protected void updateComponentFromInput() {
-		useProjectSettingsField.setFieldValue(useProjectPref.getStoredValue(project));
+	protected void updateComponentFromInput_do() {
 		sdkLocationField.setFieldValue(sdkLocationPref.getStoredValue(project));
 	}
 	
 	@Override
-	public void loadDefaults() {
-		useProjectSettingsField.setFieldValue(useProjectPref.getDefault());
+	protected void loadDefaults_do() {
 		sdkLocationField.setFieldValue(sdkLocationPref.getGlobalPreference().get());
 	}
 	
 	@Override
-	public boolean saveSettings() {
-		try {
-			useProjectPref.setValue(project, useProjectSettingsField.getBooleanFieldValue());
-			sdkLocationPref.setValue(project, sdkLocationField.getFieldValue());
-		} catch(BackingStoreException e) {
-			return false;
-		}
-		return true;
+	protected void saveSettings_do() throws BackingStoreException {
+		sdkLocationPref.setValue(project, sdkLocationField.getFieldValue());
 	}
 	
 }

@@ -166,7 +166,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	protected void createContents(final Composite topControl) {
 		PixelConverter pc = new PixelConverter(topControl);
 		
-		Link openPrefsLink = ControlUtils.createOpenPreferencesDialogLink(topControl, 
+		Link openPrefsLink = ControlUtils.createOpenPreferencesDialogLinkedText(topControl, 
 			PreferencesMessages.DLTKEditorColoringConfigurationBlock_link);
 		openPrefsLink.setLayoutData(
 			gdFillDefaults().hint(pc.convertWidthInCharsToPixels(50), SWT.DEFAULT).create());

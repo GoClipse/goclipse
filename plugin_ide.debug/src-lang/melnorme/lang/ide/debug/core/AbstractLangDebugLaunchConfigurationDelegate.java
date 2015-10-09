@@ -82,7 +82,8 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 			launchInfo.getProgramArgumentsString());
 		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
 			launchInfo.workingDir.toString());
-		
+		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+			launchInfo.project.getName());
 		
 		if(!workingCopy.hasAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_STOP_AT_MAIN)) {
 			workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_DEBUGGER_STOP_AT_MAIN, false);
