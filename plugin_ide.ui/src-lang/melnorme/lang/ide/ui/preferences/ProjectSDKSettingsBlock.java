@@ -14,15 +14,14 @@ import org.eclipse.core.resources.IProject;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
-import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock.LanguageSDKLocationGroup;
 import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.fields.ButtonTextField;
 
-public class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock {
+public abstract class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock {
 	
-	protected final LanguageSDKLocationGroup langSDKGroup = init_createSDKLocationGroup();
+	protected final LangSDKConfigBlock langSDKConfigBlock = init_createSDKLocationGroup();
 
-	protected final ButtonTextField sdkLocationField = langSDKGroup.sdkLocationField;
+	protected final ButtonTextField sdkLocationField = langSDKConfigBlock.sdkLocationGroup.sdkLocationField;
 	
 	protected final IProjectPreference<String> sdkLocationPref;
 	
@@ -33,13 +32,11 @@ public class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock {
 		this.sdkLocationPref = sdkLocationPref;
 	}
 	
-	protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
-		return new LanguageSDKLocationGroup();
-	}
+	protected abstract LangSDKConfigBlock init_createSDKLocationGroup();
 	
 	@Override
 	public AbstractComponentExt getParentSettingsBlock() {
-		return langSDKGroup;
+		return langSDKConfigBlock;
 	}
 	
 	@Override

@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
+import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
 
@@ -23,7 +24,12 @@ public class GoToolchainConfigurationPage extends AbstractLangPropertyPage {
 	protected IPreferencesWidgetComponent createProjectConfigComponent(IProject project) {
 		return new ProjectSDKSettingsBlock(project, 
 			ToolchainPreferences.USE_PROJECT_SETTINGS, 
-			ToolchainPreferences.SDK_PATH.getProjectPreference());
+			ToolchainPreferences.SDK_PATH.getProjectPreference()) {
+			@Override
+			protected LangSDKConfigBlock init_createSDKLocationGroup() {
+				return new LangSDKConfigBlock() { }; /* FIXME: GoSDKConfigBlock */
+			}
+		};
 	}
 	
 }
