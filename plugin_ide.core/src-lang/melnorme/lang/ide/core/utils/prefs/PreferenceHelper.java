@@ -41,7 +41,8 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	public final String key;
 	public final String qualifier;
-	protected final T defaultValue;
+	
+	protected T defaultValue;
 	
 	protected final IProjectPreference<Boolean> useProjectSettingsPref;
 	
@@ -63,16 +64,13 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	public PreferenceHelper(String pluginId, String key, T defaultValue, boolean ensureUniqueKey,
 			IProjectPreference<Boolean> useProjectSettingsPref) {
 		this.key = assertNotNull(key);
-		this.qualifier = pluginId;
-		this.defaultValue = assertNotNull(defaultValue);
-		
-		this.useProjectSettingsPref = useProjectSettingsPref; // can be null
-		
 		if(ensureUniqueKey) {
 			checkUniqueKey(key, this);
 		}
+		this.qualifier = pluginId;
+		this.useProjectSettingsPref = useProjectSettingsPref; // can be null
 		
-		initializeDefaultValueInDefaultScope();
+		setDefaultValue(defaultValue);
 		
 		initializeListener();
 		field.setFieldValue(get());
@@ -86,7 +84,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		return qualifier;
 	}
 	
-	public T getDefault() {
+	public T getDefault2() {
 		return defaultValue;
 	}
 	
@@ -103,7 +101,9 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		return new PreferencesLookupHelper(getQualifier(), project);
 	}
 	
-	protected void initializeDefaultValueInDefaultScope() {
+	public void setDefaultValue(T defaultValue) {
+		assertNotNull(defaultValue);
+		this.defaultValue = defaultValue;
 		doSet(getDefaultNode(), defaultValue);
 	}
 	
@@ -148,7 +148,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		
 		@Override
 		public T getDefault() {
-			return PreferenceHelper.this.getDefault();
+			return PreferenceHelper.this.getDefault2();
 		}
 		
 		@Override

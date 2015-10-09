@@ -70,7 +70,7 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 		}
 		
 		protected String getRawFieldValue2() {
-			return ToolchainPreferences.SDK_PATH2.getProjectPreference().getEffectiveValue(project);
+			return ToolchainPreferences.SDK_PATH.getProjectPreference().getEffectiveValue(project);
 		}
 		
 		@Override

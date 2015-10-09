@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package Lcom.googlecode.goclipse.ui.preferences;
+package com.googlecode.goclipse.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
 
@@ -23,7 +23,7 @@ public class GoToolchainConfigurationPage extends AbstractLangPropertyPage {
 	protected IPreferencesWidgetComponent createProjectConfigComponent(IProject project) {
 		return new ProjectSDKSettingsBlock(project, 
 			ToolchainPreferences.USE_PROJECT_SETTINGS, 
-			ToolchainPreferences.SDK_PATH2.getProjectPreference());
+			ToolchainPreferences.SDK_PATH.getProjectPreference());
 	}
 	
 }
