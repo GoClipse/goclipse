@@ -19,7 +19,7 @@ public interface ToolchainPreferences {
 	
 	IProjectPreference<Boolean> USE_PROJECT_SETTINGS = new BooleanPreference("key", false).getProjectPreference();
 	
-	public static final StringPreference SDK_PATH2 = new StringPreference(LangCore.PLUGIN_ID, "sdk_path", "", 
+	public static final StringPreference SDK_PATH = new StringPreference(LangCore.PLUGIN_ID, "sdk_path", "", 
 		USE_PROJECT_SETTINGS);
 	
 	

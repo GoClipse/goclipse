@@ -84,9 +84,9 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 	
 	public TextStyling getDefault() {
 		if(isOverridingThemeActive()) {
-			return darkPref.getDefault();
+			return darkPref.getDefault2();
 		}
-		return defaultThemePref.getDefault();
+		return defaultThemePref.getDefault2();
 	}
 	
 	public String getActiveKey() {
