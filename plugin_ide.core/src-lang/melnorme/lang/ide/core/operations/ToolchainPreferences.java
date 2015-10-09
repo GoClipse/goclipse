@@ -10,12 +10,17 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface ToolchainPreferences {
 	
-	public static final StringPreference SDK_PATH = new StringPreference("sdk_path", "");
+	IProjectPreference<Boolean> USE_PROJECT_SETTINGS = new BooleanPreference("key", false).getProjectPreference();
+	
+	public static final StringPreference SDK_PATH2 = new StringPreference(LangCore.PLUGIN_ID, "sdk_path", "", 
+		USE_PROJECT_SETTINGS);
 	
 	
 	public static final BooleanPreference AUTO_START_DAEMON =

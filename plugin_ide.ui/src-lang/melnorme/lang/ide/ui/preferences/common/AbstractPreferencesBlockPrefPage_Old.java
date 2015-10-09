@@ -12,35 +12,25 @@
 package melnorme.lang.ide.ui.preferences.common;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.ownership.IDisposable;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * Abstract preference wraping a {@link IPreferencesBlock_Old}.
+ * Abstract preference wraping a {@link IPreferencesWidgetComponent}.
  * Old API, preferred to use {@link AbstractPreferencesBlock}.
  */
 public abstract class AbstractPreferencesBlockPrefPage_Old extends AbstractComponentsPrefPage {
 	
-	public interface IPreferencesBlock_Old extends IWidgetComponent, IDisposable {
-		
-		public void saveSettings();
-		
-		public void loadDefaults();
-		
-	}
-	
-	private IPreferencesBlock_Old fConfigurationBlock;
+	private IPreferencesWidgetComponent fConfigurationBlock;
 	
 	public AbstractPreferencesBlockPrefPage_Old(IPreferenceStore store) {
 		super(store);
 		fConfigurationBlock = createPreferencesComponent();
 	}
 	
-	protected abstract IPreferencesBlock_Old createPreferencesComponent();
+	protected abstract IPreferencesWidgetComponent createPreferencesComponent();
 	
 	@Override
 	protected Control createContents(Composite parent) {
@@ -66,7 +56,6 @@ public abstract class AbstractPreferencesBlockPrefPage_Old extends AbstractCompo
 	
 	@Override
 	public void dispose() {
-		fConfigurationBlock.dispose();
 		super.dispose();
 	}
 	

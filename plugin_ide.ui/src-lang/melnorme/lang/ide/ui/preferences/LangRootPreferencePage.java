@@ -32,7 +32,7 @@ public abstract class LangRootPreferencePage extends AbstractComponentsPrefPage 
 	protected LangSDKConfigBlock createLangSDKConfigBlock() {
 		LangSDKConfigBlock langSDKConfigBlock = new LangSDKConfigBlock();
 		
-		connectStringField(ToolchainPreferences.SDK_PATH.key, langSDKConfigBlock.getLocationField(), 
+		connectStringField(ToolchainPreferences.SDK_PATH2.key, langSDKConfigBlock.getLocationField(), 
 			getSDKValidator());
 		
 		return langSDKConfigBlock;

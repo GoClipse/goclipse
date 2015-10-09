@@ -93,6 +93,7 @@ public class ColorField extends LabelledFieldComponent<RGB> {
 		colorSelector.setColorValue(getFieldValue());
 	}
 	
+	@Override
 	public void setEnabled(boolean enabled) {
 		SWTUtil.setEnabledIfOk(label, enabled);
 		SWTUtil.setEnabledIfOk(colorSelector.getButton(), enabled);

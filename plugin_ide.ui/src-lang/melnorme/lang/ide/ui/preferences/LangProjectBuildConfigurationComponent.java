@@ -26,15 +26,17 @@ import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class LangProjectBuildConfigurationComponent extends AbstractComponent {
+public abstract class LangProjectBuildConfigurationComponent extends AbstractComponentExt 
+	implements IPreferencesWidgetComponent {
 	
 	protected final IProject project;
 	protected final BuildTargetField buildTargetField = init_createBuildTargetField();
@@ -178,11 +180,12 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 		SWTFactoryUtil.createPushButton2(topControl, 
 			"Restore all targets to defaults", null,
 			new GridData(GridData.HORIZONTAL_ALIGN_END),
-			(e) -> restoreDefaults()
+			(e) -> loadDefaults()
 		);
 	}
 	
-	protected void setEnabled(boolean enabled) {
+	@Override
+	public void setEnabled(boolean enabled) {
 		buildTargetField.setEnabled(enabled);
 		buildTargetSettings.setEnabled(enabled);
 	}
@@ -196,7 +199,8 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 	
 	/* ----------------- apply/restore ----------------- */
 	
-	public boolean performOk() {
+	@Override
+	public boolean saveSettings() {
 		if(project == null) {
 			return false;
 		}
@@ -218,7 +222,8 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 		return true;
 	}
 	
-	public void restoreDefaults() {
+	@Override
+	public void loadDefaults() {
 		if(project == null) {
 			return;
 		}

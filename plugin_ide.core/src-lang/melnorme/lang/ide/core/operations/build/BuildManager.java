@@ -36,6 +36,7 @@ import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
@@ -139,14 +140,15 @@ public abstract class BuildManager {
 	
 	/* -----------------  Persistence preference ----------------- */
 	
-	protected static final StringPreference BUILD_TARGETS_PREF = new StringPreference("build_targets", "");
+	protected static final IProjectPreference<String> BUILD_TARGETS_DATA = 
+			new StringPreference("build_targets", "").getProjectPreference();
 	
 	protected BuildTargetsSerializer createSerializer() {
 		return new BuildTargetsSerializer(this);
 	}
 	
 	protected String getBuildTargetsPref(IProject project) {
-		return StringUtil.emptyAsNull(BUILD_TARGETS_PREF.get(project));
+		return StringUtil.emptyAsNull(BUILD_TARGETS_DATA.getStoredValue(project));
 	}
 	
 	/* ----------------- ProjectBuildInfo ----------------- */
@@ -230,7 +232,7 @@ public abstract class BuildManager {
 		
 		try {
 			String data = createSerializer().writeProjectBuildInfo(newProjectBuildInfo);
-			BUILD_TARGETS_PREF.set(project, data);
+			BUILD_TARGETS_DATA.setValue(project, data);
 		} catch(CommonException | BackingStoreException e) {
 			LangCore.logError("Error persisting project build info: ", e);
 		}

@@ -274,6 +274,14 @@
 				<reference definitionId="LANG_PROJECT_ID.ide.core.expressions.isNatureProject" />
 			</enabledWhen>
 		</page>
+		<page
+			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_ToolchainConfigurationPage"
+			id="LANG_PROJECT_ID.ide.ui.propertyPages.ToolchainConfiguration"
+			name="%LangToolchainPropertyPage.name">
+			<enabledWhen> 
+				<reference definitionId="LANG_PROJECT_ID.ide.core.expressions.isNatureProject" />
+			</enabledWhen>
+		</page>
 	</extension>
 	
 	<!-- ============ Wizards ============= -->

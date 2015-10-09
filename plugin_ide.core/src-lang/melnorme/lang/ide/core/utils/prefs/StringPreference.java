@@ -23,6 +23,10 @@ public class StringPreference extends PreferenceHelper<String> {
 	public StringPreference(String pluginId, String key, String defaultValue) {
 		super(pluginId, key, defaultValue);
 	}
+	public StringPreference(String pluginId, String key, String defaultValue, 
+			IProjectPreference<Boolean> useProjectSettings) {
+		super(pluginId, key, defaultValue, useProjectSettings);
+	}
 	
 	
 	@Override

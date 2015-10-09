@@ -78,6 +78,7 @@ public class SpinnerNumberField extends LabelledFieldComponent<Integer> {
 		return this;
 	}
 	
+	@Override
 	public void setEnabled(boolean enabled) {
 		SWTUtil.setEnabledIfOk(label, enabled);
 		SWTUtil.setEnabledIfOk(spinner, enabled);

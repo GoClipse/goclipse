@@ -126,7 +126,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	
 	protected IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget) 
 			throws CommonException {
-		Path buildToolPath = LangCore.getToolManager().getSDKToolPath();
+		Path buildToolPath = LangCore.getToolManager().getSDKToolPath(project);
 		try {
 			return doCreateBuildTargetOperation(opInfo, project, buildToolPath, buildTarget);
 		} catch(CoreException e) {

@@ -11,6 +11,9 @@
 package melnorme.lang.ide.core.utils.prefs;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.HashMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -24,10 +27,23 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.fields.DomainField;
 
-public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper implements IGlobalPreference<T> {
+public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
+	protected static final HashMap<String, PreferenceHelper<?>> instances = new HashMap<>();
+	
+	public static void checkUniqueKey(String key, PreferenceHelper<?> preference) {
+		synchronized (instances) {
+			// Ensure uniqueness: allow only one instance of a preference helper per key.
+			assertTrue(instances.containsKey(key) == false);
+			instances.put(key, preference);
+		}
+	}
+	
+	public final String key;
 	public final String qualifier;
 	protected final T defaultValue;
+	
+	protected final IProjectPreference<Boolean> useProjectSettingsPref;
 	
 	protected final DomainField<T> field = new DomainField<>();
 	
@@ -36,9 +52,25 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper imple
 	}
 	
 	public PreferenceHelper(String pluginId, String key, T defaultValue) {
-		super(key);
+		this(pluginId, key, defaultValue, true, null);
+	}
+	
+	public PreferenceHelper(String pluginId, String key, T defaultValue, 
+			IProjectPreference<Boolean> useProjectSettingsPref) {
+		this(pluginId, key, defaultValue, true, useProjectSettingsPref);
+	}
+	
+	public PreferenceHelper(String pluginId, String key, T defaultValue, boolean ensureUniqueKey,
+			IProjectPreference<Boolean> useProjectSettingsPref) {
+		this.key = assertNotNull(key);
 		this.qualifier = pluginId;
 		this.defaultValue = assertNotNull(defaultValue);
+		
+		this.useProjectSettingsPref = useProjectSettingsPref; // can be null
+		
+		if(ensureUniqueKey) {
+			checkUniqueKey(key, this);
+		}
 		
 		initializeDefaultValueInDefaultScope();
 		
@@ -85,10 +117,6 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper imple
 		return assertNotNull(doGet(combinedScopes()));
 	}
 	
-	public final T get(IProject project) {
-		return assertNotNull(doGet(combinedScopes(project)));
-	}
-	
 	public final T getFrom(IPreferenceStore prefStore) {
 		return doGet(new PreferenceStoreAccess(prefStore));
 	}
@@ -107,13 +135,53 @@ public abstract class PreferenceHelper<T> extends AbstractPreferenceHelper imple
 	
 	/* -----------------  ----------------- */
 	
-	public final void set(IProject project, T value) throws BackingStoreException {
+	public IProjectPreference<T> getProjectPreference() {
+		return projectPreference;
+	}
+	
+	protected final IProjectPreference<T> projectPreference = new IProjectPreference<T>() {
+		
+		@Override
+		public PreferenceHelper<T> getGlobalPreference() {
+			return PreferenceHelper.this;
+		}
+		
+		@Override
+		public T getDefault() {
+			return PreferenceHelper.this.getDefault();
+		}
+		
+		@Override
+		public T getStoredValue(IProject project) {
+			return get(project);
+		}
+		
+		@Override
+		public void setValue(IProject project, T value) throws BackingStoreException {
+			set(project, value);
+		}
+		
+		@Override
+		public T getEffectiveValue(IProject project) {
+			assertNotNull(useProjectSettingsPref);
+			if(project != null && useProjectSettingsPref.getStoredValue(project) == true) {
+				return getStoredValue(project);
+			}
+			return getGlobalPreference().get(); 
+		}
+	};
+	
+	protected final T get(IProject project) {
+		return assertNotNull(doGet(combinedScopes(project)));
+	}
+	
+	protected final void set(IProject project, T value) throws BackingStoreException {
 		IEclipsePreferences projectPreferences = getProjectNode(project);
 		doSet(projectPreferences, value);
 		projectPreferences.flush();
 	}
 	
-	public IEclipsePreferences getProjectNode(IProject project) {
+	protected IEclipsePreferences getProjectNode(IProject project) {
 		return new ProjectScope(project).getNode(getQualifier());
 	}
 	

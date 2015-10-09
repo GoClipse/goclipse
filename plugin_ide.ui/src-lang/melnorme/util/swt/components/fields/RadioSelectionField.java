@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.LabelledFieldComponent;
 
 public class RadioSelectionField<E extends Enum<?>> extends LabelledFieldComponent<E> {
@@ -129,6 +130,13 @@ public class RadioSelectionField<E extends Enum<?>> extends LabelledFieldCompone
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		for(Button button : radioButtons) {
+			SWTUtil.setEnabledIfOk(button, enabled);
+		}
 	}
 	
 }
