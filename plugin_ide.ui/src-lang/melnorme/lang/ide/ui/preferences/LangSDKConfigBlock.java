@@ -14,15 +14,14 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 
-public abstract class LangSDKConfigBlock extends AbstractComponent {
+public abstract class LangSDKConfigBlock extends AbstractComponentExt {
 	
-	public final LangSDKConfigBlock.LanguageSDKLocationGroup sdkLocationGroup = createSDKLocationGroup();
+	public final LanguageSDKLocationGroup sdkLocationGroup = createSDKLocationGroup();
 	
 	public LangSDKConfigBlock() {
 	}
@@ -45,6 +44,10 @@ public abstract class LangSDKConfigBlock extends AbstractComponent {
 		sdkLocationGroup.createComponent(topControl, gdFillDefaults().grab(true, false).create());
 	}
 	
+	@Override
+	public void setEnabled(boolean enabled) {
+		sdkLocationGroup.setEnabled(enabled);
+	}
 	
 	public static class LanguageSDKLocationGroup extends AbstractComponentExt {
 		
