@@ -14,6 +14,7 @@ package melnorme.lang.ide.ui.preferences;
 import static melnorme.lang.ide.ui.preferences.PreferencesMessages.LABEL_ConfigureWorkspaceSettings;
 import static melnorme.lang.ide.ui.preferences.PreferencesMessages.LABEL_UseProjectSpecificSettings;
 import static melnorme.lang.ide.ui.utils.ControlUtils.createOpenPreferencesDialogLink;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -25,14 +26,18 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
+import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.fields.CheckBoxField;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.fields.IDomainField;
 
 public abstract class ProjectAndPreferencesBlock extends AbstractComponent implements IPreferencesWidgetComponent {
 	
 	protected final IProject project;
 	protected final IProjectPreference<Boolean> useProjectSettingsPref;
+	protected final ArrayList2<PreferenceFieldBinding<?>> fieldBindings = new ArrayList2<>();
 	
 	protected final CheckBoxField useProjectSettingsField = new CheckBoxField(LABEL_UseProjectSpecificSettings);
 	
@@ -43,9 +48,18 @@ public abstract class ProjectAndPreferencesBlock extends AbstractComponent imple
 		
 		useProjectSettingsField.addValueChangedListener2(
 			() -> getParentSettingsBlock().setEnabled(useProjectSettingsField.getFieldValue()));
+		
+		addFieldBinding(useProjectSettingsField, useProjectSettingsPref);
 	}
 	
 	public abstract AbstractComponentExt getParentSettingsBlock();
+	
+	public <T> void addFieldBinding(IDomainField<T> field, IProjectPreference<T> preference) {
+		assertTrue(preference == useProjectSettingsPref ||
+			preference.getEnableProjectSettingPref() == useProjectSettingsPref);
+		
+		fieldBindings.add(new PreferenceFieldBinding<>(field, preference, project));
+	}
 	
 	@Override
 	public int getPreferredLayoutColumns() {
@@ -58,8 +72,11 @@ public abstract class ProjectAndPreferencesBlock extends AbstractComponent imple
 			GridDataFactory.fillDefaults().create());
 		
 		String prefPageId = getWorkspacePrefPageId();
-		Link link = createOpenPreferencesDialogLink(topControl, prefPageId, LABEL_ConfigureWorkspaceSettings);
+		Link link = createOpenPreferencesDialogLink(topControl, prefPageId, LABEL_ConfigureWorkspaceSettings, null);
 		GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).applyTo(link);
+		
+		SWTFactoryUtil.createLabel(topControl, SWT.SEPARATOR | SWT.HORIZONTAL, "", 
+			GridDataFactory.fillDefaults().span(2, 1).create());
 		
 		getParentSettingsBlock().createComponent(topControl, gdFillDefaults().span(2, 1).grab(true, false).create());
 	}
@@ -70,31 +87,49 @@ public abstract class ProjectAndPreferencesBlock extends AbstractComponent imple
 	
 	@Override
 	protected void updateComponentFromInput() {
-		useProjectSettingsField.setFieldValue(useProjectSettingsPref.getStoredValue(project));
-		updateComponentFromInput_do();
+		fieldBindings.forEach(binding -> binding.updateFieldFromInput());
 	}
-	
-	protected abstract void updateComponentFromInput_do();
 	
 	@Override
 	public void loadDefaults() {
-		useProjectSettingsField.setFieldValue(useProjectSettingsPref.getDefault());
-		loadDefaults_do();
+		fieldBindings.forEach(binding -> binding.loadDefaults());
 	}
-	
-	protected abstract void loadDefaults_do();
 	
 	@Override
 	public boolean saveSettings() {
 		try {
-			useProjectSettingsPref.setValue(project, useProjectSettingsField.getBooleanFieldValue());
-			saveSettings_do();
+			for(PreferenceFieldBinding<?> binding : fieldBindings) {
+				binding.saveSettings();
+			}
+			return true;
 		} catch(BackingStoreException e) {
 			return false;
 		}
-		return true;
 	}
 	
-	protected abstract void saveSettings_do() throws BackingStoreException ;
+	public static class PreferenceFieldBinding<T> {
+		
+		protected final IDomainField<T> field;
+		protected final IProjectPreference<T> preference;
+		protected final IProject project;
+		
+		public PreferenceFieldBinding(IDomainField<T> field, IProjectPreference<T> preference, IProject project) {
+			this.field = field;
+			this.preference = preference;
+			this.project = project;
+		}
+		
+		public void updateFieldFromInput() {
+			field.setFieldValue(preference.getStoredValue(project));
+		}
+		
+		public void loadDefaults() {
+			field.setFieldValue(preference.getGlobalPreference().get());
+		}
+		
+		public void saveSettings() throws BackingStoreException {
+			preference.setValue(project, field.getFieldValue());
+		}
+	}
 	
 }

@@ -163,12 +163,18 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		
 		@Override
 		public T getEffectiveValue(IProject project) {
-			assertNotNull(useProjectSettingsPref);
-			if(project != null && useProjectSettingsPref.getStoredValue(project) == true) {
+			assertNotNull(getEnableProjectSettingPref());
+			if(project != null && getEnableProjectSettingPref().getStoredValue(project) == true) {
 				return getStoredValue(project);
 			}
 			return getGlobalPreference().get(); 
 		}
+		
+		@Override
+		public IProjectPreference<Boolean> getEnableProjectSettingPref() {
+			return useProjectSettingsPref;
+		}
+		
 	};
 	
 	protected final T get(IProject project) {
