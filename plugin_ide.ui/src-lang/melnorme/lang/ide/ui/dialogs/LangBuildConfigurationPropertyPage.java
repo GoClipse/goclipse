@@ -12,67 +12,32 @@ package melnorme.lang.ide.ui.dialogs;
 
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.PropertyPage;
 
 import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
-import melnorme.util.swt.SWTFactoryUtil;
 
-public abstract class LangBuildConfigurationPropertyPage extends PropertyPage {
-	
-	protected LangProjectBuildConfigurationComponent buildOptionsComponent;
+public abstract class LangBuildConfigurationPropertyPage extends AbstractLangPropertyPage {
 	
 	public LangBuildConfigurationPropertyPage() {
 		super();
 		noDefaultAndApplyButton();
 	}
 	
-	@Override
-	public void setElement(IAdaptable element) {
-		super.setElement(element);
-		buildOptionsComponent = createProjectBuildConfigComponent(getProject());
-	}
-	
-	protected IProject getProject() {
-		IAdaptable adaptable = getElement();
-		if(adaptable instanceof IProject) {
-			return (IProject) adaptable;
-		}
-		return (IProject) adaptable.getAdapter(IProject.class);
-	}
-	
-	@Override
-	protected Control createContents(Composite parent) {
-		IProject project = getProject();
-		if(project == null) {
-			return SWTFactoryUtil.createLabel(parent, SWT.LEFT, "No project available", null);
-		}
-		return buildOptionsComponent.createComponent(parent);
-	}
-	
 	/* -----------------  ----------------- */
 	
-	protected abstract LangProjectBuildConfigurationComponent createProjectBuildConfigComponent(IProject project);
+	@Override
+	protected abstract LangProjectBuildConfigurationComponent createProjectConfigComponent(IProject project);
+	
+	@Override
+	public LangProjectBuildConfigurationComponent getSettingsComponent() {
+		return (LangProjectBuildConfigurationComponent) super.getSettingsComponent();
+	}
 	
 	@Override
 	public void applyData(Object data) {
 		if(data instanceof String) {
 			String targetName = (String) data;
-			buildOptionsComponent.getBuildTargetField().setFieldValue(targetName);
+			getSettingsComponent().getBuildTargetField().setFieldValue(targetName);
 		}
-	}
-	
-	@Override
-	public boolean performOk() {
-		return buildOptionsComponent.performOk();
-	}
-	
-	@Override
-	protected void performDefaults() {
-		buildOptionsComponent.restoreDefaults();
 	}
 	
 }

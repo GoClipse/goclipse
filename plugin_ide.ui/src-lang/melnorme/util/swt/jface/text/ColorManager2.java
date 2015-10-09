@@ -15,7 +15,9 @@ import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
-public class ColorManager2 implements ISharedTextColors {
+import melnorme.utilbox.ownership.IDisposable;
+
+public class ColorManager2 implements ISharedTextColors, IDisposable {
 	
 	protected ColorRegistryExt _colorRegistry;
 	

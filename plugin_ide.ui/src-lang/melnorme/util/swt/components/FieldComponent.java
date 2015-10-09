@@ -22,7 +22,7 @@ import melnorme.utilbox.fields.IFieldValueListener;
  * Field component with a field value that can be manipulated (get/set) even if the 
  * componented is not created.
  */
-public abstract class FieldComponent<VALUE> extends AbstractComponent 
+public abstract class FieldComponent<VALUE> extends AbstractComponentExt 
 	implements IDomainField<VALUE> {
 	
 	private final DomainField<VALUE> domainField;

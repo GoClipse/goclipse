@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.LabelledFieldComponent;
 
@@ -112,6 +113,11 @@ public class ComboBoxField extends LabelledFieldComponent<Integer> {
 			}
 		});
 		return combo;
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		SWTUtil.setEnabledIfOk(combo, enabled);
 	}
 	
 }

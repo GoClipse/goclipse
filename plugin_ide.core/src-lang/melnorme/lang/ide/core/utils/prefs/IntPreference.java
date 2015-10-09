@@ -24,6 +24,10 @@ public class IntPreference extends PreferenceHelper<Integer> {
 	public IntPreference(String pluginId, String key, int defaultValue) {
 		super(pluginId, key, defaultValue);
 	}
+	public IntPreference(String pluginId, String key, int defaultValue, 
+			IProjectPreference<Boolean> useProjectSettingsPref) {
+		super(pluginId, key, defaultValue, useProjectSettingsPref);
+	}
 	
 	@Override
 	protected Integer doGet(IPreferencesAccess prefsAccess) {

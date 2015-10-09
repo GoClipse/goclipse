@@ -34,7 +34,7 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_Old.IPreferencesBlock_Old;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences.OverlayStylingPreferences;
@@ -61,10 +61,9 @@ import melnorme.utilbox.tree.TreeVisitor;
  * A configuration component for syntax (and possibly semantic) source highlighting options.
  */
 public abstract class AbstractSourceColoringConfigurationBlock extends AbstractComponent 
-	implements IPreferencesBlock_Old {
+	implements IPreferencesWidgetComponent {
 		
 	protected final SourceColoringListRoot coloringOptionsList;
-	protected final ColorManager2 colorManager = new ColorManager2();
 	
 	protected final OverlayStylingPreferences overlayStylingPrefs = new OverlayStylingPreferences(
 		EditorSettings_Actual.getStylingPreferences()); 
@@ -80,11 +79,6 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 
 	public AbstractSourceColoringConfigurationBlock() {
 		this.coloringOptionsList = new SourceColoringListRoot();
-	}
-	
-	@Override
-	public void dispose() {
-		colorManager.dispose();
 	}
 	
 	protected void visitColoringItems(Consumer<SourceColoringElement> consumer) {
@@ -153,8 +147,9 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	}
 	
 	@Override
-	public void saveSettings() {
+	public boolean saveSettings() {
 		visitColoringItems(item -> item.saveToGlobalPreferences());
+		return true;
 	}
 	
 	@Override
@@ -354,13 +349,16 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		LangSourceViewer sourceViewer = new LangSourceViewer(parent, null, null,
 			showAnnotationsOverview, styles);
 		
-		AbstractLangSourceViewerConfiguration configuration = createSimpleSourceViewerConfiguration(store);
+		ColorManager2 colorManager = new ColorManager2();
+		sourceViewer.addOwned(colorManager);
+		
+		AbstractLangSourceViewerConfiguration configuration = createSimpleSourceViewerConfig(store, colorManager);
 		sourceViewer.configure(configuration);
 		return sourceViewer;
 	}
 	
-	protected AbstractLangSourceViewerConfiguration createSimpleSourceViewerConfiguration( 
-			IPreferenceStore preferenceStore) {
+	protected AbstractLangSourceViewerConfiguration createSimpleSourceViewerConfig( 
+			IPreferenceStore preferenceStore, ColorManager2 colorManager) {
 		return new SimpleSourceViewerConfiguration(preferenceStore, colorManager, overlayStylingPrefs);
 	}
 	

@@ -19,6 +19,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.misc.Location;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -85,7 +86,12 @@ public class SourceOperationContext {
 		}
 		return fileLocation;
 	}
-
+	
+	/** Can be null. */
+	public IProject getProject() {
+		return EditorUtils.getAssociatedProject(editor.getEditorInput());
+	}
+	
 	public int getInvocationLine_0() throws CoreException {
 		try {
 			return getDocument().getLineOfOffset(getInvocationOffset());

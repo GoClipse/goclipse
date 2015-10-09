@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Added per-project compiler installation preferences.
  * Newly created launch configurations now have the debug option "Stop on startup at:" set to false by default. This way debugging won't stop on the C `main`, which is essentially useless outside of C/C++.
  * Fixed: AssertionFailureException pressing Enter after source with more closing braces than opening ones.
  * Added support for Eclipse dark theme (#131). Namely:  

@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
@@ -31,7 +32,7 @@ public class LangSDKConfigBlock extends AbstractComponent {
 	}
 	
 	public FieldComponent<String> getLocationField() {
-		return sdkLocationGroup.sdkLocation;
+		return sdkLocationGroup.sdkLocationField;
 	}
 	
 	@Override
@@ -44,10 +45,10 @@ public class LangSDKConfigBlock extends AbstractComponent {
 		sdkLocationGroup.createComponent(topControl, gdFillDefaults().grab(true, false).create());
 	}
 	
-
-	public static class LanguageSDKLocationGroup extends AbstractComponent {
+	
+	public static class LanguageSDKLocationGroup extends AbstractComponentExt {
 		
-		protected final ButtonTextField sdkLocation = createSdkLocationField();
+		public final ButtonTextField sdkLocationField = createSdkLocationField();
 		
 		protected ButtonTextField createSdkLocationField() {
 			return new DirectoryTextField(PreferencesMessages.ROOT_SDKGroup_path_Label);
@@ -71,12 +72,18 @@ public class LangSDKConfigBlock extends AbstractComponent {
 		
 		@Override
 		protected void createContents(Composite topControl) {
-			sdkLocation.createComponentInlined(topControl);
+			sdkLocationField.createComponentInlined(topControl);
 		}
 		
 		@Override
 		public void updateComponentFromInput() {
 		}
+		
+		@Override
+		public void setEnabled(boolean enabled) {
+			sdkLocationField.setEnabled(enabled);
+		}
+		
 	}
 	
 	@Override

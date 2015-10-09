@@ -58,7 +58,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
 		try {
-			Path goSDKPath = GoToolManager.getDefault().getSDKToolPath();
+			Path goSDKPath = GoToolManager.getDefault().getSDKToolPath(project);
 			pb = prepareProcessBuilder(goSDKPath, goEnv);
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);

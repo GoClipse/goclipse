@@ -12,6 +12,8 @@ package com.googlecode.goclipse.core.operations;
 
 import java.nio.file.Path;
 import java.util.List;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -43,11 +45,11 @@ public class GoToolManager extends AbstractToolManager {
 	}
 	
 	@Override
-	protected IValidatedField<Path> getSDKToolPathField() {
-		return new SDKToolPathField(getSDKToolPathValidator()) {
+	protected IValidatedField<Path> getSDKToolPathField(IProject project) {
+		return new ValidatedSDKToolPath(project, getSDKToolPathValidator()) {
 			@Override
 			protected String getRawFieldValue() {
-				return GoEnvironmentPrefs.GO_ROOT.get();
+				return GoEnvironmentPrefs.GO_ROOT.getProjectPreference().getEffectiveValue(project);
 			}
 		};
 	}

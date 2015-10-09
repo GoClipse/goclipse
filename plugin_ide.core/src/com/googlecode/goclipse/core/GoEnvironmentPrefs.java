@@ -10,17 +10,26 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface GoEnvironmentPrefs {
 	
-	static StringPreference GO_ROOT = new StringPreference("com.googlecode.goclipse.goroot", "");
-	static StringPreference GO_PATH = new StringPreference("com.googlecode.goclipse.gopath", "");
-	static StringPreference GO_OS = new StringPreference("com.googlecode.goclipse.goos", "");
-	static StringPreference GO_ARCH = new StringPreference("com.googlecode.goclipse.goarch", "");
+	static StringPreference GO_ROOT = new StringPreference(LangCore.PLUGIN_ID, 
+		"com.googlecode.goclipse.goroot", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
+	static StringPreference GO_PATH = new StringPreference(LangCore.PLUGIN_ID, 
+		"com.googlecode.goclipse.gopath", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
+	static StringPreference GO_OS = new StringPreference(LangCore.PLUGIN_ID, 
+		"com.googlecode.goclipse.goos", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
+	static StringPreference GO_ARCH = new StringPreference(LangCore.PLUGIN_ID, 
+		"com.googlecode.goclipse.goarch", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
 	
-	static StringPreference COMPILER_PATH = new StringPreference("com.googlecode.goclipse.compiler.path", "");
-	static StringPreference FORMATTER_PATH = new StringPreference("com.googlecode.goclipse.formatter.path", "");
-	static StringPreference DOCUMENTOR_PATH = new StringPreference("com.googlecode.goclipse.documentor.path", "");
+	static StringPreference COMPILER_PATH = new StringPreference(LangCore.PLUGIN_ID, 
+		"com.googlecode.goclipse.compiler.path", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
+	static StringPreference FORMATTER_PATH = new StringPreference(LangCore.PLUGIN_ID, 
+		"com.googlecode.goclipse.formatter.path", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
+	static StringPreference DOCUMENTOR_PATH = new StringPreference(LangCore.PLUGIN_ID, 
+		"com.googlecode.goclipse.documentor.path", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
 	
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
@@ -49,24 +51,26 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 	
 	/* -----------------  ----------------- */
 	
-	public Path getSDKToolPath() throws CommonException {
-		return getSDKToolPathField().getValidatedField();
+	public Path getSDKToolPath(IProject project) throws CommonException {
+		return getSDKToolPathField(project).getValidatedField();
 	}
 	
-	protected IValidatedField<Path> getSDKToolPathField() {
-		return new SDKToolPathField(getSDKToolPathValidator());
+	protected IValidatedField<Path> getSDKToolPathField(IProject project) {
+		return new ValidatedSDKToolPath(project, getSDKToolPathValidator());
 	}
 	
-	public static class SDKToolPathField implements IValidatedField<Path> {
+	public static class ValidatedSDKToolPath implements IValidatedField<Path> {
 		
+		protected final IProject project;
 		protected final PathValidator pathValidator;
 		
-		public SDKToolPathField(PathValidator pathValidator) {
-			this.pathValidator = pathValidator;
+		public ValidatedSDKToolPath(IProject project, PathValidator pathValidator) {
+			this.project = project;
+			this.pathValidator = assertNotNull(pathValidator);
 		}
 		
 		protected String getRawFieldValue() {
-			return ToolchainPreferences.SDK_PATH.get();
+			return ToolchainPreferences.SDK_PATH2.getProjectPreference().getEffectiveValue(project);
 		}
 		
 		@Override
@@ -88,7 +92,7 @@ public abstract class AbstractToolManager extends ListenerListHelper<ILangOperat
 	public ProcessBuilder createSDKProcessBuilder(IProject project, String... sdkOptions)
 			throws CoreException, CommonException {
 		Location projectLocation = ResourceUtils.getProjectLocation(project);
-		Path sdkToolPath = getSDKToolPath();
+		Path sdkToolPath = getSDKToolPath(project);
 		return createToolProcessBuilder(sdkToolPath, projectLocation, sdkOptions);
 	}
 	

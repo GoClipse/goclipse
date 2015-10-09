@@ -68,6 +68,7 @@ public class CheckBoxField extends LabelledFieldComponent<Boolean> {
 		checkBox.setSelection(getFieldValue());
 	}
 	
+	@Override
 	public void setEnabled(boolean enabled) {
 		SWTUtil.setEnabledIfOk(checkBox, enabled);
 	}

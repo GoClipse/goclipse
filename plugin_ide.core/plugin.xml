@@ -20,6 +20,14 @@
 				</test>
 			</adapt>
 		</definition>
+		<definition id="com.googlecode.goclipse.core.expressions.isNatureProject">
+			 <adapt type="org.eclipse.core.resources.IProject">
+				<test
+					property="org.eclipse.core.resources.projectNature"
+					value="com.googlecode.goclipse.core.goNature">
+				</test>
+			</adapt>
+		</definition>
 		
 		<definition id="com.googlecode.goclipse.core.expressions.isResourceInIDEProject">
 			<and>

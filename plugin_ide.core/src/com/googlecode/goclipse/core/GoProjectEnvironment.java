@@ -87,7 +87,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	}
 	
 	protected static String getEffectiveValue(StringPreference stringPref, IProject project, String envAlternative) {
-		String prefValue = stringPref.get(project);
+		String prefValue = stringPref.getProjectPreference().getEffectiveValue(project);
 		if(prefValue == null || prefValue.isEmpty()) {
 			return System.getenv(envAlternative);
 		}

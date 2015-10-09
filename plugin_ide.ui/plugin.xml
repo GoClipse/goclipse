@@ -307,9 +307,17 @@
 	<extension point="org.eclipse.ui.propertyPages">
 		<page class="com.googlecode.goclipse.ui.properties.GoProjectBuildConfigurationPropertyPage"
 			id="com.googlecode.goclipse.ui.propertyPages.ProjectBuildConfiguration"
-			name="Build Targets">
+			name="%LangBuildOptionsPropertyPage.name">
 			<enabledWhen>
 				<reference definitionId="com.googlecode.goclipse.core.expressions.isGoProject" />
+			</enabledWhen>
+		</page>
+		<page
+			class="Lcom.googlecode.goclipse.ui.preferences.GoToolchainConfigurationPage"
+			id="com.googlecode.goclipse.ui.propertyPages.ToolchainConfiguration"
+			name="%LangToolchainPropertyPage.name">
+			<enabledWhen> 
+				<reference definitionId="com.googlecode.goclipse.core.expressions.isNatureProject" />
 			</enabledWhen>
 		</page>
 	</extension>
