@@ -24,7 +24,7 @@ public class LANGUAGE_ToolchainConfigurationPage extends AbstractLangPropertyPag
 	protected IPreferencesWidgetComponent createProjectConfigComponent(IProject project) {
 		return new ProjectSDKSettingsBlock(project, 
 			ToolchainPreferences.USE_PROJECT_SETTINGS, 
-			ToolchainPreferences.SDK_PATH2.getProjectPreference());
+			ToolchainPreferences.SDK_PATH.getProjectPreference());
 	}
 	
 }
