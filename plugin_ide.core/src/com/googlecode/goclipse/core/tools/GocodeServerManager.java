@@ -6,11 +6,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 import com.googlecode.goclipse.core.GoCore;
+import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -28,7 +28,7 @@ public class GocodeServerManager implements IDisposable {
 	}
 	
 	public static IPath getGocodePath() {
-		String pref = ToolchainPreferences.DAEMON_PATH.get();
+		String pref = GoToolPreferences.GO_CODE_Path.get();
 		
 		if (pref == null || pref.length() == 0) {
 			return null;
