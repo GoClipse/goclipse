@@ -13,26 +13,33 @@ package melnorme.lang.ide.ui.preferences;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 
-public abstract class LangSDKConfigBlock extends AbstractComponentExt {
+public abstract class LangSDKConfigBlock extends ValidatedConfigBlock {
 	
-	public final LanguageSDKLocationGroup sdkLocationGroup = createSDKLocationGroup();
+	public final LanguageSDKLocationGroup sdkLocationGroup = createSDKLocationGroup2();
 	
 	public LangSDKConfigBlock() {
 	}
 	
-	protected LanguageSDKLocationGroup createSDKLocationGroup() {
-		return new LanguageSDKLocationGroup();
+	protected LanguageSDKLocationGroup createSDKLocationGroup2() {
+		LanguageSDKLocationGroup sdkLocationGroup = new LanguageSDKLocationGroup();
+		
+		validation.addValidatedField(sdkLocationGroup.sdkLocationField, getSDKValidator());
+		
+		return sdkLocationGroup;
 	}
 	
 	public FieldComponent<String> getLocationField() {
 		return sdkLocationGroup.sdkLocationField;
 	}
+	
+	protected abstract PathValidator getSDKValidator();
 	
 	@Override
 	public int getPreferredLayoutColumns() {

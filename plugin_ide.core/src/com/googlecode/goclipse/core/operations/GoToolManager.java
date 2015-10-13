@@ -24,9 +24,9 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
-import melnorme.lang.tooling.data.PathValidator;
+import melnorme.lang.tooling.data.IValidatedField;
+import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.IValidatedField;
 import melnorme.utilbox.misc.Location;
 
 /**

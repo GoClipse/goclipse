@@ -1,6 +1,6 @@
 package com.googlecode.goclipse.tooling;
 
-import melnorme.lang.tooling.data.SDKLocationValidator;
+import melnorme.lang.tooling.ops.SDKLocationValidator;
 
 public class GoSDKLocationValidator extends SDKLocationValidator {
 	

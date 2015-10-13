@@ -10,10 +10,10 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.preferences;
 
+import static melnorme.lang.tooling.ops.util.PathValidator.LocationKind.FILE_ONLY;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -29,28 +29,21 @@ import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 
-import melnorme.lang.tooling.data.IFieldValidator;
-import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.ide.ui.preferences.ValidatedConfigBlock;
+import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
+import melnorme.lang.tooling.ops.util.LocationValidator;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.FileTextField;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.DomainField;
-import melnorme.utilbox.fields.IDomainField;
 import melnorme.utilbox.fields.IFieldValueListener;
-import melnorme.utilbox.fields.IValidatedField;
-import melnorme.utilbox.fields.IValidatedField.ValidatedField;
 import melnorme.utilbox.misc.ArrayUtil;
 
-public class GoSDKConfigBlock extends AbstractComponent {
-	
-	public final MultipleFieldValidation validation = new MultipleFieldValidation();
+public class GoSDKConfigBlock extends ValidatedConfigBlock {
 	
 	public final DirectoryTextField goRootField = new DirectoryTextField("GO&ROOT:");
 	public final ValidatedField validatedGoRoot = new ValidatedField(goRootField, new GoSDKLocationValidator());
@@ -72,6 +65,10 @@ public class GoSDKConfigBlock extends AbstractComponent {
 		
 		validation.addValidatedField(goRootField, new GoSDKLocationValidator());
 		
+		validation.addValidatedField(goToolPath, new LocationValidator(goToolPath.getLabelText(), FILE_ONLY));
+		validation.addValidatedField(goFmtPath, new LocationValidator(goFmtPath.getLabelText(), FILE_ONLY));
+		validation.addValidatedField(goDocPath, new LocationValidator(goDocPath.getLabelText(), FILE_ONLY));
+		
 		goRootField.addValueChangedListener(new IFieldValueListener() {
 			@Override
 			public void fieldValueChanged() {
@@ -80,42 +77,11 @@ public class GoSDKConfigBlock extends AbstractComponent {
 		});
 	}
 	
-	public static class MultipleFieldValidation extends DomainField<StatusException> implements IValidatedField<Object> {
-		
-		protected final ArrayList<ValidatedField> fields = new ArrayList2<>();
-		
-		public void addValidatedField(IDomainField<String> field, IFieldValidator validator) {
-			fields.add(new ValidatedField(field, validator));
-			field.addValueChangedListener2(true, () -> updateFieldValue());
-		}
-		
-		protected void updateFieldValue() {
-			try {
-				for(ValidatedField validatedField : fields) {
-					validatedField.getValidatedField(); // result is ignored, only care about throw
-				}
-				setFieldValue(null);
-			} catch(StatusException se) {
-				setFieldValue(se);
-			}
-		}
-		
-		@Override
-		public Object getValidatedField() throws StatusException {
-			StatusException se = getFieldValue();
-			if(se != null) {
-				throw se;
-			}
-			return null;
-		}
-		
-	}
-	
 	protected void handleGoRootChange() {
 		IPath gorootPath = new Path(goRootField.getFieldValue());
 		File binPath = gorootPath.append("bin").toFile();
 		
-		if(validatedGoRoot.getValidationStatus().isOkStatus()) {
+		if(validatedGoRoot.getValidationStatusLevel().isOkStatus()) {
 			
 			File compilerFile = findExistingFile(binPath.toPath(), 
 				GoEnvironmentUtils.getSupportedCompilerNames());
@@ -183,6 +149,18 @@ public class GoSDKConfigBlock extends AbstractComponent {
 		/* -----------------  ----------------- */
 		
 		goPathField.createComponent(topControl, getPreferenceGroupDefaultLayout());
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		goRootField.setEnabled(enabled);
+		goOSField.setEnabled(enabled);
+		goArchField.setEnabled(enabled);
+		
+		goToolPath.setEnabled(enabled);
+		goFmtPath.setEnabled(enabled);
+		goDocPath.setEnabled(enabled);
+		goPathField.setEnabled(enabled);
 	}
 	
 	@Override
