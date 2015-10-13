@@ -17,6 +17,10 @@ public class LocationValidator extends PathValidator implements IFieldValidator 
 		super(fieldNamePrefix);
 	}
 	
+	public LocationValidator(String fieldNamePrefix, LocationKind locKind) {
+		super(fieldNamePrefix, locKind);
+	}
+	
 	@Override
 	public Object getValidatedField(String pathString) throws ValidationException {
 		return getValidatedLocation(pathString);

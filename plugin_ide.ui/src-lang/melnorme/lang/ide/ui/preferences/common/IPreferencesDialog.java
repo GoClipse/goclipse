@@ -12,6 +12,6 @@ package melnorme.lang.ide.ui.preferences.common;
 
 public interface IPreferencesDialog {
 	
-	void addComponent(IPreferencesDialogComponent prefComponent);
+	void addPrefComponent(IPreferencesDialogComponent prefComponent);
 	
 }

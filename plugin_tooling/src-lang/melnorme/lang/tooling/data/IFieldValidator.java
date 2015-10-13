@@ -13,7 +13,7 @@ package melnorme.lang.tooling.data;
 
 public interface IFieldValidator {
 	
-	public Object getValidatedField(String stringValue) throws StatusException;
+	public Object getValidatedField(String value) throws StatusException;
 	
 	static StatusException getFieldStatus(IFieldValidator validator, String value) {
 		if(validator == null) {

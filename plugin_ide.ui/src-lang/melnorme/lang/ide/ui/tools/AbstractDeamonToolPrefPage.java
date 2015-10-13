@@ -57,10 +57,10 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create(), 
 			3);
 		
-		addBooleanComponent(ToolchainPreferences.AUTO_START_DAEMON.key, toolGroup, new CheckBoxField(
+		addBooleanComponent(ToolchainPreferences.AUTO_START_DAEMON, toolGroup, new CheckBoxField(
 			"Start " + getDaemonToolName() + " server automatically"));
 		
-		addBooleanComponent(ToolchainPreferences.DAEMON_CONSOLE_ENABLE.key, toolGroup, new CheckBoxField(
+		addBooleanComponent(ToolchainPreferences.DAEMON_CONSOLE_ENABLE, toolGroup, new CheckBoxField(
 			"Enable " + getDaemonToolName() + " log console (requires restart)"));
 		
 		daemonPathEditor = createDaemonPathFieldEditor(toolGroup);
@@ -68,7 +68,7 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefP
 	
 	protected ButtonTextField createDaemonPathFieldEditor(Group group) {
 		return createFileComponent(group, getDaemonToolName() + " path:", 
-			ToolchainPreferences.DAEMON_PATH.key, true);
+			ToolchainPreferences.DAEMON_PATH, true);
 	}
 	
 	protected String getDaemonToolName() {

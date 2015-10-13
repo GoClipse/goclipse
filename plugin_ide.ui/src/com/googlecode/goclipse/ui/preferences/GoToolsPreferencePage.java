@@ -11,13 +11,6 @@
 package com.googlecode.goclipse.ui.preferences;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.tools.AbstractDeamonToolPrefPage;
-import melnorme.lang.ide.ui.utils.UIOperationsHelper;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.fields.ButtonTextField;
-import melnorme.util.swt.components.fields.FileTextField;
-import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -33,6 +26,14 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.core.operations.GetAndInstallGoPackageOperation;
 
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.tools.AbstractDeamonToolPrefPage;
+import melnorme.lang.ide.ui.utils.UIOperationsHelper;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.util.swt.components.fields.FileTextField;
+import melnorme.utilbox.misc.StringUtil;
+
 public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 		IWorkbenchPreferencePage {
 	
@@ -46,7 +47,7 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 			3);
 		
 		FileTextField goOracleFileEditor = 
-				createFileComponent(oracleGroup, "Go oracle path:", GoToolPreferences.GO_ORACLE_Path.key, true);
+				createFileComponent(oracleGroup, "Go oracle path:", GoToolPreferences.GO_ORACLE_Path, true);
 		
 		createInstallPackageButton(oracleGroup, "Download Go oracle", "golang.org/x/tools/cmd/oracle", "oracle",
 			goOracleFileEditor);
