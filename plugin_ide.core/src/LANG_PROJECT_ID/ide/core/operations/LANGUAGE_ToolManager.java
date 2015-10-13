@@ -12,7 +12,7 @@ package LANG_PROJECT_ID.ide.core.operations;
 
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
-import melnorme.lang.tooling.data.PathValidator;
+import melnorme.lang.tooling.ops.util.PathValidator;
 
 public class LANGUAGE_ToolManager extends AbstractToolManager {
 	

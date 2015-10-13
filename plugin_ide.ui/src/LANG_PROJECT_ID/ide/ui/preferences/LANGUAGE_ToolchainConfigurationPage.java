@@ -12,6 +12,7 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
 
+import LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage.LANGUAGE_SDKConfigBlock;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
@@ -28,7 +29,7 @@ public class LANGUAGE_ToolchainConfigurationPage extends AbstractLangPropertyPag
 			ToolchainPreferences.SDK_PATH.getProjectPreference()) {
 				@Override
 				protected LangSDKConfigBlock init_createSDKLocationGroup() {
-					return new LangSDKConfigBlock() { };
+					return new LANGUAGE_SDKConfigBlock();
 				}
 		};
 	}
