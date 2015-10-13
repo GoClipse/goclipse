@@ -29,8 +29,25 @@ public class PathValidator extends AbstractValidatorExt implements IFieldValidat
 	public boolean directoryOnly = false;
 	
 	public PathValidator(String fieldNamePrefix) {
+		this(fieldNamePrefix, LocationKind.ANY);
+	}
+	
+	public PathValidator(String fieldNamePrefix, LocationKind locKind) {
 		this.fieldNamePrefix = fieldNamePrefix;
-		canBeEmpty = false;
+		this.canBeEmpty = false;
+		
+		this.fileOnly = locKind == LocationKind.FILE_ONLY;
+		this.directoryOnly = locKind == LocationKind.DIR_ONLY;
+	}
+	
+	public PathValidator setFileOnly(boolean fileOnly) {
+		this.fileOnly = fileOnly;
+		return this;
+	}
+	
+	public PathValidator setDirectoryOnly(boolean directoryOnly) {
+		this.directoryOnly = directoryOnly;
+		return this;
 	}
 	
 	protected LocationKind getLocationKind() {

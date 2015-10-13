@@ -25,6 +25,14 @@ public interface IDomainField<VALUE> {
 	
 	/* -----------------  ----------------- */
 	
+	default FieldListenerBinding addValueChangedListener2(boolean initialize, IFieldValueListener listener) {
+		FieldListenerBinding binding = addValueChangedListener2(listener);
+		if(initialize) {
+			listener.fieldValueChanged();
+		}
+		return binding;
+	}
+	
 	default FieldListenerBinding addValueChangedListener2(IFieldValueListener listener) {
 		addValueChangedListener(listener);
 		return new FieldListenerBinding(this, listener);

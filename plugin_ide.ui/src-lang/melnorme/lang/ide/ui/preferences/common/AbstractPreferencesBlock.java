@@ -47,7 +47,7 @@ public abstract class AbstractPreferencesBlock extends AbstractComponent {
 	}
 	
 	protected void addPrefComponent(IPreferencesDialogComponent prefComponent) {
-		prefPage.addComponent(prefComponent);
+		prefPage.addPrefComponent(prefComponent);
 	}
 	
 	protected void createStringField(Composite parent, String prefKey, FieldComponent<String> field) {
