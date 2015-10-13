@@ -10,20 +10,18 @@
  *******************************************************************************/
 package melnorme.lang.tooling.data;
 
-public interface IFieldValidator {
+public interface IStatusMessage {
 	
-	public Object getValidatedField(String value) throws StatusException;
+	StatusLevel getStatusLevel();
 	
-	static IStatusMessage getFieldStatus(IFieldValidator validator, String value) {
-		if(validator == null) {
-			return null;
-		}
-		try {
-			validator.getValidatedField(value);
-		} catch (StatusException se) {
-			return se;
-		}
-		return null;
-	} 
+	default int getStatusLevelOrdinal() {
+		return getStatusLevel().ordinal();
+	}
+	
+	default boolean isOkStatus() {
+		return getStatusLevel() == StatusLevel.OK;
+	}
+	
+	String getMessage();
 	
 }

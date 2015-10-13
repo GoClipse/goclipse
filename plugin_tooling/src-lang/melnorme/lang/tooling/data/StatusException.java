@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.core.CommonException;
 
 @SuppressWarnings("serial")
-public class StatusException extends CommonException {
+public class StatusException extends CommonException implements IStatusMessage {
 	
 	protected final StatusLevel statusLevel;
 	
@@ -27,16 +27,21 @@ public class StatusException extends CommonException {
 		this.statusLevel = assertNotNull(statusLevel);
 	}
 	
+	@Override
 	public StatusLevel getStatusLevel() {
 		return statusLevel;
 	}
 	
-	public int getStatusLevelOrdinal() {
-		return statusLevel.ordinal();
+	@Override
+	public String getMessage() {
+		return super.getMessage();
 	}
 	
-	public boolean isOkStatus() {
-		return getStatusLevel() == StatusLevel.OK;
+	public static StatusException toStatusException(IStatusMessage status) {
+		if(status instanceof StatusException) {
+			return (StatusException) status;
+		}
+		return new StatusException(status.getStatusLevel(), status.getMessage());
 	}
 	
 }

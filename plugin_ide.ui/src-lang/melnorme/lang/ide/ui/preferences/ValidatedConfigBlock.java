@@ -8,22 +8,18 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.ide.ui.preferences;
 
-public interface IFieldValidator {
+
+import melnorme.lang.tooling.data.MultipleFieldValidation;
+import melnorme.util.swt.components.AbstractComponentExt;
+
+public abstract class ValidatedConfigBlock extends AbstractComponentExt {
 	
-	public Object getValidatedField(String value) throws StatusException;
+	public final MultipleFieldValidation validation = new MultipleFieldValidation();
 	
-	static IStatusMessage getFieldStatus(IFieldValidator validator, String value) {
-		if(validator == null) {
-			return null;
-		}
-		try {
-			validator.getValidatedField(value);
-		} catch (StatusException se) {
-			return se;
-		}
-		return null;
-	} 
+	public ValidatedConfigBlock() {
+		super();
+	}
 	
 }

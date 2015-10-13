@@ -23,6 +23,15 @@ public interface IDomainField<VALUE> {
 	
 	void removeValueChangedListener(IFieldValueListener listener);
 	
+	//alias
+	default void addListener(IFieldValueListener listener) {
+		addValueChangedListener(listener);
+	}
+	//alias
+	default void removeListener(IFieldValueListener listener) {
+		removeValueChangedListener(listener);
+	}
+	
 	/* -----------------  ----------------- */
 	
 	default FieldListenerBinding addValueChangedListener2(boolean initialize, IFieldValueListener listener) {

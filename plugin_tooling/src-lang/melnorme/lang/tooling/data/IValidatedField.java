@@ -8,22 +8,21 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.fields;
+package melnorme.lang.tooling.data;
 
-import melnorme.lang.tooling.data.IFieldValidator;
-import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.utilbox.fields.IDomainField;
 
-public interface IValidatedField<TYPE> {
+public interface IValidatedField<TYPE> extends IValidationSource {
 	
 	public TYPE getValidatedField() throws StatusException;
 	
-	default StatusLevel getValidationStatus() {
+	@Override
+	default StatusException getValidationStatus() {
 		try {
 			getValidatedField();
-			return StatusLevel.OK;
+			return null;
 		} catch (StatusException se) {
-			return se.getStatusLevel();
+			return se;
 		}
 	}
 	
@@ -56,23 +55,6 @@ public interface IValidatedField<TYPE> {
 			String fieldValue = field.getFieldValue();
 			return validator.getValidatedField(fieldValue);
 		}
-	}
-	
-	/* -----------------  ----------------- */
-	
-	static StatusException getHighestStatus(Iterable<IValidatedField<?>> validationSources) {
-		StatusException highestSE = null;
-		for(IValidatedField<?> validationSource : validationSources) {
-			
-			try {
-				validationSource.getValidatedField();
-			} catch (StatusException se) {
-				if(highestSE == null || se.getStatusLevelOrdinal() > highestSE.getStatusLevelOrdinal()) {
-					highestSE = se;
-				}
-			}
-		}
-		return highestSE;
 	}
 	
 }

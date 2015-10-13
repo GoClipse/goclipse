@@ -8,9 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.ops.util;
 
 import java.nio.file.Path;
+
+import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.data.ValidationException;
+import melnorme.lang.tooling.data.ValidationMessages;
 
 public class LocationOrSinglePathValidator extends PathValidator {
 	

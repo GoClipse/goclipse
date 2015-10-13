@@ -29,6 +29,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -110,7 +111,7 @@ public class EclipseUtils {
 		}
 	}
 	
-	public static int statusLevelToEclipseSeverity(StatusException se) {
+	public static int statusLevelToEclipseSeverity(IStatusMessage se) {
 		return statusLevelToEclipseSeverity(se.getStatusLevel());
 	}
 	

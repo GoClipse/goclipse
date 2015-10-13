@@ -11,11 +11,8 @@
 package melnorme.lang.ide.ui.preferences.common;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.layout.GridData;
@@ -23,17 +20,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.BooleanFieldAdapter;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.ComboFieldAdapter;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.StringFieldAdapter;
 import melnorme.lang.tooling.data.IFieldValidator;
-import melnorme.lang.tooling.data.LocationOrSinglePathValidator;
-import melnorme.lang.tooling.data.LocationValidator;
-import melnorme.lang.tooling.data.PathValidator;
-import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.data.IValidatedField;
+import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
+import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
+import melnorme.lang.tooling.ops.util.LocationValidator;
+import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ComboBoxField;
@@ -41,8 +39,6 @@ import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.FileTextField;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.IDomainField;
-import melnorme.utilbox.fields.IValidatedField;
-import melnorme.utilbox.fields.IValidatedField.ValidatedField;
 
 /**
  * This is the preferred way to create Preference pages (as of 2015-02).
@@ -50,11 +46,9 @@ import melnorme.utilbox.fields.IValidatedField.ValidatedField;
  * This page delegates apply/cancel/revert to preference components 
  * (Usually connected to {@link FieldComponent}).
  */
-public abstract class AbstractComponentsPrefPage extends AbstractLangPreferencesPage 
-	implements IPreferencesDialog {
+public abstract class AbstractComponentsPrefPage extends AbstractComponentPrefPage2 implements IPreferencesDialog {
 	
 	private final ArrayList2<IPreferencesDialogComponent> prefComponents = new ArrayList2<>();
-	private final ArrayList2<IValidatedField<?>> validators = new ArrayList2<>();
 	
 	public AbstractComponentsPrefPage(IPreferenceStore store) {
 		super(store);
@@ -79,7 +73,6 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 	}
 	
 	public void connectStringField(StringPreference pref, IDomainField<String> field, IFieldValidator validator) {
-		assertNotNull(validator);
 		connectStringComponent(pref, field, new ValidatedField(field, validator));
 	}
 	
@@ -90,41 +83,6 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		addValidationSource(validationSource);
 		
 		field.addValueChangedListener(() -> updateStatusMessage());
-	}
-	
-	protected void addValidationSource(IValidatedField<?> validationSource) {
-		validators.add(validationSource);
-	}
-	
-	protected void updateStatusMessage() {
-		if(!isControlCreated()) {
-			return;
-		}
-		
-		StatusException se = IValidatedField.getHighestStatus(validators);
-		if(se == null) {
-			setMessage(null);
-			setValid(true);
-		} else {
-			setMessage(se.getMessage(), statusLevelToMessageType(se.getStatusLevel()));
-			setValid(se.getStatusLevel() != StatusLevel.ERROR);
-		}
-	}
-	
-	public static int statusLevelToMessageType(StatusLevel statusLevel) {
-		switch (statusLevel) {
-		case OK: return IMessageProvider.NONE;
-		case INFO: return IMessageProvider.INFORMATION;
-		case WARNING: return IMessageProvider.WARNING;
-		case ERROR: return IMessageProvider.ERROR;
-		}
-		throw assertFail();
-	}
-	
-	@Override
-	public final void createControl(Composite parent) {
-		super.createControl(parent);
-		updateStatusMessage();
 	}
 	
 	/* -----------------  ----------------- */
@@ -162,6 +120,9 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		return group;
 	}
 	
+	public void addStringComponent(IProjectPreference<String> pref, IDomainField<String> field) {
+		addPrefComponent(new StringFieldAdapter(pref.getKey(), field));
+	}
 	public void addStringComponent(StringPreference pref, IDomainField<String> field) {
 		addPrefComponent(new StringFieldAdapter(pref.key, field));
 	}
@@ -185,37 +146,24 @@ public abstract class AbstractComponentsPrefPage extends AbstractLangPreferences
 		field.createComponentInlined(parent);
 	}
 	
-	/* FIXME: remove deprecated */
+	/* ----------------- Some field creation utils, not recommended though ----------------- */
 	
-	@Deprecated
-	public void connectFileField(StringPreference pref, IDomainField<String> stringField, 
-			boolean allowSinglePath, String fieldNamePrefix) {
-		PathValidator validator = (allowSinglePath ? 
-				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix)).setFileOnly(true);
-		connectStringField(pref, stringField, validator);
-	}
-	@Deprecated
-	public void connectDirectoryField(StringPreference pref, IDomainField<String> stringField, 
-			boolean allowSinglePath, String fieldNamePrefix) {
-		PathValidator validator = (allowSinglePath ? 
-				new LocationOrSinglePathValidator(fieldNamePrefix) : new LocationValidator(fieldNamePrefix)).setDirectoryOnly(true);
-		connectStringField(pref, stringField, validator);
-	}
-	
-	@Deprecated
 	public FileTextField createFileComponent(Group group, String label, StringPreference pref, 
 			boolean allowSinglePath) {
 		FileTextField pathField = new FileTextField(label);
 		pathField.createComponentInlined(group);
-		connectFileField(pref, pathField, allowSinglePath, label);
+		PathValidator validator = (allowSinglePath ? 
+				new LocationOrSinglePathValidator(label) : new LocationValidator(label)).setFileOnly(true);
+		connectStringField(pref, pathField, validator);
 		return pathField;
 	}
-	@Deprecated
 	public DirectoryTextField createDirectoryComponent(Group group, String label, StringPreference pref, 
 			boolean allowSinglePath) {
 		DirectoryTextField pathField = new DirectoryTextField(label);
 		pathField.createComponentInlined(group);
-		connectDirectoryField(pref, pathField, allowSinglePath, label);
+		PathValidator validator = (allowSinglePath ? 
+				new LocationOrSinglePathValidator(label) : new LocationValidator(label)).setDirectoryOnly(true);
+		connectStringField(pref, pathField, validator);
 		return pathField;
 	}
 	

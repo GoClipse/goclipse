@@ -39,18 +39,10 @@ public class DomainField<VALUE> implements IDomainField<VALUE> {
 	public void addValueChangedListener(IFieldValueListener listener) {
 		listeners.addListener(listener);
 	}
-	//alias
-	public void addListener(IFieldValueListener listener) {
-		addValueChangedListener(listener);
-	}
 	
 	@Override
 	public void removeValueChangedListener(IFieldValueListener listener) {
 		listeners.removeListener(listener);
-	}
-	//alias
-	public void removeListener(IFieldValueListener listener) {
-		removeValueChangedListener(listener);
 	}
 	
 	

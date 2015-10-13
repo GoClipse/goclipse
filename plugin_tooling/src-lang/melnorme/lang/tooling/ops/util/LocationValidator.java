@@ -8,8 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.ops.util;
 
+import melnorme.lang.tooling.data.IFieldValidator;
+import melnorme.lang.tooling.data.ValidationException;
 
 public class LocationValidator extends PathValidator implements IFieldValidator {
 	
