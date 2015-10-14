@@ -46,7 +46,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	protected final IProjectPreference<Boolean> useProjectSettingsPref;
 	
-	protected final DomainField<T> field = new DomainField<>();
+	protected final DomainField<T> field = new DomainField<T>();
 	
 	public PreferenceHelper(String key, T defaultValue) {
 		this(LangCore.PLUGIN_ID, key, defaultValue);
@@ -70,38 +70,37 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		this.qualifier = pluginId;
 		this.useProjectSettingsPref = useProjectSettingsPref; // can be null
 		
-		setDefaultValue(defaultValue);
+		setPreferencesDefaultValue(defaultValue);
+		field.setFieldValue(getFromPrefStore());
 		
-		initializeListener();
-		field.setFieldValue(get());
-	}
-	
-	protected void initializeListener() {
-		InstanceScope.INSTANCE.getNode(qualifier).addPreferenceChangeListener(event -> handlePreferenceChange(event));
+		initializeListeners();
 	}
 	
 	public final String getQualifier() {
 		return qualifier;
 	}
 	
-	public T getDefault2() {
+	@Override
+	public T getDefaultValue() {
 		return defaultValue;
 	}
 	
 	@Override
-	public DomainField<T> getGlobalField() {
+	public DomainField<T> asField() {
 		return field;
 	}
 	
-	protected IPreferencesAccess combinedScopes() {
+	/* -----------------  ----------------- */
+	
+	protected IPreferencesAccess prefScopes() {
 		return new PreferencesLookupHelper(getQualifier());
 	}
 	
-	protected IPreferencesAccess combinedScopes(IProject project) {
+	protected IPreferencesAccess prefScopes(IProject project) {
 		return new PreferencesLookupHelper(getQualifier(), project);
 	}
 	
-	public void setDefaultValue(T defaultValue) {
+	public void setPreferencesDefaultValue(T defaultValue) {
 		assertNotNull(defaultValue);
 		this.defaultValue = defaultValue;
 		doSet(getDefaultNode(), defaultValue);
@@ -111,10 +110,8 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		return DefaultScope.INSTANCE.getNode(getQualifier());
 	}
 	
-	protected abstract void doSet(IEclipsePreferences projectPreferences, T value);
-	
-	public final T get() {
-		return assertNotNull(doGet(combinedScopes()));
+	public final T getFromPrefStore() {
+		return assertNotNull(doGet(prefScopes()));
 	}
 	
 	public final T getFrom(IPreferenceStore prefStore) {
@@ -123,13 +120,42 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	protected abstract T doGet(IPreferencesAccess prefsAccess);
 	
-	public final void set(T value) {
-		doSet(InstanceScope.INSTANCE.getNode(getQualifier()), value);
+	protected abstract void doSet(IEclipsePreferences preferences, T value);
+	
+	protected void initializeListeners() {
+		field.addValueChangedListener(() -> handleFieldValueChanged());
+		
+		InstanceScope.INSTANCE.getNode(qualifier).addPreferenceChangeListener(event -> handlePreferenceChange(event));
 	}
 	
+	protected void handleFieldValueChanged() {
+		updatingInstancePreferences = true;
+		try {
+			try {
+				setInstanceScopeValue(field.getValue());
+			} catch(BackingStoreException e) {
+				/* FIXME: review */
+			}
+		} finally {
+			updatingInstancePreferences = false;
+		}
+	}
+	
+	@Override
+	public final void setInstanceScopeValue(T value) throws BackingStoreException {
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(getQualifier());
+		doSet(prefs, value);
+		prefs.flush();
+	}
+	
+	protected boolean updatingInstancePreferences;
+	
 	protected void handlePreferenceChange(PreferenceChangeEvent event) {
+		if(updatingInstancePreferences) {
+			return;
+		}
 		if(event.getKey().equals(key)) {
-			field.setFieldValue(get());
+			field.setFieldValue(getFromPrefStore());
 		}
 	}
 	
@@ -147,18 +173,18 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		}
 		
 		@Override
-		public T getDefault() {
-			return PreferenceHelper.this.getDefault2();
+		public T getDefaultValue() {
+			return PreferenceHelper.this.getDefaultValue();
 		}
 		
 		@Override
 		public T getStoredValue(IProject project) {
-			return get(project);
+			return getProjectScopeValue(project);
 		}
 		
 		@Override
 		public void setValue(IProject project, T value) throws BackingStoreException {
-			set(project, value);
+			setProjectScopeValue(project, value);
 		}
 		
 		@Override
@@ -177,11 +203,11 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		
 	};
 	
-	protected final T get(IProject project) {
-		return assertNotNull(doGet(combinedScopes(project)));
+	protected final T getProjectScopeValue(IProject project) {
+		return assertNotNull(doGet(prefScopes(project)));
 	}
 	
-	protected final void set(IProject project, T value) throws BackingStoreException {
+	protected final void setProjectScopeValue(IProject project, T value) throws BackingStoreException {
 		IEclipsePreferences projectPreferences = getProjectNode(project);
 		doSet(projectPreferences, value);
 		projectPreferences.flush();

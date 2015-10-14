@@ -48,17 +48,17 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 	protected void ui_initStreamColors() {
 		super.ui_initStreamColors();
 		
-		ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.getGlobalField().addOwnedListener(owned, true,
+		ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.asField().addOwnedListener(owned, true,
 			() -> stdErr.setActivateOnWrite(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get())
 		);
 		
-		ToolsConsolePrefs.INFO_COLOR.getGlobalField().addOwnedListener(owned, true, 
+		ToolsConsolePrefs.INFO_COLOR.asField().addOwnedListener(owned, true, 
 			() -> infoOut.setColor(getManagedColor(ToolsConsolePrefs.INFO_COLOR)));
-		ToolsConsolePrefs.STDERR_COLOR.getGlobalField().addOwnedListener(owned, true, 
+		ToolsConsolePrefs.STDERR_COLOR.asField().addOwnedListener(owned, true, 
 			() -> stdErr.setColor(getManagedColor(ToolsConsolePrefs.STDERR_COLOR)));
-		ToolsConsolePrefs.STDOUT_COLOR.getGlobalField().addOwnedListener(owned, true, 
+		ToolsConsolePrefs.STDOUT_COLOR.asField().addOwnedListener(owned, true, 
 			() -> stdOut.setColor(getManagedColor(ToolsConsolePrefs.STDOUT_COLOR)));
-		ToolsConsolePrefs.BACKGROUND_COLOR.getGlobalField().addOwnedListener(owned, true, 
+		ToolsConsolePrefs.BACKGROUND_COLOR.asField().addOwnedListener(owned, true, 
 			() -> setBackground(getManagedColor(ToolsConsolePrefs.BACKGROUND_COLOR)));
 	}
 	

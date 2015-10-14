@@ -35,7 +35,7 @@ public class StylingPreferences {
 		return stylingPrefsMap.get(key);
 	}
 	
-	public void put(ITextStylingPref pref) {
+	protected void put(ITextStylingPref pref) {
 		stylingPrefsMap.put(pref.getPrefId(), pref);
 	}
 	
@@ -51,11 +51,14 @@ public class StylingPreferences {
 			}
 		}
 		
-		public void saveToOriginal() {
-			for (Entry<String, ITextStylingPref> entry : stylingPrefsMap) {
-				TextStyling fieldValue = entry.getValue().getFieldValue();
-				originalStylingPreferences.get(entry.getKey()).setFieldValue(fieldValue);
-			}
+		@Override
+		public SimpleTextStylingPref get(String key) {
+			return (SimpleTextStylingPref) super.get(key);
+		}
+		
+		@Override
+		public SimpleTextStylingPref get(ITextStylingPref pref) {
+			return (SimpleTextStylingPref) super.get(pref);
 		}
 		
 	}

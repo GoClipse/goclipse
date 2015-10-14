@@ -12,11 +12,9 @@ package melnorme.lang.ide.ui.text.coloring;
 
 import org.eclipse.swt.graphics.RGB;
 
-import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.utilbox.fields.DomainField;
 
-public class ThemedColorPreference extends ThemedTextStylingPreference implements IGlobalPreference<TextStyling> {
+public class ThemedColorPreference extends ThemedTextStylingPreference {
 	
 	public ThemedColorPreference(String key, RGB defaultValue, RGB defaultValueDark) {
 		this(LangUIPlugin.PLUGIN_ID, key, new TextStyling(defaultValue), new TextStyling(defaultValueDark));
@@ -24,11 +22,6 @@ public class ThemedColorPreference extends ThemedTextStylingPreference implement
 	
 	public ThemedColorPreference(String qualifer, String key, TextStyling defaultValue, TextStyling defaultValueDark) {
 		super(qualifer, key, defaultValue, defaultValueDark);
-	}
-	
-	@Override
-	public DomainField<TextStyling> getGlobalField() {
-		return super.getGlobalField();
 	}
 	
 }

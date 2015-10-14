@@ -10,11 +10,21 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
-import melnorme.utilbox.fields.DomainField;
+import org.osgi.service.prefs.BackingStoreException;
+
+import melnorme.utilbox.fields.IFieldView;
 
 
 public interface IGlobalPreference<T> {
 	
-	DomainField<T> getGlobalField();
+	IFieldView<T> asField();
+	
+	default T get() {
+		return asField().getValue();
+	}
+	
+	T getDefaultValue();
+	
+	void setInstanceScopeValue(T value) throws BackingStoreException;
 	
 }

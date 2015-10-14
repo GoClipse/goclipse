@@ -30,13 +30,13 @@ public class BooleanPreference extends PreferenceHelper<Boolean> {
 	}
 	
 	@Override
-	protected Boolean doGet(IPreferencesAccess prefsAccess) {
-		return prefsAccess.getBoolean(key);
+	protected Boolean doGet(IPreferencesAccess preferences) {
+		return preferences.getBoolean(key);
 	}
 	
 	@Override
-	protected void doSet(IEclipsePreferences projectPreferences, Boolean value) {
-		projectPreferences.putBoolean(key, value);
+	protected void doSet(IEclipsePreferences preferences, Boolean value) {
+		preferences.putBoolean(key, value);
 	}
 	
 }

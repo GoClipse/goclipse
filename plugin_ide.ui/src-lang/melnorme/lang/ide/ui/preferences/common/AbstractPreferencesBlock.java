@@ -18,9 +18,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
-import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.BooleanFieldAdapter;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.ComboFieldAdapter;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.StringFieldAdapter;
+import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
+import melnorme.lang.ide.core.utils.prefs.IntPreference;
+import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponent;
@@ -30,12 +31,12 @@ import melnorme.util.swt.components.fields.NumberField;
 
 public abstract class AbstractPreferencesBlock extends AbstractComponent {
 	
-	protected final AbstractComponentsPrefPage prefPage;
-	protected final IPreferenceStore preferenceStore;
+	protected final AbstractPreferencesEditorsPrefPage prefPage;
+	protected final IPreferenceStore store;
 	
-	public AbstractPreferencesBlock(AbstractComponentsPrefPage prefPage) {
+	public AbstractPreferencesBlock(AbstractPreferencesEditorsPrefPage prefPage) {
 		this.prefPage = assertNotNull(prefPage);
-		this.preferenceStore = prefPage.getPreferenceStore();
+		this.store = prefPage.getPreferenceStore();
 	}
 	
 	@Override
@@ -46,23 +47,27 @@ public abstract class AbstractPreferencesBlock extends AbstractComponent {
 		DialogPageUtils.applyStatusToPreferencePage(status, prefPage);
 	}
 	
-	protected void addPrefComponent(IPreferencesDialogComponent prefComponent) {
-		prefPage.addPrefComponent(prefComponent);
+	public <T> void createAndBindComponent(Composite parent, IGlobalPreference<T> pref, FieldComponent<T> field) {
+		field.createComponentInlined(parent);
+		prefPage.bindToPreference(pref, field);
 	}
 	
-	protected void createStringField(Composite parent, String prefKey, FieldComponent<String> field) {
-		field.createComponentInlined(parent);
-		addPrefComponent(new StringFieldAdapter(prefKey, field));
+	protected <T> void createStringField(Composite parent, IGlobalPreference<T> pref, FieldComponent<T> field) {
+		createAndBindComponent(parent, pref, field);
 	}
 	
-	protected void createBooleanField(Composite parent, String prefKey, FieldComponent<Boolean> field) {
-		field.createComponentInlined(parent);
-		addPrefComponent(new BooleanFieldAdapter(prefKey, field));
+	protected void createBooleanField(Composite parent, BooleanPreference pref, FieldComponent<Boolean> field) {
+		createAndBindComponent(parent, pref, field);
 	}
 	
-	protected void createCheckboxField(Composite parent, String prefKey, ComboBoxField field) {
+	protected void createIntField(Composite parent, IntPreference pref, NumberField field) {
 		field.createComponentInlined(parent);
-		addPrefComponent(new ComboFieldAdapter(prefKey, field));
+		prefPage.bindToPreference(pref, field.asIntProperty());
+	}
+	
+	protected void createCheckboxField(Composite parent, StringPreference pref, ComboBoxField field) {
+		field.createComponentInlined(parent);
+		prefPage.bindToPreference(pref, field.asStringProperty());
 	}
 	
 	/* -----------------  ----------------- */

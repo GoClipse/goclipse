@@ -22,6 +22,7 @@ import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.LabelledFieldComponent;
+import melnorme.utilbox.fields.IProperty;
 
 
 public class ComboBoxField extends LabelledFieldComponent<Integer> {
@@ -99,6 +100,22 @@ public class ComboBoxField extends LabelledFieldComponent<Integer> {
 			}
 		}
 		return -1;
+	}
+	
+	protected final IProperty<String> stringProperty = new IProperty<String>() {
+		@Override
+		public String getValue() {
+			return getFieldStringValue();
+		}
+		
+		@Override
+		public void setValue(String value) {
+			setFieldStringValue(value);
+		}
+	};
+	
+	public IProperty<String> asStringProperty() {
+		return stringProperty;
 	}
 	
 	/* -----------------  ----------------- */

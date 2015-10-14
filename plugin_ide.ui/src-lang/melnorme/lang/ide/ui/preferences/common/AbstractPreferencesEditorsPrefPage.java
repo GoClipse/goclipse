@@ -17,30 +17,41 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor.GlobalPreferenceAdapter;
 import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.lang.tooling.data.IValidationSource;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.IDomainField;
+import melnorme.utilbox.fields.IProperty;
 
-public abstract class AbstractComponentPrefPage2 extends AbstractLangPreferencesPage {
+/**
+ * This is the preferred way to create Preference pages (as of 2015-10).
+ *
+ */
+public abstract class AbstractPreferencesEditorsPrefPage extends AbstractLangPreferencesPage {
 	
+	protected final ArrayList2<IPreferencesEditor> prefAdapters = new ArrayList2<>();
 	private final ArrayList2<IValidationSource> validators = new ArrayList2<>();
 	
-	public AbstractComponentPrefPage2() {
+	public AbstractPreferencesEditorsPrefPage() {
 		super(null);
 	}
 	
-	public AbstractComponentPrefPage2(IPreferenceStore store) {
+	public AbstractPreferencesEditorsPrefPage(IPreferenceStore store) {
 		super(store);
 	}
 	
-	@Override
-	public final void createControl(Composite parent) {
-		super.createControl(parent);
-		updateStatusMessage();
+	/* -----------------  ----------------- */
+	
+	public void addPrefEditor(IPreferencesEditor prefComponent) {
+		prefAdapters.add(prefComponent);
 	}
 	
+	public <T> void bindToPreference(IGlobalPreference<T> pref, IProperty<T> field) {
+		addPrefEditor(new GlobalPreferenceAdapter<>(pref, field));
+	}
 	public void addValidationSource(IValidationSource validationSource) {
 		validators.add(validationSource);
 	}
@@ -60,6 +71,14 @@ public abstract class AbstractComponentPrefPage2 extends AbstractLangPreferences
 		}
 		addValidationSource(validationSource);
 		statusField.addListener(() -> updateStatusMessage());
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public final void createControl(Composite parent) {
+		super.createControl(parent);
+		updateStatusMessage();
 	}
 	
 	protected void updateStatusMessage() {
@@ -85,6 +104,35 @@ public abstract class AbstractComponentPrefPage2 extends AbstractLangPreferences
 		case ERROR: return IMessageProvider.ERROR;
 		}
 		throw assertFail();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void performDefaults() {
+		loadStoreDefaults();
+		
+		super.performDefaults();
+	}
+	
+	public void loadStoreDefaults() {
+		for(IPreferencesEditor prefAdapter : prefAdapters) {
+			prefAdapter.loadDefaults();
+		}
+	}
+	
+	@Override
+	public boolean performOk() {
+		return saveToStore();
+	}
+	
+	public boolean saveToStore() {
+		for(IPreferencesEditor prefAdapter : prefAdapters) {
+			if(prefAdapter.saveSettings() == false) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 }

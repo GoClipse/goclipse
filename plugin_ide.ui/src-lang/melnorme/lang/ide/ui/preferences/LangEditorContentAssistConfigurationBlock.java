@@ -10,17 +10,17 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import melnorme.lang.ide.ui.ContentAssistPreferences;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
-import melnorme.util.swt.components.fields.CheckBoxField;
-
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.lang.ide.ui.ContentAssistPreferences;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.util.swt.components.fields.CheckBoxField;
+
 public class LangEditorContentAssistConfigurationBlock extends AbstractPreferencesBlock {
 	
-	public LangEditorContentAssistConfigurationBlock(AbstractComponentsPrefPage prefPage) {
+	public LangEditorContentAssistConfigurationBlock(AbstractPreferencesEditorsPrefPage prefPage) {
 		super(prefPage);
 	}
 	
@@ -41,10 +41,10 @@ public class LangEditorContentAssistConfigurationBlock extends AbstractPreferenc
 		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
 		createBooleanField(group, 
-			ContentAssistPreferences.AUTO_INSERT__SingleProposals.key,
+			ContentAssistPreferences.AUTO_INSERT__SingleProposals,
 			new CheckBoxField(PreferencesMessages.LangPrefs_ContentAssist_Insertion_AutomaticSingleProposals_Label));
 		createBooleanField(group, 
-			ContentAssistPreferences.AUTO_INSERT__CommonPrefixes.key,
+			ContentAssistPreferences.AUTO_INSERT__CommonPrefixes,
 			new CheckBoxField(PreferencesMessages.LangPrefs_ContentAssist_Insertion_AutomaticCommonPrefixes_Label));
 		
 	}
@@ -55,18 +55,18 @@ public class LangEditorContentAssistConfigurationBlock extends AbstractPreferenc
 		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
 		createBooleanField(group, 
-			ContentAssistPreferences.AUTO_ACTIVATE__DotTrigger.key,
+			ContentAssistPreferences.AUTO_ACTIVATE__DotTrigger,
 			new CheckBoxField(PreferencesMessages.LangPrefs_ContentAssist_AutoActivation_DotTrigger_Label));
 		if(createAutoActivation_DoubleColonOption()) {
 			createBooleanField(group, 
-				ContentAssistPreferences.AUTO_ACTIVATE__DoubleColonTrigger.key,
+				ContentAssistPreferences.AUTO_ACTIVATE__DoubleColonTrigger,
 				new CheckBoxField(PreferencesMessages.LangPrefs_ContentAssist_AutoActivation_DoubleColonTrigger_Label));
 		}
 		createBooleanField(group, 
-			ContentAssistPreferences.AUTO_ACTIVATE__AlphaNumericTrigger.key,
+			ContentAssistPreferences.AUTO_ACTIVATE__AlphaNumericTrigger,
 			new CheckBoxField(PreferencesMessages.LangPrefs_ContentAssist_AutoActivation_AlphanumericTrigger_Label));
-		createStringField(group, 
-			ContentAssistPreferences.AUTO_ACTIVATE__Delay.key,
+		createIntField(group, 
+			ContentAssistPreferences.AUTO_ACTIVATE__Delay,
 			createNumberField(PreferencesMessages.LangPrefs_ContentAssist_AutoActivation_Delay_Label, 5));
 	}
 	

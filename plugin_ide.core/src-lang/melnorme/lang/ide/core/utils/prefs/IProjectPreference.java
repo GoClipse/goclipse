@@ -22,7 +22,7 @@ public interface IProjectPreference<T> {
 		return getGlobalPreference().key;
 	}
 	
-	T getDefault();
+	T getDefaultValue();
 	
 	T getStoredValue(IProject project);
 	

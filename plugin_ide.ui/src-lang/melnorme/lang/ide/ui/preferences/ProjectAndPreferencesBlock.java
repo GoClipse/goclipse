@@ -25,19 +25,19 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.fields.IDomainField;
+import melnorme.utilbox.fields.IProperty;
 
-public abstract class ProjectAndPreferencesBlock extends AbstractComponent implements IPreferencesWidgetComponent {
+public abstract class ProjectAndPreferencesBlock extends AbstractComponent implements IPreferencesWidget {
 	
 	protected final IProject project;
 	protected final IProjectPreference<Boolean> useProjectSettingsPref;
-	protected final ArrayList2<PreferenceFieldBinding<?>> fieldBindings = new ArrayList2<>();
+	protected final ArrayList2<PreferencePropertyBinding<?>> fieldBindings = new ArrayList2<>();
 	
 	protected final CheckBoxField useProjectSettingsField = new CheckBoxField(LABEL_UseProjectSpecificSettings);
 	
@@ -54,11 +54,11 @@ public abstract class ProjectAndPreferencesBlock extends AbstractComponent imple
 	
 	public abstract AbstractComponentExt getParentSettingsBlock();
 	
-	public <T> void addFieldBinding(IDomainField<T> field, IProjectPreference<T> preference) {
+	public <T> void addFieldBinding(IProperty<T> field, IProjectPreference<T> preference) {
 		assertTrue(preference == useProjectSettingsPref ||
 			preference.getEnableProjectSettingPref() == useProjectSettingsPref);
 		
-		fieldBindings.add(new PreferenceFieldBinding<>(field, preference, project));
+		fieldBindings.add(new PreferencePropertyBinding<>(field, preference, project));
 	}
 	
 	@Override
@@ -98,7 +98,7 @@ public abstract class ProjectAndPreferencesBlock extends AbstractComponent imple
 	@Override
 	public boolean saveSettings() {
 		try {
-			for(PreferenceFieldBinding<?> binding : fieldBindings) {
+			for(PreferencePropertyBinding<?> binding : fieldBindings) {
 				binding.saveSettings();
 			}
 			return true;
@@ -107,28 +107,28 @@ public abstract class ProjectAndPreferencesBlock extends AbstractComponent imple
 		}
 	}
 	
-	public static class PreferenceFieldBinding<T> {
+	public static class PreferencePropertyBinding<T> {
 		
-		protected final IDomainField<T> field;
+		protected final IProperty<T> property;
 		protected final IProjectPreference<T> preference;
 		protected final IProject project;
 		
-		public PreferenceFieldBinding(IDomainField<T> field, IProjectPreference<T> preference, IProject project) {
-			this.field = field;
+		public PreferencePropertyBinding(IProperty<T> property, IProjectPreference<T> preference, IProject project) {
+			this.property = property;
 			this.preference = preference;
 			this.project = project;
 		}
 		
 		public void updateFieldFromInput() {
-			field.setFieldValue(preference.getStoredValue(project));
+			property.setValue(preference.getStoredValue(project));
 		}
 		
 		public void loadDefaults() {
-			field.setFieldValue(preference.getGlobalPreference().get());
+			property.setValue(preference.getGlobalPreference().get());
 		}
 		
 		public void saveSettings() throws BackingStoreException {
-			preference.setValue(project, field.getFieldValue());
+			preference.setValue(project, property.getValue());
 		}
 	}
 	

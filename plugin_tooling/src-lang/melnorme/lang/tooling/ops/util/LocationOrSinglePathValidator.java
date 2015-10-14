@@ -14,7 +14,6 @@ import java.nio.file.Path;
 
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.data.ValidationException;
-import melnorme.lang.tooling.data.ValidationMessages;
 
 public class LocationOrSinglePathValidator extends PathValidator {
 	

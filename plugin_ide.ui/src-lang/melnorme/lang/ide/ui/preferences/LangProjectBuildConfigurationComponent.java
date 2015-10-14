@@ -26,7 +26,7 @@ import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -36,7 +36,7 @@ import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 
 public abstract class LangProjectBuildConfigurationComponent extends AbstractComponentExt 
-	implements IPreferencesWidgetComponent {
+	implements IPreferencesWidget {
 	
 	protected final IProject project;
 	protected final BuildTargetField buildTargetField = init_createBuildTargetField();

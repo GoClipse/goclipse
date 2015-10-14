@@ -15,25 +15,24 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 
-public abstract class LangRootPreferencePage extends AbstractComponentsPrefPage {
+public abstract class LangRootPreferencePage extends AbstractPreferencesEditorsPrefPage {
 	
 	protected final LangSDKConfigBlock langSDKConfigBlock;
 	
 	public LangRootPreferencePage() {
-		super(LangUIPlugin.getCorePrefStore());
+		super();
 		
-		langSDKConfigBlock = createLangSDKConfigBlock();
+		langSDKConfigBlock = init_createLangSDKConfigBlock2();
 	}
 	
-	protected LangSDKConfigBlock createLangSDKConfigBlock() {
+	protected LangSDKConfigBlock init_createLangSDKConfigBlock2() {
 		LangSDKConfigBlock langSDKConfigBlock = doCreateLangSDKConfigBlock();
 		
 		addValidationStatusField(langSDKConfigBlock.validation);
 		
-		addStringComponent(ToolchainPreferences.SDK_PATH, langSDKConfigBlock.getLocationField());
+		bindToPreference(ToolchainPreferences.SDK_PATH, langSDKConfigBlock.getLocationField());
 		
 		return langSDKConfigBlock;
 	}

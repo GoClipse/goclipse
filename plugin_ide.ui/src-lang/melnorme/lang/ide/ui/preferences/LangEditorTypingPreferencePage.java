@@ -21,7 +21,7 @@ public abstract class LangEditorTypingPreferencePage extends AbstractPreferences
 	}
 	
 	@Override
-	protected LangEditorTypingConfigurationBlock createPreferencesComponent() {
+	protected LangEditorTypingConfigurationBlock createPreferencesBlock() {
 		return new LangEditorTypingConfigurationBlock(this);
 	}
 	

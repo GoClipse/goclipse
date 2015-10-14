@@ -12,19 +12,19 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import melnorme.lang.ide.ui.ContentAssistConstants;
-import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
-import melnorme.lang.ide.ui.preferences.EditorAppearanceColorsComponent.EditorColorItem;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
-import melnorme.util.swt.components.fields.CheckBoxField;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.lang.ide.ui.ContentAssistConstants;
+import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
+import melnorme.lang.ide.ui.preferences.EditorAppearanceColorsComponent.EditorColorItem;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.util.swt.components.fields.CheckBoxField;
+
 public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
 	
-	public LangEditorConfigurationBlock(AbstractComponentsPrefPage mainPreferencePage) {
+	public LangEditorConfigurationBlock(AbstractPreferencesEditorsPrefPage mainPreferencePage) {
 		super(mainPreferencePage);
 	}
 	
@@ -40,7 +40,7 @@ public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
 	
 	protected void createAppearanceGroup(Composite parent) {
 		createBooleanField(parent,
-			EditorPrefConstants.MATCHING_BRACKETS_.key,
+			EditorPrefConstants.MATCHING_BRACKETS_,
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_matchingBrackets));
 		
 		createEditorAppearanceColorsComponent(parent);
@@ -51,9 +51,9 @@ public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
 		if(editorColorItems.length == 0) {
 			return;
 		}
-		EditorAppearanceColorsComponent appearanceItemsCp = new EditorAppearanceColorsComponent(editorColorItems);
+		EditorAppearanceColorsComponent appearanceItemsCp = new EditorAppearanceColorsComponent(store, editorColorItems);
 		appearanceItemsCp.createComponentInlined(parent);
-		addPrefComponent(appearanceItemsCp);
+		prefPage.addPrefEditor(appearanceItemsCp);
 	}
 	
 	protected EditorColorItem[] createEditorAppearanceColorEntries() {

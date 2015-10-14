@@ -58,7 +58,7 @@ public class TokenRegistry extends LifecycleObject {
 	}
 	
 	protected TextAttribute createTextAttribute(ITextStylingPref stylingPref) {
-		TextStyling textStyle = stylingPref.getFieldValue();
+		TextStyling textStyle = stylingPref.getValue();
 		
 		return textStyle.getTextAttribute(colorManager);
 	}
