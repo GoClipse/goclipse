@@ -25,18 +25,18 @@ public abstract class LangBuildConfigurationPropertyPage extends AbstractLangPro
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected abstract LangProjectBuildConfigurationComponent createProjectConfigComponent(IProject project);
+	protected abstract LangProjectBuildConfigurationComponent createProjectConfigWidget(IProject project);
 	
 	@Override
-	public LangProjectBuildConfigurationComponent getSettingsComponent() {
-		return (LangProjectBuildConfigurationComponent) super.getSettingsComponent();
+	public LangProjectBuildConfigurationComponent getPreferencesWidget() {
+		return (LangProjectBuildConfigurationComponent) super.getPreferencesWidget();
 	}
 	
 	@Override
 	public void applyData(Object data) {
 		if(data instanceof String) {
 			String targetName = (String) data;
-			getSettingsComponent().getBuildTargetField().setFieldValue(targetName);
+			getPreferencesWidget().getBuildTargetField().setFieldValue(targetName);
 		}
 	}
 	

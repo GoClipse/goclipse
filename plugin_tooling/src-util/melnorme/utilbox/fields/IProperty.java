@@ -8,10 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences.common;
+package melnorme.utilbox.fields;
 
-public interface IPreferencesDialog {
+
+public interface IProperty<VALUE> {
 	
-	void addPrefComponent(IPreferencesDialogComponent prefComponent);
+	VALUE getValue();
+	
+	void setValue(VALUE value);
 	
 }

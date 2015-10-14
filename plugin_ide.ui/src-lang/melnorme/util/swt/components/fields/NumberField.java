@@ -10,11 +10,14 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import java.text.MessageFormat;
-
-import melnorme.lang.ide.core.LangCore;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.runtime.IStatus;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.ops.util.NumberValidator;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.fields.IProperty;
 
 public class NumberField extends TextField2 {
 	
@@ -31,24 +34,39 @@ public class NumberField extends TextField2 {
 		statusChanged(status);
 	}
 	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+	}
+	
 	@SuppressWarnings("unused")
 	protected void statusChanged(IStatus status) { 
 	}
 	
 	protected IStatus validatePositiveNumber(String number) {
-		if (number.length() == 0) {
-			return LangCore.createErrorStatus(FieldMessages.NumberField_empty_input);
+		try {
+			new NumberValidator().validateNonNegativeInteger(number);
+			return LangCore.createOkStatus(null);
+		} catch(CommonException ce) {
+			return LangCore.createCoreException(ce).getStatus();
+		}
+	}
+	
+	protected final IProperty<Integer> intProperty = new IProperty<Integer>() {
+		@Override
+		public Integer getValue() {
+			return new NumberValidator().getIntegerFrom(getFieldValue());
 		}
 		
-		try {
-			int value = Integer.parseInt(number);
-			if(value >= 0) {
-				return LangCore.createOkStatus(null);
-			}
-		} catch (NumberFormatException e) {
+		@Override
+		public void setValue(Integer value) {
+			assertTrue(value != null);
+			setFieldValue(value.toString());
 		}
-		return LangCore.createErrorStatus(
-			MessageFormat.format(FieldMessages.NumberField_invalid_input, number));
+	};
+	
+	public IProperty<Integer> asIntProperty() {
+		return intProperty;
 	}
 	
 }

@@ -28,16 +28,18 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
+import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences.OverlayStylingPreferences;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences.SimpleTextStylingPref;
 import melnorme.lang.ide.ui.text.coloring.TextStyling.TextStylingData;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -49,8 +51,8 @@ import melnorme.util.swt.jface.LabeledTreeElement;
 import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvider;
 import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.text.ColorManager2;
-import melnorme.utilbox.fields.IDomainField;
 import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.fields.IProperty;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tree.IElement;
@@ -61,7 +63,7 @@ import melnorme.utilbox.tree.TreeVisitor;
  * A configuration component for syntax (and possibly semantic) source highlighting options.
  */
 public abstract class AbstractSourceColoringConfigurationBlock extends AbstractComponent 
-	implements IPreferencesWidgetComponent {
+	implements IPreferencesWidget {
 		
 	protected final SourceColoringListRoot coloringOptionsList;
 	
@@ -106,26 +108,31 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		
 		protected final ThemedTextStylingPreference stylingPref;
 		protected final String prefId;
-		protected final IDomainField<TextStyling> workingCopy;
+		protected final SimpleTextStylingPref temporaryPref;
 		
 		public SourceColoringElement(String labelText, ThemedTextStylingPreference stylingPref) {
 			super(null, null, labelText);
 			this.stylingPref = stylingPref;
 			this.prefId = stylingPref.getPrefId();
-			this.workingCopy = overlayStylingPrefs.get(prefId);
-			this.workingCopy.setFieldValue(stylingPref.getFieldValue());
+			this.temporaryPref = overlayStylingPrefs.get(prefId);
+			this.temporaryPref.setValue(stylingPref.getFieldValue());
 		}
 		
 		public TextStyling getWorkingValue() {
-			return workingCopy.getFieldValue();
+			return temporaryPref.getValue();
 		}
 		
 		public void loadDefaults() {
-			workingCopy.setFieldValue(stylingPref.getDefault());
+			temporaryPref.setValue(stylingPref.getDefaultValue());
 		}
 		
 		public void saveToGlobalPreferences() {
-			stylingPref.setFieldValue(workingCopy.getFieldValue());
+			try {
+				stylingPref.setInstanceScopeValue(temporaryPref.getValue());
+			} catch(BackingStoreException e) {
+				// Ignore
+				/* FIXME: */
+			}
 		}
 		
 	}
@@ -275,11 +282,11 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	protected abstract class ChangeStylingField implements IFieldValueListener {
 		@Override
 		public void fieldValueChanged() {
-			IDomainField<TextStyling> field = getSelectedColoringItem().workingCopy;
-			TextStyling newStyling = field.getFieldValue(); // If were being strict, we should create a copy
+			IProperty<TextStyling> field = getSelectedColoringItem().temporaryPref;
+			TextStyling newStyling = field.getValue();
 			TextStylingData data = newStyling.getData();
 			changeStylingValue(data);
-			field.setFieldValue(new TextStyling(data));
+			field.setValue(new TextStyling(data));
 		}
 		
 		protected abstract void changeStylingValue(TextStylingData data);

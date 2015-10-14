@@ -18,12 +18,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
 
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.util.swt.SWTFactoryUtil;
 
 public abstract class AbstractLangPropertyPage extends PropertyPage {
 	
-	protected IPreferencesWidgetComponent settingsComponent;
+	protected IPreferencesWidget preferencesWidget;
 	
 	public AbstractLangPropertyPage() {
 		super();
@@ -40,14 +40,14 @@ public abstract class AbstractLangPropertyPage extends PropertyPage {
 	@Override
 	public void setElement(IAdaptable element) {
 		super.setElement(element);
-		settingsComponent = createProjectConfigComponent(getProject());
+		preferencesWidget = createProjectConfigWidget(getProject());
 	}
 	
-	public IPreferencesWidgetComponent getSettingsComponent() {
-		return settingsComponent;
+	public IPreferencesWidget getPreferencesWidget() {
+		return preferencesWidget;
 	}
 	
-	protected abstract IPreferencesWidgetComponent createProjectConfigComponent(IProject project);
+	protected abstract IPreferencesWidget createProjectConfigWidget(IProject project);
 	
 	/* -----------------  ----------------- */
 	
@@ -62,18 +62,18 @@ public abstract class AbstractLangPropertyPage extends PropertyPage {
 	
 	@SuppressWarnings("unused")
 	protected Control doCreateContents(Composite parent, IProject project) {
-		return settingsComponent.createComponent(parent);
+		return preferencesWidget.createComponent(parent);
 	}
 	
 	@Override
 	public boolean performOk() {
-		settingsComponent.saveSettings();
+		preferencesWidget.saveSettings();
 		return true;
 	}
 	
 	@Override
 	protected void performDefaults() {
-		settingsComponent.loadDefaults();
+		preferencesWidget.loadDefaults();
 	}
 	
 }

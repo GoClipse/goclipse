@@ -12,7 +12,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponent;
@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
 
 //originally from DLTK version 5.0.0
-public class EditorAppearanceColorsComponent extends AbstractComponent implements IPreferencesDialogComponent {
+public class EditorAppearanceColorsComponent extends AbstractComponent implements IPreferencesEditor {
 	
 	public static class EditorColorItem {
 		public final String label;
@@ -96,32 +96,20 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 		
 	}
 	
+	protected final IPreferenceStore store;
 	protected final EditorColorItem[] editorColorItems;
 	
 	protected List colorList;
 	protected ColorSelector colorEditor;
 	protected Button useSystemDefaultButton;
 	
-	public EditorAppearanceColorsComponent(EditorColorItem[] editorColorItems) {
+	public EditorAppearanceColorsComponent(IPreferenceStore store, EditorColorItem[] editorColorItems) {
+		this.store = store;
 		this.editorColorItems = editorColorItems;
 	}
 	
 	@Override
-	protected void updateComponentFromInput() {
-		// Does nothing: need a store as input
-	}
-	
-	@Override
-	public void loadFromStore(IPreferenceStore store) {
-		for (EditorColorItem editorColorItem : editorColorItems) {
-			editorColorItem.loadFromStore(store);
-		}
-		
-		handleAppearanceColorListSelectionChanged();
-	}
-	
-	@Override
-	public void loadStoreDefaults(IPreferenceStore store) {
+	public void loadDefaults() {
 		for (EditorColorItem editorColorItem : editorColorItems) {
 			editorColorItem.loadStoreDefaults(store);
 		}
@@ -129,10 +117,11 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 	}
 	
 	@Override
-	public void saveToStore(IPreferenceStore store) {
+	public boolean saveSettings() {
 		for (EditorColorItem editorColorItem : editorColorItems) {
 			editorColorItem.saveToStore(store);
 		}
+		return true;
 	}
 	
 	@Override
@@ -173,6 +162,15 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 		createItemEditWidgets(editorComposite);
 		
 		colorList.select(0);
+	}
+	
+	@Override
+	protected void updateComponentFromInput() {
+		for(EditorColorItem editorColorItem : editorColorItems) {
+			editorColorItem.loadFromStore(store);
+		}
+		
+		handleAppearanceColorListSelectionChanged();
 	}
 	
 	protected final EditorColorItem NULL_ELEMENT = new EditorColorItem("", "", null, 0);

@@ -30,13 +30,13 @@ public class IntPreference extends PreferenceHelper<Integer> {
 	}
 	
 	@Override
-	protected Integer doGet(IPreferencesAccess prefsAccess) {
-		return prefsAccess.getInt(key);
+	protected Integer doGet(IPreferencesAccess preferences) {
+		return preferences.getInt(key);
 	}
 	
 	@Override
-	protected void doSet(IEclipsePreferences projectPreferences, Integer value) {
-		projectPreferences.putInt(key, value);
+	protected void doSet(IEclipsePreferences preferences, Integer value) {
+		preferences.putInt(key, value);
 	}
 	
 }

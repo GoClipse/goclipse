@@ -39,10 +39,10 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		
-		GoEnvironmentPrefs.GO_ROOT.set(SAMPLE_GO_ROOT.asString());
-		GoEnvironmentPrefs.GO_ARCH.set("386");
-		GoEnvironmentPrefs.GO_OS.set("windows");
-		GoEnvironmentPrefs.GO_PATH.set(SAMPLE_GOPATH_Entry.toString());
+		GoEnvironmentPrefs.GO_ROOT.asField().setValue(SAMPLE_GO_ROOT.asString());
+		GoEnvironmentPrefs.GO_ARCH.asField().setValue("386");
+		GoEnvironmentPrefs.GO_OS.asField().setValue("windows");
+		GoEnvironmentPrefs.GO_PATH.asField().setValue(SAMPLE_GOPATH_Entry.toString());
 		TestsWorkingDir.deleteDir(SAMPLE_GOPATH_Entry);
 		
 		{
@@ -64,7 +64,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 			
 			String goPathEntryOther = location.append("other").toOSString();
 			String gopath = location.toOSString() + File.pathSeparator + goPathEntryOther;
-			GoEnvironmentPrefs.GO_PATH.set(gopath);
+			GoEnvironmentPrefs.GO_PATH.asField().setValue(gopath);
 			
 			// Test GOPATH which already has project location. Also nested GOPATH entry.
 			checkEnvGoPath(project, list(location.toOSString(), goPathEntryOther), false);
@@ -73,7 +73,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 		try (SampleGoProject sampleProject = new SampleGoProject(getClass().getSimpleName())){
 			IProject project = sampleProject.getProject();
 			
-			GoEnvironmentPrefs.GO_PATH.set(SAMPLE_GO_PATH.asString());
+			GoEnvironmentPrefs.GO_PATH.asField().setValue(SAMPLE_GO_PATH.asString());
 			
 			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve_valid("src/github.com/foo"));
 			// Test that project location is not added, because project is in a Go source package

@@ -19,21 +19,27 @@ import org.eclipse.swt.widgets.Control;
 /**
  * Abstract preference page wrapping {@link IWidgetComponent}.
  */
-public abstract class AbstractPreferencesBlockPrefPage extends AbstractComponentsPrefPage {
+public abstract class AbstractPreferencesBlockPrefPage extends AbstractPreferencesEditorsPrefPage {
 	
-	private IWidgetComponent fConfigurationBlock;
+	protected final IWidgetComponent preferencesBlock;
 	
 	public AbstractPreferencesBlockPrefPage(IPreferenceStore store) {
 		super(store);
-		fConfigurationBlock = createPreferencesComponent();
+		
+		preferencesBlock = createPreferencesBlock();
+		
+		if(preferencesBlock instanceof IPreferencesEditor) {
+			IPreferencesEditor preferencesEditor = (IPreferencesEditor) preferencesBlock;
+			/* FIXME: */
+			addPrefEditor(preferencesEditor);
+		}
 	}
 	
-	protected abstract IWidgetComponent createPreferencesComponent();
+	protected abstract IWidgetComponent createPreferencesBlock();
 	
 	@Override
 	protected Control createContents(Composite parent) {
-		Control body = fConfigurationBlock.createComponent(parent);
-		return body;
+		return preferencesBlock.createComponent(parent);
 	}
 	
 }

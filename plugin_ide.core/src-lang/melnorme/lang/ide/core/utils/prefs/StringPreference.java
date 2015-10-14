@@ -30,13 +30,13 @@ public class StringPreference extends PreferenceHelper<String> {
 	
 	
 	@Override
-	protected String doGet(IPreferencesAccess prefsAccess) {
-		return prefsAccess.getString(key);
+	protected String doGet(IPreferencesAccess preferences) {
+		return preferences.getString(key);
 	}
 	
 	@Override
-	protected void doSet(IEclipsePreferences projectPreferences, String value) {
-		projectPreferences.put(key, value);
+	protected void doSet(IEclipsePreferences preferences, String value) {
+		preferences.put(key, value);
 	}
 	
 }

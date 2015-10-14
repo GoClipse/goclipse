@@ -28,7 +28,7 @@ public class GoEditorTypingPreferencePage extends AbstractPreferencesBlockPrefPa
 	}
 	
 	@Override
-	protected LangEditorTypingConfigurationBlock createPreferencesComponent() {
+	protected LangEditorTypingConfigurationBlock createPreferencesBlock() {
 		return new LangEditorTypingConfigurationBlock(this);
 	}
 	

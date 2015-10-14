@@ -11,12 +11,12 @@
 package com.googlecode.goclipse.ui.preferences;
 
 import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 
 public class GoEditorConfigurationBlock extends LangEditorConfigurationBlock {
 	
-	public GoEditorConfigurationBlock(AbstractComponentsPrefPage mainPreferencePage) {
-		super(mainPreferencePage);
+	public GoEditorConfigurationBlock(AbstractPreferencesEditorsPrefPage page) {
+		super(page);
 	}
 	
 }

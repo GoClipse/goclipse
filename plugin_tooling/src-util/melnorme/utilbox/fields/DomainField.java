@@ -27,7 +27,7 @@ public class DomainField<VALUE> implements IDomainField<VALUE> {
 		this.value = getDefaultFieldValue();
 	}
 	
-	public VALUE getDefaultFieldValue() {
+	protected VALUE getDefaultFieldValue() {
 		return null;
 	}
 	

@@ -20,7 +20,7 @@ import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator2;
-import melnorme.lang.tooling.data.ValidationMessages;
+import melnorme.lang.tooling.ops.util.ValidationMessages;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.tooling.data;
 
-import melnorme.utilbox.fields.IDomainField;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import melnorme.utilbox.fields.IProperty;
 
 public interface IValidatedField<TYPE> extends IValidationSource {
 	
@@ -42,18 +44,17 @@ public interface IValidatedField<TYPE> extends IValidationSource {
 	
 	public static class ValidatedField implements IValidatedField<Object> {
 		
-		public final IDomainField<String> field;
+		public final IProperty<String> property;
 		public final IFieldValidator validator;
 		
-		public ValidatedField(IDomainField<String> field, IFieldValidator validator) {
-			this.field = field;
-			this.validator = validator;
+		public ValidatedField(IProperty<String> field, IFieldValidator validator) {
+			this.property = assertNotNull(field);
+			this.validator = assertNotNull(validator);
 		}
 		
 		@Override
 		public Object getValidatedField() throws StatusException {
-			String fieldValue = field.getFieldValue();
-			return validator.getValidatedField(fieldValue);
+			return validator.getValidatedField(property.getValue());
 		}
 	}
 	

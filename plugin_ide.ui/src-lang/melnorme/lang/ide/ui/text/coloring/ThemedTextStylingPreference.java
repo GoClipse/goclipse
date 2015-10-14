@@ -14,10 +14,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.swt.widgets.Display;
 import org.osgi.service.event.Event;
+import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.ui.LangUI;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.IDomainField;
 import melnorme.utilbox.fields.IFieldValueListener;
 
 public class ThemedTextStylingPreference implements ITextStylingPref {
@@ -25,7 +27,7 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 	protected final String key;
 	protected final String key_Dark;
 	
-	protected final TextStylingPreference defaultThemePref;
+	protected final TextStylingPreference defaultPref;
 	protected final TextStylingPreference darkPref;
 	
 	protected final DomainField<TextStyling> effectiveValue = new DomainField<>();
@@ -40,7 +42,7 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 		this.key = key;
 		this.key_Dark = key + "#dark#";
 		
-		this.defaultThemePref = new TextStylingPreference(qualifer, key, defaultValue);
+		this.defaultPref = new TextStylingPreference(qualifer, key, defaultValue);
 		this.darkPref = new TextStylingPreference(qualifer, key_Dark, defaultValueDark);
 		
 		LangUI.getInstance().getThemeHelper().new ThemeChangeListener() {
@@ -50,14 +52,14 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 			}
 		};
 		
-		defaultThemePref.getGlobalField().addListener(() -> updateEffectiveValue());
-		darkPref.getGlobalField().addListener(() -> updateEffectiveValue());
+		defaultPref.asField().addListener(() -> updateEffectiveValue());
+		darkPref.asField().addListener(() -> updateEffectiveValue());
 		
 		updateEffectiveValue();
 	}
 	
 	public TextStylingPreference getDefaultThemePref() {
-		return defaultThemePref;
+		return defaultPref;
 	}
 	
 	public TextStylingPreference getDarkPref() {
@@ -70,11 +72,15 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 		effectiveValue.setFieldValue(getEffectiveValue());
 	}
 	
-	protected TextStyling getEffectiveValue() {
+	protected TextStylingPreference getEffectivePreference() {
 		if(isOverridingThemeActive()) {
-			return darkPref.get();
+			return darkPref;
 		}
-		return defaultThemePref.get();
+		return defaultPref;
+	}
+	
+	protected TextStyling getEffectiveValue() {
+		return getEffectivePreference().get();
 	}
 	
 	protected boolean isOverridingThemeActive() {
@@ -82,11 +88,8 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 		return LangUI.getInstance().getThemeHelper().getIdOfActiveThemeForCurrentDisplay().contains("dark");
 	}
 	
-	public TextStyling getDefault() {
-		if(isOverridingThemeActive()) {
-			return darkPref.getDefault2();
-		}
-		return defaultThemePref.getDefault2();
+	public TextStyling getDefaultValue() {
+		return getEffectivePreference().getDefaultValue();
 	}
 	
 	public String getActiveKey() {
@@ -96,34 +99,30 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 		return key;
 	}
 	
-	/* -----------------  ----------------- */
-	
-	protected DomainField<TextStyling> getGlobalField() {
-		return effectiveValue;
+	public void setInstanceScopeValue(TextStyling value) throws BackingStoreException {
+		getEffectivePreference().setInstanceScopeValue(value);
 	}
 	
-	public TextStyling getValue() {
-		return getFieldValue();
+	/* -----------------  ----------------- */
+	
+	public IDomainField<TextStyling> asField() {
+		return effectiveValue;
 	}
 	
 	@Override
 	public TextStyling getFieldValue() {
-		return getGlobalField().getFieldValue();
+		return asField().getFieldValue();
 	}
 	
-	@Override
-	public void setFieldValue(TextStyling value) {
-		getGlobalField().setFieldValue(value);
-	}
 	
 	@Override
 	public void addValueChangedListener(IFieldValueListener listener) {
-		getGlobalField().addValueChangedListener(listener);
+		asField().addValueChangedListener(listener);
 	}
 	
 	@Override
 	public void removeValueChangedListener(IFieldValueListener listener) {
-		getGlobalField().removeValueChangedListener(listener);
+		asField().removeValueChangedListener(listener);
 	}
 	
 	@Override

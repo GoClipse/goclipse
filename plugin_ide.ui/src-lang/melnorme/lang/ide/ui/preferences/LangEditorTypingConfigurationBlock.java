@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ComboBoxField;
@@ -29,8 +29,8 @@ import melnorme.utilbox.fields.IFieldValueListener;
 
 public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock {
 	
-	public LangEditorTypingConfigurationBlock(AbstractComponentsPrefPage prefPage) {
-		super(prefPage);
+	public LangEditorTypingConfigurationBlock(AbstractPreferencesEditorsPrefPage page) {
+		super(page);
 	}
 	
 	@Override
@@ -53,16 +53,16 @@ public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock
 		
 		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS.key, 
+			LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, 
 			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeStrings));
 		
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS.key,
+			LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS,
 			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeBrackets));
 		}
 		
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_CLOSE_BRACES.key,
+			LangAutoEditPreferenceConstants.AE_CLOSE_BRACES,
 			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeBraces));
 		
 	}
@@ -74,15 +74,15 @@ public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock
 		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_SMART_INDENT.key, 
+			LangAutoEditPreferenceConstants.AE_SMART_INDENT, 
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_smartIndent));
 		
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_SMART_DEINDENT.key, 
+			LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, 
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_smartDeIndent));
 		
 		createBooleanField(group, 
-			LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS.key,
+			LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS,
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_considerParenthesesAsBlocks));
 		
 		return group;
@@ -107,19 +107,19 @@ public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock
 			INDENT_MODE__LABELS, 
 			INDENT_MODE__VALUES);
 		createCheckboxField(generalGroup, 
-			CodeFormatterConstants.FORMATTER_INDENT_MODE.key,
+			CodeFormatterConstants.FORMATTER_INDENT_MODE,
 			indentModeField
 		);
 		
-		createStringField(generalGroup, 
-			CodeFormatterConstants.FORMATTER_TAB_SIZE.key,
+		createIntField(generalGroup, 
+			CodeFormatterConstants.FORMATTER_TAB_SIZE,
 			createNumberField(FormatterMessages.IndentationGroup_tab_size, 2)
 		);
 		
 		final NumberField indentationSizeField = createNumberField(
 			FormatterMessages.IndentationGroup_indent_size, 2);
-		createStringField(generalGroup,
-			CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.key, 
+		createIntField(generalGroup,
+			CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE, 
 			indentationSizeField
 		);
 		IFieldValueListener indentModeValueListener = new IFieldValueListener() {

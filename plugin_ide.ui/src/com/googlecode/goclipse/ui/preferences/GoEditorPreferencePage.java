@@ -22,7 +22,7 @@ public class GoEditorPreferencePage extends AbstractPreferencesBlockPrefPage {
 	}
 	
 	@Override
-	protected GoEditorConfigurationBlock createPreferencesComponent() {
+	protected GoEditorConfigurationBlock createPreferencesBlock() {
 		return new GoEditorConfigurationBlock(this);
 	}
 	

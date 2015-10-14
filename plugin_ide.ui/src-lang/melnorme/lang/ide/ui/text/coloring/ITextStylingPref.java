@@ -10,9 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.coloring;
 
-import melnorme.utilbox.fields.IDomainField;
+import melnorme.utilbox.fields.IFieldView;
 
-public interface ITextStylingPref extends IDomainField<TextStyling> {
+public interface ITextStylingPref extends IFieldView<TextStyling> {
 	
 	String getPrefId();
 	

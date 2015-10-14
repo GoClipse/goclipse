@@ -23,7 +23,7 @@ public class GoContentAssistPreferencePage extends AbstractPreferencesBlockPrefP
 	}
 	
 	@Override
-	protected LangEditorContentAssistConfigurationBlock createPreferencesComponent() {
+	protected LangEditorContentAssistConfigurationBlock createPreferencesBlock() {
 		return new LangEditorContentAssistConfigurationBlock(this);
 	}
 	

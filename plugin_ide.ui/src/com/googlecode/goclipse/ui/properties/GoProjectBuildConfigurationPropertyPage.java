@@ -18,7 +18,7 @@ import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
 public class GoProjectBuildConfigurationPropertyPage extends LangBuildConfigurationPropertyPage {
 	
 	@Override
-	protected LangProjectBuildConfigurationComponent createProjectConfigComponent(IProject project) {
+	protected LangProjectBuildConfigurationComponent createProjectConfigWidget(IProject project) {
 		return new GoProjectOptionsBlock(project);
 	}
 	

@@ -33,15 +33,15 @@ public class ColorPreference extends PreferenceHelper<RGB> {
 	}
 	
 	@Override
-	protected RGB doGet(IPreferencesAccess prefsAccess) {
-		String stringValue = prefsAccess.getString(key);
+	protected RGB doGet(IPreferencesAccess preferences) {
+		String stringValue = preferences.getString(key);
 		return stringValue == null ? null : StringConverter.asRGB(stringValue);
 	}
 	
 	@Override
-	protected void doSet(IEclipsePreferences projectPreferences, RGB value) {
+	protected void doSet(IEclipsePreferences preferences, RGB value) {
 		String stringValue = StringConverter.asString(value);
-		projectPreferences.put(key, stringValue);
+		preferences.put(key, stringValue);
 	}
 	
 	public Color getManagedColor() {

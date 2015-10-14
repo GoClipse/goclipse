@@ -13,7 +13,7 @@ package melnorme.lang.ide.ui.tools;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractStoreComponentsPrefPage;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.CheckBoxField;
@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 
-public abstract class AbstractDeamonToolPrefPage extends AbstractComponentsPrefPage {
+public abstract class AbstractDeamonToolPrefPage extends AbstractStoreComponentsPrefPage {
 	
 	public AbstractDeamonToolPrefPage() {
 		// Note: we must use the Core preference store, as that's the scope where the preferences are stored.

@@ -10,38 +10,20 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.preferences;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.osgi.framework.Version;
 
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesDialogComponent.EnablementButtonFieldPrefAdapter;
+import melnorme.lang.ide.ui.preferences.LangRootPreferencePage;
+import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 
-public class GoPreferencePage extends AbstractComponentsPrefPage {
-	
-	protected final GoSDKConfigBlock goSDKBlock = new GoSDKConfigBlock();
+public class GoPreferencePage extends LangRootPreferencePage {
 	
 	public GoPreferencePage() {
-		super(LangUIPlugin.getCorePrefStore());
+		super();
 		
 		setDescription("GoClipse v" + getVersionText());
-		
-		addValidationStatusField(goSDKBlock.validation);
-		
-		addStringComponent(GoEnvironmentPrefs.GO_ROOT, goSDKBlock.goRootField);
-		addComboComponent(GoEnvironmentPrefs.GO_OS, goSDKBlock.goOSField);
-		addComboComponent(GoEnvironmentPrefs.GO_ARCH, goSDKBlock.goArchField);
-		
-		addStringComponent(GoEnvironmentPrefs.COMPILER_PATH, goSDKBlock.goToolPath);
-		addStringComponent(GoEnvironmentPrefs.FORMATTER_PATH, goSDKBlock.goFmtPath);
-		addStringComponent(GoEnvironmentPrefs.DOCUMENTOR_PATH, goSDKBlock.goDocPath);
-		/* FIXME: test */
-		
-		addPrefComponent(new EnablementButtonFieldPrefAdapter(GoEnvironmentPrefs.GO_PATH.key, goSDKBlock.goPathField));
 	}
 	
 	protected static String getVersionText() {
@@ -50,14 +32,32 @@ public class GoPreferencePage extends AbstractComponentsPrefPage {
 		return version.getMajor() + "." + version.getMinor() + "." + version.getMicro();
 	}
 	
+	
 	@Override
-	protected String getHelpId() {
-		return null;
+	protected LangSDKConfigBlock init_createLangSDKConfigBlock2() {
+		return doCreateLangSDKConfigBlock();
 	}
 	
 	@Override
-	protected Control createContents(Composite parent) {
-		return goSDKBlock.createComponent(parent);
+	protected LangSDKConfigBlock doCreateLangSDKConfigBlock() {
+		GoSDKConfigBlock goSDKBlock = new GoSDKConfigBlock();
+		
+		bindToPreference(GoEnvironmentPrefs.GO_ROOT, goSDKBlock.goRootField);
+		bindToPreference(GoEnvironmentPrefs.GO_OS, goSDKBlock.goOSField.asStringProperty());
+		bindToPreference(GoEnvironmentPrefs.GO_ARCH, goSDKBlock.goArchField.asStringProperty());
+		
+		bindToPreference(GoEnvironmentPrefs.COMPILER_PATH, goSDKBlock.goToolPath);
+		bindToPreference(GoEnvironmentPrefs.FORMATTER_PATH, goSDKBlock.goFmtPath);
+		bindToPreference(GoEnvironmentPrefs.DOCUMENTOR_PATH, goSDKBlock.goDocPath);
+		
+		bindToPreference(GoEnvironmentPrefs.GO_PATH, goSDKBlock.goPathField); /*FIXME: BUG here*/
+		
+		return goSDKBlock;
+	}
+	
+	@Override
+	protected String getHelpId() {
+		return null;
 	}
 	
 }

@@ -36,13 +36,13 @@ public class TextStylingPreference extends PreferenceHelper<TextStyling> {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected TextStyling doGet(IPreferencesAccess prefsAccess) {
-		return getFromStore(prefsAccess, key);
+	protected TextStyling doGet(IPreferencesAccess preferences) {
+		return getFromStore(preferences, key);
 	}
 	
 	@Override
-	protected void doSet(IEclipsePreferences projectPreferences, TextStyling textStyle) {
-		setToStore(projectPreferences, key, textStyle);
+	protected void doSet(IEclipsePreferences preferences, TextStyling textStyle) {
+		setToStore(preferences, key, textStyle);
 	}
 	
 	public static void setToStore(IEclipsePreferences store, String key, TextStyling textStyle) {

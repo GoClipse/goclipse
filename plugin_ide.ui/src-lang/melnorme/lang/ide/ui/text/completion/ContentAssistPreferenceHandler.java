@@ -28,6 +28,7 @@ import melnorme.lang.ide.ui.editor.SourceViewerConfigurer;
 import melnorme.lang.ide.ui.text.coloring.ThemedColorPreference;
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.fields.IFieldView;
 import melnorme.utilbox.ownership.IOwner;
 
 
@@ -102,9 +103,13 @@ public class ContentAssistPreferenceHandler extends SourceViewerConfigurer
 	}
 	
 	public <T> void listenToField(IGlobalPreference<T> preference, IFieldValueListener listener) {
+		listenToField(preference.asField(), listener);
+	}
+	
+	public <T> void listenToField(IFieldView<T> field, IFieldValueListener listener) {
 		IOwner configurationOwned = sourceViewer.getConfigurationOwned();
 		
-		preference.getGlobalField().addOwnedListener(configurationOwned, true, listener);
+		field.addOwnedListener(configurationOwned, true, listener);
 	}
 	
 	@Override

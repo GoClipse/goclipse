@@ -29,9 +29,10 @@ import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 
-import melnorme.lang.ide.ui.preferences.ValidatedConfigBlock;
+import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
 import melnorme.lang.tooling.ops.util.LocationValidator;
+import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ComboBoxField;
@@ -43,10 +44,11 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.ArrayUtil;
 
-public class GoSDKConfigBlock extends ValidatedConfigBlock {
+public class GoSDKConfigBlock extends LangSDKConfigBlock {
 	
 	public final DirectoryTextField goRootField = new DirectoryTextField("GO&ROOT:");
-	public final ValidatedField validatedGoRoot = new ValidatedField(goRootField, new GoSDKLocationValidator());
+	protected final GoSDKLocationValidator goSDKLocationValidator = new GoSDKLocationValidator();
+	public final ValidatedField validatedGoRoot = new ValidatedField(goRootField, goSDKLocationValidator);
 	
 	protected final ComboBoxField goOSField = new ComboBoxField("G&OOS:",
 		ArrayUtil.prepend("<default>", GoOs.GOOS_VALUES),
@@ -63,11 +65,52 @@ public class GoSDKConfigBlock extends ValidatedConfigBlock {
 	
 	public GoSDKConfigBlock() {
 		
-		validation.addValidatedField(goRootField, new GoSDKLocationValidator());
+		validation.addValidatedField(goRootField, goSDKLocationValidator);
 		
 		validation.addValidatedField(goToolPath, new LocationValidator(goToolPath.getLabelText(), FILE_ONLY));
 		validation.addValidatedField(goFmtPath, new LocationValidator(goFmtPath.getLabelText(), FILE_ONLY));
 		validation.addValidatedField(goDocPath, new LocationValidator(goDocPath.getLabelText(), FILE_ONLY));
+	}
+	
+	@Override
+	protected LanguageSDKLocationGroup createSDKLocationGroup2() {
+		return null;
+	}
+	
+	@Override
+	protected PathValidator getSDKValidator() {
+		return goSDKLocationValidator;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public int getPreferredLayoutColumns() {
+		return 1;
+	}
+	
+	@Override
+	protected void createContents(Composite topControl) {
+		Group goSDK = createPreferenceGroup(topControl, "Go SDK installation:");
+		int numColumns = 3;
+		goSDK.setLayout(glSwtDefaults().numColumns(numColumns).create());
+		
+		goRootField.createComponentInlined(goSDK);
+		
+		goOSField.createComponentInlined(goSDK);
+		goArchField.createComponentInlined(goSDK);
+		
+		SWTFactoryUtil.createLabel(goSDK, 
+			SWT.SEPARATOR | SWT.HORIZONTAL, "",
+			gdFillDefaults().span(numColumns, 1).grab(true, false).indent(0, 5).create());
+		
+		goToolPath.createComponentInlined(goSDK);
+		goFmtPath.createComponentInlined(goSDK);
+		goDocPath.createComponentInlined(goSDK);
+		
+		/* -----------------  ----------------- */
+		
+		goPathField.createComponent(topControl, getPreferenceGroupDefaultLayout());
 		
 		goRootField.addValueChangedListener(new IFieldValueListener() {
 			@Override
@@ -75,6 +118,31 @@ public class GoSDKConfigBlock extends ValidatedConfigBlock {
 				handleGoRootChange();
 			}
 		});
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		goRootField.setEnabled(enabled);
+		goOSField.setEnabled(enabled);
+		goArchField.setEnabled(enabled);
+		
+		goToolPath.setEnabled(enabled);
+		goFmtPath.setEnabled(enabled);
+		goDocPath.setEnabled(enabled);
+		goPathField.setEnabled(enabled);
+	}
+	
+	@Override
+	public void updateComponentFromInput() {
+	}
+	
+	protected Group createPreferenceGroup(Composite parent, String groupName) {
+		return SWTFactoryUtil.createGroup(parent, groupName,
+			getPreferenceGroupDefaultLayout());
+	}
+	
+	protected GridData getPreferenceGroupDefaultLayout() {
+		return GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create();
 	}
 	
 	protected void handleGoRootChange() {
@@ -121,60 +189,6 @@ public class GoSDKConfigBlock extends ValidatedConfigBlock {
 	}
 	
 	/* -----------------  ----------------- */
-	
-	@Override
-	public int getPreferredLayoutColumns() {
-		return 1;
-	}
-	
-	@Override
-	protected void createContents(Composite topControl) {
-		Group goSDK = createPreferenceGroup(topControl, "Go SDK installation:");
-		int numColumns = 3;
-		goSDK.setLayout(glSwtDefaults().numColumns(numColumns).create());
-		
-		goRootField.createComponentInlined(goSDK);
-		
-		goOSField.createComponentInlined(goSDK);
-		goArchField.createComponentInlined(goSDK);
-		
-		SWTFactoryUtil.createLabel(goSDK, 
-			SWT.SEPARATOR | SWT.HORIZONTAL, "",
-			gdFillDefaults().span(numColumns, 1).grab(true, false).indent(0, 5).create());
-		
-		goToolPath.createComponentInlined(goSDK);
-		goFmtPath.createComponentInlined(goSDK);
-		goDocPath.createComponentInlined(goSDK);
-		
-		/* -----------------  ----------------- */
-		
-		goPathField.createComponent(topControl, getPreferenceGroupDefaultLayout());
-	}
-	
-	@Override
-	public void setEnabled(boolean enabled) {
-		goRootField.setEnabled(enabled);
-		goOSField.setEnabled(enabled);
-		goArchField.setEnabled(enabled);
-		
-		goToolPath.setEnabled(enabled);
-		goFmtPath.setEnabled(enabled);
-		goDocPath.setEnabled(enabled);
-		goPathField.setEnabled(enabled);
-	}
-	
-	@Override
-	public void updateComponentFromInput() {
-	}
-	
-	protected Group createPreferenceGroup(Composite parent, String groupName) {
-		return SWTFactoryUtil.createGroup(parent, groupName,
-			getPreferenceGroupDefaultLayout());
-	}
-	
-	protected GridData getPreferenceGroupDefaultLayout() {
-		return GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create();
-	}
 	
 	public static class GoPathField extends EnablementButtonTextField {
 		

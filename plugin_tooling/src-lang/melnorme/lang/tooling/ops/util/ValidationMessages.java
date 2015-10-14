@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.ops.util;
 
 import java.nio.file.Path;
 import java.text.MessageFormat;
@@ -16,6 +16,16 @@ import java.text.MessageFormat;
 import melnorme.utilbox.misc.Location;
 
 public abstract class ValidationMessages {
+	
+	public static String NumberField_empty_input =
+			"Empty input";
+	public static String NumberField_invalid_input2 =
+		"''{0}'' is not a valid number.";
+	
+	public static String Number_IsNegative =
+			"''{0}'' is a negative number.";
+	
+	/* -----------------  ----------------- */
 
 	public static String Path_Error_EmptyPath = 
 			"No path specified.";
