@@ -145,6 +145,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	/* -----------------  ----------------- */
 	
+	@Override
 	public IProjectPreference<T> getProjectPreference() {
 		return projectPreference;
 	}

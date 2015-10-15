@@ -10,18 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.ui.ContentAssistPreferences;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.util.swt.components.fields.CheckBoxField;
 
 public class LangEditorContentAssistConfigurationBlock extends AbstractPreferencesBlock {
 	
-	public LangEditorContentAssistConfigurationBlock(AbstractPreferencesEditorsPrefPage prefPage) {
-		super(prefPage);
+	public LangEditorContentAssistConfigurationBlock() {
+		super();
 	}
 	
 	@Override
@@ -37,13 +35,12 @@ public class LangEditorContentAssistConfigurationBlock extends AbstractPreferenc
 	
 	protected void createInsertionGroup(Composite parent) {
 		Composite group = createSubsection(parent, 
-			PreferencesMessages.LangPrefs_ContentAssist_Insertion_group);
-		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
+			PreferencesMessages.LangPrefs_ContentAssist_Insertion_group, 2);
 		
-		createBooleanField(group, 
+		createAndBindComponent(group, 
 			ContentAssistPreferences.AUTO_INSERT__SingleProposals,
 			new CheckBoxField(PreferencesMessages.LangPrefs_ContentAssist_Insertion_AutomaticSingleProposals_Label));
-		createBooleanField(group, 
+		createAndBindComponent(group, 
 			ContentAssistPreferences.AUTO_INSERT__CommonPrefixes,
 			new CheckBoxField(PreferencesMessages.LangPrefs_ContentAssist_Insertion_AutomaticCommonPrefixes_Label));
 		
@@ -51,18 +48,17 @@ public class LangEditorContentAssistConfigurationBlock extends AbstractPreferenc
 	
 	protected void createAutoActivationGroup(Composite parent) {
 		Composite group = createSubsection(parent, 
-			PreferencesMessages.LangPrefs_ContentAssist_AutoActivation_group);
-		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
+			PreferencesMessages.LangPrefs_ContentAssist_AutoActivation_group, 2);
 		
-		createBooleanField(group, 
+		createAndBindComponent(group, 
 			ContentAssistPreferences.AUTO_ACTIVATE__DotTrigger,
 			new CheckBoxField(PreferencesMessages.LangPrefs_ContentAssist_AutoActivation_DotTrigger_Label));
 		if(createAutoActivation_DoubleColonOption()) {
-			createBooleanField(group, 
+			createAndBindComponent(group, 
 				ContentAssistPreferences.AUTO_ACTIVATE__DoubleColonTrigger,
 				new CheckBoxField(PreferencesMessages.LangPrefs_ContentAssist_AutoActivation_DoubleColonTrigger_Label));
 		}
-		createBooleanField(group, 
+		createAndBindComponent(group, 
 			ContentAssistPreferences.AUTO_ACTIVATE__AlphaNumericTrigger,
 			new CheckBoxField(PreferencesMessages.LangPrefs_ContentAssist_AutoActivation_AlphanumericTrigger_Label));
 		createIntField(group, 

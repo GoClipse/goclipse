@@ -13,6 +13,8 @@ package melnorme.lang.ide.ui.preferences;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
@@ -20,17 +22,21 @@ import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 
-public abstract class LangSDKConfigBlock extends ValidatedConfigBlock {
+public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 	
-	public final LanguageSDKLocationGroup sdkLocationGroup = createSDKLocationGroup2();
+	public final LanguageSDKLocationGroup sdkLocationGroup;
 	
-	public LangSDKConfigBlock() {
+	public LangSDKConfigBlock(PreferencesPageContext prefContext) {
+		super(prefContext);
+		
+		this.sdkLocationGroup = init_createSDKLocationGroup();
 	}
 	
-	protected LanguageSDKLocationGroup createSDKLocationGroup2() {
+	protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
 		LanguageSDKLocationGroup sdkLocationGroup = new LanguageSDKLocationGroup();
+		bindToPreference(sdkLocationGroup.sdkLocationField, ToolchainPreferences.SDK_PATH);
 		
-		validation.addValidatedField(sdkLocationGroup.sdkLocationField, getSDKValidator());
+		validation.addFieldValidation(true, sdkLocationGroup.sdkLocationField, getSDKValidator());
 		
 		return sdkLocationGroup;
 	}
@@ -66,8 +72,7 @@ public abstract class LangSDKConfigBlock extends ValidatedConfigBlock {
 		
 		@Override
 		protected Composite doCreateTopLevelControl(Composite parent) {
-			return SWTFactoryUtil.createGroup(parent, 
-				PreferencesMessages.ROOT_SDKGroup_Label);
+			return SWTFactoryUtil.createGroup(parent, PreferencesMessages.ROOT_SDKGroup_Label);
 		}
 		
 		@Override

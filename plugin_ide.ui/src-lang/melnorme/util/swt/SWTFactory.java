@@ -54,6 +54,8 @@ public class SWTFactory {
 		return composite;
 	}
 	
+	/* -----------------  ----------------- */
+	
 	public static Group createGroup(Composite parent, String label, GridData gridData) {
 		Group group = createGroup(parent, label);
 		return setLayoutData(group, gridData);
@@ -68,6 +70,8 @@ public class SWTFactory {
 		group.setText(label);
 		return group;
 	}
+	
+	/* -----------------  ----------------- */
 	
 	public static Label createLabel(Composite parent, int style, String labelText, GridData gridData) {
 		Label label = createLabel(parent, style, labelText);

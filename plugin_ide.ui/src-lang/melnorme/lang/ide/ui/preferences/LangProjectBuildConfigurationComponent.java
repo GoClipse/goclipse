@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetValidator;
@@ -26,16 +27,16 @@ import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
+import melnorme.lang.ide.ui.preferences.common.AbstractValidatedBlockExt;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class LangProjectBuildConfigurationComponent extends AbstractComponentExt 
+public abstract class LangProjectBuildConfigurationComponent extends AbstractValidatedBlockExt 
 	implements IPreferencesWidget {
 	
 	protected final IProject project;
@@ -205,21 +206,29 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 			return false;
 		}
 		
-		for(Entry<String, BuildTargetData> entry : buildOptionsToChange.entrySet()) {
-			
-			try {
-				BuildTarget buildTarget = 
-						getBuildManager().getValidDefinedBuildTarget(getValidProject(), entry.getKey());
-				
-				getBuildInfo().changeBuildTarget(buildTarget, entry.getValue());
-			} catch(CommonException e) {
-				handleStatusException(e);
-				return false;
-			}
+		try {
+			doSaveSettings();
+		} catch(BackingStoreException e) {
+			return false;
 		}
 		updateComponentFromInput();
 		
 		return true;
+	}
+	
+	@Override
+	public void doSaveSettings() throws BackingStoreException {
+		try {
+			for(Entry<String, BuildTargetData> entry : buildOptionsToChange.entrySet()) {
+				
+				BuildTarget buildTarget = 
+						getBuildManager().getValidDefinedBuildTarget(getValidProject(), entry.getKey());
+				
+				getBuildInfo().changeBuildTarget(buildTarget, entry.getValue());
+			}
+		} catch(CommonException e) {
+			throw new BackingStoreException("Error saving build target settings.", e);
+		}
 	}
 	
 	@Override

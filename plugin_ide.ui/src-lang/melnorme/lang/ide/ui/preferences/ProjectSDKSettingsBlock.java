@@ -12,7 +12,6 @@ package melnorme.lang.ide.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 
 public abstract class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock {
@@ -22,10 +21,8 @@ public abstract class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock
 	}
 	
 	@Override
-	protected LangSDKConfigBlock init_createProjectSettingsBlock2() {
-		LangSDKConfigBlock langSDKConfigBlock = init_createLangSDKBlock();
-		bindToProjectPref(langSDKConfigBlock.getLocationField(), ToolchainPreferences.SDK_PATH.getProjectPreference());
-		return langSDKConfigBlock;
+	protected AbstractPreferencesBlockExt init_createProjectSettingsBlock2() {
+		return init_createLangSDKBlock();
 	}
 	
 	protected abstract LangSDKConfigBlock init_createLangSDKBlock();

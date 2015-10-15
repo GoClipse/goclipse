@@ -12,20 +12,25 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.ui.ContentAssistConstants;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.preferences.EditorAppearanceColorsComponent.EditorColorItem;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.util.swt.components.fields.CheckBoxField;
 
 public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
 	
-	public LangEditorConfigurationBlock(AbstractPreferencesEditorsPrefPage mainPreferencePage) {
-		super(mainPreferencePage);
+	protected final IPreferenceStore store; // TODO: remove
+	
+	public LangEditorConfigurationBlock(IPreferenceStore store) {
+		super();
+		this.store = assertNotNull(store);
 	}
 	
 	@Override
@@ -39,7 +44,7 @@ public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
 	}
 	
 	protected void createAppearanceGroup(Composite parent) {
-		createBooleanField(parent,
+		createAndBindComponent(parent,
 			EditorPrefConstants.MATCHING_BRACKETS_,
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_matchingBrackets));
 		
@@ -53,7 +58,7 @@ public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
 		}
 		EditorAppearanceColorsComponent appearanceItemsCp = new EditorAppearanceColorsComponent(store, editorColorItems);
 		appearanceItemsCp.createComponentInlined(parent);
-		prefPage.addPrefEditor(appearanceItemsCp);
+		addPrefElement(appearanceItemsCp);
 	}
 	
 	protected EditorColorItem[] createEditorAppearanceColorEntries() {

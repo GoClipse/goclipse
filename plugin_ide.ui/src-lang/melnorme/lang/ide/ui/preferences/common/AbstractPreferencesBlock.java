@@ -12,78 +12,117 @@ package melnorme.lang.ide.ui.preferences.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.osgi.service.prefs.BackingStoreException;
 
-import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
-import melnorme.lang.ide.ui.utils.DialogPageUtils;
+import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.fields.IProperty;
 
-public abstract class AbstractPreferencesBlock extends AbstractComponent {
+public abstract class AbstractPreferencesBlock extends AbstractValidatedBlock implements IPreferencesWidget {
 	
-	protected final AbstractPreferencesEditorsPrefPage prefPage;
-	protected final IPreferenceStore store;
+	protected final ArrayList2<IPreferencesEditor> prefAdapters = new ArrayList2<>();
+	protected final PreferencesPageContext prefContext;
 	
-	public AbstractPreferencesBlock(AbstractPreferencesEditorsPrefPage prefPage) {
-		this.prefPage = assertNotNull(prefPage);
-		this.store = prefPage.getPreferenceStore();
+	public AbstractPreferencesBlock() {
+		this(null);
+	}
+	
+	public AbstractPreferencesBlock(PreferencesPageContext prefContext) {
+		this.prefContext = prefContext == null ? init_PreferencesPageContext() : prefContext;
+		assertNotNull(this.prefContext);
+	}
+	
+	protected PreferencesPageContext init_PreferencesPageContext() {
+		return new PreferencesPageContext();
+	}
+	
+	public void addPrefElement(IPreferencesEditor prefElement) {
+		prefAdapters.add(prefElement);
+	}
+	public <T> void bindToPreference(IProperty<T> field, IGlobalPreference<T> pref) {
+		addPrefElement(prefContext.getPreferencesBinder(field, pref));
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void loadDefaults() {
+		for(IPreferencesEditor prefAdapter : prefAdapters) {
+			prefAdapter.loadDefaults();
+		}
+	}
+	
+	@Override
+	public void doSaveSettings() throws BackingStoreException {
+		for(IPreferencesEditor prefAdapter : prefAdapters) {
+			prefAdapter.doSaveSettings();
+		}
 	}
 	
 	@Override
 	public void updateComponentFromInput() {
 	}
 	
-	protected void updateStatus(IStatus status) {
-		DialogPageUtils.applyStatusToPreferencePage(status, prefPage);
-	}
+	/* -----------------  Control Helpers  ----------------- */
 	
 	public <T> void createAndBindComponent(Composite parent, IGlobalPreference<T> pref, FieldComponent<T> field) {
 		field.createComponentInlined(parent);
-		prefPage.bindToPreference2(field, pref);
-	}
-	
-	protected <T> void createStringField(Composite parent, IGlobalPreference<T> pref, FieldComponent<T> field) {
-		createAndBindComponent(parent, pref, field);
-	}
-	
-	protected void createBooleanField(Composite parent, BooleanPreference pref, FieldComponent<Boolean> field) {
-		createAndBindComponent(parent, pref, field);
+		bindToPreference(field, pref);
 	}
 	
 	protected void createIntField(Composite parent, IntPreference pref, NumberField field) {
 		field.createComponentInlined(parent);
-		prefPage.bindToPreference2(field.asIntProperty(), pref);
+		bindToPreference(field.asIntProperty(), pref);
 	}
 	
 	protected void createCheckboxField(Composite parent, StringPreference pref, ComboBoxField field) {
 		field.createComponentInlined(parent);
-		prefPage.bindToPreference2(field.asStringProperty(), pref);
+		bindToPreference(field.asStringProperty(), pref);
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected Composite createSubsection(Composite parent, String label) {
+	public static Composite createSubsection(Composite parent, String label) {
 		return SWTFactoryUtil.createGroup(parent, label, 
-			new GridData(SWT.FILL, SWT.CENTER, true, false));
+			createDefaultSubSectionGridData());
+	}
+	
+	public static Composite createSubsection(Composite parent, String label, int numColumns) {
+		return createOptionsSection(parent, label, numColumns,
+			createDefaultSubSectionGridData());
+	}
+	
+	public static GridData createDefaultSubSectionGridData() {
+		return new GridData(SWT.FILL, SWT.CENTER, true, false);
+	}
+	
+	public static Group createOptionsSection(Composite parent, String label, int numColumns, GridData gridData) {
+		Group group = SWTFactory.createGroup(parent, label, gridData);
+		group.setLayout(createDefaultOptionsSectionLayout(numColumns));
+		return group;
+	}
+	
+	public static GridLayout createDefaultOptionsSectionLayout(int numColumns) {
+		return GridLayoutFactory.swtDefaults().numColumns(numColumns).create();
 	}
 	
 	protected NumberField createNumberField(String label, int textLimit) {
-		return new NumberField(label, textLimit) {
-			@Override
-			protected void statusChanged(IStatus status) {
-				updateStatus(status);
-			}
-		};
+		NumberField numberField = new NumberField(label, textLimit);
+		validation.addValidatableField(false, numberField);
+		return numberField;
 	}
 	
 }

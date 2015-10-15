@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
+import melnorme.lang.ide.ui.utils.DialogPageUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 
 public abstract class AbstractLangPropertyPage extends PropertyPage {
@@ -62,7 +63,15 @@ public abstract class AbstractLangPropertyPage extends PropertyPage {
 	
 	@SuppressWarnings("unused")
 	protected Control doCreateContents(Composite parent, IProject project) {
-		return preferencesWidget.createComponent(parent);
+		Control component = preferencesWidget.createComponent(parent);
+		
+		preferencesWidget.getStatusField().addValueChangedListener2(true, () -> updateStatusMessage());
+		
+		return component;
+	}
+	
+	protected void updateStatusMessage() {
+		DialogPageUtils.setPrefPageStatus(this, preferencesWidget.getStatusField().getValue());
 	}
 	
 	@Override

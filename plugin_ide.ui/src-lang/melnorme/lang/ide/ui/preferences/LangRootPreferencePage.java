@@ -11,7 +11,7 @@
 package melnorme.lang.ide.ui.preferences;
 
 
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
 public abstract class LangRootPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
@@ -21,11 +21,7 @@ public abstract class LangRootPreferencePage extends AbstractPreferencesBlockPre
 	
 	@Override
 	protected LangSDKConfigBlock init_createPreferencesBlock() {
-		LangSDKConfigBlock langSDKConfigBlock = init_createLangSDKConfigBlock();
-		
-		bindToPreference2(langSDKConfigBlock.getLocationField(), ToolchainPreferences.SDK_PATH);
-		
-		return langSDKConfigBlock;
+		return init_createLangSDKConfigBlock();
 	}
 	
 	protected abstract LangSDKConfigBlock init_createLangSDKConfigBlock();

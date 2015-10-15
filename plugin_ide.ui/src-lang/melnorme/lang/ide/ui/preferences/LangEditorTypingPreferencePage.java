@@ -11,18 +11,17 @@
 package melnorme.lang.ide.ui.preferences;
 
 
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
 public abstract class LangEditorTypingPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
 	public LangEditorTypingPreferencePage() {
-		super(LangUIPlugin.getInstance().getPreferenceStore());
+		super();
 	}
 	
 	@Override
-	protected LangEditorTypingConfigurationBlock createPreferencesBlock() {
-		return new LangEditorTypingConfigurationBlock(this);
+	protected LangEditorTypingConfigurationBlock init_createPreferencesBlock() {
+		return new LangEditorTypingConfigurationBlock();
 	}
 	
 	@Override

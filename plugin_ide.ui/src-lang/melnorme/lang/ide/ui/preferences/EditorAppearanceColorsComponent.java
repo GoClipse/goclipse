@@ -17,6 +17,8 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponent;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.PixelConverter;
@@ -33,6 +35,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
+import org.osgi.service.prefs.BackingStoreException;
 
 //originally from DLTK version 5.0.0
 public class EditorAppearanceColorsComponent extends AbstractComponent implements IPreferencesEditor {
@@ -104,8 +107,8 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 	protected Button useSystemDefaultButton;
 	
 	public EditorAppearanceColorsComponent(IPreferenceStore store, EditorColorItem[] editorColorItems) {
-		this.store = store;
-		this.editorColorItems = editorColorItems;
+		this.store = assertNotNull(store);
+		this.editorColorItems = assertNotNull(editorColorItems);
 	}
 	
 	@Override
@@ -117,11 +120,10 @@ public class EditorAppearanceColorsComponent extends AbstractComponent implement
 	}
 	
 	@Override
-	public boolean saveSettings() {
+	public void doSaveSettings() throws BackingStoreException {
 		for (EditorColorItem editorColorItem : editorColorItems) {
 			editorColorItem.saveToStore(store);
 		}
-		return true;
 	}
 	
 	@Override

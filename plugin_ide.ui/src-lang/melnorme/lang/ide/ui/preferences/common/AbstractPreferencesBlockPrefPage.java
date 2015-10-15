@@ -10,36 +10,62 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences.common;
 
-import melnorme.util.swt.components.IWidgetComponent;
-
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+
+import melnorme.lang.ide.ui.utils.DialogPageUtils;
+import melnorme.lang.tooling.data.IStatusMessage;
+import melnorme.util.swt.components.IWidgetComponent;
 
 /**
  * Abstract preference page wrapping {@link IWidgetComponent}.
  */
-public abstract class AbstractPreferencesBlockPrefPage extends AbstractPreferencesEditorsPrefPage {
+public abstract class AbstractPreferencesBlockPrefPage extends AbstractLangPreferencesPage {
 	
-	protected final IWidgetComponent preferencesBlock;
+	protected final IPreferencesWidget preferencesBlock;
 	
-	public AbstractPreferencesBlockPrefPage(IPreferenceStore store) {
-		super(store);
+	public AbstractPreferencesBlockPrefPage() {
+		super(null);
 		
-		preferencesBlock = createPreferencesBlock();
+		preferencesBlock = init_createPreferencesBlock();
 		
-		if(preferencesBlock instanceof IPreferencesEditor) {
-			IPreferencesEditor preferencesEditor = (IPreferencesEditor) preferencesBlock;
-			/* FIXME: */
-			addPrefEditor(preferencesEditor);
-		}
+		preferencesBlock.getStatusField().addValueChangedListener2(true, () -> updateStatusMessage());
 	}
 	
-	protected abstract IWidgetComponent createPreferencesBlock();
+	protected abstract AbstractPreferencesBlock init_createPreferencesBlock();
 	
 	@Override
 	protected Control createContents(Composite parent) {
 		return preferencesBlock.createComponent(parent);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public final void createControl(Composite parent) {
+		super.createControl(parent);
+		updateStatusMessage();
+	}
+	
+	protected void updateStatusMessage() {
+		DialogPageUtils.setPrefPageStatus(this, getPageStatus());
+	}
+	
+	/** @return page status message. Can be null */
+	protected IStatusMessage getPageStatus() {
+		return preferencesBlock.getStatusField().getValue();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void performDefaults() {
+		preferencesBlock.loadDefaults();
+	}
+	
+	@Override
+	public boolean performOk() {
+		return preferencesBlock.saveSettings();
 	}
 	
 }
