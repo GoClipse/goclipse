@@ -10,24 +10,30 @@
  *******************************************************************************/
 package melnorme.lang.tooling.data;
 
-import java.util.ArrayList;
-
 import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.DomainField;
-import melnorme.utilbox.fields.IDomainField;
+import melnorme.utilbox.fields.IFieldView;
 
-public class MultipleFieldValidation extends DomainField<IStatusMessage> implements IValidationSource {
+public class MultipleFieldValidation extends DomainField<IStatusMessage> implements IValidatableField<IStatusMessage> {
 	
-	protected final ArrayList<ValidatedField> fields = new ArrayList2<>();
+	protected final ArrayList2<IValidationSource> validators = new ArrayList2<>();
 	
-	public void addValidatedField(IDomainField<String> field, IFieldValidator validator) {
-		fields.add(new ValidatedField(field, validator));
-		field.addValueChangedListener2(true, () -> updateFieldValue());
+	public void addFieldValidation(boolean init, IFieldView<String> field, IFieldValidator validator) {
+		addFieldValidation(init, field, new ValidatedField(field, validator));
+	}
+	
+	public void addFieldValidation(boolean init, IFieldView<?> field, IValidationSource validationSource) {
+		validators.add(validationSource);
+		field.addValueChangedListener2(init, () -> updateFieldValue());
+	}
+	
+	public void addValidatableField(boolean init, IValidatableField<?> statusField) {
+		addFieldValidation(init, statusField, statusField);
 	}
 	
 	protected void updateFieldValue() {
-		setFieldValue(IValidationSource.getHighestStatus(fields));
+		setFieldValue(IValidationSource.getHighestStatus(validators));
 	}
 	
 	@Override

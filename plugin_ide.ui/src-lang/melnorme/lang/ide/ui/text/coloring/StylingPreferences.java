@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.coloring;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Map.Entry;
 
 import melnorme.lang.ide.core.utils.prefs.IPreferenceIdentifier;
@@ -32,7 +34,7 @@ public class StylingPreferences {
 	}
 	
 	public IFieldView<TextStyling> get(String key) {
-		return stylingPrefsMap.get(key);
+		return assertNotNull(stylingPrefsMap.get(key));
 	}
 	
 	protected void put(ThemedTextStylingPreference pref) {
@@ -41,14 +43,12 @@ public class StylingPreferences {
 	
 	public static class OverlayStylingPreferences extends StylingPreferences {
 		
-		protected final StylingPreferences originalStylingPreferences;
-		
 		public OverlayStylingPreferences(StylingPreferences stylingPreferences) {
-			this.originalStylingPreferences = stylingPreferences;
 			
 			for(Entry<String, IFieldView<TextStyling>> entry : stylingPreferences.stylingPrefsMap) {
-				entry.setValue(new SimpleTextStylingPref());
+				stylingPrefsMap.put(entry.getKey(), new SimpleTextStylingPref());
 			}
+			
 		}
 		
 		@Override

@@ -35,14 +35,14 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences.OverlayStylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.TextStyling.TextStylingData;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponent;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ColorField;
 import melnorme.util.swt.jface.ElementContentProvider2;
@@ -62,8 +62,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 /**
  * A configuration component for syntax (and possibly semantic) source highlighting options.
  */
-public abstract class AbstractSourceColoringConfigurationBlock extends AbstractComponent 
-	implements IPreferencesWidget {
+public abstract class AbstractSourceColoringConfigurationBlock extends AbstractPreferencesBlock {
 		
 	protected final SourceColoringListRoot coloringOptionsList;
 	
@@ -80,7 +79,10 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	protected CheckBoxField underlineCheckboxField;
 
 	public AbstractSourceColoringConfigurationBlock() {
+		super();
 		this.coloringOptionsList = new SourceColoringListRoot();
+		
+		visitColoringItems(item -> addPrefElement(item));
 	}
 	
 	protected void visitColoringItems(Consumer<SourceColoringElement> consumer) {
@@ -104,7 +106,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		
 	}
 	
-	public class SourceColoringElement extends LabeledTreeElement {
+	public class SourceColoringElement extends LabeledTreeElement implements IPreferencesEditor {
 		
 		protected final ThemedTextStylingPreference stylingPref;
 		protected final String prefId;
@@ -122,17 +124,14 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 			return temporaryPref.getValue();
 		}
 		
+		@Override
 		public void loadDefaults() {
 			temporaryPref.setValue(stylingPref.getDefaultValue());
 		}
 		
-		public void saveToGlobalPreferences() {
-			try {
-				stylingPref.setInstanceScopeValue(temporaryPref.getValue());
-			} catch(BackingStoreException e) {
-				// Ignore
-				/* FIXME: */
-			}
+		@Override
+		public void doSaveSettings() throws BackingStoreException {
+			stylingPref.setInstanceScopeValue(temporaryPref.getValue());
 		}
 		
 	}
@@ -148,21 +147,11 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	
 	@Override
 	public void loadDefaults() {
-		visitColoringItems(item -> item.loadDefaults());
+		super.loadDefaults();
 		
 		updateComponentFromInput();
 	}
 	
-	@Override
-	public boolean saveSettings() {
-		visitColoringItems(item -> item.saveToGlobalPreferences());
-		return true;
-	}
-	
-	@Override
-	protected GridLayoutFactory createTopLevelLayout() {
-		return glFillDefaults().spacing(0, 5).numColumns(getPreferredLayoutColumns());
-	}
 	
 	@Override
 	public int getPreferredLayoutColumns() {

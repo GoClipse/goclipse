@@ -8,30 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.prefs;
-
-import org.osgi.service.prefs.BackingStoreException;
+package melnorme.lang.tooling.data;
 
 import melnorme.utilbox.fields.IFieldView;
 
-
-public interface IGlobalPreference<T> {
-	
-	IFieldView<T> asField();
-	
-	default T get() {
-		return getValue();
-	}
-	
-	default T getValue() {
-		return asField().getValue();
-	}
-	
-	T getDefaultValue();
-	
-	void setInstanceScopeValue(T value) throws BackingStoreException;
-	
-	
-	IProjectPreference<T> getProjectPreference();
+public interface IValidatableField<TYPE> extends IFieldView<TYPE>, IValidationSource {
 	
 }

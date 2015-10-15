@@ -12,8 +12,9 @@ package melnorme.lang.tooling.data;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.utilbox.fields.IProperty;
+import melnorme.utilbox.fields.IFieldView;
 
+// Need to review this
 public interface IValidatedField<TYPE> extends IValidationSource {
 	
 	public TYPE getValidatedField() throws StatusException;
@@ -44,10 +45,10 @@ public interface IValidatedField<TYPE> extends IValidationSource {
 	
 	public static class ValidatedField implements IValidatedField<Object> {
 		
-		public final IProperty<String> property;
+		public final IFieldView<String> property;
 		public final IFieldValidator validator;
 		
-		public ValidatedField(IProperty<String> field, IFieldValidator validator) {
+		public ValidatedField(IFieldView<String> field, IFieldValidator validator) {
 			this.property = assertNotNull(field);
 			this.validator = assertNotNull(validator);
 		}

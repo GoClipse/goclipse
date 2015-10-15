@@ -13,9 +13,8 @@ package com.googlecode.goclipse.ui.preferences;
 import org.osgi.framework.Version;
 
 import com.googlecode.goclipse.core.GoCore;
-import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 
-import melnorme.lang.ide.ui.preferences.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
 public class GoPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
@@ -33,19 +32,7 @@ public class GoPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
 	@Override
 	protected GoSDKConfigBlock init_createPreferencesBlock() {
-		GoSDKConfigBlock goSDKBlock = new GoSDKConfigBlock();
-		
-		bindToPreference2(goSDKBlock.goRootField, GoEnvironmentPrefs.GO_ROOT);
-		bindToPreference2(goSDKBlock.goOSField.asStringProperty(), GoEnvironmentPrefs.GO_OS);
-		bindToPreference2(goSDKBlock.goArchField.asStringProperty(), GoEnvironmentPrefs.GO_ARCH);
-		
-		bindToPreference2(goSDKBlock.goToolPath, GoEnvironmentPrefs.COMPILER_PATH);
-		bindToPreference2(goSDKBlock.goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
-		bindToPreference2(goSDKBlock.goDocPath, GoEnvironmentPrefs.DOCUMENTOR_PATH);
-		
-		bindToPreference2(goSDKBlock.goPathField.asEffectiveValueProperty(), GoEnvironmentPrefs.GO_PATH);
-		
-		return goSDKBlock;
+		return new GoSDKConfigBlock(null);
 	}
 	
 	@Override

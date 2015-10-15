@@ -27,6 +27,7 @@ import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.core.operations.GetAndInstallGoPackageOperation;
 
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.lang.ide.ui.tools.AbstractDeamonToolPrefPage;
 import melnorme.lang.ide.ui.utils.UIOperationsHelper;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -37,14 +38,25 @@ import melnorme.utilbox.misc.StringUtil;
 public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 		IWorkbenchPreferencePage {
 	
+	@Override
+	protected AbstractPreferencesBlock init_createPreferencesBlock() {
+		return new GoServerToolsBlock();
+	}
+	
+	public static class GoServerToolsBlock extends ServerToolsBlock {
+		
+		public GoServerToolsBlock() {
+			super();
+		}
+		
 	protected Group oracleGroup;
 	
 	@Override
-	protected void doCreateContents(Composite block) {
-		oracleGroup = createOptionsSection(block, 
+	protected void createContents(Composite topControl) {
+		oracleGroup = AbstractPreferencesBlock.createOptionsSection(topControl, 
 			"Go oracle",
-			GridDataFactory.fillDefaults().grab(true, false).minSize(200, SWT.DEFAULT).create(),
-			3);
+			3,
+			GridDataFactory.fillDefaults().grab(true, false).minSize(200, SWT.DEFAULT).create());
 		
 		FileTextField goOracleFileEditor = 
 				createFileComponent(oracleGroup, "Go oracle path:", GoToolPreferences.GO_ORACLE_Path, true);
@@ -52,7 +64,7 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 		createInstallPackageButton(oracleGroup, "Download Go oracle", "golang.org/x/tools/cmd/oracle", "oracle",
 			goOracleFileEditor);
 		
-		super.doCreateContents(block);
+		super.createContents(topControl);
 	}
 	
 	@Override
@@ -82,7 +94,7 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 		getGocodeButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Shell shell = workbench.getActiveWorkbenchWindow().getShell();
+				Shell shell = group.getShell();
 				boolean success = UIOperationsHelper.runAndHandle(new ProgressMonitorDialog(shell), op, true, 
 					baseButtonLabel + " error.");
 				
@@ -91,6 +103,8 @@ public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
 				}
 			}
 		});
+	}
+	
 	}
 	
 }

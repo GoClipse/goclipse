@@ -18,12 +18,12 @@ import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 public class GoEditorPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
 	public GoEditorPreferencePage() {
-		super(LangUIPlugin.getInstance().getPreferenceStore());
+		super();
 	}
 	
 	@Override
-	protected GoEditorConfigurationBlock createPreferencesBlock() {
-		return new GoEditorConfigurationBlock(this);
+	protected GoEditorConfigurationBlock init_createPreferencesBlock() {
+		return new GoEditorConfigurationBlock(LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

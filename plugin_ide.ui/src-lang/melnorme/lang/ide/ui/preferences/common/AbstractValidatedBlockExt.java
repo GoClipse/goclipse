@@ -8,18 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.ui.preferences.common;
 
 
-import melnorme.lang.tooling.data.MultipleFieldValidation;
-import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.IDisableableComponent;
 
-public abstract class ValidatedConfigBlock extends AbstractComponentExt {
+public abstract class AbstractValidatedBlockExt extends AbstractValidatedBlock implements IDisableableComponent {
 	
-	public final MultipleFieldValidation validation = new MultipleFieldValidation();
-	
-	public ValidatedConfigBlock() {
-		super();
+	@Override
+	public void _verifyContract() {
+		IDisableableComponent.super._verifyContract();
 	}
 	
 }

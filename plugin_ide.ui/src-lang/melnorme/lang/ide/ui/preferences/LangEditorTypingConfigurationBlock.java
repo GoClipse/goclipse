@@ -13,13 +13,11 @@ package melnorme.lang.ide.ui.preferences;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.array;
 
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ComboBoxField;
@@ -29,8 +27,8 @@ import melnorme.utilbox.fields.IFieldValueListener;
 
 public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock {
 	
-	public LangEditorTypingConfigurationBlock(AbstractPreferencesEditorsPrefPage page) {
-		super(page);
+	public LangEditorTypingConfigurationBlock() {
+		super();
 	}
 	
 	@Override
@@ -47,41 +45,36 @@ public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock
 	
 	protected void createAutoClosingGroup(Composite parent) {
 		Composite group = createSubsection(parent, 
-			PreferencesMessages.LangSmartTypingConfigurationBlock_autoclose_title);
-		
-		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
+			PreferencesMessages.LangSmartTypingConfigurationBlock_autoclose_title, 2);
 		
 		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
-		createBooleanField(group, 
+		createAndBindComponent(group, 
 			LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, 
 			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeStrings));
 		
-		createBooleanField(group, 
+		createAndBindComponent(group, 
 			LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS,
 			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeBrackets));
 		}
 		
-		createBooleanField(group, 
+		createAndBindComponent(group, 
 			LangAutoEditPreferenceConstants.AE_CLOSE_BRACES,
 			new CheckBoxField(PreferencesMessages.LangSmartTypingConfigurationBlock_closeBraces));
 		
 	}
 	
 	protected Composite createAutoEditGroup(Composite parent) {
-		Composite group = createSubsection(parent, 
-			PreferencesMessages.EditorPreferencePage_AutoEdits);
+		Composite group = createSubsection(parent, PreferencesMessages.EditorPreferencePage_AutoEdits, 2);
 		
-		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
-		
-		createBooleanField(group, 
+		createAndBindComponent(group, 
 			LangAutoEditPreferenceConstants.AE_SMART_INDENT, 
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_smartIndent));
 		
-		createBooleanField(group, 
+		createAndBindComponent(group, 
 			LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, 
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_smartDeIndent));
 		
-		createBooleanField(group, 
+		createAndBindComponent(group, 
 			LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS,
 			new CheckBoxField(PreferencesMessages.EditorPreferencePage_considerParenthesesAsBlocks));
 		
@@ -89,9 +82,7 @@ public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock
 	}
 	
 	protected void createIndentationGroup(Composite composite) {
-		Composite generalGroup = createSubsection(composite, FormatterMessages.IndentationGroup_header);
-		
-		generalGroup.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
+		Composite generalGroup = createSubsection(composite, FormatterMessages.IndentationGroup_header, 2);
 		
 		final String[] INDENT_MODE__LABELS = new String[] {
 				FormatterMessages.IndentationGroup_tab_policy_TAB,

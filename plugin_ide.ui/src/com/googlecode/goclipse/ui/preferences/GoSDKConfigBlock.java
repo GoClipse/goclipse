@@ -24,12 +24,15 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoEnvironmentUtils;
 import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 
-import melnorme.lang.ide.ui.preferences.ValidatedConfigBlock;
+import melnorme.lang.ide.ui.preferences.AbstractPreferencesBlockExt;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
 import melnorme.lang.tooling.ops.util.LocationValidator;
 import melnorme.lang.utils.ProcessUtils;
@@ -43,7 +46,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.ArrayUtil;
 
-public class GoSDKConfigBlock extends ValidatedConfigBlock {
+public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 	
 	public final DirectoryTextField goRootField = new DirectoryTextField("GO&ROOT:");
 	protected final GoSDKLocationValidator goSDKLocationValidator = new GoSDKLocationValidator();
@@ -62,13 +65,24 @@ public class GoSDKConfigBlock extends ValidatedConfigBlock {
 	
 	protected final EnablementButtonTextField goPathField = new GoPathField();
 	
-	public GoSDKConfigBlock() {
+	public GoSDKConfigBlock(PreferencesPageContext prefContext) {
+		super(prefContext);
 		
-		validation.addValidatedField(goRootField, goSDKLocationValidator);
+		bindToPreference(goRootField, GoEnvironmentPrefs.GO_ROOT);
+		bindToPreference(goOSField.asStringProperty(), GoEnvironmentPrefs.GO_OS);
+		bindToPreference(goArchField.asStringProperty(), GoEnvironmentPrefs.GO_ARCH);
 		
-		validation.addValidatedField(goToolPath, new LocationValidator(goToolPath.getLabelText(), FILE_ONLY));
-		validation.addValidatedField(goFmtPath, new LocationValidator(goFmtPath.getLabelText(), FILE_ONLY));
-		validation.addValidatedField(goDocPath, new LocationValidator(goDocPath.getLabelText(), FILE_ONLY));
+		bindToPreference(goToolPath, GoEnvironmentPrefs.COMPILER_PATH);
+		bindToPreference(goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
+		bindToPreference(goDocPath, GoEnvironmentPrefs.DOCUMENTOR_PATH);
+		
+		bindToPreference(goPathField.asEffectiveValueProperty(), GoEnvironmentPrefs.GO_PATH);
+		
+		validation.addFieldValidation(true, goRootField, goSDKLocationValidator);
+		
+		validation.addFieldValidation(true, goToolPath, new LocationValidator(goToolPath.getLabelText(), FILE_ONLY));
+		validation.addFieldValidation(true, goFmtPath, new LocationValidator(goFmtPath.getLabelText(), FILE_ONLY));
+		validation.addFieldValidation(true, goDocPath, new LocationValidator(goDocPath.getLabelText(), FILE_ONLY));
 	}
 	
 	/* -----------------  ----------------- */
@@ -80,9 +94,9 @@ public class GoSDKConfigBlock extends ValidatedConfigBlock {
 	
 	@Override
 	protected void createContents(Composite topControl) {
-		Group goSDK = createPreferenceGroup(topControl, "Go SDK installation:");
 		int numColumns = 3;
-		goSDK.setLayout(glSwtDefaults().numColumns(numColumns).create());
+		Group goSDK = AbstractPreferencesBlock.createOptionsSection(topControl, "Go SDK installation:", numColumns,
+			getPreferenceGroupDefaultLayout());
 		
 		goRootField.createComponentInlined(goSDK);
 		
@@ -123,11 +137,6 @@ public class GoSDKConfigBlock extends ValidatedConfigBlock {
 	
 	@Override
 	public void updateComponentFromInput() {
-	}
-	
-	protected Group createPreferenceGroup(Composite parent, String groupName) {
-		return SWTFactoryUtil.createGroup(parent, groupName,
-			getPreferenceGroupDefaultLayout());
 	}
 	
 	protected GridData getPreferenceGroupDefaultLayout() {

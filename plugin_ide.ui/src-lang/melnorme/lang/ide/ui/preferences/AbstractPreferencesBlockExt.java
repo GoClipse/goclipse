@@ -8,14 +8,19 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.components;
+package melnorme.lang.ide.ui.preferences;
 
-/**
- * An {@link AbstractComponent} with {@link #setEnabled(boolean)} functionality.
- */
-public abstract class AbstractComponentExt extends AbstractComponent implements IDisableableComponent {
+
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
+import melnorme.util.swt.components.IDisableableComponent;
+
+public abstract class AbstractPreferencesBlockExt extends AbstractPreferencesBlock 
+	implements IPreferencesWidget, IDisableableComponent {
 	
-	public AbstractComponentExt() {
+	public AbstractPreferencesBlockExt(PreferencesPageContext prefContext) {
+		super(prefContext);
 	}
 	
 	@Override

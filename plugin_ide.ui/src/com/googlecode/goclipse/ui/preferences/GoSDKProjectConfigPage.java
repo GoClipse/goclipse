@@ -10,13 +10,15 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.preferences;
 
-import org.eclipse.core.resources.IProject;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
-import com.googlecode.goclipse.core.GoEnvironmentPrefs;
+import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
-import melnorme.lang.ide.ui.preferences.ProjectAndPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.AbstractPreferencesBlockExt;
+import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
+import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 
 public class GoSDKProjectConfigPage extends AbstractLangPropertyPage {
@@ -26,28 +28,20 @@ public class GoSDKProjectConfigPage extends AbstractLangPropertyPage {
 		return new GoSDKProjectConfigBlock(project);
 	}
 	
-	protected class GoSDKProjectConfigBlock extends ProjectAndPreferencesBlock {
+	protected class GoSDKProjectConfigBlock extends ProjectSDKSettingsBlock {
 		
 		public GoSDKProjectConfigBlock(IProject project) {
 			super(project, ToolchainPreferences.USE_PROJECT_SETTINGS);
 		}
 		
 		@Override
-		protected GoSDKConfigBlock init_createProjectSettingsBlock2() {
-			/* FIXME: validation*/
-			GoSDKConfigBlock goSDKBlock = new GoSDKConfigBlock();
-			
-			bindToProjectPref(goSDKBlock.goRootField, GoEnvironmentPrefs.GO_ROOT);
-			bindToProjectPref(goSDKBlock.goOSField.asStringProperty(), GoEnvironmentPrefs.GO_OS);
-			bindToProjectPref(goSDKBlock.goArchField.asStringProperty(), GoEnvironmentPrefs.GO_ARCH);
-			
-			bindToProjectPref(goSDKBlock.goToolPath, GoEnvironmentPrefs.COMPILER_PATH);
-			bindToProjectPref(goSDKBlock.goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
-			bindToProjectPref(goSDKBlock.goDocPath, GoEnvironmentPrefs.DOCUMENTOR_PATH);
-			
-			bindToProjectPref(goSDKBlock.goPathField.asEffectiveValueProperty(), GoEnvironmentPrefs.GO_PATH);
-			
-			return goSDKBlock;
+		protected AbstractPreferencesBlockExt init_createProjectSettingsBlock2() {
+			return new GoSDKConfigBlock(prefContext);
+		}
+		
+		@Override
+		protected LangSDKConfigBlock init_createLangSDKBlock() {
+			throw assertFail();
 		}
 		
 	}

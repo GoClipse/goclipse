@@ -10,26 +10,29 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.tools;
 
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.preferences.common.AbstractStoreComponentsPrefPage;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.fields.ButtonTextField;
-import melnorme.util.swt.components.fields.CheckBoxField;
-
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 
-public abstract class AbstractDeamonToolPrefPage extends AbstractStoreComponentsPrefPage {
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
+import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
+import melnorme.lang.tooling.ops.util.LocationValidator;
+import melnorme.lang.tooling.ops.util.PathValidator;
+import melnorme.util.swt.components.FieldComponent;
+import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.util.swt.components.fields.CheckBoxField;
+import melnorme.util.swt.components.fields.FileTextField;
+
+/* FIXME: test */
+public abstract class AbstractDeamonToolPrefPage extends AbstractPreferencesBlockPrefPage {
 	
 	public AbstractDeamonToolPrefPage() {
-		// Note: we must use the Core preference store, as that's the scope where the preferences are stored.
-		super(LangUIPlugin.getCorePrefStore());
 	}
 	
 	@Override
@@ -39,29 +42,45 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractStoreComponents
 	
 	/* -----------------  ----------------- */
 	
+	@Override
+	protected AbstractPreferencesBlock init_createPreferencesBlock() {
+		return new ServerToolsBlock();
+	}
+	
+	public static class ServerToolsBlock extends AbstractPreferencesBlock {
+		
+		public ServerToolsBlock() {
+			super();
+		}
+		
+		@Override
+		public int getPreferredLayoutColumns() {
+			return 1;
+		}
+		
+		
+		
 	protected Group toolGroup;
 	protected ButtonTextField daemonPathEditor;
 	
 	@Override
-	protected Control createContents(Composite parent) {
-		Composite block = SWTFactoryUtil.createComposite(parent);
-		doCreateContents(block);
-		return block;
-	}
-	
-	protected void doCreateContents(Composite block) {
-		block.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
+	protected void createContents(Composite topControl) {
 		
-		toolGroup = createOptionsSection(block, 
+		toolGroup = AbstractPreferencesBlock.createOptionsSection(topControl, 
 			getDaemonToolName(), 
-			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create(), 
-			3);
+			3, 
+			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
 		
-		addBooleanComponent(ToolchainPreferences.AUTO_START_DAEMON, toolGroup, new CheckBoxField(
-			"Start " + getDaemonToolName() + " server automatically"));
+		FieldComponent<Boolean> startServerAutomatically = new CheckBoxField(
+			"Start " + getDaemonToolName() + " server automatically");
+		bindToPreference(startServerAutomatically, ToolchainPreferences.AUTO_START_DAEMON);
 		
-		addBooleanComponent(ToolchainPreferences.DAEMON_CONSOLE_ENABLE, toolGroup, new CheckBoxField(
-			"Enable " + getDaemonToolName() + " log console (requires restart)"));
+		FieldComponent<Boolean> enableLogConsole = new CheckBoxField(
+			"Enable " + getDaemonToolName() + " log console (requires restart)");
+		bindToPreference(enableLogConsole, ToolchainPreferences.DAEMON_CONSOLE_ENABLE);
+		
+		startServerAutomatically.createComponentInlined(toolGroup);
+		enableLogConsole.createComponentInlined(toolGroup);
 		
 		daemonPathEditor = createDaemonPathFieldEditor(toolGroup);
 	}
@@ -71,8 +90,24 @@ public abstract class AbstractDeamonToolPrefPage extends AbstractStoreComponents
 			ToolchainPreferences.DAEMON_PATH, true);
 	}
 	
+	public FileTextField createFileComponent(Group group, String label, StringPreference pref, 
+			boolean allowSinglePath) {
+		FileTextField pathField = new FileTextField(label);
+		
+		PathValidator validator = (allowSinglePath ? 
+				new LocationOrSinglePathValidator(label) : new LocationValidator(label)).setFileOnly(true);
+		
+		validation.addFieldValidation(false, pathField, new ValidatedField(pathField, validator));
+		
+		bindToPreference(pathField, pref);
+		pathField.createComponentInlined(group);
+		return pathField;
+	}
+	
 	protected String getDaemonToolName() {
 		return LangUIPlugin_Actual.DAEMON_TOOL_Name;
+	}
+	
 	}
 	
 }

@@ -26,6 +26,10 @@ import melnorme.util.swt.SWTLayoutUtil;
 public abstract class AbstractComponent implements IWidgetComponent {
 	
 	public AbstractComponent() {
+		_verifyContract();
+	}
+	
+	protected void _verifyContract() {
 	}
 	
 	@Override
