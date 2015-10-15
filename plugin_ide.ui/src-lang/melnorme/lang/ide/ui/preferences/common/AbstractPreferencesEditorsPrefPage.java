@@ -49,7 +49,7 @@ public abstract class AbstractPreferencesEditorsPrefPage extends AbstractLangPre
 		prefAdapters.add(prefComponent);
 	}
 	
-	public <T> void bindToPreference(IGlobalPreference<T> pref, IProperty<T> field) {
+	public <T> void bindToPreference2(IProperty<T> field, IGlobalPreference<T> pref) {
 		addPrefEditor(new GlobalPreferenceAdapter<>(pref, field));
 	}
 	public void addValidationSource(IValidationSource validationSource) {

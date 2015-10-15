@@ -42,7 +42,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 	protected final BuildTargetField buildTargetField = init_createBuildTargetField();
 	protected final BuildTargetSettingsComponent buildTargetSettings = init_createBuildTargetSettingsComponent();
 	
-	protected final HashMap2<String, BuildTargetData> buildOptionsToChange2 = new HashMap2<>();
+	protected final HashMap2<String, BuildTargetData> buildOptionsToChange = new HashMap2<>();
 	protected BuildTargetData buildTargetData = new BuildTargetData();
 	
 	public LangProjectBuildConfigurationComponent(IProject project) {
@@ -98,11 +98,11 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 			return;
 		}
 		
-		buildOptionsToChange2.clear();
+		buildOptionsToChange.clear();
 
 		Collection2<BuildTarget> buildTargets = buildInfo.getBuildTargets();
 		for(BuildTarget buildTarget : buildTargets) {
-			buildOptionsToChange2.put(buildTarget.getTargetName(), buildTarget.getDataCopy());
+			buildOptionsToChange.put(buildTarget.getTargetName(), buildTarget.getDataCopy());
 		}
 		
 		initBindings();
@@ -154,7 +154,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 		if(buildTargetName == null) {
 			return;
 		}
-		buildTargetData = buildOptionsToChange2.get(buildTargetName);
+		buildTargetData = buildOptionsToChange.get(buildTargetName);
 		buildTargetSettings.inputChanged(buildTargetData);
 	}
 	
@@ -205,7 +205,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 			return false;
 		}
 		
-		for(Entry<String, BuildTargetData> entry : buildOptionsToChange2.entrySet()) {
+		for(Entry<String, BuildTargetData> entry : buildOptionsToChange.entrySet()) {
 			
 			try {
 				BuildTarget buildTarget = 
@@ -228,7 +228,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractCom
 			return;
 		}
 		
-		for(BuildTargetData data : buildOptionsToChange2.values()) {
+		for(BuildTargetData data : buildOptionsToChange.values()) {
 			data.buildArguments = null;
 			data.executablePath = null;
 		}

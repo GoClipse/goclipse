@@ -57,11 +57,11 @@ public abstract class AbstractStoreComponentsPrefPage extends AbstractPreference
 	/* ======================= Field helpers: ======================= */
 	
 	public void addStringComponent(StringPreference pref, Composite parent, FieldComponent<String> field) {
-		bindToPreference(pref, field);
+		bindToPreference2(field, pref);
 		field.createComponentInlined(parent);
 	}
 	public void addBooleanComponent(BooleanPreference pref, Composite parent, FieldComponent<Boolean> field) {
-		bindToPreference(pref, field);
+		bindToPreference2(field, pref);
 		field.createComponentInlined(parent);
 	}
 	
@@ -93,7 +93,7 @@ public abstract class AbstractStoreComponentsPrefPage extends AbstractPreference
 	}
 	
 	public void connectStringField(StringPreference pref, IDomainField<String> field, IFieldValidator validator) {
-		bindToPreference(pref, field);
+		bindToPreference2(field, pref);
 		
 		addValidationSource(new ValidatedField(field, validator));
 		

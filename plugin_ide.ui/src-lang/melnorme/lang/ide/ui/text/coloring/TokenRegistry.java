@@ -20,6 +20,7 @@ import org.eclipse.jface.text.rules.Token;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.collections.HashMap2;
+import melnorme.utilbox.fields.IFieldView;
 import melnorme.utilbox.ownership.LifecycleObject;
 
 public class TokenRegistry extends LifecycleObject {
@@ -27,22 +28,23 @@ public class TokenRegistry extends LifecycleObject {
 	protected final HashMap2<String, Token> tokens = new HashMap2<>();
 	
 	protected final ColorManager2 colorManager;
+	protected final StylingPreferences stylingPrefs;
 	
-	public TokenRegistry(ColorManager2 colorManager) {
+	public TokenRegistry(ColorManager2 colorManager, StylingPreferences stylingPrefs) {
 		this.colorManager = assertNotNull(colorManager);
+		this.stylingPrefs = assertNotNull(stylingPrefs);
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public IToken getToken(ITextStylingPref stylingPref) {
-		return doGetToken(stylingPref);
+	public IToken getToken(ThemedTextStylingPreference stylingPref) {
+		return doGetToken(stylingPref.getPrefId(), stylingPrefs.get(stylingPref));
 	}
 	
-	protected Token doGetToken(ITextStylingPref stylingPref) {
+	protected Token doGetToken(String id, IFieldView<TextStyling> stylingPref) {
+		assertNotNull(id);
 		assertNotNull(stylingPref);
 		assertTrue(SWTUtil.isUIThread());
-		
-		String id = stylingPref.getPrefId();
 		
 		Token token = tokens.get(id);
 		if(token == null) {
@@ -57,14 +59,14 @@ public class TokenRegistry extends LifecycleObject {
 		return token;
 	}
 	
-	protected TextAttribute createTextAttribute(ITextStylingPref stylingPref) {
+	protected TextAttribute createTextAttribute(IFieldView<TextStyling> stylingPref) {
 		TextStyling textStyle = stylingPref.getValue();
 		
 		return textStyle.getTextAttribute(colorManager);
 	}
 	
 	
-	protected void updateToken(Token token, ITextStylingPref stylingPref) {
+	protected void updateToken(Token token, IFieldView<TextStyling> stylingPref) {
 		token.setData(createTextAttribute(stylingPref));
 		
 		handleTokenModified(token);

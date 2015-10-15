@@ -15,10 +15,9 @@ import org.osgi.framework.Version;
 import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 
-import melnorme.lang.ide.ui.preferences.LangRootPreferencePage;
-import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
+import melnorme.lang.ide.ui.preferences.AbstractPreferencesBlockPrefPage;
 
-public class GoPreferencePage extends LangRootPreferencePage {
+public class GoPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
 	public GoPreferencePage() {
 		super();
@@ -32,25 +31,19 @@ public class GoPreferencePage extends LangRootPreferencePage {
 		return version.getMajor() + "." + version.getMinor() + "." + version.getMicro();
 	}
 	
-	
 	@Override
-	protected LangSDKConfigBlock init_createLangSDKConfigBlock2() {
-		return doCreateLangSDKConfigBlock();
-	}
-	
-	@Override
-	protected LangSDKConfigBlock doCreateLangSDKConfigBlock() {
+	protected GoSDKConfigBlock init_createPreferencesBlock() {
 		GoSDKConfigBlock goSDKBlock = new GoSDKConfigBlock();
 		
-		bindToPreference(GoEnvironmentPrefs.GO_ROOT, goSDKBlock.goRootField);
-		bindToPreference(GoEnvironmentPrefs.GO_OS, goSDKBlock.goOSField.asStringProperty());
-		bindToPreference(GoEnvironmentPrefs.GO_ARCH, goSDKBlock.goArchField.asStringProperty());
+		bindToPreference2(goSDKBlock.goRootField, GoEnvironmentPrefs.GO_ROOT);
+		bindToPreference2(goSDKBlock.goOSField.asStringProperty(), GoEnvironmentPrefs.GO_OS);
+		bindToPreference2(goSDKBlock.goArchField.asStringProperty(), GoEnvironmentPrefs.GO_ARCH);
 		
-		bindToPreference(GoEnvironmentPrefs.COMPILER_PATH, goSDKBlock.goToolPath);
-		bindToPreference(GoEnvironmentPrefs.FORMATTER_PATH, goSDKBlock.goFmtPath);
-		bindToPreference(GoEnvironmentPrefs.DOCUMENTOR_PATH, goSDKBlock.goDocPath);
+		bindToPreference2(goSDKBlock.goToolPath, GoEnvironmentPrefs.COMPILER_PATH);
+		bindToPreference2(goSDKBlock.goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
+		bindToPreference2(goSDKBlock.goDocPath, GoEnvironmentPrefs.DOCUMENTOR_PATH);
 		
-		bindToPreference(GoEnvironmentPrefs.GO_PATH, goSDKBlock.goPathField); /*FIXME: BUG here*/
+		bindToPreference2(goSDKBlock.goPathField.asEffectiveValueProperty(), GoEnvironmentPrefs.GO_PATH);
 		
 		return goSDKBlock;
 	}

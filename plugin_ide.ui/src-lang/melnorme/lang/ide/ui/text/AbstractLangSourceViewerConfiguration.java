@@ -56,6 +56,7 @@ import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
 import melnorme.lang.ide.ui.editor.text.LangReconciler;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.completion.CompletionProposalsGrouping;
 import melnorme.lang.ide.ui.text.completion.ContentAssistantExt;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor;
@@ -68,8 +69,8 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 	protected final AbstractLangStructureEditor editor;
 	
 	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager,
-			AbstractLangStructureEditor editor) {
-		super(preferenceStore, colorManager);
+			StylingPreferences stylingPrefs, AbstractLangStructureEditor editor) {
+		super(preferenceStore, colorManager, stylingPrefs);
 		this.editor = editor;
 	}
 	

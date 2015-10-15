@@ -12,32 +12,22 @@ package melnorme.lang.ide.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
 
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
-import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.fields.ButtonTextField;
 
 public abstract class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock {
 	
-	protected final LangSDKConfigBlock langSDKConfigBlock = init_createSDKLocationGroup();
-
-	protected final ButtonTextField sdkLocationField = langSDKConfigBlock.sdkLocationGroup.sdkLocationField;
-	
-	protected final IProjectPreference<String> sdkLocationPref;
-	
-	public ProjectSDKSettingsBlock(IProject project, 
-			IProjectPreference<Boolean> useProjectSettingsPref, 
-			IProjectPreference<String> sdkLocationPref) {
+	public ProjectSDKSettingsBlock(IProject project, IProjectPreference<Boolean> useProjectSettingsPref) {
 		super(project, useProjectSettingsPref);
-		this.sdkLocationPref = sdkLocationPref;
-		
-		addFieldBinding(sdkLocationField, sdkLocationPref);
 	}
-	
-	protected abstract LangSDKConfigBlock init_createSDKLocationGroup();
 	
 	@Override
-	public AbstractComponentExt getParentSettingsBlock() {
+	protected LangSDKConfigBlock init_createProjectSettingsBlock2() {
+		LangSDKConfigBlock langSDKConfigBlock = init_createLangSDKBlock();
+		bindToProjectPref(langSDKConfigBlock.getLocationField(), ToolchainPreferences.SDK_PATH.getProjectPreference());
 		return langSDKConfigBlock;
 	}
+	
+	protected abstract LangSDKConfigBlock init_createLangSDKBlock();
 	
 }

@@ -27,14 +27,7 @@ public class MultipleFieldValidation extends DomainField<IStatusMessage> impleme
 	}
 	
 	protected void updateFieldValue() {
-		try {
-			for(ValidatedField validatedField : fields) {
-				validatedField.getValidatedField(); // result is ignored, only care about throw
-			}
-			setFieldValue(null);
-		} catch(StatusException se) {
-			setFieldValue(se);
-		}
+		setFieldValue(IValidationSource.getHighestStatus(fields));
 	}
 	
 	@Override

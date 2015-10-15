@@ -12,14 +12,14 @@ package melnorme.lang.ide.ui.text.coloring;
 
 import java.util.Map.Entry;
 
+import melnorme.lang.ide.core.utils.prefs.IPreferenceIdentifier;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.IFieldView;
 
 public class StylingPreferences {
 	
-	protected final HashMap2<String, ITextStylingPref> stylingPrefsMap = new HashMap2<>();
-	
-	protected final ITextStylingPref DUMMY = null;
+	protected final HashMap2<String, IFieldView<TextStyling>> stylingPrefsMap = new HashMap2<>();
 	
 	public StylingPreferences(ThemedTextStylingPreference... stylingPreferences) {
 		for (ThemedTextStylingPreference stylingPreference : stylingPreferences) {
@@ -27,15 +27,15 @@ public class StylingPreferences {
 		}
 	}
 	
-	public ITextStylingPref get(ITextStylingPref pref) {
+	public IFieldView<TextStyling> get(IPreferenceIdentifier pref) {
 		return get(pref.getPrefId());
 	}
 	
-	public ITextStylingPref get(String key) {
+	public IFieldView<TextStyling> get(String key) {
 		return stylingPrefsMap.get(key);
 	}
 	
-	protected void put(ITextStylingPref pref) {
+	protected void put(ThemedTextStylingPreference pref) {
 		stylingPrefsMap.put(pref.getPrefId(), pref);
 	}
 	
@@ -46,8 +46,8 @@ public class StylingPreferences {
 		public OverlayStylingPreferences(StylingPreferences stylingPreferences) {
 			this.originalStylingPreferences = stylingPreferences;
 			
-			for(Entry<String, ITextStylingPref> entry : stylingPreferences.stylingPrefsMap) {
-				put(new SimpleTextStylingPref(entry.getKey()));
+			for(Entry<String, IFieldView<TextStyling>> entry : stylingPreferences.stylingPrefsMap) {
+				entry.setValue(new SimpleTextStylingPref());
 			}
 		}
 		
@@ -57,23 +57,15 @@ public class StylingPreferences {
 		}
 		
 		@Override
-		public SimpleTextStylingPref get(ITextStylingPref pref) {
+		public SimpleTextStylingPref get(IPreferenceIdentifier pref) {
 			return (SimpleTextStylingPref) super.get(pref);
 		}
 		
 	}
 	
-	protected static class SimpleTextStylingPref extends DomainField<TextStyling> implements ITextStylingPref {
+	protected static class SimpleTextStylingPref extends DomainField<TextStyling> {
 		
-		protected final String id;
-		
-		public SimpleTextStylingPref(String id) {
-			this.id = id;
-		}
-		
-		@Override
-		public String getPrefId() {
-			return id;
+		public SimpleTextStylingPref() {
 		}
 		
 	}

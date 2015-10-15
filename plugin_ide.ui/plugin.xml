@@ -313,7 +313,7 @@
 			</enabledWhen>
 		</page>
 		<page
-			class="com.googlecode.goclipse.ui.preferences.GoToolchainConfigurationPage"
+			class="com.googlecode.goclipse.ui.preferences.GoSDKProjectConfigPage"
 			id="com.googlecode.goclipse.ui.propertyPages.ToolchainConfiguration"
 			name="%LangToolchainPropertyPage.name">
 			<enabledWhen> 

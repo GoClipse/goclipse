@@ -33,12 +33,9 @@ import melnorme.util.swt.jface.text.ColorManager2;
 @LANG_SPECIFIC
 public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
-	protected final StylingPreferences stylingPrefs;
-	
 	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager, 
 			AbstractLangStructureEditor editor, StylingPreferences stylingPrefs) {
-		super(preferenceStore, colorManager, editor);
-		this.stylingPrefs = stylingPrefs;
+		super(preferenceStore, colorManager, stylingPrefs, editor);
 	}
 	
 	@Override
@@ -46,7 +43,7 @@ public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfi
 			TokenRegistry tokenStore) {
 		switch (partitionType) {
 		case CODE:
-			return new GoScanner(tokenStore, stylingPrefs);
+			return new GoScanner(tokenStore);
 					
 		case LINE_COMMENT:
 		case BLOCK_COMMENT:

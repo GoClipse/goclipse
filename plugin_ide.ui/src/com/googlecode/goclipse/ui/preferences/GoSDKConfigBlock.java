@@ -29,10 +29,9 @@ import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 
-import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
+import melnorme.lang.ide.ui.preferences.ValidatedConfigBlock;
 import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
 import melnorme.lang.tooling.ops.util.LocationValidator;
-import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ComboBoxField;
@@ -44,7 +43,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.ArrayUtil;
 
-public class GoSDKConfigBlock extends LangSDKConfigBlock {
+public class GoSDKConfigBlock extends ValidatedConfigBlock {
 	
 	public final DirectoryTextField goRootField = new DirectoryTextField("GO&ROOT:");
 	protected final GoSDKLocationValidator goSDKLocationValidator = new GoSDKLocationValidator();
@@ -70,16 +69,6 @@ public class GoSDKConfigBlock extends LangSDKConfigBlock {
 		validation.addValidatedField(goToolPath, new LocationValidator(goToolPath.getLabelText(), FILE_ONLY));
 		validation.addValidatedField(goFmtPath, new LocationValidator(goFmtPath.getLabelText(), FILE_ONLY));
 		validation.addValidatedField(goDocPath, new LocationValidator(goDocPath.getLabelText(), FILE_ONLY));
-	}
-	
-	@Override
-	protected LanguageSDKLocationGroup createSDKLocationGroup2() {
-		return null;
-	}
-	
-	@Override
-	protected PathValidator getSDKValidator() {
-		return goSDKLocationValidator;
 	}
 	
 	/* -----------------  ----------------- */

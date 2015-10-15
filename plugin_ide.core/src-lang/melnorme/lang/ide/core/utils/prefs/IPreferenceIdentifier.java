@@ -8,11 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.text.coloring;
+package melnorme.lang.ide.core.utils.prefs;
 
-import melnorme.utilbox.fields.IFieldView;
-
-public interface ITextStylingPref extends IFieldView<TextStyling> {
+public interface IPreferenceIdentifier {
 	
 	String getPrefId();
 	

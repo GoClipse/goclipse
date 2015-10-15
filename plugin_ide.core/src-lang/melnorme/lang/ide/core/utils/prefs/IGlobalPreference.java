@@ -20,6 +20,10 @@ public interface IGlobalPreference<T> {
 	IFieldView<T> asField();
 	
 	default T get() {
+		return getValue();
+	}
+	
+	default T getValue() {
 		return asField().getValue();
 	}
 	

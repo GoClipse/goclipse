@@ -26,4 +26,9 @@ public interface GoCoreMessages {
 		return MessageFormat.format(pattern, sourceRootDir);
 	}
 	
+	public static String ERROR_ProjectDoesNotHaveSrcFolder(Location location) {
+		return MessageFormat.format("Error, using location `{0}` as a Go workspace, "
+				+ "but location does not contain a `src` directory. ", location);
+	}
+	
 }

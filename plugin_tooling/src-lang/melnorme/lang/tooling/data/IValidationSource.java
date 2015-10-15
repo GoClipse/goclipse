@@ -21,7 +21,7 @@ public interface IValidationSource {
 	
 	/* -----------------  ----------------- */
 	
-	static IStatusMessage getHighestStatus(Iterable<IValidationSource> validationSources) {
+	static IStatusMessage getHighestStatus(Iterable<? extends IValidationSource> validationSources) {
 		IStatusMessage highestSE = null;
 		for(IValidationSource validationSource : validationSources) {
 			
@@ -30,7 +30,6 @@ public interface IValidationSource {
 				if(highestSE == null || se.getStatusLevelOrdinal() > highestSE.getStatusLevelOrdinal()) {
 					highestSE = se;
 				}
-				/* FIXME: test*/
 			}
 			
 		}

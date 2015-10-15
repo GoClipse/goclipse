@@ -25,6 +25,7 @@ import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoBuildOutputProcessor;
 import com.googlecode.goclipse.tooling.GoPackageName;
+import com.googlecode.goclipse.tooling.env.CheckSrcFolderRootFilesWithNoPackage;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
@@ -206,8 +207,12 @@ public class GoBuildManager extends BuildManager {
 			return pb;
 		}
 		
-		protected void checkGoFilesInSourceRoot() throws CoreException {
+		protected void checkGoFilesInSourceRoot() throws CommonException {
 			CheckSrcFolderRootFilesWithNoPackage srcCheck = new CheckSrcFolderRootFilesWithNoPackage();
+			
+			if(!sourceRootDir.toFile().exists()) {
+				throw new CommonException(GoCoreMessages.ERROR_ProjectDoesNotHaveSrcFolder(sourceRootDir.getParent()));
+			}
 			
 			srcCheck.checkDir(sourceRootDir);
 			

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.googlecode.goclipse.core.operations;
+package com.googlecode.goclipse.tooling.env;
 
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
@@ -19,21 +19,19 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.EnumSet;
 
-import org.eclipse.core.runtime.CoreException;
-
-import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 public class CheckSrcFolderRootFilesWithNoPackage extends SimpleFileVisitor<Path> {
 	
 	protected Path startDir = null;
-	protected boolean containsGoSources = false;
+	public boolean containsGoSources = false;
 	
-	public void checkDir(Location dir) throws CoreException {
+	public void checkDir(Location dir) throws CommonException {
 		try {
 			Files.walkFileTree(dir.path, EnumSet.of(FileVisitOption.FOLLOW_LINKS), 1, this);
 		} catch (IOException e) {
-			throw LangCore.createCoreException("Error walking file tree", e);
+			throw new CommonException("Error walking file tree", e);
 		}
 	}
 	

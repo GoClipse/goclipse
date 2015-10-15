@@ -39,7 +39,6 @@ import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences.OverlayStylingPreferences;
-import melnorme.lang.ide.ui.text.coloring.StylingPreferences.SimpleTextStylingPref;
 import melnorme.lang.ide.ui.text.coloring.TextStyling.TextStylingData;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -51,6 +50,7 @@ import melnorme.util.swt.jface.LabeledTreeElement;
 import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvider;
 import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.text.ColorManager2;
+import melnorme.utilbox.fields.IDomainField;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.fields.IProperty;
 import melnorme.utilbox.misc.StreamUtil;
@@ -108,7 +108,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 		
 		protected final ThemedTextStylingPreference stylingPref;
 		protected final String prefId;
-		protected final SimpleTextStylingPref temporaryPref;
+		protected final IDomainField<TextStyling> temporaryPref;
 		
 		public SourceColoringElement(String labelText, ThemedTextStylingPreference stylingPref) {
 			super(null, null, labelText);
