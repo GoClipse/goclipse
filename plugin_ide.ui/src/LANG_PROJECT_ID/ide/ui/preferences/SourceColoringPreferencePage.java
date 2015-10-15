@@ -12,9 +12,9 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_Old;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
-public class SourceColoringPreferencePage extends AbstractPreferencesBlockPrefPage_Old {
+public class SourceColoringPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
 	public final static String PAGE_ID = SourceColoringPreferencePage.class.getName();
 	
@@ -28,7 +28,7 @@ public class SourceColoringPreferencePage extends AbstractPreferencesBlockPrefPa
 	}
 	
 	@Override
-	protected SourceColoringConfigurationBlock createPreferencesComponent() {
+	protected SourceColoringConfigurationBlock createPreferencesBlock() {
 		return new SourceColoringConfigurationBlock();
 	}
 	

@@ -23,7 +23,7 @@ public class LANGUAGE_ContentAssistPreferencePage extends AbstractPreferencesBlo
 	}
 	
 	@Override
-	protected LangEditorContentAssistConfigurationBlock createPreferencesComponent() {
+	protected LangEditorContentAssistConfigurationBlock createPreferencesBlock() {
 		return new LangEditorContentAssistConfigurationBlock(this);
 	}
 	

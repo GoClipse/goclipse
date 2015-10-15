@@ -17,13 +17,13 @@ import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
+import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 
 
 public class LANGUAGE_ToolchainConfigurationPage extends AbstractLangPropertyPage {
 	
 	@Override
-	protected IPreferencesWidgetComponent createProjectConfigComponent(IProject project) {
+	protected IPreferencesWidget createProjectConfigWidget(IProject project) {
 		return new ProjectSDKSettingsBlock(project, 
 			ToolchainPreferences.USE_PROJECT_SETTINGS, 
 			ToolchainPreferences.SDK_PATH.getProjectPreference()) {

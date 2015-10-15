@@ -22,7 +22,7 @@ public class EditorPreferencePage extends AbstractPreferencesBlockPrefPage {
 	}
 	
 	@Override
-	protected EditorConfigurationBlock createPreferencesComponent() {
+	protected EditorConfigurationBlock createPreferencesBlock() {
 		return new EditorConfigurationBlock(this);
 	}
 	
