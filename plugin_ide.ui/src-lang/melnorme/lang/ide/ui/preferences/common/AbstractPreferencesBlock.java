@@ -49,7 +49,7 @@ public abstract class AbstractPreferencesBlock extends AbstractComponent {
 	
 	public <T> void createAndBindComponent(Composite parent, IGlobalPreference<T> pref, FieldComponent<T> field) {
 		field.createComponentInlined(parent);
-		prefPage.bindToPreference(pref, field);
+		prefPage.bindToPreference2(field, pref);
 	}
 	
 	protected <T> void createStringField(Composite parent, IGlobalPreference<T> pref, FieldComponent<T> field) {
@@ -62,12 +62,12 @@ public abstract class AbstractPreferencesBlock extends AbstractComponent {
 	
 	protected void createIntField(Composite parent, IntPreference pref, NumberField field) {
 		field.createComponentInlined(parent);
-		prefPage.bindToPreference(pref, field.asIntProperty());
+		prefPage.bindToPreference2(field.asIntProperty(), pref);
 	}
 	
 	protected void createCheckboxField(Composite parent, StringPreference pref, ComboBoxField field) {
 		field.createComponentInlined(parent);
-		prefPage.bindToPreference(pref, field.asStringProperty());
+		prefPage.bindToPreference2(field.asStringProperty(), pref);
 	}
 	
 	/* -----------------  ----------------- */

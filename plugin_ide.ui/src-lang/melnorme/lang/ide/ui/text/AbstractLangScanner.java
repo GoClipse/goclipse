@@ -24,28 +24,25 @@ import org.eclipse.jface.text.rules.Token;
 import melnorme.lang.ide.core.text.BufferedRuleBasedScannerExt;
 import melnorme.lang.ide.core.text.CharacterScanner_ReaderHelper;
 import melnorme.lang.ide.ui.text.coloring.ILangTokenScanner;
-import melnorme.lang.ide.ui.text.coloring.ITextStylingPref;
-import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
+import melnorme.lang.ide.ui.text.coloring.ThemedTextStylingPreference;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.lang.tooling.parser.lexer.ILexingRule2;
 import melnorme.utilbox.collections.ArrayList2;
 
 public abstract class AbstractLangScanner extends BufferedRuleBasedScannerExt implements ILangTokenScanner {
 	
-	protected final TokenRegistry tokenStore;
-	protected final StylingPreferences stylingPrefs;
+	protected final TokenRegistry tokenRegistry;
 	
-	public AbstractLangScanner(TokenRegistry tokenStore, StylingPreferences stylingPrefs) {
-		this.tokenStore = assertNotNull(tokenStore);
-		this.stylingPrefs = stylingPrefs;
+	public AbstractLangScanner(TokenRegistry tokenRegistry) {
+		this.tokenRegistry = assertNotNull(tokenRegistry);
 		
 		ArrayList2<IRule> arrayList2 = new ArrayList2<>();
 		initRules(arrayList2);
 		setRules(arrayList2.toArray(IRule.class));
 	}
 	
-	public IToken getToken(ITextStylingPref stylingPref) {
-		return tokenStore.getToken(stylingPref);
+	public IToken getToken(ThemedTextStylingPreference stylingPref) {
+		return tokenRegistry.getToken(stylingPref);
 	}
 	
 	/* -----------------  ----------------- */

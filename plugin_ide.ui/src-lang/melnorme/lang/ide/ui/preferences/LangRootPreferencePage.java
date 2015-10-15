@@ -11,37 +11,23 @@
 package melnorme.lang.ide.ui.preferences;
 
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 
-public abstract class LangRootPreferencePage extends AbstractPreferencesEditorsPrefPage {
-	
-	protected final LangSDKConfigBlock langSDKConfigBlock;
+public abstract class LangRootPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
 	public LangRootPreferencePage() {
 		super();
-		
-		langSDKConfigBlock = init_createLangSDKConfigBlock2();
 	}
 	
-	protected LangSDKConfigBlock init_createLangSDKConfigBlock2() {
-		LangSDKConfigBlock langSDKConfigBlock = doCreateLangSDKConfigBlock();
+	@Override
+	protected LangSDKConfigBlock init_createPreferencesBlock() {
+		LangSDKConfigBlock langSDKConfigBlock = init_createLangSDKConfigBlock();
 		
-		addValidationStatusField(langSDKConfigBlock.validation);
-		
-		bindToPreference(ToolchainPreferences.SDK_PATH, langSDKConfigBlock.getLocationField());
+		bindToPreference2(langSDKConfigBlock.getLocationField(), ToolchainPreferences.SDK_PATH);
 		
 		return langSDKConfigBlock;
 	}
 	
-	protected abstract LangSDKConfigBlock doCreateLangSDKConfigBlock();
-	
-	@Override
-	protected Control createContents(Composite parent) {
-		return langSDKConfigBlock.createComponent(parent);
-	}
+	protected abstract LangSDKConfigBlock init_createLangSDKConfigBlock();
 	
 }

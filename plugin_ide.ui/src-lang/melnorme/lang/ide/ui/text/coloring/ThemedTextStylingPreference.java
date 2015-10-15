@@ -16,13 +16,15 @@ import org.eclipse.swt.widgets.Display;
 import org.osgi.service.event.Event;
 import org.osgi.service.prefs.BackingStoreException;
 
+import melnorme.lang.ide.core.utils.prefs.IPreferenceIdentifier;
 import melnorme.lang.ide.ui.LangUI;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.IDomainField;
 import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.fields.IFieldView;
 
-public class ThemedTextStylingPreference implements ITextStylingPref {
+public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPreferenceIdentifier {
 	
 	protected final String key;
 	protected final String key_Dark;
@@ -45,15 +47,15 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 		this.defaultPref = new TextStylingPreference(qualifer, key, defaultValue);
 		this.darkPref = new TextStylingPreference(qualifer, key_Dark, defaultValueDark);
 		
+		defaultPref.asField().addListener(() -> updateEffectiveValue());
+		darkPref.asField().addListener(() -> updateEffectiveValue());
+		
 		LangUI.getInstance().getThemeHelper().new ThemeChangeListener() {
 			@Override
 			public void handleEvent(Event event) {
 				updateEffectiveValue();
 			}
 		};
-		
-		defaultPref.asField().addListener(() -> updateEffectiveValue());
-		darkPref.asField().addListener(() -> updateEffectiveValue());
 		
 		updateEffectiveValue();
 	}
@@ -69,7 +71,12 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 	/* -----------------  ----------------- */
 	
 	protected void updateEffectiveValue() {
-		effectiveValue.setFieldValue(getEffectiveValue());
+		effectiveValue.setFieldValue(getEffectivePreference().getFromPrefStore());
+	}
+	
+	protected TextStyling getEffectiveValue() {
+		assertTrue(getEffectivePreference().get() == effectiveValue.getValue());
+		return effectiveValue.getValue();
 	}
 	
 	protected TextStylingPreference getEffectivePreference() {
@@ -77,10 +84,6 @@ public class ThemedTextStylingPreference implements ITextStylingPref {
 			return darkPref;
 		}
 		return defaultPref;
-	}
-	
-	protected TextStyling getEffectiveValue() {
-		return getEffectivePreference().get();
 	}
 	
 	protected boolean isOverridingThemeActive() {

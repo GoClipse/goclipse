@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Link;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
+import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -35,26 +36,33 @@ import melnorme.utilbox.fields.IProperty;
 
 public abstract class ProjectAndPreferencesBlock extends AbstractComponent implements IPreferencesWidget {
 	
-	protected final IProject project;
-	protected final IProjectPreference<Boolean> useProjectSettingsPref;
 	protected final ArrayList2<PreferencePropertyBinding<?>> fieldBindings = new ArrayList2<>();
 	
+	protected final IProject project;
+	protected final IProjectPreference<Boolean> useProjectSettingsPref;
+	
 	protected final CheckBoxField useProjectSettingsField = new CheckBoxField(LABEL_UseProjectSpecificSettings);
+	protected final AbstractComponentExt projectSettingsBlock;
 	
 	public ProjectAndPreferencesBlock(IProject project, IProjectPreference<Boolean> useProjectSettingsPref) {
-		super();
 		this.project = project;
 		this.useProjectSettingsPref = useProjectSettingsPref;
 		
-		useProjectSettingsField.addValueChangedListener2(
-			() -> getParentSettingsBlock().setEnabled(useProjectSettingsField.getFieldValue()));
+		this.projectSettingsBlock = init_createProjectSettingsBlock2();
 		
-		addFieldBinding(useProjectSettingsField, useProjectSettingsPref);
+		useProjectSettingsField.addValueChangedListener2(
+			() -> projectSettingsBlock.setEnabled(useProjectSettingsField.getFieldValue()));
+		
+		bindToProjectPref(useProjectSettingsField, useProjectSettingsPref);
 	}
 	
-	public abstract AbstractComponentExt getParentSettingsBlock();
+	protected abstract AbstractComponentExt init_createProjectSettingsBlock2();
 	
-	public <T> void addFieldBinding(IProperty<T> field, IProjectPreference<T> preference) {
+	public <T> void bindToProjectPref(IProperty<T> field, PreferenceHelper<T> preference) {
+		bindToProjectPref(field, preference.getProjectPreference());
+	}
+	
+	public <T> void bindToProjectPref(IProperty<T> field, IProjectPreference<T> preference) {
 		assertTrue(preference == useProjectSettingsPref ||
 			preference.getEnableProjectSettingPref() == useProjectSettingsPref);
 		
@@ -78,7 +86,7 @@ public abstract class ProjectAndPreferencesBlock extends AbstractComponent imple
 		SWTFactoryUtil.createLabel(topControl, SWT.SEPARATOR | SWT.HORIZONTAL, "", 
 			GridDataFactory.fillDefaults().span(2, 1).create());
 		
-		getParentSettingsBlock().createComponent(topControl, gdFillDefaults().span(2, 1).grab(true, false).create());
+		projectSettingsBlock.createComponent(topControl, gdFillDefaults().span(2, 1).grab(true, false).create());
 	}
 	
 	protected String getWorkspacePrefPageId() {

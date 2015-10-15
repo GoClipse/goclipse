@@ -41,6 +41,7 @@ import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.ViewerColorUpdater;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.collections.ArrayList2;
@@ -53,14 +54,16 @@ import melnorme.utilbox.ownership.IDisposable;
  */
 public abstract class AbstractSimpleLangSourceViewerConfiguration extends TextSourceViewerConfiguration {
 	
-	protected final ColorManager2 colorManager;
 	protected final IPreferenceStore preferenceStore;
+	protected final ColorManager2 colorManager;
+	protected final StylingPreferences stylingPrefs;
 	
 	public AbstractSimpleLangSourceViewerConfiguration(IPreferenceStore preferenceStore, 
-			ColorManager2 colorManager) {
+			ColorManager2 colorManager, StylingPreferences stylingPrefs) {
 		super(assertNotNull(preferenceStore));
-		this.colorManager = colorManager;
 		this.preferenceStore = preferenceStore;
+		this.colorManager = assertNotNull(colorManager);
+		this.stylingPrefs = assertNotNull(stylingPrefs);
 	}
 	
 	protected ColorManager2 getColorManager() {
@@ -111,7 +114,7 @@ public abstract class AbstractSimpleLangSourceViewerConfiguration extends TextSo
 		assertTrue(Display.getCurrent() != null);
 		
 		// Create a token registry for given sourceViewer
-		TokenRegistry tokenRegistry = new TokenRegistry(colorManager) {
+		TokenRegistry tokenRegistry = new TokenRegistry(colorManager, stylingPrefs) {
 			@Override
 			protected void handleTokenModified(Token token) {
 				sourceViewer.invalidateTextPresentation();

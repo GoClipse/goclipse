@@ -26,6 +26,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.IFieldView;
 
 public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
@@ -86,7 +87,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	}
 	
 	@Override
-	public DomainField<T> asField() {
+	public IFieldView<T> asField() {
 		return field;
 	}
 	
@@ -100,6 +101,9 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		return new PreferencesLookupHelper(getQualifier(), project);
 	}
 	
+	/**
+	 * Note: can only be used before preference value is accessed.
+	 */
 	public void setPreferencesDefaultValue(T defaultValue) {
 		assertNotNull(defaultValue);
 		this.defaultValue = defaultValue;
@@ -123,22 +127,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	protected abstract void doSet(IEclipsePreferences preferences, T value);
 	
 	protected void initializeListeners() {
-		field.addValueChangedListener(() -> handleFieldValueChanged());
-		
 		InstanceScope.INSTANCE.getNode(qualifier).addPreferenceChangeListener(event -> handlePreferenceChange(event));
-	}
-	
-	protected void handleFieldValueChanged() {
-		updatingInstancePreferences = true;
-		try {
-			try {
-				setInstanceScopeValue(field.getValue());
-			} catch(BackingStoreException e) {
-				/* FIXME: review */
-			}
-		} finally {
-			updatingInstancePreferences = false;
-		}
 	}
 	
 	@Override
@@ -148,12 +137,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		prefs.flush();
 	}
 	
-	protected boolean updatingInstancePreferences;
-	
 	protected void handlePreferenceChange(PreferenceChangeEvent event) {
-		if(updatingInstancePreferences) {
-			return;
-		}
 		if(event.getKey().equals(key)) {
 			field.setFieldValue(getFromPrefStore());
 		}
