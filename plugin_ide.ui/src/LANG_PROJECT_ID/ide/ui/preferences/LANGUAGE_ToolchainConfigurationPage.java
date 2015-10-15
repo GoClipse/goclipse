@@ -24,13 +24,11 @@ public class LANGUAGE_ToolchainConfigurationPage extends AbstractLangPropertyPag
 	
 	@Override
 	protected IPreferencesWidget createProjectConfigWidget(IProject project) {
-		return new ProjectSDKSettingsBlock(project, 
-			ToolchainPreferences.USE_PROJECT_SETTINGS, 
-			ToolchainPreferences.SDK_PATH.getProjectPreference()) {
-				@Override
-				protected LangSDKConfigBlock init_createSDKLocationGroup() {
-					return new LANGUAGE_SDKConfigBlock();
-				}
+		return new ProjectSDKSettingsBlock(project, ToolchainPreferences.USE_PROJECT_SETTINGS) {
+			@Override
+			protected LangSDKConfigBlock init_createLangSDKBlock() {
+				return new LANGUAGE_SDKConfigBlock();
+			}
 		};
 	}
 	

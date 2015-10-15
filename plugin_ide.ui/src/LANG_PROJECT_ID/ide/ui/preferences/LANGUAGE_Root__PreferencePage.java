@@ -31,7 +31,7 @@ public class LANGUAGE_Root__PreferencePage extends LangRootPreferencePage {
 	}
 	
 	@Override
-	public LangSDKConfigBlock doCreateLangSDKConfigBlock() {
+	protected LangSDKConfigBlock init_createLangSDKConfigBlock() {
 		return new LANGUAGE_SDKConfigBlock();
 	}
 	

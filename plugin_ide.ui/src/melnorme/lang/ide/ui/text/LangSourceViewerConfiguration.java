@@ -22,12 +22,9 @@ import melnorme.util.swt.jface.text.ColorManager2;
 @LANG_SPECIFIC
 public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
-	protected final StylingPreferences stylingPrefs;
-	
 	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager,
 			AbstractLangStructureEditor editor, StylingPreferences stylingPrefs) {
-		super(preferenceStore, colorManager, editor);
-		this.stylingPrefs = stylingPrefs;
+		super(preferenceStore, colorManager, stylingPrefs, editor);
 	}
 	
 	@Override
@@ -35,21 +32,21 @@ public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfi
 			TokenRegistry tokenStore) {
 		switch (partitionType) {
 		case CODE: 
-			return new LANGUAGE_CodeScanner(tokenStore, stylingPrefs);
+			return new LANGUAGE_CodeScanner(tokenStore);
 		
 		case LINE_COMMENT: 
 		case BLOCK_COMMENT: 
-			return new SingleTokenScanner(tokenStore, stylingPrefs.get(LANGUAGE_ColorPreferences.COMMENTS));
+			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.COMMENTS);
 		
 		case DOC_LINE_COMMENT:
 		case DOC_BLOCK_COMMENT:
-			return new SingleTokenScanner(tokenStore, stylingPrefs.get(LANGUAGE_ColorPreferences.DOC_COMMENTS));
+			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.DOC_COMMENTS);
 		
 		case STRING:
-			return new SingleTokenScanner(tokenStore, stylingPrefs.get(LANGUAGE_ColorPreferences.STRINGS));
+			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.STRINGS);
 		
 		case CHARACTER:
-			return new SingleTokenScanner(tokenStore, stylingPrefs.get(LANGUAGE_ColorPreferences.CHARACTER));
+			return new SingleTokenScanner(tokenStore, LANGUAGE_ColorPreferences.CHARACTER);
 		}
 		throw assertUnreachable();
 	}
