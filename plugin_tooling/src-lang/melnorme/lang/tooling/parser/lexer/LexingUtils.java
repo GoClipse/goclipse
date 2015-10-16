@@ -83,6 +83,20 @@ public class LexingUtils {
 		return count;
 	}
 	
+	public static <E extends Exception> int skipWhitespaceExceptNL(IBasicCharSource<E> reader) throws E {
+		int count = 0;
+		while(Character.isWhitespace(reader.lookahead())) {
+			
+			if(reader.lookahead() == '\n' || reader.lookahead() == '\r') {
+				break;
+			}
+			
+			reader.consume2();
+			count++;
+		}
+		return count;
+	}
+	
 	/* ----------------- Identifier helpers ----------------- */
 	
 	public static <E extends Exception> String tryConsumeJavaIdentifier(ICharSource<E> reader) throws E {
