@@ -154,15 +154,17 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 	
 	protected void testConsumeDelimitedString(ICharacterReader parseSource, char delimiter, char escapeChar, 
 			String expected) throws Exception {
+		
 		CharacterReader_SubReader subReader = new CharacterReader_SubReader(parseSource);
-		LexingUtils.consumeUntilDelimiter(subReader, delimiter, escapeChar);
+		CharacterReader_SubReader subReaderAlt2 = new CharacterReader_SubReader(parseSource);
 		
-		OffsetBasedCharacterReader<?> parseSource_ = (OffsetBasedCharacterReader<?>) parseSource;
-		int originalReadOffset = parseSource_.readOffset;
-			
+		assertEquals(LexingUtils.consumeUntilDelimiter(subReader, delimiter, escapeChar), expected);
+		
+		// ensure advanceDelimitedString reads same number of strings;
+		LexingUtils.advanceDelimitedString(subReaderAlt2, delimiter, escapeChar);
+		assertTrue(subReader.readOffset == subReaderAlt2.readOffset);
+		
 		assertEquals(LexingUtils.consumeUntilDelimiter(parseSource, delimiter, escapeChar), expected);
-		
-		assertTrue(parseSource_.readOffset - originalReadOffset == subReader.readOffset);
 	}
 	
 	@Test

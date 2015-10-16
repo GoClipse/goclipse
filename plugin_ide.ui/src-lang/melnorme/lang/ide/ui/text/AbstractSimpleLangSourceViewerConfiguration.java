@@ -130,11 +130,16 @@ public abstract class AbstractSimpleLangSourceViewerConfiguration extends TextSo
 			AbstractLangScanner scanner = createScannerFor(Display.getCurrent(), partitionType, tokenRegistry);
 			scanners.add(scanner);
 			
-			DefaultDamagerRepairer dr = new DefaultDamagerRepairer(scanner);
+			DefaultDamagerRepairer dr = getDamagerRepairer(scanner, contentType);
 			reconciler.setDamager(dr, contentType);
 			reconciler.setRepairer(dr, contentType);
 		}
 		
+	}
+	
+	@SuppressWarnings("unused")
+	protected DefaultDamagerRepairer getDamagerRepairer(AbstractLangScanner scanner, String contentType) {
+		return new DefaultDamagerRepairer(scanner);
 	}
 	
 	protected void addConfigurationScopedOwned(ISourceViewer sourceViewer, IDisposable tokenStore) {
