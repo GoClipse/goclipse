@@ -25,7 +25,7 @@ Also, to improve Eclipse performance and startup time, it is recommended you twe
 ### Project setup
 
 ##### Project creation:
-A new Go project can be created in the Project Explorer view. Open `New / Project...` and then `Go / Go Project`. The Go perspective should open after creation, if it's not open already.
+A new Go project is created with the New Project Wizard: from the Project Explorer context menu, select `New / Project...` and then `Go / Go Project`. The same wizard can be used to add a pre-existing project: simply use the location field to select a pre-existing directory.
 
 ##### Project structure: 
 A Goclipse project can work in two ways:

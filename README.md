@@ -12,7 +12,7 @@ Developers Guide
 <a><img src="documentation/README_images/ImportPluginProjects.png" /><a/> <br/>
 <sub><sup>Note: The actual project names will vary: the "LANG_PROJECT_ID" name segment will be different.</sup></sub>
 </div>
- * Note: Java compiler settings will be automatically be configured, since Eclipse compiler settings stored in source control.
+ * Note: Java compiler settings will be automatically configured, since Eclipse compiler settings are stored in source version control.
  * Setup the target platform: Open the target platform file: `releng/target-platform/IDE.target` (You can use the Open Resource dialog to help find this file, press Ctrl-R and type `IDE.target` in the dialog). Then click "Set as Target Platform" once the file is opened, as seen here: 
 <div align="center">
 <a><img src="documentation/README_images/Set_As_Target_Platform.png" /><a/> 

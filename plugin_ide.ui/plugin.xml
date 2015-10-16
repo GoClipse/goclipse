@@ -337,8 +337,9 @@
 			finalPerspective="com.googlecode.goclipse.perspectives.GoPerspective"
 			icon="icons/actions/new_project_wizard.16.png"
 			id="com.googlecode.goclipse.ui.wizards.NewProjectWizard"
-			name="Go Project"
+			name="%NewProjectWizard.name"
 			project="true">
+			<description>%NewProjectWizard.description</description>
 		</wizard>
 		
       <wizard
