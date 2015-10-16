@@ -51,7 +51,7 @@ public class SourceLinesInfo {
 				return;
 			}
 			
-			parser.consume();
+			parser.consume2();
 		}
 		
 	}

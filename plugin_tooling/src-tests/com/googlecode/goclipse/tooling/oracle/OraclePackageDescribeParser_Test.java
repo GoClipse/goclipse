@@ -39,8 +39,8 @@ import melnorme.utilbox.misc.Location;
 public class OraclePackageDescribeParser_Test extends CommonGoToolingTest {
 	
 	@Override
-	protected String getClassResourceAsString(String resourceName) {
-		return fixTestsPaths(super.getClassResourceAsString(resourceName));
+	public String getClassResource(String resourceName) {
+		return fixTestsPaths(super.getClassResource(resourceName));
 	}
 	
 	public static ElementAttributes attrib(EProtection protection, EAttributeFlag... flags) {
@@ -109,12 +109,12 @@ public class OraclePackageDescribeParser_Test extends CommonGoToolingTest {
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		
-		testParseStructure(getClassResourceAsString("oracle_describe.0_Empty.json"), "");
+		testParseStructure(getClassResource("oracle_describe.0_Empty.json"), "");
 		
 		
-		goSource = getClassResourceAsString("oracle_describe.1_Basic.go");
+		goSource = getClassResource("oracle_describe.1_Basic.go");
 		testParseStructure(
-			getClassResourceAsString("oracle_describe.1_Basic.json"), goSource,
+			getClassResource("oracle_describe.1_Basic.json"), goSource,
 			
 			elem("Hello", sr("Hello"), FUNCTION, att(), "func()", null),
 			elem("other", sr("other"), FUNCTION, attPriv(), "func()", null),
@@ -123,7 +123,7 @@ public class OraclePackageDescribeParser_Test extends CommonGoToolingTest {
 		);
 		
 		try {
-			testParseStructure(getClassResourceAsString("oracle_describe.2_Error1.json"), "");
+			testParseStructure(getClassResource("oracle_describe.2_Error1.json"), "");
 			assertFail();
 		} catch (CommonException e) {
 			// continue
@@ -131,20 +131,20 @@ public class OraclePackageDescribeParser_Test extends CommonGoToolingTest {
 		
 		// test bad source ranges
 		try {
-			testParseStructure(getClassResourceAsString("oracle_describe.2_Error2a.json"), "");
+			testParseStructure(getClassResource("oracle_describe.2_Error2a.json"), "");
 			assertFail();
 		} catch (CommonException e) { 
 			assertTrue(e.toString().contains("Invalid line number: 0"));
 		}
 		try {
-			testParseStructure(getClassResourceAsString("oracle_describe.2_Error2b.json"), "");
+			testParseStructure(getClassResource("oracle_describe.2_Error2b.json"), "");
 			assertFail();
 		} catch (CommonException e) { 
 			assertTrue(e.toString().contains("Invalid line: 10 is over the max bound: 1."));
 		}
 		
-		goSource = getClassResourceAsString("oracle_describe.2_Test.go");
-		testParseStructure(getClassResourceAsString("oracle_describe.2_Test.json"), goSource,
+		goSource = getClassResource("oracle_describe.2_Test.go");
+		testParseStructure(getClassResource("oracle_describe.2_Test.json"), goSource,
 			Location.create(fixTestsPaths("D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go")),
 			
 			elem("encodeFragment", sr("encodeFragment"), CONST, attPriv(), "util.encoding", null),
@@ -161,9 +161,9 @@ public class OraclePackageDescribeParser_Test extends CommonGoToolingTest {
 			))
 		);
 		
-		goSource = getClassResourceAsString("oracle_describe.A_std_url.go");
+		goSource = getClassResource("oracle_describe.A_std_url.go");
 		new OraclePackageDescribeParser(null).parse(
-			getClassResourceAsString("oracle_describe.A_std_url.json"), goSource);
+			getClassResource("oracle_describe.A_std_url.json"), goSource);
 		
 	}
 	

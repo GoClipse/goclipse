@@ -77,7 +77,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	public static final String NEUTRAL_SRCX; 
 	
 	static {
-		NEUTRAL_SRCX = MiscUtil.getClassResourceAsString(LangAutoEditStrategyTest.class, "sample_block_code");
+		NEUTRAL_SRCX = MiscUtil.getClassResource(LangAutoEditStrategyTest.class, "sample_block_code");
 	}
 	
 	public static final String PENDING_WS1 = "  "; 

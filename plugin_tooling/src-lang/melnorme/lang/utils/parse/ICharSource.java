@@ -36,13 +36,9 @@ public interface ICharSource<EXC extends Exception> extends IBasicCharSource<EXC
 	
 	/* -----------------  Some common helpers  ----------------- */
 	
-	default boolean lookaheadIsEOF() throws EXC {
-		return !hasCharAhead();
-	}
-	
 	default void consume(int amount) throws EXC {
 		while(amount-- > 0) {
-			consume();
+			consume2();
 		}
 	}
 	

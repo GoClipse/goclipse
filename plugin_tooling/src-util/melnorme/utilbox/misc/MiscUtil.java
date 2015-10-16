@@ -141,17 +141,17 @@ public class MiscUtil extends PathUtil {
 		return throwable instanceof RuntimeException || throwable instanceof Error;
 	}
 	
-	public static String getClassResourceAsString(Class<?> klass, String resourceName) {
-		return getClassResourceAsString(klass, resourceName, StringUtil.UTF8);
+	public static String getClassResource(Class<?> klass, String resourceName) {
+		return getClassResource(klass, resourceName, StringUtil.UTF8);
 	}
 	
-	public static String getClassResourceAsString(Class<?> klass, String resourceName, Charset charset) {
+	public static String getClassResource(Class<?> klass, String resourceName, Charset charset) {
 		try {
 			InputStream resourceStream = klass.getResourceAsStream(resourceName);
 			assertNotNull(resourceStream);
 			return readAllBytesFromStream(resourceStream).toString(charset);
 		} catch (IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			throw assertFail();
 		}
 	}
 	

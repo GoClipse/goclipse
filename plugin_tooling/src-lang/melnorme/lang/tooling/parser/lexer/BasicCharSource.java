@@ -23,11 +23,12 @@ public abstract class BasicCharSource<EXC extends Exception> implements IBasicCh
 	}
 	
 	@Override
-	public final int consume() throws EXC {
+	public final char consume2() throws EXC {
 		checkedHasNext = false;
 		int next = lookahead();
+		assertTrue(next >= 0);
 		doConsume();
-		return next;
+		return (char) next;
 	}
 	
 	protected abstract void doConsume() throws EXC;

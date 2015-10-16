@@ -45,20 +45,20 @@ public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		
-		testParseResult(fixTestsPaths(getClassResourceAsString("oracle_result.var_ref.json")),
+		testParseResult(fixTestsPaths(getClassResource("oracle_result.var_ref.json")),
 			new FindDefinitionResult(loc(fixTestsPaths("D:/devel/tools.Go/go-workspace/src/newmath/sqrt.go")), 
 				new SourceLineColumnRange(5, 6), null)
 			);
 		
-		testParseResult(fixTestsPaths(getClassResourceAsString("oracle_result.type1_ref.json")),
+		testParseResult(fixTestsPaths(getClassResource("oracle_result.type1_ref.json")),
 			new FindDefinitionResult(loc(fixTestsPaths("D:/devel/tools.Go/GoTest/src/other/blah.go")),
 				new SourceLineColumnRange(16, 6), null)
 			);
 		
-		testParseResult(getClassResourceAsString("oracle_result.type2_def.json"), 
+		testParseResult(getClassResource("oracle_result.type2_def.json"), 
 			null);
 		
-		testParseResult(getClassResourceAsString("oracle_result.type3_anon.json"), 
+		testParseResult(getClassResource("oracle_result.type3_anon.json"), 
 			null);
 	}
 	
