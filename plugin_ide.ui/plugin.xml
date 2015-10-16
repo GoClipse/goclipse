@@ -228,7 +228,7 @@
 		
 		<page
 			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Root"
-			class="LANG_PROJECT_ID.ide.ui.preferences.EditorPreferencePage"
+			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_EditorPreferencePage"
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
 			name="%EditorPreferencePage.name">
 			<keywordReference id="LANG_PROJECT_ID.ide.ui.EditorPreferencePage"/>
@@ -242,7 +242,7 @@
 		</page>
 		<page
 			category="LANG_PROJECT_ID.ide.ui.PreferencePages.Editor"
-			class="LANG_PROJECT_ID.ide.ui.preferences.SourceColoringPreferencePage"
+			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_SourceColoringPreferencePage"
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.SourceColoring"
 			name="%EditorSyntaxColoringPreferencePage.name">
 			<keywordReference id="LANG_PROJECT_ID.ide.ui.EditorSyntaxColoringPreferencePage"/>

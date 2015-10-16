@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,24 +12,24 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 
 
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
-public class SourceColoringPreferencePage extends AbstractPreferencesBlockPrefPage {
+
+public class LANGUAGE_EditorPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
-	public final static String PAGE_ID = SourceColoringPreferencePage.class.getName();
+	public LANGUAGE_EditorPreferencePage() {
+		super();
+	}
 	
-	public SourceColoringPreferencePage() {
-		super(LangUIPlugin.getInstance().getPreferenceStore());
+	@Override
+	protected LangEditorConfigurationBlock init_createPreferencesBlock() {
+		return new LangEditorConfigurationBlock(LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override
 	protected String getHelpId() {
 		return null;
-	}
-	
-	@Override
-	protected SourceColoringConfigurationBlock createPreferencesBlock() {
-		return new SourceColoringConfigurationBlock();
 	}
 	
 }

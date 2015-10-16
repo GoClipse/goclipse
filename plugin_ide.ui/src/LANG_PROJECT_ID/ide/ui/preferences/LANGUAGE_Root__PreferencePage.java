@@ -36,6 +36,11 @@ public class LANGUAGE_Root__PreferencePage extends LangRootPreferencePage {
 	}
 	
 	public static class LANGUAGE_SDKConfigBlock extends LangSDKConfigBlock {
+		
+		public LANGUAGE_SDKConfigBlock() {
+			super(null);
+		}
+		
 		@Override
 		protected SDKLocationValidator getSDKValidator() {
 			return new LANGUAGE_SDKLocationValidator();

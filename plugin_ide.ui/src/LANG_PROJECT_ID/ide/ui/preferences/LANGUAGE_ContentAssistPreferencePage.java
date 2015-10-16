@@ -12,6 +12,7 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.LangEditorContentAssistConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
 public class LANGUAGE_ContentAssistPreferencePage extends AbstractPreferencesBlockPrefPage {
@@ -19,12 +20,12 @@ public class LANGUAGE_ContentAssistPreferencePage extends AbstractPreferencesBlo
 	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + ".PreferencePages.Editor.ContentAssist";
 	
 	public LANGUAGE_ContentAssistPreferencePage() {
-		super(LangUIPlugin.getInstance().getPreferenceStore());
+		super();
 	}
 	
 	@Override
-	protected LangEditorContentAssistConfigurationBlock createPreferencesBlock() {
-		return new LangEditorContentAssistConfigurationBlock(this);
+	protected AbstractPreferencesBlock init_createPreferencesBlock() {
+		return new LangEditorContentAssistConfigurationBlock();
 	}
 	
 	@Override
