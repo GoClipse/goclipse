@@ -37,7 +37,13 @@ public class CharacterLexingRule extends LexingUtils implements ILexingRule {
 			return reader.tryConsume('\'') || consumeCommonEscape(reader) || consumeUnicodeEscapeSequence(reader);
 		};
 		
-		return consumeAnyExceptNullOr(reader, '\'');
+		if(reader.lookaheadIsEOF() || reader.lookahead() == '\'') {
+			return false;
+		}
+		if(reader.lookahead() == 0) {
+			return false; // Should the null character really not be allowed?
+		}
+		return reader.consumeAny();
 	}
 	
 	protected boolean consumeEnd(ICharacterReader reader) {
@@ -75,10 +81,11 @@ public class CharacterLexingRule extends LexingUtils implements ILexingRule {
 				int la = reader.lookahead();
 				
 				// This is not accurate to any spec, but is good enough.
-				if(!(la == '{' || la == '}' || isHexDigit(la))) {
+				if(la == '{' || la == '}' || isHexDigit(la)) {
+					reader.consume2();
+				} else {
 					break;
 				}
-				reader.consume();
 			}
 			
 			return true;

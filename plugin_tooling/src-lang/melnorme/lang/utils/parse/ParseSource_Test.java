@@ -12,16 +12,18 @@ package melnorme.lang.utils.parse;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import melnorme.lang.tests.CommonToolingTest;
-import melnorme.lang.tooling.parser.lexer.LexingUtils;
-
 import org.junit.Test;
+
+import melnorme.lang.tests.CommonToolingTest;
+import melnorme.lang.tooling.parser.lexer.CharacterReader_SubReader;
+import melnorme.lang.tooling.parser.lexer.LexingUtils;
+import melnorme.utilbox.core.Assert.AssertFailedException;
 
 public abstract class ParseSource_Test extends CommonToolingTest {
 	
 	protected final String TEST_SOURCE = "abcdef";
 	
-	protected ICharSource<?> parseSource;
+	protected ICharacterReader parseSource;
 	protected String source;
 	protected int sourceIx;
 	protected int lookahead;
@@ -32,7 +34,7 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		this.sourceIx = 0;
 	}
 	
-	protected abstract ICharSource<?> createParseSource(String source);
+	protected abstract ICharacterReader createParseSource(String source);
 	
 	@Test
 	public void test() throws Exception { test$(); }
@@ -90,9 +92,9 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		
 		// Test consume with buffered
 		checkBufferedCount(parseSource, 2);
-		assertTrue(parseSource.consume() == lookahead); sourceIx++;
+		assertTrue(parseSource.consume2() == lookahead); sourceIx++;
 		checkBufferedCount(parseSource, 1);
-		assertTrue(parseSource.consume() == source.charAt(sourceIx)); sourceIx++;
+		assertTrue(parseSource.consume2() == source.charAt(sourceIx)); sourceIx++;
 		checkBufferedCount(parseSource, 0);
 		
 		
@@ -100,24 +102,24 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		lookahead = testLookahead(source.charAt(sourceIx));
 		// Test consume with buffered
 		checkBufferedCount(parseSource, 1);
-		assertTrue(lookahead == parseSource.consume()); sourceIx++;
+		assertTrue(lookahead == parseSource.consume2()); sourceIx++;
 		
 		assertTrue(lookahead == 'c');
 		
 		
 		checkBufferedCount(parseSource, 0);
-		assertTrue(parseSource.consume() == source.charAt(sourceIx));
+		assertTrue(parseSource.consume2() == source.charAt(sourceIx));
 		sourceIx++;
 
 		while(sourceIx < source.length()) {
 			int ch = testLookahead(source.charAt(sourceIx));
-			assertTrue(parseSource.consume() == ch);
+			assertTrue(parseSource.consume2() == ch);
 			sourceIx++;
 		}
 		
 		// EOF
 		testLookahead(-1);
-		assertTrue(parseSource.consume() == -1);
+		verifyThrows(() -> parseSource.consume2(), AssertFailedException.class);
 	}
 
 	protected void checkBufferedCount(ICharSource<?> parseSource, int expected) {
@@ -140,14 +142,27 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 	public void test_consumeDelimited$() throws Exception {
 		
 		init("blah");
-		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "blah");
+		testConsumeDelimitedString(parseSource, '|', '#', "blah");
 		
 		init("one|two|three##|four#|xxx|###|five");
-		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "one");
-		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "two");
-		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "three#");
-		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "four|xxx");
-		assertEquals(LexingUtils.consumeDelimitedString(parseSource, '|', '#'), "#|five");
+		testConsumeDelimitedString(parseSource, '|', '#', "one");
+		testConsumeDelimitedString(parseSource, '|', '#', "two");
+		testConsumeDelimitedString(parseSource, '|', '#', "three#");
+		testConsumeDelimitedString(parseSource, '|', '#', "four|xxx");
+		testConsumeDelimitedString(parseSource, '|', '#', "#|five");
+	}
+	
+	protected void testConsumeDelimitedString(ICharacterReader parseSource, char delimiter, char escapeChar, 
+			String expected) throws Exception {
+		CharacterReader_SubReader subReader = new CharacterReader_SubReader(parseSource);
+		LexingUtils.consumeUntilDelimiter(subReader, delimiter, escapeChar);
+		
+		OffsetBasedCharacterReader<?> parseSource_ = (OffsetBasedCharacterReader<?>) parseSource;
+		int originalReadOffset = parseSource_.readOffset;
+			
+		assertEquals(LexingUtils.consumeUntilDelimiter(parseSource, delimiter, escapeChar), expected);
+		
+		assertTrue(parseSource_.readOffset - originalReadOffset == subReader.readOffset);
 	}
 	
 	@Test
@@ -168,7 +183,7 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 	
 	public static class StringParseSource_Test extends ParseSource_Test {
 		@Override
-		protected ICharSource<?> createParseSource(String source) {
+		protected ICharacterReader createParseSource(String source) {
 			return new StringParseSource(source);
 		}
 		

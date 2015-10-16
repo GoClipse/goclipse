@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.utils.parse;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 public class StringParseSource extends OffsetBasedCharacterReader<RuntimeException> implements ICharacterReader {
 	
 	protected final String source;
@@ -49,6 +51,7 @@ public class StringParseSource extends OffsetBasedCharacterReader<RuntimeExcepti
 	@Override
 	public void consume(int amount) throws RuntimeException {
 		readOffset += amount;
+		assertTrue(readOffset <= source.length());
 	}
 	
 	/* -----------------  ----------------- */

@@ -16,13 +16,14 @@ import org.eclipse.jface.text.Document;
 import org.junit.Test;
 
 import melnorme.lang.utils.parse.ICharSource;
+import melnorme.lang.utils.parse.ICharacterReader;
 import melnorme.lang.utils.parse.ParseSource_Test;
 
 public class CharacterScanner_ReaderHelper_Test {
 	
 	public static class ReaderHelper_ParseSource_Test extends ParseSource_Test {
 		@Override
-		protected ICharSource<?> createParseSource(String source) {
+		protected ICharacterReader createParseSource(String source) {
 			BufferedRuleBasedScannerExt charScanner = new BufferedRuleBasedScannerExt();
 			charScanner.setRange(new Document(source), 0, source.length());
 			return new CharacterScanner_ReaderHelper(charScanner); 
@@ -51,7 +52,7 @@ public class CharacterScanner_ReaderHelper_Test {
 		assertTrue(charScanner.lookaheadString(4, 0).equals(""));
 		assertTrue(reader.lookahead() == 'a');
 		
-		reader.consume();
+		reader.consume2();
 		assertTrue(charScanner.getOffset() == 1);
 		assertTrue(charScanner.lookahead(0) == 'b');
 		assertTrue(charScanner.lookaheadString(0, 0).equals(""));
@@ -59,8 +60,8 @@ public class CharacterScanner_ReaderHelper_Test {
 		assertTrue(charScanner.lookaheadString(1, 2).equals("cd"));
 		assertTrue(charScanner.lookaheadString(3, 0).equals(""));
 		
-		reader.consume();
-		reader.consume();
+		reader.consume2();
+		reader.consume2();
 		assertTrue(charScanner.getOffset() == 3);
 		assertTrue(charScanner.lookahead(0) == 'd');
 		assertTrue(reader.lookahead() == 'd');
@@ -71,7 +72,7 @@ public class CharacterScanner_ReaderHelper_Test {
 		
 		reader = new CharacterScanner_ReaderHelper(charScanner);
 		assertTrue(charScanner.lookahead(0) == 'a');
-		assertTrue(reader.consume() == 'a');
+		assertTrue(reader.consume2() == 'a');
 		assertTrue(charScanner.lookahead(0) == 'b');
 		assertTrue(charScanner.getOffset() == 1);
 		assertTrue(reader.lookahead(1) == 'c');

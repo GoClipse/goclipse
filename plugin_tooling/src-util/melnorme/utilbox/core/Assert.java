@@ -27,6 +27,8 @@ public class Assert {
 	
 	protected static final AssertHandler assertHandler; // Poor mans dependency injection
 	
+	public static boolean assertionFailureExpected = false; // Only tests should modify this field
+	
 	static {
 		String assertHandlerStr = System.getProperty(Assert.class.getName() + ".handler");
 		if(assertHandlerStr == null) {
@@ -66,7 +68,7 @@ public class Assert {
 	 * Clients should not expect this to be thrown.
 	 */
 	@SuppressWarnings("serial")
-	protected static class AssertFailedException extends RuntimeException {
+	public static class AssertFailedException extends RuntimeException {
 		
 		public AssertFailedException(String message) {
 			super(message);
@@ -84,7 +86,13 @@ public class Assert {
 	
 	protected static void checkAssertion(boolean condition, String message) {
 		if(assertHandler != null && condition == false) {
-			assertHandler.handleAssert(message);  // USEFUL TIP: place Breakpoint here
+			if(assertionFailureExpected) {
+				// This does same thing as else branch, but code is separated 
+				// so that this case won't trigger the IDE breakpoint
+				assertHandler.handleAssert(message);
+			} else {
+				assertHandler.handleAssert(message);  // USEFUL TIP: place IDE breakpoint here
+			}
 		}
 	}
 	

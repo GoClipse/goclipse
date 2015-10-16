@@ -29,6 +29,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.Assert;
+import melnorme.utilbox.core.Assert.AssertFailedException;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.core.fntypes.ThrowingRunnable;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -141,6 +142,10 @@ public class CommonTestUtils {
 	public static <EXC extends Throwable> void verifyThrows(ThrowingRunnable<?> runnable, 
 			Class<EXC> klass, String exceptionString) {
 		try {
+			if(klass != null && AssertFailedException.class.isAssignableFrom(klass)) {
+				Assert.assertionFailureExpected = true;
+			}
+			
 			runnable.run();
 			assertFail();
 		} catch(Throwable e) {
@@ -150,6 +155,8 @@ public class CommonTestUtils {
 			if(exceptionString != null) {
 				assertTrue(e.toString().contains(exceptionString));
 			}
+		} finally {
+			Assert.assertionFailureExpected = false;
 		}
 	}
 	
@@ -285,7 +292,7 @@ public class CommonTestUtils {
 	}
 	
 	public static String getClassResourceAsString(Class<?> klass, String resourceName) {
-		return MiscUtil.getClassResourceAsString(klass, resourceName);
+		return MiscUtil.getClassResource(klass, resourceName);
 	}
 	
 }

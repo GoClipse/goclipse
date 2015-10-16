@@ -15,23 +15,20 @@ import melnorme.lang.utils.parse.ICharSource;
 
 public class LexingUtils {
 	
-	public static <E extends Exception> boolean consumeAnyExceptNullOr(IBasicCharSource<E> reader, int character) 
-			throws E {
-		int ch = reader.lookahead();
-		if(ch != character && ch != 0) {
-			reader.consume();
-			return true;
-		}
-		return false;
+	/** 
+	 * Consume until given delimiter char is found (also included).	 
+	 */
+	public static <E extends Exception> String consumeUntilDelimiter(ICharSource<E> reader, 
+			char delimiter) throws E {
+		return consumeUntilDelimiter(reader, delimiter, delimiter);
 	}
 	
-	
-	/**
-	 * Consume a string delimited by give delimiter char, 
-	 * with given escapeChar acting a possible escape (use -1 for no escapeChar)
+	/** 
+	 * Consume until given delimiter char is found (also included).
+	 * Given escapeChar can escape itself, and delimiter 	 
 	 */
-	public static <E extends Exception> String consumeDelimitedString(IBasicCharSource<E> reader, 
-			int delimiter, int escapeChar) throws E {
+	public static <E extends Exception> String consumeUntilDelimiter(ICharSource<E> reader, 
+			char delimiter, char escapeChar) throws E {
 		StringBuilder sb = new StringBuilder();
 		
 		while(reader.hasCharAhead()) {
@@ -42,11 +39,11 @@ public class LexingUtils {
 				break;
 			}
 			else if(consumedChar == escapeChar && reader.hasCharAhead()) {
-				int lookahead = reader.lookahead();
-				if(lookahead == delimiter || lookahead == escapeChar) {
-					
-					char escapedChar = reader.nextChar();
-					sb.append(escapedChar);
+				
+				char secondChar = reader.lookaheadChar();
+				if(secondChar == delimiter || secondChar == escapeChar) {
+					reader.nextChar();
+					sb.append(secondChar);
 					continue;
 				}
 			}
@@ -57,12 +54,30 @@ public class LexingUtils {
 		return sb.toString();
 	}
 	
+	
+	public static <E extends Exception> void advanceDelimitedString(ICharSource<E> reader, 
+			char delimiter, char escapeChar) throws E {
+		
+		while(reader.hasCharAhead()) {
+			
+			char consumedChar = reader.nextChar();
+			
+			if(consumedChar == delimiter) {
+				break;
+			}
+			else if(consumedChar == escapeChar) {
+				reader.consumeAny(); // consumed escaped char
+			}
+			
+		}
+	}
+	
 	/* ----------------- whitespace ----------------- */
 	
 	public static <E extends Exception> int skipWhitespace(IBasicCharSource<E> reader) throws E {
 		int count = 0;
 		while(Character.isWhitespace(reader.lookahead())) {
-			reader.consume();
+			reader.consume2();
 			count++;
 		}
 		return count;

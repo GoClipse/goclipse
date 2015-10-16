@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.junit.Before;
 
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.SimpleLogger;
 
 /**
@@ -52,6 +53,12 @@ public class CommonTest extends CommonTestUtils {
 			testsLogger.println("===============================  "+simpleName+"  ===============================");
 			executedTests.add(simpleName);
 		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public String getClassResource(String resourceName) {
+		return MiscUtil.getClassResource(getClass(), resourceName);
 	}
 	
 }
