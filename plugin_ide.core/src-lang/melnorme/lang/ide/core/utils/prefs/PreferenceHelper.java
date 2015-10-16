@@ -43,7 +43,8 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	public final String key;
 	public final String qualifier;
-	protected final T defaultValue;
+	
+	protected T defaultValue;
 	
 	protected final IProjectPreference<Boolean> useProjectSettingsPref;
 	
@@ -71,10 +72,9 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		this.qualifier = pluginId;
 		this.useProjectSettingsPref = useProjectSettingsPref; // can be null
 		
-		this.defaultValue = PreferencesOverride.getDefaultValue(defaultValue, this);
-		setPreferencesDefaultValue();
+		setPreferencesDefaultValue(defaultValue);
 		
-		field.setFieldValue(getFromPrefStore());
+		updateFieldFromPrefStore();
 		
 		initializeListeners();
 	}
@@ -95,16 +95,22 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	/* -----------------  ----------------- */
 	
+	public void setPreferencesDefaultValue(T defaultValue) {
+		this.defaultValue = defaultValue;
+		doSet(getDefaultNode(), defaultValue);
+		updateFieldFromPrefStore();
+	}
+	
+	protected void updateFieldFromPrefStore() {
+		field.setFieldValue(getFromPrefStore());
+	}
+	
 	protected IPreferencesAccess prefScopes() {
 		return new PreferencesLookupHelper(getQualifier());
 	}
 	
 	protected IPreferencesAccess prefScopes(IProject project) {
 		return new PreferencesLookupHelper(getQualifier(), project);
-	}
-	
-	protected void setPreferencesDefaultValue() {
-		doSet(getDefaultNode(), defaultValue);
 	}
 	
 	protected IEclipsePreferences getDefaultNode() {
@@ -136,7 +142,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	protected void handlePreferenceChange(PreferenceChangeEvent event) {
 		if(event.getKey().equals(key)) {
-			field.setFieldValue(getFromPrefStore());
+			updateFieldFromPrefStore();
 		}
 	}
 	

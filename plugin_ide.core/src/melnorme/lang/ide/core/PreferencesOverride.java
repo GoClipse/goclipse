@@ -19,9 +19,4 @@ public class PreferencesOverride {
 		return key;
 	}
 	
-	@SuppressWarnings("unused")
-	public static <T> T getDefaultValue(T defaultValue, PreferenceHelper<?> helper) {
-		return defaultValue;
-	}
-	
 }
