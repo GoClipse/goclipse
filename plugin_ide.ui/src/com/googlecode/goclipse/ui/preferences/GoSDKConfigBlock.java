@@ -43,7 +43,6 @@ import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.FileTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.misc.ArrayUtil;
 
 public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
@@ -115,12 +114,7 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 		
 		goPathField.createComponent(topControl, getPreferenceGroupDefaultLayout());
 		
-		goRootField.addValueChangedListener(new IFieldValueListener() {
-			@Override
-			public void fieldValueChanged() {
-				handleGoRootChange();
-			}
-		});
+		goRootField.addListener(() -> handleGoRootChange());
 	}
 	
 	@Override

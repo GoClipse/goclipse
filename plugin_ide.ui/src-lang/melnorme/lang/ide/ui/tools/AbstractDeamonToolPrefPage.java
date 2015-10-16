@@ -29,7 +29,6 @@ import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.FileTextField;
 
-/* FIXME: test */
 public abstract class AbstractDeamonToolPrefPage extends AbstractPreferencesBlockPrefPage {
 	
 	public AbstractDeamonToolPrefPage() {

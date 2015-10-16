@@ -50,7 +50,7 @@ import melnorme.util.swt.jface.LabeledTreeElement;
 import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvider;
 import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.text.ColorManager2;
-import melnorme.utilbox.fields.IDomainField;
+import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.fields.IProperty;
 import melnorme.utilbox.misc.StreamUtil;
@@ -110,7 +110,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		
 		protected final ThemedTextStylingPreference stylingPref;
 		protected final String prefId;
-		protected final IDomainField<TextStyling> temporaryPref;
+		protected final IModelField<TextStyling> temporaryPref;
 		
 		public SourceColoringElement(String labelText, ThemedTextStylingPreference stylingPref) {
 			super(null, null, labelText);
@@ -212,7 +212,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		underlineCheckboxField = new CheckBoxField(PreferencesMessages.DLTKEditorPreferencePage_underline);
 		underlineCheckboxField.createComponent(itemEditorComposite, gdFillDefaults().indent(20, 0).create());
 		
-		enableField.addValueChangedListener(new ChangeStylingField() {
+		enableField.addListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.isEnabled = enableField.getBooleanFieldValue();
@@ -220,31 +220,31 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 			}
 		});
 		
-		colorField.addValueChangedListener(new ChangeStylingField() {
+		colorField.addListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.rgb = colorField.getFieldValue();
 			}
 		});
-		boldCheckboxField.addValueChangedListener(new ChangeStylingField() {
+		boldCheckboxField.addListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.isBold = boldCheckboxField.getBooleanFieldValue();
 			}
 		});
-		italicCheckboxField.addValueChangedListener(new ChangeStylingField() {
+		italicCheckboxField.addListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.isItalic = italicCheckboxField.getBooleanFieldValue();
 			}
 		});
-		striketroughCheckboxField.addValueChangedListener(new ChangeStylingField() {
+		striketroughCheckboxField.addListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.isStrikethrough = striketroughCheckboxField.getBooleanFieldValue();
 			}
 		});
-		underlineCheckboxField.addValueChangedListener(new ChangeStylingField() {
+		underlineCheckboxField.addListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.isUnderline = underlineCheckboxField.getBooleanFieldValue();

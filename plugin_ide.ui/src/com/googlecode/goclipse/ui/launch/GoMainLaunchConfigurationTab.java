@@ -91,8 +91,8 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	@Override
 	protected void initBindings() {
 		super.initBindings();
-		goPackageField.addValueChangedListener(this::buildTargetFieldChanged);
-		buildTypeField.addValueChangedListener(this::buildTargetFieldChanged);
+		goPackageField.addListener(this::buildTargetFieldChanged);
+		buildTypeField.addListener(this::buildTargetFieldChanged);
 	}
 	
 	/* -----------------  Control creation  ----------------- */

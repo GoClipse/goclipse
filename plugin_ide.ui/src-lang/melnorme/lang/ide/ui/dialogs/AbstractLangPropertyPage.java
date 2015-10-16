@@ -65,7 +65,7 @@ public abstract class AbstractLangPropertyPage extends PropertyPage {
 	protected Control doCreateContents(Composite parent, IProject project) {
 		Control component = preferencesWidget.createComponent(parent);
 		
-		preferencesWidget.getStatusField().addValueChangedListener2(true, () -> updateStatusMessage());
+		preferencesWidget.getStatusField().registerListener(true, () -> updateStatusMessage());
 		
 		return component;
 	}

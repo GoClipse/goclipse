@@ -25,7 +25,7 @@ public class MultipleFieldValidation extends DomainField<IStatusMessage> impleme
 	
 	public void addFieldValidation(boolean init, IFieldView<?> field, IValidationSource validationSource) {
 		validators.add(validationSource);
-		field.addValueChangedListener2(init, () -> updateFieldValue());
+		field.registerListener(init, () -> updateFieldValue());
 	}
 	
 	public void addValidatableField(boolean init, IValidatableField<?> statusField) {

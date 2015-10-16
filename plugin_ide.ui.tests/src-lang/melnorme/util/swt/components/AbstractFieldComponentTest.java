@@ -51,7 +51,7 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 		assertTrue(field.isCreated() == false);
 		checkValueIsNotNull();
 		
-		field.addValueChangedListener(new IFieldValueListener() {
+		field.addListener(new IFieldValueListener() {
 			@Override
 			public void fieldValueChanged() {
 				valueChangeCount++;

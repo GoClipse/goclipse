@@ -125,13 +125,13 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	/* ----------------- bindings ----------------- */
 	
 	protected void initBindings() {
-		projectField.addValueChangedListener(this::projectFieldChanged);
-		buildTargetField.addValueChangedListener(this::buildTargetFieldChanged);
+		projectField.addListener(this::projectFieldChanged);
+		buildTargetField.addListener(this::buildTargetFieldChanged);
 		
-		buildTargetSettings.buildArgumentsField.addValueChangedListener(() -> updateLaunchConfigurationDialog());
-		buildTargetSettings.buildArgumentsField.addValueChangedListener(() -> 
+		buildTargetSettings.buildArgumentsField.addListener(() -> updateLaunchConfigurationDialog());
+		buildTargetSettings.buildArgumentsField.addListener(() -> 
 			buildTargetSettings.programPathField.updateDefaultFieldValue());
-		buildTargetSettings.programPathField.addValueChangedListener(() -> updateLaunchConfigurationDialog());
+		buildTargetSettings.programPathField.addListener(() -> updateLaunchConfigurationDialog());
 	}
 	
 	public void projectFieldChanged() {

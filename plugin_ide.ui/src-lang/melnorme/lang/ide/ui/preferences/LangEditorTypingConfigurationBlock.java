@@ -121,7 +121,7 @@ public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock
 				indentationSizeField.setEnabled(enabled);
 			}
 		};
-		indentModeField.addValueChangedListener(indentModeValueListener);
+		indentModeField.addListener(indentModeValueListener);
 		indentModeValueListener.fieldValueChanged();
 	}
 	

@@ -109,7 +109,7 @@ public class ContentAssistPreferenceHandler extends SourceViewerConfigurer
 	public <T> void listenToField(IFieldView<T> field, IFieldValueListener listener) {
 		IOwner configurationOwned = sourceViewer.getConfigurationOwned();
 		
-		field.addOwnedListener(configurationOwned, true, listener);
+		field.bindOwnedListener(configurationOwned, true, listener);
 	}
 	
 	@Override

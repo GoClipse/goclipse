@@ -135,8 +135,8 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 				validateDialog();
 			}
 		};
-		nameGroup.textField.addValueChangedListener(listener);
-		locationGroup.addValueChangedListener(listener);
+		nameGroup.textField.addListener(listener);
+		locationGroup.addListener(listener);
 		
 		validateDialog();
 	}
@@ -215,7 +215,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 			this.nameGroup = nameGroup;
 			
-			nameGroup.getNameField().addValueChangedListener(this::updateDefaultFieldValue);
+			nameGroup.getNameField().addListener(this::updateDefaultFieldValue);
 		}
 		
 		protected String getProjectName() {

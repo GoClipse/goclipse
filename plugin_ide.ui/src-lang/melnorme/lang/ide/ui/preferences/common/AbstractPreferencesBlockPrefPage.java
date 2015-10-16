@@ -29,7 +29,7 @@ public abstract class AbstractPreferencesBlockPrefPage extends AbstractLangPrefe
 		
 		preferencesBlock = init_createPreferencesBlock();
 		
-		preferencesBlock.getStatusField().addValueChangedListener2(true, () -> updateStatusMessage());
+		preferencesBlock.getStatusField().registerListener(true, () -> updateStatusMessage());
 	}
 	
 	protected abstract AbstractPreferencesBlock init_createPreferencesBlock();
