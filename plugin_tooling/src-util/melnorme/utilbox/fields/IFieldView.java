@@ -21,67 +21,58 @@ public interface IFieldView<VALUE> {
 	
 	VALUE getFieldValue();
 	
-	void addValueChangedListener(IFieldValueListener listener);
+	void addListener(IFieldValueListener listener);
 	
-	void removeValueChangedListener(IFieldValueListener listener);
-	
-	//alias
-	default void addListener(IFieldValueListener listener) {
-		addValueChangedListener(listener);
-	}
-	//alias
-	default void removeListener(IFieldValueListener listener) {
-		removeValueChangedListener(listener);
-	}
+	void removeListener(IFieldValueListener listener);
 	
 	/* -----------------  ----------------- */
 	
-	default FieldListenerBinding addValueChangedListener2(boolean initialize, IFieldValueListener listener) {
-		FieldListenerBinding binding = addValueChangedListener2(listener);
-		if(initialize) {
+	default FieldListenerRegistration registerListener(IFieldValueListener listener) {
+		addListener(listener);
+		return new FieldListenerRegistration(this, listener);
+	}
+	
+	default FieldListenerRegistration registerListener(boolean initListener, IFieldValueListener listener) {
+		FieldListenerRegistration binding = registerListener(listener);
+		if(initListener) {
 			listener.fieldValueChanged();
 		}
 		return binding;
 	}
 	
-	default FieldListenerBinding addValueChangedListener2(IFieldValueListener listener) {
-		addValueChangedListener(listener);
-		return new FieldListenerBinding(this, listener);
+	/**
+	 * Register a value changed listener, that automatically get unregistered when given ownedList is disposed.
+	 */
+	default void bindOwnedListener(IOwner owner, IFieldValueListener listener) {
+		registerListener(listener).bindLifetime(owner);
 	}
 	
-	public static class FieldListenerBinding implements IDisposable {
+	default void bindOwnedListener(IOwner owner, boolean initListener, IFieldValueListener listener) {
+		registerListener(listener).bindLifetime(owner);
+		if(initListener) {
+			listener.fieldValueChanged();
+		}
+	}
+	
+	public static class FieldListenerRegistration implements IDisposable {
 		
 		protected final IFieldView<?> field;
 		protected final IFieldValueListener listener;
 		
-		public FieldListenerBinding(IFieldView<?> field, IFieldValueListener listener) {
+		public FieldListenerRegistration(IFieldView<?> field, IFieldValueListener listener) {
 			this.field = field;
 			this.listener = listener;
 		}
 		
 		@Override
 		public void dispose() {
-			field.removeValueChangedListener(listener);
+			field.removeListener(listener);
 		}
 		
 		public void bindLifetime(IOwner owner) {
 			owner.bind(this);
 		}
 		
-	}
-	
-	/**
-	 * Register a value changed listener, that automatically get unregistered when given ownedList is disposed.
-	 */
-	default void addOwnedListener(IOwner owner, IFieldValueListener listener) {
-		addValueChangedListener2(listener).bindLifetime(owner);
-	}
-	
-	default void addOwnedListener(IOwner owner, boolean init, IFieldValueListener listener) {
-		addValueChangedListener2(listener).bindLifetime(owner);
-		if(init) {
-			listener.fieldValueChanged();
-		}
 	}
 	
 }

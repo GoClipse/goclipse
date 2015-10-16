@@ -25,6 +25,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.PreferencesOverride;
 import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.IFieldView;
 
@@ -42,8 +43,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	public final String key;
 	public final String qualifier;
-	
-	protected T defaultValue;
+	protected final T defaultValue;
 	
 	protected final IProjectPreference<Boolean> useProjectSettingsPref;
 	
@@ -64,14 +64,16 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	public PreferenceHelper(String pluginId, String key, T defaultValue, boolean ensureUniqueKey,
 			IProjectPreference<Boolean> useProjectSettingsPref) {
-		this.key = assertNotNull(key);
+		this.key = assertNotNull(PreferencesOverride.getKeyIdentifer(key, this));
 		if(ensureUniqueKey) {
 			checkUniqueKey(key, this);
 		}
 		this.qualifier = pluginId;
 		this.useProjectSettingsPref = useProjectSettingsPref; // can be null
 		
-		setPreferencesDefaultValue(defaultValue);
+		this.defaultValue = PreferencesOverride.getDefaultValue(defaultValue, this);
+		setPreferencesDefaultValue();
+		
 		field.setFieldValue(getFromPrefStore());
 		
 		initializeListeners();
@@ -101,12 +103,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		return new PreferencesLookupHelper(getQualifier(), project);
 	}
 	
-	/**
-	 * Note: can only be used before preference value is accessed.
-	 */
-	public void setPreferencesDefaultValue(T defaultValue) {
-		assertNotNull(defaultValue);
-		this.defaultValue = defaultValue;
+	protected void setPreferencesDefaultValue() {
 		doSet(getDefaultNode(), defaultValue);
 	}
 	

@@ -50,7 +50,7 @@ public class TokenRegistry extends LifecycleObject {
 		if(token == null) {
 			Token newToken = new Token(createTextAttribute(stylingPref));
 			
-			stylingPref.addOwnedListener(owned, () -> updateToken(newToken, stylingPref));
+			stylingPref.bindOwnedListener(owned, () -> updateToken(newToken, stylingPref));
 			
 			tokens.put(id, newToken);
 			token = newToken;

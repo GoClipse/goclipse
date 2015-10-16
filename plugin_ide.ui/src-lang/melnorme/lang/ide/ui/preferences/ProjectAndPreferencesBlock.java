@@ -55,7 +55,7 @@ public abstract class ProjectAndPreferencesBlock extends AbstractPreferencesBloc
 		
 		this.projectSettingsBlock = init_createProjectSettingsBlock2();
 		
-		useProjectSettingsField.addValueChangedListener2(
+		useProjectSettingsField.registerListener(
 			() -> projectSettingsBlock.setEnabled(useProjectSettingsField.getFieldValue()));
 		
 		bindToPreference(useProjectSettingsField, useProjectSettingsPref.getGlobalPreference());
@@ -86,6 +86,9 @@ public abstract class ProjectAndPreferencesBlock extends AbstractPreferencesBloc
 			GridDataFactory.fillDefaults().span(2, 1).create());
 		
 		projectSettingsBlock.createComponent(topControl, gdFillDefaults().span(2, 1).grab(true, false).create());
+		
+		// Update projectSettingsBlock setEnabled status - because setEnabled only works after the control is created.
+		useProjectSettingsField.fireFieldValueChanged();
 	}
 	
 	protected String getWorkspacePrefPageId() {

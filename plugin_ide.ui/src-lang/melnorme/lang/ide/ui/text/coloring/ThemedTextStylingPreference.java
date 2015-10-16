@@ -20,7 +20,7 @@ import melnorme.lang.ide.core.utils.prefs.IPreferenceIdentifier;
 import melnorme.lang.ide.ui.LangUI;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.utilbox.fields.DomainField;
-import melnorme.utilbox.fields.IDomainField;
+import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.fields.IFieldView;
 
@@ -47,8 +47,8 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 		this.defaultPref = new TextStylingPreference(qualifer, key, defaultValue);
 		this.darkPref = new TextStylingPreference(qualifer, key_Dark, defaultValueDark);
 		
-		defaultPref.asField().addListener(() -> updateEffectiveValue());
-		darkPref.asField().addListener(() -> updateEffectiveValue());
+		defaultPref.asField().registerListener(() -> updateEffectiveValue());
+		darkPref.asField().registerListener(() -> updateEffectiveValue());
 		
 		LangUI.getInstance().getThemeHelper().new ThemeChangeListener() {
 			@Override
@@ -108,7 +108,7 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 	
 	/* -----------------  ----------------- */
 	
-	public IDomainField<TextStyling> asField() {
+	public IModelField<TextStyling> asField() {
 		return effectiveValue;
 	}
 	
@@ -119,13 +119,13 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 	
 	
 	@Override
-	public void addValueChangedListener(IFieldValueListener listener) {
-		asField().addValueChangedListener(listener);
+	public void addListener(IFieldValueListener listener) {
+		asField().addListener(listener);
 	}
 	
 	@Override
-	public void removeValueChangedListener(IFieldValueListener listener) {
-		asField().removeValueChangedListener(listener);
+	public void removeListener(IFieldValueListener listener) {
+		asField().removeListener(listener);
 	}
 	
 	@Override

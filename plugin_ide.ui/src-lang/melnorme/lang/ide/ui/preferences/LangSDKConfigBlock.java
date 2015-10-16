@@ -24,7 +24,7 @@ import melnorme.util.swt.components.fields.DirectoryTextField;
 
 public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 	
-	public final LanguageSDKLocationGroup sdkLocationGroup;
+	public final LanguageSDKLocationGroup2 sdkLocationGroup;
 	
 	public LangSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
@@ -32,13 +32,8 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		this.sdkLocationGroup = init_createSDKLocationGroup();
 	}
 	
-	protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
-		LanguageSDKLocationGroup sdkLocationGroup = new LanguageSDKLocationGroup();
-		bindToPreference(sdkLocationGroup.sdkLocationField, ToolchainPreferences.SDK_PATH);
-		
-		validation.addFieldValidation(true, sdkLocationGroup.sdkLocationField, getSDKValidator());
-		
-		return sdkLocationGroup;
+	protected LanguageSDKLocationGroup2 init_createSDKLocationGroup() {
+		return new LanguageSDKLocationGroup2();
 	}
 	
 	public FieldComponent<String> getLocationField() {
@@ -62,9 +57,18 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		sdkLocationGroup.setEnabled(enabled);
 	}
 	
-	public static class LanguageSDKLocationGroup extends AbstractComponentExt {
+	public class LanguageSDKLocationGroup2 extends AbstractComponentExt {
 		
 		public final ButtonTextField sdkLocationField = createSdkLocationField();
+		
+		public LanguageSDKLocationGroup2() {
+			initBindings();
+		}
+		
+		protected void initBindings() {
+			bindToPreference(sdkLocationField, ToolchainPreferences.SDK_PATH);
+			validation.addFieldValidation(true, sdkLocationField, getSDKValidator());
+		}
 		
 		protected ButtonTextField createSdkLocationField() {
 			return new DirectoryTextField(PreferencesMessages.ROOT_SDKGroup_path_Label);

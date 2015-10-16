@@ -113,11 +113,11 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractVal
 	}
 	
 	protected void initBindings() {
-		buildTargetField.addValueChangedListener(() -> handleBuildTargetChanged());
+		buildTargetField.addListener(() -> handleBuildTargetChanged());
 		
-		buildTargetSettings.buildArgumentsField.addValueChangedListener(() -> 
+		buildTargetSettings.buildArgumentsField.addListener(() -> 
 			buildTargetData.buildArguments = buildTargetSettings.getEffectiveArgumentsValue());
-		buildTargetSettings.programPathField.addValueChangedListener(() -> 
+		buildTargetSettings.programPathField.addListener(() -> 
 			buildTargetData.executablePath = buildTargetSettings.getEffectiveProgramPathValue());
 	}
 	

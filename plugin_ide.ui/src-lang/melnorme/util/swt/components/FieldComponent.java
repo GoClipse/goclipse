@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Control;
 
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.fields.DomainField;
-import melnorme.utilbox.fields.IDomainField;
+import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IFieldValueListener;
 
 /**
@@ -23,7 +23,7 @@ import melnorme.utilbox.fields.IFieldValueListener;
  * componented is not created.
  */
 public abstract class FieldComponent<VALUE> extends AbstractComponentExt 
-	implements IDomainField<VALUE> {
+	implements IModelField<VALUE> {
 	
 	private final DomainField<VALUE> domainField;
 	
@@ -40,7 +40,7 @@ public abstract class FieldComponent<VALUE> extends AbstractComponentExt
 	
 	public FieldComponent(DomainField<VALUE> domainField) {
 		this.domainField = domainField;
-		this.domainField.addValueChangedListener(new IFieldValueListener() {
+		this.domainField.addListener(new IFieldValueListener() {
 			@Override
 			public void fieldValueChanged() {
 				if(!settingValueFromControl) {
@@ -79,13 +79,13 @@ public abstract class FieldComponent<VALUE> extends AbstractComponentExt
 	}
 	
 	@Override
-	public void addValueChangedListener(IFieldValueListener listener) {
-		domainField.addValueChangedListener(listener);
+	public void addListener(IFieldValueListener listener) {
+		domainField.addListener(listener);
 	}
 	
 	@Override
-	public void removeValueChangedListener(IFieldValueListener listener) {
-		domainField.removeValueChangedListener(listener);
+	public void removeListener(IFieldValueListener listener) {
+		domainField.removeListener(listener);
 	}
 	
 	/* -----------------  ----------------- */

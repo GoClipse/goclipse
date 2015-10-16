@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.fields;
+package melnorme.lang.ide.core;
 
-public interface IDomainField<VALUE> extends IFieldView<VALUE>, IProperty<VALUE> {
+import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
+
+public class PreferencesOverride {
 	
-	@Override
-	default VALUE getValue() {
-		return IFieldView.super.getValue();
+	@SuppressWarnings("unused")
+	public static String getKeyIdentifer(String key, PreferenceHelper<?> helper) {
+		return key;
 	}
 	
-	@Override
-	default void setValue(VALUE value) {
-		setFieldValue(value);
+	@SuppressWarnings("unused")
+	public static <T> T getDefaultValue(T defaultValue, PreferenceHelper<?> helper) {
+		return defaultValue;
 	}
-	
-	void setFieldValue(VALUE value);
 	
 }

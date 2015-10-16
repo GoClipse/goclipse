@@ -49,8 +49,8 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		
 		customizeCreateControl();
 		
-		editor.getStructureField().addListener(structureListener);
-		editor.getSelectedElementField().addListener(structureListener);
+		editor.getStructureField().registerListener(structureListener);
+		editor.getSelectedElementField().registerListener(structureListener);
 		
 		updateTreeViewer();
 	}
