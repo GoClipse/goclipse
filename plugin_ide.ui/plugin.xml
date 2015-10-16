@@ -299,6 +299,7 @@
 			finalPerspective="LANG_PROJECT_ID.ide.ui.Perspective"
 			preferredPerspectives="LANG_PROJECT_ID.ide.ui.Perspective"
 			project="true">
+			<description>%NewProjectWizard.description</description>
 		</wizard>
 	</extension>
 	

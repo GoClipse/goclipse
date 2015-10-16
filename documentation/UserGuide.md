@@ -22,7 +22,7 @@ Also, to improve Eclipse performance and startup time, it is recommended you twe
 ### Project setup
 
 ##### Project creation:
-A new LANGUAGE project can be created in the Project Explorer view. Open `New / Project...` and then `LANGUAGE / LANGUAGE Project`.
+A new LANGUAGE project is created with the New Project Wizard: from the Project Explorer context menu, select `New / Project...` and then `LANGUAGE / LANGUAGE Project`. The same wizard is used to add a pre-existing project: simply use the location field to select a pre-existing location for your project.
 
 
 ### Launch and Debug:
