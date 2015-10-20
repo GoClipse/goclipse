@@ -27,15 +27,15 @@ public class GoScanner extends AbstractLangScanner {
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
 		
 		
-		final IToken tkDefault = getToken(GoUIPreferenceConstants.SC__DEFAULT);
+		final IToken tkDefault = getToken(GoUIPreferenceConstants.DEFAULT);
 		
 		WordRule wordRule = new WordRule(new JavaWordDetector(), tkDefault);
 		
-		final IToken keyword         = getToken(GoUIPreferenceConstants.SC__KEYWORD);
-		final IToken value           = getToken(GoUIPreferenceConstants.SC__KW_LITERAL);
-		final IToken primitive       = getToken(GoUIPreferenceConstants.SC__KW_PRIMITIVE);
-		final IToken builtinFunction = getToken(GoUIPreferenceConstants.SC__BUILTIN_FUNCTION);
-		final IToken textToken       = getToken(GoUIPreferenceConstants.SC__DEFAULT);
+		final IToken keyword         = getToken(GoUIPreferenceConstants.KEYWORD);
+		final IToken value           = getToken(GoUIPreferenceConstants.KW_LITERAL);
+		final IToken primitive       = getToken(GoUIPreferenceConstants.KW_PRIMITIVE);
+		final IToken builtinFunction = getToken(GoUIPreferenceConstants.BUILTIN_FUNCTION);
+		final IToken textToken       = getToken(GoUIPreferenceConstants.DEFAULT);
 		setDefaultReturnToken(textToken);
 		
 		// add tokens for each reserved word
@@ -110,8 +110,8 @@ public class GoScanner extends AbstractLangScanner {
 		
 		rules.add(wordRule);
 		
-		rules.add(new GoOperatorRule(getToken(GoUIPreferenceConstants.SC__OPERATOR)));
-		rules.add(new GoControlCharactersRule(getToken(GoUIPreferenceConstants.SC__STRUCTURAL_SYMBOLS)));
+		rules.add(new GoOperatorRule(getToken(GoUIPreferenceConstants.OPERATOR)));
+		rules.add(new GoControlCharactersRule(getToken(GoUIPreferenceConstants.STRUCTURAL_SYMBOLS)));
 	}
 	
 	public static class GoOperatorRule extends DefaultPredicateRule {

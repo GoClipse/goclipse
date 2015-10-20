@@ -47,14 +47,14 @@ public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfi
 					
 		case LINE_COMMENT:
 		case BLOCK_COMMENT:
-			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.SC__COMMENT);
+			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.COMMENT);
 			
 		case CHARACTER:
-			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.SC__CHARACTER);
+			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.CHARACTER);
 		case STRING:
-			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.SC__STRING);
+			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.STRING);
 		case MULTILINE_STRING:
-			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.SC__MULTILINE_STRING);
+			return new SingleTokenScanner(tokenStore, GoUIPreferenceConstants.MULTILINE_STRING);
 		}
 		
 		throw assertFail();

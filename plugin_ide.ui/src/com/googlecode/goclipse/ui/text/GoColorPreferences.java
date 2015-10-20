@@ -19,40 +19,43 @@ public interface GoColorPreferences {
 	
 	String PREFIX = "editor.coloring.";
 	
-    ThemedTextStylingPreference SC__DEFAULT = new ThemedTextStylingPreference(PREFIX + "default", 
+    ThemedTextStylingPreference DEFAULT = new ThemedTextStylingPreference(PREFIX + "default", 
     	new TextStyling(new RGB(  0,  0,  0), false, false),
     	new TextStyling(new RGB(230,230,230), false, false));
     
-	ThemedTextStylingPreference SC__COMMENT = new ThemedTextStylingPreference(PREFIX + "comment", 
+	ThemedTextStylingPreference COMMENT = new ThemedTextStylingPreference(PREFIX + "comment", 
 		new TextStyling(new RGB(107, 127, 147), false, false),
     	new TextStyling(new RGB(107, 127, 147), false, false));
 	
-	ThemedTextStylingPreference SC__KEYWORD = new ThemedTextStylingPreference(PREFIX + "keyword", 
+	ThemedTextStylingPreference KEYWORD = new ThemedTextStylingPreference(PREFIX + "keyword", 
 		new TextStyling(new RGB(127, 0, 85), true, false),
     	new TextStyling(new RGB(127, 0, 85), true, false));
-	ThemedTextStylingPreference SC__KW_PRIMITIVE = new ThemedTextStylingPreference(PREFIX + "primitive", 
+	ThemedTextStylingPreference KW_PRIMITIVE = new ThemedTextStylingPreference(PREFIX + "primitive", 
 		new TextStyling(new RGB(50, 130, 160), true, false),
     	new TextStyling(new RGB(50, 130, 160), true, false));
-	ThemedTextStylingPreference SC__KW_LITERAL = new ThemedTextStylingPreference(PREFIX + "value", 
+	ThemedTextStylingPreference KW_LITERAL = new ThemedTextStylingPreference(PREFIX + "value", 
 		new TextStyling(new RGB(160, 120, 70), false, false),
     	new TextStyling(new RGB(160, 120, 70), false, false));
-	ThemedTextStylingPreference SC__BUILTIN_FUNCTION = new ThemedTextStylingPreference(PREFIX + "builtin_function", 
+	ThemedTextStylingPreference BUILTIN_FUNCTION = new ThemedTextStylingPreference(PREFIX + "builtin_function", 
 		new TextStyling(new RGB(  0,  0,  0), true, false),
     	new TextStyling(new RGB(230,230,230), true, false));
-	ThemedTextStylingPreference SC__OPERATOR = new ThemedTextStylingPreference(PREFIX + "operator", 
+	ThemedTextStylingPreference OPERATOR = new ThemedTextStylingPreference(PREFIX + "operator", 
 		new TextStyling(new RGB(  0,  0,  0), false, false),
     	new TextStyling(new RGB(230,230,230), false, false));
-	ThemedTextStylingPreference SC__STRUCTURAL_SYMBOLS = new ThemedTextStylingPreference(PREFIX + "syntax_chars", 
+	ThemedTextStylingPreference STRUCTURAL_SYMBOLS = new ThemedTextStylingPreference(PREFIX + "syntax_chars", 
 		new TextStyling(new RGB(  0,  0,  0), false, false),
     	new TextStyling(new RGB(230,230,230), false, false));
 	
-	ThemedTextStylingPreference SC__CHARACTER = new ThemedTextStylingPreference(PREFIX + "character", 
+//	ThemedTextStylingPreference NUMBER = new ThemedTextStylingPreference(PREFIX + "number",
+//		new TextStyling(new RGB(126, 160, 0), false, false),
+//		new TextStyling(new RGB(126, 160, 0), false, false));
+	ThemedTextStylingPreference CHARACTER = new ThemedTextStylingPreference(PREFIX + "character", 
 		new TextStyling(new RGB(0, 170, 10), false, false),
     	new TextStyling(new RGB(0, 170, 10), false, false));
-	ThemedTextStylingPreference SC__STRING = new ThemedTextStylingPreference(PREFIX + "string", 
+	ThemedTextStylingPreference STRING = new ThemedTextStylingPreference(PREFIX + "string", 
 		new TextStyling(new RGB(126, 164, 0), false, false),
     	new TextStyling(new RGB(126, 164, 0), false, false));
-	ThemedTextStylingPreference SC__MULTILINE_STRING = new ThemedTextStylingPreference(PREFIX + "multiline_string", 
+	ThemedTextStylingPreference MULTILINE_STRING = new ThemedTextStylingPreference(PREFIX + "multiline_string", 
 		new TextStyling(new RGB(175, 175, 0), false, false),
     	new TextStyling(new RGB(175, 175, 0), false, false));
 	// 230, 125, 105

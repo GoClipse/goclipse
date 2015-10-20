@@ -21,18 +21,18 @@ public class GoSourceColoringConfigurationBlock extends AbstractSourceColoringCo
 	protected LabeledTreeElement[] createTreeElements() {
 		return array(
 			new SourceColoringCategory("Source", array(
-				new SourceColoringElement("Comment", GoColorPreferences.SC__COMMENT),
+				new SourceColoringElement("Comment", GoColorPreferences.COMMENT),
 				
-				new SourceColoringElement("Text", GoColorPreferences.SC__DEFAULT),
-				new SourceColoringElement("Keywords", GoColorPreferences.SC__KEYWORD),
-				new SourceColoringElement("Keyword - Literals", GoColorPreferences.SC__KW_LITERAL),
-				new SourceColoringElement("Keyword - Primitives", GoColorPreferences.SC__KW_PRIMITIVE),
-				new SourceColoringElement("Built-in functions", GoColorPreferences.SC__BUILTIN_FUNCTION),
-				new SourceColoringElement("Operators", GoColorPreferences.SC__OPERATOR),
-				new SourceColoringElement("Structural symbols", GoColorPreferences.SC__STRUCTURAL_SYMBOLS),
-				new SourceColoringElement("Characters", GoColorPreferences.SC__CHARACTER),
-				new SourceColoringElement("Strings", GoColorPreferences.SC__STRING),
-				new SourceColoringElement("Multi-line strings", GoColorPreferences.SC__MULTILINE_STRING)
+				new SourceColoringElement("Text", GoColorPreferences.DEFAULT),
+				new SourceColoringElement("Keywords", GoColorPreferences.KEYWORD),
+				new SourceColoringElement("Keyword - Literals", GoColorPreferences.KW_LITERAL),
+				new SourceColoringElement("Keyword - Primitives", GoColorPreferences.KW_PRIMITIVE),
+				new SourceColoringElement("Built-in functions", GoColorPreferences.BUILTIN_FUNCTION),
+				new SourceColoringElement("Operators", GoColorPreferences.OPERATOR),
+				new SourceColoringElement("Structural symbols", GoColorPreferences.STRUCTURAL_SYMBOLS),
+				new SourceColoringElement("Characters", GoColorPreferences.CHARACTER),
+				new SourceColoringElement("Strings", GoColorPreferences.STRING),
+				new SourceColoringElement("Multi-line strings", GoColorPreferences.MULTILINE_STRING)
 			))
 		);
 	}

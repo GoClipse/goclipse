@@ -48,26 +48,26 @@ public class EditorSettings_Actual {
 	
 	public static StylingPreferences getStylingPreferences() {
 		return new StylingPreferences(
-			GoColorPreferences.SC__DEFAULT,
+			GoColorPreferences.DEFAULT,
 			
-			GoColorPreferences.SC__COMMENT,
+			GoColorPreferences.COMMENT,
 			
-			GoColorPreferences.SC__KEYWORD,
-			GoColorPreferences.SC__KW_PRIMITIVE,
-			GoColorPreferences.SC__KW_LITERAL,
-			GoColorPreferences.SC__BUILTIN_FUNCTION,
-			GoColorPreferences.SC__OPERATOR,
-			GoColorPreferences.SC__STRUCTURAL_SYMBOLS,
+			GoColorPreferences.KEYWORD,
+			GoColorPreferences.KW_PRIMITIVE,
+			GoColorPreferences.KW_LITERAL,
+			GoColorPreferences.BUILTIN_FUNCTION,
+			GoColorPreferences.OPERATOR,
+			GoColorPreferences.STRUCTURAL_SYMBOLS,
 			
-			GoColorPreferences.SC__CHARACTER,
-			GoColorPreferences.SC__STRING,
-			GoColorPreferences.SC__MULTILINE_STRING
+			GoColorPreferences.CHARACTER,
+			GoColorPreferences.STRING,
+			GoColorPreferences.MULTILINE_STRING
 		);
 	}
 	
 	public static final String TEMPLATE_CONTEXT_TYPE_ID = LangUIPlugin.PLUGIN_ID + ".TemplateContextType";
 	
-	public static final ThemedTextStylingPreference CODE_DEFAULT_COLOR = GoColorPreferences.SC__DEFAULT;
+	public static final ThemedTextStylingPreference CODE_DEFAULT_COLOR = GoColorPreferences.DEFAULT;
 	
 	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
