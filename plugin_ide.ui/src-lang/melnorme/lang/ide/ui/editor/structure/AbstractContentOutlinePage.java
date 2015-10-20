@@ -12,7 +12,7 @@ package melnorme.lang.ide.ui.editor.structure;
 
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.fields.ListenerListHelper;
 
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;

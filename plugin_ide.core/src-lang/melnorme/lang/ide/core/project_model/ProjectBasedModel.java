@@ -18,7 +18,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.fields.ListenerListHelper;
 import melnorme.utilbox.misc.SimpleLogger;
 
 public abstract class ProjectBasedModel<INFO> {

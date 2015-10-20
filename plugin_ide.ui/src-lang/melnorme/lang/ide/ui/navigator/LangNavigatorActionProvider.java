@@ -11,7 +11,10 @@
 package melnorme.lang.ide.ui.navigator;
 
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
@@ -21,8 +24,14 @@ import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
+import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
+import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.ide.ui.actions.AbstractUIOperation;
+import melnorme.lang.ide.ui.actions.RunUIOperationAction;
 import melnorme.utilbox.collections.ArrayList2;
 
 public abstract class LangNavigatorActionProvider extends CommonActionProvider {
@@ -96,4 +105,52 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 		}
 		
 	}
+	
+	public static abstract class BundleOperationsActionGroup extends ViewPartActionGroup {
+		
+		public BundleOperationsActionGroup(IViewPart viewPart) {
+			super(viewPart);
+		}
+		
+		public IProject getBundleProjectFromSelection() {
+			Object selElement = getSelectionFirstElement();
+			if(selElement instanceof IProject) {
+				return (IProject) selElement;
+			}
+			if(selElement instanceof DependenciesContainer) {
+				DependenciesContainer dependenciesContainer = (DependenciesContainer) selElement;
+				return dependenciesContainer.getParent();
+			}
+			if(selElement instanceof IFile) {
+				IFile file = (IFile) selElement;
+				if(LangCore.getBundleModelManager().isBundleManifestFile(file)) {
+					return file.getProject();
+				}
+			}
+			return null;
+		}
+		
+		@Override
+		public void fillContextMenu(IMenuManager menu) {
+			IProject project = getBundleProjectFromSelection();
+			if(project == null)
+				return;
+			
+			MenuManager bundleOpsMenu = new MenuManager(getMenuName(), LangImages.NAV_Library, "bundleMenu");
+			
+			initActions(bundleOpsMenu, project);
+			
+			menu.prependToGroup(ICommonMenuConstants.GROUP_BUILD, bundleOpsMenu);
+		}
+		
+		protected abstract String getMenuName();
+		
+		protected abstract void initActions(MenuManager bundleOpsMenu, IProject project);
+		
+		protected void addRunOperationAction(MenuManager bundleOpsMenu, AbstractUIOperation operation) {
+			bundleOpsMenu.add(new RunUIOperationAction(operation));
+		}
+		
+	}
+	
 }

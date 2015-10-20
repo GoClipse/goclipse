@@ -10,12 +10,12 @@
  *******************************************************************************/
 package melnorme.utilbox.fields;
 
-import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.lang.utils.EventSource;
 
 /**
  * A value that listener/observer can connect to and listen for modification.
  */
-public class DomainField<VALUE> implements IModelField<VALUE> {
+public class DomainField<VALUE> extends EventSource<IFieldValueListener> implements IModelField<VALUE> {
 	
 	private VALUE value; // private to prevent direct modifications.
 	
@@ -32,19 +32,6 @@ public class DomainField<VALUE> implements IModelField<VALUE> {
 	}
 	
 	/* ----------------- listeners ----------------- */
-	
-	protected final ListenerListHelper<IFieldValueListener> listeners = new ListenerListHelper<>();
-	
-	@Override
-	public void addListener(IFieldValueListener listener) {
-		listeners.addListener(listener);
-	}
-	
-	@Override
-	public void removeListener(IFieldValueListener listener) {
-		listeners.removeListener(listener);
-	}
-	
 	
 	public void fireFieldValueChanged() {
 		fieldValueChanged();

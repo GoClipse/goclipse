@@ -30,18 +30,18 @@ import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.IOperationHelper;
 import melnorme.lang.tooling.ops.util.PathValidator;
+import melnorme.lang.utils.EventSource;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 /**
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).
  */
-public abstract class AbstractToolManager extends ListenerListHelper<ILangOperationsListener> {
+public abstract class AbstractToolManager extends EventSource<ILangOperationsListener> {
 	
 	public AbstractToolManager() {
 	}

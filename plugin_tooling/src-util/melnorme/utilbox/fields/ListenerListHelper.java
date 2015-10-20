@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.misc;
+package melnorme.utilbox.fields;
 
 import java.util.Iterator;
 
@@ -20,7 +20,7 @@ import melnorme.utilbox.collections.Indexable;
  * This class is designed to be thread safe.
  * @see also {@link org.eclipse.core.runtime.ListenerList} 
  */
-public class ListenerListHelper<LISTENER> implements IListenerList<LISTENER> {
+public class ListenerListHelper<LISTENER> implements IEventSource<LISTENER> {
 	
 	private volatile Indexable<LISTENER> listeners;
 	
@@ -33,7 +33,6 @@ public class ListenerListHelper<LISTENER> implements IListenerList<LISTENER> {
 	}
 	
 	
-	@Override
 	public synchronized Indexable<LISTENER> getListeners() {
 		return listeners;
 	}

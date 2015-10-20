@@ -12,7 +12,9 @@ package melnorme.lang.ide.core.project_model;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Path;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.utils.CoreTaskAgent;
@@ -71,6 +73,14 @@ public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel>
 		
 		modelAgent.shutdownNow();
 	}
+	
+	/* -----------------  ----------------- */
+	
+	public boolean isBundleManifestFile(IFile file) {
+		return file.getProjectRelativePath().equals(getDefaultBundleManifestPath());
+	}
+	
+	protected abstract Path getDefaultBundleManifestPath();
 	
 	/* -----------------  ----------------- */
 	
