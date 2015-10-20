@@ -24,7 +24,7 @@ import melnorme.lang.utils.EntryMapTS;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.NamingThreadFactory;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.fields.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.SimpleLogger;
 

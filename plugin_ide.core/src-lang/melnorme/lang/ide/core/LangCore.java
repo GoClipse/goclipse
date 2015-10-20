@@ -19,7 +19,7 @@ import org.osgi.framework.BundleContext;
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.project_model.IBundleModelManager;
+import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.data.StatusException;
@@ -44,7 +44,7 @@ public abstract class LangCore extends Plugin {
 	
 	protected static final AbstractToolManager toolManager = LangCore_Actual.createToolManagerSingleton();
 	protected static final EngineClient engineClient = LangCore_Actual.createEngineClient();
-	protected static final IBundleModelManager bundleManager = LangCore_Actual.createBundleModelManager();
+	protected static final BundleModelManager<?> bundleManager = LangCore_Actual.createBundleModelManager();
 	protected static final BuildManager buildManager = LangCore_Actual.createBuildManager();
 	
 	public static AbstractToolManager getToolManager() {
@@ -53,7 +53,7 @@ public abstract class LangCore extends Plugin {
 	public static EngineClient getEngineClient() {
 		return engineClient;
 	}
-	public static IBundleModelManager getBundleModelManager() {
+	public static BundleModelManager<?> getBundleModelManager() {
 		return bundleManager;
 	}
 	public static LangBundleModel getBundleModel() {

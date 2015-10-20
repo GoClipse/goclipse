@@ -8,17 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.misc;
+package melnorme.utilbox.fields;
 
-import melnorme.utilbox.collections.Indexable;
-
-
-public interface IListenerList<LISTENER> {
-	
-	public Indexable<LISTENER> getListeners();
-	
-	public void removeListener(LISTENER listener);
+public interface IEventSource<LISTENER> {
 	
 	public void addListener(LISTENER listener);
+	
+	public void removeListener(LISTENER listener);
 	
 }

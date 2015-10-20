@@ -20,4 +20,9 @@ public class LangCoreMessages implements ProcessHelperMessages {
 	
 	public static final String BUILD_ClearingProblemMarkers = "Clearing problem markers";
 	
+	/* -----------------  ----------------- */
+	
+	public static final String RunningCommand = 
+			"Running command: ";
+	
 }
