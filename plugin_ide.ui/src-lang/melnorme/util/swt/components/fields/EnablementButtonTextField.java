@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Composite;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IProperty;
-import melnorme.utilbox.misc.StringUtil;
 
 public abstract class EnablementButtonTextField extends ButtonTextField {
 	
@@ -76,16 +75,16 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 		
 		@Override
 		public String getValue() {
-			return StringUtil.nullAsEmpty(getEffectiveFieldValue());
+			return getEffectiveFieldValue();
 		}
 		
 		@Override
 		public void setValue(String value) {
-			setEffectiveFieldValue(StringUtil.emptyAsNull(value));
+			setEffectiveFieldValue(value);
 		}
 	};
 	
-	public IProperty<String> asEffectiveValueProperty() {
+	public IProperty<String> asEffectiveValueProperty2() {
 		return effectiveValueProperty;
 	}
 	

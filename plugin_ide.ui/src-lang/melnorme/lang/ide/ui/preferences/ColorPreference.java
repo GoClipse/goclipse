@@ -10,12 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
-import melnorme.lang.ide.core.utils.prefs.IPreferencesAccess;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.jface.text.ColorManager;
@@ -33,15 +31,13 @@ public class ColorPreference extends PreferenceHelper<RGB> {
 	}
 	
 	@Override
-	protected RGB doGet(IPreferencesAccess preferences) {
-		String stringValue = preferences.getString(key);
-		return stringValue == null ? null : StringConverter.asRGB(stringValue);
+	protected RGB parseString(String stringValue) {
+		return StringConverter.asRGB(stringValue);
 	}
 	
 	@Override
-	protected void doSet(IEclipsePreferences preferences, RGB value) {
-		String stringValue = StringConverter.asString(value);
-		preferences.put(key, stringValue);
+	protected String valueToString(RGB value) {
+		return StringConverter.asString(value);
 	}
 	
 	public Color getManagedColor() {

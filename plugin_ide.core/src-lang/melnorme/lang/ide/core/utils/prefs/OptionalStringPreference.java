@@ -10,30 +10,33 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+
 /**
  * Helper to work with a string preference.
  */
-public class StringPreference extends PreferenceHelper<String> {
+public class OptionalStringPreference extends StringPreference {
 	
-	public StringPreference(String key, String defaultValue) {
-		super(key, defaultValue);
-	}
-	public StringPreference(String pluginId, String key, String defaultValue) {
-		super(pluginId, key, defaultValue);
-	}
-	public StringPreference(String pluginId, String key, String defaultValue, 
+	public OptionalStringPreference(String pluginId, String key,  
 			IProjectPreference<Boolean> useProjectSettings) {
-		super(pluginId, key, defaultValue, useProjectSettings);
+		super(pluginId, key, null, useProjectSettings);
 	}
 	
 	@Override
-	protected String parseString(String stringValue) {
-		return stringValue;
+	protected String getPrefValue(String savedValue) {
+		if(savedValue != null && savedValue.startsWith(":")) {
+			return savedValue.substring(1);
+		}
+		if(savedValue != null && savedValue.isEmpty()) {
+			return null;
+		}
+		return savedValue;
 	}
 	
 	@Override
-	protected String valueToString(String value) {
-		return value;
+	protected void setPrefValue(IEclipsePreferences preferences, String value) {
+		String savedValue = value == null ? "" : ":" + value; 
+		super.setPrefValue(preferences, savedValue);
 	}
 	
 }

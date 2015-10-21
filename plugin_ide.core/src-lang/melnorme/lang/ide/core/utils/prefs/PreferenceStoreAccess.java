@@ -12,6 +12,8 @@ package melnorme.lang.ide.core.utils.prefs;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import melnorme.lang.ide.core.utils.prefs.PreferenceHelper.IPreferencesAccess;
+
 /**
  * An adapter which provides only read access to a PST
  */
@@ -26,16 +28,6 @@ public class PreferenceStoreAccess implements IPreferencesAccess {
 	@Override
 	public String getString(String key) {
 		return prefStore.getString(key);
-	}
-	
-	@Override
-	public int getInt(String key) {
-		return prefStore.getInt(key);
-	}
-	
-	@Override
-	public boolean getBoolean(String key) {
-		return prefStore.getBoolean(key);
 	}
 	
 }

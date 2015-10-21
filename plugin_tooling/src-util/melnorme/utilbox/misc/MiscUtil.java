@@ -57,6 +57,12 @@ public class MiscUtil extends PathUtil {
 	
 	/* -----------------  ----------------- */
 	
+	public static boolean parseBoolean(String string) {
+		return string == null ? false : Boolean.valueOf(string).booleanValue();
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public static <T> Predicate<T> getNotNullPredicate() {
 		return new NotNullPredicate<T>();
 	}

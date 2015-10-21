@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import melnorme.utilbox.misc.NumberUtil;
 
 
 /**
@@ -30,13 +30,13 @@ public class IntPreference extends PreferenceHelper<Integer> {
 	}
 	
 	@Override
-	protected Integer doGet(IPreferencesAccess preferences) {
-		return preferences.getInt(key);
+	protected Integer parseString(String stringValue) {
+		return NumberUtil.parseInt(stringValue, 0);
 	}
 	
 	@Override
-	protected void doSet(IEclipsePreferences preferences, Integer value) {
-		preferences.putInt(key, value);
+	protected String valueToString(Integer value) {
+		return Integer.toString(value);
 	}
 	
 }
