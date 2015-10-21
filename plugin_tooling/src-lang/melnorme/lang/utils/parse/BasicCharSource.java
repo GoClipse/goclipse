@@ -8,11 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.parser.lexer;
+package melnorme.lang.utils.parse;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import melnorme.lang.utils.parse.IBasicCharSource;
 
 public abstract class BasicCharSource<EXC extends Exception> implements IBasicCharSource<EXC> {
 	
@@ -23,7 +21,7 @@ public abstract class BasicCharSource<EXC extends Exception> implements IBasicCh
 	}
 	
 	@Override
-	public final char consume2() throws EXC {
+	public final char consume() throws EXC {
 		checkedHasNext = false;
 		int next = lookahead();
 		assertTrue(next >= 0);

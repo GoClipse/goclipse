@@ -52,7 +52,7 @@ public class CharacterScanner_ReaderHelper_Test {
 		assertTrue(charScanner.lookaheadString(4, 0).equals(""));
 		assertTrue(reader.lookahead() == 'a');
 		
-		reader.consume2();
+		reader.consume();
 		assertTrue(charScanner.getOffset() == 1);
 		assertTrue(charScanner.lookahead(0) == 'b');
 		assertTrue(charScanner.lookaheadString(0, 0).equals(""));
@@ -60,8 +60,8 @@ public class CharacterScanner_ReaderHelper_Test {
 		assertTrue(charScanner.lookaheadString(1, 2).equals("cd"));
 		assertTrue(charScanner.lookaheadString(3, 0).equals(""));
 		
-		reader.consume2();
-		reader.consume2();
+		reader.consume();
+		reader.consume();
 		assertTrue(charScanner.getOffset() == 3);
 		assertTrue(charScanner.lookahead(0) == 'd');
 		assertTrue(reader.lookahead() == 'd');
@@ -72,7 +72,7 @@ public class CharacterScanner_ReaderHelper_Test {
 		
 		reader = new CharacterScanner_ReaderHelper(charScanner);
 		assertTrue(charScanner.lookahead(0) == 'a');
-		assertTrue(reader.consume2() == 'a');
+		assertTrue(reader.consume() == 'a');
 		assertTrue(charScanner.lookahead(0) == 'b');
 		assertTrue(charScanner.getOffset() == 1);
 		assertTrue(reader.lookahead(1) == 'c');

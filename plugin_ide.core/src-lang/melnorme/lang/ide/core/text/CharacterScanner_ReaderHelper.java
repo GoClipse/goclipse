@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.text;
 
-import melnorme.lang.tooling.parser.lexer.BasicCharSource;
+import melnorme.lang.utils.parse.BasicCharSource;
 import melnorme.lang.utils.parse.ICharSource;
 import melnorme.lang.utils.parse.ICharacterReader;
 

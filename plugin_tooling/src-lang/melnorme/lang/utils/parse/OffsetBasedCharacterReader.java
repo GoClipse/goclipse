@@ -12,8 +12,6 @@ package melnorme.lang.utils.parse;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import melnorme.lang.tooling.parser.lexer.BasicCharSource;
-
 public abstract class OffsetBasedCharacterReader<EXC extends Exception> extends BasicCharSource<EXC> {
 	
 	protected int readOffset;

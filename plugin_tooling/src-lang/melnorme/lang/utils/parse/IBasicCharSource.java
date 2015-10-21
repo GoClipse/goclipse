@@ -18,10 +18,10 @@ public interface IBasicCharSource<EXC extends Exception> {
 	int lookahead() throws EXC;
 	
 	/** @return the next character in the stream, advancing the stream. */
-	char consume2() throws EXC;
+	char consume() throws EXC;
 	
 	default char nextChar() throws EXC {
-		return consume2();
+		return consume();
 	}
 	
 	default boolean lookaheadIsEOF() throws EXC {
@@ -43,7 +43,7 @@ public interface IBasicCharSource<EXC extends Exception> {
 	/** Read next character if it is equal to given character. @return true if a character was read. */
 	default boolean tryConsume(char character) throws EXC {
 		if(lookahead() == character) {
-			consume2();
+			consume();
 			return true;
 		}
 		return false;
@@ -51,7 +51,7 @@ public interface IBasicCharSource<EXC extends Exception> {
 	
 	default boolean consumeAny() throws EXC {
 		if(hasCharAhead()) {
-			consume2();
+			consume();
 			return true;
 		}
 		return false;

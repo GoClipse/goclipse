@@ -76,4 +76,25 @@ public class NumberUtil {
 		return integer;
 	}
 	
+	public static boolean isDigit(char ch, int radix) {
+		char maxNumberDigit = (char) Math.min('0' + (radix-1), '9');
+		
+		if(ch >= '0' && ch <= maxNumberDigit) {
+			return true;
+		}
+		
+		if(radix > 10) {
+			
+			if(
+				(ch >= 'a' && ch < 'a' + (radix-10) ) ||
+				(ch >= 'A' && ch < 'A' + (radix-10) )
+			) {
+				return true;
+			}
+	
+		}
+		
+		return false;
+	}
+	
 }

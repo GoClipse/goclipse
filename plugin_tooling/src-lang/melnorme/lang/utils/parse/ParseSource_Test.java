@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import melnorme.lang.tests.CommonToolingTest;
 import melnorme.lang.tooling.parser.lexer.CharacterReader_SubReader;
-import melnorme.lang.tooling.parser.lexer.LexingUtils;
 import melnorme.utilbox.core.Assert.AssertFailedException;
 
 public abstract class ParseSource_Test extends CommonToolingTest {
@@ -92,9 +91,9 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		
 		// Test consume with buffered
 		checkBufferedCount(parseSource, 2);
-		assertTrue(parseSource.consume2() == lookahead); sourceIx++;
+		assertTrue(parseSource.consume() == lookahead); sourceIx++;
 		checkBufferedCount(parseSource, 1);
-		assertTrue(parseSource.consume2() == source.charAt(sourceIx)); sourceIx++;
+		assertTrue(parseSource.consume() == source.charAt(sourceIx)); sourceIx++;
 		checkBufferedCount(parseSource, 0);
 		
 		
@@ -102,24 +101,24 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		lookahead = testLookahead(source.charAt(sourceIx));
 		// Test consume with buffered
 		checkBufferedCount(parseSource, 1);
-		assertTrue(lookahead == parseSource.consume2()); sourceIx++;
+		assertTrue(lookahead == parseSource.consume()); sourceIx++;
 		
 		assertTrue(lookahead == 'c');
 		
 		
 		checkBufferedCount(parseSource, 0);
-		assertTrue(parseSource.consume2() == source.charAt(sourceIx));
+		assertTrue(parseSource.consume() == source.charAt(sourceIx));
 		sourceIx++;
 
 		while(sourceIx < source.length()) {
 			int ch = testLookahead(source.charAt(sourceIx));
-			assertTrue(parseSource.consume2() == ch);
+			assertTrue(parseSource.consume() == ch);
 			sourceIx++;
 		}
 		
 		// EOF
 		testLookahead(-1);
-		verifyThrows(() -> parseSource.consume2(), AssertFailedException.class);
+		verifyThrows(() -> parseSource.consume(), AssertFailedException.class);
 	}
 
 	protected void checkBufferedCount(ICharSource<?> parseSource, int expected) {
