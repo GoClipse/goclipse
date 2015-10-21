@@ -16,12 +16,12 @@ import java.io.File;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 
-import melnorme.lang.tooling.AbstractElementName;
+import melnorme.lang.tooling.AbstractElementName2;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.PathUtil;
 
-public class GoPackageName extends AbstractElementName implements Comparable<GoPackageName> {
+public class GoPackageName extends AbstractElementName2 implements Comparable<GoPackageName> {
 	
 	public static final String NAME_SEP = "/";
 	
