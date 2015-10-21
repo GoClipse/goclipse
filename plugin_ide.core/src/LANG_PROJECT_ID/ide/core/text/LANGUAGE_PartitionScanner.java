@@ -33,7 +33,7 @@ public class LANGUAGE_PartitionScanner extends LangPartitionScanner {
 			LangPartitionTypes.STRING.getId()
 		);
 		
-		rules.add(new LexingRulePredicateRule(LangPartitionTypes.CHARACTER.getId(), new CharacterLexingRule()));
+		rules.add(new PredicateRule_Adapter(LangPartitionTypes.CHARACTER.getId(), new CharacterLexingRule()));
 	}
 	
 }

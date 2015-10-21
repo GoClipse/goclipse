@@ -11,7 +11,7 @@
 package melnorme.lang.tests;
 
 
-import melnorme.lang.tooling.parser.lexer.ILexingRule;
+import melnorme.lang.tooling.parser.lexer.IPredicateLexingRule;
 import melnorme.lang.utils.parse.StringParseSource;
 
 public abstract class CommonLexerRuleTest extends CommonToolingTest {
@@ -40,9 +40,9 @@ public abstract class CommonLexerRuleTest extends CommonToolingTest {
 		testRule(createLexingRule(), source, expectedTokenLength);
 	}
 	
-	protected abstract ILexingRule createLexingRule();
+	protected abstract IPredicateLexingRule createLexingRule();
 	
-	public static void testRule(ILexingRule lexRule, String source, int expectedTokenLength) {
+	public static void testRule(IPredicateLexingRule lexRule, String source, int expectedTokenLength) {
 		StringParseSource reader = new StringParseSource(source);
 		boolean isMatch = lexRule.tryMatch(reader);
 

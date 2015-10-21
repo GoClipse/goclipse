@@ -13,7 +13,7 @@ package melnorme.lang.tests;
 
 import org.junit.Test;
 
-import melnorme.lang.tooling.parser.lexer.ILexingRule;
+import melnorme.lang.tooling.parser.lexer.IPredicateLexingRule;
 import melnorme.lang.tooling.parser.lexer.NumberLexingRule;
 import melnorme.lang.utils.parse.ICharacterReader;
 
@@ -24,7 +24,7 @@ public class NumberRuleTest extends CommonLexerRuleTest {
 	}
 	
 	@Override
-	protected ILexingRule createLexingRule() {
+	protected IPredicateLexingRule createLexingRule() {
 		return new NumberLexingRule() {
 			@Override
 			protected boolean consumeIntSuffix(ICharacterReader reader) {

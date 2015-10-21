@@ -20,7 +20,7 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.text.rules.Token;
 
-import melnorme.lang.tooling.parser.lexer.ILexingRule;
+import melnorme.lang.tooling.parser.lexer.IPredicateLexingRule;
 import melnorme.utilbox.collections.ArrayList2;
 
 /**
@@ -39,11 +39,11 @@ public abstract class LangPartitionScanner extends RuleBasedPartitionScannerExt 
 	
 	/* -----------------  ----------------- */
 
-	public class LexingRulePredicateRule extends DefaultPredicateRule {
+	public class PredicateRule_Adapter extends DefaultPredicateRule {
 		
-		protected final ILexingRule rule;
+		protected final IPredicateLexingRule rule;
 		
-		public LexingRulePredicateRule(String partitionTypeId, ILexingRule rule) {
+		public PredicateRule_Adapter(String partitionTypeId, IPredicateLexingRule rule) {
 			super(new Token(partitionTypeId));
 			this.rule = assertNotNull(rule);
 		}

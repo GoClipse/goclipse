@@ -38,7 +38,7 @@ public class LANGUAGE_CodeScanner extends AbstractLangScanner {
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
 		
-		WordRule wordRule = new WordRule(new JavaWordDetector(), tkOther);
+		WordRule wordRule = new WordRule(new JavaWordDetector2(), tkOther);
 		
 		wordRule.addWord("keyword",  tkKeywords);
 
