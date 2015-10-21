@@ -23,12 +23,12 @@ import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
-import melnorme.lang.tooling.data.AbstractValidator2;
+import melnorme.lang.tooling.data.AbstractValidator;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public class ValidatedBuildTarget extends AbstractValidator2 {
+public class ValidatedBuildTarget extends AbstractValidator {
 	
 	public final BuildManager buildMgr = LangCore.getBuildManager();
 	

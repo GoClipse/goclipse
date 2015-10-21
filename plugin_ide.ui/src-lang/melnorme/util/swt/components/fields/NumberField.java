@@ -20,7 +20,7 @@ import melnorme.lang.tooling.ops.util.NumberValidator;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IProperty;
 
-public class NumberField extends TextField2 implements IValidatableField<String> {
+public class NumberField extends TextFieldExt implements IValidatableField<String> {
 	
 	public NumberField(String label, int textLimit) {
 		super(label, textLimit);

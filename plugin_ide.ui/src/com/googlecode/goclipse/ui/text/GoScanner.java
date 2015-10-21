@@ -32,7 +32,7 @@ public class GoScanner extends AbstractLangScanner {
 		
 		final IToken tkDefault = getToken(GoUIPreferenceConstants.DEFAULT);
 		
-		WordRule wordRule = new WordRule(new JavaWordDetector2(), tkDefault);
+		WordRule wordRule = new WordRule(new JavaWordDetector(), tkDefault);
 		
 		final IToken keyword         = getToken(GoUIPreferenceConstants.KEYWORD);
 		final IToken value           = getToken(GoUIPreferenceConstants.KW_LITERAL);

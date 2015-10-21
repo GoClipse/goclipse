@@ -12,9 +12,9 @@ package melnorme.lang.tooling.data;
 
 import java.text.MessageFormat;
 
-public class AbstractValidator2 {
+public class AbstractValidator {
 	
-	public AbstractValidator2() {
+	public AbstractValidator() {
 		super();
 	}
 	

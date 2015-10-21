@@ -51,12 +51,14 @@ public class LangDocumentPartitionerSetup implements IDocumentSetupParticipant {
 	
 	protected FastPartitioner setupDocumentPartitioner(IDocument document, String partitioning) {
 		FastPartitioner partitioner = createDocumentPartitioner();
-		setupDocumentPartitioner$2(partitioner, document, partitioning);
+		setupDocumentPartitioner(document, partitioning, partitioner);
 		return partitioner;
 	}
 	
-	public static void setupDocumentPartitioner$2(IDocumentPartitioner partitioner, IDocument document, 
-			String partitioning) {
+	public static void setupDocumentPartitioner(IDocument document, String partitioning, 
+			IDocumentPartitioner partitioner) {
+		assertNotNull(document);
+		assertNotNull(partitioning);
 		assertNotNull(partitioner);
 		
 		partitioner.connect(document);

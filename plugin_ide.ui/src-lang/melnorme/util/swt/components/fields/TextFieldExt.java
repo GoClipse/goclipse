@@ -20,11 +20,11 @@ import org.eclipse.swt.widgets.Text;
 
 import melnorme.util.swt.SWTLayoutUtil;
 
-public class TextField2 extends TextFieldComponent {
+public class TextFieldExt extends TextFieldComponent {
 	
 	protected final int textLimit;
 	
-	public TextField2(String labelText, int textLimit) {
+	public TextFieldExt(String labelText, int textLimit) {
 		super(labelText, SWT.BORDER | SWT.SINGLE);
 		this.textLimit = textLimit;
 	}

@@ -170,11 +170,11 @@ public abstract class FieldComponent_Tests extends CommonTest {
 	
 	public static class TextField2Test extends AbstractFieldComponentTest {
 		
-		protected TextField2 field;
+		protected TextFieldExt field;
 		
 		@Override
-		public TextField2 createField() {
-			return field = new TextField2("blah", 20) {
+		public TextFieldExt createField() {
+			return field = new TextFieldExt("blah", 20) {
 				@Override
 				protected void doUpdateComponentFromValue() {
 					controlsUpdateCount++;
