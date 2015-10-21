@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.coloring;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.CoreUtil.list;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -18,10 +19,10 @@ import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.RGB;
 
-import melnorme.lang.ide.core.utils.prefs.IPreferencesAccess;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.MiscUtil;
 
 public class TextStylingPreference extends PreferenceHelper<TextStyling> {
 	
@@ -36,13 +37,23 @@ public class TextStylingPreference extends PreferenceHelper<TextStyling> {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected TextStyling doGet(IPreferencesAccess preferences) {
-		return getFromStore(preferences, key);
+	protected TextStyling getPrefValue(IPreferencesAccess prefsAccess) {
+		return getFromStore(prefsAccess, key);
 	}
 	
 	@Override
-	protected void doSet(IEclipsePreferences preferences, TextStyling textStyle) {
-		setToStore(preferences, key, textStyle);
+	protected void setPrefValue(IEclipsePreferences preferences, TextStyling value) {
+		setToStore(preferences, key, value);
+	}
+	
+	@Override
+	protected TextStyling parseString(String stringValue) {
+		throw assertFail();
+	}
+	
+	@Override
+	protected String valueToString(TextStyling value) {
+		throw assertFail();
 	}
 	
 	public static void setToStore(IEclipsePreferences store, String key, TextStyling textStyle) {
@@ -56,13 +67,17 @@ public class TextStylingPreference extends PreferenceHelper<TextStyling> {
 	
 	public static TextStyling getFromStore(IPreferencesAccess prefsHelper, String colorKey) {
 		RGB rgb = getRgb(prefsHelper, getColorKey(colorKey));
-		boolean isEnabled = prefsHelper.getBoolean(getEnabledKey(colorKey));
-		boolean isBold = prefsHelper.getBoolean(getBoldKey(colorKey));
-		boolean isItalic = prefsHelper.getBoolean(getItalicKey(colorKey));
-		boolean isStrikethrough = prefsHelper.getBoolean(getStrikethroughKey(colorKey));
-		boolean isUnderline = prefsHelper.getBoolean(getUnderlineKey(colorKey));
+		boolean isEnabled = getBoolean(prefsHelper, getEnabledKey(colorKey));
+		boolean isBold = getBoolean(prefsHelper, getBoldKey(colorKey));
+		boolean isItalic = getBoolean(prefsHelper, getItalicKey(colorKey));
+		boolean isStrikethrough = getBoolean(prefsHelper, getStrikethroughKey(colorKey));
+		boolean isUnderline = getBoolean(prefsHelper, getUnderlineKey(colorKey));
 		
 		return new TextStyling(isEnabled, rgb, isBold, isItalic, isStrikethrough, isUnderline);
+	}
+	
+	protected static boolean getBoolean(IPreferencesAccess prefsHelper, String key) {
+		return MiscUtil.parseBoolean(prefsHelper.getString(key));
 	}
 	
 	public static String getColorKey(String key) {

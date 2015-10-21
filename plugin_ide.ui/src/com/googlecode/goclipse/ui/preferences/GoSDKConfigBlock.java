@@ -75,7 +75,7 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 		bindToPreference(goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
 		bindToPreference(goDocPath, GoEnvironmentPrefs.DOCUMENTOR_PATH);
 		
-		bindToPreference(goPathField.asEffectiveValueProperty(), GoEnvironmentPrefs.GO_PATH);
+		bindToPreference(goPathField.asEffectiveValueProperty2(), GoEnvironmentPrefs.GO_PATH);
 		
 		validation.addFieldValidation(true, goRootField, goSDKLocationValidator);
 		

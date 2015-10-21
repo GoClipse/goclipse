@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import melnorme.utilbox.misc.MiscUtil;
 
 
 /**
@@ -30,13 +30,13 @@ public class BooleanPreference extends PreferenceHelper<Boolean> {
 	}
 	
 	@Override
-	protected Boolean doGet(IPreferencesAccess preferences) {
-		return preferences.getBoolean(key);
+	protected Boolean parseString(String stringValue) {
+		return MiscUtil.parseBoolean(stringValue);
 	}
 	
 	@Override
-	protected void doSet(IEclipsePreferences preferences, Boolean value) {
-		preferences.putBoolean(key, value);
+	protected String valueToString(Boolean value) {
+		return value.toString();
 	}
 	
 }

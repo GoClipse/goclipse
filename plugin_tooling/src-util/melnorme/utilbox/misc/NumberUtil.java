@@ -68,6 +68,17 @@ public class NumberUtil {
 		}
 	}
 	
+	public static int parseInt(String string, int defaultValue) {
+		int intValue = defaultValue;
+		try {
+			if(string != null) {
+				intValue = Integer.parseInt(string);
+			}
+		} catch(NumberFormatException e) {
+		}
+		return intValue;
+	}
+	
 	public static int parsePositiveInt(String integerString) throws CommonException {
 		int integer = parseInt(integerString);
 		if(integer < 0) {

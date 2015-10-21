@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+
+import melnorme.lang.ide.core.utils.prefs.PreferenceHelper.IPreferencesAccess;
 
 public class PreferencesLookupHelper implements IPreferencesAccess {
 	
@@ -54,28 +56,8 @@ public class PreferencesLookupHelper implements IPreferencesAccess {
 		return getString(key, "");
 	}
 	
-	@Override
-	public int getInt(String key) {
-		assertKeyHasDefault(key);
-		return getInt(key, 0);
-	}
-	
-	@Override
-	public boolean getBoolean(String key) {
-		assertKeyHasDefault(key);
-		return getBoolean(key, false);
-	}
-	
 	public String getString(String key, String defaultValue) {
 		return preferences().getString(qualifier, key, defaultValue, contexts);
-	}
-	
-	public int getInt(String key, int defaultValue) {
-		return preferences().getInt(qualifier, key, defaultValue, contexts);
-	}
-	
-	public boolean getBoolean(String key, boolean defaultValue) {
-		return preferences().getBoolean(qualifier, key, defaultValue, contexts);
 	}
 	
 }
