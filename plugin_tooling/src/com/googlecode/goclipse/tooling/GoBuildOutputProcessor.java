@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.BuildOutputParser;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
-import melnorme.lang.tooling.parser.lexer.LexingUtils;
+import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;

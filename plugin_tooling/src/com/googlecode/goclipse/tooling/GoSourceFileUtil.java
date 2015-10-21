@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
-import melnorme.lang.tooling.parser.lexer.LexingUtils;
+import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.core.CommonException;
 

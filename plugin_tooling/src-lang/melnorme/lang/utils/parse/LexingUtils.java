@@ -8,10 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.parser.lexer;
-
-import melnorme.lang.utils.parse.IBasicCharSource;
-import melnorme.lang.utils.parse.ICharSource;
+package melnorme.lang.utils.parse;
 
 public class LexingUtils {
 	
@@ -77,7 +74,7 @@ public class LexingUtils {
 	public static <E extends Exception> int skipWhitespace(IBasicCharSource<E> reader) throws E {
 		int count = 0;
 		while(Character.isWhitespace(reader.lookahead())) {
-			reader.consume2();
+			reader.consume();
 			count++;
 		}
 		return count;
@@ -91,7 +88,7 @@ public class LexingUtils {
 				break;
 			}
 			
-			reader.consume2();
+			reader.consume();
 			count++;
 		}
 		return count;

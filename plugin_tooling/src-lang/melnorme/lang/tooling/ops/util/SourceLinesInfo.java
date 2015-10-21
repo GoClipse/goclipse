@@ -12,7 +12,7 @@ package melnorme.lang.tooling.ops.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import melnorme.lang.tooling.parser.lexer.LexingUtils;
+import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -51,7 +51,7 @@ public class SourceLinesInfo {
 				return;
 			}
 			
-			parser.consume2();
+			parser.consume();
 		}
 		
 	}

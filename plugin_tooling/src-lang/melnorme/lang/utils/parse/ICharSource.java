@@ -38,7 +38,7 @@ public interface ICharSource<EXC extends Exception> extends IBasicCharSource<EXC
 	
 	default void consume(int amount) throws EXC {
 		while(amount-- > 0) {
-			consume2();
+			consume();
 		}
 	}
 	

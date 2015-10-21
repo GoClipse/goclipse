@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.parser.lexer;
 
 import melnorme.lang.utils.parse.ICharacterReader;
+import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.utilbox.collections.HashMap2;
 
 public class WordLexerRule<TOKEN> implements ILexingRule2<TOKEN> {

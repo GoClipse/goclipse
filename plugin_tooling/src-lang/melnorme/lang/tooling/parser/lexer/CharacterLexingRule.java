@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.parser.lexer;
 
 import melnorme.lang.utils.parse.ICharacterReader;
+import melnorme.lang.utils.parse.LexingUtils;
 
 public class CharacterLexingRule extends LexingUtils implements ILexingRule {
 	
@@ -82,7 +83,7 @@ public class CharacterLexingRule extends LexingUtils implements ILexingRule {
 				
 				// This is not accurate to any spec, but is good enough.
 				if(la == '{' || la == '}' || isHexDigit(la)) {
-					reader.consume2();
+					reader.consume();
 				} else {
 					break;
 				}
