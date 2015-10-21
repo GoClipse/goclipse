@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import melnorme.lang.utils.parse.ICharacterReader;
 
-public interface ILexingRule2<TOKEN> extends ILexingRule {
+public interface ILexingRule2<TOKEN> {
 	
 	default TOKEN evaluateToken(ICharacterReader reader) {
 		CharacterReader_SubReader subReader = new CharacterReader_SubReader(reader);
@@ -30,10 +30,5 @@ public interface ILexingRule2<TOKEN> extends ILexingRule {
 	}
 	
 	TOKEN doEvaluateToken(ICharacterReader subReader);
-	
-	@Override
-	default boolean doEvaluate(ICharacterReader reader) {
-		return evaluateToken(reader) != null;
-	}
 	
 }

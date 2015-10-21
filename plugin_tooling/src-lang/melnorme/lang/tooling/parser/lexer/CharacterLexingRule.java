@@ -13,7 +13,7 @@ package melnorme.lang.tooling.parser.lexer;
 import melnorme.lang.utils.parse.ICharacterReader;
 import melnorme.lang.utils.parse.LexingUtils;
 
-public class CharacterLexingRule extends LexingUtils implements ILexingRule {
+public class CharacterLexingRule extends LexingUtils implements IPredicateLexingRule {
 	
 	@Override
 	public boolean doEvaluate(ICharacterReader reader) {

@@ -14,7 +14,7 @@ package melnorme.lang.tooling.parser.lexer;
 import melnorme.lang.utils.parse.ICharacterReader;
 import melnorme.utilbox.misc.NumberUtil;
 
-public abstract class NumberLexingRule implements ILexingRule {
+public abstract class NumberLexingRule implements IPredicateLexingRule {
 	
 	public NumberLexingRule() {
 		super();
@@ -77,7 +77,7 @@ public abstract class NumberLexingRule implements ILexingRule {
 		
 		reader.consume(); // Consume dot
 		
-		boolean hasFractionalDigits = tryconsumeFractionalPart(reader, radix);
+		boolean hasFractionalDigits = tryConsumeFractionalPartDigits(reader, radix);
 		
 		if(hasFractionalDigits && (reader.tryConsume('e') || reader.tryConsume('E'))) {
 			if(reader.tryConsume('+') || reader.tryConsume('-')) {
@@ -93,7 +93,7 @@ public abstract class NumberLexingRule implements ILexingRule {
 		return afterDot == -1 || !(afterDot == '.' || afterDot == '_' || Character.isLetter(afterDot));
 	}
 	
-	protected boolean tryconsumeFractionalPart(ICharacterReader reader, int radix) {
+	protected boolean tryConsumeFractionalPartDigits(ICharacterReader reader, int radix) {
 		
 		if(consumeDigit(reader, radix)) {
 			consumeDigits(reader, radix, true);

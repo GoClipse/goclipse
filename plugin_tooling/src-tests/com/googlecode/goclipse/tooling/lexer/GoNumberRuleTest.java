@@ -13,12 +13,11 @@ package com.googlecode.goclipse.tooling.lexer;
 
 
 import melnorme.lang.tests.NumberRuleTest;
-import melnorme.lang.tooling.parser.lexer.ILexingRule;
 
 public class GoNumberRuleTest extends NumberRuleTest {
 	
 	@Override
-	protected ILexingRule createLexingRule() {
+	protected GoNumberLexingRule createLexingRule() {
 		return new GoNumberLexingRule();
 	}
 	

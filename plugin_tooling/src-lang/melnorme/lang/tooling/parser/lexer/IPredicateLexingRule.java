@@ -12,7 +12,7 @@ package melnorme.lang.tooling.parser.lexer;
 
 import melnorme.lang.utils.parse.ICharacterReader;
 
-public interface ILexingRule {
+public interface IPredicateLexingRule {
 	
 	/** 
 	 * Evaluate the rule using given reader.
