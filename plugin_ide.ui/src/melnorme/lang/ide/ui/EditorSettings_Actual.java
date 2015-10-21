@@ -59,6 +59,7 @@ public class EditorSettings_Actual {
 			GoColorPreferences.OPERATOR,
 			GoColorPreferences.STRUCTURAL_SYMBOLS,
 			
+			GoColorPreferences.NUMBER,
 			GoColorPreferences.CHARACTER,
 			GoColorPreferences.STRING,
 			GoColorPreferences.MULTILINE_STRING

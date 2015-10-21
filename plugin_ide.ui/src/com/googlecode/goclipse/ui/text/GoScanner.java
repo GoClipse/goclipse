@@ -7,11 +7,14 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
+import com.googlecode.goclipse.tooling.lexer.GoNumberLexingRule;
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
 
 import melnorme.lang.ide.core.text.DefaultPredicateRule;
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
+import melnorme.lang.tooling.parser.lexer.ILexingRule2;
+import melnorme.lang.utils.parse.ICharacterReader;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class GoScanner extends AbstractLangScanner {
@@ -29,7 +32,7 @@ public class GoScanner extends AbstractLangScanner {
 		
 		final IToken tkDefault = getToken(GoUIPreferenceConstants.DEFAULT);
 		
-		WordRule wordRule = new WordRule(new JavaWordDetector(), tkDefault);
+		WordRule wordRule = new WordRule(new JavaWordDetector2(), tkDefault);
 		
 		final IToken keyword         = getToken(GoUIPreferenceConstants.KEYWORD);
 		final IToken value           = getToken(GoUIPreferenceConstants.KW_LITERAL);
@@ -110,8 +113,28 @@ public class GoScanner extends AbstractLangScanner {
 		
 		rules.add(wordRule);
 		
+		rules.add(new LexingRule_RuleAdapter(new GoSubLexer(getToken(GoUIPreferenceConstants.NUMBER))));
+		
 		rules.add(new GoOperatorRule(getToken(GoUIPreferenceConstants.OPERATOR)));
 		rules.add(new GoControlCharactersRule(getToken(GoUIPreferenceConstants.STRUCTURAL_SYMBOLS)));
+	}
+	
+	protected final class GoSubLexer implements ILexingRule2<IToken> {
+		
+		protected final GoNumberLexingRule numberRule = new GoNumberLexingRule();
+		protected final IToken numberToken;
+		
+		public GoSubLexer(IToken numberToken) {
+			this.numberToken = numberToken;
+		}
+		
+		@Override
+		public IToken doEvaluateToken(ICharacterReader subReader) {
+			if(numberRule.doEvaluate(subReader)) {
+				return numberToken; 
+			}
+			return null;
+		}
 	}
 	
 	public static class GoOperatorRule extends DefaultPredicateRule {

@@ -13,6 +13,7 @@ Bundle-ClassPath: .
 Export-Package: com.googlecode.goclipse.tooling,
  com.googlecode.goclipse.tooling.env,
  com.googlecode.goclipse.tooling.gocode,
+ com.googlecode.goclipse.tooling.lexer,
  com.googlecode.goclipse.tooling.oracle,
  melnorme.lang.tests,
  melnorme.lang.tooling,

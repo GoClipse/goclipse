@@ -27,12 +27,13 @@ public class GoSourceColoringConfigurationBlock extends AbstractSourceColoringCo
 				new SourceColoringElement("Keywords", GoColorPreferences.KEYWORD),
 				new SourceColoringElement("Keyword - Literals", GoColorPreferences.KW_LITERAL),
 				new SourceColoringElement("Keyword - Primitives", GoColorPreferences.KW_PRIMITIVE),
-				new SourceColoringElement("Built-in functions", GoColorPreferences.BUILTIN_FUNCTION),
-				new SourceColoringElement("Operators", GoColorPreferences.OPERATOR),
-				new SourceColoringElement("Structural symbols", GoColorPreferences.STRUCTURAL_SYMBOLS),
 				new SourceColoringElement("Characters", GoColorPreferences.CHARACTER),
 				new SourceColoringElement("Strings", GoColorPreferences.STRING),
-				new SourceColoringElement("Multi-line strings", GoColorPreferences.MULTILINE_STRING)
+				new SourceColoringElement("Multi-line strings", GoColorPreferences.MULTILINE_STRING),
+				new SourceColoringElement("Numbers", GoColorPreferences.NUMBER),
+				new SourceColoringElement("Built-in functions", GoColorPreferences.BUILTIN_FUNCTION),
+				new SourceColoringElement("Operators", GoColorPreferences.OPERATOR),
+				new SourceColoringElement("Structural symbols", GoColorPreferences.STRUCTURAL_SYMBOLS)
 			))
 		);
 	}

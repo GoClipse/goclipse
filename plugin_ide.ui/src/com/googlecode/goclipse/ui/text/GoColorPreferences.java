@@ -46,9 +46,9 @@ public interface GoColorPreferences {
 		new TextStyling(new RGB(  0,  0,  0), false, false),
     	new TextStyling(new RGB(230,230,230), false, false));
 	
-//	ThemedTextStylingPreference NUMBER = new ThemedTextStylingPreference(PREFIX + "number",
-//		new TextStyling(new RGB(126, 160, 0), false, false),
-//		new TextStyling(new RGB(126, 160, 0), false, false));
+	ThemedTextStylingPreference NUMBER = new ThemedTextStylingPreference(PREFIX + "number",
+		new TextStyling(new RGB(126, 160, 0), false, false),
+		new TextStyling(new RGB(126, 160, 0), false, false));
 	ThemedTextStylingPreference CHARACTER = new ThemedTextStylingPreference(PREFIX + "character", 
 		new TextStyling(new RGB(0, 170, 10), false, false),
     	new TextStyling(new RGB(0, 170, 10), false, false));
