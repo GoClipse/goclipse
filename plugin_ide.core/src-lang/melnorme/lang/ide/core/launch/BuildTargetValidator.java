@@ -19,12 +19,12 @@ import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.data.AbstractValidator2;
+import melnorme.lang.tooling.data.AbstractValidator;
 import melnorme.lang.tooling.ops.util.ValidationMessages;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public abstract class BuildTargetValidator extends AbstractValidator2 
+public abstract class BuildTargetValidator extends AbstractValidator 
 	implements IBuildTargetSettings {
 	
 	public BuildTargetValidator() {

@@ -109,7 +109,7 @@ public abstract class AbstractLangScanner extends BufferedRuleBasedScannerExt im
 		}
 	}
 	
-	public static class JavaWordDetector2 implements IWordDetector {
+	public static class JavaWordDetector implements IWordDetector {
 		
 		@Override
 		public boolean isWordPart(char character) {

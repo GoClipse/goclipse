@@ -17,10 +17,10 @@ import org.eclipse.core.runtime.IStatus;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
-import melnorme.lang.tooling.data.AbstractValidator2;
+import melnorme.lang.tooling.data.AbstractValidator;
 import melnorme.lang.tooling.data.StatusException;
 
-public class ProjectValidator extends AbstractValidator2 {
+public class ProjectValidator extends AbstractValidator {
 	
 	protected final String natureId;
 	

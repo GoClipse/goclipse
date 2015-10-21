@@ -27,7 +27,7 @@ interface NavigatorElementsSwitcher_Default<RET> {
 			return visitBuildTarget((BuildTargetElement) element);
 		} 
 		else if(element instanceof IBundleModelElement) {
-			return visitBundleElement2((IBundleModelElement) element);
+			return visitBundleElement((IBundleModelElement) element);
 		} 
 		else {
 			return visitOther(element);
@@ -36,7 +36,7 @@ interface NavigatorElementsSwitcher_Default<RET> {
 	
 	public abstract RET visitProject(IProject project);
 	
-	public abstract RET visitBundleElement2(IBundleModelElement bundleElement);
+	public abstract RET visitBundleElement(IBundleModelElement bundleElement);
 	
 	public abstract RET visitBuildTargetsElement(BuildTargetsContainer buildTargetsContainer);
 	

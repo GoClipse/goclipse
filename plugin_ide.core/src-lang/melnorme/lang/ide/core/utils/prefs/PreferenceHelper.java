@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
@@ -119,11 +118,6 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	public final T getFromPrefStore() {
 		return getPrefValue(prefScopes());
-	}
-	
-	@Deprecated
-	public final T getFrom2(IPreferenceStore prefStore) {
-		return getPrefValue(new PreferenceStoreAccess(prefStore));
 	}
 	
 	protected T getPrefValue(IPreferencesAccess prefsAccess) {
