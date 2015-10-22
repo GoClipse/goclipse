@@ -26,6 +26,7 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
 import melnorme.utilbox.ownership.IDisposable;
+import melnorme.utilbox.ownership.IOwner;
 import melnorme.utilbox.ownership.LifecycleObject;
 
 @SuppressWarnings("restriction")
@@ -58,14 +59,25 @@ public class ThemeHelper extends LifecycleObject implements IDisposable {
 		return activeTheme == null ? "" : activeTheme.getId();
 	}
 	
-	public abstract class ThemeChangeListener implements EventHandler {
+	public abstract class ThemeChangeListener implements EventHandler, IDisposable {
+		
+		protected final ServiceRegistration<?> svcRegistration;
 		
 		public ThemeChangeListener() {
+			this(owned);
+		}
+		
+		public ThemeChangeListener(IOwner owner) {
 			Dictionary<String, String> properties = new Hashtable<>();
 			properties.put(EventConstants.EVENT_TOPIC, IThemeEngine.Events.THEME_CHANGED);
-			ServiceRegistration<?> svcRegistration = context.registerService(EventHandler.class, this, properties);
+			svcRegistration = context.registerService(EventHandler.class, this, properties);
 			
-			ThemeHelper.this.owned.add(() -> svcRegistration.unregister());
+			owner.bind(this);
+		}
+		
+		@Override
+		public void dispose() {
+			svcRegistration.unregister();
 		}
 		
 	}
