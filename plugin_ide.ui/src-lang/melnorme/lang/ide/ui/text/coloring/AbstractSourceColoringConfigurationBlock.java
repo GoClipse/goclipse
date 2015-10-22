@@ -27,12 +27,16 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Link;
+import org.osgi.service.event.Event;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.LangUI;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
@@ -50,8 +54,8 @@ import melnorme.util.swt.jface.LabeledTreeElement;
 import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvider;
 import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.text.ColorManager2;
-import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IProperty;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -117,6 +121,10 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 			this.stylingPref = stylingPref;
 			this.prefId = stylingPref.getPrefId();
 			this.temporaryPref = overlayStylingPrefs.get(prefId);
+			loadFromPrefs();
+		}
+		
+		public void loadFromPrefs() {
 			this.temporaryPref.setValue(stylingPref.getFieldValue());
 		}
 		
@@ -261,6 +269,19 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 			gdFillDefaults().hint(pc.convertWidthInCharsToPixels(50), pc.convertHeightInCharsToPixels(15)).
 			grab(true, true).
 			create());
+		
+		Display display = topControl.getShell().getDisplay();
+		ThemeChangeListener themeChangeListener = LangUI.getInstance().getThemeHelper().new ThemeChangeListener() {
+			@Override
+			public void handleEvent(Event event) {
+				// Reload prefs for new theme. use asyncExec because ThemeChangeListener order is not guaranteed.
+				display.asyncExec(() -> { 
+					visitColoringItems((item) -> item.loadFromPrefs());
+					updateComponentFromInput();
+				});
+			}
+		};
+		topControl.addDisposeListener((e) -> themeChangeListener.dispose()); 
 	}
 	
 	@Override
