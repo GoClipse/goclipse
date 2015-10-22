@@ -24,11 +24,11 @@ public interface LANGUAGE_ColorPreferences {
 		new TextStyling(new RGB(  0,   0,   0), false, false),
 		new TextStyling(new RGB(230, 230, 230), false, false));
 	ThemedTextStylingPreference KEYWORDS = new ThemedTextStylingPreference(PREFIX + "keyword",
-		new TextStyling(new RGB(  0,   0, 127), true, false),
-		new TextStyling(new RGB(  0,   0, 127), true, false));
+		new TextStyling(new RGB(127, 0,  85), true, false),
+		new TextStyling(new RGB(210, 0, 140), true, false));
 	ThemedTextStylingPreference KEYWORDS_VALUES = new ThemedTextStylingPreference(PREFIX + "keyword_literals",
-		new TextStyling(new RGB(  0,  0, 127), false, false),
-		new TextStyling(new RGB(127, 64,  64), false, false));
+		new TextStyling(new RGB(127, 0,  85), false, false),
+		new TextStyling(new RGB(210, 0, 140), false, false));
 	
 	ThemedTextStylingPreference STRINGS = new ThemedTextStylingPreference(PREFIX + LangPartitionTypes.STRING,
 		new TextStyling(new RGB(113, 140, 0), false, false),
