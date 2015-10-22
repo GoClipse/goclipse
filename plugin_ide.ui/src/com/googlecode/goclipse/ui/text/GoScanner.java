@@ -35,8 +35,7 @@ public class GoScanner extends AbstractLangScanner {
 		WordRule wordRule = new WordRule(new JavaWordDetector(), tkDefault);
 		
 		final IToken keyword         = getToken(GoUIPreferenceConstants.KEYWORD);
-		final IToken value           = getToken(GoUIPreferenceConstants.KW_LITERAL);
-		final IToken primitive       = getToken(GoUIPreferenceConstants.KW_PRIMITIVE);
+		final IToken primitive       = getToken(GoUIPreferenceConstants.KW_NATIVE_TYPES);
 		final IToken builtinFunction = getToken(GoUIPreferenceConstants.BUILTIN_FUNCTION);
 		final IToken textToken       = getToken(GoUIPreferenceConstants.DEFAULT);
 		setDefaultReturnToken(textToken);
@@ -68,6 +67,8 @@ public class GoScanner extends AbstractLangScanner {
 		wordRule.addWord("return",      keyword);
 		wordRule.addWord("var",         keyword);
 		
+		wordRule.addWord("iota",        keyword);
+		
 		wordRule.addWord("append",  builtinFunction);
 		wordRule.addWord("cap",     builtinFunction);
 		wordRule.addWord("close",   builtinFunction);
@@ -84,10 +85,10 @@ public class GoScanner extends AbstractLangScanner {
 		wordRule.addWord("real",    builtinFunction);
 		wordRule.addWord("recover", builtinFunction);
 		
+		final IToken value = getToken(GoUIPreferenceConstants.KW_LITERAL);
 		wordRule.addWord("nil",   value);
 		wordRule.addWord("true",  value);
 		wordRule.addWord("false", value);
-		wordRule.addWord("iota",  value);
 		
 		wordRule.addWord("uint8", primitive);
 		wordRule.addWord("uint16", primitive);

@@ -25,8 +25,8 @@ public class GoSourceColoringConfigurationBlock extends AbstractSourceColoringCo
 				
 				new SourceColoringElement("Text", GoColorPreferences.DEFAULT),
 				new SourceColoringElement("Keywords", GoColorPreferences.KEYWORD),
-				new SourceColoringElement("Keyword - Literals", GoColorPreferences.KW_LITERAL),
-				new SourceColoringElement("Keyword - Primitives", GoColorPreferences.KW_PRIMITIVE),
+				new SourceColoringElement("Keyword - true/false/nil", GoColorPreferences.KW_LITERAL),
+				new SourceColoringElement("Keyword - Primitives", GoColorPreferences.KW_NATIVE_TYPES),
 				new SourceColoringElement("Characters", GoColorPreferences.CHARACTER),
 				new SourceColoringElement("Strings", GoColorPreferences.STRING),
 				new SourceColoringElement("Multi-line strings", GoColorPreferences.MULTILINE_STRING),

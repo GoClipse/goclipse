@@ -53,7 +53,7 @@ public class EditorSettings_Actual {
 			GoColorPreferences.COMMENT,
 			
 			GoColorPreferences.KEYWORD,
-			GoColorPreferences.KW_PRIMITIVE,
+			GoColorPreferences.KW_NATIVE_TYPES,
 			GoColorPreferences.KW_LITERAL,
 			GoColorPreferences.BUILTIN_FUNCTION,
 			GoColorPreferences.OPERATOR,
