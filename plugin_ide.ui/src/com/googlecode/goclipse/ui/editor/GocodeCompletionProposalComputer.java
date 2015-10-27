@@ -46,7 +46,6 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 			TimeoutProgressMonitor pm) 
 			throws CoreException, CommonException, OperationCancellation, OperationSoftFailure {
 		
-		IEditorPart editor = context.getEditor_nonNull();
 		Location fileLoc = context.getEditorInputLocation();
 		IDocument document = context.getDocument();
 		
@@ -57,7 +56,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		if (gocodePath == null) {
 			throw LangCore.createCoreException("Error: gocode path not provided.", null);
 		}
-		IProject project = getProjectFor(editor);
+		IProject project = context.getProject();
 		
 		GoEnvironment goEnvironment = GoProjectEnvironment.getGoEnvironment(project);
 		
