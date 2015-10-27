@@ -37,6 +37,8 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 public class EclipseUtils {
 	
+	public static final String MSG__ERROR_TRYING_TO_START_PLUGIN = "Error trying to start plugin: ";
+	
 	public static IWorkspaceRoot getWorkspaceRoot() {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
@@ -49,14 +51,13 @@ public class EclipseUtils {
 		try {
 			Bundle debugPlugin = Platform.getBundle(pluginId);
 			if(debugPlugin == null) {
-				LangCore.logError("Error trying to start plugin `" + pluginId + "`: plugin not found.");
-				return;
+				throw new BundleException("Plugin not found");
 			}
 			if(debugPlugin.getState() != Bundle.STARTING) {
 				debugPlugin.start(Bundle.START_TRANSIENT);
 			}
 		} catch (BundleException e) {
-			LangCore.logError("Error trying to start plugin: " + pluginId, e);
+			LangCore.logError(MSG__ERROR_TRYING_TO_START_PLUGIN + pluginId, e);
 		}
 	}
 	

@@ -30,6 +30,7 @@ import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -81,7 +82,19 @@ public abstract class CommonCoreTest extends CommonTest {
 	
 	@BeforeClass
 	public static void setUpExceptionListenerStatic() throws Exception {
-		logErrorListener = ErrorLogListener.createAndInstall();
+		logErrorListener = new ErrorLogListener(true) {
+			@Override
+			public void handleErrorStatus(IStatus status, String plugin) {
+				String msg = status.getMessage();
+				
+				// Ignore error about early start of debug plugin
+				if(msg != null && msg.startsWith(EclipseUtils.MSG__ERROR_TRYING_TO_START_PLUGIN)) {
+					return;
+				}
+				
+				super.handleErrorStatus(status, plugin);
+			}
+		};
 	}
 	
 	@AfterClass

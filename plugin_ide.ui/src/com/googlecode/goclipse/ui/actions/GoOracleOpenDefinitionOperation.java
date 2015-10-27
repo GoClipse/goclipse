@@ -42,7 +42,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	public static final String OPEN_DEFINITION_OpName = "Open definition (go oracle)";
 	
 	public GoOracleOpenDefinitionOperation(ITextEditor editor, SourceRange range, OpenNewEditorMode openEditorMode) {
-		super(OPEN_DEFINITION_OpName, editor, range, openEditorMode, null);
+		super(OPEN_DEFINITION_OpName, editor, range, openEditorMode);
 	}
 	
 	@Override

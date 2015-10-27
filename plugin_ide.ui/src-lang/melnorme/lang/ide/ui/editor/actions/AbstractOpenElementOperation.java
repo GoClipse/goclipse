@@ -51,11 +51,8 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	
 	protected String statusErrorMessage;
 	
-	/**
-	 * @param dummy  
-	 */
 	public AbstractOpenElementOperation(String operationName, ITextEditor editor, SourceRange range,
-			OpenNewEditorMode openEditorMode, Void dummy) {
+			OpenNewEditorMode openEditorMode) {
 		super(operationName, editor);
 		
 		this.source = doc.get();
