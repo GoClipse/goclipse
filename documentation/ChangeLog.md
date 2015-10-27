@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed: Preferences: custom setting for gofmt command is not saved. (#166)
  * Syntax highlighting now works on the source compare editor/viewer.
  * Added number literals syntax highlighting. (#138)
  * Added per-project compiler installation preferences. (#152)
