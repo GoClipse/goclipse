@@ -81,9 +81,14 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	/** Start twined plugins after initial stage. */
 	protected void doCustomStart_startTwinPlugins() {
-		// Force start of debug plugin, if present, so that UI contributions will be fully active.
-		// ATM, some UI contributions that dynamically manipulate enablement and state don't work correctly
-		// unless underlying plugin is started.
+		// Commented out, editor is now the one that starting the debug plugin
+//		startDebugPlugin();
+	}
+	
+	// Force start of debug plugin, if present, so that UI contributions will be fully active.
+	// ATM, some UI contributions that dynamically manipulate enablement and state don't work correctly
+	// unless underlying plugin is started.
+	public static void startDebugPlugin() {
 		EclipseUtils.startOtherPlugin(LangUIPlugin_Actual.DEBUG_PLUGIN_ID);
 	}
 	
