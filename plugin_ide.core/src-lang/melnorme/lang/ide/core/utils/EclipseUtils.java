@@ -48,7 +48,11 @@ public class EclipseUtils {
 	public static void startOtherPlugin(String pluginId) {
 		try {
 			Bundle debugPlugin = Platform.getBundle(pluginId);
-			if(debugPlugin != null && debugPlugin.getState() != Bundle.STARTING) {
+			if(debugPlugin == null) {
+				LangCore.logError("Error trying to start plugin `" + pluginId + "`: plugin not found.");
+				return;
+			}
+			if(debugPlugin.getState() != Bundle.STARTING) {
 				debugPlugin.start(Bundle.START_TRANSIENT);
 			}
 		} catch (BundleException e) {

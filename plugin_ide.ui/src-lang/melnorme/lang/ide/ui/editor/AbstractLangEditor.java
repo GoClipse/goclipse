@@ -52,6 +52,10 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	public AbstractLangEditor() {
 		super();
+		
+		// Force start debug plugin to ensure action contributions are propagated. 
+		// XXX: Definitely there should be a better way to achieve the above, but it's tricky.
+		LangUIPlugin.startDebugPlugin();
 	}
 	
 	@Override
