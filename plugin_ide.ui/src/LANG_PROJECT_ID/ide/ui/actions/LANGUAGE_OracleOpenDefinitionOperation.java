@@ -30,7 +30,7 @@ public class LANGUAGE_OracleOpenDefinitionOperation extends AbstractOpenElementO
 	
 	public LANGUAGE_OracleOpenDefinitionOperation(ITextEditor editor, SourceRange range, 
 			OpenNewEditorMode openEditorMode) {
-		super(LangUIMessages.Op_OpenDefinition_Name, editor, range, openEditorMode, null);
+		super(LangUIMessages.Op_OpenDefinition_Name, editor, range, openEditorMode);
 	}
 	
 	@Override
