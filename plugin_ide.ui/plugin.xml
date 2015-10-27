@@ -362,6 +362,18 @@
 	</extension>
 	
 	
+	<extension point="org.eclipse.compare.contentMergeViewers">
+		<viewer
+	        id="LANG_PROJECT_ID.ide.ui.compare.ViewerCreator"
+	        class="LANG_PROJECT_ID.ide.ui.editor.CompareViewerCreator"
+	        label="%LangSourceCompare">
+		</viewer>
+		<contentTypeBinding
+			contentMergeViewerId="LANG_PROJECT_ID.ide.ui.compare.ViewerCreator"
+			contentTypeId="LANG_PROJECT_ID.ide.core.content.source">
+		</contentTypeBinding>
+	</extension>
+	
 	<!-- ============ Launch ============= -->
 	
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">

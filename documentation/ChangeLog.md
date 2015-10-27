@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Syntax highlighting now works on the source compare editor/viewer.
  * Added per-project compiler/SDK installation preferences.
  * Newly created launch configurations now have the debug option "Stop on startup at:" set to false by default. This way debugging won't stop on the C `main`, which is essentially useless outside of C/C++.
  * Added Content Assist support of name-only proposal insertion by pressing `Ctrl+Enter`. (only applicable to proposals that insert arguments)
