@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Syntax highlighting now works on the source compare editor/viewer.
  * Added number literals syntax highlighting. (#138)
  * Added per-project compiler installation preferences. (#152)
  * Newly created launch configurations now have the debug option "Stop on startup at:" set to false by default. This way debugging won't stop on the C `main`, which is essentially useless outside of C/C++.

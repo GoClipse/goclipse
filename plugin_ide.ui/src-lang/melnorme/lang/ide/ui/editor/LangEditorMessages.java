@@ -27,4 +27,7 @@ public interface LangEditorMessages {
 	public static final String QuickOutline_title = 
 			"Quick Outline";
 	
+	public static final String MSG__SOURCE_COMPARE = 
+			" Source Compare";
+	
 }

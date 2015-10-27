@@ -575,6 +575,18 @@
 		</menuContribution>
 	</extension>
 	
+	<extension point="org.eclipse.compare.contentMergeViewers">
+		<viewer
+	        id="com.googlecode.goclipse.ui.compare.ViewerCreator"
+	        class="com.googlecode.goclipse.ui.editor.CompareViewerCreator"
+	        label="%LangSourceCompare">
+		</viewer>
+		<contentTypeBinding
+			contentMergeViewerId="com.googlecode.goclipse.ui.compare.ViewerCreator"
+			contentTypeId="com.googlecode.goclipse.gosourcefile">
+		</contentTypeBinding>
+	</extension>
+	
 	<!-- ============ Launch ============= -->
 	
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
