@@ -200,7 +200,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	/* -----------------  ----------------- */
 	
 	protected SourceOperationContext createContext(ITextViewer viewer, int offset) {
-		return new SourceOperationContext(viewer, offset, editor);
+		return SourceOperationContext.create(viewer, offset, editor);
 	}
 	
 	@Override

@@ -12,7 +12,6 @@ package melnorme.lang.ide.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.array;
-import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.util.Map;
 
@@ -48,7 +47,6 @@ import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
@@ -76,10 +74,6 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 	
 	public AbstractLangStructureEditor getEditor() {
 		return editor;
-	}
-	
-	public AbstractLangEditor getEditor_asLang() {
-		return tryCast(editor, AbstractLangEditor.class);
 	}
 	
 	/* ----------------- Hovers ----------------- */
@@ -227,8 +221,9 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 	
 	@Override
 	public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-		AbstractLangEditor editor = getEditor_asLang();
-		if(editor != null) {
+		if(sourceViewer instanceof LangSourceViewer) {
+			LangSourceViewer langSourceViewer = (LangSourceViewer) sourceViewer;
+			
 			ContentAssistantExt assistant = createContentAssitant();
 			assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 			
@@ -240,7 +235,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 			
 			configureContentAssistantProcessors(assistant);
 			// Note: configuration must come after processors are created
-			assistant.configure(fPreferenceStore, editor.getSourceViewer_());
+			assistant.configure(fPreferenceStore, langSourceViewer);
 			
 			return assistant;
 		}

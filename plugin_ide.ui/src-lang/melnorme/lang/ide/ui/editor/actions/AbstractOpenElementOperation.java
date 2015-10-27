@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui.editor.actions;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import org.eclipse.core.resources.IFile;
@@ -19,7 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
@@ -28,7 +28,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
@@ -52,24 +51,21 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	
 	protected String statusErrorMessage;
 	
+	/**
+	 * @param dummy  
+	 */
 	public AbstractOpenElementOperation(String operationName, ITextEditor editor, SourceRange range,
-			OpenNewEditorMode openEditorMode) {
+			OpenNewEditorMode openEditorMode, Void dummy) {
 		super(operationName, editor);
 		
 		this.source = doc.get();
-		this.range = range;
+		this.range = assertNotNull(range);
 		this.openEditorMode = openEditorMode;
 		
 		IFile file = EditorUtils.findFileOfEditor(editor);
 		this.project = file == null ? null : file.getProject();
 		
-		ITextViewer viewer = null;
-		if(editor instanceof AbstractLangEditor) {
-			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
-			viewer = langEditor.getSourceViewer_();
-		}
-		
-		this.context = new SourceOperationContext(viewer, range, editor);
+		this.context = new SourceOperationContext(range.getOffset(), range, doc, editor);
 	}
 	
 	public int getInvocationOffset() {

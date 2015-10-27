@@ -23,6 +23,10 @@ import org.eclipse.swt.widgets.Composite;
 
 public class LangSourceViewer extends ProjectionViewerExt implements ISourceViewerExt {
 	
+	public LangSourceViewer(Composite parent, IVerticalRuler verticalRuler, int styles) {
+		super(parent, verticalRuler, null, false, styles);
+	}
+	
 	public LangSourceViewer(Composite parent, IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
 			boolean showAnnotationsOverview, int styles) {
 		super(parent, verticalRuler, overviewRuler, showAnnotationsOverview, styles);

@@ -24,28 +24,40 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class SourceOperationContext {
 	
-	protected final ITextViewer viewer;
-	protected final SourceRange range;
-	protected final IDocument document;
-	protected final ITextEditor editor; // can be null
-	
-	public SourceOperationContext(ITextViewer viewer, int offset, ITextEditor editor) {
-		this(viewer, SourceRange.srStartToEnd(offset, offset), editor);
+	public static SourceOperationContext create(ITextViewer viewer, int offset, ITextEditor editor) {
+		SourceRange selection = viewer == null ? null : EditorUtils.getSelectedRange(viewer);
+		
+		return create(offset, selection, viewer, editor);
 	}
 	
-	public SourceOperationContext(ITextViewer viewer, SourceRange range, ITextEditor editor) {
-		this.range = range;
-		this.viewer = viewer;
-		this.editor = editor;
+	public static SourceOperationContext create(int offset, SourceRange selection, ITextViewer viewer,
+			ITextEditor editor) {
 		assertTrue(viewer != null || editor != null);
-		this.document = viewer != null ? viewer.getDocument() : EditorUtils.getEditorDocument(editor);
+		IDocument document = viewer != null ? viewer.getDocument() : EditorUtils.getEditorDocument(editor);
 		
-		assertNotNull(document);
+		return new SourceOperationContext(offset, selection, document, editor);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected final int offset;
+	protected final SourceRange selection;
+	protected final IDocument document;
+	
+	protected final IEditorPart editor; // can be null
+	
+	public SourceOperationContext(int offset, SourceRange selection, IDocument document, IEditorPart editor) {
+		this.offset = offset;
+		this.selection = selection != null ? selection : SourceRange.srStartToEnd(offset, offset);
+		this.document = assertNotNull(document);
+		
+		this.editor = editor;
 	}
 	
 	public IDocument getDocument() {
@@ -53,23 +65,19 @@ public class SourceOperationContext {
 	}
 	
 	public int getInvocationOffset() {
-		return range.getOffset();
+		return offset;
 	}
 	
-	public ITextEditor getEditor_maybeNull() {
+	public SourceRange getSelection() {
+		return selection;
+	}
+	
+	public Point getSelection_asPoint() {
+		return new Point(selection.getStartPos(), selection.getLength());
+	}
+	
+	public IEditorPart getEditor_maybeNull() {
 		return editor;
-	}
-	
-	public ITextViewer getViewer_maybeNull() {
-		return viewer;
-	}
-	
-	
-	public ITextViewer getViewer_nonNull() throws CoreException {
-		if(viewer == null) {
-			throw LangCore.createCoreException("Error, no viewer available.", null);
-		}
-		return viewer;
 	}
 	
 	public IEditorPart getEditor_nonNull() throws CoreException {

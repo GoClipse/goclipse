@@ -31,8 +31,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -245,6 +247,11 @@ public class EditorUtils {
 		if(statusLine != null) {
 			statusLine.setMessage(true, message, image);
 		}
+	}
+	
+	public static SourceRange getSelectedRange(ITextViewer viewer) {
+		Point selectedRange = viewer.getSelectedRange();
+		return new SourceRange(selectedRange.x, selectedRange.y);
 	}
 	
 }

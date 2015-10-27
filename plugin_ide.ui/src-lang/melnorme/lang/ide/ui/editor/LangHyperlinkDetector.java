@@ -31,9 +31,13 @@ public abstract class LangHyperlinkDetector extends AbstractHyperlinkDetector {
 			boolean canShowMultipleHyperlinks) {
 		if (requestedRegion == null)
 			return null;
-		ITextEditor textEditor = (ITextEditor) getAdapter(ITextEditor.class);
 		
-		IDocument document = EditorUtils.getEditorDocument(textEditor);
+		ITextEditor textEditor = (ITextEditor) getAdapter(ITextEditor.class);
+		if(textEditor == null) {
+			return null; // TODO: make this work with any ITextViewer
+		}
+		
+		IDocument document = textViewer.getDocument();
 		
 		IRegion wordRegion = JavaWordFinder.findWord(document, requestedRegion.getOffset());
 		
