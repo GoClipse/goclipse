@@ -15,20 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import melnorme.lang.ide.core.ISourceFile;
-import melnorme.lang.ide.ui.LangElementImages;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.lang.ide.ui.templates.LangTemplateProposal;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.misc.CollectionUtil;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -41,6 +32,13 @@ import org.eclipse.swt.graphics.Point;
 
 import _org.eclipse.jdt.internal.corext.template.java.CompilationUnitContext;
 import _org.eclipse.jdt.internal.corext.template.java.CompilationUnitContextType;
+import melnorme.lang.ide.core.ISourceFile;
+import melnorme.lang.ide.ui.LangElementImages;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.templates.LangTemplateProposal;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.CollectionUtil;
 
 
 public class TemplateEngine {
@@ -91,7 +89,6 @@ public class TemplateEngine {
 
 	public void complete(SourceOperationContext sourceContext) throws CoreException {
 		
-		ITextViewer viewer = sourceContext.getViewer_nonNull();
 	    IDocument document = sourceContext.getDocument();
 		final int completionPosition = sourceContext.getInvocationOffset();
 		ISourceFile compilationUnit = sourceContext.getSourceFile();
@@ -100,7 +97,7 @@ public class TemplateEngine {
 			return;
 		CompilationUnitContextType compilationUnitContextType = (CompilationUnitContextType) fContextType;
 
-		Point selection= viewer.getSelectedRange();
+		Point selection= sourceContext.getSelection_asPoint();
 		Position position= new Position(completionPosition, selection.y);
 
 		// remember selected text
@@ -132,7 +129,7 @@ public class TemplateEngine {
 			if (context.getKey().length() == 0)
 				context.setForceEvaluation(true);
 
-			boolean multipleLinesSelected= areMultipleLinesSelected(viewer);
+			boolean multipleLinesSelected= areMultipleLinesSelected(document, selection);
 
 			for (Template template : templates) {
 				if (context.canEvaluate(template) &&
@@ -169,22 +166,16 @@ public class TemplateEngine {
 	 * @return <code>true</code> if one or multiple lines are selected
 	 * @since 2.1
 	 */
-	protected boolean areMultipleLinesSelected(ITextViewer viewer) {
-		if (viewer == null)
-			return false;
-
-		Point s= viewer.getSelectedRange();
+	protected boolean areMultipleLinesSelected(IDocument document, Point s) {
 		if (s.y == 0)
 			return false;
 
 		try {
-
-			IDocument document= viewer.getDocument();
+			
 			int startLine= document.getLineOfOffset(s.x);
 			int endLine= document.getLineOfOffset(s.x + s.y);
 			IRegion line= document.getLineInformation(startLine);
 			return startLine != endLine || (s.x == line.getOffset() && s.y == line.getLength());
-
 		} catch (BadLocationException x) {
 			return false;
 		}

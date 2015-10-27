@@ -23,8 +23,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.actions.CalculateValueUIOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -51,14 +49,6 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 		if(inputLoc == null) {
 			throw LangCore.createCoreException("Could not determine filesystem path from editor input", null); 
 		}
-	}
-	
-	protected void dialogInfo(String message) {
-		UIOperationsStatusHandler.displayStatusMessage(operationName, StatusLevel.INFO, message);  
-	}
-	
-	protected void dialogError(String message) {
-		UIOperationsStatusHandler.displayStatusMessage(operationName, StatusLevel.ERROR, message);  
 	}
 	
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.actions;
 
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -46,5 +48,15 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 	
 	protected abstract RESULT doBackgroundValueComputation(IProgressMonitor monitor) 
 			throws CoreException, CommonException, OperationCancellation;
+	
+	/* -----------------  ----------------- */
+	
+	protected void dialogInfo(String message) {
+		UIOperationsStatusHandler.displayStatusMessage(operationName, StatusLevel.INFO, message);  
+	}
+	
+	protected void dialogError(String message) {
+		UIOperationsStatusHandler.displayStatusMessage(operationName, StatusLevel.ERROR, message);  
+	}
 	
 }

@@ -15,8 +15,10 @@ import org.eclipse.compare.contentmergeviewer.TextMergeViewer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.TextViewer;
+import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore_Actual;
@@ -34,7 +36,8 @@ public class LangTextMergeViewer extends TextMergeViewer {
 	
 	@Override
 	protected SourceViewer createSourceViewer(Composite parent, int textOrientation) {
-		return super.createSourceViewer(parent, textOrientation);
+		int styles = textOrientation | SWT.H_SCROLL | SWT.V_SCROLL;
+		return new LangSourceViewer(parent, new CompositeRuler(), styles);
 	}
 	
 	@Override
