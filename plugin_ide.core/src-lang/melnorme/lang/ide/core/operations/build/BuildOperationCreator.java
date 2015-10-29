@@ -91,7 +91,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return operations.add(toolOp);
 	}
 	
-	protected void addCompositeBuildOperationMessage() {
+	protected void addCompositeBuildOperationMessage() throws CommonException {
 		String startMsg = headerBIG(format(MSG_BuildingProject, LangCore_Actual.LANGUAGE_NAME, project.getName()));
 		addOperation(newMessageOperation(opInfo, startMsg));
 	}

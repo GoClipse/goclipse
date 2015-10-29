@@ -173,7 +173,11 @@ public abstract class LangNewProjectWizard extends Wizard
 		
 		@Override
 		protected void configureCreatedProject(IProgressMonitor monitor) throws CoreException {
-			LangNewProjectWizard.this.configureCreatedProject(this, monitor);
+			try {
+				LangNewProjectWizard.this.configureCreatedProject(this, monitor);
+			} catch(CommonException ce) {
+				throw LangCore.createCoreException(ce);
+			}
 		}
 		
 		public void createFolder(IContainer container, IProgressMonitor monitor) throws CoreException {
@@ -233,7 +237,7 @@ public abstract class LangNewProjectWizard extends Wizard
 	}
 	
 	protected abstract void configureCreatedProject(ProjectCreator_ForWizard projectCreator, IProgressMonitor monitor)
-			throws CoreException;
+			throws CoreException, CommonException;
 	
 	/* -----------------  ----------------- */
 	
