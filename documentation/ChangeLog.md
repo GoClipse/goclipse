@@ -1,19 +1,18 @@
 ## release ChangeLog
 
-### (NextVersion)
- * Fixed: Quick outline breaks when file begins with `/* */`. (#160) 
- * Fixed: Preferences: custom setting for gofmt command is not saved. (#166)
- * Syntax highlighting now works on the source compare editor/viewer.
- * Added number literals syntax highlighting. (#138)
- * Added per-project compiler installation preferences. (#152)
- * Newly created launch configurations now have the debug option "Stop on startup at:" set to false by default. This way debugging won't stop on the C `main`, which is essentially useless outside of C/C++.
- * Fixed: AssertionFailureException pressing Enter after source with more closing braces than opening ones.
+### 0.13.0
  * Added support for Eclipse dark theme (#131). Namely:  
    * Syntax/source coloring now have different settings for dark theme.
-   * Fixed tools console colors, as well as content assist pop-up colors.
- * Changed default settings for syntax/source highlighting (non-dark themes).   
+   * Fixed Tools Console colors, as well as content assist pop-up colors.
+ * Added number literals syntax highlighting. (#138)
+ * Syntax highlighting now works on the source compare editor/viewer.
+ * Added per-project compiler installation preferences. (#152)
+ * Newly created launch configurations now have the debug option "Stop on startup at:" set to false by default. This way debugging won't stop on the C `main`, which is essentially useless outside of C/C++.
+ * Fixed: Quick outline breaks when file begins with `/* */`. (#160) 
+ * Fixed: Preferences: custom setting for gofmt command is not saved. (#166)
+ * Fixed: AssertionFailureException pressing Enter after source with more closing braces than opening ones.
  * Fixed: Unindent (Shift-Tab) broken, does nothing after empty lines in selection.
- * Fixed Outline broken, due to error "CommonException: Invalid line, out of bounds". (#156) 
+ * Fixed: Outline broken, due to error "CommonException: Invalid line, out of bounds". (#156) 
 
 ### 0.12.1
  * Go build now displays GOOS and GOARCH environment variables in build/tools console, if a non-default value is set.
