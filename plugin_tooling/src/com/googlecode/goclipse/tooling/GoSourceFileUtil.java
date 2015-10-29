@@ -34,6 +34,13 @@ public class GoSourceFileUtil {
 				continue;
 			}
 			
+			if(parser.tryConsume("/*")) {
+				while(parser.hasCharAhead() && !parser.tryConsume("*/")) {
+					parser.consume();
+				}
+				continue;
+			}
+			
 			if(parser.tryConsume("package ")) {
 				
 				consumeSpaces(parser);

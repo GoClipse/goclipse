@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed: Quick outline breaks when file begins with `/* */`. (#160) 
  * Fixed: Preferences: custom setting for gofmt command is not saved. (#166)
  * Syntax highlighting now works on the source compare editor/viewer.
  * Added number literals syntax highlighting. (#138)
