@@ -11,14 +11,16 @@
 package com.googlecode.goclipse.core;
 
 
-import melnorme.lang.ide.core.LangCore;
-
 import org.osgi.framework.BundleContext;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 
 public class GoCore extends LangCore {
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {
+		ToolchainPreferences.DAEMON_PATH.setPreferencesDefaultValue("gocode");
 	}
 	
 	@Override
