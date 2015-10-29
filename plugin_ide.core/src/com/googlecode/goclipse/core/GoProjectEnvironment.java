@@ -35,21 +35,21 @@ import melnorme.utilbox.misc.Location;
 public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
 	public static GoRoot getEffectiveGoRoot(IProject project) {
-		return new GoRoot(getEffectiveValue_NonNull(GoEnvironmentPrefs.GO_ROOT, project, GOROOT));
+		return new GoRoot(getEffectiveValueFromEnv(GoEnvironmentPrefs.GO_ROOT, project, GOROOT));
 	}
 	
 	public static GoArch getEffectiveGoArch(IProject project) {
-		String strValue = emptyAsNull(getEffectiveValue(GoEnvironmentPrefs.GO_ARCH, project, GOARCH));
+		String strValue = emptyAsNull(GoEnvironmentPrefs.GO_ARCH.getProjectPreference().getEffectiveValue(project));
 		return strValue == null ? null : new GoArch(strValue);
 	}
 	
 	public static GoOs getEffectiveGoOs(IProject project) {
-		String strValue = emptyAsNull(getEffectiveValue(GoEnvironmentPrefs.GO_OS, project, GOOS));
+		String strValue = emptyAsNull(GoEnvironmentPrefs.GO_OS.getProjectPreference().getEffectiveValue(project));
 		return strValue == null ? null : new GoOs(strValue);
 	}
 	
 	public static GoPath getEffectiveGoPath(IProject project) {
-		String goPathPref = getEffectiveValue_NonNull(GoEnvironmentPrefs.GO_PATH, project, GOPATH);
+		String goPathPref = getEffectiveValueFromEnv(GoEnvironmentPrefs.GO_PATH, project, GOPATH);
 		GoPath rawGoPath = new GoPath(goPathPref);
 		if(project == null) {
 			return rawGoPath;
@@ -81,15 +81,10 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return goPath.findGoPathEntryForSourcePath(ResourceUtils.getProjectLocation2(project)) != null;
 	}
 	
-	protected static String getEffectiveValue_NonNull(StringPreference stringPref, IProject project, 
-			String envAlternative) {
-		return nullAsEmpty(getEffectiveValue(stringPref, project, envAlternative));
-	}
-	
-	protected static String getEffectiveValue(StringPreference stringPref, IProject project, String envAlternative) {
-		String prefValue = stringPref.getProjectPreference().getEffectiveValue(project);
-		if(prefValue == null || prefValue.isEmpty()) {
-			return System.getenv(envAlternative);
+	protected static String getEffectiveValueFromEnv(StringPreference pref, IProject project, String envAlternative) {
+		String prefValue = pref.getProjectPreference().getEffectiveValue(project);
+		if(prefValue == null) {
+			return nullAsEmpty(System.getenv(envAlternative));
 		}
 		return prefValue;
 	}
