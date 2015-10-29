@@ -8,6 +8,8 @@
  * Syntax highlighting now works on the source compare editor/viewer.
  * Added per-project compiler installation preferences. (#152)
  * Newly created launch configurations now have the debug option "Stop on startup at:" set to false by default. This way debugging won't stop on the C `main`, which is essentially useless outside of C/C++.
+
+--
  * Fixed: Quick outline breaks when file begins with `/* */`. (#160) 
  * Fixed: Preferences: custom setting for gofmt command is not saved. (#166)
  * Fixed: AssertionFailureException pressing Enter after source with more closing braces than opening ones.
