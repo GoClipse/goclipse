@@ -35,7 +35,8 @@ import melnorme.utilbox.misc.Location;
 public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
 	public static GoRoot getEffectiveGoRoot(IProject project) {
-		return new GoRoot(getEffectiveValueFromEnv(GoEnvironmentPrefs.GO_ROOT, project, GOROOT));
+		String prefValue = GoEnvironmentPrefs.GO_ROOT.getProjectPreference().getEffectiveValue(project);
+		return new GoRoot(nullAsEmpty(prefValue));
 	}
 	
 	public static GoArch getEffectiveGoArch(IProject project) {
