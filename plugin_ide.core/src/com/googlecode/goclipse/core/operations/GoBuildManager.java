@@ -360,7 +360,7 @@ public class GoBuildManager extends BuildManager {
 	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project) {
 		return new BuildOperationCreator(project, opInfo) {
 			@Override
-			protected void addCompositeBuildOperationMessage() {
+			protected void addCompositeBuildOperationMessage() throws CommonException {
 				super.addCompositeBuildOperationMessage();
 				
 				GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);

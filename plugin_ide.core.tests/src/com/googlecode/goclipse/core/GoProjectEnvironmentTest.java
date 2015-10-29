@@ -16,11 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.util.Collection;
 
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.tests.TestsWorkingDir;
-
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.junit.Test;
 
@@ -28,6 +24,10 @@ import com.googlecode.goclipse.tooling.CommonGoToolingTest;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
+
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.tests.TestsWorkingDir;
 
 public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	
@@ -93,7 +93,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	}
 	
 	protected void checkEnvGoPath(IProject project, Collection<String> list, boolean insideGoPath) 
-			throws CoreException {
+			throws CommonException {
 		assertTrue(GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project) == insideGoPath);
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		assertEquals(goEnv.getGoPathEntries(), list);

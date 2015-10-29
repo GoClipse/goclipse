@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.RGB;
@@ -40,6 +39,7 @@ import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 
 public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
@@ -167,7 +167,7 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 			boolean isProjecInsideGoPath;
 			try {
 				isProjecInsideGoPath = GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project);
-			} catch (CoreException e) {
+			} catch (CommonException e) {
 				return null;
 			}
 			

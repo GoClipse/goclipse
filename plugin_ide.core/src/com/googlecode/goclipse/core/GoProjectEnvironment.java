@@ -72,13 +72,13 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return new GoPath(newGoPathEntries);
 	}
 	
-	public static boolean isProjectInsideGoPathSourceFolder(IProject project) throws CoreException {
+	public static boolean isProjectInsideGoPathSourceFolder(IProject project) throws CommonException {
 		GoPath goPath = getEffectiveGoPath(project);
 		return isProjectInsideGoPathSourceFolder(project, goPath);
 	}
 	
-	public static boolean isProjectInsideGoPathSourceFolder(IProject project, GoPath goPath) throws CoreException {
-		return goPath.findGoPathEntryForSourcePath(ResourceUtils.getProjectLocation(project)) != null;
+	public static boolean isProjectInsideGoPathSourceFolder(IProject project, GoPath goPath) throws CommonException {
+		return goPath.findGoPathEntryForSourcePath(ResourceUtils.getProjectLocation2(project)) != null;
 	}
 	
 	protected static String getEffectiveValue_NonNull(StringPreference stringPref, IProject project, 

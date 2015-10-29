@@ -13,10 +13,11 @@ package com.googlecode.goclipse.ui.navigator.elements;
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
+
+import melnorme.utilbox.core.CommonException;
 
 public class GoPathEntryElement extends GoPathElement {
 	
@@ -24,7 +25,7 @@ public class GoPathEntryElement extends GoPathElement {
 	protected final IProject project;
 	protected boolean projectInsideGoPath;
 	
-	public GoPathEntryElement(Path goPathEntryPath, IProject project, GoPath goPath) throws CoreException {
+	public GoPathEntryElement(Path goPathEntryPath, IProject project, GoPath goPath) throws CommonException {
 		super("GOPATH", goPathEntryPath.resolve(GoPath.SRC_DIR).toFile());
 		this.goPathEntryPath = goPathEntryPath;
 		this.project = project;

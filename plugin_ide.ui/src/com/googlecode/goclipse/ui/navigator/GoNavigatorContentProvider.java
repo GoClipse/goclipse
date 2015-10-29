@@ -171,7 +171,7 @@ public class GoNavigatorContentProvider extends AbstractNavigatorContentProvider
 			
 			try {
 				buildpathChildren.add(new GoPathEntryElement(goPathEntryPath, project, effectiveGoPath));
-			} catch (CoreException e) {
+			} catch (CommonException e) {
 				// Don't add any entry.
 			}
 		}

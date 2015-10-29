@@ -11,11 +11,6 @@
 package com.googlecode.goclipse.ui.wizards;
 
 
-import melnorme.lang.ide.ui.WizardMessages_Actual;
-import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
-import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
-import melnorme.lang.tooling.data.ValidationException;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,6 +20,12 @@ import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.ui.GoPluginImages;
+
+import melnorme.lang.ide.ui.WizardMessages_Actual;
+import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
+import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
+import melnorme.lang.tooling.data.ValidationException;
+import melnorme.utilbox.core.CommonException;
 
 /**
  * Go New Project Wizard.
@@ -50,7 +51,7 @@ public class GoProjectWizard extends LangNewProjectWizard {
 	
 	@Override
 	protected void configureCreatedProject(ProjectCreator_ForWizard projectCreator, IProgressMonitor monitor)
-			throws CoreException {
+			throws CoreException, CommonException {
 		IProject project = getProject();
 		if(!GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project)) {
 			projectCreator.createFolder(project.getFolder("src"), monitor);
