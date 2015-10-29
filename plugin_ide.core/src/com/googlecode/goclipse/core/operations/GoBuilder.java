@@ -12,6 +12,7 @@ package com.googlecode.goclipse.core.operations;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
@@ -31,7 +32,8 @@ public class GoBuilder extends LangProjectBuilder {
 		IProject project = getProject();
 		GoEnvironment goEnv = GoBuildManager.getValidGoEnvironment(project);
 		
-		ArrayList2<String> goBuildCmdLine = GoBuildManager.getToolCommandLine();
+		String compilerPath = getToolManager().getSDKToolPath(project).toString();
+		ArrayList2<String> goBuildCmdLine = new ArrayList2<>(compilerPath);
 		goBuildCmdLine.addElements("clean", "-i", "-x");
 		GoBuildManager.addSourcePackagesToCmdLine(project, goBuildCmdLine, goEnv);
 		return goEnv.createProcessBuilder(goBuildCmdLine, getProjectLocation(), true);

@@ -14,7 +14,6 @@ import static melnorme.lang.tooling.ops.util.PathValidator.LocationKind.FILE_ONL
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.File;
-import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -25,7 +24,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
-import com.googlecode.goclipse.core.GoEnvironmentUtils;
 import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
@@ -44,12 +42,16 @@ import melnorme.util.swt.components.fields.FileTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.MiscUtil;
 
 public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 	
 	public final DirectoryTextField goRootField = new DirectoryTextField("GO&ROOT:");
 	protected final GoSDKLocationValidator goSDKLocationValidator = new GoSDKLocationValidator();
 	public final ValidatedField validatedGoRoot = new ValidatedField(goRootField, goSDKLocationValidator);
+	
+	protected final FileTextField goFmtPath = new FileTextField("gofmt:");
+	protected final FileTextField goDocPath = new FileTextField("godoc:");
 	
 	protected final ComboBoxField goOSField = new ComboBoxField("G&OOS:",
 		ArrayUtil.prepend("<default>", GoOs.GOOS_VALUES),
@@ -58,28 +60,23 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 		array("<default>", GoArch.ARCH_AMD64, GoArch.ARCH_386,  GoArch.ARCH_ARM), 
 		array(""         , GoArch.ARCH_AMD64, GoArch.ARCH_386, GoArch.ARCH_ARM));
 	
-	protected final FileTextField goToolPath = new FileTextField("go tool:");
-	protected final FileTextField goFmtPath = new FileTextField("gofmt:");
-	protected final FileTextField goDocPath = new FileTextField("godoc:");
-	
 	protected final EnablementButtonTextField goPathField = new GoPathField();
 	
 	public GoSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
 		
 		bindToPreference(goRootField, GoEnvironmentPrefs.GO_ROOT);
-		bindToPreference(goOSField.asStringProperty(), GoEnvironmentPrefs.GO_OS);
-		bindToPreference(goArchField.asStringProperty(), GoEnvironmentPrefs.GO_ARCH);
-		
-		bindToPreference(goToolPath, GoEnvironmentPrefs.COMPILER_PATH);
 		bindToPreference(goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
 		bindToPreference(goDocPath, GoEnvironmentPrefs.DOCUMENTOR_PATH);
 		
+		bindToPreference(goOSField.asStringProperty(), GoEnvironmentPrefs.GO_OS);
+		bindToPreference(goArchField.asStringProperty(), GoEnvironmentPrefs.GO_ARCH);
+		
 		bindToPreference(goPathField.asEffectiveValueProperty2(), GoEnvironmentPrefs.GO_PATH);
+		
 		
 		validation.addFieldValidation(true, goRootField, goSDKLocationValidator);
 		
-		validation.addFieldValidation(true, goToolPath, new LocationValidator(goToolPath.getLabelText(), FILE_ONLY));
 		validation.addFieldValidation(true, goFmtPath, new LocationValidator(goFmtPath.getLabelText(), FILE_ONLY));
 		validation.addFieldValidation(true, goDocPath, new LocationValidator(goDocPath.getLabelText(), FILE_ONLY));
 	}
@@ -94,21 +91,20 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 	@Override
 	protected void createContents(Composite topControl) {
 		int numColumns = 3;
-		Group goSDK = AbstractPreferencesBlock.createOptionsSection(topControl, "Go SDK installation:", numColumns,
+		Group goSDK = AbstractPreferencesBlock.createOptionsSection(topControl, "Go installation:", numColumns,
 			getPreferenceGroupDefaultLayout());
 		
 		goRootField.createComponentInlined(goSDK);
 		
-		goOSField.createComponentInlined(goSDK);
-		goArchField.createComponentInlined(goSDK);
+		goFmtPath.createComponentInlined(goSDK);
+		goDocPath.createComponentInlined(goSDK);
 		
 		SWTFactoryUtil.createLabel(goSDK, 
 			SWT.SEPARATOR | SWT.HORIZONTAL, "",
 			gdFillDefaults().span(numColumns, 1).grab(true, false).indent(0, 5).create());
 		
-		goToolPath.createComponentInlined(goSDK);
-		goFmtPath.createComponentInlined(goSDK);
-		goDocPath.createComponentInlined(goSDK);
+		goOSField.createComponentInlined(goSDK);
+		goArchField.createComponentInlined(goSDK);
 		
 		/* -----------------  ----------------- */
 		
@@ -120,12 +116,11 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 	@Override
 	public void setEnabled(boolean enabled) {
 		goRootField.setEnabled(enabled);
+		goFmtPath.setEnabled(enabled);
+		goDocPath.setEnabled(enabled);
 		goOSField.setEnabled(enabled);
 		goArchField.setEnabled(enabled);
 		
-		goToolPath.setEnabled(enabled);
-		goFmtPath.setEnabled(enabled);
-		goDocPath.setEnabled(enabled);
 		goPathField.setEnabled(enabled);
 	}
 	
@@ -139,24 +134,14 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 	
 	protected void handleGoRootChange() {
 		IPath gorootPath = new Path(goRootField.getFieldValue());
-		File binPath = gorootPath.append("bin").toFile();
 		
 		if(validatedGoRoot.getValidationStatusLevel().isOkStatus()) {
 			
-			File compilerFile = findExistingFile(binPath.toPath(), 
-				GoEnvironmentUtils.getSupportedCompilerNames());
-			
-			goOSField.setFieldStringValue(""); 
-			goArchField.setFieldStringValue(""); 
-			
-			setValueIfFileExists(goToolPath, compilerFile);
-			
-			String goFmtName = GoEnvironmentUtils.getDefaultGofmtName();
+			String goFmtName = "gofmt" + MiscUtil.getExecutableSuffix();
 			setValueIfFileExists(goFmtPath, gorootPath.append("bin").append(goFmtName).toFile());
 			
-			String goDocName = GoEnvironmentUtils.getDefaultGodocName();
+			String goDocName = "godoc" + MiscUtil.getExecutableSuffix();
 			setValueIfFileExists(goDocPath, gorootPath.append("bin").append(goDocName).toFile());
-			
 		}
 	}
 	
@@ -166,18 +151,6 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 		} else {
 			fileField.setFieldValue("");
 		}
-	}
-	
-	protected static File findExistingFile(java.nio.file.Path binPath, List<String> paths) {
-		for (String strPath : paths) {
-			java.nio.file.Path path = binPath.resolve(strPath);
-			File file = path.toFile();
-			if (file.exists()) {
-				return file;
-			}
-		}
-		
-		return null;
 	}
 	
 	/* -----------------  ----------------- */

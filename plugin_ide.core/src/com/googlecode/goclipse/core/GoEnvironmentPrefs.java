@@ -26,8 +26,6 @@ public interface GoEnvironmentPrefs {
 	static StringPreference GO_ARCH = new StringPreference(LangCore.PLUGIN_ID, 
 		"com.googlecode.goclipse.goarch", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
 	
-	static StringPreference COMPILER_PATH = new StringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.compiler.path", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
 	static StringPreference FORMATTER_PATH = new StringPreference(LangCore.PLUGIN_ID, 
 		"com.googlecode.goclipse.formatter.path", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
 	static StringPreference DOCUMENTOR_PATH = new StringPreference(LangCore.PLUGIN_ID, 

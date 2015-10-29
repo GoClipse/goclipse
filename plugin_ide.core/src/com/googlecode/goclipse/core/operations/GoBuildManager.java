@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.googlecode.goclipse.core.GoCoreMessages;
-import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.GoBuildOutputProcessor;
 import com.googlecode.goclipse.tooling.GoPackageName;
@@ -347,15 +346,6 @@ public class GoBuildManager extends BuildManager {
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
-	}
-	
-	protected static ArrayList2<String> getToolCommandLine() throws CoreException {
-		String compilerPath = GoEnvironmentPrefs.COMPILER_PATH.get();
-		
-		if(compilerPath.isEmpty()) {
-			throw LangCore.createCoreException("Compiler Path not defined.", null);
-		}
-		return new ArrayList2<>(compilerPath);
 	}
 	
 	protected static void addSourcePackagesToCmdLine(final IProject project, ArrayList2<String> goBuildCmdLine,
