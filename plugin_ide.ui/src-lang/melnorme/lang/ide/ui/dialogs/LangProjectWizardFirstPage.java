@@ -43,7 +43,6 @@ import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.ValidationException;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
@@ -384,13 +383,13 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			try {
 				validatePreferences();
 				setValidationMessage(null);
-			} catch (ValidationException ve) {
+			} catch (CommonException ve) {
 				setPreferencesErrorMessage(ve);
 			}
 		}
 		
 		@SuppressWarnings("unused")
-		protected void setPreferencesErrorMessage(ValidationException ve) {
+		protected void setPreferencesErrorMessage(CommonException ve) {
 			setValidationMessage("The "+ LangCore_Actual.LANGUAGE_NAME + 
 				" preferences have not been configured correctly.\n"+
 				"<a>Click here to configure preferences...</a>");
@@ -398,7 +397,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 	}
 	
-	protected abstract void validatePreferences() throws ValidationException;
+	protected abstract void validatePreferences() throws CommonException;
 	
 	protected boolean validateDialog() {
 		IStatus validationStatus = getValidationStatus();
