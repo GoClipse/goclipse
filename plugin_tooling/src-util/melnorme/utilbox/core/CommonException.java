@@ -43,7 +43,7 @@ public class CommonException extends Exception {
 		if(this instanceof StatusException) {
 			return (StatusException) this;
 		} else {
-			return new StatusException(statusLevel, getMessage());
+			return new StatusException(statusLevel, getMessage(), getCause());
 		}
 	}
 	

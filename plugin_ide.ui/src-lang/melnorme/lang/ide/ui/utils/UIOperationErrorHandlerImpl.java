@@ -25,7 +25,6 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.utilbox.core.CommonException;
 
 /**
  * Utility for handling exceptions during UI operations, by presenting an information dialog to the user.
@@ -84,9 +83,6 @@ public class UIOperationErrorHandlerImpl {
 		handleStatus(true, shell, LangUIMessages.InternalError, message, exception);
 	}
 	
-	public void handleOperationStatus(boolean logError, String dialogTitle, CommonException ce) {
-		handleStatus(logError, null, dialogTitle, ce.toStatusException(StatusLevel.ERROR));
-	}
 	
 	/* -----------------  ----------------- */
 	

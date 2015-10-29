@@ -114,8 +114,12 @@ public class ExternalProcessHelper extends AbstractExternalProcessHelper {
 	public static Process startProcess(ProcessBuilder pb) throws CommonException {
 		try {
 			return pb.start();
-		} catch (IOException ie) {
-			throw new CommonException(ProcessHelperMessages.ExternalProcess_CouldNotStart, ie);
+		} catch (IOException ioe) {
+			String msg = ioe.getMessage();
+			if(msg == null) {
+				msg = ProcessHelperMessages.ExternalProcess_CouldNotStart;
+			}
+			throw new CommonException(msg, ioe);
 		}
 	}
 	

@@ -76,7 +76,7 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 						throw LangCore.createCommonException(ce);
 					}
 				}catch(CommonException ce) {
-					UIOperationsStatusHandler.handleOperationStatus2(getOperationName(), ce);
+					UIOperationsStatusHandler.handleOperationStatus(getOperationName(), ce);
 				}
 			}
 			

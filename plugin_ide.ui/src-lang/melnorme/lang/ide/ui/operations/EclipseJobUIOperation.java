@@ -39,7 +39,7 @@ public abstract class EclipseJobUIOperation extends AbstractUIOperation {
 					((CoreOperationRunnable) (pm) -> doBackgroundComputation(pm)).coreAdaptedRun(monitor);
 				} catch(CoreException ce) {
 					Display.getDefault().asyncExec(
-						() -> UIOperationsStatusHandler.handleOperationStatus2(getOperationName(), ce));
+						() -> UIOperationsStatusHandler.handleOperationStatus(getOperationName(), ce));
 				} catch(OperationCancellation e) {
 					return Status.CANCEL_STATUS;
 				}
