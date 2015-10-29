@@ -152,7 +152,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 			}
 			
 		} catch (CoreException ce) {
-			UIOperationsStatusHandler.handleOperationStatus2("Error selecting package from dialog: ", ce);
+			UIOperationsStatusHandler.handleStatus(false, "Error selecting package from dialog: ", ce);
 		}
 		throw new OperationCancellation();
 	}

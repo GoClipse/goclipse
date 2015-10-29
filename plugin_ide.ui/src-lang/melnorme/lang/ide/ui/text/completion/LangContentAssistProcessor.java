@@ -224,7 +224,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	}
 	
 	protected void handleExceptionInUI(CommonException ce) {
-		UIOperationsStatusHandler.handleOperationStatus2(LangUIMessages.ContentAssistProcessor_opName, ce);
+		UIOperationsStatusHandler.handleOperationStatus(LangUIMessages.ContentAssistProcessor_opName, ce);
 	}
 	
 	@Override

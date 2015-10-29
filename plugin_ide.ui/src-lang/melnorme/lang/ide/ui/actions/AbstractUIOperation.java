@@ -55,7 +55,7 @@ public abstract class AbstractUIOperation {
 				throw LangCore.createCommonException(ce);
 			}
 		} catch(CommonException ce) {
-			UIOperationsStatusHandler.handleOperationStatus2(
+			UIOperationsStatusHandler.handleStatus(
 				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName), ce);
 		} catch(RuntimeException re) {
 			UIOperationsStatusHandler.handleInternalError(

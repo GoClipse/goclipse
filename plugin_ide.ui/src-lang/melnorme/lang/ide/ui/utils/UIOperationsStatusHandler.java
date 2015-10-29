@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.core.CommonException;
@@ -44,6 +45,20 @@ public class UIOperationsStatusHandler {
 	
 	/* -----------------  ----------------- */
 	
+	public static void handleStatus(boolean logError, String dialogTitle, CoreException ce) {
+		handleStatus(logError, dialogTitle, LangCore.createCommonException(ce));
+	}
+	
+	public static void handleStatus(boolean logError, String dialogTitle, CommonException ce) {
+		handleStatus(logError, dialogTitle, ce.toStatusException(StatusLevel.ERROR));
+	}
+	
+	public static void handleStatus(String dialogTitle, CommonException ce) {
+		handleStatus(false, dialogTitle, ce);
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public static void displayStatusMessage(String title, StatusException status) {
 		handler.displayStatusMessage(title, status);
 	}
@@ -60,16 +75,13 @@ public class UIOperationsStatusHandler {
 		handler.handleInternalError(shell, message, exception);
 	}
 	
-	public static void handleOperationStatus2(String dialogTitle, CoreException ce) {
-		handleOperationStatus2(dialogTitle, LangCore.createCommonException(ce));
+	public static void handleOperationStatus(String opName, CoreException ce) {
+		handleOperationStatus(opName, LangCore.createCommonException(ce));
 	}
 	
-	public static void handleOperationStatus2(String dialogTitle, CommonException ce) {
-		handleOperationStatus2(false, dialogTitle, ce);
-	}
-	
-	public static void handleOperationStatus2(boolean logError, String dialogTitle, CommonException ce) {
-		handler.handleOperationStatus(logError, dialogTitle, ce);
+	public static void handleOperationStatus(String opName, CommonException ce) {
+		String dialogTitle = opName + " - " + LangCoreMessages.Msg_Error;
+		handleStatus(false, dialogTitle, ce);
 	}
 	
 	/* -----------------  ----------------- */

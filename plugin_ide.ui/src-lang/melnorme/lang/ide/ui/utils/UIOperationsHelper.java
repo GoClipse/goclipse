@@ -44,7 +44,7 @@ public class UIOperationsHelper extends UIOperationsStatusHandler {
 			} else {
 				ce = LangCore.createCoreException("Internal error: ", targetException);
 			}
-			UIOperationsStatusHandler.handleOperationStatus2(logError, errorTitle, LangCore.createCommonException(ce));
+			UIOperationsStatusHandler.handleStatus(logError, errorTitle, LangCore.createCommonException(ce));
 			return false;
 		} catch (InterruptedException e) {
 			return false;
