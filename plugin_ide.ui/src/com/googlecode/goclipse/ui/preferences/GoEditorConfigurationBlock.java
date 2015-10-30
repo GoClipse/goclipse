@@ -12,9 +12,9 @@ package com.googlecode.goclipse.ui.preferences;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.EditorConfigurationBlock;
 
-public class GoEditorConfigurationBlock extends LangEditorConfigurationBlock {
+public class GoEditorConfigurationBlock extends EditorConfigurationBlock {
 	
 	public GoEditorConfigurationBlock(IPreferenceStore store) {
 		super(store);

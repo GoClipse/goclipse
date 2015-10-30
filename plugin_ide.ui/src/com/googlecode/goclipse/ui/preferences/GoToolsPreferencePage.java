@@ -28,14 +28,14 @@ import com.googlecode.goclipse.core.operations.GetAndInstallGoPackageOperation;
 
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
-import melnorme.lang.ide.ui.tools.AbstractDeamonToolPrefPage;
+import melnorme.lang.ide.ui.preferences.pages.DaemonToolPreferencePage;
 import melnorme.lang.ide.ui.utils.UIOperationsHelper;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.FileTextField;
 import melnorme.utilbox.misc.StringUtil;
 
-public class GoToolsPreferencePage extends AbstractDeamonToolPrefPage implements
+public class GoToolsPreferencePage extends DaemonToolPreferencePage implements
 		IWorkbenchPreferencePage {
 	
 	@Override

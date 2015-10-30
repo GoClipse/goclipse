@@ -11,7 +11,7 @@
 package com.googlecode.goclipse.ui.preferences;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.LangEditorContentAssistConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.EditorContentAssistConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
 public class GoContentAssistPreferencePage extends AbstractPreferencesBlockPrefPage {
@@ -23,8 +23,8 @@ public class GoContentAssistPreferencePage extends AbstractPreferencesBlockPrefP
 	}
 	
 	@Override
-	protected LangEditorContentAssistConfigurationBlock init_createPreferencesBlock() {
-		return new LangEditorContentAssistConfigurationBlock();
+	protected EditorContentAssistConfigurationBlock init_createPreferencesBlock() {
+		return new EditorContentAssistConfigurationBlock();
 	}
 	
 	@Override
