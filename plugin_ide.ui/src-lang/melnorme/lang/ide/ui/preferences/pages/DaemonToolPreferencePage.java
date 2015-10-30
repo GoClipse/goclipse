@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Group;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
@@ -48,6 +49,14 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 	
 	public static class ServerToolsBlock extends AbstractPreferencesBlock {
 		
+		protected final FieldComponent<Boolean> startServerAutomatically = new CheckBoxField(
+			"Start " + getDaemonToolName() + " server automatically");
+		protected final FieldComponent<Boolean> enableLogConsole = new CheckBoxField(
+			"Enable " + getDaemonToolName() + " log console (requires restart)");
+		
+		protected final FieldComponent<Boolean> showErrorsDialog = new CheckBoxField(
+			"Show error dialog if " + getDaemonToolName() + " failures occur during Content Assist");
+		
 		public ServerToolsBlock() {
 			super();
 		}
@@ -57,55 +66,50 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 			return 1;
 		}
 		
+		protected Group toolGroup;
+		protected ButtonTextField daemonPathEditor;
 		
+		@Override
+		protected void createContents(Composite topControl) {
+			
+			toolGroup = AbstractPreferencesBlock.createOptionsSection(topControl, 
+				getDaemonToolName(), 
+				3, 
+				GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
+			
+			bindToPreference(startServerAutomatically, ToolchainPreferences.AUTO_START_DAEMON);
+			bindToPreference(enableLogConsole, ToolchainPreferences.DAEMON_CONSOLE_ENABLE);
+			bindToPreference(showErrorsDialog, ContentAssistPreferences.ShowDialogIfContentAssistErrors);
+			
+			daemonPathEditor = createDaemonPathFieldEditor(toolGroup);
+			
+			startServerAutomatically.createComponentInlined(toolGroup);
+			enableLogConsole.createComponentInlined(toolGroup);
+			showErrorsDialog.createComponentInlined(toolGroup);
+		}
 		
-	protected Group toolGroup;
-	protected ButtonTextField daemonPathEditor;
-	
-	@Override
-	protected void createContents(Composite topControl) {
+		protected ButtonTextField createDaemonPathFieldEditor(Group group) {
+			return createFileComponent(group, getDaemonToolName() + " path:", 
+				ToolchainPreferences.DAEMON_PATH, true);
+		}
 		
-		toolGroup = AbstractPreferencesBlock.createOptionsSection(topControl, 
-			getDaemonToolName(), 
-			3, 
-			GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
+		public FileTextField createFileComponent(Group group, String label, StringPreference pref, 
+				boolean allowSinglePath) {
+			FileTextField pathField = new FileTextField(label);
+			
+			PathValidator validator = (allowSinglePath ? 
+					new LocationOrSinglePathValidator(label) : new LocationValidator(label)).setFileOnly(true);
+			
+			validation.addFieldValidation(false, pathField, new ValidatedField(pathField, validator));
+			
+			bindToPreference(pathField, pref);
+			pathField.createComponentInlined(group);
+			return pathField;
+		}
 		
-		FieldComponent<Boolean> startServerAutomatically = new CheckBoxField(
-			"Start " + getDaemonToolName() + " server automatically");
-		bindToPreference(startServerAutomatically, ToolchainPreferences.AUTO_START_DAEMON);
-		
-		FieldComponent<Boolean> enableLogConsole = new CheckBoxField(
-			"Enable " + getDaemonToolName() + " log console (requires restart)");
-		bindToPreference(enableLogConsole, ToolchainPreferences.DAEMON_CONSOLE_ENABLE);
-		
-		startServerAutomatically.createComponentInlined(toolGroup);
-		enableLogConsole.createComponentInlined(toolGroup);
-		
-		daemonPathEditor = createDaemonPathFieldEditor(toolGroup);
-	}
-	
-	protected ButtonTextField createDaemonPathFieldEditor(Group group) {
-		return createFileComponent(group, getDaemonToolName() + " path:", 
-			ToolchainPreferences.DAEMON_PATH, true);
-	}
-	
-	public FileTextField createFileComponent(Group group, String label, StringPreference pref, 
-			boolean allowSinglePath) {
-		FileTextField pathField = new FileTextField(label);
-		
-		PathValidator validator = (allowSinglePath ? 
-				new LocationOrSinglePathValidator(label) : new LocationValidator(label)).setFileOnly(true);
-		
-		validation.addFieldValidation(false, pathField, new ValidatedField(pathField, validator));
-		
-		bindToPreference(pathField, pref);
-		pathField.createComponentInlined(group);
-		return pathField;
-	}
-	
-	protected String getDaemonToolName() {
-		return LangUIPlugin_Actual.DAEMON_TOOL_Name;
-	}
+		protected String getDaemonToolName() {
+			return LangUIPlugin_Actual.DAEMON_TOOL_Name;
+		}
 	
 	}
 	
