@@ -11,7 +11,10 @@
 package melnorme.lang.ide.ui.text.completion;
 
 import static melnorme.lang.ide.ui.LangUIPlugin.PLUGIN_ID;
+
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
 import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -35,8 +38,9 @@ public interface ContentAssistPreferences_Default {
 			new IntPreference(PLUGIN_ID, "AUTO_ACTIVATE__Delay", 200);
 	
 	
-	BooleanPreference ShowDialogIfContentAssistErrors = 
-			new BooleanPreference("daemon_showDialogIfErrors", true);
+	IProjectPreference<Boolean> ShowDialogIfContentAssistErrors = 
+			new BooleanPreference(PLUGIN_ID, "daemon_showDialogIfErrors", true,
+				ToolchainPreferences.USE_PROJECT_SETTINGS).getProjectPreference();
 	
 	
 	class Helper {

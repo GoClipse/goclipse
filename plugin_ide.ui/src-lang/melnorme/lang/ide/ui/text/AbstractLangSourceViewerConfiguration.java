@@ -255,7 +255,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 	
 	protected LangContentAssistProcessor createContentAssistProcessor(ContentAssistant assistant,
 			Indexable<CompletionProposalsGrouping> categories) {
-		return new LangContentAssistProcessor(assistant, getEditor(), categories);
+		return new LangContentAssistProcessor(assistant, categories, getEditor());
 	}
 	
 	protected abstract ContentAssistCategoriesBuilder getContentAssistCategoriesProvider();
