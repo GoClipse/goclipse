@@ -55,7 +55,7 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 			"Enable " + getDaemonToolName() + " log console (requires restart)");
 		
 		protected final FieldComponent<Boolean> showErrorsDialog = new CheckBoxField(
-			"Show error dialog if errors occur.");
+			"Show error dialog if " + getDaemonToolName() + " failures occur during Content Assist");
 		
 		public ServerToolsBlock() {
 			super();
@@ -81,11 +81,11 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 			bindToPreference(enableLogConsole, ToolchainPreferences.DAEMON_CONSOLE_ENABLE);
 			bindToPreference(showErrorsDialog, ContentAssistPreferences.ShowDialogIfContentAssistErrors);
 			
+			daemonPathEditor = createDaemonPathFieldEditor(toolGroup);
+			
 			startServerAutomatically.createComponentInlined(toolGroup);
 			enableLogConsole.createComponentInlined(toolGroup);
 			showErrorsDialog.createComponentInlined(toolGroup);
-			
-			daemonPathEditor = createDaemonPathFieldEditor(toolGroup);
 		}
 		
 		protected ButtonTextField createDaemonPathFieldEditor(Group group) {
