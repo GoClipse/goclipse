@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.text.MessageFormat;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.bindings.TriggerSequence;
 import org.eclipse.jface.bindings.keys.KeySequence;
 import org.eclipse.jface.text.ITextViewer;
@@ -48,15 +49,18 @@ import melnorme.utilbox.core.CommonException;
 public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 	
 	protected final ContentAssistant contentAssistant;
-	protected final ITextEditor editor; // can be null
 	protected final Indexable<CompletionProposalsGrouping> categories;
+	protected final ITextEditor editor; // can be null
+	protected final IProject project; // can be null
 	
 	public LangContentAssistProcessor(ContentAssistant contentAssistant, 
-			ITextEditor editor, Indexable<CompletionProposalsGrouping> groupings) {
+			Indexable<CompletionProposalsGrouping> groupings, ITextEditor editor) {
 		this.contentAssistant = assertNotNull(contentAssistant);
-		this.editor = editor;
 		this.categories = groupings;
 		assertTrue(categories != null && categories.size() > 0);
+		
+		this.editor = editor;
+		this.project = editor == null ? null : EditorUtils.getAssociatedProject(editor.getEditorInput()); 
 		
 		contentAssistant.addCompletionListener(new CompletionSessionListener());
 	}
@@ -216,7 +220,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		try {
 			proposals = cat.computeCompletionProposals(context);
 		} catch(CommonException ce) {
-			if(ContentAssistPreferences.ShowDialogIfContentAssistErrors.get()) {
+			if(ContentAssistPreferences.ShowDialogIfContentAssistErrors.getEffectiveValue(project)) {
 				handleExceptionInUI(ce);
 			} else {
 				LangCore.logError(LangUIMessages.ContentAssistProcessor_opName, ce);

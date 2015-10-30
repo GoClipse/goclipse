@@ -79,7 +79,8 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 			
 			bindToPreference(startServerAutomatically, ToolchainPreferences.AUTO_START_DAEMON);
 			bindToPreference(enableLogConsole, ToolchainPreferences.DAEMON_CONSOLE_ENABLE);
-			bindToPreference(showErrorsDialog, ContentAssistPreferences.ShowDialogIfContentAssistErrors);
+			bindToPreference(showErrorsDialog, 
+				ContentAssistPreferences.ShowDialogIfContentAssistErrors.getGlobalPreference());
 			
 			daemonPathEditor = createDaemonPathFieldEditor(toolGroup);
 			
