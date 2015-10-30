@@ -33,7 +33,11 @@ public interface ContentAssistPreferences_Default {
 			new BooleanPreference(PLUGIN_ID, "AUTO_ACTIVATE__AlphaNumericTrigger", false);
 	IntPreference AUTO_ACTIVATE__Delay = 
 			new IntPreference(PLUGIN_ID, "AUTO_ACTIVATE__Delay", 200);
-
+	
+	
+	BooleanPreference ShowDialogIfContentAssistErrors = 
+			new BooleanPreference("daemon_showDialogIfErrors", true);
+	
 	
 	class Helper {
 

@@ -34,6 +34,8 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
@@ -214,7 +216,11 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		try {
 			proposals = cat.computeCompletionProposals(context);
 		} catch(CommonException ce) {
-			handleExceptionInUI(ce);
+			if(ContentAssistPreferences.ShowDialogIfContentAssistErrors.get()) {
+				handleExceptionInUI(ce);
+			} else {
+				LangCore.logError(LangUIMessages.ContentAssistProcessor_opName, ce);
+			}
 			setAndDisplayErrorMessage(ce.getMessage());
 			return null;
 		}
