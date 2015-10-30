@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
@@ -36,7 +35,7 @@ import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class LangProjectBuildConfigurationComponent extends AbstractValidatedBlockExt 
+public class ProjectBuildConfigurationComponent extends AbstractValidatedBlockExt 
 	implements IPreferencesWidget {
 	
 	protected final IProject project;
@@ -46,7 +45,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractVal
 	protected final HashMap2<String, BuildTargetData> buildOptionsToChange = new HashMap2<>();
 	protected BuildTargetData buildTargetData = new BuildTargetData();
 	
-	public LangProjectBuildConfigurationComponent(IProject project) {
+	public ProjectBuildConfigurationComponent(IProject project) {
 		this.project = project;
 		initialize();
 	}
@@ -131,7 +130,7 @@ public abstract class LangProjectBuildConfigurationComponent extends AbstractVal
 			
 			@Override
 			public String getBuildTargetName() {
-				return LangProjectBuildConfigurationComponent.this.getBuildTargetName();
+				return ProjectBuildConfigurationComponent.this.getBuildTargetName();
 			}
 			
 			@Override

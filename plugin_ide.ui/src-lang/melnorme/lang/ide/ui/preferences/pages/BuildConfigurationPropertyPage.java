@@ -8,16 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.dialogs;
+package melnorme.lang.ide.ui.preferences.pages;
 
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
+import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
+import melnorme.lang.ide.ui.preferences.ProjectBuildConfigurationComponent;
 
-public abstract class LangBuildConfigurationPropertyPage extends AbstractLangPropertyPage {
+public abstract class BuildConfigurationPropertyPage extends AbstractLangPropertyPage {
 	
-	public LangBuildConfigurationPropertyPage() {
+	public BuildConfigurationPropertyPage() {
 		super();
 		noDefaultAndApplyButton();
 	}
@@ -25,11 +26,11 @@ public abstract class LangBuildConfigurationPropertyPage extends AbstractLangPro
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected abstract LangProjectBuildConfigurationComponent createProjectConfigWidget(IProject project);
+	protected abstract ProjectBuildConfigurationComponent createProjectConfigWidget(IProject project);
 	
 	@Override
-	public LangProjectBuildConfigurationComponent getPreferencesWidget() {
-		return (LangProjectBuildConfigurationComponent) super.getPreferencesWidget();
+	public ProjectBuildConfigurationComponent getPreferencesWidget() {
+		return (ProjectBuildConfigurationComponent) super.getPreferencesWidget();
 	}
 	
 	@Override

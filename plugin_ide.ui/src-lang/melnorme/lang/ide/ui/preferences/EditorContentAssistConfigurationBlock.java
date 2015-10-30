@@ -16,9 +16,9 @@ import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.util.swt.components.fields.CheckBoxField;
 
-public class LangEditorContentAssistConfigurationBlock extends AbstractPreferencesBlock {
+public class EditorContentAssistConfigurationBlock extends AbstractPreferencesBlock {
 	
-	public LangEditorContentAssistConfigurationBlock() {
+	public EditorContentAssistConfigurationBlock() {
 		super();
 	}
 	

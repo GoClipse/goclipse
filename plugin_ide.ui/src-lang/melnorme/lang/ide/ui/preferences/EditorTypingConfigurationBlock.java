@@ -25,9 +25,9 @@ import melnorme.util.swt.components.fields.NumberField;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import melnorme.utilbox.fields.IFieldValueListener;
 
-public class LangEditorTypingConfigurationBlock extends AbstractPreferencesBlock {
+public class EditorTypingConfigurationBlock extends AbstractPreferencesBlock {
 	
-	public LangEditorTypingConfigurationBlock() {
+	public EditorTypingConfigurationBlock() {
 		super();
 	}
 	

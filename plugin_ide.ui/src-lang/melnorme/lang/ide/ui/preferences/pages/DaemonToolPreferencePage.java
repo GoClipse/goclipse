@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.tools;
+package melnorme.lang.ide.ui.preferences.pages;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -29,9 +29,9 @@ import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.FileTextField;
 
-public abstract class AbstractDeamonToolPrefPage extends AbstractPreferencesBlockPrefPage {
+public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
-	public AbstractDeamonToolPrefPage() {
+	public DaemonToolPreferencePage() {
 	}
 	
 	@Override

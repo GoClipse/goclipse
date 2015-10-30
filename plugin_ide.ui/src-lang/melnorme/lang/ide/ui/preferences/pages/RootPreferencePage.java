@@ -8,25 +8,28 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.ui.preferences.pages;
 
 
+import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
-public abstract class LangEditorTypingPreferencePage extends AbstractPreferencesBlockPrefPage {
+public abstract class RootPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
-	public LangEditorTypingPreferencePage() {
+	public RootPreferencePage() {
 		super();
-	}
-	
-	@Override
-	protected LangEditorTypingConfigurationBlock init_createPreferencesBlock() {
-		return new LangEditorTypingConfigurationBlock();
 	}
 	
 	@Override
 	protected String getHelpId() {
 		return null;
 	}
+	
+	@Override
+	protected LangSDKConfigBlock init_createPreferencesBlock() {
+		return init_createLangSDKConfigBlock();
+	}
+	
+	protected abstract LangSDKConfigBlock init_createLangSDKConfigBlock();
 	
 }

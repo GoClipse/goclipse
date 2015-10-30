@@ -24,11 +24,11 @@ import melnorme.lang.ide.ui.preferences.EditorAppearanceColorsComponent.EditorCo
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.util.swt.components.fields.CheckBoxField;
 
-public class LangEditorConfigurationBlock extends AbstractPreferencesBlock {
+public class EditorConfigurationBlock extends AbstractPreferencesBlock {
 	
 	protected final IPreferenceStore store; // TODO: remove
 	
-	public LangEditorConfigurationBlock(IPreferenceStore store) {
+	public EditorConfigurationBlock(IPreferenceStore store) {
 		super();
 		this.store = assertNotNull(store);
 	}
