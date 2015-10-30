@@ -205,7 +205,7 @@
 	
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
-			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_Root__PreferencePage"
+			class="LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_RootPreferencePage"
 			id=   "LANG_PROJECT_ID.ide.ui.PreferencePages.Root"
 			name="%RootPreferencePage.name">
 			<keywordReference id="LANG_PROJECT_ID.ide.ui.RootPreferencePage"/>

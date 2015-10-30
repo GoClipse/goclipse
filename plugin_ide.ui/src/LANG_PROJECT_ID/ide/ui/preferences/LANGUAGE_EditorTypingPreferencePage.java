@@ -10,10 +10,10 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.preferences;
 
-import melnorme.lang.ide.ui.preferences.LangEditorTypingPreferencePage;
+import melnorme.lang.ide.ui.preferences.pages.EditorTypingPreferencePage;
 
 
-public class LANGUAGE_EditorTypingPreferencePage extends LangEditorTypingPreferencePage {
+public class LANGUAGE_EditorTypingPreferencePage extends EditorTypingPreferencePage {
 	
 	public LANGUAGE_EditorTypingPreferencePage() {
 	}

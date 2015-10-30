@@ -12,15 +12,15 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.ui.dialogs.LangBuildConfigurationPropertyPage;
-import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
+import melnorme.lang.ide.ui.preferences.ProjectBuildConfigurationComponent;
+import melnorme.lang.ide.ui.preferences.pages.BuildConfigurationPropertyPage;
 
 
-public class LANGUAGE_BuildConfigurationPropertyPage extends LangBuildConfigurationPropertyPage {
+public class LANGUAGE_BuildConfigurationPropertyPage extends BuildConfigurationPropertyPage {
 	
 	@Override
-	protected LangProjectBuildConfigurationComponent createProjectConfigWidget(IProject project) {
-		return new LangProjectBuildConfigurationComponent(project) {
+	protected ProjectBuildConfigurationComponent createProjectConfigWidget(IProject project) {
+		return new ProjectBuildConfigurationComponent(project) {
 		};
 	}
 	

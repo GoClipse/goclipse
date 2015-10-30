@@ -10,8 +10,8 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.preferences;
 
-import melnorme.lang.ide.ui.preferences.LangRootPreferencePage;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
+import melnorme.lang.ide.ui.preferences.pages.RootPreferencePage;
 import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.tooling.ops.SDKLocationValidator;
 
@@ -19,15 +19,10 @@ import melnorme.lang.tooling.ops.SDKLocationValidator;
 /**
  * The main/root preference page.
  */
-public class LANGUAGE_Root__PreferencePage extends LangRootPreferencePage {
+public class LANGUAGE_RootPreferencePage extends RootPreferencePage {
 	
-	public LANGUAGE_Root__PreferencePage() {
+	public LANGUAGE_RootPreferencePage() {
 		super();
-	}
-	
-	@Override
-	protected String getHelpId() {
-		return null;
 	}
 	
 	@Override

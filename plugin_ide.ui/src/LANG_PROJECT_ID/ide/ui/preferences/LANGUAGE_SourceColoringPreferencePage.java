@@ -27,8 +27,8 @@ public class LANGUAGE_SourceColoringPreferencePage extends AbstractPreferencesBl
 	}
 	
 	@Override
-	protected SourceColoringConfigurationBlock init_createPreferencesBlock() {
-		return new SourceColoringConfigurationBlock();
+	protected LANGUAGE_SourceColoringConfigurationBlock init_createPreferencesBlock() {
+		return new LANGUAGE_SourceColoringConfigurationBlock();
 	}
 	
 }

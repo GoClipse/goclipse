@@ -12,7 +12,7 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.EditorConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
 
@@ -23,8 +23,8 @@ public class LANGUAGE_EditorPreferencePage extends AbstractPreferencesBlockPrefP
 	}
 	
 	@Override
-	protected LangEditorConfigurationBlock init_createPreferencesBlock() {
-		return new LangEditorConfigurationBlock(LangUIPlugin.getInstance().getPreferenceStore());
+	protected EditorConfigurationBlock init_createPreferencesBlock() {
+		return new EditorConfigurationBlock(LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

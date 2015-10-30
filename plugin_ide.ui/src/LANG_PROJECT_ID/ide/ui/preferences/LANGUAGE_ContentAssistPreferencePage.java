@@ -11,7 +11,7 @@
 package LANG_PROJECT_ID.ide.ui.preferences;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.LangEditorContentAssistConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.EditorContentAssistConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
@@ -25,7 +25,7 @@ public class LANGUAGE_ContentAssistPreferencePage extends AbstractPreferencesBlo
 	
 	@Override
 	protected AbstractPreferencesBlock init_createPreferencesBlock() {
-		return new LangEditorContentAssistConfigurationBlock();
+		return new EditorContentAssistConfigurationBlock();
 	}
 	
 	@Override
