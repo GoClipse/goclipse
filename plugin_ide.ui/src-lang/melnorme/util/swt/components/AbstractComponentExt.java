@@ -19,13 +19,6 @@ public abstract class AbstractComponentExt extends AbstractComponent implements 
 	}
 	
 	@Override
-	public void _verifyContract() {
-		_verifyContract_setEnabled();
-	}
-	
-	protected void _verifyContract_setEnabled() {
-		// Verify the contract of IDisableableComponent
-		IDisableableComponent.super._verifyContract();
-	}
+	public abstract void setEnabled(boolean enabled);
 	
 }

@@ -19,9 +19,9 @@ import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.AbstractCompositeComponent;
 import melnorme.util.swt.components.FieldComponent;
+import melnorme.util.swt.components.IDisableableComponent;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.utilbox.collections.Indexable;
@@ -94,7 +94,7 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		}
 		
 		@Override
-		protected Indexable<AbstractComponentExt> getSubComponents() {
+		protected Indexable<IDisableableComponent> getSubComponents() {
 			return list(sdkLocationField);
 		}
 		

@@ -13,20 +13,16 @@ package melnorme.lang.ide.ui.preferences;
 
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.util.swt.components.IDisableableComponent;
 
 public abstract class AbstractPreferencesBlockExt extends AbstractPreferencesBlock 
-	implements IPreferencesWidget, IDisableableComponent {
+	implements IDisableableComponent {
 	
 	public AbstractPreferencesBlockExt(PreferencesPageContext prefContext) {
 		super(prefContext);
 	}
 	
 	@Override
-	public void _verifyContract() {
-		// Verify the contract of IDisableableComponent
-		IDisableableComponent.super._verifyContract();
-	}
+	public abstract void setEnabled(boolean enabled);
 	
 }

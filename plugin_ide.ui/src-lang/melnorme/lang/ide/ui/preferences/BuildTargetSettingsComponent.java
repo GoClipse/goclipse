@@ -91,6 +91,7 @@ public class BuildTargetSettingsComponent extends AbstractComponent {
 			new GridData(GridData.FILL_HORIZONTAL));
 	}
 	
+	@Override
 	public void setEnabled(boolean enabled) {
 		buildArgumentsField.setEnabled(enabled);
 		programPathField.setEnabled(enabled);

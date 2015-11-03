@@ -48,8 +48,8 @@ import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractComponent;
-import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.AbstractCompositeComponent;
+import melnorme.util.swt.components.IDisableableComponent;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.TextFieldComponent;
@@ -179,7 +179,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 		
 		@Override
-		protected Indexable<AbstractComponentExt> getSubComponents() {
+		protected Indexable<IDisableableComponent> getSubComponents() {
 			return list(textField);
 		}
 		

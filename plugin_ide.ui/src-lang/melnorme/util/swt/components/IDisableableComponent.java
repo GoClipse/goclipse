@@ -16,11 +16,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-public interface IDisableableComponent {
+public interface IDisableableComponent extends IWidgetComponent {
 	
 	void setEnabled(boolean enabled);
 	
-	default void _verifyContract() {
+	default void _IDisableableComponent$verifyContract() {
 		_verify_setEnabled(getClass());
 	}
 	
