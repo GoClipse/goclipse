@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
+import static melnorme.utilbox.core.CoreUtil.list;
+
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
@@ -18,13 +20,15 @@ import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.AbstractCompositeComponent;
 import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
+import melnorme.utilbox.collections.Indexable;
 
 public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 	
-	public final LanguageSDKLocationGroup2 sdkLocationGroup;
+	public final LanguageSDKLocationGroup sdkLocationGroup;
 	
 	public LangSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
@@ -32,8 +36,8 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		this.sdkLocationGroup = init_createSDKLocationGroup();
 	}
 	
-	protected LanguageSDKLocationGroup2 init_createSDKLocationGroup() {
-		return new LanguageSDKLocationGroup2();
+	protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
+		return new LanguageSDKLocationGroup();
 	}
 	
 	public FieldComponent<String> getLocationField() {
@@ -57,11 +61,11 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		sdkLocationGroup.setEnabled(enabled);
 	}
 	
-	public class LanguageSDKLocationGroup2 extends AbstractComponentExt {
+	public class LanguageSDKLocationGroup extends AbstractCompositeComponent {
 		
 		public final ButtonTextField sdkLocationField = createSdkLocationField();
 		
-		public LanguageSDKLocationGroup2() {
+		public LanguageSDKLocationGroup() {
 			initBindings();
 		}
 		
@@ -90,17 +94,12 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		}
 		
 		@Override
-		protected void createContents(Composite topControl) {
-			sdkLocationField.createComponentInlined(topControl);
+		protected Indexable<AbstractComponentExt> getSubComponents() {
+			return list(sdkLocationField);
 		}
 		
 		@Override
 		public void updateComponentFromInput() {
-		}
-		
-		@Override
-		public void setEnabled(boolean enabled) {
-			sdkLocationField.setEnabled(enabled);
 		}
 		
 	}
