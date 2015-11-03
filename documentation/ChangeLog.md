@@ -1,5 +1,6 @@
 ## release ChangeLog
  * Added gocode preference to enable/disable showing the error dialog if failures occur during Content Assist.
+ * Fixed: in New Go File Wizard, "Browse" button not working. 
 
 ### 0.13.0
  * Added support for Eclipse dark theme (#131). Namely:  
