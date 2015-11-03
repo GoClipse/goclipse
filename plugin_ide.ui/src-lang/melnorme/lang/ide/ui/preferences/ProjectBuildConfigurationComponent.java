@@ -26,17 +26,18 @@ import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
-import melnorme.lang.ide.ui.preferences.common.AbstractValidatedBlockExt;
+import melnorme.lang.ide.ui.preferences.common.AbstractValidatedBlock;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.IDisableableComponent;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 
-public class ProjectBuildConfigurationComponent extends AbstractValidatedBlockExt 
-	implements IPreferencesWidget {
+public class ProjectBuildConfigurationComponent extends AbstractValidatedBlock 
+	implements IPreferencesWidget, IDisableableComponent {
 	
 	protected final IProject project;
 	protected final BuildTargetField buildTargetField = init_createBuildTargetField();

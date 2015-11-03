@@ -16,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.utilbox.core.UnsupportedOperation;
 
 /**
  * Common class for UI components, or composite widgets, using SWT.
@@ -30,6 +31,7 @@ public abstract class AbstractComponent implements IWidgetComponent {
 	}
 	
 	protected void _verifyContract() {
+		_verifyContract_IDisableableComponent();
 	}
 	
 	@Override
@@ -63,6 +65,20 @@ public abstract class AbstractComponent implements IWidgetComponent {
 	public abstract int getPreferredLayoutColumns();
 	
 	protected abstract void createContents(Composite topControl);
+	
+	/* ----------------- optional setEnabled ----------------- */
+	
+	protected void _verifyContract_IDisableableComponent() {
+		if(this instanceof IDisableableComponent) {
+			IDisableableComponent disableableComponent = (IDisableableComponent) this;
+			disableableComponent._IDisableableComponent$verifyContract(); // Eagerly verify contract 
+		}
+	}
+	
+	@SuppressWarnings("unused") 
+	protected void setEnabled(boolean enabled) throws UnsupportedOperation {
+		throw new UnsupportedOperation();
+	}
 	
 	/* ----------------- util ----------------- */
 	

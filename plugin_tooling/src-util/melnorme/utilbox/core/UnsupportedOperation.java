@@ -8,16 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences.common;
+package melnorme.utilbox.core;
 
-
-import melnorme.util.swt.components.IDisableableComponent;
-
-public abstract class AbstractValidatedBlockExt extends AbstractValidatedBlock implements IDisableableComponent {
+/**
+ * Similar to {@link UnsupportedOperationException} but is a checked exception.
+ */
+public class UnsupportedOperation extends Exception {
 	
-	@Override
-	public void _verifyContract() {
-		IDisableableComponent.super._verifyContract();
+	private static final long serialVersionUID = 421240391164727792L;
+	
+	public UnsupportedOperation() {
 	}
 	
 }
