@@ -11,7 +11,7 @@
 package melnorme.util.swt.components;
 
 /**
- * An {@link AbstractComponent} with {@link #setEnabled(boolean)} functionality.
+ * An {@link AbstractComponent} extended with {@link #setEnabled(boolean)} functionality.
  */
 public abstract class AbstractComponentExt extends AbstractComponent implements IDisableableComponent {
 	
@@ -20,6 +20,10 @@ public abstract class AbstractComponentExt extends AbstractComponent implements 
 	
 	@Override
 	public void _verifyContract() {
+		_verifyContract_setEnabled();
+	}
+	
+	protected void _verifyContract_setEnabled() {
 		// Verify the contract of IDisableableComponent
 		IDisableableComponent.super._verifyContract();
 	}
