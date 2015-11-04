@@ -76,7 +76,8 @@
 		name="Go Project Builder"
 		point="org.eclipse.core.resources.builders">
 		<builder
-			callOnEmptyDelta="true">
+			callOnEmptyDelta="true"
+			isConfigurable="true">
 			<run class="com.googlecode.goclipse.core.operations.GoBuilder"/>
 		</builder>
 	</extension>

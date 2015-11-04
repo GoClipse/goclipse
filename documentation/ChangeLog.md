@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Project builder is no longer invoked when workspace "Build Automatically" setting is enabled and a file is saved. (this was considered a misfeature anyways)
  * Added gocode preference to enable/disable showing the error dialog if failures occur during Content Assist.
  * Fixed: in New Go File Wizard, "Browse" button not working.
  * Fixed: "Restore Defaults" in "Go Compiler" settings page sometimes causes GOPATH field to be enabled when it shouldn't. 
