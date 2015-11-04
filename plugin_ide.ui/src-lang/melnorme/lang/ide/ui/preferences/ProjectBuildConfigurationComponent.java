@@ -55,7 +55,7 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	}
 	protected BuildTargetSettingsComponent init_createBuildTargetSettingsComponent() {
 		return new BuildTargetSettingsComponent(
-			getValidator()::getDefaultBuildArguments2, getValidator()::getDefaultBuildArguments2);
+			getValidator()::getDefaultBuildArguments, getValidator()::getDefaultExecutablePath);
 	}
 	
 	public BuildTargetField getBuildTargetField() {

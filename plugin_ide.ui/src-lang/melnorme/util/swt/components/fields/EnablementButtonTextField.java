@@ -66,7 +66,7 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 			try {
 				setFieldValue(getDefaultFieldValue());
 			} catch(CommonException e) {
-				// Do nothing;
+				setFieldValue("");
 			}
 		}
 	}
