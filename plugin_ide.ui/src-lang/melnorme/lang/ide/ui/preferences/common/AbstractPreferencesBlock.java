@@ -31,7 +31,7 @@ import melnorme.util.swt.components.fields.NumberField;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.IProperty;
 
-public abstract class AbstractPreferencesBlock extends AbstractValidatedBlock implements IPreferencesWidget {
+public abstract class AbstractPreferencesBlock extends AbstractWidgetExt implements IPreferencesWidget {
 	
 	protected final ArrayList2<IPreferencesEditor> prefAdapters = new ArrayList2<>();
 	protected final PreferencesPageContext prefContext;

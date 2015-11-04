@@ -16,15 +16,19 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-public interface IDisableableComponent extends IWidgetComponent {
+public interface IDisableableWidget extends IWidgetComponent {
 	
+	/**
+	 * Enable or disable the entire widget. Can be set even before the widget is created.
+	 */
 	void setEnabled(boolean enabled);
+	
+	
+	/* -----------------  ----------------- */
 	
 	default void _IDisableableComponent$verifyContract() {
 		_verify_setEnabled(getClass());
 	}
-	
-	/* -----------------  ----------------- */
 	
 	public static void _verify_setEnabled(Class<?> klass) {
 		boolean needsMethodOverride = false;
@@ -46,6 +50,9 @@ public interface IDisableableComponent extends IWidgetComponent {
 			
 			for(Method method : klass.getDeclaredMethods()) {
 				if(method.getName().equals("setEnabled")) {
+					return;
+				}
+				if(method.getName().equals("doSetEnabled")) {
 					return;
 				}
 			}

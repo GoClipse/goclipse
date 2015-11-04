@@ -85,7 +85,7 @@ public class TextFieldComponent extends LabelledFieldComponent<String> {
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
+	protected void doSetEnabled(boolean enabled) {
 		SWTUtil.setEnabledIfOk(label, enabled);
 		SWTUtil.setEnabledIfOk(text, enabled);
 	}

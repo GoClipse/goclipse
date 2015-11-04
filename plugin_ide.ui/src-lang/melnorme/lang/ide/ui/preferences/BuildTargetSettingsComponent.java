@@ -22,13 +22,13 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
-import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
 
-public class BuildTargetSettingsComponent extends AbstractComponent {
+public class BuildTargetSettingsComponent extends AbstractWidget {
 	
 	protected final CommonGetter<String> getDefaultBuildTargetArguments;
 	public final BuildArgumentsField buildArgumentsField;
@@ -91,7 +91,6 @@ public class BuildTargetSettingsComponent extends AbstractComponent {
 			new GridData(GridData.FILL_HORIZONTAL));
 	}
 	
-	@Override
 	public void setEnabled(boolean enabled) {
 		buildArgumentsField.setEnabled(enabled);
 		programPathField.setEnabled(enabled);

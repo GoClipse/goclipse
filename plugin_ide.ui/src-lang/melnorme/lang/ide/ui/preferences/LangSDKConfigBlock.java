@@ -19,9 +19,9 @@ import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractCompositeComponent;
+import melnorme.util.swt.components.AbstractCompositeWidget;
 import melnorme.util.swt.components.FieldComponent;
-import melnorme.util.swt.components.IDisableableComponent;
+import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.utilbox.collections.Indexable;
@@ -61,7 +61,7 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		sdkLocationGroup.setEnabled(enabled);
 	}
 	
-	public class LanguageSDKLocationGroup extends AbstractCompositeComponent {
+	public class LanguageSDKLocationGroup extends AbstractCompositeWidget {
 		
 		public final ButtonTextField sdkLocationField = createSdkLocationField();
 		
@@ -94,18 +94,10 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		}
 		
 		@Override
-		protected Indexable<IDisableableComponent> getSubComponents() {
+		protected Indexable<IDisableableWidget> getSubWidgets() {
 			return list(sdkLocationField);
 		}
 		
-		@Override
-		public void updateComponentFromInput() {
-		}
-		
-	}
-	
-	@Override
-	public void updateComponentFromInput() {
 	}
 	
 }

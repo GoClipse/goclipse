@@ -133,7 +133,7 @@ public class RadioSelectionField<E extends Enum<?>> extends LabelledFieldCompone
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
+	protected void doSetEnabled(boolean enabled) {
 		for(Button button : radioButtons) {
 			SWTUtil.setEnabledIfOk(button, enabled);
 		}

@@ -26,18 +26,17 @@ import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
-import melnorme.lang.ide.ui.preferences.common.AbstractValidatedBlock;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.IDisableableComponent;
+import melnorme.util.swt.components.AbstractDisableableWidget;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 
-public class ProjectBuildConfigurationComponent extends AbstractValidatedBlock 
-	implements IPreferencesWidget, IDisableableComponent {
+public class ProjectBuildConfigurationComponent extends AbstractDisableableWidget 
+	implements IPreferencesWidget {
 	
 	protected final IProject project;
 	protected final BuildTargetField buildTargetField = init_createBuildTargetField();
@@ -186,16 +185,9 @@ public class ProjectBuildConfigurationComponent extends AbstractValidatedBlock
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
+	protected void doSetEnabled(boolean enabled) {
 		buildTargetField.setEnabled(enabled);
-		buildTargetSettings.setEnabled(enabled);
-	}
-	
-	/* ----------------- ----------------- */
-	
-	@Override
-	public void updateComponentFromInput() {
-		setEnabled(getBuildTargetName() != null);
+		buildTargetSettings.setEnabled(enabled && getBuildTargetName() != null);
 	}
 	
 	/* ----------------- apply/restore ----------------- */

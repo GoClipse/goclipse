@@ -69,7 +69,7 @@ public class CheckBoxField extends LabelledFieldComponent<Boolean> {
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
+	protected void doSetEnabled(boolean enabled) {
 		SWTUtil.setEnabledIfOk(checkBox, enabled);
 	}
 	

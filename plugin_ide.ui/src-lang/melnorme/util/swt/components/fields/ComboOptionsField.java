@@ -141,7 +141,7 @@ public class ComboOptionsField extends LabelledFieldComponent<String> {
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
+	protected void doSetEnabled(boolean enabled) {
 		SWTUtil.setEnabledIfOk(getFieldControl(), enabled);
 	}
 	
