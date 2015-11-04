@@ -15,13 +15,13 @@ import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.lang.tooling.data.IValidatableField;
 import melnorme.lang.tooling.data.IValidationSource;
 import melnorme.lang.tooling.data.MultipleFieldValidation;
-import melnorme.util.swt.components.AbstractComponent;
+import melnorme.util.swt.components.AbstractWidget;
 
-public abstract class AbstractValidatedBlock extends AbstractComponent implements IValidationSource {
+public abstract class AbstractWidgetExt extends AbstractWidget implements IValidationSource {
 	
 	protected final MultipleFieldValidation validation = new MultipleFieldValidation();
 	
-	public AbstractValidatedBlock() {
+	public AbstractWidgetExt() {
 		super();
 	}
 	

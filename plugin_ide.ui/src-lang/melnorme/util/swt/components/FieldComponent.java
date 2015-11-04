@@ -22,7 +22,7 @@ import melnorme.utilbox.fields.IFieldValueListener;
  * Field component with a field value that can be manipulated (get/set) even if the 
  * componented is not created.
  */
-public abstract class FieldComponent<VALUE> extends AbstractComponentExt 
+public abstract class FieldComponent<VALUE> extends AbstractDisableableWidget 
 	implements IModelField<VALUE> {
 	
 	private final DomainField<VALUE> domainField;
@@ -91,7 +91,7 @@ public abstract class FieldComponent<VALUE> extends AbstractComponentExt
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void updateComponentFromInput() {
+	public void doUpdateComponentFromInput() {
 		if(isCreated()) {
 			doUpdateComponentFromValue();
 		}

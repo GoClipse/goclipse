@@ -127,17 +127,9 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled && !isUseDefault());
+	protected void doSetEnabled(boolean enabled) {
+		super.doSetEnabled(enabled && !isUseDefault());
 		useDefaultField.setEnabled(enabled);
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Override
-	public void updateComponentFromInput() {
-		super.updateComponentFromInput();
-		super.setEnabled(!isUseDefault());
 	}
 	
 }

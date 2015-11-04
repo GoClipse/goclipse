@@ -133,7 +133,7 @@ public class ComboBoxField extends LabelledFieldComponent<Integer> {
 	}
 	
 	@Override
-	public void setEnabled(boolean enabled) {
+	protected void doSetEnabled(boolean enabled) {
 		SWTUtil.setEnabledIfOk(combo, enabled);
 	}
 	

@@ -47,9 +47,9 @@ import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.AbstractComponent;
-import melnorme.util.swt.components.AbstractCompositeComponent;
-import melnorme.util.swt.components.IDisableableComponent;
+import melnorme.util.swt.components.AbstractWidget;
+import melnorme.util.swt.components.AbstractCompositeWidget;
+import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.TextFieldComponent;
@@ -151,7 +151,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 	}
 	
-	public static class NameGroup extends AbstractCompositeComponent {
+	public static class NameGroup extends AbstractCompositeWidget {
 		
 		protected TextFieldComponent textField = new TextFieldComponent(WizardMessages.LangNewProject_NameGroup_label);
 		
@@ -179,12 +179,8 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 		
 		@Override
-		protected Indexable<IDisableableComponent> getSubComponents() {
+		protected Indexable<IDisableableWidget> getSubWidgets() {
 			return list(textField);
-		}
-		
-		@Override
-		public void updateComponentFromInput() {
 		}
 		
 		public void postSetFocus() {
@@ -217,12 +213,6 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 		protected String getProjectName() {
 			return nameGroup.getName();
-		}
-		
-		@Override
-		public void setEnabled(boolean enabled) {
-			super.setEnabled(enabled);
-			nameGroup.setEnabled(enabled);
 		}
 		
 		protected boolean isDefaultLocation() {
@@ -293,7 +283,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 	}
 	
-	public class ProjectValidationGroup extends AbstractComponent {
+	public class ProjectValidationGroup extends AbstractWidget {
 		
 		protected Label icon;
 		protected Link hintText;

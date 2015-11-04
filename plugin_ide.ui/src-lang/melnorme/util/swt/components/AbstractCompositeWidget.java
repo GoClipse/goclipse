@@ -14,26 +14,26 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.utilbox.collections.Indexable;
 
-public abstract class AbstractCompositeComponent extends AbstractComponentExt implements IDisableableComponent {
+public abstract class AbstractCompositeWidget extends AbstractDisableableWidget implements IDisableableWidget {
 	
-	public AbstractCompositeComponent() {
+	public AbstractCompositeWidget() {
 	}
 	
 	@Override
 	protected final void createContents(Composite topControl) {
-		getSubComponents().forEach(subComponent -> {
+		getSubWidgets().forEach(subComponent -> {
 			subComponent.createComponentInlined(topControl);
 		});
 	}
 	
 	@Override
-	public final void setEnabled(boolean enabled) {
-		getSubComponents().forEach(subComponent -> {
+	protected final void doSetEnabled(boolean enabled) {
+		getSubWidgets().forEach(subComponent -> {
 			subComponent.setEnabled(enabled);
 		});
 	}
 	
-	protected abstract Indexable<IDisableableComponent> getSubComponents();
+	protected abstract Indexable<IDisableableWidget> getSubWidgets();
 	
 	@Override
 	protected void _verifyContract_IDisableableComponent() {

@@ -100,8 +100,8 @@ public abstract class ButtonTextField extends TextFieldComponent {
 			throws CoreException, CommonException, OperationCancellation;
 	
 	@Override
-	public void setEnabled(boolean enabled) {
-		super.setEnabled(enabled);
+	protected void doSetEnabled(boolean enabled) {
+		super.doSetEnabled(enabled);
 		SWTUtil.setEnabledIfOk(button, enabled);
 	}
 	

@@ -16,7 +16,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTLayoutUtil;
-import melnorme.utilbox.core.UnsupportedOperation;
 
 /**
  * Common class for UI components, or composite widgets, using SWT.
@@ -24,9 +23,9 @@ import melnorme.utilbox.core.UnsupportedOperation;
  *  the standard way - only one child control is created under parent. 
  *  inlined - many child controls created under parent control. This allows more flexibility for more complex layouts. 
  */
-public abstract class AbstractComponent implements IWidgetComponent {
+public abstract class AbstractWidget implements IWidgetComponent {
 	
-	public AbstractComponent() {
+	public AbstractWidget() {
 		_verifyContract();
 	}
 	
@@ -42,6 +41,12 @@ public abstract class AbstractComponent implements IWidgetComponent {
 		return topControl;
 	}
 	
+	/** Do {@link #createComponent(Composite)}, and also set the layout data of created Control.  */
+ 	public final Composite createComponent(Composite parent, Object layoutData) {
+ 		Composite control = createComponent(parent);
+ 		return SWTLayoutUtil.setLayoutData(control, layoutData);
+ 	}
+ 	
 	@Override
 	public void createComponentInlined(Composite parent) {
 		createContents(parent);
@@ -69,25 +74,12 @@ public abstract class AbstractComponent implements IWidgetComponent {
 	/* ----------------- optional setEnabled ----------------- */
 	
 	protected void _verifyContract_IDisableableComponent() {
-		if(this instanceof IDisableableComponent) {
-			IDisableableComponent disableableComponent = (IDisableableComponent) this;
+		if(this instanceof IDisableableWidget) {
+			IDisableableWidget disableableComponent = (IDisableableWidget) this;
 			disableableComponent._IDisableableComponent$verifyContract(); // Eagerly verify contract 
 		}
 	}
 	
-	@SuppressWarnings("unused") 
-	protected void setEnabled(boolean enabled) throws UnsupportedOperation {
-		throw new UnsupportedOperation();
-	}
-	
-	/* ----------------- util ----------------- */
-	
-	/** Do {@link #createComponent(Composite)}, and also set the layout data of created Control.  */
- 	public final Composite createComponent(Composite parent, Object layoutData) {
- 		Composite control = createComponent(parent);
- 		return SWTLayoutUtil.setLayoutData(control, layoutData);
- 	}
- 	
 	/* -----------------  ----------------- */
 	
 	/** 
