@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -155,6 +156,11 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		assertTrue(kind != CLEAN_BUILD);
 		
+		if(kind == AUTO_BUILD && !isAutoBuildSupported()) {
+			LangNature.disableAutoBuildMode(getProject(), getCommand().getBuilderName(), monitor);
+			return null;
+		}
+		
 		IProject project = assertNotNull(getProject());
 		
 		try {
@@ -184,6 +190,10 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			}
 		}
 		
+	}
+	
+	protected boolean isAutoBuildSupported() {
+		return false;
 	}
 	
 	@SuppressWarnings("unused")

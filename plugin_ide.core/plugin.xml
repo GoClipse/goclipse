@@ -61,7 +61,8 @@
 		id="Builder"
 		name="%Builder_Name">
 		<builder
-			callOnEmptyDelta="true">
+			callOnEmptyDelta="true"
+			isConfigurable="true">
 			<run class="LANG_PROJECT_ID.ide.core.operations.LANGUAGE_Builder" />
 		</builder>
 	</extension>

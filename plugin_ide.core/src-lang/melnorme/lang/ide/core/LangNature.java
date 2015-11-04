@@ -17,7 +17,9 @@ import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 public abstract class LangNature implements IProjectNature {
 	
@@ -57,6 +59,7 @@ public abstract class LangNature implements IProjectNature {
 		if (commandIndex == -1) {
 			ICommand command = description.newCommand();
 			command.setBuilderName(builderID);
+			command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
 			
 			// Add a build command to the build spec
 			ICommand[] newCommands = ArrayUtil.prepend(command, commands);
@@ -76,6 +79,19 @@ public abstract class LangNature implements IProjectNature {
 			description.setBuildSpec(commands);
 			project.setDescription(description, null);
 		}
+	}
+	
+	public static void disableAutoBuildMode(IProject project, String builderId, IProgressMonitor monitor) 
+			throws CoreException {
+		IProjectDescription description = project.getDescription();
+		ICommand[] buildSpec = description.getBuildSpec();
+		for(ICommand command : buildSpec) {
+			if(command.getBuilderName().equals(builderId)) {
+				command.setBuilding(IncrementalProjectBuilder.AUTO_BUILD, false);
+			}
+		}
+		description.setBuildSpec(buildSpec);
+		project.setDescription(description, monitor);
 	}
 	
 	protected static int getCommandIndex(ICommand[] buildSpec, String builderID) {
