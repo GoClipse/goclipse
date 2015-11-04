@@ -78,7 +78,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		return new ProjectValidationGroup();
 	}
 	protected LocationGroup createLocationGroup() {
-		return new LocationGroup(nameGroup);
+		return new LocationGroup();
 	}
 	protected PreferencesValidationGroup createPreferencesValidationGroup() {
 		return new PreferencesValidationGroup();
@@ -195,19 +195,15 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 	
 	/* ----------------- Location ----------------- */
 	
-	public static class LocationGroup extends EnablementButtonTextField {
+	public class LocationGroup extends EnablementButtonTextField {
 		
-		protected final NameGroup nameGroup;
-		
-		public LocationGroup(NameGroup nameGroup) {
+		public LocationGroup() {
 			super(
 				WizardMessages.LangNewProject_Location_Directory_label, 
 				WizardMessages.LangNewProject_Location_UseDefault_Label, 
 				WizardMessages.LangNewProject_Location_Directory_buttonLabel
 			);
 		
-			this.nameGroup = nameGroup;
-			
 			nameGroup.getNameField().addListener(this::updateDefaultFieldValue);
 		}
 		
