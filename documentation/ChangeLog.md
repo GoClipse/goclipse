@@ -1,8 +1,11 @@
 ## release ChangeLog
+
+### (NextVersion)
  * Added gocode preference to enable/disable showing the error dialog if failures occur during Content Assist.
  * Fixed: in New Go File Wizard, "Browse" button not working.
  * Fixed: "Restore Defaults" in "Go Compiler" settings page sometimes causes GOPATH field to be enabled when it shouldn't. 
-
+ * Fixed: project Build Targets settings pages shows wrong default for Program Path field
+ 
 ### 0.13.0
  * Added support for Eclipse dark theme (#131). Namely:  
    * Syntax/source coloring now have different settings for dark theme.

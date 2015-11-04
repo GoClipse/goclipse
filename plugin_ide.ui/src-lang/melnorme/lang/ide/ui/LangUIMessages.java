@@ -43,7 +43,7 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 			"Build Target:";
 	
 	public static final String BuildTargetSettings_ProgramPathField_title = 
-			"Program path (for launches):";
+			"(Optional) Path of generated executable:";
 	
 	public static final String Fields_BuildArguments = "Build Arguments:";
 
@@ -54,7 +54,7 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 			"Use Build Target settings";
 	
 	public static final String LaunchTab_ProgramPathField_title = 
-			"Program path:";
+			"Path of launch executable:";
 	public static String LaunchTab_ProgramPathField__searchButton = 
 			"Browse...";
 	public static String ProgramPathDialog_title = 

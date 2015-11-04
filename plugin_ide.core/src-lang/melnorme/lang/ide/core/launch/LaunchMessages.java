@@ -9,14 +9,14 @@ public class LaunchMessages {
 	public static final String PROCESS_LAUNCH_NoSuchBuildTarget = 
 			"Build target does not exist";
 	public static final String BuildTarget_NoArtifactPathSpecified = 
-			"No executable path specified for Build Target.";
+			"No path specified for the launch executable.";
 	
 	public static String MSG_BuildTarget_NoExecutableAvailable() {
-		return "No executable available from the build target.";
+		return "No launch executable specified by the Build Target.";
 	}
 	
 	public static String MSG_BuildTarget_MultipleExecutablesAvailable() {
-		return "Multiple executables available from the build target.";
+		return "Multiple launch executables available from the Build Target.";
 	}
 	
 	/* -----------------  ----------------- */
