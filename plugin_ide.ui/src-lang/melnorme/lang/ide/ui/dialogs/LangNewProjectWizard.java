@@ -12,8 +12,6 @@ package melnorme.lang.ide.ui.dialogs;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.net.URI;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -22,6 +20,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IPageChangingListener;
 import org.eclipse.jface.dialogs.PageChangingEvent;
@@ -73,8 +72,8 @@ public abstract class LangNewProjectWizard extends Wizard
 		}
 	}
 	
-	public URI getProjectLocation() {
-		return getFirstPage().getProjectLocationUri();
+	public IPath getProjectLocation2() {
+		return getFirstPage().getProjectLocation();
 	}
 	
 	/**
@@ -167,8 +166,8 @@ public abstract class LangNewProjectWizard extends Wizard
 		}
 		
 		@Override
-		public URI getProjectLocation() {
-			return LangNewProjectWizard.this.getProjectLocation();
+		public IPath getProjectLocation2() {
+			return LangNewProjectWizard.this.getProjectLocation2();
 		}
 		
 		@Override

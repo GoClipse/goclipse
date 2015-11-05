@@ -14,8 +14,6 @@ package melnorme.lang.ide.ui.dialogs;
 import static melnorme.utilbox.core.CoreUtil.list;
 import static org.eclipse.jface.layout.GridDataFactory.fillDefaults;
 
-import java.net.URI;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -47,8 +45,8 @@ import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.AbstractCompositeWidget;
+import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
@@ -100,10 +98,6 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 	
 	public IPath getProjectLocation() {
 		return locationGroup.getProjectLocation();
-	}
-	
-	public URI getProjectLocationUri() {
-		return ResourceUtils.toUri(getProjectLocation());
 	}
 	
 	@Override

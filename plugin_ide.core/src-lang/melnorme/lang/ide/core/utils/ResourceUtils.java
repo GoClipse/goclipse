@@ -19,11 +19,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.StringUtil;
-
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.IFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
@@ -43,6 +38,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.StringUtil;
 
 public class ResourceUtils {
 	
@@ -199,7 +199,7 @@ public class ResourceUtils {
 		return createAndOpenProject(name, null, overwrite, pm);
 	}
 	
-	public static IProject createAndOpenProject(String name, URI locationUri, boolean overwrite, IProgressMonitor pm)
+	public static IProject createAndOpenProject(String name, IPath location, boolean overwrite, IProgressMonitor pm)
 			throws CoreException {
 		IProject project = EclipseUtils.getWorkspaceRoot().getProject(name);
 		if(overwrite && project.exists()) {
@@ -207,8 +207,14 @@ public class ResourceUtils {
 		}
 		
 		IProjectDescription projectDesc = project.getWorkspace().newProjectDescription(project.getName());
-		if(locationUri != null) {
-			projectDesc.setLocationURI(locationUri);
+		if(location != null) {
+			IPath workspaceLocation = project.getWorkspace().getRoot().getLocation();
+			if(location.equals(workspaceLocation.append(project.getName()))) {
+				// Location is the default project location, so don't set it in description, this causes problems.
+				// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=481508
+			} else {
+				projectDesc.setLocation(location);
+			}
 		}
 		project.create(projectDesc, pm);
 		
