@@ -17,6 +17,7 @@ import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -91,7 +92,7 @@ public abstract class LangNature implements IProjectNature {
 			}
 		}
 		description.setBuildSpec(buildSpec);
-		project.setDescription(description, monitor);
+		project.setDescription(description, IResource.AVOID_NATURE_CONFIG, monitor);
 	}
 	
 	protected static int getCommandIndex(ICommand[] buildSpec, String builderID) {
