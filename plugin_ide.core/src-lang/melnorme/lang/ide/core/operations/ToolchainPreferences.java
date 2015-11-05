@@ -31,4 +31,9 @@ public interface ToolchainPreferences {
 	public static final BooleanPreference DAEMON_CONSOLE_ENABLE =
 			new BooleanPreference("daemon_console_enable", true);
 	
+	/* -----------------  ----------------- */
+	
+	public static final IProjectPreference<Boolean> PROJ_AUTO_BUILD_DISABLED = new BooleanPreference( 
+		"prj_auto_build_disabled", false).getProjectPreference();
+	
 }

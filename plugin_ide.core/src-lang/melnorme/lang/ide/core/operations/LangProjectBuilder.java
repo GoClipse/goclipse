@@ -27,6 +27,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
@@ -35,6 +36,7 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -156,8 +158,26 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		assertTrue(kind != CLEAN_BUILD);
 		
-		if(kind == AUTO_BUILD && !isAutoBuildSupported()) {
-			LangNature.disableAutoBuildMode(getProject(), getCommand().getBuilderName(), monitor);
+		if(kind == AUTO_BUILD && !isAutoBuildSupported()
+				&& !ToolchainPreferences.PROJ_AUTO_BUILD_DISABLED.getStoredValue(getProject())
+		) {
+			try {
+				LangNature.disableAutoBuildMode(getProject(), getCommand().getBuilderName(), monitor);
+			} catch(CoreException e) {
+				CommonException ce = CommonException.fromMsgFormat(
+					"Error, could not disable AutoBuild for project `{0}`.\n"
+					+ "The project description is out-dated or invalid, "
+					+ "please remove the project from the workspace and re-add it." , getProject().getName());
+				getToolManager().notifyMessage(StatusLevel.ERROR, "Error", ce.getMessage());
+				throw e;
+			}
+			
+			try {
+				ToolchainPreferences.PROJ_AUTO_BUILD_DISABLED.setValue(getProject(), true);
+			} catch(BackingStoreException e) {
+				// Ignore
+			}
+			
 			return null;
 		}
 		
