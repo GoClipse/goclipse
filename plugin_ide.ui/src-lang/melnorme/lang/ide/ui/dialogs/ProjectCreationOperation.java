@@ -12,12 +12,12 @@ package melnorme.lang.ide.ui.dialogs;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.swt.widgets.Display;
@@ -62,7 +62,7 @@ public abstract class ProjectCreationOperation {
 	
 	public abstract IProject getProject() throws CoreException;
 	
-	public abstract URI getProjectLocation();
+	public abstract IPath getProjectLocation2();
 	
 	protected boolean runOperation(WorkspaceModifyOperation op, boolean isCancellable, String errorTitle) {
 		return UIOperationsHelper.runAndHandle(getRunnableContext(), op, isCancellable, errorTitle);
@@ -87,7 +87,7 @@ public abstract class ProjectCreationOperation {
 		
 		if(!getProject().exists()) {
 			String projectName = getProject().getName();
-			ResourceUtils.createAndOpenProject(projectName, getProjectLocation(), false, monitor);
+			ResourceUtils.createAndOpenProject(projectName, getProjectLocation2(), false, monitor);
 			
 			revertActions.add(new IRevertAction() {
 				@Override
