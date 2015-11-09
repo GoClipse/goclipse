@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Group;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
+import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.util.swt.SWTFactory;
@@ -51,6 +52,9 @@ public abstract class AbstractPreferencesBlock extends AbstractWidgetExt impleme
 	
 	public void addPrefElement(IPreferencesEditor prefElement) {
 		prefAdapters.add(prefElement);
+	}
+	public <T> void bindToPreference(IProperty<T> field, IProjectPreference<T> pref) {
+		bindToPreference(field, pref.getGlobalPreference());
 	}
 	public <T> void bindToPreference(IProperty<T> field, IGlobalPreference<T> pref) {
 		addPrefElement(prefContext.getPreferencesBinder(field, pref));
