@@ -58,7 +58,7 @@ public abstract class ProjectAndPreferencesBlock extends AbstractPreferencesBloc
 		useProjectSettingsField.registerListener(
 			() -> projectSettingsBlock.setEnabled(useProjectSettingsField.getFieldValue()));
 		
-		bindToPreference(useProjectSettingsField, useProjectSettingsPref.getGlobalPreference());
+		bindToPreference(useProjectSettingsField, useProjectSettingsPref);
 		
 		addPrefElement(projectSettingsBlock);
 		validation.addValidatableField(true, projectSettingsBlock.getStatusField());

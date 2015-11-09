@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.wizard.WizardPage;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.WizardMessages_Actual;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
@@ -64,7 +65,8 @@ class LANGUAGE_ProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	
 	@Override
 	protected void validatePreferences() throws ValidationException {
-		new LANGUAGE_SDKLocationValidator().getValidatedField(ToolchainPreferences.SDK_PATH.get());
+		PreferenceHelper<String> globalPref = ToolchainPreferences.SDK_PATH2.getGlobalPreference();
+		new LANGUAGE_SDKLocationValidator().getValidatedField(globalPref.get());
 	}
 	
 }

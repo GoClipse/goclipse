@@ -70,7 +70,7 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		}
 		
 		protected void initBindings() {
-			bindToPreference(sdkLocationField, ToolchainPreferences.SDK_PATH);
+			bindToPreference(sdkLocationField, ToolchainPreferences.SDK_PATH2);
 			validation.addFieldValidation(true, sdkLocationField, getSDKValidator());
 		}
 		
