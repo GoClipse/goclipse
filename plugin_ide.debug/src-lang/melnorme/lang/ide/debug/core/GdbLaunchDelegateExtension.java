@@ -55,13 +55,18 @@ public class GdbLaunchDelegateExtension extends GdbLaunchDelegate {
 	}
 	
 	@Override
-	protected DsfSourceLookupDirector createDsfSourceLocator(ILaunchConfiguration configuration, DsfSession session)
+	protected DsfSourceLookupDirector createDsfSourceLocator(ILaunchConfiguration lc, DsfSession session)
 			throws CoreException {
-		DsfSourceLookupDirector sourceLookupDirector = new LangSourceLookupDirector(session);
+		DsfSourceLookupDirector sourceLookupDirector = createSourceLookupDirector(lc, session);
 		
 		sourceLookupDirector.addParticipants(
 				new ISourceLookupParticipant[]{ new DsfSourceLookupParticipant(session) } );
 		return sourceLookupDirector;
+	}
+	
+	@SuppressWarnings("unused")
+	protected LangSourceLookupDirector createSourceLookupDirector(ILaunchConfiguration lc, DsfSession session) {
+		return new LangSourceLookupDirector(session);
 	}
 	
 	@Override

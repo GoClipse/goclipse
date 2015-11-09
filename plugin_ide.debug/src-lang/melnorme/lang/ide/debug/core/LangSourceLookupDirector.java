@@ -13,8 +13,6 @@ package melnorme.lang.ide.debug.core;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import melnorme.utilbox.misc.MiscUtil;
-
 import org.eclipse.cdt.debug.core.sourcelookup.AbsolutePathSourceContainer;
 import org.eclipse.cdt.debug.core.sourcelookup.ProgramRelativePathSourceContainer;
 import org.eclipse.cdt.dsf.debug.sourcelookup.DsfSourceLookupDirector;
@@ -30,6 +28,9 @@ import org.eclipse.debug.core.sourcelookup.ISourceLookupDirector;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputer;
 import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
+
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.MiscUtil;
 
 /**
  * This class removes some CDT-specific lookup mechanisms
@@ -103,11 +104,11 @@ public class LangSourceLookupDirector extends DsfSourceLookupDirector {
 		};
 	}
 	
-	public static class LangSourcePathComputer implements ISourcePathComputerDelegate {
+	public class LangSourcePathComputer implements ISourcePathComputerDelegate {
 		@Override
 		public ISourceContainer[] computeSourceContainers(ILaunchConfiguration configuration, IProgressMonitor monitor)
 				throws CoreException {
-			ISourceContainer[] common = getCommonSourceLookupDirector().getSourceContainers();
+			ISourceContainer[] common = getSourceLookupDirector().getSourceContainers();
 			ISourceContainer[] containers = new ISourceContainer[common.length];
 			
 			for (int i = 0; i < common.length; i++) {
@@ -122,22 +123,25 @@ public class LangSourceLookupDirector extends DsfSourceLookupDirector {
 
 	}
 	
-	protected static ISourceLookupDirector commonSourceLookupDirector;
-	
-	protected static synchronized ISourceLookupDirector getCommonSourceLookupDirector() {
-		if(commonSourceLookupDirector == null) {
-			commonSourceLookupDirector = new AbstractSourceLookupDirector() {
-				@Override
-				public void initializeParticipants() {
-				}
-			};
-			
-			ISourceContainer[] containers = new ISourceContainer[2];
-			containers[0] = new AbsolutePathSourceContainer();
-			containers[1] = new ProgramRelativePathSourceContainer();
-			commonSourceLookupDirector.setSourceContainers(containers);
-		}
+	protected ISourceLookupDirector getSourceLookupDirector() {
+		ISourceLookupDirector commonSourceLookupDirector = new AbstractSourceLookupDirector() {
+			@Override
+			public void initializeParticipants() {
+			}
+		};
+		
+		ArrayList2<ISourceContainer> containers = new ArrayList2<>();
+		containers.add(new AbsolutePathSourceContainer());
+		containers.add(new ProgramRelativePathSourceContainer());
+		
+		customizeDefaultSourceContainers(containers);
+		commonSourceLookupDirector.setSourceContainers(containers.toArray(ISourceContainer.class));
 		
 		return commonSourceLookupDirector;
 	}
+	
+	@SuppressWarnings("unused") 
+	protected void customizeDefaultSourceContainers(ArrayList2<ISourceContainer> containers) {
+	}
+	
 }
