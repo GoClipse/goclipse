@@ -10,10 +10,20 @@
  *******************************************************************************/
 package melnorme.lang.ide.debug.core.services;
 
+import java.util.Map;
+
+import org.eclipse.cdt.dsf.concurrent.RequestMonitorWithProgress;
+import org.eclipse.cdt.dsf.concurrent.Sequence;
 import org.eclipse.cdt.dsf.debug.service.IDsfDebugServicesFactory;
 import org.eclipse.cdt.dsf.debug.service.IExpressions;
+import org.eclipse.cdt.dsf.debug.service.command.ICommandControl;
+import org.eclipse.cdt.dsf.gdb.launching.FinalLaunchSequence_7_7;
 import org.eclipse.cdt.dsf.gdb.service.GDBBackend;
 import org.eclipse.cdt.dsf.gdb.service.GDBPatternMatchingExpressions;
+import org.eclipse.cdt.dsf.gdb.service.GdbDebugServicesFactory;
+import org.eclipse.cdt.dsf.gdb.service.command.CommandFactory_6_8;
+import org.eclipse.cdt.dsf.gdb.service.command.GDBControl;
+import org.eclipse.cdt.dsf.gdb.service.command.GDBControl_7_7;
 import org.eclipse.cdt.dsf.mi.service.IMIBackend;
 import org.eclipse.cdt.dsf.mi.service.IMIExpressions;
 import org.eclipse.cdt.dsf.mi.service.MIExpressions;
@@ -44,10 +54,51 @@ public class LangDebugServicesExtensions implements IDsfDebugServicesFactory {
 					return (V) createBackendGDBService(session, (ILaunchConfiguration) arg);
 				}
 			}
-		} 
+		}
+		
+		if(ICommandControl.class.isAssignableFrom(clazz)) {
+			for(Object arg : optionalArguments) {
+				if(arg instanceof ILaunchConfiguration) {
+					ILaunchConfiguration config = (ILaunchConfiguration) arg;
+					
+					if(parentServiceFactory instanceof GdbDebugServicesFactory) {
+						GdbDebugServicesFactory gdbSvcFactory = (GdbDebugServicesFactory) parentServiceFactory;
+						
+						GDBControl gdbControl = getGdbControl_override(session, config, gdbSvcFactory);
+						if(gdbControl != null) {
+							return (V) gdbControl;
+						}
+					}
+					
+				}
+			}
+		}
 		
 		return parentServiceFactory.createService(clazz, session, optionalArguments);
 	}
+	
+	protected GDBControl getGdbControl_override(DsfSession session, ILaunchConfiguration config, 
+			GdbDebugServicesFactory gdbSvcFactory) {
+		GDBControl gdbControl = null;
+		
+		if(GdbDebugServicesFactory.GDB_7_7_VERSION.compareTo(gdbSvcFactory.getVersion()) <= 0) {
+			gdbControl = new GDBControl_7_7(session, config, new CommandFactory_6_8()) {
+				@Override
+				protected Sequence getCompleteInitializationSequence(Map<String, Object> attributes,
+						RequestMonitorWithProgress rm) {
+					return getCompleteInitializationSequence__GDBControl_7_7__ext(getSession(), attributes, rm);
+				}
+			};
+		}
+		return gdbControl;
+	}
+	
+	protected Sequence getCompleteInitializationSequence__GDBControl_7_7__ext(DsfSession session, Map<String, Object> attributes, 
+			RequestMonitorWithProgress rm) {
+		return new FinalLaunchSequence_7_7(session, attributes, rm);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public IExpressions createExpressionService(DsfSession session) {
 		IMIExpressions originialExpressionService = new MIExpressions(session) {

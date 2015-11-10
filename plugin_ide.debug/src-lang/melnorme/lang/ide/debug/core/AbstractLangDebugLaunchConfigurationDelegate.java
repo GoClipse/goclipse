@@ -11,17 +11,37 @@
 package melnorme.lang.ide.debug.core;
 
 
+import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
+import org.eclipse.cdt.core.parser.util.StringUtil;
 import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
 import org.eclipse.cdt.dsf.debug.service.IDsfDebugServicesFactory;
+import org.eclipse.cdt.dsf.gdb.internal.GdbPlugin;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunch;
+import org.eclipse.cdt.dsf.gdb.launching.LaunchUtils;
+import org.eclipse.cdt.dsf.gdb.service.GDBBackend;
+import org.eclipse.cdt.dsf.service.DsfSession;
+import org.eclipse.cdt.utils.spawner.ProcessFactory;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ISourceLocator;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.debug.core.services.LangDebugServicesExtensions;
+import melnorme.utilbox.misc.ArrayUtil;
 
 public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangLaunchConfigurationDelegate_Actual {
 	
@@ -98,6 +118,67 @@ public abstract class AbstractLangDebugLaunchConfigurationDelegate extends LangL
 			throws CoreException {
 		String mode = launch.getLaunchMode();
 		gdbLaunchDelegate.launch(configuration, mode, launch, monitor);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static class GDBBackend_Lang extends GDBBackend {
+		
+		protected final ILaunchConfiguration fLaunchConfiguration;
+		protected final IProject project;
+		
+		public GDBBackend_Lang(DsfSession session, ILaunchConfiguration lc) {
+			super(session, lc);
+			
+			this.fLaunchConfiguration = lc;
+			this.project = getProject(lc);
+		}
+		
+		@Override
+		protected Process launchGDBProcess(String[] commandLine) throws CoreException {
+			String[] launchEnvironment = LaunchUtils.getLaunchEnvironment(fLaunchConfiguration);
+			if(launchEnvironment != null) {
+				// launchEnvironment should be usually be null GDB itself
+				LangCore.logWarning("Ignoring previous CDT GDB launch environment");
+			}
+			
+			HashMap<String, String> envMap = new HashMap<>(System.getenv());
+			customizeEnvironment(envMap);
+			launchEnvironment = convertoToEnvpFormat(envMap);
+			
+			try {
+				return ProcessFactory.getFactory().exec(commandLine, launchEnvironment);
+			} catch (IOException e) {
+			    String message = "Error while launching command: " + StringUtil.join(commandLine, " ");
+			    throw new CoreException(new Status(IStatus.ERROR, GdbPlugin.PLUGIN_ID, -1, message, e));
+			}
+		}
+		
+		@SuppressWarnings("unused")
+		protected void customizeEnvironment(HashMap<String, String> envMap) {
+		}
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static IProject getProject(ILaunchConfiguration lc) {
+		try {
+			String prjName = lc.getAttribute(ICDTLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String) null);
+			if(emptyAsNull(prjName) != null) {
+				return ResourceUtils.getProject(prjName);
+			}
+		} catch(CoreException e) {
+		}
+		return null;
+	}
+	
+	public static String[] convertoToEnvpFormat(HashMap<String, String> envMap) {
+		List<String> envp = new ArrayList<>(envMap.size());
+		for(Entry<String, String> entry : envMap.entrySet()) {
+			envp.add(entry.getKey() + "=" + entry.getValue());
+		}
+		return ArrayUtil.createFrom(envp, String.class);
 	}
 	
 }

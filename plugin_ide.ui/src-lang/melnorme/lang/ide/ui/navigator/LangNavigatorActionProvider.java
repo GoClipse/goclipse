@@ -13,6 +13,9 @@ package melnorme.lang.ide.ui.navigator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -20,8 +23,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
+import org.eclipse.ui.actions.BuildAction;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
@@ -108,8 +113,14 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 	
 	public static abstract class BundleOperationsActionGroup extends ViewPartActionGroup {
 		
+		protected final IAction buildAction;
+		
 		public BundleOperationsActionGroup(IViewPart viewPart) {
 			super(viewPart);
+			
+			buildAction = new BuildAction(() -> viewPart.getSite().getShell(), 
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+			buildAction.setActionDefinitionId(IWorkbenchCommandConstants.PROJECT_BUILD_PROJECT);
 		}
 		
 		public IProject getBundleProjectFromSelection() {
@@ -141,6 +152,10 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 			initActions(bundleOpsMenu, project);
 			
 			menu.prependToGroup(ICommonMenuConstants.GROUP_BUILD, bundleOpsMenu);
+			
+			if(ResourcesPlugin.getWorkspace().isAutoBuilding()) {
+				menu.appendToGroup(ICommonMenuConstants.GROUP_BUILD, buildAction);
+			}
 		}
 		
 		protected abstract String getMenuName();
