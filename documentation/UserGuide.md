@@ -37,8 +37,6 @@ A Goclipse project can work in two ways:
 ##### Build:
 The `go` tool will be used to build the project. The output of this tool will be displayed in a console. Additionally, error markers resulting from the build will be collected and displayed in the the Go editor and the Problems view.
 
-Note that if the `Project / Build Automatically` option in the main menu is enabled (the default), a workspace build will be requested whenever any file is saved. Turn this on or off as desired.
-
 Each Go project has 3 built-in Build Targets, which are ways in how the project can be built. 
 These can be viewed and configured in the Project Explorer:
 
