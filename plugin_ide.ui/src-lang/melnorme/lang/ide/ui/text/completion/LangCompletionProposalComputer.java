@@ -75,7 +75,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 	
 	protected abstract LangCompletionResult doComputeProposals(SourceOperationContext context,
 			int offset, TimeoutProgressMonitor pm) 
-			throws CoreException, CommonException, OperationCancellation, OperationSoftFailure;
+			throws CoreException, CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
 	
