@@ -67,6 +67,7 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		
 		public LanguageSDKLocationGroup() {
 			initBindings();
+			LangSDKConfigBlock.this.validation.addValidatableField(true, validation);
 		}
 		
 		protected void initBindings() {
