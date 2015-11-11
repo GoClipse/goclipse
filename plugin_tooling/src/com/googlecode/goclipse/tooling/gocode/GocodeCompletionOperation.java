@@ -36,11 +36,6 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 		this.gocodePath = gocodePath;
 	}
 	
-	@Override
-	protected String getToolProcessName() {
-		return "gocode";
-	}
-	
 	protected void setLibPathForEnvironment() throws CommonException, OperationCancellation {
 		
 		ArrayList2<String> arguments = new ArrayList2<>(gocodePath);
@@ -54,7 +49,7 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 		
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
-		runToolProcess2(pb, null);
+		runToolProcess(pb, null);
 	}
 	
 	public ExternalProcessResult execute(String filePath, String bufferText, int offset) 
@@ -74,13 +69,7 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 		
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
-		ExternalProcessResult processResult = runToolProcess_validateExitValue(pb, bufferText);
-		
-		if(processResult.exitValue != 0) {
-			throw new CommonException("Error, gocode returned non-zero status: " + processResult.exitValue);
-		}
-		
-		return processResult;
+		return runToolProcess(pb, bufferText);
 	}
 	
 	// TODO: move the code that process gocode result to here

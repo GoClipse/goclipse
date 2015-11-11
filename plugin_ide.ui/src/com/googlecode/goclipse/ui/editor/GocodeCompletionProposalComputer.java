@@ -65,6 +65,10 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 			getEngineToolRunner(pm), goEnvironment, gocodePath.toOSString());
 		
 		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), document.get(), offset);
+		
+		if(processResult.exitValue != 0) {
+			throw new CommonException("gocode returned non-zero status: " + processResult.exitValue);
+		}
 		String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
 		List<String> completions = new ArrayList2<>(GocodeCompletionOperation.LINE_SPLITTER.split(stdout));
 		

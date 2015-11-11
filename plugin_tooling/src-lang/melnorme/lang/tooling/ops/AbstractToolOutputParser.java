@@ -24,13 +24,17 @@ public abstract class AbstractToolOutputParser<RESULT> extends ToolOutputParseHe
 	}
 	
 	public RESULT parse(ExternalProcessResult result) throws CommonException {
-		if(result.exitValue != 0) {
-			throw new CommonException(ToolingMessages.TOOLS_ExitedWithNonZeroStatus(result.exitValue));
+		int exitValue = result.exitValue;
+		if(exitValue != 0) {
+			throw new CommonException(
+				ToolingMessages.PROCESS_CompletedWithNonZeroVAlue(getToolProcessName(), exitValue));
 		}
 		
 		return doParse(result);
 	}
-
+	
+	protected abstract String getToolProcessName();
+	
 	protected RESULT doParse(ExternalProcessResult result) throws CommonException {
 		return parse(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
