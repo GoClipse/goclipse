@@ -2,18 +2,15 @@ package com.googlecode.goclipse.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.ui.IEditorPart;
 
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
@@ -30,13 +27,14 @@ import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.ops.AbstractToolOutputParser;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class GocodeCompletionProposalComputer extends LangCompletionProposalComputer {
@@ -48,8 +46,6 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		
 		Location fileLoc = context.getEditorInputLocation();
 		IDocument document = context.getDocument();
-		
-		String prefix = lastWord(document, offset);
 		
 		GoUIPlugin.prepareGocodeManager_inUI();
 		IPath gocodePath = GocodeServerManager.getGocodePath();
@@ -64,18 +60,15 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		GocodeCompletionOperation client = new GocodeCompletionOperation(
 			getEngineToolRunner(pm), goEnvironment, gocodePath.toOSString());
 		
-		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), document.get(), offset);
+		String source = document.get();
+		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), source, offset);
 		
-		if(processResult.exitValue != 0) {
-			throw new CommonException("gocode returned non-zero status: " + processResult.exitValue);
-		}
-		String stdout = processResult.getStdOutBytes().toString(StringUtil.UTF8);
-		List<String> completions = new ArrayList2<>(GocodeCompletionOperation.LINE_SPLITTER.split(stdout));
+		ArrayList2<ToolCompletionProposal> baseResults = new GocodeOutputParser(offset, source).parse(processResult);
 		
 		ArrayList2<ICompletionProposal> results = new ArrayList2<>();
 		
-		for (String completionEntry : completions) {
-			handleResult(offset, /*codeContext,*/ results, prefix, completionEntry);
+		for (ToolCompletionProposal proposal : baseResults) {
+			results.add(adaptToolProposal(proposal));
 		}
 		
 		return results;
@@ -91,24 +84,53 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		return EditorUtils.getAssociatedProject(editor.getEditorInput());
 	}
 	
-	public static String lastWord(IDocument doc, int offset) {
-		try {
-			for (int n = offset - 1; n >= 0; n--) {
-				char c = doc.getChar(n);
-				
-				if (!Character.isJavaIdentifierPart(c)) {
-					return doc.get(n + 1, offset - n - 1);
-				}
-			}
-		} catch (BadLocationException e) {
-			GoCore.logInternalError(e);
-		}
+	public static class GocodeOutputParser extends AbstractToolOutputParser<ArrayList2<ToolCompletionProposal>> {
 		
+	public static String lastWord(String source, int offset) {
+		for (int n = offset - 1; n >= 0; n--) {
+			char c = source.charAt(n);
+			
+			if (!Character.isJavaIdentifierPart(c)) {
+				return source.substring(n + 1, offset);
+			}
+		}
+			
 		return "";
 	}
+			
+		protected final int offset;
+		protected final String source;
+		
+		public GocodeOutputParser(int offset, String source) {
+			this.offset = offset;
+			this.source = source;
+		}
+		
+		@Override
+		protected String getToolProcessName() {
+			return "gocode";
+		}
+		
+		@Override
+		protected ArrayList2<ToolCompletionProposal> parse(StringParseSource parseSource) throws CommonException {
+			String prefix = lastWord(source, offset);
+			
+			String stdout = parseSource.getSource();
+			List<String> completions = new ArrayList2<>(GocodeCompletionOperation.LINE_SPLITTER.split(stdout));
+			
+			ArrayList2<ToolCompletionProposal> baseResults = new ArrayList2<>();
+			
+			for (String completionEntry : completions) {
+				ToolCompletionProposal proposal = handleResult(offset, prefix, completionEntry);
+				if(proposal != null) {
+					baseResults.add(proposal);
+				}
+			}
+			
+			return baseResults;
+		}
 	
-	protected void handleResult(final int offset, /*CodeContext codeContext, */ArrayList<ICompletionProposal> results,
-			String prefix, String completionEntry) {
+	protected ToolCompletionProposal handleResult(final int offset, String prefix, String completionEntry) {
 		int firstComma = completionEntry.indexOf(",,");
 		int secondComma = completionEntry.indexOf(",,", firstComma + 2);
 		
@@ -117,21 +139,21 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 			
 			if ("PANIC".equals(type)) {
 				GoUIPlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
-				return;
+				return null;
 			}
 			
 			String identifier = completionEntry.substring(firstComma + 2, secondComma);
 			
 			if ("PANIC".equals(identifier)) {
 				GoUIPlugin.logError("PANIC from gocode - likely go/gocode version mismatch?");
-				return;
+				return null;
 			}
 			
 			String spec = completionEntry.substring(secondComma + 2);
 			
-			ToolCompletionProposal proposal = getProposal(offset, prefix, type, identifier, spec);
-			results.add(adaptToolProposal(proposal));
+			return getProposal(offset, prefix, type, identifier, spec);
 		}
+		return null;
 	}
 	
 	protected ToolCompletionProposal getProposal(final int offset, String prefix, String type, String identifier,
@@ -186,5 +208,5 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 			offset - prefix.length(), prefix.length(), identifier, descriptiveString, 
 			kind, attributes, null, null);
 	}
-	
+	}
 }
