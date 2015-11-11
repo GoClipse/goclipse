@@ -12,15 +12,14 @@ package com.googlecode.goclipse.tooling.gocode;
 
 import java.util.regex.Pattern;
 
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
+
 import melnorme.lang.tooling.ops.AbstractToolOperation;
 import melnorme.lang.tooling.ops.IOperationHelper;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-
-import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 
 public class GocodeCompletionOperation extends AbstractToolOperation {
@@ -53,7 +52,7 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 	}
 	
 	public ExternalProcessResult execute(String filePath, String bufferText, int offset) 
-			throws CommonException, OperationCancellation, OperationSoftFailure {
+			throws CommonException, OperationCancellation {
 		
 		setLibPathForEnvironment();
 		
