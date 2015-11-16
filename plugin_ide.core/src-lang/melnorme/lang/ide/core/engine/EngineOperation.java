@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -54,7 +55,8 @@ public abstract class EngineOperation<RET> {
 			return doRunEngineOperation(pm);
 		}
 		
-		ExecutorTaskAgent completionExecutor = new ExecutorTaskAgent(opName + " - Executor");
+		/* FIXME: should use a cached thread pool? */
+		ExecutorTaskAgent completionExecutor = CoreExecutors.newExecutorTaskAgent(opName + " - Executor");
 		
 		Future<RET> future = completionExecutor.submit(new Callable<RET>() {
 			@Override

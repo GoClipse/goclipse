@@ -12,16 +12,6 @@ package melnorme.lang.ide.core.engine;
 
 import java.util.concurrent.ExecutorService;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.utilbox.concurrency.ExecutorTaskAgent;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.ownership.IDisposable;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -31,9 +21,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
+import melnorme.lang.ide.core.utils.CoreExecutors;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.ownership.IDisposable;
+
 public class ProblemMarkerUpdater implements IDisposable {
 	
-	protected final ExecutorService problemsExecutor = new ExecutorTaskAgent("ProblemMarkerManager");
+	protected final ExecutorService problemsExecutor = CoreExecutors.newExecutorTaskAgent(getClass());
 	protected StructureModelManager structureManager;
 	
 	public ProblemMarkerUpdater() {
