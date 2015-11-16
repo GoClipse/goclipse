@@ -19,6 +19,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.CoreUtil;
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
+import melnorme.utilbox.core.fntypes.ThrowingRunnable;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
@@ -110,6 +112,16 @@ public class CommonTestExt extends CommonTest {
 			return null;
 		}
 		return matcher.group(resultGroup);
+	}
+	
+	/* -----------------  ----------------- */ 
+	
+	public static void runMultipleTimes(int liteTimes, int fullTimes, ThrowingRunnable<Exception> trun) 
+			throws Exception {
+		int times = DevelopmentCodeMarkers.TESTS_LITE_MODE ? liteTimes : fullTimes;
+		for (int i = 0; i < times; i++) {
+			trun.run();
+		}
 	}
 	
 }

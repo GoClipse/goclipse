@@ -1,20 +1,61 @@
-/*
+/*******************************************************************************
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * Written by Doug Lea with assistance from members of JCP JSR-166
- * Expert Group and released to the public domain, as explained at
- * http://creativecommons.org/publicdomain/zero/1.0/
- */
-
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package melnorme.utilbox.concurrency;
+
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Basic agent functionality. Based in part on methods from {@link ExecutorService}
+ * IBasicExecutor is a simplification of {@link ExecutorService},  
+ * it doesn't have the invokeAll* methods. 
+ *
  */
-public interface ICommonAgent {
-
+public interface IBasicExecutor  {
+	
+	/**
+	 * Submits a value-returning task for execution and returns a
+	 * Future representing the pending results of the task. The
+	 * Future's <tt>get</tt> method will return the task's result upon
+	 * successful completion.
+	 *
+	 * <p>
+	 * If you would like to immediately block waiting
+	 * for a task, you can use constructions of the form
+	 * <tt>result = exec.submit(aCallable).get();</tt>
+	 *
+	 * @param task the task to submit
+	 * @return a Future representing pending completion of the task
+	 * @throws RejectedExecutionException if the task cannot be
+	 *         scheduled for execution
+	 * @throws NullPointerException if the task is null
+	 */
+	<T> Future<T> submit(Callable<T> task);
+	
+	/**
+	 * Submits a Runnable task for execution and returns a Future
+	 * representing that task. The Future's <tt>get</tt> method will
+	 * return <tt>null</tt> upon <em>successful</em> completion.
+	 *
+	 * @param task the task to submit
+	 * @return a Future representing pending completion of the task
+	 * @throws RejectedExecutionException if the task cannot be
+	 *         scheduled for execution
+	 * @throws NullPointerException if the task is null
+	 */
+	Future<?> submit(Runnable task);
+	
     /**
      * Initiates an orderly shutdown in which previously submitted
      * tasks are executed, but no new tasks will be accepted.

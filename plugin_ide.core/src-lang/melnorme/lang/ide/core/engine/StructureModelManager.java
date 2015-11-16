@@ -14,25 +14,23 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.lang.utils.EntryMapTS;
-import melnorme.utilbox.concurrency.ICancelMonitor;
-import melnorme.utilbox.concurrency.NamingThreadFactory;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.fields.ListenerListHelper;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.SimpleLogger;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.CoreExecutors;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.utils.EntryMapTS;
+import melnorme.utilbox.concurrency.ICommonExecutor;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.fields.ListenerListHelper;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.SimpleLogger;
 
 /**
  * The purpose of Engine manager is two-fold:
@@ -45,8 +43,7 @@ public abstract class StructureModelManager {
 	
 	public static SimpleLogger log = new SimpleLogger(Platform.inDebugMode());
 	
-	protected final ExecutorService executor = Executors.newCachedThreadPool(
-		new NamingThreadFactory(getClass().getSimpleName())); 
+	protected final ICommonExecutor executor = CoreExecutors.newCachedThreadPool(getClass()); 
 	
 	public StructureModelManager() {
 	}
@@ -278,38 +275,22 @@ public abstract class StructureModelManager {
 	
 	/* -----------------  ----------------- */
 	
-	public static abstract class StructureUpdateTask implements Runnable {
+	public static abstract class StructureUpdateTask extends UpdateTask {
 		
 		protected final StructureInfo structureInfo;
-		protected volatile boolean cancelled = false;
 		
 		public StructureUpdateTask(StructureInfo structureInfo) {
 			this.structureInfo = structureInfo;
 		}
 		
-		public void cancel() {
-			cancelled = true;
-		}
-		
-		public boolean isCancelled() {
-			return cancelled;
-		}
-		
-		protected final ICancelMonitor cm = new ICancelMonitor() {
-			@Override
-			public boolean isCanceled() {
-				return cancelled;
-			}
-		};
-		
 		@Override
-		public void run() {
+		public void doRun2() {
 			Thread currentThread = Thread.currentThread();
 			String originalName = currentThread.getName();
 			try {
 				currentThread.setName(originalName + " " + structureInfo.key);
 				
-				doRun();
+				createFileStructure();
 			} catch(RuntimeException e) {
 				LangCore.logInternalError(e);
 				structureInfo.setNewStructure(null, this);
@@ -318,10 +299,7 @@ public abstract class StructureModelManager {
 			}
 		}
 		
-		protected void doRun() {
-			if(cancelled) {
-				return;
-			}
+		protected void createFileStructure() {
 			SourceFileStructure newStructure = createSourceFileStructure();
 			
 			structureInfo.setNewStructure(newStructure, this);

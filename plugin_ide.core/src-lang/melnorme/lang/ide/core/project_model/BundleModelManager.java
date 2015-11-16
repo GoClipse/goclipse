@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 
 import melnorme.lang.ide.core.BundleInfo;
-import melnorme.lang.ide.core.utils.CoreTaskAgent;
+import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.SimpleLogger;
@@ -30,7 +30,7 @@ public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel>
 	protected final BUNDLE_MODEL model;
 	protected final SimpleLogger log;
 	
-	protected final ITaskAgent modelAgent = new CoreTaskAgent(getClass().getSimpleName());
+	protected final ITaskAgent modelAgent = CoreExecutors.newExecutorTaskAgent(getClass());
 	protected final LatchRunnable startLatch = new LatchRunnable();
 	
 	public BundleModelManager(BUNDLE_MODEL model) {
