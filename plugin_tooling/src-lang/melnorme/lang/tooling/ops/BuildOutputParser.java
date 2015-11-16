@@ -78,7 +78,12 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 	
 	protected abstract ToolMessageData parseMessageData(StringParseSource output) throws CommonException;
 	
-	protected abstract void handleMessageParseError(CommonException ce);
+	protected final void handleMessageParseError(CommonException ce) {
+		handleParseError(ce);
+	}
+	
+	@Override
+	protected abstract void handleParseError(CommonException ce);
 	
 	protected CommonException createUnknownLineSyntaxError(String line) {
 		return new CommonException("Unknown error line syntax: " + line);
