@@ -59,7 +59,7 @@ public class GoEngineClient extends EngineClient {
 		}
 		
 		@Override
-		protected SourceFileStructure createSourceFileStructure() {
+		protected SourceFileStructure createNewData() {
 			
 			if(fileLocation == null || isCancelled()) {
 				return null;
@@ -143,18 +143,13 @@ public class GoEngineClient extends EngineClient {
 		
 	}
 	
-	@Override
-	protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
-		return new StructureUpdateNullTask(structureInfo);
-	}
-	
 	public static class StructureUpdateNullTask extends StructureUpdateTask {
 		public StructureUpdateNullTask(StructureInfo structureInfo) {
 			super(structureInfo);
 		}
 		
 		@Override
-		protected SourceFileStructure createSourceFileStructure() {
+		protected SourceFileStructure createNewData() {
 			return null;
 		}
 	}
