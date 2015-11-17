@@ -16,10 +16,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.concurrent.CountDownLatch;
 
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.engine.StructureModelManager.MDocumentSynchedAcess;
+import melnorme.lang.ide.core.engine.StructureModelManager.SourceModelRegistration;
 import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.utilbox.core.Assert.AssertFailedException;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.jface.text.Document;
@@ -38,11 +39,13 @@ public class StructureModelManagerTest extends CommonCoreTest {
 	
 	protected IStructureModelListener structureListener = new IStructureModelListener() {
 		@Override
-		public void structureChanged(StructureInfo lockedStructureInfo, SourceFileStructure sourceFileStructure) {
+		public void structureChanged(StructureInfo lockedStructureInfo) {
 		}
 	};
 	
-	protected EngineClient createEngineClient() {
+	protected EngineClient initializeTestsEngineClient() {
+		createUpdateTaskCount = createUpdateTaskCount_EXPECTED = 0;
+		createDisposeTaskCount = createDisposeTaskCount_EXPECTED = 0;
 		return new InstrumentedEngineClient();
 	}
 	
@@ -52,7 +55,7 @@ public class StructureModelManagerTest extends CommonCoreTest {
 		public CountDownLatch disposeLatch = new CountDownLatch(0);
 		
 		@Override
-		protected StructureUpdateTask createUpdateTask2(StructureInfo structureInfo, String source,
+		protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source,
 				Location fileLocation) {
 			createUpdateTaskCount++;
 			return new StructureUpdateTask(structureInfo) {
@@ -66,7 +69,7 @@ public class StructureModelManagerTest extends CommonCoreTest {
 		}
 		
 		@Override
-		protected StructureUpdateTask createDisposeTask2(StructureInfo structureInfo, Location fileLocation) {
+		protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
 			createDisposeTaskCount++;
 			return new StructureUpdateTask(structureInfo) {
 				@Override
@@ -79,7 +82,7 @@ public class StructureModelManagerTest extends CommonCoreTest {
 		
 	}
 	
-	public void checkCounts(int updateTaskCount, int disposeTaskCount) {
+	public void checkTaskDelta(int updateTaskCount, int disposeTaskCount) {
 		createUpdateTaskCount_EXPECTED += updateTaskCount;
 		createDisposeTaskCount_EXPECTED += disposeTaskCount;
 		checkCounts();
@@ -95,7 +98,7 @@ public class StructureModelManagerTest extends CommonCoreTest {
 	@Test
 	public void testWorkflows() throws Exception { testWorkflows$(); }
 	public void testWorkflows$() throws Exception {
-		engineClient = createEngineClient();
+		engineClient = initializeTestsEngineClient();
 		
 		assertTrue(engineClient.getStoredStructureInfo("Blah") == null);
 		
@@ -112,27 +115,31 @@ public class StructureModelManagerTest extends CommonCoreTest {
 		testMultipleConnects(key, new Document());
 	}
 	
-	protected StructureInfo testConnectStructureUpdates(Object key, Document doc, boolean initialConnect) {
+	protected SourceModelRegistration testConnectStructureUpdates(Object key, Document doc, boolean initialConnect) {
 		if(initialConnect) {
 			StructureInfo storedStructureInfo = engineClient.getStoredStructureInfo(key);
-			assertTrue(storedStructureInfo == null || !storedStructureInfo.isWorkingCopy());
+			assertTrue(storedStructureInfo == null || !storedStructureInfo.hasConnectedListeners());
 		}
 		
-		StructureInfo structureInfo = engineClient.connectStructureUpdates(key, doc, structureListener);
-		checkCounts(initialConnect ? 1 : 0, 0);
+		SourceModelRegistration registration = engineClient.connectStructureUpdates3(key, doc, structureListener);
+		checkTaskDelta(initialConnect ? 1 : 0, 0);
 		
-		assertTrue(structureInfo.isWorkingCopy());
+		StructureInfo structureInfo = registration.structureInfo;
+		assertTrue(structureInfo.hasConnectedListeners());
 		assertTrue(engineClient.getStoredStructureInfo(key) == structureInfo);
 		
-		return structureInfo;
+		return registration;
 	}
 	
-	protected void testDisconnectStructureUpdates(Object key, StructureInfo structureInfo, boolean isWorkingCopy) {
-		engineClient.disconnectStructureUpdates2(structureInfo, structureListener, new MDocumentSynchedAcess() {});
-		checkCounts(0, 1);
+	protected void testDisconnectUpdates(Object key, SourceModelRegistration registration, boolean isWorkingCopy) {
+		StructureInfo structureInfo = registration.structureInfo;
+		
+		registration.dispose();
+		verifyThrows(() -> registration.dispose(), AssertFailedException.class);
+		checkTaskDelta(0, 1);
 		
 		assertTrue(engineClient.getStoredStructureInfo(key) == structureInfo);
-		assertTrue(structureInfo.isWorkingCopy() == isWorkingCopy);
+		assertTrue(structureInfo.hasConnectedListeners() == isWorkingCopy);
 	}
 	
 	protected void testBasicFlow(Object key, Document doc, boolean initialConnect) {
@@ -142,16 +149,15 @@ public class StructureModelManagerTest extends CommonCoreTest {
 			checkCounts();
 		}
 		
-		StructureInfo structureInfo;
-		structureInfo = testConnectStructureUpdates(key, doc, initialConnect);
+		SourceModelRegistration reconcileRegistration = testConnectStructureUpdates(key, doc, initialConnect);
 		
 		doc.set("");
-		checkCounts(1, 0);
+		checkTaskDelta(1, 0);
 		
 		doc.set("");
-		checkCounts(1, 0);
+		checkTaskDelta(1, 0);
 		
-		testDisconnectStructureUpdates(key, structureInfo, initialConnect ? false : true);
+		testDisconnectUpdates(key, reconcileRegistration, initialConnect ? false : true);
 		
 		if(initialConnect) {
 			doc.set("");
@@ -160,26 +166,29 @@ public class StructureModelManagerTest extends CommonCoreTest {
 	}
 	
 	protected void testMultipleConnects(Object key, Document doc) {
-		engineClient = createEngineClient();
+		engineClient = initializeTestsEngineClient();
 		
-		StructureInfo structureInfo;
-		structureInfo = testConnectStructureUpdates(key, doc, true);
+		SourceModelRegistration registration = testConnectStructureUpdates(key, doc, true);
+		StructureInfo structureInfo = registration.structureInfo;
 		
 		checkCounts();
-		assertTrue(engineClient.connectStructureUpdates(key, doc, structureListener) == structureInfo);
+		SourceModelRegistration registration2 = engineClient.connectStructureUpdates3(key, doc, structureListener);
+		assertTrue(registration2.structureInfo == structureInfo);
 		// Test no extra updates
 		checkCounts();
 		
 		testBasicFlow(key, doc, false);
 		
-		StructureInfo structureInfo2 = engineClient.connectStructureUpdates(key, new Document(), structureListener);
-		assertTrue(structureInfo != structureInfo2);
-		checkCounts(1, 0);
+		SourceModelRegistration registration_unmanaged = 
+				engineClient.connectStructureUpdates3(key, new Document(), structureListener);
+		assertTrue(structureInfo != registration_unmanaged.structureInfo);
+
+		checkTaskDelta(1, 0);
 		
 		testBasicFlow(key, doc, false);
 		
-		testDisconnectStructureUpdates(key, structureInfo, true);
-		testDisconnectStructureUpdates(key, structureInfo, false);
+		testDisconnectUpdates(key, registration, true);
+		testDisconnectUpdates(key, registration2, false);
 		
 		testBasicFlow(key, doc, true);
 	}
@@ -205,7 +214,7 @@ public class StructureModelManagerTest extends CommonCoreTest {
 	@Ignore
 	protected final class StructureModelManager_ActualTest extends StructureModelManagerTest {
 		@Override
-		protected EngineClient createEngineClient() {
+		protected EngineClient initializeTestsEngineClient() {
 			return LangCore_Actual.createEngineClient();
 		}
 		

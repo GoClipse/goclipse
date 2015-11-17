@@ -17,4 +17,14 @@ public interface IOwner {
 	 */
 	void bind(IDisposable disposable);
 	
+	/**
+	 * Dispose the given disposable that is currently bound to the lifecycle of this owner.
+	 */
+	void disposeOwned(IDisposable disposable);
+	
+	/**
+	 * Dispose all disposables bound to this owner.
+	 */
+	void disposeAll();
+	
 }

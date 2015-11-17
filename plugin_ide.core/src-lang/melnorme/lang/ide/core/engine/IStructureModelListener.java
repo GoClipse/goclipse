@@ -11,7 +11,6 @@
 package melnorme.lang.ide.core.engine;
 
 import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
-import melnorme.lang.tooling.structure.SourceFileStructure;
 
 public interface IStructureModelListener {
 	
@@ -20,6 +19,6 @@ public interface IStructureModelListener {
 	 * 
 	 * This method runs under the scope of a {@link StructureInfo} lock, so listeners should respond quickly.
 	 */
-	void structureChanged(StructureInfo lockedStructureInfo, SourceFileStructure sourceFileStructure);
+	void structureChanged(StructureInfo lockedStructureInfo);
 	
 }

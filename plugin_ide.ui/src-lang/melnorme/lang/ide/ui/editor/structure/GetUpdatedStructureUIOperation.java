@@ -53,7 +53,7 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	protected void performBackgroundComputation() throws OperationCancellation, CoreException {
 		if(!structureInfo.isStale()) {
 			// No need for background computation
-			result = structureInfo.getStoredStructure();
+			result = structureInfo.getStoredData();
 		} else {
 			super.performBackgroundComputation();
 		}
@@ -61,7 +61,7 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	
 	@Override
 	protected SourceFileStructure doBackgroundValueComputation(IProgressMonitor pm) throws OperationCancellation {
-		return structureInfo.getUpdatedStructure(pm);
+		return structureInfo.awaitUpdatedData(pm);
 	}
 	
 	@Override

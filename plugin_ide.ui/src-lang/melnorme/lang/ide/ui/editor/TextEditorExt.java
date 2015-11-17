@@ -11,50 +11,37 @@
 package melnorme.lang.ide.ui.editor;
 
 
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.misc.CollectionUtil;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.ownership.IDisposable;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.editors.text.TextEditor;
+
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.ownership.IDisposable;
+import melnorme.utilbox.ownership.IOwner;
+import melnorme.utilbox.ownership.OwnedObjects;
 
 /**
  * A few extensions to TextEditor for non-lang-specific functionality.
  */
 public class TextEditorExt extends TextEditor {
 	
-	protected final ArrayList2<IDisposable> owned = new ArrayList2<>();
+	protected final IOwner owned = new OwnedObjects();
 	
 	public TextEditorExt() {
 		super();
 	}
 	
 	protected <T extends IDisposable> T addOwned(T disposable) {
-		owned.add(disposable);
-		return disposable;
-	}
-	
-	/**
-	 * Add given disposable, if not present already.
-	 */
-	protected <T extends IDisposable> T putOwned(T disposable) {
-		if(!CollectionUtil.containsSame(owned, disposable)) {
-			owned.add(disposable);
-		}
+		owned.bind(disposable);
 		return disposable;
 	}
 	
 	@Override
 	public void dispose() {
-		for (IDisposable disposable : owned) {
-			disposable.dispose();
-		}
-		owned.clear();
+		owned.disposeAll();
 		super.dispose();
 	}
 	
