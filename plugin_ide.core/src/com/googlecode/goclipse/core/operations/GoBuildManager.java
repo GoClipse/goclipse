@@ -226,7 +226,7 @@ public class GoBuildManager extends BuildManager {
 				throws CoreException, CommonException, OperationCancellation {
 			GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 				@Override
-				protected void handleMessageParseError(CommonException ce) {
+				protected void handleParseError(CommonException ce) {
 					LangCore.logError(ce.getMessage(), ce.getCause());
 				}
 			};

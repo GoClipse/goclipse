@@ -8,41 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.engine;
+package melnorme.utilbox.ownership;
 
-import melnorme.utilbox.concurrency.ICancelMonitor;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-public abstract class UpdateTask implements Runnable {
-
-	protected volatile boolean cancelled = false;
+/**
+ * A {@link IDisposable} that can only be disposed once. 
+ */
+public abstract class StrictDisposable implements IDisposable {
 	
-	public UpdateTask() {
-	}
-	
-	public void cancel() {
-		cancelled = true;
-	}
-	
-	public boolean isCancelled() {
-		return cancelled;
-	}
-	
-	protected final ICancelMonitor cm = new ICancelMonitor() {
-		@Override
-		public boolean isCanceled() {
-			return cancelled;
-		}
-	};
+	private boolean isDisposed = false;
 	
 	@Override
-	public void run() {
-		if(cancelled) {
-			return;
-		}
-		
-		doRun2();
+	public final void dispose() {
+		assertTrue(!isDisposed);
+		isDisposed = true;
+		disposeDo();
 	}
 	
-	public abstract void doRun2();
+	protected abstract void disposeDo();
 	
 }

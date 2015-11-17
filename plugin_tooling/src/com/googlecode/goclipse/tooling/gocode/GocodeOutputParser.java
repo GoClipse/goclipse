@@ -66,13 +66,13 @@ public class GocodeOutputParser extends AbstractToolOutputParser<ArrayList2<Tool
 			String type = completionEntry.substring(0, firstComma);
 			
 			if ("PANIC".equals(type)) {
-				throw new CommonException("PANIC from gocode - likely go/gocode version mismatch?");
+				handleParseError(new CommonException("PANIC from gocode - likely go/gocode version mismatch?"));
 			}
 			
 			String identifier = completionEntry.substring(firstComma + 2, secondComma);
 			
 			if ("PANIC".equals(identifier)) {
-				throw new CommonException("PANIC from gocode - likely go/gocode version mismatch?");
+				handleParseError(new CommonException("PANIC from gocode - likely go/gocode version mismatch?"));
 			}
 			
 			String spec = completionEntry.substring(secondComma + 2);
@@ -80,6 +80,11 @@ public class GocodeOutputParser extends AbstractToolOutputParser<ArrayList2<Tool
 			return getProposal(offset, prefix, type, identifier, spec);
 		}
 		return null;
+	}
+	
+	@Override
+	protected void handleParseError(CommonException ce) throws CommonException {
+		throw ce;
 	}
 	
 	protected ToolCompletionProposal getProposal(final int offset, String prefix, String type, String identifier,

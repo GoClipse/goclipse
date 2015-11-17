@@ -14,25 +14,6 @@ package melnorme.lang.ide.ui.editor.structure;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.engine.EngineClient;
-import melnorme.lang.ide.core.engine.IStructureModelListener;
-import melnorme.lang.ide.core.engine.StructureModelManager;
-import melnorme.lang.ide.core.engine.StructureModelManager.MDocumentSynchedAcess;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
-import melnorme.lang.ide.ui.text.LangSourceViewerConfiguration;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.util.swt.jface.text.ColorManager2;
-import melnorme.utilbox.fields.DomainField;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.ownership.IDisposable;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
@@ -48,6 +29,24 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.engine.EngineClient;
+import melnorme.lang.ide.core.engine.IStructureModelListener;
+import melnorme.lang.ide.core.engine.StructureModelManager.SourceModelRegistration;
+import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.LangSourceViewerConfiguration;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.tooling.structure.StructureElement;
+import melnorme.util.swt.jface.text.ColorManager2;
+import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.misc.Location;
 
 /**
  * Extension to {@link AbstractLangEditor} with functionality to hande {@link StructureElement}s
@@ -74,33 +73,40 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	
 	/* -----------------  ----------------- */
 	
-	protected final StructureInfoBinding structureInfoBinding = new StructureInfoBinding();
-	
 	protected Location editorLocation;
+	protected SourceModelRegistration structureUpdatesRegistration; 
 	protected volatile StructureInfo editorStructureInfo;
+	
+	{	
+		owned.bind(this::disconnectUpdates); 
+	}
 	
 	@Override
 	protected void internalDoSetInput(IEditorInput input) {
 		super.internalDoSetInput(input);
 		
 		if(editorStructureInfo != null) {
-			// Disconnect from previous input
-			structureInfoBinding.endStructureUpdates();
-			editorStructureInfo = null;
-		}
-		
-		if(input == null) {
-			// I don't think this case is possible, but guard against it just in case
-			LangCore.logError("input is null.");
-			return;
+			// Disconnect updates for previous input
+			disconnectUpdates();
 		}
 		
 		Object editorKey = getStructureModelKeyFromEditorInput(input);
 		editorLocation = (Location) (editorKey instanceof Location ? editorKey : null);
 		
-		IDocument document = getDocumentProvider().getDocument(input);
-		structureInfoBinding.beginStructureUpdates(editorKey, document);
-		putOwned(structureInfoBinding);
+		IDocument doc = getDocumentProvider().getDocument(input);
+		structureUpdatesRegistration = engineClient.connectStructureUpdates3(editorKey, doc, structureInfoListener);
+		editorStructureInfo = structureUpdatesRegistration.structureInfo;
+		
+		// Send initial update
+		handleEditorStructureUpdated();
+	}
+	
+	protected void disconnectUpdates() {
+		if(structureUpdatesRegistration != null) {
+			structureUpdatesRegistration.dispose();
+			structureUpdatesRegistration = null;
+		}
+		editorStructureInfo = null;
 	}
 	
 	public static Object getStructureModelKeyFromEditorInput(IEditorInput input) {
@@ -111,42 +117,6 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 			// Is input thread-safe? We assume so since IEditorInput is supposed to be immutable.
 			return input;
 		}
-	}
-	
-	protected class StructureInfoBinding implements IStructureModelListener, IDisposable {
-		
-		protected final StructureModelManager structureMgr = engineClient;
-		
-		public void beginStructureUpdates(Object editorKey, IDocument doc) {
-			editorStructureInfo = structureMgr.connectStructureUpdates(editorKey, doc, this);
-			assertNotNull(editorStructureInfo);
-			// Send initial update
-			handleEditorStructureUpdated();
-		}
-		
-		public void endStructureUpdates() {
-			structureMgr.disconnectStructureUpdates2(editorStructureInfo, this, new MDocumentSynchedAcess() {});
-		}
-		
-		@Override
-		public void dispose() {
-			endStructureUpdates();
-		}
-		
-		@Override
-		public void structureChanged(StructureInfo lockedStructureInfo, final SourceFileStructure structure) {
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					// editor input might have changed, so re-check this update applies to editor structure info
-					if(lockedStructureInfo != editorStructureInfo) {
-						return;
-					}
-					handleEditorStructureUpdated();
-				}
-			});
-		}
-		
 	}
 	
 	protected final DomainField<SourceFileStructure> structureField = new DomainField<>();
@@ -176,11 +146,27 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		return new StructuredSelection(selectedElement);
 	}
 	
+	protected final IStructureModelListener structureInfoListener = new IStructureModelListener() {
+		
+		@Override
+		public void structureChanged(StructureInfo lockedStructureInfo) {
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					// editor input might have changed, so check this update still applies to editor structure info
+					if(lockedStructureInfo != editorStructureInfo) {
+						return;
+					}
+					handleEditorStructureUpdated();
+				}
+			});
+		}
+	};
 	
 	protected void handleEditorStructureUpdated() {
 		assertTrue(Display.getCurrent() != null);
 		
-		SourceFileStructure structure = editorStructureInfo.getStoredStructure();
+		SourceFileStructure structure = editorStructureInfo.getStoredData();
 		if(structure == null) {
 			return; // Ignore
 		}
@@ -225,12 +211,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		super.createPartControl(parent);
 		
 		editorSelectionListener.install(assertNotNull(getSourceViewer_()));
-	}
-	
-	@Override
-	public void dispose() {
-		editorSelectionListener.uninstall(getSourceViewer_());
-		super.dispose();
+		owned.bind(() -> editorSelectionListener.uninstall(getSourceViewer_()));
 	}
 	
 	/* ----------------- Outline ----------------- */

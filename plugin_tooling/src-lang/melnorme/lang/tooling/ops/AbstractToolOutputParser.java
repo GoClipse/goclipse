@@ -45,6 +45,6 @@ public abstract class AbstractToolOutputParser<RESULT> extends ToolOutputParseHe
 	
 	protected abstract RESULT parse(StringParseSource outputParseSource) throws CommonException;
 	
-//	protected abstract void handleMessageParseError(CommonException ce) throws CommonException;
+	protected abstract void handleParseError(CommonException ce) throws CommonException;
 	
 }

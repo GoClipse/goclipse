@@ -52,12 +52,12 @@ public class ProblemMarkerUpdater implements IDisposable {
 	
 	protected final IStructureModelListener problemUpdaterListener = new IStructureModelListener() {
 		@Override
-		public void structureChanged(StructureInfo structureInfo, SourceFileStructure sourceFileStructure) {
+		public void structureChanged(StructureInfo structureInfo) {
 			Object key = structureInfo.key;
 			
 			if(key instanceof Location) {
 				Location location = (Location) key;
-				queueUpdateProblemMarkers(location, structureInfo.getStoredStructure());
+				queueUpdateProblemMarkers(location, structureInfo.getStoredData());
 			}
 		}
 	};

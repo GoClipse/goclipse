@@ -39,7 +39,7 @@ public class GoEngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createUpdateTask2(StructureInfo structureInfo, String source, Location fileLocation) {
+	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source, Location fileLocation) {
 		if(fileLocation == null) {
 			return new StructureUpdateNullTask(structureInfo);
 		}
@@ -144,7 +144,7 @@ public class GoEngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createDisposeTask2(StructureInfo structureInfo, Location fileLocation) {
+	protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
 		return new StructureUpdateNullTask(structureInfo);
 	}
 	
