@@ -8,41 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.utils.concurrency;
+package melnorme.lang.ide.core.engine;
 
-import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.lang.ide.core.LangCore_Actual;
 
-public abstract class UpdateTask implements Runnable {
-
-	protected volatile boolean cancelled = false;
-	
-	public UpdateTask() {
-	}
-	
-	public void cancel() {
-		cancelled = true;
-	}
-	
-	public boolean isCancelled() {
-		return cancelled;
-	}
-	
-	protected final ICancelMonitor cm = new ICancelMonitor() {
-		@Override
-		public boolean isCanceled() {
-			return cancelled;
-		}
-	};
+public abstract class StructureModelManager_WithActualTest extends StructureModelManagerTest {
 	
 	@Override
-	public void run() {
-		if(cancelled) {
-			return;
-		}
-		
-		doRun();
+	protected void initializeTestsEngineClient() {
+		engineClient = LangCore_Actual.createEngineClient();
 	}
 	
-	public abstract void doRun();
+	@Override
+	public void checkCounts() {
+		// Do nothing.
+	}
 	
 }

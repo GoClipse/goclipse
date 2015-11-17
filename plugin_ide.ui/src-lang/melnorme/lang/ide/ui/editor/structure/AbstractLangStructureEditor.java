@@ -85,10 +85,8 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	protected void internalDoSetInput(IEditorInput input) {
 		super.internalDoSetInput(input);
 		
-		if(editorStructureInfo != null) {
-			// Disconnect updates for previous input
-			disconnectUpdates();
-		}
+		// Disconnect updates for previous input
+		disconnectUpdates();
 		
 		Object editorKey = getStructureModelKeyFromEditorInput(input);
 		editorLocation = (Location) (editorKey instanceof Location ? editorKey : null);

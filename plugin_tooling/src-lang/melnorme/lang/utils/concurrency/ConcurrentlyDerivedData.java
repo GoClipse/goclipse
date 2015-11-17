@@ -15,13 +15,15 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import melnorme.utilbox.concurrency.ICancelMonitor;
+
 /**
  * 
  */
-public class ConcurrentDerivedData<DATA> {
+public class ConcurrentlyDerivedData<DATA> {
 	
 	private DATA data = null;
-	private UpdateTask latestUpdateTask = null;
+	private DataUpdateTask<DATA> latestUpdateTask = null;
 	private CountDownLatch latch = new CountDownLatch(0);
 	
 	public synchronized DATA getStoredData() {
@@ -40,7 +42,7 @@ public class ConcurrentDerivedData<DATA> {
 		return latch;
 	}
 	
-	public synchronized void setUpdateTask(UpdateTask newUpdateTask) {
+	public synchronized void setUpdateTask(DataUpdateTask<DATA> newUpdateTask) {
 		if(latestUpdateTask == null) {
 			assertTrue(latch.getCount() == 0);
 			latch = new CountDownLatch(1);
@@ -51,16 +53,16 @@ public class ConcurrentDerivedData<DATA> {
 		latestUpdateTask = newUpdateTask;
 	}
 	
-	public synchronized void setNewStructure(DATA newData, UpdateTask updateTask) {
+	public synchronized void setNewData(DATA newData, DataUpdateTask<DATA> updateTask) {
 		if(latestUpdateTask != updateTask) {
 			// Ignore, means this update task was cancelled
 			assertTrue(updateTask.isCancelled());
 		} else {
 			latestUpdateTask = null;
 			data = newData;
-			latch.countDown();
-			
 			doHandleDataChanged();
+			
+			latch.countDown();
 		}
 	}
 	
@@ -77,7 +79,7 @@ public class ConcurrentDerivedData<DATA> {
 	}
 	
 	/**
-	 * @see #awaitUpdatedData(long, TimeUnit)
+	 * @see #awaitUpdatedData()
 	 */
 	public DATA awaitUpdatedData(long timeout, TimeUnit unit) throws InterruptedException {
 		boolean success = getLatchForCurrentUpdate().await(timeout, unit);
@@ -85,6 +87,65 @@ public class ConcurrentDerivedData<DATA> {
 			return data;
 		}
 		throw new InterruptedException();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static abstract class DataUpdateTask<DATA> implements Runnable {
+		
+		protected final ConcurrentlyDerivedData<DATA> derivedData;
+		protected final String taskDisplayName;
+		
+		public DataUpdateTask(ConcurrentlyDerivedData<DATA> derivedData, String taskDisplayName) {
+			this.taskDisplayName = taskDisplayName;
+			this.derivedData = derivedData;
+		}
+		
+		private boolean cancelled = false;
+		private Thread thread;
+		
+		protected final ICancelMonitor cm = this::isCancelled;
+		
+		public synchronized void cancel() {
+			cancelled = true;
+			if(thread != null) {
+				thread.interrupt();
+			}
+		}
+		
+		public synchronized boolean isCancelled() {
+			return cancelled;
+		}
+		
+		@Override
+		public void run() {
+			synchronized(this) {
+				if(cancelled) {
+					return;
+				} else {
+					thread = Thread.currentThread();
+				}
+			}
+			
+			String originalName = thread.getName();
+			try {
+				thread.setName(originalName + " : " + taskDisplayName);
+				
+				DATA newData = createNewData();
+				derivedData.setNewData(newData, this);
+				
+			} catch(RuntimeException e) {
+				derivedData.setNewData(null, this);
+				handleRuntimeException(e);
+			} finally {
+				thread.setName(originalName);
+			}
+		}
+		
+		protected abstract void handleRuntimeException(RuntimeException e);
+		
+		protected abstract DATA createNewData();
+		
 	}
 	
 }

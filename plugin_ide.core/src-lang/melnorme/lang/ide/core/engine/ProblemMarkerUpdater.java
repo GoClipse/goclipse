@@ -53,10 +53,8 @@ public class ProblemMarkerUpdater implements IDisposable {
 	protected final IStructureModelListener problemUpdaterListener = new IStructureModelListener() {
 		@Override
 		public void structureChanged(StructureInfo structureInfo) {
-			Object key = structureInfo.key;
-			
-			if(key instanceof Location) {
-				Location location = (Location) key;
+			Location location = structureInfo.getLocation();
+			if(location != null) {
 				queueUpdateProblemMarkers(location, structureInfo.getStoredData());
 			}
 		}
