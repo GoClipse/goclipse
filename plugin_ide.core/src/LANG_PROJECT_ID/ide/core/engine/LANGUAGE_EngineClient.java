@@ -25,7 +25,7 @@ public class LANGUAGE_EngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createUpdateTask2(StructureInfo structureInfo, String source, Location fileLocation) {
+	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source, Location fileLocation) {
 		return new StructureUpdateTask(structureInfo) {
 			@Override
 			protected SourceFileStructure createSourceFileStructure() {
@@ -38,7 +38,7 @@ public class LANGUAGE_EngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createDisposeTask2(StructureInfo structureInfo, Location fileLocation) {
+	protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
 		return new StructureUpdateTask(structureInfo) {
 			@Override
 			protected SourceFileStructure createSourceFileStructure() {
