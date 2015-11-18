@@ -28,21 +28,11 @@ public class LANGUAGE_EngineClient extends EngineClient {
 	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source, Location fileLocation) {
 		return new StructureUpdateTask(structureInfo) {
 			@Override
-			protected SourceFileStructure createSourceFileStructure() {
+			protected SourceFileStructure createNewData() {
 				SourceRange sr = new SourceRange(0, source.length());
 				StructureElement element = new StructureElement("NOT_IMPLEMENTED", sr, sr, 
 					StructureElementKind.MODULEDEC, new ElementAttributes(null), null, null);
 				return new SourceFileStructure(fileLocation, new ArrayList2<StructureElement>(element), null);
-			}
-		};
-	}
-	
-	@Override
-	protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
-		return new StructureUpdateTask(structureInfo) {
-			@Override
-			protected SourceFileStructure createSourceFileStructure() {
-				return null;
 			}
 		};
 	}
