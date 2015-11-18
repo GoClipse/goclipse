@@ -60,7 +60,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 			IPath location = project.getLocation();
 			
 			// Test that project location is added to effective GOPATH entries 
-			checkEnvGoPath(project, list(location.toOSString(), SAMPLE_GOPATH_Entry.toString()), false);
+			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString(), location.toOSString()), false);
 			
 			String goPathEntryOther = location.append("other").toOSString();
 			String gopath = location.toOSString() + File.pathSeparator + goPathEntryOther;
