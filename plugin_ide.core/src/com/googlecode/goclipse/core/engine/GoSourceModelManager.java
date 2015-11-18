@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.engine.EngineClient;
+import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -33,13 +33,14 @@ import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.oracle.GoOracleDescribeOperation;
 import com.googlecode.goclipse.tooling.oracle.OraclePackageDescribeParser;
 
-public class GoEngineClient extends EngineClient {
+public class GoSourceModelManager extends SourceModelManager {
 	
-	public GoEngineClient() {
+	public GoSourceModelManager() {
 	}
 	
 	@Override
-	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source, Location fileLocation) {
+	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source) {
+		Location fileLocation = structureInfo.getLocation();
 		if(fileLocation == null) {
 			return new StructureUpdateNullTask(structureInfo);
 		}

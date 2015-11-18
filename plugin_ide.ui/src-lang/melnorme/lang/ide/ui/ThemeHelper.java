@@ -39,14 +39,9 @@ public class ThemeHelper extends LifecycleObject implements IDisposable {
 	public ThemeHelper(BundleContext context) {
 		this.context = context;
 		this.serviceRef = context.getServiceReference(IThemeManager.class.getName());
+		asOwner().bind(() -> context.ungetService(serviceRef));
 		
 		this.themeManager = blindCast(context.getService(serviceRef));
-	}
-	
-	@Override
-	public void dispose() {
-		super.dispose();
-		context.ungetService(serviceRef);
 	}
 	
 	public ITheme getActiveThemeForCurrentDisplay() {

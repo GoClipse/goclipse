@@ -10,12 +10,19 @@
  *******************************************************************************/
 package melnorme.lang.utils.concurrency;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.SafeFuture;
+import melnorme.utilbox.core.Assert.AssertFailedException;
+import melnorme.utilbox.core.fntypes.CallableX;
+import melnorme.utilbox.fields.ListenerListHelper;
 
 /**
  * Container for a data object that is created/updated concurrently by an update task.
@@ -26,7 +33,12 @@ import melnorme.utilbox.concurrency.ICancelMonitor;
  * The responsibility for actually executing the update task lies externally, not here. 
  * 
  */
-public class ConcurrentlyDerivedData<DATA> {
+public class ConcurrentlyDerivedData<DATA, SELF> {
+	
+	protected final ListenerListHelper<IDataChangedListener<SELF>> connectedListeners = 
+			new ListenerListHelper<>();
+	protected final ListenerListHelper<IDataUpdateRequestedListener<SELF>> updateRequestedListeners = 
+			new ListenerListHelper<>();
 	
 	private DATA data = null;
 	private DataUpdateTask<DATA> latestUpdateTask = null;
@@ -40,11 +52,19 @@ public class ConcurrentlyDerivedData<DATA> {
 		return latestUpdateTask != null;
 	}
 	
+	public synchronized boolean isStale(DATA data) {
+		return isStale() || getStoredData() != data;
+	}
+	
 	public synchronized void runSynchronized(Runnable runnable) {
 		runnable.run();
 	}
 	
-	public synchronized CountDownLatch getLatchForCurrentUpdate() {
+	public synchronized <R, E extends Exception> R callSynchronized(CallableX<R, E> callable) throws E {
+		return callable.call();
+	}
+	
+	public synchronized CountDownLatch getLatchForUpdateTask() {
 		return latch;
 	}
 	
@@ -57,6 +77,11 @@ public class ConcurrentlyDerivedData<DATA> {
 			latestUpdateTask.cancel();
 		}
 		latestUpdateTask = newUpdateTask;
+		
+		doHandleDataUpdateRequested();
+	}
+	
+	protected void doHandleDataUpdateRequested() {
 	}
 	
 	public synchronized void setNewData(DATA newData, DataUpdateTask<DATA> updateTask) {
@@ -75,34 +100,14 @@ public class ConcurrentlyDerivedData<DATA> {
 	protected void doHandleDataChanged() {
 	}
 	
-	/** Waits for the current update task to finish, and returns the first non-stale data that becomes available.
-	 * Note that the data can become stale if a new update is requested after this method returns.
-	 * @return an up-to-date data. Can be null (if no updates were ever requested). 
-	 */
-	public DATA awaitUpdatedData() throws InterruptedException {
-		getLatchForCurrentUpdate().await();
-		return data;
-	}
-	
-	/**
-	 * @see #awaitUpdatedData()
-	 */
-	public DATA awaitUpdatedData(long timeout, TimeUnit unit) throws InterruptedException {
-		boolean success = getLatchForCurrentUpdate().await(timeout, unit);
-		if(success) {
-			return data;
-		}
-		throw new InterruptedException();
-	}
-	
 	/* -----------------  ----------------- */
 	
 	public static abstract class DataUpdateTask<DATA> implements Runnable {
 		
-		protected final ConcurrentlyDerivedData<DATA> derivedData;
+		protected final ConcurrentlyDerivedData<DATA, ?> derivedData;
 		protected final String taskDisplayName;
 		
-		public DataUpdateTask(ConcurrentlyDerivedData<DATA> derivedData, String taskDisplayName) {
+		public DataUpdateTask(ConcurrentlyDerivedData<DATA, ?> derivedData, String taskDisplayName) {
 			this.taskDisplayName = taskDisplayName;
 			this.derivedData = derivedData;
 		}
@@ -124,7 +129,7 @@ public class ConcurrentlyDerivedData<DATA> {
 		}
 		
 		@Override
-		public void run() {
+		public final void run() {
 			synchronized(this) {
 				if(cancelled) {
 					return;
@@ -135,7 +140,7 @@ public class ConcurrentlyDerivedData<DATA> {
 			
 			String originalName = thread.getName();
 			try {
-				thread.setName(originalName + " : " + taskDisplayName);
+				thread.setName(originalName + " >> " + taskDisplayName);
 				
 				DATA newData = createNewData();
 				derivedData.setNewData(newData, this);
@@ -152,6 +157,85 @@ public class ConcurrentlyDerivedData<DATA> {
 		
 		protected abstract DATA createNewData();
 		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	
+	protected final DataUpdateFuture asFuture = new DataUpdateFuture();
+	
+	/** 
+	 * @return a {@link Future} that can be used to wait for the first non-stale data that becomes available.
+	 */
+	public DataUpdateFuture asFuture() {
+		return asFuture;
+	}
+	
+	public DATA awaitUpdatedData() throws InterruptedException {
+		return asFuture().get();
+	}
+	
+	public class DataUpdateFuture implements SafeFuture<DATA> {
+		@Override
+		public boolean cancel(boolean mayInterruptIfRunning) throws AssertFailedException {
+			throw assertFail();
+		}
+		
+		@Override
+		public boolean isCancelled() {
+			return false;
+		}
+		
+		@Override
+		public boolean isDone() {
+			return !isStale();
+		}
+		
+		@Override
+		public DATA get() throws InterruptedException {
+			getLatchForUpdateTask().await();
+			return data;
+		}
+		
+		@Override
+		public DATA get(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
+			boolean success = getLatchForUpdateTask().await(timeout, unit);
+			if(!success) {
+				throw new TimeoutException();
+			}
+			return data;
+		}
+	}
+
+	/* -----------------  ----------------- */
+	
+	public static interface IDataUpdateRequestedListener<DERIVED_DATA> {
+		
+		/** 
+		 * Indicates that an asynchronous request to change the underlying derived data has been made.
+		 * 
+		 * This method runs under a {@link ConcurrentlyDerivedData} lock, so listeners should finish quickly.
+		 */
+		void dataUpdateRequested(DERIVED_DATA lockedDerivedData);
+		
+	}
+	
+	public static interface IDataChangedListener<DERIVED_DATA> {
+		
+		/** 
+		 * Indicates that underlying derived data has changed.
+		 * 
+		 * This method runs under a {@link ConcurrentlyDerivedData} lock, so listeners should finish quickly.
+		 */
+		void dataChanged(DERIVED_DATA lockedDerivedData);
+		
+	}
+	
+	protected static <DATA> void notifyStructureChanged(final DATA lockedDerivedData, 
+			ListenerListHelper<? extends IDataChangedListener<DATA>> listeners) {
+		for(IDataChangedListener<DATA> listener : listeners.getListeners()) {
+			listener.dataChanged(lockedDerivedData);
+		}
 	}
 	
 }

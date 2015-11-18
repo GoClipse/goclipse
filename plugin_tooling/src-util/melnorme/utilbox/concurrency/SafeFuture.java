@@ -8,31 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.ownership;
+package melnorme.utilbox.concurrency;
 
-public class LifecycleObject implements IDisposable {
-	
-	protected final OwnedObjects owned = new OwnedObjects(); 
-	
-	public LifecycleObject() {
-		super();
-	}
-	
-	public IOwner asOwner() {
-		return owned;
-	}
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+/**
+ * Like a {@link Future}, but does not throw {@link ExecutionException}s 
+ */
+public interface SafeFuture<DATA> extends Future<DATA> {
 	
 	@Override
-	public final void dispose() {
-		dispose_pre();
-		owned.disposeAll();
-		dispose_post();
-	}
+	public DATA get() throws InterruptedException;
 	
-	protected void dispose_pre() {
-	}
-	
-	protected void dispose_post() {
-	}
+	@Override
+	public DATA get(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException;
 	
 }

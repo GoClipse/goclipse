@@ -16,9 +16,9 @@ import org.eclipse.core.runtime.Platform;
 import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.misc.SimpleLogger;
-import melnorme.utilbox.ownership.IDisposable;
+import melnorme.utilbox.ownership.LifecycleObject;
 
-public class AbstractModelUpdateManager<KEY> implements IDisposable {
+public class AbstractModelUpdateManager<KEY> extends LifecycleObject {
 	
 	public static SimpleLogger log = init_log();
 	
@@ -32,10 +32,10 @@ public class AbstractModelUpdateManager<KEY> implements IDisposable {
 	}
 	protected ICommonExecutor init_executor() {
 		return CoreExecutors.newCachedThreadPool(getClass());
-	} 
+	}
 	
 	@Override
-	public void dispose() {
+	protected void dispose_post() {
 		executor.shutdown();
 	}
 	

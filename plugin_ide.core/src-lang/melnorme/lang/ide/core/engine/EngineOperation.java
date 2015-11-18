@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -30,16 +31,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public abstract class EngineOperation<RET> {
 	
-	protected final EngineClient engineClient;
+	protected final SourceModelManager sourceModelMgr;
 	
 	protected final Location location;
 	protected final int offset;
 	protected final int timeoutMillis;
 	protected final String opName;
 	
-	public EngineOperation(EngineClient client, Location location, int offset, int timeoutMillis, 
+	public EngineOperation(SourceModelManager sourceModelMgr, Location location, int offset, int timeoutMillis, 
 			String opName) {
-		this.engineClient = client;
+		this.sourceModelMgr = sourceModelMgr;
 		
 		this.location = location;
 		this.offset = offset;
@@ -90,7 +91,10 @@ public abstract class EngineOperation<RET> {
 	
 	protected RET doRunEngineOperation(final IProgressMonitor pm) 
 			throws CommonException, CoreException, OperationCancellation {
-		engineClient.awaitUpdatedWorkingCopy(location, pm);
+		StructureInfo structureInfo = sourceModelMgr.getStoredStructureInfo(location);
+		if(structureInfo != null) {
+			structureInfo.awaitUpdatedData(pm);
+		}
 		
 		return doRunOperationWithWorkingCopy(pm);
 	}

@@ -36,8 +36,8 @@ import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
+import melnorme.lang.ide.core.utils.operation.OperationUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -208,7 +208,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			throws CoreException {
 		monitor = (monitor == null) ? new NullProgressMonitor() : monitor;	
 		
-		EclipseUtils.checkMonitorCancelation_OCE(monitor);
+		OperationUtils.checkMonitorCancelation_OCE(monitor);
 		
 		try {
 			monitor.beginTask(LaunchMessages.LCD_StartingLaunchConfiguration(configuration.getName()), 10);
