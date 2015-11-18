@@ -67,9 +67,9 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 			return rawGoPath;
 		}
 		
-		// Implicitly add project location to GOPATH
-		ArrayList2<String> newGoPathEntries = new ArrayList2<>(projectLoc.toPathString());
-		newGoPathEntries.addAll(rawGoPath.getGoPathEntries());
+		// Implicitly add project location to the end of GOPATH
+		ArrayList2<String> newGoPathEntries = new ArrayList2<>(rawGoPath.getGoPathEntries());
+		newGoPathEntries.add(projectLoc.toPathString());
 		return new GoPath(newGoPathEntries);
 	}
 	
