@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,18 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.engine;
+package melnorme.utilbox.core.fntypes;
 
-import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
+import java.util.concurrent.Callable;
 
-public interface IStructureModelListener {
+
+/**
+ * A {@link Callable} with a stricter API: 
+ * allows specifying a more specific Exception that the {@link #call()} method throws.
+ */
+public interface CallableX<RET, EXC extends Exception> extends Callable<RET> {
 	
-	/** 
-	 * Indicates that the source file structure of the file for given key has changed.
-	 * 
-	 * This method runs under the scope of a {@link StructureInfo} lock, so listeners should respond quickly.
-	 */
-	void structureChanged(StructureInfo lockedStructureInfo);
+	@Override
+	public RET call() throws EXC;
 	
 }

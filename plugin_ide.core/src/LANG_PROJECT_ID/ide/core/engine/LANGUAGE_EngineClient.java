@@ -25,14 +25,15 @@ public class LANGUAGE_EngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source, Location fileLocation) {
+	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source) {
 		return new StructureUpdateTask(structureInfo) {
 			@Override
 			protected SourceFileStructure createNewData() {
+				Location location = structureInfo.getLocation();
 				SourceRange sr = new SourceRange(0, source.length());
 				StructureElement element = new StructureElement("NOT_IMPLEMENTED", sr, sr, 
 					StructureElementKind.MODULEDEC, new ElementAttributes(null), null, null);
-				return new SourceFileStructure(fileLocation, new ArrayList2<StructureElement>(element), null);
+				return new SourceFileStructure(location, new ArrayList2<StructureElement>(element), null);
 			}
 		};
 	}
