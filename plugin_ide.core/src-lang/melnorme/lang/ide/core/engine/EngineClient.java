@@ -11,7 +11,7 @@
 package melnorme.lang.ide.core.engine;
 
 
-public abstract class EngineClient extends StructureModelManager {
+public abstract class EngineClient extends SourceModelManager {
 	
 	protected final ProblemMarkerUpdater problemUpdater = init_ProblemUpdater();
 	

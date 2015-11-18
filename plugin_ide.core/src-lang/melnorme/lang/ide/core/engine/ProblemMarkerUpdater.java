@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
+import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.ParserError;
@@ -34,19 +34,19 @@ import melnorme.utilbox.ownership.IDisposable;
 public class ProblemMarkerUpdater implements IDisposable {
 	
 	protected final ExecutorService problemsExecutor = CoreExecutors.newExecutorTaskAgent(getClass());
-	protected StructureModelManager structureManager;
+	protected SourceModelManager sourceModelManager;
 	
 	public ProblemMarkerUpdater() {
 	}
 	
-	public void install(StructureModelManager structureManager) {
-		this.structureManager = structureManager;
-		structureManager.addListener(problemUpdaterListener);
+	public void install(SourceModelManager sourceModelManager) {
+		this.sourceModelManager = sourceModelManager;
+		sourceModelManager.addListener(problemUpdaterListener);
 	}
 	
 	@Override
 	public void dispose() {
-		structureManager.removeListener(problemUpdaterListener);
+		sourceModelManager.removeListener(problemUpdaterListener);
 		problemsExecutor.shutdownNow();
 	}
 	

@@ -22,8 +22,8 @@ import org.eclipse.jface.text.IDocumentListener;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.lang.utils.EntryMapTS;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData;
+import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.DataUpdateTask;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.fields.ListenerListHelper;
@@ -31,22 +31,21 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.StrictDisposable;
 
 /**
- * The purpose of Engine manager is two-fold:
+ * The SourceModelManager keeps track of text document changes, and updates derived models, such as:
  * 
- * - Keep track of document text changes and send those updates to the engine.
- * - Retrieve parsing/structural information from the client after such text updates.
+ * - Source module structure-info / parse-analysis.
+ * - Possible persist document changes to files in filesystem, or update a semantic engine buffers.
  *
  */
-/* FIXME: rename */
-public abstract class StructureModelManager extends AbstractModelUpdateManager<Object> {
+public abstract class SourceModelManager extends AbstractModelUpdateManager<Object> {
 	
-	public StructureModelManager() {
+	public SourceModelManager() {
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected final EntryMapTS<Object, StructureInfo> infosMap = 
-			new EntryMapTS<Object, StructureInfo>() {
+	protected final SynchronizedEntryMap<Object, StructureInfo> infosMap = 
+			new SynchronizedEntryMap<Object, StructureInfo>() {
 		@Override
 		protected StructureInfo createEntry(Object key) {
 			return new StructureInfo(key);
@@ -67,7 +66,7 @@ public abstract class StructureModelManager extends AbstractModelUpdateManager<O
 	 * 
 	 * @return non-null. The {@link StructureInfo} resulting from given connection.
 	 */
-	public SourceModelRegistration connectStructureUpdates3(Object key, IDocument document, 
+	public StructureModelRegistration connectStructureUpdates(Object key, IDocument document, 
 			IStructureModelListener structureListener) {
 		assertNotNull(key);
 		assertNotNull(document);
@@ -79,22 +78,22 @@ public abstract class StructureModelManager extends AbstractModelUpdateManager<O
 		boolean connected = sourceInfo.connectDocument(document, structureListener);
 		
 		if(!connected) {
-			// Odd case: we tried to connect with equivalent key, but the document is other.
-			// return a unmanaged StructureInfo
+			// Special case: this key has already been connected to, but with a different document.
+			// As such, return a unmanaged StructureInfo
 			sourceInfo = new StructureInfo(key);
 			connected = sourceInfo.connectDocument(document, structureListener);
 		}
 		assertTrue(connected);
 		
-		return new SourceModelRegistration(sourceInfo, structureListener);
+		return new StructureModelRegistration(sourceInfo, structureListener);
 	}
 	
-	public class SourceModelRegistration extends StrictDisposable {
+	public class StructureModelRegistration extends StrictDisposable {
 		
 		public final StructureInfo structureInfo;
 		protected final IStructureModelListener structureListener;
 		
-		public SourceModelRegistration(StructureInfo structureInfo, IStructureModelListener structureListener) {
+		public StructureModelRegistration(StructureInfo structureInfo, IStructureModelListener structureListener) {
 			this.structureInfo = assertNotNull(structureInfo);
 			this.structureListener = assertNotNull(structureListener);
 		}
@@ -131,6 +130,9 @@ public abstract class StructureModelManager extends AbstractModelUpdateManager<O
 			return key;
 		}
 		
+		/**
+		 * @return the file location if source is based on a file, null otherwise.
+		 */
 		public Location getLocation() {
 			if(key instanceof Location) {
 				return (Location) key;
@@ -142,17 +144,17 @@ public abstract class StructureModelManager extends AbstractModelUpdateManager<O
 			return updateListeners.getListeners().size() > 0;
 		}
 		
-		protected synchronized boolean connectDocument(IDocument newDocument, IStructureModelListener structureListener) {
+		protected synchronized boolean connectDocument(IDocument newDocument, IStructureModelListener listener) {
 			if(document == null) {
 				document = newDocument;
 				newDocument.addDocumentListener(docListener);
-				queueNewUpdateTask();
+				queueSourceUpdateTask(document.get());
 			}
 			else if(document != newDocument) {
 				return false;
 			}
 			
-			updateListeners.addListener(structureListener);
+			updateListeners.addListener(listener);
 			return true;
 		}
 		
@@ -162,7 +164,7 @@ public abstract class StructureModelManager extends AbstractModelUpdateManager<O
 			}
 			@Override
 			public void documentChanged(DocumentEvent event) {
-				queueNewUpdateTask();
+				queueSourceUpdateTask(document.get());
 			}
 		};
 		
@@ -173,21 +175,15 @@ public abstract class StructureModelManager extends AbstractModelUpdateManager<O
 				document.removeDocumentListener(docListener);
 				document = null;
 				
-				if(disconnectTask != null) {
-					/* FIXME: disconnect task*/
-					queueUpdateTask(disconnectTask);
-				}
+				/* FIXME: disconnect task*/
+				queueUpdateTask(disconnectTask);
 				
 //				infosMap.removeEntry(key);
 			}
 		}
 		
-		protected void queueNewUpdateTask() {
-			// Note: document should only be acessed in the same thread that fires document listeners,
-			// so retrieve the document contents now.
-			final String source = document.get();
-			Location location = getLocation();
-			StructureUpdateTask updateTask = createUpdateTask(this, source, location);
+		protected void queueSourceUpdateTask(final String source) {
+			StructureUpdateTask updateTask = createUpdateTask(this, source);
 			queueUpdateTask(updateTask);
 		}
 		
@@ -212,7 +208,7 @@ public abstract class StructureModelManager extends AbstractModelUpdateManager<O
 				try {
 					return awaitUpdatedData(100, TimeUnit.MILLISECONDS);
 				} catch(InterruptedException e) {
-					continue;
+					throw new OperationCancellation();
 				}
 			}
 		}
@@ -224,10 +220,8 @@ public abstract class StructureModelManager extends AbstractModelUpdateManager<O
 	/**
 	 * Create an update task for the given structureInfo, due to a document change.
 	 * @param source the new source of the document being listened to.
-	 * @param fileLocation the file location if document is based on a file, null otherwise.
 	 */
-	protected abstract StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source,
-			Location fileLocation);
+	protected abstract StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source);
 	
 	/**
 	 * Create an update task for when the last listener of given structureInfo disconnects.
@@ -316,7 +310,5 @@ public abstract class StructureModelManager extends AbstractModelUpdateManager<O
 		}
 		structureInfo.awaitUpdatedData(pm);
 	}
-	
-	/* ----------------- util ----------------- */
 	
 }

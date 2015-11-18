@@ -8,17 +8,31 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.engine;
+package melnorme.utilbox.fields;
 
-import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 
-public interface IStructureModelListener {
+import melnorme.utilbox.collections.Indexable;
+
+public class EventSource<T> implements IEventSource<T> {
 	
-	/** 
-	 * Indicates that the source file structure of the file for given key has changed.
-	 * 
-	 * This method runs under the scope of a {@link StructureInfo} lock, so listeners should respond quickly.
-	 */
-	void structureChanged(StructureInfo lockedStructureInfo);
+	protected final ListenerListHelper<T> listeners = new ListenerListHelper<>();
+	
+	public EventSource() {
+		super();
+	}
+	
+	@Override
+	public void addListener(T listener) {
+		listeners.addListener(listener);
+	}
+	
+	@Override
+	public void removeListener(T listener) {
+		listeners.removeListener(listener);
+	}
+	
+	protected Indexable<T> getListeners() {
+		return listeners.getListeners();
+	}
 	
 }

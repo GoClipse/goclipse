@@ -18,6 +18,12 @@ import java.util.concurrent.TimeUnit;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 
 /**
+ * Container for a data object that is created/updated concurrently by an update task.
+ * 
+ * This container tracks when a new data update is requested, 
+ * marking the current data object as stale until the update task finishes.
+ * 
+ * The responsibility for actually executing the update task lies externally, not here. 
  * 
  */
 public class ConcurrentlyDerivedData<DATA> {

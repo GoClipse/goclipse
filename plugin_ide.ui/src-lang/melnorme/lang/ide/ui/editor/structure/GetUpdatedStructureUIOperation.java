@@ -11,30 +11,32 @@
 package melnorme.lang.ide.ui.editor.structure;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.engine.StructureModelManager;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
+import melnorme.lang.ide.core.engine.SourceModelManager;
+import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.ui.actions.CalculateValueUIOperation;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<SourceFileStructure> {
 	
-	protected final StructureModelManager modelManager;
-	protected final StructureInfo structureInfo;
-	
+	protected final SourceModelManager modelManager;
+	protected final AbstractLangStructureEditor editor;
+
 	public GetUpdatedStructureUIOperation(AbstractLangStructureEditor editor) {
-		this(LangCore.getEngineClient(), editor.editorStructureInfo);
+		this(LangCore.getEngineClient(), editor);
 	}
 	
-	public GetUpdatedStructureUIOperation(StructureModelManager modelManager, StructureInfo structureInfo) {
+	public GetUpdatedStructureUIOperation(SourceModelManager modelManager, AbstractLangStructureEditor editor) {
 		super("Awaiting Structure Calculation");
-		this.modelManager = modelManager;
-		this.structureInfo = structureInfo;
+		this.modelManager = assertNotNull(modelManager);
+		this.editor = assertNotNull(editor);
 	}
 	
 	@Override
@@ -44,10 +46,13 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	
 	@Override
 	protected void prepareOperation() throws CoreException {
-		if(structureInfo == null) {
-			throw LangCore.createCoreException("StructureInfo not available", null);
+		if(editor.modelRegistration == null) {
+			throw LangCore.createCoreException("Editor not connected to a structure model.", null);
 		}
+		structureInfo = editor.modelRegistration.structureInfo;
 	}
+	
+	protected StructureInfo structureInfo;
 	
 	@Override
 	protected void performBackgroundComputation() throws OperationCancellation, CoreException {

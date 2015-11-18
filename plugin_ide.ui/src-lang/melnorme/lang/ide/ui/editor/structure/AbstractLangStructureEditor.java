@@ -33,8 +33,8 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.engine.IStructureModelListener;
-import melnorme.lang.ide.core.engine.StructureModelManager.SourceModelRegistration;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
+import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
+import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
@@ -74,8 +74,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	/* -----------------  ----------------- */
 	
 	protected Location editorLocation;
-	protected SourceModelRegistration structureUpdatesRegistration; 
-	protected volatile StructureInfo editorStructureInfo;
+	protected StructureModelRegistration modelRegistration; 
 	
 	{	
 		owned.bind(this::disconnectUpdates); 
@@ -92,19 +91,17 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		editorLocation = (Location) (editorKey instanceof Location ? editorKey : null);
 		
 		IDocument doc = getDocumentProvider().getDocument(input);
-		structureUpdatesRegistration = engineClient.connectStructureUpdates3(editorKey, doc, structureInfoListener);
-		editorStructureInfo = structureUpdatesRegistration.structureInfo;
+		modelRegistration = engineClient.connectStructureUpdates(editorKey, doc, structureInfoListener);
 		
 		// Send initial update
-		handleEditorStructureUpdated();
+		handleEditorStructureUpdated(modelRegistration.structureInfo);
 	}
 	
 	protected void disconnectUpdates() {
-		if(structureUpdatesRegistration != null) {
-			structureUpdatesRegistration.dispose();
-			structureUpdatesRegistration = null;
+		if(modelRegistration != null) {
+			modelRegistration.dispose();
+			modelRegistration = null;
 		}
-		editorStructureInfo = null;
 	}
 	
 	public static Object getStructureModelKeyFromEditorInput(IEditorInput input) {
@@ -152,19 +149,19 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 				@Override
 				public void run() {
 					// editor input might have changed, so check this update still applies to editor structure info
-					if(lockedStructureInfo != editorStructureInfo) {
+					if(lockedStructureInfo != modelRegistration.structureInfo) {
 						return;
 					}
-					handleEditorStructureUpdated();
+					handleEditorStructureUpdated(modelRegistration.structureInfo);
 				}
 			});
 		}
 	};
 	
-	protected void handleEditorStructureUpdated() {
+	protected void handleEditorStructureUpdated(StructureInfo structureInfo) {
 		assertTrue(Display.getCurrent() != null);
 		
-		SourceFileStructure structure = editorStructureInfo.getStoredData();
+		SourceFileStructure structure = structureInfo.getStoredData();
 		if(structure == null) {
 			return; // Ignore
 		}

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.utilbox.fields;
 
-import melnorme.lang.utils.EventSource;
-
 /**
  * A value that listener/observer can connect to and listen for modification.
  */
