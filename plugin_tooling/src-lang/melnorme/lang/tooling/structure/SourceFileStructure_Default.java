@@ -18,7 +18,7 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
 
-public class SourceFileStructure_Default extends StructureContainer implements ISourceFileStructure {
+public abstract class SourceFileStructure_Default extends StructureContainer implements ISourceFileStructure {
 	
 	protected final Location location;
 	protected final Indexable<ParserError> parserProblems;

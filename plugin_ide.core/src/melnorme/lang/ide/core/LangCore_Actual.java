@@ -1,7 +1,7 @@
 package melnorme.lang.ide.core;
 
 import LANG_PROJECT_ID.ide.core.bundle_model.LANGUAGE_BundleModelManager;
-import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_EngineClient;
+import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_SourceModelManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_BuildManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -22,8 +22,8 @@ public class LangCore_Actual {
 		return new LANGUAGE_ToolManager();
 	}
 	
-	public static LANGUAGE_EngineClient createEngineClient() {
-		return new LANGUAGE_EngineClient();
+	public static LANGUAGE_SourceModelManager createSourceModelManager() {
+		return new LANGUAGE_SourceModelManager();
 	}
 	
 	public static LANGUAGE_BundleModelManager createBundleModelManager() {

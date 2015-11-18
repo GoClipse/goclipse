@@ -13,18 +13,17 @@ package melnorme.lang.ide.core.engine;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.concurrent.TimeUnit;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.operation.OperationUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData;
-import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.DataUpdateTask;
+import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.fields.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
@@ -33,13 +32,20 @@ import melnorme.utilbox.ownership.StrictDisposable;
 /**
  * The SourceModelManager keeps track of text document changes, and updates derived models, such as:
  * 
- * - Source module structure-info / parse-analysis.
+ * - Source module parse-analysis and structure-info (possibly with problem markers update).
  * - Possible persist document changes to files in filesystem, or update a semantic engine buffers.
  *
  */
 public abstract class SourceModelManager extends AbstractModelUpdateManager<Object> {
 	
 	public SourceModelManager() {
+		this(new ProblemMarkerUpdater());
+	}
+	
+	public SourceModelManager(ProblemMarkerUpdater problemUpdater) {
+		if(problemUpdater != null) {
+			problemUpdater.install(this);
+		}
 	}
 	
 	/* -----------------  ----------------- */
@@ -100,10 +106,6 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 		
 		@Override
 		protected void disposeDo() {
-			disconnectStructureUpdates();
-		}
-		
-		private void disconnectStructureUpdates() {
 			log.println("disconnectStructureUpdates: " + structureInfo.getKey());
 			structureInfo.disconnectFromDocument(structureListener);
 		}
@@ -112,10 +114,9 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 	
 	/* -----------------  ----------------- */
 	
-	public class StructureInfo extends ConcurrentlyDerivedData<SourceFileStructure> {
+	public class StructureInfo extends ConcurrentlyDerivedData<SourceFileStructure, StructureInfo> {
 		
 		protected final Object key;
-		protected final ListenerListHelper<IStructureModelListener> updateListeners = new ListenerListHelper<>();
 		protected final StructureUpdateTask disconnectTask; // Can be null
 		
 		protected IDocument document = null;
@@ -141,7 +142,7 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 		}
 		
 		public synchronized boolean hasConnectedListeners() {
-			return updateListeners.getListeners().size() > 0;
+			return connectedListeners.getListeners().size() > 0;
 		}
 		
 		protected synchronized boolean connectDocument(IDocument newDocument, IStructureModelListener listener) {
@@ -154,7 +155,7 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 				return false;
 			}
 			
-			updateListeners.addListener(listener);
+			connectedListeners.addListener(listener);
 			return true;
 		}
 		
@@ -169,16 +170,13 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 		};
 		
 		protected synchronized void disconnectFromDocument(IStructureModelListener structureListener) {
-			updateListeners.removeListener(structureListener);
+			connectedListeners.removeListener(structureListener);
 			
 			if(!hasConnectedListeners()) {
 				document.removeDocumentListener(docListener);
 				document = null;
 				
-				/* FIXME: disconnect task*/
 				queueUpdateTask(disconnectTask);
-				
-//				infosMap.removeEntry(key);
 			}
 		}
 		
@@ -194,23 +192,26 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 		}
 		
 		@Override
+		protected void doHandleDataUpdateRequested() {
+			for(IDataUpdateRequestedListener<StructureInfo> listener : updateRequestedListeners.getListeners()) {
+				listener.dataUpdateRequested(this);
+			}
+		}
+		
+		@Override
 		protected void doHandleDataChanged() {
-			notifyStructureChanged(this, updateListeners);
-			notifyStructureChanged(this, modelListeners);
+			notifyStructureChanged(this, connectedListeners);
+			notifyStructureChanged(this, globalListeners);
+			
+			if(!hasConnectedListeners()) {
+				// TODO need to verify thread-safety, to enable this code.
+				assertTrue(getStoredData() == null);
+//				infosMap.runSynchronized(() -> infosMap.removeEntry(key));
+			}
 		}
 		
 		public SourceFileStructure awaitUpdatedData(IProgressMonitor pm) throws OperationCancellation {
-			while(true) {
-				if(pm.isCanceled()) {
-					throw new OperationCancellation();
-				}
-				
-				try {
-					return awaitUpdatedData(100, TimeUnit.MILLISECONDS);
-				} catch(InterruptedException e) {
-					throw new OperationCancellation();
-				}
-			}
+			return OperationUtils.awaitData(asFuture(), pm);
 		}
 		
 	}
@@ -277,38 +278,15 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 	
 	/* ----------------- Listeners ----------------- */
 	
-	protected final ListenerListHelper<IStructureModelListener> modelListeners = new ListenerListHelper<>();
+	protected final ListenerListHelper<IStructureModelListener> globalListeners = new ListenerListHelper<>();
 	
 	public void addListener(IStructureModelListener listener) {
 		assertNotNull(listener);
-		modelListeners.addListener(listener);
+		globalListeners.addListener(listener);
 	}
 	
 	public void removeListener(IStructureModelListener listener) {
-		modelListeners.removeListener(listener);
-	}
-	
-	protected static void notifyStructureChanged(final StructureInfo structureInfo, 
-			ListenerListHelper<IStructureModelListener> listeners) {
-		for(IStructureModelListener listener : listeners.getListeners()) {
-			try {
-				listener.structureChanged(structureInfo);
-			} catch (Exception e) {
-				LangCore.logInternalError(e);
-			}
-		}
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public void awaitUpdatedWorkingCopy(Object modelKey, IProgressMonitor pm) throws OperationCancellation {
-		// TODO: this could be update to await until server responds (meaning that its working copy is updated), 
-		// no need to actually wait for structure to be parsed. 
-		StructureInfo structureInfo = getStoredStructureInfo(modelKey);
-		if(structureInfo == null) {
-			return; // No updates pending
-		}
-		structureInfo.awaitUpdatedData(pm);
+		globalListeners.removeListener(listener);
 	}
 	
 }

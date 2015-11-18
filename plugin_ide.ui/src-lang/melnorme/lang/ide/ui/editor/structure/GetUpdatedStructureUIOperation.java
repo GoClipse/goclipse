@@ -28,9 +28,9 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	
 	protected final SourceModelManager modelManager;
 	protected final AbstractLangStructureEditor editor;
-
+	
 	public GetUpdatedStructureUIOperation(AbstractLangStructureEditor editor) {
-		this(LangCore.getEngineClient(), editor);
+		this(LangCore.getSourceModelManager(), editor);
 	}
 	
 	public GetUpdatedStructureUIOperation(SourceModelManager modelManager, AbstractLangStructureEditor editor) {

@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
-import melnorme.lang.ide.core.engine.EngineClient;
+import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
@@ -43,15 +43,15 @@ public abstract class LangCore extends Plugin {
 	/* ----------------- Owned singletons: ----------------- */
 	
 	protected static final AbstractToolManager toolManager = LangCore_Actual.createToolManagerSingleton();
-	protected static final EngineClient engineClient = LangCore_Actual.createEngineClient();
+	protected static final SourceModelManager sourceModelManager = LangCore_Actual.createSourceModelManager();
 	protected static final BundleModelManager<?> bundleManager = LangCore_Actual.createBundleModelManager();
 	protected static final BuildManager buildManager = LangCore_Actual.createBuildManager();
 	
 	public static AbstractToolManager getToolManager() {
 		return toolManager;
 	}
-	public static EngineClient getEngineClient() {
-		return engineClient;
+	public static SourceModelManager getSourceModelManager() {
+		return sourceModelManager;
 	}
 	public static BundleModelManager<?> getBundleModelManager() {
 		return bundleManager;
@@ -105,7 +105,7 @@ public abstract class LangCore extends Plugin {
 		
 		buildManager.dispose();
 		bundleManager.shutdownManager();
-		engineClient.dispose();
+		sourceModelManager.dispose();
 		toolManager.shutdownNow();
 		
 		super.stop(context);

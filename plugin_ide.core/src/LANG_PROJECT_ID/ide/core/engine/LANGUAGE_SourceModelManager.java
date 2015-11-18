@@ -10,7 +10,7 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.core.engine;
 
-import melnorme.lang.ide.core.engine.EngineClient;
+import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.SourceFileStructure;
@@ -19,9 +19,9 @@ import melnorme.lang.tooling.structure.StructureElementKind;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
 
-public class LANGUAGE_EngineClient extends EngineClient {
+public class LANGUAGE_SourceModelManager extends SourceModelManager {
 	
-	public LANGUAGE_EngineClient() {
+	public LANGUAGE_SourceModelManager() {
 	}
 	
 	@Override

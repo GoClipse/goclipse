@@ -21,9 +21,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -32,7 +30,6 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.ArrayUtil;
 
 public class EclipseUtils {
@@ -102,19 +99,7 @@ public class EclipseUtils {
 		return (T) Platform.getAdapterManager().getAdapter(adaptable, adapterType);
 	}
 	
-	/* ----------------- concurrency ----------------- */
-	
-	public static void checkMonitorCancelation(IProgressMonitor progressMonitor) throws OperationCancellation {
-		if(progressMonitor.isCanceled()) {
-			throw new OperationCancellation();
-		}
-	}
-	
-	public static void checkMonitorCancelation_OCE(IProgressMonitor progressMonitor) throws OperationCanceledException {
-		if(progressMonitor.isCanceled()) {
-			throw new OperationCanceledException();
-		}
-	}
+	/* ----------------- status ----------------- */
 	
 	public static int statusLevelToEclipseSeverity(IStatusMessage se) {
 		return statusLevelToEclipseSeverity(se.getStatusLevel());

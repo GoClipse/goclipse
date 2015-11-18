@@ -34,8 +34,8 @@ import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.core.utils.operation.OperationUtils;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -239,7 +239,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 		try {
 			ProcessBuilder pb = createCleanPB();
-			EclipseUtils.checkMonitorCancelation(monitor);
+			OperationUtils.checkMonitorCancelation(monitor);
 			doClean(monitor, pb);
 		} catch (OperationCancellation e) {
 			// return
