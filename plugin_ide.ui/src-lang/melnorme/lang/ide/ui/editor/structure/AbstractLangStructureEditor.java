@@ -144,8 +144,9 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 			Display.getDefault().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					// editor input might have changed, so check this update still applies to editor structure info
-					if(lockedStructureInfo != modelRegistration.structureInfo) {
+					// editor input might have changed, so check this update still applies to editor binding
+					
+					if(modelRegistration == null || lockedStructureInfo != modelRegistration.structureInfo) {
 						return;
 					}
 					handleEditorStructureUpdated(modelRegistration.structureInfo);
