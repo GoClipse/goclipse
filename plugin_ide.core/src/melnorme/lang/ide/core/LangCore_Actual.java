@@ -4,8 +4,10 @@ import LANG_PROJECT_ID.ide.core.bundle_model.LANGUAGE_BundleModelManager;
 import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_SourceModelManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_BuildManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
+import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 
 public class LangCore_Actual {
@@ -20,7 +22,7 @@ public class LangCore_Actual {
 	public static final String LANGUAGE_NAME = "Lang";
 	
 	
-	public static LangCore2 instance;
+	public static LangCore instance;
 	
 	/* ----------------- Owned singletons: ----------------- */
 	
@@ -30,8 +32,7 @@ public class LangCore_Actual {
 	protected final LANGUAGE_SourceModelManager sourceModelManager;
 	
 	public LangCore_Actual() {
-		instance = (LangCore2) this;
-		LangCore.pluginInstance.langCore = instance;
+		instance = (LangCore) this;
 		
 		toolManager = createToolManagerSingleton();
 		bundleManager = createBundleModelManager();
@@ -57,9 +58,23 @@ public class LangCore_Actual {
 	
 	/* -----------------  ----------------- */
 	
+	
+	public static AbstractToolManager getToolManager() {
+		return instance.toolManager;
+	}
 	public static LANGUAGE_BundleModel getBundleModel() {
 		return instance.bundleManager.getModel();
 	}
+	public static BuildManager getBuildManager() {
+		return instance.buildManager;
+	}
+	public static BundleModelManager<?> getBundleModelManager() {
+		return instance.bundleManager;
+	}
+	public static SourceModelManager getSourceModelManager() {
+		return instance.sourceModelManager;
+	}
+	
 	public static class LANGUAGE_BundleModel extends LangBundleModel {
 		
 	}

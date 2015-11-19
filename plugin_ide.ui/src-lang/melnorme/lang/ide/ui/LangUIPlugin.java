@@ -33,6 +33,7 @@ import _org.eclipse.jdt.internal.ui.viewsupport.ProblemMarkerManager;
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore.StatusExt;
+import melnorme.lang.ide.core.LangCorePlugin;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
 import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
@@ -99,7 +100,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 			LangCore.getToolManager().addListener(operationsListener);
 		}
 		
-		LangCore.getInstance().initializeAfterUIStart();
+		LangCorePlugin.getInstance().initializeAfterUIStart();
 		
 		new InitializeAfterLoadJob(this).schedule();
 	}
@@ -145,7 +146,7 @@ public abstract class LangUIPlugin extends AbstractUIPlugin {
 	
 	/** Creates a Status with given status code and message. */
 	public static StatusExt createStatus(int statusCode, String message, Throwable throwable) {
-		return new StatusExt(statusCode, LangCore.getInstance(), message, throwable);
+		return new StatusExt(statusCode, LangCorePlugin.getInstance(), message, throwable);
 	}
 	
 	/** Creates a CoreException describing an error in this plugin. */
