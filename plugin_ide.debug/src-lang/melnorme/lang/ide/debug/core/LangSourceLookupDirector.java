@@ -115,7 +115,13 @@ public class LangSourceLookupDirector extends DsfSourceLookupDirector {
 				ISourceContainer container = common[i];
 				ISourceContainerType type = container.getType();
 				// Clone the container to make sure that the original can be safely disposed.
-				container = type.createSourceContainer(type.getMemento(container));
+
+				if(container instanceof AbsolutePathSourceContainer) {
+					// LANG: Ensure our modifications are propagated.
+					container = new LangAbsolutePathSourceContainer();
+				} else {
+					container = type.createSourceContainer(type.getMemento(container));
+				}
 				containers[i] = container;
 			}
 			return containers;
@@ -131,7 +137,7 @@ public class LangSourceLookupDirector extends DsfSourceLookupDirector {
 		};
 		
 		ArrayList2<ISourceContainer> containers = new ArrayList2<>();
-		containers.add(new AbsolutePathSourceContainer());
+		containers.add(new LangAbsolutePathSourceContainer());
 		containers.add(new ProgramRelativePathSourceContainer());
 		
 		customizeDefaultSourceContainers(containers);
