@@ -1,6 +1,9 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Minimum and recommended CDT version is now `8.8`.
+ * When debugging, fixed opening source files that are not in the workspace.
+ 
  * Project builder is no longer invoked when workspace "Build Automatically" setting is enabled and a file is saved. (this was considered a misfeature anyways)
  * Added gocode preference to enable/disable showing the error dialog if failures occur during Content Assist.
  * Fixed: in New Go File Wizard, "Browse" button not working.
