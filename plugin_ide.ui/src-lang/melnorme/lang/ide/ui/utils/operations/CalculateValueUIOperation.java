@@ -38,7 +38,7 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 		return getResultValue();
 	}
 	
-	protected RESULT executeAndGetValidatedResult() throws CoreException, CommonException {
+	public RESULT executeAndGetValidatedResult() throws CoreException, CommonException {
 		assertTrue(Display.getCurrent() != null);
 		
 		execute();

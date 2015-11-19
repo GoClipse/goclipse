@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
@@ -40,27 +42,24 @@ public abstract class LangCore extends Plugin {
 		return pluginInstance;
 	}
 	
+	protected LangCore2 langCore;
+	
 	/* ----------------- Owned singletons: ----------------- */
 	
-	protected static final AbstractToolManager toolManager = LangCore_Actual.createToolManagerSingleton();
-	protected static final SourceModelManager sourceModelManager = LangCore_Actual.createSourceModelManager();
-	protected static final BundleModelManager<?> bundleManager = LangCore_Actual.createBundleModelManager();
-	protected static final BuildManager buildManager = LangCore_Actual.createBuildManager();
-	
 	public static AbstractToolManager getToolManager() {
-		return toolManager;
+		return pluginInstance.langCore.toolManager;
 	}
 	public static SourceModelManager getSourceModelManager() {
-		return sourceModelManager;
+		return pluginInstance.langCore.sourceModelManager;
 	}
 	public static BundleModelManager<?> getBundleModelManager() {
-		return bundleManager;
+		return pluginInstance.langCore.bundleManager;
 	}
 	public static LangBundleModel getBundleModel() {
-		return bundleManager.getModel();
+		return pluginInstance.langCore.bundleManager.getModel();
 	}
 	public static BuildManager getBuildManager() {
-		return buildManager;
+		return pluginInstance.langCore.buildManager;
 	}
 	
 	/* -----------------  ----------------- */
@@ -70,6 +69,8 @@ public abstract class LangCore extends Plugin {
 	@Override
 	public final void start(BundleContext context) throws Exception {
 		pluginInstance = this;
+		LangCore2 langCore2 = new LangCore2();
+		assertTrue(this.langCore == langCore2);
 		super.start(context);
 		doCustomStart(context);
 	}
@@ -88,25 +89,15 @@ public abstract class LangCore extends Plugin {
 		} else {
 			initializedAfterUI = true;
 			
-			startAgentsAfterUIStart();
+			langCore.startAgentsAfterUIStart(this);
 		}
-	}
-	
-	/** 
-	 * Start core agents, and do other initizaliation after UI is started.
-	 */
-	public void startAgentsAfterUIStart() {
-		bundleManager.startManager();
 	}
 	
 	@Override
 	public final void stop(BundleContext context) throws Exception {
 		doCustomStop(context);
 		
-		buildManager.dispose();
-		bundleManager.shutdownManager();
-		sourceModelManager.dispose();
-		toolManager.shutdownNow();
+		langCore.shutdown();
 		
 		super.stop(context);
 		pluginInstance = null;
