@@ -14,10 +14,6 @@ package melnorme.lang.ide.ui.editor.actions;
 import java.util.HashMap;
 import java.util.Map;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.LangEditorMessages;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -33,6 +29,10 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.LangEditorMessages;
 
 
 /**
@@ -108,6 +108,10 @@ public class ToggleCommentAction extends TextEditorAction_Adapter {
 	}
 	
 	@Override
+	protected LangEditorRunner_ createOperation_(ITextEditor editor) {
+		return new LangEditorRunner_(editor) {
+			
+	@Override
 	protected void doRunWithEditor(AbstractLangEditor editor) {
 		
 		configure(editor.getSourceViewer_(), editor.getSourceViewerConfiguration_asLang());
@@ -142,6 +146,9 @@ public class ToggleCommentAction extends TextEditorAction_Adapter {
 		});
 	}
 
+		};
+	}
+	
 	/**
 	 * Is the given selection single-line commented?
 	 *

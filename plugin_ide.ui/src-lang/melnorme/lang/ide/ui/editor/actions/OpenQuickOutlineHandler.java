@@ -10,11 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.actions;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.LangEditorMessages;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.texteditor.ITextEditor;
+
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.LangEditorMessages;
 
 
 public class OpenQuickOutlineHandler extends AbstractEditorHandler {
@@ -29,8 +30,13 @@ public class OpenQuickOutlineHandler extends AbstractEditorHandler {
 	}
 	
 	@Override
-	protected void doRunWithEditor(AbstractLangEditor editor) throws CoreException {
-		editor.getSourceViewer_asExt().showOutline();
+	protected LangEditorRunner_ createOperation_(ITextEditor editor) {
+		return new LangEditorRunner_(editor) {
+			@Override
+			protected void doRunWithEditor(AbstractLangEditor editor) throws CoreException {
+				editor.getSourceViewer_asExt().showOutline();
+			}
+		};
 	}
 	
 }

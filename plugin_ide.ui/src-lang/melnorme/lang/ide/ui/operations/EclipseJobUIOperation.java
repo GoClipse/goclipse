@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 
 import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
-import melnorme.lang.ide.ui.actions.AbstractUIOperation;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 
 public abstract class EclipseJobUIOperation extends AbstractUIOperation {

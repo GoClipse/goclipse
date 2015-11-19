@@ -17,46 +17,32 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 
 public abstract class LangEditorRunner implements Runnable {
 	
-	protected final Shell shell;
-	protected final IEditorPart part;
+	protected final IEditorPart editorPart;
 	
-	public LangEditorRunner(Shell shell, IEditorPart part) {
-		this.shell = assertNotNull(shell);
-		this.part = part;
+	public LangEditorRunner(IEditorPart editorPart) {
+		this.editorPart = assertNotNull(editorPart);
 	}
 	
 	protected Shell getShell() {
-		return shell;
+		return editorPart.getEditorSite().getShell();
 	}
 	
 	@Override
 	public void run() {
-		if(part == null) {
-			handleInternalError("No editor available.");
-			return;
-		}
-		if(getShell() == null) {
-			handleInternalError("No shell available.");
-			return;
-		}
-		
-		if(part instanceof AbstractLangEditor) {
-			AbstractLangEditor langEditor = (AbstractLangEditor) part;
+		if(editorPart instanceof AbstractLangEditor) {
+			AbstractLangEditor langEditor = (AbstractLangEditor) editorPart;
 			runWithLangEditor(langEditor);
 		} else {
-			handleInternalError("Editor is not of the expected kind.");
+			handleInternalError2("Editor is not of the expected kind.");
 			return;
 		}
 		
 	}
 	
-	protected void handleInternalError(String message) {
-		UIOperationsStatusHandler.handleInternalError(shell, message, null);
-	}
+	protected abstract void handleInternalError2(String message);
 	
 	protected abstract void runWithLangEditor(AbstractLangEditor langEditor);
 	
