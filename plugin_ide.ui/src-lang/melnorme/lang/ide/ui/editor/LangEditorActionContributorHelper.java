@@ -17,11 +17,8 @@ import org.eclipse.ui.editors.text.TextEditorActionContributor;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.services.IServiceLocator;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.ui.actions.CommandsHelper;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class LangEditorActionContributorHelper extends TextEditorActionContributor {
@@ -57,28 +54,6 @@ public class LangEditorActionContributorHelper extends TextEditorActionContribut
 		for (IActiveEditorListener activeEditorListener : activeEditorListeners) {
 			activeEditorListener.setActiveEditor(part);
 		}
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public abstract class AbstractEditorOperationHandler extends AbstractEditorHandler {
-		
-		public AbstractEditorOperationHandler() {
-			super(getPage());
-		}
-		
-		@Override
-		protected LangEditorRunner_ createOperation_(ITextEditor editor) {
-			return new LangEditorRunner_(editor) {
-				@Override
-				protected void doRunWithEditor(AbstractLangEditor editor) {
-					createOperation(editor).executeAndHandle();
-				}
-			};
-		}
-		
-		public abstract AbstractEditorOperation2<?> createOperation(ITextEditor editor);
-		
 	}
 	
 	/* -----------------  ----------------- */

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.operations;
+package melnorme.lang.ide.ui.utils.operations;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -19,9 +19,9 @@ import org.eclipse.swt.widgets.Display;
 
 import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
-import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 
+// TODO need to refactor this so that can be used with any AbstractUIOperation
 public abstract class EclipseJobUIOperation extends AbstractUIOperation {
 	
 	public EclipseJobUIOperation(String operationName) {

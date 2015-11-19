@@ -32,7 +32,7 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException, OperationCancellation {
+	protected void doOperation() throws CoreException, OperationCancellation {
 		if (ToolchainPreferences.AUTO_START_DAEMON.get() == false) {
 			throw new OperationCancellation(); // stop operation
 		}

@@ -24,13 +24,13 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorCommandIds;
-import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
 import melnorme.lang.ide.ui.editor.actions.GoToMatchingBracketHandler;
 import melnorme.lang.ide.ui.editor.actions.OpenQuickOutlineHandler;
 import melnorme.lang.ide.ui.editor.actions.ToggleCommentHandler;
+import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.ArrayList2;
 
@@ -81,11 +81,7 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 	}
 	
 	protected AbstractHandler getHandler_OpenDefinition() {
-		return new AbstractEditorOperationHandler() {
-			@Override
-			protected String getOperationName() {
-				return LangUIMessages.Op_OpenDefinition_Name;
-			}
+		return new AbstractEditorHandler(getPage()) {
 			
 			@Override
 			public AbstractEditorOperation2<?> createOperation(ITextEditor editor) {

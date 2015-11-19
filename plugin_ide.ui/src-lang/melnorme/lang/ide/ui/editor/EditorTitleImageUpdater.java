@@ -23,7 +23,6 @@ import _org.eclipse.jdt.internal.ui.viewsupport.IProblemChangedListener;
 import _org.eclipse.jdt.ui.ProblemsLabelDecorator;
 
 
-
 public class EditorTitleImageUpdater implements IProblemChangedListener, IDisposable {
 	
 	protected final AbstractLangEditor editor;

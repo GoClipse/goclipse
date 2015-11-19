@@ -16,6 +16,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.LangEditorMessages;
+import melnorme.lang.ide.ui.utils.operations.BasicEditorOperation;
 
 
 public class OpenQuickOutlineHandler extends AbstractEditorHandler {
@@ -25,13 +26,8 @@ public class OpenQuickOutlineHandler extends AbstractEditorHandler {
 	}
 	
 	@Override
-	protected String getOperationName() {
-		return LangEditorMessages.QuickOutline_title;
-	}
-	
-	@Override
-	protected LangEditorRunner_ createOperation_(ITextEditor editor) {
-		return new LangEditorRunner_(editor) {
+	protected BasicEditorOperation createOperation(ITextEditor editor) {
+		return new BasicEditorOperation(LangEditorMessages.QuickOutline_title, editor) {
 			@Override
 			protected void doRunWithEditor(AbstractLangEditor editor) throws CoreException {
 				editor.getSourceViewer_asExt().showOutline();

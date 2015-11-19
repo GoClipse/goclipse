@@ -22,8 +22,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.utilbox.core.CommonException;
 
 public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
@@ -33,18 +33,8 @@ public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	public static AbstractEditorHandler getHandler(IWorkbenchPage page) {
 		return new AbstractEditorHandler(page) {
 			@Override
-			protected String getOperationName() {
-				return RUN_GOFMT_OpName;
-			}
-			
-			@Override
-			protected LangEditorRunner_ createOperation_(ITextEditor editor) {
-				return new LangEditorRunner_(editor) {
-					@Override
-					protected void doRunWithEditor(AbstractLangEditor editor) throws CoreException, CommonException {
-						new RunGoFmtOperation(editor).executeAndHandle();
-					}
-				};
+			protected BasicUIOperation createOperation(ITextEditor editor) {
+				return new RunGoFmtOperation(editor);
 			}
 		};
 	}

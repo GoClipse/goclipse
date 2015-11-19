@@ -30,7 +30,7 @@ import com.googlecode.goclipse.ui.editor.GoEditor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
+import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;

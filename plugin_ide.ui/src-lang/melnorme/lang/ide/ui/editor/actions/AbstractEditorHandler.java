@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -24,11 +23,8 @@ import org.eclipse.ui.editors.text.TextEditorActionContributor;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
-import melnorme.utilbox.core.CommonException;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 
 /**
  * This is a an editor handler that manages its enablement state so as to be restricted to a certaint type
@@ -42,8 +38,6 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 	public AbstractEditorHandler(IWorkbenchPage page) {
 		this.page = assertNotNull(page);
 	}
-	
-	protected abstract String getOperationName();
 	
 	protected Shell getShell() {
 		return page.getWorkbenchWindow().getShell();
@@ -67,44 +61,11 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 		ITextEditor editor = (ITextEditor) HandlerUtil.getActiveEditorChecked(event);
 		assertNotNull(editor);
 		
-		createOperation_(editor).run();
+		createOperation(editor).executeAndHandle();
 		
 		return null;
 	}
 	
-	protected abstract LangEditorRunner_ createOperation_(ITextEditor editor);
-	
-	public abstract class LangEditorRunner_ extends LangEditorRunner {
-		
-		public LangEditorRunner_(IEditorPart editor) {
-			super(editor);
-		}
-		
-		@Override
-		protected void runWithLangEditor(AbstractLangEditor editor) {
-			try {
-				try {
-					doRunWithEditor(editor);
-				} catch(CoreException ce) {
-					throw LangCore.createCommonException(ce);
-				}
-			}catch(CommonException ce) {
-				UIOperationsStatusHandler.handleOperationStatus(getOperationName(), ce);
-			}
-		}
-		
-		/** editor: not null */
-		protected abstract void doRunWithEditor(AbstractLangEditor editor) throws CoreException, CommonException;
-		
-		@Override
-		protected void handleInternalError2(String message) {
-			AbstractEditorHandler.this.handleInternalError(message);
-		}
-	}
-	
-	protected void handleInternalError(String message) {
-		assertNotNull(message);
-		UIOperationsStatusHandler.handleStatus(true, getShell(), getOperationName(), message, null);
-	}
+	protected abstract BasicUIOperation createOperation(ITextEditor editor);
 	
 }

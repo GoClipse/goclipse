@@ -15,6 +15,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.LangEditorMessages;
+import melnorme.lang.ide.ui.utils.operations.BasicEditorOperation;
 
 
 public class GoToMatchingBracketHandler extends AbstractEditorHandler {
@@ -24,13 +25,8 @@ public class GoToMatchingBracketHandler extends AbstractEditorHandler {
 	}
 	
 	@Override
-	protected String getOperationName() {
-		return LangEditorMessages.GotoMatchingBracket_error_title;
-	}
-	
-	@Override
-	protected LangEditorRunner_ createOperation_(ITextEditor editor) {
-		return new LangEditorRunner_(editor) {
+	protected BasicEditorOperation createOperation(ITextEditor editor) {
+		return new BasicEditorOperation(LangEditorMessages.GotoMatchingBracket_error_title, editor) {
 			@Override
 			protected void doRunWithEditor(AbstractLangEditor editor) {
 				editor.getGotoMatchingBracketManager().gotoMatchingBracket();
