@@ -48,7 +48,7 @@ public abstract class BasicUIOperation {
 		
 		try {
 			try {
-				execute2();
+				execute();
 			} catch(CoreException ce) {
 				throw LangCore.createCommonException(ce);
 			}
@@ -69,30 +69,21 @@ public abstract class BasicUIOperation {
 			MessageFormat.format(MSG_INTERNAL_ERROR_EXECUTING_OPERATION, operationName), re);
 	}
 	
-	protected final void execute2() throws CoreException, CommonException {
+	protected final void execute() throws CoreException, CommonException {
+		prepareOperation();
 		try {
-			prepareOperation();
-			
-			performBackgroundComputation();
-			
-			handleComputationResult();
+			doOperation();
 		} catch (OperationCancellation e) {
 			handleOperationCancellation();
 		}
 	}
 	
+	protected void prepareOperation() throws CoreException, CommonException {
+	}
+	
+	protected abstract void doOperation() throws CoreException, CommonException, OperationCancellation;
+	
 	protected void handleOperationCancellation() throws CoreException, CommonException {
-	}
-	
-	protected void prepareOperation() throws CoreException, CommonException, OperationCancellation {
-	}
-	
-	protected void performBackgroundComputation() throws OperationCancellation, CoreException {
-	}
-	
-	/** Handle long running computation result. This runs in UI thread. */
-	protected void handleComputationResult() throws CoreException, CommonException, OperationCancellation {
-		// Default: do nothing
 	}
 	
 }

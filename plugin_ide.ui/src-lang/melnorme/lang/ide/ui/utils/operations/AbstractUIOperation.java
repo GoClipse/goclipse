@@ -14,10 +14,15 @@ import java.text.MessageFormat;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ui.progress.IProgressService;
 
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
+/**
+ * An UI operation that optionally performs some work in a background thread, 
+ * with the UI waiting using the {@link IProgressService}
+ */
 public abstract class AbstractUIOperation extends BasicUIOperation {
 	
 	public AbstractUIOperation(String operationName) {
@@ -25,7 +30,12 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	}
 	
 	@Override
-	protected void performBackgroundComputation() throws OperationCancellation, CoreException {
+	protected final void doOperation() throws CoreException, CommonException, OperationCancellation {
+		performBackgroundComputation();
+		handleComputationResult();
+	}
+	
+	protected void performBackgroundComputation() throws CoreException, OperationCancellation {
 		computationRunnable.runUnderWorkbenchProgressService();
 	}
 	
@@ -46,5 +56,12 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	/** Perform the long running computation. Runs in a background thread. */
 	protected abstract void doBackgroundComputation(IProgressMonitor monitor) 
 			throws CoreException, CommonException, OperationCancellation;
+	
+	/* -----------------  ----------------- */
+	
+	/** Handle long running computation result. This runs in UI thread. */
+	protected void handleComputationResult() throws CoreException, CommonException, OperationCancellation {
+		// Default: do nothing
+	}
 	
 }

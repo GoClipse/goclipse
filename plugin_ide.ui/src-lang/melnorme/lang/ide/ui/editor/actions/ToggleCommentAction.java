@@ -33,6 +33,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.LangEditorMessages;
+import melnorme.lang.ide.ui.utils.operations.BasicEditorOperation;
+import melnorme.utilbox.core.CommonException;
 
 
 /**
@@ -53,7 +55,6 @@ public class ToggleCommentAction extends TextEditorAction_Adapter {
 		super(page);
 	}
 	
-	@Override
 	protected String getOperationName() {
 		return LangEditorMessages.ToggleComment_error_title;
 	}
@@ -108,25 +109,23 @@ public class ToggleCommentAction extends TextEditorAction_Adapter {
 	}
 	
 	@Override
-	protected LangEditorRunner_ createOperation_(ITextEditor editor) {
-		return new LangEditorRunner_(editor) {
+	protected BasicEditorOperation createOperation(ITextEditor editor) {
+		return new BasicEditorOperation(getOperationName(), editor) {
 			
 	@Override
-	protected void doRunWithEditor(AbstractLangEditor editor) {
+	protected void doRunWithEditor(AbstractLangEditor editor) throws CommonException {
 		
 		configure(editor.getSourceViewer_(), editor.getSourceViewerConfiguration_asLang());
 		
 		if (fOperationTarget == null || fDocumentPartitioning == null || fPrefixesMap == null) {
-			handleInternalError("Partitioning parameters not set");
-			return;
+			throw new CommonException("Partitioning parameters not set");
 		}
 		
 		if (!validateEditorInputState())
 			return;
 		
 		if(!isTargetOperationEnabled()) {
-			handleInternalError(LangEditorMessages.ToggleComment_error_message);
-			return;
+			throw new CommonException(LangEditorMessages.ToggleComment_error_message);
 		}
 		
 		final int operationCode;

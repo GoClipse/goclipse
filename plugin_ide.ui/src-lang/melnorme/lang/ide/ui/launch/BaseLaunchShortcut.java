@@ -175,7 +175,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	public void launchTarget(ILaunchable launchTarget, String mode) {
 		new BasicUIOperation("Preparing launch") {
 			@Override
-			protected void handleComputationResult() throws CoreException, CommonException, OperationCancellation {
+			protected void doOperation() throws CoreException, CommonException, OperationCancellation {
 				doLaunchTarget(launchTarget, mode);
 			};
 		}.executeAndHandle();

@@ -8,42 +8,44 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.editor.actions;
+package melnorme.lang.ide.ui.utils.operations;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorPart;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
-public abstract class LangEditorRunner implements Runnable {
+public abstract class BasicEditorOperation extends BasicUIOperation {
 	
 	protected final IEditorPart editorPart;
 	
-	public LangEditorRunner(IEditorPart editorPart) {
+	public BasicEditorOperation(String operationName, IEditorPart editorPart) {
+		super(operationName);
 		this.editorPart = assertNotNull(editorPart);
 	}
 	
-	protected Shell getShell() {
-		return editorPart.getEditorSite().getShell();
+	@Override
+	protected void handleStatus(CommonException ce) {
+		UIOperationsStatusHandler.handleOperationStatus(getOperationName(), ce);
 	}
 	
 	@Override
-	public void run() {
+	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
 		if(editorPart instanceof AbstractLangEditor) {
 			AbstractLangEditor langEditor = (AbstractLangEditor) editorPart;
-			runWithLangEditor(langEditor);
+			doRunWithEditor(langEditor);
 		} else {
-			handleInternalError2("Editor is not of the expected kind.");
-			return;
+			throw new CommonException("Internal Error: editor is AbstractLangEditor.");
 		}
-		
 	}
 	
-	protected abstract void handleInternalError2(String message);
-	
-	protected abstract void runWithLangEditor(AbstractLangEditor langEditor);
+	/** editor: not null */
+	protected abstract void doRunWithEditor(AbstractLangEditor editor) throws CoreException, CommonException;
 	
 }
