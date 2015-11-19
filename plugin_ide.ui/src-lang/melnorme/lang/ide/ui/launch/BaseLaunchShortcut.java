@@ -33,12 +33,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.actions.CalculateValueUIOperation;
-import melnorme.lang.ide.ui.actions.SimpleUIOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;
 import melnorme.utilbox.collections.Indexable;
@@ -173,7 +173,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	/* ----------------- Launch launchable ----------------- */
 	
 	public void launchTarget(ILaunchable launchTarget, String mode) {
-		new SimpleUIOperation("Preparing launch") {
+		new BasicUIOperation("Preparing launch") {
 			@Override
 			protected void handleComputationResult() throws CoreException, CommonException, OperationCancellation {
 				doLaunchTarget(launchTarget, mode);

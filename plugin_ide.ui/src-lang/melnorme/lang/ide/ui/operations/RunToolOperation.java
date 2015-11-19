@@ -21,7 +21,7 @@ import melnorme.lang.ide.core.operations.AbstractToolManager.RunProcessTask;
 import melnorme.lang.ide.core.operations.MessageEventInfo;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
-import melnorme.lang.ide.ui.actions.AbstractUIOperation;
+import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;

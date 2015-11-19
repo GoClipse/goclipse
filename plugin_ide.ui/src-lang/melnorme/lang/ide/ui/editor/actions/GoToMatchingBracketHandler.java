@@ -10,10 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.actions;
 
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.texteditor.ITextEditor;
+
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.LangEditorMessages;
-
-import org.eclipse.ui.IWorkbenchPage;
 
 
 public class GoToMatchingBracketHandler extends AbstractEditorHandler {
@@ -28,8 +29,13 @@ public class GoToMatchingBracketHandler extends AbstractEditorHandler {
 	}
 	
 	@Override
-	protected void doRunWithEditor(AbstractLangEditor editor) {
-		editor.getGotoMatchingBracketManager().gotoMatchingBracket();
+	protected LangEditorRunner_ createOperation_(ITextEditor editor) {
+		return new LangEditorRunner_(editor) {
+			@Override
+			protected void doRunWithEditor(AbstractLangEditor editor) {
+				editor.getGotoMatchingBracketManager().gotoMatchingBracket();
+			}
+		};
 	}
 	
 }

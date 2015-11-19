@@ -68,8 +68,13 @@ public class LangEditorActionContributorHelper extends TextEditorActionContribut
 		}
 		
 		@Override
-		protected void doRunWithEditor(AbstractLangEditor editor) {
-			createOperation(editor).executeAndHandle();
+		protected LangEditorRunner_ createOperation_(ITextEditor editor) {
+			return new LangEditorRunner_(editor) {
+				@Override
+				protected void doRunWithEditor(AbstractLangEditor editor) {
+					createOperation(editor).executeAndHandle();
+				}
+			};
 		}
 		
 		public abstract AbstractEditorOperation2<?> createOperation(ITextEditor editor);

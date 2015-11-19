@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.actions.AbstractUIOperation;
+import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 

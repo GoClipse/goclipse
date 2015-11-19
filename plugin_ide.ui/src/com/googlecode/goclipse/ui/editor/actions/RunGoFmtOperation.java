@@ -38,8 +38,13 @@ public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 			}
 			
 			@Override
-			protected void doRunWithEditor(AbstractLangEditor editor) {
-				new RunGoFmtOperation(editor).executeAndHandle();
+			protected LangEditorRunner_ createOperation_(ITextEditor editor) {
+				return new LangEditorRunner_(editor) {
+					@Override
+					protected void doRunWithEditor(AbstractLangEditor editor) throws CoreException, CommonException {
+						new RunGoFmtOperation(editor).executeAndHandle();
+					}
+				};
 			}
 		};
 	}

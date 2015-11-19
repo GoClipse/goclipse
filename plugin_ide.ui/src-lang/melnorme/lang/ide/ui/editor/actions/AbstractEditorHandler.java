@@ -65,36 +65,46 @@ public abstract class AbstractEditorHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ITextEditor editor = (ITextEditor) HandlerUtil.getActiveEditorChecked(event);
+		assertNotNull(editor);
 		
-		new LangEditorRunner(getShell(), editor) {
-			@Override
-			protected void runWithLangEditor(AbstractLangEditor editor) {
-				try {
-					try {
-						doRunWithEditor(editor);
-					} catch(CoreException ce) {
-						throw LangCore.createCommonException(ce);
-					}
-				}catch(CommonException ce) {
-					UIOperationsStatusHandler.handleOperationStatus(getOperationName(), ce);
-				}
-			}
-			
-			@Override
-			protected void handleInternalError(String message) {
-				AbstractEditorHandler.this.handleInternalError(message);
-			};
-		}.run();
+		createOperation_(editor).run();
 		
 		return null;
+	}
+	
+	protected abstract LangEditorRunner_ createOperation_(ITextEditor editor);
+	
+	public abstract class LangEditorRunner_ extends LangEditorRunner {
+		
+		public LangEditorRunner_(IEditorPart editor) {
+			super(editor);
+		}
+		
+		@Override
+		protected void runWithLangEditor(AbstractLangEditor editor) {
+			try {
+				try {
+					doRunWithEditor(editor);
+				} catch(CoreException ce) {
+					throw LangCore.createCommonException(ce);
+				}
+			}catch(CommonException ce) {
+				UIOperationsStatusHandler.handleOperationStatus(getOperationName(), ce);
+			}
+		}
+		
+		/** editor: not null */
+		protected abstract void doRunWithEditor(AbstractLangEditor editor) throws CoreException, CommonException;
+		
+		@Override
+		protected void handleInternalError2(String message) {
+			AbstractEditorHandler.this.handleInternalError(message);
+		}
 	}
 	
 	protected void handleInternalError(String message) {
 		assertNotNull(message);
 		UIOperationsStatusHandler.handleStatus(true, getShell(), getOperationName(), message, null);
 	}
-	
-	/** editor: not null */
-	protected abstract void doRunWithEditor(AbstractLangEditor editor) throws CoreException, CommonException;
 	
 }

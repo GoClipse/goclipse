@@ -34,8 +34,8 @@ import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.ui.LangImages;
-import melnorme.lang.ide.ui.actions.AbstractUIOperation;
 import melnorme.lang.ide.ui.actions.RunUIOperationAction;
+import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.collections.ArrayList2;
 
 public abstract class LangNavigatorActionProvider extends CommonActionProvider {
