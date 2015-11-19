@@ -30,7 +30,7 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	}
 	
 	@Override
-	protected final void doOperation() throws CoreException, CommonException, OperationCancellation {
+	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
 		performBackgroundComputation();
 		handleComputationResult();
 	}
