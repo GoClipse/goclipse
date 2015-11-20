@@ -189,4 +189,12 @@
 	  </factory>         
    </extension>	
    
+	<extension point="org.eclipse.core.runtime.adapters">
+		<factory 
+			adaptableType="org.eclipse.cdt.debug.core.model.ICBreakpoint"
+			class="melnorme.lang.ide.debug.ui.CBreakpointLabelAdapter">
+				<adapter type="org.eclipse.jface.viewers.ILabelProvider"/>
+		</factory>
+	</extension>
+	
 </plugin>

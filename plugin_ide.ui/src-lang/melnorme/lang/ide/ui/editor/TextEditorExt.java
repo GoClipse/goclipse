@@ -11,9 +11,13 @@
 package melnorme.lang.ide.ui.editor;
 
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
@@ -43,6 +47,35 @@ public class TextEditorExt extends TextEditor {
 	public void dispose() {
 		owned.disposeAll();
 		super.dispose();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected ExternalBreakpointWatcher breakpointWatcher;
+	
+	@Override
+	protected void doSetInput(IEditorInput input) throws CoreException {
+		super.doSetInput(input);
+		
+		owned.disposeOwned(breakpointWatcher);
+		breakpointWatcher = null;
+		
+		if(input == null) {
+			return;
+		}
+		
+		IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(input);
+		IFile file = EditorUtils.getAssociatedFile(input);
+		if(file != null) {
+			return; // No need for external breakpoint watching
+		}
+		breakpointWatcher = new ExternalBreakpointWatcher(input, getDocument(),  annotationModel);
+		
+		owned.bind(breakpointWatcher);
+	}
+	
+	protected IDocument getDocument() {
+		return getDocumentProvider().getDocument(getEditorInput());
 	}
 	
 	/* -----------------  ----------------- */
