@@ -46,7 +46,7 @@ public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	@Override
 	protected ProcessBuilder prepareProcessBuilder(Path goSDKPath, GoEnvironment goEnv)
 			throws CoreException, CommonException {
-		List<String> cmd = listFrom(GoEnvironmentPrefs.FORMATTER_PATH.get());
+		List<String> cmd = listFrom(GoEnvironmentPrefs.FORMATTER_PATH.getEffectiveValue(project));
 		return goEnv.createProcessBuilder(cmd, null, true);
 	}
 	

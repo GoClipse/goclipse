@@ -49,7 +49,7 @@ public class GoToolManager extends AbstractToolManager {
 		return new ValidatedSDKToolPath(project, getSDKToolPathValidator()) {
 			@Override
 			protected String getRawFieldValue2() {
-				return GoEnvironmentPrefs.GO_ROOT.getProjectPreference().getEffectiveValue(project);
+				return GoEnvironmentPrefs.GO_ROOT.getEffectiveValue(project);
 			}
 		};
 	}

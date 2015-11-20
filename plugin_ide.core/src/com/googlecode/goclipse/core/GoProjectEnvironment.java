@@ -27,7 +27,7 @@ import com.googlecode.goclipse.tooling.env.GoRoot;
 import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -35,17 +35,17 @@ import melnorme.utilbox.misc.Location;
 public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
 	public static GoRoot getEffectiveGoRoot(IProject project) {
-		String prefValue = GoEnvironmentPrefs.GO_ROOT.getProjectPreference().getEffectiveValue(project);
+		String prefValue = GoEnvironmentPrefs.GO_ROOT.getEffectiveValue(project);
 		return new GoRoot(nullAsEmpty(prefValue));
 	}
 	
 	public static GoArch getEffectiveGoArch(IProject project) {
-		String strValue = emptyAsNull(GoEnvironmentPrefs.GO_ARCH.getProjectPreference().getEffectiveValue(project));
+		String strValue = emptyAsNull(GoEnvironmentPrefs.GO_ARCH.getEffectiveValue(project));
 		return strValue == null ? null : new GoArch(strValue);
 	}
 	
 	public static GoOs getEffectiveGoOs(IProject project) {
-		String strValue = emptyAsNull(GoEnvironmentPrefs.GO_OS.getProjectPreference().getEffectiveValue(project));
+		String strValue = emptyAsNull(GoEnvironmentPrefs.GO_OS.getEffectiveValue(project));
 		return strValue == null ? null : new GoOs(strValue);
 	}
 	
@@ -82,8 +82,9 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return goPath.findGoPathEntryForSourcePath(ResourceUtils.getProjectLocation2(project)) != null;
 	}
 	
-	protected static String getEffectiveValueFromEnv(StringPreference pref, IProject project, String envAlternative) {
-		String prefValue = pref.getProjectPreference().getEffectiveValue(project);
+	protected static String getEffectiveValueFromEnv(IProjectPreference<String> pref, IProject project, 
+			String envAlternative) {
+		String prefValue = pref.getEffectiveValue(project);
 		if(prefValue == null) {
 			return nullAsEmpty(System.getenv(envAlternative));
 		}

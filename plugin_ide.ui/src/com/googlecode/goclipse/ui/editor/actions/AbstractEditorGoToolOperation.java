@@ -38,8 +38,11 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperation2<String> {
 	
 	protected GoEditor goEditor;
-	protected String editorText;
+	protected IProject project; // Can be null
+	
 	protected ProcessBuilder pb;
+	
+	protected String editorText;
 	
 	public AbstractEditorGoToolOperation(String operationName, ITextEditor editor) {
 		super(operationName, editor);
@@ -53,7 +56,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 		goEditor = (GoEditor) editor;
 		editorText = getEditorDocument(editor).get();
 		
-		IProject project = EditorUtils.getAssociatedProject(editorInput);
+		project = EditorUtils.getAssociatedProject(editorInput);
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
