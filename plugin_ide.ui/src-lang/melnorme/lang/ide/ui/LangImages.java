@@ -119,6 +119,11 @@ public abstract class LangImages {
 	public static final ImageDescriptor NAV_SourceFolder = createUnmanaged(LANG_NAVIGATOR, "SourceFolder.png");
 	public static final ImageDescriptor NAV_SourceFolderTests = createUnmanaged(LANG_NAVIGATOR, "SourceFolder_Tests2.png");
 	
+	/* -----------------  Debug  ----------------- */
+	
+	public static final ImageDescriptor BREAKPOINT_ENABLED = createUnmanaged("icons-lang", "brkp_obj.png");
+	public static final ImageDescriptor BREAKPOINT_DISABLED = createUnmanaged("icons-lang", "brkpd_obj.png");
+	
 	/* ----------------- Image cache keyed by ImageDescriptor ----------------- */
 	
 	public static ImageDescriptorRegistry getImageDescriptorRegistry() {
