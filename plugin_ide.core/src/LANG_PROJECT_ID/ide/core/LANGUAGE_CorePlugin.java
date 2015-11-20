@@ -4,7 +4,7 @@ import org.osgi.framework.BundleContext;
 
 import melnorme.lang.ide.core.LangCorePlugin;
 
-public class LANGUAGE_Core extends LangCorePlugin {
+public class LANGUAGE_CorePlugin extends LangCorePlugin {
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {
