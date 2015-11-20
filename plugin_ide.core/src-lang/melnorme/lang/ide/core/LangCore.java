@@ -10,101 +10,88 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
-import org.osgi.framework.BundleContext;
 
-import melnorme.lang.ide.core.engine.SourceModelManager;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.project_model.BundleModelManager;
-import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ILogHandler;
 
-public abstract class LangCore extends Plugin {
+public class LangCore extends LangCore_Actual {
 	
-	public static final String PLUGIN_ID = LangCore_Actual.PLUGIN_ID;
-	public static final String TESTS_PLUGIN_ID = PLUGIN_ID + ".tests";
-	
-	public static final String NATURE_ID = LangCore_Actual.NATURE_ID;
-	
-	protected static LangCore pluginInstance;
-	
-	/** Returns the singleton for this plugin instance. */
-	public static LangCore getInstance() {
-		return pluginInstance;
+	public LangCore() {
 	}
 	
-	protected LangCore2 langCore;
+	protected void shutdown() {
+		buildManager.dispose();
+		bundleManager.shutdownManager();
+		sourceModelManager.dispose();
+		toolManager.shutdownNow();
+	}
 	
-	/* ----------------- Owned singletons: ----------------- */
+	/** 
+	 * Start core agents, and do other initizaliation after UI is started.
+	 */
+	public void startAgentsAfterUIStart() {
+		bundleManager.startManager();
+	}
 	
-	public static AbstractToolManager getToolManager() {
-		return pluginInstance.langCore.toolManager;
+	/* ----------------- logging stuff ----------------- */
+	
+	protected static Plugin getInstance() {
+		return LangCorePlugin.getInstance();
 	}
-	public static SourceModelManager getSourceModelManager() {
-		return pluginInstance.langCore.sourceModelManager;
-	}
-	public static BundleModelManager<?> getBundleModelManager() {
-		return pluginInstance.langCore.bundleManager;
-	}
-	public static LangBundleModel getBundleModel() {
-		return pluginInstance.langCore.bundleManager.getModel();
-	}
-	public static BuildManager getBuildManager() {
-		return pluginInstance.langCore.buildManager;
+	
+	protected static ILog getLog() {
+		return getInstance().getLog();
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected boolean initializedAfterUI = false;
-	
-	@Override
-	public final void start(BundleContext context) throws Exception {
-		pluginInstance = this;
-		LangCore2 langCore2 = new LangCore2();
-		assertTrue(this.langCore == langCore2);
-		super.start(context);
-		doCustomStart(context);
+	/** Logs status of given StatusException. */
+	public static void logStatusException(StatusException se) {
+		int severity = EclipseUtils.statusLevelToEclipseSeverity(se);
+		getLog().log(createStatus(severity, se.getMessage(), se.getCause()));
 	}
 	
-	protected abstract void doCustomStart(BundleContext context);
+	/** Logs an error status with given message. */
+	public static void logError(String message) {
+		getLog().log(createErrorStatus(message, null));
+	}
 	
-	/** 
-	 * Initialize services that should only be started after the UI plugin 
-	 * (or other application plugin such as test runner) has started.
-	 * This is because the UI plugin might register listeners into core services, 
-	 * and this ensures that the UI plugin gets all updates, because they will only start after this. 
-	 */
-	public final void initializeAfterUIStart() {
-		if(initializedAfterUI == true) {
-			LangCore.logWarning("Atempted initializeAfterUIStart more than once.");
-		} else {
-			initializedAfterUI = true;
-			
-			langCore.startAgentsAfterUIStart(this);
+	/** Logs an error status with given message and given throwable. */
+	public static void logError(String message, Throwable throwable) {
+		getLog().log(createErrorStatus(message, throwable));
+	}
+	
+	public static void logError(CommonException ce) {
+		logError(ce.getMessage(), ce.getCause());
+	}
+	
+	/** Logs a warning status with given message */
+	public static void logWarning(String message) {
+		getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, null));
+	}
+	
+	/** Logs a warning status with given message and given throwable */
+	public static void logWarning(String message, Throwable throwable) {
+		getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, throwable));
+	}
+	
+	public static void logInternalError(Throwable throwable) {
+		logError("Internal Error!", throwable);
+	}
+	
+	public static final ILogHandler LOG_HANDLER = new ILogHandler() {
+		@Override
+		public void logStatus(StatusException statusException) {
+			logStatusException(statusException);
 		}
-	}
-	
-	@Override
-	public final void stop(BundleContext context) throws Exception {
-		doCustomStop(context);
-		
-		langCore.shutdown();
-		
-		super.stop(context);
-		pluginInstance = null;
-	}
-	
-	protected abstract void doCustomStop(BundleContext context);
-	
+	};
 	
 	/* ----------------- ----------------- */
 	
@@ -130,7 +117,7 @@ public abstract class LangCore extends Plugin {
 	
 	/** Creates a Status with given status code and message. */
 	public static StatusExt createStatus(int severity, String message, Throwable throwable) {
-		return new StatusExt(severity, LangCore.getInstance(), message, throwable);
+		return new StatusExt(severity, getInstance(), message, throwable);
 	}
 	
 	public static final class StatusExt extends Status {
@@ -173,44 +160,4 @@ public abstract class LangCore extends Plugin {
 		getInstance().getLog().log(ce.getStatus());
 	}
 	
-	/** Logs status of given StatusException. */
-	public static void logStatusException(StatusException se) {
-		int severity = EclipseUtils.statusLevelToEclipseSeverity(se);
-		logStatus(createStatus(severity, se.getMessage(), se.getCause()));
-	}
-	
-	/** Logs an error status with given message. */
-	public static void logError(String message) {
-		getInstance().getLog().log(createErrorStatus(message, null));
-	}
-	
-	/** Logs an error status with given message and given throwable. */
-	public static void logError(String message, Throwable throwable) {
-		getInstance().getLog().log(createErrorStatus(message, throwable));
-	}
-	
-	public static void logError(CommonException ce) {
-		logError(ce.getMessage(), ce.getCause());
-	}
-	
-	/** Logs a warning status with given message */
-	public static void logWarning(String message) {
-		getInstance().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, null));
-	}
-	
-	/** Logs a warning status with given message and given throwable */
-	public static void logWarning(String message, Throwable throwable) {
-		getInstance().getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, throwable));
-	}
-	
-	public static void logInternalError(Throwable throwable) {
-		logError("Internal Error!", throwable);
-	}
-	
-	public static final ILogHandler LOG_HANDLER = new ILogHandler() {
-		@Override
-		public void logStatus(StatusException statusException) {
-			LangCore.logStatusException(statusException);
-		}
-	};
 }

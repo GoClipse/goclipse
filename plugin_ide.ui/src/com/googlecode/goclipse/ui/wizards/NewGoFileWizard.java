@@ -27,8 +27,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.ui.wizards.NewSourceFileComposite.SourceFileType;
+
+import melnorme.lang.ide.core.LangCore;
 
 /**
  * This is a sample new wizard. Its role is to create a new file
@@ -130,7 +131,7 @@ public class NewGoFileWizard extends Wizard implements INewWizard {
         try {
           IDE.openEditor(page, file, true);
         } catch (PartInitException e) {
-          GoCore.logError("Error opening editor", e);
+          LangCore.logError("Error opening editor", e);
         }
       }
     });

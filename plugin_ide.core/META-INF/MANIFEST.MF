@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: GoClipse Core
 Bundle-SymbolicName: com.googlecode.goclipse.core;singleton:=true
 Bundle-Version: 0.13.0.qualifier
-Bundle-Activator: com.googlecode.goclipse.Activator
+Bundle-Activator: com.googlecode.goclipse.core.GoCorePlugin
 Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="3.9.0";visibility:=reexport,
  org.eclipse.core.resources,
@@ -18,8 +18,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: The GoClipse Development Team
 Bundle-ClassPath: .
-Export-Package: com.googlecode.goclipse,
- com.googlecode.goclipse.core,
+Export-Package: com.googlecode.goclipse.core,
  com.googlecode.goclipse.core.engine,
  com.googlecode.goclipse.core.launch,
  com.googlecode.goclipse.core.operations,

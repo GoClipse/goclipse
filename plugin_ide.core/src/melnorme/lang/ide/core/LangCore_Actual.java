@@ -6,6 +6,7 @@ import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
 import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 
+import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -23,7 +24,7 @@ public class LangCore_Actual {
 	public static final String LANGUAGE_NAME = "Go";
 	
 	
-	public static LangCore2 instance;
+	public static LangCore instance;
 	
 	/* ----------------- Owned singletons: ----------------- */
 	
@@ -33,8 +34,7 @@ public class LangCore_Actual {
 	protected final GoSourceModelManager sourceModelManager;
 	
 	public LangCore_Actual() {
-		instance = (LangCore2) this;
-		LangCore.pluginInstance.langCore = instance;
+		instance = (LangCore) this;
 		
 		toolManager = createToolManagerSingleton();
 		bundleManager = createBundleModelManager();
@@ -60,8 +60,21 @@ public class LangCore_Actual {
 		
 	/* -----------------  ----------------- */
 	
+	
+	public static AbstractToolManager getToolManager() {
+		return instance.toolManager;
+	}
 	public static GoBundleModel getBundleModel() {
 		return instance.bundleManager.getModel();
+	}
+	public static BuildManager getBuildManager() {
+		return instance.buildManager;
+	}
+	public static GoBundleModelManager getBundleModelManager() {
+		return instance.bundleManager;
+	}
+	public static SourceModelManager getSourceModelManager() {
+		return instance.sourceModelManager;
 	}
 	
 }

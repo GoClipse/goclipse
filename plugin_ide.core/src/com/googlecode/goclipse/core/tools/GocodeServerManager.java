@@ -5,7 +5,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
@@ -60,7 +59,7 @@ public class GocodeServerManager implements IDisposable {
 	
 	public void doStartServer(IPath gocodePath, IProgressMonitor monitor) throws CoreException {
 		
-		GoCore.createInfoStatus("starting gocode server [" + gocodePath + "]").logInPlugin();
+		LangCore.createInfoStatus("starting gocode server [" + gocodePath + "]").logInPlugin();
 		
 		ArrayList2<String> commandLine = new ArrayList2<String>();
 		commandLine.add(gocodePath.toOSString());
@@ -81,7 +80,7 @@ public class GocodeServerManager implements IDisposable {
 	
 	public void stopServer() {
 		if (gocodeProcess != null) {
-			GoCore.createInfoStatus("stopping gocode server").logInPlugin();
+			LangCore.createInfoStatus("stopping gocode server").logInPlugin();
 			
 			gocodeProcess.getProcess().destroy();
 			gocodeProcess = null;

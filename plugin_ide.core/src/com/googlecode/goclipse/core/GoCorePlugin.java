@@ -8,26 +8,27 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core;
+package com.googlecode.goclipse.core;
 
-public class LangCore2 extends LangCore_Actual {
+
+import org.osgi.framework.BundleContext;
+
+import melnorme.lang.ide.core.LangCorePlugin;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+
+public class GoCorePlugin extends LangCorePlugin {
 	
-	public LangCore2() {
+	@Override
+	protected void doCustomStart(BundleContext context) {
+		ToolchainPreferences.DAEMON_PATH.setPreferencesDefaultValue("gocode");
 	}
 	
-	protected void shutdown() {
-		buildManager.dispose();
-		bundleManager.shutdownManager();
-		sourceModelManager.dispose();
-		toolManager.shutdownNow();
+	@Override
+	protected void doCustomStop(BundleContext context) {
 	}
 	
-	/** 
-	 * Start core agents, and do other initizaliation after UI is started.
-	 * @param langCore TODO
-	 */
-	public void startAgentsAfterUIStart(LangCore langCore) {
-		bundleManager.startManager();
+	public static LangCorePlugin getDefault() {
+		return getInstance();
 	}
 	
 }
