@@ -181,6 +181,14 @@ public class EditorUtils {
 		}
 	}
 	
+	public static Location getLocationOrNull(IEditorInput editorInput) {
+		try {
+			return getLocationFromEditorInput(editorInput);
+		} catch(CoreException e) {
+			return null;
+		}
+	}
+	
 	/* -----------------  Editor opening utils  ----------------- */
 	
 	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING, NEVER }

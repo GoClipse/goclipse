@@ -68,9 +68,7 @@ public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel>
 	}
 	
 	@Override
-	protected void doShutdown() {
-		super.doShutdown();
-		
+	protected void dispose_pre() {
 		modelAgent.shutdownNow();
 	}
 	

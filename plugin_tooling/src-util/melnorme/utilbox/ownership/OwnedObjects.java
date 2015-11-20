@@ -32,10 +32,8 @@ public class OwnedObjects extends ArrayList2<IDisposable> implements IOwner, IDi
 	}
 	
 	@Override
-	public void disposeOwned(IDisposable disposable) {
-		boolean removed = remove(disposable);
-		assertTrue(removed);
-		disposable.dispose();
+	public boolean unbind(IDisposable disposable) {
+		return remove(disposable);
 	}
 	
 	@Override

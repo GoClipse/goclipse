@@ -31,18 +31,24 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.ThrowingRunnable;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.ownership.IOwner;
 
 public class ResourceUtils {
 	
@@ -293,6 +299,25 @@ public class ResourceUtils {
 			throw LangCore.createCoreException(ce);
 		}
 		return fileLoc;
+	}
+	
+	public static void connectResourceListener(IResourceChangeListener listener, 
+			ThrowingRunnable<CoreException> initialUpdate, ISchedulingRule opRule, IOwner owner) {
+		try {
+			getWorkspace().run(new IWorkspaceRunnable() {
+				@Override
+				public void run(IProgressMonitor monitor) throws CoreException {
+					getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
+					initialUpdate.run();
+				}
+			}, opRule, IWorkspace.AVOID_UPDATE, null);
+			
+		} catch (CoreException ce) {
+			LangCore.logStatus(ce);
+			// This really should not happen, but still try to recover by registering the listener.
+			getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
+		}
+		owner.bind(() -> ResourcesPlugin.getWorkspace().removeResourceChangeListener(listener));
 	}
 	
 }
