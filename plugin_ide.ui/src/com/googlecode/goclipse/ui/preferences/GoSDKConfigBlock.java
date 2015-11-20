@@ -35,6 +35,7 @@ import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
 import melnorme.lang.tooling.ops.util.LocationValidator;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
@@ -61,6 +62,8 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 		array(""         , GoArch.ARCH_AMD64, GoArch.ARCH_386, GoArch.ARCH_ARM));
 	
 	protected final EnablementButtonTextField goPathField = new GoPathField();
+	protected final CheckBoxField gopathAppendProjectLocField = new CheckBoxField(
+		"Also add project location to GOPATH, if it's not contained there already.");
 	
 	public GoSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
@@ -73,6 +76,7 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 		bindToPreference(goArchField.asStringProperty(), GoEnvironmentPrefs.GO_ARCH);
 		
 		bindToPreference(goPathField.asEffectiveValueProperty2(), GoEnvironmentPrefs.GO_PATH);
+		bindToPreference(gopathAppendProjectLocField, GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH);
 		
 		
 		validation.addFieldValidation(true, goRootField, goSDKLocationValidator);
@@ -108,7 +112,8 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 		
 		/* -----------------  ----------------- */
 		
-		goPathField.createComponent(topControl, getPreferenceGroupDefaultLayout());
+		Composite goPathFieldTopControl = goPathField.createComponent(topControl, getPreferenceGroupDefaultLayout());
+		gopathAppendProjectLocField.createComponent(goPathFieldTopControl);
 		
 		goRootField.addListener(() -> handleGoRootChange());
 	}
@@ -122,6 +127,7 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 		goArchField.setEnabled(enabled);
 		
 		goPathField.setEnabled(enabled);
+		gopathAppendProjectLocField.setEnabled(enabled);
 	}
 	
 	@Override

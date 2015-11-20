@@ -88,20 +88,11 @@ public class GoEnvironment {
 	}
 	
 	
-	/* ----------------- validation: TODO could use cleanup ----------------- */
-	
-	public boolean isValid() {
-		if (isNullOrEmpty(goRoot.asString())) {
-			return false;
-		}
-		return true;
-	}
+	/* ----------------- validation: ----------------- */
 	
 	public void validate() throws CommonException {
-		if(!isValid()) {
-			// TODO: more specific validation messages.
-			throw new CommonException("Go Environment settings are not valid");
-		}
+		goRoot.validate();
+		goPath.validate();
 	}
 	
 	public static boolean isNullOrEmpty(String string) {

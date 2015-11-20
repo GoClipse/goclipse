@@ -14,6 +14,7 @@ import static melnorme.lang.ide.core.operations.ToolchainPreferences.USE_PROJECT
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.OptionalStringPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
@@ -35,7 +36,7 @@ public interface GoEnvironmentPrefs {
 	IProjectPreference<String> GO_PATH = new OptionalStringPreference(LangCore.PLUGIN_ID, 
 		"com.googlecode.goclipse.gopath", ToolchainPreferences.USE_PROJECT_SETTINGS).getProjectPreference();
 	
-//	IProjectPreference<Boolean> APPEND_PROJECT_LOC_TO_GOPATH = new BooleanPreference(LangCore.PLUGIN_ID,
-//		"append_projloc_gopath", true, ToolchainPreferences.USE_PROJECT_SETTINGS).getProjectPreference();
+	IProjectPreference<Boolean> APPEND_PROJECT_LOC_TO_GOPATH = new BooleanPreference(LangCore.PLUGIN_ID,
+		"append_projloc_gopath", true, ToolchainPreferences.USE_PROJECT_SETTINGS).getProjectPreference();
 	
 }

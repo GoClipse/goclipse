@@ -67,10 +67,13 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 			return rawGoPath;
 		}
 		
-		// Implicitly add project location to the end of GOPATH
-		ArrayList2<String> newGoPathEntries = new ArrayList2<>(rawGoPath.getGoPathEntries());
-		newGoPathEntries.add(projectLoc.toPathString());
-		return new GoPath(newGoPathEntries);
+		if(GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH.getEffectiveValue(project)) {
+			// Add project location to the end of GOPATH
+			ArrayList2<String> newGoPathEntries = new ArrayList2<>(rawGoPath.getGoPathEntries());
+			newGoPathEntries.add(projectLoc.toPathString());
+			return new GoPath(newGoPathEntries);
+		}
+		return rawGoPath;
 	}
 	
 	public static boolean isProjectInsideGoPathSourceFolder(IProject project) throws CommonException {
@@ -108,10 +111,6 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return new GoEnvironment(goRoot, goArch, goOs, goPath);
 	}
 
-	public static boolean isValid(IProject project) {
-		return getGoEnvironment(project).isValid();
-	}
-	
 	public static GoEnvironment getValidatedGoEnvironment(final IProject project) throws CommonException {
 		GoEnvironment goEnv = getGoEnvironment(project);
 		goEnv.validate();

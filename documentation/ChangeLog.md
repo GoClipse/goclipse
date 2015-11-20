@@ -5,6 +5,7 @@
  * When debugging, fixed toggling breakpoints on and off for files that are outside the workspace.
  * When debugging, fixed opening source files that are are outside the workspace.
  * Fixed line breakpoint icon.
+ * Added preference to control whether project location is implicitly added to GOPATH or not.
  
  * Project builder is no longer invoked when workspace "Build Automatically" setting is enabled and a file is saved. (this was considered a misfeature anyways)
  * Added gocode preference to enable/disable showing the error dialog if failures occur during Content Assist.
