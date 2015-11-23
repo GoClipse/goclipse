@@ -58,6 +58,15 @@ public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 		return getMatchingPeer(closeChar, blockRulesReversed);
 	}
 	
+	public boolean isClosingBrace(char closeChar) {
+		for (BlockTokenRule blockTokenRule : blockRules) {
+			if(closeChar == blockTokenRule.close) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static char getMatchingPeer(char openChar, BlockTokenRule[] blockTokenRules) {
 		for (int i = 0; i < blockTokenRules.length; i++) {
 			BlockTokenRule blockRule = blockTokenRules[i];
@@ -128,14 +137,15 @@ public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 	}
 	
 	protected abstract class FnTokenAdvance {
-		protected abstract int advanceToken() throws BadLocationException;
-
+		
+		protected abstract int advanceToken() ;
+		
 		protected abstract void revertToken() ;
 	}
 	
 	protected final FnTokenAdvance prevTokenFn = new FnTokenAdvance() {
 		@Override
-		protected int advanceToken() throws BadLocationException {
+		protected int advanceToken() {
 			return readPreviousCharacter();
 		}
 		@Override
@@ -145,7 +155,7 @@ public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 	};
 	protected final FnTokenAdvance nextTokenFn = new FnTokenAdvance() {
 		@Override
-		protected int advanceToken() throws BadLocationException {
+		protected int advanceToken() {
 			return readNextCharacter();
 		}
 		@Override
@@ -167,12 +177,11 @@ public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 		return scanToBlockEnd(blockOpen);
 	}
 	
-	protected int scanToBlockEnd(char blockOpen) throws BadLocationException {
+	protected int scanToBlockEnd(char blockOpen) {
 		return scanToBlockStartForChar(blockOpen, nextTokenFn, blockRulesReversed);
 	}
 	
-	protected int scanToBlockStartForChar(char blockClose, FnTokenAdvance fnAdvance, BlockTokenRule[] blockTkRules)
-			throws BadLocationException {
+	protected int scanToBlockStartForChar(char blockClose, FnTokenAdvance fnAdvance, BlockTokenRule[] blockTkRules) {
 		int ix = getPriorityOfBlockToken(blockClose);
 		return scanToBlockPeer(ix, fnAdvance, blockTkRules);
 	}
@@ -182,8 +191,7 @@ public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 	 * @return 0 if block peer token was found (even if assumed by a syntax correction), 
 	 * or a count of how many blocks were left open.
 	 */
-	protected int scanToBlockPeer(int expectedTokenIx, FnTokenAdvance fnAdvance, BlockTokenRule[] blockTkRules)
-			throws BadLocationException {
+	protected int scanToBlockPeer(int expectedTokenIx, FnTokenAdvance fnAdvance, BlockTokenRule[] blockTkRules) {
 		assertTrue(expectedTokenIx >= 0 && expectedTokenIx < blockTkRules.length);
 		while(fnAdvance.advanceToken() != TOKEN_EOF) {
 			for (int i = 0; i < blockTkRules.length; i++) {
@@ -224,8 +232,10 @@ public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 		return getPosition();
 	}
 	
-	public boolean shouldCloseBlock(int blockOpenOffset) throws BadLocationException {
-		char primaryBlockOpen = document.getChar(blockOpenOffset);
+	public boolean shouldCloseBlock(int blockOpenOffset) {
+		assertTrue(blockOpenOffset != -1);
+		
+		char primaryBlockOpen = source.charAt(blockOpenOffset);
 		int primaryBlockPriority = getPriorityOfBlockToken(primaryBlockOpen);
 		char blockOpen = primaryBlockOpen;
 		
@@ -266,7 +276,7 @@ public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 		}
 	}
 	
-	protected int findUnmatchedOpen(int requiredPriority) throws BadLocationException {
+	protected int findUnmatchedOpen(int requiredPriority) {
 		while(prevTokenFn.advanceToken() != TOKEN_EOF) {
 			for (int i = 0; i < blockRules.length; i++) {
 				BlockTokenRule blockRule = blockRules[i];

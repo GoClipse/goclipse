@@ -124,19 +124,26 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 	
 	protected void smartIndentAfterNewLine(IDocument doc, DocumentCommand cmd) throws BadLocationException {
-		BlockHeuristicsScannner bhscanner = createBlockHeuristicsScanner(doc);
-		// Find block balances of preceding text (line start to edit cursor)
-		LineIndentResult nli = determineIndent(doc, bhscanner, doc.getLineOfOffset(cmd.offset), cmd.offset);
-		cmd.text += nli.nextLineIndent;
-		BlockBalanceResult blockInfo = nli.blockInfo;
+		IRegion lineRegion = doc.getLineInformationOfOffset(cmd.offset);
+		int lineEnd = getRegionEnd(lineRegion);
 		
+		int postWsEndPos = AutoEditUtils.findEndOfWhiteSpace(doc, cmd.offset, lineEnd); 
+		boolean hasPendingTextAfterEdit = postWsEndPos != lineEnd;
+		
+		
+		BlockHeuristicsScannner bhscanner = createBlockHeuristicsScanner(doc);
+		
+		int offsetForBalanceCalculation = findOffsetForBalanceCalculation(doc, bhscanner, cmd.offset);
+		int lineForBalanceCalculation = doc.getLineOfOffset(cmd.offset);
+		
+		// Find block balances of preceding text (line start to edit cursor)
+		LineIndentResult nli = determineIndent(doc, bhscanner, lineForBalanceCalculation, offsetForBalanceCalculation);
+		cmd.text += nli.nextLineIndent;
+		
+		BlockBalanceResult blockInfo = nli.blockInfo;
 		if(blockInfo.unbalancedOpens > 0) {
-			IRegion lineRegion = doc.getLineInformationOfOffset(cmd.offset);
-			int lineEnd = getRegionEnd(lineRegion);
-			
-			int postWsEndPos = AutoEditUtils.findEndOfWhiteSpace(doc, cmd.offset, lineEnd); 
-			boolean hasPendingTextAfterEdit = postWsEndPos != lineEnd;
 			if(preferences.closeBlocks() && !hasPendingTextAfterEdit){
+				
 				if(bhscanner.shouldCloseBlock(blockInfo.rightmostUnbalancedBlockOpenOffset)) {
 					//close block
 					cmd.caretOffset = cmd.offset + cmd.text.length();
@@ -149,6 +156,22 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			}
 			return;
 		}
+	}
+	
+	protected int findOffsetForBalanceCalculation(IDocument doc, BlockHeuristicsScannner bhscanner, int offset) {
+		while(offset < doc.getLength()) {
+			char ch;
+			try {
+				ch = doc.getChar(offset);
+			} catch(BadLocationException e) {
+				break;
+			}
+			if(!bhscanner.isClosingBrace(ch)) {
+				break;
+			}
+			offset++;
+		}
+		return offset;
 	}
 	
 	public static class LineIndentResult {
