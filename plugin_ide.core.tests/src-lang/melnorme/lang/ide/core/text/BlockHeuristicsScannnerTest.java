@@ -97,7 +97,7 @@ public class BlockHeuristicsScannnerTest extends Scanner_BaseTest {
 		StringBuffer buffer = new StringBuffer();
 		for (int i = string.length()-1; i >= 0; i--) {
 			char ch = string.charAt(i);
-			char revertedCh = TextUtils.getBracePair(ch);
+			char revertedCh = TextSourceUtils.getBracePair(ch);
 			buffer.append(revertedCh);
 		}
 		return buffer.toString();

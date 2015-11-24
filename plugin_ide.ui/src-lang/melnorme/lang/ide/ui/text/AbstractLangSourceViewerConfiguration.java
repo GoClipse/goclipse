@@ -41,7 +41,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy;
 import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
-import melnorme.lang.ide.core.text.format.AutoEditUtils;
+import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
@@ -190,7 +190,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 		
 		FormatterIndentMode indentMode = CodeFormatterConstants.fromPrefStore();
 		int spaceIndentationSize = CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.get();
-		String spaceIndent = AutoEditUtils.getNSpaces(spaceIndentationSize);
+		String spaceIndent = TextSourceUtils.getNSpaces(spaceIndentationSize);
 		
 		// An empty string must be part of IndentPrefixes, so that empty lines do not fail the unindent operation.
 		// for indent operation, only first element will be used, I believe 

@@ -57,7 +57,7 @@ public class CharacterLexingRule_Test {
 		
 		assertTrue(rule.tryMatch(reader) == expectedMatches);
 		if(expectedMatches) {
-			assertTrue(reader.getReadOffset() == expectedMatchLength);
+			assertTrue(reader.getReadPosition() == expectedMatchLength);
 		}
 	}
 	

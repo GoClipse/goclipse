@@ -83,7 +83,7 @@ public interface ICharSource<EXC extends Exception> extends IBasicCharSource<EXC
 		int length = 0;
 		while(true) {
 			int charAtIx = lookahead(length);
-			if(charAtIx == -1 || lookaheadMatches(string, length)) {
+			if(charAtIx == EOF || lookaheadMatches(string, length)) {
 				break;
 			}
 			length++;
