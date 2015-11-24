@@ -255,7 +255,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		
 		testEnterEdit("", "", TABn(0));
 		testEnterEdit("", "}", TABn(0));
-		testEnterEdit("{", "", TABn(1), NL+"}");
+		testEnterEdit("{", "", TABn(1), document.getDefaultLineDelimiter()+"}");
 		
 		// test potential close
 		testEnterEdit("(", 
