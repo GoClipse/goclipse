@@ -14,6 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public interface IBasicCharSource<EXC extends Exception> {
 	
+	public static final int EOF = -1;
+	
 	/** @return the next character in the stream, without advancing the stream. */
 	int lookahead() throws EXC;
 	
@@ -29,12 +31,12 @@ public interface IBasicCharSource<EXC extends Exception> {
 	}
 	
 	default boolean hasCharAhead() throws EXC {
-		return lookahead() != -1;
+		return lookahead() != EOF;
 	}
 	
 	default char lookaheadChar() throws EXC {
 		int la = lookahead();
-		assertTrue(la != -1);
+		assertTrue(la != EOF);
 		return (char) la;
 	}
 	

@@ -13,25 +13,19 @@ package melnorme.lang.ide.core.text.format;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.VerifyKeyListener;
-import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.widgets.Event;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
+import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockBalanceResult;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
 
@@ -40,94 +34,74 @@ import melnorme.lang.ide.core.text.BlockHeuristicsScannner.BlockTokenRule;
  * for block based languages (like C-style languages)
  * 
  * TODO smart paste
- * TODO smart indent on block character keypress
  * 
  * @author BrunoM
  */
-public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
+public class LangAutoEditStrategy extends AbstractAutoEditStrategy {
+	
+	protected static final BlockTokenRule[] BLOCK_RULES_Braces = 
+			array(new BlockTokenRule('{', '}'));
+	protected static final BlockTokenRule[] BLOCK_RULES_BracesAndParenthesis = 
+			array(new BlockTokenRule('{', '}'), new BlockTokenRule('(', ')'));
 	
 	protected final ILangAutoEditsPreferencesAccess preferences;
 	
-	protected Event lastKeyEvent;
+	protected final String partitioning;
+	protected final String contentType;
 	
+	protected LangAutoEditStrategy(ITextViewer viewer, ILangAutoEditsPreferencesAccess preferences) {
+		this(viewer, IDocumentExtension3.DEFAULT_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE, preferences);
+	}
 	
-	public LangAutoEditStrategy(ITextViewer viewer, ILangAutoEditsPreferencesAccess preferences) {
+	public LangAutoEditStrategy(ITextViewer viewer, String partitioning, String contentType,
+			ILangAutoEditsPreferencesAccess preferences) {
+		super(viewer);
 		this.preferences = preferences;
-		
-		lastKeyEvent = new Event();
-		if (viewer instanceof ITextViewerExtension) {
-			VerifyKeyRecorder verifyKeyRecorder = new VerifyKeyRecorder();
-			((ITextViewerExtension) viewer).appendVerifyKeyListener(verifyKeyRecorder);
-			// Minor issue: we should remove verifyKeyRecorder if viewer is unconfigured
-		} else {
-			// allways use blank event in lastKeyEvent
-		}
+		this.partitioning = partitioning;
+		this.contentType = contentType;
 	}
 	
-	public final class VerifyKeyRecorder implements VerifyKeyListener {
-		@Override
-		public void verifyKey(VerifyEvent event) {
-			lastKeyEvent.character = event.character;
-			lastKeyEvent.keyCode = event.keyCode;
-			lastKeyEvent.stateMask = event.stateMask;
-		}
-	}
-	
-	protected boolean keyWasBackspace() {
-		return lastKeyEvent.character == SWT.BS;
-	}
-	
-	protected boolean keyWasDelete() {
-		return lastKeyEvent.character == SWT.DEL;
-	}
-	
+	protected boolean parenthesesAsBlocks;
 	protected String indentUnit;
 	
 	@Override
-	public void customizeDocumentCommand(IDocument doc, DocumentCommand cmd) {
-		if (cmd.doit == false)
-			return;
-		
-		boolean isSmartIndent = preferences.isSmartIndent();
+	protected void doCustomizeDocumentCommand(IDocument doc, DocumentCommand cmd) throws BadLocationException {
+		parenthesesAsBlocks = preferences.parenthesesAsBlocks();
 		indentUnit = preferences.getIndentUnit();
+		boolean isSmartIndent = preferences.isSmartIndent();
 		
-		try {
-			if(isSmartIndent && AutoEditUtils.isNewLineInsertionCommand(doc, cmd)) {
-				smartIndentAfterNewLine(doc, cmd);
-			} else if(smartDeIndentAfterDeletion(doc, cmd)) {
-				return;
-			} else if(lastKeyEvent.character == SWT.TAB && areEqual(cmd.text, "\t")) {
-				smartTab(doc, cmd);
-			} else if(isSmartIndent && AutoEditUtils.isSingleCharactedInsertionOrReplaceCommand(cmd)) {
-				smartIndentOnKeypress(doc, cmd);
-			} else if(preferences.isSmartPaste() && cmd.text.length() > 1) {
-				smartPaste(doc, cmd); // no smart backspace for paste
-			} else {
-				super.customizeDocumentCommand(doc, cmd);
-			}
-		} catch (BadLocationException e) {
-			LangCore.logError("Error in LangAutoEditStrategy", e);
+		if(isSmartIndent && isSimpleNewLineKeyPress(cmd)) {
+			smartIndentAfterNewLine(doc, cmd);
+		} else if(smartDeIndentAfterDeletion(doc, cmd)) {
+			return;
+		} else if(isSmartIndent && isSimpleKeyPressCommand(cmd)) {
+			smartIndentOnKeypress(doc, cmd);
+		} else {
 		}
 	}
 	
 	protected BlockHeuristicsScannner createBlockHeuristicsScanner(IDocument doc) {
-		// Default implementation
-		String partitioning = IDocumentExtension3.DEFAULT_PARTITIONING;
-		String contentType = IDocument.DEFAULT_CONTENT_TYPE;
-		return new BlockHeuristicsScannner(doc, partitioning, contentType, new BlockTokenRule('{', '}'));
+		return new BlockHeuristicsScannner(doc, partitioning, contentType, getBlockRules());
+	}
+	
+	protected BlockTokenRule[] getBlockRules() {
+		if(parenthesesAsBlocks) {
+			return BLOCK_RULES_BracesAndParenthesis;
+		} else {
+			return BLOCK_RULES_Braces;
+		}
 	}
 	
 	/* ------------------------------------- */
 	
-	public static int getRegionEnd(IRegion region) {
-		return region.getOffset() + region.getLength();
-	}
-	
 	protected void smartIndentAfterNewLine(IDocument doc, DocumentCommand cmd) throws BadLocationException {
+		if(cmd.length > 0 || cmd.text == null)
+			return;
+		
 		IRegion lineRegion = doc.getLineInformationOfOffset(cmd.offset);
 		int lineEnd = getRegionEnd(lineRegion);
 		
-		int postWsEndPos = AutoEditUtils.findEndOfWhiteSpace(doc, cmd.offset, lineEnd); 
+		int postWsEndPos = TextSourceUtils.findEndOfIndent(docContents, cmd.offset); 
 		boolean hasPendingTextAfterEdit = postWsEndPos != lineEnd;
 		
 		
@@ -142,7 +116,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		
 		BlockBalanceResult blockInfo = nli.blockInfo;
 		if(blockInfo.unbalancedOpens > 0) {
-			if(preferences.closeBlocks() && !hasPendingTextAfterEdit){
+			if(preferences.closeBraces() && !hasPendingTextAfterEdit){
 				
 				if(bhscanner.shouldCloseBlock(blockInfo.rightmostUnbalancedBlockOpenOffset)) {
 					//close block
@@ -214,12 +188,11 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			int blockStartOffset = bhscanner.findBlockStart(blockInfo.rightmostUnbalancedBlockCloseOffset);
 			assertTrue(doc.getLineOfOffset(blockStartOffset) <= doc.getLineOfOffset(lineStart));
 			
-			IRegion blockStartLineInfo = doc.getLineInformationOfOffset(blockStartOffset);
 			
-			String startLineIndent = getLineIndent(doc, blockStartLineInfo);
+			String startLineIndent = getLineIndentForOffset(blockStartOffset);
 			
 			// Now calculate the balance for the block start line, before the block start
-			int lineOffset = blockStartLineInfo.getOffset();
+			int lineOffset = TextSourceUtils.findLineStartForOffset(docContents, blockStartOffset);
 			BlockBalanceResult blockStartInfo = bhscanner.calculateBlockBalances(lineOffset, blockStartOffset);
 			
 			// Add the indent of the start line, plus the unbalanced opens there
@@ -228,7 +201,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		}
 		
 		// The indent string to be added to the new line
-		String lineIndent = getLineIndent(doc, lineStart, editOffset);
+		String lineIndent = getLineIndentForLineStart(lineStart, editOffset);
 		if(blockInfo.unbalancedOpens == 0 && blockInfo.unbalancedCloses == 0) {
 			return new LineIndentResult(null, lineIndent, blockInfo); // finished
 		}
@@ -251,18 +224,8 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		return !partition.getType().equals(IDocument.DEFAULT_CONTENT_TYPE);
 	}
 	
-	protected static String getLineIndent(IDocument doc, IRegion line) throws BadLocationException {
-		return getLineIndent(doc, line.getOffset(), getRegionEnd(line));
-	}
-	
-	protected static String getLineIndent(IDocument doc, int start, int end) throws BadLocationException {
-		assertTrue(start <= end);
-		int indentEnd = AutoEditUtils.findEndOfWhiteSpace(doc, start, end);
-		return doc.get(start, indentEnd - start);
-	}
-	
 	protected String addIndent(String indentStr, int indentDelta) {
-		return indentStr + LangAutoEditUtils.stringNTimes(indentUnit, indentDelta);
+		return indentStr + TextSourceUtils.stringNTimes(indentUnit, indentDelta);
 	}
 	
 	/* ------------------------------------- */
@@ -289,7 +252,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 				assertTrue(doc.getLineInformation(indentLine).getOffset() == cmd.offset + cmd.length);
 				
 				IRegion indentLineRegion = doc.getLineInformation(indentLine);
-				int indentEnd = findEndOfWhiteSpace(doc, indentLineRegion);
+				int indentEnd = findEndOfIndent(indentLineRegion.getOffset());
 				String deletableIndentStr = calculateDeletableIndent(doc, indentLine, indentEnd);
 				if(equalsDocumentString(deletableIndentStr, doc, indentLineRegion)) {
 					cmd.length += deletableIndentStr.length();
@@ -307,7 +270,7 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			
 			IRegion indentLineRegion = lineRegion;
 			int indentLine = line;
-			int indentEnd = findEndOfWhiteSpace(doc, indentLineRegion);
+			int indentEnd = findEndOfIndent(indentLineRegion.getOffset());
 			if(cmd.offset < indentEnd) {
 				// potentially true
 				
@@ -349,17 +312,6 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		return expectedIndentStr;
 	}
 	
-	protected boolean equalsDocumentString(String expectedIndentStr, IDocument doc, IRegion lineRegion)
-			throws BadLocationException {
-		int length = Math.min(lineRegion.getLength(), expectedIndentStr.length());
-		String lineIndent = doc.get(lineRegion.getOffset(), length);
-		return expectedIndentStr.equals(lineIndent);
-	}
-	
-	protected int findEndOfWhiteSpace(IDocument doc, IRegion region) throws BadLocationException {
-		return AutoEditUtils.findEndOfWhiteSpace(doc, region.getOffset(), getRegionEnd(region));
-	}
-	
 	protected String determineExpectedIndent(IDocument doc, int line) throws BadLocationException {
 		BlockHeuristicsScannner bhscanner = createBlockHeuristicsScanner(doc);
 		LineIndentResult nli = determineIndent(doc, bhscanner, line);
@@ -369,17 +321,41 @@ public class LangAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	
 	/* ------------------------------------- */
 	
-	protected void smartIndentOnKeypress(IDocument doc, DocumentCommand cmd) throws BadLocationException {
-		super.customizeDocumentCommand(doc, cmd);
+	protected void smartIndentOnKeypress(IDocument doc, DocumentCommand cmd) {
+		assertTrue(cmd.text.length() == 1);
+		
+		int offset = cmd.offset;
+		
+		int lineStart = TextSourceUtils.findLineStartForOffset(docContents, offset);
+		String beforeCursor = docContents.substring(lineStart, offset);
+		
+		if(!beforeCursor.trim().isEmpty()) {
+			return;
+		}
+		
+		if(!isCloseSymbol(cmd.text)) {
+			return;
+		}
+		char closeBrace = cmd.text.charAt(0);
+		
+		BlockHeuristicsScannner bhScanner = createBlockHeuristicsScanner(doc);
+		int blockStartOffset = bhScanner.findBlockStart(offset, closeBrace);
+		
+		// Replace current indent
+		cmd.offset = lineStart;
+		cmd.length = beforeCursor.length();
+		// With indent of block-start line
+		String startLineIndent = getLineIndentForOffset(blockStartOffset);
+		cmd.text = startLineIndent + closeBrace;
 	}
 	
-	protected void smartPaste(IDocument doc, DocumentCommand cmd) throws BadLocationException {
-		super.customizeDocumentCommand(doc, cmd);
-	}
-	
-	protected void smartTab(IDocument doc, DocumentCommand cmd) {
-		cmd.text = preferences.getIndentUnit();
-		super.customizeDocumentCommand(doc, cmd);
+	protected boolean isCloseSymbol(String string) {
+		for (BlockTokenRule blockTokenRule : getBlockRules()) {
+			if(string.charAt(0) == blockTokenRule.close) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

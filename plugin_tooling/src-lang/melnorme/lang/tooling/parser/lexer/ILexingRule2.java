@@ -20,7 +20,7 @@ public interface ILexingRule2<TOKEN> {
 		CharacterReader_SubReader subReader = new CharacterReader_SubReader(reader);
 		
 		TOKEN result = doEvaluateToken(subReader);
-		if(subReader.getReadOffset() == 0) {
+		if(subReader.getReadPosition() == 0) {
 			assertTrue(result == null);
 		}
 		if(result != null) {

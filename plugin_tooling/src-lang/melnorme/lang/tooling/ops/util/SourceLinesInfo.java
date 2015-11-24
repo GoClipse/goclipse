@@ -38,7 +38,7 @@ public class SourceLinesInfo {
 			consumeNewLine(parser);
 			
 			lines.add(lineStartOffset);
-			lineStartOffset = parser.getReadOffset();
+			lineStartOffset = parser.getReadPosition();
 		}
 		
 	}

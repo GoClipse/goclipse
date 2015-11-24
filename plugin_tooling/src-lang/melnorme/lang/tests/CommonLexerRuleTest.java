@@ -48,7 +48,7 @@ public abstract class CommonLexerRuleTest extends CommonToolingTest {
 
 		assertEquals(isMatch, expectedTokenLength > 0);
 		if(isMatch) {
-			assertEquals(reader.getReadOffset(), expectedTokenLength);
+			assertEquals(reader.getReadPosition(), expectedTokenLength);
 		}
 	}
 	

@@ -165,9 +165,13 @@ public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 	};
 	
 	public int scanToBlockStart(int blockCloseOffset) throws BadLocationException {
+		char blockClose = document.getChar(blockCloseOffset);
+		return scanToBlockStart(blockCloseOffset, blockClose);
+	}
+	
+	public int scanToBlockStart(int blockCloseOffset, char blockClose) {
 		setPosition(blockCloseOffset);
 		posLimit = 0;
-		char blockClose = document.getChar(blockCloseOffset);
 		return scanToBlockStartForChar(blockClose, prevTokenFn, blockRules);
 	}
 	
@@ -229,6 +233,11 @@ public class BlockHeuristicsScannner extends AbstractDocumentScanner {
 	/** Finds the offset where starts the blocks whose end token is at given blockCloseOffset */
 	public int findBlockStart(int blockCloseOffset) throws BadLocationException {
 		scanToBlockStart(blockCloseOffset);
+		return getPosition();
+	}
+	
+	public int findBlockStart(int blockCloseOffset, char blockClose) {
+		scanToBlockStart(blockCloseOffset, blockClose);
 		return getPosition();
 	}
 	

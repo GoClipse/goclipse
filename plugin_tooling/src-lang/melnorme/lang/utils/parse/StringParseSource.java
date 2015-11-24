@@ -24,12 +24,16 @@ public class StringParseSource extends OffsetBasedCharacterReader<RuntimeExcepti
 		return source;
 	}
 	
+	/**
+	 * @return character from current read position, plus given offset (offset can be negative). 
+	 * EOF if resulting position is out of bounds.
+	 */
 	@Override
-	public int lookahead(int n) {
-		int index = readOffset + n;
+	public int lookahead(int offset) {
+		int index = readPosition + offset;
 		
-		if(index >= source.length()) {
-			return -1;
+		if(index < 0 || index >= source.length()) {
+			return EOF;
 		}
 		return source.charAt(index);
 	}
@@ -40,18 +44,18 @@ public class StringParseSource extends OffsetBasedCharacterReader<RuntimeExcepti
 	}
 	
 	protected String sourceSubString(int startPos, int endPos) {
-		return source.substring(readOffset + startPos, readOffset + endPos);
+		return source.substring(readPosition + startPos, readPosition + endPos);
 	}
 	
 	@Override
 	public int bufferedCharCount() {
-		return source.length() - readOffset;
+		return source.length() - readPosition;
 	}
 	
 	@Override
 	public void consume(int amount) throws RuntimeException {
-		readOffset += amount;
-		assertTrue(readOffset <= source.length());
+		readPosition += amount;
+		assertTrue(readPosition <= source.length());
 	}
 	
 	/* -----------------  ----------------- */

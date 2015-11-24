@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core.text.format;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -23,17 +24,16 @@ import org.junit.Test;
 import melnorme.lang.ide.core.text.BlockHeuristicsScannner;
 import melnorme.lang.ide.core.text.SamplePartitionScanner;
 import melnorme.lang.ide.core.text.Scanner_BaseTest;
+import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.core.text.format.ILangAutoEditsPreferencesAccess;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
-import melnorme.lang.ide.core.text.format.LangAutoEditUtils;
-import melnorme.lang.ide.core.text.format.LangAutoEditStrategyExt.ILangAutoEditsPreferencesAccessExt;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	
-	public static class Mock_LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccessExt {
+	public static class Mock_LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccess {
 		@Override
 		public boolean isSmartIndent() {
 			return true;
@@ -46,11 +46,6 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		
 		@Override
 		public boolean closeBraces() {
-			return true;
-		}
-		
-		@Override
-		public boolean closeBlocks() {
 			return true;
 		}
 		
@@ -146,27 +141,45 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	}
 	
 	protected void testEnterAutoEdit(String textBefore, String textAfter, String expectedEdit) {
-		testEnterAutoEdit_____(textBefore, textAfter, NL+expectedEdit, -1);
+		int caretOffset = textBefore.length();
+		testAutoEdit(textBefore, textAfter, NL+expectedEdit, caretOffset);
 	}
 	
 	protected void testEnterEdit(String textBefore, String textAfter, String expInsert, String expInsertAfter) {
 		expInsert = NL + expInsert;
-		testEnterAutoEdit_____(textBefore, textAfter, expInsert+expInsertAfter, expInsert.length());
+		int caretOffset = textBefore.length() + expInsert.length();
+		testAutoEdit(textBefore, textAfter, expInsert+expInsertAfter, caretOffset);
 	}
 	
-	protected void testEnterAutoEdit_____(String textBefore, String textAfter, String expectedInsert, int offsetDelta) {
-		Document document = setupDocument(textBefore, textAfter);
-		int keypressOffset = textBefore.length();
-		DocumentCommand docCommand = createDocumentCommand(keypressOffset, 0, NL);
+	protected void testAutoEdit(String textBefore, String textAfter, String expectedInsert, int caretOffset) {
+		testAutoEdit_____(textBefore, "", textAfter, expectedInsert, caretOffset, NL);
+	}
+	
+	protected void testAutoEdit_____(String textBefore, String deletedText, String afterCursor, 
+			String expectedInsert, int caretOffset, String insertedText) {
+		String beforeCursor = textBefore + deletedText;
+		Document document = setupDocument(beforeCursor + afterCursor);
+		
+		int keypressOffset = beforeCursor.length();
+		DocumentCommand docCommand = createDocumentCommand(keypressOffset, 0, insertedText);
+		if(docCommand.length == 0 && areEqual(docCommand.text, NL)) {
+			getAutoEditStrategy().lastKeyEvent.character = SWT.CR;
+		}
 		getAutoEditStrategy().customizeDocumentCommand(document, docCommand);
-		int caretOffset = (offsetDelta == -1) ? -1 : textBefore.length() + offsetDelta;
-		int replaceLength = 0;
-		checkCommand(docCommand, expectedInsert, keypressOffset, replaceLength, caretOffset);
+		int replaceLength = deletedText.length();
+		if(caretOffset == textBefore.length()) {
+			caretOffset = -1;
+		}
+		checkCommand(docCommand, expectedInsert, textBefore.length(), replaceLength, caretOffset);
 	}
 	
 	protected Document setupDocument(String textBefore, String textAfter) {
+		return setupDocument(textBefore + textAfter);
+	}
+	
+	protected Document setupDocument(String contents) {
 		Document document = getDocument();
-		document.set(textBefore + textAfter);
+		document.set(contents);
 		return document;
 	}
 	
@@ -185,7 +198,7 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 	
 	
 	protected static String TABn(int indent) {
-		return LangAutoEditUtils.stringNTimes(TAB, indent);
+		return TextSourceUtils.stringNTimes(TAB, indent);
 	}
 	
 	protected static String expectInd(String indent) {
@@ -690,6 +703,39 @@ public class LangAutoEditStrategyTest extends Scanner_BaseTest {
 		testCommandWithNoEffect(createDocumentCommand(sourcePre.length(), 0, ""));
 		testCommandWithNoEffect(createDocumentCommand(sourceAfter.length(), 0, ""));
 		testCommandWithNoEffect(createDocumentCommand(text.length(), 0, ""));
+	}
+	
+	
+	/* -----------------  ----------------- */
+	
+	@Test
+	public void testDeindent_onBraceKeypres() throws Exception { testDeindent_onBraceKeypres$(); }
+	public void testDeindent_onBraceKeypres$() throws Exception {
+		// No-op case
+		testAutoEdit_____(line("func() {" + TABn(1)), "", "---", ">", -1, ">");
+		
+		// A basic case
+		testBraceKeyPress(
+			line("func() {"), 
+			TABn(1),
+			"}");
+		
+		
+		// Test no deletion happens if beforeCursor is not indent
+		testBraceKeyPress(
+			line("func() {") + "\tfoo", 
+			"",
+			"}");
+		
+		// Test that ident of block start is used
+		testBraceKeyPress(
+			line(TABn(4) + "func{} {"), 
+			TABn(1),
+			TABn(4) + "}");
+	}
+	
+	protected void testBraceKeyPress(String textBefore, String deletedText, String expectedInsert) {
+		testAutoEdit_____(textBefore, deletedText, "---", expectedInsert, -1, "}");
 	}
 	
 }

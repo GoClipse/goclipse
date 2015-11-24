@@ -15,12 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collections;
 
-import melnorme.lang.ide.core.ISourceFile;
-import melnorme.lang.ide.core.text.DocumentModification;
-import melnorme.lang.ide.core.text.format.AutoEditUtils;
-import melnorme.lang.utils.parse.StringParseSource;
-import melnorme.utilbox.collections.ArrayList2;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
@@ -33,6 +27,11 @@ import org.eclipse.text.edits.MalformedTreeException;
 
 import _org.eclipse.jdt.internal.corext.template.java.JavaContext;
 import _org.eclipse.jdt.internal.corext.template.java.JavaFormatter;
+import melnorme.lang.ide.core.ISourceFile;
+import melnorme.lang.ide.core.text.DocumentModification;
+import melnorme.lang.ide.core.text.TextSourceUtils;
+import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.utilbox.collections.ArrayList2;
 
 public class LangContext extends JavaContext {
 	
@@ -81,10 +80,10 @@ public class LangContext extends JavaContext {
 	}
 	
 	// Alternative method to fix indentation, not used currently.
-	protected String fixIndentation(String docString) throws BadLocationException {
+	protected String fixIndentation(String docString) {
 		
 		final String delimeter = "\n";
-		final String indent = AutoEditUtils.getLineIndentOfOffset(getDocument(), getStart());
+		final String indent = TextSourceUtils.getLineIndentForOffset(docString, getStart());
 		
 		
 		StringBuilder newContents = new StringBuilder();
@@ -113,9 +112,10 @@ public class LangContext extends JavaContext {
 	 * as such, it can be used after the template pattern has been evaluate. 
 	 */
 	protected void simpleIndent(IDocument document) throws BadLocationException {
+		String docContents = getDocument().get();
 		
 		final String delimeter = "\n";
-		final String indent = AutoEditUtils.getLineIndentOfOffset(getDocument(), getStart());
+		final String indent = TextSourceUtils.getLineIndentForOffset(docContents, getStart());
 		
 		ArrayList2<DocumentModification> changes = new ArrayList2<>();
 		
@@ -127,7 +127,7 @@ public class LangContext extends JavaContext {
 				break;
 			}
 			
-			changes.add(new DocumentModification(parser.getReadOffset(), 0, indent));
+			changes.add(new DocumentModification(parser.getReadPosition(), 0, indent));
 			
 			parser.consumeUntil(delimeter);
 		}
