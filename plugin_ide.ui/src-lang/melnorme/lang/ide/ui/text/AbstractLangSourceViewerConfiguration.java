@@ -50,6 +50,7 @@ import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
+import melnorme.lang.ide.ui.editor.hover.HoverInformationProvider;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
@@ -122,7 +123,12 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 		return presenter;
 	}
 	
-	protected abstract IInformationProvider getInformationProvider(String contentType);
+	// ================ Information provider
+	
+	@SuppressWarnings("unused")
+	protected IInformationProvider getInformationProvider(String contentType) {
+		return new HoverInformationProvider(new BestMatchHover(getEditor()));
+	}
 	
 	protected IInformationControlCreator getInformationPresenterControlCreator(
 			@SuppressWarnings("unused") ISourceViewer sourceViewer) {

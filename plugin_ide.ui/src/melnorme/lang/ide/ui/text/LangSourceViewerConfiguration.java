@@ -3,7 +3,6 @@ package melnorme.lang.ide.ui.text;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.swt.widgets.Display;
 
 import LANG_PROJECT_ID.ide.ui.editor.LANGUAGE_CompletionProposalComputer;
@@ -54,11 +53,6 @@ public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfi
 	@Override
 	protected String getToggleCommentPrefix() {
 		return "//";
-	}
-	
-	@Override
-	protected IInformationProvider getInformationProvider(String contentType) {
-		return null;
 	}
 	
 	@Override

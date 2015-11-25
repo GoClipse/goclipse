@@ -2,17 +2,14 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
-import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
-import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
-import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
-
 import org.eclipse.jface.text.source.ISourceViewer;
 
 import LANG_PROJECT_ID.ide.core.text.LANGUAGE_AutoEditStrategy;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
-import _org.eclipse.jdt.internal.ui.text.java.hover.AnnotationHover;
-import _org.eclipse.jdt.internal.ui.text.java.hover.ProblemHover;
+import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
+import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
@@ -31,9 +28,9 @@ public final class LangUIPlugin_Actual {
 	
 	protected static final Class<?> PLUGIN_IMAGES_CLASS = LANGUAGE_Images.class;
 	
-	protected static void initTextHovers( List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
-		textHoverSpecifications.add(ProblemHover.class);
-		textHoverSpecifications.add(AnnotationHover.class);
+	@SuppressWarnings("unused")
+	protected static void initTextHovers_afterProblemHover(
+			List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
 	}
 	
 	public static LANGUAGE_AutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {

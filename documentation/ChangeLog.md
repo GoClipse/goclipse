@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Pressing F2 in the editor now shows information popup for problem under cursor (same as the mouse-over hover).
  * Improvement to Enter auto-indent when text after cursor has closing braces.
  * Minimum and recommended CDT version is now `8.8`.
  * When debugging, fixed toggling breakpoints on and off for files that are outside the workspace.
