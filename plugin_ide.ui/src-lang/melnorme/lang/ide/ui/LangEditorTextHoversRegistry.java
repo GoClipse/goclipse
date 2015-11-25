@@ -13,6 +13,8 @@ package melnorme.lang.ide.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import _org.eclipse.jdt.internal.ui.text.java.hover.AnnotationHover;
+import _org.eclipse.jdt.internal.ui.text.java.hover.ProblemHover;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 
 /**
@@ -23,7 +25,9 @@ public class LangEditorTextHoversRegistry {
 	private static List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications = new ArrayList<>();
 	
 	static {
-		LangUIPlugin_Actual.initTextHovers(textHoverSpecifications);
+		textHoverSpecifications.add(ProblemHover.class);
+		LangUIPlugin_Actual.initTextHovers_afterProblemHover(textHoverSpecifications);
+		textHoverSpecifications.add(AnnotationHover.class);
 	}
 	
 	public synchronized static List<Class<? extends ILangEditorTextHover<?>>> getTextHoversSpecifications() {
