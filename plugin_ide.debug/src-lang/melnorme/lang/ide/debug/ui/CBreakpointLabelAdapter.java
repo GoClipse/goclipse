@@ -9,6 +9,7 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package melnorme.lang.ide.debug.ui;
+
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.lang.reflect.Method;

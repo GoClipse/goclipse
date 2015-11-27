@@ -125,23 +125,26 @@ public class ReflectionUtils {
 	/* ---------------------------------------------------------------- */
 	
 	/** Reads the field with given fieldName in given object. */
-	public static <T> Object readField(T object, String fieldName) throws NoSuchFieldException {
-		return readAvailableField(object.getClass(), object, fieldName);
+	@SuppressWarnings("unchecked")
+	public static <R> R readField(Object object, String fieldName) throws NoSuchFieldException {
+		return readAvailableField((Class<Object>)object.getClass(), object, fieldName);
 	}
 	
 	/** Reads the static field with given fieldName in given klass. */
-	public static Object readStaticField(Class<?> klass, String fieldName) throws NoSuchFieldException {
+	public static <R> R readStaticField(Class<?> klass, String fieldName) throws NoSuchFieldException {
 		return readAvailableField(klass, null, fieldName);
 	}
 	
-	private static <T> Object readAvailableField(Class<?> klass, T object, String fieldName) throws NoSuchFieldException {
+	@SuppressWarnings("unchecked")
+	private static <T, R> R readAvailableField(Class<? super T> klass, T object, String fieldName) 
+			throws NoSuchFieldException {
 		Field field = getAvailableField(klass, fieldName);
 		if (field == null) {
 			throw new NoSuchFieldException();
 		}
 		
 		try {
-			return field.get(object);
+			return (R) field.get(object);
 		} catch (IllegalArgumentException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		} catch (IllegalAccessException e) {
