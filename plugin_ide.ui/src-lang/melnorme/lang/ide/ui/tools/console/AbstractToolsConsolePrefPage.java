@@ -38,8 +38,7 @@ public abstract class AbstractToolsConsolePrefPage extends FieldEditorPreference
 	protected void createFieldEditors() {
 		Composite parent = getFieldEditorParent();
 		
-		addField(new BooleanFieldEditor(ACTIVATE_ON_ERROR_MESSAGES.key, 
-			"Activate console on error messages", parent));
+		create_ActivateOnErrorMessagesField(parent);
 		
 		SWTFactoryUtil.createLabel(parent, SWT.LEFT, "Console color settings:", 
 			GridDataFactory.fillDefaults().span(2, 1).create());
@@ -52,6 +51,11 @@ public abstract class AbstractToolsConsolePrefPage extends FieldEditorPreference
 			"Program error output text color:", parent));
 		addField(new ColorFieldEditor(BACKGROUND_COLOR.getActiveKey(),
 			"Console background color:", parent));
+	}
+	
+	protected void create_ActivateOnErrorMessagesField(Composite parent) {
+		addField(new BooleanFieldEditor(ACTIVATE_ON_ERROR_MESSAGES.key, 
+			"Activate console on error messages.", parent));
 	}
 	
 }

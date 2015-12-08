@@ -121,7 +121,7 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 			boolean clearConsole = true;
 			
 			console = getOperationConsole(opInfo.getProject(), clearConsole);
-			console.activate();
+			//console.activate();
 			
 			opInfo.putProperty(TOOL_INFO__KEY_CONSOLE, console);
 		}

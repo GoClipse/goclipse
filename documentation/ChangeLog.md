@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed regression: Console view always activates when a build is invoked. (#158)
  * Pressing F2 in the editor now shows information popup for problem under cursor (same as the mouse-over hover).
  * Improvement to Auto-Indent when Enter pressed before a closing brace. 
  * Minimum and recommended CDT version is now `8.8`.

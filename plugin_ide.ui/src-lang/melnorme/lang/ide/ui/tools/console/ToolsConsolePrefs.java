@@ -13,12 +13,14 @@ package melnorme.lang.ide.ui.tools.console;
 import org.eclipse.swt.graphics.RGB;
 
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.OperationsConsolePrefDefaults_Actual;
 import melnorme.lang.ide.ui.text.coloring.ThemedColorPreference;
 
 public interface ToolsConsolePrefs extends OperationsConsolePrefDefaults_Actual {
 	
-	BooleanPreference ACTIVATE_ON_ERROR_MESSAGES = new BooleanPreference("console.do_activate", false); 
+	BooleanPreference ACTIVATE_ON_ERROR_MESSAGES = new BooleanPreference(
+		LangUIPlugin.PLUGIN_ID, "console.do_activate2", true); 
 	
 	ThemedColorPreference INFO_COLOR = new ThemedColorPreference("console.info_color", 
 		INFO_COLOR_Default, INFO_COLOR_DefaultDark); 

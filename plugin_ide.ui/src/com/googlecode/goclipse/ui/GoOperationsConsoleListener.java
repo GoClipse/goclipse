@@ -13,9 +13,30 @@ package com.googlecode.goclipse.ui;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import melnorme.lang.ide.core.operations.ProcessStartInfo;
+import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
+import melnorme.lang.ide.ui.tools.console.ToolsConsole;
+import melnorme.lang.ide.ui.tools.console.ToolsConsolePrefs;
 
 public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
+	
+	@Override
+	protected ToolsConsole createConsole(String name) {
+		return new ToolsConsole(name, LangImages.TOOLS_CONSOLE_ICON.getDescriptor()) {
+			
+			@Override
+			protected void ui_initStreamColors() {
+				super.ui_initStreamColors();
+			}
+			
+			@Override
+			protected void ui_bindActivateOnErrorsListeners() {
+				// dont activate on stderr output, because Go build often uses "-v" flag
+				stdErr.setActivateOnWrite(false);
+			}
+			
+		};
+	}
 	
 	@Override
 	public void handleProcessStart(ProcessStartInfo processStartInfo) {
@@ -24,6 +45,15 @@ public class GoOperationsConsoleListener extends AbstractToolsConsoleHandler {
 			protected void printProcessStart(IOConsoleOutputStream outStream) {
 				super.printProcessStart(outStream);
 			}
+			
+			@Override
+			protected void handleProcessTerminated(ToolsConsole console, int exitCode) {
+				Boolean activateOnErrors = ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get();
+				if(exitCode != 0 && activateOnErrors) {
+					console.activate();
+				}
+				super.handleProcessTerminated(console, exitCode);
+			};
 			
 			@Override
 			protected String getProcessTerminatedMessage(int exitCode) {
