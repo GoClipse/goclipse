@@ -48,9 +48,7 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 	protected void ui_initStreamColors() {
 		super.ui_initStreamColors();
 		
-		ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.asField().bindOwnedListener(owned, true,
-			() -> stdErr.setActivateOnWrite(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get())
-		);
+		ui_bindActivateOnErrorsListeners();
 		
 		ToolsConsolePrefs.INFO_COLOR.asField().bindOwnedListener(owned, true, 
 			() -> infoOut.setColor(getManagedColor(ToolsConsolePrefs.INFO_COLOR)));
@@ -60,6 +58,12 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 			() -> stdOut.setColor(getManagedColor(ToolsConsolePrefs.STDOUT_COLOR)));
 		ToolsConsolePrefs.BACKGROUND_COLOR.asField().bindOwnedListener(owned, true, 
 			() -> setBackground(getManagedColor(ToolsConsolePrefs.BACKGROUND_COLOR)));
+	}
+	
+	protected void ui_bindActivateOnErrorsListeners() {
+		ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.asField().bindOwnedListener(owned, true,
+			() -> stdErr.setActivateOnWrite(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get())
+		);
 	}
 	
 	protected static Color getManagedColor(ThemedColorPreference colorPref) {
