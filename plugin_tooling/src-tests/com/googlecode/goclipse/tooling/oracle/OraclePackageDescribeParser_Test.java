@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.oracle;
 
+import static com.googlecode.goclipse.tooling.CommonGoToolingTest.fixTestsPaths;
 import static melnorme.lang.tooling.structure.StructureElementKind.CONST;
 import static melnorme.lang.tooling.structure.StructureElementKind.FUNCTION;
 import static melnorme.lang.tooling.structure.StructureElementKind.INTERFACE;
@@ -21,8 +22,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
-import com.googlecode.goclipse.tooling.CommonGoToolingTest;
-
+import melnorme.lang.tests.CommonToolingTest;
 import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
@@ -36,7 +36,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 
-public class OraclePackageDescribeParser_Test extends CommonGoToolingTest {
+public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 	
 	@Override
 	public String getClassResource(String resourceName) {

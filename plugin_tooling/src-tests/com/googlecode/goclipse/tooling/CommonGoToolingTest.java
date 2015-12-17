@@ -39,7 +39,7 @@ public class CommonGoToolingTest extends CommonToolingTest {
 	
 	public static final Location TR_SAMPLE_GOPATH_ENTRY = getTestResourceLoc("sampleGoPathEntry");
 	
-	protected String fixTestsPaths(String originalSource) {
+	public static String fixTestsPaths(String originalSource) {
 		if(!MiscUtil.OS_IS_WINDOWS) {
 			return originalSource.replaceAll("D:/devel/tools", "/devel/tools");
 		}
