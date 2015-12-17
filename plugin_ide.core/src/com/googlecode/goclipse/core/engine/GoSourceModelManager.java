@@ -111,12 +111,12 @@ public class GoSourceModelManager extends SourceModelManager {
 					return null; // Don't log this error 
 				}
 				
-				return new OraclePackageDescribeParser(fileLocation) {
+				return new OraclePackageDescribeParser(fileLocation, source) {
 					@Override
 					protected boolean isSourceElementLocation(Location sourceFileLoc) throws CommonException {
 						return describeTempFile.equals(sourceFileLoc);
 					};
-				}.parse(describeResult, source);
+				}.parse(describeResult);
 			} catch(CommonException e) {
 				LangCore.logWarning("Error parsing oracle describe result, for source structure update. ", e);
 				return null;
@@ -127,7 +127,7 @@ public class GoSourceModelManager extends SourceModelManager {
 				throws CommonException, CoreException, OperationCancellation {
 
 			ExternalProcessResult describeResult = runGoOracle(goEnv, opTempFile);
-			return new OraclePackageDescribeParser(fileLocation).parse(describeResult, source);
+			return new OraclePackageDescribeParser(fileLocation, source).parse(describeResult);
 		}
 		
 		protected ExternalProcessResult runGoOracle(GoEnvironment goEnv, Location opTempFile)

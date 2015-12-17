@@ -38,7 +38,7 @@ public class CharacterLexingRule extends LexingUtils implements IPredicateLexing
 			return reader.tryConsume('\'') || consumeCommonEscape(reader) || consumeUnicodeEscapeSequence(reader);
 		};
 		
-		if(reader.lookaheadIsEOF() || reader.lookahead() == '\'') {
+		if(reader.lookaheadIsEOS() || reader.lookahead() == '\'') {
 			return false;
 		}
 		if(reader.lookahead() == 0) {

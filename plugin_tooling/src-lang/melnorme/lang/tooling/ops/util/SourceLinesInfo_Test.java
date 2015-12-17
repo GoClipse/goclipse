@@ -21,7 +21,7 @@ public class SourceLinesInfo_Test extends CommonTest {
 	public void test$() throws Exception {
 		SourceLinesInfo sourceLinesInfo = new SourceLinesInfo("abcdef");
 		
-		verifyThrows(() -> sourceLinesInfo.getValidatedOffset(1, 10), null, "line+column, out of bounds");
+		verifyThrows(() -> sourceLinesInfo.getValidatedOffset_1(1, 10), null, "line+column, out of bounds");
 	}
 	
 }

@@ -22,11 +22,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
-import melnorme.lang.tests.CommonToolingTest;
 import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.AbstractStructureParser;
+import melnorme.lang.tooling.ops.AbstractStructureParser_Test;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
@@ -36,7 +37,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 
-public class OraclePackageDescribeParser_Test extends CommonToolingTest {
+public class OraclePackageDescribeParser_Test extends AbstractStructureParser_Test {
 	
 	@Override
 	public String getClassResource(String resourceName) {
@@ -59,10 +60,6 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		return att(ArrayUtil.concat(flags, EAttributeFlag.TEMPLATED));
 	}
 	
-	protected SourceRange sr(int offset, int length) {
-		return new SourceRange(offset, length);
-	}
-	
 	protected ArrayList2<StructureElement> elems(StructureElement... expectedElements) {
 		return new ArrayList2<>(expectedElements);
 	}
@@ -73,23 +70,33 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 	}
 	
 	protected String goSource;
+	protected Location location;
 	
 	protected void testParseStructure(String describeOutput, String goSource, StructureElement... expectedElements)
 			throws CommonException {
-		testParseStructure(describeOutput, goSource, null, expectedElements);
+		this.location = null;
+		this.goSource = goSource;
+		super.testParseStructure(describeOutput, list(), expectedElements);
 	}
 	
 	protected void testParseStructure(String describeOutput, String goSource, Location location, 
 			StructureElement... expectedElements)
 			throws CommonException {
-		OraclePackageDescribeParser parser = new OraclePackageDescribeParser(location);
-		SourceFileStructure structure = parser.parse(describeOutput, goSource);
+		this.location = location;
+		this.goSource = goSource;
+		
+		AbstractStructureParser parser = createStructureParser();
+		SourceFileStructure structure = parser.parse(describeOutput);
 		
 		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
 		SourceFileStructure expected = new SourceFileStructure(location, expectedStructure, null);
 		assertAreEqual(expected.getChildren(), structure.getChildren());
 		
-		assertEquals(structure, expected);
+		assertEquals(structure, expected);	}
+	
+	@Override
+	protected OraclePackageDescribeParser createStructureParser() {
+		return new OraclePackageDescribeParser(location, goSource);
 	}
 	
 	public int ixof(String marker) {
@@ -162,8 +169,8 @@ public class OraclePackageDescribeParser_Test extends CommonToolingTest {
 		);
 		
 		goSource = getClassResource("oracle_describe.A_std_url.go");
-		new OraclePackageDescribeParser(null).parse(
-			getClassResource("oracle_describe.A_std_url.json"), goSource);
+		new OraclePackageDescribeParser(null, goSource).parse(
+			getClassResource("oracle_describe.A_std_url.json"));
 		
 	}
 	

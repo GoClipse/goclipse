@@ -15,25 +15,31 @@ public class LexingUtils {
 	/** 
 	 * Consume until given delimiter char is found (also included).	 
 	 */
-	public static <E extends Exception> String consumeUntilDelimiter(ICharSource<E> reader, 
+	public static <E extends Exception> String consumeUntilDelimiterOrEOS(IBasicCharSource<E> reader, 
 			char delimiter) throws E {
-		return consumeUntilDelimiter(reader, delimiter, delimiter);
+		return consumeUntilDelimiterOrEOS(reader, delimiter, delimiter);
 	}
 	
 	/** 
 	 * Consume until given delimiter char is found (also included).
 	 * Given escapeChar can escape itself, and delimiter 	 
 	 */
-	public static <E extends Exception> String consumeUntilDelimiter(ICharSource<E> reader, 
+	public static <E extends Exception> String consumeUntilDelimiterOrEOS(IBasicCharSource<E> reader, 
 			char delimiter, char escapeChar) throws E {
 		StringBuilder sb = new StringBuilder();
-		
+		consumeUntilDelimiter_intoStringBuilder(reader, delimiter, escapeChar, sb);
+		return sb.toString();
+	}
+	
+	public static <E extends Exception> boolean consumeUntilDelimiter_intoStringBuilder(IBasicCharSource<E> reader, 
+			char delimiter, char escapeChar, 
+			StringBuilder sb) throws E {
 		while(reader.hasCharAhead()) {
 			
 			char consumedChar = reader.nextChar();
 			
 			if(consumedChar == delimiter) {
-				break;
+				return false;
 			}
 			else if(consumedChar == escapeChar && reader.hasCharAhead()) {
 				
@@ -46,9 +52,8 @@ public class LexingUtils {
 			}
 			
 			sb.append(consumedChar);
-			
 		}
-		return sb.toString();
+		return true;
 	}
 	
 	
@@ -174,7 +179,7 @@ public class LexingUtils {
 	public static <E extends Exception> String consumeLine(ICharSource<E> reader) throws E {
 		int offset = 0;
 		
-		if(reader.lookaheadIsEOF()) {
+		if(reader.lookaheadIsEOS()) {
 			return null;
 		}
 		String line = stringUntilNewline(reader, offset);

@@ -29,6 +29,8 @@ public interface LangElementImages {
 	ImageHandle MODULE = LangImages.createManaged(CAT_LANG_OBJ, "module.png");
 	ImageHandle NAMESPACE = LangImages.createManaged(CAT_LANG_OBJ, "namespace.png");
 	ImageHandle PACKAGE = LangImages.createManaged(CAT_LANG_OBJ, "package.png");
+	ImageHandle IMPORT = LangImages.createManaged(CAT_LANG_OBJ, "import.png");
+	ImageHandle IMPORTS = LangImages.createManaged(CAT_LANG_OBJ, "imports.png");
 	
 	ImageHandle T_CLASS = LangImages.createManaged(CAT_LANG_OBJ, "t_class.png");
 	ImageHandle T_ENUM = LangImages.createManaged(CAT_LANG_OBJ, "t_enum.png");

@@ -11,6 +11,8 @@
 package com.googlecode.goclipse.tooling.oracle;
 
 
+import static com.googlecode.goclipse.tooling.oracle.JSONParseHelpers.readOptionalString;
+import static com.googlecode.goclipse.tooling.oracle.JSONParseHelpers.readString;
 import static melnorme.lang.tooling.structure.StructureElementKind.STRUCT;
 
 import java.util.Collections;
@@ -24,8 +26,8 @@ import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolingMessages;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.AbstractStructureParser;
 import melnorme.lang.tooling.ops.SourceFileLocation;
-import melnorme.lang.tooling.ops.util.SourceLinesInfo;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
@@ -38,27 +40,22 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class OraclePackageDescribeParser extends JSONParseHelpers {
+public class OraclePackageDescribeParser extends AbstractStructureParser {
 	
-	protected final Location location;
-	
-	protected SourceLinesInfo sourceLineInfo;
-	
-	public OraclePackageDescribeParser(Location location) {
-		this.location = location;
+	public OraclePackageDescribeParser(Location location, String goSource) {
+		super(location, goSource);
 	}
 	
-	public SourceFileStructure parse(ExternalProcessResult result, String goSource) throws CommonException {
+	public SourceFileStructure parse(ExternalProcessResult result) throws CommonException {
 		if(result.exitValue != 0) {
 			throw new CommonException(ToolingMessages.TOOLS_ExitedWithNonZeroStatus(result.exitValue));
 		}
 		
-		return parse(result.getStdOutBytes().toString(StringUtil.UTF8), goSource);
+		return parse(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
 	
-	public SourceFileStructure parse(String describeOutput, String goSource) throws CommonException {
-		
-		sourceLineInfo = new SourceLinesInfo(goSource);
+	@Override
+	public SourceFileStructure parse(String describeOutput) throws CommonException {
 		
 		ArrayList2<StructureElement> elements;
 		try {
@@ -134,7 +131,7 @@ public class OraclePackageDescribeParser extends JSONParseHelpers {
 		if(!isSourceElementLocation(elementSourceFileLoc.getFileLocation())) {
 			return null;
 		}
-		SourceRange nameSourceRange = elementSourceFileLoc.parseSourceRangeFrom1BasedIndex(sourceLineInfo);
+		SourceRange nameSourceRange = elementSourceFileLoc.parseSourceRangeFrom1BasedIndex(sourceLinesInfo);
 		SourceRange sourceRange  = nameSourceRange;
 		
 		String type = readOptionalString(object, "type");

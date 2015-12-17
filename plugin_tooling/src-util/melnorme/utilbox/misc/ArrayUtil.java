@@ -304,6 +304,13 @@ public class ArrayUtil {
 		}
 		return -1;
 	}
+	public static int indexOf(char[] array, char elem) {
+		for (int i = 0; i < array.length; i++) {
+			if(array[i] == elem)
+				return i;
+		}
+		return -1;
+	}
 	
 	/** @return the index in given array of the first element that is the same as given elem, 
 	 * or -1 if none is found. */
