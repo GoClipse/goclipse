@@ -157,13 +157,13 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 		CharacterReader_SubReader subReader = new CharacterReader_SubReader(parseSource);
 		CharacterReader_SubReader subReaderAlt2 = new CharacterReader_SubReader(parseSource);
 		
-		assertEquals(LexingUtils.consumeUntilDelimiter(subReader, delimiter, escapeChar), expected);
+		assertEquals(LexingUtils.consumeUntilDelimiterOrEOS(subReader, delimiter, escapeChar), expected);
 		
 		// ensure advanceDelimitedString reads same number of strings;
 		LexingUtils.advanceDelimitedString(subReaderAlt2, delimiter, escapeChar);
 		assertTrue(subReader.readPosition == subReaderAlt2.readPosition);
 		
-		assertEquals(LexingUtils.consumeUntilDelimiter(parseSource, delimiter, escapeChar), expected);
+		assertEquals(LexingUtils.consumeUntilDelimiterOrEOS(parseSource, delimiter, escapeChar), expected);
 	}
 	
 	@Test

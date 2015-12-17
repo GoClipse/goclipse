@@ -94,7 +94,7 @@ public class LangContext extends JavaContext {
 		
 		while(true) {
 			if(!parser.tryConsume(delimeter)) {
-				assertTrue(parser.lookaheadIsEOF());
+				assertTrue(parser.lookaheadIsEOS());
 				break;
 			}
 			newContents.append(delimeter);
@@ -123,7 +123,7 @@ public class LangContext extends JavaContext {
 		parser.consumeUntil(delimeter);
 		while(true) {
 			if(!parser.tryConsume(delimeter)) {
-				assertTrue(parser.lookaheadIsEOF());
+				assertTrue(parser.lookaheadIsEOS());
 				break;
 			}
 			

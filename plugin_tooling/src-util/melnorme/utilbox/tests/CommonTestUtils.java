@@ -140,7 +140,7 @@ public class CommonTestUtils {
 	}
 	
 	public static <EXC extends Throwable> void verifyThrows(ThrowingRunnable<?> runnable, 
-			Class<EXC> klass, String exceptionString) {
+			Class<EXC> klass, String expectedExceptionString) {
 		try {
 			if(klass != null && AssertFailedException.class.isAssignableFrom(klass)) {
 				Assert.assertionFailureExpected = true;
@@ -152,8 +152,9 @@ public class CommonTestUtils {
 			if(klass != null) {
 				assertTrue(klass.isInstance(e));
 			}
-			if(exceptionString != null) {
-				assertTrue(e.toString().contains(exceptionString));
+			if(expectedExceptionString != null) {
+				String exceptionStr = e.toString();
+				assertTrue(exceptionStr.contains(expectedExceptionString));
 			}
 		} finally {
 			Assert.assertionFailureExpected = false;
