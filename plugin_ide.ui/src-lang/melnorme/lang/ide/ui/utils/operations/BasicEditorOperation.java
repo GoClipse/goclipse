@@ -31,7 +31,7 @@ public abstract class BasicEditorOperation extends BasicUIOperation {
 	}
 	
 	@Override
-	protected void handleStatus(CommonException ce) {
+	protected void handleError(CommonException ce) {
 		UIOperationsStatusHandler.handleOperationStatus(getOperationName(), ce);
 	}
 	

@@ -18,8 +18,13 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 		return MessageFormat.format(message, args);
 	}	
 	
+	public static String Error = 
+			"Error: ";
 	public static String InternalError = 
-			"Internal Error";
+			"Internal Error: ";
+	public static String InternalErrorOccured = 
+			"An internal error has occured.";
+	
 	
 	public static String LangPlugin_error = 
 			"UI plugin Error";

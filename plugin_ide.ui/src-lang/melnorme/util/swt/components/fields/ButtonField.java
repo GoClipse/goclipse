@@ -21,20 +21,16 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.WidgetSelectedRunner;
+import melnorme.util.swt.components.LabelledFieldComponent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class ButtonTextField extends TextFieldComponent {
+public abstract class ButtonField extends LabelledFieldComponent<String> {
 	
 	protected String buttonLabel;
 	protected Button button;
 	
-	public ButtonTextField(String labelText, int textStyle, String buttonlabel) {
-		super(labelText, textStyle);
-		buttonLabel = buttonlabel;
-	}
-	
-	public ButtonTextField(String labelText, String buttonlabel) {
+	public ButtonField(String labelText, String buttonlabel) {
 		super(labelText);
 		buttonLabel = buttonlabel;
 	}
@@ -47,7 +43,7 @@ public abstract class ButtonTextField extends TextFieldComponent {
 	
 	@Override
 	public int getPreferredLayoutColumns() {
-		return 3;
+		return 2;
 	}
 	
 	@Override
@@ -58,7 +54,7 @@ public abstract class ButtonTextField extends TextFieldComponent {
 	
 	@Override
 	protected void createContents_layout() {
-		SWTLayoutUtil.layoutControls(array(label, text, button), text, text);
+		SWTLayoutUtil.layoutControls(array(label, button), button, null);
 	}
 	
 	/* -----------------  Button  ----------------- */
@@ -72,16 +68,11 @@ public abstract class ButtonTextField extends TextFieldComponent {
 		return new SetFieldValueOperation<String>(this, this::getNewValueFromButtonSelection2);
 	}
 	
-	protected String getButtonOperationErrorMessage() {
-		return "Error:";
-	}
-	
 	protected abstract String getNewValueFromButtonSelection2() 
 			throws CoreException, CommonException, OperationCancellation;
 	
 	@Override
 	protected void doSetEnabled(boolean enabled) {
-		super.doSetEnabled(enabled);
 		SWTUtil.setEnabledIfOk(button, enabled);
 	}
 	

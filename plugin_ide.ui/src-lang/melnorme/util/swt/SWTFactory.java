@@ -144,6 +144,23 @@ public class SWTFactory {
 		return setLayoutData(text, gridData);
 	}
 	
+	public static Text createReadonlyText(Composite dialogArea, String initialText) {
+		int style = SWT.BORDER | SWT.READ_ONLY;
+		if(true) {
+			style |= SWT.MULTI | SWT.WRAP;
+		}
+		Text text = createText(dialogArea, style);
+		text.setText(initialText);
+		return text;
+	}
+	
+	public static Text createReadonlyText(Composite dialogArea, String initialText, GridData gridData) {
+		Text text = createReadonlyText(dialogArea, initialText);
+		return setLayoutData(text, gridData);
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public static Combo createCombo(Composite parent, int style) {
 		Combo combo = new Combo(parent, style);
 		return combo;

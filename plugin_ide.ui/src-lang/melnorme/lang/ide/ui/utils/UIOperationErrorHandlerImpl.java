@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Shell;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore.StatusExt;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 
@@ -78,10 +77,6 @@ public class UIOperationErrorHandlerImpl {
 		handleStatus(false, null, title, new StatusException(statusLevel, message));
 	}
 	
-	public final void handleInternalError(Shell shell, String message, Throwable exception) {
-		assertNotNull(message);
-		handleStatus(true, shell, LangUIMessages.InternalError, message, exception);
-	}
 	
 	
 	/* -----------------  ----------------- */
