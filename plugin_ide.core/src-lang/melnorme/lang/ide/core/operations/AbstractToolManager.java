@@ -55,7 +55,7 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 		return getSDKToolPathField(project).getValidatedField();
 	}
 	
-	protected IValidatedField<Path> getSDKToolPathField(IProject project) {
+	private IValidatedField<Path> getSDKToolPathField(IProject project) {
 		return new ValidatedSDKToolPath(project, getSDKToolPathValidator());
 	}
 	
