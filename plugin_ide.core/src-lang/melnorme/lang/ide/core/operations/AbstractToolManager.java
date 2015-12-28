@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
@@ -25,7 +23,6 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
-import melnorme.lang.tooling.data.IValidatedField;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.IOperationHelper;
@@ -52,37 +49,11 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	/* -----------------  ----------------- */
 	
 	public Path getSDKToolPath(IProject project) throws CommonException {
-		return getSDKToolPathField(project).getValidatedField();
+		return getSDKToolPathValidator().getValidatedPath(getSDKPathPreference(project));
 	}
 	
-	private IValidatedField<Path> getSDKToolPathField(IProject project) {
-		return new ValidatedSDKToolPath(project, getSDKToolPathValidator());
-	}
-	
-	public static class ValidatedSDKToolPath implements IValidatedField<Path> {
-		
-		protected final IProject project;
-		protected final PathValidator pathValidator;
-		
-		public ValidatedSDKToolPath(IProject project, PathValidator pathValidator) {
-			this.project = project;
-			this.pathValidator = assertNotNull(pathValidator);
-		}
-		
-		protected String getRawFieldValue2() {
-			return ToolchainPreferences.SDK_PATH2.getEffectiveValue(project);
-		}
-		
-		@Override
-		public Path getValidatedField() throws StatusException {
-			String pathString = getRawFieldValue2();
-			return getPathValidator().getValidatedPath(pathString);
-		}
-		
-		protected PathValidator getPathValidator() {
-			return pathValidator;
-		}
-		
+	protected String getSDKPathPreference(IProject project) {
+		return ToolchainPreferences.SDK_PATH2.getEffectiveValue(project);
 	}
 	
 	protected abstract PathValidator getSDKToolPathValidator();

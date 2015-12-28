@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -24,7 +23,6 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
-import melnorme.lang.tooling.data.IValidatedField;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -45,13 +43,8 @@ public class GoToolManager extends AbstractToolManager {
 	}
 	
 	@Override
-	protected IValidatedField<Path> getSDKToolPathField(IProject project) {
-		return new ValidatedSDKToolPath(project, getSDKToolPathValidator()) {
-			@Override
-			protected String getRawFieldValue2() {
-				return GoEnvironmentPrefs.GO_ROOT.getEffectiveValue(project);
-			}
-		};
+	protected String getSDKPathPreference(IProject project) {
+		return GoEnvironmentPrefs.GO_ROOT.getEffectiveValue(project);
 	}
 	
 	/* -----------------  ----------------- */
