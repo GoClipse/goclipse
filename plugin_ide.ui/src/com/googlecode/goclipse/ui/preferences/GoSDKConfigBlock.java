@@ -33,7 +33,7 @@ import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
 import melnorme.lang.tooling.ops.util.LocationValidator;
-import melnorme.lang.utils.ProcessUtils;
+import melnorme.lang.utils.EnvUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ComboBoxField;
@@ -169,7 +169,7 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 		
 		@Override
 		protected String getDefaultFieldValue() throws CommonException {
-			return ProcessUtils.getVarFromEnvMap(System.getenv(), "GOPATH");
+			return EnvUtils.getVarFromEnvMap(System.getenv(), "GOPATH");
 		}
 		
 		@Override

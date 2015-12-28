@@ -19,6 +19,7 @@ import java.util.Map;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
 
+import melnorme.lang.utils.EnvUtils;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -178,7 +179,7 @@ public class GoEnvironment {
 		
 		if(goRootInPath) {
 			// Add GoRoot to path. See #113 for rationale
-			ProcessUtils.addDirToPathEnv(getGoRoot_Location().toPath(), pb);
+			EnvUtils.addDirToPathEnv(getGoRoot_Location().toPath(), pb);
 		}
 	}
 	

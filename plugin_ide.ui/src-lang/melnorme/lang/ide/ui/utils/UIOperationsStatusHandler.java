@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
+import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.core.CommonException;
@@ -45,16 +46,16 @@ public class UIOperationsStatusHandler {
 	
 	/* -----------------  ----------------- */
 	
-	public static void handleStatus(boolean logError, String dialogTitle, CoreException ce) {
-		handleStatus(logError, dialogTitle, LangCore.createCommonException(ce));
+	public static void handleStatus(boolean logError, String title, CoreException ce) {
+		handleStatus(logError, title, LangCore.createCommonException(ce));
 	}
 	
-	public static void handleStatus(boolean logError, String dialogTitle, CommonException ce) {
-		handleStatus(logError, dialogTitle, ce.toStatusException(StatusLevel.ERROR));
+	public static void handleStatus(boolean logError, String title, CommonException ce) {
+		handleStatus(logError, title, ce.toStatusException(StatusLevel.ERROR));
 	}
 	
-	public static void handleStatus(String dialogTitle, CommonException ce) {
-		handleStatus(false, dialogTitle, ce);
+	public static void handleStatus(String title, CommonException ce) {
+		handleStatus(false, title, ce);
 	}
 	
 	/* -----------------  ----------------- */
@@ -68,11 +69,11 @@ public class UIOperationsStatusHandler {
 	}
 	
 	public static void handleInternalError(String message, Throwable exception) {
-		handler.handleInternalError(null, message, exception);
+		handleInternalError(null, message, exception);
 	}
 	
 	public static void handleInternalError(Shell shell, String message, Throwable exception) {
-		handler.handleInternalError(shell, message, exception);
+		handler.handleStatus(true, shell, LangUIMessages.InternalError, message, exception);
 	}
 	
 	public static void handleOperationStatus(String opName, CoreException ce) {

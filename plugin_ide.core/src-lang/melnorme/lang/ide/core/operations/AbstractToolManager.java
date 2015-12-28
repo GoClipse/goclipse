@@ -52,18 +52,23 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 		return getSDKToolPathValidator().getValidatedPath(getSDKPathPreference(project));
 	}
 	
-	protected String getSDKPathPreference(IProject project) {
+	public String getSDKPathPreference(IProject project) {
 		return ToolchainPreferences.SDK_PATH2.getEffectiveValue(project);
 	}
 	
-	protected abstract PathValidator getSDKToolPathValidator();
+	public abstract PathValidator getSDKToolPathValidator();
 	
 	/* -----------------  ----------------- */
 	
 	public ProcessBuilder createSDKProcessBuilder(IProject project, String... sdkOptions)
-			throws CoreException, CommonException {
-		Location projectLocation = ResourceUtils.getProjectLocation(project);
+			throws CommonException {
 		Path sdkToolPath = getSDKToolPath(project);
+		return createToolProcessBuilder(project, sdkToolPath, sdkOptions);
+	}
+	
+	public ProcessBuilder createToolProcessBuilder(IProject project, Path sdkToolPath, String... sdkOptions)
+			throws CommonException {
+		Location projectLocation = project == null ? null : ResourceUtils.getProjectLocation2(project);
 		return createToolProcessBuilder(sdkToolPath, projectLocation, sdkOptions);
 	}
 	

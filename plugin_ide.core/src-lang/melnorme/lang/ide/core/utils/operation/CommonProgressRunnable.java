@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,23 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.operation;
 
-import melnorme.utilbox.concurrency.ICancelMonitor;
-
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public final class EclipseCancelMonitor implements ICancelMonitor {
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+
+public interface CommonProgressRunnable {
 	
-	protected final IProgressMonitor monitor;
-	
-	public EclipseCancelMonitor(IProgressMonitor monitor) {
-		this.monitor = assertNotNull(monitor);
-	}
-	
-	@Override
-	public boolean isCanceled() {
-		return monitor.isCanceled();
-	}
+	void run(IProgressMonitor pm) throws CommonException, OperationCancellation;
 	
 }

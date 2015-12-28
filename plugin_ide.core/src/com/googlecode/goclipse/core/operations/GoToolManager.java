@@ -38,12 +38,12 @@ public class GoToolManager extends AbstractToolManager {
 	}
 	
 	@Override
-	protected PathValidator getSDKToolPathValidator() {
+	public PathValidator getSDKToolPathValidator() {
 		return new GoSDKLocationValidator();
 	}
 	
 	@Override
-	protected String getSDKPathPreference(IProject project) {
+	public String getSDKPathPreference(IProject project) {
 		return GoEnvironmentPrefs.GO_ROOT.getEffectiveValue(project);
 	}
 	

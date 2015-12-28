@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,25 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.operation;
-
-import melnorme.utilbox.concurrency.ICancelMonitor;
+package melnorme.util.swt;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
-public final class EclipseCancelMonitor implements ICancelMonitor {
+public class WidgetSelectedRunner extends SelectionAdapter {
 	
-	protected final IProgressMonitor monitor;
+	protected final Runnable runnable;
 	
-	public EclipseCancelMonitor(IProgressMonitor monitor) {
-		this.monitor = assertNotNull(monitor);
+	public WidgetSelectedRunner(Runnable runnable) {
+		this.runnable = assertNotNull(runnable);
 	}
 	
 	@Override
-	public boolean isCanceled() {
-		return monitor.isCanceled();
+	public void widgetSelected(SelectionEvent e) {
+		runnable.run();
 	}
 	
 }
