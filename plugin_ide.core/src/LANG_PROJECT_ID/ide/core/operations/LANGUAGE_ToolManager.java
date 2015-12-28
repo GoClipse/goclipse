@@ -17,7 +17,7 @@ import melnorme.lang.tooling.ops.util.PathValidator;
 public class LANGUAGE_ToolManager extends AbstractToolManager {
 	
 	@Override
-	protected PathValidator getSDKToolPathValidator() {
+	public PathValidator getSDKToolPathValidator() {
 		return new LANGUAGE_SDKLocationValidator();
 	}
 	
