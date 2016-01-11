@@ -10,30 +10,21 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.preferences;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.googlecode.goclipse.core.GoToolPreferences;
-import com.googlecode.goclipse.core.operations.GetAndInstallGoPackageOperation;
 
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.pages.DaemonToolPreferencePage;
-import melnorme.lang.ide.ui.utils.UIOperationsHelper;
+import melnorme.lang.ide.ui.preferences.pages.DownloadToolTextField;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.fields.ButtonTextField;
-import melnorme.util.swt.components.fields.FileTextField;
-import melnorme.utilbox.misc.StringUtil;
+import melnorme.util.swt.components.fields.TextFieldComponent;
 
 public class GoToolsPreferencePage extends DaemonToolPreferencePage implements
 		IWorkbenchPreferencePage {
@@ -49,61 +40,59 @@ public class GoToolsPreferencePage extends DaemonToolPreferencePage implements
 			super();
 		}
 		
-	protected Group oracleGroup;
-	
-	@Override
-	protected void createContents(Composite topControl) {
-		oracleGroup = AbstractPreferencesBlock.createOptionsSection(topControl, 
-			"Go oracle",
-			3,
-			GridDataFactory.fillDefaults().grab(true, false).minSize(200, SWT.DEFAULT).create());
+		protected Group oracleGroup;
+		protected DownloadToolTextField oracleField;
 		
-		FileTextField goOracleFileEditor = 
-				createFileComponent(oracleGroup, "Go oracle path:", GoToolPreferences.GO_ORACLE_Path, true);
-		
-		createInstallPackageButton(oracleGroup, "Download Go oracle", "golang.org/x/tools/cmd/oracle", "oracle",
-			goOracleFileEditor);
-		
-		super.createContents(topControl);
-	}
-	
-	@Override
-	protected String getDaemonToolName() {
-		return LangUIPlugin_Actual.DAEMON_TOOL_Name;
-	}
-	
-	@Override
-	protected ButtonTextField createDaemonPathFieldEditor(Group daemonGroup) {
-		daemonPathEditor = super.createDaemonPathFieldEditor(daemonGroup);
-		
-		createInstallPackageButton(daemonGroup, "Download gocode", "github.com/nsf/gocode", "gocode", 
-			daemonPathEditor);
-		
-		return daemonPathEditor;
-	}
-	
-	protected void createInstallPackageButton(Group group, final String baseButtonLabel, String goPackage, 
-			String exeName, final ButtonTextField textFieldEditor) {
-		assertNotNull(textFieldEditor);
-		final GetAndInstallGoPackageOperation op = new GetAndInstallGoPackageOperation(goPackage, exeName);
-		String buttonLabel = baseButtonLabel + " (run: `" + StringUtil.collToString(op.getCmdLine(), " ")  + "`)";
-		
-		Button getGocodeButton = SWTFactoryUtil.createButton(group, SWT.PUSH, buttonLabel, 
-				GridDataFactory.fillDefaults().span(3, 0).create());
-		
-		getGocodeButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Shell shell = group.getShell();
-				boolean success = UIOperationsHelper.runAndHandle(new ProgressMonitorDialog(shell), op, true, 
-					baseButtonLabel + " error.");
-				
-				if(success) {
-					textFieldEditor.setFieldValue(op.getGocodeExeLocation().toPathString());
+		@Override
+		protected void createContents(Composite topControl) {
+			oracleGroup = AbstractPreferencesBlock.createOptionsSection(topControl, 
+				"Go oracle",
+				4,
+				GridDataFactory.fillDefaults().grab(true, false).minSize(200, SWT.DEFAULT).create());
+			
+			
+			oracleField = new DownloadToolTextField("Executable:", "Download...") {
+				@Override
+				protected BasicUIOperation getDownloadButtonHandler() {
+					return new Start_GoInstallJob_Operation("Download oracle", this,
+						"golang.org/x/tools/cmd/oracle",
+						"oracle") {
+					};
 				}
-			}
-		});
-	}
+			};
+			createComponentAndBind(oracleGroup, "Go oracle path:", GoToolPreferences.GO_ORACLE_Path, true, oracleField);
+			
+			super.createContents(topControl);
+			
+			SWTFactoryUtil.createLabel(topControl, SWT.NONE, "Note: if you've made any changes "
+					+ "in the Go SDK preferences, \n"
+					+ "make sure you press \"Apply\" in that page before using `Download...` here.");
+		}
+		
+		@Override
+		protected String getDaemonToolName() {
+			return LangUIPlugin_Actual.DAEMON_TOOL_Name;
+		}
+		
+		@Override
+		protected TextFieldComponent createDaemonPathFieldEditor(Group group) {
+			group.setLayout(createDefaultOptionsSectionLayout(4));
+			return super.createDaemonPathFieldEditor(group);
+		}
+		
+		@Override
+		protected TextFieldComponent doCreateDaemonPathFieldEditor(String label) {
+			
+			return new DownloadToolTextField("Executable:", "Download...") {
+				@Override
+				protected BasicUIOperation getDownloadButtonHandler() {
+					return new Start_GoInstallJob_Operation("Download gocode", this,
+						"github.com/nsf/gocode",
+						"gocode") {
+					};
+				}
+			};
+		}
 	
 	}
 	

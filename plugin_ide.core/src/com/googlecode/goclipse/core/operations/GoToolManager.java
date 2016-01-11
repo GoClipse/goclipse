@@ -10,22 +10,12 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
-import com.googlecode.goclipse.tooling.env.GoEnvironment;
-
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.tooling.ops.util.PathValidator;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 
 /**
  * Manager for running various go tools, usually for build.
@@ -45,14 +35,6 @@ public class GoToolManager extends AbstractToolManager {
 	@Override
 	public String getSDKPathPreference(IProject project) {
 		return GoEnvironmentPrefs.GO_ROOT.getEffectiveValue(project);
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public AbstractRunProcessTask newRunToolTask(GoEnvironment goEnv, List<String> commandLine, Location workingDir,
-			IProgressMonitor pm) throws CoreException, CommonException {
-		ProcessBuilder pb = goEnv.createProcessBuilder(commandLine, workingDir, true);
-		return newRunToolOperation2(pb, pm);
 	}
 	
 }

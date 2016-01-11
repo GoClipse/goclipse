@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
@@ -48,7 +50,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	@Override
 	protected void prepareOperation() throws CoreException, CommonException {
 		super.prepareOperation();
-		
+		assertNotNull(inputLoc);
 		editor.doSave(new NullProgressMonitor());
 		
 		byteOffset = getByteOffsetForInvocationEncoding();
