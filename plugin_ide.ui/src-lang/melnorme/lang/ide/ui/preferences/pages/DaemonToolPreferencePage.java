@@ -26,9 +26,9 @@ import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
 import melnorme.lang.tooling.ops.util.LocationValidator;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.components.FieldComponent;
-import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.FileTextField;
+import melnorme.util.swt.components.fields.TextFieldComponent;
 
 public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
@@ -67,7 +67,7 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 		}
 		
 		protected Group toolGroup;
-		protected ButtonTextField daemonPathEditor;
+		protected TextFieldComponent daemonPathEditor;
 		
 		@Override
 		protected void createContents(Composite topControl) {
@@ -89,15 +89,29 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 			showErrorsDialog.createComponentInlined(toolGroup);
 		}
 		
-		protected ButtonTextField createDaemonPathFieldEditor(Group group) {
-			return createFileComponent(group, getDaemonToolName() + " path:", 
-				ToolchainPreferences.DAEMON_PATH, true);
+		protected TextFieldComponent createDaemonPathFieldEditor(Group group) {
+			String label = getDaemonToolName() + " path:";
+			TextFieldComponent pathField = doCreateDaemonPathFieldEditor(label);
+			
+			createComponentAndBind(group, label, ToolchainPreferences.DAEMON_PATH, true, pathField);
+			return pathField;
 		}
 		
-		public FileTextField createFileComponent(Group group, String label, StringPreference pref, 
+		protected TextFieldComponent doCreateDaemonPathFieldEditor(String label) {
+			return new FileTextField(label);
+		}
+		
+		@Deprecated
+		public TextFieldComponent createFileComponent(Group group, String label, StringPreference pref, 
 				boolean allowSinglePath) {
-			FileTextField pathField = new FileTextField(label);
+			TextFieldComponent pathField = doCreateDaemonPathFieldEditor(label);
 			
+			createComponentAndBind(group, label, pref, allowSinglePath, pathField);
+			return pathField;
+		}
+		
+		public void createComponentAndBind(Group group, String label, StringPreference pref,
+				boolean allowSinglePath, TextFieldComponent pathField) {
 			PathValidator validator = (allowSinglePath ? 
 					new LocationOrSinglePathValidator(label) : new LocationValidator(label)).setFileOnly(true);
 			
@@ -105,7 +119,6 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 			
 			bindToPreference(pathField, pref);
 			pathField.createComponentInlined(group);
-			return pathField;
 		}
 		
 		protected String getDaemonToolName() {

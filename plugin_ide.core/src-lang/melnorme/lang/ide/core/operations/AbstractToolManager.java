@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
@@ -49,7 +51,9 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	/* -----------------  ----------------- */
 	
 	public Path getSDKToolPath(IProject project) throws CommonException {
-		return getSDKToolPathValidator().getValidatedPath(getSDKPathPreference(project));
+		Path validatedPath = getSDKToolPathValidator().getValidatedPath(getSDKPathPreference(project));
+		assertNotNull(validatedPath);
+		return validatedPath;
 	}
 	
 	public String getSDKPathPreference(IProject project) {
