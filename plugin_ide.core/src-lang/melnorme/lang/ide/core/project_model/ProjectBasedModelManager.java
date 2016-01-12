@@ -48,7 +48,7 @@ public abstract class ProjectBasedModelManager extends LifecycleObject {
 		
 		IProject[] projects = EclipseUtils.getWorkspaceRoot().getProjects();
 		for (IProject project : projects) {
-			if(listener.isEligibleForBundleManifestWatch(project) && listener.projectHasBundleManifest(project)) {
+			if(listener.isValidLangProject(project) && listener.isValidBundleModelProject(project)) {
 				bundleProjectAdded(project);
 			}
 		}
@@ -60,11 +60,6 @@ public abstract class ProjectBasedModelManager extends LifecycleObject {
 		
 		public ManagerResourceListener() {
 			super();
-		}
-		
-		@Override
-		public boolean isEligibleForBundleManifestWatch(IProject project) {
-			return LangNature.isAccessible(project, true);
 		}
 		
 		@Override

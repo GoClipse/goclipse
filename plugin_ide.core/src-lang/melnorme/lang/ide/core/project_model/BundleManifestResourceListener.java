@@ -14,15 +14,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 
+import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.utils.DefaultProjectResourceListener;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.BundlePath;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 
 public abstract class BundleManifestResourceListener extends DefaultProjectResourceListener {
 	
 	public BundleManifestResourceListener() {
+	}
+	
+	public boolean isValidLangProject(IProject project) {
+		return LangNature.isAccessible(project, true);
 	}
 	
 	@Override
@@ -31,7 +32,7 @@ public abstract class BundleManifestResourceListener extends DefaultProjectResou
 		
 		Object existingProjectInfo = getProjectInfo(project);
 		
-		if(projectDelta.getKind() == IResourceDelta.REMOVED || !isEligibleForBundleManifestWatch(project)) {
+		if(projectDelta.getKind() == IResourceDelta.REMOVED || !isValidLangProject(project)) {
 			// New bundle model status = removed. 
 			
 			if(existingProjectInfo == null) {
@@ -43,18 +44,14 @@ public abstract class BundleManifestResourceListener extends DefaultProjectResou
 		
 		
 		if(projectDelta.getKind() == IResourceDelta.ADDED) {
-			if(projectHasBundleManifest(project)) {
-				bundleProjectAdded(project);
-			}
+			tentativeAddBundleProject(project);
 		} else if (projectDelta.getKind() == IResourceDelta.CHANGED) {
 			
 			// It might be the case that project wasn't eligible to have an info, but now is eligible,
 			// purely due to a change in DESCRIPTION (such as a nature add)
 			if(existingProjectInfo == null) {
 				// Then it's true, project has become bundle model project.
-				if(projectHasBundleManifest(project)) {
-					bundleProjectAdded(project);
-				}
+				tentativeAddBundleProject(project);
 				return;
 			}
 			
@@ -69,15 +66,15 @@ public abstract class BundleManifestResourceListener extends DefaultProjectResou
 		}
 	}
 	
-	public abstract boolean isEligibleForBundleManifestWatch(IProject project);
-	
-	public boolean projectHasBundleManifest(IProject project) {
-		try {
-			Location projectLoc = ResourceUtils.getLocation(project);
-			return new BundlePath(projectLoc).hasBundleManifest();
-		} catch(CommonException e) {
-			return false;
+	protected void tentativeAddBundleProject(IProject project) {
+		if(isValidBundleModelProject(project)) {
+			bundleProjectAdded(project);
 		}
+	}
+	
+	@SuppressWarnings("unused") 
+	public boolean isValidBundleModelProject(IProject project) {
+		return true;
 	}
 	
 	public boolean resourceDeltaIsBundleManifestChange(IResourceDelta resourceDelta) {
