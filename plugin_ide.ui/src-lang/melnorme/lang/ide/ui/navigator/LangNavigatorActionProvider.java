@@ -131,7 +131,7 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 			}
 			if(selElement instanceof IFile) {
 				IFile file = (IFile) selElement;
-				if(LangCore.getBundleModelManager().isBundleManifestFile(file)) {
+				if(LangCore.getBundleModelManager().resourceIsManifest(file)) {
 					return file.getProject();
 				}
 			}

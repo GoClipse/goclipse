@@ -11,7 +11,6 @@
 package LANG_PROJECT_ID.ide.core.bundle_model;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.Path;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore_Actual.LANGUAGE_BundleModel;
@@ -26,12 +25,7 @@ public class LANGUAGE_BundleModelManager extends BundleModelManager<LANGUAGE_Bun
 	
 	@Override
 	protected BundleManifestResourceListener init_createResourceListener() {
-		return new ManagerResourceListener(getDefaultBundleManifestPath());
-	}
-	
-	@Override
-	protected Path getDefaultBundleManifestPath() {
-		return new Path("lang.bundle");
+		return new ManagerResourceListener();
 	}
 	
 	@Override

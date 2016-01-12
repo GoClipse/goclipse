@@ -27,10 +27,6 @@ public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider 
 				return new BundleModelGetStyledStringSwitcher() { }.switchBundleElement(bundleElement);
 			}
 			
-			@Override
-			public StyledString visitOther(Object element) {
-				return null;
-			}
 		};
 	}
 	
@@ -44,10 +40,6 @@ public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider 
 				}.switchBundleElement(bundleElement);
 			}
 			
-			@Override
-			public ImageDescriptor visitOther(Object element) {
-				return null;
-			}
 		};
 	}
 	
