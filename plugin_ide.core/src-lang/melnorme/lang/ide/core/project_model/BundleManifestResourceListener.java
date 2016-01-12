@@ -13,16 +13,16 @@ package melnorme.lang.ide.core.project_model;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.Path;
 
 import melnorme.lang.ide.core.utils.DefaultProjectResourceListener;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.BundlePath;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 public abstract class BundleManifestResourceListener extends DefaultProjectResourceListener {
 	
-	protected final Path manifestFile; // Can be null
-	
-	public BundleManifestResourceListener(Path manifestFile) {
-		this.manifestFile = manifestFile;
+	public BundleManifestResourceListener() {
 	}
 	
 	@Override
@@ -72,25 +72,17 @@ public abstract class BundleManifestResourceListener extends DefaultProjectResou
 	public abstract boolean isEligibleForBundleManifestWatch(IProject project);
 	
 	public boolean projectHasBundleManifest(IProject project) {
-		if(manifestFile == null) {
-			return true; // Implicitly assume project has manifest
+		try {
+			Location projectLoc = ResourceUtils.getLocation(project);
+			return new BundlePath(projectLoc).hasBundleManifest();
+		} catch(CommonException e) {
+			return false;
 		}
-		
-		IResource packageFile = project.findMember(manifestFile);
-		return packageFile != null && packageFile.getType() == IResource.FILE;
 	}
 	
 	public boolean resourceDeltaIsBundleManifestChange(IResourceDelta resourceDelta) {
 		return resourceIsManifest(resourceDelta.getResource());
 	}
-	
-	protected boolean resourceIsManifest(IResource resource) {
-		return manifestFile != null && 
-				resource != null &&
-				resource.getType() == IResource.FILE && 
-				resource.getProjectRelativePath().equals(manifestFile);
-	}
-	
 	
 	public abstract Object getProjectInfo(IProject project);
 	
@@ -99,5 +91,7 @@ public abstract class BundleManifestResourceListener extends DefaultProjectResou
 	public abstract void bundleProjectRemoved(IProject project);
 	
 	public abstract void bundleManifestChanged(IProject project);
+	
+	public abstract boolean resourceIsManifest(IResource resource);
 	
 }

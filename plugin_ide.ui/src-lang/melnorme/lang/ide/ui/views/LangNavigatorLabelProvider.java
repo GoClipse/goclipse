@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.views;
 
 import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -25,8 +26,8 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import _org.eclipse.jdt.ui.ProblemsLabelDecorator;
-import melnorme.lang.ide.core.project_model.view.BundleModelElementKind.BundleModelElementsSwitcher;
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.project_model.view.BundleModelElementKind.BundleModelElementsSwitcher;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 import melnorme.lang.ide.ui.LangImages;
@@ -82,6 +83,11 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 		
 		@Override
 		public StyledString visitProject(IProject project) {
+			return null;
+		}
+		
+		@Override
+		public StyledString visitManifestFile(IFile element) {
 			return null;
 		}
 		
@@ -154,11 +160,6 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 	public static abstract class DefaultGetImageSwitcher implements NavigatorElementsSwitcher<ImageDescriptor> {
 		
 		@Override
-		public ImageDescriptor visitProject(IProject project) {
-			return null;
-		}
-		
-		@Override
 		public ImageDescriptor visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
 			return LangImages.BUILD_TARGETS_ELEM.getDescriptor();
 		}
@@ -170,6 +171,11 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 				return new DecoratedImageDescriptor(baseImage, LangImages.OVR_CHECKED, Corner.BOTTOM_RIGHT);
 			}
 			return baseImage;
+		}
+		
+		@Override
+		public ImageDescriptor visitManifestFile(IFile element) {
+			return null;
 		}
 		
 	}

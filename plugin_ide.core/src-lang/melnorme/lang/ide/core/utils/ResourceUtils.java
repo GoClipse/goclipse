@@ -122,9 +122,13 @@ public class ResourceUtils {
 	}
 	
 	public static Location getProjectLocation2(IProject project) throws CommonException {
-		IPath location = project.getLocation();
+		return getLocation(project);
+	}
+	
+	public static Location getLocation(IResource resource) throws CommonException {
+		IPath location = resource.getLocation();
 		if(location == null) {
-			throw new CommonException("Invalid project location: " + project.getLocationURI());
+			throw new CommonException("Invalid resource location: " + resource.getLocationURI());
 		}
 		return Location.create(location.toFile().toPath());
 	}

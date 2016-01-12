@@ -11,13 +11,17 @@
 package melnorme.lang.ide.core.project_model;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.getWorkspaceRoot;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.resources.IResource;
 
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.BundlePath;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.LifecycleObject;
 
 /**
@@ -54,8 +58,8 @@ public abstract class ProjectBasedModelManager extends LifecycleObject {
 	
 	protected class ManagerResourceListener extends BundleManifestResourceListener {
 		
-		public ManagerResourceListener(Path manifestFile) {
-			super(manifestFile);
+		public ManagerResourceListener() {
+			super();
 		}
 		
 		@Override
@@ -83,6 +87,11 @@ public abstract class ProjectBasedModelManager extends LifecycleObject {
 			ProjectBasedModelManager.this.bundleManifestFileChanged(project);
 		}
 		
+		@Override
+		public boolean resourceIsManifest(IResource resource) {
+			return ProjectBasedModelManager.this.resourceIsManifest(resource);
+		}
+		
 	}
 	
 	protected abstract Object getProjectInfo(IProject project);
@@ -92,5 +101,18 @@ public abstract class ProjectBasedModelManager extends LifecycleObject {
 	protected abstract void bundleProjectRemoved(IProject project);
 	
 	protected abstract void bundleManifestFileChanged(IProject project);
+	
+	public boolean resourceIsManifest(IResource resource) {
+		if(resource == null || resource.getType() != IResource.FILE) {
+			return false;
+		}
+		try {
+			Location projectLoc = ResourceUtils.getLocation(resource.getProject());
+			Location resourceLoc = ResourceUtils.getLocation(resource);
+			return areEqual(new BundlePath(projectLoc).getManifestLocation(true), resourceLoc);
+		} catch(CommonException e) {
+			return false;
+		}
+	}
 	
 }

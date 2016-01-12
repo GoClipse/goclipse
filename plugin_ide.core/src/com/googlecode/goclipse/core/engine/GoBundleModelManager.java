@@ -11,8 +11,6 @@
 package com.googlecode.goclipse.core.engine;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.Path;
-
 import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
 
 import melnorme.lang.ide.core.BundleInfo;
@@ -32,17 +30,12 @@ public class GoBundleModelManager extends BundleModelManager<GoBundleModel> {
 	
 	@Override
 	protected BundleManifestResourceListener init_createResourceListener() {
-		return new ManagerResourceListener(null);
+		return new ManagerResourceListener();
 	}
 	
 	@Override
 	protected BundleInfo createNewInfo(IProject project) {
 		return new BundleInfo();
-	}
-	
-	@Override
-	protected Path getDefaultBundleManifestPath() {
-		return null;
 	}
 	
 }

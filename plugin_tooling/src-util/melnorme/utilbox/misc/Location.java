@@ -145,6 +145,17 @@ public class Location {
 		return path.toUri();
 	}
 	
+	/** @return whether location is a root location. */
+	public boolean isRoot() {
+		return path.getNameCount() == 0;
+	}
+	
+	/** @return the filename of this location. Can be null if location is the root location. */
+	public String getFileName() {
+		Path fileName = path.getFileName();
+		return fileName == null ? null : fileName.toString();
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public Location resolve(String subPathStr) throws CommonException {

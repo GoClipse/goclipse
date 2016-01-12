@@ -11,9 +11,12 @@
 package melnorme.lang.ide.ui.views;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -115,6 +118,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		default Boolean visitProject(IProject project) {
 			return project.isAccessible();
 		}
+		
 		@Override
 		default Boolean visitBundleElement(IBundleModelElement bundleElement) {
 			return bundleElement.hasChildren();
@@ -128,7 +132,11 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 			return false;
 		}
 		@Override
-		default Boolean visitOther(Object element) {
+		default Boolean visitManifestFile(IFile element) {
+			return false;
+		}
+		@Override
+		default Boolean visitOther2(Object element) {
 			return false;
 		}
 	}
@@ -145,6 +153,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		public Object[] visitProject(IProject project) {
 			return getProjectChildren(project);
 		}
+		
 		@Override
 		public Object[] visitBundleElement(IBundleModelElement bundleElement) {
 			return bundleElement.getChildren();
@@ -158,8 +167,9 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		public Object[] visitBuildTarget(BuildTargetElement buildTarget) {
 			return null;
 		}
+		
 		@Override
-		public Object[] visitOther(Object element) {
+		public Object[] visitManifestFile(IFile element) {
 			return null;
 		}
 		
@@ -207,8 +217,8 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 	
 	public static interface LangNavigatorSwitcher_GetParent extends NavigatorElementsSwitcher<Object> {
 		@Override
-		default Object visitProject(IProject project) {
-			return project.getParent();
+		default Object visitResource(IResource resource) {
+			return resource.getParent();
 		}
 		@Override
 		default Object visitBundleElement(IBundleModelElement dubElement) {
@@ -223,8 +233,8 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 			return buildTarget.getParent();
 		}
 		@Override
-		default Object visitOther(Object element) {
-			return null;
+		default Object visitManifestFile(IFile element) {
+			throw assertFail();
 		}
 	}
 	
