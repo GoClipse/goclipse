@@ -19,12 +19,18 @@ import melnorme.utilbox.collections.HashMap2;
 public class OperationInfo {
 	
 	public final IProject project; // can be null
+	public final boolean explicitConsoleNotify;
 	public final HashMap2<String, Object> properties = new HashMap2<>();
 	
 	protected boolean started = false;
 	
 	protected OperationInfo(IProject project) {
+		this(project, false);
+	}
+	
+	protected OperationInfo(IProject project, boolean explicitConsoleNotify) {
 		this.project = project;
+		this.explicitConsoleNotify = explicitConsoleNotify;
 	}
 	
 	public IProject getProject() {

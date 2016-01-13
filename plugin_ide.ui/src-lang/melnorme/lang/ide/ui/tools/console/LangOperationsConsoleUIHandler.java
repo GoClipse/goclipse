@@ -41,9 +41,9 @@ import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
 
-public abstract class AbstractToolsConsoleHandler implements ILangOperationsListener {
+public abstract class LangOperationsConsoleUIHandler implements ILangOperationsListener {
 	
-	public AbstractToolsConsoleHandler() {
+	public LangOperationsConsoleUIHandler() {
 		super();
 	}
 	
@@ -114,14 +114,12 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 		ToolsConsole console = null;
 		
 		if(console == null) {
-//			boolean clearConsole = useGlobalConsole() ? 
-//					project == null :
-//					opInfo.clearConsole;
-			
 			boolean clearConsole = true;
 			
 			console = getOperationConsole(opInfo.getProject(), clearConsole);
-			//console.activate();
+			if(opInfo.explicitConsoleNotify) {
+				console.activate();
+			}
 			
 			opInfo.putProperty(TOOL_INFO__KEY_CONSOLE, console);
 		}
@@ -130,6 +128,7 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 	public static final String TOOL_INFO__KEY_CONSOLE = "CONSOLE";
 	
 	protected ToolsConsole getOperationConsole(OperationInfo opInfo) {
+		assertNotNull(opInfo);
 		return opInfo.getProperty(TOOL_INFO__KEY_CONSOLE, ToolsConsole.class);
 	}
 	
@@ -139,9 +138,16 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 		console.writeOperationInfo(messageEvent.operationMessage);
 	}
 	
+	
+	public enum ProcessStartKind {
+		NORMAL,
+		ENGINE_SERVER,
+		ENGINE_CLIENT
+	}
+	
 	@Override
 	public void handleProcessStart(ProcessStartInfo processStartInfo) {
-		new ProcessUIConsoleHandler(processStartInfo).handle();
+		handleProcessStart(ProcessStartKind.NORMAL, processStartInfo);
 	}
 	
 	@Override
@@ -149,62 +155,97 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 		String prefixText = headerVeryBig("Starting " + DAEMON_TOOL_Name + " server:  ") + "   ";
 		ProcessStartInfo processStartInfo = new ProcessStartInfo(null, pb, prefixText, psh);
 		
-		new EngineServerProcessUIConsoleHandler(processStartInfo).handle();
+		handleProcessStart(ProcessStartKind.ENGINE_SERVER, processStartInfo);
 	}
 	
 	@Override
 	public void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper psh) {
 		ProcessStartInfo processStartInfo = new ProcessStartInfo(null, pb, ">> Running: ", psh);
-		new EngineClientProcessUIConsoleHandler(processStartInfo).handle();
+		
+		handleProcessStart(ProcessStartKind.ENGINE_CLIENT, processStartInfo);
+	}
+	
+	public void handleProcessStart(ProcessStartKind kind, ProcessStartInfo processStartInfo) {
+		switch (kind) {
+		case NORMAL: {
+			ToolsConsole console = getOperationConsole(processStartInfo.opInfo);
+			new ProcessUIConsoleHandler(console, processStartInfo).handle();
+			break;
+		}
+		case ENGINE_SERVER:
+		case ENGINE_CLIENT: {
+			
+			if(ToolchainPreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
+				return;
+			}
+			
+			DaemonToolMessageConsole console = DaemonToolMessageConsole.getConsole();
+			if(kind == ProcessStartKind.ENGINE_CLIENT) {
+				new ProcessUIConsoleHandler(console, processStartInfo).handle();
+			} else {
+				new ProcessUIConsoleHandler(console.infoOut, console.serverStdOut, console.serverStdErr, 
+					processStartInfo).handle();
+			}
+			
+			break;
+		}
+		}
 	}
 	
 	/* -----------------  ----------------- */
 	
 	public class ProcessUIConsoleHandler {
 		
-		protected final ToolsConsole console;
-		protected final ProcessStartInfo processStartInfo;
-		
-		public ProcessUIConsoleHandler(ProcessStartInfo processStartInfo) {
-			this.console = init_getConsole(processStartInfo.opInfo);
-			this.processStartInfo = assertNotNull(processStartInfo);
-		}
+		protected IOConsoleOutputStream infoOut;
+		protected IOConsoleOutputStream processStdOut;
+		protected IOConsoleOutputStream processStdErr;
+		protected String infoPrefaceText;
+		protected ProcessStartHelper processStartHelper;
 		
 		public ProcessUIConsoleHandler(ToolsConsole console, ProcessStartInfo processStartInfo) {
-			this.console = console;
-			this.processStartInfo = assertNotNull(processStartInfo);
+			this(console.infoOut, console.stdOut, console.stdErr, processStartInfo);
 		}
 		
-		protected ToolsConsole init_getConsole(OperationInfo operationInfo) {
-			return getOperationConsole(operationInfo);
+		public ProcessUIConsoleHandler(IOConsoleOutputStream infoOut, 
+				IOConsoleOutputStream processStdOut,
+				IOConsoleOutputStream processStdErr, 
+				ProcessStartInfo processStartInfo) 
+		{
+			List<String> commandLine = processStartInfo.pb.command();
+			String argsLabel = DebugPlugin.renderArguments(ArrayUtil.createFrom(commandLine, String.class), null);
+			String infoPrefaceText = processStartInfo.prefixText + argsLabel + "\n";
+			
+			init(infoOut, processStdOut, processStdErr, processStartInfo.processStartHelper, infoPrefaceText);
 		}
 		
-		protected final ToolsConsole getConsole() {
-			return console;
+		public void init(IOConsoleOutputStream infoOut, IOConsoleOutputStream processStdOut,
+				IOConsoleOutputStream processStdErr, ProcessStartHelper processStartHelper, String infoPrefaceText) {
+			this.infoOut = infoOut;
+			this.processStdOut = processStdOut;
+			this.processStdErr = processStdErr;
+			
+			this.processStartHelper = processStartHelper;
+			
+			this.infoPrefaceText = infoPrefaceText;
 		}
 		
 		public void handle() {
-			printProcessStart(console.infoOut);
-		}
-		
-		protected void printProcessStart(IOConsoleOutputStream outStream) {
-			handleProcessStart(outStream, processStartInfo.prefixText, processStartInfo.pb, 
-				processStartInfo.processStartHelper);
-		}
-		
-		protected final void handleProcessStart(IOConsoleOutputStream outStream, String prefix, ProcessBuilder pb, 
-				ProcessStartHelper psh) {
-			List<String> commandLine = pb.command();
 			try {
-				
-				String argsLabel = DebugPlugin.renderArguments(ArrayUtil.createFrom(commandLine, String.class), null);
-				outStream.write(prefix + argsLabel + "\n");
+				doWriteInfoPreface();
 			} catch (IOException e) {
 				// Do nothing
 			}
 			
+			connectProcessOutputListener();
+		}
+		
+		protected void doWriteInfoPreface() throws IOException {
+			infoOut.write(infoPrefaceText);
+		}
+		
+		protected void connectProcessOutputListener() {
 			try {
-				psh.addProcessListener(createOutputListener(console));
+				processStartHelper.addProcessListener(createOutputListener());
 			} catch(CommonException ce) {
 				
 				String text = "  FAILED: " + ce.getMessage();
@@ -213,29 +254,28 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 					text += "   Reason: " + cause.getMessage() + "\n";
 				}
 				try {
-					outStream.write(text);
+					infoOut.write(text);
 				} catch (IOException e) {
 					// Do nothing
 				}
 				
 			}
-			
 		}
 		
-		protected IProcessOutputListener createOutputListener(final ToolsConsole console) {
-			return new ConsoleOutputProcessListener(console.stdOut, console.stdErr) {
+		protected IProcessOutputListener createOutputListener() {
+			return new ConsoleOutputProcessListener(processStdOut, processStdErr) {
 				@Override
 				public void notifyProcessTerminatedAndRead(int exitCode) {
 					super.notifyProcessTerminatedAndRead(exitCode);
-					handleProcessTerminated(console, exitCode);
+					handleProcessTerminated(exitCode);
 				}
 			};
 		}
 		
-		protected void handleProcessTerminated(ToolsConsole console, int exitCode) {
+		protected void handleProcessTerminated(int exitCode) {
 			try {
-				console.infoOut.write(getProcessTerminatedMessage(exitCode));
-				console.infoOut.flush();
+				infoOut.write(getProcessTerminatedMessage(exitCode));
+				infoOut.flush();
 			} catch (IOException e) {
 				// Ignore
 			}
@@ -245,46 +285,6 @@ public abstract class AbstractToolsConsoleHandler implements ILangOperationsList
 			return "  ^^^ Terminated, exit code: " + exitCode +  " ^^^\n";
 		}
 		
-	}
-	
-	public class EngineServerProcessUIConsoleHandler extends ProcessUIConsoleHandler {
-		
-		protected DaemonToolMessageConsole console;
-		
-		public EngineServerProcessUIConsoleHandler(ProcessStartInfo info) {
-			super(info);
-		}
-		
-		@Override
-		protected ToolsConsole init_getConsole(OperationInfo operationInfo) {
-			return console = DaemonToolMessageConsole.getConsole();
-		}
-		
-		@Override
-		public void handle() {
-			if(ToolchainPreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
-				return;
-			}
-			super.handle();
-		}
-		
-		@Override
-		protected ConsoleOutputProcessListener createOutputListener(ToolsConsole console_) {
-			return new ConsoleOutputProcessListener(console.serverStdOut, console.serverStdErr);
-		}
-	
-	}
-	
-	public class EngineClientProcessUIConsoleHandler extends EngineServerProcessUIConsoleHandler {
-		
-		public EngineClientProcessUIConsoleHandler(ProcessStartInfo info) {
-			super(info);
-		}
-		
-		@Override
-		protected ConsoleOutputProcessListener createOutputListener(ToolsConsole console_) {
-			return new ConsoleOutputProcessListener(console.stdOut, console.stdErr);
-		}
 	}
 	
 }
