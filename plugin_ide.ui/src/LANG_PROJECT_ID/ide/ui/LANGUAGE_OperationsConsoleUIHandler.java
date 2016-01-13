@@ -12,6 +12,6 @@ package LANG_PROJECT_ID.ide.ui;
 
 import melnorme.lang.ide.ui.tools.console.LangOperationsConsoleUIHandler;
 
-public class LANGUAGE_OperationsConsoleListener extends LangOperationsConsoleUIHandler {
+public class LANGUAGE_OperationsConsoleUIHandler extends LangOperationsConsoleUIHandler {
 	
 }

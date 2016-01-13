@@ -7,8 +7,8 @@ import org.osgi.framework.BundleContext;
 public class LANGUAGE_UIPlugin extends LangUIPlugin {
 	
 	@Override
-	protected LANGUAGE_OperationsConsoleListener createOperationsConsoleListener() {
-		return new LANGUAGE_OperationsConsoleListener();
+	protected LANGUAGE_OperationsConsoleUIHandler createOperationsConsoleListener() {
+		return new LANGUAGE_OperationsConsoleUIHandler();
 	}
 	
 	@Override
