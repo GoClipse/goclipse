@@ -32,7 +32,7 @@ import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
-import melnorme.lang.ide.ui.tools.console.DaemonToolMessageConsole;
+import melnorme.lang.ide.ui.tools.console.EngineToolsConsole;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -96,7 +96,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	
 	@Override
 	protected void handleStatusErrorMessage() {
-		DaemonToolMessageConsole engineToolsConsole = DaemonToolMessageConsole.getConsole();
+		EngineToolsConsole engineToolsConsole = EngineToolsConsole.getConsole();
 		engineToolsConsole.activate();
 		
 		super.handleStatusErrorMessage();

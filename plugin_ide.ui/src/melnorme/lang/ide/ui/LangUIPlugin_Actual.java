@@ -46,9 +46,9 @@ public final class LangUIPlugin_Actual {
 	
 	/* ----------------- UI messages:  ----------------- */
 	
-	public static final String TOOLS_CONSOLE_NAME = LangCore_Actual.LANGUAGE_NAME + " build";
+	public static final String BUILD_ConsoleName = LangCore_Actual.LANGUAGE_NAME + " Build";
+	public static final String ENGINE_TOOLS_ConsoleName = LangCore_Actual.LANGUAGE_NAME + " Tools Log";
 	
 	public static final String DAEMON_TOOL_Name = "gocode";
-	public static final String DAEMON_TOOL_ConsoleName = "Oracle/gocode log";
 	
 }

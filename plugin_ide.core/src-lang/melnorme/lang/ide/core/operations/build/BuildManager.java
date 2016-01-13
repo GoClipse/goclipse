@@ -436,7 +436,7 @@ public abstract class BuildManager {
 	
 	public IToolOperation newBuildTargetsOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
 			throws CommonException {
-		OperationInfo operationInfo = LangCore.getToolManager().startNewToolOperation();
+		OperationInfo operationInfo = LangCore.getToolManager().startNewBuildOperation();
 		return newBuildOperation(operationInfo, project, true, targetsToBuild);
 	}
 	

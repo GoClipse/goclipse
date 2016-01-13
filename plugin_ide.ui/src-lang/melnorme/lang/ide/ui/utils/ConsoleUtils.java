@@ -18,6 +18,9 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 
+import melnorme.lang.ide.ui.tools.console.ToolsConsole;
+import melnorme.utilbox.core.fntypes.SimpleGetter;
+
 public class ConsoleUtils {
 	
 	/** Finds an existing {@link MessageConsole} with given name. 
@@ -56,6 +59,33 @@ public class ConsoleUtils {
 		MessageConsole msgConsole = new MessageConsole(name, imageDescriptor);
 		ConsolePlugin.getDefault().getConsoleManager().addConsoles(array(msgConsole));
 		return msgConsole;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static ToolsConsole getOrCreateToolsConsole2(String name, boolean clearConsole,
+			Class<ToolsConsole> klass, SimpleGetter<ToolsConsole> consoleCreator) {
+		ToolsConsole console = findConsole(name, klass);
+		if(console != null) {
+			if(clearConsole) {
+				
+				// In order to clear a console, we recreate it. 
+				// This is to avoid using console.clearConsole() , because of poor concurrency behavior: 
+				// if more than one cleanConsole is requested per a console lifetime, 
+				// these aditional clears may appear out of order with regards
+				// to input written to the console output streams.
+				// since org.eclipse.ui.console_3.5.200.v20130514-0954
+				
+				ConsolePlugin.getDefault().getConsoleManager().removeConsoles(array(console));
+				console = null;
+			} else {
+				return console;
+			}
+		}
+		// create a new one
+		console = consoleCreator.get();
+		ConsolePlugin.getDefault().getConsoleManager().addConsoles(array(console));
+		return console;
 	}
 	
 }

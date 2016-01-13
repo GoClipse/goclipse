@@ -13,13 +13,14 @@ package melnorme.lang.ide.core.operations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ILangOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
@@ -30,6 +31,7 @@ import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.IOperationHelper;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.lang.utils.ProcessUtils;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -95,9 +97,9 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 		}
 	}
 	
-	public void notifyOperationStarted(OperationInfo opInfo) {
+	public void notifyStartBuildOperation(OperationInfo opInfo) {
 		for(ILangOperationsListener processListener : getListeners()) {
-			processListener.handleNewOperation(opInfo);
+			processListener.handleStartBuildOperation(opInfo);
 		}
 	}
 	
@@ -109,53 +111,89 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	
 	/* ----------------- ----------------- */
 	
+	protected EclipseCancelMonitor cm(IProgressMonitor pm) {
+		return new EclipseCancelMonitor(pm);
+	}
+	
 	public OperationInfo startNewToolOperation() {
 		return startNewToolOperation(false);
 	}
 	
 	public OperationInfo startNewToolOperation(boolean explicitConsoleNotify) {
+		/* FIXME: these are using build operation*/
+		return startNewBuildOperation(explicitConsoleNotify);
+	}
+	
+	public OperationInfo startNewBuildOperation() {
+		return startNewBuildOperation(false);
+	}
+	
+	public OperationInfo startNewBuildOperation(boolean explicitConsoleNotify) {
 		OperationInfo opInfo = new OperationInfo(null, explicitConsoleNotify);
-		notifyOperationStarted(opInfo);
+		notifyStartBuildOperation(opInfo);
 		opInfo.setStarted(true);
 		return opInfo;
 	}
 	
-	protected EclipseCancelMonitor cm(IProgressMonitor pm) {
-		return new EclipseCancelMonitor(pm);
-	}
-	
-	public RunProcessTask newRunToolOperation2(ProcessBuilder pb, IProgressMonitor pm) {
+	public final RunProcessTask newRunToolOperation2(ProcessBuilder pb, IProgressMonitor pm) {
 		OperationInfo opInfo = startNewToolOperation();
-		return newRunToolTask(opInfo, pb, cm(pm));
+		return newRunToolTask(opInfo, pb, pm);
 	}
 	
-	public RunProcessTask newRunToolTask(OperationInfo opInfo, ProcessBuilder pb, IProgressMonitor pm) {
-		return newRunToolTask(opInfo, pb, cm(pm));
-	}
-	public RunProcessTask newRunToolTask(OperationInfo opInfo, ProcessBuilder pb, ICancelMonitor cm) {
-		return new RunProcessTask(opInfo, pb, cm);
+	@Deprecated
+	public final RunProcessTask newRunToolTask(OperationInfo opInfo, ProcessBuilder pb, IProgressMonitor pm) {
+		AggregatedOperationConsoleHandler buildOperationHandler = getBuildOperationHandler(opInfo);
+		return newRunToolTask2(buildOperationHandler, pb, cm(pm));
 	}
 	
-	public class RunProcessTask extends AbstractRunProcessTask {
+	public RunProcessTask newRunToolTask2(AggregatedOperationConsoleHandler buildOperationHandler, ProcessBuilder pb,
+			ICancelMonitor cm) {
+		return new RunProcessTask(buildOperationHandler, pb, cm);
+	}
+	
+	protected AggregatedOperationConsoleHandler getBuildOperationHandler(OperationInfo opInfo) {
+		AggregatedOperationConsoleHandler aggregatedHandlers = new AggregatedOperationConsoleHandler();
 		
-		protected final OperationInfo opInfo;
-		
-		public RunProcessTask(OperationInfo opInfo, ProcessBuilder pb, ICancelMonitor cancelMonitor) {
-			super(pb, cancelMonitor);
-			this.opInfo = opInfo;
+		for(ILangOperationsListener processListener : getListeners()) {
+			ILangOperationConsoleHandler handler = 
+					processListener.getOperationUIHandler(ProcessStartKind.BUILD, opInfo);
+			aggregatedHandlers.handlers.add(handler);
 		}
+		return aggregatedHandlers;
+	}
+	
+	public static class AggregatedOperationConsoleHandler implements ILangOperationConsoleHandler {
+		
+		public final ArrayList2<ILangOperationConsoleHandler> handlers = new ArrayList2<>(); 
 		
 		@Override
-		protected void handleProcessStartResult(ProcessStartHelper psh) {
-			for(ILangOperationsListener processListener : getListeners()) {
-				processListener.handleProcessStart(newProcessStartInfo(opInfo, pb, psh));
+		public void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper) {
+			for (ILangOperationConsoleHandler handler : handlers) {
+				handler.handleProcessStart(prefixText, pb, processStartHelper);
 			}
 		}
 		
 	}
 	
-	protected ProcessStartInfo newProcessStartInfo(OperationInfo opInfo, ProcessBuilder pb, ProcessStartHelper psh) {
-		return new ProcessStartInfo(opInfo, pb, ">> Running: ", psh);
+	public class RunProcessTask extends AbstractRunProcessTask {
+		
+		protected final ILangOperationConsoleHandler opHandler;
+		
+		public RunProcessTask(ILangOperationConsoleHandler opHandler, ProcessBuilder pb, ICancelMonitor cm) {
+			super(pb, cm);
+			this.opHandler = opHandler;
+		}
+		
+		@Override
+		protected void handleProcessStartResult(ProcessStartHelper psh) {
+			String prefixText = newProcessStartInfo_getPrefixText();
+			opHandler.handleProcessStart(prefixText, pb, psh);
+		}
+		
+	}
+	
+	protected String newProcessStartInfo_getPrefixText() {
+		return ">> Running: ";
 	}
 	
 	/* ----------------- ----------------- */
