@@ -62,16 +62,6 @@ public abstract class StartBundleDownloadOperation extends BasicUIOperation {
 		return confirm;
 	}
 	
-	protected void scheduleDownloadJob(ProcessBuilder pb) {
-		new RunOperationAsJob(operationName, (pm) -> {
-			toolMgr.new RunEngineClientOperation(pb, new EclipseCancelMonitor(pm)).runProcess(null);
-			Display.getDefault().asyncExec(() -> afterDownloadJobCompletes_inUI());
-		}).schedule();
-	}
-	
-	protected void afterDownloadJobCompletes_inUI() {
-	}
-	
 	protected static class IntroDialog extends IconAndMessageDialog {
 		
 		protected final String dialogTitle;
@@ -113,6 +103,23 @@ public abstract class StartBundleDownloadOperation extends BasicUIOperation {
 			return dialogArea;
 		}
 		
+	}
+	
+	protected void scheduleDownloadJob(ProcessBuilder pb) {
+		new RunOperationAsJob(operationName, (pm) -> {
+			
+			inJob_handleOperationStart();
+			
+			toolMgr.new RunEngineClientOperation(pb, new EclipseCancelMonitor(pm)).runProcess(null);
+			Display.getDefault().asyncExec(() -> afterDownloadJobCompletes_inUI());
+		}).schedule();
+	}
+	
+	protected void inJob_handleOperationStart() {
+		toolMgr.startNewToolOperation(true);
+	}
+	
+	protected void afterDownloadJobCompletes_inUI() {
 	}
 	
 }

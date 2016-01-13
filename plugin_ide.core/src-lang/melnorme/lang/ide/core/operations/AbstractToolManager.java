@@ -110,7 +110,11 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	/* ----------------- ----------------- */
 	
 	public OperationInfo startNewToolOperation() {
-		OperationInfo opInfo = new OperationInfo(null);
+		return startNewToolOperation(false);
+	}
+	
+	public OperationInfo startNewToolOperation(boolean explicitConsoleNotify) {
+		OperationInfo opInfo = new OperationInfo(null, explicitConsoleNotify);
 		notifyOperationStarted(opInfo);
 		opInfo.setStarted(true);
 		return opInfo;
