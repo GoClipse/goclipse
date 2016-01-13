@@ -19,6 +19,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.utils.prefs.IPreferenceIdentifier;
 import melnorme.lang.ide.ui.LangUI;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IFieldValueListener;
@@ -47,8 +48,8 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 		this.defaultPref = new TextStylingPreference(qualifer, key, defaultValue);
 		this.darkPref = new TextStylingPreference(qualifer, key_Dark, defaultValueDark);
 		
-		defaultPref.asField().registerListener(() -> updateEffectiveValue());
-		darkPref.asField().registerListener(() -> updateEffectiveValue());
+		this.defaultPref.asField().registerListener(() -> updateEffectiveValue());
+		this.darkPref.asField().registerListener(() -> updateEffectiveValue());
 		
 		LangUI.getInstance().getThemeHelper().new ThemeChangeListener() {
 			@Override
@@ -57,6 +58,9 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 			}
 		};
 		
+		// We can't tell without going to UI if dark theme is active or no, so initialize with defaultPref
+		effectiveValue.setFieldValue(defaultPref.getFromPrefStore());
+		// .. then request an update of effective value
 		updateEffectiveValue();
 	}
 	
@@ -71,7 +75,10 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 	/* -----------------  ----------------- */
 	
 	protected void updateEffectiveValue() {
-		effectiveValue.setFieldValue(getEffectivePreference().getFromPrefStore());
+		SWTUtil.runInSWTThread(() -> {
+			/* Unfortunately, this need to run in UI thread */
+			effectiveValue.setFieldValue(getEffectivePreference().getFromPrefStore());
+		});
 	}
 	
 	protected TextStyling getEffectiveValue() {

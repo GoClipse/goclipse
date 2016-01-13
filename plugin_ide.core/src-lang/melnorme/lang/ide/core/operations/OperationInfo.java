@@ -16,6 +16,8 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.utilbox.collections.HashMap2;
 
+/* FIXME: need to remove */
+@Deprecated
 public class OperationInfo {
 	
 	public final IProject project; // can be null

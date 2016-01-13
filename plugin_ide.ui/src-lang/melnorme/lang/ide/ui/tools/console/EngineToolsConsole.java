@@ -11,6 +11,8 @@
 package melnorme.lang.ide.ui.tools.console;
 
 import static melnorme.utilbox.core.CoreUtil.array;
+
+import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 
@@ -20,12 +22,12 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
-public class DaemonToolMessageConsole extends ToolsConsole {
+public class EngineToolsConsole extends ToolsConsole {
 	
 	public final IOConsoleOutputStream serverStdOut;
 	public final IOConsoleOutputStream serverStdErr;
 	
-	public DaemonToolMessageConsole(String name, ImageDescriptor imageDescriptor) {
+	public EngineToolsConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor, false);
 
 		serverStdOut = newOutputStream();
@@ -45,15 +47,15 @@ public class DaemonToolMessageConsole extends ToolsConsole {
 		stdErr.setActivateOnWrite(false);
 	}
 	
-	public static DaemonToolMessageConsole getConsole() {
-		DaemonToolMessageConsole console = ConsoleUtils.findConsole(
-			LangUIPlugin_Actual.DAEMON_TOOL_ConsoleName, DaemonToolMessageConsole.class);
+	public static EngineToolsConsole getConsole() {
+		EngineToolsConsole console = ConsoleUtils.findConsole(
+			LangUIPlugin_Actual.ENGINE_TOOLS_ConsoleName, EngineToolsConsole.class);
 		if(console != null) {
 			return console;
 		}
 		// no console, so create a new one
-		DaemonToolMessageConsole msgConsole = new DaemonToolMessageConsole(
-			LangUIPlugin_Actual.DAEMON_TOOL_ConsoleName, null);
+		EngineToolsConsole msgConsole = new EngineToolsConsole(
+			LangUIPlugin_Actual.ENGINE_TOOLS_ConsoleName, LangImages.ENGINE_TOOLS_CONSOLE_ICON.getDescriptor());
 		ConsolePlugin.getDefault().getConsoleManager().addConsoles(array(msgConsole));
 		return msgConsole;
 	}

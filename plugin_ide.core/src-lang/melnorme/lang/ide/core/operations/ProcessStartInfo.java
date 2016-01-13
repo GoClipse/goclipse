@@ -20,7 +20,7 @@ public class ProcessStartInfo {
 	public final OperationInfo opInfo;
 	
 	public final ProcessBuilder pb;
-	public final String prefixText;
+	public String prefixText;
 	public final ProcessStartHelper processStartHelper;
 	
 	public ProcessStartInfo(OperationInfo opInfo, ProcessBuilder pb, String prefixText, ProcessStartHelper psh) {

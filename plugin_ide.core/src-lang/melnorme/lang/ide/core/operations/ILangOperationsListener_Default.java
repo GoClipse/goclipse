@@ -18,16 +18,37 @@ public interface ILangOperationsListener_Default {
 	/** Report a message to the user. */
 	void notifyMessage(StatusLevel statusLevel, String title, String message);
 	
-	void handleNewOperation(OperationInfo opInfo);
+	void handleStartBuildOperation(OperationInfo opInfo);
 	
 	void handleMessage(MessageEventInfo messageInfo);
 	
-	void handleProcessStart(ProcessStartInfo processStartInfo);
+	public enum ProcessStartKind {
+		BUILD,
+		ENGINE_SERVER,
+		ENGINE_TOOLS
+	}
 	
 	// TODO: Need to refactor out these two methods into something more generic.
 	
-	void engineDaemonStart(ProcessBuilder pb, ProcessStartHelper processStartHelper);
+	default void engineDaemonStart(ProcessBuilder pb, ProcessStartHelper psh) {
+		handleProcessStart(ProcessStartKind.ENGINE_SERVER, pb, psh);
+	}
 	
-	void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper processStartHelper);
+	default void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper psh) {
+		handleProcessStart(ProcessStartKind.ENGINE_TOOLS, pb, psh);
+	}
+	
+	default void handleProcessStart(ProcessStartKind kind, ProcessBuilder pb, ProcessStartHelper psh) {
+		ILangOperationConsoleHandler operationUIHandler = getOperationUIHandler(kind, null);
+		operationUIHandler.handleProcessStart(null, pb, psh);
+	}
+	
+	ILangOperationConsoleHandler getOperationUIHandler(ProcessStartKind kind, OperationInfo opInfo);
+	
+	public interface ILangOperationConsoleHandler {
+		
+		void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper);
+		
+	}
 	
 }

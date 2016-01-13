@@ -14,6 +14,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.AbstractToolManager.AggregatedOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.AbstractToolManager.RunProcessTask;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -43,7 +45,10 @@ public abstract class AbstractToolManagerOperation implements IToolOperation {
 	
 	protected ExternalProcessResult runBuildTool(OperationInfo opInfo, ProcessBuilder pb, IProgressMonitor pm) 
 			throws CommonException, OperationCancellation {
-		return getToolManager().newRunToolTask(opInfo, pb, pm).runProcess();
+		AbstractToolManager toolMgr = getToolManager();
+		AggregatedOperationConsoleHandler buildOperationHandler = toolMgr.getBuildOperationHandler(opInfo);
+		RunProcessTask newRunToolTask = toolMgr.newRunToolTask2(buildOperationHandler, pb, toolMgr.cm(pm));
+		return newRunToolTask.runProcess();
 	}
 	
 }
