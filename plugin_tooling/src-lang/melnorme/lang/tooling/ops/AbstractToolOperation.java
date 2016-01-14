@@ -19,9 +19,9 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class AbstractToolOperation {
 	
-	protected final IOperationHelper operationHelper;
+	protected final IOperationService operationHelper;
 	
-	public AbstractToolOperation(IOperationHelper opHelper) {
+	public AbstractToolOperation(IOperationService opHelper) {
 		this.operationHelper = assertNotNull(opHelper);
 	}
 	
@@ -30,7 +30,7 @@ public abstract class AbstractToolOperation {
 		return operationHelper.runProcess(pb, input);
 	}
 	
-	public IOperationHelper getOperationHelper() {
+	public IOperationService getOperationHelper() {
 		return operationHelper;
 	}
 	

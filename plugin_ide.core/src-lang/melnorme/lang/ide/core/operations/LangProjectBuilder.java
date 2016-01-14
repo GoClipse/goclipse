@@ -110,7 +110,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		if(workspaceOpHandler != null) {
 			return;
 		}
-		workspaceOpHandler = getToolManager().startNewToolOperation();
+		workspaceOpHandler = getToolManager().startNewBuildOperation();
 		workspaceOpHandlerMap.put(LangCore.NATURE_ID, workspaceOpHandler);
 		
 		ResourceUtils.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
@@ -252,7 +252,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected void doClean(IProgressMonitor pm, ProcessBuilder pb) 
 			throws CoreException, CommonException, OperationCancellation {
-		getToolManager().newRunToolOperation2(pb, pm).runProcess();
+		getToolManager().newRunBuildToolOperation(pb, pm).runProcess();
 	}
 	
 }

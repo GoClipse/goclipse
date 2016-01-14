@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.tooling.ops.AbstractToolOperation;
-import melnorme.lang.tooling.ops.IOperationHelper;
+import melnorme.lang.tooling.ops.IOperationService;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -29,7 +29,7 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 	protected final GoEnvironment goEnvironment;
 	protected final String gocodePath;
 	
-	public GocodeCompletionOperation(IOperationHelper opHelper, GoEnvironment goEnvironment, String gocodePath) {
+	public GocodeCompletionOperation(IOperationService opHelper, GoEnvironment goEnvironment, String gocodePath) {
 		super(opHelper);
 		this.goEnvironment = goEnvironment;
 		this.gocodePath = gocodePath;

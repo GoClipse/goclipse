@@ -20,6 +20,8 @@ import com.googlecode.goclipse.tooling.env.GoPath;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -49,7 +51,8 @@ public class GetAndInstallGoPackageOperation implements CoreOperationRunnable {
 	public void doRun(IProgressMonitor monitor) throws CommonException, CoreException, OperationCancellation {
 		ProcessBuilder pb = getProcessToStart();
 		
-		LangCore.getToolManager().newRunToolOperation2(pb, monitor).runProcess();
+		IOperationConsoleHandler opHandler = toolMgr.startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, true);
+		toolMgr.newRunProcessTask(opHandler, pb, monitor).runProcess();
 	}
 	
 	public ProcessBuilder getProcessToStart() throws CommonException {
