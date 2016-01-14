@@ -61,14 +61,14 @@ This is unlike most source editors - if instead you want to just remove one leve
 ##### Code-Completion/Auto-Complete:
 Invoked with Ctrl-Space. This functionality is called Content Assist in Eclipse. 
 
-> This functionality is provided by the [gocode](https://github.com/nsf/gocode) tool. If there is a problem with this operation, a diagnostics log with the output of gocode can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
+> This functionality is provided by the [gocode](https://github.com/nsf/gocode) tool. If there is a problem with this operation, a diagnostics log with the output of gocode can be seen in the `Go Tools Log` console page in the Eclipse Console view.
 
 ##### Open Definition:
 The Open Definition functionality is invoked by pressing F3 in the source editor. 
 Open Definition is also available in the editor context menu and by means of editor *hyper-linking* 
 (hold Ctrl and click on a reference with the mouse cursor). 
 
-> This functionality is provided by the [Go Oracle](http://golang.org/s/oracle-user-manual) tool. If there is a problem with this operation, a diagnostics log with the output of oracle can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
+> This functionality is provided by the [Go Oracle](http://golang.org/s/oracle-user-manual) tool. If there is a problem with this operation, a diagnostics log with the output of oracle can be seen in the `Go Tools Log` console page in the Eclipse Console view.
 
 ### Launch and Debug:
 To run a Go project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open `Run / Run Configurations...`. Then double click `Go Application` to create a new launch, and configure it accordingly. You can run these launches from the `Run Configurations...`, or for quicker access, from the Launch button in the Eclipse toolbar. You will need to specify a Go package as the build target for the launch.
