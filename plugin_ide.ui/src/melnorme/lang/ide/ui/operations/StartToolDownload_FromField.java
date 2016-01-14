@@ -31,9 +31,9 @@ public abstract class StartToolDownload_FromField extends StartBundleDownloadOpe
 	protected final String dlSource;
 	protected final String exeName;
 	
-	public StartToolDownload_FromField(String operationName,
+	public StartToolDownload_FromField(String operationName, String downloadBundleJobName, 
 			DownloadToolTextField toolTextField, String gitSource, String exeName) {
-		super(operationName);
+		super(operationName, downloadBundleJobName);
 		this.toolField = assertNotNull(toolTextField);
 		this.dlSource = assertNotNull(gitSource);
 		this.exeName = assertNotNull(exeName);

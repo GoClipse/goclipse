@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
@@ -214,6 +215,9 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 		@Override
 		public void activate() {
 			console.activate();
+			// Try again - because of poort concurrency guarantes, the console view might have been activated
+			// but with the wrong console page, so send another request, in UI thread.
+			Display.getDefault().asyncExec(() -> console.activate());
 		}
 		
 	}
