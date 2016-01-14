@@ -18,7 +18,6 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 
-import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 import melnorme.utilbox.core.fntypes.SimpleGetter;
 
 public class ConsoleUtils {
@@ -63,9 +62,9 @@ public class ConsoleUtils {
 	
 	/* -----------------  ----------------- */
 	
-	public static ToolsConsole getOrCreateToolsConsole2(String name, boolean clearConsole,
-			Class<ToolsConsole> klass, SimpleGetter<ToolsConsole> consoleCreator) {
-		ToolsConsole console = findConsole(name, klass);
+	public static <T extends IConsole> T getOrCreateToolsConsole(String name, boolean clearConsole,
+			Class<T> klass, SimpleGetter<T> consoleCreator) {
+		T console = findConsole(name, klass);
 		if(console != null) {
 			if(clearConsole) {
 				

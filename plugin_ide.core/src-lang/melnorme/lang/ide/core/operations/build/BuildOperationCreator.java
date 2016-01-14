@@ -26,8 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.MessageEventInfo;
-import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
@@ -36,17 +35,20 @@ import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
+/** 
+ * A one-time {@link BuildOperationCreator} creator (is meant to be used once, immediately)
+ */
 public class BuildOperationCreator implements BuildManagerMessages {
 	
 	protected final BuildManager buildMgr = LangCore.getBuildManager();
 	protected final String buildProblemId = LangCore_Actual.BUILD_PROBLEM_ID;
 	
 	protected final IProject project;
-	protected final OperationInfo opInfo;
+	protected final IOperationConsoleHandler opHandler;
 	
-	public BuildOperationCreator(IProject project, OperationInfo opInfo) {
+	public BuildOperationCreator(IProject project, IOperationConsoleHandler opHandler) {
 		this.project = project;
-		this.opInfo = assertNotNull(opInfo);
+		this.opHandler = assertNotNull(opHandler);
 	}
 	
 	protected ArrayList2<IToolOperation> operations;
@@ -66,7 +68,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		}
 		
 		if(targetsToBuild.isEmpty()) {
-			addOperation(newMessageOperation(opInfo, 
+			addOperation(newMessageOperation( 
 				TextMessageUtils.headerSMALL(MSG_NoBuildTargetsEnabled)));
 		}
 		
@@ -82,7 +84,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 			}
 		});
 		
-		addOperation(newMessageOperation(opInfo, headerBIG(MSG_BuildTerminated)));
+		addOperation(newMessageOperation(headerBIG(MSG_BuildTerminated)));
 		
 		return new CompositeBuildOperation(operations);
 	}
@@ -93,15 +95,15 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	
 	protected void addCompositeBuildOperationMessage() throws CommonException {
 		String startMsg = headerBIG(format(MSG_BuildingProject, LangCore_Actual.LANGUAGE_NAME, project.getName()));
-		addOperation(newMessageOperation(opInfo, startMsg));
+		addOperation(newMessageOperation(startMsg));
 	}
 	
 	protected IToolOperation doCreateClearBuildMarkersOperation() {
 		return (pm) -> {
 			boolean hadDeletedMarkers = doDeleteProjectMarkers(buildProblemId, pm);
 			if(hadDeletedMarkers) {
-				LangCore.getToolManager().notifyMessageEvent(new MessageEventInfo(opInfo, 
-					format(MSG_ClearingMarkers, project.getName()) + "\n"));
+				opHandler.writeInfoMessage(
+					format(MSG_ClearingMarkers, project.getName()) + "\n");
 			}
 		};
 	}
@@ -128,30 +130,30 @@ public class BuildOperationCreator implements BuildManagerMessages {
 			throws CommonException {
 		Path buildToolPath = LangCore.getToolManager().getSDKToolPath(project);
 		try {
-			return doCreateBuildTargetOperation(opInfo, project, buildToolPath, buildTarget);
+			return doCreateBuildTargetOperation(opHandler, project, buildToolPath, buildTarget);
 		} catch(CoreException e) {
 			throw new CommonException(e.getMessage(), e.getCause());
 		}
 	}
 	
-	public IToolOperation doCreateBuildTargetOperation(OperationInfo opInfo,
+	public IToolOperation doCreateBuildTargetOperation(IOperationConsoleHandler opHandler,
 			IProject project, Path buildToolPath, BuildTarget buildTarget
 	) throws CommonException, CoreException {
 		ValidatedBuildTarget validatedBuildTarget = buildMgr.getValidatedBuildTarget(project, buildTarget);
 		BuildType buildType = validatedBuildTarget.getBuildType();
-		return buildType.getBuildOperation(validatedBuildTarget, opInfo, buildToolPath);
+		return buildType.getBuildOperation(validatedBuildTarget, opHandler, buildToolPath);
 	}
 	
-	protected IToolOperation newMessageOperation(OperationInfo opInfo, String msg) {
-		return new BuildMessageOperation(new MessageEventInfo(opInfo, msg));
+	protected IToolOperation newMessageOperation(String msg) {
+		return new BuildMessageOperation(msg);
 	}
 	
-	protected class BuildMessageOperation implements IToolOperation, Callable<MessageEventInfo> {
+	protected class BuildMessageOperation implements IToolOperation, Callable<Void> {
 		
-		protected final MessageEventInfo msgInfo;
+		protected final String msg;
 		
-		public BuildMessageOperation(MessageEventInfo msgInfo) {
-			this.msgInfo = msgInfo;
+		public BuildMessageOperation(String msg) {
+			this.msg = msg;
 		}
 		
 		@Override
@@ -164,9 +166,9 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		}
 		
 		@Override
-		public MessageEventInfo call() throws RuntimeException {
-			LangCore.getToolManager().notifyMessageEvent(msgInfo);
-			return msgInfo;
+		public Void call() throws RuntimeException {
+			opHandler.writeInfoMessage(msg);
+			return null;
 		}
 	}
 	

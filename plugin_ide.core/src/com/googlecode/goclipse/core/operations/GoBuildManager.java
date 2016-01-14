@@ -30,7 +30,7 @@ import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
@@ -170,8 +170,8 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget, 
-				OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
-			return new GoBuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath);
+				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
+			return new GoBuildTargetOperation(validatedBuildTarget, opHandler, buildToolPath);
 		}
 		
 	}
@@ -181,9 +181,9 @@ public class GoBuildManager extends BuildManager {
 		protected final GoEnvironment goEnv;
 		protected final Location sourceRootDir;
 		
-		public GoBuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, OperationInfo opInfo, 
+		public GoBuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, IOperationConsoleHandler opHandler, 
 				Path buildToolPath) throws CommonException, CoreException {
-			super(validatedBuildTarget.buildMgr, validatedBuildTarget, opInfo, buildToolPath);
+			super(validatedBuildTarget.buildMgr, validatedBuildTarget, opHandler, buildToolPath);
 			
 			Location projectLocation = getProjectLocation();
 			
@@ -271,8 +271,8 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
-				OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
-			return new GoBuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath) {
+				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
+			return new GoBuildTargetOperation(validatedBuildTarget, opHandler, buildToolPath) {
 				
 				@Override
 				protected ProcessBuilder getProcessBuilder2(String[] toolArguments) throws CommonException {
@@ -334,8 +334,8 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget, 
-				OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
-			return new GoBuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath);
+				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
+			return new GoBuildTargetOperation(validatedBuildTarget, opHandler, buildToolPath);
 		}
 		
 	}
@@ -357,8 +357,8 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	@Override
-	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project) {
-		return new BuildOperationCreator(project, opInfo) {
+	protected BuildOperationCreator createBuildOperationCreator(IOperationConsoleHandler opHandler, IProject project) {
+		return new BuildOperationCreator(project, opHandler) {
 			@Override
 			protected void addCompositeBuildOperationMessage() throws CommonException {
 				super.addCompositeBuildOperationMessage();
@@ -366,12 +366,12 @@ public class GoBuildManager extends BuildManager {
 				GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 				
 				if(goEnv.getGoArch() != null) {
-					addOperation(newMessageOperation(opInfo, "  with GOARCH: " + goEnv.getGoArch().asString() + "\n"));
+					addOperation(newMessageOperation("  with GOARCH: " + goEnv.getGoArch().asString() + "\n"));
 				}
 				if(goEnv.getGoOs() != null) {
-					addOperation(newMessageOperation(opInfo, "  with GOOS: " + goEnv.getGoOs().asString() + "\n"));
+					addOperation(newMessageOperation("  with GOOS: " + goEnv.getGoOs().asString() + "\n"));
 				}
-				addOperation(newMessageOperation(opInfo, "  with GOPATH: " + goEnv.getGoPathString() + "\n"));
+				addOperation(newMessageOperation("  with GOPATH: " + goEnv.getGoPathString() + "\n"));
 			}
 		};
 	}

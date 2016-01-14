@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 
-import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.BundlePath;

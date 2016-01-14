@@ -32,6 +32,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -96,38 +97,37 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		assertTrue(getProject() != null);
 	}
 	
-	protected static HashMap2<String, OperationInfo> workspaceOpInfoMap = new HashMap2<>();
-	protected OperationInfo workspaceOpInfo;
+	protected static HashMap2<String, IOperationConsoleHandler> workspaceOpHandlerMap = new HashMap2<>();
+	protected IOperationConsoleHandler workspaceOpHandler;
 	
 	protected void prepareForBuild(IProgressMonitor pm) throws CoreException, OperationCancellation {
 		handleBeginWorkspaceBuild(pm);
-		
-		assertTrue(workspaceOpInfo.isStarted());
 	}
 	
 	protected void handleBeginWorkspaceBuild(IProgressMonitor pm) throws CoreException, OperationCancellation {
-		workspaceOpInfo = workspaceOpInfoMap.get(LangCore.NATURE_ID);
+		workspaceOpHandler = workspaceOpHandlerMap.get(LangCore.NATURE_ID);
 		
-		if(workspaceOpInfo != null) {
+		if(workspaceOpHandler != null) {
 			return;
 		}
-		workspaceOpInfo = getToolManager().startNewToolOperation();
-		workspaceOpInfoMap.put(LangCore.NATURE_ID, workspaceOpInfo);
+		workspaceOpHandler = getToolManager().startNewToolOperation();
+		workspaceOpHandlerMap.put(LangCore.NATURE_ID, workspaceOpHandler);
 		
 		ResourceUtils.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
 			@Override
 			public void resourceChanged(IResourceChangeEvent event) {
 				int type = event.getType();
 				if(type == IResourceChangeEvent.POST_BUILD || type == IResourceChangeEvent.PRE_BUILD) {
-					workspaceOpInfo = null;
-					workspaceOpInfoMap.remove(LangCore.NATURE_ID);
+					workspaceOpHandler = null;
+					workspaceOpHandlerMap.remove(LangCore.NATURE_ID);
 					ResourceUtils.getWorkspace().removeResourceChangeListener(this);
 				}
 			}
 		}, IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.PRE_BUILD);
 		
-		getToolManager().notifyMessageEvent(new MessageEventInfo(workspaceOpInfo, 
-			headerVeryBig(MessageFormat.format(MSG_Starting_LANG_Build, LangCore_Actual.LANGUAGE_NAME))));
+		workspaceOpHandler.writeInfoMessage(
+			headerVeryBig(MessageFormat.format(MSG_Starting_LANG_Build, LangCore_Actual.LANGUAGE_NAME))
+		);
 		
 		clearWorkspaceErrorMarkers(pm);
 	}
@@ -142,7 +142,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected void clearErrorMarkers(IProject project, IProgressMonitor pm) 
 			throws CoreException, OperationCancellation {
-		IToolOperation clearMarkersOp = buildManager.newProjectClearMarkersOperation(workspaceOpInfo, project);
+		IToolOperation clearMarkersOp = buildManager.newProjectClearMarkersOperation(workspaceOpHandler, project);
 		try {
 			clearMarkersOp.execute(pm);
 		} catch (CommonException ce) {
@@ -151,7 +151,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected void handleEndWorkspaceBuild2() {
-		workspaceOpInfo = null;
+		workspaceOpHandler = null;
 	}
 	
 	@Override
@@ -228,7 +228,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected IToolOperation createBuildOp() throws CommonException {
-		return buildManager.newProjectBuildOperation(workspaceOpInfo, getProject(), false);
+		return buildManager.newProjectBuildOperation(workspaceOpHandler, getProject(), false);
 	}
 	
 	/* ----------------- Clean ----------------- */

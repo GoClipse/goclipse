@@ -18,9 +18,7 @@ public interface ILangOperationsListener_Default {
 	/** Report a message to the user. */
 	void notifyMessage(StatusLevel statusLevel, String title, String message);
 	
-	void handleStartBuildOperation(OperationInfo opInfo);
-	
-	void handleMessage(MessageEventInfo messageInfo);
+	/* -----------------  ----------------- */
 	
 	public enum ProcessStartKind {
 		BUILD,
@@ -28,27 +26,34 @@ public interface ILangOperationsListener_Default {
 		ENGINE_TOOLS
 	}
 	
-	// TODO: Need to refactor out these two methods into something more generic.
-	
-	default void engineDaemonStart(ProcessBuilder pb, ProcessStartHelper psh) {
-		handleProcessStart(ProcessStartKind.ENGINE_SERVER, pb, psh);
+	default IOperationConsoleHandler beginBuildOperation(boolean explicitConsoleNotify) {
+		return beginOperation(ProcessStartKind.BUILD, true, explicitConsoleNotify);
 	}
 	
-	default void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper psh) {
-		handleProcessStart(ProcessStartKind.ENGINE_TOOLS, pb, psh);
+	default IOperationConsoleHandler beginOperation(ProcessStartKind kind) {
+		return beginOperation(kind, false, false);
 	}
 	
-	default void handleProcessStart(ProcessStartKind kind, ProcessBuilder pb, ProcessStartHelper psh) {
-		ILangOperationConsoleHandler operationUIHandler = getOperationUIHandler(kind, null);
-		operationUIHandler.handleProcessStart(null, pb, psh);
-	}
+	IOperationConsoleHandler beginOperation(ProcessStartKind kind, boolean clearConsole, boolean activateConsole);
 	
-	ILangOperationConsoleHandler getOperationUIHandler(ProcessStartKind kind, OperationInfo opInfo);
-	
-	public interface ILangOperationConsoleHandler {
+	public interface IOperationConsoleHandler {
 		
 		void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper);
 		
+		void writeInfoMessage(String operationMessage);
+		
+		void activate();
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	default void engineDaemonStart(ProcessBuilder pb, ProcessStartHelper psh) {
+		beginOperation(ProcessStartKind.ENGINE_SERVER).handleProcessStart(null, pb, psh);
+	}
+	
+	default void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper psh) {
+		beginOperation(ProcessStartKind.ENGINE_TOOLS).handleProcessStart(null, pb, psh);
 	}
 	
 }

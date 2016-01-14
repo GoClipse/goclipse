@@ -32,15 +32,17 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CoreException, OperationCancellation {
+	protected void performBackgroundComputation() throws CoreException, OperationCancellation {
 		if (ToolchainPreferences.AUTO_START_DAEMON.get() == false) {
-			throw new OperationCancellation(); // stop operation
+			return; // stop operation
 		}
 		
 		gocodePath = GocodeServerManager.getGocodePath();
 		boolean needsStart = gocodeServerManager.prepareServerStart(gocodePath);
-		if(needsStart == false) {
-			throw new OperationCancellation(); // stop operation
+		if(needsStart) {
+			super.performBackgroundComputation();
+		} else {
+			return;
 		}
 	}
 	
