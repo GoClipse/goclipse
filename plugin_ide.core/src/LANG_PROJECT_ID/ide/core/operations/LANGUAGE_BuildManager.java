@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
@@ -49,8 +49,8 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
-				OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
-			return new LANGUAGE_BuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath);
+				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
+			return new LANGUAGE_BuildTargetOperation(validatedBuildTarget, opHandler, buildToolPath);
 		}
 	}
 	
@@ -58,9 +58,10 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 	
 	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public LANGUAGE_BuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, OperationInfo parentOpInfo, 
+		public LANGUAGE_BuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, 
+				IOperationConsoleHandler opHandler, 
 				Path buildToolPath) throws CommonException, CoreException {
-			super(validatedBuildTarget.buildMgr, validatedBuildTarget, parentOpInfo, buildToolPath);
+			super(validatedBuildTarget.buildMgr, validatedBuildTarget, opHandler, buildToolPath);
 		}
 		
 		@Override
