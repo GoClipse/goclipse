@@ -53,7 +53,7 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 	/* -----------------  ----------------- */
 	
 	@SuppressWarnings("unused")
-	protected final String getBuildConsoleName(IProject project) {
+	protected String getBuildConsoleName(IProject project) {
 		return LangUIPlugin_Actual.BUILD_ConsoleName;
 	}
 	
