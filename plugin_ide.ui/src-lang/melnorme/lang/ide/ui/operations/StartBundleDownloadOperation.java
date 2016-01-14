@@ -26,6 +26,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
@@ -108,15 +110,15 @@ public abstract class StartBundleDownloadOperation extends BasicUIOperation {
 	protected void scheduleDownloadJob(ProcessBuilder pb) {
 		new RunOperationAsJob(operationName, (pm) -> {
 			
-			inJob_handleOperationStart();
+			IOperationConsoleHandler handler = inJob_handleOperationStart();
 			
-			toolMgr.new RunEngineClientOperation(pb, new EclipseCancelMonitor(pm)).runProcess(null);
+			toolMgr.new RunToolTask(handler, pb, new EclipseCancelMonitor(pm)).runProcess(null);
 			Display.getDefault().asyncExec(() -> afterDownloadJobCompletes_inUI());
 		}).schedule();
 	}
 	
-	protected void inJob_handleOperationStart() {
-		toolMgr.startNewToolOperation(true);
+	protected IOperationConsoleHandler inJob_handleOperationStart() {
+		return toolMgr.startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, true);
 	}
 	
 	protected void afterDownloadJobCompletes_inUI() {

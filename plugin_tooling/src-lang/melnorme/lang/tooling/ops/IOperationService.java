@@ -15,7 +15,11 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ILogHandler;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public interface IOperationHelper extends ILogHandler {
+/**
+ * Service/helper class to perform certain operation tasks (such as running a process) 
+ * under a context that is abstracted away. (Usually it's a UI context that observes the tasks) 
+ */
+public interface IOperationService extends ILogHandler {
 	
 	/**
 	 * Start a process from given ProcessBuilder pb, run it with given input until completion. 

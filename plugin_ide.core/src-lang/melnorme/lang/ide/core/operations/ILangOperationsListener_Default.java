@@ -36,6 +36,26 @@ public interface ILangOperationsListener_Default {
 	
 	IOperationConsoleHandler beginOperation(ProcessStartKind kind, boolean clearConsole, boolean activateConsole);
 	
+	default IOperationConsoleHandler beginOperation(StartOperationOptions options) {
+		return beginOperation(options.kind, options.clearConsole, options.activateConsole);
+	}
+	
+	public class StartOperationOptions {
+		
+		public ProcessStartKind kind;
+		public boolean clearConsole;
+		public boolean activateConsole;
+		
+		public StartOperationOptions(ProcessStartKind kind, boolean clearConsole, boolean activateConsole) {
+			this.kind = kind;
+			this.clearConsole = clearConsole;
+			this.activateConsole = activateConsole;
+		}
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public interface IOperationConsoleHandler {
 		
 		void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper);
@@ -44,16 +64,6 @@ public interface ILangOperationsListener_Default {
 		
 		void activate();
 		
-	}
-	
-	/* -----------------  ----------------- */
-	
-	default void engineDaemonStart(ProcessBuilder pb, ProcessStartHelper psh) {
-		beginOperation(ProcessStartKind.ENGINE_SERVER).handleProcessStart(null, pb, psh);
-	}
-	
-	default void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper psh) {
-		beginOperation(ProcessStartKind.ENGINE_TOOLS).handleProcessStart(null, pb, psh);
 	}
 	
 }

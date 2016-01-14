@@ -22,6 +22,7 @@ import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
@@ -29,7 +30,7 @@ import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.lang.tooling.ops.IOperationHelper;
+import melnorme.lang.tooling.ops.IOperationService;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
@@ -104,15 +105,6 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 		return new EclipseCancelMonitor(pm);
 	}
 	
-	public IOperationConsoleHandler startNewToolOperation() {
-		return startNewToolOperation(false);
-	}
-	
-	public IOperationConsoleHandler startNewToolOperation(boolean explicitConsoleNotify) {
-		/* FIXME: these are using build operation*/
-		return startNewBuildOperation(explicitConsoleNotify);
-	}
-	
 	public IOperationConsoleHandler startNewBuildOperation() {
 		return startNewBuildOperation(false);
 	}
@@ -121,28 +113,20 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 		return startNewOperation(ProcessStartKind.BUILD, true, explicitConsoleNotify);
 	}
 	
-	public IOperationConsoleHandler startNewOperation(ProcessStartKind kind, boolean clearConsole,
+	public IOperationConsoleHandler startNewOperation(ProcessStartKind kind, boolean clearConsole, 
 			boolean activateConsole) {
+		return startNewOperation(new StartOperationOptions(kind, clearConsole, activateConsole));
+	}
+	
+	public IOperationConsoleHandler startNewOperation(StartOperationOptions options) {
+		
 		AggregatedOperationConsoleHandler aggregatedHandlers = new AggregatedOperationConsoleHandler();
 		
 		for(ILangOperationsListener processListener : getListeners()) {
-			IOperationConsoleHandler handler = processListener.beginOperation(kind, clearConsole, activateConsole);
+			IOperationConsoleHandler handler = processListener.beginOperation(options);
 			aggregatedHandlers.handlers.add(handler);
 		}
 		return aggregatedHandlers;
-	}
-	
-	public final RunProcessTask newRunToolOperation2(ProcessBuilder pb, IProgressMonitor pm) {
-		IOperationConsoleHandler opHandler = startNewToolOperation();
-		return newRunProcessTask(opHandler, pb, pm);
-	}
-	
-	public final RunProcessTask newRunProcessTask(IOperationConsoleHandler handler, ProcessBuilder pb, 
-			IProgressMonitor pm) {
-		return newRunProcessTask(handler, pb, cm(pm));
-	}
-	public RunProcessTask newRunProcessTask(IOperationConsoleHandler handler, ProcessBuilder pb, ICancelMonitor cm) {
-		return new RunProcessTask(handler, pb, cm);
 	}
 	
 	public static class AggregatedOperationConsoleHandler implements IOperationConsoleHandler {
@@ -175,25 +159,43 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 		
 	}
 	
-	public class RunProcessTask extends AbstractRunProcessTask {
+	/* -----------------  ----------------- */
+	
+	public final RunToolTask newRunBuildToolOperation(ProcessBuilder pb, IProgressMonitor pm) {
+		IOperationConsoleHandler opHandler = startNewBuildOperation();
+		return newRunProcessTask(opHandler, pb, pm);
+	}
+	
+	public final RunToolTask newRunProcessTask(IOperationConsoleHandler handler, ProcessBuilder pb, 
+			IProgressMonitor pm) {
+		return newRunProcessTask(handler, pb, cm(pm));
+	}
+	public RunToolTask newRunProcessTask(IOperationConsoleHandler handler, ProcessBuilder pb, ICancelMonitor cm) {
+		String prefixText = ">> Running: ";
+		return new RunToolTask(handler, prefixText, pb, cm);
+	}
+	
+	public class RunToolTask extends AbstractRunProcessTask {
 		
-		protected final IOperationConsoleHandler opHandler;
+		protected final IOperationConsoleHandler handler;
+		protected final String prefixText;
 		
-		public RunProcessTask(IOperationConsoleHandler opHandler, ProcessBuilder pb, ICancelMonitor cm) {
+		public RunToolTask(IOperationConsoleHandler handler, ProcessBuilder pb, ICancelMonitor cm) {
+			this(handler, null, pb, cm);
+		}
+		
+		public RunToolTask(IOperationConsoleHandler handler, String prefixText, 
+				ProcessBuilder pb, ICancelMonitor cm) {
 			super(pb, cm);
-			this.opHandler = opHandler;
+			this.prefixText = prefixText;
+			this.handler = assertNotNull(handler);
 		}
 		
 		@Override
 		protected void handleProcessStartResult(ProcessStartHelper psh) {
-			String prefixText = newProcessStartInfo_getPrefixText();
-			opHandler.handleProcessStart(prefixText, pb, psh);
+			handler.handleProcessStart(prefixText, pb, psh);
 		}
 		
-	}
-	
-	protected String newProcessStartInfo_getPrefixText() {
-		return ">> Running: ";
 	}
 	
 	/* ----------------- ----------------- */
@@ -206,40 +208,11 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, ICancelMonitor cm) 
 			throws CoreException, OperationCancellation {
 		try {
-			return new RunEngineClientOperation(pb, cm).runProcess(clientInput);
+			IOperationConsoleHandler handler = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
+			return new RunToolTask(handler, pb, cm).runProcess(clientInput);
 		} catch(CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
-	}
-	
-	public class RunEngineClientOperation extends AbstractRunProcessTask {
-		
-		public RunEngineClientOperation(ProcessBuilder pb, ICancelMonitor cancelMonitor) {
-			super(pb, cancelMonitor);
-		}
-		
-		@Override
-		protected void handleProcessStartResult(ProcessStartHelper psh) {
-			for (ILangOperationsListener listener : AbstractToolManager.this.getListeners()) {
-				listener.engineClientToolStart(pb, psh);
-			}
-		}
-		
-	}
-	
-	public class StartEngineDaemonOperation extends AbstractRunProcessTask {
-		
-		public StartEngineDaemonOperation(ProcessBuilder pb, ICancelMonitor cancelMonitor) {
-			super(pb, cancelMonitor);
-		}
-		
-		@Override
-		protected void handleProcessStartResult(ProcessStartHelper psh) {
-			for (ILangOperationsListener listener : getListeners()) {
-				listener.engineDaemonStart(pb, psh);
-			}
-		}
-		
 	}
 	
 	/* -----------------  ----------------- */
@@ -247,7 +220,7 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	/** 
 	 * Helper to start engine client processes in the tool manager. 
 	 */
-	public class ToolManagerEngineToolRunner implements IOperationHelper {
+	public class ToolManagerEngineToolRunner implements IOperationService {
 		
 		protected final boolean throwOnNonZeroStatus;
 		protected final EclipseCancelMonitor cm;
@@ -260,7 +233,8 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 		@Override
 		public ExternalProcessResult runProcess(ProcessBuilder pb, String input) throws CommonException,
 				OperationCancellation {
-			return new RunEngineClientOperation(pb, cm).runProcess(input, throwOnNonZeroStatus);
+			IOperationConsoleHandler handler = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
+			return new RunToolTask(handler, pb, cm).runProcess(input, throwOnNonZeroStatus);
 		}
 		
 		@Override
