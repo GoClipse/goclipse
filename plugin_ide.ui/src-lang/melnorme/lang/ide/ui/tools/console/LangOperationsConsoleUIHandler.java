@@ -12,7 +12,6 @@ package melnorme.lang.ide.ui.tools.console;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,8 +21,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
-import melnorme.lang.ide.core.operations.MessageEventInfo;
-import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.ide.ui.LangImages;
@@ -56,7 +53,7 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 	/* -----------------  ----------------- */
 	
 	@SuppressWarnings("unused")
-	protected final String getBuildConsoleName(IProject project) {
+	protected String getBuildConsoleName(IProject project) {
 		return LangUIPlugin_Actual.BUILD_ConsoleName;
 	}
 	
@@ -66,7 +63,7 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 	
 	protected ToolsConsole getBuildConsole(IProject project, boolean clearConsole) {
 		String operationConsoleName = getBuildConsoleName(project);
-		return ConsoleUtils.getOrCreateToolsConsole2(operationConsoleName, clearConsole, ToolsConsole.class, 
+		return ConsoleUtils.getOrCreateToolsConsole(operationConsoleName, clearConsole, ToolsConsole.class, 
 			() -> createBuildConsole(operationConsoleName));
 	}
 	
@@ -74,59 +71,35 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void handleStartBuildOperation(OperationInfo opInfo) {
-		assertTrue(opInfo.isStarted() == false);
+	public IOperationConsoleHandler beginOperation(ProcessStartKind kind, boolean clearConsole, 
+			boolean activateConsole) {
 		
-		boolean clearConsole = true;
-		IProject project = opInfo.getProject();
+		IOperationConsoleHandler opHandler = doBeginOperation(kind, clearConsole);
 		
-		ToolsConsole console = getBuildConsole(project, clearConsole);
-		
-		if(opInfo.explicitConsoleNotify) {
-			console.activate();
+		if(activateConsole){
+			opHandler.activate();
 		}
 		
-		opInfo.putProperty(TOOL_INFO__KEY_CONSOLE, console);
+		return opHandler;
 	}
 	
-	public static final String TOOL_INFO__KEY_CONSOLE = "CONSOLE";
-	
-	protected ToolsConsole getOperationConsole(OperationInfo opInfo) {
-		assertNotNull(opInfo);
-		return opInfo.getProperty(TOOL_INFO__KEY_CONSOLE, ToolsConsole.class);
-	}
-	
-	@Override
-	public void handleMessage(MessageEventInfo messageEvent) {
-		ToolsConsole console = getOperationConsole(messageEvent.opInfo);
-		console.writeOperationInfo(messageEvent.operationMessage);
-	}
-	
-	@Override
-	public ILangOperationConsoleHandler getOperationUIHandler(ProcessStartKind kind, OperationInfo opInfo) {
+	protected IOperationConsoleHandler doBeginOperation(ProcessStartKind kind, boolean clearConsole) {
 		switch (kind) {
 		case BUILD: {
-			assertNotNull(opInfo); /* FIXME: review need for this contract */
-			ToolsConsole console = getOperationConsole(opInfo);
-			assertNotNull(console);
+			ToolsConsole console = getBuildConsole(null, clearConsole);
 			return createConsoleHandler(kind, console, console.stdOut, console.stdErr);
 		}
 		case ENGINE_SERVER: {
 			if(ToolchainPreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
 				// return no-op handler.
-				return new ILangOperationConsoleHandler() {
-					@Override
-					public void handleProcessStart(String prefixText, ProcessBuilder pb,
-							ProcessStartHelper processStartHelper) {
-					}
-				};
+				return new NoopOperationConsoleHandler();
 			}
 			
-			EngineToolsConsole console = EngineToolsConsole.getConsole();
+			EngineToolsConsole console = EngineToolsConsole.getConsole(false);
 			return createConsoleHandler(kind, console, console.serverStdOut, console.serverStdErr);
 		}
 		case ENGINE_TOOLS: {
-			EngineToolsConsole console = EngineToolsConsole.getConsole();
+			EngineToolsConsole console = EngineToolsConsole.getConsole(false);
 			return createConsoleHandler(kind, console, console.stdOut, console.stdErr);
 		}
 		}
@@ -140,7 +113,21 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 	
 	/* -----------------  ----------------- */
 	
-	public class LangOperationConsoleHandler implements ILangOperationConsoleHandler {
+	public class NoopOperationConsoleHandler implements IOperationConsoleHandler {
+		@Override
+		public void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper psh) {
+		}
+		
+		@Override
+		public void writeInfoMessage(String operationMessage) {
+		}
+		
+		@Override
+		public void activate() {
+		}
+	}
+	
+	public class LangOperationConsoleHandler implements IOperationConsoleHandler {
 		
 		protected final ProcessStartKind kind;
 		protected final ToolsConsole console;
@@ -152,11 +139,16 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 		
 		public LangOperationConsoleHandler(ProcessStartKind kind, ToolsConsole console, 
 				IOConsoleOutputStream stdOut, IOConsoleOutputStream stdErr) {
-			this.kind = kind;
-			this.console = console;
+			this.kind = assertNotNull(kind);
+			this.console = assertNotNull(console);
 			this.infoOut = console.infoOut;
 			this.stdOut = stdOut;
 			this.stdErr = stdErr;
+		}
+		
+		@Override
+		public void writeInfoMessage(String operationMessage) {
+			console.writeOperationInfo(operationMessage);
 		}
 		
 		@Override
@@ -217,6 +209,11 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 			} catch (IOException e) {
 				// Ignore
 			}
+		}
+		
+		@Override
+		public void activate() {
+			console.activate();
 		}
 		
 	}

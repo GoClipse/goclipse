@@ -18,8 +18,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.AbstractToolManager.RunProcessTask;
-import melnorme.lang.ide.core.operations.MessageEventInfo;
-import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.collections.Indexable;
@@ -46,12 +45,13 @@ public abstract class RunToolOperation extends AbstractUIOperation {
 			throws CoreException, CommonException, OperationCancellation {
 		ProcessBuilder pb = createProcessBuilder();
 		
-		OperationInfo opInfo = getToolManager().startNewToolOperation();
+		IOperationConsoleHandler opHandler = getToolManager().startNewToolOperation();
 		
-		getToolManager().notifyMessageEvent(new MessageEventInfo(opInfo, 
-			TextMessageUtils.headerBIG(getOperationStartMessage())));
+		opHandler.writeInfoMessage(
+			TextMessageUtils.headerBIG(getOperationStartMessage())
+		);
 		
-		RunProcessTask runToolTask = getToolManager().newRunToolTask(opInfo, pb, monitor);
+		RunProcessTask runToolTask = getToolManager().newRunProcessTask(opHandler, pb, monitor);
 		runProcessTask(runToolTask);
 	}
 	
