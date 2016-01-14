@@ -54,7 +54,7 @@ public class GoToolsPreferencePage extends DaemonToolPreferencePage implements
 			oracleField = new DownloadToolTextField("Executable:", "Download...") {
 				@Override
 				protected BasicUIOperation getDownloadButtonHandler() {
-					return new Start_GoInstallJob_Operation("Download oracle", this,
+					return new Start_GoInstallJob_Operation("Download oracle", "Downloading oracle...", this,
 						"golang.org/x/tools/cmd/oracle",
 						"oracle") {
 					};
@@ -86,7 +86,7 @@ public class GoToolsPreferencePage extends DaemonToolPreferencePage implements
 			return new DownloadToolTextField("Executable:", "Download...") {
 				@Override
 				protected BasicUIOperation getDownloadButtonHandler() {
-					return new Start_GoInstallJob_Operation("Download gocode", this,
+					return new Start_GoInstallJob_Operation("Download gocode", "Downloading gocode...", this,
 						"github.com/nsf/gocode",
 						"gocode") {
 					};

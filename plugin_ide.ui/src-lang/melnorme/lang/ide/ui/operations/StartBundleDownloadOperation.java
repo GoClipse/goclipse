@@ -38,9 +38,11 @@ import melnorme.utilbox.misc.ArrayUtil;
 public abstract class StartBundleDownloadOperation extends BasicUIOperation {
 	
 	protected final AbstractToolManager toolMgr = LangCore.getToolManager();
+	protected final String downloadBundleJobName;
 	
-	public StartBundleDownloadOperation(String operationName) {
+	public StartBundleDownloadOperation(String operationName, String downloadBundleJobName) {
 		super(operationName);
+		this.downloadBundleJobName = assertNotNull(downloadBundleJobName);
 	}
 	
 	protected void startProcessUnderJob(ProcessBuilder pb, String toolLocation) {
@@ -108,7 +110,7 @@ public abstract class StartBundleDownloadOperation extends BasicUIOperation {
 	}
 	
 	protected void scheduleDownloadJob(ProcessBuilder pb) {
-		new RunOperationAsJob(operationName, (pm) -> {
+		new RunOperationAsJob(downloadBundleJobName, (pm) -> {
 			
 			IOperationConsoleHandler handler = inJob_handleOperationStart();
 			
