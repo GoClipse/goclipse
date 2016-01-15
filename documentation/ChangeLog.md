@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Added "apl" and "main" code snippets.
  * Added improved download functionality in gocode/oracle preference page. 
  * Fixed regression: Console view always activates when a build is invoked. (#158)
  * Pressing F2 in the editor now shows information popup for problem under cursor (same as the mouse-over hover).
