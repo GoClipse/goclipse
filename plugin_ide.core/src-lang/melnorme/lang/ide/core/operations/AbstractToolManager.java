@@ -93,9 +93,22 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	
 	/* -----------------  ----------------- */
 	
+	public void logAndNotifyError(String title, StatusException ce) {
+		logAndNotifyError(title, title, ce);
+	}
+	
+	public void logAndNotifyError(String msgId, String title, StatusException ce) {
+		LangCore.logError(ce);
+		notifyMessage(msgId, ce.getStatusLevel(), title, ce.getMessage());
+	}
+	
 	public void notifyMessage(StatusLevel statusLevel, String title, String message) {
+		notifyMessage(null, statusLevel, title, message);
+	}
+	
+	public void notifyMessage(String msgId, StatusLevel statusLevel, String title, String message) {
 		for(ILangOperationsListener listener : getListeners()) {
-			listener.notifyMessage(statusLevel, title, message);
+			listener.notifyMessage(msgId, statusLevel, title, message);
 		}
 	}
 	
@@ -202,17 +215,17 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, IProgressMonitor pm) 
 			throws CoreException, OperationCancellation {
-		return runEngineTool(pb, clientInput, cm(pm));
-	}
-	
-	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, ICancelMonitor cm) 
-			throws CoreException, OperationCancellation {
 		try {
-			IOperationConsoleHandler handler = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
-			return new RunToolTask(handler, pb, cm).runProcess(clientInput);
+			return runEngineTool(pb, clientInput, cm(pm));
 		} catch(CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
+	}
+	
+	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, ICancelMonitor cm)
+			throws CommonException, OperationCancellation {
+		IOperationConsoleHandler handler = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
+		return new RunToolTask(handler, pb, cm).runProcess(clientInput);
 	}
 	
 	/* -----------------  ----------------- */

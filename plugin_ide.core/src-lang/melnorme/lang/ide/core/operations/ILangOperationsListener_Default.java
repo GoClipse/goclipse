@@ -15,8 +15,12 @@ import melnorme.lang.tooling.data.StatusLevel;
 
 public interface ILangOperationsListener_Default {
 	
+	default void notifyMessage(StatusLevel statusLevel, String title, String message) {
+		notifyMessage(null, statusLevel, title, message);
+	}
+	
 	/** Report a message to the user. */
-	void notifyMessage(StatusLevel statusLevel, String title, String message);
+	void notifyMessage(String msgId, StatusLevel statusLevel, String title, String message);
 	
 	/* -----------------  ----------------- */
 	

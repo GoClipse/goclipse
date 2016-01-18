@@ -39,6 +39,10 @@ public class CommonException extends Exception {
 		super(assertNotNull(message), cause);
 	}
 	
+	public StatusException toStatusError() {
+		return toStatusException(StatusLevel.ERROR);
+	}
+	
 	public StatusException toStatusException(StatusLevel statusLevel) {
 		if(this instanceof StatusException) {
 			return (StatusException) this;
