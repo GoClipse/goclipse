@@ -3,4 +3,38 @@
 <template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="BUG" description="BUG here comment" enabled="true" name="BUG">/* FIXME: BUG here${cursor}*/</template>
 <template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="FIXME" description="FIXME comment" enabled="true" name="FIXME">/* FIXME: ${cursor}*/</template>
 <template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="header_comment" description="header comment" enabled="true" name="headerbar">/* ----------------- ${header} ----------------- */</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="for1" description="iterate over array" enabled="true" name="for">for ${i} := 0; ${i} &lt; len(${array}); ${i}++ {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="for2" description="C style for" enabled="true" name="for">for ${init}; ${condition}; ${post} {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="for3" description="C while" enabled="true" name="for">for ${condition} {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="forever" description="forever loop" enabled="true" name="forever">for {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="forrange1" description="iterate with a range (index only)" enabled="true" name="forrange">for ${i} := range ${cont} {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="forrange2" description="iterate with a range (value only)" enabled="true" name="forrange">for _, ${v} := range ${cont} {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="forrange3" description="iterate with a range (index and value)" enabled="true" name="forrange">for ${i}, ${v} := range ${cont} {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="make1" description="make slice" enabled="true" name="make">make([]${type}, ${size})</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="make2" description="make map" enabled="true" name="make">make(map[${key_type}]${value_type})</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="make3" description="make channel" enabled="true" name="make">make(chan ${type})</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="switch1" description="switch case statement" enabled="true" name="switch">switch ${key} {&#13;
+case ${value}:&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="switch2" description="if-else-if-else chain" enabled="true" name="switch">switch {&#13;
+case ${condition1}:&#13;
+	${cursor}&#13;
+case ${condition2}:&#13;
+	&#13;
+}</template>
 </templates>
