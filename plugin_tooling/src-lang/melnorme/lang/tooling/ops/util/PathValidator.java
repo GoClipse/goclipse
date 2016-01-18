@@ -13,14 +13,14 @@ package melnorme.lang.tooling.ops.util;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.data.AbstractValidatorExt;
-import melnorme.lang.tooling.data.IFieldValidator;
+import melnorme.lang.tooling.data.IValidator;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.data.ValidationException;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
-public class PathValidator extends AbstractValidatorExt implements IFieldValidator {
+public class PathValidator extends AbstractValidatorExt implements IValidator<String, Path> {
 	
 	public static enum LocationKind { ANY, FILE_ONLY, DIR_ONLY }
 	
@@ -68,7 +68,7 @@ public class PathValidator extends AbstractValidatorExt implements IFieldValidat
 	}
 	
 	@Override
-	public Object getValidatedField(String pathString) throws ValidationException {
+	public Path getValidatedField(String pathString) throws ValidationException {
 		return getValidatedPath(pathString);
 	}
 	

@@ -15,14 +15,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.fields.IFieldView;
 
 // Need to review this
-public interface IValidatedField<TYPE> extends IValidationSource {
+public interface IValidatedValue<TYPE> extends IValidationSource {
 	
-	public TYPE getValidatedField() throws StatusException;
+	public TYPE getValidatedValue() throws StatusException;
 	
 	@Override
 	default StatusException getValidationStatus() {
 		try {
-			getValidatedField();
+			getValidatedValue();
 			return null;
 		} catch (StatusException se) {
 			return se;
@@ -31,30 +31,30 @@ public interface IValidatedField<TYPE> extends IValidationSource {
 	
 	/* -----------------  ----------------- */
 	
-	public static class NullValidationSource<T> implements IValidatedField<T> {
+	public static class NullValidationSource<T> implements IValidatedValue<T> {
 		
 		public static <T> NullValidationSource<T> create() {
 			return new NullValidationSource<>();
 		}
 		
 		@Override
-		public T getValidatedField() throws StatusException {
+		public T getValidatedValue() throws StatusException {
 			return null;
 		}
 	}
 	
-	public static class ValidatedField implements IValidatedField<Object> {
+	public static class ValidatedField2<SOURCE> implements IValidatedValue<Object> {
 		
-		public final IFieldView<String> property;
-		public final IFieldValidator validator;
+		public final IFieldView<SOURCE> property;
+		public final IValidator<SOURCE, ?> validator;
 		
-		public ValidatedField(IFieldView<String> field, IFieldValidator validator) {
+		public ValidatedField2(IFieldView<SOURCE> field, IValidator<SOURCE, ?> validator) {
 			this.property = assertNotNull(field);
 			this.validator = assertNotNull(validator);
 		}
 		
 		@Override
-		public Object getValidatedField() throws StatusException {
+		public Object getValidatedValue() throws StatusException {
 			return validator.getValidatedField(property.getValue());
 		}
 	}

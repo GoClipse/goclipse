@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.data;
 
-import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
+import melnorme.lang.tooling.data.IValidatedValue.ValidatedField2;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.IFieldView;
@@ -19,8 +19,8 @@ public class MultipleFieldValidation extends DomainField<IStatusMessage> impleme
 	
 	protected final ArrayList2<IValidationSource> validators = new ArrayList2<>();
 	
-	public void addFieldValidation(boolean init, IFieldView<String> field, IFieldValidator validator) {
-		addFieldValidation(init, field, new ValidatedField(field, validator));
+	public <SOURCE> void addFieldValidation(boolean init, IFieldView<SOURCE> field, IValidator<SOURCE, ?> validator) {
+		addFieldValidation(init, field, new ValidatedField2<>(field, validator));
 	}
 	
 	public void addFieldValidation(boolean init, IFieldView<?> field, IValidationSource validationSource) {

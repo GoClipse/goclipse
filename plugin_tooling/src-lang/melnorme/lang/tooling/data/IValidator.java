@@ -10,11 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.tooling.data;
 
-public interface IFieldValidator {
+public interface IValidator<VALUE, RESULT> {
 	
-	public Object getValidatedField(String value) throws StatusException;
+	public RESULT getValidatedField(VALUE value) throws StatusException;
 	
-	static IStatusMessage getFieldStatus(IFieldValidator validator, String value) {
+	static <SOURCE> IStatusMessage getFieldStatus(IValidator<SOURCE, ?> validator, SOURCE value) {
 		if(validator == null) {
 			return null;
 		}

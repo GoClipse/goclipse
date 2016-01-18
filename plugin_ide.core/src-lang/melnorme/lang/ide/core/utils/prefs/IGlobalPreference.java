@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import org.eclipse.core.resources.IProject;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.utilbox.fields.IFieldView;
@@ -29,5 +30,9 @@ public interface IGlobalPreference<T> {
 	
 	
 	IProjectPreference<T> getProjectPreference();
+	
+	default T getEffectiveValue(IProject project) {
+		return getProjectPreference().getEffectiveValue(project);
+	}
 	
 }

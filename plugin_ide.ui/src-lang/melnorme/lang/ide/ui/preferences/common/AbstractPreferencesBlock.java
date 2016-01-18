@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.osgi.service.prefs.BackingStoreException;
 
+import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
@@ -30,6 +31,7 @@ import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IProperty;
 
 public abstract class AbstractPreferencesBlock extends AbstractWidgetExt implements IPreferencesWidget {
@@ -58,6 +60,12 @@ public abstract class AbstractPreferencesBlock extends AbstractWidgetExt impleme
 	}
 	public <T> void bindToPreference(IProperty<T> field, IGlobalPreference<T> pref) {
 		addPrefElement(prefContext.getPreferencesBinder(field, pref));
+	}
+	
+	public void bindToDerivedPreference(IModelField<String> field, DerivedValuePreference<?> pref) {
+		addPrefElement(prefContext.getPreferencesBinder(field, pref));
+		
+		validation.addFieldValidation(true, field, pref.getValidator());
 	}
 	
 	/* -----------------  ----------------- */
