@@ -31,7 +31,7 @@ import com.googlecode.goclipse.tooling.env.GoOs;
 import melnorme.lang.ide.ui.preferences.AbstractPreferencesBlockExt;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
-import melnorme.lang.tooling.data.IValidatedField.ValidatedField;
+import melnorme.lang.tooling.data.IValidatedValue.ValidatedField2;
 import melnorme.lang.tooling.ops.util.LocationValidator;
 import melnorme.lang.utils.EnvUtils;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -49,7 +49,7 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 	
 	public final DirectoryTextField goRootField = new DirectoryTextField("GO&ROOT:");
 	protected final GoSDKLocationValidator goSDKLocationValidator = new GoSDKLocationValidator();
-	public final ValidatedField validatedGoRoot = new ValidatedField(goRootField, goSDKLocationValidator);
+	public final ValidatedField2<String> validatedGoRoot = new ValidatedField2<>(goRootField, goSDKLocationValidator);
 	
 	protected final FileTextField goFmtPath = new FileTextField("gofmt:");
 	protected final FileTextField goDocPath = new FileTextField("godoc:");

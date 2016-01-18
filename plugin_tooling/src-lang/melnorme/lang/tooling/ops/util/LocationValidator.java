@@ -10,10 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops.util;
 
-import melnorme.lang.tooling.data.IFieldValidator;
+import java.nio.file.Path;
+
+import melnorme.lang.tooling.data.IValidator;
 import melnorme.lang.tooling.data.ValidationException;
 
-public class LocationValidator extends PathValidator implements IFieldValidator {
+public class LocationValidator extends PathValidator implements IValidator<String, Path> {
 	
 	public LocationValidator(String fieldNamePrefix) {
 		super(fieldNamePrefix);
@@ -24,8 +26,8 @@ public class LocationValidator extends PathValidator implements IFieldValidator 
 	}
 	
 	@Override
-	public Object getValidatedField(String pathString) throws ValidationException {
-		return getValidatedLocation(pathString);
+	public Path getValidatedField(String pathString) throws ValidationException {
+		return getValidatedLocation(pathString).path;
 	}
 	
 }
