@@ -14,11 +14,15 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
@@ -27,7 +31,8 @@ import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartH
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.ide.ui.utils.StatusMessageDialog;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
@@ -41,12 +46,25 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 		super();
 	}
 	
+	protected final Set<String> mutedMessages = Collections.synchronizedSet(new HashSet<>());
+	
 	@Override
-	public void notifyMessage(final StatusLevel statusLevel, final String title, final String message) {
+	public void notifyMessage(String msgId, StatusLevel statusLevel, String title, String message) {
 		SWTUtil.runInSWTThread(new Runnable() {
 			@Override
 			public void run() {
-				UIOperationsStatusHandler.displayStatusMessage(title, statusLevel, message);
+				if(msgId != null && mutedMessages.contains(msgId)) { 
+					return;
+				}
+				Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
+				new StatusMessageDialog(shell, title, statusLevel, message) {
+					@Override
+					protected void setIgnoreFutureMessages() {
+						if(msgId != null) {
+							mutedMessages.add(msgId);
+						}
+					};
+				}.open();
 			}
 		});
 	}
