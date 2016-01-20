@@ -99,7 +99,13 @@ public class SourceLinesInfo {
 	protected int getValidateOffset_do(int lineIndex, int columnIndex) throws CommonException {
 		int offset = getOffsetForLine(lineIndex) + columnIndex;
 		
-		if(offset >= source.length()) {
+		if(lineIndex + 1 < lines.size()) {
+			if(offset >= getOffsetForLine(lineIndex + 1)) {
+				throw new CommonException("Invalid column, out of bounds.");
+			}
+		}
+		
+		if(offset > source.length()) {
 			throw new CommonException("Invalid line+column, out of bounds.");
 		}
 		return offset;
