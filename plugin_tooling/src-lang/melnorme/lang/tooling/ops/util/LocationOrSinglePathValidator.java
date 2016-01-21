@@ -12,7 +12,7 @@ package melnorme.lang.tooling.ops.util;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.ValidationException;
 
 public class LocationOrSinglePathValidator extends PathValidator {
@@ -25,7 +25,7 @@ public class LocationOrSinglePathValidator extends PathValidator {
 	@Override
 	protected Path validateRelativePath(Path path) throws ValidationException {
 		if(path.getNameCount() != 1) {
-			throw createException(StatusLevel.ERROR, ValidationMessages.Path_NotAbsoluteNorSingle(path));
+			throw createException(Severity.ERROR, ValidationMessages.Path_NotAbsoluteNorSingle(path));
 		}
 		
 		return path;

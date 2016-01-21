@@ -20,6 +20,16 @@ public enum Severity {
 	ERROR,
 	;
 	
+	public boolean isError() {
+		return this == Severity.ERROR;
+	}
+	
+	public boolean isHigherSeverity(Severity other) {
+		return ordinal() > other.ordinal();
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public static Severity fromString(String messageTypeString) throws CommonException {
 		if(messageTypeString == null) {
 			return null;

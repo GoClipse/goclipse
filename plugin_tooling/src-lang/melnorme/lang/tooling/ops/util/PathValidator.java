@@ -14,7 +14,7 @@ import java.nio.file.Path;
 
 import melnorme.lang.tooling.data.AbstractValidatorExt;
 import melnorme.lang.tooling.data.IValidator;
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.ValidationException;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -81,12 +81,12 @@ public class PathValidator extends AbstractValidatorExt implements IValidator<St
 			if(canBeEmpty) {
 				return null;
 			}
-			throw createException(StatusLevel.WARNING, ValidationMessages.Path_EmptyPath());
+			throw createException(Severity.ERROR, ValidationMessages.Path_EmptyPath());
 		}
 		
 		Path path = PathUtil.createPathOrNull(pathString);
 		if(path == null) {
-			throw createException(StatusLevel.ERROR, ValidationMessages.Path_InvalidPath(pathString));
+			throw createException(Severity.ERROR, ValidationMessages.Path_InvalidPath(pathString));
 		}
 		return path;
 	}
@@ -118,7 +118,7 @@ public class PathValidator extends AbstractValidatorExt implements IValidator<St
 	}
 	
 	protected ValidationException error_NotAbsolute(Path path) throws ValidationException {
-		return createException(StatusLevel.ERROR, ValidationMessages.Location_NotAbsolute(path));
+		return createException(Severity.ERROR, ValidationMessages.Location_NotAbsolute(path));
 	}
 	
 	protected Location validateLocation(Location location) throws ValidationException {
@@ -128,7 +128,7 @@ public class PathValidator extends AbstractValidatorExt implements IValidator<St
 	
 	protected void validateLocation(Location location, LocationKind locKind) throws ValidationException {
 		if(!location.toFile().exists()) {
-			throw createException(StatusLevel.WARNING, ValidationMessages.Location_DoesntExist(location));
+			throw createException(Severity.WARNING, ValidationMessages.Location_DoesntExist(location));
 		}
 		
 		validateType(location, locKind);
@@ -136,10 +136,10 @@ public class PathValidator extends AbstractValidatorExt implements IValidator<St
 	
 	public void validateType(Location location, LocationKind locKind) throws ValidationException {
 		if(locKind == LocationKind.FILE_ONLY && !location.toFile().isFile()) {
-			throw createException(StatusLevel.WARNING, ValidationMessages.Location_NotAFile(location));
+			throw createException(Severity.WARNING, ValidationMessages.Location_NotAFile(location));
 		}
 		if(locKind == LocationKind.DIR_ONLY && !location.toFile().isDirectory()) {
-			throw createException(StatusLevel.WARNING, ValidationMessages.Location_NotADirectory(location));
+			throw createException(Severity.WARNING, ValidationMessages.Location_NotADirectory(location));
 		}
 	}
 	

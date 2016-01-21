@@ -21,8 +21,8 @@ import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
@@ -135,7 +135,7 @@ public class ProjectBuildInfo {
 			newBuildTargets.add(buildTargetCursor);
 		}
 		if(!mutated) {
-			throw new StatusException(StatusLevel.WARNING, BuildManagerMessages.ERROR_MODEL_OUT_OF_DATE);
+			throw new StatusException(Severity.WARNING, BuildManagerMessages.ERROR_MODEL_OUT_OF_DATE);
 		}
 		
 		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargets);

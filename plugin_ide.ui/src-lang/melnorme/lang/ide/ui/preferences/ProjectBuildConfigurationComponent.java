@@ -28,7 +28,7 @@ import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractDisableableWidget;
 import melnorme.utilbox.collections.Collection2;
@@ -159,7 +159,7 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	}
 	
 	protected void handleStatusException(CommonException ce) {
-		UIOperationsStatusHandler.handleStatus(true, "Error", ce.toStatusException(StatusLevel.ERROR));
+		UIOperationsStatusHandler.handleStatus(true, "Error", ce.toStatusException(Severity.ERROR));
 	}
 	
 	/* -----------------  ----------------- */

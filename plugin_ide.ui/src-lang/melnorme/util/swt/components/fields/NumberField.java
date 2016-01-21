@@ -14,8 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.lang.tooling.data.IValidatableField;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.util.NumberValidator;
 import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.utilbox.core.CommonException;
@@ -37,7 +37,7 @@ public class NumberField extends TextFieldExt implements IValidatableField<Strin
 			doValidatePositiveNumber(number);
 			return null;
 		} catch(CommonException ce) {
-			return ce.toStatusException(StatusLevel.ERROR);
+			return ce.toStatusException(Severity.ERROR);
 		}
 	}
 	

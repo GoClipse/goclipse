@@ -13,7 +13,6 @@ package melnorme.lang.ide.core.utils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
@@ -36,10 +35,9 @@ public class ProjectValidator extends AbstractValidator {
 		if(projectName == null || projectName.isEmpty()) {
 			throw error(msg_ProjectNotSpecified());
 		}
-		IStatus status = ResourceUtils.getWorkspace().validateName(projectName, IResource.PROJECT);
-		if(!status.isOK()) {
-			throw EclipseUtils.statusToStatusException(status);
-		}
+		EclipseUtils.validate(
+			() -> ResourceUtils.getWorkspace().validateName(projectName, IResource.PROJECT));
+		
 		return ResourceUtils.getWorkspaceRoot().getProject(projectName);
 	}
 	

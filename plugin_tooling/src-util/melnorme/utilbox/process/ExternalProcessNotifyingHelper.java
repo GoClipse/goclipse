@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.misc.ILogHandler;
@@ -129,7 +129,7 @@ public class ExternalProcessNotifyingHelper extends ExternalProcessHelper {
 	}
 	
 	protected void handleListenerException(String message, RuntimeException e) {
-		logHandler.logStatus(new StatusException(StatusLevel.ERROR, message, e));
+		logHandler.logStatus(new StatusException(Severity.ERROR, message, e));
 	}
 	
 	@Override

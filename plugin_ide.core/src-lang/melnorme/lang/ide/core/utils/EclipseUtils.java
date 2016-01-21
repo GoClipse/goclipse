@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -28,6 +29,7 @@ import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tooling.data.IStatusMessage;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -101,11 +103,15 @@ public class EclipseUtils {
 	
 	/* ----------------- status ----------------- */
 	
-	public static int statusLevelToEclipseSeverity(IStatusMessage se) {
-		return statusLevelToEclipseSeverity(se.getStatusLevel());
+	public static int toEclipseSeverity(IStatusMessage se) {
+		return toEclipseSeverity(se.getSeverity());
 	}
 	
-	public static int statusLevelToEclipseSeverity(StatusLevel statusLevel) {
+	public static int toEclipseSeverity(Severity severity) {
+		return toEclipseSeverity(severity.toStatusLevel());
+	}
+	
+	public static int toEclipseSeverity(StatusLevel statusLevel) {
 		switch(statusLevel) {
 		case OK: return IStatus.OK;
 		case INFO: return IStatus.INFO;
@@ -115,7 +121,7 @@ public class EclipseUtils {
 		throw assertUnreachable();
 	}
 	
-	public static StatusLevel eclipseSeverityToStatusLevel(IStatus status) {
+	public static StatusLevel toStatusLevel(IStatus status) {
 		switch(status.getSeverity()) {
 		case IStatus.CANCEL: return null;
 		case IStatus.OK: return StatusLevel.OK;
@@ -126,8 +132,21 @@ public class EclipseUtils {
 		throw assertUnreachable();
 	}
 	
-	public static StatusException statusToStatusException(IStatus status) {
-		return new StatusException(eclipseSeverityToStatusLevel(status), status.getMessage(), status.getException());
+	public static void validate(Supplier<IStatus> statusGetter) throws StatusException {
+		IStatus status = statusGetter.get();
+		StatusException se = statusToStatusException3(status);
+		if(se != null) {
+			throw se;
+		}
+	}
+	
+	public static StatusException statusToStatusException3(IStatus status) throws StatusException {
+		if(status.isOK() || status.getSeverity() == IStatus.CANCEL) {
+			return null;
+		}
+		
+		Severity severity = toStatusLevel(status).toSeverity();
+		return new StatusException(severity, status.getMessage(), status.getException());
 	}
 	
 }
