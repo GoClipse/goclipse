@@ -98,7 +98,7 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	}
 	
 	public void logAndNotifyError(String msgId, String title, StatusException ce) {
-		LangCore.logError(ce);
+		LangCore.logError(title, ce);
 		notifyMessage(msgId, ce.getSeverity().toStatusLevel(), title, ce.getMessage());
 	}
 	

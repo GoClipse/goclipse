@@ -18,7 +18,7 @@ import melnorme.utilbox.misc.MiscUtil;
 /**
  * Utility markers and flags for commented code, or conditional blocks.
  */
-public interface DevelopmentCodeMarkers {
+public class DevelopmentCodeMarkers {
 	
 	// Marker for commented out buggy code
 	public static final boolean BUGS_MODE = false; 
@@ -29,7 +29,10 @@ public interface DevelopmentCodeMarkers {
 	// Marker for disabled functionality
 	public static final boolean DISABLED_FUNCTIONALITY = false;
 	
-	// Flag for lightweight tests execution mode
+	// Flag indicating we are running in tests mode
+	public static boolean TESTS_MODE = false;
+	
+	// Flag indicating we are running in tests lightweight/quick mode
 	public static final boolean TESTS_LITE_MODE = MiscUtil.getSystemProperty("" + "TestsLiteMode", false); 
 	
 	/**

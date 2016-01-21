@@ -173,7 +173,7 @@ public abstract class BuildManager {
 					ArrayList2<BuildTarget> buildTargets = createSerializer().readProjectBuildInfo(targetsPrefValue);
 					currentBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
 				} catch(CommonException ce) {
-					LangCore.logError(ce);
+					LangCore.logError("Error reading project build-info.", ce);
 				}
 			}
 		}

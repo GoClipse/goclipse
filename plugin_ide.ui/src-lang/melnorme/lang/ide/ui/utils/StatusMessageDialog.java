@@ -85,7 +85,7 @@ public abstract class StatusMessageDialog extends IconAndMessageDialog {
 	}
 	
 	@Override
-	protected void okPressed() {
+	public void okPressed() {
 		if(ignore.getSelection()) {
 			setIgnoreFutureMessages();
 		}
