@@ -25,6 +25,11 @@ public class ParserError {
 	public final String msgErrorSource;
 	public final Object msgData;
 	
+	public ParserError(ParserErrorTypes errorType, SourceRange sourceRange, 
+			String msgErrorSource, Object msgData) {
+		this(errorType, Severity.ERROR, sourceRange, msgErrorSource, msgData);
+	}
+	
 	public ParserError(ParserErrorTypes errorType, Severity severity, SourceRange sourceRange, 
 			String msgErrorSource, Object msgData) {
 		this.errorType = assertNotNull(errorType);

@@ -30,17 +30,17 @@ public enum Severity {
 	
 	/* -----------------  ----------------- */
 	
-	public static Severity fromString(String messageTypeString) throws CommonException {
-		if(messageTypeString == null) {
+	public static Severity fromString(String severityString) throws CommonException {
+		if(severityString == null) {
 			return null;
 		}
 		
-		switch (messageTypeString.toUpperCase()) {
+		switch (severityString.toUpperCase()) {
 		case "WARNING": return WARNING;
 		case "ERROR": return ERROR;
 		case "INFO": return INFO;
 		default:
-			throw new CommonException("Invalid Status: " + messageTypeString);
+			throw new CommonException("Invalid Severity string `" + severityString + "`.");
 		}
 	}
 	
