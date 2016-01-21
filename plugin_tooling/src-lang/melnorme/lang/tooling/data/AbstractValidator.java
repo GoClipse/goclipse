@@ -27,7 +27,7 @@ public class AbstractValidator {
 	}
 	
 	protected StatusException error(String message, Throwable exception) throws StatusException {
-		throw new StatusException(StatusLevel.ERROR, message, exception);
+		throw new StatusException(Severity.ERROR, message, exception);
 	}
 	
 }

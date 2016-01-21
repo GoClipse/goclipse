@@ -54,7 +54,7 @@ public class LangCore extends LangCore_Actual {
 	
 	/** Logs status of given StatusException. */
 	public static void logStatusException(StatusException se) {
-		int severity = EclipseUtils.statusLevelToEclipseSeverity(se);
+		int severity = EclipseUtils.toEclipseSeverity(se);
 		getLog().log(createStatus(severity, se.getMessage(), se.getCause()));
 	}
 	

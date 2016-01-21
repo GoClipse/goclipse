@@ -12,7 +12,7 @@ package melnorme.lang.tooling.ops;
 
 import java.text.MessageFormat;
 
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.ValidationException;
 import melnorme.lang.tooling.ops.util.LocationValidator;
 import melnorme.utilbox.misc.Location;
@@ -30,7 +30,7 @@ public abstract class SDKLocationValidator extends LocationValidator {
 		Location sdkExecutableLocation = getSDKExecutableLocation(sdkLocation);
 		
 		if(!sdkExecutableLocation.toFile().exists()) {
-			throw createException(StatusLevel.WARNING, getSDKExecutableErrorMessage(sdkExecutableLocation));
+			throw createException(Severity.WARNING, getSDKExecutableErrorMessage(sdkExecutableLocation));
 		}
 		return sdkExecutableLocation;
 	}

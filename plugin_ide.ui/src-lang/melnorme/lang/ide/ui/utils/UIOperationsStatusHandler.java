@@ -17,8 +17,8 @@ import org.eclipse.swt.widgets.Shell;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.ui.LangUIMessages;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.core.CommonException;
 
 public class UIOperationsStatusHandler {
@@ -51,7 +51,7 @@ public class UIOperationsStatusHandler {
 	}
 	
 	public static void handleStatus(boolean logError, String title, CommonException ce) {
-		handleStatus(logError, title, ce.toStatusException(StatusLevel.ERROR));
+		handleStatus(logError, title, ce.toStatusException(Severity.ERROR));
 	}
 	
 	public static void handleStatus(String title, CommonException ce) {
@@ -64,8 +64,8 @@ public class UIOperationsStatusHandler {
 		handler.displayStatusMessage(title, status);
 	}
 	
-	public static void displayStatusMessage(String title, StatusLevel statusLevel, String message) {
-		handler.displayStatusMessage(title, statusLevel, message);
+	public static void displayStatusMessage(String title, Severity severity, String message) {
+		handler.displayStatusMessage(title, severity, message);
 	}
 	
 	public static void handleInternalError(String message, Throwable exception) {

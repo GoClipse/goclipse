@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import melnorme.lang.tooling.data.StatusLevel;
+import org.junit.Test;
+
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.core.CommonException;
-
-import org.junit.Test;
 
 
 public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
@@ -32,7 +32,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	protected static final Path BUILD_OUTPUT_TestResources = getTestResourcePath("buildOutput");
 	
 	protected static ToolSourceMessage error(Path path, int line, int column, String errorMessage) {
-		return new ToolSourceMessage(path, new SourceLineColumnRange(line, column), StatusLevel.ERROR, errorMessage);
+		return new ToolSourceMessage(path, new SourceLineColumnRange(line, column), Severity.ERROR, errorMessage);
 	}
 	
 	@Test

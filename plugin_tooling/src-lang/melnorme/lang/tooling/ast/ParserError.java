@@ -15,17 +15,20 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.Comparator;
 
-import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.data.Severity;
 
 public class ParserError {
 	
 	public final ParserErrorTypes errorType;
+	public final Severity severity;
 	public final SourceRange sourceRange;
 	public final String msgErrorSource;
 	public final Object msgData;
 	
-	public ParserError(ParserErrorTypes errorType, SourceRange sourceRange, String msgErrorSource, Object msgData) {
+	public ParserError(ParserErrorTypes errorType, Severity severity, SourceRange sourceRange, 
+			String msgErrorSource, Object msgData) {
 		this.errorType = assertNotNull(errorType);
+		this.severity = assertNotNull(severity);
 		this.sourceRange = assertNotNull(sourceRange);
 		this.msgErrorSource = msgErrorSource;
 		this.msgData = msgData;
@@ -45,6 +48,14 @@ public class ParserError {
 	
 	public int getEndPos() {
 		return getOffset() + getLength();
+	}
+	
+	public SourceRange getSourceRange() {
+		return sourceRange;
+	}
+	
+	public Severity getSeverity() {
+		return severity;
 	}
 	
 	@Override

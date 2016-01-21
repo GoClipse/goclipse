@@ -10,16 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.utils.operations;
 
-import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
-import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
+
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.tooling.data.Severity;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperation {
 	
@@ -57,11 +57,11 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 	/* -----------------  ----------------- */
 	
 	protected void dialogInfo(String message) {
-		UIOperationsStatusHandler.displayStatusMessage(operationName, StatusLevel.INFO, message);  
+		UIOperationsStatusHandler.displayStatusMessage(operationName, Severity.INFO, message);  
 	}
 	
 	protected void dialogError(String message) {
-		UIOperationsStatusHandler.displayStatusMessage(operationName, StatusLevel.ERROR, message);  
+		UIOperationsStatusHandler.displayStatusMessage(operationName, Severity.ERROR, message);  
 	}
 	
 }

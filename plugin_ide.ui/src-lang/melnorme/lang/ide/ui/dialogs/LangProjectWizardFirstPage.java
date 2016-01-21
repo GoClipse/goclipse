@@ -243,10 +243,8 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 				throw new CommonException(WizardMessages.LangNewProject_Location_invalidLocation);
 			}
 			
-			IStatus locationStatus = ResourceUtils.getWorkspace().validateProjectLocation(project, projectLocation);
-			if(!locationStatus.isOK()) {
-				throw EclipseUtils.statusToStatusException(locationStatus);
-			}
+			EclipseUtils.validate(
+				() -> ResourceUtils.getWorkspace().validateProjectLocation(project, projectLocation));
 		}
 		
 		/* -----------------  ----------------- */

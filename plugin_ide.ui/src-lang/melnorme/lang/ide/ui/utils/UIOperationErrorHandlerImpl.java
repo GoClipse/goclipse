@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Shell;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore.StatusExt;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
 
 /**
  * Utility for handling exceptions during UI operations, by presenting an information dialog to the user.
@@ -35,7 +35,7 @@ public class UIOperationErrorHandlerImpl {
 			message = "Error: ";
 		}
 		
-		StatusException status = new StatusException(StatusLevel.ERROR, message, exception);
+		StatusException status = new StatusException(Severity.ERROR, message, exception);
 		
 		handleStatus(logError, shell, title, status);
 	}
@@ -73,8 +73,8 @@ public class UIOperationErrorHandlerImpl {
 		handleStatus(false, null, title, status);
 	}
 	
-	public void displayStatusMessage(String title, StatusLevel statusLevel, String message) {
-		handleStatus(false, null, title, new StatusException(statusLevel, message));
+	public void displayStatusMessage(String title, Severity severity, String message) {
+		handleStatus(false, null, title, new StatusException(severity, message));
 	}
 	
 	
@@ -92,7 +92,7 @@ public class UIOperationErrorHandlerImpl {
 		
 		protected static StatusExt createDialogStatus(StatusException se) {
 			return LangCore.createStatus(
-				EclipseUtils.statusLevelToEclipseSeverity(se), 
+				EclipseUtils.toEclipseSeverity(se), 
 				null, 
 				new Exception(getExceptionText(se.getCause()))
 			);

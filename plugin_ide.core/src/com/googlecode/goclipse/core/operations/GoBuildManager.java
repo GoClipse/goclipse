@@ -30,8 +30,8 @@ import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
-import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
@@ -232,7 +232,7 @@ public class GoBuildManager extends BuildManager {
 			};
 			buildOutput.parseOutput(buildAllResult);
 			
-			new ToolMarkersUtil().addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir, pm);
+			new ToolMarkersHelper().addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir, pm);
 		}
 		
 	}

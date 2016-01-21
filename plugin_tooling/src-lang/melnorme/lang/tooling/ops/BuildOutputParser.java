@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
@@ -117,11 +118,11 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 		int endColumn = parseOptionalPositiveInt(msgdata.endColumnString);
 		
 		// messageTypeString should be valid to parse
-		StatusLevel msgKind = StatusLevel.fromString(msgdata.messageTypeString);
-		assertNotNull(msgKind);
+		Severity severity = Severity.fromString(msgdata.messageTypeString);
+		assertNotNull(severity);
 		
 		SourceLineColumnRange sourceRange = new SourceLineColumnRange(lineNo, column, endline, endColumn);
-		return new ToolSourceMessage(filePath, sourceRange, msgKind, msgdata.messageText);
+		return new ToolSourceMessage(filePath, sourceRange, severity, msgdata.messageText);
 	}
 	
 	protected StatusLevel parseMessageKind(String messageTypeString) throws CommonException {
