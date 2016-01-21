@@ -22,8 +22,8 @@ public abstract class StructureContainer implements IStructureElementContainer {
 	public StructureContainer(Indexable<? extends StructureElement> _children) {
 		this.children = nullToEmpty(_children).upcastTypeParameter();
 		
-		for(StructureElement element : children) {
-			element.setParent(this);
+		for(StructureElement child : children) {
+			child.setParent(this);
 		}
 		
 		_invariant();

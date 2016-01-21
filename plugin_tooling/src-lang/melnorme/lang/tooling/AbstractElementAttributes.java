@@ -25,7 +25,7 @@ import melnorme.utilbox.misc.StringUtil;
  */
 abstract class AbstractElementAttributes {
 	
-	protected final EProtection protection;
+	protected final EProtection protection; // can be null
 	protected final EnumSet<EAttributeFlag> flagsSet;
 	
 	public AbstractElementAttributes(EProtection protection, EnumSet<EAttributeFlag> flagsSet) {
