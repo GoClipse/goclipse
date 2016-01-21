@@ -30,7 +30,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.HashMap2;
@@ -39,14 +39,14 @@ import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
-public class ToolMarkersUtil {
+public class ToolMarkersHelper {
 	
 	protected boolean readWordForCharEnd;
 	
-	public ToolMarkersUtil() {
+	public ToolMarkersHelper() {
 		this(false);
 	}
-	public ToolMarkersUtil(boolean readWordForCharEnd) {
+	public ToolMarkersHelper(boolean readWordForCharEnd) {
 		this.readWordForCharEnd = readWordForCharEnd;
 	}
 	
@@ -89,14 +89,10 @@ public class ToolMarkersUtil {
 		if(!resource.exists())
 			return;
 		
-		if(toolMessage.getMessageKind() == StatusLevel.OK) {
-			return; // Don't add message as a marker.
-		}
-		
 		// TODO: check if marker already exists?
 		IMarker marker = resource.createMarker(markerType);
 		
-		marker.setAttribute(IMarker.SEVERITY, severityFrom(toolMessage.getMessageKind()));
+		marker.setAttribute(IMarker.SEVERITY, markerSeverityFrom(toolMessage.getSeverity()));
 		marker.setAttribute(IMarker.MESSAGE, toolMessage.getMessage());
 		
 		if(!(resource instanceof IFile)) {
@@ -209,12 +205,11 @@ public class ToolMarkersUtil {
 		return ix;
 	}
 	
-	public static int severityFrom(StatusLevel statusLevel) {
-		switch (statusLevel) {
+	public static int markerSeverityFrom(Severity severity) {
+		switch (severity) {
 		case ERROR: return IMarker.SEVERITY_ERROR;
 		case WARNING: return IMarker.SEVERITY_WARNING;
 		case INFO: return IMarker.SEVERITY_INFO;
-		case OK: return IMarker.SEVERITY_INFO; // Shouldn't happen
 		}
 		throw assertFail();
 	}

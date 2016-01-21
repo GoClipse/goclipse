@@ -14,41 +14,33 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import melnorme.utilbox.core.CommonException;
 
-public enum StatusLevel {
-	OK,
+public enum Severity {
 	INFO,
 	WARNING,
 	ERROR,
 	;
 	
-	public boolean isOkStatus() {
-		return this == OK;
-	}
-	
-	public Severity toSeverity() {
-		switch (this) {
-		case OK:
-		case INFO: return Severity.INFO;
-		case WARNING: return Severity.WARNING;
-		case ERROR: return Severity.ERROR;
-		}
-		throw assertFail();
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static StatusLevel fromString(String messageTypeString) throws CommonException {
+	public static Severity fromString(String messageTypeString) throws CommonException {
 		if(messageTypeString == null) {
 			return null;
 		}
 		
-		switch (messageTypeString.toLowerCase()) {
-		case "warning": return WARNING;
-		case "error": return ERROR;
-		case "info": return INFO;
-		case "ok": return INFO;
+		switch (messageTypeString.toUpperCase()) {
+		case "WARNING": return WARNING;
+		case "ERROR": return ERROR;
+		case "INFO": return INFO;
 		default:
 			throw new CommonException("Invalid Status: " + messageTypeString);
 		}
 	}
+	
+	public StatusLevel toStatusLevel() {
+		switch (this) {
+		case INFO: return StatusLevel.INFO;
+		case WARNING: return StatusLevel.WARNING;
+		case ERROR: return StatusLevel.INFO;
+		}
+		throw assertFail();
+	}
+	
 }

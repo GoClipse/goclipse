@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
+import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.ParserError;
@@ -144,7 +145,7 @@ public class ProblemMarkerUpdater implements IDisposable {
 			IMarker marker = file.createMarker(LangCore_Actual.SOURCE_PROBLEM_ID);
 			marker.setAttribute(IMarker.LOCATION, location.toPathString());
 			marker.setAttribute(IMarker.MESSAGE, problem.getUserMessage());
-			marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+			marker.setAttribute(IMarker.SEVERITY, ToolMarkersHelper.markerSeverityFrom(problem.getSeverity()));
 			marker.setAttribute(IMarker.CHAR_START, problem.getStartPos());
 			marker.setAttribute(IMarker.CHAR_END, problem.getEndPos());
 		}

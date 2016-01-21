@@ -16,21 +16,21 @@ import static melnorme.utilbox.misc.HashcodeUtil.getHashCode;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.utilbox.misc.HashcodeUtil;
 
 public class ToolSourceMessage {
 	
 	public final Path path;
 	public final SourceLineColumnRange range;
-	public final StatusLevel kind;
+	public final Severity severity;
 	public final String message;
 	
-	public ToolSourceMessage(Path path, SourceLineColumnRange range, StatusLevel level, String message) {
+	public ToolSourceMessage(Path path, SourceLineColumnRange range, Severity severity, String message) {
 		this.path = assertNotNull(path);
 		this.range = assertNotNull(range);
 		this.message = assertNotNull(message);
-		this.kind = assertNotNull(level);
+		this.severity = assertNotNull(severity);
 	}
 	
 	@Override
@@ -43,7 +43,7 @@ public class ToolSourceMessage {
 		return 
 			areEqual(path, other.path) &&
 			areEqual(range, other.range) && 
-			areEqual(kind, other.kind) && 
+			areEqual(severity, other.severity) && 
 			areEqual(message, other.message);
 	}
 	
@@ -54,7 +54,7 @@ public class ToolSourceMessage {
 	
 	@Override
 	public String toString() {
-		return range + " " + kind + ": "+ message;
+		return range + " " + severity + ": "+ message;
 	}
 	
 	/* -----------------  ----------------- */ 
@@ -71,8 +71,8 @@ public class ToolSourceMessage {
 		return range.column;
 	}
 	
-	public StatusLevel getMessageKind() {
-		return kind;
+	public Severity getSeverity() {
+		return severity;
 	}
 	
 	public String getMessage() {
