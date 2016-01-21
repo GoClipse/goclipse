@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
-import melnorme.lang.ide.core.operations.ToolMarkersUtil;
+import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
@@ -71,7 +71,7 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 			
 			// TODO: Lang process build result
 			
-			new ToolMarkersUtil().addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project), pm);
+			new ToolMarkersHelper().addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project), pm);
 		}
 	}
 	
