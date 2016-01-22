@@ -34,122 +34,122 @@
 				{
 					"name": "Parse",
 					"type": "func(rawurl string) (url *util.URL, err error)",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:333:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:334:6",
 					"kind": "func"
 				},
 				{
 					"name": "ParseQuery",
 					"type": "func(query string) (m util.Values, err error)",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:521:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:540:6",
 					"kind": "func"
 				},
 				{
 					"name": "ParseRequestURI",
 					"type": "func(rawurl string) (url *util.URL, err error)",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:353:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:354:6",
 					"kind": "func"
 				},
 				{
 					"name": "QueryEscape",
 					"type": "func(s string) string",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:173:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:174:6",
 					"kind": "func"
 				},
 				{
 					"name": "QueryUnescape",
 					"type": "func(s string) (string, error)",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:112:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:113:6",
 					"kind": "func"
 				},
 				{
 					"name": "URL",
 					"type": "struct{Scheme string; Opaque string; User *util.Userinfo; Host string; Path string; RawQuery string; Fragment string}",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:230:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:231:6",
 					"kind": "type",
 					"methods": [
 						{
 							"name": "method (*URL) IsAbs() bool",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:624:15"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:643:15"
 						},
 						{
 							"name": "method (*URL) Parse(ref string) (*URL, error)",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:631:15"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:650:15"
 						},
 						{
 							"name": "method (*URL) Query() Values",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:677:15"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:696:15"
 						},
 						{
 							"name": "method (*URL) RequestURI() string",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:684:15"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:703:15"
 						},
 						{
 							"name": "method (*URL) ResolveReference(ref *URL) *URL",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:645:15"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:664:15"
 						},
 						{
 							"name": "method (*URL) String() string",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:443:15"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:462:15"
 						}
 					]
 				},
 				{
 					"name": "User",
 					"type": "func(username string) *util.Userinfo",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:242:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:243:6",
 					"kind": "func"
 				},
 				{
 					"name": "UserPassword",
 					"type": "func(username string, password string) *util.Userinfo",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:253:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:254:6",
 					"kind": "func"
 				},
 				{
 					"name": "Userinfo",
 					"type": "struct{username string; password string; passwordSet bool}",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:261:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:262:6",
 					"kind": "type",
 					"methods": [
 						{
 							"name": "method (*Userinfo) Password() (string, bool)",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:273:20"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:274:20"
 						},
 						{
 							"name": "method (*Userinfo) String() string",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:282:20"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:283:20"
 						},
 						{
 							"name": "method (*Userinfo) Username() string",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:268:20"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:269:20"
 						}
 					]
 				},
 				{
 					"name": "Values",
 					"type": "map[string][]string",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:482:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:501:6",
 					"kind": "type",
 					"methods": [
 						{
 							"name": "method (Values) Add(key string, value string)",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:507:17"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:526:17"
 						},
 						{
 							"name": "method (Values) Del(key string)",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:512:17"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:531:17"
 						},
 						{
 							"name": "method (Values) Encode() string",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:563:17"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:582:17"
 						},
 						{
 							"name": "method (Values) Get(key string) string",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:488:17"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:507:17"
 						},
 						{
 							"name": "method (Values) Set(key string, value string)",
-							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:501:17"
+							"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:520:17"
 						}
 					]
 				},
@@ -190,13 +190,13 @@
 				{
 					"name": "escape",
 					"type": "func(s string, mode util.encoding) string",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:177:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:178:6",
 					"kind": "func"
 				},
 				{
 					"name": "getscheme",
 					"type": "func(rawurl string) (scheme string, path string, err error)",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:293:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:294:6",
 					"kind": "func"
 				},
 				{
@@ -208,45 +208,45 @@
 				{
 					"name": "parse",
 					"type": "func(rawurl string, viaRequest bool) (url *util.URL, err error)",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:361:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:362:6",
 					"kind": "func"
 				},
 				{
 					"name": "parseAuthority",
 					"type": "func(authority string) (user *util.Userinfo, host string, err error)",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:417:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:418:6",
 					"kind": "func"
 				},
 				{
 					"name": "parseQuery",
 					"type": "func(m util.Values, query string) (err error)",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:527:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:546:6",
 					"kind": "func"
 				},
 				{
 					"name": "resolvePath",
 					"type": "func(base string, ref string) string",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:589:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:608:6",
 					"kind": "func"
 				},
 				{
 					"name": "shouldEscape",
 					"type": "func(c byte, mode util.encoding) bool",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:68:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:67:6",
 					"kind": "func"
 				},
 				{
 					"name": "split",
 					"type": "func(s string, c string, cutc bool) (string, string)",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:320:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:321:6",
 					"kind": "func"
 				},
 				{
 					"name": "unescape",
 					"type": "func(s string, mode util.encoding) (string, error)",
-					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:118:6",
+					"pos": "D:/devel/tools.Go/go-workspace/src/util/MyUtilFoo/libfoo/libfoo.go:119:6",
 					"kind": "func"
-				},
+				}, 
 				{
 					"name": "unhex",
 					"type": "func(c byte) byte",
