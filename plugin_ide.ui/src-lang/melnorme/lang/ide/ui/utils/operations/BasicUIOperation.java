@@ -57,12 +57,18 @@ public abstract class BasicUIOperation implements Runnable {
 		assertTrue(Display.getCurrent() != null);
 		
 		try {
-			execute();
+			execute0();
+		} catch(CoreException ce) {
+			handleError(ce);
 		} catch(CommonException ce) {
 			handleError(ce);
 		} catch(RuntimeException re) {
 			handleRuntimeException(re);
 		}
+	}
+	
+	protected void handleError(CoreException ce) {
+		handleError(LangCore.createCommonException(ce));
 	}
 	
 	protected void handleError(CommonException ce) {
@@ -80,14 +86,6 @@ public abstract class BasicUIOperation implements Runnable {
 	}
 	
 	/* -----------------  ----------------- */
-	
-	private final void execute() throws CommonException {
-		try {
-			execute0();
-		} catch(CoreException ce) {
-			throw LangCore.createCommonException(ce);
-		}
-	}
 	
 	protected final void execute0() throws CoreException, CommonException {
 		prepareOperation();
