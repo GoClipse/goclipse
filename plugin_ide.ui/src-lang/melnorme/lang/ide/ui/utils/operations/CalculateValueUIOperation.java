@@ -41,7 +41,7 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 	public RESULT executeAndGetValidatedResult() throws CoreException, CommonException {
 		assertTrue(Display.getCurrent() != null);
 		
-		execute();
+		execute0();
 		return getResultValue();
 	}
 	
