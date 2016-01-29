@@ -42,6 +42,7 @@ import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut.BuildTargetLaunchable;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider.ViewPartActionGroup;
+import melnorme.lang.ide.ui.utils.BuildUtilities;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.operations.EclipseJobUIOperation;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
@@ -312,6 +313,13 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		protected String getJobTitle() {
 			return format(BuildManagerMessages.INFO_BuildTargetAction, 
 				getProject(), buildTargetElement.getTargetDisplayName());
+		}
+		
+		@Override
+		public void doRun() throws StatusException {
+			BuildUtilities.saveEditors(null); // This needs to run in UI
+			
+			super.doRun();
 		}
 		
 		@Override
