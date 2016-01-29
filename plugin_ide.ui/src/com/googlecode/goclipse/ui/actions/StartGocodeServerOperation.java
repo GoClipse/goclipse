@@ -32,23 +32,18 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void performBackgroundComputation() throws CommonException, OperationCancellation, CoreException {
+	protected boolean isBackgroundComputationNecessary() throws CoreException, CommonException, OperationCancellation {
 		if (ToolchainPreferences.AUTO_START_DAEMON.get() == false) {
-			return; // stop operation
+			return false; // stop operation
 		}
 		
 		gocodePath = GocodeServerManager.getGocodePath();
 		boolean needsStart = gocodeServerManager.prepareServerStart(gocodePath);
-		if(needsStart) {
-			super.performBackgroundComputation();
-		} else {
-			return;
-		}
+		return needsStart;
 	}
 	
 	@Override
-	protected void doBackgroundComputation(IProgressMonitor monitor)
-			throws CoreException, CommonException, OperationCancellation {
+	protected void doBackgroundComputation(IProgressMonitor monitor) throws CoreException, OperationCancellation {
 		gocodeServerManager.doStartServer(gocodePath, monitor);
 	}
 	
