@@ -10,14 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-
-public interface IToolOperation {
-	
-	public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
+public interface IToolOperation extends ICoreOperation {
 	
 }

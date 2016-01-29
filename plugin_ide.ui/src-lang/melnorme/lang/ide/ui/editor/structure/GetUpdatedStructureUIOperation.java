@@ -55,13 +55,14 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	protected StructureInfo structureInfo;
 	
 	@Override
-	protected void performBackgroundComputation() throws OperationCancellation, CoreException {
+	protected void performBackgroundComputation() throws CoreException, CommonException, OperationCancellation {
 		if(!structureInfo.isStale()) {
 			// No need for background computation
 			result = structureInfo.getStoredData();
-		} else {
-			super.performBackgroundComputation();
+			return;
 		}
+		
+		super.performBackgroundComputation();
 	}
 	
 	@Override
