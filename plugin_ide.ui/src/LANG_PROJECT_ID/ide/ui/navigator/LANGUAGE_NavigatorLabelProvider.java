@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelP
 import org.eclipse.jface.viewers.StyledString;
 
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
-import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
+import melnorme.lang.ide.ui.navigator.LangNavigatorLabelProvider;
 
 public class LANGUAGE_NavigatorLabelProvider extends LangNavigatorLabelProvider implements IStyledLabelProvider {
 	

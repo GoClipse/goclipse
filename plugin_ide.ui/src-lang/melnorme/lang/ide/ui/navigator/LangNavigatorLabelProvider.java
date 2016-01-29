@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.views;
+package melnorme.lang.ide.ui.navigator;
 
 import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
 
@@ -32,9 +32,8 @@ import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.navigator.BuildTargetElement;
-import melnorme.lang.ide.ui.navigator.BuildTargetsContainer;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
+import melnorme.lang.ide.ui.views.AbstractLangLabelProvider;
 import melnorme.util.swt.jface.resources.CompositeImageDescriptorExt.Corner;
 import melnorme.util.swt.jface.resources.DecoratedImageDescriptor;
 import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;

@@ -1,6 +1,6 @@
 package LANG_PROJECT_ID.ide.ui.navigator;
 
-import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
+import melnorme.lang.ide.ui.navigator.AbstractNavigatorContentProvider;
 
 public class LANGUAGE_NavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
