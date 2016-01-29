@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OracleOpenDefinitionOperation;
+import LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OpenDefinitionOperation;
 
 public class LANGUAGE_HyperlinkDetector extends LangHyperlinkDetector {
 	
@@ -37,7 +37,7 @@ public class LANGUAGE_HyperlinkDetector extends LangHyperlinkDetector {
 		public void open() {
 			textEditor.doSave(new NullProgressMonitor());
 			
-			new LANGUAGE_OracleOpenDefinitionOperation(
+			new LANGUAGE_OpenDefinitionOperation(
 				textEditor, getElementRange(), OpenNewEditorMode.TRY_REUSING_EXISTING).executeAndHandle();
 		}
 		

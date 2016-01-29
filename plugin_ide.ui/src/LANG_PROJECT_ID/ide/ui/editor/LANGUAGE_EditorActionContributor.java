@@ -12,7 +12,7 @@ package LANG_PROJECT_ID.ide.ui.editor;
 
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OracleOpenDefinitionOperation;
+import LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OpenDefinitionOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
 import melnorme.lang.tooling.ast.SourceRange;
@@ -20,9 +20,9 @@ import melnorme.lang.tooling.ast.SourceRange;
 public class LANGUAGE_EditorActionContributor extends LangEditorActionContributor {
 	
 	@Override
-	protected LANGUAGE_OracleOpenDefinitionOperation createOpenDefinitionOperation(ITextEditor editor,
+	protected LANGUAGE_OpenDefinitionOperation createOpenDefinitionOperation(ITextEditor editor,
 			SourceRange range, OpenNewEditorMode newEditorMode) {
-		return new LANGUAGE_OracleOpenDefinitionOperation(editor, range, newEditorMode);
+		return new LANGUAGE_OpenDefinitionOperation(editor, range, newEditorMode);
 	}
 	
 	@Override
