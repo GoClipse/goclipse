@@ -25,28 +25,33 @@ import melnorme.utilbox.core.CommonException;
  */
 public abstract class AbstractUIOperation extends BasicUIOperation {
 	
+	protected ProgressServiceExecutor opExecutor = new ProgressServiceExecutor(this::doBackgroundComputation_prepare);
+	
 	public AbstractUIOperation(String operationName) {
 		super(operationName);
 	}
 	
 	@Override
-	protected final void doOperation() throws CoreException, CommonException, OperationCancellation {
+	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
 		performBackgroundComputation();
 		handleComputationResult();
 	}
 	
-	protected void performBackgroundComputation() throws CoreException, OperationCancellation {
-		computationRunnable.runUnderWorkbenchProgressService();
+	protected void performBackgroundComputation() throws CoreException, CommonException, OperationCancellation {
+		performBackgroundComputation(opExecutor);
 	}
 	
-	protected final OperationRunnableWithProgress computationRunnable = new OperationRunnableWithProgress() {
-		@Override
-		public void doRun(IProgressMonitor monitor) throws CoreException, OperationCancellation, CommonException {
-			monitor.setTaskName(getTaskName());
-			
-			doBackgroundComputation(monitor);
-		}
-	};
+	protected void performBackgroundComputation(ProgressServiceExecutor opExecutor)
+			throws CoreException, CommonException, OperationCancellation {
+		opExecutor.execute();
+	}
+	
+	protected void doBackgroundComputation_prepare(IProgressMonitor monitor) 
+			throws CoreException, CommonException, OperationCancellation {
+		monitor.setTaskName(getTaskName());
+		
+		doBackgroundComputation(monitor);
+	}
 	
 	/** @return the task name for the progress dialog. This method must be thread-safe. */
 	protected String getTaskName() {
