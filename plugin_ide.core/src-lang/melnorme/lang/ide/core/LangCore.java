@@ -68,10 +68,6 @@ public class LangCore extends LangCore_Actual {
 		getLog().log(createErrorStatus(message, throwable));
 	}
 	
-	public static void logError(CommonException ce) {
-		logError(ce.getMessage(), ce.getCause());
-	}
-	
 	/** Logs a warning status with given message */
 	public static void logWarning(String message) {
 		getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, null));

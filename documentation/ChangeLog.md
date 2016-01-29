@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Dirty editors are now automatically saved if a build is invoked directly from a Build Target in the Project Explorer. (if the workspace "Save automatically before build" option is enabled).
+ * Fixed workspace resource locking when a build is invoked directly from a Build Target in the Project Explorer.
  * Added "apl" and "main" code snippets.
  * Added improved download functionality in gocode/oracle preference page. 
  * Fixed regression: Console view always activates when a build is invoked. (#158)

@@ -38,7 +38,7 @@ import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
-import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
+import melnorme.lang.ide.ui.navigator.LangNavigatorLabelProvider;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 

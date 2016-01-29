@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.views;
+package melnorme.lang.ide.ui.navigator;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -38,8 +38,6 @@ import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.ui.navigator.BuildTargetElement;
-import melnorme.lang.ide.ui.navigator.BuildTargetsContainer;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.jface.AbstractTreeContentProvider;

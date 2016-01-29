@@ -46,7 +46,7 @@ abstract class StructureElement_Default extends StructureContainer implements IS
 		this.nameSourceRange = assertNotNull(nameSourceRange);
 		this.sourceRange = assertNotNull(sourceRange);
 		this.elementKind = assertNotNull(elementKind);
-		this.elementAttributes = assertNotNull(elementAttributes);
+		this.elementAttributes = elementAttributes == null ? new ElementAttributes(null) : elementAttributes;
 		this.type = type;
 	}
 	

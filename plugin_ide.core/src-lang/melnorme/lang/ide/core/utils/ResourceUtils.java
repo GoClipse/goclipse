@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -44,6 +45,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.build.IToolOperation;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.ThrowingRunnable;
 import melnorme.utilbox.misc.Location;
@@ -131,6 +134,53 @@ public class ResourceUtils {
 			throw new CommonException("Invalid resource location: " + resource.getLocationURI());
 		}
 		return Location.create(location.toFile().toPath());
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static void runToolOperationInWorkspace(IToolOperation operation, ISchedulingRule rule, 
+			IProgressMonitor monitor) throws CoreException, OperationCancellation, CommonException {
+		
+		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+			
+			@Override
+			public void run(IProgressMonitor monitor) throws CoreException {
+				try {
+					operation.execute(monitor);
+				} catch(CommonException | OperationCancellation e) {
+					throw new CoreExceptionWrapper(e);
+				}
+			}
+		};
+		
+		try {
+			ResourceUtils.getWorkspace().run(runnable, rule, IWorkspace.AVOID_UPDATE, monitor);
+		} catch(CoreExceptionWrapper cew) {
+			Exception wrapped = cew.getWrapped();
+			if(wrapped instanceof CommonException) {
+				throw (CommonException) wrapped;
+			}
+			if(wrapped instanceof OperationCancellation) {
+				throw (OperationCancellation) wrapped;
+			}
+			assertFail();
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public static class CoreExceptionWrapper extends CoreException {
+		
+		protected final Exception wrapped;
+		
+		public CoreExceptionWrapper(Exception wrapped) {
+			super(LangCore.createErrorStatus("Error: ", wrapped));
+			this.wrapped = assertNotNull(wrapped);
+		}
+		
+		public Exception getWrapped() {
+			return wrapped;
+		}
+		
 	}
 	
 	/* ----------------- File read/write ----------------- */

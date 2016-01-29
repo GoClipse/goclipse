@@ -20,7 +20,7 @@ import com.googlecode.goclipse.ui.navigator.elements.GoPathElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 
-import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
+import melnorme.lang.ide.ui.navigator.AbstractNavigatorContentProvider;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;

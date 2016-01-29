@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
@@ -29,6 +30,7 @@ import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -86,7 +88,10 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		
 		addOperation(newMessageOperation(headerBIG(MSG_BuildTerminated)));
 		
-		return new CompositeBuildOperation(operations);
+		// Note: the locking rule has to be the whole workspace, because the build might read dependent projects
+		// and also error markers can be created globally
+		ISchedulingRule rule = ResourceUtils.getWorkspaceRoot();
+		return new CompositeBuildOperation(operations, rule);
 	}
 	
 	protected boolean addOperation(IToolOperation toolOp) {

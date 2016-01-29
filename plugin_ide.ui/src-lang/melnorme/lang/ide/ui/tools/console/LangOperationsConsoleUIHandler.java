@@ -32,6 +32,7 @@ import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.lang.ide.ui.utils.StatusMessageDialog;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTUtil;
@@ -57,14 +58,21 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 					return;
 				}
 				Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
-				new StatusMessageDialog(shell, title, statusLevel, message) {
+				StatusMessageDialog dialog = new StatusMessageDialog(shell, title, statusLevel, message) {
 					@Override
 					protected void setIgnoreFutureMessages() {
 						if(msgId != null) {
 							mutedMessages.add(msgId);
 						}
 					};
-				}.open();
+				};
+				
+				if(UIOperationsStatusHandler.isIgnoringHandling()) {
+					Display.getCurrent().asyncExec(
+						() -> dialog.okPressed()
+					);
+				}
+				dialog.open();
 			}
 		});
 	}

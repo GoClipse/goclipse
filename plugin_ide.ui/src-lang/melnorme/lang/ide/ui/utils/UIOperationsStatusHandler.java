@@ -26,6 +26,10 @@ public class UIOperationsStatusHandler {
 	// Normally, handler instance is never changed. Only in tests is it changed.
 	public volatile static UIOperationErrorHandlerImpl handler = new UIOperationErrorHandlerImpl();
 	
+	public static boolean isIgnoringHandling() {
+		return handler instanceof Null_UIOperationErrorHandlerImpl;
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public static void handleStatus(boolean logError, Shell shell, String title, String message, Throwable exception) {
