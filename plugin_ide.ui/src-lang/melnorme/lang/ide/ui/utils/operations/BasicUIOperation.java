@@ -81,7 +81,7 @@ public abstract class BasicUIOperation implements Runnable {
 	
 	/* -----------------  ----------------- */
 	
-	public final void execute() throws CommonException {
+	private final void execute() throws CommonException {
 		try {
 			execute0();
 		} catch(CoreException ce) {
