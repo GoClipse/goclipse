@@ -11,15 +11,18 @@
 package melnorme.lang.tooling.structure;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
+
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.HashcodeUtil;
 
 
-public abstract class StructureContainer implements IStructureElementContainer {
+public abstract class AbstractStructureContainer implements IStructureElementContainer {
 	
 	protected final Indexable<StructureElement> children;
 	
-	public StructureContainer(Indexable<? extends StructureElement> _children) {
+	public AbstractStructureContainer(Indexable<? extends StructureElement> _children) {
 		this.children = nullToEmpty(_children).upcastTypeParameter();
 		
 		for(StructureElement child : children) {
@@ -38,6 +41,31 @@ public abstract class StructureContainer implements IStructureElementContainer {
 	@Override
 	public Indexable<StructureElement> getChildren() {
 		return children;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static class SimpleStructureContainer extends AbstractStructureContainer {
+		
+		public SimpleStructureContainer(Indexable<? extends StructureElement> children) {
+			super(children);
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if(this == obj) return true;
+			if(!(obj instanceof SimpleStructureContainer)) return false;
+			
+			SimpleStructureContainer other = (SimpleStructureContainer) obj;
+			
+			return areEqual(children, other.children);
+		}
+		
+		@Override
+		public int hashCode() {
+			return HashcodeUtil.combinedHashCode(children);
+		}
+		
 	}
 	
 }

@@ -14,20 +14,22 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.structure.AbstractStructureContainer.SimpleStructureContainer;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
 
-public abstract class SourceFileStructure_Default extends StructureContainer implements ISourceFileStructure {
+public abstract class SourceFileStructure_Default implements ISourceFileStructure {
 	
 	protected final Location location;
 	protected final Indexable<ParserError> parserProblems;
+	protected final IStructureElementContainer elementsContainer;
 	
 	public SourceFileStructure_Default(Location location, Indexable<StructureElement> children, 
 			Indexable<ParserError> parserProblems) {
-		super(children);
 		this.location = location;
 		this.parserProblems = nullToEmpty(parserProblems);
+		this.elementsContainer = new SimpleStructureContainer(children);
 	}
 	
 	@Override
@@ -39,17 +41,17 @@ public abstract class SourceFileStructure_Default extends StructureContainer imp
 		
 		return 
 			areEqual(location, other.location) &&
-			areEqual(children, other.children);
+			areEqual(elementsContainer, other.elementsContainer);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(location, children.size());
+		return HashcodeUtil.combinedHashCode(location, elementsContainer);
 	}
 	
 	@Override
 	public String toString() {
-		return StructureContainer.class.getSimpleName() + (location == null ? "" : " " + location); 
+		return getClass().getSimpleName() + (location == null ? "" : " " + location); 
 	}
 	
 	/* -----------------  ----------------- */
@@ -64,12 +66,17 @@ public abstract class SourceFileStructure_Default extends StructureContainer imp
 		return location == null ? null : location.getPath().getFileName().toString();
 	}
 	
-	public StructureElement getStructureElementAt(int offset) {
-		return new StructureElementFinderByOffset(offset).findInnerMost(this);
-	}
-	
 	public Indexable<ParserError> getParserProblems() {
 		return parserProblems;
+	}
+	
+	@Override
+	public IStructureElementContainer getElementsContainer() {
+		return elementsContainer;
+	}
+	
+	public StructureElement getStructureElementAt(int offset) {
+		return new StructureElementFinderByOffset(offset).findInnerMost(elementsContainer);
 	}
 	
 	/* ----------------- Utils ----------------- */

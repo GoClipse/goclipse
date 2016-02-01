@@ -15,8 +15,8 @@ import melnorme.utilbox.collections.Indexable;
 
 public interface IStructureElementContainer {
 	
-	/** @return the logical name of the compilation unit (aka, the module) of this element. Can be null. */
-	String getModuleName();
+//	/** @return the logical name of the compilation unit (aka, the module) of this element. Can be null. */
+//	String getModuleName();
 	
 	/** @return the children of this container. */
 	Indexable<StructureElement> getChildren();
