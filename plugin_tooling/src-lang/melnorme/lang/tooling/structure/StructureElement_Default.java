@@ -22,7 +22,7 @@ import melnorme.utilbox.misc.HashcodeUtil;
 /**
  * Only {@link StructureElement} can extend this class!
  */
-abstract class StructureElement_Default extends StructureContainer implements IStructureElement {
+abstract class StructureElement_Default extends AbstractStructureContainer implements IStructureElement {
 	
 	protected final String name;
 	protected final SourceRange nameSourceRange;
@@ -124,11 +124,11 @@ abstract class StructureElement_Default extends StructureContainer implements IS
 		this.parent = parent;
 	}
 	
-	@Override
-	public String getModuleName() {
-		IStructureElementContainer parent = getParent();
-		return parent == null ? null : parent.getModuleName();
-	}
+//	@Override
+//	public String getModuleName() {
+//		IStructureElementContainer parent = getParent();
+//		return parent == null ? null : parent.getModuleName();
+//	}
 	
 	@Override
 	public ISourceFileStructure getContainingFileStructure() {
