@@ -92,7 +92,7 @@ public abstract class AbstractStructureParser_Test extends CommonToolingTest {
 	protected void testParseStructure(String describeOutput, SourceFileStructure expected) throws CommonException {
 		AbstractStructureParser parser = createStructureParser();
 		SourceFileStructure structure = parser.parse(describeOutput);
-		assertAreEqual(structure.getElementsContainer(), expected.getElementsContainer());
+		assertAreEqual(structure.getChildren(), expected.getChildren());
 		
 		assertEquals(expected, structure);
 	}

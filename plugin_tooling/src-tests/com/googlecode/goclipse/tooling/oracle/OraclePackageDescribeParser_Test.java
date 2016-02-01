@@ -91,7 +91,7 @@ public class OraclePackageDescribeParser_Test extends AbstractStructureParser_Te
 		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
 		SourceFileStructure expected = new SourceFileStructure(location, expectedStructure, null);
 		
-		assertAreEqual(expected.getElementsContainer().getChildren(), structure.getElementsContainer().getChildren());
+		assertAreEqual(expected.getChildren(), structure.getChildren());
 		assertEquals(structure, expected);	
 	}
 	

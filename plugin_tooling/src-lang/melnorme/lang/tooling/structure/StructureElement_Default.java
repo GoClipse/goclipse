@@ -14,8 +14,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.misc.StringUtil.prefixStr;
+
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.HashcodeUtil;
 
@@ -76,6 +78,19 @@ abstract class StructureElement_Default extends AbstractStructureContainer imple
 	
 	protected String toStringNode() {
 		return "ELEM " + name + sourceRange + " " + elementKind + prefixStr(" : ", type) + " " + elementAttributes;
+	}
+	
+	public StructureElement cloneSubTree() {
+		return new StructureElement(name, nameSourceRange, nameSourceRange, 
+			elementKind, elementAttributes, type, cloneSubTree(children));
+	}
+	
+	public static ArrayList2<StructureElement> cloneSubTree(Indexable<StructureElement> elements) {
+		ArrayList2<StructureElement> clonedElements = new ArrayList2<>(elements.size());
+		for (StructureElement child : elements) {
+			clonedElements.add(child.cloneSubTree());
+		}
+		return clonedElements;
 	}
 	
 	/* -----------------  ----------------- */
