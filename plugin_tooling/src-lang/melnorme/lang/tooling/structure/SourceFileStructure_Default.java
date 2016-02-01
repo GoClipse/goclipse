@@ -13,23 +13,22 @@ package melnorme.lang.tooling.structure;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
+
 import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.structure.AbstractStructureContainer.SimpleStructureContainer;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
 
-public abstract class SourceFileStructure_Default implements ISourceFileStructure {
+public abstract class SourceFileStructure_Default extends AbstractStructureContainer implements ISourceFileStructure {
 	
 	protected final Location location;
 	protected final Indexable<ParserError> parserProblems;
-	protected final IStructureElementContainer elementsContainer;
 	
 	public SourceFileStructure_Default(Location location, Indexable<StructureElement> children, 
 			Indexable<ParserError> parserProblems) {
+		super(children);
 		this.location = location;
 		this.parserProblems = nullToEmpty(parserProblems);
-		this.elementsContainer = new SimpleStructureContainer(children);
 	}
 	
 	@Override
@@ -41,12 +40,12 @@ public abstract class SourceFileStructure_Default implements ISourceFileStructur
 		
 		return 
 			areEqual(location, other.location) &&
-			areEqual(elementsContainer, other.elementsContainer);
+			areEqual(children, other.children);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(location, elementsContainer);
+		return HashcodeUtil.combinedHashCode(location, children);
 	}
 	
 	@Override
@@ -70,13 +69,8 @@ public abstract class SourceFileStructure_Default implements ISourceFileStructur
 		return parserProblems;
 	}
 	
-	@Override
-	public IStructureElementContainer getElementsContainer() {
-		return elementsContainer;
-	}
-	
 	public StructureElement getStructureElementAt(int offset) {
-		return new StructureElementFinderByOffset(offset).findInnerMost(elementsContainer);
+		return new StructureElementFinderByOffset(offset).findInnerMost(this);
 	}
 	
 	/* ----------------- Utils ----------------- */
