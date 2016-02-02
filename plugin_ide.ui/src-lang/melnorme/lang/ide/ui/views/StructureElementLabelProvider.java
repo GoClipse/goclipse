@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
-public class StructureElementLabelProvider extends AbstractLangLabelProvider {
+public abstract class StructureElementLabelProvider extends AbstractLangLabelProvider {
 	
 	public static DelegatingStyledCellLabelProvider createLangLabelProvider() {
 		StructureElementLabelProvider labelProvider = LangUIPlugin_Actual.getStructureElementLabelProvider();
@@ -38,15 +38,24 @@ public class StructureElementLabelProvider extends AbstractLangLabelProvider {
 	public StyledString getStyledText(Object element) {
 		if(element instanceof StructureElement) {
 			StructureElement structureElement = (StructureElement) element;
-			StyledString styledString = new StyledString(structureElement.getName());
-			
-			if(structureElement.getType() != null) {
-				String typeSuffix = " : " + structureElement.getType();
-				styledString.append(new StyledString(typeSuffix, StyledString.DECORATIONS_STYLER));
-			}
-			return styledString;
+			return getStyledText(structureElement);
 		}
 		return null;
+	}
+	
+	protected StyledString getStyledText(StructureElement structureElement) {
+		StyledString styledString = new StyledString(structureElement.getName());
+		
+		if(structureElement.getType() != null) {
+			String typeSuffix = getTypeDescriptionPrefix(structureElement) + structureElement.getType();
+			styledString.append(new StyledString(typeSuffix, StyledString.DECORATIONS_STYLER));
+		}
+		return styledString;
+	}
+	
+	@SuppressWarnings("unused")
+	protected String getTypeDescriptionPrefix(StructureElement structureElement) {
+		return " : ";
 	}
 	
 	@Override
