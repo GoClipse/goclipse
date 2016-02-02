@@ -38,6 +38,8 @@ public class TextBlocksReader_Test extends CommonTestUtils {
 		assertEquals(createReader(" ||||").consumeText(), "");
 		assertEquals(createReader(" |\\\\|").consumeText(), "\\");
 		
+		assertEquals(createReader(" ||blah").consumeText(), "blah");
+		
 		final String seqA = "blah 1.0 |--\\|--| aa.-=+\"xx\\\"xx\"cc";
 		
 		testReaderBasicSequenceA(createReader(seqA));
