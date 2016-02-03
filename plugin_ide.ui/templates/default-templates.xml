@@ -20,32 +20,26 @@
 <template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="main" description="main function" enabled="true" name="main">func main() {&#13;
 	${cursor}&#13;
 }</template>
-<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="for" description="iterate over array" enabled="true" name="for">for ${i} := 0; ${i} &lt; len(${array}); ${i}++ {&#13;
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="for2" description="C style for" enabled="true" name="for">for ${init}; ${condition}; ${post} {&#13;
 	${cursor}&#13;
 }</template>
-<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="for" description="C style for" enabled="true" name="for">for ${init}; ${condition}; ${post} {&#13;
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="for3" description="basic for loop" enabled="true" name="for">for ${condition} {&#13;
 	${cursor}&#13;
 }</template>
-<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="for" description="C while" enabled="true" name="for">for ${condition} {&#13;
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="foreach2" description="iterate with a range (value only)" enabled="true" name="foreach">for _, ${v} := range ${cont} {&#13;
 	${cursor}&#13;
 }</template>
-<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="foreach" description="iterate with a range (index only)" enabled="true" name="forrange">for ${i} := range ${cont} {&#13;
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="foreach3" description="iterate with a range (index and value)" enabled="true" name="foreach">for ${i}, ${v} := range ${cont} {&#13;
 	${cursor}&#13;
 }</template>
-<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="foreach" description="iterate with a range (value only)" enabled="true" name="forrange">for _, ${v} := range ${cont} {&#13;
-	${cursor}&#13;
-}</template>
-<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="foreach" description="iterate with a range (index and value)" enabled="true" name="forrange">for ${i}, ${v} := range ${cont} {&#13;
-	${cursor}&#13;
-}</template>
-<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="mk_slice" description="make slice" enabled="true" name="make">make([]${type}, ${size})</template>
-<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="mk_map" description="make map" enabled="true" name="make">make(map[${key_type}]${value_type})</template>
-<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="mk_channel" description="make channel" enabled="true" name="make">make(chan ${type})</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="mk_slice" description="make slice" enabled="true" name="mk_slice">make([]${type}, ${size})</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="mk_map" description="make map" enabled="true" name="mk_map">make(map[${key_type}]${value_type})</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="mk_channel" description="make channel" enabled="true" name="mk_channel">make(chan ${type})</template>
 <template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="switch" description="switch case statement" enabled="true" name="switch">switch ${key} {&#13;
 case ${value}:&#13;
 	${cursor}&#13;
 }</template>
-<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="cond_switch" description="condition-style switch statement" enabled="true" name="switch">switch {&#13;
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="cond_switch" description="condition-style switch statement" enabled="true" name="cond_switch">switch {&#13;
 case ${condition1}:&#13;
 	${cursor}&#13;
 case ${condition2}:&#13;
