@@ -17,7 +17,6 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
-import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -29,7 +28,6 @@ import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation;
 
-import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
 import melnorme.lang.ide.ui.tools.console.EngineToolsConsole;
@@ -37,6 +35,7 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperation {
@@ -59,8 +58,7 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 	protected int byteOffset;
 	
 	protected int getByteOffsetForInvocationEncoding() throws CommonException {
-		ITextFileBuffer textFileBuffer = ResourceUtils.getTextFileBuffer(inputLoc);
-		Charset charset = Charset.forName(textFileBuffer.getEncoding());
+		Charset charset = StringUtil.UTF8; // All Go source file must be encoded in UTF8, not another format.
 		return getByteOffsetFromEncoding(source, getInvocationOffset(), charset);
 	}
 	
