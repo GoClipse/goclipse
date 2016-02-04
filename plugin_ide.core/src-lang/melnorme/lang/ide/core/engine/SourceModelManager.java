@@ -13,12 +13,17 @@ package melnorme.lang.ide.core.engine;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.IFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.DefaultBufferListener;
 import melnorme.lang.ide.core.utils.operation.OperationUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData;
@@ -116,10 +121,13 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 	
 	public class StructureInfo extends ConcurrentlyDerivedData<SourceFileStructure, StructureInfo> {
 		
+		protected final ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
+		
 		protected final Object key;
 		protected final StructureUpdateTask disconnectTask; // Can be null
 		
 		protected IDocument document = null;
+		protected ITextFileBuffer textFileBuffer; // Can be null, even if document is present
 		
 		public StructureInfo(Object key) {
 			this.key = assertNotNull(key);
@@ -131,14 +139,20 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 			return key;
 		}
 		
-		/**
-		 * @return the file location if source is based on a file, null otherwise.
-		 */
+		/** @return the file location if source is based on a file, null otherwise. */
 		public Location getLocation() {
 			if(key instanceof Location) {
 				return (Location) key;
 			}
 			return null;
+		}
+		
+		public synchronized IDocument getDocument() {
+			return document;
+		}
+		
+		public synchronized ITextFileBuffer getTextFileBuffer() {
+			return textFileBuffer;
 		}
 		
 		public synchronized boolean hasConnectedListeners() {
@@ -150,6 +164,11 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 				document = newDocument;
 				newDocument.addDocumentListener(docListener);
 				queueSourceUpdateTask(document.get());
+				
+				textFileBuffer = fbm.getTextFileBuffer(document);
+				if(textFileBuffer != null) {
+					fbm.addFileBufferListener(fbListener);
+				}
 			}
 			else if(document != newDocument) {
 				return false;
@@ -159,30 +178,56 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 			return true;
 		}
 		
-		protected final IDocumentListener docListener = new IDocumentListener() {
-			@Override
-			public void documentAboutToBeChanged(DocumentEvent event) {
-			}
-			@Override
-			public void documentChanged(DocumentEvent event) {
-				queueSourceUpdateTask(document.get());
-			}
-		};
-		
 		protected synchronized void disconnectFromDocument(IStructureModelListener structureListener) {
 			connectedListeners.removeListener(structureListener);
 			
 			if(!hasConnectedListeners()) {
 				document.removeDocumentListener(docListener);
 				document = null;
+				textFileBuffer = null;
 				
 				queueUpdateTask(disconnectTask);
+				fbm.removeFileBufferListener(fbListener);
 			}
 		}
+		
+		protected final IDocumentListener docListener = new IDocumentListener() {
+			@Override
+			public void documentAboutToBeChanged(DocumentEvent event) {
+			}
+			@Override
+			public void documentChanged(DocumentEvent event) {
+				queueSourceUpdateTask(event.fDocument.get());
+			}
+		};
+		
+		protected final DefaultBufferListener fbListener = new DefaultBufferListener() {
+			@Override
+			public void dirtyStateChanged(IFileBuffer buffer, boolean isDirty) {
+				
+				if(buffer instanceof ITextFileBuffer) {
+					ITextFileBuffer fb = (ITextFileBuffer) buffer;
+					
+					IDocument document = StructureInfo.this.getDocument(); // Retrieve with a synchronized block
+					if(!isDirty && fb.getDocument() == document) {
+						// FIXME: minor concurrency issue here: 
+						// an older document source might be queued after a more recent source.
+						queueSourceUpdateTask(document.get());
+					}
+				}
+			}
+		};
 		
 		protected void queueSourceUpdateTask(final String source) {
 			StructureUpdateTask updateTask = createUpdateTask(this, source);
 			queueUpdateTask(updateTask);
+		}
+		
+		protected void queueSourceUpdateTask_forFileSave(final String source) {
+			StructureUpdateTask updateTask = createUpdateTask_forFileSave(this, source);
+			if(updateTask != null) {
+				queueUpdateTask(updateTask);
+			}
 		}
 		
 		protected synchronized void queueUpdateTask(StructureUpdateTask updateTask) {
@@ -223,6 +268,15 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 	 * @param source the new source of the document being listened to.
 	 */
 	protected abstract StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source);
+	
+	/**
+	 * Similar to {@link #createUpdateTask(StructureInfo, String)} but only for when the file buffer 
+	 * is saved to disk. Default is to return null, which ignores this event.
+	 */
+	@SuppressWarnings("unused")
+	protected StructureUpdateTask createUpdateTask_forFileSave(StructureInfo structureInfo, String source) {
+		return null;
+	}
 	
 	/**
 	 * Create an update task for when the last listener of given structureInfo disconnects.

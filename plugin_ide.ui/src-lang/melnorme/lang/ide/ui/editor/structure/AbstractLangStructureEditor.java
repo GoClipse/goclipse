@@ -241,7 +241,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 	}
 	
 	public static void setElementSelection(ITextEditor editor, StructureElement element) {
-		SourceRange nameSR = element.getNameSourceRange();
+		SourceRange nameSR = element.getNameSourceRange2();
 		if(nameSR != null) {
 			editor.selectAndReveal(nameSR.getOffset(), nameSR.getLength());
 		}

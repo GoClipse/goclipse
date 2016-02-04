@@ -27,8 +27,8 @@ import melnorme.utilbox.misc.HashcodeUtil;
 abstract class StructureElement_Default extends AbstractStructureContainer implements IStructureElement {
 	
 	protected final String name;
-	protected final SourceRange nameSourceRange;
 	protected final SourceRange sourceRange;
+	protected final SourceRange nameSourceRange2; // Can be null
 	
 	protected final StructureElementKind elementKind;
 	protected final ElementAttributes elementAttributes;
@@ -45,8 +45,8 @@ abstract class StructureElement_Default extends AbstractStructureContainer imple
 			String type, Indexable<StructureElement> children) {
 		super(children);
 		this.name = assertNotNull(name);
-		this.nameSourceRange = assertNotNull(nameSourceRange);
 		this.sourceRange = assertNotNull(sourceRange);
+		this.nameSourceRange2 = nameSourceRange;
 		this.elementKind = assertNotNull(elementKind);
 		this.elementAttributes = elementAttributes == null ? new ElementAttributes(null) : elementAttributes;
 		this.type = type;
@@ -61,7 +61,7 @@ abstract class StructureElement_Default extends AbstractStructureContainer imple
 		
 		return 
 			areEqual(name, other.name) &&
-			areEqual(nameSourceRange, other.nameSourceRange) &&
+			areEqual(nameSourceRange2, other.nameSourceRange2) &&
 			areEqual(sourceRange, other.sourceRange) &&
 			areEqual(elementKind, other.elementKind) &&
 			areEqual(elementAttributes, other.elementAttributes) &&
@@ -81,7 +81,7 @@ abstract class StructureElement_Default extends AbstractStructureContainer imple
 	}
 	
 	public StructureElement cloneSubTree() {
-		return new StructureElement(name, nameSourceRange, nameSourceRange, 
+		return new StructureElement(name, nameSourceRange2, sourceRange, 
 			elementKind, elementAttributes, type, cloneSubTree(children));
 	}
 	
@@ -101,13 +101,13 @@ abstract class StructureElement_Default extends AbstractStructureContainer imple
 	}
 	
 	@Override
-	public SourceRange getNameSourceRange() {
-		return nameSourceRange;
+	public SourceRange getSourceRange() {
+		return sourceRange;
 	}
 	
 	@Override
-	public SourceRange getSourceRange() {
-		return sourceRange;
+	public SourceRange getNameSourceRange2() {
+		return nameSourceRange2;
 	}
 	
 	@Override
