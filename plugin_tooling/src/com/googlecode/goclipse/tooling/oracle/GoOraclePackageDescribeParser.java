@@ -118,9 +118,12 @@ public class GoOraclePackageDescribeParser extends AbstractStructureParser {
 			public int compare(StructureElement o1, StructureElement o2) {
 				SourceRange sr1 = o1.getSourceRange();
 				SourceRange sr2 = o2.getSourceRange();
+				
 				int cmp = sr1.getOffset() - sr2.getOffset();
 				if(cmp == 0) {
-					return o1.getNameSourceRange().getOffset() - o2.getNameSourceRange().getOffset();
+					int offset1 = o1.getNameSourceRange2() == null ? 0 : o1.getNameSourceRange2().getOffset();
+					int offset2 = o2.getNameSourceRange2() == null ? 0 : o2.getNameSourceRange2().getOffset();
+					return offset1 - offset2;
 				}
 				return cmp;
 			}
@@ -135,11 +138,15 @@ public class GoOraclePackageDescribeParser extends AbstractStructureParser {
 		
 		String posString = readString(object, "pos");
 		SourceFileLocation elementSourceFileLoc = SourceFileLocation.parseSourceRange(posString, ':');
+		
+		SourceRange nameSourceRange;
+		SourceRange sourceRange;
+		
 		if(!isSourceElementLocation(elementSourceFileLoc.getFileLocation())) {
-			return null;
+			sourceRange = nameSourceRange = null;
+		} else {
+			sourceRange = nameSourceRange = elementSourceFileLoc.parseSourceRangeFrom1BasedIndex(sourceLinesInfo);
 		}
-		SourceRange nameSourceRange = elementSourceFileLoc.parseSourceRangeFrom1BasedIndex(sourceLinesInfo);
-		SourceRange sourceRange  = nameSourceRange;
 		
 		String type = readOptionalString(object, "type");
 		
@@ -187,6 +194,17 @@ public class GoOraclePackageDescribeParser extends AbstractStructureParser {
 		
 		JSONArray methods = getOptionalJSONArray(object, "methods");
 		Indexable<StructureElement> children = parseElements(methods, true);
+		
+		if(!isSourceElementLocation(elementSourceFileLoc.getFileLocation())) {
+			// Fix source range to children range.
+			if(children.size() == 0) {
+				return null; // Shouldn't even happen
+			}
+			nameSourceRange = null;
+			int startPos = children.get(0).getSourceRange().getStartPos();
+			int endPos = children.get(children.size()-1).getSourceRange().getEndPos();
+			sourceRange = SourceRange.srStartToEnd(startPos, endPos);
+		}
 		
 		return new StructureElement(name, nameSourceRange, sourceRange, 
 			elementKind, elementAttributes, type, children);

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.engine;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 
@@ -23,6 +24,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
+import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.runtime.CoreException;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
@@ -48,6 +50,11 @@ public class GoSourceModelManager extends SourceModelManager {
 		return new GoStructureUpdateTask(structureInfo, source, fileLocation);
 	}
 	
+	@Override
+	protected StructureUpdateTask createUpdateTask_forFileSave(StructureInfo structureInfo, String source) {
+		return createUpdateTask(structureInfo, source);
+	}
+	
 	protected class GoStructureUpdateTask extends StructureUpdateTask {
 		
 		protected final String source;
@@ -59,6 +66,10 @@ public class GoSourceModelManager extends SourceModelManager {
 			this.fileLocation = fileLocation;
 		}
 		
+		protected Location tempDir;
+		protected GoEnvironment goEnv;
+		protected Location describeFile;
+		
 		@Override
 		protected SourceFileStructure createNewData() {
 			
@@ -66,44 +77,35 @@ public class GoSourceModelManager extends SourceModelManager {
 				return null;
 			}
 			
-			GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironmentFromLocation(fileLocation);
-			Location tempDir = null;
-			Location describeTempFile;
+			goEnv = GoProjectEnvironment.getGoEnvironmentFromLocation(fileLocation);
+			describeFile = fileLocation;
+			tempDir = null;
 			
-			ExternalProcessResult describeResult;
 			try {
-				tempDir = Location.create_fromValid(Files.createTempDirectory("_goclipse"));
-				Location tempDir_src = tempDir.resolve_fromValid("src/describe_temp");
-				Files.createDirectories(tempDir_src.toPath());
-				
-				describeTempFile = tempDir_src.resolve_fromValid("describe.go");
-				try {
-					
-					FileUtil.writeStringToFile(describeTempFile.toFile(), source, StringUtil.UTF8);
-					
-					goEnv = new GoEnvironment(goEnv.getGoRoot(), goEnv.getGoArch(), goEnv.getGoOs(), 
-						new GoPath(tempDir.toString()));
-					
-					describeResult = runGoOracle(goEnv, describeTempFile);
-					
-				} finally {
-					if(describeTempFile != null) {
-						try {
-							Files.deleteIfExists(describeTempFile.toPath());
-							FileUtil.deleteDir(tempDir);
-						} catch(IOException e) {
-							LangCore.logError("Could not delete temp files", e);
-						}
-					}
-				}
+				setupDescribeFile();
 			} catch(IOException e) {
 				LangCore.logError("Error creating temporary file for oracle describe: ", e);
 				return null;
+			}
+			
+			ExternalProcessResult describeResult;
+			try {
+				
+				describeResult = runGoOracle(goEnv, describeFile);
+				
 			} catch(OperationCancellation e) {
 				return null;
 			} catch(CommonException | CoreException e) {
 				LangCore.logError("Error running oracle describe for source structure update", e);
 				return null;
+			} finally {
+				if(tempDir != null) {
+					try {
+						FileUtil.deleteDir(tempDir);
+					} catch(IOException e) {
+						LangCore.logError("Could not delete temp files", e);
+					}
+				}
 			}
 			
 			try {
@@ -111,13 +113,31 @@ public class GoSourceModelManager extends SourceModelManager {
 				return new GoOraclePackageDescribeParser(fileLocation, source) {
 					@Override
 					protected boolean isSourceElementLocation(Location sourceFileLoc) throws CommonException {
-						return describeTempFile.equals(sourceFileLoc);
+						return describeFile.equals(sourceFileLoc);
 					};
 				}.parse(describeResult);
 			} catch(CommonException e) {
 				LangCore.logWarning("Error parsing oracle describe result, for source structure update. ", e);
 				return null;
 			}
+		}
+		
+		protected void setupDescribeFile() throws IOException, FileNotFoundException {
+			ITextFileBuffer fb = structureInfo.getTextFileBuffer();
+			if(fb != null && !fb.isDirty()) {
+				// No need for temp file, use file on disk.
+				return;
+			}
+			
+			tempDir = Location.create_fromValid(Files.createTempDirectory("_goclipse"));
+			Location tempDir_src = tempDir.resolve_fromValid("src/describe_temp");
+			Files.createDirectories(tempDir_src.toPath());
+			describeFile = tempDir_src.resolve_fromValid("describe.go");
+			FileUtil.writeStringToFile(describeFile.toFile(), source, StringUtil.UTF8);
+			
+			// Modify goEnv for tempDir
+			goEnv = new GoEnvironment(goEnv.getGoRoot(), goEnv.getGoArch(), goEnv.getGoOs(), 
+				new GoPath(tempDir.toString()));
 		}
 		
 		protected ExternalProcessResult runGoOracle(GoEnvironment goEnv, Location opTempFile)
@@ -128,8 +148,7 @@ public class GoSourceModelManager extends SourceModelManager {
 			
 			ProcessBuilder pb = oracleOp.createProcessBuilder(goEnv, opTempFile, offset);
 			
-			ExternalProcessResult describeResult = LangCore.getToolManager().runEngineTool(pb, null, cm);
-			return describeResult;
+			return LangCore.getToolManager().runEngineTool(pb, null, cm);
 		}
 		
 	}

@@ -92,7 +92,7 @@ public class GoOraclePackageDescribeParser_Test extends AbstractStructureParser_
 		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
 		SourceFileStructure expected = new SourceFileStructure(location, expectedStructure, null);
 		
-		assertAreEqual(expected.getChildren(), structure.getChildren());
+		assertAreEqual(structure.getChildren(), expected.getChildren());
 		assertEquals(structure, expected);	
 	}
 	
@@ -173,6 +173,16 @@ public class GoOraclePackageDescribeParser_Test extends AbstractStructureParser_
 		source = getClassResource("oracle_describe.A_std_url.go");
 		new GoOraclePackageDescribeParser(null, source).parse(
 			getClassResource("oracle_describe.A_std_url.json"));
+		
+		
+		source = DEFAULT_SOURCE;
+		testParseStructure(getClassResource("oracle_describe.3_methods.json"), source,
+			Location.create(fixTestsPaths("D:/devel/tools.Go/go-workspace/src/util/other/hello_other.go")),
+			
+			new StructureElement("MainController", null, sr(7, 0), STRUCT, att(), null, elems(
+				elem("RegisterJson", sr(7, 0), METHOD, att(), "func()", null)
+			))
+		);
 		
 	}
 	

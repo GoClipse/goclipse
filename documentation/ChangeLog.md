@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Partially fixed outline not showing some method declarations. Now it works when editor is saved, but not if the editor is dirty. (#177)
  * Added on-the-fly parser errors in the editor (uses Go `oracle`).
  * Added some new Snippets: `for`, `foreach`, `switch`, and a few others.
  * Fixed NPE when invoking Open Definition in a file that is available in the Eclipse workspace under more than one path/location. (#167)
