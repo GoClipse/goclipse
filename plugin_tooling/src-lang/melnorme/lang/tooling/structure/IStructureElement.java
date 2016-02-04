@@ -29,7 +29,7 @@ public interface IStructureElement extends IStructureElementContainer {
 	SourceRange getSourceRange();
 	
 	/** @return the source range of the name of this element. */
-	SourceRange getNameSourceRange();
+	SourceRange getNameSourceRange2();
 	
 	/** @return an enum like instance indicating the kind of element this is. */
 	StructureElementKind getKind();
