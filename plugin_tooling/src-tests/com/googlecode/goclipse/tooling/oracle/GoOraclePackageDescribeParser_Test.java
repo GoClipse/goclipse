@@ -25,6 +25,8 @@ import org.junit.Test;
 import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
+import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.AbstractStructureParser;
 import melnorme.lang.tooling.ops.AbstractStructureParser_Test;
@@ -37,7 +39,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 
-public class OraclePackageDescribeParser_Test extends AbstractStructureParser_Test {
+public class GoOraclePackageDescribeParser_Test extends AbstractStructureParser_Test {
 	
 	@Override
 	public String getClassResource(String resourceName) {
@@ -69,13 +71,12 @@ public class OraclePackageDescribeParser_Test extends AbstractStructureParser_Te
 		return new StructureElement(name, nameSR, nameSR, elementKind, elementAttributes, type, children);
 	}
 	
-	protected String goSource;
 	protected Location location;
 	
 	protected void testParseStructure(String describeOutput, String goSource, StructureElement... expectedElements)
 			throws CommonException {
 		this.location = null;
-		this.goSource = goSource;
+		this.source = goSource;
 		super.testParseStructure(describeOutput, list(), expectedElements);
 	}
 	
@@ -83,7 +84,7 @@ public class OraclePackageDescribeParser_Test extends AbstractStructureParser_Te
 			StructureElement... expectedElements)
 			throws CommonException {
 		this.location = location;
-		this.goSource = goSource;
+		this.source = goSource;
 		
 		AbstractStructureParser parser = createStructureParser();
 		SourceFileStructure structure = parser.parse(describeOutput);
@@ -96,12 +97,12 @@ public class OraclePackageDescribeParser_Test extends AbstractStructureParser_Te
 	}
 	
 	@Override
-	protected OraclePackageDescribeParser createStructureParser() {
-		return new OraclePackageDescribeParser(location, goSource);
+	protected GoOraclePackageDescribeParser createStructureParser() {
+		return new GoOraclePackageDescribeParser(location, source);
 	}
 	
 	public int ixof(String marker) {
-		int indexOf = goSource.indexOf(marker);
+		int indexOf = source.indexOf(marker);
 		assertTrue(indexOf >= 0);
 		return indexOf;
 	}
@@ -120,9 +121,9 @@ public class OraclePackageDescribeParser_Test extends AbstractStructureParser_Te
 		testParseStructure(getClassResource("oracle_describe.0_Empty.json"), "");
 		
 		
-		goSource = getClassResource("oracle_describe.1_Basic.go");
+		source = getClassResource("oracle_describe.1_Basic.go");
 		testParseStructure(
-			getClassResource("oracle_describe.1_Basic.json"), goSource,
+			getClassResource("oracle_describe.1_Basic.json"), source,
 			
 			elem("Hello", sr("Hello"), FUNCTION, att(), "func()", null),
 			elem("other", sr("other"), FUNCTION, attPriv(), "func()", null),
@@ -151,8 +152,8 @@ public class OraclePackageDescribeParser_Test extends AbstractStructureParser_Te
 			assertTrue(e.toString().contains("Invalid line: 10 is over the max bound: 1."));
 		}
 		
-		goSource = getClassResource("oracle_describe.2_Test.go");
-		testParseStructure(getClassResource("oracle_describe.2_Test.json"), goSource,
+		source = getClassResource("oracle_describe.2_Test.go");
+		testParseStructure(getClassResource("oracle_describe.2_Test.json"), source,
 			Location.create(fixTestsPaths("D:/devel/tools.Go/go-workspace/src/util/libfoo/libfoo.go")),
 			
 			elem("encodeFragment", sr("encodeFragment"), CONST, attPriv(), "util.encoding", null),
@@ -169,10 +170,25 @@ public class OraclePackageDescribeParser_Test extends AbstractStructureParser_Te
 			))
 		);
 		
-		goSource = getClassResource("oracle_describe.A_std_url.go");
-		new OraclePackageDescribeParser(null, goSource).parse(
+		source = getClassResource("oracle_describe.A_std_url.go");
+		new GoOraclePackageDescribeParser(null, source).parse(
 			getClassResource("oracle_describe.A_std_url.json"));
 		
+	}
+	
+	
+	@Test
+	public void testErrorParse() throws Exception { testErrorParse$(); }
+	public void testErrorParse$() throws Exception {
+		source = DEFAULT_SOURCE; 
+		GoOraclePackageDescribeParser parser = createStructureParser();
+		
+		String errorMsg = "oracle: C:\\Users\\Bruno\\src\\describe.go:1:2: expected operand, found 'for'";
+		
+		SourceFileStructure structure = parser.parseErrorMessage(errorMsg);
+		assertEquals(structure, new SourceFileStructure(location, list(), list(
+			new ParserError(ParserErrorTypes.GENERIC_ERROR, srAt(7, 8), "expected operand, found 'for'", null)))
+		);
 	}
 	
 }

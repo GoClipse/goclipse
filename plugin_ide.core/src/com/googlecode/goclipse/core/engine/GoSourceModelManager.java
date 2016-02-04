@@ -31,7 +31,7 @@ import com.googlecode.goclipse.tooling.GoSourceFileUtil;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.oracle.GoOracleDescribeOperation;
-import com.googlecode.goclipse.tooling.oracle.OraclePackageDescribeParser;
+import com.googlecode.goclipse.tooling.oracle.GoOraclePackageDescribeParser;
 
 public class GoSourceModelManager extends SourceModelManager {
 	
@@ -107,11 +107,8 @@ public class GoSourceModelManager extends SourceModelManager {
 			}
 			
 			try {
-				if(describeResult.exitValue != 0) {
-					return null; // Don't log this error 
-				}
 				
-				return new OraclePackageDescribeParser(fileLocation, source) {
+				return new GoOraclePackageDescribeParser(fileLocation, source) {
 					@Override
 					protected boolean isSourceElementLocation(Location sourceFileLoc) throws CommonException {
 						return describeTempFile.equals(sourceFileLoc);
@@ -121,13 +118,6 @@ public class GoSourceModelManager extends SourceModelManager {
 				LangCore.logWarning("Error parsing oracle describe result, for source structure update. ", e);
 				return null;
 			}
-		}
-		
-		protected SourceFileStructure createSourceFileStructure(GoEnvironment goEnv, Location opTempFile)
-				throws CommonException, CoreException, OperationCancellation {
-
-			ExternalProcessResult describeResult = runGoOracle(goEnv, opTempFile);
-			return new OraclePackageDescribeParser(fileLocation, source).parse(describeResult);
 		}
 		
 		protected ExternalProcessResult runGoOracle(GoEnvironment goEnv, Location opTempFile)

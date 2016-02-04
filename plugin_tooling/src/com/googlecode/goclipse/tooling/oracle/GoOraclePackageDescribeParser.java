@@ -14,9 +14,12 @@ package com.googlecode.goclipse.tooling.oracle;
 import static com.googlecode.goclipse.tooling.oracle.JSONParseHelpers.readOptionalString;
 import static com.googlecode.goclipse.tooling.oracle.JSONParseHelpers.readString;
 import static melnorme.lang.tooling.structure.StructureElementKind.STRUCT;
+import static melnorme.utilbox.core.CoreUtil.list;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,14 +27,17 @@ import org.json.JSONObject;
 
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
-import melnorme.lang.tooling.ToolingMessages;
+import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.AbstractStructureParser;
+import melnorme.lang.tooling.ops.LineColumnPosition;
 import melnorme.lang.tooling.ops.SourceFileLocation;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
 import melnorme.lang.utils.parse.LexingUtils;
+import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -40,15 +46,16 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class OraclePackageDescribeParser extends AbstractStructureParser {
+public class GoOraclePackageDescribeParser extends AbstractStructureParser {
 	
-	public OraclePackageDescribeParser(Location location, String goSource) {
+	public GoOraclePackageDescribeParser(Location location, String goSource) {
 		super(location, goSource);
 	}
 	
 	public SourceFileStructure parse(ExternalProcessResult result) throws CommonException {
 		if(result.exitValue != 0) {
-			throw new CommonException(ToolingMessages.TOOLS_ExitedWithNonZeroStatus(result.exitValue));
+			String errorMsg = result.getStdErrBytes().toString(StringUtil.UTF8);
+			return parseErrorMessage(errorMsg);
 		}
 		
 		return parse(result.getStdOutBytes().toString(StringUtil.UTF8));
@@ -217,6 +224,67 @@ public class OraclePackageDescribeParser extends AbstractStructureParser {
 			return StructureElementKind.VARIABLE;
 		}
 		
+	}
+	
+	protected static final Pattern GO_MESSAGE_LINE_Regex = Pattern.compile(
+		"^([^:\\n]*):" + // file
+		"(\\d*):((\\d*):)?" +// line:column
+//		"( (\\d*):(\\d*))?" + // end line:column
+//		"()" + // column-end
+		"\\s(.*)$" // error message
+	);
+	
+	public SourceFileStructure parseErrorMessage(String errorMsg) throws CommonException {
+		errorMsg = StringUtil.substringUntilLastMatch(errorMsg, "\n");
+		errorMsg = StringUtil.trimStart(errorMsg, "oracle: ");
+		
+		ArrayList2<ParserError> parserProblems = new ArrayList2<>();
+		
+		if(errorMsg.length() > 2 && errorMsg.charAt(1) == ':') {
+			// The path has a Windows driver letter, we need to remove it so it doesn't mess up the regex
+			errorMsg = errorMsg.substring(2);
+		}
+		Matcher matcher = GO_MESSAGE_LINE_Regex.matcher(errorMsg);
+		if(!matcher.matches()) {
+			throw new CommonException("Error message line format not recognized.");
+		}
+		
+		String lineStr = matcher.group(2);
+		String columnStr = matcher.group(4);
+		String message = matcher.group(5);
+		
+		LineColumnPosition lcPost = parseLineColumn(lineStr, columnStr, 1, 1);
+		
+		int offset = sourceLinesInfo.getValidatedOffset_1(lcPost.line, lcPost.column);
+		String source = sourceLinesInfo.getSource();
+		int length = 1;
+		
+		if(offset == source.length()) {
+			length = 0;
+		} 
+		else if(offset < source.length()) {
+			length = heuristic_determinTokenLength(offset, source);
+		}
+		
+		SourceRange sr = new SourceRange(offset, length);
+		parserProblems.add(new ParserError(ParserErrorTypes.GENERIC_ERROR, sr, message, null));
+		
+		return new SourceFileStructure(location, list(), parserProblems);
+	}
+	
+	/**
+	 * Try to guess the length of the token at given offset, from given source.
+	 * Doesn't have to be accurate measurement. (used to get a better range for error msgs)  
+	 */
+	protected int heuristic_determinTokenLength(int offset, String source) {
+		
+		StringCharSource charSource = new StringCharSource(source);
+		charSource.consume(offset);
+		int length = LexingUtils.matchJavaIdentifier(charSource);
+		if (length == 0) {
+			return 1;
+		}
+		return length;
 	}
 	
 }

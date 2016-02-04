@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.utils.parse;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public class StringCharSource extends OffsetBasedCharacterReader<RuntimeException> implements ICharacterReader {
@@ -17,7 +18,7 @@ public class StringCharSource extends OffsetBasedCharacterReader<RuntimeExceptio
 	protected final String source;
 	
 	public StringCharSource(String source) {
-		this.source = source;
+		this.source = assertNotNull(source);
 	}
 	
 	public String getSource() {
