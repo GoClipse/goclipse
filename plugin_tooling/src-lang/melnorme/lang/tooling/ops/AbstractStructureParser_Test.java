@@ -29,11 +29,13 @@ import melnorme.utilbox.core.CommonException;
 
 public abstract class AbstractStructureParser_Test extends CommonToolingTest {
 	
+	protected static final String DEFAULT_SOURCE = "aaaaa\n0123456789\nxxx\nabcdefghijkl\n";
+	
 	public AbstractStructureParser_Test() {
 		super();
 	}
 	
-	protected String defaultSource = "aaaaa\n0123456789\nxxx\nabcdefghijkl\n";
+	protected String source = DEFAULT_SOURCE;
 	
 	public static String quoteString(String string) {
 		return '"' + replaceAll(string, "\"", "\\\"") + '"';
@@ -50,7 +52,7 @@ public abstract class AbstractStructureParser_Test extends CommonToolingTest {
 	protected int pos(int line_0, int col_0) {
 		int lineOffset = 0;
 		while(line_0 > 0) {
-			int newIx = defaultSource.indexOf('\n', lineOffset);
+			int newIx = source.indexOf('\n', lineOffset);
 			assertTrue(newIx > 0);
 			lineOffset = newIx + 1;
 			line_0--;

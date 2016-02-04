@@ -30,6 +30,10 @@ public class SourceLinesInfo {
 		calculateLines(parser);
 	}
 	
+	public String getSource() {
+		return source;
+	}
+	
 	protected void calculateLines(StringParseSource parser) {
 		lines = new ArrayList2<>();
 		
