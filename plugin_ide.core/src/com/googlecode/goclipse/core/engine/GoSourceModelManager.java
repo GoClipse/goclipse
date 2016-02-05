@@ -24,9 +24,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.runtime.CoreException;
-
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.tooling.GoSourceFileUtil;
@@ -42,28 +40,35 @@ public class GoSourceModelManager extends SourceModelManager {
 	
 	@Override
 	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source) {
+		return createUpdateTask(structureInfo, source, false);
+	}
+	
+	@Override
+	protected StructureUpdateTask createUpdateTask_forFileSave(StructureInfo structureInfo, String source) {
+		return createUpdateTask(structureInfo, source, true);
+	}
+	
+	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source, boolean isSavedToDisk) {
 		Location fileLocation = structureInfo.getLocation();
 		if(fileLocation == null) {
 			return new StructureUpdateNullTask(structureInfo);
 		}
 		
-		return new GoStructureUpdateTask(structureInfo, source, fileLocation);
-	}
-	
-	@Override
-	protected StructureUpdateTask createUpdateTask_forFileSave(StructureInfo structureInfo, String source) {
-		return createUpdateTask(structureInfo, source);
+		return new GoStructureUpdateTask(structureInfo, source, fileLocation, isSavedToDisk);
 	}
 	
 	protected class GoStructureUpdateTask extends StructureUpdateTask {
 		
 		protected final String source;
 		protected final Location fileLocation;
+		protected final boolean isDocumentSavedToDisk;
 		
-		public GoStructureUpdateTask(StructureInfo structureInfo, String source, Location fileLocation) {
+		public GoStructureUpdateTask(StructureInfo structureInfo, String source, Location fileLocation, 
+				boolean isSavedToDisk) {
 			super(structureInfo);
 			this.source = source;
 			this.fileLocation = fileLocation;
+			this.isDocumentSavedToDisk = isSavedToDisk;
 		}
 		
 		protected Location tempDir;
@@ -108,6 +113,10 @@ public class GoSourceModelManager extends SourceModelManager {
 				}
 			}
 			
+			if(fileLocation == null || isCancelled()) {
+				return null;
+			}
+			
 			try {
 				
 				return new GoOraclePackageDescribeParser(fileLocation, source) {
@@ -123,8 +132,7 @@ public class GoSourceModelManager extends SourceModelManager {
 		}
 		
 		protected void setupDescribeFile() throws IOException, FileNotFoundException {
-			ITextFileBuffer fb = structureInfo.getTextFileBuffer();
-			if(fb != null && !fb.isDirty()) {
+			if(isDocumentSavedToDisk) {
 				// No need for temp file, use file on disk.
 				return;
 			}
