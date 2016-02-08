@@ -3,29 +3,29 @@
 ### (NextVersion)
 
 ### 0.14.0
- * Partially fixed outline not showing some method declarations. Now it works when editor is saved, but not if the editor is dirty. (#177)
  * Added on-the-fly parser errors in the editor (uses Go `oracle`).
- * Added some new Snippets: `for`, `foreach`, `switch`, and a few others.
+ * Added some new Snippets: `for`, `foreach`, `switch`, `main`, `apl` and a few others.
+ * Added improved download functionality in gocode/oracle preference page. 
+ * Pressing F2 in the editor now shows information popup for problem under cursor (same as the mouse-over hover).
+ * Project builder is no longer invoked when workspace "Build Automatically" setting is enabled and a file is saved. (this was considered a misfeature anyways)
+ * Dirty editors are now automatically saved if a build is invoked directly from a Build Target in the Project Explorer. (if the workspace "Save automatically before build" option is enabled).
+ * Improved Auto-Indent when Enter pressed before a closing brace. 
+ * Added preference to control whether project location is implicitly added to GOPATH or not.
+ * Added gocode preference to enable/disable showing the error dialog if failures occur during Content Assist.
+ * Minimum and recommended CDT version is now `8.8`.
+
+--
+ * Partially fixed outline not showing some method declarations. Now it works when editor is saved, but not if the editor is dirty. (#177)
  * Fixed NPE when invoking Open Definition in a file that is available in the Eclipse workspace under more than one path/location. (#167)
  * Fixed bug with Content Assist snippets using the `${word_selection}` variable.
- * Dirty editors are now automatically saved if a build is invoked directly from a Build Target in the Project Explorer. (if the workspace "Save automatically before build" option is enabled).
  * Fixed workspace resource locking when a build is invoked directly from a Build Target in the Project Explorer.
- * Added "apl" and "main" code snippets.
- * Added improved download functionality in gocode/oracle preference page. 
  * Fixed regression: Console view always activates when a build is invoked. (#158)
- * Pressing F2 in the editor now shows information popup for problem under cursor (same as the mouse-over hover).
- * Improvement to Auto-Indent when Enter pressed before a closing brace. 
- * Minimum and recommended CDT version is now `8.8`.
  * When debugging, fixed toggling breakpoints on and off for files that are outside the workspace.
  * When debugging, fixed opening source files that are are outside the workspace.
  * Fixed line breakpoint icon.
- * Added preference to control whether project location is implicitly added to GOPATH or not.
- 
- * Project builder is no longer invoked when workspace "Build Automatically" setting is enabled and a file is saved. (this was considered a misfeature anyways)
- * Added gocode preference to enable/disable showing the error dialog if failures occur during Content Assist.
  * Fixed: in New Go File Wizard, "Browse" button not working.
  * Fixed: "Restore Defaults" in "Go Compiler" settings page sometimes causes GOPATH field to be enabled when it shouldn't. 
- * Fixed: project Build Targets settings pages shows wrong default for Program Path field
+ * Fixed: project Build Targets settings pages shows wrong default for Program Path field.
  
 ### 0.13.0
  * Added support for Eclipse dark theme (#131). Namely:  
