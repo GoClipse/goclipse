@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Map;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -143,11 +144,11 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 	/* ----------------- Navigation operations ----------------- */
 	
 	@Override 
-	protected Map<String, ITextEditor> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
-		Map<String, ITextEditor> targets = super.getHyperlinkDetectorTargets(sourceViewer);
+	protected Map<String, IAdaptable> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
+		Map<String, IAdaptable> targets = super.getHyperlinkDetectorTargets(sourceViewer);
 		targets.put(EditorSettings_Actual.EDITOR_CODE_TARGET, editor); 
 		return targets;
-	}
+	} 
 	
 	public void installOutlinePresenter(final LangSourceViewer sourceViewer) {
 		final InformationPresenter presenter = 
