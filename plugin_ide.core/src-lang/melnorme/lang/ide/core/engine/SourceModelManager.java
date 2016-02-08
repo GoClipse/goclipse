@@ -372,12 +372,15 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 		if(doc instanceof ISynchronizable) {
 			ISynchronizable synchronizable = (ISynchronizable) doc;
 			
-			synchronized(synchronizable.getLockObject()) {
-				return runnable.call();
+			Object lockObject = synchronizable.getLockObject();
+			if(lockObject != null) {
+				synchronized(lockObject) {
+					return runnable.call();
+				}
 			}
-		} else {
-			return runnable.call();
 		}
+		
+		return runnable.call();
 	}
 	
 }
