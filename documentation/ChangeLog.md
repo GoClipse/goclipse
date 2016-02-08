@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+
+### 0.14.0
  * Partially fixed outline not showing some method declarations. Now it works when editor is saved, but not if the editor is dirty. (#177)
  * Added on-the-fly parser errors in the editor (uses Go `oracle`).
  * Added some new Snippets: `for`, `foreach`, `switch`, and a few others.
