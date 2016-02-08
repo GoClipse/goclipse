@@ -182,8 +182,10 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 				document = null;
 				
 				queueUpdateTask(disconnectTask);
-				fbm.removeFileBufferListener(fbListener);
-				fbListener = null;
+				if(fbListener != null) {
+					fbm.removeFileBufferListener(fbListener);
+					fbListener = null;
+				}
 			}
 		}
 		
