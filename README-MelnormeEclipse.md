@@ -1,10 +1,11 @@
 MelnormeEclipse
 ================
 
-MelnormeEclipse is a framework for building Eclipse based IDEs for general purpose languages. It builds upon the Eclipse Platform to provide even more generic components and code infrastructure, that can then be customized or extended by each concrete IDE, making it easier to develop a full-fledged IDE.
+MelnormeEclipse is a framework for building Eclipse based IDEs for general purpose languages. It builds upon the Eclipse Platform to provide even more generic components and code infrastructure, that can then be customized or extended by each concrete IDE, making it easier to develop a full-fledged IDE. Some specific aspects of MelnormeEclipse:
 
-There isn't support for building semantic functionality (like what [Xtext](https://www.eclipse.org/Xtext/) does, for example), although it could be gradually added in the future.
+* There is a focus on an IDE paradigm of using external tools for building, code completion, and any sort of language analysis. Most of MelnormeEclipse infrastructure is UI infrastructure, the rest of IDE engine functionality is usually driven by language-specific external tools.
 
+* MelnormeEclipse is not linked to as a library, instead the whole source of MelnormeEclipse is embedded in the concrete IDE. This means each concrete IDE has its own version of MelnormeEclipse, which can be updated or modified separately. 
 
 ### History/Background
 
