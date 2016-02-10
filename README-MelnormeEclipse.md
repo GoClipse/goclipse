@@ -1,21 +1,16 @@
 MelnormeEclipse
 ================
 
-MelnormeEclipse is a framework for building Eclipse based IDEs, reusing common infrastructure and code from projects like [JDT](https://eclipse.org/jdt/), [DLTK](https://eclipse.org/dltk/), or [CDT](https://eclipse.org/cdt/), as well code written completely from scratch. 
-It aims to provide useful IDE functionality for new language IDEs, beyond what the Eclipse Platform provides.
-It provides mostly UI infrastructure at the moment. There isn't support for building semantic functionality (like what [Xtext](https://www.eclipse.org/Xtext/) does, for example), although it could be gradually added in the future.
+MelnormeEclipse is a framework for building Eclipse based IDEs for general purpose languages. It builds upon the Eclipse Platform to provide even more generic components and code infrastructure, that can then be customized or extended by each concrete IDE, making it easier to develop a full-fledged IDE.
 
-#### Projects using MelnormeEclipse
+There isn't support for building semantic functionality (like what [Xtext](https://www.eclipse.org/Xtext/) does, for example), although it could be gradually added in the future.
 
- * DDT - http://ddt-ide.github.io/
- * RustDT - http://rustdt.github.io/
- * Goclipse - http://goclipse.github.io/
 
 ### History/Background
 
 MelnormeEclipse originated from the [DDT](http://ddt-ide.github.io/) project, and a desire to refactor non language-specific code to a separate project, so that it could be reused by other IDEs. DDT had been using the [DLTK](https://eclipse.org/dltk/) framework for a long time, and DLTK has a similar goal as MelnormeEclipse: leverage a JDT-style infrastructure for use by other IDEs (and not necessarily just dynamic languages). But development on DLTK halted, whilst being left with many API and functionality limitations. 
 
-To continue developing a project to provide common IDE infrastructure, it would be necessary to either fork DLTK, or build a new project from scractch. For several reasons the later option was chosen. As such, some MelnormeEclipse components where rewritten from scratch, others were rewritten from JDT/DLTK code, others still are copied from those IDE with little to no modifications, whichever case is deemed better. 
+To continue developing a project to provide common IDE infrastructure, it would be necessary to either fork DLTK, or build a new project from scractch. For several reasons the later option was chosen. As such, some MelnormeEclipse components where rewritten from scratch, others were rewritten from existing JDT/DLTK code, others still were copied from those IDEs with little to no modifications - whichever case was deemed better. 
 
 
 ### Design notes:
