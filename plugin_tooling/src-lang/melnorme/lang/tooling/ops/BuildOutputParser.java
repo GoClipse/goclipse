@@ -15,10 +15,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.data.InfoResult;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -35,13 +37,18 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 		return buildMessages;
 	}
 	
-	public final ArrayList<ToolSourceMessage> parseOutput(ExternalProcessResult buildResult) throws CommonException {
-		return handleProcessResult(buildResult);
+	public final ArrayList<ToolSourceMessage> parseOutput(ExternalProcessResult buildResult) 
+			throws CommonException, OperationCancellation {
+		try {
+			return handleProcessResult(buildResult);
+		} catch(InfoResult e) {
+			throw e.toCommonException();
+		}
 	}
 	
 	@Override
-	protected void handleNonZeroExitCode(int exitValue) throws CommonException {
-		// Ignore nonzero
+	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException {
+		// Ignore non-zero exit
 	}
 	
 	@Override

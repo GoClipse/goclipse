@@ -12,38 +12,20 @@ package melnorme.lang.tooling.ops;
 
 
 import melnorme.lang.tooling.data.InfoResult;
-import melnorme.utilbox.concurrency.ICancelMonitor;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class AbstractToolOutputParser2<RESULT> extends ToolOutputParseHelper {
+public abstract class AbstractToolOutputParser2<RESULT> extends AbstractSingleToolOperation<RESULT> {
 	
-	protected final String toolPath;
 	protected final boolean nonZeroExitIsFatal;
 	
-	public AbstractToolOutputParser2(String toolPath, boolean nonZeroResultIsFatal) {
-		super();
-		this.toolPath = toolPath;
+	public AbstractToolOutputParser2(IOperationService opService, String toolPath, boolean nonZeroResultIsFatal) {
+		super(opService, toolPath);
 		this.nonZeroExitIsFatal = nonZeroResultIsFatal;
 	}
 	
-	public FindDefinitionResult execute(IProcessRunner opRunner,
-			ICancelMonitor cm) throws OperationCancellation, CommonException, InfoResult {
-		ProcessBuilder pb = createProcessBuilder();
-		
-		ExternalProcessResult result = opRunner.runProcess(pb, null, cm);
-		if(result.exitValue != 0) {
-			handleNonZeroExitValue(result);
-		}
-		
-		return parseToolResult(result);
-	}
-	
-	protected abstract ProcessBuilder createProcessBuilder() throws CommonException;
-	
-	@SuppressWarnings("unused")
-	protected void handleNonZeroExitValue( ExternalProcessResult result) throws CommonException, InfoResult {
+	@Override
+	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, InfoResult {
 		String nonZeroExitMsg = getToolName() + " did not complete successfully.";
 		if(nonZeroExitIsFatal) {
 			throw new CommonException(nonZeroExitMsg);
@@ -53,11 +35,5 @@ public abstract class AbstractToolOutputParser2<RESULT> extends ToolOutputParseH
 	}
 	
 	protected abstract String getToolName();
-	
-	public FindDefinitionResult parseToolResult(ExternalProcessResult result) throws CommonException {
-		return parseToolResult(result.getStdOutBytes().toString());
-	}
-	
-	public abstract FindDefinitionResult parseToolResult(String output) throws CommonException;
 	
 }

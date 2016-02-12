@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops;
 
+import melnorme.lang.tooling.data.InfoResult;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -20,21 +22,24 @@ public abstract class AbstractToolOperation2<RESULT> extends ToolOutputParseHelp
 		super();
 	}
 	
-	public RESULT handleProcessResult(ExternalProcessResult result) throws CommonException {
-		int exitValue = result.exitValue;
-		if(exitValue != 0) {
-			handleNonZeroExitCode(exitValue);
+	public RESULT handleProcessResult(ExternalProcessResult result) 
+			throws CommonException, OperationCancellation, InfoResult {
+		if(result.exitValue != 0) {
+			handleNonZeroExitCode(result);
 		}
 		
 		return doHandleProcessResult(result);
 	}
 	
-	protected abstract void handleNonZeroExitCode(int exitValue) throws CommonException;
+	protected abstract void handleNonZeroExitCode(ExternalProcessResult result) 
+			throws CommonException, OperationCancellation, InfoResult;
 	
-	protected RESULT doHandleProcessResult(ExternalProcessResult result) throws CommonException {
+	protected RESULT doHandleProcessResult(ExternalProcessResult result) 
+			throws CommonException, OperationCancellation, InfoResult {
 		return handleProcessOutput(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
 	
-	protected abstract RESULT handleProcessOutput(String output) throws CommonException;
+	protected abstract RESULT handleProcessOutput(String output) 
+			throws CommonException, OperationCancellation, InfoResult;
 	
 }
