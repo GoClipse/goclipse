@@ -12,6 +12,7 @@ package melnorme.lang.tooling.ops;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -25,9 +26,9 @@ public abstract class AbstractToolOperation {
 		this.operationHelper = assertNotNull(opHelper);
 	}
 	
-	protected ExternalProcessResult runToolProcess(ProcessBuilder pb, String input) 
+	protected ExternalProcessResult runToolProcess(ProcessBuilder pb, String input, ICancelMonitor cm) 
 			throws CommonException, OperationCancellation {
-		return operationHelper.runProcess(pb, input);
+		return operationHelper.runProcess(pb, input, cm);
 	}
 	
 	public IOperationService getOperationHelper() {

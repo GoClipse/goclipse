@@ -33,12 +33,16 @@ import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.IProcessRunner;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> {
+public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> 
+	implements IProcessRunner {
 	
 	protected final String source;
 	protected final SourceRange range; // range of element to open. Usually only offset matters
@@ -160,6 +164,14 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		}
 		
 		return lineOffset + column_oneBased-1;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public ExternalProcessResult runProcess(ProcessBuilder pb, String input, ICancelMonitor cm)
+			throws OperationCancellation, CommonException {
+		return LangCore.getToolManager().runEngineTool(pb, input, cm);
 	}
 	
 }

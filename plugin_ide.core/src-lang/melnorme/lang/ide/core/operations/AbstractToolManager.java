@@ -114,7 +114,7 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	
 	/* ----------------- ----------------- */
 	
-	protected EclipseCancelMonitor cm(IProgressMonitor pm) {
+	public static EclipseCancelMonitor cm(IProgressMonitor pm) {
 		return new EclipseCancelMonitor(pm);
 	}
 	
@@ -213,19 +213,19 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	
 	/* ----------------- ----------------- */
 	
-	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, IProgressMonitor pm) 
+	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String processInput, IProgressMonitor pm) 
 			throws CoreException, OperationCancellation {
 		try {
-			return runEngineTool(pb, clientInput, cm(pm));
+			return runEngineTool(pb, processInput, cm(pm));
 		} catch(CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
 	}
 	
-	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, ICancelMonitor cm)
+	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String processInput, ICancelMonitor cm)
 			throws CommonException, OperationCancellation {
 		IOperationConsoleHandler handler = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
-		return new RunToolTask(handler, pb, cm).runProcess(clientInput);
+		return new RunToolTask(handler, pb, cm).runProcess(processInput);
 	}
 	
 	/* -----------------  ----------------- */
@@ -233,19 +233,22 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	/** 
 	 * Helper to start engine client processes in the tool manager. 
 	 */
-	public class ToolManagerEngineToolRunner implements IOperationService {
+	public class ToolManagerEngineToolRunner2 implements IOperationService {
 		
 		protected final boolean throwOnNonZeroStatus;
-		protected final EclipseCancelMonitor cm;
 		
-		public ToolManagerEngineToolRunner(IProgressMonitor monitor, boolean throwOnNonZeroStatus) {
+		public ToolManagerEngineToolRunner2() {
+			this(false);
+		}
+		
+		@Deprecated
+		protected ToolManagerEngineToolRunner2(boolean throwOnNonZeroStatus) {
 			this.throwOnNonZeroStatus = throwOnNonZeroStatus;
-			this.cm = new EclipseCancelMonitor(monitor);
 		}
 		
 		@Override
-		public ExternalProcessResult runProcess(ProcessBuilder pb, String input) throws CommonException,
-				OperationCancellation {
+		public ExternalProcessResult runProcess(ProcessBuilder pb, String input, ICancelMonitor cm) 
+				throws CommonException, OperationCancellation {
 			IOperationConsoleHandler handler = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
 			return new RunToolTask(handler, pb, cm).runProcess(input, throwOnNonZeroStatus);
 		}
