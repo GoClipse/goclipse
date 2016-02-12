@@ -32,9 +32,9 @@ public abstract class AbstractToolOperation2<RESULT> extends ToolOutputParseHelp
 	protected abstract void handleNonZeroExitCode(int exitValue) throws CommonException;
 	
 	protected RESULT doHandleProcessResult(ExternalProcessResult result) throws CommonException {
-		return handleProcessResult(result.getStdOutBytes().toString(StringUtil.UTF8));
+		return handleProcessOutput(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
 	
-	protected abstract RESULT handleProcessResult(String source) throws CommonException;
+	protected abstract RESULT handleProcessOutput(String output) throws CommonException;
 	
 }
