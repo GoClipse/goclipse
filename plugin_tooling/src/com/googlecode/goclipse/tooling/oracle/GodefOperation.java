@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.tooling.data.InfoResult;
-import melnorme.lang.tooling.ops.AbstractToolOutputParser2;
+import melnorme.lang.tooling.ops.AbstractSingleToolOperation;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.IOperationService;
 import melnorme.lang.tooling.ops.ToolOutputParseHelper;
@@ -26,7 +26,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class GodefOperation extends AbstractToolOutputParser2<FindDefinitionResult> {
+public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionResult> {
 	
 	protected GoEnvironment goEnv;
 	protected Location fileLocation;
