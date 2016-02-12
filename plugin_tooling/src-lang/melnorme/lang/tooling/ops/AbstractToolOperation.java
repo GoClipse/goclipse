@@ -18,12 +18,11 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 
-public abstract class AbstractToolOperation2<RESULT> extends AbstractToolOutputParser2<RESULT> {
+public abstract class AbstractToolOperation {
 	
 	protected final IOperationService operationHelper;
 	
-	public AbstractToolOperation2(IOperationService opHelper, String toolPath) {
-		super(toolPath);
+	public AbstractToolOperation(IOperationService opHelper) {
 		this.operationHelper = assertNotNull(opHelper);
 	}
 	

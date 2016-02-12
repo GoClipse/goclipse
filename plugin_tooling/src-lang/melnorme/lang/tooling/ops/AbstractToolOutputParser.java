@@ -14,40 +14,33 @@ package melnorme.lang.tooling.ops;
 import melnorme.lang.tooling.ToolingMessages;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class AbstractToolOutputParser<RESULT> extends AbstractToolOutputParser2<RESULT> {
+public abstract class AbstractToolOutputParser<RESULT> extends ToolOutputParseHelper {
 	
-	public AbstractToolOutputParser(String toolPath) {
-		super(toolPath, true);
+	public AbstractToolOutputParser() {
+		super();
 	}
 	
 	public RESULT parse(ExternalProcessResult result) throws CommonException {
 		int exitValue = result.exitValue;
 		if(exitValue != 0) {
-			handleNonZeroExitValue(result);
+			throw new CommonException(
+				ToolingMessages.PROCESS_CompletedWithNonZeroVAlue(getToolProcessName(), exitValue));
 		}
 		
 		return doParse(result);
 	}
 	
-	@Override
-	protected void handleNonZeroExitValue(ExternalProcessResult result) throws CommonException {
-		throw new CommonException(
-			ToolingMessages.PROCESS_CompletedWithNonZeroVAlue(getToolName(), result.exitValue));
+	protected abstract String getToolProcessName();
+	
+	protected RESULT doParse(ExternalProcessResult result) throws CommonException {
+		return parse(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
 	
-	protected final RESULT doParse(ExternalProcessResult result) throws CommonException {
-		return parseToolResult(result);
-	}
-	
-	public final RESULT parse(String outputSource) throws CommonException {
-		return parseToolResult(outputSource);
-	}
-	
-	@Override
-	public RESULT parseToolResult(String output) throws CommonException {
-		return parse(new StringParseSource(output));
+	public RESULT parse(String outputSource) throws CommonException {
+		return parse(new StringParseSource(outputSource));
 	}
 	
 	protected abstract RESULT parse(StringParseSource outputParseSource) throws CommonException;
