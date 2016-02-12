@@ -61,7 +61,7 @@ public class ProcessUtils {
 	
 	public static void validateNonZeroExitValue(int exitValue) throws CommonException {
 		if(exitValue != 0) {
-			throw new CommonException(ToolingMessages.PROCESS_CompletedWithNonZeroVAlue("Process", exitValue));
+			throw new CommonException(ToolingMessages.PROCESS_CompletedWithNonZeroValue("Process", exitValue));
 		}
 	}
 	

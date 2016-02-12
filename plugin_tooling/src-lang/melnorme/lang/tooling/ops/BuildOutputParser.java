@@ -35,11 +35,17 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 		return buildMessages;
 	}
 	
-	public ArrayList<ToolSourceMessage> parseOutput(ExternalProcessResult buildResult) throws CommonException {
-		return doParse(buildResult);
+	public final ArrayList<ToolSourceMessage> parseOutput(ExternalProcessResult buildResult) throws CommonException {
+		return handleProcessResult(buildResult);
 	}
+	
 	@Override
-	protected ArrayList<ToolSourceMessage> doParse(ExternalProcessResult result) throws CommonException {
+	protected void handleNonZeroExitCode(int exitValue) throws CommonException {
+		// Ignore nonzero
+	}
+	
+	@Override
+	protected ArrayList<ToolSourceMessage> doHandleProcessResult(ExternalProcessResult result) throws CommonException {
 		return parse(result.getStdErrBytes().toString(StringUtil.UTF8));
 	}
 	

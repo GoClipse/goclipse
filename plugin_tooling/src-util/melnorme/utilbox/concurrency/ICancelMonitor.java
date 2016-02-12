@@ -24,17 +24,12 @@ public interface ICancelMonitor {
 		
 	}
 	
-	// TODO: remove this unnecessary class wrapper in Java8
-	public class _Util  {
-		
-		public static final NullCancelMonitor NULL_MONITOR = new NullCancelMonitor();
-		
-		public static void checkCancelation(ICancelMonitor cm) throws OperationCancellation {
-			if(cm.isCanceled()) {
-				throw new OperationCancellation();
-			}
+	public static final NullCancelMonitor NULL_MONITOR = new NullCancelMonitor();
+	
+	public static void checkCancelation(ICancelMonitor cm) throws OperationCancellation {
+		if(cm.isCanceled()) {
+			throw new OperationCancellation();
 		}
-		
 	}
 	
 }
