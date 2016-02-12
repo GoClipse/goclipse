@@ -13,6 +13,7 @@ import com.googlecode.goclipse.tooling.gocode.GocodeOutputParser;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
@@ -41,7 +42,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		
 		// TODO: we should run this operation outside the UI thread.
 		GocodeCompletionOperation client = new GocodeCompletionOperation(
-			getEngineToolRunner(pm), goEnvironment, gocodePath.toOSString());
+			getEngineToolRunner(), goEnvironment, gocodePath.toOSString(), new EclipseCancelMonitor(pm));
 		
 		String source = document.get();
 		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), source, offset);

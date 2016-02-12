@@ -16,4 +16,8 @@ public interface GoToolPreferences {
 	
 	StringPreference GO_ORACLE_Path = new StringPreference("GoToolPreferences.GO_ORACLE_Path", "oracle");
 	
+	/* FIXME: add UI for this */
+	StringPreference GODEF_Path = new StringPreference("GoToolPreferences.godef.Path", 
+		"");
+	
 }

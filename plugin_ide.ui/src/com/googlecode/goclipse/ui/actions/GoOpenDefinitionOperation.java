@@ -24,25 +24,25 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.GoToolPreferences;
-import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.oracle.GoOracleFindDefinitionOperation;
+import com.googlecode.goclipse.tooling.oracle.GodefOperation;
 
+import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
-import melnorme.lang.ide.ui.tools.console.EngineToolsConsole;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.data.InfoResult;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperation {
+public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 	
-	public static final String OPEN_DEFINITION_OpName = "Open definition (go oracle)";
+	public static final String OPEN_DEFINITION_OpName = "Open definition";
 	
-	public GoOracleOpenDefinitionOperation(ITextEditor editor, SourceRange range, OpenNewEditorMode openEditorMode) {
+	public GoOpenDefinitionOperation(ITextEditor editor, SourceRange range, OpenNewEditorMode openEditorMode) {
 		super(OPEN_DEFINITION_OpName, editor, range, openEditorMode);
 	}
 	
@@ -80,22 +80,34 @@ public class GoOracleOpenDefinitionOperation extends AbstractOpenElementOperatio
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
-		GoOracleFindDefinitionOperation op = new GoOracleFindDefinitionOperation(goOraclePath);
-		ProcessBuilder pb = op.createProcessBuilder(goEnv, inputLoc, byteOffset);
+		EclipseCancelMonitor cm = cm(monitor);
 		
-		ExternalProcessResult result = GoToolManager.getDefault().runEngineTool(pb, null, monitor);
-		if(result.exitValue != 0) {
-			statusErrorMessage = "Go oracle did not complete successfully.";
-			return null;
+		try {
+			String godefPath = GoToolPreferences.GODEF_Path.get();
+			return new GodefOperation(godefPath, goEnv, inputLoc, byteOffset).execute(this, cm);
+		} catch(InfoResult | CommonException e) {
+
+			// Try go oracle as an alternative
+			try {
+				return new GoOracleFindDefinitionOperation(goOraclePath).execute(inputLoc, byteOffset, goEnv, this, cm);
+			} catch(InfoResult | CommonException oracleError) {
+				// Ignore oracle error, display previous godef error 
+			}
+			
+			try {
+				throw e;
+			} catch(InfoResult ir) {
+				statusErrorMessage = e.getMessage();
+				return null;
+			}
 		}
 		
-		return op.parseToolResult(result);
 	}
 	
 	@Override
 	protected void handleStatusErrorMessage() {
-		EngineToolsConsole engineToolsConsole = EngineToolsConsole.getConsole();
-		engineToolsConsole.activate();
+//		EngineToolsConsole engineToolsConsole = EngineToolsConsole.getConsole();
+//		engineToolsConsole.activate();
 		
 		super.handleStatusErrorMessage();
 	}

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.gocode;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.regex.Pattern;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
@@ -17,6 +19,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import melnorme.lang.tooling.ops.AbstractToolOperation;
 import melnorme.lang.tooling.ops.IOperationService;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -28,11 +31,14 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 	
 	protected final GoEnvironment goEnvironment;
 	protected final String gocodePath;
+	protected final ICancelMonitor cm;
 	
-	public GocodeCompletionOperation(IOperationService opHelper, GoEnvironment goEnvironment, String gocodePath) {
+	public GocodeCompletionOperation(IOperationService opHelper, GoEnvironment goEnvironment, String gocodePath,
+			ICancelMonitor cm) {
 		super(opHelper);
-		this.goEnvironment = goEnvironment;
-		this.gocodePath = gocodePath;
+		this.goEnvironment = assertNotNull(goEnvironment);
+		this.gocodePath = assertNotNull(gocodePath);
+		this.cm = assertNotNull(cm);
 	}
 	
 	protected void setLibPathForEnvironment() throws CommonException, OperationCancellation {
@@ -48,7 +54,7 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 		
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
-		runToolProcess(pb, null);
+		runToolProcess(pb, null, cm);
 	}
 	
 	public ExternalProcessResult execute(String filePath, String bufferText, int offset) 
@@ -68,7 +74,7 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 		
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
-		return runToolProcess(pb, bufferText);
+		return runToolProcess(pb, bufferText, cm);
 	}
 	
 	// TODO: move the code that process gocode result to here

@@ -13,7 +13,7 @@ package com.googlecode.goclipse.ui.editor.actions;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.googlecode.goclipse.ui.actions.GoOracleOpenDefinitionOperation;
+import com.googlecode.goclipse.ui.actions.GoOpenDefinitionOperation;
 
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
@@ -25,9 +25,9 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 	}
 	
 	@Override
-	protected GoOracleOpenDefinitionOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
+	protected GoOpenDefinitionOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
 			OpenNewEditorMode newEditorMode) {
-		return new GoOracleOpenDefinitionOperation(editor, range, newEditorMode);
+		return new GoOpenDefinitionOperation(editor, range, newEditorMode);
 	}
 	
 	@Override

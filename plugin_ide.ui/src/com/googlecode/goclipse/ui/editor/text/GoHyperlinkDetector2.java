@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.googlecode.goclipse.ui.actions.GoOracleOpenDefinitionOperation;
+import com.googlecode.goclipse.ui.actions.GoOpenDefinitionOperation;
 
 public class GoHyperlinkDetector2 extends LangHyperlinkDetector {
 	
@@ -36,7 +36,7 @@ public class GoHyperlinkDetector2 extends LangHyperlinkDetector {
 		
 		@Override
 		public String getHyperlinkText() {
-			return GoOracleOpenDefinitionOperation.OPEN_DEFINITION_OpName;
+			return GoOpenDefinitionOperation.OPEN_DEFINITION_OpName;
 		}
 		
 		@Override
@@ -44,7 +44,7 @@ public class GoHyperlinkDetector2 extends LangHyperlinkDetector {
 			textEditor.doSave(new NullProgressMonitor());
 			
 			SourceRange sr = new SourceRange(region.getOffset(), region.getLength());
-			new GoOracleOpenDefinitionOperation(textEditor, sr, OpenNewEditorMode.TRY_REUSING_EXISTING)
+			new GoOpenDefinitionOperation(textEditor, sr, OpenNewEditorMode.TRY_REUSING_EXISTING)
 				.executeAndHandle();
 		}
 		
