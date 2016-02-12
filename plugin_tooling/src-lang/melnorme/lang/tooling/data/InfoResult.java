@@ -12,6 +12,8 @@ package melnorme.lang.tooling.data;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import melnorme.utilbox.core.CommonException;
+
 @SuppressWarnings("serial")
 public class InfoResult extends Throwable {
 	
@@ -22,6 +24,10 @@ public class InfoResult extends Throwable {
 	@Override
 	public String getMessage() {
 		return super.getMessage();
+	}
+	
+	public CommonException toCommonException() {
+		return new CommonException(getMessage());
 	}
 	
 }

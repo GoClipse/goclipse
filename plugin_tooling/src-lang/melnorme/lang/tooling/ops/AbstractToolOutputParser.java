@@ -12,7 +12,9 @@ package melnorme.lang.tooling.ops;
 
 
 import melnorme.lang.tooling.ToolingMessages;
+import melnorme.lang.tooling.data.InfoResult;
 import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -22,14 +24,18 @@ public abstract class AbstractToolOutputParser<RESULT> extends AbstractToolOpera
 		super();
 	}
 	
-	public RESULT parse(ExternalProcessResult result) throws CommonException {
-		return handleProcessResult(result);
+	public RESULT parse(ExternalProcessResult result) throws CommonException, OperationCancellation {
+		try {
+			return handleProcessResult(result);
+		} catch(InfoResult e) {
+			throw e.toCommonException();
+		}
 	}
 	
 	@Override
-	protected void handleNonZeroExitCode(int exitValue) throws CommonException {
+	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException {
 		throw new CommonException(
-			ToolingMessages.PROCESS_CompletedWithNonZeroValue(getToolProcessName(), exitValue));
+			ToolingMessages.PROCESS_CompletedWithNonZeroValue(getToolProcessName(), result.exitValue));
 	}
 	
 	protected abstract String getToolProcessName();

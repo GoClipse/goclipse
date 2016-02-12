@@ -84,7 +84,7 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 		
 		try {
 			String godefPath = GoToolPreferences.GODEF_Path.get();
-			return new GodefOperation(godefPath, goEnv, inputLoc, byteOffset).execute(this, cm);
+			return new GodefOperation(this, godefPath, goEnv, inputLoc, byteOffset).execute(cm);
 		} catch(InfoResult | CommonException e) {
 
 			// Try go oracle as an alternative

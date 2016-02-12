@@ -8,13 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.github.rustdt.tooling.ops;
+package melnorme.lang.tooling.ops;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.lang.tooling.ops.AbstractToolOperation2;
-import melnorme.lang.tooling.ops.IOperationService;
+import melnorme.lang.tooling.data.InfoResult;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -33,7 +32,7 @@ public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOp
 		this.toolPath = assertNotNull(toolPath);
 	}
 	
-	public RESULT execute(ICancelMonitor cm) throws CommonException, OperationCancellation {
+	public RESULT execute(ICancelMonitor cm) throws CommonException, OperationCancellation, InfoResult {
 		ProcessBuilder pb = createProcessBuilder();
 		ExternalProcessResult result = opHelper.runProcess(pb, toolInput, cm);
 		return handleProcessResult(result);

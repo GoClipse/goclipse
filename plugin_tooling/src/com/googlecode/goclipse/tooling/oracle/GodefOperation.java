@@ -17,8 +17,10 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import melnorme.lang.tooling.data.InfoResult;
 import melnorme.lang.tooling.ops.AbstractToolOutputParser2;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.IOperationService;
 import melnorme.lang.tooling.ops.ToolOutputParseHelper;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -30,8 +32,9 @@ public class GodefOperation extends AbstractToolOutputParser2<FindDefinitionResu
 	protected Location fileLocation;
 	protected int byteOffset;
 	
-	public GodefOperation(String godefPath, GoEnvironment goEnv, Location fileLocation, int byteOffset) {
-		super(godefPath, false);
+	public GodefOperation(IOperationService opService, String godefPath, GoEnvironment goEnv, 
+			Location fileLocation, int byteOffset) {
+		super(opService, godefPath, false);
 		this.goEnv = assertNotNull(goEnv);
 		this.fileLocation = fileLocation;
 		this.byteOffset = byteOffset;
@@ -54,17 +57,18 @@ public class GodefOperation extends AbstractToolOutputParser2<FindDefinitionResu
 	}
 	
 	@Override
-	protected void handleNonZeroExitValue(ExternalProcessResult result) throws CommonException, InfoResult {
+	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, InfoResult {
 		String errOut = result.getStdErrBytes().toString(StringUtil.UTF8);
 		if(errOut.trim().contains("\n")) {
-			super.handleNonZeroExitValue(result);
+			super.handleNonZeroExitCode(result);
 			return;
 		}
 		throw new InfoResult(errOut);
 	}
 	
 	@Override
-	public FindDefinitionResult parseToolResult(String output) throws CommonException {
+	protected FindDefinitionResult handleProcessOutput(String output)
+			throws CommonException, OperationCancellation, InfoResult {
 		output = output.trim();
 		return ToolOutputParseHelper.parsePathLineColumn(output, ":");
 	}
