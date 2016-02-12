@@ -235,22 +235,14 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 	 */
 	public class ToolManagerEngineToolRunner2 implements IOperationService {
 		
-		protected final boolean throwOnNonZeroStatus;
-		
 		public ToolManagerEngineToolRunner2() {
-			this(false);
-		}
-		
-		@Deprecated
-		protected ToolManagerEngineToolRunner2(boolean throwOnNonZeroStatus) {
-			this.throwOnNonZeroStatus = throwOnNonZeroStatus;
 		}
 		
 		@Override
 		public ExternalProcessResult runProcess(ProcessBuilder pb, String input, ICancelMonitor cm) 
 				throws CommonException, OperationCancellation {
 			IOperationConsoleHandler handler = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
-			return new RunToolTask(handler, pb, cm).runProcess(input, throwOnNonZeroStatus);
+			return new RunToolTask(handler, pb, cm).runProcess(input, false);
 		}
 		
 		@Override
