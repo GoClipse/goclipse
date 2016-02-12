@@ -23,13 +23,14 @@ public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOp
 	
 	protected final IOperationService opHelper;
 	protected final String toolPath;
-	
+	protected final boolean nonZeroExitIsFatal;
+
 	protected String toolInput = "";
 	
-	public AbstractSingleToolOperation(IOperationService opHelper, String toolPath) {
-		super();
+	public AbstractSingleToolOperation(IOperationService opHelper, String toolPath, boolean nonZeroResultIsFatal) {
 		this.opHelper = assertNotNull(opHelper);
 		this.toolPath = assertNotNull(toolPath);
+		this.nonZeroExitIsFatal = nonZeroResultIsFatal;
 	}
 	
 	public RESULT execute(ICancelMonitor cm) throws CommonException, OperationCancellation, InfoResult {
@@ -39,5 +40,18 @@ public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOp
 	}
 	
 	protected abstract ProcessBuilder createProcessBuilder() throws CommonException;
+	
+	@Override
+	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, InfoResult {
+		String nonZeroExitMsg = getToolName() + " did not complete successfully.";
+		if(nonZeroExitIsFatal) {
+			throw new CommonException(nonZeroExitMsg);
+		} else {
+			throw new InfoResult(nonZeroExitMsg);
+		}
+	}
+	
+	protected abstract String getToolName();
+
 	
 }
