@@ -12,14 +12,13 @@ package melnorme.lang.ide.ui.text.completion;
 
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager.ToolManagerEngineToolRunner;
+import melnorme.lang.ide.core.operations.AbstractToolManager.ToolManagerEngineToolRunner2;
 import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.LangImages;
@@ -106,8 +105,8 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 	
 	/* -----------------  ----------------- */
 	
-	protected ToolManagerEngineToolRunner getEngineToolRunner(IProgressMonitor pm) {
-		return LangCore.getToolManager().new ToolManagerEngineToolRunner(pm, false);
+	protected ToolManagerEngineToolRunner2 getEngineToolRunner() {
+		return LangCore.getToolManager().new ToolManagerEngineToolRunner2();
 	}
 	
 }

@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 
+import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -62,6 +63,10 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 	
 	protected void dialogError(String message) {
 		UIOperationsStatusHandler.displayStatusMessage(operationName, Severity.ERROR, message);  
+	}
+	
+	public static EclipseCancelMonitor cm(IProgressMonitor pm) {
+		return new EclipseCancelMonitor(pm);
 	}
 	
 }
