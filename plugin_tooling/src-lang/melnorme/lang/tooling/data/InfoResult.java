@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2016 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.ops;
+package melnorme.lang.tooling.data;
 
-import melnorme.utilbox.misc.ILogHandler;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-/**
- * Service/helper class to perform certain operation tasks (such as running a process) 
- * under a context that is abstracted away. (Usually it's a UI context that observes the tasks) 
- */
-public interface IOperationService extends ILogHandler, IProcessRunner {
+@SuppressWarnings("serial")
+public class InfoResult extends Throwable {
+	
+	public InfoResult(String message) {
+		super(assertNotNull(message));
+	}
+	
+	@Override
+	public String getMessage() {
+		return super.getMessage();
+	}
 	
 }
