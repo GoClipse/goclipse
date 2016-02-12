@@ -24,11 +24,12 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 
-public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayList<ToolSourceMessage>> {
+public abstract class BuildOutputParser2 extends AbstractToolOutputParser<ArrayList<ToolSourceMessage>> {
 	
 	protected ArrayList2<ToolSourceMessage> buildMessages;
 	
-	public BuildOutputParser() {
+	public BuildOutputParser2(String toolPath) {
+		super(toolPath);
 	}
 	
 	public ArrayList2<ToolSourceMessage> getBuildMessages() {
@@ -38,8 +39,9 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 	public ArrayList<ToolSourceMessage> parseOutput(ExternalProcessResult buildResult) throws CommonException {
 		return doParse(buildResult);
 	}
+	
 	@Override
-	protected ArrayList<ToolSourceMessage> doParse(ExternalProcessResult result) throws CommonException {
+	public ArrayList<ToolSourceMessage> parseToolResult(ExternalProcessResult result) throws CommonException {
 		return parse(result.getStdErrBytes().toString(StringUtil.UTF8));
 	}
 	
