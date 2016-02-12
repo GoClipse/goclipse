@@ -35,7 +35,7 @@ public abstract class AbstractToolOutputParser<RESULT> extends AbstractToolOpera
 	protected abstract String getToolProcessName();
 	
 	@Override
-	protected RESULT handleProcessResult(String source) throws CommonException {
+	protected RESULT handleProcessOutput(String source) throws CommonException {
 		return parse(source);
 	}
 	
