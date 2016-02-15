@@ -87,6 +87,9 @@ public abstract class LangEditorContextMenuContributor extends CommandsHelper {
 			pushItem(svcLocator, ITextEditorActionDefinitionIds.SHIFT_RIGHT));
 		sourceMenu.appendToGroup(SOURCE_MENU_GroupFormat, 
 			pushItem(svcLocator, ITextEditorActionDefinitionIds.SHIFT_LEFT));
+		
+		sourceMenu.appendToGroup(SOURCE_MENU_GroupFormat, 
+			pushItem(svcLocator, EditorCommandIds.Format));
 	}
 	
 }

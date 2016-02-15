@@ -37,8 +37,11 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 	@Override
 	protected void contributeSourceMenu(IMenuManager sourceMenu) {
 		super.contributeSourceMenu(sourceMenu);
-		
-		activateHandler(COMMAND_RunGoFmt, RunGoFmtOperation.getHandler(getPage()));
+	}
+	
+	@Override
+	protected IEditorOperationCreator getOpCreator_Format() {
+		return (editor) -> new RunGoFmtOperation(editor);
 	}
 	
 }

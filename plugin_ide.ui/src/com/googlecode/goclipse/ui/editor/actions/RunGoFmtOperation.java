@@ -16,28 +16,16 @@ import java.nio.file.Path;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
-import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.utilbox.core.CommonException;
 
 public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	
 	protected static final String RUN_GOFMT_OpName = "Run 'gofmt'";
-	
-	public static AbstractEditorHandler getHandler(IWorkbenchPage page) {
-		return new AbstractEditorHandler(page) {
-			@Override
-			protected BasicUIOperation createOperation(ITextEditor editor) {
-				return new RunGoFmtOperation(editor);
-			}
-		};
-	}
 	
 	public RunGoFmtOperation(ITextEditor editor) {
 		super(RUN_GOFMT_OpName, editor);
