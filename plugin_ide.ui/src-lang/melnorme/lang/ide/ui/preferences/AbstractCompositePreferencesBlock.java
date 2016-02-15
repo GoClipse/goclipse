@@ -35,6 +35,13 @@ public abstract class AbstractCompositePreferencesBlock extends AbstractPreferen
 		return subComponents;
 	}
 	
+	protected void addSubComponent(AbstractDisableableWidget subComponent) {
+		validation.addValidatableField(true, subComponent.getStatusField());
+		subComponents.add(subComponent);
+	}
+	
+	/* -----------------  ----------------- */
+	
 	@Override
 	protected final void createContents(Composite topControl) {
 		getSubWidgets().forEach(subComponent -> {
