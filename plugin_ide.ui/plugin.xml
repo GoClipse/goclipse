@@ -131,6 +131,12 @@
 			description="%QuickOutlineAction.description"
 		/>
 		
+		<command 
+			categoryId="LANG_PROJECT_ID.ide.ui.commands.Category"
+			id="LANG_PROJECT_ID.ide.ui.commands.Format"
+			name="%FormatAction.name"
+			description="%FormatAction.description"
+		/>		
 	</extension>
 	
 	<extension point="org.eclipse.ui.bindings">
@@ -163,6 +169,12 @@
 			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			sequence="M1+O">
+		</key>
+		<key
+			commandId="LANG_PROJECT_ID.ide.ui.commands.Format"
+			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
+			sequence="M1+M2+F"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
 		</key>
 	</extension>
 	
