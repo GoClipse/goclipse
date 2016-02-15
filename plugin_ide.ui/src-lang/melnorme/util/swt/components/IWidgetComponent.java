@@ -13,6 +13,7 @@ package melnorme.util.swt.components;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import melnorme.util.swt.SWTLayoutUtil;
 
 public interface IWidgetComponent {
 	
@@ -21,6 +22,12 @@ public interface IWidgetComponent {
 	 */
 	public Control createComponent(Composite parent);
 	
+	/** Do {@link #createComponent(Composite)}, and also set the layout data of created Control.  */
+ 	default Control createComponent(Composite parent, Object layoutData) {
+ 		Control control = createComponent(parent);
+ 		return SWTLayoutUtil.setLayoutData(control, layoutData);
+ 	}
+ 	
 	/**
 	 * Create the component controls directly on given parent.
 	 * This places restriction on parent: it must have a GridLayout, 
