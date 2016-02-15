@@ -14,10 +14,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.tooling.data.InfoResult;
 import melnorme.lang.tooling.ops.AbstractSingleToolOperation;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.IOperationService;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.lang.tooling.ops.ToolOutputParseHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -57,18 +57,18 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 	}
 	
 	@Override
-	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, InfoResult {
+	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, OperationSoftFailure {
 		String errOut = result.getStdErrBytes().toString(StringUtil.UTF8);
 		if(errOut.trim().contains("\n")) {
 			super.handleNonZeroExitCode(result);
 			return;
 		}
-		throw new InfoResult(errOut);
+		throw new OperationSoftFailure(errOut);
 	}
 	
 	@Override
 	protected FindDefinitionResult handleProcessOutput(String output)
-			throws CommonException, OperationCancellation, InfoResult {
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		output = output.trim();
 		return ToolOutputParseHelper.parsePathLineColumn(output, ":");
 	}

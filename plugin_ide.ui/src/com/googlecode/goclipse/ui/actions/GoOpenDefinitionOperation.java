@@ -32,8 +32,8 @@ import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.data.InfoResult;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -85,18 +85,18 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 		try {
 			String godefPath = GoToolPreferences.GODEF_Path.get();
 			return new GodefOperation(this, godefPath, goEnv, inputLoc, byteOffset).execute(cm);
-		} catch(InfoResult | CommonException e) {
+		} catch(OperationSoftFailure | CommonException e) {
 
 			// Try go oracle as an alternative
 			try {
 				return new GoOracleFindDefinitionOperation(goOraclePath).execute(inputLoc, byteOffset, goEnv, this, cm);
-			} catch(InfoResult | CommonException oracleError) {
+			} catch(OperationSoftFailure | CommonException oracleError) {
 				// Ignore oracle error, display previous godef error 
 			}
 			
 			try {
 				throw e;
-			} catch(InfoResult ir) {
+			} catch(OperationSoftFailure ir) {
 				statusErrorMessage = e.getMessage();
 				return null;
 			}

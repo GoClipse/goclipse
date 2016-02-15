@@ -13,7 +13,6 @@ package melnorme.lang.tooling.ops;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.lang.tooling.data.InfoResult;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -33,7 +32,7 @@ public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOp
 		this.nonZeroExitIsFatal = nonZeroResultIsFatal;
 	}
 	
-	public RESULT execute(ICancelMonitor cm) throws CommonException, OperationCancellation, InfoResult {
+	public RESULT execute(ICancelMonitor cm) throws CommonException, OperationCancellation, OperationSoftFailure {
 		ProcessBuilder pb = createProcessBuilder();
 		ExternalProcessResult result = opHelper.runProcess(pb, toolInput, cm);
 		return handleProcessResult(result);
@@ -42,12 +41,12 @@ public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOp
 	protected abstract ProcessBuilder createProcessBuilder() throws CommonException;
 	
 	@Override
-	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, InfoResult {
+	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException, OperationSoftFailure {
 		String nonZeroExitMsg = getToolName() + " did not complete successfully.";
 		if(nonZeroExitIsFatal) {
 			throw new CommonException(nonZeroExitMsg);
 		} else {
-			throw new InfoResult(nonZeroExitMsg);
+			throw new OperationSoftFailure(nonZeroExitMsg);
 		}
 	}
 	

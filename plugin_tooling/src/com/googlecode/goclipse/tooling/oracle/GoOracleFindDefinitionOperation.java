@@ -17,7 +17,6 @@ import org.json.JSONObject;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.tooling.data.InfoResult;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.IProcessRunner;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
@@ -35,12 +34,12 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 	}
 	
 	public FindDefinitionResult execute(Location inputLoc, int byteOffset, GoEnvironment goEnv, IProcessRunner opRunner,
-			ICancelMonitor cm) throws OperationCancellation, CommonException, InfoResult {
+			ICancelMonitor cm) throws OperationCancellation, CommonException, OperationSoftFailure {
 		ProcessBuilder pb = createProcessBuilder(goEnv, inputLoc, byteOffset);
 		
 		ExternalProcessResult result = opRunner.runProcess(pb, null, cm);
 		if(result.exitValue != 0) {
-			throw new InfoResult("Go oracle did not complete successfully.");
+			throw new OperationSoftFailure("Go oracle did not complete successfully.");
 		}
 		
 		return parseToolResult(result);

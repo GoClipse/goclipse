@@ -12,7 +12,6 @@ package melnorme.lang.tooling.ops;
 
 
 import melnorme.lang.tooling.ToolingMessages;
-import melnorme.lang.tooling.data.InfoResult;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -27,7 +26,7 @@ public abstract class AbstractToolOutputParser<RESULT> extends AbstractToolOpera
 	public RESULT parse(ExternalProcessResult result) throws CommonException, OperationCancellation {
 		try {
 			return handleProcessResult(result);
-		} catch(InfoResult e) {
+		} catch(OperationSoftFailure e) {
 			throw e.toCommonException();
 		}
 	}

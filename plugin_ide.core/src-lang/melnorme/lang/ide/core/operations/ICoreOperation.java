@@ -18,7 +18,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 
-public interface IToolOperation {
+public interface ICoreOperation {
 	
 	void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
 	

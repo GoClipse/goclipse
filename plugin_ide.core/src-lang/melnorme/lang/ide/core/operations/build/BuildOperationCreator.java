@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.IToolOperation;
+import melnorme.lang.ide.core.operations.ICoreOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
@@ -54,13 +54,13 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		this.opHandler = assertNotNull(opHandler);
 	}
 	
-	protected ArrayList2<IToolOperation> operations;
+	protected ArrayList2<ICoreOperation> operations;
 	
-	public IToolOperation newClearBuildMarkersOperation() {
+	public ICoreOperation newClearBuildMarkersOperation() {
 		return doCreateClearBuildMarkersOperation();
 	}
 	
-	public IToolOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild, boolean clearMarkers) 
+	public ICoreOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild, boolean clearMarkers) 
 			throws CommonException {
 		operations = ArrayList2.create();
 		
@@ -80,7 +80,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		}
 		
 		// refresh project
-		addOperation(new IToolOperation() {
+		addOperation(new ICoreOperation() {
 			@Override
 			public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 				project.refreshLocal(IResource.DEPTH_INFINITE, pm);
@@ -95,7 +95,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return new CompositeBuildOperation(operations, rule);
 	}
 	
-	protected boolean addOperation(IToolOperation toolOp) {
+	protected boolean addOperation(ICoreOperation toolOp) {
 		return operations.add(toolOp);
 	}
 	
@@ -104,7 +104,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		addOperation(newMessageOperation(startMsg));
 	}
 	
-	protected IToolOperation doCreateClearBuildMarkersOperation() {
+	protected ICoreOperation doCreateClearBuildMarkersOperation() {
 		return (pm) -> {
 			boolean hadDeletedMarkers = doDeleteProjectMarkers(buildProblemId, pm);
 			if(hadDeletedMarkers) {
@@ -132,7 +132,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return false;
 	}
 	
-	protected IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget) 
+	protected ICoreOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget) 
 			throws CommonException {
 		Path buildToolPath = LangCore.getToolManager().getSDKToolPath(project);
 		try {
@@ -142,7 +142,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		}
 	}
 	
-	public IToolOperation doCreateBuildTargetOperation(IOperationConsoleHandler opHandler,
+	public ICoreOperation doCreateBuildTargetOperation(IOperationConsoleHandler opHandler,
 			IProject project, Path buildToolPath, BuildTarget buildTarget
 	) throws CommonException, CoreException {
 		ValidatedBuildTarget validatedBuildTarget = buildMgr.getValidatedBuildTarget(project, buildTarget);
@@ -150,11 +150,11 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return buildType.getBuildOperation(validatedBuildTarget, opHandler, buildToolPath);
 	}
 	
-	protected IToolOperation newMessageOperation(String msg) {
+	protected ICoreOperation newMessageOperation(String msg) {
 		return new BuildMessageOperation(msg);
 	}
 	
-	protected class BuildMessageOperation implements IToolOperation, Callable<Void> {
+	protected class BuildMessageOperation implements ICoreOperation, Callable<Void> {
 		
 		protected final String msg;
 		
