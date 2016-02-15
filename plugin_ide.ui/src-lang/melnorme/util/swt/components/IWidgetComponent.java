@@ -11,7 +11,6 @@
 package melnorme.util.swt.components;
 
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
 import melnorme.util.swt.SWTLayoutUtil;
 
@@ -20,11 +19,11 @@ public interface IWidgetComponent {
 	/**
 	 * Create the component controls under a single top-level Control. 
 	 */
-	public Control createComponent(Composite parent);
+	public Composite createComponent(Composite parent);
 	
 	/** Do {@link #createComponent(Composite)}, and also set the layout data of created Control.  */
- 	default Control createComponent(Composite parent, Object layoutData) {
- 		Control control = createComponent(parent);
+ 	default Composite createComponent(Composite parent, Object layoutData) {
+ 		Composite control = createComponent(parent);
  		return SWTLayoutUtil.setLayoutData(control, layoutData);
  	}
  	
