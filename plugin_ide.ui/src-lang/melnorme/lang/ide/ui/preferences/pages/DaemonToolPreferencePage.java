@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.preferences.pages;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
@@ -75,7 +76,7 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 			toolGroup = AbstractPreferencesBlock.createOptionsSection(topControl, 
 				getDaemonToolName(), 
 				3, 
-				GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create());
+				createDefaultGroupGridData());
 			
 			bindToPreference(startServerAutomatically, ToolchainPreferences.AUTO_START_DAEMON);
 			bindToPreference(enableLogConsole, ToolchainPreferences.DAEMON_CONSOLE_ENABLE);
@@ -87,6 +88,10 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 			startServerAutomatically.createComponentInlined(toolGroup);
 			enableLogConsole.createComponentInlined(toolGroup);
 			showErrorsDialog.createComponentInlined(toolGroup);
+		}
+		
+		protected GridData createDefaultGroupGridData() {
+			return GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create();
 		}
 		
 		protected TextFieldComponent createDaemonPathFieldEditor(Group group) {
