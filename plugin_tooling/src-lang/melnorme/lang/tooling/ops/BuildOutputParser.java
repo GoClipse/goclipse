@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import melnorme.lang.tooling.data.InfoResult;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.parse.StringParseSource;
@@ -41,7 +40,7 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 			throws CommonException, OperationCancellation {
 		try {
 			return handleProcessResult(buildResult);
-		} catch(InfoResult e) {
+		} catch(OperationSoftFailure e) {
 			throw e.toCommonException();
 		}
 	}

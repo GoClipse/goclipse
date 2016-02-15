@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops;
 
-import melnorme.lang.tooling.data.InfoResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -23,7 +22,7 @@ public abstract class AbstractToolOperation2<RESULT> extends ToolOutputParseHelp
 	}
 	
 	public RESULT handleProcessResult(ExternalProcessResult result) 
-			throws CommonException, OperationCancellation, InfoResult {
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		if(result.exitValue != 0) {
 			handleNonZeroExitCode(result);
 		}
@@ -32,14 +31,14 @@ public abstract class AbstractToolOperation2<RESULT> extends ToolOutputParseHelp
 	}
 	
 	protected abstract void handleNonZeroExitCode(ExternalProcessResult result) 
-			throws CommonException, OperationCancellation, InfoResult;
+			throws CommonException, OperationCancellation, OperationSoftFailure;
 	
 	protected RESULT doHandleProcessResult(ExternalProcessResult result) 
-			throws CommonException, OperationCancellation, InfoResult {
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		return handleProcessOutput(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
 	
 	protected abstract RESULT handleProcessOutput(String output) 
-			throws CommonException, OperationCancellation, InfoResult;
+			throws CommonException, OperationCancellation, OperationSoftFailure;
 	
 }
