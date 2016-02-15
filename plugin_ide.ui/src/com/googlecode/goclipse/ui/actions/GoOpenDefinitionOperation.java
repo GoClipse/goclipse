@@ -76,14 +76,14 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 	@Override
 	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor) 
 			throws CoreException, CommonException, OperationCancellation {
-		String goOraclePath = GoToolPreferences.GO_ORACLE_Path.get();
+		String goOraclePath = GoToolPreferences.GO_ORACLE_Path.getDerivedValue().toString();
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
 		EclipseCancelMonitor cm = cm(monitor);
 		
 		try {
-			String godefPath = GoToolPreferences.GODEF_Path.get();
+			String godefPath = GoToolPreferences.GODEF_Path.getDerivedValue().toString();
 			return new GodefOperation(this, godefPath, goEnv, inputLoc, byteOffset).execute(cm);
 		} catch(OperationSoftFailure | CommonException e) {
 

@@ -23,7 +23,6 @@ import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.pages.DaemonToolPreferencePage;
 import melnorme.lang.ide.ui.preferences.pages.DownloadToolTextField;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
-import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.TextFieldComponent;
 
@@ -43,9 +42,7 @@ public class GoToolsPreferencePage extends DaemonToolPreferencePage implements
 		
 		protected final AbstractToolLocationGroup oracleGroup = new AbstractToolLocationGroup("oracle") {
 			{
-				validation.addFieldValidation(false, toolLocationField, 
-					(new LocationOrSinglePathValidator("Go oracle path:")).setFileOnly(true));
-				bindToPreference(toolLocationField, GoToolPreferences.GO_ORACLE_Path);
+				bindToDerivedPreference(toolLocationField, GoToolPreferences.GO_ORACLE_Path);
 			}
 			
 			@Override
@@ -59,10 +56,7 @@ public class GoToolsPreferencePage extends DaemonToolPreferencePage implements
 		};
 		protected final AbstractToolLocationGroup godefGroup = new AbstractToolLocationGroup("godef") {
 			{
-				/* FIXME: move to pref */
-				validation.addFieldValidation(false, toolLocationField, 
-					(new LocationOrSinglePathValidator("godef path:")).setFileOnly(true));
-				bindToPreference(toolLocationField, GoToolPreferences.GODEF_Path);
+				bindToDerivedPreference(toolLocationField, GoToolPreferences.GODEF_Path);
 			}
 			
 			@Override
