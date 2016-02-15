@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations.build;
+package melnorme.lang.ide.core.operations;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -18,7 +18,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 
-public interface ICoreOperation {
+public interface IToolOperation {
 	
 	void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation;
 	

@@ -21,21 +21,21 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 import melnorme.lang.ide.core.LangCoreMessages;
-import melnorme.lang.ide.core.operations.build.ICoreOperation;
+import melnorme.lang.ide.core.operations.IToolOperation;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public class ProgressServiceExecutor {
 	
-	protected final ICoreOperation coreOperation;
+	protected final IToolOperation coreOperation;
 	protected final IProgressService progressService;
 	
-	public ProgressServiceExecutor(ICoreOperation coreOperation) {
+	public ProgressServiceExecutor(IToolOperation coreOperation) {
 		this(coreOperation, PlatformUI.getWorkbench().getProgressService());
 	}
 	
-	public ProgressServiceExecutor(ICoreOperation coreOperation, IProgressService progressService) {
+	public ProgressServiceExecutor(IToolOperation coreOperation, IProgressService progressService) {
 		this.coreOperation = assertNotNull(coreOperation);
 		this.progressService = assertNotNull(progressService);
 	}

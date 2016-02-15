@@ -45,7 +45,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.ICoreOperation;
+import melnorme.lang.ide.core.operations.IToolOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.ThrowingRunnable;
@@ -138,7 +138,7 @@ public class ResourceUtils {
 	
 	/* -----------------  ----------------- */
 	
-	public static void runToolOperationInWorkspace(ICoreOperation operation, ISchedulingRule rule, 
+	public static void runToolOperationInWorkspace(IToolOperation operation, ISchedulingRule rule, 
 			IProgressMonitor monitor) throws CoreException, OperationCancellation, CommonException {
 		
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
