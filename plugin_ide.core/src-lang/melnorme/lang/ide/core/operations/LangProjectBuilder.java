@@ -141,7 +141,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected void clearErrorMarkers(IProject project, IProgressMonitor pm) 
 			throws CoreException, OperationCancellation {
-		IToolOperation clearMarkersOp = buildManager.newProjectClearMarkersOperation(workspaceOpHandler, project);
+		ICoreOperation clearMarkersOp = buildManager.newProjectClearMarkersOperation(workspaceOpHandler, project);
 		try {
 			clearMarkersOp.execute(pm);
 		} catch (CommonException ce) {
@@ -226,7 +226,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 	
-	protected IToolOperation createBuildOp() throws CommonException {
+	protected ICoreOperation createBuildOp() throws CommonException {
 		return buildManager.newProjectBuildOperation(workspaceOpHandler, getProject(), false);
 	}
 	

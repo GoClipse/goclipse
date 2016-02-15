@@ -22,7 +22,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class AbstractToolManagerOperation implements IToolOperation {
+public abstract class AbstractToolManagerOperation implements ICoreOperation {
 	
 	protected final IProject project;
 	

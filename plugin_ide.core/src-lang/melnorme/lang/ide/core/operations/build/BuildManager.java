@@ -27,7 +27,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.IToolOperation;
+import melnorme.lang.ide.core.operations.ICoreOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
@@ -426,28 +426,28 @@ public abstract class BuildManager {
 		return new BuildOperationCreator(project, opHandler);
 	}
 	
-	public IToolOperation newProjectClearMarkersOperation(IOperationConsoleHandler opHandler, IProject project) {
+	public ICoreOperation newProjectClearMarkersOperation(IOperationConsoleHandler opHandler, IProject project) {
 		return createBuildOperationCreator(opHandler, project).newClearBuildMarkersOperation();
 	}
 	
-	public final IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
+	public final ICoreOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
 			throws CommonException {
 		return newBuildTargetsOperation(project, ArrayList2.create(buildTarget));
 	}
 	
-	public IToolOperation newBuildTargetsOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
+	public ICoreOperation newBuildTargetsOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
 			throws CommonException {
 		IOperationConsoleHandler opHandler = LangCore.getToolManager().startNewBuildOperation();
 		return newBuildOperation(opHandler, project, true, targetsToBuild);
 	}
 	
-	public final IToolOperation newProjectBuildOperation(IOperationConsoleHandler opHandler, IProject project,
+	public final ICoreOperation newProjectBuildOperation(IOperationConsoleHandler opHandler, IProject project,
 			boolean clearMarkers) throws CommonException {
 		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets();
 		return newBuildOperation(opHandler, project, clearMarkers, enabledTargets);
 	}
 	
-	public IToolOperation newBuildOperation(IOperationConsoleHandler opHandler, IProject project, boolean clearMarkers,
+	public ICoreOperation newBuildOperation(IOperationConsoleHandler opHandler, IProject project, boolean clearMarkers,
 			Collection2<BuildTarget> targetsToBuild) throws CommonException {
 		return createBuildOperationCreator(opHandler, project).newProjectBuildOperation(targetsToBuild, clearMarkers);
 	}
