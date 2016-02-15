@@ -15,8 +15,6 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-import melnorme.util.swt.SWTLayoutUtil;
-
 /**
  * Common class for UI components, or composite widgets, using SWT.
  * Can be created in two ways: 
@@ -41,12 +39,6 @@ public abstract class AbstractWidget implements IWidgetComponent {
 		return topControl;
 	}
 	
-	/** Do {@link #createComponent(Composite)}, and also set the layout data of created Control.  */
- 	public final Composite createComponent(Composite parent, Object layoutData) {
- 		Composite control = createComponent(parent);
- 		return SWTLayoutUtil.setLayoutData(control, layoutData);
- 	}
- 	
 	@Override
 	public void createComponentInlined(Composite parent) {
 		createContents(parent);

@@ -26,7 +26,7 @@ import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.utilbox.collections.Indexable;
 
-public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
+public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlock {
 	
 	public final LanguageSDKLocationGroup sdkLocationGroup;
 	
@@ -34,6 +34,7 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 		super(prefContext);
 		
 		this.sdkLocationGroup = init_createSDKLocationGroup();
+		subComponents.add(sdkLocationGroup);
 	}
 	
 	protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
@@ -49,16 +50,6 @@ public abstract class LangSDKConfigBlock extends AbstractPreferencesBlockExt {
 	@Override
 	public int getPreferredLayoutColumns() {
 		return 1;
-	}
-	
-	@Override
-	protected void createContents(Composite topControl) {
-		sdkLocationGroup.createComponent(topControl, gdFillDefaults().grab(true, false).create());
-	}
-	
-	@Override
-	public void setEnabled(boolean enabled) {
-		sdkLocationGroup.setEnabled(enabled);
 	}
 	
 	public class LanguageSDKLocationGroup extends AbstractCompositeWidget {
