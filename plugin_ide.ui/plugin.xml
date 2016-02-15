@@ -131,17 +131,17 @@
 			description="%QuickOutlineAction.description"
 		/>
 		
+		<command categoryId="com.googlecode.goclipse.ui.commands.Category"
+			id="com.googlecode.goclipse.ui.commands.Format"
+			name="%FormatAction.name"
+			description="%FormatAction.description"
+		/>
+		
 		<command
             name="Launch Go Application"
             description="Launch Go Application"
             categoryId="com.googlecode.goclipse.ui.commands.Category"
             id="com.googlecode.goclipse.debug.ui.LaunchShortcut.run">
-      </command>
-      <command
-            name="Go Format (gofmt)"
-            description="Run the &apos;go fmt&apos;command on the current file."
-            categoryId="com.googlecode.goclipse.ui.commands.Category"
-            id="com.googlecode.goclipse.editors.GofmtShortcut.run">
       </command>
 	</extension>
 	
@@ -179,16 +179,17 @@
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			sequence="M1+O">
 		</key>		
+		<key
+			commandId="com.googlecode.goclipse.ui.commands.Format"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			sequence="M1+M2+F"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+		</key>
+		
       <key
             commandId="com.googlecode.goclipse.debug.ui.LaunchShortcut.run"
             contextId="org.eclipse.ui.contexts.window"
             sequence="M2+M3+G"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
-      </key>
-      <key
-            commandId="com.googlecode.goclipse.editors.GofmtShortcut.run"
-            contextId="com.googlecode.goclipse.ui.Contexts.Editor"
-            sequence="M1+M2+F"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </key>
 	</extension>
