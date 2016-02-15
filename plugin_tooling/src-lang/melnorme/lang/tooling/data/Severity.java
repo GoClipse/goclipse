@@ -48,7 +48,7 @@ public enum Severity {
 		switch (this) {
 		case INFO: return StatusLevel.INFO;
 		case WARNING: return StatusLevel.WARNING;
-		case ERROR: return StatusLevel.INFO;
+		case ERROR: return StatusLevel.ERROR;
 		}
 		throw assertFail();
 	}

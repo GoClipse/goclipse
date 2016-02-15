@@ -2,6 +2,9 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed incorrect icon for errors and warnings in preference page status.
+ * Fixed: can't save preference pages with empty fields.
+ 
  * Fixed bug with Content Assist snippets using the `${word_selection}` variable.
  * Dirty editors are now automatically saved if a build is invoked directly from a Build Target in the Project Explorer. (if the workspace "Save automatically before build" option is enabled).
  * Fixed workspace resource locking when a build is invoked directly from a Build Target in the Project Explorer.

@@ -81,7 +81,7 @@ public class PathValidator extends AbstractValidatorExt implements IValidator<St
 			if(canBeEmpty) {
 				return null;
 			}
-			throw createException(Severity.ERROR, ValidationMessages.Path_EmptyPath());
+			throw createException(Severity.WARNING, ValidationMessages.Path_EmptyPath());
 		}
 		
 		Path path = PathUtil.createPathOrNull(pathString);
