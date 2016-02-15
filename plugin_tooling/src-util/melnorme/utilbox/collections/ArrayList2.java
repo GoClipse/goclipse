@@ -111,10 +111,11 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		return CollectionUtil.addAll(this, source, mapper);
 	}
 	
-	public void addIfNotNull(E element) {
+	public ArrayList2<E> addIfNotNull(E element) {
 		if(element != null) {
 			add(element);
 		}
+		return this;
 	}
 	
 	@Override
