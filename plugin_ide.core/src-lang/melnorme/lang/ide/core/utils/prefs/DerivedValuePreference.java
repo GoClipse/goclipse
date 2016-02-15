@@ -21,15 +21,26 @@ public class DerivedValuePreference<VALUE> extends StringPreference {
 	
 	protected final IValidator<String, VALUE> validator;
 	
+	public DerivedValuePreference(String pluginId, String key,  
+			IProjectPreference<Boolean> useProjectPref /* can be null*/,
+			String defaultValue, IValidator<String, VALUE> validator) {
+		super(pluginId, key, defaultValue, useProjectPref);
+		this.validator = assertNotNull(validator);
+	}
+	
 	public DerivedValuePreference(String pluginId, String key, String defaultValue, 
-			IProjectPreference<Boolean> useProjectSettings /* can be null*/,
+			IProjectPreference<Boolean> useProjectPref /* can be null*/,
 			IValidator<String, VALUE> validator) {
-		super(pluginId, key, defaultValue, useProjectSettings);
+		super(pluginId, key, defaultValue, useProjectPref);
 		this.validator = assertNotNull(validator);
 	}
 	
 	public IValidator<String, VALUE> getValidator() {
 		return validator;
+	}
+	
+	public VALUE getDerivedValue() throws StatusException {
+		return validator.getValidatedField(get());
 	}
 	
 	public VALUE getDerivedValue(IProject project) throws StatusException {

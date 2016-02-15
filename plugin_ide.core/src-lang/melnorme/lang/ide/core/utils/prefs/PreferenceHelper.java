@@ -45,7 +45,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	protected T defaultValue;
 	
-	protected final IProjectPreference<Boolean> useProjectSettingsPref;
+	protected final IProjectPreference<Boolean> useProjectPreference;
 	
 	protected final DomainField<T> field = new DomainField<T>();
 	
@@ -58,18 +58,18 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	}
 	
 	public PreferenceHelper(String pluginId, String key, T defaultValue, 
-			IProjectPreference<Boolean> useProjectSettingsPref) {
-		this(pluginId, key, defaultValue, true, useProjectSettingsPref);
+			IProjectPreference<Boolean> useProjectPref) {
+		this(pluginId, key, defaultValue, true, useProjectPref);
 	}
 	
 	public PreferenceHelper(String pluginId, String key, T defaultValue, boolean ensureUniqueKey,
-			IProjectPreference<Boolean> useProjectSettingsPref) {
+			IProjectPreference<Boolean> useProjectPreference) {
 		this.key = assertNotNull(PreferencesOverride.getKeyIdentifer(key, this));
 		if(ensureUniqueKey) {
 			checkUniqueKey(key, this);
 		}
 		this.qualifier = pluginId;
-		this.useProjectSettingsPref = useProjectSettingsPref; // can be null
+		this.useProjectPreference = useProjectPreference; // can be null
 		
 		setPreferencesDefaultValue(defaultValue);
 		
@@ -203,7 +203,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		
 		@Override
 		public IProjectPreference<Boolean> getEnableProjectSettingPref() {
-			return useProjectSettingsPref;
+			return useProjectPreference;
 		}
 		
 	};

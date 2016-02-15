@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed incorrect icon for errors and warnings in preference page status.
+ * Fixed: can't save preference pages with empty fields.
  * godef #TODO
 
 ### 0.14.0
