@@ -34,7 +34,6 @@ import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.operation.OperationUtils;
 import melnorme.lang.tooling.data.StatusLevel;
