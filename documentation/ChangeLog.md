@@ -4,6 +4,7 @@
  * Fixed incorrect icon for errors and warnings in preference page status.
  * Fixed: can't save preference pages with empty fields.
  * godef #TODO
+ * Minor improvement to editor caret position preservation when invoking gofmt.
 
 ### 0.14.0
  * Added on-the-fly parser errors in the editor (uses Go `oracle`).

@@ -104,12 +104,4 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 		
 	}
 	
-	@Override
-	protected void handleStatusErrorMessage() {
-//		EngineToolsConsole engineToolsConsole = EngineToolsConsole.getConsole();
-//		engineToolsConsole.activate();
-		
-		super.handleStatusErrorMessage();
-	}
-	
 }
