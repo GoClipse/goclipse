@@ -24,6 +24,10 @@ public interface IByteSequence {
 	
 	public String toString(Charset charset);
 	
+	default String toUtf8String() {
+		return toString(StringUtil.UTF8);
+	}
+	
 	public byte[] toByteArray();
 	
 }

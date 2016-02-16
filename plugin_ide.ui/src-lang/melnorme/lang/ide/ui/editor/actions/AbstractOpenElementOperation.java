@@ -22,7 +22,6 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore;
@@ -55,9 +54,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	protected int line_0;
 	protected int col_0;
 	
-	protected String statusErrorMessage;
-	
-	public AbstractOpenElementOperation(String operationName, ITextEditor editor, SourceRange range,
+	public AbstractOpenElementOperation(String operationName, ITextEditor editor, SourceRange range, 
 			OpenNewEditorMode openEditorMode) {
 		super(operationName, editor);
 		
@@ -106,9 +103,8 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	
 	@Override
 	protected void handleComputationResult() throws CoreException, CommonException {
-		if(statusErrorMessage != null) {
-			handleStatusErrorMessage();
-		}
+		super.handleComputationResult();
+		
 		if(result == null) {
 			Display.getCurrent().beep();
 			return;
@@ -121,14 +117,6 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		SourceLineColumnRange sourceRange = result.getSourceRange();
 		
 		openEditorForLocation(result.getFileLocation(), sourceRange);
-	}
-	
-	protected void handleStatusErrorMessage() {
-		if(editor instanceof AbstractTextEditor) {
-			AbstractTextEditor abstractTextEditor = (AbstractTextEditor) editor;
-			EditorUtils.setStatusLineErrorMessage(abstractTextEditor, statusErrorMessage, null);
-		}
-		Display.getCurrent().beep();
 	}
 	
 	protected void openEditorForLocation(Location fileLoc, SourceLineColumnRange sourceRange) 

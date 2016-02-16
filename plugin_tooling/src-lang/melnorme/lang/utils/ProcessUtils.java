@@ -60,8 +60,12 @@ public class ProcessUtils {
 	/* -----------------  ----------------- */
 	
 	public static void validateNonZeroExitValue(int exitValue) throws CommonException {
+		validateNonZeroExitValue("Process", exitValue);
+	}
+	
+	public static void validateNonZeroExitValue(String processName, int exitValue) throws CommonException {
 		if(exitValue != 0) {
-			throw new CommonException(ToolingMessages.PROCESS_CompletedWithNonZeroValue("Process", exitValue));
+			throw new CommonException(ToolingMessages.PROCESS_CompletedWithNonZeroValue(processName, exitValue));
 		}
 	}
 	
