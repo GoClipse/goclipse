@@ -19,7 +19,7 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -29,10 +29,10 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.ui.editor.GoEditor;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
+import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -77,16 +77,12 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	protected String doBackgroundValueComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
 		
-		GoToolManager toolMgr = GoToolManager.getDefault();
-		IOperationConsoleHandler opHandler = background_startOperation(toolMgr);
-		ExternalProcessResult processResult = 
-				toolMgr.newRunProcessTask(opHandler, pb, monitor).runProcess(editorText, true);
+		AbstractToolManager toolMgr = LangCore.getToolManager();
+		
+		ExternalProcessResult processResult = toolMgr.runEngineTool(pb, editorText, monitor);
+		ProcessUtils.validateNonZeroExitValue(processResult.exitValue);
 		
 		return processResult.getStdOutBytes().toString();
-	}
-	
-	protected IOperationConsoleHandler background_startOperation(GoToolManager toolMgr) {
-		return toolMgr.startNewOperation(ProcessStartKind.ENGINE_TOOLS, true, false);
 	}
 	
 	@Override
@@ -96,8 +92,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 		}
 	}
 	
-	
-	public static void replaceText(ISourceViewer sourceViewer, String newText) {
+	public static void replaceText(ITextViewer sourceViewer, String newText) {
 		ISelection sel = sourceViewer.getSelectionProvider().getSelection();
 		int topIndex = sourceViewer.getTopIndex();
 		
