@@ -21,6 +21,7 @@ import com.googlecode.goclipse.tooling.GoPackageName;
 
 import melnorme.lang.utils.EnvUtils;
 import melnorme.lang.utils.ProcessUtils;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -153,11 +154,12 @@ public class GoEnvironment {
 	
 	/* -----------------  process builder  ----------------- */
 	
-	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir) throws CommonException {
+	public ProcessBuilder createProcessBuilder(Indexable<String> commandLine, Location workingDir) 
+			throws CommonException {
 		return createProcessBuilder(commandLine, workingDir, true);
 	}
 	
-	public ProcessBuilder createProcessBuilder(List<String> commandLine, Location workingDir, boolean goRootInPath) 
+	public ProcessBuilder createProcessBuilder(Indexable<String> commandLine, Location workingDir, boolean goRootInPath) 
 			throws CommonException {
 		ProcessBuilder pb = ProcessUtils.createProcessBuilder(commandLine, workingDir);
 		setupProcessEnv(pb, goRootInPath);

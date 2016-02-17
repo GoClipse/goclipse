@@ -29,11 +29,13 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class RunToolOperation extends AbstractUIOperation {
+public class RunToolOperation extends AbstractUIOperation {
 			
 	protected final IProject project;
 	protected final Indexable<String> commands;
 	protected final StartOperationOptions opViewOptions;
+	
+	protected ProcessBuilder pb;
 	
 	public RunToolOperation(String operationName, IProject project, Indexable<String> commands,
 			StartOperationOptions opViewOptions) {
@@ -48,9 +50,15 @@ public abstract class RunToolOperation extends AbstractUIOperation {
 	}
 	
 	@Override
+	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+		pb = createProcessBuilder();
+		
+		super.doOperation();
+	}
+	
+	@Override
 	protected void doBackgroundComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
-		ProcessBuilder pb = createProcessBuilder();
 		
 		IOperationConsoleHandler opHandler = getToolManager().startNewOperation(opViewOptions);
 		
@@ -59,7 +67,7 @@ public abstract class RunToolOperation extends AbstractUIOperation {
 		);
 		
 		RunToolTask runToolTask = getToolManager().newRunProcessTask(opHandler, pb, monitor);
-		runProcessTask(runToolTask);
+		runProcessTask(runToolTask, monitor);
 	}
 	
 	protected String getOperationStartMessage() {
@@ -67,10 +75,11 @@ public abstract class RunToolOperation extends AbstractUIOperation {
 	}
 	
 	protected ProcessBuilder createProcessBuilder() throws CoreException, CommonException {
-		return AbstractToolManager.createProcessBuilder(project, getCommands());
+		return getToolManager().createSimpleProcessBuilder(project, getCommands());
 	}
 	
-	protected void runProcessTask(RunToolTask runToolTask) throws CommonException, OperationCancellation {
+	protected void runProcessTask(RunToolTask runToolTask, @SuppressWarnings("unused") IProgressMonitor pm) 
+			throws CommonException, OperationCancellation, CoreException {
 		runToolTask.runProcess();
 	}
 	
@@ -80,11 +89,11 @@ public abstract class RunToolOperation extends AbstractUIOperation {
 	
 	/* -----------------  ----------------- */
 	
-	public abstract static class RunSDKToolOperation extends RunToolOperation {
+	public static class RunSDKToolOperation extends RunToolOperation {
 		
 		public RunSDKToolOperation(String operationName, IProject project, Indexable<String> commands) {
 			super(operationName, project, commands, 
-				new StartOperationOptions(ProcessStartKind.BUILD, true, false));
+				new StartOperationOptions(ProcessStartKind.BUILD, true, true));
 		}
 		
 		@Override

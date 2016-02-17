@@ -10,10 +10,9 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.editor.actions;
 
-import static melnorme.utilbox.core.CoreUtil.listFrom;
+import static melnorme.utilbox.core.CoreUtil.list;
 
 import java.nio.file.Path;
-import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -21,6 +20,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
 public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
@@ -34,7 +34,7 @@ public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	@Override
 	protected ProcessBuilder prepareProcessBuilder(Path goSDKPath, GoEnvironment goEnv)
 			throws CoreException, CommonException {
-		List<String> cmd = listFrom(GoEnvironmentPrefs.FORMATTER_PATH.getEffectiveValue(project));
+		Indexable<String> cmd = list(GoEnvironmentPrefs.FORMATTER_PATH.getEffectiveValue(project));
 		return goEnv.createProcessBuilder(cmd, null, true);
 	}
 	
