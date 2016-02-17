@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.list;
 
 import java.nio.file.Path;
 
@@ -23,7 +24,6 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
@@ -74,21 +74,20 @@ public abstract class AbstractToolManager extends EventSource<ILangOperationsLis
 		return createToolProcessBuilder(project, sdkToolPath, sdkOptions);
 	}
 	
-	public ProcessBuilder createToolProcessBuilder(IProject project, Path sdkToolPath, String... sdkOptions)
+	public ProcessBuilder createToolProcessBuilder(IProject project, Path toolPath, String... toolArguments)
 			throws CommonException {
 		Location projectLocation = project == null ? null : ResourceUtils.getProjectLocation2(project);
-		return createToolProcessBuilder(sdkToolPath, projectLocation, sdkOptions);
+		return createToolProcessBuilder(toolPath, projectLocation, toolArguments);
 	}
 	
-	public ProcessBuilder createToolProcessBuilder(Path buildToolCmdPath, Location workingDir, String... arguments) {
-		return ProcessUtils.createProcessBuilder(buildToolCmdPath, workingDir, true, arguments);
+	public ProcessBuilder createToolProcessBuilder(Path toolCmdPath, Location workingDir, String... arguments) {
+		return ProcessUtils.createProcessBuilder(toolCmdPath, workingDir, true, arguments);
 	}
 	
-	public static ProcessBuilder createProcessBuilder(IProject project, String... commands) {
-		Path workingDir = project != null ?
-			project.getLocation().toFile().toPath() :
-			EclipseUtils.getWorkspaceRoot().getLocation().toFile().toPath();
-		return new ProcessBuilder(commands).directory(workingDir.toFile());
+	public ProcessBuilder createSimpleProcessBuilder(IProject project, String... commands) 
+			throws CommonException {
+		Location workingDir = project == null ? null : ResourceUtils.getProjectLocation2(project);
+		return ProcessUtils.createProcessBuilder(list(commands), workingDir);
 	}
 	
 	/* -----------------  ----------------- */

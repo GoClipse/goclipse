@@ -138,6 +138,11 @@ public class ResourceUtils {
 	
 	/* -----------------  ----------------- */
 	
+	public static void runToolOperation(ISchedulingRule rule, IProgressMonitor monitor, 
+			ICoreOperation operation) throws CoreException, OperationCancellation, CommonException {
+		runToolOperationInWorkspace(operation, rule, monitor);
+	}
+	
 	public static void runToolOperationInWorkspace(ICoreOperation operation, ISchedulingRule rule, 
 			IProgressMonitor monitor) throws CoreException, OperationCancellation, CommonException {
 		
