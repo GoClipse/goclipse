@@ -5,6 +5,7 @@
  * Fixed: can't save preference pages with empty fields.
  * godef #TODO
  * Minor improvement to editor caret position preservation when invoking gofmt.
+ * Fixed bug where problem markers for the #build-tests target would not be created for Eclipse projects inside a GOPATH entry.
 
 ### 0.14.0
  * Added on-the-fly parser errors in the editor (uses Go `oracle`).

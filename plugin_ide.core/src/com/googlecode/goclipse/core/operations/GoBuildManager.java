@@ -180,6 +180,7 @@ public class GoBuildManager extends BuildManager {
 		
 		protected final GoEnvironment goEnv;
 		protected final Location sourceRootDir;
+		protected Location workingDirectory;
 		
 		public GoBuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, IOperationConsoleHandler opHandler, 
 				Path buildToolPath) throws CommonException, CoreException {
@@ -195,12 +196,13 @@ public class GoBuildManager extends BuildManager {
 				
 				checkGoFilesInSourceRoot();
 			}
+			workingDirectory = sourceRootDir;
 		}
 		
 		@Override
 		protected ProcessBuilder getProcessBuilder2(String[] toolArguments) throws CommonException {
 			AbstractToolManager toolMgr = getToolManager();
-			ProcessBuilder pb = toolMgr.createToolProcessBuilder(getBuildToolPath(), sourceRootDir, toolArguments);
+			ProcessBuilder pb = toolMgr.createToolProcessBuilder(getBuildToolPath(), workingDirectory, toolArguments);
 			
 			goEnv.setupProcessEnv(pb, true);
 			return pb;
@@ -232,7 +234,7 @@ public class GoBuildManager extends BuildManager {
 			};
 			buildOutput.parseOutput(buildAllResult);
 			
-			new ToolMarkersHelper().addErrorMarkers(buildOutput.getBuildErrors(), sourceRootDir, pm);
+			new ToolMarkersHelper().addErrorMarkers(buildOutput.getBuildErrors(), workingDirectory, pm);
 		}
 		
 	}
@@ -273,12 +275,10 @@ public class GoBuildManager extends BuildManager {
 		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
 				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
 			return new GoBuildTargetOperation(validatedBuildTarget, opHandler, buildToolPath) {
-				
-				@Override
-				protected ProcessBuilder getProcessBuilder2(String[] toolArguments) throws CommonException {
-					ProcessBuilder pb = super.getProcessBuilder2(toolArguments);
-					pb.directory(getBinFolderLocation(validatedBuildTarget).toFile());
-					return pb;
+				{
+					// We need to change working directory to bin, 
+					// because our commands create executable files in the working directory.
+					workingDirectory = getBinFolderLocation(validatedBuildTarget);
 				}
 				
 				@Override
