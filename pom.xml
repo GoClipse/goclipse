@@ -11,6 +11,7 @@
 
 	<properties>
 		<tycho-version>0.24.0</tycho-version>
+		<project_version>0.0.1-SNAPSHOT</project_version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>

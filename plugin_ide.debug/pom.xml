@@ -11,6 +11,7 @@
 	</parent>
 
 	<artifactId>LANG_PROJECT_ID.ide.debug</artifactId>
+	<version>${project_version}</version>
 	<packaging>eclipse-plugin</packaging>
 
 </project>
