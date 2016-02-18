@@ -16,7 +16,7 @@
 	</properties>
 
 	<artifactId>features.repository</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>${project_version}</version>
 	<packaging>eclipse-repository</packaging>
 
 	<build>

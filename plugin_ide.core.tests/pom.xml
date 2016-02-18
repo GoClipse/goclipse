@@ -11,7 +11,7 @@
 	</parent>
 	
 	<artifactId>com.googlecode.goclipse.core.tests</artifactId>
-	<version>0.14.0-SNAPSHOT</version>
+	<version>${project_version}</version>
 	<packaging>eclipse-test-plugin</packaging>
 	
 	<build>
