@@ -4,22 +4,21 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.googlecode</groupId>
-	<artifactId>goclipse.aggregator</artifactId>
+	<groupId>com.googlecode.goclipse</groupId>
+	<artifactId>ide-aggregator</artifactId>
 	<version>1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<tycho-version>0.24.0</tycho-version>
-		<project_version>0.14.0-SNAPSHOT</project_version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
 
-		<targetPlatform>releng/target-platform/IDE</targetPlatform>
+		<ide.targetPlatform>releng/target-platform/IDE</ide.targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
-			
+		
 	</properties>
 
 	<modules>
@@ -91,9 +90,9 @@
 					<target>
 						<artifact>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>goclipse.aggregator</artifactId>
+							<artifactId>ide-aggregator</artifactId>
 							<version>1-SNAPSHOT</version>
-							<classifier>${targetPlatform}</classifier>
+							<classifier>${ide.targetPlatform}</classifier>
 						</artifact>
 					</target>
 				</configuration>
