@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.dsource</groupId>
+		<groupId>LANG_PROJECT_ID</groupId>
 		<artifactId>ide-aggregator</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1-SNAPSHOT</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	
@@ -16,7 +16,7 @@
 	</properties>
 
 	<artifactId>features.repository</artifactId>
-	<version>${project_version}</version>
+	<version>0.1.0</version>
 	<packaging>eclipse-repository</packaging>
 
 	<build>
