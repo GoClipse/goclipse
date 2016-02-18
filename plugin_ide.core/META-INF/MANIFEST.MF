@@ -3,8 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.googlecode.goclipse.core;singleton:=true
 Bundle-Version: 0.14.0.qualifier
 Bundle-Localization: plugin
-Bundle-Name: GoClipse Core
-Bundle-Vendor: The GoClipse Development Team
+Bundle-Name: %pluginName
+Bundle-Vendor: %pluginProvider
 Bundle-Activator: com.googlecode.goclipse.core.GoCorePlugin
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
