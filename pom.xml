@@ -33,9 +33,6 @@
 		<module>releng/repository</module>
 	</modules>
 
-	<profiles>
-	</profiles>
-
 	<!-- Core build -->
 	
 	<build>
@@ -99,5 +96,10 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<!-- Profiles -->
+	
+	<profiles>
+	</profiles>
 
 </project>
