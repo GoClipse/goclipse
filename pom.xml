@@ -100,6 +100,33 @@
 	<!-- Profiles -->
 	
 	<profiles>
+		<profile>
+			<id>sign-build</id>
+			
+			<build>
+				<plugins>
+					<plugin>  
+						<groupId>org.apache.maven.plugins</groupId>  
+						<artifactId>maven-jarsigner-plugin</artifactId>  
+						<version>1.2</version>  
+						<configuration>
+							<keystore>${signing.keystore}</keystore>
+							<storepass>${signing.store_pass}</storepass>
+							<alias>ide_project</alias>
+							<keypass>${signing.key_pass}</keypass>
+						</configuration>
+						<executions>
+						<execution>
+							<id>sign</id>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
 </project>
