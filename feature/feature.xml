@@ -2,7 +2,7 @@
 <feature
       id="LANG_PROJECT_ID"
       label="%featureName"
-      version="0.0.1.qualifier"
+      version="0.1.0.qualifier"
       provider-name="%providerName"
       plugin="LANG_PROJECT_ID.ide.ui">
 

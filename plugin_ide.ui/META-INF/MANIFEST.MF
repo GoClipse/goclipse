@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
 Bundle-SymbolicName: LANG_PROJECT_ID.ide.ui;singleton:=true
-Bundle-Version: 0.0.1.qualifier
+Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPlugin
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
