@@ -22,7 +22,7 @@ import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
-import melnorme.lang.tooling.data.IValidatedValue.ValidatedField2;
+import melnorme.lang.tooling.data.IValidatableValue.ValidatableField;
 import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
 import melnorme.lang.tooling.ops.util.LocationValidator;
 import melnorme.lang.tooling.ops.util.PathValidator;
@@ -111,7 +111,7 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 			PathValidator validator = (allowSinglePath ? 
 					new LocationOrSinglePathValidator(label) : new LocationValidator(label)).setFileOnly(true);
 			
-			validation.addFieldValidation(false, pathField, new ValidatedField2<>(pathField, validator));
+			validation.addFieldValidation(false, pathField, new ValidatableField<>(pathField, validator));
 			
 			bindToPreference(pathField, pref);
 			pathField.createComponentInlined(group);

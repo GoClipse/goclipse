@@ -14,8 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.utilbox.fields.IFieldView;
 
-// Need to review this
-public interface IValidatedValue<TYPE> extends IValidationSource {
+public interface IValidatableValue<TYPE> extends IValidationSource {
 	
 	public TYPE getValidatedValue() throws StatusException;
 	
@@ -31,10 +30,10 @@ public interface IValidatedValue<TYPE> extends IValidationSource {
 	
 	/* -----------------  ----------------- */
 	
-	public static class NullValidationSource<T> implements IValidatedValue<T> {
+	public static class NullValidatableValue<T> implements IValidatableValue<T> {
 		
-		public static <T> NullValidationSource<T> create() {
-			return new NullValidationSource<>();
+		public static <T> NullValidatableValue<T> create() {
+			return new NullValidatableValue<>();
 		}
 		
 		@Override
@@ -43,12 +42,12 @@ public interface IValidatedValue<TYPE> extends IValidationSource {
 		}
 	}
 	
-	public static class ValidatedField2<SOURCE> implements IValidatedValue<Object> {
+	public static class ValidatableField<SOURCE> implements IValidatableValue<Object> {
 		
 		public final IFieldView<SOURCE> property;
 		public final IValidator<SOURCE, ?> validator;
 		
-		public ValidatedField2(IFieldView<SOURCE> field, IValidator<SOURCE, ?> validator) {
+		public ValidatableField(IFieldView<SOURCE> field, IValidator<SOURCE, ?> validator) {
 			this.property = assertNotNull(field);
 			this.validator = assertNotNull(validator);
 		}

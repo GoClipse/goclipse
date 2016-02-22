@@ -35,6 +35,7 @@ A release is a web site with an Eclipse p2 update site. The website may contain 
 
  1. Ensure the version numbers of all plugins/features/etc. are properly updated, if they haven't been already.
  1. Run `mvn clean integration-test` to perform the Tycho build (see section above). Ensure all tests pass.
+   * To create a signed release the `sign-build` Maven profile must be activated, and the required properties set.
  1. Create and push a new release tag for the current release commit. 
  1. Go to the Github releases page and edit the newly present release. Add the corresponding ([ChangeLog.md](documentation/ChangeLog.md)) entries to the release notes. 
  1. Locally, run `ant -f releng/ CreateProjectSite`. This last step will prepare the project web site under `bin-maven/ProjectSite`.
