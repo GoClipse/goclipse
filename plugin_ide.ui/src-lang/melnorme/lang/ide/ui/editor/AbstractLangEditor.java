@@ -38,6 +38,7 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.EclipsePreferencesAdapter;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
@@ -48,6 +49,7 @@ import melnorme.lang.ide.ui.editor.actions.GotoMatchingBracketManager;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.utilbox.misc.ArrayUtil;
 
 public abstract class AbstractLangEditor extends TextEditorExt {
@@ -264,6 +266,19 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 			EditorPrefConstants.MATCHING_BRACKETS_COLOR2.getActiveKey(), 
 			EditorPrefConstants.HIGHLIGHT_BRACKET_AT_CARET_LOCATION, 
 			EditorPrefConstants.ENCLOSING_BRACKETS);
+	}
+	
+	/* ----------------- save ----------------- */
+	
+	@Override
+	protected void editorSaved() {
+		IProject associatedProject = EditorUtils.getAssociatedProject(getEditorInput());
+		if(ToolchainPreferences.FORMAT_ON_SAVE.getEffectiveValue(associatedProject)) {
+			BasicUIOperation formatOperation = LangUIPlugin_Actual.getFormatOperation(this);
+			formatOperation.executeAndHandle();
+		}
+		
+		super.editorSaved();
 	}
 	
 }

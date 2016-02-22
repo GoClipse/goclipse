@@ -2,14 +2,19 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.source.ISourceViewer;
 
 import LANG_PROJECT_ID.ide.core.text.LANGUAGE_AutoEditStrategy;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
@@ -48,5 +53,18 @@ public final class LangUIPlugin_Actual {
 	public static final String ENGINE_TOOLS_ConsoleName = LangCore_Actual.LANGUAGE_NAME + " Tools Log";
 	
 	public static final String DAEMON_TOOL_Name = "lang_daemon";
+	
+	
+	/* -----------------  ----------------- */
+	
+	@SuppressWarnings("unused")
+	public static BasicUIOperation getFormatOperation(AbstractLangEditor editor) {
+		return new BasicUIOperation() {
+			@Override
+			protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+				// TODO: Lang Format operation
+			}
+		};
+	}
 	
 }

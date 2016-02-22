@@ -23,6 +23,8 @@ public interface ToolchainPreferences {
 	public static final IProjectPreference<String> SDK_PATH2 = new StringPreference(LangCore.PLUGIN_ID, "sdk_path", "", 
 		USE_PROJECT_SETTINGS).getProjectPreference();
 	
+	public static final BooleanPreference FORMAT_ON_SAVE =
+			new BooleanPreference("format_onSave", false);
 	
 	public static final BooleanPreference AUTO_START_DAEMON =
 			new BooleanPreference("auto_start_daemon", true);
