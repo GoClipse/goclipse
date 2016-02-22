@@ -7,11 +7,14 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoStructureElementLabelProvider;
 import com.googlecode.goclipse.ui.editor.GoDocHover;
+import com.googlecode.goclipse.ui.editor.actions.RunGoFmtOperation;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 
 /**
@@ -50,5 +53,12 @@ public final class LangUIPlugin_Actual {
 	public static final String ENGINE_TOOLS_ConsoleName = LangCore_Actual.LANGUAGE_NAME + " Tools Log";
 	
 	public static final String DAEMON_TOOL_Name = "gocode";
+	
+	
+	/* -----------------  ----------------- */
+	
+	public static BasicUIOperation getFormatOperation(AbstractLangEditor editor) {
+		return new RunGoFmtOperation(editor);
+	}
 	
 }
