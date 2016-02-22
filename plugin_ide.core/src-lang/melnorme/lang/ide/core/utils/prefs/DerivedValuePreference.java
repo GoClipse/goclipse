@@ -40,8 +40,8 @@ public class DerivedValuePreference<VALUE> extends StringPreference {
 		return validator;
 	}
 	
-	public IValidatableValue<VALUE> getValidatableValue() {
-		return this::getDerivedValue;
+	public IValidatableValue<VALUE> getValidatableValue(IProject project) {
+		return () -> getDerivedValue(project);
 	}
 	
 	public VALUE getDerivedValue() throws StatusException {
