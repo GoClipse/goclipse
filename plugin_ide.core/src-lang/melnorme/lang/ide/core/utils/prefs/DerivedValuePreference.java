@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.core.resources.IProject;
 
+import melnorme.lang.tooling.data.IValidatableValue;
 import melnorme.lang.tooling.data.IValidator;
 import melnorme.lang.tooling.data.StatusException;
 
@@ -37,6 +38,10 @@ public class DerivedValuePreference<VALUE> extends StringPreference {
 	
 	public IValidator<String, VALUE> getValidator() {
 		return validator;
+	}
+	
+	public IValidatableValue<VALUE> getValidatableValue() {
+		return this::getDerivedValue;
 	}
 	
 	public VALUE getDerivedValue() throws StatusException {
