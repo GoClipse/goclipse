@@ -46,7 +46,6 @@ public class GoSDKConfigBlock extends AbstractCompositePreferencesBlock {
 	public final ValidatableField<String> validatedGoRoot = new ValidatableField<>(goRootField, goSDKLocationValidator);
 	
 	protected final FileTextField goFmtPath = new FileTextField("gofmt:");
-	protected final FileTextField goDocPath = new FileTextField("godoc:");
 	
 	protected final EnablementButtonTextField goPathField = new GoPathField();
 	protected final CheckBoxField gopathAppendProjectLocField = new CheckBoxField(
@@ -57,14 +56,12 @@ public class GoSDKConfigBlock extends AbstractCompositePreferencesBlock {
 		
 		addSubComponent(goRootField);
 		addSubComponent(goFmtPath);
-		addSubComponent(goDocPath);
 		
 		addSubComponent(goPathField);
 		addSubComponent(gopathAppendProjectLocField);
 		
 		prefContext.bindToPreference(goRootField, GoEnvironmentPrefs.GO_ROOT);
 		prefContext.bindToPreference(goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
-		prefContext.bindToPreference(goDocPath, GoEnvironmentPrefs.DOCUMENTOR_PATH);
 		
 		prefContext.bindToPreference(goPathField.asEffectiveValueProperty2(), GoEnvironmentPrefs.GO_PATH);
 		prefContext.bindToPreference(gopathAppendProjectLocField, GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH);
@@ -73,7 +70,6 @@ public class GoSDKConfigBlock extends AbstractCompositePreferencesBlock {
 		validation.addFieldValidation(true, goRootField, goSDKLocationValidator);
 		
 		validation.addFieldValidation(true, goFmtPath, new LocationValidator(goFmtPath.getLabelText(), FILE_ONLY));
-		validation.addFieldValidation(true, goDocPath, new LocationValidator(goDocPath.getLabelText(), FILE_ONLY));
 	}
 	
 	/* -----------------  ----------------- */
@@ -95,7 +91,6 @@ public class GoSDKConfigBlock extends AbstractCompositePreferencesBlock {
 		goRootField.createComponentInlined(goSDK);
 		
 		goFmtPath.createComponentInlined(goSDK);
-		goDocPath.createComponentInlined(goSDK);
 		
 		/* -----------------  ----------------- */
 		
@@ -116,9 +111,6 @@ public class GoSDKConfigBlock extends AbstractCompositePreferencesBlock {
 			
 			String goFmtName = "gofmt" + MiscUtil.getExecutableSuffix();
 			setValueIfFileExists(goFmtPath, gorootPath.append("bin").append(goFmtName).toFile());
-			
-			String goDocName = "godoc" + MiscUtil.getExecutableSuffix();
-			setValueIfFileExists(goDocPath, gorootPath.append("bin").append(goDocName).toFile());
 		}
 	}
 	

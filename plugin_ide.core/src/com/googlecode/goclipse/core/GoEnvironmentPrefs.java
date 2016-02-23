@@ -25,8 +25,6 @@ public interface GoEnvironmentPrefs {
 		"com.googlecode.goclipse.goroot", "", USE_PROJECT_SETTINGS).getProjectPreference();
 	IProjectPreference<String> FORMATTER_PATH = new StringPreference(LangCore.PLUGIN_ID, 
 		"com.googlecode.goclipse.formatter.path", "", USE_PROJECT_SETTINGS).getProjectPreference();
-	IProjectPreference<String> DOCUMENTOR_PATH = new StringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.documentor.path", "", USE_PROJECT_SETTINGS).getProjectPreference();
 	
 	
 	IProjectPreference<String> GO_PATH = new OptionalStringPreference(LangCore.PLUGIN_ID, 
