@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import static melnorme.utilbox.core.CoreUtil.list;
-
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
@@ -21,10 +19,8 @@ import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractCompositeWidget;
 import melnorme.util.swt.components.FieldComponent;
-import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
-import melnorme.utilbox.collections.Indexable;
 
 public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlock {
 	
@@ -59,6 +55,8 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 		public LanguageSDKLocationGroup() {
 			initBindings();
 			LangSDKConfigBlock.this.validation.addValidatableField(true, validation);
+			
+			this.subComponents.add(sdkLocationField);
 		}
 		
 		protected void initBindings() {
@@ -83,11 +81,6 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 		@Override
 		public int getPreferredLayoutColumns() {
 			return 3;
-		}
-		
-		@Override
-		protected Indexable<IDisableableWidget> getSubWidgets() {
-			return list(sdkLocationField);
 		}
 		
 	}

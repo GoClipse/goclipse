@@ -29,22 +29,21 @@ import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractDisableableWidget;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.utilbox.fields.IProperty;
 
-public abstract class ProjectAndPreferencesBlock extends AbstractPreferencesBlock2
-	implements IPreferencesWidget {
+public abstract class ProjectPreferencesBlock extends AbstractPreferencesBlock2 implements IPreferencesEditor {
 	
 	protected final IProject project;
 	protected final IProjectPreference<Boolean> useProjectSettingsPref;
 	
 	protected final CheckBoxField useProjectSettingsField = new CheckBoxField(LABEL_UseProjectSpecificSettings);
-	protected final AbstractPreferencesBlockExt projectSettingsBlock;
+	protected final AbstractDisableableWidget projectSettingsBlock;
 	
-	public ProjectAndPreferencesBlock(IProject project, IProjectPreference<Boolean> useProjectSettingsPref) {
+	public ProjectPreferencesBlock(IProject project, IProjectPreference<Boolean> useProjectSettingsPref) {
 		super(new ProjectPreferencesPageContext(project, useProjectSettingsPref));
 		this.project = project;
 		this.useProjectSettingsPref = useProjectSettingsPref;
@@ -56,12 +55,21 @@ public abstract class ProjectAndPreferencesBlock extends AbstractPreferencesBloc
 		
 		prefContext.bindToPreference(useProjectSettingsField, useProjectSettingsPref);
 		
-		prefContext.addPrefElement(projectSettingsBlock);
 		validation.addValidatableField(true, projectSettingsBlock.getStatusField());
 	}
 	
-	protected abstract AbstractPreferencesBlockExt init_createProjectSettingsBlock2();
-
+	protected abstract AbstractDisableableWidget init_createProjectSettingsBlock2();
+	
+	@Override
+	public void doSaveSettings() throws BackingStoreException {
+		prefContext.doSaveSettings();
+	}
+	
+	@Override
+	public void loadDefaults() {
+		prefContext.loadDefaults();
+	}
+	
 	/* -----------------  ----------------- */ 
 	
 	@Override

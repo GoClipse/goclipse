@@ -14,9 +14,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.osgi.service.prefs.BackingStoreException;
 
+import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
+import melnorme.lang.tooling.data.CompositeValidatableField;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IProperty;
 
 public class PreferencesPageContext implements IPreferencesEditor {
@@ -37,6 +40,9 @@ public class PreferencesPageContext implements IPreferencesEditor {
 		}
 	}
 	
+	/**
+	 * Add a {@link IPreferencesEditor}. Add order is preserved)
+	 */
 	public void addPrefElement(IPreferencesEditor prefElement) {
 		prefAdapters.add(prefElement);
 	}
@@ -75,6 +81,15 @@ public class PreferencesPageContext implements IPreferencesEditor {
 			property.setValue(preference.getDefaultValue());
 		}
 		
+	}
+	
+	/* ----------------- util ----------------- */
+	
+	public void bindToValidatedPreference(IModelField<String> field, DerivedValuePreference<?> pref, 
+			CompositeValidatableField validation) {
+		bindToPreference(field, pref);
+		
+		validation.addFieldValidation(true, field, pref.getValidator());
 	}
 	
 }

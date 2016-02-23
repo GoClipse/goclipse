@@ -13,14 +13,15 @@ package melnorme.lang.ide.ui.preferences;
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
+import melnorme.util.swt.components.AbstractDisableableWidget;
 
-public abstract class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock {
+public abstract class ProjectSDKSettingsBlock extends ProjectPreferencesBlock {
 	
 	public ProjectSDKSettingsBlock(IProject project, IProjectPreference<Boolean> useProjectSettingsPref) {
 		super(project, useProjectSettingsPref);
 	}
 	
 	@Override
-	protected abstract LangSDKConfigBlock init_createProjectSettingsBlock2();
+	protected abstract AbstractDisableableWidget init_createProjectSettingsBlock2();
 	
 }

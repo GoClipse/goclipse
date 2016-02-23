@@ -18,10 +18,7 @@ import melnorme.lang.ide.ui.preferences.pages.DownloadToolTextField;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractCompositeWidget;
-import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
 
 public abstract class AbstractToolLocationGroup extends AbstractCompositeWidget {
 	
@@ -33,11 +30,10 @@ public abstract class AbstractToolLocationGroup extends AbstractCompositeWidget 
 	};
 	
 	public final String toolName;
-	protected final ArrayList2<IDisableableWidget> subwidgets = new ArrayList2<IDisableableWidget>();
 	
 	public AbstractToolLocationGroup(String toolName) {
 		this.toolName = toolName;
-		this.subwidgets.add(toolLocationField);
+		this.subComponents.add(toolLocationField);
 	}
 	
 	@Override
@@ -53,11 +49,6 @@ public abstract class AbstractToolLocationGroup extends AbstractCompositeWidget 
 	@Override
 	public int getPreferredLayoutColumns() {
 		return 4;
-	}
-	
-	@Override
-	protected Indexable<IDisableableWidget> getSubWidgets() {
-		return subwidgets;
 	}
 	
 	protected abstract BasicUIOperation do_getDownloadButtonHandler(DownloadToolTextField downloadToolTextField);

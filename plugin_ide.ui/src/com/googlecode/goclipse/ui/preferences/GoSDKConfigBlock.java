@@ -28,7 +28,7 @@ import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 
-import melnorme.lang.ide.ui.preferences.AbstractPreferencesBlockExt;
+import melnorme.lang.ide.ui.preferences.AbstractCompositePreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.data.IValidatableValue.ValidatableField;
@@ -45,7 +45,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.MiscUtil;
 
-public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
+public class GoSDKConfigBlock extends AbstractCompositePreferencesBlock {
 	
 	public final DirectoryTextField goRootField = new DirectoryTextField("GO&ROOT:");
 	protected final GoSDKLocationValidator goSDKLocationValidator = new GoSDKLocationValidator();
@@ -67,6 +67,15 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 	
 	public GoSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
+		
+		subComponents.add(goRootField);
+		subComponents.add(goFmtPath);
+		subComponents.add(goDocPath);
+		subComponents.add(goOSField);
+		subComponents.add(goArchField);
+		
+		subComponents.add(goPathField);
+		subComponents.add(gopathAppendProjectLocField);
 		
 		prefContext.bindToPreference(goRootField, GoEnvironmentPrefs.GO_ROOT);
 		prefContext.bindToPreference(goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
@@ -94,6 +103,9 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 	
 	@Override
 	protected void createContents(Composite topControl) {
+		// Ignore super
+		//super.createContents(topControl);
+		
 		int numColumns = 3;
 		Group goSDK = AbstractPreferencesBlock2.createOptionsSection(topControl, "Go installation:", numColumns,
 			getPreferenceGroupDefaultLayout());
@@ -116,22 +128,6 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 		gopathAppendProjectLocField.createComponent(goPathFieldTopControl);
 		
 		goRootField.addListener(() -> handleGoRootChange());
-	}
-	
-	@Override
-	public void setEnabled(boolean enabled) {
-		goRootField.setEnabled(enabled);
-		goFmtPath.setEnabled(enabled);
-		goDocPath.setEnabled(enabled);
-		goOSField.setEnabled(enabled);
-		goArchField.setEnabled(enabled);
-		
-		goPathField.setEnabled(enabled);
-		gopathAppendProjectLocField.setEnabled(enabled);
-	}
-	
-	@Override
-	public void updateComponentFromInput() {
 	}
 	
 	protected GridData getPreferenceGroupDefaultLayout() {

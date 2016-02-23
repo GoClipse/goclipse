@@ -15,7 +15,6 @@ import org.eclipse.core.resources.IProject;
 import com.github.rustdt.ide.ui.preferences.AbstractProjectToolchainSettingsPage;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.preferences.AbstractPreferencesBlockExt;
 import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
 
 public class GoSDKProjectConfigPage extends AbstractProjectToolchainSettingsPage {
@@ -32,7 +31,7 @@ public class GoSDKProjectConfigPage extends AbstractProjectToolchainSettingsPage
 		}
 		
 		@Override
-		protected AbstractPreferencesBlockExt init_createProjectSettingsBlock2() {
+		protected GoSDKConfigBlock init_createProjectSettingsBlock2() {
 			return new GoSDKConfigBlock(prefContext);
 		}
 		
