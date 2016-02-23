@@ -22,7 +22,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
-import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.util.swt.SWTFactory;
@@ -30,40 +29,18 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.IModelField;
-import melnorme.utilbox.fields.IProperty;
 
-public abstract class AbstractPreferencesBlock extends AbstractWidgetExt implements IPreferencesWidget {
+public abstract class AbstractPreferencesBlock2 extends AbstractWidgetExt implements IPreferencesWidget {
 	
-	protected final ArrayList2<IPreferencesEditor> prefAdapters = new ArrayList2<>();
 	protected final PreferencesPageContext prefContext;
 	
-	public AbstractPreferencesBlock() {
-		this(null);
-	}
-	
-	public AbstractPreferencesBlock(PreferencesPageContext prefContext) {
-		this.prefContext = prefContext == null ? init_PreferencesPageContext() : prefContext;
-		assertNotNull(this.prefContext);
-	}
-	
-	protected PreferencesPageContext init_PreferencesPageContext() {
-		return new PreferencesPageContext();
-	}
-	
-	public void addPrefElement(IPreferencesEditor prefElement) {
-		prefAdapters.add(prefElement);
-	}
-	public <T> void bindToPreference(IProperty<T> field, IProjectPreference<T> pref) {
-		bindToPreference(field, pref.getGlobalPreference());
-	}
-	public <T> void bindToPreference(IProperty<T> field, IGlobalPreference<T> pref) {
-		addPrefElement(prefContext.getPreferencesBinder(field, pref));
+	public AbstractPreferencesBlock2(PreferencesPageContext prefContext) {
+		this.prefContext = assertNotNull(prefContext);
 	}
 	
 	public void bindToDerivedPreference(IModelField<String> field, DerivedValuePreference<?> pref) {
-		addPrefElement(prefContext.getPreferencesBinder(field, pref));
+		prefContext.bindToPreference(field, pref);
 		
 		validation.addFieldValidation(true, field, pref.getValidator());
 	}
@@ -72,16 +49,12 @@ public abstract class AbstractPreferencesBlock extends AbstractWidgetExt impleme
 	
 	@Override
 	public void loadDefaults() {
-		for(IPreferencesEditor prefAdapter : prefAdapters) {
-			prefAdapter.loadDefaults();
-		}
+		prefContext.loadDefaults();
 	}
 	
 	@Override
 	public void doSaveSettings() throws BackingStoreException {
-		for(IPreferencesEditor prefAdapter : prefAdapters) {
-			prefAdapter.doSaveSettings();
-		}
+		prefContext.doSaveSettings();
 	}
 	
 	@Override
@@ -92,17 +65,17 @@ public abstract class AbstractPreferencesBlock extends AbstractWidgetExt impleme
 	
 	public <T> void createAndBindComponent(Composite parent, IGlobalPreference<T> pref, FieldComponent<T> field) {
 		field.createComponentInlined(parent);
-		bindToPreference(field, pref);
+		prefContext.bindToPreference(field, pref);
 	}
 	
 	protected void createIntField(Composite parent, IntPreference pref, NumberField field) {
 		field.createComponentInlined(parent);
-		bindToPreference(field.asIntProperty(), pref);
+		prefContext.bindToPreference(field.asIntProperty(), pref);
 	}
 	
 	protected void createCheckboxField(Composite parent, StringPreference pref, ComboBoxField field) {
 		field.createComponentInlined(parent);
-		bindToPreference(field.asStringProperty(), pref);
+		prefContext.bindToPreference(field.asStringProperty(), pref);
 	}
 	
 	/* -----------------  ----------------- */

@@ -21,10 +21,6 @@ public abstract class ProjectSDKSettingsBlock extends ProjectAndPreferencesBlock
 	}
 	
 	@Override
-	protected AbstractPreferencesBlockExt init_createProjectSettingsBlock2() {
-		return init_createLangSDKBlock();
-	}
-	
-	protected abstract LangSDKConfigBlock init_createLangSDKBlock();
+	protected abstract LangSDKConfigBlock init_createProjectSettingsBlock2();
 	
 }

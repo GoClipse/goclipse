@@ -20,8 +20,9 @@ import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.data.IValidatableValue.ValidatableField;
 import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
 import melnorme.lang.tooling.ops.util.LocationValidator;
@@ -44,11 +45,11 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected AbstractPreferencesBlock init_createPreferencesBlock() {
-		return new ServerToolsBlock();
+	protected AbstractPreferencesBlock2 init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new ServerToolsBlock(prefContext);
 	}
 	
-	public static class ServerToolsBlock extends AbstractPreferencesBlock {
+	public static class ServerToolsBlock extends AbstractPreferencesBlock2 {
 		
 		protected final FieldComponent<Boolean> startServerAutomatically = new CheckBoxField(
 			"Start " + getDaemonToolName() + " server automatically");
@@ -58,8 +59,8 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 		protected final FieldComponent<Boolean> showErrorsDialog = new CheckBoxField(
 			"Show error dialog if " + getDaemonToolName() + " failures occur during Content Assist");
 		
-		public ServerToolsBlock() {
-			super();
+		public ServerToolsBlock(PreferencesPageContext prefContext) {
+			super(prefContext);
 		}
 		
 		@Override
@@ -73,14 +74,14 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 		@Override
 		protected void createContents(Composite topControl) {
 			
-			toolGroup = AbstractPreferencesBlock.createOptionsSection(topControl, 
+			toolGroup = AbstractPreferencesBlock2.createOptionsSection(topControl, 
 				getDaemonToolName(), 
 				3, 
 				createDefaultGroupGridData());
 			
-			bindToPreference(startServerAutomatically, ToolchainPreferences.AUTO_START_DAEMON);
-			bindToPreference(enableLogConsole, ToolchainPreferences.DAEMON_CONSOLE_ENABLE);
-			bindToPreference(showErrorsDialog, 
+			prefContext.bindToPreference(startServerAutomatically, ToolchainPreferences.AUTO_START_DAEMON);
+			prefContext.bindToPreference(enableLogConsole, ToolchainPreferences.DAEMON_CONSOLE_ENABLE);
+			prefContext.bindToPreference(showErrorsDialog, 
 				ContentAssistPreferences.ShowDialogIfContentAssistErrors.getGlobalPreference());
 			
 			daemonPathEditor = createDaemonPathFieldEditor(toolGroup);
@@ -113,7 +114,7 @@ public abstract class DaemonToolPreferencePage extends AbstractPreferencesBlockP
 			
 			validation.addFieldValidation(false, pathField, new ValidatableField<>(pathField, validator));
 			
-			bindToPreference(pathField, pref);
+			prefContext.bindToPreference(pathField, pref);
 			pathField.createComponentInlined(group);
 		}
 		

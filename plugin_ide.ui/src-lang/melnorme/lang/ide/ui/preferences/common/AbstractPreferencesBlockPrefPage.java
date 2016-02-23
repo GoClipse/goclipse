@@ -22,17 +22,18 @@ import melnorme.util.swt.components.IWidgetComponent;
  */
 public abstract class AbstractPreferencesBlockPrefPage extends AbstractLangPreferencesPage {
 	
-	protected final IPreferencesWidget preferencesBlock;
+	protected final PreferencesPageContext prefContext = new PreferencesPageContext();
+	protected final AbstractWidgetExt preferencesBlock;
 	
 	public AbstractPreferencesBlockPrefPage() {
 		super(null);
 		
-		preferencesBlock = init_createPreferencesBlock();
+		preferencesBlock = init_createPreferencesBlock(prefContext);
 		
 		preferencesBlock.getStatusField().registerListener(true, () -> updateStatusMessage());
 	}
 	
-	protected abstract AbstractPreferencesBlock init_createPreferencesBlock();
+	protected abstract AbstractWidgetExt init_createPreferencesBlock(PreferencesPageContext prefContext);
 	
 	@Override
 	protected Control createContents(Composite parent) {
@@ -60,12 +61,12 @@ public abstract class AbstractPreferencesBlockPrefPage extends AbstractLangPrefe
 	
 	@Override
 	public void performDefaults() {
-		preferencesBlock.loadDefaults();
+		prefContext.loadDefaults();
 	}
 	
 	@Override
 	public boolean performOk() {
-		return preferencesBlock.saveSettings();
+		return prefContext.saveSettings();
 	}
 	
 }

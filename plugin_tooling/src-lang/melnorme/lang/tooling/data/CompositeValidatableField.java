@@ -15,7 +15,8 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.IFieldView;
 
-public class MultipleFieldValidation extends DomainField<IStatusMessage> implements IValidatableField<IStatusMessage> {
+public class CompositeValidatableField extends DomainField<IStatusMessage> 
+	implements IValidatableField<IStatusMessage> {
 	
 	protected final ArrayList2<IValidationSource> validators = new ArrayList2<>();
 	
