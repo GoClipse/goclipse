@@ -18,17 +18,18 @@ import org.eclipse.swt.widgets.Composite;
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import melnorme.utilbox.fields.IFieldValueListener;
 
-public class EditorTypingConfigurationBlock extends AbstractPreferencesBlock {
+public class EditorTypingConfigurationBlock extends AbstractPreferencesBlock2 {
 	
-	public EditorTypingConfigurationBlock() {
-		super();
+	public EditorTypingConfigurationBlock(PreferencesPageContext prefContext) {
+		super(prefContext);
 	}
 	
 	@Override

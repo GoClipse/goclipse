@@ -10,21 +10,18 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.preferences;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
-import melnorme.lang.ide.ui.preferences.AbstractPreferencesBlockExt;
-import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
-import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
+import com.github.rustdt.ide.ui.preferences.AbstractProjectToolchainSettingsPage;
 
-public class GoSDKProjectConfigPage extends AbstractLangPropertyPage {
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.ui.preferences.AbstractPreferencesBlockExt;
+import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
+
+public class GoSDKProjectConfigPage extends AbstractProjectToolchainSettingsPage {
 	
 	@Override
-	protected IPreferencesWidget createProjectConfigWidget(IProject project) {
+	protected GoSDKProjectConfigBlock createProjectConfigWidget(IProject project) {
 		return new GoSDKProjectConfigBlock(project);
 	}
 	
@@ -37,11 +34,6 @@ public class GoSDKProjectConfigPage extends AbstractLangPropertyPage {
 		@Override
 		protected AbstractPreferencesBlockExt init_createProjectSettingsBlock2() {
 			return new GoSDKConfigBlock(prefContext);
-		}
-		
-		@Override
-		protected LangSDKConfigBlock init_createLangSDKBlock() {
-			throw assertFail();
 		}
 		
 	}

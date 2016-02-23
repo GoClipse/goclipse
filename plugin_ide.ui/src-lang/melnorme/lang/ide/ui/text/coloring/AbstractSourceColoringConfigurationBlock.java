@@ -39,8 +39,9 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences.OverlayStylingPreferences;
@@ -66,7 +67,7 @@ import melnorme.utilbox.tree.TreeVisitor;
 /**
  * A configuration component for syntax (and possibly semantic) source highlighting options.
  */
-public abstract class AbstractSourceColoringConfigurationBlock extends AbstractPreferencesBlock {
+public abstract class AbstractSourceColoringConfigurationBlock extends AbstractPreferencesBlock2 {
 		
 	protected final SourceColoringListRoot coloringOptionsList;
 	
@@ -82,11 +83,11 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 	protected CheckBoxField striketroughCheckboxField;
 	protected CheckBoxField underlineCheckboxField;
 
-	public AbstractSourceColoringConfigurationBlock() {
-		super();
+	public AbstractSourceColoringConfigurationBlock(PreferencesPageContext prefContext) {
+		super(prefContext);
 		this.coloringOptionsList = new SourceColoringListRoot();
 		
-		visitColoringItems(item -> addPrefElement(item));
+		visitColoringItems(item -> prefContext.addPrefElement(item));
 	}
 	
 	protected void visitColoringItems(Consumer<SourceColoringElement> consumer) {

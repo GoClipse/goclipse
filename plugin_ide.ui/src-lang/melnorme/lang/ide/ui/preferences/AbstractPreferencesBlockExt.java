@@ -11,11 +11,11 @@
 package melnorme.lang.ide.ui.preferences;
 
 
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.util.swt.components.IDisableableWidget;
 
-public abstract class AbstractPreferencesBlockExt extends AbstractPreferencesBlock 
+public abstract class AbstractPreferencesBlockExt extends AbstractPreferencesBlock2 
 	implements IDisableableWidget {
 	
 	public AbstractPreferencesBlockExt(PreferencesPageContext prefContext) {

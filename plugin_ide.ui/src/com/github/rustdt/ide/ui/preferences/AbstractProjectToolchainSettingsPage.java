@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2016 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,29 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences.pages;
+package com.github.rustdt.ide.ui.preferences;
 
+
+import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage2;
-import melnorme.lang.ide.ui.preferences.ProjectBuildConfigurationComponent;
+import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
 
-public abstract class BuildConfigurationPropertyPage 
-	extends AbstractLangPropertyPage2<ProjectBuildConfigurationComponent> {
+public abstract class AbstractProjectToolchainSettingsPage extends AbstractLangPropertyPage2<ProjectSDKSettingsBlock> {
 	
-	public BuildConfigurationPropertyPage() {
+	public AbstractProjectToolchainSettingsPage() {
 		super();
-		noDefaultAndApplyButton();
 	}
-	
-	/* -----------------  ----------------- */
 	
 	@Override
-	public void applyData(Object data) {
-		if(data instanceof String) {
-			String targetName = (String) data;
-			getPreferencesWidget().getBuildTargetField().setFieldValue(targetName);
-		}
-	}
+	protected abstract ProjectSDKSettingsBlock createProjectConfigWidget(IProject project);
 	
 	@Override
 	public boolean performOk() {

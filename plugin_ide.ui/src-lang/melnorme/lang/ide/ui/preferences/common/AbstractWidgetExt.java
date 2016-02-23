@@ -11,18 +11,22 @@
 package melnorme.lang.ide.ui.preferences.common;
 
 
+import melnorme.lang.tooling.data.CompositeValidatableField;
 import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.lang.tooling.data.IValidatableField;
 import melnorme.lang.tooling.data.IValidationSource;
-import melnorme.lang.tooling.data.MultipleFieldValidation;
 import melnorme.util.swt.components.AbstractWidget;
 
 public abstract class AbstractWidgetExt extends AbstractWidget implements IValidationSource {
 	
-	protected final MultipleFieldValidation validation = new MultipleFieldValidation();
+	protected final CompositeValidatableField validation = init_createValidationField();
 	
 	public AbstractWidgetExt() {
 		super();
+	}
+	
+	protected CompositeValidatableField init_createValidationField() {
+		return new CompositeValidatableField();
 	}
 	
 	@Override

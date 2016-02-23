@@ -19,7 +19,8 @@ import com.googlecode.goclipse.core.GoToolPreferences;
 
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.preferences.AbstractToolLocationGroup;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.ide.ui.preferences.pages.DaemonToolPreferencePage;
 import melnorme.lang.ide.ui.preferences.pages.DownloadToolTextField;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
@@ -30,14 +31,14 @@ public class GoToolsPreferencePage extends DaemonToolPreferencePage implements
 		IWorkbenchPreferencePage {
 	
 	@Override
-	protected AbstractPreferencesBlock init_createPreferencesBlock() {
-		return new GoServerToolsBlock();
+	protected AbstractPreferencesBlock2 init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new GoServerToolsBlock(prefContext);
 	}
 	
 	public static class GoServerToolsBlock extends ServerToolsBlock {
 		
-		public GoServerToolsBlock() {
-			super();
+		public GoServerToolsBlock(PreferencesPageContext prefContext) {
+			super(prefContext);
 		}
 		
 		protected final AbstractToolLocationGroup oracleGroup = new AbstractToolLocationGroup("oracle") {

@@ -62,7 +62,7 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 		}
 		
 		protected void initBindings() {
-			bindToPreference(sdkLocationField, ToolchainPreferences.SDK_PATH2);
+			prefContext.bindToPreference(sdkLocationField, ToolchainPreferences.SDK_PATH2);
 			validation.addFieldValidation(true, sdkLocationField, getSDKValidator());
 		}
 		

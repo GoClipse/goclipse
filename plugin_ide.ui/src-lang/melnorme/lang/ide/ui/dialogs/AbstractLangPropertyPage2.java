@@ -18,15 +18,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
 
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
+import melnorme.lang.ide.ui.preferences.common.AbstractWidgetExt;
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
 import melnorme.util.swt.SWTFactoryUtil;
 
-public abstract class AbstractLangPropertyPage extends PropertyPage {
+public abstract class AbstractLangPropertyPage2<WIDGET extends AbstractWidgetExt> extends PropertyPage {
 	
-	protected IPreferencesWidget preferencesWidget;
+	protected WIDGET preferencesWidget;
 	
-	public AbstractLangPropertyPage() {
+	public AbstractLangPropertyPage2() {
 		super();
 	}
 	
@@ -44,11 +44,11 @@ public abstract class AbstractLangPropertyPage extends PropertyPage {
 		preferencesWidget = createProjectConfigWidget(getProject());
 	}
 	
-	public IPreferencesWidget getPreferencesWidget() {
+	public WIDGET getPreferencesWidget() {
 		return preferencesWidget;
 	}
 	
-	protected abstract IPreferencesWidget createProjectConfigWidget(IProject project);
+	protected abstract WIDGET createProjectConfigWidget(IProject project);
 	
 	/* -----------------  ----------------- */
 	
@@ -75,14 +75,9 @@ public abstract class AbstractLangPropertyPage extends PropertyPage {
 	}
 	
 	@Override
-	public boolean performOk() {
-		preferencesWidget.saveSettings();
-		return true;
-	}
+	public abstract boolean performOk();
 	
 	@Override
-	protected void performDefaults() {
-		preferencesWidget.loadDefaults();
-	}
+	protected abstract void performDefaults();
 	
 }

@@ -15,6 +15,7 @@ import org.osgi.framework.Version;
 import com.googlecode.goclipse.core.GoCorePlugin;
 
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 public class GoPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
@@ -31,8 +32,8 @@ public class GoPreferencePage extends AbstractPreferencesBlockPrefPage {
 	}
 	
 	@Override
-	protected GoSDKConfigBlock init_createPreferencesBlock() {
-		return new GoSDKConfigBlock(null);
+	protected GoSDKConfigBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new GoSDKConfigBlock(prefContext);
 	}
 	
 	@Override

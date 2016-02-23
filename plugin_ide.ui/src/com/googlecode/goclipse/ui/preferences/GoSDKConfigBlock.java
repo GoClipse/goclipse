@@ -29,7 +29,7 @@ import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoOs;
 
 import melnorme.lang.ide.ui.preferences.AbstractPreferencesBlockExt;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.data.IValidatableValue.ValidatableField;
 import melnorme.lang.tooling.ops.util.LocationValidator;
@@ -68,15 +68,15 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 	public GoSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
 		
-		bindToPreference(goRootField, GoEnvironmentPrefs.GO_ROOT);
-		bindToPreference(goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
-		bindToPreference(goDocPath, GoEnvironmentPrefs.DOCUMENTOR_PATH);
+		prefContext.bindToPreference(goRootField, GoEnvironmentPrefs.GO_ROOT);
+		prefContext.bindToPreference(goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
+		prefContext.bindToPreference(goDocPath, GoEnvironmentPrefs.DOCUMENTOR_PATH);
 		
-		bindToPreference(goOSField.asStringProperty(), GoEnvironmentPrefs.GO_OS);
-		bindToPreference(goArchField.asStringProperty(), GoEnvironmentPrefs.GO_ARCH);
+		prefContext.bindToPreference(goOSField.asStringProperty(), GoEnvironmentPrefs.GO_OS);
+		prefContext.bindToPreference(goArchField.asStringProperty(), GoEnvironmentPrefs.GO_ARCH);
 		
-		bindToPreference(goPathField.asEffectiveValueProperty2(), GoEnvironmentPrefs.GO_PATH);
-		bindToPreference(gopathAppendProjectLocField, GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH);
+		prefContext.bindToPreference(goPathField.asEffectiveValueProperty2(), GoEnvironmentPrefs.GO_PATH);
+		prefContext.bindToPreference(gopathAppendProjectLocField, GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH);
 		
 		
 		validation.addFieldValidation(true, goRootField, goSDKLocationValidator);
@@ -95,7 +95,7 @@ public class GoSDKConfigBlock extends AbstractPreferencesBlockExt {
 	@Override
 	protected void createContents(Composite topControl) {
 		int numColumns = 3;
-		Group goSDK = AbstractPreferencesBlock.createOptionsSection(topControl, "Go installation:", numColumns,
+		Group goSDK = AbstractPreferencesBlock2.createOptionsSection(topControl, "Go installation:", numColumns,
 			getPreferenceGroupDefaultLayout());
 		
 		goRootField.createComponentInlined(goSDK);

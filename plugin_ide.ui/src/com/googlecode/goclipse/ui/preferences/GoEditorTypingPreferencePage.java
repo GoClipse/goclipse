@@ -13,6 +13,7 @@ package com.googlecode.goclipse.ui.preferences;
 
 import melnorme.lang.ide.ui.preferences.EditorTypingConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 
 public class GoEditorTypingPreferencePage extends AbstractPreferencesBlockPrefPage {
@@ -27,8 +28,8 @@ public class GoEditorTypingPreferencePage extends AbstractPreferencesBlockPrefPa
 	}
 	
 	@Override
-	protected EditorTypingConfigurationBlock init_createPreferencesBlock() {
-		return new EditorTypingConfigurationBlock();
+	protected EditorTypingConfigurationBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new EditorTypingConfigurationBlock(prefContext);
 	}
 	
 }

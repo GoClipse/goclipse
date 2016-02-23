@@ -14,6 +14,7 @@ package melnorme.lang.ide.ui.preferences;
 import static melnorme.lang.ide.ui.preferences.PreferencesMessages.LABEL_ConfigureWorkspaceSettings;
 import static melnorme.lang.ide.ui.preferences.PreferencesMessages.LABEL_UseProjectSpecificSettings;
 import static melnorme.lang.ide.ui.utils.ControlUtils.createOpenPreferencesDialogLink;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.resources.IProject;
@@ -26,7 +27,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
@@ -34,7 +35,7 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.utilbox.fields.IProperty;
 
-public abstract class ProjectAndPreferencesBlock extends AbstractPreferencesBlock
+public abstract class ProjectAndPreferencesBlock extends AbstractPreferencesBlock2
 	implements IPreferencesWidget {
 	
 	protected final IProject project;
@@ -43,13 +44,8 @@ public abstract class ProjectAndPreferencesBlock extends AbstractPreferencesBloc
 	protected final CheckBoxField useProjectSettingsField = new CheckBoxField(LABEL_UseProjectSpecificSettings);
 	protected final AbstractPreferencesBlockExt projectSettingsBlock;
 	
-	@Override
-	protected PreferencesPageContext init_PreferencesPageContext() {
-		return new ProjectPreferencesPageContext();
-	}
-	
 	public ProjectAndPreferencesBlock(IProject project, IProjectPreference<Boolean> useProjectSettingsPref) {
-		super();
+		super(new ProjectPreferencesPageContext(project, useProjectSettingsPref));
 		this.project = project;
 		this.useProjectSettingsPref = useProjectSettingsPref;
 		
@@ -58,9 +54,9 @@ public abstract class ProjectAndPreferencesBlock extends AbstractPreferencesBloc
 		useProjectSettingsField.registerListener(
 			() -> projectSettingsBlock.setEnabled(useProjectSettingsField.getFieldValue()));
 		
-		bindToPreference(useProjectSettingsField, useProjectSettingsPref);
+		prefContext.bindToPreference(useProjectSettingsField, useProjectSettingsPref);
 		
-		addPrefElement(projectSettingsBlock);
+		prefContext.addPrefElement(projectSettingsBlock);
 		validation.addValidatableField(true, projectSettingsBlock.getStatusField());
 	}
 	
@@ -97,7 +93,16 @@ public abstract class ProjectAndPreferencesBlock extends AbstractPreferencesBloc
 	
 	/* -----------------  ----------------- */
 	
-	protected class ProjectPreferencesPageContext extends PreferencesPageContext {
+	protected static class ProjectPreferencesPageContext extends PreferencesPageContext {
+		
+		protected final IProject project; 
+		protected final IProjectPreference<Boolean> useProjectSettingsPref;
+		
+		public ProjectPreferencesPageContext(IProject project, IProjectPreference<Boolean> useProjectSettingsPref) {
+			this.project = assertNotNull(project);
+			this.useProjectSettingsPref = assertNotNull(useProjectSettingsPref);
+		}
+		
 		@Override
 		public <T> IPreferencesEditor getPreferencesBinder(IProperty<T> field, IGlobalPreference<T> globalPref) {
 			IProjectPreference<T> pref = globalPref.getProjectPreference();

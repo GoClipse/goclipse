@@ -13,13 +13,14 @@ package melnorme.lang.ide.ui.preferences;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.ui.ContentAssistPreferences;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.util.swt.components.fields.CheckBoxField;
 
-public class EditorContentAssistConfigurationBlock extends AbstractPreferencesBlock {
+public class EditorContentAssistConfigurationBlock extends AbstractPreferencesBlock2 {
 	
-	public EditorContentAssistConfigurationBlock() {
-		super();
+	public EditorContentAssistConfigurationBlock(PreferencesPageContext prefContext) {
+		super(prefContext);
 	}
 	
 	@Override

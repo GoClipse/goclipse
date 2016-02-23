@@ -13,11 +13,12 @@ package com.googlecode.goclipse.ui.preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import melnorme.lang.ide.ui.preferences.EditorConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 public class GoEditorConfigurationBlock extends EditorConfigurationBlock {
 	
-	public GoEditorConfigurationBlock(IPreferenceStore store) {
-		super(store);
+	public GoEditorConfigurationBlock(PreferencesPageContext prefContext, IPreferenceStore store) {
+		super(prefContext, store);
 	}
 	
 }

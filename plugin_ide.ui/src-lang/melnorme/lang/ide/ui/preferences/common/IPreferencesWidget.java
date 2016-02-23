@@ -10,15 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences.common;
 
-import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.util.swt.components.IWidgetComponent;
-import melnorme.utilbox.fields.IFieldView;
 
 /**
  * Basically a widget component that knows how to save it's settings, and load the default settings. 
  */
 public interface IPreferencesWidget extends IWidgetComponent, IPreferencesEditor {
-	
-	IFieldView<IStatusMessage> getStatusField();
 	
 }
