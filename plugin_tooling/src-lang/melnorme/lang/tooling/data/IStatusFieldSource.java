@@ -8,16 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences.common;
+package melnorme.lang.tooling.data;
+
+import melnorme.lang.tooling.data.IStatusMessage;
+import melnorme.lang.tooling.data.IValidationSource;
+import melnorme.utilbox.fields.IFieldView;
 
 
-import melnorme.util.swt.components.AbstractWidget;
-import melnorme.util.swt.components.IValidatableWidget;
-
-public abstract class AbstractWidgetExt extends AbstractWidget implements IValidatableWidget {
+public interface IStatusFieldSource extends IValidationSource {
 	
-	public AbstractWidgetExt() {
-		super();
+	@Override
+	public default IStatusMessage getValidationStatus() {
+		return getStatusField().getFieldValue();
 	}
+	
+	IFieldView<IStatusMessage> getStatusField();
 	
 }

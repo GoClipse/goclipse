@@ -13,8 +13,8 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.EditorContentAssistConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
-import melnorme.lang.ide.ui.preferences.common.AbstractWidgetExt;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
+import melnorme.util.swt.components.IValidatableWidget;
 
 public class LANGUAGE_ContentAssistPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
@@ -25,7 +25,7 @@ public class LANGUAGE_ContentAssistPreferencePage extends AbstractPreferencesBlo
 	}
 	
 	@Override
-	protected AbstractWidgetExt init_createPreferencesBlock(PreferencesPageContext prefContext) {
+	protected IValidatableWidget init_createPreferencesBlock(PreferencesPageContext prefContext) {
 		return new EditorContentAssistConfigurationBlock(prefContext);
 	}
 	

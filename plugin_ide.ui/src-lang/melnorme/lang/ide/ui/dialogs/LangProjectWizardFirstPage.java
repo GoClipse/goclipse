@@ -147,7 +147,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		protected TextFieldComponent textField = new TextFieldComponent(WizardMessages.LangNewProject_NameGroup_label);
 		
 		public NameGroup() {
-			subComponents.add(textField);
+			addSubComponent(textField);
 		}
 		
 		public String getName() {

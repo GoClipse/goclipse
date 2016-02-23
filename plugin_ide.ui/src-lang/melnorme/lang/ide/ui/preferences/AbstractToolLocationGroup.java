@@ -33,7 +33,7 @@ public abstract class AbstractToolLocationGroup extends AbstractCompositeWidget 
 	
 	public AbstractToolLocationGroup(String toolName) {
 		this.toolName = toolName;
-		this.subComponents.add(toolLocationField);
+		this.addSubComponent(toolLocationField);
 	}
 	
 	@Override

@@ -13,8 +13,10 @@ package melnorme.lang.ide.ui.preferences;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.util.swt.components.AbstractCompositeWidget;
+import melnorme.utilbox.fields.IModelField;
 
 public abstract class AbstractCompositePreferencesBlock extends AbstractCompositeWidget {
 	
@@ -24,6 +26,10 @@ public abstract class AbstractCompositePreferencesBlock extends AbstractComposit
 		super();
 		this.prefContext = assertNotNull(prefContext);
 		createInlined = false;
+	}
+	
+	protected void bindToDerivedPreference(IModelField<String> field, DerivedValuePreference<?> pref) {
+		prefContext.bindToValidatedPreference(field, pref, validation);
 	}
 	
 }

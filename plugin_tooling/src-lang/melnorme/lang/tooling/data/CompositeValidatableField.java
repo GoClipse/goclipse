@@ -15,8 +15,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.IFieldView;
 
-public class CompositeValidatableField extends DomainField<IStatusMessage> 
-	implements IValidatableField<IStatusMessage> {
+public class CompositeValidatableField extends DomainField<IStatusMessage> implements IValidationSource {
 	
 	protected final ArrayList2<IValidationSource> validators = new ArrayList2<>();
 	
@@ -33,7 +32,11 @@ public class CompositeValidatableField extends DomainField<IStatusMessage>
 		addFieldValidation(init, statusField, statusField);
 	}
 	
-	protected void updateFieldValue() {
+	public void addStatusField(boolean init, IFieldView<IStatusMessage> statusField) {
+		addFieldValidation(init, statusField, () -> statusField.getFieldValue());
+	}
+	
+	public void updateFieldValue() {
 		setFieldValue(IValidationSource.getHighestStatus(validators));
 	}
 	

@@ -30,7 +30,7 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 		super(prefContext);
 		
 		this.sdkLocationGroup = init_createSDKLocationGroup();
-		subComponents.add(sdkLocationGroup);
+		addSubComponent(sdkLocationGroup);
 	}
 	
 	protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
@@ -53,10 +53,9 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 		public final ButtonTextField sdkLocationField = createSdkLocationField();
 		
 		public LanguageSDKLocationGroup() {
-			initBindings();
-			LangSDKConfigBlock.this.validation.addValidatableField(true, validation);
+			this.addSubComponent(sdkLocationField);
 			
-			this.subComponents.add(sdkLocationField);
+			initBindings();
 		}
 		
 		protected void initBindings() {
