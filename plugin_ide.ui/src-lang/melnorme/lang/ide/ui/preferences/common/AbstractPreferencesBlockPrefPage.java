@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Control;
 
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
 import melnorme.lang.tooling.data.IStatusMessage;
+import melnorme.util.swt.components.IValidatableWidget;
 import melnorme.util.swt.components.IWidgetComponent;
 
 /**
@@ -23,7 +24,7 @@ import melnorme.util.swt.components.IWidgetComponent;
 public abstract class AbstractPreferencesBlockPrefPage extends AbstractLangPreferencesPage {
 	
 	protected final PreferencesPageContext prefContext = new PreferencesPageContext();
-	protected final AbstractWidgetExt preferencesBlock;
+	protected final IValidatableWidget preferencesBlock;
 	
 	public AbstractPreferencesBlockPrefPage() {
 		super(null);
@@ -33,7 +34,7 @@ public abstract class AbstractPreferencesBlockPrefPage extends AbstractLangPrefe
 		preferencesBlock.getStatusField().registerListener(true, () -> updateStatusMessage());
 	}
 	
-	protected abstract AbstractWidgetExt init_createPreferencesBlock(PreferencesPageContext prefContext);
+	protected abstract IValidatableWidget init_createPreferencesBlock(PreferencesPageContext prefContext);
 	
 	@Override
 	protected Control createContents(Composite parent) {

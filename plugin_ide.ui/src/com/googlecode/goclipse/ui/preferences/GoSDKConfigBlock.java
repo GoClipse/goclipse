@@ -68,14 +68,14 @@ public class GoSDKConfigBlock extends AbstractCompositePreferencesBlock {
 	public GoSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
 		
-		subComponents.add(goRootField);
-		subComponents.add(goFmtPath);
-		subComponents.add(goDocPath);
-		subComponents.add(goOSField);
-		subComponents.add(goArchField);
+		addSubComponent(goRootField);
+		addSubComponent(goFmtPath);
+		addSubComponent(goDocPath);
+		addSubComponent(goOSField);
+		addSubComponent(goArchField);
 		
-		subComponents.add(goPathField);
-		subComponents.add(gopathAppendProjectLocField);
+		addSubComponent(goPathField);
+		addSubComponent(gopathAppendProjectLocField);
 		
 		prefContext.bindToPreference(goRootField, GoEnvironmentPrefs.GO_ROOT);
 		prefContext.bindToPreference(goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);

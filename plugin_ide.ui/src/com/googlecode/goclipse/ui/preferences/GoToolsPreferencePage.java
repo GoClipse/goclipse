@@ -73,8 +73,8 @@ public class GoToolsPreferencePage extends DaemonToolPreferencePage implements
 		@Override
 		protected void createContents(Composite topControl) {
 			
-			validation.addValidatableField(true, oracleGroup.getStatusField());
-			validation.addValidatableField(true, godefGroup.getStatusField());
+			validation.addStatusField(true, oracleGroup.getStatusField());
+			validation.addStatusField(true, godefGroup.getStatusField());
 			
 			oracleGroup.createComponent(topControl, createDefaultGroupGridData());
 			super.createContents(topControl);

@@ -55,7 +55,7 @@ public abstract class ProjectPreferencesBlock extends AbstractPreferencesBlock2 
 		
 		prefContext.bindToPreference(useProjectSettingsField, useProjectSettingsPref);
 		
-		validation.addValidatableField(true, projectSettingsBlock.getStatusField());
+		validation.addStatusField(true, projectSettingsBlock.getStatusField());
 	}
 	
 	protected abstract AbstractDisableableWidget init_createProjectSettingsBlock2();

@@ -13,9 +13,10 @@ package melnorme.util.swt.components;
 import melnorme.lang.ide.ui.preferences.common.AbstractWidgetExt;
 
 /**
- * An {@link AbstractWidgetExt} extended with {@link #setEnabled(boolean)} functionality.
+ * An {@link AbstractWidget} extended with {@link #setEnabled(boolean)} functionality.
  */
-public abstract class AbstractDisableableWidget extends AbstractWidgetExt implements IDisableableWidget {
+public abstract class AbstractDisableableWidget extends AbstractWidgetExt 
+	implements IDisableableWidget {
 	
 	public AbstractDisableableWidget() {
 	}

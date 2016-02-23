@@ -18,11 +18,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
 
-import melnorme.lang.ide.ui.preferences.common.AbstractWidgetExt;
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.IValidatableWidget;
 
-public abstract class AbstractLangPropertyPage2<WIDGET extends AbstractWidgetExt> extends PropertyPage {
+public abstract class AbstractLangPropertyPage2<WIDGET extends IValidatableWidget> extends PropertyPage {
 	
 	protected WIDGET preferencesWidget;
 	

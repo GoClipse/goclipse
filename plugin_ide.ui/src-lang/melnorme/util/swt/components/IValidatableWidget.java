@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2016 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences.common;
+package melnorme.util.swt.components;
 
+import melnorme.lang.tooling.data.IStatusFieldSource;
+import melnorme.lang.tooling.data.IStatusMessage;
+import melnorme.utilbox.fields.IFieldView;
 
-import melnorme.util.swt.components.AbstractWidget;
-import melnorme.util.swt.components.IValidatableWidget;
+public interface IValidatableWidget extends IWidgetComponent, IStatusFieldSource {
 
-public abstract class AbstractWidgetExt extends AbstractWidget implements IValidatableWidget {
-	
-	public AbstractWidgetExt() {
-		super();
+	@Override
+	default IFieldView<IStatusMessage> getStatusField() {
+		return IFieldView.NULL_FIELD_VIEW();
 	}
 	
 }

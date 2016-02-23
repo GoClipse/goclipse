@@ -13,19 +13,29 @@ package melnorme.util.swt.components;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.lang.tooling.data.CompositeValidatableField;
+import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.fields.IFieldView;
 
-public abstract class AbstractCompositeWidget extends AbstractDisableableWidget implements IDisableableWidget {
+public abstract class AbstractCompositeWidget extends AbstractDisableableWidget {
 	
-	protected final ArrayList2<IDisableableWidget> subComponents = new ArrayList2<>();
+	private final ArrayList2<IDisableableWidget> subComponents = new ArrayList2<>();
+	protected final CompositeValidatableField validation = new CompositeValidatableField();
+	
 	protected boolean createInlined = true;
 	
 	public AbstractCompositeWidget() {
 	}
 	
+	@Override
+	public IFieldView<IStatusMessage> getStatusField() {
+		return validation;
+	}
+	
 	protected void addSubComponent(AbstractDisableableWidget subComponent) {
-		validation.addValidatableField(true, subComponent.getStatusField());
+		validation.addStatusField(true, subComponent.getStatusField());
 		subComponents.add(subComponent);
 	}
 	
@@ -62,10 +72,24 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 		});
 	}
 	
-	
 	@Override
 	protected void _verifyContract_IDisableableComponent() {
 		// No need to check, only possible children are AbstractComponentExt
+	}
+	
+	@Override
+	protected void updateControlEnablement() {
+		super.updateControlEnablement();
+		
+		updateValidationStatusForEnablement();
+	}
+	
+	protected void updateValidationStatusForEnablement() {
+		if(!isEnabled()) {
+			validation.setValue(null);
+		} else {
+			validation.updateFieldValue();
+		}
 	}
 	
 }

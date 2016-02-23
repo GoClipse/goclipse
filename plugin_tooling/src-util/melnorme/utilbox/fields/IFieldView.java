@@ -75,4 +75,30 @@ public interface IFieldView<VALUE> {
 		
 	}
 	
+	/* -----------------  ----------------- */
+	
+	@SuppressWarnings("unchecked")
+	public static <T> IFieldView<T> NULL_FIELD_VIEW() {
+		return (IFieldView<T>) NULL_FIELD_VIEW;
+	}
+	
+	public static final IFieldView<Object> NULL_FIELD_VIEW = new IFieldView<Object>() {
+		
+		@Override
+		public Object getFieldValue() {
+			return null;
+		}
+		
+		@Override
+		public void addListener(IFieldValueListener listener) {
+			// Do nothing
+		}
+		
+		@Override
+		public void removeListener(IFieldValueListener listener) {
+			// Do nothing
+		}
+		
+	};
+	
 }
