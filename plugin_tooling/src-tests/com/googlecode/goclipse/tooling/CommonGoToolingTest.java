@@ -16,9 +16,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
-import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
-import com.googlecode.goclipse.tooling.env.GoOs;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 
@@ -33,7 +31,6 @@ public class CommonGoToolingTest extends CommonToolingTest {
 	
 	protected static final GoEnvironment SAMPLE_GOEnv_1 = new GoEnvironment(
 		SAMPLE_GO_ROOT, 
-		new GoArch("386"), new GoOs("windows"), 
 		SAMPLE_GO_PATH
 	);
 	

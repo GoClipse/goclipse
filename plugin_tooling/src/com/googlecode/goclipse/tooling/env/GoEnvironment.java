@@ -31,23 +31,16 @@ import melnorme.utilbox.misc.Location;
  */
 public class GoEnvironment {
 	
-	public static final String ENV_BIN_FOLDER = "bin";
-	public static final String ENV_PKG_FOLDER = "pkg";
-	
 	protected final GoRoot goRoot;
-	protected final GoArch goArch;
-	protected final GoOs goOs;
 	protected final GoPath goPath;
 	
-	public GoEnvironment(GoRoot goRoot, GoArch goArch, GoOs goOs, GoPath goPath) {
+	public GoEnvironment(GoRoot goRoot, GoPath goPath) {
 		this.goRoot = assertNotNull(goRoot);
-		this.goArch = goArch;
-		this.goOs = goOs;
 		this.goPath = assertNotNull(goPath);
 	}
 	
-	public GoEnvironment(GoRoot goRoot, GoArch goArch, GoOs goOs, String goPath) {
-		this(goRoot, goArch, goOs, new GoPath(goPath));
+	public GoEnvironment(GoRoot goRoot, String goPath) {
+		this(goRoot, new GoPath(goPath));
 	}
 	
 	public GoRoot getGoRoot() {
@@ -56,25 +49,6 @@ public class GoEnvironment {
 	
 	public Location getGoRoot_Location() throws CommonException {
 		return goRoot.asLocation();
-	}
-	
-	public GoArch getGoArch() {
-		return goArch;
-	}
-	public GoOs getGoOs() {
-		return goOs;
-	}
-	
-	public GoArch getGoArch_NonNull() throws CommonException {
-		if(goArch == null) 
-			throw new CommonException("GOARCH is undefined");
-		return goArch;
-	}
-	
-	public GoOs getGoOs_NonNull() throws CommonException {
-		if(goOs == null) 
-			throw new CommonException("GOOS is undefined");
-		return goOs;
 	}
 	
 	public GoPath getGoPath() {
@@ -138,19 +112,6 @@ public class GoEnvironment {
 		return goWorkspace.getBinLocation();
 	}
 	
-//	protected String getGoOS_GoArch_segment() throws CommonException {
-//		return getGoOs().asString() + "_" + getGoArch().asString();
-//	}
-//	
-//	protected Path getGoOSGoArchSegmentPath() throws CommonException {
-//		return PathUtil.createPath(getGoOS_GoArch_segment(), "Invalid GOOS-GOARCH: ");
-//	}
-//	
-//	public Location getGoRootToolsDir() throws CommonException {
-//		Path subPath = getGoOSGoArchSegmentPath();
-//		return goRoot.asLocation().resolve_fromValid("pkg/tool/").resolve(subPath);
-//	}
-	
 	
 	/* -----------------  process builder  ----------------- */
 	
@@ -171,13 +132,6 @@ public class GoEnvironment {
 		
 		putMapEntry(env, GoEnvironmentConstants.GOROOT, goRoot.asString());
 		putMapEntry(env, GoEnvironmentConstants.GOPATH, getGoPathString());
-		
-		if(goArch != null) {
-			putMapEntry(env, GoEnvironmentConstants.GOARCH, goArch.asString());
-		}
-		if(goOs != null) {
-			putMapEntry(env, GoEnvironmentConstants.GOOS, goOs.asString());
-		}
 		
 		if(goRootInPath) {
 			// Add GoRoot to path. See #113 for rationale

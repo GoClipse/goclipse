@@ -144,8 +144,7 @@ public class GoSourceModelManager extends SourceModelManager {
 			FileUtil.writeStringToFile(describeFile.toFile(), source, StringUtil.UTF8);
 			
 			// Modify goEnv for tempDir
-			goEnv = new GoEnvironment(goEnv.getGoRoot(), goEnv.getGoArch(), goEnv.getGoOs(), 
-				new GoPath(tempDir.toString()));
+			goEnv = new GoEnvironment(goEnv.getGoRoot(), new GoPath(tempDir.toString()));
 		}
 		
 		protected ExternalProcessResult runGoOracle(GoEnvironment goEnv, Location opTempFile)

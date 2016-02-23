@@ -365,12 +365,6 @@ public class GoBuildManager extends BuildManager {
 				
 				GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 				
-				if(goEnv.getGoArch() != null) {
-					addOperation(newMessageOperation("  with GOARCH: " + goEnv.getGoArch().asString() + "\n"));
-				}
-				if(goEnv.getGoOs() != null) {
-					addOperation(newMessageOperation("  with GOOS: " + goEnv.getGoOs().asString() + "\n"));
-				}
 				addOperation(newMessageOperation("  with GOPATH: " + goEnv.getGoPathString() + "\n"));
 			}
 		};

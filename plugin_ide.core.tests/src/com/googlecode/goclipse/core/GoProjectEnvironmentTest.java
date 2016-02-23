@@ -40,8 +40,6 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	public void test$() throws Exception {
 		
 		GoEnvironmentPrefs.GO_ROOT.getGlobalPreference().setInstanceScopeValue(SAMPLE_GO_ROOT.asString());
-		GoEnvironmentPrefs.GO_ARCH.getGlobalPreference().setInstanceScopeValue("386");
-		GoEnvironmentPrefs.GO_OS.getGlobalPreference().setInstanceScopeValue("windows");
 		GoEnvironmentPrefs.GO_PATH.getGlobalPreference().setInstanceScopeValue(SAMPLE_GOPATH_Entry.toString());
 		TestsWorkingDir.deleteDir(SAMPLE_GOPATH_Entry);
 		

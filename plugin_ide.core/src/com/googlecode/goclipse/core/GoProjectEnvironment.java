@@ -11,17 +11,14 @@
 package com.googlecode.goclipse.core;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
-import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
-import com.googlecode.goclipse.tooling.env.GoArch;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironmentConstants;
-import com.googlecode.goclipse.tooling.env.GoOs;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
@@ -37,16 +34,6 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	public static GoRoot getEffectiveGoRoot(IProject project) {
 		String prefValue = GoEnvironmentPrefs.GO_ROOT.getEffectiveValue(project);
 		return new GoRoot(nullAsEmpty(prefValue));
-	}
-	
-	public static GoArch getEffectiveGoArch(IProject project) {
-		String strValue = emptyAsNull(GoEnvironmentPrefs.GO_ARCH.getEffectiveValue(project));
-		return strValue == null ? null : new GoArch(strValue);
-	}
-	
-	public static GoOs getEffectiveGoOs(IProject project) {
-		String strValue = emptyAsNull(GoEnvironmentPrefs.GO_OS.getEffectiveValue(project));
-		return strValue == null ? null : new GoOs(strValue);
 	}
 	
 	public static GoPath getEffectiveGoPath(IProject project) {
@@ -105,10 +92,8 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	 */
 	public static GoEnvironment getGoEnvironment(IProject project) {
 		GoRoot goRoot = getEffectiveGoRoot(project);
-		GoArch goArch = getEffectiveGoArch(project);
-		GoOs goOs = getEffectiveGoOs(project);
 		GoPath goPath = getEffectiveGoPath(project);
-		return new GoEnvironment(goRoot, goArch, goOs, goPath);
+		return new GoEnvironment(goRoot, goPath);
 	}
 
 	public static GoEnvironment getValidatedGoEnvironment(final IProject project) throws CommonException {

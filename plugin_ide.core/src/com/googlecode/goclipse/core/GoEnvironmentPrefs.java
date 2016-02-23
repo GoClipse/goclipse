@@ -23,10 +23,6 @@ public interface GoEnvironmentPrefs {
 	
 	IProjectPreference<String> GO_ROOT = new StringPreference(LangCore.PLUGIN_ID, 
 		"com.googlecode.goclipse.goroot", "", USE_PROJECT_SETTINGS).getProjectPreference();
-	IProjectPreference<String> GO_OS = new StringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.goos", "", USE_PROJECT_SETTINGS).getProjectPreference();
-	IProjectPreference<String> GO_ARCH = new StringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.goarch", "", USE_PROJECT_SETTINGS).getProjectPreference();
 	IProjectPreference<String> FORMATTER_PATH = new StringPreference(LangCore.PLUGIN_ID, 
 		"com.googlecode.goclipse.formatter.path", "", USE_PROJECT_SETTINGS).getProjectPreference();
 	IProjectPreference<String> DOCUMENTOR_PATH = new StringPreference(LangCore.PLUGIN_ID, 
