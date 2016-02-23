@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -271,14 +272,14 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	/* ----------------- save ----------------- */
 	
 	@Override
-	protected void editorSaved() {
+	protected void performSave(boolean overwrite, IProgressMonitor pm) {
 		IProject associatedProject = EditorUtils.getAssociatedProject(getEditorInput());
 		if(ToolchainPreferences.FORMAT_ON_SAVE.getEffectiveValue(associatedProject)) {
 			BasicUIOperation formatOperation = LangUIPlugin_Actual.getFormatOperation(this);
 			formatOperation.executeAndHandle();
 		}
 		
-		super.editorSaved();
+		super.performSave(overwrite, pm);
 	}
 	
 }

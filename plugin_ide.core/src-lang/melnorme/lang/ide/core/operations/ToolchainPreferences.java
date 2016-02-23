@@ -24,7 +24,7 @@ public interface ToolchainPreferences {
 		USE_PROJECT_SETTINGS).getProjectPreference();
 	
 	public static final BooleanPreference FORMAT_ON_SAVE =
-			new BooleanPreference("format_onSave", false);
+			new BooleanPreference(LangCore.PLUGIN_ID, "format_onSave", false, USE_PROJECT_SETTINGS);
 	
 	public static final BooleanPreference AUTO_START_DAEMON =
 			new BooleanPreference("auto_start_daemon", true);
