@@ -10,12 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.preferences;
 
-import static melnorme.lang.tooling.ops.util.PathValidator.LocationKind.FILE_ONLY;
-
 import java.io.File;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -29,23 +25,18 @@ import melnorme.lang.ide.ui.preferences.AbstractCompositePreferencesBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.data.IValidatableValue.ValidatableField;
-import melnorme.lang.tooling.ops.util.LocationValidator;
 import melnorme.lang.utils.EnvUtils;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
-import melnorme.util.swt.components.fields.FileTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.MiscUtil;
 
 public class GoSDKConfigBlock extends AbstractCompositePreferencesBlock {
 	
-	public final DirectoryTextField goRootField = new DirectoryTextField("GO&ROOT:");
+	public final DirectoryTextField goRootField = new DirectoryTextField("Directory:");
 	protected final GoSDKLocationValidator goSDKLocationValidator = new GoSDKLocationValidator();
 	public final ValidatableField<String> validatedGoRoot = new ValidatableField<>(goRootField, goSDKLocationValidator);
-	
-	protected final FileTextField goFmtPath = new FileTextField("gofmt:");
 	
 	protected final EnablementButtonTextField goPathField = new GoPathField();
 	protected final CheckBoxField gopathAppendProjectLocField = new CheckBoxField(
@@ -55,21 +46,17 @@ public class GoSDKConfigBlock extends AbstractCompositePreferencesBlock {
 		super(prefContext);
 		
 		addSubComponent(goRootField);
-		addSubComponent(goFmtPath);
 		
 		addSubComponent(goPathField);
 		addSubComponent(gopathAppendProjectLocField);
 		
 		prefContext.bindToPreference(goRootField, GoEnvironmentPrefs.GO_ROOT);
-		prefContext.bindToPreference(goFmtPath, GoEnvironmentPrefs.FORMATTER_PATH);
 		
 		prefContext.bindToPreference(goPathField.asEffectiveValueProperty2(), GoEnvironmentPrefs.GO_PATH);
 		prefContext.bindToPreference(gopathAppendProjectLocField, GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH);
 		
 		
 		validation.addFieldValidation(true, goRootField, goSDKLocationValidator);
-		
-		validation.addFieldValidation(true, goFmtPath, new LocationValidator(goFmtPath.getLabelText(), FILE_ONLY));
 	}
 	
 	/* -----------------  ----------------- */
@@ -84,42 +71,26 @@ public class GoSDKConfigBlock extends AbstractCompositePreferencesBlock {
 		// Ignore super
 		//super.createContents(topControl);
 		
-		int numColumns = 3;
-		Group goSDK = AbstractPreferencesBlock2.createOptionsSection(topControl, "Go installation:", numColumns,
-			getPreferenceGroupDefaultLayout());
+		Group goSDK = AbstractPreferencesBlock2.createOptionsSection(topControl, "Go installation (GOROOT):", 3,
+			createSubComponentDefaultGridData());
 		
 		goRootField.createComponentInlined(goSDK);
 		
-		goFmtPath.createComponentInlined(goSDK);
-		
 		/* -----------------  ----------------- */
 		
-		Composite goPathFieldTopControl = goPathField.createComponent(topControl, getPreferenceGroupDefaultLayout());
+		Composite goPathFieldTopControl = goPathField.createComponent(topControl, 
+			createSubComponentDefaultGridData());
 		gopathAppendProjectLocField.createComponent(goPathFieldTopControl);
 		
 		goRootField.addListener(() -> handleGoRootChange());
 	}
 	
-	protected GridData getPreferenceGroupDefaultLayout() {
+	@Override
+	protected GridData createSubComponentDefaultGridData() {
 		return GridDataFactory.fillDefaults().grab(true, false).minSize(300, SWT.DEFAULT).create();
 	}
 	
 	protected void handleGoRootChange() {
-		IPath gorootPath = new Path(goRootField.getFieldValue());
-		
-		if(validatedGoRoot.getValidationStatusLevel().isOkStatus()) {
-			
-			String goFmtName = "gofmt" + MiscUtil.getExecutableSuffix();
-			setValueIfFileExists(goFmtPath, gorootPath.append("bin").append(goFmtName).toFile());
-		}
-	}
-	
-	protected void setValueIfFileExists(FileTextField fileField, File filePath) {
-		if (filePath != null && filePath.exists() && filePath.isFile()) {
-			fileField.setFieldValue(filePath.getAbsolutePath());
-		} else {
-			fileField.setFieldValue("");
-		}
 	}
 	
 	/* -----------------  ----------------- */

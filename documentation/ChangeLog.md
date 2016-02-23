@@ -7,7 +7,8 @@
  * godef #TODO
  * Minor improvement to editor caret position preservation when invoking gofmt.
  * Fixed bug where problem markers for the #build-tests target would not be created for Eclipse projects inside a GOPATH entry.
- * Removed GOOS and GOARCH from preferences, they no longer have an apparent use. 
+ * Removed GOOS and GOARCH from preferences, they no longer have an apparent use.
+ * Removed gofmt and godoc preferences. 
 
 ### 0.14.0
  * Added on-the-fly parser errors in the editor (uses Go `oracle`).

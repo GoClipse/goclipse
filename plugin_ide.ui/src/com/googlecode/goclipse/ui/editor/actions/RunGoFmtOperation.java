@@ -17,11 +17,12 @@ import java.nio.file.Path;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
 
 public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	
@@ -34,7 +35,8 @@ public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	@Override
 	protected ProcessBuilder prepareProcessBuilder(Path goSDKPath, GoEnvironment goEnv)
 			throws CoreException, CommonException {
-		Indexable<String> cmd = list(GoEnvironmentPrefs.FORMATTER_PATH.getEffectiveValue(project));
+		Location gofmt = goEnv.getGoRoot_Location().resolve_fromValid("bin/gofmt" + MiscUtil.getExecutableSuffix());
+		Indexable<String> cmd = list(gofmt.toString());
 		return goEnv.createProcessBuilder(cmd, null, true);
 	}
 	
