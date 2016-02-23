@@ -14,6 +14,7 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.EditorConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 
 public class LANGUAGE_EditorPreferencePage extends AbstractPreferencesBlockPrefPage {
@@ -23,8 +24,8 @@ public class LANGUAGE_EditorPreferencePage extends AbstractPreferencesBlockPrefP
 	}
 	
 	@Override
-	protected EditorConfigurationBlock init_createPreferencesBlock() {
-		return new EditorConfigurationBlock(LangUIPlugin.getInstance().getPreferenceStore());
+	protected EditorConfigurationBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new EditorConfigurationBlock(prefContext, LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

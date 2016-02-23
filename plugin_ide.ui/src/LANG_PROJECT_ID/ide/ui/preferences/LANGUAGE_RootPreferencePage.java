@@ -11,6 +11,7 @@
 package LANG_PROJECT_ID.ide.ui.preferences;
 
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.ide.ui.preferences.pages.RootPreferencePage;
 import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.tooling.ops.SDKLocationValidator;
@@ -26,14 +27,14 @@ public class LANGUAGE_RootPreferencePage extends RootPreferencePage {
 	}
 	
 	@Override
-	protected LangSDKConfigBlock init_createLangSDKConfigBlock() {
-		return new LANGUAGE_SDKConfigBlock();
+	protected LangSDKConfigBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new LANGUAGE_SDKConfigBlock(prefContext);
 	}
 	
 	public static class LANGUAGE_SDKConfigBlock extends LangSDKConfigBlock {
 		
-		public LANGUAGE_SDKConfigBlock() {
-			super(null);
+		public LANGUAGE_SDKConfigBlock(PreferencesPageContext prefContext) {
+			super(prefContext);
 		}
 		
 		@Override

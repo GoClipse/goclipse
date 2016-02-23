@@ -12,6 +12,7 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 
 
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 public class LANGUAGE_SourceColoringPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
@@ -27,8 +28,8 @@ public class LANGUAGE_SourceColoringPreferencePage extends AbstractPreferencesBl
 	}
 	
 	@Override
-	protected LANGUAGE_SourceColoringConfigurationBlock init_createPreferencesBlock() {
-		return new LANGUAGE_SourceColoringConfigurationBlock();
+	protected LANGUAGE_SourceColoringConfigurationBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new LANGUAGE_SourceColoringConfigurationBlock(prefContext);
 	}
 	
 }

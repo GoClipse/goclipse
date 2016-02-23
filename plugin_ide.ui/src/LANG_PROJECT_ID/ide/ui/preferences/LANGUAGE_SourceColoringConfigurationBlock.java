@@ -15,13 +15,14 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.io.InputStream;
 
 import LANG_PROJECT_ID.ide.ui.text.LANGUAGE_ColorPreferences;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.ide.ui.text.coloring.AbstractSourceColoringConfigurationBlock;
 import melnorme.util.swt.jface.LabeledTreeElement;
 
 public class LANGUAGE_SourceColoringConfigurationBlock extends AbstractSourceColoringConfigurationBlock {
 	
-	public LANGUAGE_SourceColoringConfigurationBlock() {
-		super();
+	public LANGUAGE_SourceColoringConfigurationBlock(PreferencesPageContext prefContext) {
+		super(prefContext);
 	}
 	
 	@Override
