@@ -11,7 +11,6 @@
 package melnorme.lang.ide.ui.dialogs;
 
 
-import static melnorme.utilbox.core.CoreUtil.list;
 import static org.eclipse.jface.layout.GridDataFactory.fillDefaults;
 
 import org.eclipse.core.resources.IProject;
@@ -47,11 +46,9 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractCompositeWidget;
 import melnorme.util.swt.components.AbstractWidget;
-import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.TextFieldComponent;
-import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldValueListener;
@@ -149,6 +146,10 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 		protected TextFieldComponent textField = new TextFieldComponent(WizardMessages.LangNewProject_NameGroup_label);
 		
+		public NameGroup() {
+			subComponents.add(textField);
+		}
+		
 		public String getName() {
 			return textField.getFieldValue();
 		}
@@ -170,11 +171,6 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		@Override
 		public int getPreferredLayoutColumns() {
 			return 2;
-		}
-		
-		@Override
-		protected Indexable<IDisableableWidget> getSubWidgets() {
-			return list(textField);
 		}
 		
 		public void postSetFocus() {

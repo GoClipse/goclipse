@@ -88,6 +88,16 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		this.coloringOptionsList = new SourceColoringListRoot();
 		
 		visitColoringItems(item -> prefContext.addPrefElement(item));
+		
+		prefContext.addPrefElement(new IPreferencesEditor() {
+			@Override
+			public void loadDefaults() {
+				updateComponentFromInput();
+			}
+			@Override
+			public void doSaveSettings() throws BackingStoreException {
+			}
+		});
 	}
 	
 	protected void visitColoringItems(Consumer<SourceColoringElement> consumer) {
@@ -153,13 +163,6 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 	}
 	
 	protected abstract LabeledTreeElement[] createTreeElements();
-	
-	@Override
-	public void loadDefaults() {
-		super.loadDefaults();
-		
-		updateComponentFromInput();
-	}
 	
 	
 	@Override

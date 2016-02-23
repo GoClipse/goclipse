@@ -10,20 +10,49 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 
 public abstract class AbstractCompositeWidget extends AbstractDisableableWidget implements IDisableableWidget {
 	
+	protected final ArrayList2<IDisableableWidget> subComponents = new ArrayList2<>();
+	protected boolean createInlined = true;
+	
 	public AbstractCompositeWidget() {
 	}
 	
+	protected void addSubComponent(AbstractDisableableWidget subComponent) {
+		validation.addValidatableField(true, subComponent.getStatusField());
+		subComponents.add(subComponent);
+	}
+	
+	protected final Indexable<IDisableableWidget> getSubWidgets() {
+		return subComponents;
+	}
+	
 	@Override
-	protected final void createContents(Composite topControl) {
-		getSubWidgets().forEach(subComponent -> {
-			subComponent.createComponentInlined(topControl);
-		});
+	protected void createContents(Composite topControl) {
+		createSubComponents(topControl, createInlined);
+	}
+	
+	protected void createSubComponents(Composite topControl, boolean createInlined) {
+		if(createInlined) {
+			getSubWidgets().forEach(subComponent -> {
+				subComponent.createComponentInlined(topControl);
+			});
+		} else {
+			getSubWidgets().forEach(subComponent -> {
+				subComponent.createComponent(topControl, createSubComponentDefaultGridData());
+			});
+		}
+		
+	}
+	
+	protected GridData createSubComponentDefaultGridData() {
+		return gdFillDefaults().grab(true, false).create();
 	}
 	
 	@Override
@@ -33,7 +62,6 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 		});
 	}
 	
-	protected abstract Indexable<IDisableableWidget> getSubWidgets();
 	
 	@Override
 	protected void _verifyContract_IDisableableComponent() {

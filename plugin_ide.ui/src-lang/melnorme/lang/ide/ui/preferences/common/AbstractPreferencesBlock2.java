@@ -18,7 +18,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
@@ -31,7 +30,7 @@ import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
 import melnorme.utilbox.fields.IModelField;
 
-public abstract class AbstractPreferencesBlock2 extends AbstractWidgetExt implements IPreferencesWidget {
+public abstract class AbstractPreferencesBlock2 extends AbstractWidgetExt {
 	
 	protected final PreferencesPageContext prefContext;
 	
@@ -39,23 +38,11 @@ public abstract class AbstractPreferencesBlock2 extends AbstractWidgetExt implem
 		this.prefContext = assertNotNull(prefContext);
 	}
 	
-	public void bindToDerivedPreference(IModelField<String> field, DerivedValuePreference<?> pref) {
-		prefContext.bindToPreference(field, pref);
-		
-		validation.addFieldValidation(true, field, pref.getValidator());
+	public final void bindToDerivedPreference(IModelField<String> field, DerivedValuePreference<?> pref) {
+		prefContext.bindToValidatedPreference(field, pref, validation);
 	}
 	
 	/* -----------------  ----------------- */
-	
-	@Override
-	public void loadDefaults() {
-		prefContext.loadDefaults();
-	}
-	
-	@Override
-	public void doSaveSettings() throws BackingStoreException {
-		prefContext.doSaveSettings();
-	}
 	
 	@Override
 	public void updateComponentFromInput() {
