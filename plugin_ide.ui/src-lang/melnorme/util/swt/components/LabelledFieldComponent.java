@@ -77,7 +77,9 @@ public abstract class LabelledFieldComponent<VALUE> extends FieldComponent<VALUE
 	}
 	
 	protected void createContents_Label(Composite parent) {
-		label = SWTFactory.createLabel(parent, SWT.NONE, labelText);
+		if(labelText != null) {
+			label = SWTFactory.createLabel(parent, SWT.NONE, labelText);
+		}
 	}
 	
 	protected abstract void createContents_layout();
