@@ -29,14 +29,14 @@ public abstract class ButtonTextField extends TextFieldComponent {
 	protected String buttonLabel;
 	protected Button button;
 	
-	public ButtonTextField(String labelText, int textStyle, String buttonlabel) {
-		super(labelText, textStyle);
-		buttonLabel = buttonlabel;
+	public ButtonTextField(String label, int textStyle, String buttonLabel) {
+		super(label, textStyle);
+		this.buttonLabel = buttonLabel;
 	}
 	
-	public ButtonTextField(String labelText, String buttonlabel) {
-		super(labelText);
-		buttonLabel = buttonlabel;
+	public ButtonTextField(String label, String buttonLabel) {
+		super(label);
+		this.buttonLabel = buttonLabel;
 	}
 	
 	protected String getButtonLabel() {

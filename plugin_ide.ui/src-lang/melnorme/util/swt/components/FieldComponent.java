@@ -91,7 +91,7 @@ public abstract class FieldComponent<VALUE> extends AbstractDisableableWidget
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void doUpdateComponentFromInput() {
+	public void doUpdateComponentFromInput2() {
 		if(isCreated()) {
 			doUpdateComponentFromValue();
 		}

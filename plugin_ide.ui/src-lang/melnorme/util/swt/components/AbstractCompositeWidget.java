@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
@@ -21,12 +23,16 @@ import melnorme.utilbox.fields.IFieldView;
 
 public abstract class AbstractCompositeWidget extends AbstractDisableableWidget {
 	
-	private final ArrayList2<IDisableableWidget> subComponents = new ArrayList2<>();
+	private final ArrayList2<AbstractDisableableWidget> subComponents = new ArrayList2<>();
 	protected final CompositeValidatableField validation = new CompositeValidatableField();
 	
 	protected boolean createInlined = true;
 	
 	public AbstractCompositeWidget() {
+	}
+	
+	public AbstractCompositeWidget(boolean createInlined) {
+		this.createInlined = createInlined;
 	}
 	
 	@Override
@@ -35,12 +41,14 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 	}
 	
 	protected void addSubComponent(AbstractDisableableWidget subComponent) {
+		assertNotNull(subComponent);
 		validation.addStatusField(true, subComponent.getStatusField());
+		subComponent.setParent(this);
 		subComponents.add(subComponent);
 	}
 	
 	protected final Indexable<IDisableableWidget> getSubWidgets() {
-		return subComponents;
+		return subComponents.<IDisableableWidget>upcastTypeParameter();
 	}
 	
 	@Override
@@ -66,20 +74,15 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 	}
 	
 	@Override
-	protected final void doSetEnabled(boolean enabled) {
-		getSubWidgets().forEach(subComponent -> {
-			subComponent.setEnabled(enabled);
-		});
-	}
-	
-	@Override
 	protected void _verifyContract_IDisableableComponent() {
 		// No need to check, only possible children are AbstractComponentExt
 	}
 	
 	@Override
-	protected void updateControlEnablement() {
-		super.updateControlEnablement();
+	protected final void doSetEnabled(boolean enabled) {
+		subComponents.forEach(subComponent -> {
+			subComponent.updateControlEnablement();
+		});
 		
 		updateValidationStatusForEnablement();
 	}

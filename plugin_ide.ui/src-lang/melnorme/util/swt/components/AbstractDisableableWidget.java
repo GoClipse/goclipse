@@ -10,6 +10,9 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import melnorme.lang.ide.ui.preferences.common.AbstractWidgetExt;
 
 /**
@@ -18,19 +21,25 @@ import melnorme.lang.ide.ui.preferences.common.AbstractWidgetExt;
 public abstract class AbstractDisableableWidget extends AbstractWidgetExt 
 	implements IDisableableWidget {
 	
+	protected AbstractDisableableWidget parent;
+	protected boolean enabled = true;
+	
 	public AbstractDisableableWidget() {
 	}
 	
-	protected boolean enabled = true;
+	public void setParent(AbstractDisableableWidget parent) {
+		assertTrue(this.parent == null);
+		this.parent = assertNotNull(parent);
+	}
+	
+	public boolean isEnabled() {
+		return enabled && (parent == null || parent.isEnabled());
+	}
 	
 	@Override
 	public final void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		updateControlEnablement();
-	}
-	
-	public boolean isEnabled() {
-		return enabled;
 	}
 	
 	protected void updateControlEnablement() {
@@ -41,12 +50,12 @@ public abstract class AbstractDisableableWidget extends AbstractWidgetExt
 	
 	
 	@Override
-	protected final void updateComponentFromInput() {
-		doUpdateComponentFromInput();
+	public void updateComponentFromInput() {
 		updateControlEnablement();
+		doUpdateComponentFromInput2();
 	}
 	
-	protected void doUpdateComponentFromInput() {
+	protected void doUpdateComponentFromInput2() {
 	}
 	
 }

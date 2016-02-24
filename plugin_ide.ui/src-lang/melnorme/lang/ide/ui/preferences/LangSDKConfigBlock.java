@@ -18,27 +18,21 @@ import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractCompositeWidget;
-import melnorme.util.swt.components.FieldComponent;
+import melnorme.util.swt.components.AbstractDisableableWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 
 public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlock {
 	
-	public final LanguageSDKLocationGroup sdkLocationGroup;
-	
 	public LangSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
 		
-		this.sdkLocationGroup = init_createSDKLocationGroup();
+		AbstractDisableableWidget sdkLocationGroup = init_createSDKLocationGroup();
 		addSubComponent(sdkLocationGroup);
 	}
 	
-	protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
+	protected AbstractDisableableWidget init_createSDKLocationGroup() {
 		return new LanguageSDKLocationGroup();
-	}
-	
-	public FieldComponent<String> getLocationField() {
-		return sdkLocationGroup.sdkLocationField;
 	}
 	
 	protected abstract PathValidator getSDKValidator();

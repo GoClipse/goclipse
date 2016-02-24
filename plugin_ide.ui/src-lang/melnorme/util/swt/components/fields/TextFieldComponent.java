@@ -26,12 +26,12 @@ public class TextFieldComponent extends LabelledFieldComponent<String> {
 	protected int defaultTextStyle = SWT.SINGLE | SWT.BORDER;
 	protected Text text;
 	
-	public TextFieldComponent(String labelText) {
-		this(labelText, SWT.SINGLE | SWT.BORDER);
+	public TextFieldComponent(String label) {
+		this(label, SWT.SINGLE | SWT.BORDER);
 	}
 	
-	public TextFieldComponent(String labelText, int textStyle) {
-		super(labelText, Option_AllowNull.NO, "");
+	public TextFieldComponent(String label, int textStyle) {
+		super(label, Option_AllowNull.NO, "");
 		this.defaultTextStyle = textStyle;
 	}
 	
