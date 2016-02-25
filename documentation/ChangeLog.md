@@ -1,17 +1,20 @@
 ## release ChangeLog
 
 ### (NextVersion)
- * godef #TODO
- * Added signing to releases.
- * Added "Format automatically on editor save." option to gofmt.
-  * gofmt preferences moved to "Go/Tools" preference page.
+
+### 0.14.1
+ * Added `godef` integration. `godef` is used as an alternative to oracle for the Open Definition operation. 
+   * I wasn't able to use it extensively, but it seems to be more powerful than oracle (it can recover from some compiler errors for example). And indeed most other Go IDEs/editors are using godef, so this bring Goclipse in line with that. 
+ * Added "Format automatically on editor save." preference.
+ * gofmt preferences moved to "Go/Tools" preference page.
  * Minor improvement to editor caret position preservation when invoking gofmt.
- * Fixed incorrect icon for errors and warnings in preference page status.
- * Fixed: can't save preference pages with empty fields.
- * Fixed bug where problem markers for the #build-tests target would not be created for Eclipse projects inside a GOPATH entry.
+ * Added signing to releases.
  * Removed GOOS and GOARCH from preferences, they no longer have an apparent use.
  * Removed godoc preference. 
-
+ * Fixed: Incorrect icon for errors and warnings in preference page status.
+ * Fixed: Can't save preference pages with empty fields.
+ * Fixed: Problem markers for the #build-tests target would not be created for Eclipse projects inside a GOPATH entry.
+ 
 ### 0.14.0
  * Added on-the-fly parser errors in the editor (uses Go `oracle`).
  * Added some new Snippets: `for`, `foreach`, `switch`, `main`, `apl` and a few others.
