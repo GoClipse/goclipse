@@ -13,6 +13,7 @@ package melnorme.util.swt.components;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import melnorme.lang.tooling.data.IValidator;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.IModelField;
@@ -110,6 +111,12 @@ public abstract class FieldComponent<VALUE> extends AbstractDisableableWidget
 	
 	public boolean isCreated() {
 		return SWTUtil.isOkToUse(getFieldControl());
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public void addFieldValidator(IValidator<VALUE, ?> validator) {
+		validation.addFieldValidation(true, this, validator);
 	}
 	
 }

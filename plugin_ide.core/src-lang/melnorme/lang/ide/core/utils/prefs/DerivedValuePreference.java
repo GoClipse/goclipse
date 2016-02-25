@@ -18,22 +18,24 @@ import melnorme.lang.tooling.data.IValidatableValue;
 import melnorme.lang.tooling.data.IValidator;
 import melnorme.lang.tooling.data.StatusException;
 
-public class DerivedValuePreference<VALUE> extends StringPreference {
+public class DerivedValuePreference<VALUE> {
 	
+	protected final StringPreference preference;
 	protected final IValidator<String, VALUE> validator;
-	
-	public DerivedValuePreference(String pluginId, String key,  
-			IProjectPreference<Boolean> useProjectPref /* can be null*/,
-			String defaultValue, IValidator<String, VALUE> validator) {
-		super(pluginId, key, defaultValue, useProjectPref);
-		this.validator = assertNotNull(validator);
-	}
 	
 	public DerivedValuePreference(String pluginId, String key, String defaultValue, 
 			IProjectPreference<Boolean> useProjectPref /* can be null*/,
 			IValidator<String, VALUE> validator) {
-		super(pluginId, key, defaultValue, useProjectPref);
+		this(new StringPreference(pluginId, key, defaultValue, useProjectPref), validator);
+	}
+	
+	public DerivedValuePreference(StringPreference preference, IValidator<String, VALUE> validator) {
+		this.preference = assertNotNull(preference);
 		this.validator = assertNotNull(validator);
+	}
+	
+	public StringPreference getPreference() {
+		return preference;
 	}
 	
 	public IValidator<String, VALUE> getValidator() {
@@ -45,11 +47,11 @@ public class DerivedValuePreference<VALUE> extends StringPreference {
 	}
 	
 	public VALUE getDerivedValue() throws StatusException {
-		return validator.getValidatedField(get());
+		return validator.getValidatedField(preference.get());
 	}
 	
 	public VALUE getDerivedValue(IProject project) throws StatusException {
-		String stringValue = getProjectPreference().getEffectiveValue(project);
+		String stringValue = preference.getProjectPreference().getEffectiveValue(project);
 		return validator.getValidatedField(stringValue);
 	}
 	

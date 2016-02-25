@@ -15,16 +15,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
-import melnorme.lang.tooling.data.CompositeValidatableField;
-import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.fields.IFieldView;
 
 public abstract class AbstractCompositeWidget extends AbstractDisableableWidget {
 	
 	private final ArrayList2<AbstractDisableableWidget> subComponents = new ArrayList2<>();
-	protected final CompositeValidatableField validation = new CompositeValidatableField();
 	
 	protected boolean createInlined = true;
 	
@@ -33,11 +29,6 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 	
 	public AbstractCompositeWidget(boolean createInlined) {
 		this.createInlined = createInlined;
-	}
-	
-	@Override
-	public IFieldView<IStatusMessage> getStatusField() {
-		return validation;
 	}
 	
 	protected <T extends AbstractDisableableWidget> T addSubComponent(T subComponent) {
@@ -82,18 +73,8 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 	@Override
 	protected final void doSetEnabled(boolean enabled) {
 		subComponents.forEach(subComponent -> {
-			subComponent.updateControlEnablement();
+			subComponent.updateControlEnablement2();
 		});
-		
-		updateValidationStatusForEnablement();
-	}
-	
-	protected void updateValidationStatusForEnablement() {
-		if(!isEnabled()) {
-			validation.setValue(null);
-		} else {
-			validation.updateFieldValue();
-		}
 	}
 	
 }
