@@ -1,14 +1,16 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * godef #TODO
  * Added signing to releases.
+ * Added "Format automatically on editor save." option to gofmt.
+  * gofmt preferences moved to "Go/Tools" preference page.
+ * Minor improvement to editor caret position preservation when invoking gofmt.
  * Fixed incorrect icon for errors and warnings in preference page status.
  * Fixed: can't save preference pages with empty fields.
- * godef #TODO
- * Minor improvement to editor caret position preservation when invoking gofmt.
  * Fixed bug where problem markers for the #build-tests target would not be created for Eclipse projects inside a GOPATH entry.
  * Removed GOOS and GOARCH from preferences, they no longer have an apparent use.
- * Removed gofmt and godoc preferences. 
+ * Removed godoc preference. 
 
 ### 0.14.0
  * Added on-the-fly parser errors in the editor (uses Go `oracle`).

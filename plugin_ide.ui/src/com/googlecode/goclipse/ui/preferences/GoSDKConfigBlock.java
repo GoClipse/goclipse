@@ -28,12 +28,11 @@ import melnorme.utilbox.core.CommonException;
 
 public class GoSDKConfigBlock extends LangSDKConfigBlock {
 	
-	protected final GoPathGroup goPathGroup = new GoPathGroup();
-	
 	public GoSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
 		
-		addSubComponent(goPathGroup);
+		addSubComponent(new GoPathGroup());
+		
 	}
 	
 	@Override

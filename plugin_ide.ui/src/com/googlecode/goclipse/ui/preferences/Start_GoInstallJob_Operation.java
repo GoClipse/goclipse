@@ -11,8 +11,8 @@ import melnorme.utilbox.core.CommonException;
 public class Start_GoInstallJob_Operation extends StartToolDownload_FromField {
 	
 	public Start_GoInstallJob_Operation(String operationName, String downloadBundleJobName, 
-			DownloadToolTextField toolTextField, String dlSource, String exeName) {
-		super(operationName, downloadBundleJobName, toolTextField, dlSource, exeName);
+			DownloadToolTextField toolLocationField, String dlSource, String exeName) {
+		super(operationName, downloadBundleJobName, toolLocationField, dlSource, exeName);
 	}
 	
 	protected GoEnvironment getGoEnvironment() {

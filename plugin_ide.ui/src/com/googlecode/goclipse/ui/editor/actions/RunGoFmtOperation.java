@@ -35,9 +35,13 @@ public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
 	@Override
 	protected ProcessBuilder prepareProcessBuilder(Path goSDKPath, GoEnvironment goEnv)
 			throws CoreException, CommonException {
-		Location gofmt = goEnv.getGoRoot_Location().resolve_fromValid("bin/gofmt" + MiscUtil.getExecutableSuffix());
+		Location gofmt = getGofmtLocation(goEnv.getGoRoot_Location());
 		Indexable<String> cmd = list(gofmt.toString());
 		return goEnv.createProcessBuilder(cmd, null, true);
+	}
+	
+	public static Location getGofmtLocation(Location rootLocation) throws CommonException {
+		return rootLocation.resolve_fromValid("bin/gofmt" + MiscUtil.getExecutableSuffix());
 	}
 	
 }
