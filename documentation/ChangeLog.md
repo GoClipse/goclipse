@@ -4,7 +4,7 @@
 
 ### 0.14.1
  * Added `godef` integration. `godef` is used as an alternative to oracle for the Open Definition operation. 
-   * I wasn't able to use it extensively, but it seems to be more powerful than oracle (it can recover from some compiler errors for example). And indeed most other Go IDEs/editors are using godef, so this bring Goclipse in line with that. 
+   * I wasn't able to use it extensively, but it seems to be more powerful than oracle (it can recover from some compiler errors for example), and faster. Indeed, most other Go IDEs/editors are using godef, so this bring Goclipse in line with that. 
  * Added "Format automatically on editor save." preference.
  * gofmt preferences moved to "Go/Tools" preference page.
  * Minor improvement to editor caret position preservation when invoking gofmt.
