@@ -30,8 +30,6 @@ public interface ToolchainPreferences {
 			new BooleanPreference("auto_start_daemon", true);
 	public static final StringPreference DAEMON_PATH =
 			new StringPreference("daemon_path", "");
-	public static final BooleanPreference DAEMON_CONSOLE_ENABLE =
-			new BooleanPreference("daemon_console_enable", true);
 	
 	/* -----------------  ----------------- */
 	

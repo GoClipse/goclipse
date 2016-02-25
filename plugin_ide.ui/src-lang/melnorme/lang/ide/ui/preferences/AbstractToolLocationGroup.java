@@ -11,46 +11,32 @@
 package melnorme.lang.ide.ui.preferences;
 
 
-import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.swt.widgets.Composite;
-
 import melnorme.lang.ide.ui.preferences.pages.DownloadToolTextField;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractCompositeWidget;
-import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.util.swt.components.AbstractGroupWidget;
 
-public abstract class AbstractToolLocationGroup extends AbstractCompositeWidget {
-	
-	public final ButtonTextField toolLocationField = new DownloadToolTextField("Executable:", "Download...") {
-		@Override
-		public BasicUIOperation getDownloadButtonHandler() {
-			return do_getDownloadButtonHandler(this);
-		}
-	};
+public abstract class AbstractToolLocationGroup extends AbstractGroupWidget {
 	
 	public final String toolName;
+	public final DownloadToolTextField toolLocationField;
 	
 	public AbstractToolLocationGroup(String toolName) {
+		super(toolName + ": ", 4);
 		this.toolName = toolName;
-		this.addSubComponent(toolLocationField);
+		
+		this.toolLocationField = initToolLocationField();
+		addSubComponent(toolLocationField);
 	}
 	
-	@Override
-	protected Composite doCreateTopLevelControl(Composite parent) {
-		return SWTFactoryUtil.createGroup(parent, toolName + ": ");
+	protected DownloadToolTextField initToolLocationField() {
+		return new DownloadToolTextField() {
+			@Override
+			public BasicUIOperation getDownloadButtonHandler() {
+				return do_getDownloadButtonHandler(this);
+			}
+		};
 	}
 	
-	@Override
-	protected GridLayoutFactory createTopLevelLayout() {
-		return GridLayoutFactory.swtDefaults().numColumns(getPreferredLayoutColumns());
-	}
-	
-	@Override
-	public int getPreferredLayoutColumns() {
-		return 4;
-	}
-	
-	protected abstract BasicUIOperation do_getDownloadButtonHandler(DownloadToolTextField downloadToolTextField);
+	protected abstract BasicUIOperation do_getDownloadButtonHandler(DownloadToolTextField toolLocationField);
 	
 }

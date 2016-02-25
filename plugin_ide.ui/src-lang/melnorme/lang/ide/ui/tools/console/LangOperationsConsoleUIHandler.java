@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
@@ -117,11 +116,6 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 			return createConsoleHandler(kind, console, console.stdOut, console.stdErr);
 		}
 		case ENGINE_SERVER: {
-			if(ToolchainPreferences.DAEMON_CONSOLE_ENABLE.get() == false) {
-				// return no-op handler.
-				return new NoopOperationConsoleHandler();
-			}
-			
 			EngineToolsConsole console = EngineToolsConsole.getConsole(false);
 			return createConsoleHandler(kind, console, console.serverStdOut, console.serverStdErr);
 		}

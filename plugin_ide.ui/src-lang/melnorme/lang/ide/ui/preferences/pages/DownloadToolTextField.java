@@ -31,6 +31,10 @@ public abstract class DownloadToolTextField extends ButtonTextField {
 	protected String downloadButtonLabel;
 	protected Button downloadButton;
 	
+	public DownloadToolTextField() {
+		this("Executable:", "Download...");
+	}
+	
 	public DownloadToolTextField(String label, String downloadButtonLabel) {
 		this(label, FileTextField.DEFAULT_BUTTON_LABEL, downloadButtonLabel);
 	}
