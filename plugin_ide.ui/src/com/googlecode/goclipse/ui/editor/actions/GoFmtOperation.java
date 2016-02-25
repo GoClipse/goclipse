@@ -42,7 +42,7 @@ public class GoFmtOperation extends AbstractEditorGoToolOperation {
 	}
 	
 	protected Path getGofmtLocation(GoEnvironment goEnv) throws CommonException {
-		if(GoToolPreferences.GOFMT_Path.getPreference().get().isEmpty()) {
+		if(GoToolPreferences.GOFMT_Path.getPreference().get() == null) {
 			return getGofmtLocationFromGoRoot(goEnv.getGoRoot_Location()).toPath();
 		}
 		return GoToolPreferences.GOFMT_Path.getDerivedValue(project);
