@@ -39,19 +39,27 @@ public abstract class AbstractDisableableWidget extends AbstractWidgetExt
 	@Override
 	public final void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-		updateControlEnablement();
+		updateControlEnablement2();
 	}
 	
-	protected void updateControlEnablement() {
+	protected void updateControlEnablement2() {
 		doSetEnabled(isEnabled());
+		updateValidationStatusForEnablement();
 	}
 	
 	protected abstract void doSetEnabled(boolean enabled);
 	
+	protected void updateValidationStatusForEnablement() {
+		if(!isEnabled()) {
+			validation.setValue(null);
+		} else {
+			validation.updateFieldValue();
+		}
+	}
 	
 	@Override
 	public void updateComponentFromInput() {
-		updateControlEnablement();
+		updateControlEnablement2();
 		doUpdateComponentFromInput2();
 	}
 	

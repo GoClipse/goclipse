@@ -13,7 +13,7 @@ package melnorme.lang.ide.core.utils.prefs;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * Helper to work with a string preference.
+ * A string preference that allows the null value.
  */
 public class OptionalStringPreference extends StringPreference {
 	

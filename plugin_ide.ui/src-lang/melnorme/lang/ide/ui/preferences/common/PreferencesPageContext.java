@@ -85,11 +85,11 @@ public class PreferencesPageContext implements IPreferencesEditor {
 	
 	/* ----------------- util ----------------- */
 	
-	public void bindToValidatedPreference(IModelField<String> field, DerivedValuePreference<?> pref, 
+	public void bindToValidatedPreference(IModelField<String> field, DerivedValuePreference<?> derivedPref, 
 			CompositeValidatableField validation) {
-		bindToPreference(field, pref);
+		bindToPreference(field, derivedPref.getPreference());
 		
-		validation.addFieldValidation(true, field, pref.getValidator());
+		validation.addFieldValidation(true, field, derivedPref.getValidator());
 	}
 	
 }
