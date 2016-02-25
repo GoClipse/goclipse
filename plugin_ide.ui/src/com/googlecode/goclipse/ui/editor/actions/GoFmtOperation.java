@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.utilbox.collections.Indexable;
@@ -24,23 +25,30 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 
-public class RunGoFmtOperation extends AbstractEditorGoToolOperation {
+public class GoFmtOperation extends AbstractEditorGoToolOperation {
 	
 	protected static final String RUN_GOFMT_OpName = "Run 'gofmt'";
 	
-	public RunGoFmtOperation(ITextEditor editor) {
+	public GoFmtOperation(ITextEditor editor) {
 		super(RUN_GOFMT_OpName, editor);
 	}
 	
 	@Override
 	protected ProcessBuilder prepareProcessBuilder(Path goSDKPath, GoEnvironment goEnv)
 			throws CoreException, CommonException {
-		Location gofmt = getGofmtLocation(goEnv.getGoRoot_Location());
+		Path gofmt = getGofmtLocation(goEnv);
 		Indexable<String> cmd = list(gofmt.toString());
 		return goEnv.createProcessBuilder(cmd, null, true);
 	}
 	
-	public static Location getGofmtLocation(Location rootLocation) throws CommonException {
+	protected Path getGofmtLocation(GoEnvironment goEnv) throws CommonException {
+		if(GoToolPreferences.GOFMT_Path.getPreference().get().isEmpty()) {
+			return getGofmtLocationFromGoRoot(goEnv.getGoRoot_Location()).toPath();
+		}
+		return GoToolPreferences.GOFMT_Path.getDerivedValue(project);
+	}
+	
+	public static Location getGofmtLocationFromGoRoot(Location rootLocation) throws CommonException {
 		return rootLocation.resolve_fromValid("bin/gofmt" + MiscUtil.getExecutableSuffix());
 	}
 	

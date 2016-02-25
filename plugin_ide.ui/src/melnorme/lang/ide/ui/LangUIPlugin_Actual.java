@@ -7,7 +7,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import com.googlecode.goclipse.ui.GoPluginImages;
 import com.googlecode.goclipse.ui.GoStructureElementLabelProvider;
 import com.googlecode.goclipse.ui.editor.GoDocHover;
-import com.googlecode.goclipse.ui.editor.actions.RunGoFmtOperation;
+import com.googlecode.goclipse.ui.editor.actions.GoFmtOperation;
 import com.googlecode.goclipse.ui.editor.text.GoAutoEditStrategy;
 
 import melnorme.lang.ide.core.LangCore_Actual;
@@ -58,7 +58,7 @@ public final class LangUIPlugin_Actual {
 	/* -----------------  ----------------- */
 	
 	public static BasicUIOperation getFormatOperation(AbstractLangEditor editor) {
-		return new RunGoFmtOperation(editor);
+		return new GoFmtOperation(editor);
 	}
 	
 }

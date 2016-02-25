@@ -41,7 +41,7 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 	
 	@Override
 	protected IEditorOperationCreator getOpCreator_Format() {
-		return (editor) -> new RunGoFmtOperation(editor);
+		return (editor) -> new GoFmtOperation(editor);
 	}
 	
 }

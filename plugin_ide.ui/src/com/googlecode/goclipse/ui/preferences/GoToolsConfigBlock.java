@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoToolPreferences;
-import com.googlecode.goclipse.ui.editor.actions.RunGoFmtOperation;
+import com.googlecode.goclipse.ui.editor.actions.GoFmtOperation;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.preferences.AbstractToolLocationGroup;
@@ -104,6 +104,9 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 		public GoFmtGroup() {
 			super("gofmt:", "Use default location (from Go installation).");
 			
+			prefContext.bindToPreference(asEffectiveValueProperty2(), GoToolPreferences.GOFMT_Path.getPreference());
+			validation.addFieldValidation(true, buttonTextField, GoToolPreferences.GOFMT_Path.getValidator());
+			
 			this.formatOnSaveField = new CheckBoxField("Format automatically on editor save.");
 			
 			this.addSubComponent(formatOnSaveField);
@@ -118,7 +121,7 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 		@Override
 		protected String getDefaultFieldValue() throws CommonException {
 			Location rootLoc = Location.create(GoEnvironmentPrefs.GO_ROOT.getGlobalPreference().get());
-			return RunGoFmtOperation.getGofmtLocation(rootLoc).toPathString();
+			return GoFmtOperation.getGofmtLocationFromGoRoot(rootLoc).toPathString();
 		}
 		
 	}

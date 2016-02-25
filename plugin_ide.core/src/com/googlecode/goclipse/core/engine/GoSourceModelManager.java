@@ -149,7 +149,8 @@ public class GoSourceModelManager extends SourceModelManager {
 		
 		protected ExternalProcessResult runGoOracle(GoEnvironment goEnv, Location opTempFile)
 				throws CommonException, CoreException, OperationCancellation {
-			GoOracleDescribeOperation oracleOp = new GoOracleDescribeOperation(GoToolPreferences.GO_ORACLE_Path.get());
+			GoOracleDescribeOperation oracleOp = new GoOracleDescribeOperation(
+				GoToolPreferences.GO_ORACLE_Path.getDerivedValue().toString());
 			
 			int offset = GoSourceFileUtil.findPackageDeclaration_NameStart(source);
 			
