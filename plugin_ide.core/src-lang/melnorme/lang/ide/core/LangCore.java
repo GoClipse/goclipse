@@ -78,6 +78,11 @@ public class LangCore extends LangCore_Actual {
 		getLog().log(new Status(IStatus.WARNING, PLUGIN_ID, message, throwable));
 	}
 	
+	/** Logs an info status with given message */
+	public static void logInfo(String message) {
+		getLog().log(new Status(IStatus.INFO, PLUGIN_ID, message, null));
+	}
+	
 	public static void logInternalError(Throwable throwable) {
 		logError("Internal Error!", throwable);
 	}

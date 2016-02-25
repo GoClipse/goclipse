@@ -40,11 +40,12 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 		return validation;
 	}
 	
-	protected void addSubComponent(AbstractDisableableWidget subComponent) {
+	protected <T extends AbstractDisableableWidget> T addSubComponent(T subComponent) {
 		assertNotNull(subComponent);
 		validation.addStatusField(true, subComponent.getStatusField());
 		subComponent.setParent(this);
 		subComponents.add(subComponent);
+		return subComponent;
 	}
 	
 	protected final Indexable<IDisableableWidget> getSubWidgets() {

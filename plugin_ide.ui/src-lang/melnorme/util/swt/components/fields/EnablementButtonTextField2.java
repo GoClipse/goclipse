@@ -28,7 +28,7 @@ import melnorme.utilbox.fields.IProperty;
  */
 public abstract class EnablementButtonTextField2 extends AbstractCompositeWidget {
 	
-	public static final String LABEL_UseDefault = "Use default:";
+	public static final String LABEL_UseDefault = "Use default value.";
 	
 	protected final String label;
 	protected final String useDefaultCheckboxLabel;
