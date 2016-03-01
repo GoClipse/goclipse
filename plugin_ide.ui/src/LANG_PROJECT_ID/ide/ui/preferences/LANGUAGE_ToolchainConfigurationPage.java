@@ -12,12 +12,11 @@ package LANG_PROJECT_ID.ide.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
 
-import com.github.rustdt.ide.ui.preferences.AbstractProjectToolchainSettingsPage;
-
 import LANG_PROJECT_ID.ide.ui.preferences.LANGUAGE_RootPreferencePage.LANGUAGE_SDKConfigBlock;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractProjectToolchainSettingsPage;
 
 
 public class LANGUAGE_ToolchainConfigurationPage extends AbstractProjectToolchainSettingsPage	 {

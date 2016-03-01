@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package com.github.rustdt.ide.ui.preferences;
+package melnorme.lang.ide.ui.preferences.common;
 
 
 import org.eclipse.core.resources.IProject;
