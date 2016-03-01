@@ -12,10 +12,9 @@ package com.googlecode.goclipse.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
 
-import com.github.rustdt.ide.ui.preferences.AbstractProjectToolchainSettingsPage;
-
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractProjectToolchainSettingsPage;
 
 public class GoSDKProjectConfigPage extends AbstractProjectToolchainSettingsPage {
 	

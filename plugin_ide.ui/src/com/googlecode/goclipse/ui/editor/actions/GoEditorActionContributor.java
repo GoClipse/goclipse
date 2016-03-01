@@ -39,9 +39,4 @@ public class GoEditorActionContributor extends LangEditorActionContributor imple
 		super.contributeSourceMenu(sourceMenu);
 	}
 	
-	@Override
-	protected IEditorOperationCreator getOpCreator_Format() {
-		return (editor) -> new GoFmtOperation(editor);
-	}
-	
 }
