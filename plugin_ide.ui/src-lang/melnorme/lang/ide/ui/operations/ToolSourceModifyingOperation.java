@@ -55,8 +55,11 @@ public class ToolSourceModifyingOperation extends RunToolOperation {
 		
 		ResourceUtils.runToolOperation(lockingRule, pm, 
 			(pm2) -> {
+				pm2.setTaskName(getTaskName());
 				ExternalProcessResult result = runToolTask.runProcess();
-				ProcessUtils.validateNonZeroExitValue("rustfmt", result.exitValue);
+				
+				String toolName = pb.command().get(0);
+				ProcessUtils.validateNonZeroExitValue(toolName, result.exitValue);
 				do_refreshResources(pm2);
 			});
 	}
