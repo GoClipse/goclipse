@@ -25,6 +25,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorCommandIds;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
 import melnorme.lang.ide.ui.editor.actions.GoToMatchingBracketHandler;
@@ -125,7 +126,9 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 	protected abstract AbstractEditorOperation2<?> createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
 			OpenNewEditorMode newEditorMode);
 	
-	protected abstract IEditorOperationCreator getOpCreator_Format();
+	protected IEditorOperationCreator getOpCreator_Format() {
+		return LangUIPlugin_Actual::getFormatOperation;
+	}
 	
 	protected abstract void registerOtherEditorHandlers();
 	

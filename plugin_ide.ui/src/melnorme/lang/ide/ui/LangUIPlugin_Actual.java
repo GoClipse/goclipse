@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import LANG_PROJECT_ID.ide.core.text.LANGUAGE_AutoEditStrategy;
 import LANG_PROJECT_ID.ide.ui.LANGUAGE_Images;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
@@ -57,12 +57,13 @@ public final class LangUIPlugin_Actual {
 	
 	/* -----------------  ----------------- */
 	
-	@SuppressWarnings("unused")
-	public static BasicUIOperation getFormatOperation(AbstractLangEditor editor) {
+	@SuppressWarnings("unused") 
+	public static BasicUIOperation getFormatOperation(ITextEditor editor) {
 		return new BasicUIOperation() {
 			@Override
 			protected void doOperation() throws CoreException, CommonException, OperationCancellation {
-				// TODO: Lang Format operation
+				// TODO: LANG: Format operation
+				throw new CommonException("Operation not implemented");
 			}
 		};
 	}

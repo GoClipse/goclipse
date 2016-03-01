@@ -10,16 +10,12 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.editor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OpenDefinitionOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
 
 public class LANGUAGE_EditorActionContributor extends LangEditorActionContributor {
 	
@@ -31,16 +27,6 @@ public class LANGUAGE_EditorActionContributor extends LangEditorActionContributo
 	
 	@Override
 	protected void registerOtherEditorHandlers() {
-	}
-
-	@Override
-	protected IEditorOperationCreator getOpCreator_Format() {
-		return editor -> new BasicUIOperation("Format") {
-			@Override
-			protected void doOperation() throws CoreException, CommonException, OperationCancellation {
-				throw new CommonException("Not implemented");
-			}
-		};
 	}
 	
 }
