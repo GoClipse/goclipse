@@ -3,6 +3,15 @@
 *Note:* For an overview of Goclipse features, see [Features](Features.md#ddt-features). This also serves to document 
 what overall functionalities are available.
 
+
+### Eclipse basics
+
+If you are new to Eclipse, you can learn some of the basics of the Eclipse IDE with this short intro article: 
+[An introduction to Eclipse for Visual Studio users
+](http://www.ibm.com/developerworks/opensource/library/os-eclipse-visualstudio/)
+
+Also, to improve Eclipse performance and startup time, it is recommended you tweak the JVM parameters. There is a tool called Eclipse Optimizer that can do that automatically, it is recommended you use it. Read more about it [here](http://www.infoq.com/news/2015/03/eclipse-optimizer). (Installing/enabling the JRebel optimization is not necessary as that only applies to Java developers)
+
 ### Configuration
 
 A [Go installation](https://golang.org/doc/install) is required for most IDE functionality. Access Eclipse preferences from the menu `Window / Preferences`, navigate to the `Go` preference page, and configure the Go installation path under the `GOROOT` field. 
@@ -12,15 +21,6 @@ For functionality such as code completion, open definition, and editor outline, 
  * The [Go Oracle](http://golang.org/s/oracle-user-manual) tool. 
  
 The path to the executable of these two tools should be configured in the `Go / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
-
-
-### Eclipse basics
-
-If you are new to Eclipse, you can learn some of the basics of the Eclipse IDE with this short intro article: 
-[An introduction to Eclipse for Visual Studio users
-](http://www.ibm.com/developerworks/opensource/library/os-eclipse-visualstudio/)
-
-Also, to improve Eclipse performance and startup time, it is recommended you tweak the JVM parameters. There is a tool called Eclipse Optimizer that can do that automatically, it is recommended you use it. Read more about it [here](http://www.infoq.com/news/2015/03/eclipse-optimizer). (Installing/enabling the JRebel optimization is not necessary as that only applies to Java developers)
 
 ### Project setup
 
