@@ -5,7 +5,7 @@ what overall functionalities are available.
 
 ### Configuration
 
-A [Go installation](https://golang.org/doc/install) is required for most IDE functionality. Access Eclipse preferences from the menu `Window / Preferences`, navigate to the `Go` preference page, and configure the Go installation path under the `GOROOT` field. The other fields (such as `GOOS` or `GOARCH`) can remain at the default settings.
+A [Go installation](https://golang.org/doc/install) is required for most IDE functionality. Access Eclipse preferences from the menu `Window / Preferences`, navigate to the `Go` preference page, and configure the Go installation path under the `GOROOT` field. 
 
 For functionality such as code completion, open definition, and editor outline, you will need:
  * The [gocode](https://github.com/nsf/gocode) tool. It is recommended to use the latest gocode version.
