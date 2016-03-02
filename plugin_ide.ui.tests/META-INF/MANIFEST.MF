@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: LANGUAGE IDE UI Tests
+Bundle-Name: LANG_IDE_NAME IDE UI Tests
 Bundle-SymbolicName: LANG_PROJECT_ID.ide.ui.tests;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Fragment-Host: LANG_PROJECT_ID.ide.ui

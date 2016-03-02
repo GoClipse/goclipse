@@ -13,24 +13,24 @@ Also, to improve Eclipse performance and startup time, it is recommended you twe
 
 ### Configuration
 
-A [LANGUAGE installation](https://LANG TODO) is required for most IDE functionality. Access Eclipse preferences from the menu `Window / Preferences`, navigate to the `LANGUAGE` preference page, and configure the LANGUAGE installation path under the appropriate field.
+A [LANG_NAME installation](https://LANG TODO) is required for most IDE functionality. Access Eclipse preferences from the menu `Window / Preferences`, navigate to the `LANG_NAME` preference page, and configure the LANG_NAME installation path under the appropriate field.
 
 For functionality such as code completion, open definition, and editor outline, you will need:
  * The LANG TODO tool. 
  
-The path to the executable of these two tools should be configured in the `LANGUAGE / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
+The path to the executable of these two tools should be configured in the `LANG_NAME / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
 
 
 ### Project setup
 
 ##### Project creation:
-A new LANGUAGE project is created with the New Project Wizard: from the Project Explorer context menu, select `New / Project...` and then `LANGUAGE / LANGUAGE Project`. The same wizard is used to add a pre-existing project: simply use the location field to select a pre-existing location for your project.
+A new LANG_NAME project is created with the New Project Wizard: from the Project Explorer context menu, select `New / Project...` and then `LANG_NAME / LANG_NAME Project`. The same wizard is used to add a pre-existing project: simply use the location field to select a pre-existing location for your project.
 
 
 ### Launch and Debug:
-To run a LANGUAGE project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open 'Run' / 'Run Configurations...'. Then double click 'LANGUAGE Application" to create a new LANGUAGE launch, and configure it accordingly. You can run these launches from the 'Run Configurations...', or for quicker access, from the Launch button in the Eclipse toolbar.
+To run a LANG_NAME project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open 'Run' / 'Run Configurations...'. Then double click 'LANG_NAME Application" to create a new LANG_NAME launch, and configure it accordingly. You can run these launches from the 'Run Configurations...', or for quicker access, from the Launch button in the Eclipse toolbar.
 
-Alternatively, to automatically create and run a launch configuration (if a matching one doesn't exist already), you can select a LANGUAGE project in the workspace explorer, open the context menu, and do 'Run As...' / 'LANGUAGE Application'. (or 'Debug As...' for debugging instead). If a matching configuration exists already, that one will be run.
+Alternatively, to automatically create and run a launch configuration (if a matching one doesn't exist already), you can select a LANG_NAME project in the workspace explorer, open the context menu, and do 'Run As...' / 'LANG_NAME Application'. (or 'Debug As...' for debugging instead). If a matching configuration exists already, that one will be run.
 
 Whenever a launch is requested, a build will be performed beforehand. This behavior can be configured under general Eclipse settings, or in the launch configuration.
 
@@ -43,7 +43,7 @@ Whenever a launch is requested, a build will be performed beforehand. This behav
 |----|
 
 
-You can debug a LANGUAGE program by running a launch in debug mode. You will need a GDB debugger. To configure debug options (in particular, the path to the debugger to use), open the launch under 'Run' / 'Debug Configurations...', and then navigate to the 'Debugger' tab in the desired launch configuration:
+You can debug a LANG_NAME program by running a launch in debug mode. You will need a GDB debugger. To configure debug options (in particular, the path to the debugger to use), open the launch under 'Run' / 'Debug Configurations...', and then navigate to the 'Debugger' tab in the desired launch configuration:
 
 <div align="center">
 <a><img src="screenshots/UserGuide_DebuggerLaunchConfiguration.png" /><a/> 

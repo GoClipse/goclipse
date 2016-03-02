@@ -13,7 +13,7 @@ package melnorme.lang.ide.ui;
 
 public interface PreferencesMessages_Actual {
 	
-	public static String ROOT_SDKGroup_Label = "LANGUAGE SDK:";
+	public static String ROOT_SDKGroup_Label = "LANG_NAME SDK:";
 	public static String ROOT_SDKGroup_path_Label = "SDK path: ";
 	
 }

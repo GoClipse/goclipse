@@ -20,7 +20,7 @@ import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.utilbox.collections.ArrayList2;
 
 /**
- * Sample LANGUAGE code scanner
+ * Sample LANG_NAME code scanner
  */
 public class LANGUAGE_CodeScanner extends AbstractLangScanner {
 	

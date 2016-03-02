@@ -325,7 +325,7 @@
 			id="LANG_PROJECT_ID.ide.ui.NavigatorContent"
 			contentProvider="LANG_PROJECT_ID.ide.ui.navigator.LANGUAGE_NavigatorContentProvider"
 			labelProvider="LANG_PROJECT_ID.ide.ui.navigator.LANGUAGE_NavigatorLabelProvider"
-			name="LANGUAGE Elements"
+			name="LANG_NAME Elements"
 			priority="highest">
 			
 			<!-- 

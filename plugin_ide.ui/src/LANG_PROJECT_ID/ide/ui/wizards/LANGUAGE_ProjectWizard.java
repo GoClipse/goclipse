@@ -25,7 +25,7 @@ import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.tooling.data.ValidationException;
 
 /**
- * LANGUAGE New Project Wizard.
+ * LANG_NAME New Project Wizard.
  */
 public class LANGUAGE_ProjectWizard extends LangNewProjectWizard {
 	

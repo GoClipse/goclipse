@@ -45,7 +45,7 @@
 	
 	<extension point="org.eclipse.core.filebuffers.documentSetup"
 		id="LANG_PROJECT_ID.DocumentSetupParticipant"
-		name="LANGUAGE Document Setup Participant"
+		name="LANG_NAME Document Setup Participant"
 		>
 		<participant
 			class="LANG_PROJECT_ID.ide.core.text.LANGUAGE_DocumentSetupParticipant"

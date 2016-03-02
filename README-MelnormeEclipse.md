@@ -85,7 +85,7 @@ Follow these steps:
 | String 	| Description | Example |
 |---------	|--------------	| -----	|
 |LANGUAGE_ |  Name of language - for Java class names.| <sub><sup>`Dee`</sup></sub> |
-|LANGUAGE  | Name of language - for UI display. | <sub><sup>`D`</sup></sub> |
+|LANG_NAME  | Name of language - for UI display. | <sub><sup>`D`</sup></sub> |
 |LANG_PROJECT_ID | Common prefix for all plugin identifiers. | <sub><sup>`org.dsource.ddt`</sup></sub> |
 |LANG_IDE_NAME   | Name of the IDE. | <sub><sup>`DDT`</sup></sub> |
 |LANG_IDE_SITE   |  URL of project website. | <sub><sup>`http://ddt-ide.github.io/`</sup></sub> |

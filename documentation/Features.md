@@ -4,12 +4,12 @@
 
 ### Features:
 
- * LANGUAGE source code editor, with:
+ * LANG_NAME source code editor, with:
    * Configurable Syntax highlighting. 
    * Automatic indent/de-indent and brace completion on certain keypresses (Enter, Backspace).
    * Editor outline and Quick-Outline (`Ctrl+O`). (LANG_OTHER remove or change as appropriate)
- * LANGUAGE Project wizard.
- * LANGUAGE project builder.
+ * LANG_NAME Project wizard.
+ * LANG_NAME project builder.
    * With in-editor build errors reporting.
 
 | [![sample_basic](screenshots/sample_basic.thumb.png)](screenshots/sample_basic.png?raw=true)<br/>`Workbench and editor` |
