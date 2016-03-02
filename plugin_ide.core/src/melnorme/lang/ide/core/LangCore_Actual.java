@@ -21,7 +21,7 @@ public class LangCore_Actual {
 	public static final String BUILD_PROBLEM_ID = PLUGIN_ID + ".goProblem";
 	public static final String SOURCE_PROBLEM_ID = PLUGIN_ID + ".source_problem";
 	
-	// Note: the variable shoudl not be named with a prefix of LANGUAGE_, 
+	// Note: the variable should not be named with a prefix of LANGUAGE, 
 	// or it will interfere with MelnormeEclipse templating
 	public static final String NAME_OF_LANGUAGE = "Go";
 	
