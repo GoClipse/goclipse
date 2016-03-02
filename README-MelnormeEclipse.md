@@ -90,12 +90,14 @@ Follow these steps:
 |LANG_IDE_NAME   | Name of the IDE. | <sub><sup>`DDT`</sup></sub> |
 |LANG_IDE_SITE   |  URL of project website. | <sub><sup>`http://ddt-ide.github.io/`</sup></sub> |
 |LANG_IDE_UPDATE_SITE| URL of project's Eclipse Update Site. | <sub><sup>`http://ddt-ide.github.io/releases`</sup></sub> |
-|LANG_IDE_WEBSITE_GIT_REPO| URL of the Git repository of the Github-Pages-based project website. | <sub><sup>`https://github.com/DDT-IDE/ddt-ide.github.io.git`</sup></sub>  |
+|LANG_IDE_WEBSITE_GIT_REPO| URL of the Git project of the Github-Pages-based project website. | <sub><sup>`https://github.com/DDT-IDE/ddt-ide.github.io`</sup></sub>  |
 |LANG_OTHER      | Other changes specific to each location. | N/A |
 
  Note: some strings like `LANGUAGE_` or `LANG_PROJECT_ID`  will replace Java class identifiers. After this replace you will also need to rename the compilation unit, and/or move them to a different folder. This can be done quickly in Eclipse with quick-fixes.
 
 * [ ] Write language specific code. Several language specific implementations need to be created or customized. These are usually marked with the `TODO: LANG` Java comment.
+
+* [ ] Modify `icons/ide-logo.32x32.png`
 
 * [ ] Update Changelog, Features, UserGuide, etc, in documentation folder, according to your IDE.
 
