@@ -362,7 +362,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 		@SuppressWarnings("unused")
 		protected void setPreferencesErrorMessage(CommonException ve) {
-			setValidationMessage("The "+ LangCore_Actual.LANGUAGE_NAME + 
+			setValidationMessage("The "+ LangCore_Actual.NAME_OF_LANGUAGE + 
 				" preferences have not been configured correctly.\n"+
 				"<a>Click here to configure preferences...</a>");
 		}

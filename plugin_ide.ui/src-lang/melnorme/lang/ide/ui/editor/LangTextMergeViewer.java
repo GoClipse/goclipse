@@ -60,7 +60,7 @@ public class LangTextMergeViewer extends TextMergeViewer {
 	
 	@Override
 	public String getTitle() {
-		return LangCore_Actual.LANGUAGE_NAME + LangEditorMessages.MSG__SOURCE_COMPARE;
+		return LangCore_Actual.NAME_OF_LANGUAGE + LangEditorMessages.MSG__SOURCE_COMPARE;
 	}
 	
 	public IPreferenceStore getPreferenceStore() {
