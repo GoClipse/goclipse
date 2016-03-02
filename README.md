@@ -9,7 +9,7 @@ Developers Guide
  * In Eclipse, click "File / Import... ", and then "General / Existing projects into workspace". Select the Git repository folder as the "root directory", and select all the Eclipse projects that show up. Click finish to import those projects.
 <div align="center">
 <a><img src="documentation/README_images/ImportPluginProjects.png" /><a/> <br/>
-<sub><sup>Note: The actual project names will vary: the "LANG_PROJECT_ID" name segment will be different.</sup></sub>
+<sub><sup>Note: The actual project names will be different from those in the screenshot above.</sup></sub>
 </div>
  * Note: Java compiler settings will be automatically configured, since Eclipse compiler settings are stored in source version control.
  * Setup the target platform: Open the target platform file: `releng/target-platform/IDE.target` (You can use the Open Resource dialog to help find this file, press Ctrl-R and type `IDE.target` in the dialog). Then click "Set as Target Platform" once the file is opened, as seen here: 
