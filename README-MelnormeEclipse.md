@@ -66,25 +66,29 @@ MelnormeEclipse is not currently as big or complete as JDT/DLTK in terms of prov
  
 ### Writing a MelnormeEclipse-based IDE:
 
-To get started creating a new MelnormeEclipse-based IDE, fork the repo, and then do a search-replace on the following strings, replace for the appropriate text for your project:
+To get started creating a new MelnormeEclipse-based IDE, fork the repo, and follow these steps:
+
+ * [ ] Do a search-replace on the following strings, replace for the appropriate text for your IDE project:
 
 | String 	| Description | Example |
 |---------	|--------------	| -----	|
-|LANGUAGE  | Name of language - for UI display. | <sub><sup>`D`</sup></sub> |
 |LANGUAGE_ |  Name of language - for Java class names.| <sub><sup>`Dee`</sup></sub> |
-|LANG_PROJECT_ID | Common identifier prefix for all IDE plugins. | <sub><sup>`org.dsource.ddt`</sup></sub> |
-|LANG_IDE_NAME   | Name of IDE, long form. | <sub><sup>`D Development Tools`</sup></sub> |
+|LANGUAGE  | Name of language - for UI display. | <sub><sup>`D`</sup></sub> |
+|LANG_PROJECT_ID | Common prefix for all plugin identifiers. | <sub><sup>`org.dsource.ddt`</sup></sub> |
+|LANG_IDE_NAME   | Name of the IDE. | <sub><sup>`DDT`</sup></sub> |
 |LANG_IDE_SITE   |  URL of project website. | <sub><sup>`http://ddt-ide.github.io/`</sup></sub> |
 |LANG_IDE_UPDATE_SITE| URL of project's Eclipse Update Site. | <sub><sup>`http://ddt-ide.github.io/releases`</sup></sub> |
 |LANG_IDE_WEBSITE_GIT_REPO| URL of the Git repository of the Github-Pages-based project website. | <sub><sup>`https://github.com/DDT-IDE/ddt-ide.github.io.git`</sup></sub>  |
-|LANG_OTHER      | Other location specific changes. | N/A |
+|LANG_OTHER      | Other changes specific to each location. | N/A |
 
-Note: some strings like `LANGUAGE_` or `LANG_PROJECT_ID`  will replace Java class identifiers. After this replace you will need to rename the compilation unit, and/or move them to a different folder. This can be done quickly in Eclipse with quick-fixes.
+ Note: some strings like `LANGUAGE_` or `LANG_PROJECT_ID`  will replace Java class identifiers. After this replace you will also need to rename the compilation unit, and/or move them to a different folder. This can be done quickly in Eclipse with quick-fixes.
 
-##### Language specific code.
-To implement language specific IDE functionality, several language specific implementations need to be created or customized. These are usually marked with the `LANG_OTHER` string.
+* [ ] Write language specific code. Several language specific implementations need to be created or customized. These are usually marked with the `TODO: LANG` Java comment.
 
-* TODO: "Usually marked"? Need to mark all. 
+* [ ] Update Changelog, Features, UserGuide, etc, in documentation folder, according to your IDE.
+
+* [ ] Delete README-MelnormeEclipse.md
+
 
 ##### MelnormeEclipse source embedding
 The MelnormeEclipse source is embedded directly into the host IDE. To make it easier to manage source updates to and from MelnormeEclipse, the following rules need to be observed. 

@@ -6,4 +6,4 @@ Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: LANG_OTHER Org
+Bundle-Vendor: LANG_IDE_NAME Team
