@@ -66,7 +66,19 @@ MelnormeEclipse is not currently as big or complete as JDT/DLTK in terms of prov
  
 ### Writing a MelnormeEclipse-based IDE:
 
-To get started creating a new MelnormeEclipse-based IDE, fork the repo, and follow these steps:
+To get started creating a new MelnormeEclipse-based IDE, fork this repository.
+
+##### Understand MelnormeEclipse source embedding
+The MelnormeEclipse source is embedded directly into the host IDE. To make it easier to manage source updates to and from MelnormeEclipse, the following rules need to be observed. 
+
+ * The vast majority of `melnorme.lang` code, or simply Lang code, is code not specific to any language, and should only depend on other `melnorme` code, or on Eclipse.org platform plugins. But not on IDE specific code.   
+   * Such is placed on a separate source folder: `src-lang/`.
+   * The source of all code placed in `src-lang/` should be the exact same for all MelnormeEclipse based IDEs (even if the binary or runtime structure/API may differ).
+ * Then, the rest of `melnorme.lang` code will have IDE specific code. Such classes should either be annotated with the `melnorme.lang.tooling.LANG_SPECIFIC` annotation, or have an `_Actual` suffix in the name. This code will contain bindings to IDE-specific code (such as ids, other IDE constants, or even IDE-specific methods).
+  * This language specific `melnorme.lang` code must not be place on `src-lang/`, but on the same source folder as the rest of the language specific code (`src` by default).
+
+##### Modifying the starting template
+Follow these steps:
 
  * [ ] Do a search-replace on the following strings, replace for the appropriate text for your IDE project:
 
@@ -89,12 +101,7 @@ To get started creating a new MelnormeEclipse-based IDE, fork the repo, and foll
 
 * [ ] Delete README-MelnormeEclipse.md
 
+##### Merging new updates from upstream MelnormeEclipse repo.
+TODO: Need to describe this better
 
-##### MelnormeEclipse source embedding
-The MelnormeEclipse source is embedded directly into the host IDE. To make it easier to manage source updates to and from MelnormeEclipse, the following rules need to be observed. 
 
- * The vast majority of `melnorme.lang` code, or simply Lang code, is code not specific to any language, and should only depend on other `melnorme` code, or on Eclipse.org platform plugins. But not on IDE specific code.   
-   * Such is placed on a separate source folder: `src-lang/`.
-   * The source of all code placed in `src-lang/` should be the exact same for all MelnormeEclipse based IDEs (even if the binary or runtime structure/API may differ).
- * Then, the rest of `melnorme.lang` code will have IDE specific code. Such classes must be annotated with the `melnorme.lang.tooling.LANG_SPECIFIC` annotation, or have an `_Actual` suffix in the name (this is deprecated). This code will contain bindings to IDE-specific code (such as ids, other IDE constants, or even IDE-specific methods).
-  * This language specific `melnorme.lang` code must be place not on `src-lang/`, but on the same source folder as the rest of the language specific code (`src` by default).
