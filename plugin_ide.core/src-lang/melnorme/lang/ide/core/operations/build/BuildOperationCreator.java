@@ -100,7 +100,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	}
 	
 	protected void addCompositeBuildOperationMessage() throws CommonException {
-		String startMsg = headerBIG(format(MSG_BuildingProject, LangCore_Actual.LANGUAGE_NAME, project.getName()));
+		String startMsg = headerBIG(format(MSG_BuildingProject, LangCore_Actual.NAME_OF_LANGUAGE, project.getName()));
 		addOperation(newMessageOperation(startMsg));
 	}
 	

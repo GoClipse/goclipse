@@ -125,7 +125,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		}, IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.PRE_BUILD);
 		
 		workspaceOpHandler.writeInfoMessage(
-			headerVeryBig(MessageFormat.format(MSG_Starting_LANG_Build, LangCore_Actual.LANGUAGE_NAME))
+			headerVeryBig(MessageFormat.format(MSG_Starting_LANG_Build, LangCore_Actual.NAME_OF_LANGUAGE))
 		);
 		
 		clearWorkspaceErrorMarkers(pm);
