@@ -1,5 +1,3 @@
-See project page ( LANG_IDE_SITE ) for user information.
-
 Developers Guide
 ================
 
