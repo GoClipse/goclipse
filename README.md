@@ -1,7 +1,8 @@
+[![Build Status](https://travis-ci.org/GoClipse/goclipse.svg?branch=master)](https://travis-ci.org/GoClipse/goclipse)
+[![Gitter](https://badges.gitter.im/GoClipse/goclipse.svg)](https://gitter.im/GoClipse/goclipse?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 Developers Guide
 ================
-
-[![Build Status](https://travis-ci.org/GoClipse/goclipse.svg?branch=master)](https://travis-ci.org/GoClipse/goclipse)
 
 #### Setting up the development environment:
  * You need [Eclipse PDE](https://eclipse.org/pde/) to develop Eclipse plugins. Download and start it.
