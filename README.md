@@ -4,6 +4,8 @@
 Developers Guide
 ================
 
+[![Join the chat at https://gitter.im/GoClipse/goclipse](https://badges.gitter.im/GoClipse/goclipse.svg)](https://gitter.im/GoClipse/goclipse?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 #### Setting up the development environment:
  * You need [Eclipse PDE](https://eclipse.org/pde/) to develop Eclipse plugins. Download and start it.
  * Clone the Git repository.
