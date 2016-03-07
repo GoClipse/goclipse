@@ -1,23 +1,23 @@
 MelnormeEclipse
 ================
 
-MelnormeEclipse is a framework for building Eclipse based IDEs for general purpose languages. It builds upon the Eclipse Platform to provide even more generic components and code infrastructure, that can then be customized or extended by each concrete IDE, making it easier to develop a full-fledged IDE. Some specific aspects of MelnormeEclipse:
+MelnormeEclipse is a framework for building Eclipse based IDEs for general purpose languages. It builds upon the Eclipse Platform to provide even more generic components and code infrastructure, that can then be re-used and extended by a concrete, full-fledged IDE, thus reducing development effort. Some relevant aspects of MelnormeEclipse:
 
-* There is a focus on an IDE paradigm of using external tools for building, code completion, and any sort of language analysis. Most of MelnormeEclipse infrastructure is UI infrastructure, the rest of IDE engine functionality is usually driven by language-specific external tools.
+* There is a focus on an IDE paradigm of using external programs for building, code completion, and any others sorts of *language semantic functionality*. Most of MelnormeEclipse infrastructure is UI infrastructure, the core of a concrete IDE's engine functionality is usually driven by language-specific external programs. (This is not a requirement though - using internal tools is easily supported as well).
 
-* MelnormeEclipse is not linked to as a library, instead the whole source of MelnormeEclipse is embedded in the concrete IDE. This means each concrete IDE has its own version of MelnormeEclipse, which can be updated or modified separately. 
+* MelnormeEclipse is not linked to as a library, instead the whole source of MelnormeEclipse is embedded in the concrete IDE. This means each concrete IDE has its own version of MelnormeEclipse, which can be updated or modified separately. (see Design notes for the rationale behind this)
 
 ### History/Background
 
-MelnormeEclipse originated from the [DDT](http://ddt-ide.github.io/) project, and a desire to refactor non language-specific code to a separate project, so that it could be reused by other IDEs. DDT had been using the [DLTK](https://eclipse.org/dltk/) framework for a long time, and DLTK has a similar goal as MelnormeEclipse: leverage a JDT-style infrastructure for use by other IDEs (and not necessarily just dynamic languages). But development on DLTK halted, whilst being left with many API and functionality limitations. 
+MelnormeEclipse originated from the [DDT](http://ddt-ide.github.io/) project, and a desire to refactor non language-specific code to a separate project, so that it could be reused by other IDEs. DDT had been using the [DLTK](https://eclipse.org/dltk/) framework for a long time, and DLTK has a similar goal as MelnormeEclipse: leverage a JDT-style infrastructure for use by other IDEs (and not necessarily just dynamic languages). But development on DLTK slowed down to a near halt, whilst still being left with many API and functionality limitations. DLTK started as a JDT clone, but never got the chance to evolve much beyong the Java-centric internal model.
 
-To continue developing a project to provide common IDE infrastructure, it would be necessary to either fork DLTK, or build a new project from scractch. For several reasons the later option was chosen. As such, some MelnormeEclipse components where rewritten from scratch, others were rewritten from existing JDT/DLTK code, others still were copied from those IDEs with little to no modifications - whichever case was deemed better. 
+As such, in order to begin a project to provide common IDE infrastructure, it would be necessary to either fork DLTK, or build a new project from scractch. For several reasons the later option was chosen. Some MelnormeEclipse components where written from scratch, others were rewritten from existing JDT/DLTK code, others still were copied from JDT/DLTK with little to no modifications - whichever case was deemed better to serve MelnormeEclipse goals. 
 
 
 ### Design notes:
 
 ##### No IModelElement/IJavaElement model hierarchy
-This is a key design difference between MelnormeEclipse and DLTK/JDT/CDT: avoiding the use of the IModelElement/IJavaElement model hierarchy (IModelElement is DLTK's analogue of IJavaElement), as this model is seen as having several shortcomings or unnecessary complexities. For example, the IModelElement/IJavaElement model classes don't adapt well to languages with structures significantly different than Java. Another issue is that it is felt that combining source elements (functions, types, etc.) and external elements (like source folders and package declarations) into the same hierarchy makes the design more clumsy that it should be, as these concerns are fairly separate.
+This is a key design difference between MelnormeEclipse and DLTK/JDT/CDT: avoiding the use of the IModelElement/IJavaElement model hierarchy (IModelElement is DLTK's analogue of IJavaElement). This model is seen as having unnecessary complexities, and several shortcomings. For example, it's too Java-centric, the model doesn't adapt well for IDEs of languages with structures significantly different than Java. Another issue is that it was felt that combining source elements (functions, types, etc.) and external elements (like source folders and package declarations) into the same hierarchy makes the design more complex that it should be, as these concerns are fairly separate.
 
 ##### Support for using external semantic tools.
 In the more common case, MelnormeEclipse based IDEs will use external tools for functionality like building, but also code completion, find definition, etc. (for example, autocomplete deamons). But having that semantic functionality built in the host IDE itself is also well supported.
@@ -68,8 +68,15 @@ MelnormeEclipse is not currently as big or complete as JDT/DLTK in terms of prov
 
 To get started creating a new MelnormeEclipse-based IDE, fork this repository.
 
-##### Understand MelnormeEclipse source embedding
-The MelnormeEclipse source is embedded directly into the host IDE. To make it easier to manage source updates to and from MelnormeEclipse, the following rules need to be observed. 
+##### Terminology
+Some terminology used internally in MelnormeEclipse source:
+
+* **Bundle** - A bundle is the same as a "package" in the context of a language package manager. In other words, it's the unit of source distribution and dependency management. So, it's a jar in Java, a crate in Rust, a gem in Ruby, etc. . A bundle manifest is the file that describe the bundle (usually defining the bundle  name, version, dependencies, source folders, build targets, etc.). Not all concrete languages might have a full-fledged bundle concept: in Go for example, Go's packages are not versioned, there is no explicit manifest file, etc. .
+
+* **EngineTools** / **Daemon** - A language's external programs responsible for providing semantic functionality of use to the IDEs. Usually code-completion and find-definition, but can be a lot more (source outline, parse errors, find-references, search symbols, refactoring, etc.). It's sometimes called a deamon because a more advanced/optimized design for these tools requires them to be combined in a single program running as a resident process (deamon). This program caches in-memory semantic information about underlying projects, so that future requests can re-use this information.
+
+##### Understanding MelnormeEclipse source embedding
+The MelnormeEclipse source is embedded directly into the host IDE. To make it easier to manage source updates to and from MelnormeEclipse, the following rules should be observed. 
 
  * The vast majority of `melnorme.lang` code, or simply Lang code, is code not specific to any language, and should only depend on other `melnorme` code, or on Eclipse.org platform plugins. But not on IDE specific code.   
    * Such is placed on a separate source folder: `src-lang/`.
@@ -104,6 +111,5 @@ Follow these steps:
 * [ ] Delete README-MelnormeEclipse.md
 
 ##### Merging new updates from upstream MelnormeEclipse repo.
-TODO: Need to describe this better
 
-
+TODO: Need to describe this better, come up with a clearer process for updating to new changes.
