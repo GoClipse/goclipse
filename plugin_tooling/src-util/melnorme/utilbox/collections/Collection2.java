@@ -12,6 +12,8 @@ package melnorme.utilbox.collections;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Function;
 
 import melnorme.utilbox.misc.ArrayUtil;
@@ -19,6 +21,11 @@ import melnorme.utilbox.misc.CollectionUtil;
 
 /**
  * An {@link Iterable} with size information.
+ * 
+ * This is essentially the same as {@link Collection}, but without the methods that modify the underlying collection.
+ * Indeed, its main purpose is as a replacement for {@link Collection}, 
+ * providing <b>statically</b> checked read-only access. 
+ * This is preferable to {@link Collections#unmodifiableCollection(Collection)} because that one only checks at runtime.
  */
 public interface Collection2<E> extends Iterable<E> {
 	
@@ -38,7 +45,7 @@ public interface Collection2<E> extends Iterable<E> {
 		return CollectionUtil.map(this, evalFunction);
 	}
 	
-	/* ----------------- Some array utils ----------------- */
+	/* ----------------- Some array utility methods ----------------- */
 	
 	default ArrayList2<E> toArrayList() {
 		return new ArrayList2<>(this);

@@ -20,8 +20,8 @@ import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 
 /**
- * Extension to {@link java.util.ArrayList}, with some helper methods,
- * and implementing a read-only interface.
+ * Extension to {@link java.util.ArrayList}, it implements {@link Indexable},
+ * and also adds several short utility methods (mostly syntax-sugar).
  */
 public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 	
