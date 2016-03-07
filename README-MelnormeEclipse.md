@@ -13,26 +13,9 @@ MelnormeEclipse originated from the [DDT](http://ddt-ide.github.io/) project, an
 
 As such, in order to begin a project to provide common IDE infrastructure, it would be necessary to either fork DLTK, or build a new project from scractch. For several reasons the later option was chosen. Some MelnormeEclipse components where written from scratch, others were rewritten from existing JDT/DLTK code, others still were copied from JDT/DLTK with little to no modifications - whichever case was deemed better to serve MelnormeEclipse goals. 
 
-
-### Design notes:
-
-##### No IModelElement/IJavaElement model hierarchy
-This is a key design difference between MelnormeEclipse and DLTK/JDT/CDT: avoiding the use of the IModelElement/IJavaElement model hierarchy (IModelElement is DLTK's analogue of IJavaElement). This model is seen as having unnecessary complexities, and several shortcomings. For example, it's too Java-centric, the model doesn't adapt well for IDEs of languages with structures significantly different than Java. Another issue is that it was felt that combining source elements (functions, types, etc.) and external elements (like source folders and package declarations) into the same hierarchy makes the design more complex that it should be, as these concerns are fairly separate.
-
-##### Support for using external semantic tools.
-In the more common case, MelnormeEclipse based IDEs will use external tools for functionality like building, but also code completion, find definition, etc. (for example, autocomplete deamons). But having that semantic functionality built in the host IDE itself is also well supported.
-
-##### MelnormeEclipse source is embedded in host IDE.
-MelnormeEclipse is designed to be used by embedding the its source code directly in the host IDE code. 
-As opposed to DLTK or Xtext for example, where a runtime dependency on the framework plugins is required. 
-As such, updating to a new MelnormeEclipse version is made by means of Git source control workflows. The motivation 
-for this is so provide complete API control to host IDEs - if some change is desired that MelnormeEclipse is not able 
-to be customized without changing MelnormeEclipse code, this won't be much of a problem, the local MelnormeEclipse source can be changed for theat host IDE. This also means different MelnormeEclipse-based IDEs can be installed on the same Eclipse installation, even if they are based on different (and otherwise incompatible) MelnormeEclipse versions or variations.
-(The same would not be possible with DLTK for example)
-
 ### Functionality:
 
-MelnormeEclipse is not currently as big or complete as JDT/DLTK in terms of provided functionality, but it covers the basics:
+MelnormeEclipse is not currently as big or complete as JDT/DLTK in terms of provided functionality, but it covers a fair amount of ground already:
 
 * New project wizard.
 
@@ -62,6 +45,22 @@ MelnormeEclipse is not currently as big or complete as JDT/DLTK in terms of prov
 * IDE build script (Maven/Tycho based).
  * Eclipse Update Site upload script. (uploads to a Git repo)
  * Skeleton project website, designed to be used by Github pages.
+
+### Design notes:
+
+##### Support for using external semantic tools.
+In the more common case, MelnormeEclipse based IDEs will use external tools for functionality like building, but also code completion, find definition, etc. (for example, autocomplete deamons). But having that semantic functionality built in the host IDE itself is also well supported.
+
+##### MelnormeEclipse source is embedded in host IDE.
+MelnormeEclipse is designed to be used by embedding the its source code directly in the host IDE code. 
+As opposed to DLTK or Xtext for example, where a runtime dependency on the framework plugins is required. 
+As such, updating to a new MelnormeEclipse version is made by means of Git source control workflows. The motivation 
+for this is so provide complete API control to host IDEs - if some change is desired that MelnormeEclipse is not able 
+to be customized without changing MelnormeEclipse code, this won't be much of a problem, the local MelnormeEclipse source can be changed for theat host IDE. This also means different MelnormeEclipse-based IDEs can be installed on the same Eclipse installation, even if they are based on different (and otherwise incompatible) MelnormeEclipse versions or variations.
+(The same would not be possible with DLTK for example)
+
+##### No IModelElement/IJavaElement model hierarchy
+This is a key design difference between MelnormeEclipse and DLTK/JDT/CDT: avoiding the use of the IModelElement/IJavaElement model hierarchy (IModelElement is DLTK's analogue of IJavaElement). This model is seen as having unnecessary complexities, and several shortcomings. For example, it's too Java-centric, the model doesn't adapt well for IDEs of languages with structures significantly different than Java. Another issue is that it was felt that combining source elements (functions, types, etc.) and external elements (like source folders and package declarations) into the same hierarchy makes the design more complex that it should be, as these concerns are fairly separate.
 
  
 ### Writing a MelnormeEclipse-based IDE:
