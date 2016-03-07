@@ -1,11 +1,9 @@
 MelnormeEclipse
 ================
 
-MelnormeEclipse is a framework for building Eclipse based IDEs for general purpose languages. It builds upon the Eclipse Platform to provide even more generic components and code infrastructure, that can then be re-used and extended by a concrete, full-fledged IDE, thus reducing development effort. Some relevant aspects of MelnormeEclipse:
+MelnormeEclipse is a framework for building Eclipse based IDEs for general purpose languages. 
 
-* There is a focus on an IDE paradigm of using external programs for building, code completion, and any others sorts of *language semantic functionality*. Most of MelnormeEclipse infrastructure is UI infrastructure, the core of a concrete IDE's engine functionality is usually driven by language-specific external programs. (This is not a requirement though - using internal tools is easily supported as well).
-
-* MelnormeEclipse is not linked to as a library, instead the whole source of MelnormeEclipse is embedded in the concrete IDE. This means each concrete IDE has its own version of MelnormeEclipse, which can be updated or modified separately. (see Design notes for the rationale behind this)
+*  https://github.com/bruno-medeiros/MelnormeEclipse/wiki
 
 ### History/Background
 
@@ -49,7 +47,7 @@ MelnormeEclipse is not currently as big or complete as JDT/DLTK in terms of prov
 ### Design notes:
 
 ##### Support for using external semantic tools.
-In the more common case, MelnormeEclipse based IDEs will use external tools for functionality like building, but also code completion, find definition, etc. (for example, autocomplete deamons). But having that semantic functionality built in the host IDE itself is also well supported.
+There is a focus on an IDE paradigm of using external programs for building, code completion, and any others sorts of *language semantic functionality*. Most of MelnormeEclipse infrastructure is UI infrastructure, the core of a concrete IDE's engine functionality is usually driven by language-specific external programs. (This is not a requirement though - using internal tools is easily supported as well).
 
 ##### MelnormeEclipse source is embedded in host IDE.
 MelnormeEclipse is designed to be used by embedding the its source code directly in the host IDE code. 
