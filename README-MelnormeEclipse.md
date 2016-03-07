@@ -59,6 +59,10 @@ for this is so provide complete API control to host IDEs - if some change is des
 to be customized without changing MelnormeEclipse code, this won't be much of a problem, the local MelnormeEclipse source can be changed for theat host IDE. This also means different MelnormeEclipse-based IDEs can be installed on the same Eclipse installation, even if they are based on different (and otherwise incompatible) MelnormeEclipse versions or variations.
 (The same would not be possible with DLTK for example)
 
+A secondary reason for this approach, that only became apparent later, is so Melnorme code can refer to IDE-specific code directly, and thus preserve certain type-system constraints *statically*. Otherwise (using the library approach), you would sometimes need casts and runtime checks from a Melnorme generic type to the IDE-specific type. 
+For example: `IStructureElement` is pure Melnorme code, but refers to `StructureElementKind` which is a language specific class and can be modified by the concrete IDE.
+In a language such as C++ or D, one could write Melnorme as library that used templates and meta-programming, but it's not something one can do in Java, to this degree.
+
 ##### No IModelElement/IJavaElement model hierarchy
 This is a key design difference between MelnormeEclipse and DLTK/JDT/CDT: avoiding the use of the IModelElement/IJavaElement model hierarchy (IModelElement is DLTK's analogue of IJavaElement). This model is seen as having unnecessary complexities, and several shortcomings. For example, it's too Java-centric, the model doesn't adapt well for IDEs of languages with structures significantly different than Java. Another issue is that it was felt that combining source elements (functions, types, etc.) and external elements (like source folders and package declarations) into the same hierarchy makes the design more complex that it should be, as these concerns are fairly separate.
 
