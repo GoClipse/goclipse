@@ -68,14 +68,14 @@ MelnormeEclipse is not currently as big or complete as JDT/DLTK in terms of prov
 
 To get started creating a new MelnormeEclipse-based IDE, fork this repository.
 
-##### Terminology
+#### Terminology
 Some terminology used internally in MelnormeEclipse source:
 
 * **Bundle** - A bundle is the same as a "package" in the context of a language package manager. In other words, it's the unit of source distribution and dependency management. So, it's a jar in Java, a crate in Rust, a gem in Ruby, etc. . A bundle manifest is the file that describe the bundle (usually defining the bundle  name, version, dependencies, source folders, build targets, etc.). Not all concrete languages might have a full-fledged bundle concept: in Go for example, Go's packages are not versioned, there is no explicit manifest file, etc. .
 
 * **EngineTools** / **Daemon** - A language's external programs responsible for providing semantic functionality of use to the IDEs. Usually code-completion and find-definition, but can be a lot more (source outline, parse errors, find-references, search symbols, refactoring, etc.). It's sometimes called a deamon because a more advanced/optimized design for these tools requires them to be combined in a single program running as a resident process (deamon). This program caches in-memory semantic information about underlying projects, so that future requests can re-use this information.
 
-##### Understanding MelnormeEclipse source embedding
+#### Understanding MelnormeEclipse source embedding
 The MelnormeEclipse source is embedded directly into the host IDE. To make it easier to manage source updates to and from MelnormeEclipse, the following rules should be observed. 
 
  * The vast majority of `melnorme.lang` code, or simply Lang code, is code not specific to any language, and should only depend on other `melnorme` code, or on Eclipse.org platform plugins. But not on IDE specific code.   
@@ -84,7 +84,7 @@ The MelnormeEclipse source is embedded directly into the host IDE. To make it ea
  * Then, the rest of `melnorme.lang` code will have IDE specific code. Such classes should either be annotated with the `melnorme.lang.tooling.LANG_SPECIFIC` annotation, or have an `_Actual` suffix in the name. This code will contain bindings to IDE-specific code (such as ids, other IDE constants, or even IDE-specific methods).
   * This language specific `melnorme.lang` code must not be place on `src-lang/`, but on the same source folder as the rest of the language specific code (`src` by default).
 
-##### Modifying the starting template
+#### Modifying the starting template
 Follow these steps:
 
  * [ ] Do a search-replace on the following strings, replace for the appropriate text for your IDE project:
@@ -110,6 +110,6 @@ Follow these steps:
 
 * [ ] Delete README-MelnormeEclipse.md
 
-##### Merging new updates from upstream MelnormeEclipse repo.
+#### Merging new updates from upstream MelnormeEclipse repo.
 
 TODO: Need to describe this better, come up with a clearer process for updating to new changes.
