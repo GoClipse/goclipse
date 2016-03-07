@@ -105,13 +105,24 @@ Follow these steps:
 
  Note: some strings like `LANGUAGE_` or `LANG_PROJECT_ID`  will replace Java class identifiers. After this replace you will also need to rename the compilation unit, and/or move them to a different folder. This can be done quickly in Eclipse with quick-fixes.
 
-* [ ] Write language specific code. Several language specific implementations need to be created or customized. These are usually marked with the `TODO: LANG` Java comment.
-
 * [ ] Modify `icons/ide-logo.32x32.png`
 
 * [ ] Update Changelog, Features, UserGuide, etc, in documentation folder, according to your IDE.
 
 * [ ] Delete README-MelnormeEclipse.md
+ 
+* [ ] Write language specific code. Several language specific implementations need to be created or customized. These are usually marked with the `TODO: LANG` Java comment. See next section for a more detailed guide.
+
+#### Implementing language specific features.
+
+###### Syntax highlighting:
+Customize `LANGUAGE_CodeScanner`, and `LANGUAGE_PartitionScanner`. These follow the standard Eclipse way of doings things, see: http://help.eclipse.org/mars/index.jsp?topic=/org.eclipse.platform.doc.isv/guide/editors_highlighting.htm .
+
+###### Outline and parser errors
+Customize `LANGUAGE_SourceModelManager`. You need to integrate with a parser library or external tool, to then transform the parser output (the AST), into a simplified `SourceFileStructure`. This is a structure derived from a source file, with parse errors and structure elements. A structure element is just a description of top-level source-file definitions, like function/type/class definitions. This is used for the outline. (potentially code folding too, in the future)
+
+###### #TODO: describe the other customization points
+
 
 #### Merging new updates from upstream MelnormeEclipse
 
