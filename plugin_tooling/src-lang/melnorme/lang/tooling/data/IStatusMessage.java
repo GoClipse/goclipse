@@ -12,16 +12,12 @@ package melnorme.lang.tooling.data;
 
 public interface IStatusMessage {
 	
-	StatusLevel getStatusLevel();
-	
-	default int getStatusLevelOrdinal() {
-		return getStatusLevel().ordinal();
-	}
-	
-	default boolean isOkStatus() {
-		return getStatusLevel() == StatusLevel.OK;
-	}
+	Severity getSeverity();
 	
 	String getMessage();
+	
+	default boolean isHigherSeverity(IStatusMessage other) {
+		return getSeverity().isHigherSeverity(other.getSeverity());
+	}
 	
 }

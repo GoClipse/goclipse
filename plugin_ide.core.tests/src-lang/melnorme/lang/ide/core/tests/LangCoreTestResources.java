@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCorePlugin;
 import melnorme.lang.ide.core.tests.utils.BundleResourcesUtil;
 import melnorme.lang.utils.MiscFileUtils;
 
@@ -42,7 +43,7 @@ public class LangCoreTestResources {
 	/** Copies the contents of a test bundle resource folder into given destFolder destination */
 	public static void copyFolderContentsFromCoreTestsResource(String resourcePath, File destFolder) 
 			throws CoreException {
-		String pluginId = LangCore.TESTS_PLUGIN_ID;
+		String pluginId = LangCorePlugin.TESTS_PLUGIN_ID;
 		String bundleResourcePath = new Path(TESTDATA_BUNDLE_PATH).append(resourcePath).toString();
 		try {
 			BundleResourcesUtil.copyDirContents(pluginId, bundleResourcePath, destFolder);

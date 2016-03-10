@@ -10,8 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.structure;
 
-import melnorme.lang.tooling.structure.StructureElement;
+import static melnorme.utilbox.misc.ArrayUtil.nullToEmpty;
+
 import melnorme.lang.tooling.structure.IStructureElementContainer;
+import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.util.swt.jface.AbstractTreeContentProvider;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -22,18 +24,26 @@ public class StructureElementContentProvider extends AbstractTreeContentProvider
 	public boolean hasChildren(Object element) {
 		if(element instanceof IStructureElementContainer) {
 			IStructureElementContainer structureElement = (IStructureElementContainer) element;
-			return !structureElement.getChildren().isEmpty(); 
+			return hasChildren(structureElement); 
 		}
 		return false;
+	}
+	
+	protected boolean hasChildren(IStructureElementContainer structureElement) {
+		return nullToEmpty(getChildren(structureElement)).length != 0;
 	}
 	
 	@Override
 	public Object[] getChildren(Object element) {
 		if(element instanceof IStructureElementContainer) {
 			IStructureElementContainer structureElement = (IStructureElementContainer) element;
-			return toArray(structureElement.getChildren());
+			return getChildren(structureElement);
 		}
 		return null;
+	}
+	
+	protected Object[] getChildren(IStructureElementContainer structureElement) {
+		return toArray(structureElement.getChildren());
 	}
 	
 	public static <T> Object[] toArray(Indexable<T> indexable) {

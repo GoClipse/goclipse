@@ -18,11 +18,16 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.PreferencePage;
 
 import melnorme.lang.tooling.data.IStatusMessage;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 public class DialogPageUtils {
+	
+	public static int severityToMessageType(Severity severity) {
+		return statusLevelToMessageType(severity.toStatusLevel());
+	}
 	
 	public static int statusLevelToMessageType(StatusLevel statusLevel) {
 		switch (statusLevel) {
@@ -49,7 +54,7 @@ public class DialogPageUtils {
 			return;
 		}
 		
-		prefPage.setValid(status == null || status.getStatusLevel() != StatusLevel.ERROR);
+		prefPage.setValid(status == null || !status.getSeverity().isError());
 		
 		setDialogPageStatus(prefPage, status);
 	}
@@ -62,7 +67,7 @@ public class DialogPageUtils {
 		if(status == null) {
 			prefPage.setMessage(null);
 		} else {
-			prefPage.setMessage(status.getMessage(), statusLevelToMessageType(status.getStatusLevel()));
+			prefPage.setMessage(status.getMessage(), severityToMessageType(status.getSeverity()));
 		}
 	}
 	

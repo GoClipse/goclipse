@@ -10,35 +10,36 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.gocode;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.regex.Pattern;
 
-import melnorme.lang.tooling.ops.AbstractToolOperation;
-import melnorme.lang.tooling.ops.IOperationHelper;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
+
+import melnorme.lang.tooling.ops.IProcessRunner;
+import melnorme.lang.tooling.ops.ToolOutputParseHelper;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-
-public class GocodeCompletionOperation extends AbstractToolOperation {
+public class GocodeCompletionOperation extends ToolOutputParseHelper {
 	
 	public static final boolean USE_TCP = true;
 	
+	protected final IProcessRunner toolRunner;
 	protected final GoEnvironment goEnvironment;
 	protected final String gocodePath;
+	protected final ICancelMonitor cm;
 	
-	public GocodeCompletionOperation(IOperationHelper opHelper, GoEnvironment goEnvironment, String gocodePath) {
-		super(opHelper);
-		this.goEnvironment = goEnvironment;
-		this.gocodePath = gocodePath;
-	}
-	
-	@Override
-	protected String getToolProcessName() {
-		return "gocode";
+	public GocodeCompletionOperation(IProcessRunner toolRunner, GoEnvironment goEnvironment, String gocodePath,
+			ICancelMonitor cm) {
+		this.toolRunner = assertNotNull(toolRunner);
+		this.goEnvironment = assertNotNull(goEnvironment);
+		this.gocodePath = assertNotNull(gocodePath);
+		this.cm = assertNotNull(cm);
 	}
 	
 	protected void setLibPathForEnvironment() throws CommonException, OperationCancellation {
@@ -54,11 +55,11 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 		
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
-		runToolProcess2(pb, null);
+		toolRunner.runProcess(pb, null, cm);
 	}
 	
 	public ExternalProcessResult execute(String filePath, String bufferText, int offset) 
-			throws CommonException, OperationCancellation, OperationSoftFailure {
+			throws CommonException, OperationCancellation {
 		
 		setLibPathForEnvironment();
 		
@@ -74,13 +75,7 @@ public class GocodeCompletionOperation extends AbstractToolOperation {
 		
 		ProcessBuilder pb = goEnvironment.createProcessBuilder(arguments, null, true);
 		
-		ExternalProcessResult processResult = runToolProcess_validateExitValue(pb, bufferText);
-		
-		if(processResult.exitValue != 0) {
-			throw new CommonException("Error, gocode returned non-zero status: " + processResult.exitValue);
-		}
-		
-		return processResult;
+		return toolRunner.runProcess(pb, bufferText, cm);
 	}
 	
 	// TODO: move the code that process gocode result to here

@@ -14,19 +14,21 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.misc.StringUtil.prefixStr;
+
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.HashcodeUtil;
 
 /**
  * Only {@link StructureElement} can extend this class!
  */
-abstract class StructureElement_Default extends StructureContainer implements IStructureElement {
+abstract class StructureElement_Default extends AbstractStructureContainer implements IStructureElement {
 	
 	protected final String name;
-	protected final SourceRange nameSourceRange;
 	protected final SourceRange sourceRange;
+	protected final SourceRange nameSourceRange2; // Can be null
 	
 	protected final StructureElementKind elementKind;
 	protected final ElementAttributes elementAttributes;
@@ -43,10 +45,10 @@ abstract class StructureElement_Default extends StructureContainer implements IS
 			String type, Indexable<StructureElement> children) {
 		super(children);
 		this.name = assertNotNull(name);
-		this.nameSourceRange = assertNotNull(nameSourceRange);
 		this.sourceRange = assertNotNull(sourceRange);
+		this.nameSourceRange2 = nameSourceRange;
 		this.elementKind = assertNotNull(elementKind);
-		this.elementAttributes = assertNotNull(elementAttributes);
+		this.elementAttributes = elementAttributes == null ? new ElementAttributes(null) : elementAttributes;
 		this.type = type;
 	}
 	
@@ -59,7 +61,7 @@ abstract class StructureElement_Default extends StructureContainer implements IS
 		
 		return 
 			areEqual(name, other.name) &&
-			areEqual(nameSourceRange, other.nameSourceRange) &&
+			areEqual(nameSourceRange2, other.nameSourceRange2) &&
 			areEqual(sourceRange, other.sourceRange) &&
 			areEqual(elementKind, other.elementKind) &&
 			areEqual(elementAttributes, other.elementAttributes) &&
@@ -78,6 +80,19 @@ abstract class StructureElement_Default extends StructureContainer implements IS
 		return "ELEM " + name + sourceRange + " " + elementKind + prefixStr(" : ", type) + " " + elementAttributes;
 	}
 	
+	public StructureElement cloneSubTree() {
+		return new StructureElement(name, nameSourceRange2, sourceRange, 
+			elementKind, elementAttributes, type, cloneSubTree(children));
+	}
+	
+	public static ArrayList2<StructureElement> cloneSubTree(Indexable<StructureElement> elements) {
+		ArrayList2<StructureElement> clonedElements = new ArrayList2<>(elements.size());
+		for (StructureElement child : elements) {
+			clonedElements.add(child.cloneSubTree());
+		}
+		return clonedElements;
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override
@@ -86,13 +101,13 @@ abstract class StructureElement_Default extends StructureContainer implements IS
 	}
 	
 	@Override
-	public SourceRange getNameSourceRange() {
-		return nameSourceRange;
+	public SourceRange getSourceRange() {
+		return sourceRange;
 	}
 	
 	@Override
-	public SourceRange getSourceRange() {
-		return sourceRange;
+	public SourceRange getNameSourceRange2() {
+		return nameSourceRange2;
 	}
 	
 	@Override
@@ -124,11 +139,11 @@ abstract class StructureElement_Default extends StructureContainer implements IS
 		this.parent = parent;
 	}
 	
-	@Override
-	public String getModuleName() {
-		IStructureElementContainer parent = getParent();
-		return parent == null ? null : parent.getModuleName();
-	}
+//	@Override
+//	public String getModuleName() {
+//		IStructureElementContainer parent = getParent();
+//		return parent == null ? null : parent.getModuleName();
+//	}
 	
 	@Override
 	public ISourceFileStructure getContainingFileStructure() {

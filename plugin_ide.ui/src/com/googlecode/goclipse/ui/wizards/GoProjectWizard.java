@@ -73,7 +73,7 @@ class GoProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	
 	@Override
 	protected void validatePreferences() throws ValidationException {
-		 new GoSDKLocationValidator().getValidatedField(GoEnvironmentPrefs.GO_ROOT.get());
+		 new GoSDKLocationValidator().getValidatedField(GoEnvironmentPrefs.GO_ROOT.getGlobalPreference().get());
 	}
 	
 }

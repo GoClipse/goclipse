@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Map;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -41,7 +42,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.jdt.internal.ui.text.CompositeReconcilingStrategy;
 import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
-import melnorme.lang.ide.core.text.format.AutoEditUtils;
+import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
@@ -50,6 +51,7 @@ import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
+import melnorme.lang.ide.ui.editor.hover.HoverInformationProvider;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.structure.LangOutlineInformationControl.OutlineInformationControlCreator;
 import melnorme.lang.ide.ui.editor.structure.StructureElementInformationProvider;
@@ -122,7 +124,12 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 		return presenter;
 	}
 	
-	protected abstract IInformationProvider getInformationProvider(String contentType);
+	// ================ Information provider
+	
+	@SuppressWarnings("unused")
+	protected IInformationProvider getInformationProvider(String contentType) {
+		return new HoverInformationProvider(new BestMatchHover(getEditor()));
+	}
 	
 	protected IInformationControlCreator getInformationPresenterControlCreator(
 			@SuppressWarnings("unused") ISourceViewer sourceViewer) {
@@ -137,11 +144,11 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 	/* ----------------- Navigation operations ----------------- */
 	
 	@Override 
-	protected Map<String, ITextEditor> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
-		Map<String, ITextEditor> targets = super.getHyperlinkDetectorTargets(sourceViewer);
+	protected Map<String, IAdaptable> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
+		Map<String, IAdaptable> targets = super.getHyperlinkDetectorTargets(sourceViewer);
 		targets.put(EditorSettings_Actual.EDITOR_CODE_TARGET, editor); 
 		return targets;
-	}
+	} 
 	
 	public void installOutlinePresenter(final LangSourceViewer sourceViewer) {
 		final InformationPresenter presenter = 
@@ -190,7 +197,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends AbstractSimp
 		
 		FormatterIndentMode indentMode = CodeFormatterConstants.fromPrefStore();
 		int spaceIndentationSize = CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE.get();
-		String spaceIndent = AutoEditUtils.getNSpaces(spaceIndentationSize);
+		String spaceIndent = TextSourceUtils.getNSpaces(spaceIndentationSize);
 		
 		// An empty string must be part of IndentPrefixes, so that empty lines do not fail the unindent operation.
 		// for indent operation, only first element will be used, I believe 

@@ -15,17 +15,59 @@ import melnorme.lang.tooling.data.StatusLevel;
 
 public interface ILangOperationsListener_Default {
 	
+	default void notifyMessage(StatusLevel statusLevel, String title, String message) {
+		notifyMessage(null, statusLevel, title, message);
+	}
+	
 	/** Report a message to the user. */
-	void notifyMessage(StatusLevel statusLevel, String title, String message);
+	void notifyMessage(String msgId, StatusLevel statusLevel, String title, String message);
 	
-	void handleNewOperation(OperationInfo opInfo);
+	/* -----------------  ----------------- */
 	
-	void handleMessage(MessageEventInfo messageInfo);
+	public enum ProcessStartKind {
+		BUILD,
+		ENGINE_SERVER,
+		ENGINE_TOOLS
+	}
 	
-	void handleProcessStart(ProcessStartInfo processStartInfo);
+	default IOperationConsoleHandler beginBuildOperation(boolean explicitConsoleNotify) {
+		return beginOperation(ProcessStartKind.BUILD, true, explicitConsoleNotify);
+	}
 	
-	void engineDaemonStart(ProcessBuilder pb, ProcessStartHelper processStartHelper);
+	default IOperationConsoleHandler beginOperation(ProcessStartKind kind) {
+		return beginOperation(kind, false, false);
+	}
 	
-	void engineClientToolStart(ProcessBuilder pb, ProcessStartHelper processStartHelper);
+	IOperationConsoleHandler beginOperation(ProcessStartKind kind, boolean clearConsole, boolean activateConsole);
+	
+	default IOperationConsoleHandler beginOperation(StartOperationOptions options) {
+		return beginOperation(options.kind, options.clearConsole, options.activateConsole);
+	}
+	
+	public class StartOperationOptions {
+		
+		public ProcessStartKind kind;
+		public boolean clearConsole;
+		public boolean activateConsole;
+		
+		public StartOperationOptions(ProcessStartKind kind, boolean clearConsole, boolean activateConsole) {
+			this.kind = kind;
+			this.clearConsole = clearConsole;
+			this.activateConsole = activateConsole;
+		}
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public interface IOperationConsoleHandler {
+		
+		void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper);
+		
+		void writeInfoMessage(String operationMessage);
+		
+		void activate();
+		
+	}
 	
 }

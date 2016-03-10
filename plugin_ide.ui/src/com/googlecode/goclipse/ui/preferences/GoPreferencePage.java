@@ -12,9 +12,10 @@ package com.googlecode.goclipse.ui.preferences;
 
 import org.osgi.framework.Version;
 
-import com.googlecode.goclipse.core.GoCore;
+import com.googlecode.goclipse.core.GoCorePlugin;
 
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 public class GoPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
@@ -25,14 +26,14 @@ public class GoPreferencePage extends AbstractPreferencesBlockPrefPage {
 	}
 	
 	protected static String getVersionText() {
-		Version version = GoCore.getDefault().getBundle().getVersion();
+		Version version = GoCorePlugin.getDefault().getBundle().getVersion();
 		
 		return version.getMajor() + "." + version.getMinor() + "." + version.getMicro();
 	}
 	
 	@Override
-	protected GoSDKConfigBlock init_createPreferencesBlock() {
-		return new GoSDKConfigBlock(null);
+	protected GoSDKConfigBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new GoSDKConfigBlock(prefContext);
 	}
 	
 	@Override

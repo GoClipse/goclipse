@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: UI Tests
 Bundle-SymbolicName: com.googlecode.goclipse.ui.tests;singleton:=true
-Bundle-Version: 0.13.0.qualifier
+Bundle-Version: 0.14.1.qualifier
 Fragment-Host: com.googlecode.goclipse.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.10.0",

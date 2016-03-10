@@ -14,18 +14,18 @@ package melnorme.lang.ide.ui.editor.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.EditorUtils_JDT;
-import melnorme.lang.ide.ui.editor.LangEditorMessages;
-import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
-import melnorme.utilbox.ownership.IDisposable;
-
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
+
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.LangEditorMessages;
+import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
+import melnorme.utilbox.ownership.IDisposable;
 
 public class GotoMatchingBracketManager implements IDisposable {
 	
@@ -62,7 +62,7 @@ public class GotoMatchingBracketManager implements IDisposable {
 		if (document == null)
 			return;
 		
-		IRegion selection= EditorUtils_JDT.getSignedSelection(sourceViewer);
+		IRegion selection= EditorUtils.getSignedSelection(sourceViewer);
 		if (fPreviousSelections == null)
 			initializePreviousSelectionList();
 		

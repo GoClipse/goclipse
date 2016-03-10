@@ -16,10 +16,13 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Before;
 
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.SimpleLogger;
+import melnorme.utilbox.ownership.OwnedObjects;
 
 /**
  *  Recommended base class for all tests.
@@ -28,6 +31,9 @@ import melnorme.utilbox.misc.SimpleLogger;
 public class CommonTest extends CommonTestUtils {
 	
 	public CommonTest() {
+		
+		DevelopmentCodeMarkers.TESTS_MODE = true;
+		
 		if(isJUnitTest()) {
 			String klassName = getClass().getSimpleName();
 			// Check proper tests nomenclature:
@@ -53,6 +59,13 @@ public class CommonTest extends CommonTestUtils {
 			testsLogger.println("===============================  "+simpleName+"  ===============================");
 			executedTests.add(simpleName);
 		}
+	}
+	
+	protected final OwnedObjects owned = new OwnedObjects();
+	
+	@After
+	public void disposeOwned() {
+		owned.disposeAll();
 	}
 	
 	/* -----------------  ----------------- */

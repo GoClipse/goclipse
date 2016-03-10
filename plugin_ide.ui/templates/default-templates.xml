@@ -3,4 +3,46 @@
 <template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="BUG" description="BUG here comment" enabled="true" name="BUG">/* FIXME: BUG here${cursor}*/</template>
 <template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="FIXME" description="FIXME comment" enabled="true" name="FIXME">/* FIXME: ${cursor}*/</template>
 <template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="header_comment" description="header comment" enabled="true" name="headerbar">/* ----------------- ${header} ----------------- */</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="apl" description="Apache Public License" enabled="true" name="apl">// Copyright ${year} ${user}&#13;
+//&#13;
+// Licensed under the Apache License, Version 2.0 (the "License");&#13;
+// you may not use this file except in compliance with the License.&#13;
+// You may obtain a copy of the License at&#13;
+//&#13;
+//    http://www.apache.org/licenses/LICENSE-2.0&#13;
+//&#13;
+// Unless required by applicable law or agreed to in writing, software&#13;
+// distributed under the License is distributed on an "AS IS" BASIS,&#13;
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.&#13;
+// See the License for the specific language governing permissions and&#13;
+// limitations under the License.
+</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="main" description="main function" enabled="true" name="main">func main() {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="for2" description="C style for" enabled="true" name="for">for ${init}; ${condition}; ${post} {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="for3" description="basic for loop" enabled="true" name="for">for ${condition} {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="foreach2" description="iterate with a range (value only)" enabled="true" name="foreach">for _, ${v} := range ${cont} {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="foreach3" description="iterate with a range (index and value)" enabled="true" name="foreach">for ${i}, ${v} := range ${cont} {&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="mk_slice" description="make slice" enabled="true" name="mk_slice">make([]${type}, ${size})</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="mk_map" description="make map" enabled="true" name="mk_map">make(map[${key_type}]${value_type})</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="mk_channel" description="make channel" enabled="true" name="mk_channel">make(chan ${type})</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="switch" description="switch case statement" enabled="true" name="switch">switch ${key} {&#13;
+case ${value}:&#13;
+	${cursor}&#13;
+}</template>
+<template autoinsert="true" context="com.googlecode.goclipse.ui.TemplateContextType" deleted="false" id="cond_switch" description="condition-style switch statement" enabled="true" name="cond_switch">switch {&#13;
+case ${condition1}:&#13;
+	${cursor}&#13;
+case ${condition2}:&#13;
+	&#13;
+}</template>
 </templates>

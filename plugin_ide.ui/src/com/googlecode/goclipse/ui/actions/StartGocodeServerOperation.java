@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.actions.AbstractUIOperation;
+import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -32,21 +32,18 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException, OperationCancellation {
+	protected boolean isBackgroundComputationNecessary() throws CoreException, CommonException, OperationCancellation {
 		if (ToolchainPreferences.AUTO_START_DAEMON.get() == false) {
-			throw new OperationCancellation(); // stop operation
+			return false; // stop operation
 		}
 		
 		gocodePath = GocodeServerManager.getGocodePath();
 		boolean needsStart = gocodeServerManager.prepareServerStart(gocodePath);
-		if(needsStart == false) {
-			throw new OperationCancellation(); // stop operation
-		}
+		return needsStart;
 	}
 	
 	@Override
-	protected void doBackgroundComputation(IProgressMonitor monitor)
-			throws CoreException, CommonException, OperationCancellation {
+	protected void doBackgroundComputation(IProgressMonitor monitor) throws CoreException, OperationCancellation {
 		gocodeServerManager.doStartServer(gocodePath, monitor);
 	}
 	

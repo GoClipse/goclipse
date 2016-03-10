@@ -11,34 +11,31 @@
 package com.googlecode.goclipse.ui.editor.actions;
 
 
-import static melnorme.lang.ide.ui.editor.EditorUtils.getEditorDocument;
-import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
-import com.googlecode.goclipse.ui.editor.GoEditor;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
+import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
+import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperation2<String> {
 	
-	protected GoEditor goEditor;
-	protected String editorText;
+	protected IProject project;
 	protected ProcessBuilder pb;
 	
 	public AbstractEditorGoToolOperation(String operationName, ITextEditor editor) {
@@ -46,23 +43,14 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException {
-		if(!(editor instanceof GoEditor)) {
-			throw LangCore.createCoreException("Editor is not a GoEditor.", null);
-		}
-		goEditor = (GoEditor) editor;
-		editorText = getEditorDocument(editor).get();
+	protected void prepareOperation() throws CoreException, CommonException {
 		
-		IProject project = EditorUtils.getAssociatedProject(editorInput);
+		project = EditorUtils.getAssociatedProject(editorInput);
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
-		try {
-			Path goSDKPath = GoToolManager.getDefault().getSDKToolPath(project);
-			pb = prepareProcessBuilder(goSDKPath, goEnv);
-		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
-		}
+		Path goSDKPath = GoToolManager.getDefault().getSDKToolPath(project);
+		pb = prepareProcessBuilder(goSDKPath, goEnv);
 	}
 	
 	protected abstract ProcessBuilder prepareProcessBuilder(Path goSDKPath, GoEnvironment goEnv) 
@@ -71,33 +59,21 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	@Override
 	protected String doBackgroundValueComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
-		ExternalProcessResult processResult = 
-				GoToolManager.getDefault().newRunToolOperation2(pb, monitor).runProcess(editorText, true);
+		
+		AbstractToolManager toolMgr = LangCore.getToolManager();
+		
+		String editorText = doc.get();
+		ExternalProcessResult processResult = toolMgr.runEngineTool(pb, editorText, monitor);
+		ProcessUtils.validateNonZeroExitValue(processResult.exitValue);
 		
 		return processResult.getStdOutBytes().toString();
 	}
 	
 	@Override
-	protected void handleComputationResult() throws CoreException {
-		if(!areEqual(result, editorText)) {
-			replaceText(goEditor.getSourceViewer_(), result);
-		}
-	}
-	
-	
-	public static void replaceText(ISourceViewer sourceViewer, String newText) {
-		ISelection sel = sourceViewer.getSelectionProvider().getSelection();
-		int topIndex = sourceViewer.getTopIndex();
+	protected void handleComputationResult() throws CommonException {
+		assertNotNull(result);
 		
-		sourceViewer.getDocument().set(newText);
-		
-		if (sel != null) {
-			sourceViewer.getSelectionProvider().setSelection(sel);
-		}
-		
-		if (topIndex != -1) {
-			sourceViewer.setTopIndex(topIndex);
-		}
+		setEditorTextPreservingCarret(result);
 	}
 	
 }

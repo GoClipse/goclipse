@@ -3,16 +3,6 @@
 *Note:* For an overview of Goclipse features, see [Features](Features.md#ddt-features). This also serves to document 
 what overall functionalities are available.
 
-### Configuration
-
-A [Go installation](https://golang.org/doc/install) is required for most IDE functionality. Access Eclipse preferences from the menu `Window / Preferences`, navigate to the `Go` preference page, and configure the Go installation path under the `GOROOT` field. The other fields (such as `GOOS` or `GOARCH`) can remain at the default settings.
-
-For functionality such as code completion, open definition, and editor outline, you will need:
- * The [gocode](https://github.com/nsf/gocode) tool. It is recommended to use the latest gocode version.
- * The [Go Oracle](http://golang.org/s/oracle-user-manual) tool. 
- 
-The path to the executable of these two tools should be configured in the `Go / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
-
 
 ### Eclipse basics
 
@@ -21,6 +11,16 @@ If you are new to Eclipse, you can learn some of the basics of the Eclipse IDE w
 ](http://www.ibm.com/developerworks/opensource/library/os-eclipse-visualstudio/)
 
 Also, to improve Eclipse performance and startup time, it is recommended you tweak the JVM parameters. There is a tool called Eclipse Optimizer that can do that automatically, it is recommended you use it. Read more about it [here](http://www.infoq.com/news/2015/03/eclipse-optimizer). (Installing/enabling the JRebel optimization is not necessary as that only applies to Java developers)
+
+### Configuration
+
+A [Go installation](https://golang.org/doc/install) is required for most IDE functionality. Access Eclipse preferences from the menu `Window / Preferences`, navigate to the `Go` preference page, and configure the Go installation path under the `GOROOT` field. 
+
+For functionality such as code completion, open definition, and editor outline, you will need:
+ * The [gocode](https://github.com/nsf/gocode) tool. It is recommended to use the latest gocode version.
+ * The [Go Oracle](http://golang.org/s/oracle-user-manual) tool. 
+ 
+The path to the executable of these two tools should be configured in the `Go / Tools` preference page. The path can be an absolute path, or just the executable name, in which case, the executable will be searched in the PATH environment variable.
 
 ### Project setup
 
@@ -36,8 +36,6 @@ A Goclipse project can work in two ways:
 
 ##### Build:
 The `go` tool will be used to build the project. The output of this tool will be displayed in a console. Additionally, error markers resulting from the build will be collected and displayed in the the Go editor and the Problems view.
-
-Note that if the `Project / Build Automatically` option in the main menu is enabled (the default), a workspace build will be requested whenever any file is saved. Turn this on or off as desired.
 
 Each Go project has 3 built-in Build Targets, which are ways in how the project can be built. 
 These can be viewed and configured in the Project Explorer:
@@ -63,14 +61,14 @@ This is unlike most source editors - if instead you want to just remove one leve
 ##### Code-Completion/Auto-Complete:
 Invoked with Ctrl-Space. This functionality is called Content Assist in Eclipse. 
 
-> This functionality is provided by the [gocode](https://github.com/nsf/gocode) tool. If there is a problem with this operation, a diagnostics log with the output of gocode can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
+> This functionality is provided by the [gocode](https://github.com/nsf/gocode) tool. If there is a problem with this operation, a diagnostics log with the output of gocode can be seen in the `Go Tools Log` console page in the Eclipse Console view.
 
 ##### Open Definition:
 The Open Definition functionality is invoked by pressing F3 in the source editor. 
 Open Definition is also available in the editor context menu and by means of editor *hyper-linking* 
 (hold Ctrl and click on a reference with the mouse cursor). 
 
-> This functionality is provided by the [Go Oracle](http://golang.org/s/oracle-user-manual) tool. If there is a problem with this operation, a diagnostics log with the output of oracle can be seen in the `Oracle/gocode log` console page in the Eclipse Console view.
+> This functionality is provided by the [Go Oracle](http://golang.org/s/oracle-user-manual) tool. If there is a problem with this operation, a diagnostics log with the output of oracle can be seen in the `Go Tools Log` console page in the Eclipse Console view.
 
 ### Launch and Debug:
 To run a Go project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open `Run / Run Configurations...`. Then double click `Go Application` to create a new launch, and configure it accordingly. You can run these launches from the `Run Configurations...`, or for quicker access, from the Launch button in the Eclipse toolbar. You will need to specify a Go package as the build target for the launch.

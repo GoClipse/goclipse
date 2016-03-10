@@ -10,10 +10,10 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.editor.actions;
 
-import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
-
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.ui.services.IServiceLocator;
+
+import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 
 public class GoEditorContextMenuContributor extends LangEditorContextMenuContributor implements GoCommandConstants {
 	
@@ -24,8 +24,6 @@ public class GoEditorContextMenuContributor extends LangEditorContextMenuContrib
 	@Override
 	protected void contributeSourceMenu(IMenuManager sourceMenu) {
 		super.contributeSourceMenu(sourceMenu);
-		
-		sourceMenu.appendToGroup(SOURCE_MENU_GroupFormat, pushItem(svcLocator, COMMAND_RunGoFmt));
 	}
 	
 }

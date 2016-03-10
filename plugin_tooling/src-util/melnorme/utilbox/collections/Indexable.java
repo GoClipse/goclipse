@@ -12,6 +12,7 @@ package melnorme.utilbox.collections;
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
@@ -21,9 +22,14 @@ import melnorme.utilbox.misc.CollectionUtil;
 
 /**
  * Interface for a read-only view of an ordered, indexable, random access collection.
+ * This is essentially the same as {@link List}, but without the methods that modify the underlying collection.
+ * Indeed, its main purpose is as a replacement for {@link List}, 
+ * providing a <b>statically</b> checked read-only access. 
+ * This is preferable to {@link Collections#unmodifiableList(List)} because that one only checks at runtime.
  * 
- * Also specifies a default equals/hashcode semantics, that implementers should use.
- * 
+ * <p>
+ * It also provides a default equals/hashcode implementation, that concrete types can use.
+ * </p>
  */
 public interface Indexable<E> extends Collection2<E>, RandomAccess {
 	
@@ -33,34 +39,6 @@ public interface Indexable<E> extends Collection2<E>, RandomAccess {
 	@Override
 	public <T> Indexable<T> upcastTypeParameter();
 	
-	/* ----------------- equals/hashcode ----------------- */
-	
-	public static boolean equals(Indexable<?> collA, Object other) {
-		if(collA == other) return true;
-		
-		if(other instanceof Indexable) {
-			return indexableEquals(collA, (Indexable<?>) other);
-		}
-		if(collA instanceof List && other instanceof List) {
-			return CollectionUtil.listEquals((List<?>) collA, (List<?>) other);
-		}
-		return false;
-	}
-	
-	public static boolean indexableEquals(Indexable<?> coll1, Indexable<?> coll2) {
-		if(coll1.size() != coll2.size()) {
-			return false;
-		}
-		
-		return CollectionUtil.iterationEquals(coll1.iterator(), coll2.iterator());
-	}
-	
-	public static int hashCode(Indexable<?> indexable) {
-        int hashCode = 1;
-        for(Object element : indexable)
-            hashCode = 31*hashCode + (element==null ? 0 : element.hashCode());
-        return hashCode;
-	}
 	
 	/* -----------------  ----------------- */
 	
@@ -106,4 +84,34 @@ public interface Indexable<E> extends Collection2<E>, RandomAccess {
 	@SuppressWarnings("rawtypes")
 	public static final Indexable EMPTY_INDEXABLE = new ArrayList2<>();
 	
+	
+	/* ----------------- equals/hashcode ----------------- */
+	
+	public static boolean equals(Indexable<?> collA, Object other) {
+		if(collA == other) return true;
+		
+		if(other instanceof Indexable) {
+			return indexableEquals(collA, (Indexable<?>) other);
+		}
+		if(collA instanceof List && other instanceof List) {
+			return CollectionUtil.listEquals((List<?>) collA, (List<?>) other);
+		}
+		return false;
+	}
+	
+	public static boolean indexableEquals(Indexable<?> coll1, Indexable<?> coll2) {
+		if(coll1.size() != coll2.size()) {
+			return false;
+		}
+		
+		return CollectionUtil.iterationEquals(coll1.iterator(), coll2.iterator());
+	}
+	
+	public static int hashCode(Indexable<?> indexable) {
+        int hashCode = 1;
+        for(Object element : indexable)
+            hashCode = 31*hashCode + (element==null ? 0 : element.hashCode());
+        return hashCode;
+	}
+
 }

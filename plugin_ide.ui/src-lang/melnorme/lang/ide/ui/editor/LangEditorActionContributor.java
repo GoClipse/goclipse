@@ -24,13 +24,15 @@ import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorCommandIds;
-import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorHandler;
 import melnorme.lang.ide.ui.editor.actions.GoToMatchingBracketHandler;
 import melnorme.lang.ide.ui.editor.actions.OpenQuickOutlineHandler;
 import melnorme.lang.ide.ui.editor.actions.ToggleCommentHandler;
+import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.ArrayList2;
 
@@ -77,31 +79,33 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 		
 		activateHandler(EditorCommandIds.QuickOutline, getHandler_QuickOutline());
 		
+		activateHandler(EditorCommandIds.Format, getHandler_Format());
+		
 		registerOtherEditorHandlers();
 	}
 	
-	protected AbstractHandler getHandler_OpenDefinition() {
-		return new AbstractEditorOperationHandler() {
+	public AbstractEditorHandler getEditorHandler(IEditorOperationCreator editorOpCreator) {
+		return new AbstractEditorHandler(getPage()) {
 			@Override
-			protected String getOperationName() {
-				return LangUIMessages.Op_OpenDefinition_Name;
-			}
-			
-			@Override
-			public AbstractEditorOperation2<?> createOperation(ITextEditor editor) {
-				OpenNewEditorMode newEditorMode = OpenNewEditorMode.TRY_REUSING_EXISTING;
-				SourceRange selection = EditorUtils.getSelectionSR(editor);
-				return createOpenDefinitionOperation(editor, selection, newEditorMode);
+			protected BasicUIOperation createOperation(ITextEditor editor) {
+				return editorOpCreator.createOperation(editor);
 			}
 		};
 	}
 	
-	protected abstract AbstractEditorOperation2<?> createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
-			OpenNewEditorMode newEditorMode);
+	public static interface IEditorOperationCreator {
+		
+		BasicUIOperation createOperation(ITextEditor editor);
+		
+	}
 	
-	
-	protected abstract void registerOtherEditorHandlers();
-	
+	protected AbstractHandler getHandler_OpenDefinition() {
+		return getEditorHandler((editor) -> {
+			OpenNewEditorMode newEditorMode = OpenNewEditorMode.TRY_REUSING_EXISTING;
+			SourceRange selection = EditorUtils.getSelectionSR(editor);
+			return createOpenDefinitionOperation(editor, selection, newEditorMode);
+		});
+	}
 	
 	protected AbstractHandler getHandler_GoToMatchingBracket() {
 		return new GoToMatchingBracketHandler(getPage());
@@ -114,6 +118,19 @@ public abstract class LangEditorActionContributor extends LangEditorActionContri
 	protected AbstractHandler getHandler_QuickOutline() {
 		return new OpenQuickOutlineHandler(getPage());
 	}
+	
+	public AbstractEditorHandler getHandler_Format() {
+		return getEditorHandler(getOpCreator_Format());
+	}
+	
+	protected abstract AbstractEditorOperation2<?> createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
+			OpenNewEditorMode newEditorMode);
+	
+	protected IEditorOperationCreator getOpCreator_Format() {
+		return LangUIPlugin_Actual::getFormatOperation;
+	}
+	
+	protected abstract void registerOtherEditorHandlers();
 	
 	/* ----------------- Menu / Toolbar contributions ----------------- */
 	

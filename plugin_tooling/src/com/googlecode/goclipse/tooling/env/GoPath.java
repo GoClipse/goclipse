@@ -21,6 +21,7 @@ import java.util.List;
 import com.googlecode.goclipse.tooling.GoPackageName;
 
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -55,6 +56,12 @@ public class GoPath {
 	
 	public boolean isEmpty() {
 		return goPathElements.size() == 0;
+	}
+	
+	public void validate() throws CommonException {
+		if(isEmpty()) {
+			throw new CommonException("Invalid Go environment, GOPATH is empty.");
+		}
 	}
 	
 	public String asString() {

@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.navigator;
 
 import java.text.Collator;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -48,7 +49,16 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 		
 		@Override
 		public Integer visitProject(IProject project) {
-			return visitFolder();
+			return -2;
+		}
+		@Override
+		public Integer visitFolder(IFolder folder) {
+			return -2;
+		}
+		
+		@Override
+		public Integer visitManifestFile(IFile element) {
+			return 0;
 		}
 		
 		@Override
@@ -66,17 +76,6 @@ public abstract class LangNavigatorSorter extends ViewerSorter {
 			return buildTargetElement.getOrder();
 		}
 		
-		@Override
-		public Integer visitOther(Object element) {
-			if(element instanceof IFolder) {
-				return visitFolder();
-			}
-			return 0;
-		}
-		
-		protected int visitFolder() {
-			return -2;
-		}
 	}
 	
 	public static abstract class BundleModelElementsSorterSwitcher_Default 

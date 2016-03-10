@@ -5,13 +5,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.googlecode</groupId>
-		<artifactId>goclipse.aggregator</artifactId>
+		<groupId>com.googlecode.goclipse</groupId>
+		<artifactId>ide-aggregator</artifactId>
 		<version>1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>com.googlecode.goclipse.debug</artifactId>
-	<version>0.13.0-SNAPSHOT</version>
+	<version>0.14.1-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 
 </project>

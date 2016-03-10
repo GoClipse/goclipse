@@ -21,15 +21,16 @@ import org.eclipse.swt.widgets.Composite;
 import melnorme.lang.ide.ui.ContentAssistConstants;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.preferences.EditorAppearanceColorsComponent.EditorColorItem;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.util.swt.components.fields.CheckBoxField;
 
-public class EditorConfigurationBlock extends AbstractPreferencesBlock {
+public class EditorConfigurationBlock extends AbstractPreferencesBlock2 {
 	
 	protected final IPreferenceStore store; // TODO: remove
 	
-	public EditorConfigurationBlock(IPreferenceStore store) {
-		super();
+	public EditorConfigurationBlock(PreferencesPageContext prefContext, IPreferenceStore store) {
+		super(prefContext);
 		this.store = assertNotNull(store);
 	}
 	
@@ -58,7 +59,7 @@ public class EditorConfigurationBlock extends AbstractPreferencesBlock {
 		}
 		EditorAppearanceColorsComponent appearanceItemsCp = new EditorAppearanceColorsComponent(store, editorColorItems);
 		appearanceItemsCp.createComponentInlined(parent);
-		addPrefElement(appearanceItemsCp);
+		prefContext.addPrefElement(appearanceItemsCp);
 	}
 	
 	protected EditorColorItem[] createEditorAppearanceColorEntries() {

@@ -32,6 +32,12 @@ public class GoRoot {
 		return goRootString.isEmpty();
 	}
 	
+	public void validate() throws CommonException {
+		if(isEmpty()) {
+			throw new CommonException("Invalid Go environment, GOROOT is empty.");
+		}
+	}
+	
 	public Location asLocation() throws CommonException {
 		if(isEmpty()) {
 			throw new CommonException("GOROOT is not defined.");

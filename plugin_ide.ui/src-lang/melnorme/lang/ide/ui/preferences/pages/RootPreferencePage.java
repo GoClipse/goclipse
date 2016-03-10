@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 public abstract class RootPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
@@ -26,10 +27,6 @@ public abstract class RootPreferencePage extends AbstractPreferencesBlockPrefPag
 	}
 	
 	@Override
-	protected LangSDKConfigBlock init_createPreferencesBlock() {
-		return init_createLangSDKConfigBlock();
-	}
-	
-	protected abstract LangSDKConfigBlock init_createLangSDKConfigBlock();
+	protected abstract LangSDKConfigBlock init_createPreferencesBlock(PreferencesPageContext prefContext);
 	
 }

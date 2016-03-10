@@ -12,11 +12,13 @@ package melnorme.lang.ide.ui.actions;
 
 import org.eclipse.jface.action.Action;
 
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
+
 public class RunUIOperationAction extends Action {
 	
-	protected final AbstractUIOperation operation;
+	protected final BasicUIOperation operation;
 	
-	public RunUIOperationAction(AbstractUIOperation operation) {
+	public RunUIOperationAction(BasicUIOperation operation) {
 		this.operation = operation;
 		
 		setText(operation.getOperationName());

@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.preferences.EditorTypingConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 public abstract class EditorTypingPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
@@ -21,8 +22,8 @@ public abstract class EditorTypingPreferencePage extends AbstractPreferencesBloc
 	}
 	
 	@Override
-	protected EditorTypingConfigurationBlock init_createPreferencesBlock() {
-		return new EditorTypingConfigurationBlock();
+	protected EditorTypingConfigurationBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new EditorTypingConfigurationBlock(prefContext);
 	}
 	
 	@Override

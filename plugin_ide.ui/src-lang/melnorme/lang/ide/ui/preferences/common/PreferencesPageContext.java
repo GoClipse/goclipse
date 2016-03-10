@@ -14,10 +14,44 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.osgi.service.prefs.BackingStoreException;
 
+import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
+import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
+import melnorme.lang.tooling.data.CompositeValidatableField;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IProperty;
 
-public class PreferencesPageContext {
+public class PreferencesPageContext implements IPreferencesEditor {
+	
+	protected final ArrayList2<IPreferencesEditor> prefAdapters = new ArrayList2<>();
+	
+	@Override
+	public void loadDefaults() {
+		for(IPreferencesEditor prefAdapter : prefAdapters) {
+			prefAdapter.loadDefaults();
+		}
+	}
+	
+	@Override
+	public void doSaveSettings() throws BackingStoreException {
+		for(IPreferencesEditor prefAdapter : prefAdapters) {
+			prefAdapter.doSaveSettings();
+		}
+	}
+	
+	/**
+	 * Add a {@link IPreferencesEditor}. Add order is preserved)
+	 */
+	public void addPrefElement(IPreferencesEditor prefElement) {
+		prefAdapters.add(prefElement);
+	}
+	public <T> void bindToPreference(IProperty<T> field, IProjectPreference<T> pref) {
+		bindToPreference(field, pref.getGlobalPreference());
+	}
+	public <T> void bindToPreference(IProperty<T> field, IGlobalPreference<T> pref) {
+		addPrefElement(getPreferencesBinder(field, pref));
+	}
 	
 	public <T> IPreferencesEditor getPreferencesBinder(IProperty<T> field, IGlobalPreference<T> pref) {
 		return new GlobalPreferenceAdapter<>(pref, field);
@@ -47,6 +81,15 @@ public class PreferencesPageContext {
 			property.setValue(preference.getDefaultValue());
 		}
 		
+	}
+	
+	/* ----------------- util ----------------- */
+	
+	public void bindToValidatedPreference(IModelField<String> field, DerivedValuePreference<?> derivedPref, 
+			CompositeValidatableField validation) {
+		bindToPreference(field, derivedPref.getPreference());
+		
+		validation.addFieldValidation(true, field, derivedPref.getValidator());
 	}
 	
 }

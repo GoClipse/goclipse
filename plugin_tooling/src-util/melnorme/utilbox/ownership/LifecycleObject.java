@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.utilbox.ownership;
 
-import melnorme.utilbox.collections.Indexable;
-
 public class LifecycleObject implements IDisposable {
 	
 	protected final OwnedObjects owned = new OwnedObjects(); 
@@ -20,13 +18,21 @@ public class LifecycleObject implements IDisposable {
 		super();
 	}
 	
-	@Override
-	public void dispose() {
-		owned.disposeAll();
+	public IOwner asOwner() {
+		return owned;
 	}
 	
-	public Indexable<IDisposable> getOwned() {
-		return owned;
+	@Override
+	public final void dispose() {
+		dispose_pre();
+		owned.disposeAll();
+		dispose_post();
+	}
+	
+	protected void dispose_pre() {
+	}
+	
+	protected void dispose_post() {
 	}
 	
 }

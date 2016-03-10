@@ -39,10 +39,8 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		
-		GoEnvironmentPrefs.GO_ROOT.setInstanceScopeValue(SAMPLE_GO_ROOT.asString());
-		GoEnvironmentPrefs.GO_ARCH.setInstanceScopeValue("386");
-		GoEnvironmentPrefs.GO_OS.setInstanceScopeValue("windows");
-		GoEnvironmentPrefs.GO_PATH.setInstanceScopeValue(SAMPLE_GOPATH_Entry.toString());
+		GoEnvironmentPrefs.GO_ROOT.getGlobalPreference().setInstanceScopeValue(SAMPLE_GO_ROOT.asString());
+		GoEnvironmentPrefs.GO_PATH.getGlobalPreference().setInstanceScopeValue(SAMPLE_GOPATH_Entry.toString());
 		TestsWorkingDir.deleteDir(SAMPLE_GOPATH_Entry);
 		
 		{
@@ -60,11 +58,11 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 			IPath location = project.getLocation();
 			
 			// Test that project location is added to effective GOPATH entries 
-			checkEnvGoPath(project, list(location.toOSString(), SAMPLE_GOPATH_Entry.toString()), false);
+			checkEnvGoPath(project, list(SAMPLE_GOPATH_Entry.toString(), location.toOSString()), false);
 			
 			String goPathEntryOther = location.append("other").toOSString();
 			String gopath = location.toOSString() + File.pathSeparator + goPathEntryOther;
-			GoEnvironmentPrefs.GO_PATH.setInstanceScopeValue(gopath);
+			GoEnvironmentPrefs.GO_PATH.getGlobalPreference().setInstanceScopeValue(gopath);
 			
 			// Test GOPATH which already has project location. Also nested GOPATH entry.
 			checkEnvGoPath(project, list(location.toOSString(), goPathEntryOther), false);
@@ -73,7 +71,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 		try (SampleGoProject sampleProject = new SampleGoProject(getClass().getSimpleName())){
 			IProject project = sampleProject.getProject();
 			
-			GoEnvironmentPrefs.GO_PATH.setInstanceScopeValue(SAMPLE_GO_PATH.asString());
+			GoEnvironmentPrefs.GO_PATH.getGlobalPreference().setInstanceScopeValue(SAMPLE_GO_PATH.asString());
 			
 			sampleProject.moveToLocation(SAMPLE_GOPATH_Entry.resolve_valid("src/github.com/foo"));
 			// Test that project location is not added, because project is in a Go source package

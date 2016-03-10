@@ -25,8 +25,8 @@ public class GoUIPlugin extends LangUIPlugin {
 	protected static GocodeServerManager gocodeServerManager = new GocodeServerManager();
 	
 	@Override
-	protected GoOperationsConsoleListener createOperationsConsoleListener() {
-		return new GoOperationsConsoleListener();
+	protected GoOperationsConsoleUIHandler createOperationsConsoleListener() {
+		return new GoOperationsConsoleUIHandler();
 	}
 	
 	@Override

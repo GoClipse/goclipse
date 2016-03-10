@@ -27,7 +27,8 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.ICoreOperation;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -173,7 +174,7 @@ public abstract class BuildManager {
 					ArrayList2<BuildTarget> buildTargets = createSerializer().readProjectBuildInfo(targetsPrefValue);
 					currentBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
 				} catch(CommonException ce) {
-					LangCore.logError(ce);
+					LangCore.logError("Error reading project build-info.", ce);
 				}
 			}
 		}
@@ -290,7 +291,7 @@ public abstract class BuildManager {
 		}
 		
 		public abstract CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
-				OperationInfo opInfo, Path buildToolPath)
+				IOperationConsoleHandler opHandler, Path buildToolPath)
 				throws CommonException, CoreException;
 		
 	}
@@ -421,34 +422,34 @@ public abstract class BuildManager {
 	
 	/* ----------------- Build operations ----------------- */
 	
-	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project) {
-		return new BuildOperationCreator(project, opInfo);
+	protected BuildOperationCreator createBuildOperationCreator(IOperationConsoleHandler opHandler, IProject project) {
+		return new BuildOperationCreator(project, opHandler);
 	}
 	
-	public IToolOperation newProjectClearMarkersOperation(OperationInfo opInfo, IProject project) {
-		return createBuildOperationCreator(opInfo, project).newClearBuildMarkersOperation();
+	public ICoreOperation newProjectClearMarkersOperation(IOperationConsoleHandler opHandler, IProject project) {
+		return createBuildOperationCreator(opHandler, project).newClearBuildMarkersOperation();
 	}
 	
-	public final IToolOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
+	public final ICoreOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
 			throws CommonException {
 		return newBuildTargetsOperation(project, ArrayList2.create(buildTarget));
 	}
 	
-	public IToolOperation newBuildTargetsOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
+	public ICoreOperation newBuildTargetsOperation(IProject project, Collection2<BuildTarget> targetsToBuild)
 			throws CommonException {
-		OperationInfo operationInfo = LangCore.getToolManager().startNewToolOperation();
-		return newBuildOperation(operationInfo, project, true, targetsToBuild);
+		IOperationConsoleHandler opHandler = LangCore.getToolManager().startNewBuildOperation();
+		return newBuildOperation(opHandler, project, true, targetsToBuild);
 	}
 	
-	public final IToolOperation newProjectBuildOperation(OperationInfo opInfo, IProject project,
+	public final ICoreOperation newProjectBuildOperation(IOperationConsoleHandler opHandler, IProject project,
 			boolean clearMarkers) throws CommonException {
 		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets();
-		return newBuildOperation(opInfo, project, clearMarkers, enabledTargets);
+		return newBuildOperation(opHandler, project, clearMarkers, enabledTargets);
 	}
 	
-	public IToolOperation newBuildOperation(OperationInfo opInfo, IProject project, boolean clearMarkers,
+	public ICoreOperation newBuildOperation(IOperationConsoleHandler opHandler, IProject project, boolean clearMarkers,
 			Collection2<BuildTarget> targetsToBuild) throws CommonException {
-		return createBuildOperationCreator(opInfo, project).newProjectBuildOperation(targetsToBuild, clearMarkers);
+		return createBuildOperationCreator(opHandler, project).newProjectBuildOperation(targetsToBuild, clearMarkers);
 	}
 	
 }

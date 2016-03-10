@@ -10,13 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.editor.actions;
 
-import melnorme.lang.ide.ui.EditorSettings_Actual.EditorCommandIds;
-
 public interface GoCommandConstants {
-	
-	static String COMMAND_GoToMatchingBracket = EditorCommandIds.GoToMatchingBracket;
-	static String COMMAND_ToggleLineComment = EditorCommandIds.ToggleComment;
-	
-	static String COMMAND_RunGoFmt = "com.googlecode.goclipse.editors.GofmtShortcut.run";
 	
 }

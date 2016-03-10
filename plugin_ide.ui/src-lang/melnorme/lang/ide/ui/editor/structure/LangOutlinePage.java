@@ -44,7 +44,7 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		
-		getTreeViewer().setContentProvider(new StructureElementContentProvider());
+		getTreeViewer().setContentProvider(createContentProvider());
 		getTreeViewer().setLabelProvider(StructureElementLabelProvider.createLangLabelProvider());
 		
 		customizeCreateControl();
@@ -53,6 +53,10 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		editor.getSelectedElementField().registerListener(structureListener);
 		
 		updateTreeViewer();
+	}
+	
+	protected StructureElementContentProvider createContentProvider() {
+		return new StructureElementContentProvider();
 	}
 	
 	protected void customizeCreateControl() {

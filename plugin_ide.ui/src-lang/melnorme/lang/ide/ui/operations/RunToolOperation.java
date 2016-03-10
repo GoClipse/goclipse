@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.operations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -17,24 +19,30 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.operations.AbstractToolManager.RunProcessTask;
-import melnorme.lang.ide.core.operations.MessageEventInfo;
-import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.AbstractToolManager.RunToolTask;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
-import melnorme.lang.ide.ui.actions.AbstractUIOperation;
+import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class RunToolOperation extends AbstractUIOperation {
+public class RunToolOperation extends AbstractUIOperation {
 			
 	protected final IProject project;
 	protected final Indexable<String> commands;
+	protected final StartOperationOptions opViewOptions;
 	
-	public RunToolOperation(String operationName, IProject project, Indexable<String> commands) {
+	protected ProcessBuilder pb;
+	
+	public RunToolOperation(String operationName, IProject project, Indexable<String> commands,
+			StartOperationOptions opViewOptions) {
 		super(operationName);
 		this.project = project;
-		this.commands = commands;
+		this.commands = assertNotNull(commands);
+		this.opViewOptions = assertNotNull(opViewOptions);
 	}
 	
 	protected AbstractToolManager getToolManager() {
@@ -42,17 +50,24 @@ public abstract class RunToolOperation extends AbstractUIOperation {
 	}
 	
 	@Override
+	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+		pb = createProcessBuilder();
+		
+		super.doOperation();
+	}
+	
+	@Override
 	protected void doBackgroundComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
-		ProcessBuilder pb = createProcessBuilder();
 		
-		OperationInfo opInfo = getToolManager().startNewToolOperation();
+		IOperationConsoleHandler opHandler = getToolManager().startNewOperation(opViewOptions);
 		
-		getToolManager().notifyMessageEvent(new MessageEventInfo(opInfo, 
-			TextMessageUtils.headerBIG(getOperationStartMessage())));
+		opHandler.writeInfoMessage(
+			TextMessageUtils.headerBIG(getOperationStartMessage())
+		);
 		
-		RunProcessTask runToolTask = getToolManager().newRunToolTask(opInfo, pb, monitor);
-		runProcessTask(runToolTask);
+		RunToolTask runToolTask = getToolManager().newRunProcessTask(opHandler, pb, monitor);
+		runProcessTask(runToolTask, monitor);
 	}
 	
 	protected String getOperationStartMessage() {
@@ -60,10 +75,11 @@ public abstract class RunToolOperation extends AbstractUIOperation {
 	}
 	
 	protected ProcessBuilder createProcessBuilder() throws CoreException, CommonException {
-		return AbstractToolManager.createProcessBuilder(project, getCommands());
+		return getToolManager().createSimpleProcessBuilder(project, getCommands());
 	}
 	
-	protected void runProcessTask(RunProcessTask runToolTask) throws CommonException, OperationCancellation {
+	protected void runProcessTask(RunToolTask runToolTask, @SuppressWarnings("unused") IProgressMonitor pm) 
+			throws CommonException, OperationCancellation, CoreException {
 		runToolTask.runProcess();
 	}
 	
@@ -73,10 +89,11 @@ public abstract class RunToolOperation extends AbstractUIOperation {
 	
 	/* -----------------  ----------------- */
 	
-	public abstract static class RunSDKToolOperation extends RunToolOperation {
+	public static class RunSDKToolOperation extends RunToolOperation {
 		
 		public RunSDKToolOperation(String operationName, IProject project, Indexable<String> commands) {
-			super(operationName, project, commands);
+			super(operationName, project, commands, 
+				new StartOperationOptions(ProcessStartKind.BUILD, true, true));
 		}
 		
 		@Override

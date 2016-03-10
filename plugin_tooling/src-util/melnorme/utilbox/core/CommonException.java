@@ -14,8 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.text.MessageFormat;
 
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
 
 /**
  * A generic status exception.
@@ -39,11 +39,15 @@ public class CommonException extends Exception {
 		super(assertNotNull(message), cause);
 	}
 	
-	public StatusException toStatusException(StatusLevel statusLevel) {
+	public StatusException toStatusError() {
+		return toStatusException(Severity.ERROR);
+	}
+	
+	public StatusException toStatusException(Severity severity) {
 		if(this instanceof StatusException) {
 			return (StatusException) this;
 		} else {
-			return new StatusException(statusLevel, getMessage(), getCause());
+			return new StatusException(severity, getMessage(), getCause());
 		}
 	}
 	

@@ -10,16 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.engine;
 
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
-import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
+import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.IDataChangedListener;
 
-public interface IStructureModelListener {
-	
-	/** 
-	 * Indicates that the source file structure of the file for given key has changed.
-	 * 
-	 * This method runs under the scope of a {@link StructureInfo} lock, so listeners should respond quickly.
-	 */
-	void structureChanged(StructureInfo lockedStructureInfo, SourceFileStructure sourceFileStructure);
+public interface IStructureModelListener extends IDataChangedListener<StructureInfo> {
 	
 }

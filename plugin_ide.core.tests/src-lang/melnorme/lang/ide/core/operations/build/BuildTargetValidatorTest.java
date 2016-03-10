@@ -19,7 +19,7 @@ import org.junit.Test;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.launch.BuildTargetValidator;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.tests.BuildTestsHelper;
 import melnorme.lang.ide.core.tests.SampleProject;
@@ -139,9 +139,10 @@ public class BuildTargetValidatorTest extends CommonTest {
 			
 			@Override
 			public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget, 
-					OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
+					IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
 				return null;
 			}
+			
 		};
 		
 		

@@ -20,16 +20,16 @@ public interface ToolchainPreferences {
 	IProjectPreference<Boolean> USE_PROJECT_SETTINGS = new BooleanPreference(
 		"toolchain_prefs.use_project_settings", false).getProjectPreference();
 	
-	public static final StringPreference SDK_PATH = new StringPreference(LangCore.PLUGIN_ID, "sdk_path", "", 
-		USE_PROJECT_SETTINGS);
+	public static final IProjectPreference<String> SDK_PATH2 = new StringPreference(LangCore.PLUGIN_ID, "sdk_path", "", 
+		USE_PROJECT_SETTINGS).getProjectPreference();
 	
+	public static final BooleanPreference FORMAT_ON_SAVE =
+			new BooleanPreference(LangCore.PLUGIN_ID, "format_onSave", false, USE_PROJECT_SETTINGS);
 	
 	public static final BooleanPreference AUTO_START_DAEMON =
 			new BooleanPreference("auto_start_daemon", true);
 	public static final StringPreference DAEMON_PATH =
 			new StringPreference("daemon_path", "");
-	public static final BooleanPreference DAEMON_CONSOLE_ENABLE =
-			new BooleanPreference("daemon_console_enable", true);
 	
 	/* -----------------  ----------------- */
 	

@@ -38,7 +38,7 @@ import com.googlecode.goclipse.ui.navigator.elements.GoPathEntryElement;
 import com.googlecode.goclipse.ui.navigator.elements.GoRootElement;
 
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
-import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
+import melnorme.lang.ide.ui.navigator.LangNavigatorLabelProvider;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -49,11 +49,6 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 	@Override
 	protected DefaultGetStyledStringSwitcher getStyledString_switcher() {
 		return new DefaultGetStyledStringSwitcher() {
-			@Override
-			public StyledString visitOther(Object element) {
-				return null;
-			}
-			
 			@Override
 			public StyledString visitGoPathElement(GoPathElement goPathElement) {
 				return getStyledText_GoPathElement(goPathElement);
@@ -109,12 +104,8 @@ public class GoNavigatorLabelProvider extends LangNavigatorLabelProvider  {
 		return new DefaultGetImageSwitcher() {
 			
 			@Override
-			public ImageDescriptor visitOther(Object element) {
-				if(element instanceof IResource) {
-					IResource resource = (IResource) element;
-					return getResourceImageDescriptor(resource);
-				}
-				return null;
+			public ImageDescriptor visitResource(IResource resource) {
+				return getResourceImageDescriptor(resource);
 			}
 			
 			@Override

@@ -32,6 +32,11 @@ public class OwnedObjects extends ArrayList2<IDisposable> implements IOwner, IDi
 	}
 	
 	@Override
+	public boolean unbind(IDisposable disposable) {
+		return remove(disposable);
+	}
+	
+	@Override
 	public boolean add(IDisposable e) {
 		checkDisposed();
 		return super.add(e);
@@ -54,6 +59,7 @@ public class OwnedObjects extends ArrayList2<IDisposable> implements IOwner, IDi
 		disposeAll();
 	}
 	
+	@Override
 	public void disposeAll() {
 		for(IDisposable disposable : this) {
 			disposable.dispose();

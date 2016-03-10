@@ -10,17 +10,19 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.text.format;
 
+import melnorme.lang.ide.core.text.TextSourceUtils;
+
 public interface ILangAutoEditsPreferencesAccess {
 	
 	boolean isSmartIndent();
 	
 	boolean isSmartDeIndent();
 	
-	boolean closeBlocks();
-	
 	boolean closeBraces();
 	
 	boolean isSmartPaste();
+	
+	public boolean parenthesesAsBlocks();
 	
 	FormatterIndentMode getTabStyle();
 	
@@ -28,7 +30,7 @@ public interface ILangAutoEditsPreferencesAccess {
 	
 	default String getIndentUnit() {
 		if (getTabStyle() == FormatterIndentMode.SPACES) {
-			return AutoEditUtils.getNSpaces(getIndentSize());
+			return TextSourceUtils.getNSpaces(getIndentSize());
 		} else {
 			return "\t";
 		}

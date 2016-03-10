@@ -41,7 +41,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCorePlugin;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.tests.utils.ErrorLogListener;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -64,7 +64,7 @@ public abstract class CommonCoreTest extends CommonTest {
 		
 		disableAutoBuild();
 		
-		LangCore.getInstance().initializeAfterUIStart();
+		LangCorePlugin.getInstance().initializeAfterUIStart();
 	}
 	
 	protected static void disableAutoBuild() {

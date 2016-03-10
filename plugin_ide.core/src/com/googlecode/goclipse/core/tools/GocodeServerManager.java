@@ -4,13 +4,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.debug.core.DebugPlugin;
 
-import com.googlecode.goclipse.core.GoCore;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -60,7 +62,6 @@ public class GocodeServerManager implements IDisposable {
 	
 	public void doStartServer(IPath gocodePath, IProgressMonitor monitor) throws CoreException {
 		
-		GoCore.createInfoStatus("starting gocode server [" + gocodePath + "]").logInPlugin();
 		
 		ArrayList2<String> commandLine = new ArrayList2<String>();
 		commandLine.add(gocodePath.toOSString());
@@ -69,10 +70,16 @@ public class GocodeServerManager implements IDisposable {
 			commandLine.add("-sock=tcp");
 		}
 		
+		LangCore.logInfo("Starting gocode server: " + 
+			DebugPlugin.renderArguments(commandLine.toArray(String.class), null));
+		
 		ProcessBuilder pb = new ProcessBuilder(commandLine);
 		
 		try {
-			gocodeProcess = GoToolManager.getDefault().new StartEngineDaemonOperation(pb, 
+			GoToolManager toolMgr = GoToolManager.getDefault();
+			IOperationConsoleHandler opHandler = toolMgr.startNewOperation(ProcessStartKind.ENGINE_SERVER, true, false);
+			String prefixText = "==== Starting gocode server ====\n";
+			gocodeProcess = toolMgr.new RunToolTask(opHandler, prefixText, pb, 
 				new EclipseCancelMonitor(monitor)).startProcess();
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce.getMessage(), ce.getCause());
@@ -81,7 +88,7 @@ public class GocodeServerManager implements IDisposable {
 	
 	public void stopServer() {
 		if (gocodeProcess != null) {
-			GoCore.createInfoStatus("stopping gocode server").logInPlugin();
+			LangCore.createInfoStatus("stopping gocode server").logInPlugin();
 			
 			gocodeProcess.getProcess().destroy();
 			gocodeProcess = null;

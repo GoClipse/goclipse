@@ -14,28 +14,28 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public abstract class OffsetBasedCharacterReader<EXC extends Exception> extends BasicCharSource<EXC> {
 	
-	protected int readOffset;
+	protected int readPosition;
 	
 	public OffsetBasedCharacterReader() {
 		super();
 	}
 	
-	public int getReadOffset() {
-		return readOffset;
+	public int getReadPosition() {
+		return readPosition;
 	}
 	
 	protected void invariant() {
-		assertTrue(readOffset >= 0);
+		assertTrue(readPosition >= 0);
 	}
 	
 	@Override
 	protected void doConsume() throws EXC {
-		readOffset++;
+		readPosition++;
 		invariant();
 	}
 	
 	public void unread() throws EXC {
-		readOffset--;
+		readPosition--;
 		invariant();
 		doUnread();
 	}
@@ -43,7 +43,7 @@ public abstract class OffsetBasedCharacterReader<EXC extends Exception> extends 
 	protected abstract void doUnread() throws EXC;
 	
 	public void reset() throws EXC {
-		readOffset = 0;
+		readPosition = 0;
 	}
 	
 }

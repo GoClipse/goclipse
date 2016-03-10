@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui.text;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.swt.widgets.Display;
 
 import com.googlecode.goclipse.ui.GoUIPreferenceConstants;
@@ -65,10 +64,6 @@ public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfi
 		return "//";
 	}
 	
-	@Override
-	protected IInformationProvider getInformationProvider(String contentType) {
-		return null;
-	}
 	
 	@Override
 	protected ContentAssistCategoriesBuilder getContentAssistCategoriesProvider() {

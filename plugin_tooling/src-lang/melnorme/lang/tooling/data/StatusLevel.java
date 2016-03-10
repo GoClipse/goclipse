@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.data;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import melnorme.utilbox.core.CommonException;
 
 public enum StatusLevel {
@@ -22,7 +24,19 @@ public enum StatusLevel {
 	public boolean isOkStatus() {
 		return this == OK;
 	}
-
+	
+	public Severity toSeverity() {
+		switch (this) {
+		case OK:
+		case INFO: return Severity.INFO;
+		case WARNING: return Severity.WARNING;
+		case ERROR: return Severity.ERROR;
+		}
+		throw assertFail();
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public static StatusLevel fromString(String messageTypeString) throws CommonException {
 		if(messageTypeString == null) {
 			return null;

@@ -2,7 +2,7 @@
 <feature
       id="goclipse_feature"
       label="GoClipse"
-      version="0.13.0.qualifier"
+      version="0.14.1.qualifier"
       provider-name="The GoClipse Development Team"
       plugin="com.googlecode.goclipse.ui">
 
@@ -121,7 +121,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
    <requires>
       <import feature="org.eclipse.platform" version="4.5.0" match="compatible"/>
       <import feature="org.eclipse.cdt.gnu.dsf" version="8.7.0" match="compatible"/>
-      <import feature="org.eclipse.cdt.platform" version="8.7.0" match="compatible"/>
+      <import feature="org.eclipse.cdt.platform" version="8.8.0" match="compatible"/>
    </requires>
 
    <plugin

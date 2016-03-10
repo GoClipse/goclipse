@@ -13,6 +13,7 @@ package melnorme.lang.ide.core.text;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import org.eclipse.core.runtime.Assert;
@@ -36,6 +37,7 @@ public class AbstractDocumentScanner {
 	public static int TOKEN_OUTSIDE = -3; // Token for whole partitions that we skip over
 	
 	protected final IDocument document;
+	protected final String source;
 	protected final String partitioning;
 	protected final IDocumentExtension3 documentExt3;
 	protected final IDocumentPartitioner partitioner;
@@ -53,9 +55,10 @@ public class AbstractDocumentScanner {
 	protected ITypedRegion lastPartition = new TypedRegion(-1, 0, "__no_partition_at_all"); // init with empty value 
 	
 	protected AbstractDocumentScanner(IDocument document, String partitioning, String contentType) {
-		Assert.isLegal(document != null);
-		this.document = document;
+		this.document = assertNotNull(document);
 		this.partitioning = partitioning;
+		
+		this.source = document.get();
 		
 		if(partitioning == null) {
 			this.contentType = IDocument.DEFAULT_CONTENT_TYPE;
@@ -94,15 +97,21 @@ public class AbstractDocumentScanner {
 		return document.getLength();
 	}
 	
-	protected final int readPreviousCharacter() throws BadLocationException {
+	protected final int readPreviousCharacter() {
 		if(pos <= posLimit) {
 			return token = TOKEN_EOF;
 		} else {
-			pos--;
 			
-			ITypedRegion partition = getPartition(pos);
+			ITypedRegion partition;
+			try {
+				partition = getPartition(pos-1);
+			} catch(BadLocationException e) {
+				return token = TOKEN_OUTSIDE;
+			}
+			
+			pos--;
 			if (contentType.equals(partition.getType())) {
-				return token = document.getChar(pos);
+				return token = source.charAt(pos);
 			} else {
 				pos = partition.getOffset();
 				return token = TOKEN_OUTSIDE;
@@ -110,16 +119,22 @@ public class AbstractDocumentScanner {
 		}
 	}
 	
-	protected final int readNextCharacter() throws BadLocationException {
+	protected final int readNextCharacter() {
 		if(pos >= posLimit) {
 			return token = TOKEN_EOF;
 		} else {
 			int charPos = pos;
-			pos++;
 			
-			ITypedRegion partition = getPartition(charPos);
+			ITypedRegion partition;
+			try {
+				partition = getPartition(charPos);
+			} catch(BadLocationException e) {
+				return token = TOKEN_OUTSIDE;
+			}
+			
+			pos++;
 			if (contentType.equals(partition.getType())) {
-				return token = document.getChar(charPos);
+				return token = source.charAt(charPos);
 			} else {
 				pos = partition.getOffset() + partition.getLength();
 				return token = TOKEN_OUTSIDE;

@@ -119,9 +119,19 @@ public class SWTUtil {
 	public static int statusLevelToMessageDialogKing(StatusLevel statusLevel) {
 		switch (statusLevel) {
 		case ERROR: return MessageDialog.ERROR;
+		case WARNING: return MessageDialog.WARNING;
 		case INFO: return MessageDialog.INFORMATION;
 		case OK: return MessageDialog.OK;
-		case WARNING: return MessageDialog.WARNING;
+		}
+		throw assertFail();
+	}
+	
+	public static int getSystemImageCode(StatusLevel statusLevel) {
+		switch (statusLevel) {
+		case ERROR: return SWT.ICON_ERROR;
+		case WARNING: return SWT.ICON_WARNING;
+		case INFO: return SWT.ICON_INFORMATION;
+		case OK: return SWT.ICON_WORKING;
 		}
 		throw assertFail();
 	}

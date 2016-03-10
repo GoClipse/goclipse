@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
-import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
@@ -29,7 +29,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public abstract class CommonBuildTargetOperation extends AbstractToolManagerOperation {
 	
 	protected final BuildManager buildManager;
-	protected final OperationInfo opInfo;
+	protected final IOperationConsoleHandler opHandler;
 	protected final Path buildToolPath;
 	
 	protected final BuildConfiguration buildConfiguration;
@@ -37,11 +37,11 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	protected final String[] evaluatedBuildArguments;
 	
 	public CommonBuildTargetOperation(BuildManager buildManager, ValidatedBuildTarget validatedBuildTarget, 
-			OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
+			IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
 		super(assertNotNull(validatedBuildTarget).getProject());
 		this.buildManager = assertNotNull(buildManager);
 		this.buildToolPath = buildToolPath;
-		this.opInfo = assertNotNull(opInfo);
+		this.opHandler = assertNotNull(opHandler);
 		
 		assertNotNull(validatedBuildTarget);
 		this.buildConfiguration = assertNotNull(validatedBuildTarget.getBuildConfiguration());
@@ -106,7 +106,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IProgressMonitor pm)
 			throws CoreException, CommonException, OperationCancellation {
-		processBuildOutput(runBuildTool(opInfo, pb, pm), pm);
+		processBuildOutput(runBuildTool(opHandler, pb, pm), pm);
 	}
 	
 	protected abstract void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)

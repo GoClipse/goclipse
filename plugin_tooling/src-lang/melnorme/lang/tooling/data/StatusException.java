@@ -16,20 +16,20 @@ import melnorme.utilbox.core.CommonException;
 @SuppressWarnings("serial")
 public class StatusException extends CommonException implements IStatusMessage {
 	
-	protected final StatusLevel statusLevel;
+	protected final Severity severity;
 	
-	public StatusException(StatusLevel statusLevel, String message) {
-		this(statusLevel, message, null);
+	public StatusException(Severity severity, String message) {
+		this(severity, message, null);
 	}
 	
-	public StatusException(StatusLevel statusLevel, String message, Throwable cause) {
+	public StatusException(Severity severity, String message, Throwable cause) {
 		super(message, cause);
-		this.statusLevel = assertNotNull(statusLevel);
+		this.severity = assertNotNull(severity);
 	}
 	
 	@Override
-	public StatusLevel getStatusLevel() {
-		return statusLevel;
+	public Severity getSeverity() {
+		return severity;
 	}
 	
 	@Override
@@ -41,7 +41,7 @@ public class StatusException extends CommonException implements IStatusMessage {
 		if(status instanceof StatusException) {
 			return (StatusException) status;
 		}
-		return new StatusException(status.getStatusLevel(), status.getMessage());
+		return new StatusException(status.getSeverity(), status.getMessage());
 	}
 	
 }

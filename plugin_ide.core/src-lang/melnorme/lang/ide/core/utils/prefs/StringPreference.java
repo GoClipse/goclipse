@@ -22,8 +22,8 @@ public class StringPreference extends PreferenceHelper<String> {
 		super(pluginId, key, defaultValue);
 	}
 	public StringPreference(String pluginId, String key, String defaultValue, 
-			IProjectPreference<Boolean> useProjectSettings) {
-		super(pluginId, key, defaultValue, useProjectSettings);
+			IProjectPreference<Boolean> useProjectPref) {
+		super(pluginId, key, defaultValue, useProjectPref);
 	}
 	
 	@Override

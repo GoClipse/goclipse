@@ -43,7 +43,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.text.TextUtils;
+import melnorme.lang.ide.core.text.TextSourceUtils;
 import melnorme.lang.ide.ui.editor.ISourceViewerExt;
 import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
 import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
@@ -253,7 +253,7 @@ public class LangCompletionProposal implements
 	
 	protected boolean isValidPrefix(String prefix) {
 		String rplString = getBaseReplaceString();
-		return TextUtils.isPrefix(prefix, rplString, true);
+		return TextSourceUtils.isPrefix(prefix, rplString, true);
 	}
 	
 	@Override

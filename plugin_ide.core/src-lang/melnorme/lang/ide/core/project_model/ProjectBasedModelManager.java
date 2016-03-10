@@ -10,23 +10,23 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
+import static melnorme.lang.ide.core.utils.ResourceUtils.getWorkspaceRoot;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangNature;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.BundlePath;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.ownership.LifecycleObject;
 
 /**
  * Abstract class for a manager for a project-based model.
  */
-public abstract class ProjectBasedModelManager {
+public abstract class ProjectBasedModelManager extends LifecycleObject {
 	
 	protected final BundleManifestResourceListener listener = init_createResourceListener();
 	
@@ -34,39 +34,20 @@ public abstract class ProjectBasedModelManager {
 	}
 	
 	protected void initializeModelManager() {
-		try {
-			ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
-				@Override
-				public void run(IProgressMonitor monitor) {
-					ResourceUtils.getWorkspace().addResourceChangeListener(
-						listener, IResourceChangeEvent.POST_CHANGE);
-					initializeProjectsInfo(monitor);
-				}
-			}, null);
-		} catch (CoreException ce) {
-			LangCore.logStatus(ce);
-			// This really should not happen, but still try to recover by registering listener.
-			ResourceUtils.getWorkspace().addResourceChangeListener(
-				listener, IResourceChangeEvent.POST_CHANGE);
-		}
+		ResourceUtils.connectResourceListener(listener, this::initializeProjectsInfo, getWorkspaceRoot(), owned);
 	}
 	
 	public final void shutdownManager() {
-		doShutdown();
-	}
-	
-	protected void doShutdown() {
-		// It is allowed to shutdown the manager without having it started.
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(listener);
+		dispose();
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected void initializeProjectsInfo(@SuppressWarnings("unused") IProgressMonitor monitor) {
+	protected void initializeProjectsInfo() {
 		
 		IProject[] projects = EclipseUtils.getWorkspaceRoot().getProjects();
 		for (IProject project : projects) {
-			if(listener.isEligibleForBundleManifestWatch(project) && listener.projectHasBundleManifest(project)) {
+			if(listener.isValidLangProject(project) && listener.isValidBundleModelProject(project)) {
 				bundleProjectAdded(project);
 			}
 		}
@@ -76,13 +57,8 @@ public abstract class ProjectBasedModelManager {
 	
 	protected class ManagerResourceListener extends BundleManifestResourceListener {
 		
-		public ManagerResourceListener(Path manifestFile) {
-			super(manifestFile);
-		}
-		
-		@Override
-		public boolean isEligibleForBundleManifestWatch(IProject project) {
-			return LangNature.isAccessible(project, true);
+		public ManagerResourceListener() {
+			super();
 		}
 		
 		@Override
@@ -105,6 +81,11 @@ public abstract class ProjectBasedModelManager {
 			ProjectBasedModelManager.this.bundleManifestFileChanged(project);
 		}
 		
+		@Override
+		public boolean resourceIsManifest(IResource resource) {
+			return ProjectBasedModelManager.this.resourceIsManifest(resource);
+		}
+		
 	}
 	
 	protected abstract Object getProjectInfo(IProject project);
@@ -114,5 +95,18 @@ public abstract class ProjectBasedModelManager {
 	protected abstract void bundleProjectRemoved(IProject project);
 	
 	protected abstract void bundleManifestFileChanged(IProject project);
+	
+	public boolean resourceIsManifest(IResource resource) {
+		if(resource == null || resource.getType() != IResource.FILE) {
+			return false;
+		}
+		try {
+			Location projectLoc = ResourceUtils.getLocation(resource.getProject());
+			Location resourceLoc = ResourceUtils.getLocation(resource);
+			return areEqual(new BundlePath(projectLoc).getManifestLocation(true), resourceLoc);
+		} catch(CommonException e) {
+			return false;
+		}
+	}
 	
 }

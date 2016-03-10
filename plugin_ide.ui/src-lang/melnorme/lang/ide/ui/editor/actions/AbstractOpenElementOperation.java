@@ -22,7 +22,6 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore;
@@ -30,14 +29,20 @@ import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.IOperationService;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> {
+public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> 
+	implements IOperationService {
 	
 	protected final String source;
 	protected final SourceRange range; // range of element to open. Usually only offset matters
@@ -49,9 +54,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	protected int line_0;
 	protected int col_0;
 	
-	protected String statusErrorMessage;
-	
-	public AbstractOpenElementOperation(String operationName, ITextEditor editor, SourceRange range,
+	public AbstractOpenElementOperation(String operationName, ITextEditor editor, SourceRange range, 
 			OpenNewEditorMode openEditorMode) {
 		super(operationName, editor);
 		
@@ -100,9 +103,8 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	
 	@Override
 	protected void handleComputationResult() throws CoreException, CommonException {
-		if(statusErrorMessage != null) {
-			handleStatusErrorMessage();
-		}
+		super.handleComputationResult();
+		
 		if(result == null) {
 			Display.getCurrent().beep();
 			return;
@@ -115,14 +117,6 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		SourceLineColumnRange sourceRange = result.getSourceRange();
 		
 		openEditorForLocation(result.getFileLocation(), sourceRange);
-	}
-	
-	protected void handleStatusErrorMessage() {
-		if(editor instanceof AbstractTextEditor) {
-			AbstractTextEditor abstractTextEditor = (AbstractTextEditor) editor;
-			EditorUtils.setStatusLineErrorMessage(abstractTextEditor, statusErrorMessage, null);
-		}
-		Display.getCurrent().beep();
 	}
 	
 	protected void openEditorForLocation(Location fileLoc, SourceLineColumnRange sourceRange) 
@@ -159,6 +153,19 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		}
 		
 		return lineOffset + column_oneBased-1;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public ExternalProcessResult runProcess(ProcessBuilder pb, String input, ICancelMonitor cm)
+			throws OperationCancellation, CommonException {
+		return LangCore.getToolManager().runEngineTool(pb, input, cm);
+	}
+	
+	@Override
+	public void logStatus(StatusException statusException) {
+		LangCore.logStatusException(statusException);
 	}
 	
 }

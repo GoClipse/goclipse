@@ -13,16 +13,14 @@ package melnorme.util.swt.components.fields;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
+import melnorme.util.swt.WidgetSelectedRunner;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -31,14 +29,14 @@ public abstract class ButtonTextField extends TextFieldComponent {
 	protected String buttonLabel;
 	protected Button button;
 	
-	public ButtonTextField(String labelText, int textStyle, String buttonlabel) {
-		super(labelText, textStyle);
-		buttonLabel = buttonlabel;
+	public ButtonTextField(String label, int textStyle, String buttonLabel) {
+		super(label, textStyle);
+		this.buttonLabel = buttonLabel;
 	}
 	
-	public ButtonTextField(String labelText, String buttonlabel) {
-		super(labelText);
-		buttonLabel = buttonlabel;
+	public ButtonTextField(String label, String buttonLabel) {
+		super(label);
+		this.buttonLabel = buttonLabel;
 	}
 	
 	protected String getButtonLabel() {
@@ -67,29 +65,11 @@ public abstract class ButtonTextField extends TextFieldComponent {
 	
 	protected void createContents_Button(Composite topControl) {
 		button = SWTFactoryUtil.createPushButton(topControl, getButtonLabel(), null);
-		button.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				handleButtonSelected();
-			}
-		});
+		button.addSelectionListener(new WidgetSelectedRunner(getButtonHandler()));
 	}
 	
-	protected void handleButtonSelected() {
-		try {
-			try {
-				String result = getNewValueFromButtonSelection2();
-				if(result != null) {
-					setFieldValue(result);
-				}
-			} catch(CoreException ce) {
-				throw LangCore.createCommonException(ce);
-			}
-		} catch(CommonException ce) {
-			UIOperationsStatusHandler.handleStatus(false, getButtonOperationErrorMessage(), ce);
-		} catch(OperationCancellation e) {
-			return;
-		}
+	protected BasicUIOperation getButtonHandler() {
+		return new SetFieldValueOperation<String>(this, this::getNewValueFromButtonSelection2);
 	}
 	
 	protected String getButtonOperationErrorMessage() {

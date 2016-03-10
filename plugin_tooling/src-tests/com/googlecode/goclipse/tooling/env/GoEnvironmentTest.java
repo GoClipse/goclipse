@@ -76,6 +76,8 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 		assertTrue(goPath.isEmpty());
 		assertTrue(goPath.getGoPathEntries().size() == 0);
 		assertEquals(goPath.getGoPathWorkspaceString(), "");
+		
+		verifyThrows(() -> new GoPath("").validate(), CommonException.class, "empty");
 	}
 	
 	@Test

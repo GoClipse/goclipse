@@ -10,25 +10,24 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
+import static melnorme.lang.ide.core.operations.ToolchainPreferences.USE_PROJECT_SETTINGS;
+
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.OptionalStringPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface GoEnvironmentPrefs {
 	
-	static StringPreference GO_ROOT = new StringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.goroot", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
-	static OptionalStringPreference GO_PATH = new OptionalStringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.gopath", ToolchainPreferences.USE_PROJECT_SETTINGS);
-	static StringPreference GO_OS = new StringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.goos", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
-	static StringPreference GO_ARCH = new StringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.goarch", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
+	IProjectPreference<String> GO_ROOT = new StringPreference(LangCore.PLUGIN_ID, 
+		"com.googlecode.goclipse.goroot", "", USE_PROJECT_SETTINGS).getProjectPreference();
 	
-	static StringPreference FORMATTER_PATH = new StringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.formatter.path", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
-	static StringPreference DOCUMENTOR_PATH = new StringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.documentor.path", "", ToolchainPreferences.USE_PROJECT_SETTINGS);
+	IProjectPreference<String> GO_PATH = new OptionalStringPreference(LangCore.PLUGIN_ID, 
+		"com.googlecode.goclipse.gopath", ToolchainPreferences.USE_PROJECT_SETTINGS).getProjectPreference();
+	
+	IProjectPreference<Boolean> APPEND_PROJECT_LOC_TO_GOPATH = new BooleanPreference(LangCore.PLUGIN_ID,
+		"append_projloc_gopath", true, ToolchainPreferences.USE_PROJECT_SETTINGS).getProjectPreference();
 	
 }

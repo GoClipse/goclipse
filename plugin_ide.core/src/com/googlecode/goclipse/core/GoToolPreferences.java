@@ -10,10 +10,25 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
-import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import java.nio.file.Path;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
+import melnorme.lang.ide.core.utils.prefs.OptionalStringPreference;
+import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
 
 public interface GoToolPreferences {
 	
-	StringPreference GO_ORACLE_Path = new StringPreference("GoToolPreferences.GO_ORACLE_Path", "oracle");
+	DerivedValuePreference<Path> GO_ORACLE_Path = new DerivedValuePreference<Path>(LangCore.PLUGIN_ID, 
+		"GoToolPreferences.GO_ORACLE_Path", "", null,  
+		(new LocationOrSinglePathValidator("Go oracle path:")).setFileOnly(true));
+	
+	DerivedValuePreference<Path> GODEF_Path = new DerivedValuePreference<Path>(LangCore.PLUGIN_ID, 
+		"GoToolPreferences.godef.Path", "", null, 
+		(new LocationOrSinglePathValidator("godef path:")).setFileOnly(true));
+	
+	DerivedValuePreference<Path> GOFMT_Path = new DerivedValuePreference<Path>(
+		new OptionalStringPreference(LangCore.PLUGIN_ID, "GoToolPreferences.GOFMT_Path", null), 
+		(new LocationOrSinglePathValidator("gofmt path:")).setFileOnly(true));
 	
 }

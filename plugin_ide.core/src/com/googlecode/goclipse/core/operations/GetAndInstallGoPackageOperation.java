@@ -10,13 +10,18 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.googlecode.goclipse.core.GoProjectEnvironment;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -27,25 +32,35 @@ import melnorme.utilbox.misc.MiscUtil;
 
 public class GetAndInstallGoPackageOperation implements CoreOperationRunnable {
 	
+	protected final AbstractToolManager toolMgr = LangCore.getToolManager();
+	
+	protected final GoEnvironment goEnv;
 	protected final String goPackage;
 	protected final String exeName;
 	protected boolean preventWindowsConsoleGUI = false;
 	
-	public GetAndInstallGoPackageOperation(String goPackage, String exeName) {
-		this.goPackage = goPackage;
-		this.exeName = exeName;
+	public GetAndInstallGoPackageOperation(GoEnvironment goEnv, String goPackage, String exeName) {
+		this.goEnv = assertNotNull(goEnv);
+		this.goPackage = assertNotNull(goPackage);
+		this.exeName = assertNotNull(exeName);
 	}
 	
 	protected Location workingDir;
 	
 	@Override
 	public void doRun(IProgressMonitor monitor) throws CommonException, CoreException, OperationCancellation {
-		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(null);
+		ProcessBuilder pb = getProcessToStart();
+		
+		IOperationConsoleHandler opHandler = toolMgr.startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, true);
+		toolMgr.newRunProcessTask(opHandler, pb, monitor).runProcess();
+	}
+	
+	public ProcessBuilder getProcessToStart() throws CommonException {
 		workingDir = getFirstGoPathEntry(goEnv);
 		
 		ArrayList2<String> cmdLine = getCmdLine();
 		
-		GoToolManager.getDefault().newRunToolTask(goEnv, cmdLine, workingDir, monitor).runProcess();
+		return goEnv.createProcessBuilder(cmdLine, workingDir, true);
 	}
 	
 	protected Location getFirstGoPathEntry(GoEnvironment goEnv) throws CommonException {
@@ -59,8 +74,9 @@ public class GetAndInstallGoPackageOperation implements CoreOperationRunnable {
 		return workingDir;
 	}
 	
-	public ArrayList2<String> getCmdLine() {
-		ArrayList2<String> cmdLine = CollectionUtil.createArrayList("go", "get", "-u");
+	public ArrayList2<String> getCmdLine() throws CommonException {
+		String sdkPath = toolMgr.getSDKToolPath(null).toString();
+		ArrayList2<String> cmdLine = CollectionUtil.createArrayList(sdkPath, "get", "-u");
 		
 		if(preventWindowsConsoleGUI && MiscUtil.OS_IS_WINDOWS) {
 			cmdLine.addElements("-ldflags", "-H=windowsgui");
@@ -70,7 +86,7 @@ public class GetAndInstallGoPackageOperation implements CoreOperationRunnable {
 		return cmdLine;
 	}
 	
-	public Location getGocodeExeLocation() {
+	public Location getDownloadedToolLocation() {
 		return workingDir.resolve_fromValid("bin/"+exeName + (MiscUtil.OS_IS_WINDOWS ? ".exe" : ""));
 	}
 	

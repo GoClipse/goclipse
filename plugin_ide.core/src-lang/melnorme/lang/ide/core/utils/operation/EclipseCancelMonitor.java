@@ -12,6 +12,8 @@ package melnorme.lang.ide.core.utils.operation;
 
 import melnorme.utilbox.concurrency.ICancelMonitor;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public final class EclipseCancelMonitor implements ICancelMonitor {
@@ -19,7 +21,7 @@ public final class EclipseCancelMonitor implements ICancelMonitor {
 	protected final IProgressMonitor monitor;
 	
 	public EclipseCancelMonitor(IProgressMonitor monitor) {
-		this.monitor = monitor;
+		this.monitor = assertNotNull(monitor);
 	}
 	
 	@Override

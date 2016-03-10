@@ -26,6 +26,11 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	public GoBuildOutputProcessor() {
 	}
 	
+	@Override
+	protected String getToolProcessName() {
+		return "go build";
+	}
+	
 	public ArrayList2<ToolSourceMessage> getBuildErrors() {
 		return buildMessages;
 	}

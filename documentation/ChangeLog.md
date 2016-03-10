@@ -1,11 +1,44 @@
 ## release ChangeLog
 
 ### (NextVersion)
+
+### 0.14.1
+ * Added `godef` integration. `godef` is used as an alternative to oracle for the Open Definition operation. 
+   * I wasn't able to use it extensively, but it seems to be more powerful than oracle (it can recover from some compiler errors for example), and faster. Indeed, most other Go IDEs/editors are using godef, so this bring Goclipse in line with that. 
+ * Added "Format automatically on editor save." preference.
+ * gofmt preferences moved to "Go/Tools" preference page.
+ * Minor improvement to editor caret position preservation when invoking gofmt.
+ * Added signing to releases.
+ * Removed GOOS and GOARCH from preferences, they no longer have an apparent use.
+ * Removed godoc preference. 
+ * Fixed: Incorrect icon for errors and warnings in preference page status.
+ * Fixed: Can't save preference pages with empty fields.
+ * Fixed: Problem markers for the #build-tests target would not be created for Eclipse projects inside a GOPATH entry.
+ 
+### 0.14.0
+ * Added on-the-fly parser errors in the editor (uses Go `oracle`).
+ * Added some new Snippets: `for`, `foreach`, `switch`, `main`, `apl` and a few others.
+ * Added improved download functionality in gocode/oracle preference page. 
+ * Pressing F2 in the editor now shows information popup for problem under cursor (same as the mouse-over hover).
  * Project builder is no longer invoked when workspace "Build Automatically" setting is enabled and a file is saved. (this was considered a misfeature anyways)
+ * Dirty editors are now automatically saved if a build is invoked directly from a Build Target in the Project Explorer. (if the workspace "Save automatically before build" option is enabled).
+ * Improved Auto-Indent when Enter pressed before a closing brace. 
+ * Added preference to control whether project location is implicitly added to GOPATH or not.
  * Added gocode preference to enable/disable showing the error dialog if failures occur during Content Assist.
+ * Minimum and recommended CDT version is now `8.8`.
+
+--
+ * Partially fixed outline not showing some method declarations. Now it works when editor is saved, but not if the editor is dirty. (#177)
+ * Fixed NPE when invoking Open Definition in a file that is available in the Eclipse workspace under more than one path/location. (#167)
+ * Fixed bug with Content Assist snippets using the `${word_selection}` variable.
+ * Fixed workspace resource locking when a build is invoked directly from a Build Target in the Project Explorer.
+ * Fixed regression: Console view always activates when a build is invoked. (#158)
+ * When debugging, fixed toggling breakpoints on and off for files that are outside the workspace.
+ * When debugging, fixed opening source files that are are outside the workspace.
+ * Fixed line breakpoint icon.
  * Fixed: in New Go File Wizard, "Browse" button not working.
  * Fixed: "Restore Defaults" in "Go Compiler" settings page sometimes causes GOPATH field to be enabled when it shouldn't. 
- * Fixed: project Build Targets settings pages shows wrong default for Program Path field
+ * Fixed: project Build Targets settings pages shows wrong default for Program Path field.
  
 ### 0.13.0
  * Added support for Eclipse dark theme (#131). Namely:  

@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import com.googlecode.goclipse.ui.text.GoColorPreferences;
 
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.ide.ui.text.coloring.AbstractSourceColoringConfigurationBlock;
 import melnorme.util.swt.jface.LabeledTreeElement;
 
@@ -13,8 +14,8 @@ public class GoSourceColoringConfigurationBlock extends AbstractSourceColoringCo
 	
 	private static final String PREVIEW_FILE_NAME = "SourceColoringPreviewFile.go";
 	
-	public GoSourceColoringConfigurationBlock() {
-		super();
+	public GoSourceColoringConfigurationBlock(PreferencesPageContext prefContext) {
+		super(prefContext);
 	}
 	
 	@Override

@@ -11,28 +11,17 @@
 package melnorme.lang.ide.ui.editor;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 import static melnorme.utilbox.core.CoreUtil.assertInstance;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.ide.core.TextSettings_Actual;
-import melnorme.lang.ide.core.utils.prefs.EclipsePreferencesAdapter;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
-import melnorme.lang.ide.ui.LangImages;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.ide.ui.editor.actions.GotoMatchingBracketManager;
-import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
-import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
-import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
-import melnorme.utilbox.misc.ArrayUtil;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -47,6 +36,22 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.prefs.EclipsePreferencesAdapter;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
+import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.editor.actions.GotoMatchingBracketManager;
+import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
+import melnorme.utilbox.misc.ArrayUtil;
 
 public abstract class AbstractLangEditor extends TextEditorExt {
 	
@@ -81,6 +86,12 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	@Override
 	protected void doSetInput(IEditorInput input) throws CoreException {
 		super.doSetInput(input);
+		
+		if(input == null) {
+			// Do nothing, editor will be closed.
+			LangCore.logError("doSetInput = null");
+			return;
+		}
 		
 		SourceViewer sourceViewer = getSourceViewer_();
 		
@@ -153,15 +164,11 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	@Override
 	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
-//		AbstractLangSourceViewerConfiguration langSVC = getSourceViewerConfiguration_asLang();
-//		if(langSVC != null && langSVC.affectsTextPresentation(event)) {
-//			return true;
-//		}
-//		
 		return super.affectsTextPresentation(event);
 	}
 	
 	protected void internalDoSetInput(IEditorInput input) {
+		assertNotNull(input);
 		editorTitleImageUpdater.updateEditorImage(EditorUtils.getAssociatedFile(input));
 	}
 	
@@ -260,6 +267,19 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 			EditorPrefConstants.MATCHING_BRACKETS_COLOR2.getActiveKey(), 
 			EditorPrefConstants.HIGHLIGHT_BRACKET_AT_CARET_LOCATION, 
 			EditorPrefConstants.ENCLOSING_BRACKETS);
+	}
+	
+	/* ----------------- save ----------------- */
+	
+	@Override
+	protected void performSave(boolean overwrite, IProgressMonitor pm) {
+		IProject associatedProject = EditorUtils.getAssociatedProject(getEditorInput());
+		if(ToolchainPreferences.FORMAT_ON_SAVE.getEffectiveValue(associatedProject)) {
+			BasicUIOperation formatOperation = LangUIPlugin_Actual.getFormatOperation(this);
+			formatOperation.executeAndHandle();
+		}
+		
+		super.performSave(overwrite, pm);
 	}
 	
 }

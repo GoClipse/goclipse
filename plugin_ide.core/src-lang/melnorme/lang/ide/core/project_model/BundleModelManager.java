@@ -12,12 +12,10 @@ package melnorme.lang.ide.core.project_model;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.Path;
 
 import melnorme.lang.ide.core.BundleInfo;
-import melnorme.lang.ide.core.utils.CoreTaskAgent;
+import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.SimpleLogger;
@@ -30,7 +28,7 @@ public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel>
 	protected final BUNDLE_MODEL model;
 	protected final SimpleLogger log;
 	
-	protected final ITaskAgent modelAgent = new CoreTaskAgent(getClass().getSimpleName());
+	protected final ITaskAgent modelAgent = CoreExecutors.newExecutorTaskAgent(getClass());
 	protected final LatchRunnable startLatch = new LatchRunnable();
 	
 	public BundleModelManager(BUNDLE_MODEL model) {
@@ -68,19 +66,9 @@ public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel>
 	}
 	
 	@Override
-	protected void doShutdown() {
-		super.doShutdown();
-		
+	protected void dispose_pre() {
 		modelAgent.shutdownNow();
 	}
-	
-	/* -----------------  ----------------- */
-	
-	public boolean isBundleManifestFile(IFile file) {
-		return file.getProjectRelativePath().equals(getDefaultBundleManifestPath());
-	}
-	
-	protected abstract Path getDefaultBundleManifestPath();
 	
 	/* -----------------  ----------------- */
 	

@@ -12,6 +12,8 @@ package melnorme.lang.tooling.ops;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import melnorme.utilbox.core.CommonException;
+
 /**
  * Helper throwable result for "soft" failures: these are non-critical failures, 
  * such as invoking content assist on a source location where that operation cannot be performed.
@@ -23,6 +25,15 @@ public class OperationSoftFailure extends Exception {
 	
 	public OperationSoftFailure(String message) {
 		super(assertNotNull(message));
+	}
+	
+	@Override
+	public String getMessage() {
+		return super.getMessage();
+	}
+	
+	public CommonException toCommonException() {
+		return new CommonException(getMessage());
 	}
 	
 }

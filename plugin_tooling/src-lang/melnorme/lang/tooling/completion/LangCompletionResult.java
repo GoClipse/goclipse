@@ -39,7 +39,7 @@ public class LangCompletionResult {
 		return errorMessage;
 	}
 	
-	protected Indexable<ToolCompletionProposal> getProposals() {
+	public Indexable<ToolCompletionProposal> getProposals_maybeNull() {
 		return proposals;
 	}
 	
@@ -48,7 +48,7 @@ public class LangCompletionResult {
 			throw new OperationSoftFailure(getErrorMessage());
 		}
 		
-		return getProposals();
+		return getProposals_maybeNull();
 	}
 	
 }

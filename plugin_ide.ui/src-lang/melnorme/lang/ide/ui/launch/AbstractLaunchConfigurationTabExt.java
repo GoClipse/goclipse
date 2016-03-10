@@ -53,11 +53,10 @@ public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchCo
 		} catch(StatusException se) {
 			String message = se.getMessage();
 			
-			switch (se.getStatusLevel()) {
+			switch (se.getSeverity()) {
 			case ERROR: setErrorMessage(message); break;
 			case WARNING: setWarningMessage(message); break;
-			case INFO: 
-			case OK: setMessage(message);break;
+			case INFO: setMessage(message);break;
 			}
 		} catch(CommonException e) {
 			setErrorMessage(e.getMessage());

@@ -1,8 +1,8 @@
+[![Build Status](https://travis-ci.org/GoClipse/goclipse.svg?branch=master)](https://travis-ci.org/GoClipse/goclipse)
+[![Gitter](https://badges.gitter.im/GoClipse/goclipse.svg)](https://gitter.im/GoClipse/goclipse?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 Developers Guide
 ================
-
-[![Build Status](https://travis-ci.org/GoClipse/goclipse.svg?branch=master)](https://travis-ci.org/GoClipse/goclipse)
 
 #### Setting up the development environment:
  * You need [Eclipse PDE](https://eclipse.org/pde/) to develop Eclipse plugins. Download and start it.
@@ -10,7 +10,7 @@ Developers Guide
  * In Eclipse, click "File / Import... ", and then "General / Existing projects into workspace". Select the Git repository folder as the "root directory", and select all the Eclipse projects that show up. Click finish to import those projects.
 <div align="center">
 <a><img src="documentation/README_images/ImportPluginProjects.png" /><a/> <br/>
-<sub><sup>Note: The actual project names will vary: the "LANG_PROJECT_ID" name segment will be different.</sup></sub>
+<sub><sup>Note: The actual project names will be different from those in the screenshot above.</sup></sub>
 </div>
  * Note: Java compiler settings will be automatically configured, since Eclipse compiler settings are stored in source version control.
  * Setup the target platform: Open the target platform file: `releng/target-platform/IDE.target` (You can use the Open Resource dialog to help find this file, press Ctrl-R and type `IDE.target` in the dialog). Then click "Set as Target Platform" once the file is opened, as seen here: 
@@ -35,6 +35,7 @@ A release is a web site with an Eclipse p2 update site. The website may contain 
 
  1. Ensure the version numbers of all plugins/features/etc. are properly updated, if they haven't been already.
  1. Run `mvn clean integration-test` to perform the Tycho build (see section above). Ensure all tests pass.
+   * To create a signed release the `sign-build` Maven profile must be activated, and the required properties set.
  1. Create and push a new release tag for the current release commit. 
  1. Go to the Github releases page and edit the newly present release. Add the corresponding ([ChangeLog.md](documentation/ChangeLog.md)) entries to the release notes. 
  1. Locally, run `ant -f releng/ CreateProjectSite`. This last step will prepare the project web site under `bin-maven/ProjectSite`.

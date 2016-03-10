@@ -17,9 +17,9 @@ public class AbstractValidatorExt extends AbstractValidator {
 	public AbstractValidatorExt() {
 	}
 	
-	protected ValidationException createException(StatusLevel statusLevel, String message) {
-		assertNotNull(statusLevel);
-		return new ValidationException(statusLevel, getFullMessage(message), message, null);
+	protected ValidationException createException(Severity severity, String message) {
+		assertNotNull(severity);
+		return new ValidationException(severity, getFullMessage(message), message, null);
 	}
 	
 	protected String getFullMessage(String simpleMessage) {

@@ -31,8 +31,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextSelection;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorInput;
@@ -178,6 +181,14 @@ public class EditorUtils {
 		}
 	}
 	
+	public static Location getLocationOrNull(IEditorInput editorInput) {
+		try {
+			return getLocationFromEditorInput(editorInput);
+		} catch(CoreException e) {
+			return null;
+		}
+	}
+	
 	/* -----------------  Editor opening utils  ----------------- */
 	
 	public static enum OpenNewEditorMode { ALWAYS, TRY_REUSING_EXISTING, NEVER }
@@ -252,6 +263,24 @@ public class EditorUtils {
 	public static SourceRange getSelectedRange(ITextViewer viewer) {
 		Point selectedRange = viewer.getSelectedRange();
 		return new SourceRange(selectedRange.x, selectedRange.y);
+	}
+	
+	/* ----------------- JDT ----------------- */
+	
+	/**
+	 * Copy of {@link org.eclipse.jface.text.source.MatchingCharacterPainter#getSignedSelection()}
+	 */
+	public static final IRegion getSignedSelection(ITextViewer sourceViewer) {
+		Point viewerSelection= sourceViewer.getSelectedRange();
+	
+		StyledText text= sourceViewer.getTextWidget();
+		Point selection= text.getSelectionRange();
+		if (text.getCaretOffset() == selection.x) {
+			viewerSelection.x= viewerSelection.x + viewerSelection.y;
+			viewerSelection.y= -viewerSelection.y;
+		}
+	
+		return new Region(viewerSelection.x, viewerSelection.y);
 	}
 	
 }

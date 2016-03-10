@@ -12,11 +12,11 @@
 package melnorme.lang.ide.ui.editor.text;
 
 import melnorme.lang.ide.core.text.format.FormatterIndentMode;
-import melnorme.lang.ide.core.text.format.LangAutoEditStrategyExt.ILangAutoEditsPreferencesAccessExt;
+import melnorme.lang.ide.core.text.format.ILangAutoEditsPreferencesAccess;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
 
-public class LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccessExt {
+public class LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccess {
 	
 	public LangAutoEditsPreferencesAccess() {
 	}
@@ -31,11 +31,6 @@ public class LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferences
 		return LangAutoEditPreferenceConstants.AE_SMART_DEINDENT.get();
 	}
 	
-	@Override
-	public boolean closeBlocks() {
-		return closeBraces();
-	}
-
 	@Override
 	public boolean closeBraces() {
 		return LangAutoEditPreferenceConstants.AE_CLOSE_BRACES.get();

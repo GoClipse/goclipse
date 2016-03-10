@@ -93,7 +93,7 @@ public class SourceFileLocation {
 		int line_1based = NumberUtil.parseInt(line);
 		int column_1based = NumberUtil.parseInt(column);
 		
-		int validatedOffset = sourceLinesInfo.getValidatedOffset(line_1based, column_1based);
+		int validatedOffset = sourceLinesInfo.getValidatedOffset_1(line_1based, column_1based);
 		int length = sourceLinesInfo.getIdentifierAt(validatedOffset);
 		
 		return new SourceRange(validatedOffset, length);

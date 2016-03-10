@@ -11,12 +11,11 @@
 package melnorme.lang.ide.ui.preferences.pages;
 
 
-import org.eclipse.core.resources.IProject;
-
-import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
+import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage2;
 import melnorme.lang.ide.ui.preferences.ProjectBuildConfigurationComponent;
 
-public abstract class BuildConfigurationPropertyPage extends AbstractLangPropertyPage {
+public abstract class BuildConfigurationPropertyPage 
+	extends AbstractLangPropertyPage2<ProjectBuildConfigurationComponent> {
 	
 	public BuildConfigurationPropertyPage() {
 		super();
@@ -26,19 +25,21 @@ public abstract class BuildConfigurationPropertyPage extends AbstractLangPropert
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected abstract ProjectBuildConfigurationComponent createProjectConfigWidget(IProject project);
-	
-	@Override
-	public ProjectBuildConfigurationComponent getPreferencesWidget() {
-		return (ProjectBuildConfigurationComponent) super.getPreferencesWidget();
-	}
-	
-	@Override
 	public void applyData(Object data) {
 		if(data instanceof String) {
 			String targetName = (String) data;
 			getPreferencesWidget().getBuildTargetField().setFieldValue(targetName);
 		}
+	}
+	
+	@Override
+	public boolean performOk() {
+		return getPreferencesWidget().saveSettings();
+	}
+	
+	@Override
+	protected void performDefaults() {
+		getPreferencesWidget().loadDefaults();
 	}
 	
 }

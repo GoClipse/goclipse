@@ -16,7 +16,7 @@ public interface IValidationSource {
 	
 	default StatusLevel getValidationStatusLevel() {
 		IStatusMessage se = getValidationStatus();
-		return se == null ? StatusLevel.OK : se.getStatusLevel(); 
+		return se == null ? StatusLevel.OK : se.getSeverity().toStatusLevel(); 
 	}
 	
 	/* -----------------  ----------------- */
@@ -27,7 +27,7 @@ public interface IValidationSource {
 			
 			IStatusMessage se = validationSource.getValidationStatus();
 			if(se != null) {
-				if(highestSE == null || se.getStatusLevelOrdinal() > highestSE.getStatusLevelOrdinal()) {
+				if(highestSE == null || se.isHigherSeverity(highestSE)) {
 					highestSE = se;
 				}
 			}

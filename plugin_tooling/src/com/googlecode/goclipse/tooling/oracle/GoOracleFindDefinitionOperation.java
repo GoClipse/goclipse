@@ -15,9 +15,15 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.googlecode.goclipse.tooling.env.GoEnvironment;
+
 import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.IProcessRunner;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
@@ -25,6 +31,18 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 	
 	public GoOracleFindDefinitionOperation(String goOraclePath) {
 		super(goOraclePath);
+	}
+	
+	public FindDefinitionResult execute(Location inputLoc, int byteOffset, GoEnvironment goEnv, IProcessRunner opRunner,
+			ICancelMonitor cm) throws OperationCancellation, CommonException, OperationSoftFailure {
+		ProcessBuilder pb = createProcessBuilder(goEnv, inputLoc, byteOffset);
+		
+		ExternalProcessResult result = opRunner.runProcess(pb, null, cm);
+		if(result.exitValue != 0) {
+			throw new OperationSoftFailure("Go oracle did not complete successfully.");
+		}
+		
+		return parseToolResult(result);
 	}
 	
 	public FindDefinitionResult parseToolResult(ExternalProcessResult result) throws CommonException {

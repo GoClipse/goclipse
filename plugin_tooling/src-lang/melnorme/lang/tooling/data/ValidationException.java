@@ -21,8 +21,8 @@ public class ValidationException extends StatusException {
 	
 	protected final String simpleMessage;
 	
-	public ValidationException(StatusLevel statusLevel, String message, String simpleMessage, Throwable cause) {
-		super(statusLevel, message, cause);
+	public ValidationException(Severity severity, String message, String simpleMessage, Throwable cause) {
+		super(severity, message, cause);
 		this.simpleMessage = assertNotNull(simpleMessage);
 	}
 	

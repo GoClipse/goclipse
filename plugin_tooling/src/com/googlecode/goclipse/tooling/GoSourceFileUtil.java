@@ -44,7 +44,7 @@ public class GoSourceFileUtil {
 			if(parser.tryConsume("package ")) {
 				
 				consumeSpaces(parser);
-				return parser.getReadOffset();
+				return parser.getReadPosition();
 			} else {
 				String line = LexingUtils.consumeLine(parser);
 				if(line.trim().isEmpty()) {

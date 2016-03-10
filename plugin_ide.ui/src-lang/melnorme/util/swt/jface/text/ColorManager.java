@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.util.swt.jface.text;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +25,7 @@ public class ColorManager implements ISharedTextColors {
 	private static final ColorManager defaultInstance = new ColorManager();
 	
 	public static ColorManager getDefault() {
-		return defaultInstance;
+		return assertNotNull(defaultInstance);
 	}
 	
 	protected final Map<RGB, Color> colors = new HashMap<>(16);

@@ -15,9 +15,6 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.EnumSet;
 
-import melnorme.lang.tooling.EAttributeFlag;
-import melnorme.lang.tooling.EProtection;
-import melnorme.lang.tooling.ElementAttributes;
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -28,7 +25,7 @@ import melnorme.utilbox.misc.StringUtil;
  */
 abstract class AbstractElementAttributes {
 	
-	protected final EProtection protection;
+	protected final EProtection protection; // can be null
 	protected final EnumSet<EAttributeFlag> flagsSet;
 	
 	public AbstractElementAttributes(EProtection protection, EnumSet<EAttributeFlag> flagsSet) {
@@ -65,7 +62,8 @@ abstract class AbstractElementAttributes {
 	
 	@Override
 	public String toString() {
-		return "FLAGS[" + getProtection() + ";" + StringUtil.collToString(flagsSet, ",") + "]";
+		String protString = getProtection() == null ? "" : getProtection().toString();
+		return "ATTRIBS[" + protString + ";" + StringUtil.collToString(flagsSet, ",") + "]";
 	}
 	
 	/* -----------------  ----------------- */

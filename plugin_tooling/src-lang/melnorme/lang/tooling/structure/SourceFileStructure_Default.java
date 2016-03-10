@@ -13,12 +13,13 @@ package melnorme.lang.tooling.structure;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
+
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
 
-public class SourceFileStructure_Default extends StructureContainer implements ISourceFileStructure {
+public abstract class SourceFileStructure_Default extends AbstractStructureContainer implements ISourceFileStructure {
 	
 	protected final Location location;
 	protected final Indexable<ParserError> parserProblems;
@@ -44,12 +45,12 @@ public class SourceFileStructure_Default extends StructureContainer implements I
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(location, children.size());
+		return HashcodeUtil.combinedHashCode(location, children);
 	}
 	
 	@Override
 	public String toString() {
-		return StructureContainer.class.getSimpleName() + (location == null ? "" : " " + location); 
+		return getClass().getSimpleName() + (location == null ? "" : " " + location); 
 	}
 	
 	/* -----------------  ----------------- */
@@ -64,12 +65,12 @@ public class SourceFileStructure_Default extends StructureContainer implements I
 		return location == null ? null : location.getPath().getFileName().toString();
 	}
 	
-	public StructureElement getStructureElementAt(int offset) {
-		return new StructureElementFinderByOffset(offset).findInnerMost(this);
-	}
-	
 	public Indexable<ParserError> getParserProblems() {
 		return parserProblems;
+	}
+	
+	public StructureElement getStructureElementAt(int offset) {
+		return new StructureElementFinderByOffset(offset).findInnerMost(this);
 	}
 	
 	/* ----------------- Utils ----------------- */

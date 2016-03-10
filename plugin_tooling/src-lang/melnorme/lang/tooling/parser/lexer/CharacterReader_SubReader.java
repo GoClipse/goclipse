@@ -31,17 +31,17 @@ public class CharacterReader_SubReader extends OffsetBasedCharacterReader<Runtim
 	
 	@Override
 	public int lookahead(int offset) throws RuntimeException {
-		return reader.lookahead(readOffset + offset);
+		return reader.lookahead(readPosition + offset);
 	}
 	
 	@Override
 	public String lookaheadString(int offset, int length) {
-		return reader.lookaheadString(readOffset + offset, length);
+		return reader.lookaheadString(readPosition + offset, length);
 	}
 	
 	@Override
 	public int bufferedCharCount() {
-		return Math.max(0, reader.bufferedCharCount() - readOffset);
+		return Math.max(0, reader.bufferedCharCount() - readPosition);
 	}
 	
 	@Override
@@ -49,8 +49,8 @@ public class CharacterReader_SubReader extends OffsetBasedCharacterReader<Runtim
 	}
 	
 	public void consumeInParentReader() {
-		reader.consume(readOffset);
-		readOffset = 0;
+		reader.consume(readPosition);
+		readPosition = 0;
 	}
 	
 }

@@ -11,10 +11,10 @@
 package melnorme.utilbox.core.fntypes;
 
 /**
- * An {@link ICallable} for simple callables, typically:
+ * An {@link CallableX} for simple callables, typically:
  *  ones not having any side effects, nor performing long-waiting computation.
  */
-public interface Getter<RET, EXC extends Exception> extends ICallable<RET, EXC> {
+public interface Getter<RET, EXC extends Exception> extends CallableX<RET, EXC> {
 	
 	@Override
 	default RET call() throws EXC {

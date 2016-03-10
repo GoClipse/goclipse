@@ -13,16 +13,17 @@ package melnorme.lang.ide.core.project_model;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.Path;
 
+import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.utils.DefaultProjectResourceListener;
 
 public abstract class BundleManifestResourceListener extends DefaultProjectResourceListener {
 	
-	protected final Path manifestFile; // Can be null
+	public BundleManifestResourceListener() {
+	}
 	
-	public BundleManifestResourceListener(Path manifestFile) {
-		this.manifestFile = manifestFile;
+	public boolean isValidLangProject(IProject project) {
+		return LangNature.isAccessible(project, true);
 	}
 	
 	@Override
@@ -31,7 +32,7 @@ public abstract class BundleManifestResourceListener extends DefaultProjectResou
 		
 		Object existingProjectInfo = getProjectInfo(project);
 		
-		if(projectDelta.getKind() == IResourceDelta.REMOVED || !isEligibleForBundleManifestWatch(project)) {
+		if(projectDelta.getKind() == IResourceDelta.REMOVED || !isValidLangProject(project)) {
 			// New bundle model status = removed. 
 			
 			if(existingProjectInfo == null) {
@@ -43,18 +44,14 @@ public abstract class BundleManifestResourceListener extends DefaultProjectResou
 		
 		
 		if(projectDelta.getKind() == IResourceDelta.ADDED) {
-			if(projectHasBundleManifest(project)) {
-				bundleProjectAdded(project);
-			}
+			tentativeAddBundleProject(project);
 		} else if (projectDelta.getKind() == IResourceDelta.CHANGED) {
 			
 			// It might be the case that project wasn't eligible to have an info, but now is eligible,
 			// purely due to a change in DESCRIPTION (such as a nature add)
 			if(existingProjectInfo == null) {
 				// Then it's true, project has become bundle model project.
-				if(projectHasBundleManifest(project)) {
-					bundleProjectAdded(project);
-				}
+				tentativeAddBundleProject(project);
 				return;
 			}
 			
@@ -69,28 +66,20 @@ public abstract class BundleManifestResourceListener extends DefaultProjectResou
 		}
 	}
 	
-	public abstract boolean isEligibleForBundleManifestWatch(IProject project);
-	
-	public boolean projectHasBundleManifest(IProject project) {
-		if(manifestFile == null) {
-			return true; // Implicitly assume project has manifest
+	protected void tentativeAddBundleProject(IProject project) {
+		if(isValidBundleModelProject(project)) {
+			bundleProjectAdded(project);
 		}
-		
-		IResource packageFile = project.findMember(manifestFile);
-		return packageFile != null && packageFile.getType() == IResource.FILE;
+	}
+	
+	@SuppressWarnings("unused") 
+	public boolean isValidBundleModelProject(IProject project) {
+		return true;
 	}
 	
 	public boolean resourceDeltaIsBundleManifestChange(IResourceDelta resourceDelta) {
 		return resourceIsManifest(resourceDelta.getResource());
 	}
-	
-	protected boolean resourceIsManifest(IResource resource) {
-		return manifestFile != null && 
-				resource != null &&
-				resource.getType() == IResource.FILE && 
-				resource.getProjectRelativePath().equals(manifestFile);
-	}
-	
 	
 	public abstract Object getProjectInfo(IProject project);
 	
@@ -99,5 +88,7 @@ public abstract class BundleManifestResourceListener extends DefaultProjectResou
 	public abstract void bundleProjectRemoved(IProject project);
 	
 	public abstract void bundleManifestChanged(IProject project);
+	
+	public abstract boolean resourceIsManifest(IResource resource);
 	
 }

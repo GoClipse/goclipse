@@ -18,7 +18,7 @@ public interface ISourceFileStructure extends IStructureElementContainer {
 	/** @return the location of this SourceFile. Can be null */
 	Location getLocation();
 	
-	@Override
-	public String getModuleName();
+//	@Override
+	String getModuleName();
 	
 }

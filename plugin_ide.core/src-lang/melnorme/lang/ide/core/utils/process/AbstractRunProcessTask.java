@@ -111,7 +111,7 @@ public abstract class AbstractRunProcessTask implements IRunProcessTask {
 	public ExternalProcessResult doRunProcess(String input, boolean throwOnNonZeroStatus) 
 			throws CommonException, OperationCancellation 
 	{
-		ICancelMonitor._Util.checkCancelation(cancelMonitor);
+		ICancelMonitor.checkCancelation(cancelMonitor);
 		
 		ExternalProcessNotifyingHelper processHelper = startProcess(cancelMonitor);
 		processHelper.writeInput_(input, StringUtil.UTF8);

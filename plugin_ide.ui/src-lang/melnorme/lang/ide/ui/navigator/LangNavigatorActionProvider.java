@@ -13,6 +13,8 @@ package melnorme.lang.ide.ui.navigator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -20,8 +22,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchCommandConstants;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
+import org.eclipse.ui.actions.BuildAction;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
@@ -30,8 +34,8 @@ import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.ui.LangImages;
-import melnorme.lang.ide.ui.actions.AbstractUIOperation;
 import melnorme.lang.ide.ui.actions.RunUIOperationAction;
+import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.collections.ArrayList2;
 
 public abstract class LangNavigatorActionProvider extends CommonActionProvider {
@@ -56,9 +60,8 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 	
 	protected void initActionGroups(IViewPart viewPart) {
 		actionGroups.add(createBuildTargetsActionGroup(viewPart));
+		actionGroups.add(createProjectBuildActionGroup(viewPart));
 	}
-	
-	protected abstract BuildTargetsActionGroup createBuildTargetsActionGroup(IViewPart viewPart);
 	
 	@Override
 	public void setContext(ActionContext context) {
@@ -81,6 +84,12 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 		}
 	}
 	
+	protected abstract BuildTargetsActionGroup createBuildTargetsActionGroup(IViewPart viewPart);
+	
+	protected BuildOperationsActionGroup createProjectBuildActionGroup(IViewPart viewPart) {
+		return new BuildOperationsActionGroup(viewPart);
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public static class ViewPartActionGroup extends ActionGroup {
@@ -95,21 +104,20 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 			return viewPart.getSite().getShell();
 		}
 		
-		protected Object getSelectionFirstElement() {
+		protected IStructuredSelection getStructuredSelection() {
 			ISelection selection = getContext().getSelection();
 			if(selection instanceof IStructuredSelection) {
-				IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-				return structuredSelection.getFirstElement();
+				return (IStructuredSelection) selection;
 			}
-			return selection;
+			return null;
 		}
 		
-	}
-	
-	public static abstract class BundleOperationsActionGroup extends ViewPartActionGroup {
-		
-		public BundleOperationsActionGroup(IViewPart viewPart) {
-			super(viewPart);
+		protected Object getSelectionFirstElement() {
+			IStructuredSelection ssel = getStructuredSelection();
+			if(ssel != null) {
+				return ssel.getFirstElement();
+			}
+			return getContext().getSelection();
 		}
 		
 		public IProject getBundleProjectFromSelection() {
@@ -123,11 +131,50 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 			}
 			if(selElement instanceof IFile) {
 				IFile file = (IFile) selElement;
-				if(LangCore.getBundleModelManager().isBundleManifestFile(file)) {
+				if(LangCore.getBundleModelManager().resourceIsManifest(file)) {
 					return file.getProject();
 				}
 			}
 			return null;
+		}
+		
+	}
+	
+	public static class BuildOperationsActionGroup extends ViewPartActionGroup {
+		
+		protected final BuildAction buildAction;
+		
+		public BuildOperationsActionGroup(IViewPart viewPart) {
+			super(viewPart);
+			
+			buildAction = new BuildAction(() -> viewPart.getSite().getShell(), 
+				IncrementalProjectBuilder.INCREMENTAL_BUILD);
+			buildAction.setActionDefinitionId(IWorkbenchCommandConstants.PROJECT_BUILD_PROJECT);
+		}
+		
+		@Override
+		public void fillContextMenu(IMenuManager menu) {
+			IProject project = getBundleProjectFromSelection();
+			if(project == null)
+				return;
+			
+			if(ResourcesPlugin.getWorkspace().isAutoBuilding()) {
+				// This action is not otherwise shown if project is auto-building, so add it.
+				
+				IStructuredSelection structuredSel = getStructuredSelection();
+				if(structuredSel != null) {
+					buildAction.selectionChanged(structuredSel);
+				}
+				menu.appendToGroup(ICommonMenuConstants.GROUP_BUILD, buildAction);
+			}
+		}
+		
+	}
+	
+	public static abstract class BundleOperationsActionGroup extends ViewPartActionGroup {
+		
+		public BundleOperationsActionGroup(IViewPart viewPart) {
+			super(viewPart);
 		}
 		
 		@Override
@@ -141,6 +188,7 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 			initActions(bundleOpsMenu, project);
 			
 			menu.prependToGroup(ICommonMenuConstants.GROUP_BUILD, bundleOpsMenu);
+			
 		}
 		
 		protected abstract String getMenuName();

@@ -10,8 +10,17 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.preferences;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.swt.widgets.Composite;
+
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsolePrefPage;
 
 public class GoOperationsConsolePrefPage extends AbstractToolsConsolePrefPage {
+	
+	@Override
+	protected void create_ActivateOnErrorMessagesField(Composite parent) {
+		addField(new BooleanFieldEditor(ACTIVATE_ON_ERROR_MESSAGES.key, 
+		"Activate console on build failures.", parent));
+	}
 	
 }

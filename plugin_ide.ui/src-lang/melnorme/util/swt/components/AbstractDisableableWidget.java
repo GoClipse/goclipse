@@ -10,42 +10,60 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import melnorme.lang.ide.ui.preferences.common.AbstractWidgetExt;
 
 /**
- * An {@link AbstractWidgetExt} extended with {@link #setEnabled(boolean)} functionality.
+ * An {@link AbstractWidget} extended with {@link #setEnabled(boolean)} functionality.
  */
-public abstract class AbstractDisableableWidget extends AbstractWidgetExt implements IDisableableWidget {
+public abstract class AbstractDisableableWidget extends AbstractWidgetExt 
+	implements IDisableableWidget {
+	
+	protected AbstractDisableableWidget parent;
+	protected boolean enabled = true;
 	
 	public AbstractDisableableWidget() {
 	}
 	
-	protected boolean enabled = true;
+	public void setParent(AbstractDisableableWidget parent) {
+		assertTrue(this.parent == null);
+		this.parent = assertNotNull(parent);
+	}
+	
+	public boolean isEnabled() {
+		return enabled && (parent == null || parent.isEnabled());
+	}
 	
 	@Override
 	public final void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-		updateControlEnablement();
+		updateControlEnablement2();
 	}
 	
-	public boolean isEnabled() {
-		return enabled;
-	}
-	
-	protected void updateControlEnablement() {
+	protected void updateControlEnablement2() {
 		doSetEnabled(isEnabled());
+		updateValidationStatusForEnablement();
 	}
 	
 	protected abstract void doSetEnabled(boolean enabled);
 	
-	
-	@Override
-	protected final void updateComponentFromInput() {
-		doUpdateComponentFromInput();
-		updateControlEnablement();
+	protected void updateValidationStatusForEnablement() {
+		if(!isEnabled()) {
+			validation.setValue(null);
+		} else {
+			validation.updateFieldValue();
+		}
 	}
 	
-	protected void doUpdateComponentFromInput() {
+	@Override
+	public void updateComponentFromInput() {
+		updateControlEnablement2();
+		doUpdateComponentFromInput2();
+	}
+	
+	protected void doUpdateComponentFromInput2() {
 	}
 	
 }

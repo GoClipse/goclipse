@@ -45,11 +45,6 @@ public class LangUI extends LifecycleObject {
 		addOwned(themeHelper);
 	}
 	
-	@Override
-	public void dispose() {
-		super.dispose();
-	}
-	
 	public void addOwned(IDisposable disposable) {
 		owned.add(disposable);
 	}

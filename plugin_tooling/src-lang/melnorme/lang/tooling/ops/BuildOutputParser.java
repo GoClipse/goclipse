@@ -15,9 +15,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -34,11 +36,22 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 		return buildMessages;
 	}
 	
-	public ArrayList<ToolSourceMessage> parseOutput(ExternalProcessResult buildResult) throws CommonException {
-		return doParse(buildResult);
+	public final ArrayList<ToolSourceMessage> parseOutput(ExternalProcessResult buildResult) 
+			throws CommonException, OperationCancellation {
+		try {
+			return handleProcessResult(buildResult);
+		} catch(OperationSoftFailure e) {
+			throw e.toCommonException();
+		}
 	}
+	
 	@Override
-	protected ArrayList<ToolSourceMessage> doParse(ExternalProcessResult result) throws CommonException {
+	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException {
+		// Ignore non-zero exit
+	}
+	
+	@Override
+	protected ArrayList<ToolSourceMessage> doHandleProcessResult(ExternalProcessResult result) throws CommonException {
 		return parse(result.getStdErrBytes().toString(StringUtil.UTF8));
 	}
 	
@@ -78,8 +91,12 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 	
 	protected abstract ToolMessageData parseMessageData(StringParseSource output) throws CommonException;
 	
+	protected final void handleMessageParseError(CommonException ce) {
+		handleParseError(ce);
+	}
+	
 	@Override
-	protected abstract void handleMessageParseError(CommonException ce);
+	protected abstract void handleParseError(CommonException ce);
 	
 	protected CommonException createUnknownLineSyntaxError(String line) {
 		return new CommonException("Unknown error line syntax: " + line);
@@ -113,11 +130,11 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 		int endColumn = parseOptionalPositiveInt(msgdata.endColumnString);
 		
 		// messageTypeString should be valid to parse
-		StatusLevel msgKind = StatusLevel.fromString(msgdata.messageTypeString);
-		assertNotNull(msgKind);
+		Severity severity = Severity.fromString(msgdata.messageTypeString);
+		assertNotNull(severity);
 		
 		SourceLineColumnRange sourceRange = new SourceLineColumnRange(lineNo, column, endline, endColumn);
-		return new ToolSourceMessage(filePath, sourceRange, msgKind, msgdata.messageText);
+		return new ToolSourceMessage(filePath, sourceRange, severity, msgdata.messageText);
 	}
 	
 	protected StatusLevel parseMessageKind(String messageTypeString) throws CommonException {

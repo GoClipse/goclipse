@@ -23,7 +23,7 @@ class ToolingMessages_Default {
 		return MessageFormat.format("Tool exited with non-zero exit value: {0}", exitValue);
 	}
 	
-	public static String PROCESS_CompletedWithNonZeroVAlue(String processName, int exitValue) {
+	public static String PROCESS_CompletedWithNonZeroValue(String processName, int exitValue) {
 		return processName + " completed with non-zero exit value (" + exitValue + ")";
 	}
 	
