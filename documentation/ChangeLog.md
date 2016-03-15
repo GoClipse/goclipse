@@ -2,6 +2,7 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
  * Added signing to releases.
  * Fixed incorrect icon for errors and warnings in preference page status.
  * Fixed: can't save preference pages with empty fields.

@@ -34,9 +34,8 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.LangUI;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener;
+import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener2;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
@@ -275,7 +274,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 			create());
 		
 		Display display = topControl.getShell().getDisplay();
-		ThemeChangeListener themeChangeListener = LangUI.getInstance().getThemeHelper().new ThemeChangeListener() {
+		ThemeChangeListener2 themeChangeListener = new ThemeChangeListener2() {
 			@Override
 			public void handleEvent(Event event) {
 				// Reload prefs for new theme. use asyncExec because ThemeChangeListener order is not guaranteed.
