@@ -49,6 +49,10 @@ public class LangUI extends LifecycleObject {
 		owned.add(disposable);
 	}
 	
+	public BundleContext getBundleContext() {
+		return context;
+	}
+	
 	public ThemeHelper getThemeHelper() {
 		return themeHelper;
 	}

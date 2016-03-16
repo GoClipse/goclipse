@@ -19,11 +19,12 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.utils.prefs.IPreferenceIdentifier;
 import melnorme.lang.ide.ui.LangUI;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener2;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.fields.DomainField;
-import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.fields.IFieldView;
+import melnorme.utilbox.fields.IModelField;
 
 public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPreferenceIdentifier {
 	
@@ -51,12 +52,12 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 		this.defaultPref.asField().registerListener(() -> updateEffectiveValue());
 		this.darkPref.asField().registerListener(() -> updateEffectiveValue());
 		
-		LangUI.getInstance().getThemeHelper().new ThemeChangeListener() {
+		LangUI.getInstance().getThemeHelper().asOwner().bind(new ThemeChangeListener2() {
 			@Override
 			public void handleEvent(Event event) {
 				updateEffectiveValue();
 			}
-		};
+		});
 		
 		// We can't tell without going to UI if dark theme is active or no, so initialize with defaultPref
 		effectiveValue.setFieldValue(defaultPref.getFromPrefStore());

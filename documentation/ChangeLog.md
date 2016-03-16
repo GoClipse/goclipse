@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
 
 ### 0.14.1
  * Added `godef` integration. `godef` is used as an alternative to oracle for the Open Definition operation. 
