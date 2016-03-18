@@ -22,13 +22,13 @@ Developers Guide
 #### Automated Building and Testing:
 Using Maven (and Tycho), it is possible to automatically build LANG_IDE_NAME, create an update site, and run all the tests. Download [Maven](http://maven.apache.org/) (minimum version 3.0), and run the following commands on the root folder of the repository:
  * Run `mvn package` to build the LANG_IDE_NAME feature into a p2 repository (which is a local update site). It will be placed at `bin-maven/features.repository/repository`
- * Run `mvn integration-test` to build LANG_IDE_NAME as above and also run the test suites. You can do `mvn integration-test -P TestsLiteMode` to run the test suites in "Lite Mode" (skip certain long-running tests).
+ * Run `mvn verify` to build LANG_IDE_NAME as above and also run the test suites. You can do `mvn verify -P TestsLiteMode` to run the test suites in "Lite Mode" (skip certain long-running tests).
 
 #### Creating and deploying a new release:
 A release is a web site with an Eclipse p2 update site. The website may contain no web pages at all, rather it can be just the p2 site. To create and deploy a new release:
 
  1. Ensure the version numbers of all plugins/features/etc. are properly updated, if they haven't been already.
- 1. Run `mvn clean integration-test` to perform the Tycho build (see section above). Ensure all tests pass.
+ 1. Run `mvn clean verify` to perform the Tycho build (see section above). Ensure all tests pass.
    * To create a signed release the `sign-build` Maven profile must be activated, and the required properties set.
  1. Create and push a new release tag for the current release commit. 
  1. Go to the Github releases page and edit the newly present release. Add the corresponding ([ChangeLog.md](documentation/ChangeLog.md)) entries to the release notes. 
