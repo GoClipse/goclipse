@@ -32,6 +32,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.IStructureModelListener;
+import melnorme.lang.ide.core.engine.LocationKey;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
@@ -83,8 +84,8 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		// Disconnect updates for previous input
 		disconnectUpdates();
 		
-		Object editorKey = getStructureModelKeyFromEditorInput(input);
-		editorLocation = (Location) (editorKey instanceof Location ? editorKey : null);
+		LocationKey editorKey = getStructureModelKeyFromEditorInput(input);
+		editorLocation = editorKey.getLocation();
 		
 		IDocument doc = getDocumentProvider().getDocument(input);
 		modelRegistration = sourceModelMgr.connectStructureUpdates(editorKey, doc, structureInfoListener);
@@ -100,13 +101,14 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		}
 	}
 	
-	public static Object getStructureModelKeyFromEditorInput(IEditorInput input) {
+	public static LocationKey getStructureModelKeyFromEditorInput(IEditorInput input) {
 		try {
 			// Try to adapt as Location
-			return EditorUtils.getLocationFromEditorInput(input);
+			Location location = EditorUtils.getLocationFromEditorInput(input);
+			return new LocationKey(location);
 		} catch(CoreException e) {
 			// Is input thread-safe? We assume so since IEditorInput is supposed to be immutable.
-			return input;
+			return new LocationKey(input);
 		}
 	}
 	

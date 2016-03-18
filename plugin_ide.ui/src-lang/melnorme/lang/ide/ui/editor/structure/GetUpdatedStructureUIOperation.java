@@ -73,7 +73,7 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	protected void handleComputationResult() throws CoreException, CommonException {
 		if(result == null) {
 			throw LangCore.createCoreException(
-				"Could not retrieve source file structure for: " + structureInfo.getKey(), null);
+				"Could not retrieve source file structure for: " + structureInfo.getKey2(), null);
 		}
 	}
 	

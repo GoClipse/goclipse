@@ -91,7 +91,7 @@ public abstract class EngineOperation<RET> {
 	
 	protected RET doRunEngineOperation(final IProgressMonitor pm) 
 			throws CommonException, CoreException, OperationCancellation {
-		StructureInfo structureInfo = sourceModelMgr.getStoredStructureInfo(location);
+		StructureInfo structureInfo = sourceModelMgr.getStoredStructureInfo(new LocationKey(location));
 		if(structureInfo != null) {
 			structureInfo.awaitUpdatedData(pm);
 		}

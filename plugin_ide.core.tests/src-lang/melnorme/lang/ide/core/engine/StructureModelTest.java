@@ -29,55 +29,57 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.Assert.AssertFailedException;
 import melnorme.utilbox.ownership.StrictDisposable;
+import melnorme.utilbox.tests.TestsWorkingDir;
 
 public class StructureModelTest extends CommonCoreTest {
 	
 	static {
-		assertTrue(StructureModelManager_WithActualTest.class != null); // Ensure class exists
+		assertTrue(StructureModelManager_WithActual_Test.class != null); // Ensure class exists
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected SourceModelManager manager;
-	protected InstrumentedSourceModelManager manager2;
+	protected SourceModelManager mgr;
+	protected FixtureSourceModelManager fixtureMgr;
 	
-	public int createUpdateTaskCount;
 	public int createUpdateTaskCount_EXPECTED;
 	
-	protected IStructureModelListener structureListener = new IStructureModelListener() {
+	public static final IStructureModelListener NIL_LISTENER = new IStructureModelListener() {
 		@Override
 		public void dataChanged(StructureInfo lockedStructureInfo) {
 		}
 	};
 	
 	protected void initializeTestsEngineClient() {
-		createUpdateTaskCount = createUpdateTaskCount_EXPECTED = 0;
-		manager2 = new InstrumentedSourceModelManager();
-		manager = manager2; 
+		fixtureMgr = new FixtureSourceModelManager();
+		mgr = fixtureMgr; 
+		createUpdateTaskCount_EXPECTED = 0;
 	}
 	
-	public class InstrumentedSourceModelManager extends SourceModelManager {
+	public static class FixtureSourceModelManager extends SourceModelManager {
+		
+		protected final SourceFileStructure defaultSourceFileStructure = new SourceFileStructure(null, null, 
+			(Indexable<ParserError>) null);
+		
+		protected Function<StructureInfo, StructureUpdateTask> updateTaskProvider = (structureInfo) -> {
+			return new StructureUpdateTask(structureInfo) {
+				@Override
+				protected SourceFileStructure createNewData() {
+					return defaultSourceFileStructure;
+				}
+			};
+		};
+		
+		public int createUpdateTaskCount = 0;
 		
 		@Override
 		protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source) {
 			createUpdateTaskCount++;
 			
-			return createUpdateTask.apply(structureInfo);
+			return updateTaskProvider.apply(structureInfo);
 		}
 		
 	}
-	
-	protected final SourceFileStructure defaultSourceFileStructure = new SourceFileStructure(null, null, 
-		(Indexable<ParserError>) null);
-	
-	protected Function<StructureInfo, StructureUpdateTask> createUpdateTask = (structureInfo) -> {
-		return new StructureUpdateTask(structureInfo) {
-			@Override
-			protected SourceFileStructure createNewData() {
-				return defaultSourceFileStructure;
-			}
-		};
-	};
 	
 	public void checkTaskDelta(int updateTaskCount) {
 		createUpdateTaskCount_EXPECTED += updateTaskCount;
@@ -85,7 +87,7 @@ public class StructureModelTest extends CommonCoreTest {
 	}
 	
 	public void checkCounts() {
-		assertTrue(createUpdateTaskCount == createUpdateTaskCount_EXPECTED);
+		assertTrue(fixtureMgr.createUpdateTaskCount == createUpdateTaskCount_EXPECTED);
 	}
 	
 	/* -----------------  ----------------- */
@@ -101,9 +103,9 @@ public class StructureModelTest extends CommonCoreTest {
 	public void testWorkflows$() throws Exception {
 		initializeTestsEngineClient();
 		
-		assertTrue(manager.getStoredStructureInfo("Blah") == null);
+		assertTrue(mgr.getStoredStructureInfo(new LocationKey("Blah")) == null);
 		
-		Object key = "Key1";
+		LocationKey key = new LocationKey("Key1");
 		
 		testBasicFlow(key, new Document(), true);
 		
@@ -111,12 +113,16 @@ public class StructureModelTest extends CommonCoreTest {
 		testBasicFlow(key, new Document(), true);
 		
 		
+		// Test with actual location
+		LocationKey locationKey = new LocationKey(TestsWorkingDir.getWorkingDir("StructureModelTest/blah"));
+		testBasicFlow(locationKey, new Document(), true);
+		
 		/* -----------------  ----------------- */
 		
 		testMultipleConnects(key, new Document());
 	}
 	
-	protected void testBasicFlow(Object key, Document doc, boolean initialConnect) throws InterruptedException {
+	protected void testBasicFlow(LocationKey key, Document doc, boolean initialConnect) throws InterruptedException {
 		checkCounts();
 		if(initialConnect) {
 			documentSet(doc);
@@ -141,34 +147,34 @@ public class StructureModelTest extends CommonCoreTest {
 		}
 	}
 	
-	protected StructureModelRegistration testConnectUpdates(Object key, Document doc, boolean initialConnect) {
+	protected StructureModelRegistration testConnectUpdates(LocationKey key, Document doc, boolean initialConnect) {
 		if(initialConnect) {
-			StructureInfo storedStructureInfo = manager.getStoredStructureInfo(key);
+			StructureInfo storedStructureInfo = mgr.getStoredStructureInfo(key);
 			assertTrue(storedStructureInfo == null || !storedStructureInfo.hasConnectedListeners());
 		}
 		
-		StructureModelRegistration registration = manager.connectStructureUpdates(key, doc, structureListener);
+		StructureModelRegistration registration = mgr.connectStructureUpdates(key, doc, NIL_LISTENER);
 		checkTaskDelta(initialConnect ? 1 : 0);
 		
 		StructureInfo structureInfo = registration.structureInfo;
 		assertTrue(structureInfo.hasConnectedListeners());
-		assertTrue(manager.getStoredStructureInfo(key) == structureInfo);
+		assertTrue(mgr.getStoredStructureInfo(key) == structureInfo);
 		
 		return registration;
 	}
 	
-	protected void testDisconnectUpdates(Object key, StructureModelRegistration regist, boolean hasOtherConnections) 
+	protected void testDisconnectUpdates(LocationKey key, StructureModelRegistration regist, boolean hasOtherConnections) 
 			throws InterruptedException {
 		StructureInfo structureInfo = regist.structureInfo;
 		
 		TestsStructureModelListener listener = 
-				new TestsStructureModelListener(manager, structureInfo, hasOtherConnections ? 0 : 1);
+				new TestsStructureModelListener(mgr, structureInfo, hasOtherConnections ? 0 : 1);
 		assertTrue(structureInfo.isStale() == false);
 		try {
 			regist.dispose();
 			
 			checkTaskDelta(0);
-			assertTrue(manager.getStoredStructureInfo(key) == structureInfo);
+			assertTrue(mgr.getStoredStructureInfo(key) == structureInfo);
 			assertTrue(structureInfo.hasConnectedListeners() == hasOtherConnections);
 			
 			if(hasOtherConnections == false) {
@@ -178,7 +184,7 @@ public class StructureModelTest extends CommonCoreTest {
 			awaitUnchecked(listener.latch);
 		} finally {
 			owned.remove(listener);
-			manager.removeListener(listener);
+			mgr.removeListener(listener);
 		}
 		
 		verifyThrows(() -> regist.dispose(), AssertFailedException.class);
@@ -220,16 +226,16 @@ public class StructureModelTest extends CommonCoreTest {
 	
 	protected void testBasicFlow_Cancellation(StructureModelRegistration registration, Document doc) 
 			throws InterruptedException {
-		if(manager2 == null)
+		if(fixtureMgr == null)
 			return;
 		
 		CountDownLatch interruptionTerminationLatch = new CountDownLatch(1);
 		
-		Function<StructureInfo, StructureUpdateTask> _saved = createUpdateTask;
+		Function<StructureInfo, StructureUpdateTask> _saved = fixtureMgr.updateTaskProvider;
 		try {
 			CountDownLatch entryLatch = new CountDownLatch(1);
 			
-			createUpdateTask = (structureInfo) -> {
+			fixtureMgr.updateTaskProvider = (structureInfo) -> {
 				return new StructureUpdateTask(structureInfo) {
 					@Override
 					protected SourceFileStructure createNewData() {
@@ -252,7 +258,7 @@ public class StructureModelTest extends CommonCoreTest {
 			assertTrue(registration.structureInfo.isStale() == true);
 			
 		} finally {
-			createUpdateTask = _saved;
+			fixtureMgr.updateTaskProvider = _saved;
 		}
 		
 		// Task should be waiting on engineClient2.taskExitLatch now
@@ -265,14 +271,14 @@ public class StructureModelTest extends CommonCoreTest {
 	
 	/* -----------------  ----------------- */
 	
-	protected void testMultipleConnects(Object key, Document doc) throws InterruptedException {
+	protected void testMultipleConnects(LocationKey key, Document doc) throws InterruptedException {
 		initializeTestsEngineClient();
 		
 		StructureModelRegistration registration = testConnectUpdates(key, doc, true);
 		StructureInfo structureInfo = registration.structureInfo;
 		
 		checkCounts();
-		StructureModelRegistration registration2 = manager.connectStructureUpdates(key, doc, structureListener);
+		StructureModelRegistration registration2 = mgr.connectStructureUpdates(key, doc, NIL_LISTENER);
 		assertTrue(registration2.structureInfo == structureInfo);
 		// Test no extra updates
 		checkCounts();
@@ -280,7 +286,7 @@ public class StructureModelTest extends CommonCoreTest {
 		testBasicFlow(key, doc, false);
 		
 		StructureModelRegistration registration_unmanaged = 
-				manager.connectStructureUpdates(key, new Document(), structureListener);
+				mgr.connectStructureUpdates(key, new Document(), NIL_LISTENER);
 		assertTrue(structureInfo != registration_unmanaged.structureInfo);
 
 		checkTaskDelta(1);

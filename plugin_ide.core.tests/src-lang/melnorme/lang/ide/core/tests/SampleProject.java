@@ -12,6 +12,7 @@ package melnorme.lang.ide.core.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
@@ -50,6 +51,10 @@ public class SampleProject implements AutoCloseable {
 	
 	public String getName() {
 		return getProject().getName();
+	}
+	
+	public IFile getFile(String path) {
+		return getProject().getFile(path);
 	}
 	
 	/* ----------------- helpers ----------------- */
