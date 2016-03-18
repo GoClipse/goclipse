@@ -10,14 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.utils.concurrency;
 
-import java.util.HashMap;
-
 import melnorme.lang.utils.EntryMap;
 import melnorme.utilbox.core.fntypes.CallableX;
 
 public abstract class SynchronizedEntryMap<KEY, ENTRY> extends EntryMap<KEY, ENTRY> {
-	
-	protected final HashMap<KEY, ENTRY> map = new HashMap<>();
 	
 	@Override
 	public ENTRY getEntry(KEY key) {

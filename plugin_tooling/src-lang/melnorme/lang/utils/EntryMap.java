@@ -15,7 +15,7 @@ import java.util.HashMap;
 /**
  * Map that automatically create entries. 
  * Not synchronized.
- * TODO There likely is be a better, more standard name for this, but I'm aware what.
+ * TODO There likely is a better, more well-known name for this kind of structure, but I'm not aware of it.
  */
 public abstract class EntryMap<KEY, ENTRY> {
 	
