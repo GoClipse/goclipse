@@ -12,6 +12,7 @@ package melnorme.lang.ide.core.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.IFileBuffer;
@@ -97,7 +98,7 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 			connected = structureInfo.connectDocument(document, structureListener);
 		}
 		assertTrue(connected);
-		assertTrue(structureInfo.getLocation() == key.getLocation());
+		assertTrue(areEqual(structureInfo.getLocation(), key.getLocation()));
 		
 		return new StructureModelRegistration(structureInfo, structureListener);
 	}
