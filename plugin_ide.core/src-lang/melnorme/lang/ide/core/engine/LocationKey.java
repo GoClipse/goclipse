@@ -50,7 +50,7 @@ public class LocationKey {
 		
 		LocationKey other = (LocationKey) obj;
 		
-		return areEqual(location, other.location) && areEqual(other, other.alternative);
+		return areEqual(location, other.location) && areEqual(alternative, other.alternative);
 	}
 	
 	@Override
