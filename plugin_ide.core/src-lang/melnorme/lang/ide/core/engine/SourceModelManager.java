@@ -57,16 +57,16 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 	
 	/* -----------------  ----------------- */
 	
-	protected final SynchronizedEntryMap<Object, StructureInfo> infosMap = 
-			new SynchronizedEntryMap<Object, StructureInfo>() {
+	protected final SynchronizedEntryMap<LocationKey, StructureInfo> infosMap = 
+			new SynchronizedEntryMap<LocationKey, StructureInfo>() {
 		@Override
-		protected StructureInfo createEntry(Object key) {
+		protected StructureInfo createEntry(LocationKey key) {
 			return new StructureInfo(key);
 		}
 	};
 	
 	/**  @return the {@link SourceFileStructure} currently stored under given key. Can be null. */
-	public StructureInfo getStoredStructureInfo(Object key) {
+	public StructureInfo getStoredStructureInfo(LocationKey key) {
 		return infosMap.getEntryOrNull(key);
 	}
 	
@@ -79,7 +79,7 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 	 * 
 	 * @return non-null. The {@link StructureInfo} resulting from given connection.
 	 */
-	public StructureModelRegistration connectStructureUpdates(Object key, IDocument document, 
+	public StructureModelRegistration connectStructureUpdates(LocationKey key, IDocument document, 
 			IStructureModelListener structureListener) {
 		assertNotNull(key);
 		assertNotNull(document);
@@ -97,6 +97,7 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 			connected = structureInfo.connectDocument(document, structureListener);
 		}
 		assertTrue(connected);
+		assertTrue(structureInfo.getLocation() == key.getLocation());
 		
 		return new StructureModelRegistration(structureInfo, structureListener);
 	}
@@ -113,7 +114,7 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 		
 		@Override
 		protected void disposeDo() {
-			log.println("disconnectStructureUpdates: " + structureInfo.getKey());
+			log.println("disconnectStructureUpdates: " + structureInfo.getKey2());
 			structureInfo.disconnectFromDocument(structureListener);
 		}
 		
@@ -125,29 +126,26 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 		
 		protected final ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
 		
-		protected final Object key;
+		protected final LocationKey key2;
 		protected final StructureUpdateTask disconnectTask; // Can be null
 		
 		protected IDocument document = null;
 		protected DefaultBufferListener fbListener = null;
 		
 		
-		public StructureInfo(Object key) {
-			this.key = assertNotNull(key);
+		public StructureInfo(LocationKey key) {
+			this.key2 = assertNotNull(key);
 			
 			this.disconnectTask = assertNotNull(createDisconnectTask(this));
 		}
 		
-		public final Object getKey() {
-			return key;
+		public final LocationKey getKey2() {
+			return key2;
 		}
 		
 		/** @return the file location if source is based on a file, null otherwise. */
 		public Location getLocation() {
-			if(key instanceof Location) {
-				return (Location) key;
-			}
-			return null;
+			return key2.getLocation();
 		}
 		
 		public synchronized boolean hasConnectedListeners() {
@@ -276,7 +274,7 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 		protected final StructureInfo structureInfo;
 		
 		public StructureUpdateTask(StructureInfo structureInfo) {
-			super(structureInfo, structureInfo.getKey().toString());
+			super(structureInfo, structureInfo.getKey2().toString());
 			this.structureInfo = structureInfo;
 		}
 		

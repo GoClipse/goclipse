@@ -12,11 +12,11 @@ package melnorme.lang.ide.core.engine;
 
 import melnorme.lang.ide.core.LangCore_Actual;
 
-public abstract class StructureModelManager_WithActualTest extends StructureModelTest {
+public abstract class StructureModelManager_WithActual_Test extends StructureModelTest {
 	
 	@Override
 	protected void initializeTestsEngineClient() {
-		manager = LangCore_Actual.createSourceModelManager();
+		mgr = LangCore_Actual.createSourceModelManager();
 	}
 	
 	@Override

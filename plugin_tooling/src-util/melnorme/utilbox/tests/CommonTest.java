@@ -64,6 +64,10 @@ public class CommonTest extends CommonTestUtils {
 	protected final OwnedObjects owned = new OwnedObjects();
 	
 	@After
+	public void dispose() throws Exception {
+		disposeOwned();
+	}
+	
 	public void disposeOwned() {
 		owned.disposeAll();
 	}

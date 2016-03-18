@@ -35,7 +35,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -46,6 +45,8 @@ import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.tests.utils.ErrorLogListener;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -122,9 +123,8 @@ public abstract class CommonCoreTest extends CommonTest {
 	}
 	
 	private static void initializeWorkingDirToEclipseInstanceLocation() {
-		Location instanceLocation = Platform.getInstanceLocation();
 		try {
-			URI uri = instanceLocation.getURL().toURI();
+			URI uri = Platform.getInstanceLocation().getURL().toURI();
 			Path workingDirPath = new File(uri).toPath().toAbsolutePath().resolve("TestsWD");
 			TestsWorkingDir.initWorkingDir(workingDirPath.toString());
 		} catch (URISyntaxException e) {
@@ -134,7 +134,7 @@ public abstract class CommonCoreTest extends CommonTest {
 	
 	/* ----------------- utilities ----------------- */
 	
-	public static org.eclipse.core.runtime.Path epath(melnorme.utilbox.misc.Location loc) {
+	public static org.eclipse.core.runtime.Path epath(Location loc) {
 		return ResourceUtils.epath(loc);
 	}
 	public static org.eclipse.core.runtime.Path epath(Path path) {
@@ -143,6 +143,10 @@ public abstract class CommonCoreTest extends CommonTest {
 	
 	public static Path path(IPath path) {
 		return MiscUtil.createValidPath(path.toOSString());
+	}
+	
+	public static Location location(IResource resource) throws CommonException {
+		return ResourceUtils.getLocation(resource);
 	}
 	
 	public static IProject createAndOpenProject(String name, boolean overwrite) throws CoreException {
