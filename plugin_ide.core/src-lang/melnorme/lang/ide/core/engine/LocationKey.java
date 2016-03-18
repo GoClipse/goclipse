@@ -55,7 +55,7 @@ public class LocationKey {
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(alternative);
+		return HashcodeUtil.combinedHashCode(location, alternative);
 	}
 	
 	@Override
