@@ -370,10 +370,16 @@ public abstract class BuildManager {
 			boolean requireNonNull) throws CommonException {
 		ProjectBuildInfo buildInfo = getValidBuildInfo(project, false);
 		
+		// validate name after validation project buildInfo
 		if(buildTargetName == null || buildTargetName.isEmpty()) {
 			throw new CommonException(LaunchMessages.PROCESS_LAUNCH_NoBuildTargetSpecified);
 		}
 		
+		return getValidBuildTarget(buildInfo, buildTargetName, definedTargetsOnly, requireNonNull);
+	}
+	
+	public BuildTarget getValidBuildTarget(ProjectBuildInfo buildInfo, String buildTargetName, boolean definedTargetsOnly,
+			boolean requireNonNull) throws CommonException {
 		BuildTarget buildTarget = buildInfo.getDefinedBuildTarget(buildTargetName);
 		
 		if(buildTarget == null && !definedTargetsOnly) {
