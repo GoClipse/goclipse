@@ -365,6 +365,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			targetName,
 			false,
 			null,
+			null,
 			executablePath
 		);
 		

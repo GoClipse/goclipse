@@ -28,6 +28,7 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 	private static final String PROP_NAME = "config";
 	private static final String PROP_ENABLED = "enabled";
 	private static final String PROP_ARGUMENTS = "options";
+	private static final String PROP_CHECK_ARGUMENTS = "check_options";
 	private static final String PROP_EXE_PATH = "exe_path";
 	
 	/* -----------------  ----------------- */
@@ -86,6 +87,7 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		targetElem.setAttribute(PROP_NAME, buildTarget.getTargetName());
 		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(buildTarget.isEnabled()));
 		setOptionalAttribute(targetElem, PROP_ARGUMENTS, buildTarget.getBuildArguments());
+		setOptionalAttribute(targetElem, PROP_CHECK_ARGUMENTS, buildTarget.getCheckArguments());
 		setOptionalAttribute(targetElem, PROP_EXE_PATH, buildTarget.getExecutablePath());
 		
 		return targetElem;
@@ -99,6 +101,7 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 			buildTargetData.enabled = getBooleanAttribute(targetElem, PROP_ENABLED, false);
 			buildTargetData.targetName = getAttribute(targetElem, PROP_NAME, "");
 			buildTargetData.buildArguments = getAttribute(targetElem, PROP_ARGUMENTS, null);
+			buildTargetData.checkArguments = getAttribute(targetElem, PROP_CHECK_ARGUMENTS, null);
 			buildTargetData.executablePath = getAttribute(targetElem, PROP_EXE_PATH, null);
 			
 			return createBuildTarget(targetElem, buildTargetData);

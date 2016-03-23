@@ -69,10 +69,6 @@ public class ProjectBuildInfo {
 		return buildTargets.get(name);
 	}
 	
-	public BuildTarget getBuildTargetFor(String name) throws CommonException {
-		return buildMgr.getBuildTargetFor2(this, name);
-	}
-	
 	public BuildTarget getDefaultBuildTarget() throws CommonException {
 		if(buildTargets.size() == 0) {
 			throw new CommonException("No targets available");

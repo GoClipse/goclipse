@@ -36,7 +36,7 @@ public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	
 	public BuildTargetLaunchCreator(String projectName, 
 			String targetName, String buildArguments, String executablePath) {
-		this(projectName, new BuildTargetData(targetName, true, buildArguments, executablePath));
+		this(projectName, new BuildTargetData(targetName, true, buildArguments, null, executablePath));
 	}
 	
 	public BuildTargetLaunchCreator(String projectName, BuildTargetData data) {
