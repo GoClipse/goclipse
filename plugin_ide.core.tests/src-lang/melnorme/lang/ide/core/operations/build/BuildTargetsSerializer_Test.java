@@ -14,8 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import org.junit.Test;
 
-import com.github.rustdt.ide.core.operations.RustBuildManager;
-
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.utilbox.collections.ArrayList2;
@@ -24,7 +22,7 @@ import melnorme.utilbox.tests.CommonTest;
 
 public class BuildTargetsSerializer_Test extends CommonTest {
 	
-	protected final RustBuildManager buildMgr = LangCore.getBuildManager();
+	protected final BuildManager buildMgr = LangCore.getBuildManager();
 	protected BuildTargetsSerializer serializer = buildMgr.createSerializer();
 	
 	@Test
