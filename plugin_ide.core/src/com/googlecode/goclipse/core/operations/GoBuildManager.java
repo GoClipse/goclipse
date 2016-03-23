@@ -356,6 +356,8 @@ public class GoBuildManager extends BuildManager {
 		}
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
 	protected BuildOperationCreator createBuildOperationCreator(IOperationConsoleHandler opHandler, IProject project) {
 		return new BuildOperationCreator(project, opHandler) {
