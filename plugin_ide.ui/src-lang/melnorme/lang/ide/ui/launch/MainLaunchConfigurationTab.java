@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
-import melnorme.lang.ide.core.launch.BuildTargetValidator;
+import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -69,7 +69,10 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	protected BuildTargetSettingsComponent init_BuildTargetSettingsComponent() {
 		BuildTargetSettingsComponent component = new BuildTargetSettingsComponent(
-			this::getDefaultBuildTargetArguments, this::getDefaultProgramPath);
+			this::getDefaultBuildTargetArguments,
+			null,
+			this::getDefaultProgramPath
+		);
 		component.programPathField.setLabelText(LangUIMessages.LaunchTab_ProgramPathField_title);
 		
 		component.buildArgumentsField.getUseDefaultField().setLabelText(
@@ -82,15 +85,15 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	/* -----------------  ----------------- */
 	
 	protected String getDefaultBuildTargetArguments() throws CommonException {
-		return getValidator().getOriginalBuildArguments();
+		return getBuildTargetSettings().getOriginalBuildArguments();
 	}
 	
 	protected String getDefaultProgramPath() throws CommonException {
-		return getValidator().getOriginalExecutablePath();
+		return getBuildTargetSettings().getOriginalExecutablePath();
 	}
 	
-	protected BuildTargetValidator getValidator() throws CommonException {
-		return new BuildTargetValidator() {
+	protected CompositeBuildTargetSettings getBuildTargetSettings() throws CommonException {
+		return new CompositeBuildTargetSettings() {
 			
 			@Override
 			public String getProjectName() throws CommonException {
@@ -104,7 +107,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 			
 			@Override
 			public String getBuildArguments() {
-				return buildTargetSettings.getEffectiveArgumentsValue();
+				return buildTargetSettings.getEffectiveBuildArgumentsValue();
 			}
 			
 			@Override
@@ -117,9 +120,9 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	@Override
 	protected void doValidate() throws CommonException, CoreException {
-		getValidator().getValidBuildTarget();
-		getValidator().getEffectiveBuildArguments();
-		getValidator().getValidExecutableLocation();
+		getBuildTargetSettings().getValidBuildTarget();
+		getBuildTargetSettings().getEffectiveBuildArguments();
+		getBuildTargetSettings().getValidExecutableLocation();
 	}
 	
 	/* ----------------- bindings ----------------- */

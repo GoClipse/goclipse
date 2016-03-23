@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.BundleInfo;
-import melnorme.lang.ide.core.launch.BuildTargetValidator;
+import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
@@ -67,34 +67,34 @@ public class BuildTargetValidatorTest extends CommonTest {
 		
 		try(SampleProject sampleProj = initSampleProject()){
 			
-			BuildTargetValidator target1Validator = btsValidator("SampleTarget", null, null);
-			assertEquals(target1Validator.getValidBuildTarget(), 
+			CompositeBuildTargetSettings target1Settings = btSettings("SampleTarget", null, null);
+			assertEquals(target1Settings.getValidBuildTarget(), 
 				new BuildTarget("SampleTarget", true, null, null, null));
 			
-			target1Validator.getExecutablePath();
+			target1Settings.getExecutablePath();
 			
-			BuildTargetValidator target2Validator = getBuiltTargetSettingsValidator(
+			CompositeBuildTargetSettings target2Validator = getBuiltTargetSettingsValidator(
 				sampleProj.getName(), "SampleTarget2", null, null);
 			assertEquals(target2Validator.getValidBuildTarget(), 
 				new BuildTarget("SampleTarget2", true, "sample args", "--check_args", "sample path"));
 			
-			assertEquals(btsValidator("SampleTarget", "ARGS", "EXEPATH").getValidBuildTarget(), 
+			assertEquals(btSettings("SampleTarget", "ARGS", "EXEPATH").getValidBuildTarget(), 
 				new BuildTarget("SampleTarget", true, "ARGS", null, "EXEPATH"));
 			
-			assertEquals(btsValidator("ImplicitTarget", "ARGS", "EXEPATH").getValidBuildTarget(), 
+			assertEquals(btSettings("ImplicitTarget", "ARGS", "EXEPATH").getValidBuildTarget(), 
 				new BuildTarget("ImplicitTarget", false, "ARGS", null, "EXEPATH"));
 		}
 		
 	}
 	
-	protected BuildTargetValidator btsValidator(
+	protected CompositeBuildTargetSettings btSettings(
 			String buildTargetName, String buildArguments, String artifactPath) {
 		return getBuiltTargetSettingsValidator(sampleProject.getName(), buildTargetName, buildArguments, artifactPath);
 	}
 	
-	protected BuildTargetValidator getBuiltTargetSettingsValidator(
+	protected CompositeBuildTargetSettings getBuiltTargetSettingsValidator(
 			String projectName, String buildTargetName, String buildArguments, String artifactPath) {
-		BuildTargetValidator btProcessor = new BuildTargetValidator() {
+		CompositeBuildTargetSettings btProcessor = new CompositeBuildTargetSettings() {
 			
 			@Override
 			public String getProjectName() throws CommonException {

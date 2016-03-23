@@ -10,41 +10,22 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.launch;
 
-import org.eclipse.core.resources.IProject;
-
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
-import melnorme.lang.ide.core.utils.ProjectValidator;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.data.AbstractValidator;
 import melnorme.lang.tooling.ops.util.ValidationMessages;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public abstract class BuildTargetValidator extends AbstractValidator 
+/** 
+ * A {@link BuildTarget} source, derived from a parent/original BuildTarget, and overriden settings
+ */
+public abstract class CompositeBuildTargetSettings extends BuildTargetSource 
 	implements IBuildTargetSettings {
 	
-	public BuildTargetValidator() {
+	public CompositeBuildTargetSettings() {
 	}
 	
-	public ProjectValidator getProjectValidator() {
-		return new ProjectValidator(LangCore.NATURE_ID);
-	}
-	
-	public IProject getValidProject() throws CommonException {
-		return getProjectValidator().getProject(getProjectName());
-	}
-	
-	protected BuildManager getBuildManager() {
-		return LangCore.getBuildManager();
-	}
-	
-	protected Location getProjectLocation() throws CommonException {
-		return ResourceUtils.loc(getValidProject().getLocation());
-	}
 	
 	/* -----------------  ----------------- */
 	
@@ -61,17 +42,8 @@ public abstract class BuildTargetValidator extends AbstractValidator
 		return getBuildManager().createBuildTarget(data);
 	}
 	
-	protected BuildTarget getOriginalBuildTarget() throws CommonException {
-		return getBuildManager().getValidBuildTarget(
-			getValidProject(), getBuildTargetName(), false, true);
-	}
-	
 	protected ValidatedBuildTarget getValidatedBuildTarget() throws CommonException {
 		return getBuildManager().getValidatedBuildTarget(getValidProject(), getValidBuildTarget());
-	}
-	
-	protected ValidatedBuildTarget getValidatedOriginalBuildTarget() throws CommonException {
-		return getBuildManager().getValidatedBuildTarget(getValidProject(), getOriginalBuildTarget());
 	}
 	
 	/* -----------------  ----------------- */
@@ -82,14 +54,6 @@ public abstract class BuildTargetValidator extends AbstractValidator
 	
 	public String getOriginalExecutablePath() throws CommonException {
 		return getValidatedOriginalBuildTarget().getEffectiveValidExecutablePath();
-	}
-	
-	public String getDefaultBuildArguments() throws CommonException {
-		return getValidatedOriginalBuildTarget().getDefaultBuildArguments();
-	}
-	
-	public String getDefaultExecutablePath() throws CommonException {
-		return getValidatedOriginalBuildTarget().getDefaultExecutablePath();
 	}
 	
 	/* -----------------  ----------------- */ 
