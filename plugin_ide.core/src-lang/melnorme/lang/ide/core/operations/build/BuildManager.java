@@ -213,13 +213,9 @@ public abstract class BuildManager {
 				null : 
 				currentBuildInfo.getDefinedBuildTarget(targetName);
 		
-		BuildTargetData data = new BuildTargetData(targetName, isEnabled, null, null);
-		
-		if(oldBuildTarget != null) {
-			data.enabled = oldBuildTarget.isEnabled();
-			data.buildArguments = oldBuildTarget.getBuildArguments();
-			data.executablePath = oldBuildTarget.getExecutablePath();
-		}
+		BuildTargetData data = oldBuildTarget != null ? 
+				oldBuildTarget.getDataCopy() : 
+				new BuildTargetData(targetName, isEnabled, null, null, null);
 		
 		return createBuildTarget(data);
 	}
@@ -378,25 +374,16 @@ public abstract class BuildManager {
 			throw new CommonException(LaunchMessages.PROCESS_LAUNCH_NoBuildTargetSpecified);
 		}
 		
-		BuildTarget buildTarget = 
-				definedTargetsOnly ? 
-				buildInfo.getDefinedBuildTarget(buildTargetName) :
-				buildInfo.getBuildTargetFor(buildTargetName);
+		BuildTarget buildTarget = buildInfo.getDefinedBuildTarget(buildTargetName);
+		
+		if(buildTarget == null && !definedTargetsOnly) {
+			buildTarget = createBuildTarget(new BuildTargetData(buildTargetName, false));
+		}
 		
 		if(buildTarget == null && requireNonNull) {
 			throw new CommonException(LaunchMessages.PROCESS_LAUNCH_NoSuchBuildTarget);
 		}
 		return buildTarget;
-	}
-	
-	public BuildTarget getBuildTargetFor2(ProjectBuildInfo projectBuildInfo, String targetName)
-			throws CommonException {
-		BuildTarget buildTarget = projectBuildInfo.getDefinedBuildTarget(targetName);
-		if(buildTarget != null) {
-			return buildTarget;
-		}
-		
-		return createBuildTarget(new BuildTargetData(targetName, false, null, null));
 	}
 	
 	/* -----------------  Build Target Validator  ----------------- */

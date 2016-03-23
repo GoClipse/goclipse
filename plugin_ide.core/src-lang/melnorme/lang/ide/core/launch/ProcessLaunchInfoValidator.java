@@ -23,16 +23,16 @@ import melnorme.utilbox.misc.Location;
 
 public class ProcessLaunchInfoValidator {
 	
-	protected final BuildTargetValidator buildSettingsValidator;
+	protected final CompositeBuildTargetSettings buildTargetSettings;
 	
 	protected final String programArguments;
 	protected final String workingDirectory;
 	protected final Map<String, String> environmentVars;
 	protected final boolean appendEnvironmentVars;
 	
-	public ProcessLaunchInfoValidator(BuildTargetValidator buildSettingsValidator, String programArguments,
+	public ProcessLaunchInfoValidator(CompositeBuildTargetSettings buildTargetSettings, String programArguments,
 			String workingDirectory, Map<String, String> environmentVars, boolean appendEnvironmentVars) {
-		this.buildSettingsValidator = buildSettingsValidator;
+		this.buildTargetSettings = buildTargetSettings;
 		this.programArguments = programArguments;
 		this.workingDirectory = workingDirectory;
 		this.environmentVars = environmentVars;
@@ -42,18 +42,18 @@ public class ProcessLaunchInfoValidator {
 	/* -----------------  ----------------- */
 	
 	protected IProject getProject() throws CommonException, CoreException {
-		return buildSettingsValidator.getValidProject();
+		return buildTargetSettings.getValidProject();
 	}
 	
 	protected BuildTarget getBuildTarget() throws CoreException, CommonException {
-		if(buildSettingsValidator.getBuildTargetName() == null){
+		if(buildTargetSettings.getBuildTargetName() == null){
 			return null;
 		}
-		return buildSettingsValidator.getValidBuildTarget();
+		return buildTargetSettings.getValidBuildTarget();
 	}
 	
 	protected Location getValidExecutableFileLocation() throws CoreException, CommonException {
-		return buildSettingsValidator.getValidExecutableLocation();
+		return buildTargetSettings.getValidExecutableLocation();
 	}
 	
 	/* -----------------  ----------------- */

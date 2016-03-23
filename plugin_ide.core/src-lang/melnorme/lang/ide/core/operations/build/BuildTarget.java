@@ -22,15 +22,23 @@ public class BuildTarget {
 		public String targetName;
 		public boolean enabled;
 		public String buildArguments;
+		public String checkArguments;
 		public String executablePath;
 		
 		public BuildTargetData() {
 		}
 		
-		public BuildTargetData(String targetName, boolean enabled, String buildArguments, String executablePath) {
+		public BuildTargetData(String targetName, boolean enabled) {
+			this.targetName = targetName;
+			this.enabled = enabled;
+		}
+		
+		public BuildTargetData(String targetName, boolean enabled, String buildArguments, 
+				String checkArguments, String executablePath) {
 			this.targetName = targetName;
 			this.enabled = enabled;
 			this.buildArguments = buildArguments;
+			this.checkArguments = checkArguments;
 			this.executablePath = executablePath;
 		}
 		
@@ -45,27 +53,34 @@ public class BuildTarget {
 					areEqual(targetName, other.targetName) &&
 					areEqual(enabled, other.enabled) &&
 					areEqual(buildArguments, other.buildArguments) &&
+					areEqual(checkArguments, other.checkArguments) &&
 					areEqual(executablePath, other.executablePath);
 		}
 		
 		@Override
 		public int hashCode() {
-			return HashcodeUtil.combinedHashCode(targetName, enabled, buildArguments);
+			return HashcodeUtil.combinedHashCode(targetName, enabled, buildArguments, checkArguments);
 		}
 		
 	}
 	
-	protected final BuildTargetData data = new BuildTargetData();
+	/* ----------------- BuildTarget ----------------- */
+	
+	protected BuildTargetData data = new BuildTargetData();
 	
 	public BuildTarget(BuildTargetData data) {
-		this(data.targetName, data.enabled, data.buildArguments, data.executablePath);
+		this(data.targetName, data.enabled, data.buildArguments, data.checkArguments, data.executablePath);
 	}
 	
-	public BuildTarget(String targetName, boolean enabled, String buildArguments, String executablePath) {
-		data.targetName = StringUtil.nullAsEmpty(targetName);
-		data.enabled = enabled;
-		data.buildArguments = buildArguments;
-		data.executablePath = executablePath;
+	public BuildTarget(String targetName, boolean enabled, String buildArguments, String checkArguments,
+			String executablePath) {
+		data = new BuildTargetData(
+			StringUtil.nullAsEmpty(targetName), 
+			enabled, 
+			buildArguments, 
+			checkArguments, 
+			executablePath
+		);
 	}
 	
 	@Override
@@ -98,6 +113,10 @@ public class BuildTarget {
 		return data.buildArguments;
 	}
 	
+	public String getCheckArguments() {
+		return data.checkArguments;
+	}
+	
 	public String getTargetName() {
 		return data.targetName;
 	}
@@ -111,6 +130,7 @@ public class BuildTarget {
 			getTargetName(),
 			isEnabled(),
 			getBuildArguments(),
+			getCheckArguments(),
 			getExecutablePath()
 		);
 	}

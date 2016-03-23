@@ -96,12 +96,12 @@ public class ValidatedBuildTarget extends AbstractValidator {
 	
 	/* -----------------  ----------------- */
 	
-	protected String getBuildArguments2() {
+	protected String getBuildArguments() {
 		return buildTarget.getBuildArguments();
 	}
 	
 	public String getEffectiveBuildArguments() throws CommonException {
-		String buildOptions = getBuildArguments2();
+		String buildOptions = getBuildArguments();
 		if(buildOptions != null) {
 			return buildOptions;
 		}
@@ -109,6 +109,11 @@ public class ValidatedBuildTarget extends AbstractValidator {
 	}
 	
 	public String getDefaultBuildArguments() throws CommonException {
+		return getBuildType().getDefaultBuildOptions(this);
+	}
+	
+	public String getDefaultCheckArguments() throws CommonException {
+		// FIXME: TO DO
 		return getBuildType().getDefaultBuildOptions(this);
 	}
 	

@@ -31,9 +31,9 @@ public interface ToolchainPreferences {
 	public static final StringPreference DAEMON_PATH =
 			new StringPreference("daemon_path", "");
 	
-	/* -----------------  ----------------- */
-	
-	public static final IProjectPreference<Boolean> PROJ_AUTO_BUILD_DISABLED = new BooleanPreference( 
-		"prj_auto_build_disabled", false).getProjectPreference();
+//	/* -----------------  ----------------- */
+//	
+//	public static final IProjectPreference<Boolean> PROJ_AUTO_BUILD_DISABLED = new BooleanPreference( 
+//		"prj_auto_build_disabled", false).getProjectPreference();
 	
 }

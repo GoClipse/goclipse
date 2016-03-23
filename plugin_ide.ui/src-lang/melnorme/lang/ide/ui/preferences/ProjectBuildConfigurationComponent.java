@@ -19,10 +19,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.launch.BuildTargetValidator;
+import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
@@ -40,10 +41,10 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	
 	protected final IProject project;
 	protected final BuildTargetField buildTargetField = init_createBuildTargetField();
-	protected final BuildTargetSettingsComponent buildTargetSettings = init_createBuildTargetSettingsComponent();
+	protected final BuildTargetSettingsComponent buildTargetSettingsComponent 
+		= init_createBuildTargetSettingsComponent();
 	
 	protected final HashMap2<String, BuildTargetData> buildOptionsToChange = new HashMap2<>();
-	protected BuildTargetData buildTargetData = new BuildTargetData();
 	
 	public ProjectBuildConfigurationComponent(IProject project) {
 		this.project = project;
@@ -55,15 +56,18 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	}
 	protected BuildTargetSettingsComponent init_createBuildTargetSettingsComponent() {
 		return new BuildTargetSettingsComponent(
-			getValidator()::getDefaultBuildArguments, getValidator()::getDefaultExecutablePath);
+			this::getDefaultBuildArguments, 
+			this::getDefaultCheckArguments,
+			this::getDefaultExecutablePath
+		);
 	}
-	
+
 	public BuildTargetField getBuildTargetField() {
 		return buildTargetField;
 	}
 	
 	public BuildTargetSettingsComponent getBuildTargetSettings() {
-		return buildTargetSettings;
+		return buildTargetSettingsComponent;
 	}
 	
 	/* -----------------  ----------------- */
@@ -105,23 +109,42 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 			buildOptionsToChange.put(buildTarget.getTargetName(), buildTarget.getDataCopy());
 		}
 		
-		initBindings();
+		buildTargetField.addListener(() -> handleBuildTargetChanged());
 		
 		buildTargetField.setFieldOptions(
 			buildInfo.getBuildTargets().map((buildTarget) -> buildTarget.getTargetName()));
 	}
 	
-	protected void initBindings() {
-		buildTargetField.addListener(() -> handleBuildTargetChanged());
+	protected void handleBuildTargetChanged() {
+		String buildTargetName = getBuildTargetName();
+		if(buildTargetName == null) {
+			return;
+		}
 		
-		buildTargetSettings.buildArgumentsField.addListener(() -> 
-			buildTargetData.buildArguments = buildTargetSettings.getEffectiveArgumentsValue());
-		buildTargetSettings.programPathField.addListener(() -> 
-			buildTargetData.executablePath = buildTargetSettings.getEffectiveProgramPathValue());
+		buildTargetSettingsComponent.buildTargetData = buildOptionsToChange.get(buildTargetName);
+		buildTargetSettingsComponent.inputChanged(buildTargetSettingsComponent.buildTargetData);
 	}
 	
-	protected BuildTargetValidator getValidator() {
-		return new BuildTargetValidator() {
+	/* -----------------  ----------------- */
+		
+	public ValidatedBuildTarget getOriginalBuildTarget() throws CommonException {
+		return getValidator().getValidatedOriginalBuildTarget();
+	}
+	
+	public String getDefaultBuildArguments() throws CommonException {
+		return getOriginalBuildTarget().getDefaultBuildArguments();
+	}
+	
+	public String getDefaultCheckArguments() throws CommonException {
+		return getOriginalBuildTarget().getDefaultCheckArguments();
+	}
+	
+	public String getDefaultExecutablePath() throws CommonException {
+		return getOriginalBuildTarget().getDefaultExecutablePath();
+	}
+	
+	protected BuildTargetSource getValidator() {
+		return new BuildTargetSource() {
 			
 			@Override
 			public String getProjectName() throws CommonException {
@@ -133,29 +156,7 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 				return ProjectBuildConfigurationComponent.this.getBuildTargetName();
 			}
 			
-			@Override
-			public String getBuildArguments() {
-				return buildTargetSettings.getEffectiveArgumentsValue();
-			}
-			
-			@Override
-			public String getExecutablePath() {
-				return buildTargetSettings.getEffectiveProgramPathValue();
-			}
 		};
-	}
-	
-//	protected void doValidate() throws CommonException, CoreException {
-//		getValidator().getValidExecutableLocation();
-//	}
-	
-	protected void handleBuildTargetChanged() {
-		String buildTargetName = getBuildTargetName();
-		if(buildTargetName == null) {
-			return;
-		}
-		buildTargetData = buildOptionsToChange.get(buildTargetName);
-		buildTargetSettings.inputChanged(buildTargetData);
 	}
 	
 	protected void handleStatusException(CommonException ce) {
@@ -174,7 +175,7 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 		buildTargetField.createComponent(topControl,
 			gdFillDefaults().grab(true, false).hint(150, SWT.DEFAULT).create());
 		
-		buildTargetSettings.createComponent(topControl, 
+		buildTargetSettingsComponent.createComponent(topControl, 
 			gdFillDefaults().grab(true, false).hint(200, SWT.DEFAULT).create());
 		
 		SWTFactoryUtil.createPushButton2(topControl, 
@@ -187,7 +188,7 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	@Override
 	protected void doSetEnabled(boolean enabled) {
 		buildTargetField.setEnabled(enabled);
-		buildTargetSettings.setEnabled(enabled && getBuildTargetName() != null);
+		buildTargetSettingsComponent.setEnabled(enabled && getBuildTargetName() != null);
 	}
 	
 	/* ----------------- apply/restore ----------------- */
