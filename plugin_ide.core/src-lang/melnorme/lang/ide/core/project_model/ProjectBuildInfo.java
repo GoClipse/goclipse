@@ -13,6 +13,9 @@ package melnorme.lang.ide.core.project_model;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.BundleInfo;
@@ -37,13 +40,13 @@ public class ProjectBuildInfo {
 	protected final BundleInfo bundleInfo;
 	
 	public ProjectBuildInfo(BuildManager buildManager, IProject project, 
-			BundleInfo bundleInfo, Indexable<BuildTargetData> buildTargetsData) {
+			BundleInfo bundleInfo, Indexable<BuildTarget> buildTargets) {
 		this.buildMgr = buildManager;
 		this.project = project;
 		this.bundleInfo = assertNotNull(bundleInfo);
 		
-		for(BuildTargetData btd : nullToEmpty(buildTargetsData)) {
-			this.buildTargets.put(btd.getTargetName(), new BuildTarget(btd));
+		for(BuildTarget buildTarget : nullToEmpty(buildTargets)) {
+			this.buildTargets.put(buildTarget.getBuildTargetName(), buildTarget);
 		}
 	}
 	
@@ -70,6 +73,10 @@ public class ProjectBuildInfo {
 		return buildTargets.get(name);
 	}
 	
+	public Map<String, BuildTarget> getBuildTargetsMap() {
+		return Collections.unmodifiableMap(buildTargets);
+	}
+	
 	public BuildTarget getDefaultBuildTarget() throws CommonException {
 		if(buildTargets.size() == 0) {
 			throw new CommonException("No targets available");
@@ -91,52 +98,44 @@ public class ProjectBuildInfo {
 		return getBundleInfo().getBuildConfigurations();
 	}
 	
-	public BuildConfiguration getBuildConfiguration_nonNull(String buildConfigName) throws CommonException {
-		for(BuildConfiguration buildConfig : getBuildConfigs()) {
-			if(buildConfig.getName().equals(buildConfigName)) {
-				return buildConfig;
-			}
-		}
-		throw new CommonException(BuildManagerMessages.BuildConfig_NotFound(buildConfigName));
-	}
 	
 	/* -----------------  ----------------- */
 		
-	public void changeEnable(BuildTarget oldBuildTarget, boolean newEnabledValue) throws StatusException {
+	public void changeEnable(BuildTarget oldBuildTarget, boolean newEnabledValue) throws CommonException {
 		BuildTargetData buildTargetData = oldBuildTarget.getDataCopy();
 		buildTargetData.enabled = newEnabledValue;
 		changeBuildTarget(oldBuildTarget, buildTargetData);
 	}
 	
-	public void changeBuildArguments(BuildTarget oldBuildTarget, String newBuildArgumentsValue) throws StatusException {
+	public void changeBuildArguments(BuildTarget oldBuildTarget, String newBuildArgumentsValue) throws CommonException {
 		BuildTargetData buildTargetData = oldBuildTarget.getDataCopy();
 		buildTargetData.buildArguments = newBuildArgumentsValue;
 		changeBuildTarget(oldBuildTarget, buildTargetData);
 	}
 	
 	public void changeBuildTarget(BuildTarget oldBuildTarget, BuildTargetData buildTargetData)
-			throws StatusException {
-		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget2(buildTargetData));
+			throws CommonException {
+		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget3(project, buildTargetData));
 	}
 	
-	protected void changeBuildTarget(BuildTarget oldBuildTarget, BuildTarget newBuildTarget) throws StatusException {
+	protected void changeBuildTarget(BuildTarget buildTargetToChange, BuildTarget newBuildTarget) throws CommonException {
 		boolean mutated = false;
-		ArrayList2<BuildTargetData> newBuildTargetsData = new ArrayList2<>(buildTargets.size());
+		ArrayList2<BuildTarget> newBuildTargets = new ArrayList2<>(buildTargets.size());
 		
 		for(BuildTarget buildTargetCursor : getBuildTargets()) {
-			if(buildTargetCursor == oldBuildTarget) {
-				newBuildTargetsData.add(newBuildTarget.getDataCopy());
+			if(buildTargetCursor == buildTargetToChange) {
+				newBuildTargets.add(newBuildTarget);
 				mutated = true;
 				continue;
 			}
-			newBuildTargetsData.add(buildTargetCursor.getDataCopy());
+			newBuildTargets.add(buildMgr.createBuildTarget3(project, buildTargetCursor.getData()));
 		}
 		if(!mutated) {
 			throw new StatusException(Severity.WARNING, BuildManagerMessages.ERROR_MODEL_OUT_OF_DATE);
 		}
 		
-		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargetsData);
-		buildMgr.setAndSaveProjectBuildInfo(project, newProjectBuildInfo);
+		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargets);
+		buildMgr.setProjectBuildInfoAndSave(project, newProjectBuildInfo);
 	}
 	
 }

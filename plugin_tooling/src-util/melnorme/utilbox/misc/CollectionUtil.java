@@ -25,6 +25,7 @@ import java.util.function.Predicate;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.fntypes.FunctionX;
 
 /**
  * Utils for creation, query, and modification of Collection classes.
@@ -262,6 +263,21 @@ public class CollectionUtil {
 	
 	public static <E, R, DEST extends Collection<R>> DEST mapTo(
 			Iterable<E> coll, Function<? super E, ? extends R> evalFunction, DEST destCollection) {
+		for(E collElement : coll) {
+			R mappeElem = evalFunction.apply(collElement);
+			destCollection.add(mappeElem);
+		}
+		
+		return destCollection;
+	}
+	
+	public static <E, R, EXC extends Exception> ArrayList2<R> mapx(
+			Iterable<E> coll, FunctionX<? super E, ? extends R, EXC> evalFunction) throws EXC {
+		return mapxTo(coll, evalFunction, new ArrayList2<R>());
+	}
+	
+	public static <E, R, EXC extends Exception, DEST extends Collection<R>> DEST mapxTo(
+			Iterable<E> coll, FunctionX<? super E, ? extends R, EXC> evalFunction, DEST destCollection) throws EXC {
 		for(E collElement : coll) {
 			R mappeElem = evalFunction.apply(collElement);
 			destCollection.add(mappeElem);

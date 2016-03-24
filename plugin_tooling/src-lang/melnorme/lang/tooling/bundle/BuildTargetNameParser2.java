@@ -17,7 +17,7 @@ import melnorme.utilbox.misc.StringUtil;
 public class BuildTargetNameParser2 extends BuildTargetNameParser {
 	
 	@Override
-	protected String getNameSeparator() {
+	public String getNameSeparator() {
 		return ":";
 	}
 	

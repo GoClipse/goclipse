@@ -8,8 +8,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
-import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
@@ -38,19 +38,19 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) {
+		protected void getDefaultBuildOptions(BuildTarget bt, ArrayList2<String> buildArgs) {
 			buildArgs.add(".");
 		}
 		
 		@Override
-		public LaunchArtifact getMainLaunchArtifact(ValidatedBuildTarget vbt) throws CommonException {
-			return new LaunchArtifact(vbt.getBuildConfigName(), "default_artifact.exe"); // TODO: LANG
+		public LaunchArtifact getMainLaunchArtifact(BuildTarget bt) throws CommonException {
+			return new LaunchArtifact(bt.getBuildConfigName(), "default_artifact.exe"); // TODO: LANG
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
+		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt,
 				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return new LANGUAGE_BuildTargetOperation(validatedBuildTarget, opHandler, buildToolPath);
+			return new LANGUAGE_BuildTargetOperation(bt, opHandler, buildToolPath);
 		}
 	}
 	
@@ -58,10 +58,10 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 	
 	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public LANGUAGE_BuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, 
+		public LANGUAGE_BuildTargetOperation(BuildTarget buildTarget, 
 				IOperationConsoleHandler opHandler, 
 				Path buildToolPath) throws CommonException, CoreException {
-			super(validatedBuildTarget.buildMgr, validatedBuildTarget, opHandler, buildToolPath);
+			super(buildTarget.buildMgr, buildTarget, opHandler, buildToolPath);
 		}
 		
 		@Override

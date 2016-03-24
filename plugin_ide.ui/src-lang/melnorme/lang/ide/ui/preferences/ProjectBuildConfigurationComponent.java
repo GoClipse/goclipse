@@ -23,7 +23,6 @@ import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
@@ -127,8 +126,8 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	
 	/* -----------------  ----------------- */
 		
-	public ValidatedBuildTarget getOriginalBuildTarget() throws CommonException {
-		return getValidator().getValidatedOriginalBuildTarget();
+	public BuildTarget getOriginalBuildTarget() throws CommonException {
+		return getValidator().getOriginalBuildTarget();
 	}
 	
 	public String getDefaultBuildArguments() throws CommonException {

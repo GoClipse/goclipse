@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
@@ -115,6 +116,18 @@ public abstract class BuildManager {
 			return BuildManager.log;
 		}
 		
+		// public access
+		@Override
+		public ProjectBuildInfo getProjectInfo(IProject project) {
+			return super.getProjectInfo(project);
+		}
+		
+		// public access
+		@Override
+		public ProjectBuildInfo setProjectInfo(IProject project, ProjectBuildInfo newProjectInfo) {
+			return super.setProjectInfo(project, newProjectInfo);
+		}
+		
 	}
 	
 	/* -----------------  ----------------- */
@@ -164,31 +177,70 @@ public abstract class BuildManager {
 	protected void loadProjectBuildInfo(IProject project, BundleInfo newBundleInfo) {
 		assertNotNull(newBundleInfo);
 		
-		ProjectBuildInfo currentBuildInfo = buildModel.getProjectInfo(project);
+		final ProjectBuildInfo currentBuildInfo = buildModel.getProjectInfo(project);
 		
-		if(currentBuildInfo == null) {
-			String targetsPrefValue = getBuildTargetsPref(project);
-			if(targetsPrefValue != null) {
-				try {
-					ArrayList2<BuildTargetData> buildTargetsData = createSerializer().readProjectBuildInfo(targetsPrefValue);
-					currentBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargetsData);
-				} catch(CommonException ce) {
-					LangCore.logError("Error reading project build-info.", ce);
-				}
-			}
+		Map<String, BuildTarget> existingBuildTargets;
+		
+		if(currentBuildInfo != null) {
+			existingBuildTargets = currentBuildInfo.getBuildTargetsMap();
+		} else {
+			existingBuildTargets = getStoredTargetSettings(project);
 		}
 		
 		// Create new build info
-		ArrayList2<BuildTargetData> buildTargets = createBuildTargetsForNewBundleInfo(
-			project, newBundleInfo, currentBuildInfo);
+		ArrayList2<BuildTarget> buildTargets = createBuildTargetsForNewBundleInfo(
+			project, newBundleInfo, existingBuildTargets);
 		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
 		setProjectBuildInfo(project, newBuildInfo);
 	}
 	
-	@SuppressWarnings("unused")
-	protected ArrayList2<BuildTargetData> createBuildTargetsForNewBundleInfo(IProject project, BundleInfo newBundleInfo, 
-			ProjectBuildInfo currentBuildInfo) {
-		ArrayList2<BuildTargetData> buildTargets = new ArrayList2<>();
+	protected Map<String, BuildTarget> getStoredTargetSettings(IProject project) {
+		Map<String, BuildTarget> existingBuildTargets = new HashMap<>();
+		
+		String targetsPrefValue = getBuildTargetsPref(project);
+		if(targetsPrefValue != null) {
+			ArrayList2<BuildTargetData> buildTargetsData;
+			try {
+				buildTargetsData = createSerializer().readProjectBuildInfo(targetsPrefValue);
+			} catch(CommonException ce) {
+				LangCore.logError("Error reading project build-info.", ce);
+				return existingBuildTargets;
+			}
+			
+			for (BuildTargetData buildTargetData : buildTargetsData) {
+				BuildTarget buildTarget;
+				try {
+					buildTarget = createBuildTarget3(project, buildTargetData);
+				} catch(CommonException ce) {
+					LangCore.logWarning("Invalid build target.", ce);
+					continue;
+				}
+				existingBuildTargets.put(buildTargetData.getTargetName(), buildTarget);
+			}
+		}
+		return existingBuildTargets;
+	}
+
+	protected final ArrayList2<BuildTarget> createBuildTargetsForNewBundleInfo(IProject project, 
+			BundleInfo newBundleInfo, Map<String, BuildTarget> currentBuildTargets) {
+		
+		ArrayList2<BuildTarget> buildTargets = getDefaultBuildTargets(project, newBundleInfo);
+	
+		for(int ix = 0; ix < buildTargets.size(); ix++) {
+			BuildTarget buildTarget = buildTargets.get(ix);
+			
+			BuildTarget currentBuildTarget = currentBuildTargets.get(buildTarget.getTargetName());
+			
+			if(currentBuildTarget != null) {
+				buildTargets.set(ix, currentBuildTarget);
+			}
+		}
+		
+		return buildTargets;
+	}
+	
+	protected ArrayList2<BuildTarget> getDefaultBuildTargets(IProject project, BundleInfo newBundleInfo) {
+		ArrayList2<BuildTarget> buildTargets = new ArrayList2<>();
 		boolean isFirstConfig = true;
 		
 		Indexable<BuildConfiguration> buildConfigs = newBundleInfo.getBuildConfigurations();
@@ -199,16 +251,9 @@ public abstract class BuildManager {
 				
 				String targetName = getBuildTargetName2(buildConfig.getName(), buildType.getName());
 				
-				// Get the old build target, of the same name
-				BuildTarget oldBuildTarget = currentBuildInfo == null ? null : 
-						currentBuildInfo.getDefinedBuildTarget(targetName);
+				BuildTargetData newBuildTargetData = new BuildTargetData(targetName, isFirstConfig); 
 				
-				// Reuse the settings
-				BuildTargetData newBuildTargetData = oldBuildTarget != null ? 
-						oldBuildTarget.getDataCopy() : 
-						new BuildTargetData(targetName, isFirstConfig, null, null, null); 
-				
-				buildTargets.add(newBuildTargetData);
+				buildTargets.add(new BuildTarget(project, newBundleInfo, newBuildTargetData, buildType, buildConfig));
 				isFirstConfig = false;
 			}
 			
@@ -220,7 +265,7 @@ public abstract class BuildManager {
 		return buildModel.setProjectInfo(project, newProjectBuildInfo);
 	}
 	
-	public ProjectBuildInfo setAndSaveProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
+	public ProjectBuildInfo setProjectBuildInfoAndSave(IProject project, ProjectBuildInfo newProjectBuildInfo) {
 		buildModel.setProjectInfo(project, newProjectBuildInfo);
 		
 		try {
@@ -249,28 +294,23 @@ public abstract class BuildManager {
 			return name;
 		}
 		
-		public ValidatedBuildTarget getValidatedBuildTarget(IProject project, BuildTargetDataView buildTargetData,
-				String buildConfigName) throws CommonException {
-			return new ValidatedBuildTarget(project, buildTargetData, this, buildConfigName);
-		}
-		
-		protected BuildConfiguration getValidBuildconfiguration(String buildConfigName, ProjectBuildInfo buildInfo)
+		protected BuildConfiguration getValidBuildconfiguration(String buildConfigName, BundleInfo bundleInfo)
 				throws CommonException {
-			return buildInfo.getBuildConfiguration_nonNull(buildConfigName);
+			return bundleInfo.getBuildConfiguration_nonNull(buildConfigName);
 		}
 		
-		public String getDefaultBuildOptions(ValidatedBuildTarget validatedBuildTarget) 
+		public String getDefaultBuildOptions(BuildTarget bt) 
 				throws CommonException {
 			ArrayList2<String> arguments = new ArrayList2<>();
-			getDefaultBuildOptions(validatedBuildTarget, arguments);
+			getDefaultBuildOptions(bt, arguments);
 			return DebugPlugin.renderArguments(arguments.toArray(String.class), null);
 		}
 		
-		protected abstract void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) 
+		protected abstract void getDefaultBuildOptions(BuildTarget bt, ArrayList2<String> buildArgs) 
 				throws CommonException;
 		
-		public LaunchArtifact getMainLaunchArtifact(ValidatedBuildTarget vbt) throws CommonException {
-			BuildConfiguration buildConfig = vbt.getBuildConfiguration();
+		public LaunchArtifact getMainLaunchArtifact(BuildTarget bt) throws CommonException {
+			BuildConfiguration buildConfig = bt.getBuildConfiguration();
 			if(buildConfig.getArtifactPath() == null) {
 				return null;
 			}
@@ -278,11 +318,11 @@ public abstract class BuildManager {
 		}
 		
 		@SuppressWarnings("unused")
-		public Indexable<LaunchArtifact> getSubTargetLaunchArtifacts(ValidatedBuildTarget vbt) throws CommonException {
+		public Indexable<LaunchArtifact> getSubTargetLaunchArtifacts(BuildTarget bt) throws CommonException {
 			return null;
 		}
 		
-		public abstract CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
+		public abstract CommonBuildTargetOperation getBuildOperation(BuildTarget bt,
 				IOperationConsoleHandler opHandler, Path buildToolPath)
 				throws CommonException, CoreException;
 		
@@ -348,13 +388,29 @@ public abstract class BuildManager {
 	
 	/* -----------------  Build Target  ----------------- */
 	
-	public BuildTarget createBuildTarget2(BuildTargetData buildTargetData) {
-		return new BuildTarget(buildTargetData);
+	public BuildTarget createBuildTarget3(IProject project, BuildTargetDataView buildTargetData) throws CommonException {
+		assertNotNull(buildTargetData.getTargetName());
+		String targetName = buildTargetData.getTargetName();
+		assertNotNull(targetName);
+		BuildTargetNameParser nameParser = getBuildTargetNameParser();
+		String buildConfigName = nameParser.getBuildConfig(targetName);
+		
+		BuildType buildType = getBuildType_NonNull(nameParser.getBuildType(targetName));
+		
+		BundleInfo bundleInfo = bundleModel.getBundleInfo(project); 
+		
+		return BuildTarget.create(project, bundleInfo, buildTargetData, buildType, buildConfigName);
 	}
 	
 	public BuildTarget getValidDefinedBuildTarget(IProject project, String buildTargetName) 
-			throws CommonException, StatusException {
+			throws CommonException {
 		return getValidBuildTarget(project, buildTargetName, true, true);
+	}
+	
+	public BuildTarget getValidDefinedBuildTarget(IProject project, String buildTypeName, String buildConfigName)
+			throws CommonException {
+		String buildTargetName = getBuildTargetName2(buildConfigName, buildTypeName);
+		return getValidDefinedBuildTarget(project, buildTargetName);
 	}
 	
 	public BuildTarget getValidBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly) 
@@ -367,11 +423,15 @@ public abstract class BuildManager {
 		ProjectBuildInfo buildInfo = getValidBuildInfo(project, false);
 		
 		// validate name after validation project buildInfo
-		if(buildTargetName == null || buildTargetName.isEmpty()) {
-			throw new CommonException(LaunchMessages.PROCESS_LAUNCH_NoBuildTargetSpecified);
-		}
+		validateBuildTargetName(buildTargetName);
 		
 		return getValidBuildTarget(buildInfo, buildTargetName, definedTargetsOnly, requireNonNull);
+	}
+	
+	protected void validateBuildTargetName(String buildTargetName) throws CommonException {
+		if(buildTargetName == null || buildTargetName.isEmpty()) {
+			throw new CommonException(LaunchMessages.BuildTarget_NotSpecified);
+		}
 	}
 	
 	public BuildTarget getValidBuildTarget(ProjectBuildInfo buildInfo, String buildTargetName, boolean definedTargetsOnly,
@@ -380,35 +440,15 @@ public abstract class BuildManager {
 		
 		BuildTarget buildTarget = buildInfo.getDefinedBuildTarget(buildTargetName);
 		
-		if(buildTarget == null && !definedTargetsOnly) {
-			buildTarget = createBuildTarget2(new BuildTargetData(buildTargetName, false));
-		}
-		
-		if(buildTarget == null && requireNonNull) {
-			throw new CommonException(LaunchMessages.PROCESS_LAUNCH_NoSuchBuildTarget);
+		if(buildTarget == null) {
+			if(!definedTargetsOnly) {
+				buildTarget = createBuildTarget3(buildInfo.getProject(), new BuildTargetData(buildTargetName, false));
+			}
+			else if(requireNonNull) {
+				throw new CommonException(LaunchMessages.BuildTarget_NotFound);
+			}
 		}
 		return buildTarget;
-	}
-	
-	/* -----------------  Build Target Validator  ----------------- */
-	
-	public ValidatedBuildTarget getValidatedBuildTarget(IProject project, BuildTarget buildTarget) 
-			throws CommonException {
-		
-		String targetName = buildTarget.getTargetName();
-		BuildTargetNameParser nameParser = getBuildTargetNameParser();
-		String buildConfigName = nameParser.getBuildConfig(targetName);
-		
-		BuildType buildType = getBuildType_NonNull(nameParser.getBuildType(targetName));
-		
-		return buildType.getValidatedBuildTarget(project, buildTarget.getData(), buildConfigName);
-	}
-	
-	public ValidatedBuildTarget getValidatedBuildTarget(IProject project, String buildTypeName, String buildConfigName)
-			throws CommonException {
-		String buildTargetName = getBuildTargetName2(buildConfigName, buildTypeName);
-		BuildTarget buildTarget = getValidDefinedBuildTarget(project, buildTargetName);
-		return getValidatedBuildTarget(project, buildTarget);
 	}
 	
 	/* ----------------- Build operations ----------------- */

@@ -27,7 +27,7 @@ public class BuildTargetNameParser {
 		return getBuildTypeName(buildTargetName);
 	}
 	
-	protected String getNameSeparator() {
+	public String getNameSeparator() {
 		return " #";
 	}
 	

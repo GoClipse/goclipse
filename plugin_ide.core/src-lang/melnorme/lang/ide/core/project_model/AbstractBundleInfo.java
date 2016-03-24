@@ -10,11 +10,22 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model;
 
+import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 
 public abstract class AbstractBundleInfo {
 	
 	public abstract Indexable<BuildConfiguration> getBuildConfigurations();
+	
+	public BuildConfiguration getBuildConfiguration_nonNull(String buildConfigName) throws CommonException {
+		for(BuildConfiguration buildConfig : getBuildConfigurations()) {
+			if(buildConfig.getName().equals(buildConfigName)) {
+				return buildConfig;
+			}
+		}
+		throw new CommonException(BuildManagerMessages.BuildConfig_NotFound(buildConfigName));
+	}
 	
 }

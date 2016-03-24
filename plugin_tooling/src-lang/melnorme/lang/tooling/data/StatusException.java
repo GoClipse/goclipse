@@ -37,6 +37,11 @@ public class StatusException extends CommonException implements IStatusMessage {
 		return super.getMessage();
 	}
 	
+	@Override
+	public StatusException toStatusException(Severity severity) {
+		return this;
+	}
+	
 	public static StatusException toStatusException(IStatusMessage status) {
 		if(status instanceof StatusException) {
 			return (StatusException) status;

@@ -49,6 +49,14 @@ public class BuildTargetData implements BuildTargetDataView {
 		);
 	}
 	
+	public void setData(BuildTargetDataView data) {
+		this.targetName = data.getTargetName();
+		this.enabled = data.isEnabled();
+		this.buildArguments = data.getBuildArguments();
+		this.checkArguments = data.getCheckArguments();
+		this.executablePath = data.getExecutablePath();
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;

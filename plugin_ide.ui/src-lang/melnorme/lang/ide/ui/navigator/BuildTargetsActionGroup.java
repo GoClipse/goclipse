@@ -36,7 +36,6 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
@@ -46,6 +45,7 @@ import melnorme.lang.ide.ui.utils.BuildUtilities;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -89,18 +89,13 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	
 	protected void addLaunchActions(IMenuManager menu, BuildTargetElement buildTargetElement) {
 		
-		ValidatedBuildTarget validatedBuildTarget;
-		try {
-			validatedBuildTarget = buildTargetElement.getValidatedBuildTarget();
-		} catch(CommonException e) {
-			return;
-		}
+		BuildTarget buildTarget = buildTargetElement.getBuildTarget();
 		
-		LaunchArtifact mainLaunchArtifact = getOrNull(validatedBuildTarget::getMainLaunchArtifact);
-		Indexable<LaunchArtifact> launchSubArtifacts = getOrNull(validatedBuildTarget::getSubLaunchArtifacts);
+		LaunchArtifact mainLaunchArtifact = getOrNull(buildTarget::getMainLaunchArtifact);
+		Indexable<LaunchArtifact> launchSubArtifacts = getOrNull(buildTarget::getSubLaunchArtifacts);
 		
 		String suggestedLaunchSuffix = buildTargetElement.getTargetDisplayName();
-		if(validatedBuildTarget.isDefaultBuildType()) {
+		if(buildTarget.isDefaultBuildType()) {
 			suggestedLaunchSuffix = null;
 		}
 		
@@ -125,7 +120,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		MenuManager debugSubTargetsMenu = new MenuManager("Debug ");
 		
 		if(mainLaunchArtifact != null) {
-			addMainArtifactAction(validatedBuildTarget, 
+			addMainArtifactAction(buildTarget, 
 				runTargetAction, debugTargetAction, 
 				runSubTargetsMenu, debugSubTargetsMenu);
 		}
@@ -146,13 +141,13 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	}
 	
 	protected void addMainArtifactAction(
-			ValidatedBuildTarget validatedBuildTarget, 
+			BuildTarget buildTarget, 
 			LaunchBuildTargetAction runTargetAction,
 			LaunchBuildTargetAction debugTargetAction, 
 			MenuManager runSubTargetsMenu, 
 			MenuManager debugSubTargetsMenu) 
 	{
-		if(validatedBuildTarget.isDefaultBuildType()) {
+		if(buildTarget.isDefaultBuildType()) {
 			runTargetAction.setText("Run default executable");
 			debugTargetAction.setText("Debug default executable");
 		}
@@ -298,7 +293,11 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		@Override
 		public void doRun() throws StatusException {
-			getBuildInfo().changeEnable(buildTarget, isChecked());
+			try {
+				getBuildInfo().changeEnable(buildTarget, isChecked());
+			} catch(CommonException e) {
+				throw e.toStatusException(Severity.ERROR);
+			}
 		}
 		
 	}

@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import melnorme.utilbox.core.fntypes.FunctionX;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 
@@ -46,6 +47,11 @@ public interface Collection2<E> extends Iterable<E> {
 	
 	default <R> ArrayList2<R> map(Function<? super E, ? extends R> evalFunction) {
 		return CollectionUtil.map(this, evalFunction);
+	}
+	
+	default <R, EXC extends Exception> ArrayList2<R> mapx(FunctionX<? super E, ? extends R, EXC> evalFunction) 
+			throws EXC {
+		return CollectionUtil.mapx(this, evalFunction);
 	}
 	
 	/**
