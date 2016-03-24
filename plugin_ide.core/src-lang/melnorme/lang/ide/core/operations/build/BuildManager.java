@@ -29,7 +29,6 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ICoreOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBasedModel;
@@ -171,8 +170,8 @@ public abstract class BuildManager {
 			String targetsPrefValue = getBuildTargetsPref(project);
 			if(targetsPrefValue != null) {
 				try {
-					ArrayList2<BuildTarget> buildTargets = createSerializer().readProjectBuildInfo(targetsPrefValue);
-					currentBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
+					ArrayList2<BuildTargetData> buildTargetsData = createSerializer().readProjectBuildInfo(targetsPrefValue);
+					currentBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargetsData);
 				} catch(CommonException ce) {
 					LangCore.logError("Error reading project build-info.", ce);
 				}
@@ -180,15 +179,16 @@ public abstract class BuildManager {
 		}
 		
 		// Create new build info
-		ArrayList2<BuildTarget> buildTargets = createBuildTargetsForNewInfo(project, newBundleInfo, currentBuildInfo);
+		ArrayList2<BuildTargetData> buildTargets = createBuildTargetsForNewBundleInfo(
+			project, newBundleInfo, currentBuildInfo);
 		ProjectBuildInfo newBuildInfo = new ProjectBuildInfo(this, project, newBundleInfo, buildTargets);
 		setProjectBuildInfo(project, newBuildInfo);
 	}
 	
 	@SuppressWarnings("unused")
-	protected ArrayList2<BuildTarget> createBuildTargetsForNewInfo(IProject project, BundleInfo newBundleInfo, 
+	protected ArrayList2<BuildTargetData> createBuildTargetsForNewBundleInfo(IProject project, BundleInfo newBundleInfo, 
 			ProjectBuildInfo currentBuildInfo) {
-		ArrayList2<BuildTarget> buildTargets = new ArrayList2<>();
+		ArrayList2<BuildTargetData> buildTargets = new ArrayList2<>();
 		boolean isFirstConfig = true;
 		
 		Indexable<BuildConfiguration> buildConfigs = newBundleInfo.getBuildConfigurations();
@@ -197,27 +197,23 @@ public abstract class BuildManager {
 			Indexable<BuildType> buildTypes = getBuildTypes();
 			for(BuildType buildType : buildTypes) {
 				
-				String targetName = getBuildTargetName2(buildConfig.getName(), buildType.getName()); 
+				String targetName = getBuildTargetName2(buildConfig.getName(), buildType.getName());
 				
-				buildTargets.add(createBuildTargetFromConfig(currentBuildInfo, isFirstConfig, targetName));
+				// Get the old build target, of the same name
+				BuildTarget oldBuildTarget = currentBuildInfo == null ? null : 
+						currentBuildInfo.getDefinedBuildTarget(targetName);
+				
+				// Reuse the settings
+				BuildTargetData newBuildTargetData = oldBuildTarget != null ? 
+						oldBuildTarget.getDataCopy() : 
+						new BuildTargetData(targetName, isFirstConfig, null, null, null); 
+				
+				buildTargets.add(newBuildTargetData);
 				isFirstConfig = false;
 			}
 			
 		}
 		return buildTargets;
-	}
-	
-	protected BuildTarget createBuildTargetFromConfig(ProjectBuildInfo currentBuildInfo, boolean isEnabled,
-			String targetName) {
-		BuildTarget oldBuildTarget = currentBuildInfo == null ? 
-				null : 
-				currentBuildInfo.getDefinedBuildTarget(targetName);
-		
-		BuildTargetData data = oldBuildTarget != null ? 
-				oldBuildTarget.getDataCopy() : 
-				new BuildTargetData(targetName, isEnabled, null, null, null);
-		
-		return createBuildTarget(data);
 	}
 	
 	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
@@ -253,9 +249,9 @@ public abstract class BuildManager {
 			return name;
 		}
 		
-		public ValidatedBuildTarget getValidatedBuildTarget(IProject project, BuildTarget buildTarget,
+		public ValidatedBuildTarget getValidatedBuildTarget(IProject project, BuildTargetDataView buildTargetData,
 				String buildConfigName) throws CommonException {
-			return new ValidatedBuildTarget(project, buildTarget, this, buildConfigName);
+			return new ValidatedBuildTarget(project, buildTargetData, this, buildConfigName);
 		}
 		
 		protected BuildConfiguration getValidBuildconfiguration(String buildConfigName, ProjectBuildInfo buildInfo)
@@ -352,7 +348,7 @@ public abstract class BuildManager {
 	
 	/* -----------------  Build Target  ----------------- */
 	
-	public BuildTarget createBuildTarget(BuildTargetData buildTargetData) {
+	public BuildTarget createBuildTarget2(BuildTargetData buildTargetData) {
 		return new BuildTarget(buildTargetData);
 	}
 	
@@ -380,10 +376,12 @@ public abstract class BuildManager {
 	
 	public BuildTarget getValidBuildTarget(ProjectBuildInfo buildInfo, String buildTargetName, boolean definedTargetsOnly,
 			boolean requireNonNull) throws CommonException {
+		assertNotNull(buildTargetName);
+		
 		BuildTarget buildTarget = buildInfo.getDefinedBuildTarget(buildTargetName);
 		
 		if(buildTarget == null && !definedTargetsOnly) {
-			buildTarget = createBuildTarget(new BuildTargetData(buildTargetName, false));
+			buildTarget = createBuildTarget2(new BuildTargetData(buildTargetName, false));
 		}
 		
 		if(buildTarget == null && requireNonNull) {
@@ -403,7 +401,7 @@ public abstract class BuildManager {
 		
 		BuildType buildType = getBuildType_NonNull(nameParser.getBuildType(targetName));
 		
-		return buildType.getValidatedBuildTarget(project, buildTarget, buildConfigName);
+		return buildType.getValidatedBuildTarget(project, buildTarget.getData(), buildConfigName);
 	}
 	
 	public ValidatedBuildTarget getValidatedBuildTarget(IProject project, String buildTypeName, String buildConfigName)

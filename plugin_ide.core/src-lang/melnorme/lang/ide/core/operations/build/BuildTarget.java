@@ -10,129 +10,51 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
-import static melnorme.utilbox.core.CoreUtil.areEqual;
-
-import melnorme.utilbox.misc.HashcodeUtil;
-import melnorme.utilbox.misc.StringUtil;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 public class BuildTarget {
 	
-	public static class BuildTargetData {
-		
-		public String targetName;
-		public boolean enabled;
-		public String buildArguments;
-		public String checkArguments;
-		public String executablePath;
-		
-		public BuildTargetData() {
-		}
-		
-		public BuildTargetData(String targetName, boolean enabled) {
-			this.targetName = targetName;
-			this.enabled = enabled;
-		}
-		
-		public BuildTargetData(String targetName, boolean enabled, String buildArguments, 
-				String checkArguments, String executablePath) {
-			this.targetName = targetName;
-			this.enabled = enabled;
-			this.buildArguments = buildArguments;
-			this.checkArguments = checkArguments;
-			this.executablePath = executablePath;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if(this == obj) return true;
-			if(!(obj instanceof BuildTargetData)) return false;
-			
-			BuildTargetData other = (BuildTargetData) obj;
-			
-			return 
-					areEqual(targetName, other.targetName) &&
-					areEqual(enabled, other.enabled) &&
-					areEqual(buildArguments, other.buildArguments) &&
-					areEqual(checkArguments, other.checkArguments) &&
-					areEqual(executablePath, other.executablePath);
-		}
-		
-		@Override
-		public int hashCode() {
-			return HashcodeUtil.combinedHashCode(targetName, enabled, buildArguments, checkArguments);
-		}
-		
-	}
-	
-	/* ----------------- BuildTarget ----------------- */
-	
-	protected BuildTargetData data = new BuildTargetData();
+	protected final BuildTargetDataView data;
 	
 	public BuildTarget(BuildTargetData data) {
-		this(data.targetName, data.enabled, data.buildArguments, data.checkArguments, data.executablePath);
-	}
-	
-	public BuildTarget(String targetName, boolean enabled, String buildArguments, String checkArguments,
-			String executablePath) {
-		data = new BuildTargetData(
-			StringUtil.nullAsEmpty(targetName), 
-			enabled, 
-			buildArguments, 
-			checkArguments, 
-			executablePath
-		);
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(this == obj) return true;
-		if(!(obj instanceof BuildTarget)) return false;
+		assertNotNull(data.targetName);
 		
-		BuildTarget other = (BuildTarget) obj;
-		
-		return areEqual(data, other.data);
-	}
-	
-	@Override
-	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(data);
+		this.data = new BuildTargetData(data);
 	}
 	
 	@Override
 	public String toString() {
-		return data.targetName + (data.enabled ? " [ENABLED]" : "");
+		return data.getTargetName() + (data.isEnabled() ? " [ENABLED]" : "");
 	}
 	
 	/* -----------------  ----------------- */
 	
+	public String getTargetName() {
+		return assertNotNull(data.getTargetName());
+	}
+	
 	public boolean isEnabled() {
-		return data.enabled;
+		return data.isEnabled();
 	}
 	
 	public String getBuildArguments() {
-		return data.buildArguments;
+		return data.getBuildArguments();
 	}
 	
 	public String getCheckArguments() {
-		return data.checkArguments;
-	}
-	
-	public String getTargetName() {
-		return data.targetName;
+		return data.getCheckArguments();
 	}
 	
 	public String getExecutablePath() {
-		return data.executablePath;
+		return data.getExecutablePath();
+	}
+	
+	public BuildTargetDataView getData() {
+		return data;
 	}
 	
 	public BuildTargetData getDataCopy() {
-		return new BuildTargetData(
-			getTargetName(),
-			isEnabled(),
-			getBuildArguments(),
-			getCheckArguments(),
-			getExecutablePath()
-		);
+		return new BuildTargetData(data);
 	}
 	
 }

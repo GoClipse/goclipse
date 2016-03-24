@@ -15,12 +15,22 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.tests.CommonTest;
 
 public class BuildTargetsSerializer_Test extends CommonTest {
+	
+	public static BuildTargetData bt(String targetName, boolean enabled, String buildArguments, String checkArguments,
+			String executablePath) {
+		return new BuildTargetData(
+			targetName, 
+			enabled, 
+			buildArguments, 
+			checkArguments, 
+			executablePath
+		);
+	}
 	
 	protected final BuildManager buildMgr = LangCore.getBuildManager();
 	protected BuildTargetsSerializer serializer = buildMgr.createSerializer();
@@ -38,16 +48,15 @@ public class BuildTargetsSerializer_Test extends CommonTest {
 		));
 	}
 	
-	protected BuildTarget createBuildTarget(boolean enabled, String targetName, String buildArgs, String checkArgs,
+	protected BuildTargetData createBuildTarget(boolean enabled, String targetName, String buildArgs, String checkArgs,
 			String filePath) {
-		return buildMgr.createBuildTarget(
-			new BuildTargetData(targetName, enabled, buildArgs, checkArgs, filePath));
+		return bt(targetName, enabled, buildArgs, checkArgs, filePath);
 	}
 	
-	protected void testSerialize(ArrayList2<BuildTarget> buildTargets) {
+	protected void testSerialize(ArrayList2<BuildTargetData> buildTargetsData) {
 		try {
-			String xml = serializer.writeProjectBuildInfo(buildTargets);
-			assertAreEqual(buildTargets, serializer.readProjectBuildInfo(xml));
+			String xml = serializer.writeProjectBuildInfo(buildTargetsData);
+			assertAreEqual(buildTargetsData, serializer.readProjectBuildInfo(xml));
 		} catch(CommonException e) {
 			assertFail();
 		}

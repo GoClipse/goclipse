@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2016 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,19 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.launch;
+package melnorme.lang.ide.core.operations.build;
 
-public interface IBuildTargetSettings {
+
+public interface BuildTargetDataView {
 	
-	// can be null
-	String getProjectName();
+	String getTargetName();
 	
-	// can be null
-	String getBuildTargetName();
+	boolean isEnabled();
 	
-	// can be null
 	String getBuildArguments();
 	
-	// can be null
+	String getCheckArguments();
+	
 	String getExecutablePath();
 	
 }

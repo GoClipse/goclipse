@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import static melnorme.lang.ide.core.operations.build.BuildTargetsSerializer_Test.bt;
+
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
@@ -28,7 +30,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.tests.CommonTest;
 
-public class BuildTargetValidatorTest extends CommonTest {
+public class BuildTargetSettingsTest extends CommonTest {
 	
 	protected class SampleBuildProject extends SampleProject {
 		
@@ -40,10 +42,10 @@ public class BuildTargetValidatorTest extends CommonTest {
 		
 		protected void setSampleProjectInfo() throws org.eclipse.core.runtime.CoreException {
 			
-			ArrayList2<BuildTarget> buildTargets = new ArrayList2<>();
+			ArrayList2<BuildTargetData> buildTargets = new ArrayList2<>();
 			buildTargets.addElements(
-				new BuildTarget("SampleTarget", true, null, null, null),
-				new BuildTarget("SampleTarget2", true, "sample args", "--check_args", "sample path")
+				bt("SampleTarget", true, null, null, null),
+				bt("SampleTarget2", true, "sample args", "--check_args", "sample path")
 			);
 			
 			BundleInfo bundleInfo = BuildTestsHelper.createSampleBundleInfoA("foo", null);
@@ -68,21 +70,21 @@ public class BuildTargetValidatorTest extends CommonTest {
 		try(SampleProject sampleProj = initSampleProject()){
 			
 			CompositeBuildTargetSettings target1Settings = btSettings("SampleTarget", null, null);
-			assertEquals(target1Settings.getValidBuildTarget(), 
-				new BuildTarget("SampleTarget", true, null, null, null));
+			assertEquals(target1Settings.getValidBuildTarget().getData(), 
+				bt("SampleTarget", true, null, null, null));
 			
 			target1Settings.getExecutablePath();
 			
 			CompositeBuildTargetSettings target2Validator = getBuiltTargetSettingsValidator(
 				sampleProj.getName(), "SampleTarget2", null, null);
-			assertEquals(target2Validator.getValidBuildTarget(), 
-				new BuildTarget("SampleTarget2", true, "sample args", "--check_args", "sample path"));
+			assertEquals(target2Validator.getValidBuildTarget().getData(), 
+				bt("SampleTarget2", true, "sample args", "--check_args", "sample path"));
 			
-			assertEquals(btSettings("SampleTarget", "ARGS", "EXEPATH").getValidBuildTarget(), 
-				new BuildTarget("SampleTarget", true, "ARGS", null, "EXEPATH"));
+			assertEquals(btSettings("SampleTarget", "ARGS", "EXEPATH").getValidBuildTarget().getData(), 
+				bt("SampleTarget", true, "ARGS", null, "EXEPATH"));
 			
-			assertEquals(btSettings("ImplicitTarget", "ARGS", "EXEPATH").getValidBuildTarget(), 
-				new BuildTarget("ImplicitTarget", false, "ARGS", null, "EXEPATH"));
+			assertEquals(btSettings("ImplicitTarget", "ARGS", "EXEPATH").getValidBuildTarget().getData(), 
+				bt("ImplicitTarget", false, "ARGS", null, "EXEPATH"));
 		}
 		
 	}
@@ -97,7 +99,7 @@ public class BuildTargetValidatorTest extends CommonTest {
 		CompositeBuildTargetSettings btProcessor = new CompositeBuildTargetSettings() {
 			
 			@Override
-			public String getProjectName() throws CommonException {
+			public String getProjectName() {
 				return projectName;
 			}
 			
@@ -150,12 +152,12 @@ public class BuildTargetValidatorTest extends CommonTest {
 			
 			IProject project = sampleProj.getProject();
 			
-			BuildTarget targetA = new BuildTarget("SampleTarget", true, null, null, null);
+			BuildTargetData targetA = bt("SampleTarget", true, null, null, null);
 			ValidatedBuildTarget validatedTargetA = buildType.getValidatedBuildTarget(project, targetA, "");
 			verifyThrows(() -> validatedTargetA.getEffectiveValidExecutablePath(), CommonException.class, 
 				LaunchMessages.MSG_BuildTarget_NoExecutableAvailable());
 			
-			BuildTarget target2 = new BuildTarget("SampleTarget2", true, "sample args", "-check", "sample path");
+			BuildTargetData target2 = bt("SampleTarget2", true, "sample args", "-check", "sample path");
 			ValidatedBuildTarget validatedTarget2 = buildType.getValidatedBuildTarget(project, target2, "");
 			
 			assertAreEqual(validatedTarget2.getEffectiveValidExecutablePath(), "sample path");
