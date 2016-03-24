@@ -19,7 +19,7 @@ import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
@@ -37,12 +37,13 @@ public class ProjectBuildInfo {
 	protected final BundleInfo bundleInfo;
 	
 	public ProjectBuildInfo(BuildManager buildManager, IProject project, 
-			BundleInfo bundleInfo, Indexable<BuildTarget> buildTargets) {
+			BundleInfo bundleInfo, Indexable<BuildTargetData> buildTargetsData) {
 		this.buildMgr = buildManager;
 		this.project = project;
 		this.bundleInfo = assertNotNull(bundleInfo);
-		for(BuildTarget buildTarget : nullToEmpty(buildTargets)) {
-			this.buildTargets.put(buildTarget.getTargetName(), buildTarget);
+		
+		for(BuildTargetData btd : nullToEmpty(buildTargetsData)) {
+			this.buildTargets.put(btd.getTargetName(), new BuildTarget(btd));
 		}
 	}
 	
@@ -115,26 +116,26 @@ public class ProjectBuildInfo {
 	
 	public void changeBuildTarget(BuildTarget oldBuildTarget, BuildTargetData buildTargetData)
 			throws StatusException {
-		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget(buildTargetData));
+		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget2(buildTargetData));
 	}
 	
 	protected void changeBuildTarget(BuildTarget oldBuildTarget, BuildTarget newBuildTarget) throws StatusException {
 		boolean mutated = false;
-		ArrayList2<BuildTarget> newBuildTargets = new ArrayList2<>(buildTargets.size());
+		ArrayList2<BuildTargetData> newBuildTargetsData = new ArrayList2<>(buildTargets.size());
 		
 		for(BuildTarget buildTargetCursor : getBuildTargets()) {
 			if(buildTargetCursor == oldBuildTarget) {
-				newBuildTargets.add(newBuildTarget);
+				newBuildTargetsData.add(newBuildTarget.getDataCopy());
 				mutated = true;
 				continue;
 			}
-			newBuildTargets.add(buildTargetCursor);
+			newBuildTargetsData.add(buildTargetCursor.getDataCopy());
 		}
 		if(!mutated) {
 			throw new StatusException(Severity.WARNING, BuildManagerMessages.ERROR_MODEL_OUT_OF_DATE);
 		}
 		
-		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargets);
+		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargetsData);
 		buildMgr.setAndSaveProjectBuildInfo(project, newProjectBuildInfo);
 	}
 	

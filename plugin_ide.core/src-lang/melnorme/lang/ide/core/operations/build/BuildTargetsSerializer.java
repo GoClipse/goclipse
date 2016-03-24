@@ -15,10 +15,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.utils.DocumentSerializerHelper;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.CommonException;
 
 public class BuildTargetsSerializer extends DocumentSerializerHelper {
@@ -40,27 +40,28 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 	}
 	
 	public String writeProjectBuildInfo(ProjectBuildInfo projectBuildInfo) throws CommonException {
-		return writeProjectBuildInfo(projectBuildInfo.getBuildTargets());
+		Collection2<BuildTarget> buildTargets = projectBuildInfo.getBuildTargets();
+		return writeProjectBuildInfo(buildTargets.map((elem) -> elem.getData()));
 	}
 	
-	public String writeProjectBuildInfo(Iterable<BuildTarget> buildTargets) throws CommonException {
+	public String writeProjectBuildInfo(Iterable<? extends BuildTargetDataView> buildTargets) throws CommonException {
 		Document doc = getDocumentBuilder().newDocument();
 		writeDocument(doc, buildTargets);
 		
 		return documentToString(doc);
 	}
 	
-	protected void writeDocument(Document doc, Iterable<BuildTarget> buildTargets) {
+	protected void writeDocument(Document doc, Iterable<? extends BuildTargetDataView> buildTargets) {
 		Element buildTargetsElem = doc.createElementNS(LangCore.PLUGIN_ID, BUILD_TARGETS_ElemName);
 		doc.appendChild(buildTargetsElem);
 		
-		for(BuildTarget buildTarget : buildTargets) {
+		for(BuildTargetDataView buildTarget : buildTargets) {
 			buildTargetsElem.appendChild(createBuildTargetElement(doc, buildTarget));
 		}
 		
 	}
 	
-	public ArrayList2<BuildTarget> readProjectBuildInfo(String targetsXml) throws CommonException {
+	public ArrayList2<BuildTargetData> readProjectBuildInfo(String targetsXml) throws CommonException {
 		Document doc = parseDocumentFromXml(targetsXml);
 		
 		Node buildTargetsElem = doc.getFirstChild();
@@ -68,7 +69,7 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 			throw new CommonException("Expected element " + BUILD_TARGETS_ElemName + ".");
 		}
 		
-		ArrayList2<BuildTarget> buildTargets = new ArrayList2<>();
+		ArrayList2<BuildTargetData> buildTargets = new ArrayList2<>();
 		
 		Node targetElem = buildTargetsElem.getFirstChild();
 		for(; targetElem != null; targetElem = targetElem.getNextSibling() ) {
@@ -81,19 +82,19 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		return buildTargets;
 	}
 	
-	protected Element createBuildTargetElement(Document doc, BuildTarget buildTarget) {
+	protected Element createBuildTargetElement(Document doc, BuildTargetDataView btd) {
 		Element targetElem = doc.createElement(TARGET_ElemName);
 		
-		targetElem.setAttribute(PROP_NAME, buildTarget.getTargetName());
-		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(buildTarget.isEnabled()));
-		setOptionalAttribute(targetElem, PROP_ARGUMENTS, buildTarget.getBuildArguments());
-		setOptionalAttribute(targetElem, PROP_CHECK_ARGUMENTS, buildTarget.getCheckArguments());
-		setOptionalAttribute(targetElem, PROP_EXE_PATH, buildTarget.getExecutablePath());
+		targetElem.setAttribute(PROP_NAME, btd.getTargetName());
+		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(btd.isEnabled()));
+		setOptionalAttribute(targetElem, PROP_ARGUMENTS, btd.getBuildArguments());
+		setOptionalAttribute(targetElem, PROP_CHECK_ARGUMENTS, btd.getCheckArguments());
+		setOptionalAttribute(targetElem, PROP_EXE_PATH, btd.getExecutablePath());
 		
 		return targetElem;
 	}
 	
-	protected BuildTarget readBuildTargetElement(Node targetElem) throws CommonException {
+	protected BuildTargetData readBuildTargetElement(Node targetElem) throws CommonException {
 		String nodeName = targetElem.getNodeName();
 		if(nodeName.equals(TARGET_ElemName)) {
 			
@@ -110,9 +111,9 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		}
 	}
 	
-	protected BuildTarget createBuildTarget(@SuppressWarnings("unused") Node targetElem, 
+	protected BuildTargetData createBuildTarget(@SuppressWarnings("unused") Node targetElem, 
 			BuildTargetData buildTargetData) {
-		return buildManager.createBuildTarget(buildTargetData);
+		return buildTargetData;
 	}
 	
 }

@@ -96,7 +96,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		return new CompositeBuildTargetSettings() {
 			
 			@Override
-			public String getProjectName() throws CommonException {
+			public String getProjectName() {
 				return MainLaunchConfigurationTab.this.getProjectName();
 			}
 			
@@ -120,9 +120,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	@Override
 	protected void doValidate() throws CommonException, CoreException {
-		getBuildTargetSettings().getValidBuildTarget();
-		getBuildTargetSettings().getEffectiveBuildArguments();
-		getBuildTargetSettings().getValidExecutableLocation();
+		getBuildTargetSettings().validate();
 	}
 	
 	/* ----------------- bindings ----------------- */

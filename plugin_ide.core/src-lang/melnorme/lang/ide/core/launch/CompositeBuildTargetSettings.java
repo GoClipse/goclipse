@@ -11,7 +11,7 @@
 package melnorme.lang.ide.core.launch;
 
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.tooling.ops.util.ValidationMessages;
 import melnorme.utilbox.core.CommonException;
@@ -27,11 +27,22 @@ public abstract class CompositeBuildTargetSettings extends BuildTargetSource
 	}
 	
 	
+	public void validate() throws CommonException {
+		getValidBuildTarget();
+		getEffectiveBuildArguments();
+		getValidExecutableLocation();
+	}
+	
+	
 	/* -----------------  ----------------- */
 	
 	public BuildTarget getValidBuildTarget() throws CommonException {
 		BuildTarget originalBuildTarget = getOriginalBuildTarget();
 		
+		return getValidBuildTarget(originalBuildTarget);
+	}
+	
+	public BuildTarget getValidBuildTarget(BuildTarget originalBuildTarget) {
 		BuildTargetData data = originalBuildTarget.getDataCopy();
 		if(getBuildArguments() != null) {
 			data.buildArguments = getBuildArguments();
@@ -39,7 +50,7 @@ public abstract class CompositeBuildTargetSettings extends BuildTargetSource
 		if(getExecutablePath() != null) {
 			data.executablePath = getExecutablePath();
 		}
-		return getBuildManager().createBuildTarget(data);
+		return getBuildManager().createBuildTarget2(data);
 	}
 	
 	protected ValidatedBuildTarget getValidatedBuildTarget() throws CommonException {

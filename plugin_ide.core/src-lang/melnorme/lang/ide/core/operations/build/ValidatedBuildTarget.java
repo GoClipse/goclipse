@@ -33,15 +33,15 @@ public class ValidatedBuildTarget extends AbstractValidator {
 	public final BuildManager buildMgr = LangCore.getBuildManager();
 	
 	protected final IProject project;
-	protected final BuildTarget buildTarget;
+	protected final BuildTargetDataView buildTargetData;
 	protected final BuildType buildType;
 	protected final ProjectBuildInfo buildInfo;
 	protected final BuildConfiguration buildConfiguration;
 	
-	public ValidatedBuildTarget(IProject project, BuildTarget buildTarget, BuildType buildType, 
+	public ValidatedBuildTarget(IProject project, BuildTargetDataView buildTargetData, BuildType buildType, 
 			String buildConfigName) throws CommonException {
 		this.project = project;
-		this.buildTarget = buildTarget;
+		this.buildTargetData = buildTargetData;
 		this.buildType = assertNotNull(buildType);
 		
 		this.buildInfo = buildMgr.getValidBuildInfo(project);
@@ -76,10 +76,6 @@ public class ValidatedBuildTarget extends AbstractValidator {
 		return buildType;
 	}
 	
-	public BuildTarget getBuildTarget() {
-		return buildTarget;
-	}
-	
 	public boolean isDefaultBuildType() {
 		return getBuildType() == buildMgr.getDefaultBuildType();
 	}
@@ -97,7 +93,7 @@ public class ValidatedBuildTarget extends AbstractValidator {
 	/* -----------------  ----------------- */
 	
 	protected String getBuildArguments() {
-		return buildTarget.getBuildArguments();
+		return buildTargetData.getBuildArguments();
 	}
 	
 	public String getEffectiveBuildArguments() throws CommonException {
@@ -112,19 +108,21 @@ public class ValidatedBuildTarget extends AbstractValidator {
 		return getBuildType().getDefaultBuildOptions(this);
 	}
 	
-	public String getDefaultCheckArguments() throws CommonException {
-		// FIXME: TO DO
-		return getBuildType().getDefaultBuildOptions(this);
-	}
-	
 	public String[] getEffectiveEvaluatedBuildArguments() throws CommonException {
 		return LaunchUtils.getEvaluatedArguments(getEffectiveBuildArguments());
 	}
 	
 	/* -----------------  ----------------- */
 	
+	public String getDefaultCheckArguments() throws CommonException {
+		// FIXME: TO DO
+		return getBuildType().getDefaultBuildOptions(this);
+	}
+	
+	/* -----------------  ----------------- */
+	
 	protected String getExecutablePath() {
-		return buildTarget.getExecutablePath();
+		return buildTargetData.getExecutablePath();
 	}
 	
 	public String getEffectiveValidExecutablePath() throws CommonException {

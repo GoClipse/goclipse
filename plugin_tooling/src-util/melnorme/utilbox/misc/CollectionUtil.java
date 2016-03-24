@@ -100,9 +100,12 @@ public class CollectionUtil {
 	
 	/* ----------------- query ----------------- */
 	
-	public static <T> int indexOfSame(Iterable<T> iterable, T obj) {
+	public static <T> int indexOfSame(Iterable<? extends T> iterable, T obj) {
+		return indexOfSame(iterable.iterator(), obj);
+	}
+	
+	public static <T> int indexOfSame(Iterator<? extends T> iterator, T obj) {
 		int ix = 0;
-		Iterator<? extends T> iterator = iterable.iterator();
 		while(iterator.hasNext()) {
 			T element = iterator.next();
 			if(element == obj)
@@ -112,12 +115,29 @@ public class CollectionUtil {
 		return -1;
 	}
 	
-	public static <T> int indexOf(Iterable<T> iterable, T obj) {
+	public static <T> int indexOf(Iterable<? extends T> iterable, T obj) {
+		return indexOf(iterable.iterator(), obj);
+	}
+	
+	public static <T> int indexOf(Iterator<? extends T> iterator, T obj) {
 		int ix = 0;
-		Iterator<? extends T> iterator = iterable.iterator();
 		while(iterator.hasNext()) {
 			T element = iterator.next();
 			if(areEqual(element, obj))
+				return ix;
+			ix++;
+		}
+		return -1;
+	}
+	
+	/**
+	 * @return the index in the iteration order of the first element that matches given predicate, or -1 otherwise.
+	 */
+	public static <T> int indexUntil(Iterator<? extends T> iterator, Predicate<T> predicate) {
+		int ix = 0;
+		while(iterator.hasNext()) {
+			T element = iterator.next();
+			if(predicate.test(element))
 				return ix;
 			ix++;
 		}

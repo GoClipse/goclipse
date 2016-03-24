@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.TabItem;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.components.AbstractWidget;

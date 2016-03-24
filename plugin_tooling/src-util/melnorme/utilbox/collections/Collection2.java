@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -38,11 +39,21 @@ public interface Collection2<E> extends Iterable<E> {
 	/** @return the receiver (this), with the type parameter recast. 
 	 * WARNING: This operation is only safe if: 
 	 * - The bound T is a supertype of E, and the returned collection is used only for reading. */
-	public <T> Collection2<T> upcastTypeParameter();
+	<T> Collection2<T> upcastTypeParameter();
 	
 	
-	public default <R> ArrayList2<R> map(Function<? super E, ? extends R> evalFunction) {
+	/* ----------------- utility methods ----------------- */
+	
+	default <R> ArrayList2<R> map(Function<? super E, ? extends R> evalFunction) {
 		return CollectionUtil.map(this, evalFunction);
+	}
+	
+	/**
+	 * @return the index in the iteration order of the first element that matches given predicate, or -1 otherwise.
+	 * Note that if the iteration order of this collection is not stable, then the index isn't either.
+	 */
+	default int indexUntil(Predicate<? super E> predicate) {
+		return CollectionUtil.indexUntil(iterator(), predicate);
 	}
 	
 	/* ----------------- Some array utility methods ----------------- */

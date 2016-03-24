@@ -117,7 +117,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			};
 			
 			@Override
-			public String getProjectName() throws CommonException {
+			public String getProjectName() {
 				return launchSettings.projectName;
 			};
 			

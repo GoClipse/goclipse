@@ -21,7 +21,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.utilbox.core.CommonException;

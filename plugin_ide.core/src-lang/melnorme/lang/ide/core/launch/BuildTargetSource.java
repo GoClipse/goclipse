@@ -46,12 +46,12 @@ public abstract class BuildTargetSource extends AbstractValidator {
 	}
 	
 	// can be null
-	public abstract String getProjectName() throws CommonException;
+	public abstract String getProjectName();
 	
 	// can be null
 	public abstract String getBuildTargetName();
 	
-	protected BuildTarget getOriginalBuildTarget() throws CommonException {
+	public BuildTarget getOriginalBuildTarget() throws CommonException {
 		return getBuildManager().getValidBuildTarget(
 			getValidProject(), getBuildTargetName(), false, true);
 	}
