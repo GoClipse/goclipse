@@ -69,8 +69,18 @@ public abstract class BuildManager {
 	}
 	
 	public BuildManager(BuildModel buildModel, LangBundleModel bundleModel) {
+		this(buildModel, bundleModel, true);
+	}
+	
+	public BuildManager(BuildModel buildModel, LangBundleModel bundleModel, boolean initialize) {
 		this.buildModel = buildModel;
 		this.bundleModel = bundleModel;
+		if(initialize) {
+			initialize(bundleModel);
+		}
+	}
+	
+	public void initialize(LangBundleModel bundleModel) {
 		synchronized (init_Lock) { 
 			HashMap<String, BundleInfo> projectInfos = bundleModel.connectListener(listener);
 			
@@ -333,6 +343,7 @@ public abstract class BuildManager {
 	protected final Indexable<BuildType> initBuildTypes() {
 		Indexable<BuildType> buildTypes = getBuildTypes_do();
 		assertTrue(buildTypes.size() > 0);
+		assertTrue(buildTypes.contains(null) == false);
 		return buildTypes;
 	}
 	

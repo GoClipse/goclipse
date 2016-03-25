@@ -33,4 +33,8 @@ public abstract class CommonLangBundleModel<T extends AbstractBundleInfo> extend
 		return super.getProjectInfo(project);
 	}
 	
+	public T setBundleInfo(IProject project, T newProjectInfo) {
+		return super.setProjectInfo(project, newProjectInfo);
+	}
+	
 }

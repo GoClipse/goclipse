@@ -40,24 +40,21 @@ import melnorme.utilbox.tests.CommonTest;
 
 public class BuildManager_Test extends CommonTest {
 	
-	protected final BuildManager buildMgr = new TestsBuildManager(LangCore.getBundleModel());
-
-	protected String SEP = buildMgr.getBuildTargetNameParser().getNameSeparator();
-	
 	public static final BuildTargetData sampleBT_A = 
 			bt("TargetA", true, null, null, null);
 	public static final BuildTargetData sampleBT_B = 
 			bt("TargetB", true, "B: build_args", "B: check_args", "B: exe_path");
+	public static final BuildTargetData sampleBT_STRICT = 
+			bt("ConfigA#strict", true, "S: build_args", "S: check_args", "S: exe_path");
 	
-	public final BuildTargetData sampleBT_STRICT = 
-			bt("ConfigA"+SEP+"strict", true, "S: build_args", "S: check_args", "S: exe_path");
-	
-	protected final ArrayList2<BuildTargetData> DEFAULT_TARGETS = list(
+	public static final ArrayList2<BuildTargetData> DEFAULT_TARGETS = list(
 		sampleBT_A,
 		sampleBT_B,
 		sampleBT_STRICT
 	);
 	
+	protected final BuildManager buildMgr = new TestsBuildManager(LangCore.getBundleModel());
+
 	public class TestsBuildManager extends BuildManager {
 		public TestsBuildManager(LangBundleModel bundleModel) {
 			super(bundleModel);
@@ -83,10 +80,11 @@ public class BuildManager_Test extends CommonTest {
 		
 		@Override
 		protected ArrayList2<BuildTarget> getDefaultBuildTargets(IProject project, BundleInfo newBundleInfo) {
-			Indexable<BuildTargetData> dEFAULT_TARGETS2 = DEFAULT_TARGETS;
-			return createBuildTargets(project, dEFAULT_TARGETS2);
+			return createBuildTargets(project, DEFAULT_TARGETS);
 		}
 	}
+	
+	protected String SEP = buildMgr.getBuildTargetNameParser().getNameSeparator();
 	
 	public ArrayList2<BuildTarget> createBuildTargets(IProject project, Indexable<BuildTargetData> buildTargetsData) {
 		try {
