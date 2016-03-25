@@ -26,7 +26,6 @@ import com.googlecode.goclipse.core.operations.GoBuildManager;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.core.CommonException;
@@ -83,10 +82,9 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	
 	protected BuildTarget testGetBuildTargetFor(ProjectBuildInfo buildInfo, String targetName, String goPackageName, 
 			String buildType, String relArtifactPath) throws CommonException, CoreException {
-		BuildTarget buildTarget = getBuildManager().getValidBuildTarget(buildInfo, targetName, false, true);
-		assertAreEqual(buildTarget.getTargetName(), targetName);
+		BuildTarget bt = getBuildManager().getValidBuildTarget(buildInfo, targetName, false, true);
+		assertAreEqual(bt.getTargetName(), targetName);
 
-		ValidatedBuildTarget bt = getBuildManager().getValidatedBuildTarget(project, buildTarget);
 		assertAreEqual(bt.getBuildConfigName(), goPackageName);
 		assertAreEqual(bt.getBuildTypeName(), buildType);
 		
@@ -101,7 +99,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 			
 		}
 		
-		return buildTarget;
+		return bt;
 	}
 	
 }

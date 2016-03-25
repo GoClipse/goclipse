@@ -36,18 +36,18 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	protected final BuildType buildType;
 	protected final String[] evaluatedBuildArguments;
 	
-	public CommonBuildTargetOperation(BuildManager buildManager, ValidatedBuildTarget validatedBuildTarget, 
+	public CommonBuildTargetOperation(BuildManager buildManager, BuildTarget buildTarget, 
 			IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-		super(assertNotNull(validatedBuildTarget).getProject());
+		super(assertNotNull(buildTarget).getProject());
 		this.buildManager = assertNotNull(buildManager);
 		this.buildToolPath = buildToolPath;
 		this.opHandler = assertNotNull(opHandler);
 		
-		assertNotNull(validatedBuildTarget);
-		this.buildConfiguration = assertNotNull(validatedBuildTarget.getBuildConfiguration());
-		this.buildType = assertNotNull(validatedBuildTarget.getBuildType());
+		assertNotNull(buildTarget);
+		this.buildConfiguration = assertNotNull(buildTarget.getBuildConfiguration());
+		this.buildType = assertNotNull(buildTarget.getBuildType());
 		
-		this.evaluatedBuildArguments = validatedBuildTarget.getEffectiveEvaluatedBuildArguments();
+		this.evaluatedBuildArguments = buildTarget.getEffectiveEvaluatedBuildArguments();
 	}
 	
 	public BuildConfiguration getConfiguration() {

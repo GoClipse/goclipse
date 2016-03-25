@@ -28,16 +28,16 @@ import com.googlecode.goclipse.tooling.env.CheckSrcFolderRootFilesWithNoPackage;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
+import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
-import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -88,7 +88,7 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected BuildConfiguration getValidBuildconfiguration(String buildConfigName, ProjectBuildInfo buildInfo)
+		protected BuildConfiguration getValidBuildconfiguration(String buildConfigName, BundleInfo bundleInfo)
 				throws CommonException {
 			return new BuildConfiguration(buildConfigName, null);
 		}
@@ -98,11 +98,12 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) 
+		protected void getDefaultBuildOptions(BuildTarget bt, ArrayList2<String> buildArgs) 
 				throws CommonException {
 			String goPackageSpec = getGoPackageSpec(
-				vbt.getProject(), 
-				vbt.getBuildConfigName());
+				bt.getProject(), 
+				bt.getBuildConfigName()
+			);
 			buildArgs.addElements(getBuildCommand());
 			buildArgs.addElements("-v", "-gcflags", "-N -l", goPackageSpec);
 		}
@@ -127,9 +128,9 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public LaunchArtifact getMainLaunchArtifact(ValidatedBuildTarget vbt) throws CommonException {
+		public LaunchArtifact getMainLaunchArtifact(BuildTarget bt) throws CommonException {
 			try {
-				String buildConfigName = vbt.getBuildConfigName();
+				String buildConfigName = bt.getBuildConfigName();
 				
 				Path path = PathUtil.createPath(buildConfigName);
 				if(path.getNameCount() == 0 || path.endsWith("...")) {
@@ -140,15 +141,15 @@ public class GoBuildManager extends BuildManager {
 				return null;
 			}
 			
-			Location binFolderLocation = getBinFolderLocation(vbt);
+			Location binFolderLocation = getBinFolderLocation(bt);
 			
-			String binFilePath = getBinFilePath(getValidGoPackageName(vbt.getBuildConfigName()));
+			String binFilePath = getBinFilePath(getValidGoPackageName(bt.getBuildConfigName()));
 			String exePath = binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString();
-			return new LaunchArtifact(vbt.getBuildConfigName(), exePath);
+			return new LaunchArtifact(bt.getBuildConfigName(), exePath);
 		}
 		
-		protected Location getBinFolderLocation(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
-			return GoProjectEnvironment.getBinFolderLocation(validatedBuildTarget.getProject());
+		protected Location getBinFolderLocation(BuildTarget buildTarget) throws CommonException {
+			return GoProjectEnvironment.getBinFolderLocation(buildTarget.getProject());
 		}
 		
 		protected String getBinFilePath(GoPackageName goPackageName) throws CommonException {
@@ -169,9 +170,9 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget, 
+		public CommonBuildTargetOperation getBuildOperation(BuildTarget buildTarget, 
 				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return new GoBuildTargetOperation(validatedBuildTarget, opHandler, buildToolPath);
+			return new GoBuildTargetOperation(buildTarget, opHandler, buildToolPath);
 		}
 		
 	}
@@ -182,9 +183,9 @@ public class GoBuildManager extends BuildManager {
 		protected final Location sourceRootDir;
 		protected Location workingDirectory;
 		
-		public GoBuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, IOperationConsoleHandler opHandler, 
+		public GoBuildTargetOperation(BuildTarget buildTarget, IOperationConsoleHandler opHandler, 
 				Path buildToolPath) throws CommonException, CoreException {
-			super(validatedBuildTarget.buildMgr, validatedBuildTarget, opHandler, buildToolPath);
+			super(buildTarget.buildMgr, buildTarget, opHandler, buildToolPath);
 			
 			Location projectLocation = getProjectLocation();
 			
@@ -272,13 +273,13 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
+		public CommonBuildTargetOperation getBuildOperation(BuildTarget buildTarget,
 				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return new GoBuildTargetOperation(validatedBuildTarget, opHandler, buildToolPath) {
+			return new GoBuildTargetOperation(buildTarget, opHandler, buildToolPath) {
 				{
 					// We need to change working directory to bin, 
 					// because our commands create executable files in the working directory.
-					workingDirectory = getBinFolderLocation(validatedBuildTarget);
+					workingDirectory = getBinFolderLocation(buildTarget);
 				}
 				
 				@Override
@@ -328,14 +329,14 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public LaunchArtifact getMainLaunchArtifact(ValidatedBuildTarget vbt) throws CommonException {
+		public LaunchArtifact getMainLaunchArtifact(BuildTarget bt) throws CommonException {
 			return null;
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget, 
+		public CommonBuildTargetOperation getBuildOperation(BuildTarget buildTarget, 
 				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return new GoBuildTargetOperation(validatedBuildTarget, opHandler, buildToolPath);
+			return new GoBuildTargetOperation(buildTarget, opHandler, buildToolPath);
 		}
 		
 	}

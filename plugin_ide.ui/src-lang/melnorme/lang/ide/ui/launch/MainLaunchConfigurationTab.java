@@ -85,11 +85,11 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	/* -----------------  ----------------- */
 	
 	protected String getDefaultBuildTargetArguments() throws CommonException {
-		return getBuildTargetSettings().getOriginalBuildArguments();
+		return getBuildTargetSettings().getOriginalBuildTarget().getEffectiveBuildArguments();
 	}
 	
 	protected String getDefaultProgramPath() throws CommonException {
-		return getBuildTargetSettings().getOriginalExecutablePath();
+		return getBuildTargetSettings().getOriginalBuildTarget().getEffectiveValidExecutablePath();
 	}
 	
 	protected CompositeBuildTargetSettings getBuildTargetSettings() throws CommonException {

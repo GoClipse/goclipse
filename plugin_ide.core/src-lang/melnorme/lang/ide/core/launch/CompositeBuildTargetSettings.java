@@ -12,8 +12,6 @@ package melnorme.lang.ide.core.launch;
 
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
-import melnorme.lang.tooling.ops.util.ValidationMessages;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -39,57 +37,31 @@ public abstract class CompositeBuildTargetSettings extends BuildTargetSource
 	public BuildTarget getValidBuildTarget() throws CommonException {
 		BuildTarget originalBuildTarget = getOriginalBuildTarget();
 		
-		return getValidBuildTarget(originalBuildTarget);
+		return getValidBuildTarget2(originalBuildTarget);
 	}
 	
-	public BuildTarget getValidBuildTarget(BuildTarget originalBuildTarget) {
+	public BuildTarget getValidBuildTarget2(BuildTarget originalBuildTarget) throws CommonException {
 		BuildTargetData data = originalBuildTarget.getDataCopy();
 		if(getBuildArguments() != null) {
 			data.buildArguments = getBuildArguments();
 		}
+		/* FIXME: review*/
 		if(getExecutablePath() != null) {
 			data.executablePath = getExecutablePath();
 		}
-		return getBuildManager().createBuildTarget2(data);
+		return getBuildManager().createBuildTarget3(getValidProject(), data);
 	}
 	
-	protected ValidatedBuildTarget getValidatedBuildTarget() throws CommonException {
-		return getBuildManager().getValidatedBuildTarget(getValidProject(), getValidBuildTarget());
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public String getOriginalBuildArguments() throws CommonException {
-		return getValidatedOriginalBuildTarget().getEffectiveBuildArguments();
-	}
-	
-	public String getOriginalExecutablePath() throws CommonException {
-		return getValidatedOriginalBuildTarget().getEffectiveValidExecutablePath();
-	}
 	
 	/* -----------------  ----------------- */ 
 	
 	public String getEffectiveBuildArguments() throws CommonException {
-		return getValidatedBuildTarget().getEffectiveBuildArguments();
+		return getValidBuildTarget().getEffectiveBuildArguments();
 	}
 	
 	public Location getValidExecutableLocation() throws CommonException {
-		return getValidExecutableLocation(getValidatedBuildTarget().getEffectiveValidExecutablePath());
+		return getValidBuildTarget().getValidExecutableLocation2(getValidBuildTarget().getEffectiveValidExecutablePath());
 	}
 	
-	/* -----------------  ----------------- */ 
-	
-	public Location getValidExecutableLocation(String exeFilePathString) throws CommonException {
-		if(exeFilePathString == null || exeFilePathString.isEmpty()) {
-			throw new CommonException(LaunchMessages.BuildTarget_NoArtifactPathSpecified);
-		}
-		
-		Location exeFileLocation = Location.create(getProjectLocation(), exeFilePathString);
-		
-		if(exeFileLocation.toFile().exists() && !exeFileLocation.toFile().isFile()) {
-			error(ValidationMessages.Location_NotAFile(exeFileLocation));
-		}
-		return exeFileLocation;
-	}
 	
 }

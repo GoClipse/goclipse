@@ -45,11 +45,11 @@ public abstract class ProjectBasedModel<INFO> {
 		return (HashMap<String, INFO>) projectInfos.clone();
 	}
 	
-	public synchronized INFO getProjectInfo(IProject project) {
+	protected synchronized INFO getProjectInfo(IProject project) {
 		return projectInfos.get(project.getName());
 	}
 	
-	public synchronized INFO setProjectInfo(IProject project, INFO newProjectInfo) {
+	protected synchronized INFO setProjectInfo(IProject project, INFO newProjectInfo) {
 		String projectName = project.getName();
 		assertNotNull(newProjectInfo);
 		projectInfos.put(projectName, newProjectInfo);

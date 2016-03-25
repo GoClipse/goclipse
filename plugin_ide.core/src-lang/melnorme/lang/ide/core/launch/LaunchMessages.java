@@ -4,9 +4,9 @@ import java.text.MessageFormat;
 
 public class LaunchMessages {
 	
-	public static final String PROCESS_LAUNCH_NoBuildTargetSpecified = 
+	public static final String BuildTarget_NotSpecified = 
 			"Build target not specified";
-	public static final String PROCESS_LAUNCH_NoSuchBuildTarget = 
+	public static final String BuildTarget_NotFound = 
 			"Build target does not exist";
 	public static final String BuildTarget_NoArtifactPathSpecified = 
 			"No path specified for the launch executable.";

@@ -136,18 +136,17 @@ public class BuildOperationCreator implements BuildManagerMessages {
 			throws CommonException {
 		Path buildToolPath = LangCore.getToolManager().getSDKToolPath(project);
 		try {
-			return doCreateBuildTargetOperation(opHandler, project, buildToolPath, buildTarget);
+			return doCreateBuildTargetOperation(opHandler, buildToolPath, buildTarget);
 		} catch(CoreException e) {
 			throw new CommonException(e.getMessage(), e.getCause());
 		}
 	}
 	
 	public ICoreOperation doCreateBuildTargetOperation(IOperationConsoleHandler opHandler,
-			IProject project, Path buildToolPath, BuildTarget buildTarget
+			Path buildToolPath, BuildTarget buildTarget
 	) throws CommonException, CoreException {
-		ValidatedBuildTarget validatedBuildTarget = buildMgr.getValidatedBuildTarget(project, buildTarget);
-		BuildType buildType = validatedBuildTarget.getBuildType();
-		return buildType.getBuildOperation(validatedBuildTarget, opHandler, buildToolPath);
+		BuildType buildType = buildTarget.getBuildType();
+		return buildType.getBuildOperation(buildTarget, opHandler, buildToolPath);
 	}
 	
 	protected ICoreOperation newMessageOperation(String msg) {

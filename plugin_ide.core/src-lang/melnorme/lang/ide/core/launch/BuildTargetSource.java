@@ -16,12 +16,9 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.utils.ProjectValidator;
-import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.AbstractValidator;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 
 public abstract class BuildTargetSource extends AbstractValidator {
 	
@@ -37,10 +34,6 @@ public abstract class BuildTargetSource extends AbstractValidator {
 		return getProjectValidator().getProject(getProjectName());
 	}
 	
-	protected Location getProjectLocation() throws CommonException {
-		return ResourceUtils.loc(getValidProject().getLocation());
-	}
-	
 	protected BuildManager getBuildManager() {
 		return LangCore.getBuildManager();
 	}
@@ -52,12 +45,7 @@ public abstract class BuildTargetSource extends AbstractValidator {
 	public abstract String getBuildTargetName();
 	
 	public BuildTarget getOriginalBuildTarget() throws CommonException {
-		return getBuildManager().getValidBuildTarget(
-			getValidProject(), getBuildTargetName(), false, true);
-	}
-	
-	public ValidatedBuildTarget getValidatedOriginalBuildTarget() throws CommonException {
-		return getBuildManager().getValidatedBuildTarget(getValidProject(), getOriginalBuildTarget());
+		return getBuildManager().getValidBuildTarget(getValidProject(), getBuildTargetName(), false, true);
 	}
 	
 }
