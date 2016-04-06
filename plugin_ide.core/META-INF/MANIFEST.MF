@@ -2,11 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: com.googlecode.goclipse.core;singleton:=true
 Bundle-Version: 0.14.1.qualifier
-Bundle-Localization: plugin
 Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
-Bundle-Activator: com.googlecode.goclipse.core.GoCorePlugin
+Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.googlecode.goclipse.core.GoCorePlugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="3.9.0";visibility:=reexport,
  org.eclipse.core.resources;bundle-version="3.9.0";visibility:=reexport,
@@ -17,7 +18,6 @@ Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
  org.eclipse.jface;bundle-version="3.9.1",
  com.googlecode.goclipse.tooling;visibility:=reexport,
  org.eclipse.core.filebuffers
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
 Export-Package: com.googlecode.goclipse.core,
  com.googlecode.goclipse.core.engine,

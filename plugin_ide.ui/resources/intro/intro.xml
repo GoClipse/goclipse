@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <introContent>
   	<extensionContent id="LangIDE-introExtension" style="intro.css" name="User Guide Extension" path="overview/@">
-		<group style-id="content-group" id="LangIDE-introLink-group">
+		<group style-id="content-group" id="com-googlecode-goclipse-introLink-group">
        		<link label="GoClipse User Guide" 
-       		url="http://org.eclipse.ui.intro/openBrowser?http://goclipse.github.io/" 
-       		id="LangIDE-introLink" style-id="content-link">
+       		url="http://org.eclipse.ui.intro/openBrowser?url=http://goclipse.github.io/" 
+       		id="com-googlecode-goclipse-introLink" style-id="content-link">
           		<text>The configuration and user manual for GoClipse (recommended read).</text>
        		</link>
        	</group>

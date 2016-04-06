@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: GoClipse Debug
 Bundle-SymbolicName: com.googlecode.goclipse.debug;singleton:=true
 Bundle-Version: 0.14.1.qualifier
+Bundle-Name: %pluginName
+Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
 Bundle-Activator: com.googlecode.goclipse.debug.ui.GoDebugUI
-Bundle-Vendor: github.com/Goclipse
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: com.googlecode.goclipse.core,
  com.googlecode.goclipse.ui,
  org.eclipse.cdt.dsf;bundle-version="[2.4.0,3.0.0)",
@@ -19,4 +20,3 @@ Require-Bundle: com.googlecode.goclipse.core,
  org.eclipse.cdt.debug.ui;bundle-version="[7.3.0,8.0.0)",
  org.eclipse.cdt.dsf.gdb.ui;bundle-version="[2.4.0,3.0.0)",
  org.eclipse.cdt.dsf.ui;bundle-version="[2.4.0,3.0.0)"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
