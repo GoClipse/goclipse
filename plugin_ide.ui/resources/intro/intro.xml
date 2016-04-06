@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="LangIDE-introExtension" style="intro.css" name="User Guide Extension" path="overview/@">
+		<group style-id="content-group" id="LangIDE-introLink-group">
+       		<link label="LANG_IDE_NAME User Guide" 
+       		url="http://org.eclipse.ui.intro/openBrowser?LANG_IDE_SITE" 
+       		id="LangIDE-introLink" style-id="content-link">
+          		<text>The configuration and user manual for LANG_IDE_NAME (recommended read).</text>
+       		</link>
+       	</group>
+  	</extensionContent>
+</introContent>
