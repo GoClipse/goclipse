@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
@@ -268,8 +269,8 @@ public class BuildManager_Test extends CommonTest {
 	
 	protected CompositeBuildTargetSettings getBuiltTargetSettingsValidator(
 			String projectName, String buildTargetName, String buildArguments, String artifactPath) {
-		CompositeBuildTargetSettings btSettings = new CompositeBuildTargetSettings() {
-			
+		
+		BuildTargetSource buildTargetSource = new BuildTargetSource() {
 			@Override
 			protected BuildManager getBuildManager() {
 				return buildMgr;
@@ -284,7 +285,9 @@ public class BuildManager_Test extends CommonTest {
 			public String getBuildTargetName() {
 				return buildTargetName;
 			}
-			
+		};
+		
+		CompositeBuildTargetSettings btSettings = new CompositeBuildTargetSettings(buildTargetSource) {
 			@Override
 			public String getBuildArguments() {
 				return buildArguments;

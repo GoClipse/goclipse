@@ -41,24 +41,24 @@ public class ProcessLaunchInfoValidator {
 	
 	/* -----------------  ----------------- */
 	
-	protected IProject getProject() throws CommonException, CoreException {
-		return buildTargetSettings.getValidProject();
+	protected IProject getProject() throws CommonException {
+		return buildTargetSettings.btSupplier.getValidProject();
 	}
 	
-	protected BuildTarget getBuildTarget() throws CoreException, CommonException {
-		if(buildTargetSettings.getBuildTargetName() == null){
-			return null;
-		}
+	protected BuildTarget getBuildTarget() throws CommonException {
+//		if(buildTargetSettings.getBuildTargetName() == null){
+//			return null;
+//		}
 		return buildTargetSettings.getValidBuildTarget();
 	}
 	
-	protected Location getValidExecutableFileLocation() throws CoreException, CommonException {
-		return buildTargetSettings.getValidExecutableLocation();
+	protected Location getValidExecutableFileLocation() throws CommonException {
+		return getBuildTarget().getValidExecutableLocation();
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public IPath getWorkingDirectory() throws CommonException, CoreException {
+	public IPath getWorkingDirectory() throws CommonException {
 		IPath path = getDefinedWorkingDirectory();
 		if(path == null) {
 			return getDefaultWorkingDirectory();
@@ -66,11 +66,11 @@ public class ProcessLaunchInfoValidator {
 		return path;
 	}
 	
-	public IPath getDefinedWorkingDirectory() throws CoreException {
+	public IPath getDefinedWorkingDirectory() throws CommonException {
 		return workingDirectory.isEmpty() ? null : new org.eclipse.core.runtime.Path(workingDirectory);
 	}
 	
-	public IPath getDefaultWorkingDirectory() throws CommonException, CoreException {
+	public IPath getDefaultWorkingDirectory() throws CommonException {
 		return getProject().getLocation();
 	}
 	
@@ -92,7 +92,7 @@ public class ProcessLaunchInfoValidator {
 		
 		IProject project = getProject();
 		BuildTarget buildTarget = getBuildTarget();
-		Location programLoc = getValidExecutableFileLocation();
+		Location programLoc = getValidExecutableFileLocation(); // not null
 		
 		String[] processArgs = getProgramArguments();
 		IPath workingDirectory = getWorkingDirectory();

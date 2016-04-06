@@ -170,7 +170,10 @@ public class BuildTarget extends AbstractValidator {
 		return getBuildType().getMainLaunchArtifact(this);
 	}
 	
-	/* FIXME: review*/
+	public Location getValidExecutableLocation() throws CommonException {
+		return getValidExecutableLocation2(getEffectiveValidExecutablePath());
+	}
+	
 	public Location getValidExecutableLocation2(String exeFilePathString) throws CommonException {
 		if(exeFilePathString == null || exeFilePathString.isEmpty()) {
 			throw new CommonException(LaunchMessages.BuildTarget_NoArtifactPathSpecified);
@@ -182,6 +185,13 @@ public class BuildTarget extends AbstractValidator {
 			error(ValidationMessages.Location_NotAFile(exeFileLocation));
 		}
 		return exeFileLocation;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public void validateForBuild() throws CommonException {
+		getEffectiveBuildArguments();
+		getValidExecutableLocation();
 	}
 	
 }

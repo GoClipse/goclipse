@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
+import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -84,27 +85,28 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	/* -----------------  ----------------- */
 	
+	protected final BuildTargetSource buildTargetSource = new BuildTargetSource() {
+		@Override
+		public String getProjectName() {
+			return MainLaunchConfigurationTab.this.getProjectName();
+		}
+		
+		@Override
+		public String getBuildTargetName() {
+			return MainLaunchConfigurationTab.this.getBuildTargetName();
+		}
+	};
+	
 	protected String getDefaultBuildTargetArguments() throws CommonException {
-		return getBuildTargetSettings().getOriginalBuildTarget().getEffectiveBuildArguments();
+		return buildTargetSource.getOriginalBuildTarget().getEffectiveBuildArguments();
 	}
 	
 	protected String getDefaultProgramPath() throws CommonException {
-		return getBuildTargetSettings().getOriginalBuildTarget().getEffectiveValidExecutablePath();
+		return buildTargetSource.getOriginalBuildTarget().getEffectiveValidExecutablePath();
 	}
 	
 	protected CompositeBuildTargetSettings getBuildTargetSettings() throws CommonException {
-		return new CompositeBuildTargetSettings() {
-			
-			@Override
-			public String getProjectName() {
-				return MainLaunchConfigurationTab.this.getProjectName();
-			}
-			
-			@Override
-			public String getBuildTargetName() {
-				return MainLaunchConfigurationTab.this.getBuildTargetName();
-			}
-			
+		return new CompositeBuildTargetSettings(buildTargetSource) {
 			@Override
 			public String getBuildArguments() {
 				return buildTargetSettings.getEffectiveBuildArgumentsValue();
@@ -114,13 +116,12 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 			public String getExecutablePath() {
 				return buildTargetSettings.getEffectiveProgramPathValue();
 			}
-			
 		};
 	}
 	
 	@Override
 	protected void doValidate() throws CommonException, CoreException {
-		getBuildTargetSettings().validate();
+		getBuildTargetSettings().getValidBuildTarget().validateForBuild();
 	}
 	
 	/* ----------------- bindings ----------------- */
