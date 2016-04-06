@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
-Bundle-Vendor: %pluginProvider
 Bundle-SymbolicName: LANG_PROJECT_ID.ide.ui;singleton:=true
 Bundle-Version: 0.1.0.qualifier
-Bundle-Activator: LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPlugin
+Bundle-Name: %pluginName
+Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: LANG_PROJECT_ID.ide.ui.LANGUAGE_UIPlugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: LANG_PROJECT_ID.ide.core,
  org.eclipse.core.runtime;bundle-version="3.6.0",
