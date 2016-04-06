@@ -10,58 +10,58 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.launch;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 
 /** 
  * A {@link BuildTarget} source, derived from a parent/original BuildTarget, and overriden settings
  */
-public abstract class CompositeBuildTargetSettings extends BuildTargetSource 
-	implements IBuildTargetSettings {
+public abstract class CompositeBuildTargetSettings {
 	
-	public CompositeBuildTargetSettings() {
+	protected final BuildTargetSource btSupplier;
+	
+	public CompositeBuildTargetSettings(BuildTargetSource btSupplier) {
+		this.btSupplier = assertNotNull(btSupplier);
 	}
 	
+	// can be null
+	public abstract String getBuildArguments();
 	
-	public void validate() throws CommonException {
-		getValidBuildTarget();
-		getEffectiveBuildArguments();
-		getValidExecutableLocation();
-	}
-	
+	// can be null
+	public abstract String getExecutablePath();
 	
 	/* -----------------  ----------------- */
 	
 	public BuildTarget getValidBuildTarget() throws CommonException {
-		BuildTarget originalBuildTarget = getOriginalBuildTarget();
+		BuildTarget originalBuildTarget = btSupplier.getOriginalBuildTarget();
 		
 		return getValidBuildTarget2(originalBuildTarget);
 	}
 	
-	public BuildTarget getValidBuildTarget2(BuildTarget originalBuildTarget) throws CommonException {
+	protected BuildTarget getValidBuildTarget2(BuildTarget originalBuildTarget) {
 		BuildTargetData data = originalBuildTarget.getDataCopy();
-		if(getBuildArguments() != null) {
-			data.buildArguments = getBuildArguments();
+		
+		String buildArguments = getBuildArguments();
+		String executablePath = getExecutablePath();
+		
+		if(buildArguments != null) {
+			data.buildArguments = buildArguments;
 		}
-		/* FIXME: review*/
-		if(getExecutablePath() != null) {
-			data.executablePath = getExecutablePath();
+		/* FIXME: bug here checkArguments */
+		
+		if(executablePath != null) {
+			data.executablePath = executablePath;
 		}
-		return getBuildManager().createBuildTarget3(getValidProject(), data);
+		return new BuildTarget(
+			originalBuildTarget.getProject(), 
+			originalBuildTarget.getBundleInfo(), 
+			data, 
+			originalBuildTarget.getBuildType(), 
+			originalBuildTarget.getBuildConfiguration()
+		);
 	}
-	
-	
-	/* -----------------  ----------------- */ 
-	
-	public String getEffectiveBuildArguments() throws CommonException {
-		return getValidBuildTarget().getEffectiveBuildArguments();
-	}
-	
-	public Location getValidExecutableLocation() throws CommonException {
-		return getValidBuildTarget().getValidExecutableLocation2(getValidBuildTarget().getEffectiveValidExecutablePath());
-	}
-	
 	
 }

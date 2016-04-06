@@ -32,6 +32,7 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
+import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
@@ -109,8 +110,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 		
 		BuildTargetLaunchCreator launchSettings = new BuildTargetLaunchCreator(config);
 		
-		CompositeBuildTargetSettings buildTargetSettings = new CompositeBuildTargetSettings() {
-			
+		BuildTargetSource buildTargetSource = new BuildTargetSource() {
 			@Override
 			public ProjectValidator getProjectValidator() {
 				return new ProjectValidator();
@@ -119,13 +119,15 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			@Override
 			public String getProjectName() {
 				return launchSettings.projectName;
-			};
+			}
 			
 			@Override
 			public String getBuildTargetName() {
 				return launchSettings.getTargetName();
 			}
-			
+		};
+		
+		CompositeBuildTargetSettings buildTargetSettings = new CompositeBuildTargetSettings(buildTargetSource) {
 			@Override
 			public String getExecutablePath() {
 				return launchSettings.getExecutablePath();
