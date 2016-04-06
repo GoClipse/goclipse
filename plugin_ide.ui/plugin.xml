@@ -487,14 +487,6 @@
 	
 	<!-- ============ Other (TODO cleanup) ============= -->
 	
-   <extension point="org.eclipse.ui.intro.configExtension">
-      <configExtension
-            configId="org.eclipse.ui.intro.universalConfig"
-            content="welcome/intro.xml">
-      </configExtension>
-   </extension>
-   
-	
    <extension point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
          <perspectiveShortcut id="com.googlecode.goclipse.perspectives.GoPerspective"/>
