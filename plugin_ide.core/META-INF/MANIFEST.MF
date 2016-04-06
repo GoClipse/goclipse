@@ -9,7 +9,7 @@ Bundle-Activator: com.googlecode.goclipse.core.GoCorePlugin
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.junit;bundle-version="4.11.0";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="3.9.0";visibility:=reexport,
- org.eclipse.core.resources,
+ org.eclipse.core.resources;bundle-version="3.9.0";visibility:=reexport,
  org.eclipse.core.variables;bundle-version="3.2.0",
  org.eclipse.debug.core;visibility:=reexport,
  org.eclipse.core.filesystem,
