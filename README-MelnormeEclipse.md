@@ -103,7 +103,10 @@ Follow these steps:
 
  Note: some strings like `LANGUAGE_` or `LANG_PROJECT_ID`  will replace Java class identifiers. After this replace you will also need to rename the compilation unit, and/or move them to a different folder. This can be done quickly in Eclipse with quick-fixes.
 
-* [ ] Modify `icons/ide-logo.32x32.png`
+* [ ] Modify `plugin_ide.ui/icons/ide-logo.32x32.png`
+
+* [ ] In `plugin_ide.ui/resources/intro/`, fix `intro.xml` and `intro.css`: the newly replaced LANG_PROJECT_ID string needs to have the dots replaced by hyphens.
+So for example, if you replaced LANG_PROJECT_ID with `org.dsource.ddt`, then that needs to change to `org-dsource-ddt`.
 
 * [ ] Update Changelog, Features, UserGuide, etc, in documentation folder, according to your IDE.
 
