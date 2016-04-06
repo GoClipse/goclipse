@@ -28,8 +28,6 @@ Using Maven (and Tycho), it is possible to automatically build Goclipse, create 
  * Run `mvn package` to build the IDE feature into a p2 repository (which is a local update site).  It will be placed at `bin-maven/features.repository/repository`
  * Run `mvn verify` to build the IDE as above and also run the test suites. 
 
-[![PoweredByCloudBees](http://www.cloudbees.com/sites/default/files/Button-Powered-by-CB.png)](https://bruno-medeiros.ci.cloudbees.com/job/Goclipse/)
-
 #### Creating and deploying a new release:
 A release is a web site with an Eclipse p2 update site. The website may contain no web pages at all, rather it can be just the p2 site. To create and deploy a new release:
 
