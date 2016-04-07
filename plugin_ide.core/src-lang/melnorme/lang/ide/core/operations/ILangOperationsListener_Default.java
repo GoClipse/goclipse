@@ -70,4 +70,18 @@ public interface ILangOperationsListener_Default {
 		
 	}
 	
+	public class NoopOperationConsoleHandler implements IOperationConsoleHandler {
+		@Override
+		public void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper psh) {
+		}
+		
+		@Override
+		public void writeInfoMessage(String operationMessage) {
+		}
+		
+		@Override
+		public void activate() {
+		}
+	}
+	
 }

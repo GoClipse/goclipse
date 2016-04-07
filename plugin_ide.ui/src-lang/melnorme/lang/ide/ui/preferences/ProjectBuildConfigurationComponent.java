@@ -126,8 +126,20 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	
 	/* -----------------  ----------------- */
 		
+	protected final BuildTargetSource buildTargetSource = new BuildTargetSource() {
+		@Override
+		public String getProjectName(){
+			return project == null ? null : project.getName();
+		};
+		
+		@Override
+		public String getBuildTargetName() {
+			return ProjectBuildConfigurationComponent.this.getBuildTargetName();
+		}
+	};
+	
 	public BuildTarget getOriginalBuildTarget() throws CommonException {
-		return getValidator().getOriginalBuildTarget();
+		return buildTargetSource.getBuildTarget();
 	}
 	
 	public String getDefaultBuildArguments() throws CommonException {
@@ -140,22 +152,6 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	
 	public String getDefaultExecutablePath() throws CommonException {
 		return getOriginalBuildTarget().getDefaultExecutablePath();
-	}
-	
-	protected BuildTargetSource getValidator() {
-		return new BuildTargetSource() {
-			
-			@Override
-			public String getProjectName(){
-				return project == null ? null : project.getName();
-			};
-			
-			@Override
-			public String getBuildTargetName() {
-				return ProjectBuildConfigurationComponent.this.getBuildTargetName();
-			}
-			
-		};
 	}
 	
 	protected void handleStatusException(CommonException ce) {
@@ -212,11 +208,8 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	public void doSaveSettings() throws BackingStoreException {
 		try {
 			for(Entry<String, BuildTargetData> entry : buildOptionsToChange.entrySet()) {
-				
-				BuildTarget buildTarget = 
-						getBuildManager().getValidDefinedBuildTarget(getValidProject(), entry.getKey());
-				
-				getBuildInfo().changeBuildTarget(buildTarget, entry.getValue());
+				String targetName = entry.getKey();
+				getBuildInfo().changeBuildTarget(targetName, entry.getValue());
 			}
 		} catch(CommonException e) {
 			throw new BackingStoreException("Error saving build target settings.", e);
@@ -229,9 +222,9 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 			return;
 		}
 		
-		for(BuildTargetData data : buildOptionsToChange.values()) {
-			data.buildArguments = null;
-			data.executablePath = null;
+		for (Entry<String, BuildTargetData> entry : buildOptionsToChange) {
+			BuildTargetData data = entry.getValue();
+			entry.setValue(new BuildTargetData(data.getTargetName(), data.enabled));
 		}
 		handleBuildTargetChanged();
 	}

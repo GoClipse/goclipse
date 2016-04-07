@@ -17,11 +17,14 @@ import java.nio.file.Path;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -34,10 +37,11 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	protected final BuildConfiguration buildConfiguration;
 	protected final BuildType buildType;
-	protected final String[] evaluatedBuildArguments;
+	protected final Indexable<String> evaluatedBuildArguments2;
 	
 	public CommonBuildTargetOperation(BuildManager buildManager, BuildTarget buildTarget, 
-			IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
+			IOperationConsoleHandler opHandler, Path buildToolPath, String buildArguments
+	) throws CommonException {
 		super(assertNotNull(buildTarget).getProject());
 		this.buildManager = assertNotNull(buildManager);
 		this.buildToolPath = buildToolPath;
@@ -47,7 +51,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		this.buildConfiguration = assertNotNull(buildTarget.getBuildConfiguration());
 		this.buildType = assertNotNull(buildTarget.getBuildType());
 		
-		this.evaluatedBuildArguments = buildTarget.getEffectiveEvaluatedBuildArguments();
+		this.evaluatedBuildArguments2 = new ArrayList2<>(LaunchUtils.getEvaluatedArguments(buildArguments));
 	}
 	
 	public BuildConfiguration getConfiguration() {
@@ -90,18 +94,19 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		return getToolProcessBuilder(getEffectiveEvaluatedArguments());
 	}
 	
-	protected ProcessBuilder getToolProcessBuilder(String[] buildArguments) 
+	protected ProcessBuilder getToolProcessBuilder(Indexable<String> buildArguments) 
 			throws CoreException, CommonException, OperationCancellation {
 		return getProcessBuilder2(buildArguments);
 	}
 	
-	protected String[] getEffectiveEvaluatedArguments() throws CoreException, CommonException {
-		return evaluatedBuildArguments;
+	protected Indexable<String> getEffectiveEvaluatedArguments() throws CoreException, CommonException {
+		return evaluatedBuildArguments2;
 	}
 	
-	protected ProcessBuilder getProcessBuilder2(String[] toolArguments) 
+	protected ProcessBuilder getProcessBuilder2(Indexable<String> toolArguments) 
 			throws CommonException, OperationCancellation, CoreException {
-		return getToolManager().createToolProcessBuilder(getBuildToolPath(), getProjectLocation(), toolArguments);
+		return getToolManager().createToolProcessBuilder(getBuildToolPath(), getProjectLocation(), 
+			toolArguments.toArray(String.class));
 	}
 	
 	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IProgressMonitor pm)

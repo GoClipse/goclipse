@@ -134,20 +134,6 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 	
 	/* -----------------  ----------------- */
 	
-	public class NoopOperationConsoleHandler implements IOperationConsoleHandler {
-		@Override
-		public void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper psh) {
-		}
-		
-		@Override
-		public void writeInfoMessage(String operationMessage) {
-		}
-		
-		@Override
-		public void activate() {
-		}
-	}
-	
 	public class LangOperationConsoleHandler implements IOperationConsoleHandler {
 		
 		protected final ProcessStartKind kind;

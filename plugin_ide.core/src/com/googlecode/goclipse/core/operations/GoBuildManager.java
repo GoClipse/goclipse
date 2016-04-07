@@ -98,14 +98,27 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void getDefaultBuildOptions(BuildTarget bt, ArrayList2<String> buildArgs) 
+		public String getDefaultBuildArguments(BuildTarget bt) throws CommonException {
+			ArrayList2<String> buildArgs = getPackageSpecCommand(bt, getBuildCommand());
+			return StringUtil.collToString(buildArgs, " ");
+		}
+		
+		protected ArrayList2<String> getPackageSpecCommand(BuildTarget bt, String... buildCommands) 
 				throws CommonException {
+			ArrayList2<String> buildArgs = new ArrayList2<>();
+			buildArgs.addElements(buildCommands);
+			
 			String goPackageSpec = getGoPackageSpec(
 				bt.getProject(), 
 				bt.getBuildConfigName()
 			);
-			buildArgs.addElements(getBuildCommand());
 			buildArgs.addElements("-v", "-gcflags", "-N -l", goPackageSpec);
+			return buildArgs;
+		}
+		
+		@Override
+		public String getDefaultCheckArguments(BuildTarget bt) throws CommonException {
+			return getDefaultBuildArguments(bt);
 		}
 		
 		protected abstract String[] getBuildCommand();
@@ -170,9 +183,15 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTarget buildTarget, 
-				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return new GoBuildTargetOperation(buildTarget, opHandler, buildToolPath);
+		public String getDefaultCheckArguments(BuildTarget bt) throws CommonException {
+			ArrayList2<String> buildArgs = getPackageSpecCommand(bt, "build");
+			return StringUtil.collToString(buildArgs, " ");
+		}
+		
+		@Override
+		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler,
+				Path buildToolPath, String buildArguments) throws CommonException {
+			return new GoBuildTargetOperation(bt, opHandler, buildToolPath, buildArguments);
 		}
 		
 	}
@@ -184,12 +203,12 @@ public class GoBuildManager extends BuildManager {
 		protected Location workingDirectory;
 		
 		public GoBuildTargetOperation(BuildTarget buildTarget, IOperationConsoleHandler opHandler, 
-				Path buildToolPath) throws CommonException, CoreException {
-			super(buildTarget.buildMgr, buildTarget, opHandler, buildToolPath);
+				Path buildToolPath, String buildArguments) throws CommonException {
+			super(buildTarget.buildMgr, buildTarget, opHandler, buildToolPath, buildArguments);
 			
 			Location projectLocation = getProjectLocation();
 			
-			goEnv = getValidGoEnvironment(project);
+			goEnv = GoProjectEnvironment.getValidatedGoEnvironment(project);
 			if(GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project, goEnv.getGoPath())) {
 				sourceRootDir = projectLocation;
 			} else {
@@ -201,9 +220,10 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected ProcessBuilder getProcessBuilder2(String[] toolArguments) throws CommonException {
+		protected ProcessBuilder getProcessBuilder2(Indexable<String> toolArguments) throws CommonException {
 			AbstractToolManager toolMgr = getToolManager();
-			ProcessBuilder pb = toolMgr.createToolProcessBuilder(getBuildToolPath(), workingDirectory, toolArguments);
+			ProcessBuilder pb = toolMgr.createToolProcessBuilder(getBuildToolPath(), workingDirectory, 
+				toolArguments.toArray(String.class));
 			
 			goEnv.setupProcessEnv(pb, true);
 			return pb;
@@ -264,18 +284,19 @@ public class GoBuildManager extends BuildManager {
 			return goPackageName.endsWith("/...") || goPackageName.equals("...");
 		}
 		
-		protected boolean isMultipleGoPackagesArguments(String[] arguments) {
-			if(arguments.length == 0) {
+		protected boolean isMultipleGoPackagesArguments(Indexable<String> arguments) {
+			if(arguments.size() == 0) {
 				return false;
 			}
-			String lastArg = arguments[arguments.length-1];
+			String lastArg = arguments.get(arguments.size()-1);
 			return isMultipleGoPackages(lastArg);
 		}
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(BuildTarget buildTarget,
-				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return new GoBuildTargetOperation(buildTarget, opHandler, buildToolPath) {
+				IOperationConsoleHandler opHandler, Path buildToolPath, String buildArguments
+		) throws CommonException {
+			return new GoBuildTargetOperation(buildTarget, opHandler, buildToolPath, buildArguments) {
 				{
 					// We need to change working directory to bin, 
 					// because our commands create executable files in the working directory.
@@ -284,7 +305,7 @@ public class GoBuildManager extends BuildManager {
 				
 				@Override
 				public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-					String[] argumentsOriginal = getEffectiveEvaluatedArguments();
+					Indexable<String> argumentsOriginal = getEffectiveEvaluatedArguments();
 					
 					if(!isMultipleGoPackagesArguments(argumentsOriginal)) {
 						runBuildToolAndProcessOutput(getToolProcessBuilder(argumentsOriginal), pm);
@@ -292,7 +313,7 @@ public class GoBuildManager extends BuildManager {
 					}
 					
 					ArrayList2<String> argumentsTemplate = new ArrayList2<>(argumentsOriginal);
-					int lastArgIx = argumentsOriginal.length - 1;
+					int lastArgIx = argumentsOriginal.size() - 1;
 					String goPackageToBuild = StringUtil.trimEnd(argumentsTemplate.get(lastArgIx), "...");
 					
 					GoWorkspaceLocation goWorkspace = goEnv.getGoPath().findGoPathEntry(getProjectLocation());
@@ -305,8 +326,7 @@ public class GoBuildManager extends BuildManager {
 					for (GoPackageName goPackage : sourcePackages) {
 						argumentsTemplate.set(lastArgIx, goPackage.getFullNameAsString());
 						
-						String[] arguments = argumentsTemplate.toArray(String.class);
-						runBuildToolAndProcessOutput(getToolProcessBuilder(arguments), pm);
+						runBuildToolAndProcessOutput(getToolProcessBuilder(argumentsTemplate), pm);
 					}
 					
 				}
@@ -334,9 +354,9 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTarget buildTarget, 
-				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return new GoBuildTargetOperation(buildTarget, opHandler, buildToolPath);
+		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler,
+				Path buildToolPath, String buildArguments) throws CommonException {
+			return new GoBuildTargetOperation(bt, opHandler, buildToolPath, buildArguments);
 		}
 		
 	}

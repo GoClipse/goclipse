@@ -82,7 +82,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	
 	protected BuildTarget testGetBuildTargetFor(ProjectBuildInfo buildInfo, String targetName, String goPackageName, 
 			String buildType, String relArtifactPath) throws CommonException, CoreException {
-		BuildTarget bt = getBuildManager().getValidBuildTarget(buildInfo, targetName, false, true);
+		BuildTarget bt = getBuildManager().getBuildTarget(buildInfo, targetName, false, true);
 		assertAreEqual(bt.getTargetName(), targetName);
 
 		assertAreEqual(bt.getBuildConfigName(), goPackageName);
