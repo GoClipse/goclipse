@@ -36,7 +36,7 @@ public abstract class CompositeBuildTargetSettings {
 	/* -----------------  ----------------- */
 	
 	public BuildTarget getValidBuildTarget() throws CommonException {
-		BuildTarget originalBuildTarget = btSupplier.getOriginalBuildTarget();
+		BuildTarget originalBuildTarget = btSupplier.getBuildTarget();
 		
 		return getValidBuildTarget2(originalBuildTarget);
 	}

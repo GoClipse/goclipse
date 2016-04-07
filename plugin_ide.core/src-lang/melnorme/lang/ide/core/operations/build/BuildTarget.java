@@ -12,12 +12,15 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.nio.file.Path;
+
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.launch.LaunchUtils;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
@@ -120,6 +123,10 @@ public class BuildTarget extends AbstractValidator {
 	
 	/* -----------------  ----------------- */
 	
+	public String getDefaultBuildArguments() throws CommonException {
+		return getBuildType().getDefaultBuildArguments(this);
+	}
+	
 	public String getEffectiveBuildArguments() throws CommonException {
 		String buildOptions = targetData.getBuildArguments();
 		if(buildOptions != null) {
@@ -128,19 +135,18 @@ public class BuildTarget extends AbstractValidator {
 		return getDefaultBuildArguments();
 	}
 	
-	public String getDefaultBuildArguments() throws CommonException {
-		return getBuildType().getDefaultBuildOptions(this);
-	}
-	
-	public String[] getEffectiveEvaluatedBuildArguments() throws CommonException {
-		return LaunchUtils.getEvaluatedArguments(getEffectiveBuildArguments());
-	}
-	
 	/* -----------------  ----------------- */
 	
 	public String getDefaultCheckArguments() throws CommonException {
-		// FIXME: TO DO
-		return getBuildType().getDefaultBuildOptions(this);
+		return getBuildType().getDefaultCheckArguments(this);
+	}
+	
+	public String getEffectiveCheckArguments() throws CommonException {
+		String buildOptions = targetData.getCheckArguments();
+		if(buildOptions != null) {
+			return buildOptions;
+		}
+		return getDefaultCheckArguments();
 	}
 	
 	/* -----------------  ----------------- */
@@ -192,6 +198,21 @@ public class BuildTarget extends AbstractValidator {
 	public void validateForBuild() throws CommonException {
 		getEffectiveBuildArguments();
 		getValidExecutableLocation();
+	}
+	
+	public CommonBuildTargetOperation getBuildOperation(IOperationConsoleHandler opHandler, boolean isCheck)
+			throws CommonException {
+		AbstractToolManager toolManager = LangCore.getToolManager();
+		
+		Path buildToolPath = toolManager.getSDKToolPath(getProject());
+		return getBuildOperation(opHandler, isCheck, buildToolPath);
+	}
+	
+	public CommonBuildTargetOperation getBuildOperation(IOperationConsoleHandler opHandler, boolean isCheck, 
+			Path buildToolPath) throws CommonException {
+		assertNotNull(opHandler);
+		String buildArguments = isCheck ? getEffectiveCheckArguments() : getEffectiveBuildArguments();
+		return getBuildType().getBuildOperation(this, opHandler, buildToolPath, buildArguments);
 	}
 	
 }

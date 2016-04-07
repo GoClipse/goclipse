@@ -38,8 +38,13 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void getDefaultBuildOptions(BuildTarget bt, ArrayList2<String> buildArgs) {
-			buildArgs.add(".");
+		public String getDefaultBuildArguments(BuildTarget bt) throws CommonException {
+			return ".";
+		}
+		
+		@Override
+		public String getDefaultCheckArguments(BuildTarget bt) throws CommonException {
+			return ".";
 		}
 		
 		@Override
@@ -49,8 +54,8 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt,
-				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return new LANGUAGE_BuildTargetOperation(bt, opHandler, buildToolPath);
+				IOperationConsoleHandler opHandler, Path buildToolPath, String buildArguments) throws CommonException {
+			return new LANGUAGE_BuildTargetOperation(bt, opHandler, buildToolPath, buildArguments);
 		}
 	}
 	
@@ -58,10 +63,10 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 	
 	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public LANGUAGE_BuildTargetOperation(BuildTarget buildTarget, 
-				IOperationConsoleHandler opHandler, 
-				Path buildToolPath) throws CommonException, CoreException {
-			super(buildTarget.buildMgr, buildTarget, opHandler, buildToolPath);
+		public LANGUAGE_BuildTargetOperation(BuildTarget buildTarget,
+				IOperationConsoleHandler opHandler,
+				Path buildToolPath, String buildArguments) throws CommonException {
+			super(buildTarget.buildMgr, buildTarget, opHandler, buildToolPath, buildArguments);
 		}
 		
 		@Override

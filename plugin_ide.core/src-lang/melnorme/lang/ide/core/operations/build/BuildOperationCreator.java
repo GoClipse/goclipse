@@ -14,7 +14,6 @@ import static java.text.MessageFormat.format;
 import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.nio.file.Path;
 import java.util.concurrent.Callable;
 
 import org.eclipse.core.resources.IMarker;
@@ -29,7 +28,6 @@ import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.ICoreOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
-import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
@@ -76,7 +74,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		}
 		
 		for(BuildTarget buildTarget : targetsToBuild) {
-			addOperation(newBuildTargetOperation(project, buildTarget));
+			addOperation(newBuildTargetOperation(buildTarget));
 		}
 		
 		// refresh project
@@ -132,21 +130,9 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return false;
 	}
 	
-	protected ICoreOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget) 
-			throws CommonException {
-		Path buildToolPath = LangCore.getToolManager().getSDKToolPath(project);
-		try {
-			return doCreateBuildTargetOperation(opHandler, buildToolPath, buildTarget);
-		} catch(CoreException e) {
-			throw new CommonException(e.getMessage(), e.getCause());
-		}
-	}
-	
-	public ICoreOperation doCreateBuildTargetOperation(IOperationConsoleHandler opHandler,
-			Path buildToolPath, BuildTarget buildTarget
-	) throws CommonException, CoreException {
-		BuildType buildType = buildTarget.getBuildType();
-		return buildType.getBuildOperation(buildTarget, opHandler, buildToolPath);
+	protected ICoreOperation newBuildTargetOperation(BuildTarget buildTarget) throws CommonException {
+		/* FIXME: todo isCheck */
+		return buildTarget.getBuildOperation(opHandler, false);
 	}
 	
 	protected ICoreOperation newMessageOperation(String msg) {

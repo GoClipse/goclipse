@@ -20,9 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.debug.core.DebugPlugin;
 import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.BundleInfo;
@@ -309,15 +307,9 @@ public abstract class BuildManager {
 			return bundleInfo.getBuildConfiguration_nonNull(buildConfigName);
 		}
 		
-		public String getDefaultBuildOptions(BuildTarget bt) 
-				throws CommonException {
-			ArrayList2<String> arguments = new ArrayList2<>();
-			getDefaultBuildOptions(bt, arguments);
-			return DebugPlugin.renderArguments(arguments.toArray(String.class), null);
-		}
+		public abstract String getDefaultBuildArguments(BuildTarget bt) throws CommonException;
 		
-		protected abstract void getDefaultBuildOptions(BuildTarget bt, ArrayList2<String> buildArgs) 
-				throws CommonException;
+		public abstract String getDefaultCheckArguments(BuildTarget bt) throws CommonException;
 		
 		public LaunchArtifact getMainLaunchArtifact(BuildTarget bt) throws CommonException {
 			BuildConfiguration buildConfig = bt.getBuildConfiguration();
@@ -333,8 +325,8 @@ public abstract class BuildManager {
 		}
 		
 		public abstract CommonBuildTargetOperation getBuildOperation(BuildTarget bt,
-				IOperationConsoleHandler opHandler, Path buildToolPath)
-				throws CommonException, CoreException;
+				IOperationConsoleHandler opHandler, Path buildToolPath, String buildArguments)
+				throws CommonException;
 		
 	}
 	
@@ -413,30 +405,24 @@ public abstract class BuildManager {
 		return BuildTarget.create(project, bundleInfo, buildTargetData, buildType, buildConfigName);
 	}
 	
-	public BuildTarget getValidDefinedBuildTarget(IProject project, String buildTargetName) 
+	public BuildTarget getDefinedBuildTarget(IProject project, String buildTargetName) 
 			throws CommonException {
-		return getValidBuildTarget(project, buildTargetName, true, true);
+		return getBuildTarget(project, buildTargetName, true, true);
 	}
 	
-	public BuildTarget getValidDefinedBuildTarget(IProject project, String buildTypeName, String buildConfigName)
-			throws CommonException {
-		String buildTargetName = getBuildTargetName2(buildConfigName, buildTypeName);
-		return getValidDefinedBuildTarget(project, buildTargetName);
-	}
-	
-	public BuildTarget getValidBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly) 
+	public BuildTarget getBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly) 
 			throws CommonException, StatusException {
-		return getValidBuildTarget(project, buildTargetName, definedTargetsOnly, true);
+		return getBuildTarget(project, buildTargetName, definedTargetsOnly, true);
 	}
 	
-	public BuildTarget getValidBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly, 
+	public BuildTarget getBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly, 
 			boolean requireNonNull) throws CommonException {
 		ProjectBuildInfo buildInfo = getValidBuildInfo(project, false);
 		
 		// validate name after validation project buildInfo
 		validateBuildTargetName(buildTargetName);
 		
-		return getValidBuildTarget(buildInfo, buildTargetName, definedTargetsOnly, requireNonNull);
+		return getBuildTarget(buildInfo, buildTargetName, definedTargetsOnly, requireNonNull);
 	}
 	
 	protected void validateBuildTargetName(String buildTargetName) throws CommonException {
@@ -445,7 +431,7 @@ public abstract class BuildManager {
 		}
 	}
 	
-	public BuildTarget getValidBuildTarget(ProjectBuildInfo buildInfo, String buildTargetName, boolean definedTargetsOnly,
+	protected BuildTarget getBuildTarget(ProjectBuildInfo buildInfo, String buildTargetName, boolean definedTargetsOnly,
 			boolean requireNonNull) throws CommonException {
 		assertNotNull(buildTargetName);
 		

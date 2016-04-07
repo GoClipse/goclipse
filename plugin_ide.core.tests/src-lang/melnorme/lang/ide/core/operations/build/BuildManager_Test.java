@@ -19,6 +19,7 @@ import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.BundleInfo;
@@ -27,6 +28,7 @@ import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NoopOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
@@ -34,9 +36,12 @@ import melnorme.lang.ide.core.tests.BuildTestsHelper;
 import melnorme.lang.ide.core.tests.SampleProject;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.tests.CommonTest;
 
 public class BuildManager_Test extends CommonTest {
@@ -103,15 +108,25 @@ public class BuildManager_Test extends CommonTest {
 		}
 		
 		@Override
-		protected void getDefaultBuildOptions(BuildTarget bt, ArrayList2<String> buildArgs)
-				throws CommonException {
-			buildArgs.add("build this");
+		public String getDefaultBuildArguments(BuildTarget bt) throws CommonException {
+			return "default: build_args";
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt,
-				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return null;
+		public String getDefaultCheckArguments(BuildTarget bt) throws CommonException {
+			return "default: check_args";
+		}
+		
+		@Override
+		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler, 
+				Path buildToolPath, String buildArguments) 
+				throws CommonException {
+			return new CommonBuildTargetOperation(buildMgr, bt, opHandler, buildToolPath, buildArguments) {
+				@Override
+				protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
+						throws CoreException, CommonException, OperationCancellation {
+				}
+			};
 		}
 		
 		@Override
@@ -169,31 +184,37 @@ public class BuildManager_Test extends CommonTest {
 			);
 
 			assertEquals(
-				buildMgr.getValidBuildTarget(project, "TargetA", true).getData(),
+				buildMgr.getBuildTarget(project, "TargetA", true).getData(),
 				sampleBT_A);
+			assertEquals(
+				buildMgr.getBuildTarget(project, "TargetB", true).getData(),
+				sampleBT_B);
 			verifyThrows(
-				() -> buildMgr.getValidBuildTarget(project, "TargetA#default", true).getData(),
+				() -> buildMgr.getBuildTarget(project, "TargetA#default", true).getData(),
 				CommonException.class,
 				LaunchMessages.BuildTarget_NotFound);
 			
 			verifyThrows(
-				() -> buildMgr.getValidBuildTarget(project, "TargetA"+SEP+"bad_config", false).getData(),
+				() -> buildMgr.getBuildTarget(project, "TargetA"+SEP+"bad_config", false).getData(),
 				CommonException.class,
 				"No such build type: `bad_config`"); // Build Type not found
 			
 			assertEquals(
-				buildMgr.getValidBuildTarget(project, "ImplicitTarget"+SEP+"default", false).getData(),
+				buildMgr.getBuildTarget(project, "ImplicitTarget"+SEP+"default", false).getData(),
 				bt("ImplicitTarget"+SEP+"default", false, null, null, null));
 			
 			verifyThrows(
-				() -> buildMgr.getValidBuildTarget(project, "ImplicitTarget"+SEP+"strict", false).getData(),
+				() -> buildMgr.getBuildTarget(project, "ImplicitTarget"+SEP+"strict", false).getData(),
 				CommonException.class,
 				"Build configuration `ImplicitTarget` not found"); // Config not found
 			
 			
-			testSaveLoadProjectInfo();
+			testBuildOperation();
 		}
 		
+		try(SampleProject sampleProj = initSampleProject()){
+			testSaveLoadProjectInfo();
+		}
 	}
 	
 	protected void testSaveLoadProjectInfo() throws CommonException {
@@ -327,5 +348,35 @@ public class BuildManager_Test extends CommonTest {
 			assertAreEqual(buildTarget2.getEffectiveValidExecutablePath(), "sample path");
 			
 		}
+	}
+	
+	protected NoopOperationConsoleHandler consoleHandler = new NoopOperationConsoleHandler();
+	
+	protected void testBuildOperation() throws CommonException, StatusException, CoreException {
+		BuildTarget btA = buildMgr.getBuildTarget(project, "TargetA", true);
+		assertTrue(btA.getData().getBuildArguments() == null);
+		assertTrue(btA.getData().getCheckArguments() == null);
+		
+		BuildTarget btB = buildMgr.getBuildTarget(project, "TargetB", true);
+		assertTrue(btB.getData().getBuildArguments() != null);
+		assertTrue(btB.getData().getCheckArguments() != null);
+		
+		assertAreEqual(
+			btA.getBuildOperation(consoleHandler, false, path("blah")).getEffectiveEvaluatedArguments(), 
+			list("default:", "build_args")
+		);
+		assertAreEqual(
+			btA.getBuildOperation(consoleHandler, true, path("blah")).getEffectiveEvaluatedArguments(), 
+			list("default:", "check_args")
+		);
+		
+		assertAreEqual(
+			btB.getBuildOperation(consoleHandler, false, path("blah")).getEffectiveEvaluatedArguments(), 
+			list("B:", "build_args")
+		);
+		assertAreEqual(
+			btB.getBuildOperation(consoleHandler, true, path("blah")).getEffectiveEvaluatedArguments(), 
+			list("B:", "check_args")
+		);
 	}
 }

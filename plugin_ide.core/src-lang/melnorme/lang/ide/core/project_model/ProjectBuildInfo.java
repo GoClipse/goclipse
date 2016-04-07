@@ -107,10 +107,12 @@ public class ProjectBuildInfo {
 		changeBuildTarget(oldBuildTarget, buildTargetData);
 	}
 	
-	public void changeBuildArguments(BuildTarget oldBuildTarget, String newBuildArgumentsValue) throws CommonException {
-		BuildTargetData buildTargetData = oldBuildTarget.getDataCopy();
-		buildTargetData.buildArguments = newBuildArgumentsValue;
-		changeBuildTarget(oldBuildTarget, buildTargetData);
+	public void changeBuildTarget(String buildTargetName, BuildTargetData buildTargetData)
+			throws CommonException {
+		
+		BuildTarget oldBuildTarget = buildMgr.getDefinedBuildTarget(project, buildTargetName);
+		
+		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget3(project, buildTargetData));
 	}
 	
 	public void changeBuildTarget(BuildTarget oldBuildTarget, BuildTargetData buildTargetData)
