@@ -17,11 +17,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugPlugin;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.ICoreOperation;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 public class ProcessLaunchInfoValidator {
+	
+	protected final BuildManager buildManager = LangCore.getBuildManager();
 	
 	protected final CompositeBuildTargetSettings buildTargetSettings;
 	
@@ -46,9 +51,6 @@ public class ProcessLaunchInfoValidator {
 	}
 	
 	protected BuildTarget getBuildTarget() throws CommonException {
-//		if(buildTargetSettings.getBuildTargetName() == null){
-//			return null;
-//		}
 		return buildTargetSettings.getValidBuildTarget();
 	}
 	
@@ -92,6 +94,9 @@ public class ProcessLaunchInfoValidator {
 		
 		IProject project = getProject();
 		BuildTarget buildTarget = getBuildTarget();
+		ICoreOperation buildOperation = buildTarget == null ? 
+				null : buildManager.newBuildTargetOperation(getProject(), buildTarget);
+		
 		Location programLoc = getValidExecutableFileLocation(); // not null
 		
 		String[] processArgs = getProgramArguments();
@@ -100,7 +105,7 @@ public class ProcessLaunchInfoValidator {
 		
 		return new ProcessLaunchInfo(
 			project, 
-			buildTarget, 
+			buildOperation, 
 			programLoc,
 			processArgs, 
 			workingDirectory, 

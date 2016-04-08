@@ -58,7 +58,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return doCreateClearBuildMarkersOperation();
 	}
 	
-	public ICoreOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild, boolean clearMarkers) 
+	public CompositeBuildOperation newProjectBuildOperation(Collection2<ICoreOperation> buildOps, boolean clearMarkers) 
 			throws CommonException {
 		operations = ArrayList2.create();
 		
@@ -68,13 +68,13 @@ public class BuildOperationCreator implements BuildManagerMessages {
 			addOperation(newClearBuildMarkersOperation());
 		}
 		
-		if(targetsToBuild.isEmpty()) {
+		if(buildOps.isEmpty()) {
 			addOperation(newMessageOperation( 
 				TextMessageUtils.headerSMALL(MSG_NoBuildTargetsEnabled)));
 		}
 		
-		for(BuildTarget buildTarget : targetsToBuild) {
-			addOperation(newBuildTargetOperation(buildTarget));
+		for(ICoreOperation buildOp : buildOps) {
+			addOperation(buildOp);
 		}
 		
 		// refresh project
@@ -130,9 +130,8 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return false;
 	}
 	
-	protected ICoreOperation newBuildTargetOperation(BuildTarget buildTarget) throws CommonException {
-		/* FIXME: todo isCheck */
-		return buildTarget.getBuildOperation(opHandler, false);
+	protected final ICoreOperation newBuildTargetOperation(BuildTarget buildTarget, boolean isCheck) throws CommonException {
+		return buildTarget.getBuildOperation(opHandler, isCheck);
 	}
 	
 	protected ICoreOperation newMessageOperation(String msg) {
