@@ -50,8 +50,6 @@ public abstract class CompositeBuildTargetSettings {
 		if(buildArguments != null) {
 			data.buildArguments = buildArguments;
 		}
-		/* FIXME: bug here checkArguments */
-		
 		if(executablePath != null) {
 			data.executablePath = executablePath;
 		}

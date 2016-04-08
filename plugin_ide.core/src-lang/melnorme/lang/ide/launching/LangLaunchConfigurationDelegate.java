@@ -30,13 +30,13 @@ import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.launch.BuildTargetSource;
+import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
-import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.ICoreOperation;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.operation.OperationUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -188,12 +188,12 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	
 	protected boolean doBuildForLaunch(ProcessLaunchInfo config, ILaunchConfiguration configuration, String mode,
 			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		BuildTarget buildTarget = config.getBuildTarget();
-		if(buildTarget == null) {
-			return super.buildForLaunch(configuration, mode, pm);
-		} else {
-			LangCore.getBuildManager().newBuildTargetOperation(config.getProject(), buildTarget).execute(pm);
+		ICoreOperation buildOperation = config.getBuildOperation();
+		if(buildOperation != null) {
+			buildOperation.execute(pm);
 			return false;
+		} else {
+			return super.buildForLaunch(configuration, mode, pm);
 		}
 	}
 	
