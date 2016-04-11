@@ -11,17 +11,19 @@
 package com.googlecode.goclipse.core.operations;
 
 import org.eclipse.core.resources.IProject;
+
 import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
+
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.tooling.ops.util.PathValidator;
 
 /**
  * Manager for running various go tools, usually for build.
  * Note that running such tools under this class will notify Eclipse console listeners.
  */
-public class GoToolManager extends AbstractToolManager {
+public class GoToolManager extends ToolManager {
 	
 	public static GoToolManager getDefault() {
 		return (GoToolManager) LangCore.getToolManager();

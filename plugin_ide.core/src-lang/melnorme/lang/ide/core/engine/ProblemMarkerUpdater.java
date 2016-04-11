@@ -13,8 +13,6 @@ package melnorme.lang.ide.core.engine;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.concurrent.ExecutorService;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -32,28 +30,35 @@ import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
 
-public class ProblemMarkerUpdater implements IDisposable {
+public class ProblemMarkerUpdater extends AbstractAgentManager {
 	
-	protected final ExecutorService problemsExecutor = CoreExecutors.newExecutorTaskAgent(getClass());
 	protected SourceModelManager sourceModelManager;
 	
 	public ProblemMarkerUpdater() {
 	}
 	
+	@Override
+	protected ICommonExecutor init_executor() {
+		return CoreExecutors.newExecutorTaskAgent(getClass());
+	}
+	
 	public void install(SourceModelManager sourceModelManager) {
 		this.sourceModelManager = sourceModelManager;
-		sourceModelManager.addListener(problemUpdaterListener);
-		sourceModelManager.asOwner().bind(this);
+		IDisposable listenerRegistration = sourceModelManager.addListener(problemUpdaterListener);
+		asOwner().bind(listenerRegistration);
+		
+		sourceModelManager.asOwner().bind(this); // Make ProblemMarkerUpdater be owned by the model manager
 	}
 	
 	@Override
-	public void dispose() {
-		sourceModelManager.removeListener(problemUpdaterListener);
-		problemsExecutor.shutdownNow();
+	protected void dispose_post() {
+		super.dispose_post();
+		executor.shutdownNow();
 	}
 	
 	protected final IStructureModelListener problemUpdaterListener = new IStructureModelListener() {
@@ -65,7 +70,7 @@ public class ProblemMarkerUpdater implements IDisposable {
 			
 			assertTrue(Job.getJobManager().currentRule() == null);
 			
-			problemsExecutor.submit(new UpdateProblemMarkersTask(structureInfo));
+			executor.submit(new UpdateProblemMarkersTask(structureInfo));
 		}
 	};
 	

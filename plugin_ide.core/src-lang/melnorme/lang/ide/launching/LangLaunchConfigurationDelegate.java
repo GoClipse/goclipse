@@ -36,7 +36,7 @@ import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
-import melnorme.lang.ide.core.operations.ICoreOperation;
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.operation.OperationUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -188,7 +188,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	
 	protected boolean doBuildForLaunch(ProcessLaunchInfo config, ILaunchConfiguration configuration, String mode,
 			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		ICoreOperation buildOperation = config.getBuildOperation();
+		ICommonOperation buildOperation = config.getBuildOperation();
 		if(buildOperation != null) {
 			buildOperation.execute(pm);
 			return false;

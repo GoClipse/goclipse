@@ -44,9 +44,9 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 /**
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).
  */
-public abstract class AbstractToolManager extends EventSource<ILangOperationsListener> {
+public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
-	public AbstractToolManager() {
+	public ToolManager() {
 	}
 	
 	public void shutdownNow() {

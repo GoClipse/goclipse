@@ -25,7 +25,7 @@ import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.utils.ProcessUtils;
@@ -60,7 +60,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	protected String doBackgroundValueComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
 		
-		AbstractToolManager toolMgr = LangCore.getToolManager();
+		ToolManager toolMgr = LangCore.getToolManager();
 		
 		String editorText = doc.get();
 		ExternalProcessResult processResult = toolMgr.runEngineTool(pb, editorText, monitor);

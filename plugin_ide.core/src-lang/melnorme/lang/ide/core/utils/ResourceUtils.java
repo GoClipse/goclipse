@@ -18,14 +18,11 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.eclipse.core.filebuffers.FileBuffers;
-import org.eclipse.core.filebuffers.IFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.core.filebuffers.LocationKind;
-import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -172,6 +169,16 @@ public class ResourceUtils {
 		}
 	}
 	
+	
+	public static void runCommonOperationInWorkspace(ICoreOperation operation, ISchedulingRule rule, 
+			IProgressMonitor monitor) throws OperationCancellation, CommonException {
+		try {
+			runToolOperationInWorkspace(operation, rule, monitor);
+		} catch(CoreException e) {
+			throw LangCore.createCommonException(e);
+		}
+	}
+	
 	@SuppressWarnings("serial")
 	public static class CoreExceptionWrapper extends CoreException {
 		
@@ -310,13 +317,11 @@ public class ResourceUtils {
 	
 	/* ----------------- file Buffer utils ----------------- */
 	
-	public static ITextFileBuffer getTextFileBuffer(Location fileLoc) {
-		return getTextFileBuffer(fileLoc.path);
+	public static ITextFileBuffer getTextFileBuffer(ITextFileBufferManager fbm, Location fileLoc) {
+		return getTextFileBuffer(fbm, fileLoc.path);
 	}
 	
-	public static ITextFileBuffer getTextFileBuffer(Path filePath) {
-		
-		ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
+	public static ITextFileBuffer getTextFileBuffer(ITextFileBufferManager fbm, Path filePath) {
 		
 		ITextFileBuffer fileBuffer;
 		fileBuffer = fbm.getTextFileBuffer(epath(filePath), LocationKind.NORMALIZE);
@@ -337,27 +342,6 @@ public class ResourceUtils {
 		}
 		
 		return null;
-	}
-	
-	public static Location getFileBufferLocation(IFileBuffer buffer) throws CoreException {
-		IFileStore fileStore = buffer.getFileStore();
-		if(fileStore == null) {
-			throw LangCore.createCoreException("Error in discardWorkingCopy: listener fileStore == null", null);
-		}
-		Path filePath;
-		try {
-			filePath = Paths.get(fileStore.toURI());
-		} catch (RuntimeException e) {
-			throw LangCore.createCoreException("Error converting URI to path.", e);
-		}
-		
-		Location fileLoc;
-		try {
-			fileLoc = Location.create(filePath);
-		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
-		}
-		return fileLoc;
 	}
 	
 	public static void connectResourceListener(IResourceChangeListener listener, 

@@ -32,6 +32,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.operation.OperationUtils;
 import melnorme.utilbox.collections.HashMap2;
@@ -50,7 +51,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		return ResourceUtils.getProjectLocation(getProject());
 	}
 	
-	protected AbstractToolManager getToolManager() {
+	protected ToolManager getToolManager() {
 		return LangCore.getToolManager();
 	}
 	
@@ -138,12 +139,8 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected void clearErrorMarkers(IProject project, IProgressMonitor pm) 
 			throws CoreException, OperationCancellation {
-		ICoreOperation clearMarkersOp = buildManager.newProjectClearMarkersOperation(workspaceOpHandler, project);
-		try {
-			clearMarkersOp.execute(pm);
-		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
-		}
+		ICommonOperation clearMarkersOp = buildManager.newProjectClearMarkersOperation(workspaceOpHandler, project);
+		EclipseUtils.execute_asCore(pm, clearMarkersOp);
 	}
 	
 	protected void handleEndWorkspaceBuild2() {
@@ -188,6 +185,10 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	@SuppressWarnings("unused")
 	protected IProject[] doBuild(final IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
 			throws CoreException, OperationCancellation {
+		
+		if(kind == IncrementalProjectBuilder.AUTO_BUILD) {
+			return null; // Ignore auto build
+		}
 		try {
 			createBuildOp().execute(monitor);
 		} catch (CommonException ce) {
@@ -196,8 +197,8 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 	
-	protected ICoreOperation createBuildOp() throws CommonException {
-		return buildManager.newProjectBuildOperation(workspaceOpHandler, getProject(), false);
+	protected ICommonOperation createBuildOp() throws CommonException {
+		return buildManager.newProjectBuildOperation(workspaceOpHandler, getProject(), false, false);
 	}
 	
 	/* ----------------- Clean ----------------- */

@@ -30,9 +30,9 @@ import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -221,7 +221,7 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		protected ProcessBuilder getProcessBuilder2(Indexable<String> toolArguments) throws CommonException {
-			AbstractToolManager toolMgr = getToolManager();
+			ToolManager toolMgr = getToolManager();
 			ProcessBuilder pb = toolMgr.createToolProcessBuilder(getBuildToolPath(), workingDirectory, 
 				toolArguments.toArray(String.class));
 			
@@ -246,7 +246,7 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		protected void processBuildOutput(ExternalProcessResult buildAllResult, IProgressMonitor pm) 
-				throws CoreException, CommonException, OperationCancellation {
+				throws CommonException, OperationCancellation {
 			GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 				@Override
 				protected void handleParseError(CommonException ce) {
@@ -304,7 +304,7 @@ public class GoBuildManager extends BuildManager {
 				}
 				
 				@Override
-				public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+				public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
 					Indexable<String> argumentsOriginal = getEffectiveEvaluatedArguments();
 					
 					if(!isMultipleGoPackagesArguments(argumentsOriginal)) {

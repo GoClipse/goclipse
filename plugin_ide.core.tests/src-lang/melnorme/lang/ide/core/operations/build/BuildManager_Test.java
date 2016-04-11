@@ -124,7 +124,7 @@ public class BuildManager_Test extends CommonTest {
 			return new CommonBuildTargetOperation(buildMgr, bt, opHandler, buildToolPath, buildArguments) {
 				@Override
 				protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
-						throws CoreException, CommonException, OperationCancellation {
+						throws CommonException, OperationCancellation {
 				}
 			};
 		}

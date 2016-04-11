@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PlatformUI;
 
-import melnorme.lang.ide.core.operations.AbstractToolManager.RunToolTask;
+import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.utils.ProcessUtils;

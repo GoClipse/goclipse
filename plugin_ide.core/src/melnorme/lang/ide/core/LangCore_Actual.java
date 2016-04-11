@@ -1,13 +1,13 @@
 package melnorme.lang.ide.core;
 
 import com.googlecode.goclipse.core.engine.GoBundleModelManager;
-import com.googlecode.goclipse.core.engine.GoSourceModelManager;
 import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
+import com.googlecode.goclipse.core.engine.GoSourceModelManager;
 import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.core.operations.GoToolManager;
 
 import melnorme.lang.ide.core.engine.SourceModelManager;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 
@@ -30,7 +30,7 @@ public class LangCore_Actual {
 	
 	/* ----------------- Owned singletons: ----------------- */
 	
-	protected final AbstractToolManager toolManager;
+	protected final ToolManager toolManager;
 	protected final GoBundleModelManager bundleManager;
 	protected final BuildManager buildManager;
 	protected final GoSourceModelManager sourceModelManager;
@@ -63,7 +63,7 @@ public class LangCore_Actual {
 	/* -----------------  ----------------- */
 	
 	
-	public static AbstractToolManager getToolManager() {
+	public static ToolManager getToolManager() {
 		return instance.toolManager;
 	}
 	public static GoBundleModel getBundleModel() {

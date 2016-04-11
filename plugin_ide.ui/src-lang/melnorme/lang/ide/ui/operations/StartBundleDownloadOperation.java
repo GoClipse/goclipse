@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
@@ -37,7 +37,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 public abstract class StartBundleDownloadOperation extends BasicUIOperation {
 	
-	protected final AbstractToolManager toolMgr = LangCore.getToolManager();
+	protected final ToolManager toolMgr = LangCore.getToolManager();
 	protected final String downloadBundleJobName;
 	
 	public StartBundleDownloadOperation(String operationName, String downloadBundleJobName) {

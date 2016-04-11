@@ -26,7 +26,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.ICoreOperation;
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -454,7 +454,7 @@ public abstract class BuildManager {
 		return new BuildOperationCreator(project, opHandler);
 	}
 	
-	public ICoreOperation newProjectClearMarkersOperation(IOperationConsoleHandler opHandler, IProject project) {
+	public ICommonOperation newProjectClearMarkersOperation(IOperationConsoleHandler opHandler, IProject project) {
 		return createBuildOperationCreator(opHandler, project).newClearBuildMarkersOperation();
 	}
 	
@@ -464,27 +464,34 @@ public abstract class BuildManager {
 	}
 	
 	public final CompositeBuildOperation newBuildTargetsOperation(IProject project, 
-			Collection2<BuildTarget> targetsToBuild)
-			throws CommonException {
-		IOperationConsoleHandler opHandler = LangCore.getToolManager().startNewBuildOperation();
-		return newBuildOperation(opHandler, project, true, targetsToBuild);
+			Collection2<BuildTarget> targetsToBuild) throws CommonException {
+		return newBuildOperation(null, project, true, targetsToBuild);
 	}
 	
 	public final CompositeBuildOperation newProjectBuildOperation(IOperationConsoleHandler opHandler, IProject project,
-			boolean clearMarkers) throws CommonException {
+			boolean clearMarkers, boolean isCheck) throws CommonException {
 		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets();
-		return newBuildOperation(opHandler, project, clearMarkers, enabledTargets);
+		return newBuildOperation(opHandler, project, clearMarkers, enabledTargets, isCheck);
 	}
+	
+	/* ----------------- ----------------- */
 	
 	public CompositeBuildOperation newBuildOperation(IOperationConsoleHandler opHandler, IProject project, 
 			boolean clearMarkers, Collection2<BuildTarget> targetsToBuild) throws CommonException {
-		/* FIXME: todo isCheck */
-		boolean isCheck = false;
+		return newBuildOperation(opHandler, project, clearMarkers, targetsToBuild, false);
+	}
+	
+	public CompositeBuildOperation newBuildOperation(IOperationConsoleHandler opHandler, IProject project,
+			boolean clearMarkers, Collection2<BuildTarget> targetsToBuild, boolean isCheck) throws CommonException {
+		ArrayList2<ICommonOperation> buildCommands = 
+				targetsToBuild.mapx((buildTarget) -> buildTarget.getBuildOperation(opHandler, isCheck));
 		
+		return newTopLevelBuildOperation(opHandler, project, clearMarkers, buildCommands);
+	}
+	
+	public CompositeBuildOperation newTopLevelBuildOperation(IOperationConsoleHandler opHandler, IProject project,
+			boolean clearMarkers, Collection2<ICommonOperation> buildCommands) throws CommonException {
 		BuildOperationCreator buildOpCreator = createBuildOperationCreator(opHandler, project);
-		
-		ArrayList2<ICoreOperation> buildCommands = 
-				targetsToBuild.mapx((buildTarget) -> buildOpCreator.newBuildTargetOperation(buildTarget, isCheck));
 		
 		return buildOpCreator.newProjectBuildOperation(buildCommands, clearMarkers);
 	}

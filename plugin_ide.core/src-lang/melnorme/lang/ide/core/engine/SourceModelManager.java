@@ -14,27 +14,20 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import org.eclipse.core.filebuffers.FileBuffers;
-import org.eclipse.core.filebuffers.IFileBuffer;
-import org.eclipse.core.filebuffers.ITextFileBuffer;
-import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentListener;
-import org.eclipse.jface.text.ISynchronizable;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.DefaultBufferListener;
+import melnorme.lang.ide.core.engine.DocumentReconcileManager.DocumentReconcileConnection;
 import melnorme.lang.ide.core.utils.operation.OperationUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.DataUpdateTask;
 import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.fields.ListenerListHelper;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.ownership.StrictDisposable;
 
 /**
@@ -44,11 +37,13 @@ import melnorme.utilbox.ownership.StrictDisposable;
  * - Possible persist document changes to files in filesystem, or update a semantic engine buffers.
  *
  */
-public abstract class SourceModelManager extends AbstractModelUpdateManager<Object> {
+public abstract class SourceModelManager extends AbstractAgentManager {
 	
 	public SourceModelManager() {
 		this(new ProblemMarkerUpdater());
 	}
+	
+	protected final DocumentReconcileManager reconcileMgr = new DocumentReconcileManager();
 	
 	public SourceModelManager(ProblemMarkerUpdater problemUpdater) {
 		if(problemUpdater != null) {
@@ -125,13 +120,11 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 	
 	public class StructureInfo extends ConcurrentlyDerivedData<SourceFileStructure, StructureInfo> {
 		
-		protected final ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
-		
 		protected final LocationKey key2;
 		protected final StructureUpdateTask disconnectTask; // Can be null
 		
 		protected IDocument document = null;
-		protected DefaultBufferListener fbListener = null;
+		protected DocumentReconcileConnection reconcileConnection = null;
 		
 		
 		public StructureInfo(LocationKey key) {
@@ -157,13 +150,8 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 			if(document == null) {
 				document = newDocument;
 				queueSourceUpdateTask(document.get());
-				newDocument.addDocumentListener(docListener);
 				
-				ITextFileBuffer textFileBuffer = fbm.getTextFileBuffer(document);
-				if(textFileBuffer != null) {
-					fbListener = new DirtyBufferListener(document, textFileBuffer, this);
-					fbm.addFileBufferListener(fbListener);
-				}
+				reconcileConnection = reconcileMgr.connectDocument(document, this);
 			}
 			else if(document != newDocument) {
 				return false;
@@ -177,42 +165,31 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 			connectedListeners.removeListener(structureListener);
 			
 			if(!hasConnectedListeners()) {
-				document.removeDocumentListener(docListener);
+				reconcileConnection.disconnect();
+				reconcileConnection = null;
+				
 				document = null;
 				
 				queueUpdateTask(disconnectTask);
-				if(fbListener != null) {
-					fbm.removeFileBufferListener(fbListener);
-					fbListener = null;
-				}
 			}
 		}
 		
-		protected final IDocumentListener docListener = new IDocumentListener() {
-			@Override
-			public void documentAboutToBeChanged(DocumentEvent event) {
-			}
-			@Override
-			public void documentChanged(DocumentEvent event) {
-				queueSourceUpdateTask(event.fDocument.get());
-			}
-		};
-		
-		protected void queueSourceUpdateTask(final String source) {
+		protected StructureUpdateTask queueSourceUpdateTask(final String source) {
 			StructureUpdateTask updateTask = createUpdateTask(this, source);
 			queueUpdateTask(updateTask);
+			return updateTask;
 		}
 		
-		@SuppressWarnings("unused")
-		public synchronized void documentSaved(IDocument document, ITextFileBuffer textFileBuffer) {
+		public synchronized StructureUpdateTask documentSaved(IDocument document) {
 			// need to recheck, the underlying document might have changed
 			if(document != this.document) {
-				return;
+				return null;
 			}
 			StructureUpdateTask updateTask = createUpdateTask_forFileSave(this, document.get());
 			if(updateTask != null) {
 				queueUpdateTask(updateTask);
 			}
+			return updateTask;
 		}
 		
 		protected synchronized void queueUpdateTask(StructureUpdateTask updateTask) {
@@ -319,67 +296,14 @@ public abstract class SourceModelManager extends AbstractModelUpdateManager<Obje
 	
 	protected final ListenerListHelper<IStructureModelListener> globalListeners = new ListenerListHelper<>();
 	
-	public void addListener(IStructureModelListener listener) {
+	public IDisposable addListener(IStructureModelListener listener) {
 		assertNotNull(listener);
 		globalListeners.addListener(listener);
+		return () -> removeListener(listener);
 	}
 	
 	public void removeListener(IStructureModelListener listener) {
 		globalListeners.removeListener(listener);
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static class DirtyBufferListener extends DefaultBufferListener {
-		
-		protected final IDocument document;
-		protected final ITextFileBuffer textFileBuffer;
-		protected final StructureInfo structureInfo;
-		
-		public DirtyBufferListener(IDocument document, ITextFileBuffer textFileBuffer,
-				StructureInfo structureInfo) {
-			this.document = assertNotNull(document);
-			this.textFileBuffer = assertNotNull(textFileBuffer);
-			this.structureInfo = assertNotNull(structureInfo);
-		}
-		
-		@Override
-		public void dirtyStateChanged(IFileBuffer buffer, boolean isDirty) {
-			
-			if(buffer == textFileBuffer) {
-				if(!isDirty) {
-					
-					// At the moment this only gets called from UI thread, however
-					// we try to make it work if called from a different thread than the one firing document changes.
-					
-					runUnderDocumentLock(document, () -> {
-						
-						// We need to recheck isDirty under the document lock to get an accurate reading 
-						if(!textFileBuffer.isDirty()) {
-							structureInfo.documentSaved(document, textFileBuffer);
-						}
-						
-						return null;
-					});
-				}
-			}
-		}
-		
-	}
-	
-	public static <R> R runUnderDocumentLock(IDocument doc, CallableX<R, RuntimeException> runnable) {
-		if(doc instanceof ISynchronizable) {
-			ISynchronizable synchronizable = (ISynchronizable) doc;
-			
-			Object lockObject = synchronizable.getLockObject();
-			if(lockObject != null) {
-				synchronized(lockObject) {
-					return runnable.call();
-				}
-			}
-		}
-		
-		return runnable.call();
 	}
 	
 }

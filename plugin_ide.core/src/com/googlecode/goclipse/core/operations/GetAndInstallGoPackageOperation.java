@@ -19,9 +19,9 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -32,7 +32,7 @@ import melnorme.utilbox.misc.MiscUtil;
 
 public class GetAndInstallGoPackageOperation implements CoreOperationRunnable {
 	
-	protected final AbstractToolManager toolMgr = LangCore.getToolManager();
+	protected final ToolManager toolMgr = LangCore.getToolManager();
 	
 	protected final GoEnvironment goEnv;
 	protected final String goPackage;

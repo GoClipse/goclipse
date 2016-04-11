@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugPlugin;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ICoreOperation;
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.utilbox.core.CommonException;
@@ -94,7 +94,7 @@ public class ProcessLaunchInfoValidator {
 		
 		IProject project = getProject();
 		BuildTarget buildTarget = getBuildTarget();
-		ICoreOperation buildOperation = buildTarget == null ? 
+		ICommonOperation buildOperation = buildTarget == null ? 
 				null : buildManager.newBuildTargetOperation(getProject(), buildTarget);
 		
 		Location programLoc = getValidExecutableFileLocation(); // not null
