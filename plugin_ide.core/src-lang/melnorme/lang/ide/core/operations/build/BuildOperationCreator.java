@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.ICoreOperation;
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -52,13 +52,13 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		this.opHandler = assertNotNull(opHandler);
 	}
 	
-	protected ArrayList2<ICoreOperation> operations;
+	protected ArrayList2<ICommonOperation> operations;
 	
-	public ICoreOperation newClearBuildMarkersOperation() {
+	public ICommonOperation newClearBuildMarkersOperation() {
 		return doCreateClearBuildMarkersOperation();
 	}
 	
-	public CompositeBuildOperation newProjectBuildOperation(Collection2<ICoreOperation> buildOps, boolean clearMarkers) 
+	public CompositeBuildOperation newProjectBuildOperation(Collection2<ICommonOperation> buildOps, boolean clearMarkers) 
 			throws CommonException {
 		operations = ArrayList2.create();
 		
@@ -73,15 +73,19 @@ public class BuildOperationCreator implements BuildManagerMessages {
 				TextMessageUtils.headerSMALL(MSG_NoBuildTargetsEnabled)));
 		}
 		
-		for(ICoreOperation buildOp : buildOps) {
+		for(ICommonOperation buildOp : buildOps) {
 			addOperation(buildOp);
 		}
 		
 		// refresh project
-		addOperation(new ICoreOperation() {
+		addOperation(new ICommonOperation() {
 			@Override
-			public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-				project.refreshLocal(IResource.DEPTH_INFINITE, pm);
+			public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
+				try {
+					project.refreshLocal(IResource.DEPTH_INFINITE, pm);
+				} catch(CoreException e) {
+					throw LangCore.createCommonException(e);
+				}
 			}
 		});
 		
@@ -93,7 +97,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return new CompositeBuildOperation(operations, rule);
 	}
 	
-	protected boolean addOperation(ICoreOperation toolOp) {
+	protected boolean addOperation(ICommonOperation toolOp) {
 		return operations.add(toolOp);
 	}
 	
@@ -102,7 +106,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		addOperation(newMessageOperation(startMsg));
 	}
 	
-	protected ICoreOperation doCreateClearBuildMarkersOperation() {
+	protected ICommonOperation doCreateClearBuildMarkersOperation() {
 		return (pm) -> {
 			boolean hadDeletedMarkers = doDeleteProjectMarkers(buildProblemId, pm);
 			if(hadDeletedMarkers) {
@@ -130,15 +134,11 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return false;
 	}
 	
-	protected final ICoreOperation newBuildTargetOperation(BuildTarget buildTarget, boolean isCheck) throws CommonException {
-		return buildTarget.getBuildOperation(opHandler, isCheck);
-	}
-	
-	protected ICoreOperation newMessageOperation(String msg) {
+	protected ICommonOperation newMessageOperation(String msg) {
 		return new BuildMessageOperation(msg);
 	}
 	
-	protected class BuildMessageOperation implements ICoreOperation, Callable<Void> {
+	protected class BuildMessageOperation implements ICommonOperation, Callable<Void> {
 		
 		protected final String msg;
 		

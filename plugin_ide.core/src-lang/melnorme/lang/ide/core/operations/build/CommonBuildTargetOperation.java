@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.launch.LaunchUtils;
@@ -79,7 +78,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	}
 	
 	@Override
-	public void execute(IProgressMonitor parentPM) throws CoreException, CommonException, OperationCancellation {
+	public void execute(IProgressMonitor parentPM) throws CommonException, OperationCancellation {
 		try(ProgressSubTaskHelper pm = new ProgressSubTaskHelper(parentPM, getBuildOperationName())) {
 			ProcessBuilder pb = getToolProcessBuilder();
 			runBuildToolAndProcessOutput(pb, pm);
@@ -90,31 +89,31 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		return "Building " + getBuildTargetName();
 	}
 	
-	protected ProcessBuilder getToolProcessBuilder() throws CoreException, CommonException, OperationCancellation {
+	protected ProcessBuilder getToolProcessBuilder() throws CommonException, OperationCancellation {
 		return getToolProcessBuilder(getEffectiveEvaluatedArguments());
 	}
 	
 	protected ProcessBuilder getToolProcessBuilder(Indexable<String> buildArguments) 
-			throws CoreException, CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		return getProcessBuilder2(buildArguments);
 	}
 	
-	protected Indexable<String> getEffectiveEvaluatedArguments() throws CoreException, CommonException {
+	protected Indexable<String> getEffectiveEvaluatedArguments() throws CommonException {
 		return evaluatedBuildArguments2;
 	}
 	
 	protected ProcessBuilder getProcessBuilder2(Indexable<String> toolArguments) 
-			throws CommonException, OperationCancellation, CoreException {
+			throws CommonException, OperationCancellation {
 		return getToolManager().createToolProcessBuilder(getBuildToolPath(), getProjectLocation(), 
 			toolArguments.toArray(String.class));
 	}
 	
 	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IProgressMonitor pm)
-			throws CoreException, CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		processBuildOutput(runBuildTool(opHandler, pb, pm), pm);
 	}
 	
 	protected abstract void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
-			throws CoreException, CommonException, OperationCancellation;
+			throws CommonException, OperationCancellation;
 			
 }

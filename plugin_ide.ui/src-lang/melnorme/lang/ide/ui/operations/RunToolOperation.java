@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.operations.AbstractToolManager.RunToolTask;
+import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
@@ -45,7 +45,7 @@ public class RunToolOperation extends AbstractUIOperation {
 		this.opViewOptions = assertNotNull(opViewOptions);
 	}
 	
-	protected AbstractToolManager getToolManager() {
+	protected ToolManager getToolManager() {
 		return LangCore.getToolManager();
 	}
 	

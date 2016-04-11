@@ -2,7 +2,6 @@ package LANG_PROJECT_ID.ide.core.operations;
 
 import java.nio.file.Path;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
@@ -71,12 +70,12 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		
 		@Override
 		protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm) 
-				throws CoreException {
+				throws CommonException {
 			ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); 
 			
 			// TODO: Lang process build result
 			
-			new ToolMarkersHelper().addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation(project), pm);
+			new ToolMarkersHelper().addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation2(project), pm);
 		}
 	}
 	

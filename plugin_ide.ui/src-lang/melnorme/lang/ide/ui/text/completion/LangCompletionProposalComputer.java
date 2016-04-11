@@ -18,7 +18,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager.ToolManagerEngineToolRunner2;
+import melnorme.lang.ide.core.operations.ToolManager.ToolManagerEngineToolRunner2;
 import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.LangImages;

@@ -19,7 +19,7 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -202,7 +202,7 @@ public class BuildTarget extends AbstractValidator {
 	
 	public CommonBuildTargetOperation getBuildOperation(IOperationConsoleHandler opHandler, boolean isCheck)
 			throws CommonException {
-		AbstractToolManager toolManager = LangCore.getToolManager();
+		ToolManager toolManager = LangCore.getToolManager();
 		
 		Path buildToolPath = toolManager.getSDKToolPath(getProject());
 		return getBuildOperation(opHandler, isCheck, buildToolPath);

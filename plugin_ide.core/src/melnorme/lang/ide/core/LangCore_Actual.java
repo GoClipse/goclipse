@@ -5,7 +5,7 @@ import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_SourceModelManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_BuildManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
 import melnorme.lang.ide.core.engine.SourceModelManager;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -28,7 +28,7 @@ public class LangCore_Actual {
 	
 	/* ----------------- Owned singletons: ----------------- */
 	
-	protected final AbstractToolManager toolManager;
+	protected final ToolManager toolManager;
 	protected final LANGUAGE_BundleModelManager bundleManager;
 	protected final BuildManager buildManager;
 	protected final LANGUAGE_SourceModelManager sourceModelManager;
@@ -61,7 +61,7 @@ public class LangCore_Actual {
 	/* -----------------  ----------------- */
 	
 	
-	public static AbstractToolManager getToolManager() {
+	public static ToolManager getToolManager() {
 		return instance.toolManager;
 	}
 	public static LANGUAGE_BundleModel getBundleModel() {

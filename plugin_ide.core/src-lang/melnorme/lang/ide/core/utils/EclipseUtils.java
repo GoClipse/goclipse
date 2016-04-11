@@ -22,16 +22,20 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 
 public class EclipseUtils {
@@ -147,6 +151,17 @@ public class EclipseUtils {
 		
 		Severity severity = toStatusLevel(status).toSeverity();
 		return new StatusException(severity, status.getMessage(), status.getException());
+	}
+	
+	/* ----------------- ops ----------------- */
+	
+	public static void execute_asCore(IProgressMonitor pm, ICommonOperation commonOperation)
+			throws OperationCancellation, CoreException {
+		try {
+			commonOperation.execute(pm);
+		} catch (CommonException ce) {
+			throw LangCore.createCoreException(ce);
+		}
 	}
 	
 }

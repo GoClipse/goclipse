@@ -53,8 +53,17 @@ public class ToolMarkersHelper {
 	protected final HashMap2<Path, Document> documents = new HashMap2<>();
 	
 	public void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath, IProgressMonitor pm) 
-			throws CoreException {
+			throws CommonException {
 		
+		try {
+			doAddErrorMarkers(buildErrors, rootPath, pm);
+		} catch(CoreException e) {
+			throw LangCore.createCommonException(e);
+		}
+	}
+	
+	public void doAddErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath, IProgressMonitor pm)
+			throws CoreException {
 		documents.clear();
 		
 		ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
@@ -68,7 +77,6 @@ public class ToolMarkersHelper {
 				}
 			}
 		}, ResourceUtils.getWorkspaceRoot(), IWorkspace.AVOID_UPDATE, pm);
-		
 	}
 	
 	public void addErrorMarkers(ToolSourceMessage toolMessage, Location rootPath) throws CoreException {

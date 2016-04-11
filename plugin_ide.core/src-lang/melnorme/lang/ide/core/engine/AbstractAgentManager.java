@@ -18,16 +18,16 @@ import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.ownership.LifecycleObject;
 
-public class AbstractModelUpdateManager<KEY> extends LifecycleObject {
+public class AbstractAgentManager extends LifecycleObject {
 	
-	public static SimpleLogger log = init_log();
+	public final SimpleLogger log = init_log();
 	
 	protected final ICommonExecutor executor = init_executor();
 	
-	public AbstractModelUpdateManager() {
+	public AbstractAgentManager() {
 	}
 	
-	protected static SimpleLogger init_log() {
+	protected SimpleLogger init_log() {
 		return new SimpleLogger(Platform.inDebugMode());
 	}
 	protected ICommonExecutor init_executor() {
