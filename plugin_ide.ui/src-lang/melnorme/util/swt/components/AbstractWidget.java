@@ -13,6 +13,7 @@ package melnorme.util.swt.components;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -96,6 +97,14 @@ public abstract class AbstractWidget implements IWidgetComponent {
 	
 	protected static GridLayoutFactory glFillDefaults() {
 		return GridLayoutFactory.fillDefaults();
+	}
+	
+	public static GridData horizontalExpandDefault() {
+		return horizontalExpandDefault(SWT.DEFAULT);
+	}
+	
+	public static GridData horizontalExpandDefault(int hHint) {
+		return gdFillDefaults().grab(true, false).hint(hHint, SWT.DEFAULT).create();
 	}
 	
 }

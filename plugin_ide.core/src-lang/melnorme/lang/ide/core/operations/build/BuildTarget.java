@@ -70,7 +70,7 @@ public class BuildTarget extends AbstractValidator {
 	
 	@Override
 	public String toString() {
-		return project.getName() + "//" + targetData.getTargetName() + (targetData.isEnabled() ? " [ENABLED]" : "");
+		return project.getName() + " >> " + targetData.getTargetName();
 	}
 	
 	public Location getProjectLocation() throws CommonException {
@@ -85,8 +85,12 @@ public class BuildTarget extends AbstractValidator {
 		return assertNotNull(targetData.getTargetName());
 	}
 	
-	public boolean isEnabled() {
-		return targetData.isEnabled();
+	public boolean isNormalBuildEnabled() {
+		return targetData.isNormalBuildEnabled();
+	}
+	
+	public boolean isAutoBuildEnabled() {
+		return targetData.isAutoBuildEnabled();
 	}
 	
 	public BuildTargetDataView getData() {
@@ -133,20 +137,6 @@ public class BuildTarget extends AbstractValidator {
 			return buildOptions;
 		}
 		return getDefaultBuildArguments();
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public String getDefaultCheckArguments() throws CommonException {
-		return getBuildType().getDefaultCheckArguments(this);
-	}
-	
-	public String getEffectiveCheckArguments() throws CommonException {
-		String buildOptions = targetData.getCheckArguments();
-		if(buildOptions != null) {
-			return buildOptions;
-		}
-		return getDefaultCheckArguments();
 	}
 	
 	/* -----------------  ----------------- */
@@ -200,18 +190,18 @@ public class BuildTarget extends AbstractValidator {
 		getValidExecutableLocation();
 	}
 	
-	public CommonBuildTargetOperation getBuildOperation(IOperationConsoleHandler opHandler, boolean isCheck)
+	public CommonBuildTargetOperation getBuildOperation(IOperationConsoleHandler opHandler)
 			throws CommonException {
 		ToolManager toolManager = LangCore.getToolManager();
 		
 		Path buildToolPath = toolManager.getSDKToolPath(getProject());
-		return getBuildOperation(opHandler, isCheck, buildToolPath);
+		return getBuildOperation(opHandler, buildToolPath);
 	}
 	
-	public CommonBuildTargetOperation getBuildOperation(IOperationConsoleHandler opHandler, boolean isCheck, 
-			Path buildToolPath) throws CommonException {
+	public CommonBuildTargetOperation getBuildOperation(IOperationConsoleHandler opHandler, Path buildToolPath) 
+			throws CommonException {
 		assertNotNull(opHandler);
-		String buildArguments = isCheck ? getEffectiveCheckArguments() : getEffectiveBuildArguments();
+		String buildArguments = getEffectiveBuildArguments();
 		return getBuildType().getBuildOperation(this, opHandler, buildToolPath, buildArguments);
 	}
 	

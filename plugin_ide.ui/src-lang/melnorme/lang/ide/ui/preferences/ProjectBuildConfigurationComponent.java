@@ -23,7 +23,7 @@ import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
@@ -56,7 +56,6 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	protected BuildTargetSettingsComponent init_createBuildTargetSettingsComponent() {
 		return new BuildTargetSettingsComponent(
 			this::getDefaultBuildArguments, 
-			this::getDefaultCheckArguments,
 			this::getDefaultExecutablePath
 		);
 	}
@@ -120,8 +119,8 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 			return;
 		}
 		
-		buildTargetSettingsComponent.buildTargetData = buildOptionsToChange.get(buildTargetName);
-		buildTargetSettingsComponent.inputChanged(buildTargetSettingsComponent.buildTargetData);
+		buildTargetSettingsComponent.btData = buildOptionsToChange.get(buildTargetName);
+		buildTargetSettingsComponent.inputChanged(buildTargetSettingsComponent.btData);
 	}
 	
 	/* -----------------  ----------------- */
@@ -144,10 +143,6 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	
 	public String getDefaultBuildArguments() throws CommonException {
 		return getOriginalBuildTarget().getDefaultBuildArguments();
-	}
-	
-	public String getDefaultCheckArguments() throws CommonException {
-		return getOriginalBuildTarget().getDefaultCheckArguments();
 	}
 	
 	public String getDefaultExecutablePath() throws CommonException {
@@ -209,7 +204,8 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 		try {
 			for(Entry<String, BuildTargetData> entry : buildOptionsToChange.entrySet()) {
 				String targetName = entry.getKey();
-				getBuildInfo().changeBuildTarget(targetName, entry.getValue());
+				BuildTargetData value = entry.getValue();
+				getBuildInfo().changeBuildTarget(targetName, value);
 			}
 		} catch(CommonException e) {
 			throw new BackingStoreException("Error saving build target settings.", e);
@@ -222,9 +218,18 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 			return;
 		}
 		
+		ProjectBuildInfo buildInfo;
+		try {
+			buildInfo = getBuildInfo();
+		} catch(CommonException e) {
+			UIOperationsStatusHandler.handleStatus(true, "Error loading defaults", e);
+			return;
+		}
+		
 		for (Entry<String, BuildTargetData> entry : buildOptionsToChange) {
-			BuildTargetData data = entry.getValue();
-			entry.setValue(new BuildTargetData(data.getTargetName(), data.enabled));
+			String targetName = entry.getKey();
+			BuildTargetData newData = buildInfo.getDefaultBuildTarget(targetName).getDataCopy(); 
+			entry.setValue(newData);
 		}
 		handleBuildTargetChanged();
 	}

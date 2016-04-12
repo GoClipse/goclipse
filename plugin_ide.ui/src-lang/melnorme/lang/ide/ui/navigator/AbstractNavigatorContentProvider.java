@@ -30,11 +30,11 @@ import org.eclipse.ui.navigator.ICommonContentProvider;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildModel;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.utils.EclipseUtils;

@@ -36,7 +36,7 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut.BuildTargetLaunchable;
@@ -82,6 +82,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			
 			menu.add(new Separator("configure_BuildTarget"));
 			menu.add(new ToggleEnabledAction(buildTargetElement));
+			menu.add(new ToggleAutoBuildEnabledAction(buildTargetElement));
 			menu.add(new ConfigureBuildTargetAction(buildTargetElement));
 		}
 		
@@ -260,7 +261,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		@Override
 		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-			ArrayList2<BuildTarget> enabledTargets = getBuildInfo().getEnabledTargets();
+			ArrayList2<BuildTarget> enabledTargets = getBuildInfo().getEnabledTargets(true);
 			getBuildManager().newBuildTargetsOperation(getProject(), enabledTargets).execute(pm);
 		}
 	}
@@ -287,17 +288,36 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	public static class ToggleEnabledAction extends AbstractBuildTargetAction {
 		
 		public ToggleEnabledAction(BuildTargetElement buildTargetElement) {
-			super(buildTargetElement, BuildManagerMessages.NAME_ToggleEnabledAction, Action.AS_CHECK_BOX);
-			setChecked(buildTarget.isEnabled());
+			super(buildTargetElement, BuildManagerMessages.LABEL_EnableForNormalBuild, Action.AS_CHECK_BOX);
+			setChecked(buildTarget.isNormalBuildEnabled());
 		}
 		
 		@Override
 		public void doRun() throws StatusException {
 			try {
-				getBuildInfo().changeEnable(buildTarget, isChecked());
+				doRun0();
 			} catch(CommonException e) {
 				throw e.toStatusException(Severity.ERROR);
 			}
+		}
+		
+		protected void doRun0() throws CommonException {
+			getBuildInfo().changeEnable(buildTarget, isChecked(), buildTarget.isAutoBuildEnabled());
+		}
+		
+	}
+	
+	public static class ToggleAutoBuildEnabledAction extends ToggleEnabledAction {
+		
+		public ToggleAutoBuildEnabledAction(BuildTargetElement buildTargetElement) {
+			super(buildTargetElement);
+			setText(BuildManagerMessages.LABEL_EnableForAutoBuild);
+			setChecked(buildTarget.isAutoBuildEnabled());
+		}
+		
+		@Override
+		protected void doRun0() throws CommonException {
+			getBuildInfo().changeEnable(buildTarget, buildTarget.isNormalBuildEnabled(), isChecked());
 		}
 		
 	}
@@ -363,7 +383,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		BuildTargetData buildTargetData = new BuildTargetData(
 			targetName,
 			false,
-			null,
+			false,
 			null,
 			executablePath
 		);

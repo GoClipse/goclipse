@@ -166,8 +166,18 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 		@Override
 		public ImageDescriptor visitBuildTarget(BuildTargetElement buildTarget) {
 			ImageDescriptor baseImage = LangImages.BUILD_TARGET.getDescriptor();
-			if(buildTarget.getBuildTarget().isEnabled()) {
-				return new DecoratedImageDescriptor(baseImage, LangImages.OVR_CHECKED, Corner.BOTTOM_RIGHT);
+			
+			boolean normalEnabled = buildTarget.getBuildTarget().isNormalBuildEnabled();
+			boolean autoEnabled = buildTarget.getBuildTarget().isAutoBuildEnabled();
+			
+			if(normalEnabled && autoEnabled) {
+				return new DecoratedImageDescriptor(baseImage, LangImages.OVR_BUILD_BOTH_CHECKED, Corner.BOTTOM_RIGHT);
+			}
+			if(normalEnabled) {
+				return new DecoratedImageDescriptor(baseImage, LangImages.OVR_BUILD_NORMAL_CHECKED, Corner.BOTTOM_RIGHT);
+			}
+			if(autoEnabled) {
+				return new DecoratedImageDescriptor(baseImage, LangImages.OVR_BUILD_AUTO_CHECKED, Corner.BOTTOM_RIGHT);
 			}
 			return baseImage;
 		}

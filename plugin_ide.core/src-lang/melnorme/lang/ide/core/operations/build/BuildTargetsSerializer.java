@@ -15,7 +15,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.utils.DocumentSerializerHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -26,9 +25,9 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 	private static final String BUILD_TARGETS_ElemName = "build_targets";
 	private static final String TARGET_ElemName = "target";
 	private static final String PROP_NAME = "config";
-	private static final String PROP_ENABLED = "enabled";
+	private static final String PROP_ENABLED = "n_enabled";
+	private static final String PROP_AUTO_ENABLED = "auto_enabled";
 	private static final String PROP_ARGUMENTS = "options";
-	private static final String PROP_CHECK_ARGUMENTS = "check_options";
 	private static final String PROP_EXE_PATH = "exe_path";
 	
 	/* -----------------  ----------------- */
@@ -86,9 +85,9 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		Element targetElem = doc.createElement(TARGET_ElemName);
 		
 		targetElem.setAttribute(PROP_NAME, btd.getTargetName());
-		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(btd.isEnabled()));
+		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(btd.isNormalBuildEnabled()));
+		targetElem.setAttribute(PROP_AUTO_ENABLED, Boolean.toString(btd.isAutoBuildEnabled()));
 		setOptionalAttribute(targetElem, PROP_ARGUMENTS, btd.getBuildArguments());
-		setOptionalAttribute(targetElem, PROP_CHECK_ARGUMENTS, btd.getCheckArguments());
 		setOptionalAttribute(targetElem, PROP_EXE_PATH, btd.getExecutablePath());
 		
 		return targetElem;
@@ -99,10 +98,10 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		if(nodeName.equals(TARGET_ElemName)) {
 			
 			BuildTargetData buildTargetData = new BuildTargetData();
-			buildTargetData.enabled = getBooleanAttribute(targetElem, PROP_ENABLED, false);
+			buildTargetData.normalBuildEnabled = getBooleanAttribute(targetElem, PROP_ENABLED, false);
+			buildTargetData.autoBuildEnabled = getBooleanAttribute(targetElem, PROP_AUTO_ENABLED, false);
 			buildTargetData.targetName = getAttribute(targetElem, PROP_NAME, "");
 			buildTargetData.buildArguments = getAttribute(targetElem, PROP_ARGUMENTS, null);
-			buildTargetData.checkArguments = getAttribute(targetElem, PROP_CHECK_ARGUMENTS, null);
 			buildTargetData.executablePath = getAttribute(targetElem, PROP_EXE_PATH, null);
 			
 			return createBuildTarget(targetElem, buildTargetData);

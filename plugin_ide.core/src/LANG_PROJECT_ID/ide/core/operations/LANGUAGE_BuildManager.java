@@ -42,11 +42,6 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultCheckArguments(BuildTarget bt) throws CommonException {
-			return ".";
-		}
-		
-		@Override
 		public LaunchArtifact getMainLaunchArtifact(BuildTarget bt) throws CommonException {
 			return new LaunchArtifact(bt.getBuildConfigName(), "default_artifact.exe"); // TODO: LANG
 		}

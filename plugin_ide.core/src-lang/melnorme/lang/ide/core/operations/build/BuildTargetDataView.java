@@ -15,11 +15,11 @@ public interface BuildTargetDataView {
 	
 	String getTargetName();
 	
-	boolean isEnabled();
+	boolean isNormalBuildEnabled();
+	
+	boolean isAutoBuildEnabled();
 	
 	String getBuildArguments();
-	
-	String getCheckArguments();
 	
 	String getExecutablePath();
 	

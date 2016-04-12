@@ -21,36 +21,35 @@ import melnorme.utilbox.tests.CommonTest;
 
 public class BuildTargetsSerializer_Test extends CommonTest {
 	
-	public static BuildTargetData bt(String targetName, boolean enabled, String buildArguments, String checkArguments,
-			String executablePath) {
-		return new BuildTargetData(
-			targetName, 
-			enabled, 
-			buildArguments, 
-			checkArguments, 
-			executablePath
-		);
+	public static BuildTargetData bt(String targetName, boolean enabled, boolean autoEnabled, 
+			String buildArguments, String executablePath) {
+		BuildTargetData bt = new BuildTargetData(
+					targetName, 
+					enabled, 
+					autoEnabled,
+					buildArguments, 
+					executablePath
+				);
+		
+		assertEquals(bt, bt);
+		assertEquals(bt, new BuildTargetData().setData(bt));
+		return bt;
 	}
 	
 	protected final BuildManager buildMgr = LangCore.getBuildManager();
 	protected BuildTargetsSerializer serializer = buildMgr.createSerializer();
 	
 	@Test
-	public void testname() throws Exception { testname$(); }
-	public void testname$() throws Exception {
+	public void test() throws Exception { test$(); }
+	public void test$() throws Exception {
 		testSerialize(new ArrayList2<>());
-		testSerialize(new ArrayList2<>(createBuildTarget(false, "", null, null, null)));
-		testSerialize(new ArrayList2<>(createBuildTarget(true, "", "-opt", "-check", "foo.exe")));
+		testSerialize(new ArrayList2<>(bt("", false, false, null, null)));
+		testSerialize(new ArrayList2<>(bt("", true, true, "-opt", "foo.exe")));
 		testSerialize(new ArrayList2<>(
-				createBuildTarget(false, "", "", "", ""),
-				createBuildTarget(true, "blah", "-opt", null, "foo.exe"),
-				createBuildTarget(true, "xxx", null, "-check", "foo/bar.ooo")
+				bt("", false, true, "", ""),
+				bt("blah", true, false, "-opt", "foo.exe"),
+				bt("xxx", true, false, null, "foo/bar.ooo")
 		));
-	}
-	
-	protected BuildTargetData createBuildTarget(boolean enabled, String targetName, String buildArgs, String checkArgs,
-			String filePath) {
-		return bt(targetName, enabled, buildArgs, checkArgs, filePath);
 	}
 	
 	protected void testSerialize(ArrayList2<BuildTargetData> buildTargetsData) {

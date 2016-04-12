@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.project_model;
+package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
@@ -19,10 +19,6 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.BundleInfo;
-import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
-import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
@@ -84,10 +80,14 @@ public class ProjectBuildInfo {
 		return buildTargets.iterator().next().getValue();
 	}
 	
-	public ArrayList2<BuildTarget> getEnabledTargets() {
+	public ArrayList2<BuildTarget> getEnabledTargets(boolean normalBuild) {
 		ArrayList2<BuildTarget> enabledTargets = ArrayList2.create();
 		for(BuildTarget buildTarget : nullToEmpty(getBuildTargets())) {
-			if(buildTarget.isEnabled()) {
+			
+			if(
+				normalBuild && buildTarget.isNormalBuildEnabled() ||
+				!normalBuild && buildTarget.isAutoBuildEnabled()
+			) {
 				enabledTargets.add(buildTarget);
 			}
 		}
@@ -98,12 +98,20 @@ public class ProjectBuildInfo {
 		return getBundleInfo().getBuildConfigurations();
 	}
 	
+	public BuildTarget getDefaultBuildTarget(String targetName) {
+		assertNotNull(targetName);
+		ArrayList2<BuildTarget> defaultBuildTargets = buildMgr.getDefaultBuildTargets(project, bundleInfo);
+		return defaultBuildTargets.findElement(
+			(elem) -> targetName.equals(elem.getTargetName()));
+	}
 	
 	/* -----------------  ----------------- */
 		
-	public void changeEnable(BuildTarget oldBuildTarget, boolean newEnabledValue) throws CommonException {
+	public final void changeEnable(BuildTarget oldBuildTarget, 
+			boolean newNormalBuildEnabled, boolean newAutoBuildEnabled) throws CommonException {
 		BuildTargetData buildTargetData = oldBuildTarget.getDataCopy();
-		buildTargetData.enabled = newEnabledValue;
+		buildTargetData.normalBuildEnabled = newNormalBuildEnabled;
+		buildTargetData.autoBuildEnabled = newAutoBuildEnabled;
 		changeBuildTarget(oldBuildTarget, buildTargetData);
 	}
 	
@@ -112,12 +120,12 @@ public class ProjectBuildInfo {
 		
 		BuildTarget oldBuildTarget = buildMgr.getDefinedBuildTarget(project, buildTargetName);
 		
-		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget3(project, buildTargetData));
+		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget(project, buildTargetData));
 	}
 	
 	public void changeBuildTarget(BuildTarget oldBuildTarget, BuildTargetData buildTargetData)
 			throws CommonException {
-		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget3(project, buildTargetData));
+		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget(project, buildTargetData));
 	}
 	
 	protected void changeBuildTarget(BuildTarget buildTargetToChange, BuildTarget newBuildTarget) throws CommonException {
@@ -130,7 +138,7 @@ public class ProjectBuildInfo {
 				mutated = true;
 				continue;
 			}
-			newBuildTargets.add(buildMgr.createBuildTarget3(project, buildTargetCursor.getData()));
+			newBuildTargets.add(buildMgr.createBuildTarget(project, buildTargetCursor.getData()));
 		}
 		if(!mutated) {
 			throw new StatusException(Severity.WARNING, BuildManagerMessages.ERROR_MODEL_OUT_OF_DATE);

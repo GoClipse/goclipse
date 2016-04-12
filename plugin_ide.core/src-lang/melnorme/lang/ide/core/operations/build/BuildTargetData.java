@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertAreEqual;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import melnorme.utilbox.misc.HashcodeUtil;
@@ -17,44 +18,47 @@ import melnorme.utilbox.misc.HashcodeUtil;
 public class BuildTargetData implements BuildTargetDataView {
 	
 	public String targetName;
-	public boolean enabled;
+	public boolean normalBuildEnabled;
+	public boolean autoBuildEnabled;
 	public String buildArguments;
-	public String checkArguments;
 	public String executablePath;
 	
 	public BuildTargetData() {
 	}
 	
-	public BuildTargetData(String targetName, boolean enabled) {
+	public BuildTargetData(String targetName, boolean normalBuildEnabled, boolean autoBuildEnabled) {
 		this.targetName = targetName;
-		this.enabled = enabled;
+		this.normalBuildEnabled = normalBuildEnabled;
+		this.autoBuildEnabled = autoBuildEnabled;
 	}
 	
-	public BuildTargetData(String targetName, boolean enabled, String buildArguments, 
-			String checkArguments, String executablePath) {
-		this.targetName = targetName;
-		this.enabled = enabled;
+	public BuildTargetData(String targetName, boolean normalBuildEnabled, boolean autoBuildEnabled, 
+			String buildArguments, String executablePath) {
+		this(targetName, normalBuildEnabled, autoBuildEnabled);
+		
 		this.buildArguments = buildArguments;
-		this.checkArguments = checkArguments;
 		this.executablePath = executablePath;
 	}
 	
 	public BuildTargetData(BuildTargetDataView data) {
 		this(
 			data.getTargetName(),
-			data.isEnabled(),
+			data.isNormalBuildEnabled(),
+			data.isAutoBuildEnabled(),
 			data.getBuildArguments(),
-			data.getCheckArguments(),
 			data.getExecutablePath()
 		);
 	}
 	
-	public void setData(BuildTargetDataView data) {
+	public BuildTargetData setData(BuildTargetDataView data) {
 		this.targetName = data.getTargetName();
-		this.enabled = data.isEnabled();
+		this.normalBuildEnabled = data.isNormalBuildEnabled(); 
+		this.autoBuildEnabled = data.isAutoBuildEnabled();
 		this.buildArguments = data.getBuildArguments();
-		this.checkArguments = data.getCheckArguments();
 		this.executablePath = data.getExecutablePath();
+		
+		assertAreEqual(this, data);
+		return this;
 	}
 	
 	@Override
@@ -66,15 +70,15 @@ public class BuildTargetData implements BuildTargetDataView {
 		
 		return 
 				areEqual(targetName, other.targetName) &&
-				areEqual(enabled, other.enabled) &&
+				areEqual(normalBuildEnabled, other.normalBuildEnabled) &&
+				areEqual(autoBuildEnabled, other.autoBuildEnabled) &&
 				areEqual(buildArguments, other.buildArguments) &&
-				areEqual(checkArguments, other.checkArguments) &&
 				areEqual(executablePath, other.executablePath);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(targetName, enabled, buildArguments, checkArguments);
+		return HashcodeUtil.combinedHashCode(targetName, normalBuildEnabled, autoBuildEnabled, buildArguments);
 	}
 	
 	/* -----------------  ----------------- */
@@ -85,18 +89,18 @@ public class BuildTargetData implements BuildTargetDataView {
 	}
 	
 	@Override
-	public boolean isEnabled() {
-		return enabled;
+	public boolean isNormalBuildEnabled() {
+		return normalBuildEnabled;
+	}
+	
+	@Override
+	public boolean isAutoBuildEnabled() {
+		return autoBuildEnabled;
 	}
 	
 	@Override
 	public String getBuildArguments() {
 		return buildArguments;
-	}
-	
-	@Override
-	public String getCheckArguments() {
-		return checkArguments;
 	}
 	
 	@Override

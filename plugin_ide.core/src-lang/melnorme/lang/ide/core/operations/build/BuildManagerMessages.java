@@ -22,9 +22,11 @@ public interface BuildManagerMessages {
 	public String MSG_BuildTerminated = "Build terminated.";
 	public String MSG_NoBuildTargetsEnabled = "No build targets enabled.";
 	
+	public String LABEL_EnableForNormalBuild = "Enable for workspace build";
+	public String LABEL_EnableForAutoBuild = "Enable for automatic build (on editor save)";
+	
 	public String NAME_BuildEnabledTargetsAction = "Build Enabled";
 	public String NAME_BuildAllTargetsAction = "Build All";
-	public String NAME_ToggleEnabledAction = "Enable for workspace build";
 	public String NAME_RunBuildTargetAction = "Build target";
 	
 	public String NAME_ConfigureTargetsAction = "Configure targets...";
