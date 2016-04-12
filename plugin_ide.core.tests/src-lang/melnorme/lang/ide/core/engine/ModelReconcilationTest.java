@@ -26,12 +26,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
 import melnorme.lang.ide.core.engine.StructureModelTest.FixtureSourceModelManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.SampleProject;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -87,6 +90,9 @@ public class ModelReconcilationTest extends CommonCoreTest {
 		
 		FixtureSourceModelManager sourceModelMgr = new FixtureSourceModelManager();
 		
+		BuildManager buildMgr = sourceModelMgr.reconcileMgr.projectReconciler.buildMgr;
+		disableAutoBuilds(buildMgr.getBuildInfo(fixtureProject.project));
+		
 		IFile fileA = fixtureProject.getFile("folder/fileA");
 		try(BufferFixture helper = new BufferFixture(fbm, fileA.getFullPath(), LocationKind.IFILE, sourceModelMgr)) {
 			
@@ -96,8 +102,9 @@ public class ModelReconcilationTest extends CommonCoreTest {
 			StructureModelRegistration reg = sourceModelMgr.connectStructureUpdates(locationKey, helper.getDocument(), 
 				StructureModelTest.NIL_LISTENER);
 			
+			// A structure working copy is now connected
 			
-			
+			// Do a doc change
 			helper.instrumentedChangeDocument("change1 xxx");
 			
 			helper.createStructureTask_EntryLatch.countDown();
@@ -107,10 +114,31 @@ public class ModelReconcilationTest extends CommonCoreTest {
 			// TODO
 			//assertTrue(annotationsMgr.getAnnotations(fixtureProject.project).size() == 1);
 			
+			helper.sourceModelMgr.updateTaskProvider = helper.sourceModelMgr.DEFAULT_UPDATE_TASK;
+			
+			// test revert - isDirty
+			assertTrue(helper.buffer.isDirty());
+			helper.buffer.revert(new NullProgressMonitor());
+			
+			// test revert - isDirty == false (regression)
+			assertTrue(helper.buffer.isDirty() == false);
+			helper.buffer.revert(new NullProgressMonitor());
+			
 			reg.dispose();
 			
 		};
 		
+	}
+	
+	protected void disableAutoBuilds(ProjectBuildInfo buildInfo) {
+		buildInfo.getBuildTargets().forEach((bt) -> {
+			try {
+				// Disable the auto/check build
+				buildInfo.changeEnable(bt.getBuildTargetName(), bt.isNormalBuildEnabled(), false);
+			} catch(Exception e) {
+				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			}
+		});
 	}
 	
 	/* -----------------  ----------------- */

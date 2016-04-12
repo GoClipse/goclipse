@@ -283,6 +283,10 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			this.buildTarget = buildTargetElement.getBuildTarget();
 		}
 		
+		protected String getBuildTargetName() {
+			return buildTarget.getBuildTargetName();
+		}
+		
 	}
 	
 	public static class ToggleEnabledAction extends AbstractBuildTargetAction {
@@ -302,7 +306,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		}
 		
 		protected void doRun0() throws CommonException {
-			getBuildInfo().changeEnable(buildTarget, isChecked(), buildTarget.isAutoBuildEnabled());
+			getBuildInfo().changeEnable(getBuildTargetName(), isChecked(), buildTarget.isAutoBuildEnabled());
 		}
 		
 	}
@@ -317,7 +321,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		@Override
 		protected void doRun0() throws CommonException {
-			getBuildInfo().changeEnable(buildTarget, buildTarget.isNormalBuildEnabled(), isChecked());
+			getBuildInfo().changeEnable(getBuildTargetName(), buildTarget.isNormalBuildEnabled(), isChecked());
 		}
 		
 	}

@@ -24,8 +24,11 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.ISynchronizable;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
+import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.lang.ide.core.utils.DefaultBufferListener;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -41,13 +44,15 @@ import melnorme.utilbox.misc.Location;
 public class DocumentReconcileManager extends AbstractAgentManager {
 	
 	protected final ITextFileBufferManager fbm;
+	protected final ProjectReconcileManager projectReconciler;
 	
 	public DocumentReconcileManager() {
-		this(FileBuffers.getTextFileBufferManager());
+		this(FileBuffers.getTextFileBufferManager(), LangCore.getBuildManager(), LangCore.getToolManager());
 	}
 	
-	public DocumentReconcileManager(ITextFileBufferManager fbm) {
+	public DocumentReconcileManager(ITextFileBufferManager fbm, BuildManager buildMgr, ToolManager toolMgr) {
 		this.fbm = assertNotNull(fbm);
+		this.projectReconciler = assertNotNull(new ProjectReconcileManager(this.executor, buildMgr, toolMgr));
 	}
 	
 	@Override
@@ -175,8 +180,6 @@ public class DocumentReconcileManager extends AbstractAgentManager {
 		}
 		
 	}
-	
-	protected final ProjectReconcileManager projectReconciler = new ProjectReconcileManager(this.executor);
 	
 	/* -----------------  ----------------- */
 	
