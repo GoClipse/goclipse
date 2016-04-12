@@ -32,6 +32,7 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.concurrency.ResultFuture.LatchFuture;
 import melnorme.utilbox.core.fntypes.CallableX;
+import melnorme.utilbox.misc.Location;
 
 /**
  * Manager for all model reconciliations after text file buffer changes,
@@ -57,7 +58,8 @@ public class DocumentReconcileManager extends AbstractAgentManager {
 	/* -----------------  ----------------- */
 	
 	public DocumentReconcileConnection connectDocument(IDocument document, StructureInfo structureInfo) {
-		ITextFileBuffer textFileBuffer = ResourceUtils.getTextFileBuffer(fbm, structureInfo.getLocation());
+		Location location = structureInfo.getLocation();
+		ITextFileBuffer textFileBuffer = location == null ? null : ResourceUtils.getTextFileBuffer(fbm, location);
 		
 		if(textFileBuffer != null) {
 			return new TextReconcileConnection(document, structureInfo, textFileBuffer);

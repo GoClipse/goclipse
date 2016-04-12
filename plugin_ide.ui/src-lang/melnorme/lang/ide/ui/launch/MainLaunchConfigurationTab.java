@@ -24,7 +24,7 @@ import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.preferences.BuildTargetSettingsComponent;
 import melnorme.utilbox.collections.Collection2;
@@ -71,9 +71,10 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	protected BuildTargetSettingsComponent init_BuildTargetSettingsComponent() {
 		BuildTargetSettingsComponent component = new BuildTargetSettingsComponent(
 			this::getDefaultBuildTargetArguments,
-			null,
 			this::getDefaultProgramPath
-		);
+		) {
+			{ createEnablementFields = false; }
+		};
 		component.programPathField.setLabelText(LangUIMessages.LaunchTab_ProgramPathField_title);
 		
 		component.buildArgumentsField.getUseDefaultField().setLabelText(

@@ -31,7 +31,6 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperat
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NoopOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.tests.BuildTestsHelper;
 import melnorme.lang.ide.core.tests.SampleProject;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
@@ -47,11 +46,11 @@ import melnorme.utilbox.tests.CommonTest;
 public class BuildManager_Test extends CommonTest {
 	
 	public static final BuildTargetData sampleBT_A = 
-			bt("TargetA", true, null, null, null);
+			bt("TargetA", true, false, null, null);
 	public static final BuildTargetData sampleBT_B = 
-			bt("TargetB", true, "B: build_args", "B: check_args", "B: exe_path");
+			bt("TargetB", false, true, "B: build_args", "B: exe_path");
 	public static final BuildTargetData sampleBT_STRICT = 
-			bt("ConfigA#strict", true, "S: build_args", "S: check_args", "S: exe_path");
+			bt("ConfigA#strict", true, true, "S: build_args", "S: exe_path");
 	
 	public static final ArrayList2<BuildTargetData> DEFAULT_TARGETS = list(
 		sampleBT_A,
@@ -95,7 +94,7 @@ public class BuildManager_Test extends CommonTest {
 	public ArrayList2<BuildTarget> createBuildTargets(IProject project, Indexable<BuildTargetData> buildTargetsData) {
 		try {
 			return buildTargetsData.mapx((buildTargetData) -> {
-				return buildMgr.createBuildTarget3(project, buildTargetData);
+				return buildMgr.createBuildTarget(project, buildTargetData);
 			});
 		} catch(CommonException e) {
 			throw assertFail();
@@ -110,11 +109,6 @@ public class BuildManager_Test extends CommonTest {
 		@Override
 		public String getDefaultBuildArguments(BuildTarget bt) throws CommonException {
 			return "default: build_args";
-		}
-		
-		@Override
-		public String getDefaultCheckArguments(BuildTarget bt) throws CommonException {
-			return "default: check_args";
 		}
 		
 		@Override
@@ -201,7 +195,7 @@ public class BuildManager_Test extends CommonTest {
 			
 			assertEquals(
 				buildMgr.getBuildTarget(project, "ImplicitTarget"+SEP+"default", false).getData(),
-				bt("ImplicitTarget"+SEP+"default", false, null, null, null));
+				bt("ImplicitTarget"+SEP+"default", false, false, null, null));
 			
 			verifyThrows(
 				() -> buildMgr.getBuildTarget(project, "ImplicitTarget"+SEP+"strict", false).getData(),
@@ -222,13 +216,13 @@ public class BuildManager_Test extends CommonTest {
 		SampleStrictBuildType buildType = new SampleStrictBuildType("default");
 		BuildConfiguration buildConfig = new BuildConfiguration("configA", null);
 		
-		BuildTarget btA = new BuildTarget(project, bundleInfo, bt("TargetA", false, "new1", "new2", "new3"), 
+		BuildTarget btA = new BuildTarget(project, bundleInfo, bt("TargetA", false, true, "new1", "new3"), 
 			buildType, buildConfig);
 		BuildTarget btNonExistentButValid = new BuildTarget(project, bundleInfo, 
-			new BuildTargetData("TargetA" + SEP + "default", true), 
+			new BuildTargetData("TargetA" + SEP + "default", true, false), 
 			buildType, buildConfig);
 		BuildTarget btNonExistent = new BuildTarget(project, bundleInfo, 
-			new BuildTargetData("TargetA" + SEP + "NonExistentType", true), 
+			new BuildTargetData("TargetA" + SEP + "NonExistentType", false, true), 
 			buildType, buildConfig);
 		
 		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, 
@@ -241,7 +235,7 @@ public class BuildManager_Test extends CommonTest {
 		
 		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
 		checkBuildTargets(buildInfo.getBuildTargets().toArrayList(), list(
-			bt("TargetA", false, "new1", "new2", "new3"), // Ensure TargetA uses previous settings
+			bt("TargetA", false, true, "new1", "new3"), // Ensure TargetA uses previous settings
 			sampleBT_B,
 			sampleBT_STRICT)
 		);
@@ -266,19 +260,19 @@ public class BuildManager_Test extends CommonTest {
 			
 			assertEquals(
 				btSettings("TargetA", null, null).getValidBuildTarget().getData(), 
-				bt("TargetA", true, null, null, null));
+				bt("TargetA", true, false, null, null));
 			
 			assertEquals(
 				btSettings("TargetB", null, null).getValidBuildTarget().getData(), 
-				bt("TargetB", true, "B: build_args", "B: check_args", "B: exe_path"));
+				bt("TargetB", false, true, "B: build_args", "B: exe_path"));
 			
 			assertEquals(
 				btSettings("TargetB", "ARGS", "EXEPATH").getValidBuildTarget().getData(), 
-				bt("TargetB", true, "ARGS", "B: check_args", "EXEPATH"));
+				bt("TargetB", false, true, "ARGS", "EXEPATH"));
 			
 			assertEquals(
 				btSettings("ImplicitTarget", "ARGS", "EXEPATH").getValidBuildTarget().getData(), 
-				bt("ImplicitTarget", false, "ARGS", null, "EXEPATH"));
+				bt("ImplicitTarget", false, false, "ARGS", "EXEPATH"));
 		}
 		
 	}
@@ -337,12 +331,12 @@ public class BuildManager_Test extends CommonTest {
 			ProjectBuildInfo buildInfo = buildMgr.getValidBuildInfo(project);
 			BundleInfo bundleInfo = buildInfo.getBundleInfo();
 
-			BuildTargetData targetA = bt("SampleTarget", true, null, null, null);
+			BuildTargetData targetA = bt("SampleTarget", true, true, null, null);
 			BuildTarget buildTargetA = BuildTarget.create(project, bundleInfo, targetA, buildType, "");
 			verifyThrows(() -> buildTargetA.getEffectiveValidExecutablePath(), CommonException.class, 
 				LaunchMessages.MSG_BuildTarget_NoExecutableAvailable());
 			
-			BuildTargetData target2 = bt("SampleTarget2", true, "sample args", "-check", "sample path");
+			BuildTargetData target2 = bt("SampleTarget2", true, true, "sample args", "sample path");
 			BuildTarget buildTarget2 = BuildTarget.create(project, bundleInfo, target2, buildType, "");
 			
 			assertAreEqual(buildTarget2.getEffectiveValidExecutablePath(), "sample path");
@@ -355,28 +349,18 @@ public class BuildManager_Test extends CommonTest {
 	protected void testBuildOperation() throws CommonException, StatusException, CoreException {
 		BuildTarget btA = buildMgr.getBuildTarget(project, "TargetA", true);
 		assertTrue(btA.getData().getBuildArguments() == null);
-		assertTrue(btA.getData().getCheckArguments() == null);
 		
 		BuildTarget btB = buildMgr.getBuildTarget(project, "TargetB", true);
 		assertTrue(btB.getData().getBuildArguments() != null);
-		assertTrue(btB.getData().getCheckArguments() != null);
 		
 		assertAreEqual(
-			btA.getBuildOperation(consoleHandler, false, path("blah")).getEffectiveEvaluatedArguments(), 
+			btA.getBuildOperation(consoleHandler, path("blah")).getEffectiveEvaluatedArguments(), 
 			list("default:", "build_args")
 		);
-		assertAreEqual(
-			btA.getBuildOperation(consoleHandler, true, path("blah")).getEffectiveEvaluatedArguments(), 
-			list("default:", "check_args")
-		);
 		
 		assertAreEqual(
-			btB.getBuildOperation(consoleHandler, false, path("blah")).getEffectiveEvaluatedArguments(), 
+			btB.getBuildOperation(consoleHandler, path("blah")).getEffectiveEvaluatedArguments(), 
 			list("B:", "build_args")
-		);
-		assertAreEqual(
-			btB.getBuildOperation(consoleHandler, true, path("blah")).getEffectiveEvaluatedArguments(), 
-			list("B:", "check_args")
 		);
 	}
 }

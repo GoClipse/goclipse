@@ -62,6 +62,11 @@ public interface Collection2<E> extends Iterable<E> {
 		return CollectionUtil.indexUntil(iterator(), predicate);
 	}
 	
+	/** {@link CollectionUtil#findElement(java.util.Iterator, Predicate)} */
+	default E findElement(Predicate<? super E> predicate) {
+		return CollectionUtil.findElement(iterator(), predicate);
+	}
+	
 	/* ----------------- Some array utility methods ----------------- */
 	
 	default ArrayList2<E> toArrayList() {

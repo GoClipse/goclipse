@@ -116,11 +116,6 @@ public class GoBuildManager extends BuildManager {
 			return buildArgs;
 		}
 		
-		@Override
-		public String getDefaultCheckArguments(BuildTarget bt) throws CommonException {
-			return getDefaultBuildArguments(bt);
-		}
-		
 		protected abstract String[] getBuildCommand();
 		
 		protected String getGoPackageSpec(IProject project, String goPackageSpec) throws CommonException {
@@ -180,12 +175,6 @@ public class GoBuildManager extends BuildManager {
 		@Override
 		protected String[] getBuildCommand() {
 			return array("install");
-		}
-		
-		@Override
-		public String getDefaultCheckArguments(BuildTarget bt) throws CommonException {
-			ArrayList2<String> buildArgs = getPackageSpecCommand(bt, "build");
-			return StringUtil.collToString(buildArgs, " ");
 		}
 		
 		@Override

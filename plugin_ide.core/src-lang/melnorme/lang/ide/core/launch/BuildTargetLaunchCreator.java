@@ -22,7 +22,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -36,7 +36,7 @@ public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	
 	public BuildTargetLaunchCreator(String projectName, 
 			String targetName, String buildArguments, String executablePath) {
-		this(projectName, new BuildTargetData(targetName, true, buildArguments, null, executablePath));
+		this(projectName, new BuildTargetData(targetName, true, true, buildArguments, executablePath));
 	}
 	
 	public BuildTargetLaunchCreator(String projectName, BuildTargetData data) {

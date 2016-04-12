@@ -124,8 +124,9 @@ public class CollectionUtil {
 		int ix = 0;
 		while(iterator.hasNext()) {
 			T element = iterator.next();
-			if(areEqual(element, obj))
+			if(areEqual(element, obj)) {
 				return ix;
+			}
 			ix++;
 		}
 		return -1;
@@ -138,13 +139,27 @@ public class CollectionUtil {
 		int ix = 0;
 		while(iterator.hasNext()) {
 			T element = iterator.next();
-			if(predicate.test(element))
+			if(predicate.test(element)) {
 				return ix;
+			}
 			ix++;
 		}
 		return -1;
 	}
 	
+	// BM: is there no function in the JVM standard lib that does this??
+	/**
+	 * @return the first element to match given predicate, null otherwise.
+	 */
+	public static <T> T findElement(Iterator<? extends T> iterator, Predicate<? super T> predicate) {
+		while(iterator.hasNext()) {
+			T element = iterator.next();
+			if(predicate.test(element)) {
+				return element;
+			}
+		}
+		return null;
+	}
 	
 	/** @return whether given coll contains given obj 
 	 * (obj must be the same as the one contained, not just equal). 
@@ -167,8 +182,6 @@ public class CollectionUtil {
 		}
 		return true;
 	}
-	
-	/* ----------------- retrieval ----------------- */
 	
 	/**
 	 * @return the first element of given coll, if collection is non-null and non-empty. Otherwise null. 

@@ -16,7 +16,7 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
+import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 
 public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 	

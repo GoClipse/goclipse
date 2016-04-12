@@ -16,15 +16,15 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.components.AbstractWidget;
+import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -32,34 +32,37 @@ import melnorme.utilbox.core.fntypes.CommonGetter;
 
 public class BuildTargetSettingsComponent extends AbstractWidget {
 	
+	protected boolean createEnablementFields = true;
+	
+	protected final CheckBoxField normalEnableField;
+	protected final CheckBoxField autoEnableField;
+	
 	protected final CommonGetter<String> getDefaultBuildTargetArguments;
 	public final BuildArgumentsField buildArgumentsField;
-	public final BuildArgumentsField checkArgumentsField;
 	protected final CommonGetter<String> getDefaultProgramPath;
 	public final EnablementButtonTextField programPathField;
 	
-	protected BuildTargetData buildTargetData = new BuildTargetData();
+	
+	protected BuildTargetData btData = new BuildTargetData();
 	
 	public BuildTargetSettingsComponent(
 			CommonGetter<String> getDefaultBuildArguments, 
-			CommonGetter<String> getDefaultCheckArguments,
 			CommonGetter<String> getDefaultProgramPath
 	) {
 		this.getDefaultBuildTargetArguments = assertNotNull(getDefaultBuildArguments);
 		this.getDefaultProgramPath = assertNotNull(getDefaultProgramPath);
 		
-		buildArgumentsField = init_createArgumentsField();
-		buildArgumentsField.addListener(() -> buildTargetData.buildArguments = getEffectiveBuildArgumentsValue());
+		normalEnableField = new CheckBoxField(BuildManagerMessages.LABEL_EnableForNormalBuild);
+		normalEnableField.addListener(() -> btData.normalBuildEnabled = normalEnableField.getBooleanFieldValue());
 		
-		if(getDefaultCheckArguments == null) {
-			checkArgumentsField = null;
-		} else {
-			checkArgumentsField = init_createCheckArgumentsField(getDefaultCheckArguments);
-			checkArgumentsField.addListener(() -> buildTargetData.checkArguments = getEffectiveCheckArgumentsValue());
-		}
+		autoEnableField = new CheckBoxField(BuildManagerMessages.LABEL_EnableForAutoBuild);
+		autoEnableField.addListener(() -> btData.autoBuildEnabled = autoEnableField.getBooleanFieldValue());
+		
+		buildArgumentsField = init_createArgumentsField();
+		buildArgumentsField.addListener(() -> btData.buildArguments = getEffectiveBuildArgumentsValue());
 		
 		programPathField = init_createProgramPathField();
-		programPathField.addListener(() -> buildTargetData.executablePath = getEffectiveProgramPathValue());
+		programPathField.addListener(() -> btData.executablePath = getEffectiveProgramPathValue());
 	}
 	
 	protected BuildManager getBuildManager() {
@@ -68,20 +71,6 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 	
 	protected BuildArgumentsField init_createArgumentsField() {
 		return new BuildArgumentsField();
-	}
-	
-	protected BuildArgumentsField init_createCheckArgumentsField(CommonGetter<String> getDefaultCheckArguments) {
-		return new BuildArgumentsField() {
-			@Override
-			protected String getDefaultFieldValue() throws CommonException {
-				return getDefaultCheckArguments.get();
-			}
-			
-			@Override
-			protected void doSetEnabled(boolean enabled) {
-				super.doSetEnabled(enabled);
-			}
-		};
 	}
 	
 	protected EnablementButtonTextField init_createProgramPathField() {	
@@ -94,19 +83,14 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 		return buildArgumentsField.getEffectiveFieldValue();
 	}
 	
-	public String getEffectiveCheckArgumentsValue() {
-		return checkArgumentsField.getEffectiveFieldValue();
-	}
-	
 	public String getEffectiveProgramPathValue() {
 		return programPathField.getEffectiveFieldValue();
 	}
 	
 	public void inputChanged(BuildTargetData buildTargetData) {
+		normalEnableField.setFieldValue(buildTargetData.normalBuildEnabled);
+		autoEnableField.setFieldValue(buildTargetData.autoBuildEnabled);
 		buildArgumentsField.setEffectiveFieldValue(buildTargetData.buildArguments);
-		if(checkArgumentsField != null) {
-			checkArgumentsField.setEffectiveFieldValue(buildTargetData.checkArguments);
-		}
 		programPathField.setEffectiveFieldValue(buildTargetData.executablePath);
 	}
 	
@@ -123,38 +107,22 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 	
 	@Override
 	protected void createContents(Composite topControl) {
-		
-		if(checkArgumentsField == null) {
-			buildArgumentsField.createComponent(topControl, 
-				gdFillDefaults().grab(true, false).hint(200, SWT.DEFAULT).create());
-		} else {
-			
-			TabFolder tabFolder = new TabFolder(topControl, SWT.NONE);
-			
-			TabItem buildArgsTab = new TabItem(tabFolder, SWT.NONE);
-			buildArgsTab.setText("Build command");
-			buildArgsTab.setControl(buildArgumentsField.createComponent(tabFolder));
-			
-			TabItem checkArgsTab = new TabItem(tabFolder, SWT.NONE);
-			checkArgsTab.setText("Check command" );
-			checkArgsTab.setControl(checkArgumentsField.createComponent(tabFolder));
-			
-			tabFolder.setLayoutData(
-				gdFillDefaults().grab(true, false).hint(200, SWT.DEFAULT).create());
+		if(createEnablementFields) {
+			normalEnableField.createComponent(topControl, horizontalExpandDefault());
+			autoEnableField.createComponent(topControl, horizontalExpandDefault());
 		}
 		
-		programPathField.createComponent(topControl, 
-			new GridData(GridData.FILL_HORIZONTAL));
+		buildArgumentsField.createComponent(topControl, horizontalExpandDefault(200));
+		programPathField.createComponent(topControl, horizontalExpandDefault());
 	}
 	
 	public void setEnabled(boolean enabled) {
+		normalEnableField.setEnabled(enabled);
+		autoEnableField.setEnabled(enabled);
 		buildArgumentsField.setEnabled(enabled);
 		programPathField.setEnabled(enabled);
-		if(checkArgumentsField != null) {
-			checkArgumentsField.setEnabled(enabled);
-		}
 	}
-
+	
 	public class BuildArgumentsField extends EnablementButtonTextField {
 		
 		public BuildArgumentsField() {

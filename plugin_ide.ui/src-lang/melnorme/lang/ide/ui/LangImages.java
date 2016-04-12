@@ -104,6 +104,10 @@ public abstract class LangImages {
 	
 	public static final ImageDescriptor OVR_CHECKED = createUnmanaged(LANG_OVERLAYS, "ovr_checked.png");
 	
+	public static final ImageDescriptor OVR_BUILD_NORMAL_CHECKED = createUnmanaged(LANG_OVERLAYS, "build_normal_enabled.png");
+	public static final ImageDescriptor OVR_BUILD_AUTO_CHECKED = createUnmanaged(LANG_OVERLAYS, "build_auto_enabled.png");
+	public static final ImageDescriptor OVR_BUILD_BOTH_CHECKED = createUnmanaged(LANG_OVERLAYS, "build_both_enabled.png");
+	
 	/* ----------------- Navigator ----------------- */
 	
 	public static final ImageDescriptor NAV_Error = createUnmanaged(LANG_NAVIGATOR, "Error.png");

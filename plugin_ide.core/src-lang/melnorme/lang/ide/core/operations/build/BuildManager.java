@@ -31,7 +31,6 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperat
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBasedModel;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -218,7 +217,7 @@ public abstract class BuildManager {
 			for (BuildTargetData buildTargetData : buildTargetsData) {
 				BuildTarget buildTarget;
 				try {
-					buildTarget = createBuildTarget3(project, buildTargetData);
+					buildTarget = createBuildTarget(project, buildTargetData);
 				} catch(CommonException ce) {
 					LangCore.logWarning("Invalid build target.", ce);
 					continue;
@@ -259,7 +258,7 @@ public abstract class BuildManager {
 				
 				String targetName = getBuildTargetName2(buildConfig.getName(), buildType.getName());
 				
-				BuildTargetData newBuildTargetData = new BuildTargetData(targetName, isFirstConfig); 
+				BuildTargetData newBuildTargetData = new BuildTargetData(targetName, isFirstConfig, false); 
 				
 				buildTargets.add(new BuildTarget(project, newBundleInfo, newBuildTargetData, buildType, buildConfig));
 				isFirstConfig = false;
@@ -308,8 +307,6 @@ public abstract class BuildManager {
 		}
 		
 		public abstract String getDefaultBuildArguments(BuildTarget bt) throws CommonException;
-		
-		public abstract String getDefaultCheckArguments(BuildTarget bt) throws CommonException;
 		
 		public LaunchArtifact getMainLaunchArtifact(BuildTarget bt) throws CommonException {
 			BuildConfiguration buildConfig = bt.getBuildConfiguration();
@@ -391,7 +388,7 @@ public abstract class BuildManager {
 	
 	/* -----------------  Build Target  ----------------- */
 	
-	public BuildTarget createBuildTarget3(IProject project, BuildTargetDataView buildTargetData) throws CommonException {
+	public BuildTarget createBuildTarget(IProject project, BuildTargetDataView buildTargetData) throws CommonException {
 		assertNotNull(buildTargetData.getTargetName());
 		String targetName = buildTargetData.getTargetName();
 		assertNotNull(targetName);
@@ -439,7 +436,8 @@ public abstract class BuildManager {
 		
 		if(buildTarget == null) {
 			if(!definedTargetsOnly) {
-				buildTarget = createBuildTarget3(buildInfo.getProject(), new BuildTargetData(buildTargetName, false));
+				buildTarget = createBuildTarget(buildInfo.getProject(), 
+					new BuildTargetData(buildTargetName, false, false));
 			}
 			else if(requireNonNull) {
 				throw new CommonException(LaunchMessages.BuildTarget_NotFound);
@@ -469,22 +467,17 @@ public abstract class BuildManager {
 	}
 	
 	public final CompositeBuildOperation newProjectBuildOperation(IOperationConsoleHandler opHandler, IProject project,
-			boolean clearMarkers, boolean isCheck) throws CommonException {
-		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets();
-		return newBuildOperation(opHandler, project, clearMarkers, enabledTargets, isCheck);
+			boolean clearMarkers, boolean isAuto) throws CommonException {
+		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets(!isAuto);
+		return newBuildOperation(opHandler, project, clearMarkers, enabledTargets);
 	}
 	
 	/* ----------------- ----------------- */
 	
 	public CompositeBuildOperation newBuildOperation(IOperationConsoleHandler opHandler, IProject project, 
 			boolean clearMarkers, Collection2<BuildTarget> targetsToBuild) throws CommonException {
-		return newBuildOperation(opHandler, project, clearMarkers, targetsToBuild, false);
-	}
-	
-	public CompositeBuildOperation newBuildOperation(IOperationConsoleHandler opHandler, IProject project,
-			boolean clearMarkers, Collection2<BuildTarget> targetsToBuild, boolean isCheck) throws CommonException {
 		ArrayList2<ICommonOperation> buildCommands = 
-				targetsToBuild.mapx((buildTarget) -> buildTarget.getBuildOperation(opHandler, isCheck));
+				targetsToBuild.mapx((buildTarget) -> buildTarget.getBuildOperation(opHandler));
 		
 		return newTopLevelBuildOperation(opHandler, project, clearMarkers, buildCommands);
 	}
