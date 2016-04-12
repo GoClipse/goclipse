@@ -107,33 +107,26 @@ public class ProjectBuildInfo {
 	
 	/* -----------------  ----------------- */
 		
-	public final void changeEnable(BuildTarget oldBuildTarget, 
-			boolean newNormalBuildEnabled, boolean newAutoBuildEnabled) throws CommonException {
+	public final void changeEnable(String buildTargetName, boolean newNormalBuildEnabled, boolean newAutoBuildEnabled)
+			throws CommonException {
+		BuildTarget oldBuildTarget = buildMgr.getDefinedBuildTarget(project, buildTargetName);
 		BuildTargetData buildTargetData = oldBuildTarget.getDataCopy();
 		buildTargetData.normalBuildEnabled = newNormalBuildEnabled;
 		buildTargetData.autoBuildEnabled = newAutoBuildEnabled;
-		changeBuildTarget(oldBuildTarget, buildTargetData);
+		changeBuildTarget(buildTargetName, buildTargetData);
 	}
 	
 	public void changeBuildTarget(String buildTargetName, BuildTargetData buildTargetData)
 			throws CommonException {
-		
-		BuildTarget oldBuildTarget = buildMgr.getDefinedBuildTarget(project, buildTargetName);
-		
-		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget(project, buildTargetData));
+		changeBuildTarget(buildTargetName, buildMgr.createBuildTarget(project, buildTargetData));
 	}
 	
-	public void changeBuildTarget(BuildTarget oldBuildTarget, BuildTargetData buildTargetData)
-			throws CommonException {
-		changeBuildTarget(oldBuildTarget, buildMgr.createBuildTarget(project, buildTargetData));
-	}
-	
-	protected void changeBuildTarget(BuildTarget buildTargetToChange, BuildTarget newBuildTarget) throws CommonException {
+	protected void changeBuildTarget(String buildTargetName, BuildTarget newBuildTarget) throws CommonException {
 		boolean mutated = false;
 		ArrayList2<BuildTarget> newBuildTargets = new ArrayList2<>(buildTargets.size());
 		
 		for(BuildTarget buildTargetCursor : getBuildTargets()) {
-			if(buildTargetCursor == buildTargetToChange) {
+			if(buildTargetCursor.getTargetName().equals(buildTargetName)) {
 				newBuildTargets.add(newBuildTarget);
 				mutated = true;
 				continue;

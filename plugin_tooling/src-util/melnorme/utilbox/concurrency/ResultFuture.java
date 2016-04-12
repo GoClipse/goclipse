@@ -64,6 +64,7 @@ public class ResultFuture<DATA> implements Future<DATA> {
 		synchronized (lock) {
 			if(isDone()) {
 				handleReSetResult();
+				return;
 			}
 			this.resultValue = resultValue;
 			status = ResultStatus.RESULT_SET;
@@ -157,6 +158,11 @@ public class ResultFuture<DATA> implements Future<DATA> {
 		
 		public void setCompleted() {
 			setResult(null);
+		}
+		
+		@Override
+		protected void handleReSetResult() {
+			// Do nothing - this is allowed because the possible value is always null anyways
 		}
 		
 	}

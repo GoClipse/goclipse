@@ -137,13 +137,15 @@ abstract class AbstractProjectReconcileManager {
 
 public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 	
-	private final BuildManager buildMgr = LangCore.getBuildManager();
-	private final ToolManager toolMgr = LangCore.getToolManager();
+	protected final BuildManager buildMgr;
+	protected final ToolManager toolMgr;
 	
 	protected boolean checkBuildOnSave = false;
 	
-	public ProjectReconcileManager(ICommonExecutor executor) {
+	public ProjectReconcileManager(ICommonExecutor executor, BuildManager buildMgr, ToolManager toolMgr) {
 		super(executor);
+		this.buildMgr = assertNotNull(buildMgr);
+		this.toolMgr = assertNotNull(toolMgr);
 	}
 	
 	@Override

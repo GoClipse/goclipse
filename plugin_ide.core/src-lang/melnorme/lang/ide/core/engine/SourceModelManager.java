@@ -39,13 +39,15 @@ import melnorme.utilbox.ownership.StrictDisposable;
  */
 public abstract class SourceModelManager extends AbstractAgentManager {
 	
+	protected final DocumentReconcileManager reconcileMgr;
+	
 	public SourceModelManager() {
-		this(new ProblemMarkerUpdater());
+		this(new DocumentReconcileManager(), new ProblemMarkerUpdater());
 	}
 	
-	protected final DocumentReconcileManager reconcileMgr = new DocumentReconcileManager();
-	
-	public SourceModelManager(ProblemMarkerUpdater problemUpdater) {
+	public SourceModelManager(DocumentReconcileManager reconcileMgr, ProblemMarkerUpdater problemUpdater) {
+		this.reconcileMgr = assertNotNull(reconcileMgr);
+		
 		if(problemUpdater != null) {
 			problemUpdater.install(this);
 		}

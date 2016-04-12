@@ -58,17 +58,22 @@ public class StructureModelTest extends CommonCoreTest {
 	
 	public static class FixtureSourceModelManager extends SourceModelManager {
 		
-		protected final SourceFileStructure defaultSourceFileStructure = new SourceFileStructure(null, null, 
+		public FixtureSourceModelManager() {
+			super(new DocumentReconcileManager(), new ProblemMarkerUpdater());
+		}
+		
+		public final SourceFileStructure DEFAULT_STRUCTURE = new SourceFileStructure(null, null, 
 			(Indexable<ParserError>) null);
 		
-		protected Function<StructureInfo, StructureUpdateTask> updateTaskProvider = (structureInfo) -> {
+		public final Function<StructureInfo, StructureUpdateTask> DEFAULT_UPDATE_TASK = (structureInfo) -> {
 			return new StructureUpdateTask(structureInfo) {
 				@Override
 				protected SourceFileStructure createNewData() {
-					return defaultSourceFileStructure;
+					return DEFAULT_STRUCTURE;
 				}
 			};
 		};
+		protected Function<StructureInfo, StructureUpdateTask> updateTaskProvider = DEFAULT_UPDATE_TASK;
 		
 		public int createUpdateTaskCount = 0;
 		
