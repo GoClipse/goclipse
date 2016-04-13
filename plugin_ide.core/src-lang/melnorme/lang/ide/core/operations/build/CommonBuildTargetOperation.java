@@ -12,13 +12,12 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.DebugPlugin;
 
-import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
@@ -30,27 +29,24 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class CommonBuildTargetOperation extends AbstractToolManagerOperation {
 	
-	protected final BuildManager buildManager;
+	protected final String buildTargetName;
 	protected final IOperationConsoleHandler opHandler;
-	protected final Path buildToolPath;
 	
 	protected final BuildConfiguration buildConfiguration;
 	protected final BuildType buildType;
-	protected final Indexable<String> evaluatedBuildArguments2;
+	protected final String buildCommand;
 	
-	public CommonBuildTargetOperation(BuildManager buildManager, BuildTarget buildTarget, 
-			IOperationConsoleHandler opHandler, Path buildToolPath, String buildArguments
-	) throws CommonException {
-		super(assertNotNull(buildTarget).getProject());
-		this.buildManager = assertNotNull(buildManager);
-		this.buildToolPath = buildToolPath;
+	public CommonBuildTargetOperation(ToolManager toolManager, BuildTarget buildTarget, 
+			IOperationConsoleHandler opHandler, String buildCommand
+	) {
+		super(toolManager, assertNotNull(buildTarget).getProject());
+		this.buildTargetName = buildTarget.getBuildTargetName();
 		this.opHandler = assertNotNull(opHandler);
 		
 		assertNotNull(buildTarget);
 		this.buildConfiguration = assertNotNull(buildTarget.getBuildConfiguration());
 		this.buildType = assertNotNull(buildTarget.getBuildType());
-		
-		this.evaluatedBuildArguments2 = new ArrayList2<>(LaunchUtils.getEvaluatedArguments(buildArguments));
+		this.buildCommand = assertNotNull(buildCommand);
 	}
 	
 	public BuildConfiguration getConfiguration() {
@@ -70,11 +66,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	}
 	
 	public String getBuildTargetName() {
-		return buildManager.getBuildTargetName2(getConfigurationName(), getBuildTypeName());
-	}
-	
-	protected Path getBuildToolPath() throws CommonException {
-		return buildToolPath;
+		return buildTargetName;
 	}
 	
 	@Override
@@ -89,23 +81,26 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		return "Building " + getBuildTargetName();
 	}
 	
+	protected Indexable<String> getEffectiveProccessCommandLine() throws CommonException {
+		return evaluateBuildCommand(buildCommand);
+	}
+	
+	protected ArrayList2<String> evaluateBuildCommand(String toolCommandLine) throws CommonException {
+		VariablesResolver variablesManager = getToolManager().getVariablesManager(project);
+		
+		toolCommandLine = variablesManager.performStringSubstitution(toolCommandLine);
+		
+		String[] evaluatedArguments = DebugPlugin.parseArguments(toolCommandLine);
+		return new ArrayList2<>(evaluatedArguments);
+	}
+	
 	protected ProcessBuilder getToolProcessBuilder() throws CommonException, OperationCancellation {
-		return getToolProcessBuilder(getEffectiveEvaluatedArguments());
+		return getProcessBuilder3(getEffectiveProccessCommandLine());
 	}
 	
-	protected ProcessBuilder getToolProcessBuilder(Indexable<String> buildArguments) 
+	protected ProcessBuilder getProcessBuilder3(Indexable<String> commandLine) 
 			throws CommonException, OperationCancellation {
-		return getProcessBuilder2(buildArguments);
-	}
-	
-	protected Indexable<String> getEffectiveEvaluatedArguments() throws CommonException {
-		return evaluatedBuildArguments2;
-	}
-	
-	protected ProcessBuilder getProcessBuilder2(Indexable<String> toolArguments) 
-			throws CommonException, OperationCancellation {
-		return getToolManager().createToolProcessBuilder(getBuildToolPath(), getProjectLocation(), 
-			toolArguments.toArray(String.class));
+		return getToolManager().createToolProcessBuilder(commandLine, getProjectLocation());
 	}
 	
 	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IProgressMonitor pm)

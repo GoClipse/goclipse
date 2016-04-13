@@ -65,8 +65,8 @@ public class ProjectBuildInfo {
 	/**
 	 * @return a BuildTarget explicitly defined in this build info. 
 	 */
-	public BuildTarget getDefinedBuildTarget(String name) {
-		return buildTargets.get(name);
+	public BuildTarget getDefinedBuildTarget(String targetName) {
+		return buildTargets.get(targetName);
 	}
 	
 	public Map<String, BuildTarget> getBuildTargetsMap() {
@@ -122,6 +122,13 @@ public class ProjectBuildInfo {
 	}
 	
 	protected void changeBuildTarget(String buildTargetName, BuildTarget newBuildTarget) throws CommonException {
+		ProjectBuildInfo newProjectBuildInfo = copyWithModifiedBuildTarget(buildTargetName, newBuildTarget);
+		buildMgr.tryUpdateProjectBuildInfo(project, this, newProjectBuildInfo);
+		buildMgr.saveProjectInfo(project);
+	}
+	
+	protected ProjectBuildInfo copyWithModifiedBuildTarget(String buildTargetName, BuildTarget newBuildTarget)
+			throws CommonException, StatusException {
 		boolean mutated = false;
 		ArrayList2<BuildTarget> newBuildTargets = new ArrayList2<>(buildTargets.size());
 		
@@ -134,11 +141,10 @@ public class ProjectBuildInfo {
 			newBuildTargets.add(buildMgr.createBuildTarget(project, buildTargetCursor.getData()));
 		}
 		if(!mutated) {
-			throw new StatusException(Severity.WARNING, BuildManagerMessages.ERROR_MODEL_OUT_OF_DATE);
+			throw new StatusException(Severity.WARNING, BuildManagerMessages.ERROR_ProjectBuildSettingsOutOfDate);
 		}
 		
-		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargets);
-		buildMgr.setProjectBuildInfoAndSave(project, newProjectBuildInfo);
+		return new ProjectBuildInfo(buildMgr, project, bundleInfo, newBuildTargets);
 	}
 	
 }

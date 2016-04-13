@@ -45,11 +45,11 @@ public abstract class ProjectBasedModel<INFO> {
 		return (HashMap<String, INFO>) projectInfos.clone();
 	}
 	
-	protected synchronized INFO getProjectInfo(IProject project) {
+	public synchronized INFO getProjectInfo(IProject project) {
 		return projectInfos.get(project.getName());
 	}
 	
-	protected synchronized INFO setProjectInfo(IProject project, INFO newProjectInfo) {
+	public synchronized INFO setProjectInfo(IProject project, INFO newProjectInfo) {
 		String projectName = project.getName();
 		assertNotNull(newProjectInfo);
 		projectInfos.put(projectName, newProjectInfo);
@@ -60,13 +60,14 @@ public abstract class ProjectBasedModel<INFO> {
 	/**
 	 * Set a new project info, but only if the current info is the same as given oldProjectInfo
 	 */
-	public synchronized INFO updateProjectInfo(IProject project, INFO oldProjectInfo, INFO newProjectInfo) {
+	public synchronized boolean updateProjectInfo(IProject project, INFO oldProjectInfo, INFO newProjectInfo) {
 		String projectName = project.getName();
 		assertNotNull(newProjectInfo);
 		if(projectInfos.get(projectName) == oldProjectInfo) {
-			return setProjectInfo(project, newProjectInfo);
+			setProjectInfo(project, newProjectInfo);
+			return true;
 		}
-		return null;
+		return false;
 	}
 	
 	public synchronized INFO removeProjectInfo(IProject project) {
@@ -80,6 +81,8 @@ public abstract class ProjectBasedModel<INFO> {
 	public synchronized Set<String> getModelProjects() {
 		return new HashSet<>(projectInfos.keySet());
 	}
+	
+	/* ----------------- Notifications ----------------- */
 	
 	protected void notifyProjectInfoAdded(IProject project, INFO newProjectInfo) {
 		getLog().println(getClass().getSimpleName() + " info set: " + project.getName());

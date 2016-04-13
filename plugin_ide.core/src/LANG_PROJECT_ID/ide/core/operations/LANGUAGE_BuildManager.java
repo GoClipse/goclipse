@@ -1,10 +1,9 @@
 package LANG_PROJECT_ID.ide.core.operations;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -20,8 +19,8 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public final class LANGUAGE_BuildManager extends BuildManager {
 	
-	public LANGUAGE_BuildManager(LangBundleModel bundleModel) {
-		super(bundleModel);
+	public LANGUAGE_BuildManager(LangBundleModel bundleModel, ToolManager toolManager) {
+		super(bundleModel, toolManager);
 	}
 	
 	@Override
@@ -37,7 +36,7 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildArguments(BuildTarget bt) throws CommonException {
+		public String getDefaultCommandArguments(BuildTarget bt) throws CommonException {
 			return ".";
 		}
 		
@@ -48,8 +47,8 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt,
-				IOperationConsoleHandler opHandler, Path buildToolPath, String buildArguments) throws CommonException {
-			return new LANGUAGE_BuildTargetOperation(bt, opHandler, buildToolPath, buildArguments);
+				IOperationConsoleHandler opHandler, String buildArguments) {
+			return new LANGUAGE_BuildTargetOperation(bt, opHandler, buildArguments);
 		}
 	}
 	
@@ -58,9 +57,8 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
 		public LANGUAGE_BuildTargetOperation(BuildTarget buildTarget,
-				IOperationConsoleHandler opHandler,
-				Path buildToolPath, String buildArguments) throws CommonException {
-			super(buildTarget.buildMgr, buildTarget, opHandler, buildToolPath, buildArguments);
+				IOperationConsoleHandler opHandler, String buildArguments) {
+			super(LANGUAGE_BuildManager.this.toolManager, buildTarget, opHandler, buildArguments);
 		}
 		
 		@Override

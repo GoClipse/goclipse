@@ -12,14 +12,11 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -78,7 +75,7 @@ public class BuildTarget extends AbstractValidator {
 	}
 	
 	public String getBuildTargetName() {
-		return targetData.getTargetName();
+		return assertNotNull(targetData.getTargetName());
 	}
 	
 	public String getTargetName() {
@@ -128,7 +125,7 @@ public class BuildTarget extends AbstractValidator {
 	/* -----------------  ----------------- */
 	
 	public String getDefaultBuildArguments() throws CommonException {
-		return getBuildType().getDefaultBuildArguments(this);
+		return getBuildType().getDefaultCommandLine(this);
 	}
 	
 	public String getEffectiveBuildArguments() throws CommonException {
@@ -192,17 +189,9 @@ public class BuildTarget extends AbstractValidator {
 	
 	public CommonBuildTargetOperation getBuildOperation(IOperationConsoleHandler opHandler)
 			throws CommonException {
-		ToolManager toolManager = LangCore.getToolManager();
-		
-		Path buildToolPath = toolManager.getSDKToolPath(getProject());
-		return getBuildOperation(opHandler, buildToolPath);
-	}
-	
-	public CommonBuildTargetOperation getBuildOperation(IOperationConsoleHandler opHandler, Path buildToolPath) 
-			throws CommonException {
 		assertNotNull(opHandler);
 		String buildArguments = getEffectiveBuildArguments();
-		return getBuildType().getBuildOperation(this, opHandler, buildToolPath, buildArguments);
+		return getBuildType().getBuildOperation(this, opHandler, buildArguments);
 	}
 	
 }

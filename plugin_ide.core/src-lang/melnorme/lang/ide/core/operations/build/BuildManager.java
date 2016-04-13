@@ -10,24 +10,24 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import static melnorme.lang.ide.core.LangCore_Actual.VAR_NAME_SdkToolPath;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Platform;
-import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBasedModel;
@@ -60,21 +60,28 @@ public abstract class BuildManager {
 	
 	protected final BuildModel buildModel;
 	protected final LangBundleModel bundleModel;
+	protected final ToolManager toolManager; 
 	
-	public BuildManager(LangBundleModel bundleModel) {
-		this(new BuildModel(), bundleModel);
+	public BuildManager(LangBundleModel bundleModel, ToolManager toolManager) {
+		this(new BuildModel(), bundleModel, toolManager);
 	}
 	
-	public BuildManager(BuildModel buildModel, LangBundleModel bundleModel) {
-		this(buildModel, bundleModel, true);
+	public BuildManager(BuildModel buildModel, LangBundleModel bundleModel, ToolManager toolManager) {
+		this(buildModel, bundleModel, toolManager, true);
 	}
 	
-	public BuildManager(BuildModel buildModel, LangBundleModel bundleModel, boolean initialize) {
-		this.buildModel = buildModel;
-		this.bundleModel = bundleModel;
+	public BuildManager(BuildModel buildModel, LangBundleModel bundleModel, ToolManager toolManager, 
+			boolean initialize) {
+		this.buildModel = assertNotNull(buildModel);
+		this.bundleModel = assertNotNull(bundleModel);
+		this.toolManager = assertNotNull(toolManager);
 		if(initialize) {
 			initialize(bundleModel);
 		}
+	}
+	
+	public ToolManager getToolManager() {
+		return toolManager;
 	}
 	
 	public void initialize(LangBundleModel bundleModel) {
@@ -121,18 +128,6 @@ public abstract class BuildManager {
 		@Override
 		protected SimpleLogger getLog() {
 			return BuildManager.log;
-		}
-		
-		// public access
-		@Override
-		public ProjectBuildInfo getProjectInfo(IProject project) {
-			return super.getProjectInfo(project);
-		}
-		
-		// public access
-		@Override
-		public ProjectBuildInfo setProjectInfo(IProject project, ProjectBuildInfo newProjectInfo) {
-			return super.setProjectInfo(project, newProjectInfo);
 		}
 		
 	}
@@ -272,17 +267,22 @@ public abstract class BuildManager {
 		return buildModel.setProjectInfo(project, newProjectBuildInfo);
 	}
 	
-	public ProjectBuildInfo setProjectBuildInfoAndSave(IProject project, ProjectBuildInfo newProjectBuildInfo) {
-		buildModel.setProjectInfo(project, newProjectBuildInfo);
-		
+	public void tryUpdateProjectBuildInfo(IProject project, ProjectBuildInfo oldInfo, ProjectBuildInfo newInfo) 
+			throws CommonException {
+		boolean success = buildModel.updateProjectInfo(project, oldInfo, newInfo);
+		if(!success) {
+			throw new CommonException(BuildManagerMessages.ERROR_ProjectBuildSettingsOutOfDate);
+		}
+	}
+	
+	public void saveProjectInfo(IProject project) {
+		ProjectBuildInfo projectInfo = buildModel.getProjectInfo(project);
 		try {
-			String data = createSerializer().writeProjectBuildInfo(newProjectBuildInfo);
+			String data = createSerializer().writeProjectBuildInfo(projectInfo);
 			BUILD_TARGETS_DATA.setValue(project, data);
-		} catch(CommonException | BackingStoreException e) {
+		} catch(CommonException e) {
 			LangCore.logError("Error persisting project build info: ", e);
 		}
-		
-		return newProjectBuildInfo;
 	}
 	
 	/* ----------------- Build Types ----------------- */
@@ -306,7 +306,11 @@ public abstract class BuildManager {
 			return bundleInfo.getBuildConfiguration_nonNull(buildConfigName);
 		}
 		
-		public abstract String getDefaultBuildArguments(BuildTarget bt) throws CommonException;
+		public String getDefaultCommandLine(BuildTarget bt) throws CommonException {
+			return VariablesResolver.variableRefString(VAR_NAME_SdkToolPath) + " " + getDefaultCommandArguments(bt);
+		}
+		
+		public abstract String getDefaultCommandArguments(BuildTarget bt) throws CommonException;
 		
 		public LaunchArtifact getMainLaunchArtifact(BuildTarget bt) throws CommonException {
 			BuildConfiguration buildConfig = bt.getBuildConfiguration();
@@ -321,10 +325,9 @@ public abstract class BuildManager {
 			return null;
 		}
 		
-		public abstract CommonBuildTargetOperation getBuildOperation(BuildTarget bt,
-				IOperationConsoleHandler opHandler, Path buildToolPath, String buildArguments)
-				throws CommonException;
-		
+		public abstract CommonBuildTargetOperation getBuildOperation(
+			BuildTarget bt, IOperationConsoleHandler opHandler, String buildArguments
+		);
 	}
 	
 	protected final Indexable<BuildType> buildTypes = initBuildTypes();
@@ -412,14 +415,11 @@ public abstract class BuildManager {
 		return getBuildTarget(project, buildTargetName, definedTargetsOnly, true);
 	}
 	
-	public BuildTarget getBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly, 
+	public final BuildTarget getBuildTarget(IProject project, String buildTargetName, boolean definedTargetsOnly, 
 			boolean requireNonNull) throws CommonException {
 		ProjectBuildInfo buildInfo = getValidBuildInfo(project, false);
 		
-		// validate name after validation project buildInfo
-		validateBuildTargetName(buildTargetName);
-		
-		return getBuildTarget(buildInfo, buildTargetName, definedTargetsOnly, requireNonNull);
+		return getBuildTarget_x(buildInfo, buildTargetName, definedTargetsOnly, requireNonNull);
 	}
 	
 	protected void validateBuildTargetName(String buildTargetName) throws CommonException {
@@ -428,9 +428,10 @@ public abstract class BuildManager {
 		}
 	}
 	
-	public BuildTarget getBuildTarget(ProjectBuildInfo buildInfo, String buildTargetName, boolean definedTargetsOnly,
+	public BuildTarget getBuildTarget_x(ProjectBuildInfo buildInfo, String buildTargetName, boolean definedTargetsOnly,
 			boolean requireNonNull) throws CommonException {
-		assertNotNull(buildTargetName);
+		// validate name after validation project buildInfo
+		validateBuildTargetName(buildTargetName);
 		
 		BuildTarget buildTarget = buildInfo.getDefinedBuildTarget(buildTargetName);
 		

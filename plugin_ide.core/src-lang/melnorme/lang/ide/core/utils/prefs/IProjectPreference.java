@@ -11,7 +11,8 @@
 package melnorme.lang.ide.core.utils.prefs;
 
 import org.eclipse.core.resources.IProject;
-import org.osgi.service.prefs.BackingStoreException;
+
+import melnorme.utilbox.core.CommonException;
 
 
 public interface IProjectPreference<T> {
@@ -26,7 +27,7 @@ public interface IProjectPreference<T> {
 	
 	T getStoredValue(IProject project);
 	
-	void setValue(IProject project, T value) throws BackingStoreException;
+	void setValue(IProject project, T value) throws CommonException;
 	
 	T getEffectiveValue(IProject project);
 	

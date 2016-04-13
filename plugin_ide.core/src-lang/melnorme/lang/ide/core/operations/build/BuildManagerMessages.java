@@ -14,8 +14,8 @@ import java.text.MessageFormat;
 
 public interface BuildManagerMessages {
 
-	public String ERROR_MODEL_OUT_OF_DATE = 
-			"Could not perform operation, target has changed in the meanwhile";
+	public String ERROR_ProjectBuildSettingsOutOfDate = 
+			"Could not change build target settings, the build target to be changed is out of date.";
 	
 	public String MSG_BuildingProject = "Building {0} project: {1}";
 	public String MSG_ClearingMarkers = "Cleared problem markers for {0}.";

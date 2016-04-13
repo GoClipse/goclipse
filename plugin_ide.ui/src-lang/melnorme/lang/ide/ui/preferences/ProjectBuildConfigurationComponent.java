@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetSource;
@@ -191,7 +190,7 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 		
 		try {
 			doSaveSettings();
-		} catch(BackingStoreException e) {
+		} catch(CommonException e) {
 			return false;
 		}
 		updateComponentFromInput();
@@ -200,15 +199,11 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	}
 	
 	@Override
-	public void doSaveSettings() throws BackingStoreException {
-		try {
-			for(Entry<String, BuildTargetData> entry : buildOptionsToChange.entrySet()) {
-				String targetName = entry.getKey();
-				BuildTargetData value = entry.getValue();
-				getBuildInfo().changeBuildTarget(targetName, value);
-			}
-		} catch(CommonException e) {
-			throw new BackingStoreException("Error saving build target settings.", e);
+	public void doSaveSettings() throws CommonException {
+		for(Entry<String, BuildTargetData> entry : buildOptionsToChange.entrySet()) {
+			String targetName = entry.getKey();
+			BuildTargetData value = entry.getValue();
+			getBuildInfo().changeBuildTarget(targetName, value);
 		}
 	}
 	

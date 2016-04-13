@@ -12,11 +12,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences;
 
-import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.AbstractWidget;
-
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -35,7 +30,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.List;
-import org.osgi.service.prefs.BackingStoreException;
+
+import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
+import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.SWTUtil;
+import melnorme.util.swt.components.AbstractWidget;
 
 //originally from DLTK version 5.0.0
 public class EditorAppearanceColorsComponent extends AbstractWidget implements IPreferencesEditor {
@@ -120,7 +119,7 @@ public class EditorAppearanceColorsComponent extends AbstractWidget implements I
 	}
 	
 	@Override
-	public void doSaveSettings() throws BackingStoreException {
+	public void doSaveSettings() {
 		for (EditorColorItem editorColorItem : editorColorItems) {
 			editorColorItem.saveToStore(store);
 		}

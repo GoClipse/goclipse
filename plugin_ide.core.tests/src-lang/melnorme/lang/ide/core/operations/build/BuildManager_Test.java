@@ -10,12 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import static melnorme.lang.ide.core.LangCore_Actual.VAR_NAME_SdkToolPath;
 import static melnorme.lang.ide.core.operations.build.BuildTargetsSerializer_Test.bt;
+import static melnorme.lang.ide.core.operations.build.VariablesResolver.variableRefString;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -24,12 +24,14 @@ import org.junit.Test;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NoopOperationConsoleHandler;
-import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.operations.build.BuildManager_Test.TestsBuildManager.SampleStrictBuildType;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.tests.BuildTestsHelper;
 import melnorme.lang.ide.core.tests.SampleProject;
@@ -58,11 +60,12 @@ public class BuildManager_Test extends CommonTest {
 		sampleBT_STRICT
 	);
 	
-	protected final BuildManager buildMgr = new TestsBuildManager(LangCore.getBundleModel());
-
-	public class TestsBuildManager extends BuildManager {
+	protected final TestsBuildManager buildMgr = new TestsBuildManager(LangCore.getBundleModel());
+	
+	public static class TestsBuildManager extends BuildManager {
+		
 		public TestsBuildManager(LangBundleModel bundleModel) {
-			super(bundleModel);
+			super(bundleModel, LangCore.getToolManager());
 		}
 		
 		@Override
@@ -87,66 +90,65 @@ public class BuildManager_Test extends CommonTest {
 		protected ArrayList2<BuildTarget> getDefaultBuildTargets(IProject project, BundleInfo newBundleInfo) {
 			return createBuildTargets(project, DEFAULT_TARGETS);
 		}
+		
+		public ArrayList2<BuildTarget> createBuildTargets(IProject project, Indexable<BuildTargetData> buildTargetsData) {
+			try {
+				return buildTargetsData.mapx((buildTargetData) -> {
+					return createBuildTarget(project, buildTargetData);
+				});
+			} catch(CommonException e) {
+				throw assertFail();
+			}
+		}
+		
+		public class SampleStrictBuildType extends BuildType {
+			public SampleStrictBuildType(String name) {
+				super(name);
+			}
+			
+			@Override
+			public String getDefaultCommandArguments(BuildTarget bt) throws CommonException {
+				return "default: build_args";
+			}
+			
+			@Override
+			public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler, 
+					String buildArguments) {
+				return new CommonBuildTargetOperation(toolManager, bt, opHandler, buildArguments) {
+					@Override
+					protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
+							throws CommonException, OperationCancellation {
+					}
+				};
+			}
+			
+			@Override
+			protected BuildConfiguration getValidBuildconfiguration(String buildConfigName, BundleInfo bundleInfo)
+					throws CommonException {
+				if(list("ConfigA", "ConfigB").contains(buildConfigName)) {
+					return new BuildConfiguration(buildConfigName, null);
+				}
+				throw new CommonException(BuildManagerMessages.BuildConfig_NotFound(buildConfigName));
+			}
+		}
+		
+		public class SampleBuildType extends SampleStrictBuildType {
+			
+			public SampleBuildType(String name) {
+				super(name);
+			}
+			
+			@Override
+			protected BuildConfiguration getValidBuildconfiguration(String buildConfigName,
+					BundleInfo bundleInfo) throws CommonException {
+				// Allow implicit configurations
+				return new BuildConfiguration(buildConfigName, null);
+			}
+		}
+		
 	}
 	
 	protected String SEP = buildMgr.getBuildTargetNameParser().getNameSeparator();
-	
-	public ArrayList2<BuildTarget> createBuildTargets(IProject project, Indexable<BuildTargetData> buildTargetsData) {
-		try {
-			return buildTargetsData.mapx((buildTargetData) -> {
-				return buildMgr.createBuildTarget(project, buildTargetData);
-			});
-		} catch(CommonException e) {
-			throw assertFail();
-		}
-	}
-
-	public class SampleStrictBuildType extends BuildType {
-		public SampleStrictBuildType(String name) {
-			super(name);
-		}
-		
-		@Override
-		public String getDefaultBuildArguments(BuildTarget bt) throws CommonException {
-			return "default: build_args";
-		}
-		
-		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler, 
-				Path buildToolPath, String buildArguments) 
-				throws CommonException {
-			return new CommonBuildTargetOperation(buildMgr, bt, opHandler, buildToolPath, buildArguments) {
-				@Override
-				protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
-						throws CommonException, OperationCancellation {
-				}
-			};
-		}
-		
-		@Override
-		protected BuildConfiguration getValidBuildconfiguration(String buildConfigName, BundleInfo bundleInfo)
-				throws CommonException {
-			if(list("ConfigA", "ConfigB").contains(buildConfigName)) {
-				return new BuildConfiguration(buildConfigName, null);
-			}
-			throw new CommonException(BuildManagerMessages.BuildConfig_NotFound(buildConfigName));
-		}
-	}
-
-	public class SampleBuildType extends SampleStrictBuildType {
-		
-		public SampleBuildType(String name) {
-			super(name);
-		}
-		
-		@Override
-		protected BuildConfiguration getValidBuildconfiguration(String buildConfigName,
-				BundleInfo bundleInfo) throws CommonException {
-			// Allow implicit configurations
-			return new BuildConfiguration(buildConfigName, null);
-		}
-	}
-
 	
 	protected SampleProject sampleProject;
 	protected IProject project;
@@ -202,18 +204,20 @@ public class BuildManager_Test extends CommonTest {
 				CommonException.class,
 				"Build configuration `ImplicitTarget` not found"); // Config not found
 			
-			
-			testBuildOperation();
 		}
 		
 		try(SampleProject sampleProj = initSampleProject()){
 			testSaveLoadProjectInfo();
 		}
+		
+		try(SampleProject sampleProj = initSampleProject()){
+			testBuildOperation();
+		}
 	}
 	
 	protected void testSaveLoadProjectInfo() throws CommonException {
 		
-		SampleStrictBuildType buildType = new SampleStrictBuildType("default");
+		SampleStrictBuildType buildType = buildMgr.new SampleStrictBuildType("default");
 		BuildConfiguration buildConfig = new BuildConfiguration("configA", null);
 		
 		BuildTarget btA = new BuildTarget(project, bundleInfo, bt("TargetA", false, true, "new1", "new3"), 
@@ -227,7 +231,8 @@ public class BuildManager_Test extends CommonTest {
 		
 		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, 
 			new ArrayList2<>(btA, btNonExistentButValid, btNonExistent));
-		buildMgr.setProjectBuildInfoAndSave(project, newProjectBuildInfo);
+		buildMgr.setProjectBuildInfo(project, newProjectBuildInfo);
+		buildMgr.saveProjectInfo(project);
 		
 		buildMgr.getBuildModel().removeProjectInfo(project);
 		assertTrue(buildMgr.getBuildModel().getProjectInfo(project) == null);
@@ -322,7 +327,7 @@ public class BuildManager_Test extends CommonTest {
 	public void testBuildType() throws Exception { testBuildType$(); }
 	public void testBuildType$() throws Exception {
 		
-		BuildManager.BuildType buildType = new SampleBuildType("default");
+		BuildManager.BuildType buildType = buildMgr.new SampleBuildType("default");
 		
 		try(SampleProject sampleProj = initSampleProject()){
 			
@@ -346,7 +351,9 @@ public class BuildManager_Test extends CommonTest {
 	
 	protected NoopOperationConsoleHandler consoleHandler = new NoopOperationConsoleHandler();
 	
-	protected void testBuildOperation() throws CommonException, StatusException, CoreException {
+	protected void testBuildOperation() throws CommonException, StatusException {
+		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
+		
 		BuildTarget btA = buildMgr.getBuildTarget(project, "TargetA", true);
 		assertTrue(btA.getData().getBuildArguments() == null);
 		
@@ -354,13 +361,52 @@ public class BuildManager_Test extends CommonTest {
 		assertTrue(btB.getData().getBuildArguments() != null);
 		
 		assertAreEqual(
-			btA.getBuildOperation(consoleHandler, path("blah")).getEffectiveEvaluatedArguments(), 
+			btA.getBuildOperation(consoleHandler).getEffectiveProccessCommandLine(), 
 			list("default:", "build_args")
 		);
 		
 		assertAreEqual(
-			btB.getBuildOperation(consoleHandler, path("blah")).getEffectiveEvaluatedArguments(), 
+			btB.getBuildOperation(consoleHandler).getEffectiveProccessCommandLine(), 
 			list("B:", "build_args")
 		);
+		
+		testBuildOperation_Vars(buildInfo, btB);
 	}
+	
+	protected void testBuildOperation_Vars(ProjectBuildInfo buildInfo, BuildTarget btB) throws CommonException {
+		ToolchainPreferences.SDK_PATH2.setValue(project, "my_tool_path");
+		
+		// Test var resolution - SDK tool var
+		assertAreEqual(
+			getBuildOperation(buildInfo, btB, variableRefString(VAR_NAME_SdkToolPath) + " build"),
+			
+			list("my_tool_path", "build")
+		);
+		
+		// Test var resolution - undefined var
+		verifyThrows(
+			() -> getBuildOperation(buildInfo, btB, "${XXX_NON_EXISTANT_VAR} build"), 
+			
+			CommonException.class, "undefined variable XXX_NON_EXISTANT_VAR"
+		);
+		
+		// Test var resolution - invalid arg
+		verifyThrows(
+			() -> getBuildOperation(buildInfo, btB, "${" + LangCore_Actual.VAR_NAME_SdkToolPath + ":arg}" + " build"), 
+			
+			CommonException.class, LangCore_Actual.VAR_NAME_SdkToolPath + " does not accept arguments"
+		);
+		
+	}
+	
+	protected Indexable<String> getBuildOperation(ProjectBuildInfo buildInfo, BuildTarget btB, String buildArguments)
+			throws CommonException {
+		BuildTargetData dataCopy = btB.getDataCopy();
+		dataCopy.buildArguments = buildArguments;
+		BuildTarget newBuildTarget = buildInfo.buildMgr.createBuildTarget(buildInfo.project, dataCopy);
+		
+		CommonBuildTargetOperation buildOperation = newBuildTarget.getBuildOperation(consoleHandler);
+		return buildOperation.getEffectiveProccessCommandLine();
+	}
+	
 }

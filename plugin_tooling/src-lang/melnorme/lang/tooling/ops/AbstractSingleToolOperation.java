@@ -20,13 +20,13 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class AbstractSingleToolOperation<RESULT> extends AbstractToolOperation2<RESULT> {
 	
-	protected final IOperationService opHelper;
+	protected final IToolOperationService opHelper;
 	protected final String toolPath;
 	protected final boolean nonZeroExitIsFatal;
 
 	protected String toolInput = "";
 	
-	public AbstractSingleToolOperation(IOperationService opHelper, String toolPath, boolean nonZeroResultIsFatal) {
+	public AbstractSingleToolOperation(IToolOperationService opHelper, String toolPath, boolean nonZeroResultIsFatal) {
 		this.opHelper = assertNotNull(opHelper);
 		this.toolPath = assertNotNull(toolPath);
 		this.nonZeroExitIsFatal = nonZeroResultIsFatal;

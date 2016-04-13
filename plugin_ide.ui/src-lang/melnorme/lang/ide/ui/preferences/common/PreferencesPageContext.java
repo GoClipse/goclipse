@@ -12,13 +12,12 @@ package melnorme.lang.ide.ui.preferences.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.osgi.service.prefs.BackingStoreException;
-
 import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.tooling.data.CompositeValidatableField;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IProperty;
 
@@ -34,7 +33,7 @@ public class PreferencesPageContext implements IPreferencesEditor {
 	}
 	
 	@Override
-	public void doSaveSettings() throws BackingStoreException {
+	public void doSaveSettings() throws CommonException {
 		for(IPreferencesEditor prefAdapter : prefAdapters) {
 			prefAdapter.doSaveSettings();
 		}
@@ -72,7 +71,7 @@ public class PreferencesPageContext implements IPreferencesEditor {
 		}
 		
 		@Override
-		public void doSaveSettings() throws BackingStoreException {
+		public void doSaveSettings() throws CommonException {
 			preference.setInstanceScopeValue(property.getValue());
 		}
 		

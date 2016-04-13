@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Link;
 import org.osgi.service.event.Event;
-import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
@@ -54,6 +53,7 @@ import melnorme.util.swt.jface.LabeledTreeElement;
 import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvider;
 import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.text.ColorManager2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.fields.IModelField;
 import melnorme.utilbox.fields.IProperty;
@@ -94,7 +94,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 				updateComponentFromInput();
 			}
 			@Override
-			public void doSaveSettings() throws BackingStoreException {
+			public void doSaveSettings() {
 			}
 		});
 	}
@@ -148,7 +148,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		}
 		
 		@Override
-		public void doSaveSettings() throws BackingStoreException {
+		public void doSaveSettings() throws CommonException {
 			stylingPref.setInstanceScopeValue(temporaryPref.getValue());
 		}
 		

@@ -16,6 +16,6 @@ import melnorme.utilbox.misc.ILogHandler;
  * Service/helper class to perform certain operation tasks (such as running a process) 
  * under a context that is abstracted away. (Usually it's a UI context that observes the tasks) 
  */
-public interface IOperationService extends ILogHandler, IProcessRunner {
+public interface IToolOperationService extends ILogHandler, IProcessRunner {
 	
 }

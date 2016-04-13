@@ -23,6 +23,8 @@ public class LangCore_Actual {
 	// or it will interfere with MelnormeEclipse templating
 	public static final String NAME_OF_LANGUAGE = "LANG_NAME";
 	
+	public static final String VAR_NAME_SdkToolPath = "SDK_TOOL_PATH";
+	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the SDK tool";
 	
 	public static LangCore instance;
 	
@@ -50,7 +52,7 @@ public class LangCore_Actual {
 		return new LANGUAGE_BundleModelManager();
 	}
 	public static BuildManager createBuildManager(LangBundleModel bundleModel) {
-		return new LANGUAGE_BuildManager(bundleModel);
+		return new LANGUAGE_BuildManager(bundleModel, LangCore.getToolManager());
 	}
 	
 	public static LANGUAGE_SourceModelManager createSourceModelManager() {

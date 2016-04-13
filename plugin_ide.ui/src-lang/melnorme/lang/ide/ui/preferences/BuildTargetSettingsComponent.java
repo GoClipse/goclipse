@@ -12,15 +12,13 @@ package melnorme.lang.ide.ui.preferences;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.util.swt.components.AbstractWidget;
@@ -31,6 +29,8 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
 
 public class BuildTargetSettingsComponent extends AbstractWidget {
+	
+	protected final BuildManager buildManager = LangCore.getBuildManager();
 	
 	protected boolean createEnablementFields = true;
 	
@@ -66,11 +66,12 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 	}
 	
 	protected BuildManager getBuildManager() {
-		return LangCore.getBuildManager();
+		return buildManager;
 	}
 	
 	protected BuildArgumentsField init_createArgumentsField() {
-		return new BuildArgumentsField();
+		VariablesResolver varResolver = buildManager.getToolManager().getVariablesManager(null);
+		return new BuildArgumentsField(getDefaultBuildTargetArguments, varResolver);
 	}
 	
 	protected EnablementButtonTextField init_createProgramPathField() {	
@@ -121,43 +122,6 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 		autoEnableField.setEnabled(enabled);
 		buildArgumentsField.setEnabled(enabled);
 		programPathField.setEnabled(enabled);
-	}
-	
-	public class BuildArgumentsField extends EnablementButtonTextField {
-		
-		public BuildArgumentsField() {
-			super(LangUIMessages.Fields_BuildArguments, LABEL_UseDefault, LangUIMessages.Fields_VariablesButtonLabel);
-			defaultTextStyle = SWT.MULTI | SWT.BORDER;
-		}
-		
-		@Override
-		protected void createContents_Label(Composite parent) {
-			// Do not create label
-		}
-		
-		@Override
-		public int getPreferredLayoutColumns() {
-			return 1;
-		}
-		
-		@Override
-		protected void createContents_layout() {
-			text.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(40, 100).create());
-			button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
-		}
-		
-		/* -----------------  ----------------- */
-		
-		@Override
-		protected String getDefaultFieldValue() throws CommonException {
-			return getDefaultBuildTargetArguments.get();
-		}
-		
-		@Override
-		protected String getNewValueFromButtonSelection2() throws OperationCancellation {
-			return getFieldValue() + ControlUtils.openStringVariableSelectionDialog(text.getShell());
-		}
-		
 	}
 	
 	public class ProgramPathField extends EnablementButtonTextField {

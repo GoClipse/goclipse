@@ -11,8 +11,8 @@
 package melnorme.lang.ide.core.utils.prefs;
 
 import org.eclipse.core.resources.IProject;
-import org.osgi.service.prefs.BackingStoreException;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldView;
 
 
@@ -26,7 +26,7 @@ public interface IGlobalPreference<T> {
 	
 	T getDefaultValue();
 	
-	void setInstanceScopeValue(T value) throws BackingStoreException;
+	void setInstanceScopeValue(T value) throws CommonException;
 	
 	
 	IProjectPreference<T> getProjectPreference();
