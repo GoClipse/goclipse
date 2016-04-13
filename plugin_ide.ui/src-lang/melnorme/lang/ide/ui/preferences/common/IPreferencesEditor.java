@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.preferences.common;
 
-import org.osgi.service.prefs.BackingStoreException;
+import melnorme.utilbox.core.CommonException;
 
 public interface IPreferencesEditor {
 	
@@ -20,11 +20,11 @@ public interface IPreferencesEditor {
 		try {
 			doSaveSettings();
 			return true;
-		} catch(BackingStoreException e) {
+		} catch(CommonException e) {
 			return false;
 		}
 	}
 	
-	void doSaveSettings() throws BackingStoreException;
+	void doSaveSettings() throws CommonException;
 	
 }

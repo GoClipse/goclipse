@@ -39,10 +39,15 @@ public class ProcessUtils {
 	}
 	
 	public static ProcessBuilder createProcessBuilder(Path cmdExePath, Location workingDir, String... arguments) {
+		ArrayList2<String> commandLine = createCommandLine(cmdExePath, arguments);
+		return createProcessBuilder(commandLine, workingDir);
+	}
+	
+	public static ArrayList2<String> createCommandLine(Path cmdExePath, String... arguments) {
 		ArrayList2<String> commandLine = new ArrayList2<>();
 		commandLine.add(cmdExePath.toString());
 		commandLine.addElements(arguments);
-		return createProcessBuilder(commandLine, workingDir);
+		return commandLine;
 	}
 	
 	public static ProcessBuilder createProcessBuilder(Path cmdExePath, Location workingDir, 

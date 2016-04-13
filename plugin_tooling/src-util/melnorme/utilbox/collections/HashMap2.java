@@ -28,6 +28,16 @@ public class HashMap2<K, V> extends HashMap<K, V> implements Collection2<Map.Ent
 		super();
 	}
 	
+	public HashMap2(Map<? extends K, ? extends V> map) {
+		super(map);
+	}
+	
+	public HashMap2<K, V> copy() {
+		return new HashMap2<K, V>(this);
+	}
+	
+	/* -----------------  ----------------- */
+	
 	/**
 	 * Possible problem here: modification through {@link Entry#setValue(Object)
 	 */

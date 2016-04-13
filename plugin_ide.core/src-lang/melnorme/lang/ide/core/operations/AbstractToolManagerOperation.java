@@ -10,12 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -24,10 +25,16 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class AbstractToolManagerOperation implements ICommonOperation {
 	
+	protected final ToolManager toolManager;
 	protected final IProject project;
 	
-	public AbstractToolManagerOperation(IProject project) {
+	public AbstractToolManagerOperation(ToolManager toolManager, IProject project) {
+		this.toolManager = assertNotNull(toolManager);
 		this.project = project;
+	}
+	
+	protected ToolManager getToolManager() {
+		return toolManager;
 	}
 	
 	public IProject getProject() {
@@ -36,10 +43,6 @@ public abstract class AbstractToolManagerOperation implements ICommonOperation {
 	
 	protected Location getProjectLocation() throws CommonException {
 		return ResourceUtils.getProjectLocation2(project);
-	}
-	
-	protected ToolManager getToolManager() {
-		return LangCore.getToolManager();
 	}
 	
 	protected ExternalProcessResult runBuildTool(IOperationConsoleHandler opHandler, ProcessBuilder pb, 

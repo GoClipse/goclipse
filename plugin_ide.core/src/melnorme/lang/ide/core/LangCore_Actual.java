@@ -8,7 +8,6 @@ import com.googlecode.goclipse.core.operations.GoToolManager;
 
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 
 public class LangCore_Actual {
@@ -25,6 +24,8 @@ public class LangCore_Actual {
 	// or it will interfere with MelnormeEclipse templating
 	public static final String NAME_OF_LANGUAGE = "Go";
 	
+	public static final String VAR_NAME_SdkToolPath = "GO_TOOL_PATH";
+	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the Go tool";
 	
 	public static LangCore instance;
 	
@@ -32,7 +33,7 @@ public class LangCore_Actual {
 	
 	protected final ToolManager toolManager;
 	protected final GoBundleModelManager bundleManager;
-	protected final BuildManager buildManager;
+	protected final GoBuildManager buildManager;
 	protected final GoSourceModelManager sourceModelManager;
 	
 	public LangCore_Actual() {
@@ -55,8 +56,8 @@ public class LangCore_Actual {
 	public static GoBundleModelManager createBundleModelManager() {
 		return new GoBundleModelManager();
 	}
-	public static BuildManager createBuildManager(LangBundleModel bundleModel) {
-		return new GoBuildManager(bundleModel);
+	public static GoBuildManager createBuildManager(LangBundleModel bundleModel) {
+		return new GoBuildManager(bundleModel, getToolManager());
 	}
 	
 		
@@ -69,7 +70,7 @@ public class LangCore_Actual {
 	public static GoBundleModel getBundleModel() {
 		return instance.bundleManager.getModel();
 	}
-	public static BuildManager getBuildManager() {
+	public static GoBuildManager getBuildManager() {
 		return instance.buildManager;
 	}
 	public static GoBundleModelManager getBundleModelManager() {

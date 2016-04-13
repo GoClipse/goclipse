@@ -61,7 +61,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		BuildManager buildMgr = LangCore.getBuildManager();
+		GoBuildManager buildMgr = LangCore.getBuildManager();
 		
 		ProjectBuildInfo pbi = buildMgr.getBuildInfo(project);
 		assertTrue(pbi != null);
@@ -82,7 +82,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	
 	protected BuildTarget testGetBuildTargetFor(ProjectBuildInfo buildInfo, String targetName, String goPackageName, 
 			String buildType, String relArtifactPath) throws CommonException, CoreException {
-		BuildTarget bt = getBuildManager().getBuildTarget(buildInfo, targetName, false, true);
+		BuildTarget bt = getBuildManager().getBuildTarget_x(buildInfo, targetName, false, true);
 		assertAreEqual(bt.getTargetName(), targetName);
 
 		assertAreEqual(bt.getBuildConfigName(), goPackageName);

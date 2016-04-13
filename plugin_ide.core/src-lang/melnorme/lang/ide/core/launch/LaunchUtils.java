@@ -11,26 +11,10 @@
 package melnorme.lang.ide.core.launch;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.variables.IStringVariableManager;
-import org.eclipse.core.variables.VariablesPlugin;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.utilbox.core.CommonException;
-
 public class LaunchUtils {
-	
-	public static String[] getEvaluatedArguments(String extraOptionsString) throws CommonException {
-		try {
-			IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
-			extraOptionsString = varMgr.performStringSubstitution(extraOptionsString, true);
-		} catch(CoreException ce) {
-			throw LangCore.createCommonException(ce);
-		}
-		return DebugPlugin.parseArguments(extraOptionsString);
-	}
 	
 	public static String getOptionalAttribute(ILaunchConfiguration config, String keyIsDefault, String key) 
 			throws CoreException {

@@ -18,7 +18,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ToolManager.ToolManagerEngineToolRunner2;
+import melnorme.lang.ide.core.operations.ToolManager.ToolManagerEngineToolRunner;
 import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.LangImages;
@@ -105,8 +105,8 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 	
 	/* -----------------  ----------------- */
 	
-	protected ToolManagerEngineToolRunner2 getEngineToolRunner() {
-		return LangCore.getToolManager().new ToolManagerEngineToolRunner2();
+	protected ToolManagerEngineToolRunner getEngineToolRunner() {
+		return LangCore.getToolManager().new ToolManagerEngineToolRunner();
 	}
 	
 }

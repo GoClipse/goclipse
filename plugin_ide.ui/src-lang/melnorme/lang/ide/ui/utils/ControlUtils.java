@@ -97,7 +97,11 @@ public class ControlUtils {
 	}
 	
 	public static String openStringVariableSelectionDialog(final Shell shell) throws OperationCancellation {
-		StringVariableSelectionDialog dialog = new StringVariableSelectionDialog(shell);
+		return openStringVariableSelectionDialog(new StringVariableSelectionDialog(shell));
+	}
+	
+	public static String openStringVariableSelectionDialog(StringVariableSelectionDialog dialog)
+			throws OperationCancellation {
 		dialog.open();
 		String result = dialog.getVariableExpression();
 		if(result == null) {

@@ -16,7 +16,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.tooling.ops.AbstractSingleToolOperation;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
-import melnorme.lang.tooling.ops.IOperationService;
+import melnorme.lang.tooling.ops.IToolOperationService;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.lang.tooling.ops.ToolOutputParseHelper;
 import melnorme.utilbox.collections.ArrayList2;
@@ -32,7 +32,7 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 	protected Location fileLocation;
 	protected int byteOffset;
 	
-	public GodefOperation(IOperationService opService, String godefPath, GoEnvironment goEnv, 
+	public GodefOperation(IToolOperationService opService, String godefPath, GoEnvironment goEnv, 
 			Location fileLocation, int byteOffset) {
 		super(opService, godefPath, false);
 		this.goEnv = assertNotNull(goEnv);

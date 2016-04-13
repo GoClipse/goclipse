@@ -22,7 +22,6 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Link;
-import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
@@ -33,6 +32,7 @@ import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractDisableableWidget;
 import melnorme.util.swt.components.fields.CheckBoxField;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IProperty;
 
 public abstract class ProjectPreferencesBlock extends AbstractPreferencesBlock2 implements IPreferencesEditor {
@@ -61,7 +61,7 @@ public abstract class ProjectPreferencesBlock extends AbstractPreferencesBlock2 
 	protected abstract AbstractDisableableWidget init_createProjectSettingsBlock2();
 	
 	@Override
-	public void doSaveSettings() throws BackingStoreException {
+	public void doSaveSettings() throws CommonException {
 		prefContext.doSaveSettings();
 	}
 	
@@ -145,7 +145,7 @@ public abstract class ProjectPreferencesBlock extends AbstractPreferencesBlock2 
 		}
 		
 		@Override
-		public void doSaveSettings() throws BackingStoreException {
+		public void doSaveSettings() throws CommonException {
 			preference.setValue(project, property.getValue());
 		}
 	}

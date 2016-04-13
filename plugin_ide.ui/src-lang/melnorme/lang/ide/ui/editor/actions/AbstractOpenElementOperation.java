@@ -33,7 +33,7 @@ import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
-import melnorme.lang.tooling.ops.IOperationService;
+import melnorme.lang.tooling.ops.IToolOperationService;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -42,7 +42,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> 
-	implements IOperationService {
+	implements IToolOperationService {
 	
 	protected final String source;
 	protected final SourceRange range; // range of element to open. Usually only offset matters

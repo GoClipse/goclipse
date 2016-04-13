@@ -13,6 +13,7 @@ package melnorme.utilbox.fields;
 import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.ownership.IOwner;
 
+/* FIXME: use Supplier */
 public interface IFieldView<VALUE> {
 	
 	default VALUE getValue() {

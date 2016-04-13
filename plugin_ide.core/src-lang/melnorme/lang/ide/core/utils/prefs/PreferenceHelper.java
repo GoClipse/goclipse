@@ -25,6 +25,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.PreferencesOverride;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.IFieldView;
 
@@ -145,10 +146,18 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	}
 	
 	@Override
-	public final void setInstanceScopeValue(T value) throws BackingStoreException {
+	public final void setInstanceScopeValue(T value) throws CommonException {
 		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(getQualifier());
 		setPrefValue(prefs, value);
-		prefs.flush();
+		try {
+			prefs.flush();
+		} catch(BackingStoreException e) {
+			throw toCommonException(e);
+		}
+	}
+	
+	public static CommonException toCommonException(BackingStoreException e) throws CommonException {
+		return new CommonException(e.getMessage(), e.getCause());
 	}
 	
 	protected void handlePreferenceChange(PreferenceChangeEvent event) {
@@ -188,8 +197,12 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		}
 		
 		@Override
-		public void setValue(IProject project, T value) throws BackingStoreException {
-			setProjectScopeValue(project, value);
+		public void setValue(IProject project, T value) throws CommonException {
+			try {
+				setProjectScopeValue(project, value);
+			} catch(BackingStoreException e) {
+				toCommonException(e);
+			}
 		}
 		
 		@Override

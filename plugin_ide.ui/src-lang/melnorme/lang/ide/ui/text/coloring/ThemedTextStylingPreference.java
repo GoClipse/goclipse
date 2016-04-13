@@ -14,13 +14,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.swt.widgets.Display;
 import org.osgi.service.event.Event;
-import org.osgi.service.prefs.BackingStoreException;
 
 import melnorme.lang.ide.core.utils.prefs.IPreferenceIdentifier;
 import melnorme.lang.ide.ui.LangUI;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener2;
 import melnorme.util.swt.SWTUtil;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.fields.IFieldView;
@@ -110,7 +110,7 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 		return key;
 	}
 	
-	public void setInstanceScopeValue(TextStyling value) throws BackingStoreException {
+	public void setInstanceScopeValue(TextStyling value) throws CommonException {
 		getEffectivePreference().setInstanceScopeValue(value);
 	}
 	

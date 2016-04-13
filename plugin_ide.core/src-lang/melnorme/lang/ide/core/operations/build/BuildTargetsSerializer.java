@@ -10,6 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import static melnorme.lang.ide.core.LangCore_Actual.VAR_NAME_SdkToolPath;
+import static melnorme.lang.ide.core.operations.build.VariablesResolver.variableRefString;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -28,6 +31,7 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 	private static final String PROP_ENABLED = "n_enabled";
 	private static final String PROP_AUTO_ENABLED = "auto_enabled";
 	private static final String PROP_ARGUMENTS = "options";
+	private static final String PROP_COMMANDLINE = "commandline";
 	private static final String PROP_EXE_PATH = "exe_path";
 	
 	/* -----------------  ----------------- */
@@ -55,7 +59,7 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		doc.appendChild(buildTargetsElem);
 		
 		for(BuildTargetDataView buildTarget : buildTargets) {
-			buildTargetsElem.appendChild(createBuildTargetElement(doc, buildTarget));
+			buildTargetsElem.appendChild(writeBuildTargetElement(doc, buildTarget));
 		}
 		
 	}
@@ -81,13 +85,13 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		return buildTargets;
 	}
 	
-	protected Element createBuildTargetElement(Document doc, BuildTargetDataView btd) {
+	protected Element writeBuildTargetElement(Document doc, BuildTargetDataView btd) {
 		Element targetElem = doc.createElement(TARGET_ElemName);
 		
 		targetElem.setAttribute(PROP_NAME, btd.getTargetName());
 		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(btd.isNormalBuildEnabled()));
 		targetElem.setAttribute(PROP_AUTO_ENABLED, Boolean.toString(btd.isAutoBuildEnabled()));
-		setOptionalAttribute(targetElem, PROP_ARGUMENTS, btd.getBuildArguments());
+		setOptionalAttribute(targetElem, PROP_COMMANDLINE, btd.getBuildArguments());
 		setOptionalAttribute(targetElem, PROP_EXE_PATH, btd.getExecutablePath());
 		
 		return targetElem;
@@ -101,8 +105,14 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 			buildTargetData.normalBuildEnabled = getBooleanAttribute(targetElem, PROP_ENABLED, false);
 			buildTargetData.autoBuildEnabled = getBooleanAttribute(targetElem, PROP_AUTO_ENABLED, false);
 			buildTargetData.targetName = getAttribute(targetElem, PROP_NAME, "");
-			buildTargetData.buildArguments = getAttribute(targetElem, PROP_ARGUMENTS, null);
+			buildTargetData.buildArguments = getAttribute(targetElem, PROP_COMMANDLINE, null);
 			buildTargetData.executablePath = getAttribute(targetElem, PROP_EXE_PATH, null);
+			
+			if(buildTargetData.buildArguments == null) {
+				String buildArgs_old = getAttribute(targetElem, PROP_ARGUMENTS, null);
+				// Try to migrate old format for settings
+				buildTargetData.buildArguments = variableRefString(VAR_NAME_SdkToolPath) + " " + buildArgs_old; 
+			}
 			
 			return createBuildTarget(targetElem, buildTargetData);
 		} else {

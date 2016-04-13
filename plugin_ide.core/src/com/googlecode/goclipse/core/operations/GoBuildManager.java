@@ -54,8 +54,8 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class GoBuildManager extends BuildManager {
 	
-	public GoBuildManager(LangBundleModel bundleModel) {
-		super(bundleModel);
+	public GoBuildManager(LangBundleModel bundleModel, ToolManager toolManager) {
+		super(bundleModel, toolManager);
 	}
 	
 	public static final String BUILD_TYPE_Build = "build";
@@ -98,7 +98,7 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildArguments(BuildTarget bt) throws CommonException {
+		public String getDefaultCommandArguments(BuildTarget bt) throws CommonException {
 			ArrayList2<String> buildArgs = getPackageSpecCommand(bt, getBuildCommand());
 			return StringUtil.collToString(buildArgs, " ");
 		}
@@ -179,8 +179,8 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler,
-				Path buildToolPath, String buildArguments) throws CommonException {
-			return new GoBuildTargetOperation(bt, opHandler, buildToolPath, buildArguments);
+				String buildArguments) throws CommonException {
+			return new GoBuildTargetOperation(bt, opHandler, buildArguments);
 		}
 		
 	}
@@ -192,8 +192,8 @@ public class GoBuildManager extends BuildManager {
 		protected Location workingDirectory;
 		
 		public GoBuildTargetOperation(BuildTarget buildTarget, IOperationConsoleHandler opHandler, 
-				Path buildToolPath, String buildArguments) throws CommonException {
-			super(buildTarget.buildMgr, buildTarget, opHandler, buildToolPath, buildArguments);
+				String buildArguments) throws CommonException {
+			super(GoBuildManager.this.toolManager, buildTarget, opHandler, buildArguments);
 			
 			Location projectLocation = getProjectLocation();
 			
@@ -209,10 +209,11 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected ProcessBuilder getProcessBuilder2(Indexable<String> toolArguments) throws CommonException {
-			ToolManager toolMgr = getToolManager();
-			ProcessBuilder pb = toolMgr.createToolProcessBuilder(getBuildToolPath(), workingDirectory, 
-				toolArguments.toArray(String.class));
+		protected ProcessBuilder getProcessBuilder3(Indexable<String> commandLine)
+				throws CommonException {
+			ProcessBuilder pb = getToolManager().createToolProcessBuilder(commandLine, getProjectLocation());
+			/*FIXME: BUG here workingDirectory*/
+//			ProcessBuilder pb = getToolManager().createToolProcessBuilder(commandLine, workingDirectory);
 			
 			goEnv.setupProcessEnv(pb, true);
 			return pb;
@@ -273,19 +274,19 @@ public class GoBuildManager extends BuildManager {
 			return goPackageName.endsWith("/...") || goPackageName.equals("...");
 		}
 		
-		protected boolean isMultipleGoPackagesArguments(Indexable<String> arguments) {
-			if(arguments.size() == 0) {
+		protected boolean isMultipleGoPackagesCommandInvocation(Indexable<String> commandLine) {
+			if(commandLine.size() <= 1) {
 				return false;
 			}
-			String lastArg = arguments.get(arguments.size()-1);
+			String lastArg = commandLine.get(commandLine.size()-1);
 			return isMultipleGoPackages(lastArg);
 		}
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(BuildTarget buildTarget,
-				IOperationConsoleHandler opHandler, Path buildToolPath, String buildArguments
+				IOperationConsoleHandler opHandler, String buildArguments
 		) throws CommonException {
-			return new GoBuildTargetOperation(buildTarget, opHandler, buildToolPath, buildArguments) {
+			return new GoBuildTargetOperation(buildTarget, opHandler, buildArguments) {
 				{
 					// We need to change working directory to bin, 
 					// because our commands create executable files in the working directory.
@@ -294,15 +295,15 @@ public class GoBuildManager extends BuildManager {
 				
 				@Override
 				public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
-					Indexable<String> argumentsOriginal = getEffectiveEvaluatedArguments();
+					Indexable<String> commandLineOriginal = getEffectiveProccessCommandLine();
 					
-					if(!isMultipleGoPackagesArguments(argumentsOriginal)) {
-						runBuildToolAndProcessOutput(getToolProcessBuilder(argumentsOriginal), pm);
+					if(!isMultipleGoPackagesCommandInvocation(commandLineOriginal)) {
+						runBuildToolAndProcessOutput(getProcessBuilder3(commandLineOriginal), pm);
 						return;
 					}
 					
-					ArrayList2<String> argumentsTemplate = new ArrayList2<>(argumentsOriginal);
-					int lastArgIx = argumentsOriginal.size() - 1;
+					ArrayList2<String> argumentsTemplate = new ArrayList2<>(commandLineOriginal);
+					int lastArgIx = commandLineOriginal.size() - 1;
 					String goPackageToBuild = StringUtil.trimEnd(argumentsTemplate.get(lastArgIx), "...");
 					
 					GoWorkspaceLocation goWorkspace = goEnv.getGoPath().findGoPathEntry(getProjectLocation());
@@ -315,7 +316,7 @@ public class GoBuildManager extends BuildManager {
 					for (GoPackageName goPackage : sourcePackages) {
 						argumentsTemplate.set(lastArgIx, goPackage.getFullNameAsString());
 						
-						runBuildToolAndProcessOutput(getToolProcessBuilder(argumentsTemplate), pm);
+						runBuildToolAndProcessOutput(getProcessBuilder3(argumentsTemplate), pm);
 					}
 					
 				}
@@ -344,8 +345,8 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler,
-				Path buildToolPath, String buildArguments) throws CommonException {
-			return new GoBuildTargetOperation(bt, opHandler, buildToolPath, buildArguments);
+				String buildArguments) throws CommonException {
+			return new GoBuildTargetOperation(bt, opHandler, buildArguments);
 		}
 		
 	}

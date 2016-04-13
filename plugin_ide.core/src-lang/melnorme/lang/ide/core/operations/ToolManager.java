@@ -18,25 +18,32 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.VariablesPlugin;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
+import melnorme.lang.ide.core.operations.build.VariablesResolver;
+import melnorme.lang.ide.core.operations.build.VariablesResolver.SupplierAdapterVar;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
-import melnorme.lang.tooling.ops.IOperationService;
+import melnorme.lang.tooling.ops.IToolOperationService;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.EventSource;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -68,20 +75,44 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
 	/* -----------------  ----------------- */
 	
+	protected final IStringVariableManager globalVarManager = VariablesPlugin.getDefault().getStringVariableManager();
+	
+	public VariablesResolver getVariablesManager(IProject project) {
+		VariablesResolver variablesResolver = new VariablesResolver(globalVarManager);
+		
+		setupVariableResolver(variablesResolver, project);
+		return variablesResolver;
+	}
+	
+	protected void setupVariableResolver(VariablesResolver variablesResolver, IProject project) {
+		/* FIXME: use Supplier*/
+		DomainField<String> sdkPathField = new DomainField<String>() {
+			@Override
+			public String getFieldValue() {
+				return ToolchainPreferences.SDK_PATH2.getStoredValue(project);
+			}
+		};
+		variablesResolver.putDynamicVar(
+			new SupplierAdapterVar(LangCore_Actual.VAR_NAME_SdkToolPath, "xxxxx", sdkPathField));
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public ProcessBuilder createSDKProcessBuilder(IProject project, String... sdkOptions)
 			throws CommonException {
 		Path sdkToolPath = getSDKToolPath(project);
 		return createToolProcessBuilder(project, sdkToolPath, sdkOptions);
 	}
 	
-	public ProcessBuilder createToolProcessBuilder(IProject project, Path toolPath, String... toolArguments)
+	public final ProcessBuilder createToolProcessBuilder(IProject project, Path toolPath, String... toolArguments)
 			throws CommonException {
 		Location projectLocation = project == null ? null : ResourceUtils.getProjectLocation2(project);
-		return createToolProcessBuilder(toolPath, projectLocation, toolArguments);
+		ArrayList2<String> commandLine = ProcessUtils.createCommandLine(toolPath, toolArguments);
+		return createToolProcessBuilder(commandLine, projectLocation);
 	}
 	
-	public ProcessBuilder createToolProcessBuilder(Path toolCmdPath, Location workingDir, String... arguments) {
-		return ProcessUtils.createProcessBuilder(toolCmdPath, workingDir, true, arguments);
+	public ProcessBuilder createToolProcessBuilder(Indexable<String> commandLine, Location workingDir) {
+		return ProcessUtils.createProcessBuilder(commandLine, workingDir);
 	}
 	
 	public ProcessBuilder createSimpleProcessBuilder(IProject project, String... commands) 
@@ -232,24 +263,13 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	/** 
 	 * Helper to start engine client processes in the tool manager. 
 	 */
-	public class ToolManagerEngineToolRunner2 implements IOperationService {
-		
-		protected final boolean throwOnNonZeroStatus;
-		
-		public ToolManagerEngineToolRunner2() {
-			this(false);
-		}
-		
-		@Deprecated
-		protected ToolManagerEngineToolRunner2(boolean throwOnNonZeroStatus) {
-			this.throwOnNonZeroStatus = throwOnNonZeroStatus;
-		}
+	public class ToolManagerEngineToolRunner implements IToolOperationService {
 		
 		@Override
 		public ExternalProcessResult runProcess(ProcessBuilder pb, String input, ICancelMonitor cm) 
 				throws CommonException, OperationCancellation {
 			IOperationConsoleHandler handler = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
-			return new RunToolTask(handler, pb, cm).runProcess(input, throwOnNonZeroStatus);
+			return new RunToolTask(handler, pb, cm).runProcess(input);
 		}
 		
 		@Override
