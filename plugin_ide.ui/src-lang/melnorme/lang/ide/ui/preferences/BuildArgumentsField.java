@@ -26,6 +26,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
 
+/* FIXME: rename this, rework*/
 public class BuildArgumentsField extends EnablementButtonTextField {
 	
 	protected final CommonGetter<String> getDefaultBuildTargetArguments;
@@ -33,7 +34,7 @@ public class BuildArgumentsField extends EnablementButtonTextField {
 	
 	public BuildArgumentsField(CommonGetter<String> getDefaultBuildTargetArguments, 
 			VariablesResolver variablesResolver) {
-		super(LangUIMessages.Fields_BuildArguments, LABEL_UseDefault, LangUIMessages.Fields_VariablesButtonLabel);
+		super(LangUIMessages.Fields_BuildCommand, LABEL_UseDefault, LangUIMessages.Fields_VariablesButtonLabel);
 		defaultTextStyle = SWT.MULTI | SWT.BORDER;
 		
 		this.getDefaultBuildTargetArguments = assertNotNull(getDefaultBuildTargetArguments);

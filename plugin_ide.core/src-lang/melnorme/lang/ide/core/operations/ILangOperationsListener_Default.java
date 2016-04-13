@@ -60,6 +60,7 @@ public interface ILangOperationsListener_Default {
 	
 	/* -----------------  ----------------- */
 	
+	/* FIXME: rename this */
 	public interface IOperationConsoleHandler {
 		
 		void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper);

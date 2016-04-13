@@ -30,7 +30,7 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		);
 	}
 	
-	protected class LANGUAGE_BuildType extends BuildType {
+	public static class LANGUAGE_BuildType extends BuildType {
 		public LANGUAGE_BuildType(String name) {
 			super(name);
 		}
@@ -46,19 +46,21 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt,
-				IOperationConsoleHandler opHandler, String buildArguments) {
-			return new LANGUAGE_BuildTargetOperation(bt, opHandler, buildArguments);
+		public CommonBuildTargetOperation getBuildOperation(
+				ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+		) throws CommonException {
+			return new LANGUAGE_BuildTargetOperation(toolManager, bt, opHandler);
 		}
 	}
 	
 	/* ----------------- Build ----------------- */
 	
-	protected class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
+	protected static class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public LANGUAGE_BuildTargetOperation(BuildTarget buildTarget,
-				IOperationConsoleHandler opHandler, String buildArguments) {
-			super(LANGUAGE_BuildManager.this.toolManager, buildTarget, opHandler, buildArguments);
+		public LANGUAGE_BuildTargetOperation(
+				ToolManager toolManager, BuildTarget buildTarget, IOperationConsoleHandler opHandler
+		) throws CommonException {
+			super(toolManager, buildTarget, opHandler);
 		}
 		
 		@Override

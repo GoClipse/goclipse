@@ -326,8 +326,8 @@ public abstract class BuildManager {
 		}
 		
 		public abstract CommonBuildTargetOperation getBuildOperation(
-			BuildTarget bt, IOperationConsoleHandler opHandler, String buildArguments
-		);
+				ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+		) throws CommonException;
 	}
 	
 	protected final Indexable<BuildType> buildTypes = initBuildTypes();
@@ -478,7 +478,7 @@ public abstract class BuildManager {
 	public CompositeBuildOperation newBuildOperation(IOperationConsoleHandler opHandler, IProject project, 
 			boolean clearMarkers, Collection2<BuildTarget> targetsToBuild) throws CommonException {
 		ArrayList2<ICommonOperation> buildCommands = 
-				targetsToBuild.mapx((buildTarget) -> buildTarget.getBuildOperation(opHandler));
+				targetsToBuild.mapx((buildTarget) -> buildTarget.getBuildOperation(toolManager, opHandler));
 		
 		return newTopLevelBuildOperation(opHandler, project, clearMarkers, buildCommands);
 	}

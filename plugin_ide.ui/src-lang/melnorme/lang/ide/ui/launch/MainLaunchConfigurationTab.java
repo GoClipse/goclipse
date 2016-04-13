@@ -70,7 +70,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	protected BuildTargetSettingsComponent init_BuildTargetSettingsComponent() {
 		BuildTargetSettingsComponent component = new BuildTargetSettingsComponent(
-			this::getDefaultBuildTargetArguments,
+			this::getDefaultBuildTargetCommand,
 			this::getDefaultProgramPath
 		) {
 			{ createEnablementFields = false; }
@@ -98,8 +98,8 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		}
 	};
 	
-	protected String getDefaultBuildTargetArguments() throws CommonException {
-		return buildTargetSource.getBuildTarget().getEffectiveBuildArguments();
+	protected String getDefaultBuildTargetCommand() throws CommonException {
+		return buildTargetSource.getBuildTarget().getEffectiveBuildCommand();
 	}
 	
 	protected String getDefaultProgramPath() throws CommonException {

@@ -18,6 +18,7 @@ import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
@@ -124,16 +125,16 @@ public class BuildTarget extends AbstractValidator {
 	
 	/* -----------------  ----------------- */
 	
-	public String getDefaultBuildArguments() throws CommonException {
+	public String getDefaultBuildCommand() throws CommonException {
 		return getBuildType().getDefaultCommandLine(this);
 	}
 	
-	public String getEffectiveBuildArguments() throws CommonException {
+	public String getEffectiveBuildCommand() throws CommonException {
 		String buildOptions = targetData.getBuildArguments();
 		if(buildOptions != null) {
 			return buildOptions;
 		}
-		return getDefaultBuildArguments();
+		return getDefaultBuildCommand();
 	}
 	
 	/* -----------------  ----------------- */
@@ -183,15 +184,15 @@ public class BuildTarget extends AbstractValidator {
 	/* -----------------  ----------------- */
 	
 	public void validateForBuild() throws CommonException {
-		getEffectiveBuildArguments();
+		getEffectiveBuildCommand();
+		/* FIXME: validation issue */
 		getValidExecutableLocation();
 	}
 	
-	public CommonBuildTargetOperation getBuildOperation(IOperationConsoleHandler opHandler)
+	public CommonBuildTargetOperation getBuildOperation(ToolManager toolManager, IOperationConsoleHandler opHandler)
 			throws CommonException {
 		assertNotNull(opHandler);
-		String buildArguments = getEffectiveBuildArguments();
-		return getBuildType().getBuildOperation(this, opHandler, buildArguments);
+		return getBuildType().getBuildOperation(toolManager, this, opHandler);
 	}
 	
 }

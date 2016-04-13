@@ -54,7 +54,7 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	}
 	protected BuildTargetSettingsComponent init_createBuildTargetSettingsComponent() {
 		return new BuildTargetSettingsComponent(
-			this::getDefaultBuildArguments, 
+			this::getDefaultBuildCommand, 
 			this::getDefaultExecutablePath
 		);
 	}
@@ -140,8 +140,8 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 		return buildTargetSource.getBuildTarget();
 	}
 	
-	public String getDefaultBuildArguments() throws CommonException {
-		return getOriginalBuildTarget().getDefaultBuildArguments();
+	public String getDefaultBuildCommand() throws CommonException {
+		return getOriginalBuildTarget().getDefaultBuildCommand();
 	}
 	
 	public String getDefaultExecutablePath() throws CommonException {

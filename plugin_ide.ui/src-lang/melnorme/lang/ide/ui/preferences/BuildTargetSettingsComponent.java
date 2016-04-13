@@ -37,7 +37,7 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 	protected final CheckBoxField normalEnableField;
 	protected final CheckBoxField autoEnableField;
 	
-	protected final CommonGetter<String> getDefaultBuildTargetArguments;
+	protected final CommonGetter<String> getDefaultBuildCommand;
 	public final BuildArgumentsField buildArgumentsField;
 	protected final CommonGetter<String> getDefaultProgramPath;
 	public final EnablementButtonTextField programPathField;
@@ -46,10 +46,10 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 	protected BuildTargetData btData = new BuildTargetData();
 	
 	public BuildTargetSettingsComponent(
-			CommonGetter<String> getDefaultBuildArguments, 
+			CommonGetter<String> getDefaultBuildCommand, 
 			CommonGetter<String> getDefaultProgramPath
 	) {
-		this.getDefaultBuildTargetArguments = assertNotNull(getDefaultBuildArguments);
+		this.getDefaultBuildCommand = assertNotNull(getDefaultBuildCommand);
 		this.getDefaultProgramPath = assertNotNull(getDefaultProgramPath);
 		
 		normalEnableField = new CheckBoxField(BuildManagerMessages.LABEL_EnableForNormalBuild);
@@ -71,7 +71,7 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 	
 	protected BuildArgumentsField init_createArgumentsField() {
 		VariablesResolver varResolver = buildManager.getToolManager().getVariablesManager(null);
-		return new BuildArgumentsField(getDefaultBuildTargetArguments, varResolver);
+		return new BuildArgumentsField(getDefaultBuildCommand, varResolver);
 	}
 	
 	protected EnablementButtonTextField init_createProgramPathField() {	
