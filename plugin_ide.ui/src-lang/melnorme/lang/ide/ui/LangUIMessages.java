@@ -50,7 +50,8 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 	public static final String BuildTargetSettings_ProgramPathField_title = 
 			"(Optional) Path of generated executable:";
 	
-	public static final String Fields_BuildArguments = "Build Arguments:";
+	public static final String Fields_BuildCommand = 
+			"Build Command:";
 
 	
 	public static final String Fields_VariablesButtonLabel = 

@@ -178,9 +178,10 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler,
-				String buildArguments) throws CommonException {
-			return new GoBuildTargetOperation(bt, opHandler, buildArguments);
+		public CommonBuildTargetOperation getBuildOperation(
+				ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+		) throws CommonException {
+			return new GoBuildTargetOperation(toolManager, bt, opHandler);
 		}
 		
 	}
@@ -191,9 +192,10 @@ public class GoBuildManager extends BuildManager {
 		protected final Location sourceRootDir;
 		protected Location workingDirectory;
 		
-		public GoBuildTargetOperation(BuildTarget buildTarget, IOperationConsoleHandler opHandler, 
-				String buildArguments) throws CommonException {
-			super(GoBuildManager.this.toolManager, buildTarget, opHandler, buildArguments);
+		public GoBuildTargetOperation(
+				ToolManager toolManager, BuildTarget buildTarget, IOperationConsoleHandler opHandler 
+		) throws CommonException {
+			super(toolManager, buildTarget, opHandler);
 			
 			Location projectLocation = getProjectLocation();
 			
@@ -283,10 +285,10 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTarget buildTarget,
-				IOperationConsoleHandler opHandler, String buildArguments
+		public CommonBuildTargetOperation getBuildOperation(
+				ToolManager toolManager, BuildTarget buildTarget, IOperationConsoleHandler opHandler
 		) throws CommonException {
-			return new GoBuildTargetOperation(buildTarget, opHandler, buildArguments) {
+			return new GoBuildTargetOperation(toolManager, buildTarget, opHandler) {
 				{
 					// We need to change working directory to bin, 
 					// because our commands create executable files in the working directory.
@@ -344,9 +346,10 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler,
-				String buildArguments) throws CommonException {
-			return new GoBuildTargetOperation(bt, opHandler, buildArguments);
+		public CommonBuildTargetOperation getBuildOperation(
+				ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+		) throws CommonException {
+			return new GoBuildTargetOperation(toolManager, bt, opHandler);
 		}
 		
 	}

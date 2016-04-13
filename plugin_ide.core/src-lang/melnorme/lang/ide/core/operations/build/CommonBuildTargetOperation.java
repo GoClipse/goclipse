@@ -36,9 +36,9 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	protected final BuildType buildType;
 	protected final String buildCommand;
 	
-	public CommonBuildTargetOperation(ToolManager toolManager, BuildTarget buildTarget, 
-			IOperationConsoleHandler opHandler, String buildCommand
-	) {
+	public CommonBuildTargetOperation(
+			ToolManager toolManager, BuildTarget buildTarget, IOperationConsoleHandler opHandler
+	) throws CommonException {
 		super(toolManager, assertNotNull(buildTarget).getProject());
 		this.buildTargetName = buildTarget.getBuildTargetName();
 		this.opHandler = assertNotNull(opHandler);
@@ -46,7 +46,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		assertNotNull(buildTarget);
 		this.buildConfiguration = assertNotNull(buildTarget.getBuildConfiguration());
 		this.buildType = assertNotNull(buildTarget.getBuildType());
-		this.buildCommand = assertNotNull(buildCommand);
+		this.buildCommand = assertNotNull(buildTarget.getEffectiveBuildCommand());
 	}
 	
 	public BuildConfiguration getConfiguration() {
@@ -81,7 +81,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		return "Building " + getBuildTargetName();
 	}
 	
-	protected Indexable<String> getEffectiveProccessCommandLine() throws CommonException {
+	public Indexable<String> getEffectiveProccessCommandLine() throws CommonException {
 		return evaluateBuildCommand(buildCommand);
 	}
 	
