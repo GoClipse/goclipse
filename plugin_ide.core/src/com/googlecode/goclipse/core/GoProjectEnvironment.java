@@ -102,6 +102,19 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		return goEnv;
 	}
 	
+	public static Location getAssociatedSourceFolder(GoPath goPath, Location projectLoc) throws CommonException {
+		
+		if(goPath.findExactGoPathEntry(projectLoc) != null) {
+			return projectLoc.resolve_valid("src");
+		}
+		
+		if(goPath.findGoPathEntryForSourcePath(projectLoc) != null) {
+			return projectLoc;
+		}
+		
+		throw new CommonException(GoCoreMessages.ERROR_GOPATH_DoesNotContainProject());
+	}
+	
 	public static ArrayList2<GoPackageName> findSourcePackages(IProject project, GoEnvironment goEnvironment)
 			throws CoreException {
 		return goEnvironment.getGoPath().findGoSourcePackages(ResourceUtils.getProjectLocation(project));

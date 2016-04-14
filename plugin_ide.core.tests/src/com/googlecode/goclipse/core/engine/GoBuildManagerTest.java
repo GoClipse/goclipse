@@ -16,44 +16,64 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.googlecode.goclipse.core.CommonGoCoreTest;
+import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.operations.GoBuildManager;
+import com.googlecode.goclipse.tooling.CommonGoToolingTest;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NoopOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.tests.TestsWorkingDir;
 
 public class GoBuildManagerTest extends CommonGoCoreTest {
 	
 	public final static String PROJ_NAME = GoBuildManagerTest.class.getSimpleName();
 	
-	protected static IProject project;
+	public static final Location TESTS_GO_WORKSPACE = TestsWorkingDir.getWorkingDir("TestsGoWorkspace");
 	
-	@BeforeClass
-	public static void classSetup() throws CoreException {
+	protected GoBuildManager buildMgr = LangCore.getBuildManager();
+	protected IProject project;
+	protected IProject project2;
+	
+	@Before
+	public void classSetup() throws CoreException, CommonException {
 		project = createLangProject(PROJ_NAME, true);
+		
+		project2 = ResourceUtils.createAndOpenProject(PROJ_NAME + "_SubGOPATHEntry", 
+			epath(TESTS_GO_WORKSPACE.resolve_fromValid("src/package")), true, null);
+		setupLangProject(project2, false);
+		
+		GoEnvironmentPrefs.GO_ROOT.setValue(project, CommonGoToolingTest.MOCK_GOROOT.toString());
+		GoEnvironmentPrefs.GO_ROOT.setValue(project2, CommonGoToolingTest.MOCK_GOROOT.toString());
+		ToolchainPreferences.USE_PROJECT_SETTINGS.setValue(project, true);
+		ToolchainPreferences.USE_PROJECT_SETTINGS.setValue(project2, true);
 	}
 
-	@AfterClass
-	public static void classTeardown() throws CoreException {
+	@After
+	public void classTeardown() throws CoreException {
 		ResourceUtils.tryDeleteProject(PROJ_NAME);
 	}
 	
-	protected static Location getProjectLocation() {
+	protected Location getProjectLocation() {
 		return ResourceUtils.loc(project.getLocation());
 	}
 	
-	protected BuildManager getBuildManager() {
-		return LangCore.getBuildManager();
+	protected ToolManager getToolManager() {
+		return buildMgr.getToolManager();
 	}
 	
 	/* -----------------  ----------------- */
@@ -61,7 +81,6 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		GoBuildManager buildMgr = LangCore.getBuildManager();
 		
 		ProjectBuildInfo pbi = buildMgr.getBuildInfo(project);
 		assertTrue(pbi != null);
@@ -73,6 +92,8 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		
 		testGetBuildTargetFor(pbi, "go_foo #"+BUILD_TYPE_BuildTests, "go_foo", BUILD_TYPE_BuildTests, "go_foo.test");
 		testGetBuildTargetFor(pbi, "go_foo #"+BUILD_TYPE_RunTests, "go_foo", BUILD_TYPE_RunTests, null);
+		
+		testBuildOperation();
 	}
 	
 	protected BuildTarget testGetBuildTargetFor(ProjectBuildInfo buildInfo, String targetName, String buildConfig, 
@@ -82,7 +103,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	
 	protected BuildTarget testGetBuildTargetFor(ProjectBuildInfo buildInfo, String targetName, String goPackageName, 
 			String buildType, String relArtifactPath) throws CommonException, CoreException {
-		BuildTarget bt = getBuildManager().getBuildTarget_x(buildInfo, targetName, false, true);
+		BuildTarget bt = buildMgr.getBuildTarget_x(buildInfo, targetName, false, true);
 		assertAreEqual(bt.getTargetName(), targetName);
 
 		assertAreEqual(bt.getBuildConfigName(), goPackageName);
@@ -100,6 +121,58 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		}
 		
 		return bt;
+	}
+	
+	protected void testBuildOperation() throws CommonException, OperationCancellation {
+		BuildTarget bt = buildMgr.getBuildInfo(project).getBuildTargets().iterator().next();
+		
+		GoEnvironmentPrefs.GO_ROOT.setValue(project, "");
+		
+		// Test GOROOT validation
+		verifyThrows(() -> getBuildOperation(bt), null, "GOROOT is empty");
+		
+		// setup GOROOT 
+		GoEnvironmentPrefs.GO_ROOT.setValue(project, CommonGoToolingTest.MOCK_GOROOT.toString());
+		
+		verifyThrows(() -> getBuildOperation(bt), null, "location does not contain a `src`");
+		// setup src dir
+		createSourceDir(getProjectLocation());
+		
+		// Test operation working directory (for projects that are a Go-workspace)
+		assertEquals(
+			getBuildOperation(bt).getToolProcessBuilder().directory().toString(), 
+			srcLoc(getProjectLocation()).toString());
+		
+		/* ----------------- setup a project not CONTAINED in a Go-workspace 'src' entry ----------------- */
+		Location projectParentLoc = getProjectLocation().resolve_fromValid("..");
+		GoEnvironmentPrefs.GO_PATH.setValue(project, projectParentLoc.toString());
+		GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH.setValue(project, false);
+//		createSourceDir(projectParentLoc);
+		
+		verifyThrows(() -> getBuildOperation(bt), null, "Project location is not part of the GOPATH");
+
+		
+		/* -----------------  ----------------- */
+		GoEnvironmentPrefs.GO_PATH.setValue(project2, TESTS_GO_WORKSPACE.toString());
+		GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH.setValue(project2, false);
+		BuildTarget bt2 = buildMgr.getBuildInfo(project2).getBuildTargets().iterator().next();
+		
+		// Test operation working directory
+		assertEquals(
+			getBuildOperation(bt2).getToolProcessBuilder().directory().toString(), 
+			ResourceUtils.loc(project2.getLocation()).toString());
+	}
+	
+	protected void createSourceDir(Location projectLoc) {
+		assertTrue(srcLoc(projectLoc).toFile().mkdir());
+	}
+	
+	protected Location srcLoc(Location projectLoc) {
+		return projectLoc.resolve_fromValid("src");
+	}
+	
+	protected CommonBuildTargetOperation getBuildOperation(BuildTarget bt) throws CommonException {
+		return bt.getBuildOperation(getToolManager(), new NoopOperationConsoleHandler());
 	}
 	
 }

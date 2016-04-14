@@ -86,6 +86,8 @@ public class GoEnvironmentTest extends CommonGoToolingTest {
 		
 		GoEnvironment goEnv = SAMPLE_GOEnv_1;
 		
+		goEnv.validate();
+		
 		Location goRootSrc = goEnv.getGoRoot_Location().resolve_valid("src");
 		
 		assertAreEqual(goEnv.findGoPackageForSourceFile(goRootSrc.resolve_valid("pack/m.go")), 

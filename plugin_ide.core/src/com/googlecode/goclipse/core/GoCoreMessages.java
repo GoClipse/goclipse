@@ -31,4 +31,8 @@ public interface GoCoreMessages {
 				+ "but location does not contain a `src` directory. ", location);
 	}
 	
+	static String ERROR_GOPATH_DoesNotContainProject() {
+		return "Invalid GOPATH: Project location is not part of the GOPATH (or a GOPATH 'src' entry).";
+	}
+	
 }

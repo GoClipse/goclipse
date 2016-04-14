@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Map;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
@@ -55,7 +54,7 @@ public class GoEnvironment {
 		return goPath;
 	}
 	
-	public List<String> getGoPathEntries() {
+	public Indexable<String> getGoPathEntries() {
 		return goPath.getGoPathEntries();
 	}
 	

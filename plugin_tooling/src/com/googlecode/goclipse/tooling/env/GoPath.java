@@ -10,20 +10,18 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.env;
 
-import static java.util.Collections.unmodifiableList;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 
 import com.googlecode.goclipse.tooling.GoPackageName;
 
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 /**
@@ -33,7 +31,7 @@ public class GoPath {
 	
 	public static final String SRC_DIR = "src";
 	
-	protected final List<String> goPathElements;
+	protected final Indexable<String> goPathElements;
 	
 	public GoPath(String goPathString) {
 		this(StringUtil.splitToList(goPathString, File.pathSeparator));
@@ -47,10 +45,10 @@ public class GoPath {
 				newElements.add(string);
 			}
 		}
-		this.goPathElements = unmodifiableList(new ArrayList<>(newElements));
+		this.goPathElements = new ArrayList2<>(newElements);
 	}
 	
-	public List<String> getGoPathEntries() {
+	public Indexable<String> getGoPathEntries() {
 		return goPathElements;
 	}
 	
@@ -72,13 +70,26 @@ public class GoPath {
 		return StringUtil.collToString(goPathElements, File.pathSeparator);
 	}
 	
+	public GoWorkspaceLocation findExactGoPathEntry(Location location) {
+		assertNotNull(location);
+		
+		for (String pathElement : goPathElements) {
+			Location pathElementLoc = Location.createValidOrNull(pathElement);
+			
+			if(pathElementLoc != null && pathElementLoc.equals(location)) {
+				return new GoWorkspaceLocation(pathElementLoc);
+			}
+		}
+		return null;
+	}
+	
 	/** @return the GoWorkspaceLocation from the GOPATH entries that contains the given goPathSubLocation. */
 	public GoWorkspaceLocation findGoPathEntry(Location goPathSubLocation) {
 		if(goPathSubLocation == null) {
 			return null;
 		}
 		for (String pathElement : goPathElements) {
-			Location pathElementLoc = Location.createValidOrNull(PathUtil.createPathOrNull(pathElement));
+			Location pathElementLoc = Location.createValidOrNull(pathElement);
 			
 			if(pathElementLoc != null && goPathSubLocation.startsWith(pathElementLoc)) {
 				return new GoWorkspaceLocation(pathElementLoc);

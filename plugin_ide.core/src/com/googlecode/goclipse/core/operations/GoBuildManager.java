@@ -189,7 +189,7 @@ public class GoBuildManager extends BuildManager {
 	public static class GoBuildTargetOperation extends CommonBuildTargetOperation {
 		
 		protected final GoEnvironment goEnv;
-		protected final Location sourceRootDir;
+		protected final Location sourceBaseDir;
 		protected Location workingDirectory;
 		
 		public GoBuildTargetOperation(
@@ -197,25 +197,22 @@ public class GoBuildManager extends BuildManager {
 		) throws CommonException {
 			super(toolManager, buildTarget, opHandler);
 			
-			Location projectLocation = getProjectLocation();
+			Location projectLoc = getProjectLocation();
 			
 			goEnv = GoProjectEnvironment.getValidatedGoEnvironment(project);
-			if(GoProjectEnvironment.isProjectInsideGoPathSourceFolder(project, goEnv.getGoPath())) {
-				sourceRootDir = projectLocation;
-			} else {
-				sourceRootDir = projectLocation.resolve_valid("src");
-				
+			sourceBaseDir = GoProjectEnvironment.getAssociatedSourceFolder(goEnv.getGoPath(), projectLoc);
+			
+			if(sourceBaseDir.getParent().equals(projectLoc)) {
 				checkGoFilesInSourceRoot();
 			}
-			workingDirectory = sourceRootDir;
+			
+			workingDirectory = sourceBaseDir;
 		}
 		
 		@Override
 		protected ProcessBuilder getProcessBuilder3(Indexable<String> commandLine)
 				throws CommonException {
-			ProcessBuilder pb = getToolManager().createToolProcessBuilder(commandLine, getProjectLocation());
-			/*FIXME: BUG here workingDirectory*/
-//			ProcessBuilder pb = getToolManager().createToolProcessBuilder(commandLine, workingDirectory);
+			ProcessBuilder pb = getToolManager().createToolProcessBuilder(commandLine, workingDirectory);
 			
 			goEnv.setupProcessEnv(pb, true);
 			return pb;
@@ -224,15 +221,15 @@ public class GoBuildManager extends BuildManager {
 		protected void checkGoFilesInSourceRoot() throws CommonException {
 			CheckSrcFolderRootFilesWithNoPackage srcCheck = new CheckSrcFolderRootFilesWithNoPackage();
 			
-			if(!sourceRootDir.toFile().exists()) {
-				throw new CommonException(GoCoreMessages.ERROR_ProjectDoesNotHaveSrcFolder(sourceRootDir.getParent()));
+			if(!sourceBaseDir.toFile().exists()) {
+				throw new CommonException(GoCoreMessages.ERROR_ProjectDoesNotHaveSrcFolder(sourceBaseDir.getParent()));
 			}
 			
-			srcCheck.checkDir(sourceRootDir);
+			srcCheck.checkDir(sourceBaseDir);
 			
 			if(srcCheck.containsGoSources) {
 				LangCore.getToolManager().notifyMessage(StatusLevel.WARNING, "Go build: Warning!", 
-					GoCoreMessages.ERROR_SrcRootContainsGoFiles(sourceRootDir));
+					GoCoreMessages.ERROR_SrcRootContainsGoFiles(sourceBaseDir));
 			}
 		}
 		
