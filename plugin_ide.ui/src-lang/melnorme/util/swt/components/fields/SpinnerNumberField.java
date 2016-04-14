@@ -18,10 +18,10 @@ import org.eclipse.swt.widgets.Spinner;
 
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.FieldComponent;
-import melnorme.util.swt.components.LabelledFieldComponent;
+import melnorme.util.swt.components.FieldWidget;
+import melnorme.util.swt.components.LabelledFieldWidget;
 
-public class SpinnerNumberField extends LabelledFieldComponent<Integer> {
+public class SpinnerNumberField extends LabelledFieldWidget<Integer> {
 	
 	protected Spinner spinner;
 	
@@ -59,7 +59,7 @@ public class SpinnerNumberField extends LabelledFieldComponent<Integer> {
 	}
 	
 	@Override
-	protected void doUpdateComponentFromValue() {
+	protected void doUpdateWidgetFromValue() {
 		spinner.setSelection(getFieldValue());
 	}
 	
@@ -86,7 +86,7 @@ public class SpinnerNumberField extends LabelledFieldComponent<Integer> {
 	
 	/* -----------------  ----------------- */
 	
-	public static Spinner createFieldSpinner(FieldComponent<Integer> field, Composite parent, int style) {
+	public static Spinner createFieldSpinner(FieldWidget<Integer> field, Composite parent, int style) {
 		final Spinner spinner = new Spinner(parent, style);
 		spinner.addModifyListener(new ModifyListener() {
 			@Override

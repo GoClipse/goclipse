@@ -58,12 +58,12 @@ public abstract class AbstractDisableableWidget extends AbstractWidgetExt
 	}
 	
 	@Override
-	public void updateComponentFromInput() {
+	public void updateWidgetFromInput() {
 		updateControlEnablement2();
-		doUpdateComponentFromInput2();
+		doUpdateWidgetFromInput();
 	}
 	
-	protected void doUpdateComponentFromInput2() {
+	protected void doUpdateWidgetFromInput() {
 	}
 	
 }

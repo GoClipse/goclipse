@@ -26,7 +26,7 @@ import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ICommonOperation;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -326,7 +326,7 @@ public abstract class BuildManager {
 		}
 		
 		public abstract CommonBuildTargetOperation getBuildOperation(
-				ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+				ToolManager toolManager, BuildTarget bt, IOperationMonitor opMonitor
 		) throws CommonException;
 	}
 	
@@ -449,12 +449,12 @@ public abstract class BuildManager {
 	
 	/* ----------------- Build operations ----------------- */
 	
-	protected BuildOperationCreator createBuildOperationCreator(IOperationConsoleHandler opHandler, IProject project) {
-		return new BuildOperationCreator(project, opHandler);
+	protected BuildOperationCreator createBuildOperationCreator(IOperationMonitor opMonitor, IProject project) {
+		return new BuildOperationCreator(project, opMonitor);
 	}
 	
-	public ICommonOperation newProjectClearMarkersOperation(IOperationConsoleHandler opHandler, IProject project) {
-		return createBuildOperationCreator(opHandler, project).newClearBuildMarkersOperation();
+	public ICommonOperation newProjectClearMarkersOperation(IOperationMonitor opMonitor, IProject project) {
+		return createBuildOperationCreator(opMonitor, project).newClearBuildMarkersOperation();
 	}
 	
 	public final CompositeBuildOperation newBuildTargetOperation(IProject project, BuildTarget buildTarget)
@@ -467,25 +467,25 @@ public abstract class BuildManager {
 		return newBuildOperation(null, project, true, targetsToBuild);
 	}
 	
-	public final CompositeBuildOperation newProjectBuildOperation(IOperationConsoleHandler opHandler, IProject project,
+	public final CompositeBuildOperation newProjectBuildOperation(IOperationMonitor opMonitor, IProject project,
 			boolean clearMarkers, boolean isAuto) throws CommonException {
 		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets(!isAuto);
-		return newBuildOperation(opHandler, project, clearMarkers, enabledTargets);
+		return newBuildOperation(opMonitor, project, clearMarkers, enabledTargets);
 	}
 	
 	/* ----------------- ----------------- */
 	
-	public CompositeBuildOperation newBuildOperation(IOperationConsoleHandler opHandler, IProject project, 
+	public CompositeBuildOperation newBuildOperation(IOperationMonitor opMonitor, IProject project, 
 			boolean clearMarkers, Collection2<BuildTarget> targetsToBuild) throws CommonException {
 		ArrayList2<ICommonOperation> buildCommands = 
-				targetsToBuild.mapx((buildTarget) -> buildTarget.getBuildOperation(toolManager, opHandler));
+				targetsToBuild.mapx((buildTarget) -> buildTarget.getBuildOperation(toolManager, opMonitor));
 		
-		return newTopLevelBuildOperation(opHandler, project, clearMarkers, buildCommands);
+		return newTopLevelBuildOperation(opMonitor, project, clearMarkers, buildCommands);
 	}
 	
-	public CompositeBuildOperation newTopLevelBuildOperation(IOperationConsoleHandler opHandler, IProject project,
+	public CompositeBuildOperation newTopLevelBuildOperation(IOperationMonitor opMonitor, IProject project,
 			boolean clearMarkers, Collection2<ICommonOperation> buildCommands) throws CommonException {
-		BuildOperationCreator buildOpCreator = createBuildOperationCreator(opHandler, project);
+		BuildOperationCreator buildOpCreator = createBuildOperationCreator(opMonitor, project);
 		
 		return buildOpCreator.newProjectBuildOperation(buildCommands, clearMarkers);
 	}

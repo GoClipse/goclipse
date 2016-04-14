@@ -32,11 +32,11 @@ public class GoOperationsConsoleUIHandler extends LangOperationsConsoleUIHandler
 	}
 	
 	@Override
-	protected LangOperationConsoleHandler createConsoleHandler(ProcessStartKind kind, ToolsConsole console,
+	protected OperationConsoleMonitor createConsoleHandler(ProcessStartKind kind, ToolsConsole console,
 			IOConsoleOutputStream stdOut, IOConsoleOutputStream stdErr) {
-		LangOperationConsoleHandler handler = super.createConsoleHandler(kind, console, stdOut, stdErr);
-		handler.errorOnNonZeroExitValueForBuild = true;
-		return handler;
+		OperationConsoleMonitor monitor = super.createConsoleHandler(kind, console, stdOut, stdErr);
+		monitor.errorOnNonZeroExitValueForBuild = true;
+		return monitor;
 	}
 	
 	@Override

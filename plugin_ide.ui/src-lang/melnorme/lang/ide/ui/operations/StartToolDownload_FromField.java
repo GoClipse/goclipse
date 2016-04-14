@@ -19,15 +19,14 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 
-import melnorme.lang.ide.ui.operations.StartBundleDownloadOperation;
 import melnorme.lang.ide.ui.preferences.pages.DownloadToolTextField;
-import melnorme.util.swt.components.FieldComponent;
+import melnorme.util.swt.components.FieldWidget;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public abstract class StartToolDownload_FromField extends StartBundleDownloadOperation {
 	
-	protected final FieldComponent<String> toolField;
+	protected final FieldWidget<String> toolField;
 	protected final String dlSource;
 	protected final String exeName;
 	

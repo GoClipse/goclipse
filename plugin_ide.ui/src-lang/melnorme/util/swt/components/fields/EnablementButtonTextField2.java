@@ -48,7 +48,7 @@ public abstract class EnablementButtonTextField2 extends AbstractCompositeWidget
 		
 		this.useDefaultField = createUseDefaultField(useDefaultCheckboxLabel);
 		useDefaultField.setFieldValue(true);
-		useDefaultField.addListener(this::updateComponentFromInput);
+		useDefaultField.addListener(this::updateWidgetFromInput);
 		addSubComponent(useDefaultField);
 		
 		this.buttonTextField = init_createButtonTextField();
@@ -86,7 +86,7 @@ public abstract class EnablementButtonTextField2 extends AbstractCompositeWidget
 	}
 	
 	@Override
-	protected void doUpdateComponentFromInput2() {
+	protected void doUpdateWidgetFromInput() {
 		if(isUseDefault()) {
 			String defaultFieldValue;
 			try {

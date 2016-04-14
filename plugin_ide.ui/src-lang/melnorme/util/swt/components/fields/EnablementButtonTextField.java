@@ -116,7 +116,7 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 		if(createUseDefaultComponent) {
 			Composite enablementTopControl = useDefaultField.createComponent(topControl);
 			GridDataFactory.swtDefaults().span(getPreferredLayoutColumns(), 1).applyTo(enablementTopControl);
-			useDefaultField.addListener(this::updateComponentFromInput);
+			useDefaultField.addListener(this::updateWidgetFromInput);
 		}
 	}
 	

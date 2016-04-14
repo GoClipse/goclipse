@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
@@ -30,14 +30,14 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public abstract class CommonBuildTargetOperation extends AbstractToolManagerOperation {
 	
 	protected final String buildTargetName;
-	protected final IOperationConsoleHandler opHandler;
+	protected final IOperationMonitor opHandler;
 	
 	protected final BuildConfiguration buildConfiguration;
 	protected final BuildType buildType;
 	protected final String buildCommand;
 	
 	public CommonBuildTargetOperation(
-			ToolManager toolManager, BuildTarget buildTarget, IOperationConsoleHandler opHandler
+			ToolManager toolManager, BuildTarget buildTarget, IOperationMonitor opHandler
 	) throws CommonException {
 		super(toolManager, assertNotNull(buildTarget).getProject());
 		this.buildTargetName = buildTarget.getBuildTargetName();

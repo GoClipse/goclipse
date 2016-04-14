@@ -28,12 +28,12 @@ import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractWidget;
-import melnorme.util.swt.components.FieldComponent;
+import melnorme.util.swt.components.FieldWidget;
 import melnorme.util.swt.components.IValidatableWidget;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
-import melnorme.utilbox.fields.IFieldView;
 import melnorme.utilbox.fields.IField;
+import melnorme.utilbox.fields.IFieldView;
 
 public abstract class AbstractPreferencesBlock2 extends AbstractWidget implements IValidatableWidget {
 	
@@ -56,12 +56,12 @@ public abstract class AbstractPreferencesBlock2 extends AbstractWidget implement
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void updateComponentFromInput() {
+	public void updateWidgetFromInput() {
 	}
 	
 	/* -----------------  Control Helpers  ----------------- */
 	
-	public <T> void createAndBindComponent(Composite parent, IGlobalPreference<T> pref, FieldComponent<T> field) {
+	public <T> void createAndBindComponent(Composite parent, IGlobalPreference<T> pref, FieldWidget<T> field) {
 		field.createComponentInlined(parent);
 		prefContext.bindToPreference(field, pref);
 	}

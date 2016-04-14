@@ -166,7 +166,7 @@ public class EditorAppearanceColorsComponent extends AbstractWidget implements I
 	}
 	
 	@Override
-	protected void updateComponentFromInput() {
+	protected void updateWidgetFromInput() {
 		for(EditorColorItem editorColorItem : editorColorItems) {
 			editorColorItem.loadFromStore(store);
 		}

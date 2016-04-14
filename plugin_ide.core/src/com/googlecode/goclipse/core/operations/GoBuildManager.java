@@ -30,7 +30,7 @@ import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -179,9 +179,9 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(
-				ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+				ToolManager toolManager, BuildTarget bt, IOperationMonitor opMonitor
 		) throws CommonException {
-			return new GoBuildTargetOperation(toolManager, bt, opHandler);
+			return new GoBuildTargetOperation(toolManager, bt, opMonitor);
 		}
 		
 	}
@@ -193,9 +193,9 @@ public class GoBuildManager extends BuildManager {
 		protected Location workingDirectory;
 		
 		public GoBuildTargetOperation(
-				ToolManager toolManager, BuildTarget buildTarget, IOperationConsoleHandler opHandler 
+				ToolManager toolManager, BuildTarget buildTarget, IOperationMonitor opMonitor 
 		) throws CommonException {
-			super(toolManager, buildTarget, opHandler);
+			super(toolManager, buildTarget, opMonitor);
 			
 			Location projectLoc = getProjectLocation();
 			
@@ -283,9 +283,9 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(
-				ToolManager toolManager, BuildTarget buildTarget, IOperationConsoleHandler opHandler
+				ToolManager toolManager, BuildTarget buildTarget, IOperationMonitor opMonitor
 		) throws CommonException {
-			return new GoBuildTargetOperation(toolManager, buildTarget, opHandler) {
+			return new GoBuildTargetOperation(toolManager, buildTarget, opMonitor) {
 				{
 					// We need to change working directory to bin, 
 					// because our commands create executable files in the working directory.
@@ -344,9 +344,9 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(
-				ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+				ToolManager toolManager, BuildTarget bt, IOperationMonitor opMonitor
 		) throws CommonException {
-			return new GoBuildTargetOperation(toolManager, bt, opHandler);
+			return new GoBuildTargetOperation(toolManager, bt, opMonitor);
 		}
 		
 	}
@@ -370,8 +370,8 @@ public class GoBuildManager extends BuildManager {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected BuildOperationCreator createBuildOperationCreator(IOperationConsoleHandler opHandler, IProject project) {
-		return new BuildOperationCreator(project, opHandler) {
+	protected BuildOperationCreator createBuildOperationCreator(IOperationMonitor opMonitor, IProject project) {
+		return new BuildOperationCreator(project, opMonitor) {
 			@Override
 			protected void addCompositeBuildOperationMessage() throws CommonException {
 				super.addCompositeBuildOperationMessage();

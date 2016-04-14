@@ -30,17 +30,17 @@ public interface ILangOperationsListener_Default {
 		ENGINE_TOOLS
 	}
 	
-	default IOperationConsoleHandler beginBuildOperation(boolean explicitConsoleNotify) {
+	default IOperationMonitor beginBuildOperation(boolean explicitConsoleNotify) {
 		return beginOperation(ProcessStartKind.BUILD, true, explicitConsoleNotify);
 	}
 	
-	default IOperationConsoleHandler beginOperation(ProcessStartKind kind) {
+	default IOperationMonitor beginOperation(ProcessStartKind kind) {
 		return beginOperation(kind, false, false);
 	}
 	
-	IOperationConsoleHandler beginOperation(ProcessStartKind kind, boolean clearConsole, boolean activateConsole);
+	IOperationMonitor beginOperation(ProcessStartKind kind, boolean clearConsole, boolean activateConsole);
 	
-	default IOperationConsoleHandler beginOperation(StartOperationOptions options) {
+	default IOperationMonitor beginOperation(StartOperationOptions options) {
 		return beginOperation(options.kind, options.clearConsole, options.activateConsole);
 	}
 	
@@ -60,8 +60,10 @@ public interface ILangOperationsListener_Default {
 	
 	/* -----------------  ----------------- */
 	
-	/* FIXME: rename this */
-	public interface IOperationConsoleHandler {
+	/**
+	 * A UI monitor handling the view of an IDE operation. (normally it will be a console).
+	 */
+	public interface IOperationMonitor {
 		
 		void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper);
 		
@@ -71,7 +73,7 @@ public interface ILangOperationsListener_Default {
 		
 	}
 	
-	public class NoopOperationConsoleHandler implements IOperationConsoleHandler {
+	public class NullOperationMonitor implements IOperationMonitor {
 		@Override
 		public void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper psh) {
 		}

@@ -193,7 +193,7 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 		} catch(CommonException e) {
 			return false;
 		}
-		updateComponentFromInput();
+		updateWidgetFromInput();
 		
 		return true;
 	}

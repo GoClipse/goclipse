@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -189,10 +189,10 @@ public class BuildTarget extends AbstractValidator {
 		getValidExecutableLocation();
 	}
 	
-	public CommonBuildTargetOperation getBuildOperation(ToolManager toolManager, IOperationConsoleHandler opHandler)
+	public CommonBuildTargetOperation getBuildOperation(ToolManager toolManager, IOperationMonitor opMonitor)
 			throws CommonException {
-		assertNotNull(opHandler);
-		return getBuildType().getBuildOperation(toolManager, this, opHandler);
+		assertNotNull(opMonitor);
+		return getBuildType().getBuildOperation(toolManager, this, opMonitor);
 	}
 	
 }

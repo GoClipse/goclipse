@@ -26,7 +26,7 @@ import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.tooling.CommonGoToolingTest;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NoopOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NullOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -172,7 +172,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	}
 	
 	protected CommonBuildTargetOperation getBuildOperation(BuildTarget bt) throws CommonException {
-		return bt.getBuildOperation(getToolManager(), new NoopOperationConsoleHandler());
+		return bt.getBuildOperation(getToolManager(), new NullOperationMonitor());
 	}
 	
 }

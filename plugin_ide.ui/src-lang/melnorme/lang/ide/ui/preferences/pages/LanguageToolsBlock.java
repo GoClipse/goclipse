@@ -18,7 +18,7 @@ import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.components.AbstractGroupWidget;
-import melnorme.util.swt.components.FieldComponent;
+import melnorme.util.swt.components.FieldWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.FileTextField;
@@ -48,9 +48,9 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 		
 		public final ButtonTextField toolLocationField;
 		
-		protected final FieldComponent<Boolean> startServerAutomatically = new CheckBoxField(
+		protected final FieldWidget<Boolean> startServerAutomatically = new CheckBoxField(
 			"Start " + getEngineToolName() + " server automatically");
-		protected final FieldComponent<Boolean> showErrorsDialog = new CheckBoxField(
+		protected final FieldWidget<Boolean> showErrorsDialog = new CheckBoxField(
 			"Show error dialog if " + getEngineToolName() + " failures occur during Content Assist");
 		
 		public EngineToolGroup() {

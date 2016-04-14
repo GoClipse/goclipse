@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -94,35 +94,35 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		assertTrue(getProject() != null);
 	}
 	
-	protected static HashMap2<String, IOperationConsoleHandler> workspaceOpHandlerMap = new HashMap2<>();
-	protected IOperationConsoleHandler workspaceOpHandler;
+	protected static HashMap2<String, IOperationMonitor> workspaceOpMonitorMap = new HashMap2<>();
+	protected IOperationMonitor workspaceOpMonitor;
 	
 	protected void prepareForBuild(IProgressMonitor pm) throws CoreException, OperationCancellation {
 		handleBeginWorkspaceBuild(pm);
 	}
 	
 	protected void handleBeginWorkspaceBuild(IProgressMonitor pm) throws CoreException, OperationCancellation {
-		workspaceOpHandler = workspaceOpHandlerMap.get(LangCore.NATURE_ID);
+		workspaceOpMonitor = workspaceOpMonitorMap.get(LangCore.NATURE_ID);
 		
-		if(workspaceOpHandler != null) {
+		if(workspaceOpMonitor != null) {
 			return;
 		}
-		workspaceOpHandler = getToolManager().startNewBuildOperation();
-		workspaceOpHandlerMap.put(LangCore.NATURE_ID, workspaceOpHandler);
+		workspaceOpMonitor = getToolManager().startNewBuildOperation();
+		workspaceOpMonitorMap.put(LangCore.NATURE_ID, workspaceOpMonitor);
 		
 		ResourceUtils.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
 			@Override
 			public void resourceChanged(IResourceChangeEvent event) {
 				int type = event.getType();
 				if(type == IResourceChangeEvent.POST_BUILD || type == IResourceChangeEvent.PRE_BUILD) {
-					workspaceOpHandler = null;
-					workspaceOpHandlerMap.remove(LangCore.NATURE_ID);
+					workspaceOpMonitor = null;
+					workspaceOpMonitorMap.remove(LangCore.NATURE_ID);
 					ResourceUtils.getWorkspace().removeResourceChangeListener(this);
 				}
 			}
 		}, IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.PRE_BUILD);
 		
-		workspaceOpHandler.writeInfoMessage(
+		workspaceOpMonitor.writeInfoMessage(
 			headerVeryBig(MessageFormat.format(MSG_Starting_LANG_Build, LangCore_Actual.NAME_OF_LANGUAGE))
 		);
 		
@@ -139,12 +139,12 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected void clearErrorMarkers(IProject project, IProgressMonitor pm) 
 			throws CoreException, OperationCancellation {
-		ICommonOperation clearMarkersOp = buildManager.newProjectClearMarkersOperation(workspaceOpHandler, project);
+		ICommonOperation clearMarkersOp = buildManager.newProjectClearMarkersOperation(workspaceOpMonitor, project);
 		EclipseUtils.execute_asCore(pm, clearMarkersOp);
 	}
 	
 	protected void handleEndWorkspaceBuild2() {
-		workspaceOpHandler = null;
+		workspaceOpMonitor = null;
 	}
 	
 	@Override
@@ -198,7 +198,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected ICommonOperation createBuildOp() throws CommonException {
-		return buildManager.newProjectBuildOperation(workspaceOpHandler, getProject(), false, false);
+		return buildManager.newProjectBuildOperation(workspaceOpMonitor, getProject(), false, false);
 	}
 	
 	/* ----------------- Clean ----------------- */
