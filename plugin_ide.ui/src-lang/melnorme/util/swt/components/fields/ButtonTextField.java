@@ -24,7 +24,7 @@ import melnorme.util.swt.WidgetSelectedRunner;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class ButtonTextField extends TextFieldComponent {
+public abstract class ButtonTextField extends TextFieldWidget {
 	
 	protected String buttonLabel;
 	protected Button button;

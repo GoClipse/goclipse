@@ -96,7 +96,7 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 	}
 	
 	@Override
-	protected void updateComponentFromInput() {
+	protected void updateWidgetFromInput() {
 	}
 	
 	/* -----------------  ----------------- */

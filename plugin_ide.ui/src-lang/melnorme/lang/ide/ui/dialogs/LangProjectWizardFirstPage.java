@@ -48,7 +48,7 @@ import melnorme.util.swt.components.AbstractCompositeWidget;
 import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
-import melnorme.util.swt.components.fields.TextFieldComponent;
+import melnorme.util.swt.components.fields.TextFieldWidget;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldValueListener;
@@ -144,7 +144,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 	
 	public static class NameGroup extends AbstractCompositeWidget {
 		
-		protected TextFieldComponent textField = new TextFieldComponent(WizardMessages.LangNewProject_NameGroup_label);
+		protected TextFieldWidget textField = new TextFieldWidget(WizardMessages.LangNewProject_NameGroup_label);
 		
 		public NameGroup() {
 			addSubComponent(textField);
@@ -154,7 +154,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			return textField.getFieldValue();
 		}
 		
-		public TextFieldComponent getNameField() {
+		public TextFieldWidget getNameField() {
 			return textField;
 		}
 		
@@ -296,7 +296,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 		
 		@Override
-		public void updateComponentFromInput() {
+		public void updateWidgetFromInput() {
 			IProject projectHandle;
 			try {
 				projectHandle = getProjectHandle2();
@@ -346,12 +346,12 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			
 			if (pref != null) {
 				pref.open();
-				updateComponentFromInput();
+				updateWidgetFromInput();
 			}
 		}
 		
 		@Override
-		public void updateComponentFromInput() {
+		public void updateWidgetFromInput() {
 			try {
 				validatePreferences();
 				setValidationMessage(null);
@@ -387,8 +387,8 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			valid = false;
 		}
 		
-		projectValidationGroup.updateComponentFromInput();
-		prefValidationGroup.updateComponentFromInput();
+		projectValidationGroup.updateWidgetFromInput();
+		prefValidationGroup.updateWidgetFromInput();
 		
 		return valid;
 	}

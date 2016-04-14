@@ -91,7 +91,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		prefContext.addPrefElement(new IPreferencesEditor() {
 			@Override
 			public void loadDefaults() {
-				updateComponentFromInput();
+				updateWidgetFromInput();
 			}
 			@Override
 			public void doSaveSettings() {
@@ -280,7 +280,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 				// Reload prefs for new theme. use asyncExec because ThemeChangeListener order is not guaranteed.
 				display.asyncExec(() -> { 
 					visitColoringItems((item) -> item.loadFromPrefs());
-					updateComponentFromInput();
+					updateWidgetFromInput();
 				});
 			}
 		};
@@ -288,7 +288,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 	}
 	
 	@Override
-	public void updateComponentFromInput() {
+	public void updateWidgetFromInput() {
 		handleAppearanceColorListSelectionChanged();
 	}
 	

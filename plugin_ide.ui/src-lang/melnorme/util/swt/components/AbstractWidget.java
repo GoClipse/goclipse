@@ -36,14 +36,14 @@ public abstract class AbstractWidget implements IWidgetComponent {
 	public Composite createComponent(Composite parent) {
 		Composite topControl = createTopLevelControl(parent);
 		createContents(topControl);
-		updateComponentFromInput();
+		updateWidgetFromInput();
 		return topControl;
 	}
 	
 	@Override
 	public void createComponentInlined(Composite parent) {
 		createContents(parent);
-		updateComponentFromInput();
+		updateWidgetFromInput();
 	}
 	
 	protected final Composite createTopLevelControl(Composite parent) {
@@ -76,9 +76,9 @@ public abstract class AbstractWidget implements IWidgetComponent {
 	/* -----------------  ----------------- */
 	
 	/** 
-	 * Update the controls of the components from whatever is considerd the input, or source, of the control.
+	 * Update the widget controls from whatever is considerd the input, or source, of the control.
 	 */
-	protected abstract void updateComponentFromInput();
+	protected abstract void updateWidgetFromInput();
 	
  	
 	/* ----------------- Shortcut utils ----------------- */

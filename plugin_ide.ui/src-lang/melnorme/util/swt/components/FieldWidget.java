@@ -23,7 +23,7 @@ import melnorme.utilbox.fields.IFieldValueListener;
  * Field component with a field value that can be manipulated (get/set) even if the 
  * componented is not created.
  */
-public abstract class FieldComponent<VALUE> extends AbstractDisableableWidget 
+public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget 
 	implements IField<VALUE> {
 	
 	private final Field<VALUE> domainField;
@@ -31,21 +31,21 @@ public abstract class FieldComponent<VALUE> extends AbstractDisableableWidget
 	protected boolean listenersNeedNotify;
 	protected boolean settingValueFromControl;
 	
-	public FieldComponent() {
+	public FieldWidget() {
 		this(new Field<>(null));
 	}
 	
-	public FieldComponent(VALUE defaultFieldValue) {
+	public FieldWidget(VALUE defaultFieldValue) {
 		this(new Field<>(defaultFieldValue));
 	}
 	
-	public FieldComponent(Field<VALUE> domainField) {
+	public FieldWidget(Field<VALUE> domainField) {
 		this.domainField = domainField;
 		this.domainField.addListener(new IFieldValueListener() {
 			@Override
 			public void fieldValueChanged() {
 				if(!settingValueFromControl) {
-					updateComponentFromInput();
+					updateWidgetFromInput();
 				}
 			}
 		});
@@ -92,15 +92,15 @@ public abstract class FieldComponent<VALUE> extends AbstractDisableableWidget
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void doUpdateComponentFromInput2() {
+	public void doUpdateWidgetFromInput() {
 		if(isCreated()) {
-			doUpdateComponentFromValue();
+			doUpdateWidgetFromValue();
 		}
 	}
 	
 	/** do Update component controls for given value.
 	 * Precondition: component is created.*/
-	protected abstract void doUpdateComponentFromValue();
+	protected abstract void doUpdateWidgetFromValue();
 	
 	@Override
 	protected abstract void createContents(Composite topControl);

@@ -19,9 +19,9 @@ import org.eclipse.swt.widgets.Control;
 
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.LabelledFieldComponent;
+import melnorme.util.swt.components.LabelledFieldWidget;
 
-public class ColorField extends LabelledFieldComponent<RGB> {
+public class ColorField extends LabelledFieldWidget<RGB> {
 	
 	public static class ColorSelectorExt extends ColorSelector {
 		
@@ -89,7 +89,7 @@ public class ColorField extends LabelledFieldComponent<RGB> {
 	}
 	
 	@Override
-	protected void doUpdateComponentFromValue() {
+	protected void doUpdateWidgetFromValue() {
 		colorSelector.setColorValue(getFieldValue());
 	}
 	

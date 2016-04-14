@@ -24,19 +24,19 @@ import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
 
-public abstract class FieldComponent_Tests extends CommonTest {
+public abstract class FieldWidget_Tests extends CommonTest {
 	
 	public static class TextFieldTest extends AbstractFieldComponentTest {
 		
-		protected TextFieldComponent field;
+		protected TextFieldWidget field;
 		
 		@Override
-		public TextFieldComponent createField() {
-			return field = new TextFieldComponent("") {
+		public TextFieldWidget createField() {
+			return field = new TextFieldWidget("") {
 				@Override
-				protected void doUpdateComponentFromValue() {
+				protected void doUpdateWidgetFromValue() {
 					controlsUpdateCount++;
-					super.doUpdateComponentFromValue();
+					super.doUpdateWidgetFromValue();
 				};			
 			};
 		}
@@ -80,8 +80,8 @@ public abstract class FieldComponent_Tests extends CommonTest {
 	public static class TextField_ExtTest extends TextFieldTest {
 		
 		@Override
-		public TextFieldComponent createField() {
-			return field = new TextFieldComponent("") {
+		public TextFieldWidget createField() {
+			return field = new TextFieldWidget("") {
 				
 				@Override
 				protected void doSetFieldValue(String value) {
@@ -92,9 +92,9 @@ public abstract class FieldComponent_Tests extends CommonTest {
 				}
 				
 				@Override
-				protected void doUpdateComponentFromValue() {
+				protected void doUpdateWidgetFromValue() {
 					controlsUpdateCount++;
-					super.doUpdateComponentFromValue();
+					super.doUpdateWidgetFromValue();
 				};
 			};
 			
@@ -133,9 +133,9 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		public SpinnerNumberField createField() {
 			return field = new SpinnerNumberField("blah") {
 				@Override
-				protected void doUpdateComponentFromValue() {
+				protected void doUpdateWidgetFromValue() {
 					controlsUpdateCount++;
-					super.doUpdateComponentFromValue();
+					super.doUpdateWidgetFromValue();
 				};
 			};
 		}
@@ -176,9 +176,9 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		public TextFieldExt createField() {
 			return field = new TextFieldExt("blah", 20) {
 				@Override
-				protected void doUpdateComponentFromValue() {
+				protected void doUpdateWidgetFromValue() {
 					controlsUpdateCount++;
-					super.doUpdateComponentFromValue();
+					super.doUpdateWidgetFromValue();
 				}
 			};
 		}
@@ -213,9 +213,9 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		public CheckBoxField createField() {
 			return field = new CheckBoxField("blah") {
 				@Override
-				protected void doUpdateComponentFromValue() {
+				protected void doUpdateWidgetFromValue() {
 					controlsUpdateCount++;
-					super.doUpdateComponentFromValue();
+					super.doUpdateWidgetFromValue();
 				}
 			};
 		}
@@ -254,9 +254,9 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		public ComboBoxField createField() {
 			return field = new ComboBoxField("blah", LABELS, VALUES) {
 				@Override
-				protected void doUpdateComponentFromValue() {
+				protected void doUpdateWidgetFromValue() {
 					controlsUpdateCount++;
-					super.doUpdateComponentFromValue();
+					super.doUpdateWidgetFromValue();
 				}
 			};
 		}
@@ -324,9 +324,9 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		public RadioSelectionField<Values> createField() {
 			return field = new RadioSelectionField<Values>(Values.values()) {
 				@Override
-				protected void doUpdateComponentFromValue() {
+				protected void doUpdateWidgetFromValue() {
 					controlsUpdateCount++;
-					super.doUpdateComponentFromValue();
+					super.doUpdateWidgetFromValue();
 				}
 			};
 		}
@@ -391,9 +391,9 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		public ComboOptionsField createField() {
 			field = new ComboOptionsField("label") {
 				@Override
-				protected void doUpdateComponentFromValue() {
+				protected void doUpdateWidgetFromValue() {
 					controlsUpdateCount++;
-					super.doUpdateComponentFromValue();
+					super.doUpdateWidgetFromValue();
 				}
 			};
 			field.setFieldOptions(
@@ -511,9 +511,9 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		public ColorField createField() {
 			return field = new ColorField("blah") {
 				@Override
-				protected void doUpdateComponentFromValue() {
+				protected void doUpdateWidgetFromValue() {
 					controlsUpdateCount++;
-					super.doUpdateComponentFromValue();
+					super.doUpdateWidgetFromValue();
 				}
 			};
 		}

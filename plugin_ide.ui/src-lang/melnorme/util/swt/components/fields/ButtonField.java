@@ -21,11 +21,11 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.WidgetSelectedRunner;
-import melnorme.util.swt.components.LabelledFieldComponent;
+import melnorme.util.swt.components.LabelledFieldWidget;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public abstract class ButtonField extends LabelledFieldComponent<String> {
+public abstract class ButtonField extends LabelledFieldWidget<String> {
 	
 	protected String buttonLabel;
 	protected Button button;

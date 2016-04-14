@@ -20,12 +20,12 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.FieldComponent;
-import melnorme.util.swt.components.LabelledFieldComponent;
+import melnorme.util.swt.components.FieldWidget;
+import melnorme.util.swt.components.LabelledFieldWidget;
 import melnorme.utilbox.fields.IProperty;
 
 
-public class ComboBoxField extends LabelledFieldComponent<Integer> {
+public class ComboBoxField extends LabelledFieldWidget<Integer> {
 	
 	protected final String[] valueLabels;
 	protected final String[] values;
@@ -68,7 +68,7 @@ public class ComboBoxField extends LabelledFieldComponent<Integer> {
 	}
 	
 	@Override
-	protected void doUpdateComponentFromValue() {
+	protected void doUpdateWidgetFromValue() {
 		int indexValue = getFieldValue();
 		if(indexValue == -1) {
 			return;
@@ -120,7 +120,7 @@ public class ComboBoxField extends LabelledFieldComponent<Integer> {
 	
 	/* -----------------  ----------------- */
 	
-	public static Combo createFieldCombo(final FieldComponent<Integer> field, Composite parent, int style) {
+	public static Combo createFieldCombo(final FieldWidget<Integer> field, Composite parent, int style) {
 		final Combo combo = new Combo(parent, style);
 		combo.addSelectionListener(new SelectionAdapter() {
 			@Override

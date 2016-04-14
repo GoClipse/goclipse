@@ -26,7 +26,7 @@ import melnorme.utilbox.fields.NonNullField;
  * By default, Label is created first, to the left. 
  * But subclasses can customize this behavior, even not creating a Label at all.
  */
-public abstract class LabelledFieldComponent<VALUE> extends FieldComponent<VALUE>{
+public abstract class LabelledFieldWidget<VALUE> extends FieldWidget<VALUE>{
 	
 	public static enum Option_AllowNull { YES, NO ; public boolean isTrue() { return this == YES; } };
 	
@@ -34,18 +34,18 @@ public abstract class LabelledFieldComponent<VALUE> extends FieldComponent<VALUE
 	
 	protected Label label; // Optional component! May be null even after creation
 	
-	public LabelledFieldComponent(String labelText) {
+	public LabelledFieldWidget(String labelText) {
 		this(new Field<VALUE>(), labelText);
 	}
 	
-	public LabelledFieldComponent(String labelText, Option_AllowNull allowNull, VALUE defaultFieldValue) {
+	public LabelledFieldWidget(String labelText, Option_AllowNull allowNull, VALUE defaultFieldValue) {
 		this(
 			allowNull.isTrue() ? new Field<>() : new NonNullField<>(assertNotNull(defaultFieldValue)), 
 			labelText
 		);
 	}
 	
-	public LabelledFieldComponent(Field<VALUE> domainField, String labelText) {
+	public LabelledFieldWidget(Field<VALUE> domainField, String labelText) {
 		super(domainField);
 		this.labelText = labelText;
 	}

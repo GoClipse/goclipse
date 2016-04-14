@@ -18,24 +18,24 @@ import org.eclipse.swt.widgets.Text;
 
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.LabelledFieldComponent;
+import melnorme.util.swt.components.LabelledFieldWidget;
 import melnorme.utilbox.fields.Field;
 
-public class TextFieldComponent extends LabelledFieldComponent<String> {
+public class TextFieldWidget extends LabelledFieldWidget<String> {
 	
 	protected int defaultTextStyle = SWT.SINGLE | SWT.BORDER;
 	protected Text text;
 	
-	public TextFieldComponent(String label) {
+	public TextFieldWidget(String label) {
 		this(label, SWT.SINGLE | SWT.BORDER);
 	}
 	
-	public TextFieldComponent(String label, int textStyle) {
+	public TextFieldWidget(String label, int textStyle) {
 		super(label, Option_AllowNull.NO, "");
 		this.defaultTextStyle = textStyle;
 	}
 	
-	public TextFieldComponent(Field<String> domainField, String labelText) {
+	public TextFieldWidget(Field<String> domainField, String labelText) {
 		super(domainField, labelText);
 	}
 	
@@ -80,7 +80,7 @@ public class TextFieldComponent extends LabelledFieldComponent<String> {
 	}
 	
 	@Override
-	protected void doUpdateComponentFromValue() {
+	protected void doUpdateWidgetFromValue() {
 		text.setText(getFieldValue());
 	}
 	

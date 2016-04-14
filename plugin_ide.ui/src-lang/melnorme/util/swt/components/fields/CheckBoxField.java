@@ -19,9 +19,9 @@ import org.eclipse.swt.widgets.Composite;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.LabelledFieldComponent;
+import melnorme.util.swt.components.LabelledFieldWidget;
 
-public class CheckBoxField extends LabelledFieldComponent<Boolean> {
+public class CheckBoxField extends LabelledFieldWidget<Boolean> {
 	
 	protected Button checkBox;
 	
@@ -64,7 +64,7 @@ public class CheckBoxField extends LabelledFieldComponent<Boolean> {
 	}
 	
 	@Override
-	protected void doUpdateComponentFromValue() {
+	protected void doUpdateWidgetFromValue() {
 		checkBox.setSelection(getFieldValue());
 	}
 	

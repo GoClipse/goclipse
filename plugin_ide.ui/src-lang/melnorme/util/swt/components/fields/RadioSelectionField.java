@@ -21,9 +21,9 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.LabelledFieldComponent;
+import melnorme.util.swt.components.LabelledFieldWidget;
 
-public class RadioSelectionField<E extends Enum<?>> extends LabelledFieldComponent<E> {
+public class RadioSelectionField<E extends Enum<?>> extends LabelledFieldWidget<E> {
 	
 	protected final E[] values;
 	protected final Button[] radioButtons;
@@ -106,7 +106,7 @@ public class RadioSelectionField<E extends Enum<?>> extends LabelledFieldCompone
 	}
 	
 	@Override
-	protected void doUpdateComponentFromValue() {
+	protected void doUpdateWidgetFromValue() {
 		int indexValue = getSelectionIndex();
 		
 		setControlButtonSelection(indexValue);

@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Text;
 
 import melnorme.util.swt.SWTLayoutUtil;
 
-public class TextFieldExt extends TextFieldComponent {
+public class TextFieldExt extends TextFieldWidget {
 	
 	protected final int textLimit;
 	
