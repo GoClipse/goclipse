@@ -92,7 +92,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		testGetBuildTargetFor(pbi, BUILD_TYPE_RunTests+":go_foo", "go_foo", BUILD_TYPE_RunTests, null);
 		
 		// Test without separator
-		testGetBuildTargetFor(pbi, "go_package", "go_package", "build");
+		testGetBuildTargetFor(pbi, ":go_package", "go_package", "build");
 		
 		testBuildOperation();
 	}
