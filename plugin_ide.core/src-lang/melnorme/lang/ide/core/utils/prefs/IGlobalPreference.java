@@ -10,16 +10,19 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import java.util.function.Supplier;
+
 import org.eclipse.core.resources.IProject;
 
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldView;
 
 
-public interface IGlobalPreference<T> {
+public interface IGlobalPreference<T> extends Supplier<T> {
 	
 	IFieldView<T> asField();
 	
+	@Override
 	default T get() {
 		return asField().get();
 	}

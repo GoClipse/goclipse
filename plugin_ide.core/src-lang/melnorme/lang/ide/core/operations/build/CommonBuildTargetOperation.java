@@ -12,16 +12,15 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.util.Optional;
+
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.debug.core.DebugPlugin;
 
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -33,8 +32,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	protected final IOperationMonitor opMonitor;
 	
 	protected final BuildConfiguration buildConfiguration;
-	protected final BuildType buildType;
-	protected final String buildCommand;
+	protected final CommandInvocation buildCommand;
 	
 	public CommonBuildTargetOperation(
 			ToolManager toolManager, BuildTarget buildTarget, IOperationMonitor opHandler
@@ -45,8 +43,8 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		
 		assertNotNull(buildTarget);
 		this.buildConfiguration = assertNotNull(buildTarget.getBuildConfiguration());
-		this.buildType = assertNotNull(buildTarget.getBuildType());
-		this.buildCommand = assertNotNull(buildTarget.getEffectiveBuildCommand());
+		String buildCommand = assertNotNull(buildTarget.getEffectiveBuildCommand());
+		this.buildCommand = assertNotNull(new CommandInvocation(buildCommand, toolManager, Optional.of(project)));
 	}
 	
 	public BuildConfiguration getConfiguration() {
@@ -55,14 +53,6 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	public String getConfigurationName() {
 		return buildConfiguration.getName();
-	}
-	
-	public BuildType getBuildType() {
-		return buildType;
-	}
-	
-	public String getBuildTypeName() {
-		return buildType.getName();
 	}
 	
 	public String getBuildTargetName() {
@@ -82,16 +72,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	}
 	
 	public Indexable<String> getEffectiveProccessCommandLine() throws CommonException {
-		return evaluateBuildCommand(buildCommand);
-	}
-	
-	protected ArrayList2<String> evaluateBuildCommand(String toolCommandLine) throws CommonException {
-		VariablesResolver variablesManager = getToolManager().getVariablesManager(project);
-		
-		toolCommandLine = variablesManager.performStringSubstitution(toolCommandLine);
-		
-		String[] evaluatedArguments = DebugPlugin.parseArguments(toolCommandLine);
-		return new ArrayList2<>(evaluatedArguments);
+		return buildCommand.getEffectiveCommandLine();
 	}
 	
 	public ProcessBuilder getToolProcessBuilder() throws CommonException, OperationCancellation {

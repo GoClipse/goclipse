@@ -38,6 +38,8 @@ public interface BuildManagerMessages {
 	
 	public String MSG_Starting_LANG_Build = "Starting {0} build";
 	
+	public String NO_BUILD_TARGET_FOUND_FOR_BUILD_TYPE_0 = "No Build Target found for build type `{0}`. ";
+	
 	public static String BuildConfig_NotFound(String buildConfigName) {
 		return MessageFormat.format("Build configuration `{0}` not found.", buildConfigName);
 	}
