@@ -86,12 +86,13 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		assertTrue(pbi != null);
 		assertTrue(pbi.getBuildTargets().size() == GoBuildManager.BUILD_TYPES.size());
 		
-		testGetBuildTargetFor(pbi, "go_package", "go_package", "build");
-		testGetBuildTargetFor(pbi, "go_package #build", "go_package", "build");
-		testGetBuildTargetFor(pbi, "foo/go_package #build", "foo/go_package", "build", "go_package");
+		testGetBuildTargetFor(pbi, "build:go_package", "go_package", "build");
+		testGetBuildTargetFor(pbi, "build:foo/go_package", "foo/go_package", "build", "go_package");
+		testGetBuildTargetFor(pbi, BUILD_TYPE_BuildTests+":go_foo", "go_foo", BUILD_TYPE_BuildTests, "go_foo.test");
+		testGetBuildTargetFor(pbi, BUILD_TYPE_RunTests+":go_foo", "go_foo", BUILD_TYPE_RunTests, null);
 		
-		testGetBuildTargetFor(pbi, "go_foo #"+BUILD_TYPE_BuildTests, "go_foo", BUILD_TYPE_BuildTests, "go_foo.test");
-		testGetBuildTargetFor(pbi, "go_foo #"+BUILD_TYPE_RunTests, "go_foo", BUILD_TYPE_RunTests, null);
+		// Test without separator
+		testGetBuildTargetFor(pbi, "go_package", "go_package", "build");
 		
 		testBuildOperation();
 	}

@@ -10,7 +10,7 @@ public class BundleInfo extends AbstractBundleInfo {
 	@Override
 	public Indexable<BuildConfiguration> getBuildConfigurations() {
 		return ArrayList2.create(
-			new BuildConfiguration("./...", null)
+			new BuildConfiguration("", null)
 		);
 	}
 	

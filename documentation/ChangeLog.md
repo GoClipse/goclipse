@@ -2,11 +2,11 @@
 
 ### (NextVersion)
  * Added customization of the build command for Build Targets:
-It's now possible to specify a command other than the default one (the $$SDK tool). 
-   * Note however that the $$IDE still expects the output of the command (the error messages) to be in the same format as the default tool.
- * Added a setting to invoke a special build target when a $IDE editor is saved.
+It's now possible to specify a command other than the default one (the `go` tool). 
+   * Note however that Goclipse still expects the output of the command (the error messages) to be in the same format as the default tool.
+ * Added a setting to invoke a special build target when a Go editor is saved.
    * This allows invoking a build command (informally called a "check-build") that only checks for compiler errors, but doesn't not produce binaries. This has the potential to be faster than a full build.
-   * Default is `` for $$IDE
+   * Default is `go build`. ##TODO
   
  * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
 

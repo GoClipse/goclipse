@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.DebugPlugin;
 
 import com.googlecode.goclipse.core.GoCoreMessages;
 import com.googlecode.goclipse.core.GoProjectEnvironment;
@@ -39,6 +40,8 @@ import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
+import melnorme.lang.tooling.bundle.BuildTargetNameParser;
+import melnorme.lang.tooling.bundle.BuildTargetNameParser2;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.utilbox.collections.ArrayList2;
@@ -59,6 +62,7 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	public static final String BUILD_TYPE_Build = "build";
+	public static final String BUILD_TYPE_BuildCheck = "check";
 	public static final String BUILD_TYPE_BuildTests = "build-tests";
 	public static final String BUILD_TYPE_RunTests = "[run-tests]";
 	
@@ -68,8 +72,9 @@ public class GoBuildManager extends BuildManager {
 	
 	public static ArrayList2<BuildType> createDefaultBuildTypes() {
 		return ArrayList2.create(
-			new GoDefaultBuildType(),
+			new GoDefaultBuildType(BUILD_TYPE_Build),
 			new GoTestBuildType(),
+			new GoCheckBuildType(),
 			new GoRunTestsBuildType()
 		);
 	}
@@ -77,6 +82,11 @@ public class GoBuildManager extends BuildManager {
 	@Override
 	protected Indexable<BuildType> getBuildTypes_do() {
 		return BUILD_TYPES;
+	}
+	
+	@Override
+	public BuildTargetNameParser getBuildTargetNameParser() {
+		return new BuildTargetNameParser2();
 	}
 	
 	/* -----------------  ----------------- */
@@ -100,7 +110,7 @@ public class GoBuildManager extends BuildManager {
 		@Override
 		public String getDefaultCommandArguments(BuildTarget bt) throws CommonException {
 			ArrayList2<String> buildArgs = getPackageSpecCommand(bt, getBuildCommand());
-			return StringUtil.collToString(buildArgs, " ");
+			return DebugPlugin.renderArguments(buildArgs.toArray(String.class), null);
 		}
 		
 		protected ArrayList2<String> getPackageSpecCommand(BuildTarget bt, String... buildCommands) 
@@ -168,13 +178,13 @@ public class GoBuildManager extends BuildManager {
 	
 	public static class GoDefaultBuildType extends AbstractGoBuildType {
 		
-		public GoDefaultBuildType() {
-			super(BUILD_TYPE_Build);
+		public GoDefaultBuildType(String name) {
+			super(name);
 		}
 		
 		@Override
 		protected String[] getBuildCommand() {
-			return array("install");
+			return array("build");
 		}
 		
 		@Override
@@ -184,6 +194,17 @@ public class GoBuildManager extends BuildManager {
 			return new GoBuildTargetOperation(toolManager, bt, opMonitor);
 		}
 		
+	}
+	
+	public static class GoCheckBuildType extends GoDefaultBuildType {
+		public GoCheckBuildType() {
+			super(BUILD_TYPE_BuildCheck);
+		}
+		
+		@Override
+		protected String[] getBuildCommand() {
+			return array("install");
+		}
 	}
 	
 	public static class GoBuildTargetOperation extends CommonBuildTargetOperation {
