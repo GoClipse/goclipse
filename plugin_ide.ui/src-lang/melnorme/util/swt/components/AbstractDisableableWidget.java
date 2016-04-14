@@ -51,7 +51,7 @@ public abstract class AbstractDisableableWidget extends AbstractWidgetExt
 	
 	protected void updateValidationStatusForEnablement() {
 		if(!isEnabled()) {
-			validation.setValue(null);
+			validation.set(null);
 		} else {
 			validation.updateFieldValue();
 		}

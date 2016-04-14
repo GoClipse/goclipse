@@ -46,7 +46,7 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.util.swt.jface.text.ColorManager2;
-import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.misc.Location;
 
 /**
@@ -112,14 +112,14 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 		}
 	}
 	
-	protected final DomainField<SourceFileStructure> structureField = new DomainField<>();
-	protected final DomainField<StructureElement> selectedElementField = new DomainField<>();
+	protected final Field<SourceFileStructure> structureField = new Field<>();
+	protected final Field<StructureElement> selectedElementField = new Field<>();
 	
-	public DomainField<SourceFileStructure> getStructureField() {
+	public Field<SourceFileStructure> getStructureField() {
 		return structureField;
 	}
 	
-	public DomainField<StructureElement> getSelectedElementField() {
+	public Field<StructureElement> getSelectedElementField() {
 		return selectedElementField;
 	}
 	

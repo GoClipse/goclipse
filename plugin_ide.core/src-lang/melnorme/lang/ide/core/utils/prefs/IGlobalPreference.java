@@ -21,7 +21,7 @@ public interface IGlobalPreference<T> {
 	IFieldView<T> asField();
 	
 	default T get() {
-		return asField().getValue();
+		return asField().get();
 	}
 	
 	T getDefaultValue();

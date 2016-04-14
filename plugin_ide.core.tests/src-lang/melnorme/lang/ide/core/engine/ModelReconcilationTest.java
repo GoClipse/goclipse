@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IDocument;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
@@ -53,6 +54,8 @@ class AnnotationsModelManager {
 	
 }
 
+/* FIXME: review test*/
+@Ignore
 public class ModelReconcilationTest extends CommonCoreTest {
 	
 	protected ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();

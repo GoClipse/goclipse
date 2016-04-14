@@ -132,21 +132,21 @@ public abstract class ProjectPreferencesBlock extends AbstractPreferencesBlock2 
 			this.preference = preference;
 			this.project = project;
 			
-			property.setValue(preference.getStoredValue(project));
+			property.set(preference.getStoredValue(project));
 		}
 		
 		public void updateFieldFromInput() {
-			property.setValue(preference.getStoredValue(project));
+			property.set(preference.getStoredValue(project));
 		}
 		
 		@Override
 		public void loadDefaults() {
-			property.setValue(preference.getGlobalPreference().get());
+			property.set(preference.getGlobalPreference().get());
 		}
 		
 		@Override
 		public void doSaveSettings() throws CommonException {
-			preference.setValue(project, property.getValue());
+			preference.setValue(project, property.get());
 		}
 	}
 	

@@ -48,7 +48,7 @@ public class ContentAssistPreferenceHandler extends SourceViewerConfigurer
 	}
 	
 	protected Color getColor(ThemedColorPreference colorPref) {
-		return getColorManager().getColor(colorPref.getValue().rgb);
+		return getColorManager().getColor(colorPref.get().rgb);
 	}
 	
 	/* -----------------  ----------------- */

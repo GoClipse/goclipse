@@ -11,17 +11,17 @@
 package melnorme.utilbox.fields;
 
 /**
- * A value that listener/observer can connect to and listen for modification.
+ * Default implementation of a {@link IField}, an observable property.
  */
-public class DomainField<VALUE> extends EventSource<IFieldValueListener> implements IModelField<VALUE> {
+public class Field<VALUE> extends EventSource<IFieldValueListener> implements IField<VALUE> {
 	
 	private VALUE value; // private to prevent direct modifications.
 	
-	public DomainField(VALUE defaultFieldValue) {
+	public Field(VALUE defaultFieldValue) {
 		this.value = defaultFieldValue;
 	}
 	
-	public DomainField() {
+	public Field() {
 		this.value = getDefaultFieldValue();
 	}
 	

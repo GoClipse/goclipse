@@ -10,17 +10,22 @@
  *******************************************************************************/
 package melnorme.utilbox.fields;
 
+import java.util.function.Supplier;
+
 import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.ownership.IOwner;
 
-/* FIXME: use Supplier */
-public interface IFieldView<VALUE> {
+/**
+ * A read-only access for an observable value.
+ */
+public interface IFieldView<TYPE> extends Supplier<TYPE> {
 	
-	default VALUE getValue() {
+	@Override
+	default TYPE get() {
 		return getFieldValue();
 	}
 	
-	VALUE getFieldValue();
+	TYPE getFieldValue();
 	
 	void addListener(IFieldValueListener listener);
 	

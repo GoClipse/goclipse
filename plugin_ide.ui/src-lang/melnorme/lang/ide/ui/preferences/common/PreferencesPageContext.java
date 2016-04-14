@@ -18,7 +18,7 @@ import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.tooling.data.CompositeValidatableField;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.IModelField;
+import melnorme.utilbox.fields.IField;
 import melnorme.utilbox.fields.IProperty;
 
 public class PreferencesPageContext implements IPreferencesEditor {
@@ -67,24 +67,24 @@ public class PreferencesPageContext implements IPreferencesEditor {
 			this.preference = assertNotNull(preference);
 			this.property = assertNotNull(property);
 			
-			property.setValue(preference.asField().getValue());
+			property.set(preference.asField().get());
 		}
 		
 		@Override
 		public void doSaveSettings() throws CommonException {
-			preference.setInstanceScopeValue(property.getValue());
+			preference.setInstanceScopeValue(property.get());
 		}
 		
 		@Override
 		public void loadDefaults() {
-			property.setValue(preference.getDefaultValue());
+			property.set(preference.getDefaultValue());
 		}
 		
 	}
 	
 	/* ----------------- util ----------------- */
 	
-	public void bindToValidatedPreference(IModelField<String> field, DerivedValuePreference<?> derivedPref, 
+	public void bindToValidatedPreference(IField<String> field, DerivedValuePreference<?> derivedPref, 
 			CompositeValidatableField validation) {
 		bindToPreference(field, derivedPref.getPreference());
 		

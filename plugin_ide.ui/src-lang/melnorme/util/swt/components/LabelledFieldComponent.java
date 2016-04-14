@@ -18,8 +18,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import melnorme.util.swt.SWTFactory;
-import melnorme.utilbox.fields.DomainField;
-import melnorme.utilbox.fields.NonNullDomainField;
+import melnorme.utilbox.fields.Field;
+import melnorme.utilbox.fields.NonNullField;
 
 /**
  * AbstractFieldComponent extented with a label control.
@@ -35,17 +35,17 @@ public abstract class LabelledFieldComponent<VALUE> extends FieldComponent<VALUE
 	protected Label label; // Optional component! May be null even after creation
 	
 	public LabelledFieldComponent(String labelText) {
-		this(new DomainField<VALUE>(), labelText);
+		this(new Field<VALUE>(), labelText);
 	}
 	
 	public LabelledFieldComponent(String labelText, Option_AllowNull allowNull, VALUE defaultFieldValue) {
 		this(
-			allowNull.isTrue() ? new DomainField<>() : new NonNullDomainField<>(assertNotNull(defaultFieldValue)), 
+			allowNull.isTrue() ? new Field<>() : new NonNullField<>(assertNotNull(defaultFieldValue)), 
 			labelText
 		);
 	}
 	
-	public LabelledFieldComponent(DomainField<VALUE> domainField, String labelText) {
+	public LabelledFieldComponent(Field<VALUE> domainField, String labelText) {
 		super(domainField);
 		this.labelText = labelText;
 	}

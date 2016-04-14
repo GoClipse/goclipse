@@ -33,7 +33,7 @@ import melnorme.util.swt.components.IValidatableWidget;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
 import melnorme.utilbox.fields.IFieldView;
-import melnorme.utilbox.fields.IModelField;
+import melnorme.utilbox.fields.IField;
 
 public abstract class AbstractPreferencesBlock2 extends AbstractWidget implements IValidatableWidget {
 	
@@ -49,7 +49,7 @@ public abstract class AbstractPreferencesBlock2 extends AbstractWidget implement
 		return validation;
 	}
 	
-	public final void bindToDerivedPreference(IModelField<String> field, DerivedValuePreference<?> pref) {
+	public final void bindToDerivedPreference(IField<String> field, DerivedValuePreference<?> pref) {
 		prefContext.bindToValidatedPreference(field, pref, validation);
 	}
 	

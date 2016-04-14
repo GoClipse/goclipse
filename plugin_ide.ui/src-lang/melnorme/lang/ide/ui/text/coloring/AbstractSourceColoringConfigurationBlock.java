@@ -55,7 +55,7 @@ import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IFieldValueListener;
-import melnorme.utilbox.fields.IModelField;
+import melnorme.utilbox.fields.IField;
 import melnorme.utilbox.fields.IProperty;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -124,7 +124,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		
 		protected final ThemedTextStylingPreference stylingPref;
 		protected final String prefId;
-		protected final IModelField<TextStyling> temporaryPref;
+		protected final IField<TextStyling> temporaryPref;
 		
 		public SourceColoringElement(String labelText, ThemedTextStylingPreference stylingPref) {
 			super(null, null, labelText);
@@ -135,21 +135,21 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		}
 		
 		public void loadFromPrefs() {
-			this.temporaryPref.setValue(stylingPref.getFieldValue());
+			this.temporaryPref.set(stylingPref.getFieldValue());
 		}
 		
 		public TextStyling getWorkingValue() {
-			return temporaryPref.getValue();
+			return temporaryPref.get();
 		}
 		
 		@Override
 		public void loadDefaults() {
-			temporaryPref.setValue(stylingPref.getDefaultValue());
+			temporaryPref.set(stylingPref.getDefaultValue());
 		}
 		
 		@Override
 		public void doSaveSettings() throws CommonException {
-			stylingPref.setInstanceScopeValue(temporaryPref.getValue());
+			stylingPref.setInstanceScopeValue(temporaryPref.get());
 		}
 		
 	}
@@ -296,10 +296,10 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		@Override
 		public void fieldValueChanged() {
 			IProperty<TextStyling> field = getSelectedColoringItem().temporaryPref;
-			TextStyling newStyling = field.getValue();
+			TextStyling newStyling = field.get();
 			TextStylingData data = newStyling.getData();
 			changeStylingValue(data);
-			field.setValue(new TextStyling(data));
+			field.set(new TextStyling(data));
 		}
 		
 		protected abstract void changeStylingValue(TextStylingData data);

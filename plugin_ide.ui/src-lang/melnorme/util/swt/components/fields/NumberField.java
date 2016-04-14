@@ -47,12 +47,12 @@ public class NumberField extends TextFieldExt implements IValidatableField<Strin
 	
 	protected final IProperty<Integer> intProperty = new IProperty<Integer>() {
 		@Override
-		public Integer getValue() {
+		public Integer get() {
 			return new NumberValidator().getIntegerFrom(getFieldValue());
 		}
 		
 		@Override
-		public void setValue(Integer value) {
+		public void set(Integer value) {
 			assertTrue(value != null);
 			setFieldValue(value.toString());
 		}

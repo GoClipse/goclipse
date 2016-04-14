@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 
 import melnorme.lang.ide.core.utils.prefs.IPreferenceIdentifier;
 import melnorme.utilbox.collections.HashMap2;
-import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IFieldView;
 
 public class StylingPreferences {
@@ -63,7 +63,7 @@ public class StylingPreferences {
 		
 	}
 	
-	protected static class SimpleTextStylingPref extends DomainField<TextStyling> {
+	protected static class SimpleTextStylingPref extends Field<TextStyling> {
 		
 		public SimpleTextStylingPref() {
 		}
