@@ -72,14 +72,13 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 	}
 	
 	protected final IProperty<String> effectiveValueProperty = new IProperty<String>() {
-		
 		@Override
-		public String getValue() {
+		public String get() {
 			return getEffectiveFieldValue();
 		}
 		
 		@Override
-		public void setValue(String value) {
+		public void set(String value) {
 			setEffectiveFieldValue(value);
 		}
 	};

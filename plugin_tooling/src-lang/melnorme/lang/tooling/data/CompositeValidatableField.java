@@ -12,10 +12,10 @@ package melnorme.lang.tooling.data;
 
 import melnorme.lang.tooling.data.IValidatableValue.ValidatableField;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IFieldView;
 
-public class CompositeValidatableField extends DomainField<IStatusMessage> implements IValidationSource {
+public class CompositeValidatableField extends Field<IStatusMessage> implements IValidationSource {
 	
 	protected final ArrayList2<IValidationSource> validators = new ArrayList2<>();
 	

@@ -71,7 +71,7 @@ public abstract class AbstractLangPropertyPage2<WIDGET extends IValidatableWidge
 	}
 	
 	protected void updateStatusMessage() {
-		DialogPageUtils.setPrefPageStatus(this, preferencesWidget.getStatusField().getValue());
+		DialogPageUtils.setPrefPageStatus(this, preferencesWidget.getStatusField().get());
 	}
 	
 	@Override

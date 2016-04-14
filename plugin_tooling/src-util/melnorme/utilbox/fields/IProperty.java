@@ -10,11 +10,13 @@
  *******************************************************************************/
 package melnorme.utilbox.fields;
 
+import java.util.function.Supplier;
 
-public interface IProperty<VALUE> {
+public interface IProperty<TYPE> extends Supplier<TYPE> {
 	
-	VALUE getValue();
+	@Override
+	TYPE get();
 	
-	void setValue(VALUE value);
+	void set(TYPE value);
 	
 }

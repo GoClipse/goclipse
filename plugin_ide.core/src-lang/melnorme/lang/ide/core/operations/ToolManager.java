@@ -43,7 +43,6 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.DomainField;
 import melnorme.utilbox.fields.EventSource;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -85,15 +84,11 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	}
 	
 	protected void setupVariableResolver(VariablesResolver variablesResolver, IProject project) {
-		/* FIXME: use Supplier*/
-		DomainField<String> sdkPathField = new DomainField<String>() {
-			@Override
-			public String getFieldValue() {
-				return ToolchainPreferences.SDK_PATH2.getStoredValue(project);
-			}
-		};
-		variablesResolver.putDynamicVar(
-			new SupplierAdapterVar(LangCore_Actual.VAR_NAME_SdkToolPath, "xxxxx", sdkPathField));
+		variablesResolver.putDynamicVar(new SupplierAdapterVar(
+			LangCore_Actual.VAR_NAME_SdkToolPath, 
+			LangCore_Actual.VAR_NAME_SdkToolPath_DESCRIPTION, 
+			ToolchainPreferences.SDK_PATH2.getProperty(project))
+		);
 	}
 	
 	/* -----------------  ----------------- */

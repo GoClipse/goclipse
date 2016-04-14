@@ -104,12 +104,12 @@ public class ComboBoxField extends LabelledFieldComponent<Integer> {
 	
 	protected final IProperty<String> stringProperty = new IProperty<String>() {
 		@Override
-		public String getValue() {
+		public String get() {
 			return getFieldStringValue();
 		}
 		
 		@Override
-		public void setValue(String value) {
+		public void set(String value) {
 			setFieldStringValue(value);
 		}
 	};

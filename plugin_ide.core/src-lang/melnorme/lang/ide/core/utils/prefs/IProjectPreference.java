@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import java.util.function.Supplier;
+
 import org.eclipse.core.resources.IProject;
 
 import melnorme.utilbox.core.CommonException;
@@ -32,5 +34,7 @@ public interface IProjectPreference<T> {
 	T getEffectiveValue(IProject project);
 	
 	IProjectPreference<Boolean> getEnableProjectSettingPref();
+	
+	Supplier<T> getProperty(IProject project);
 	
 }

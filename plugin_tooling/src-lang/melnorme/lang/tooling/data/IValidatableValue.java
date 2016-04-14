@@ -54,7 +54,7 @@ public interface IValidatableValue<TYPE> extends IValidationSource {
 		
 		@Override
 		public Object getValidatedValue() throws StatusException {
-			return validator.getValidatedField(property.getValue());
+			return validator.getValidatedField(property.get());
 		}
 	}
 	

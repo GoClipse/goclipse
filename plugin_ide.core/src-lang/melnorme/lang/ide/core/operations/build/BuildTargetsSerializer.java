@@ -30,8 +30,8 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 	private static final String PROP_NAME = "config";
 	private static final String PROP_ENABLED = "n_enabled";
 	private static final String PROP_AUTO_ENABLED = "auto_enabled";
+	private static final String PROP_FORMAT_VERSION2 = "version2";
 	private static final String PROP_ARGUMENTS = "options";
-	private static final String PROP_COMMANDLINE = "commandline";
 	private static final String PROP_EXE_PATH = "exe_path";
 	
 	/* -----------------  ----------------- */
@@ -91,7 +91,9 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		targetElem.setAttribute(PROP_NAME, btd.getTargetName());
 		targetElem.setAttribute(PROP_ENABLED, Boolean.toString(btd.isNormalBuildEnabled()));
 		targetElem.setAttribute(PROP_AUTO_ENABLED, Boolean.toString(btd.isAutoBuildEnabled()));
-		setOptionalAttribute(targetElem, PROP_COMMANDLINE, btd.getBuildArguments());
+		targetElem.setAttribute(PROP_FORMAT_VERSION2, "true");
+		
+		setOptionalAttribute(targetElem, PROP_ARGUMENTS, btd.getBuildArguments());
 		setOptionalAttribute(targetElem, PROP_EXE_PATH, btd.getExecutablePath());
 		
 		return targetElem;
@@ -105,13 +107,16 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 			buildTargetData.normalBuildEnabled = getBooleanAttribute(targetElem, PROP_ENABLED, false);
 			buildTargetData.autoBuildEnabled = getBooleanAttribute(targetElem, PROP_AUTO_ENABLED, false);
 			buildTargetData.targetName = getAttribute(targetElem, PROP_NAME, "");
-			buildTargetData.buildArguments = getAttribute(targetElem, PROP_COMMANDLINE, null);
+			buildTargetData.buildArguments = getAttribute(targetElem, PROP_ARGUMENTS, null);
 			buildTargetData.executablePath = getAttribute(targetElem, PROP_EXE_PATH, null);
 			
-			if(buildTargetData.buildArguments == null) {
+			if(getAttribute(targetElem, PROP_FORMAT_VERSION2, null) == null) {
+				// we have a version 1 format
 				String buildArgs_old = getAttribute(targetElem, PROP_ARGUMENTS, null);
-				// Try to migrate old format for settings
-				buildTargetData.buildArguments = variableRefString(VAR_NAME_SdkToolPath) + " " + buildArgs_old; 
+				if(buildArgs_old != null) {
+					// Try to migrate from previous settings format
+					buildTargetData.buildArguments = variableRefString(VAR_NAME_SdkToolPath) + " " + buildArgs_old; 
+				}
 			}
 			
 			return createBuildTarget(targetElem, buildTargetData);

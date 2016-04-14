@@ -13,6 +13,7 @@ package melnorme.lang.ide.core.operations.build;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.text.MessageFormat;
+import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.variables.IDynamicVariable;
@@ -26,7 +27,6 @@ import melnorme.lang.ide.core.utils.StringSubstitutionEngine;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.IFieldView;
 
 public class VariablesResolver {
 	
@@ -144,9 +144,9 @@ public class VariablesResolver {
 		
 		protected final String name;
 		protected final String description;
-		protected final IFieldView<String> fieldView;
+		protected final Supplier<String> fieldView;
 		
-		public SupplierAdapterVar(String name, String description, IFieldView<String> fieldView) {
+		public SupplierAdapterVar(String name, String description, Supplier<String> fieldView) {
 			this.name = assertNotNull(name);
 			this.description = assertNotNull(description);
 			this.fieldView = assertNotNull(fieldView);
@@ -173,7 +173,7 @@ public class VariablesResolver {
 				throw LangCore.createCoreException(
 					MessageFormat.format("Variable {0} does not accept arguments.", getName()) , null);
 			}
-			return fieldView.getFieldValue();
+			return fieldView.get();
 		}
 	}
 	

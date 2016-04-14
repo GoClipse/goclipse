@@ -12,11 +12,11 @@ package melnorme.utilbox.fields;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-public class NonNullDomainField<VALUE> extends DomainField<VALUE> {
+public class NonNullField<VALUE> extends Field<VALUE> {
 	
 	protected final VALUE defaultFieldValue;
 	
-	public NonNullDomainField(VALUE defaultFieldValue) {
+	public NonNullField(VALUE defaultFieldValue) {
 		super(defaultFieldValue);
 		this.defaultFieldValue = defaultFieldValue;
 	}

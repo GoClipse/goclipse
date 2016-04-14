@@ -67,7 +67,7 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 	}
 	
 	protected static Color getManagedColor(ThemedColorPreference colorPref) {
-		return ColorManager.getDefault().getColor(colorPref.getValue().rgb);
+		return ColorManager.getDefault().getColor(colorPref.get().rgb);
 	}
 	
 	@Override

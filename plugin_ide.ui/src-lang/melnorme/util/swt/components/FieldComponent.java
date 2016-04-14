@@ -15,8 +15,8 @@ import org.eclipse.swt.widgets.Control;
 
 import melnorme.lang.tooling.data.IValidator;
 import melnorme.util.swt.SWTUtil;
-import melnorme.utilbox.fields.DomainField;
-import melnorme.utilbox.fields.IModelField;
+import melnorme.utilbox.fields.Field;
+import melnorme.utilbox.fields.IField;
 import melnorme.utilbox.fields.IFieldValueListener;
 
 /**
@@ -24,22 +24,22 @@ import melnorme.utilbox.fields.IFieldValueListener;
  * componented is not created.
  */
 public abstract class FieldComponent<VALUE> extends AbstractDisableableWidget 
-	implements IModelField<VALUE> {
+	implements IField<VALUE> {
 	
-	private final DomainField<VALUE> domainField;
+	private final Field<VALUE> domainField;
 	
 	protected boolean listenersNeedNotify;
 	protected boolean settingValueFromControl;
 	
 	public FieldComponent() {
-		this(new DomainField<>(null));
+		this(new Field<>(null));
 	}
 	
 	public FieldComponent(VALUE defaultFieldValue) {
-		this(new DomainField<>(defaultFieldValue));
+		this(new Field<>(defaultFieldValue));
 	}
 	
-	public FieldComponent(DomainField<VALUE> domainField) {
+	public FieldComponent(Field<VALUE> domainField) {
 		this.domainField = domainField;
 		this.domainField.addListener(new IFieldValueListener() {
 			@Override

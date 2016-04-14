@@ -21,10 +21,10 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener2;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IFieldValueListener;
 import melnorme.utilbox.fields.IFieldView;
-import melnorme.utilbox.fields.IModelField;
+import melnorme.utilbox.fields.IField;
 
 public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPreferenceIdentifier {
 	
@@ -34,7 +34,7 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 	protected final TextStylingPreference defaultPref;
 	protected final TextStylingPreference darkPref;
 	
-	protected final DomainField<TextStyling> effectiveValue = new DomainField<>();
+	protected final Field<TextStyling> effectiveValue = new Field<>();
 	
 	public ThemedTextStylingPreference(String key, TextStyling defaultValue, TextStyling defaultValueDark) {
 		this(LangUIPlugin.PLUGIN_ID, key, defaultValue, defaultValueDark);
@@ -83,8 +83,8 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 	}
 	
 	protected TextStyling getEffectiveValue() {
-		assertTrue(getEffectivePreference().get() == effectiveValue.getValue());
-		return effectiveValue.getValue();
+		assertTrue(getEffectivePreference().get() == effectiveValue.get());
+		return effectiveValue.get();
 	}
 	
 	protected TextStylingPreference getEffectivePreference() {
@@ -116,7 +116,7 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 	
 	/* -----------------  ----------------- */
 	
-	public IModelField<TextStyling> asField() {
+	public IField<TextStyling> asField() {
 		return effectiveValue;
 	}
 	

@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Text;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.LabelledFieldComponent;
-import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.Field;
 
 public class TextFieldComponent extends LabelledFieldComponent<String> {
 	
@@ -35,7 +35,7 @@ public class TextFieldComponent extends LabelledFieldComponent<String> {
 		this.defaultTextStyle = textStyle;
 	}
 	
-	public TextFieldComponent(DomainField<String> domainField, String labelText) {
+	public TextFieldComponent(Field<String> domainField, String labelText) {
 		super(domainField, labelText);
 	}
 	

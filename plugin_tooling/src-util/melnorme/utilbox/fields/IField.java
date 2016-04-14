@@ -10,18 +10,21 @@
  *******************************************************************************/
 package melnorme.utilbox.fields;
 
-public interface IModelField<VALUE> extends IFieldView<VALUE>, IProperty<VALUE> {
+/**
+ * A property that can be modifed (set/get) and observed.
+ */
+public interface IField<TYPE> extends IFieldView<TYPE>, IProperty<TYPE> {
 	
 	@Override
-	default VALUE getValue() {
-		return IFieldView.super.getValue();
+	default TYPE get() {
+		return IFieldView.super.get();
 	}
 	
 	@Override
-	default void setValue(VALUE value) {
+	default void set(TYPE value) {
 		setFieldValue(value);
 	}
 	
-	void setFieldValue(VALUE value);
+	void setFieldValue(TYPE value);
 	
 }

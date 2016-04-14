@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -26,7 +27,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.PreferencesOverride;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.DomainField;
+import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IFieldView;
 
 public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
@@ -48,7 +49,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 	
 	protected final IProjectPreference<Boolean> useProjectPreference;
 	
-	protected final DomainField<T> field = new DomainField<T>();
+	protected final Field<T> field = new Field<T>();
 	
 	public PreferenceHelper(String key, T defaultValue) {
 		this(LangCore.PLUGIN_ID, key, defaultValue);
@@ -189,6 +190,16 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		@Override
 		public T getDefaultValue() {
 			return PreferenceHelper.this.getDefaultValue();
+		}
+		
+		@Override
+		public Supplier<T> getProperty(IProject project) {
+			return new Supplier<T>() {
+				@Override
+				public T get() {
+					return getStoredValue(project);
+				}
+			};
 		}
 		
 		@Override

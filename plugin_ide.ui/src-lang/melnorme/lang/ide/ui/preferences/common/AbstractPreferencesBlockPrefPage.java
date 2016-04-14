@@ -55,7 +55,7 @@ public abstract class AbstractPreferencesBlockPrefPage extends AbstractLangPrefe
 	
 	/** @return page status message. Can be null */
 	protected IStatusMessage getPageStatus() {
-		return preferencesBlock.getStatusField().getValue();
+		return preferencesBlock.getStatusField().get();
 	}
 	
 	/* -----------------  ----------------- */
