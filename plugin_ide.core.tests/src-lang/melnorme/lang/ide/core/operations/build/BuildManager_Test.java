@@ -18,7 +18,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.junit.Test;
 
@@ -35,6 +34,7 @@ import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.operations.build.BuildManager_Test.TestsBuildManager.SampleStrictBuildType;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.tests.BuildTestsHelper;
+import melnorme.lang.ide.core.tests.CoreTestWithProject;
 import melnorme.lang.ide.core.tests.SampleProject;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
@@ -44,9 +44,8 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import melnorme.utilbox.tests.CommonTest;
 
-public class BuildManager_Test extends CommonTest {
+public class BuildManager_Test extends CoreTestWithProject {
 	
 	public static final BuildTargetData sampleBT_A = 
 			bt("TargetA", true, false, null, null);
@@ -151,15 +150,6 @@ public class BuildManager_Test extends CommonTest {
 	}
 	
 	protected String SEP = buildMgr.getBuildTargetNameParser().getNameSeparator();
-	
-	protected SampleProject sampleProject;
-	protected IProject project;
-	
-	protected SampleProject initSampleProject() throws CoreException, CommonException {
-		this.sampleProject = new SampleProject(getClass().getSimpleName());
-		this.project = sampleProject.getProject();
-		return sampleProject;
-	}
 	
 	protected final BundleInfo bundleInfo = BuildTestsHelper.createSampleBundleInfoA("SampleBundle", null);
 	
@@ -286,7 +276,7 @@ public class BuildManager_Test extends CommonTest {
 	
 	protected CompositeBuildTargetSettings btSettings(
 			String buildTargetName, String buildArguments, String artifactPath) {
-		return getBuiltTargetSettingsValidator(sampleProject.getName(), buildTargetName, buildArguments, artifactPath);
+		return getBuiltTargetSettingsValidator(project.getName(), buildTargetName, buildArguments, artifactPath);
 	}
 	
 	protected CompositeBuildTargetSettings getBuiltTargetSettingsValidator(

@@ -71,6 +71,11 @@ public class Location {
 		}
 	}
 	
+	/** @return a new {@link Location} from given path, or null if pathString is not valid.  */
+	public static Location createValidOrNull(String pathString) {
+		return Location.createValidOrNull(PathUtil.createPathOrNull(pathString));
+	}
+	
 	/**
 	 * @return Create a location based on given baseLocation if given pathString is a relative path,
 	 * otherwise return the pathString location.

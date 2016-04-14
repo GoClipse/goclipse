@@ -306,6 +306,10 @@ public class ResourceUtils {
 	
 	public static void tryDeleteProject(String projectName) throws CoreException {
 		IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
+		tryDeleteProject(project);
+	}
+	
+	public static void tryDeleteProject(IProject project) throws CoreException {
 		try {
 			project.delete(true, null);
 		} catch (CoreException ce) {

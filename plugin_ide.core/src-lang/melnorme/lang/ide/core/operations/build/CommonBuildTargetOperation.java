@@ -94,7 +94,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 		return new ArrayList2<>(evaluatedArguments);
 	}
 	
-	protected ProcessBuilder getToolProcessBuilder() throws CommonException, OperationCancellation {
+	public ProcessBuilder getToolProcessBuilder() throws CommonException, OperationCancellation {
 		return getProcessBuilder3(getEffectiveProccessCommandLine());
 	}
 	
