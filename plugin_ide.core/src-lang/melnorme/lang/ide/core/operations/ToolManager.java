@@ -14,6 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.list;
 
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -76,18 +78,26 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
 	protected final IStringVariableManager globalVarManager = VariablesPlugin.getDefault().getStringVariableManager();
 	
-	public VariablesResolver getVariablesManager(IProject project) {
+	public VariablesResolver getVariablesManager(Optional<IProject> project) {
 		VariablesResolver variablesResolver = new VariablesResolver(globalVarManager);
 		
 		setupVariableResolver(variablesResolver, project);
 		return variablesResolver;
 	}
 	
-	protected void setupVariableResolver(VariablesResolver variablesResolver, IProject project) {
+	protected void setupVariableResolver(VariablesResolver variablesResolver, Optional<IProject> project) {
+		Supplier<String> sdkToolPath;
+		
+		if(project.isPresent()) {
+			sdkToolPath = ToolchainPreferences.SDK_PATH2.getProperty(project.get());
+		} else {
+			sdkToolPath = ToolchainPreferences.SDK_PATH2.getGlobalPreference();
+		}
+		
 		variablesResolver.putDynamicVar(new SupplierAdapterVar(
 			LangCore_Actual.VAR_NAME_SdkToolPath, 
 			LangCore_Actual.VAR_NAME_SdkToolPath_DESCRIPTION, 
-			ToolchainPreferences.SDK_PATH2.getProperty(project))
+			sdkToolPath)
 		);
 	}
 	

@@ -455,6 +455,17 @@ public abstract class BuildManager {
 		return buildTarget;
 	}
 	
+	public BuildTarget getFirstDefinedBuildTarget(IProject project, BuildType buildType) throws CommonException {
+		ProjectBuildInfo buildInfo = getBuildInfo(project);
+		
+		assertNotNull(buildType);
+		BuildTarget foundBT = buildInfo.getBuildTargets().findElement((bt) -> bt.getBuildType() == buildType);
+		if(foundBT == null) {
+			throw CommonException.fromMsgFormat(BuildManagerMessages.NO_BUILD_TARGET_FOUND_FOR_BUILD_TYPE_0, buildType.getName());
+		}
+		return foundBT;
+	}
+	
 	/* ----------------- Build operations ----------------- */
 	
 	protected BuildOperationCreator createBuildOperationCreator(IOperationMonitor opMonitor, IProject project) {

@@ -68,7 +68,7 @@ public class BuildTarget extends AbstractValidator {
 	
 	@Override
 	public String toString() {
-		return project.getName() + " >> " + targetData.getTargetName();
+		return project.getName() + "//" + targetData.getTargetName();
 	}
 	
 	public Location getProjectLocation() throws CommonException {
