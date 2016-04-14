@@ -38,6 +38,7 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
@@ -198,10 +199,10 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(
-				ToolManager toolManager, BuildTarget bt, IOperationMonitor opMonitor
+		public CommonBuildTargetOperation getBuildOperation(IOperationMonitor opMonitor,
+				ToolManager toolMgr, BuildTarget bt, CommandInvocation buildCommand
 		) throws CommonException {
-			return new GoBuildTargetOperation(toolManager, bt, opMonitor);
+			return new GoBuildTargetOperation(opMonitor, toolMgr, bt.getBuildTargetName(), buildCommand);
 		}
 		
 	}
@@ -223,10 +224,9 @@ public class GoBuildManager extends BuildManager {
 		protected final Location sourceBaseDir;
 		protected Location workingDirectory;
 		
-		public GoBuildTargetOperation(
-				ToolManager toolManager, BuildTarget buildTarget, IOperationMonitor opMonitor 
-		) throws CommonException {
-			super(toolManager, buildTarget, opMonitor);
+		public GoBuildTargetOperation(IOperationMonitor opMonitor, ToolManager toolManager, String buildTargetName,
+				CommandInvocation buildCommand) throws CommonException {
+			super(opMonitor, toolManager, buildTargetName, buildCommand);
 			
 			Location projectLoc = getProjectLocation();
 			
@@ -313,14 +313,14 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(
-				ToolManager toolManager, BuildTarget buildTarget, IOperationMonitor opMonitor
+		public CommonBuildTargetOperation getBuildOperation(IOperationMonitor opMonitor,
+				ToolManager toolMgr, BuildTarget bt, CommandInvocation buildCommand
 		) throws CommonException {
-			return new GoBuildTargetOperation(toolManager, buildTarget, opMonitor) {
+			return new GoBuildTargetOperation(opMonitor, toolMgr, bt.getBuildTargetName(), buildCommand) {
 				{
 					// We need to change working directory to bin, 
 					// because our commands create executable files in the working directory.
-					workingDirectory = getBinFolderLocation(buildTarget);
+					workingDirectory = getBinFolderLocation(bt);
 				}
 				
 				@Override
@@ -374,10 +374,10 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(
-				ToolManager toolManager, BuildTarget bt, IOperationMonitor opMonitor
+		public CommonBuildTargetOperation getBuildOperation(IOperationMonitor opMonitor,
+				ToolManager toolMgr, BuildTarget bt, CommandInvocation buildCommand
 		) throws CommonException {
-			return new GoBuildTargetOperation(toolManager, bt, opMonitor);
+			return new GoBuildTargetOperation(opMonitor, toolMgr, bt.getBuildTargetName(), buildCommand);
 		}
 		
 	}

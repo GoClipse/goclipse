@@ -20,11 +20,15 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
-
+import java.util.Optional;
 import java.util.function.Predicate;
 import melnorme.utilbox.ownership.IDisposable;
 
 public class MiscUtil extends PathUtil {
+	
+	public static <T> Optional<T> toOptional(Optional<T> project) {
+		return project == null ? Optional.empty() : project;
+	}
 	
 	/* ----------------- System ----------------- */
 	

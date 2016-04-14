@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
@@ -331,9 +332,20 @@ public abstract class BuildManager {
 			return null;
 		}
 		
-		public abstract CommonBuildTargetOperation getBuildOperation(
+		public final CommonBuildTargetOperation getBuildOperation(
 				ToolManager toolManager, BuildTarget bt, IOperationMonitor opMonitor
+		) throws CommonException {
+			
+			String buildCommandString = bt.getEffectiveBuildCommand();
+			CommandInvocation buildCommand = new CommandInvocation(buildCommandString, toolManager, 
+				Optional.of(bt.getProject()));
+			return getBuildOperation(opMonitor, toolManager, bt, buildCommand);
+		}
+		
+		public abstract CommonBuildTargetOperation getBuildOperation(IOperationMonitor opMonitor,
+				ToolManager toolMgr, BuildTarget bt, CommandInvocation buildCommand
 		) throws CommonException;
+		
 	}
 	
 	protected final Indexable<BuildType> buildTypes = initBuildTypes();
