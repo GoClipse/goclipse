@@ -255,12 +255,18 @@ public abstract class BuildManager {
 				
 				BuildTargetData newBuildTargetData = new BuildTargetData(targetName, isFirstConfig, false); 
 				
-				buildTargets.add(new BuildTarget(project, newBundleInfo, newBuildTargetData, buildType, buildConfig));
+				buildTargets.add(
+					createDefaultBuildTarget(project, newBundleInfo, buildConfig, buildType, newBuildTargetData));
 				isFirstConfig = false;
 			}
 			
 		}
 		return buildTargets;
+	}
+	
+	protected BuildTarget createDefaultBuildTarget(IProject project, BundleInfo newBundleInfo,
+			BuildConfiguration buildConfig, BuildType buildType, BuildTargetData buildTargetData) {
+		return new BuildTarget(project, newBundleInfo, buildTargetData, buildType, buildConfig);
 	}
 	
 	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
@@ -346,7 +352,7 @@ public abstract class BuildManager {
 	}
 	
 	public BuildType getBuildType_NonNull(String buildTypeName) throws CommonException {
-		if(buildTypeName == null) {
+		if(buildTypeName == null || buildTypeName.isEmpty()) {
 			return getDefaultBuildType();
 		}
 		
@@ -391,7 +397,9 @@ public abstract class BuildManager {
 	
 	/* -----------------  Build Target  ----------------- */
 	
-	public BuildTarget createBuildTarget(IProject project, BuildTargetDataView buildTargetData) throws CommonException {
+	public BuildTarget createBuildTarget(IProject project, BuildTargetDataView buildTargetData) 
+			throws CommonException {
+		
 		assertNotNull(buildTargetData.getTargetName());
 		String targetName = buildTargetData.getTargetName();
 		assertNotNull(targetName);
@@ -464,7 +472,8 @@ public abstract class BuildManager {
 	
 	public final CompositeBuildOperation newBuildTargetsOperation(IProject project, 
 			Collection2<BuildTarget> targetsToBuild) throws CommonException {
-		return newBuildOperation(null, project, true, targetsToBuild);
+		IOperationMonitor buildOp = getToolManager().startNewBuildOperation();
+		return newBuildOperation(buildOp, project, true, targetsToBuild);
 	}
 	
 	public final CompositeBuildOperation newProjectBuildOperation(IOperationMonitor opMonitor, IProject project,
@@ -477,6 +486,7 @@ public abstract class BuildManager {
 	
 	public CompositeBuildOperation newBuildOperation(IOperationMonitor opMonitor, IProject project, 
 			boolean clearMarkers, Collection2<BuildTarget> targetsToBuild) throws CommonException {
+		assertNotNull(opMonitor);
 		ArrayList2<ICommonOperation> buildCommands = 
 				targetsToBuild.mapx((buildTarget) -> buildTarget.getBuildOperation(toolManager, opMonitor));
 		

@@ -30,7 +30,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public abstract class CommonBuildTargetOperation extends AbstractToolManagerOperation {
 	
 	protected final String buildTargetName;
-	protected final IOperationMonitor opHandler;
+	protected final IOperationMonitor opMonitor;
 	
 	protected final BuildConfiguration buildConfiguration;
 	protected final BuildType buildType;
@@ -41,7 +41,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	) throws CommonException {
 		super(toolManager, assertNotNull(buildTarget).getProject());
 		this.buildTargetName = buildTarget.getBuildTargetName();
-		this.opHandler = assertNotNull(opHandler);
+		this.opMonitor = assertNotNull(opHandler);
 		
 		assertNotNull(buildTarget);
 		this.buildConfiguration = assertNotNull(buildTarget.getBuildConfiguration());
@@ -105,7 +105,7 @@ public abstract class CommonBuildTargetOperation extends AbstractToolManagerOper
 	
 	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IProgressMonitor pm)
 			throws CommonException, OperationCancellation {
-		processBuildOutput(runBuildTool(opHandler, pb, pm), pm);
+		processBuildOutput(runBuildTool(opMonitor, pb, pm), pm);
 	}
 	
 	protected abstract void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)

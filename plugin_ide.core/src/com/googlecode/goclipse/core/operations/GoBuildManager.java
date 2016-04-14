@@ -37,6 +37,7 @@ import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
@@ -87,6 +88,15 @@ public class GoBuildManager extends BuildManager {
 	@Override
 	public BuildTargetNameParser getBuildTargetNameParser() {
 		return new BuildTargetNameParser2();
+	}
+	
+	@Override
+	protected BuildTarget createDefaultBuildTarget(IProject project, BundleInfo newBundleInfo,
+			BuildConfiguration buildConfig, BuildType buildType, BuildTargetData buildTargetData) {
+		if(buildType.getName().equals(BUILD_TYPE_BuildCheck)) {
+			buildTargetData.autoBuildEnabled = true;
+		}
+		return super.createDefaultBuildTarget(project, newBundleInfo, buildConfig, buildType, buildTargetData);
 	}
 	
 	/* -----------------  ----------------- */
