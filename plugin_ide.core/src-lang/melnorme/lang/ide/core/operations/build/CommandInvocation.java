@@ -38,6 +38,10 @@ public class CommandInvocation {
 		return toolManager;
 	}
 	
+	public IProject getProject() {
+		return project.get();
+	}
+	
 	public Indexable<String> getEffectiveCommandLine() throws CommonException {
 		VariablesResolver variablesManager = getToolManager().getVariablesManager(project);
 		

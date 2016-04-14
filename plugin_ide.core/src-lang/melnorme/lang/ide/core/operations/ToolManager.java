@@ -47,6 +47,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.EventSource;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 /**
@@ -79,6 +80,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	protected final IStringVariableManager globalVarManager = VariablesPlugin.getDefault().getStringVariableManager();
 	
 	public VariablesResolver getVariablesManager(Optional<IProject> project) {
+		project = MiscUtil.toOptional(project);
 		VariablesResolver variablesResolver = new VariablesResolver(globalVarManager);
 		
 		setupVariableResolver(variablesResolver, project);

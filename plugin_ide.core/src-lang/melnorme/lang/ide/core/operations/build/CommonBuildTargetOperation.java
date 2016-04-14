@@ -12,15 +12,12 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.util.Optional;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
-import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -28,31 +25,17 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class CommonBuildTargetOperation extends AbstractToolManagerOperation {
 	
-	protected final String buildTargetName;
 	protected final IOperationMonitor opMonitor;
-	
-	protected final BuildConfiguration buildConfiguration;
+	protected final String buildTargetName;
 	protected final CommandInvocation buildCommand;
 	
-	public CommonBuildTargetOperation(
-			ToolManager toolManager, BuildTarget buildTarget, IOperationMonitor opHandler
-	) throws CommonException {
-		super(toolManager, assertNotNull(buildTarget).getProject());
-		this.buildTargetName = buildTarget.getBuildTargetName();
-		this.opMonitor = assertNotNull(opHandler);
-		
-		assertNotNull(buildTarget);
-		this.buildConfiguration = assertNotNull(buildTarget.getBuildConfiguration());
-		String buildCommand = assertNotNull(buildTarget.getEffectiveBuildCommand());
-		this.buildCommand = assertNotNull(new CommandInvocation(buildCommand, toolManager, Optional.of(project)));
-	}
-	
-	public BuildConfiguration getConfiguration() {
-		return buildConfiguration;
-	}
-	
-	public String getConfigurationName() {
-		return buildConfiguration.getName();
+	public CommonBuildTargetOperation(IOperationMonitor opMonitor, 
+			ToolManager toolManager, String buildTargetName, CommandInvocation buildCommand) {
+		super(toolManager, buildCommand.getProject());
+		assertNotNull(this.project);
+		this.opMonitor = assertNotNull(opMonitor);
+		this.buildTargetName = assertNotNull(buildTargetName);
+		this.buildCommand = assertNotNull(buildCommand);
 	}
 	
 	public String getBuildTargetName() {

@@ -112,10 +112,10 @@ public class BuildManager_Test extends CoreTestWithProject {
 			}
 			
 			@Override
-			public CommonBuildTargetOperation getBuildOperation(
-					ToolManager toolManager, BuildTarget bt, IOperationMonitor opMonitor
+			public CommonBuildTargetOperation getBuildOperation(IOperationMonitor opMonitor,
+					ToolManager toolMgr, BuildTarget bt, CommandInvocation buildCommand
 			) throws CommonException {
-				return new CommonBuildTargetOperation(toolManager, bt, opMonitor) {
+				return new CommonBuildTargetOperation(opMonitor, toolManager, bt.getBuildTargetName(), buildCommand) {
 					@Override
 					protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
 							throws CommonException, OperationCancellation {
