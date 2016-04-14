@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -150,12 +150,12 @@ public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 	
 	@Override
 	public void doProjectReconcile(IProject project, IProgressMonitor cancelMonitor) {
-		IOperationConsoleHandler buildOpContext = 
+		IOperationMonitor opMonitor = 
 				toolMgr.startNewOperation(ProcessStartKind.BUILD, true, false);
 		try {
 			
 			CompositeBuildOperation buildOp = 
-					buildMgr.newProjectBuildOperation(buildOpContext, project, true, true);
+					buildMgr.newProjectBuildOperation(opMonitor, project, true, true);
 			
 			buildOp.execute(cancelMonitor);
 		} catch(CommonException e) {

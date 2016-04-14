@@ -2,7 +2,7 @@ package LANG_PROJECT_ID.ide.core.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -47,9 +47,9 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(
-				ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+				ToolManager toolManager, BuildTarget bt, IOperationMonitor opMonitor
 		) throws CommonException {
-			return new LANGUAGE_BuildTargetOperation(toolManager, bt, opHandler);
+			return new LANGUAGE_BuildTargetOperation(toolManager, bt, opMonitor);
 		}
 	}
 	
@@ -58,9 +58,9 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 	protected static class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
 		
 		public LANGUAGE_BuildTargetOperation(
-				ToolManager toolManager, BuildTarget buildTarget, IOperationConsoleHandler opHandler
+				ToolManager toolManager, BuildTarget buildTarget, IOperationMonitor opMonitor
 		) throws CommonException {
-			super(toolManager, buildTarget, opHandler);
+			super(toolManager, buildTarget, opMonitor);
 		}
 		
 		@Override

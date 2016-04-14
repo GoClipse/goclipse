@@ -27,7 +27,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.ICommonOperation;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
@@ -45,11 +45,11 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	protected final String buildProblemId = LangCore_Actual.BUILD_PROBLEM_ID;
 	
 	protected final IProject project;
-	protected final IOperationConsoleHandler opHandler;
+	protected final IOperationMonitor opMonitor;
 	
-	public BuildOperationCreator(IProject project, IOperationConsoleHandler opHandler) {
+	public BuildOperationCreator(IProject project, IOperationMonitor opMonitor) {
 		this.project = project;
-		this.opHandler = assertNotNull(opHandler);
+		this.opMonitor = assertNotNull(opMonitor);
 	}
 	
 	protected ArrayList2<ICommonOperation> operations;
@@ -110,7 +110,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		return (pm) -> {
 			boolean hadDeletedMarkers = doDeleteProjectMarkers(buildProblemId, pm);
 			if(hadDeletedMarkers) {
-				opHandler.writeInfoMessage(
+				opMonitor.writeInfoMessage(
 					format(MSG_ClearingMarkers, project.getName()) + "\n");
 			}
 		};
@@ -157,7 +157,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		
 		@Override
 		public Void call() throws RuntimeException {
-			opHandler.writeInfoMessage(msg);
+			opMonitor.writeInfoMessage(msg);
 			return null;
 		}
 	}

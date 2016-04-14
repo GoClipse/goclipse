@@ -97,10 +97,10 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IOperationConsoleHandler beginOperation(ProcessStartKind kind, boolean clearConsole, 
+	public IOperationMonitor beginOperation(ProcessStartKind kind, boolean clearConsole, 
 			boolean activateConsole) {
 		
-		IOperationConsoleHandler opHandler = doBeginOperation(kind, clearConsole);
+		IOperationMonitor opHandler = doBeginOperation(kind, clearConsole);
 		
 		if(activateConsole){
 			opHandler.activate();
@@ -109,7 +109,7 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 		return opHandler;
 	}
 	
-	protected IOperationConsoleHandler doBeginOperation(ProcessStartKind kind, boolean clearConsole) {
+	protected IOperationMonitor doBeginOperation(ProcessStartKind kind, boolean clearConsole) {
 		switch (kind) {
 		case BUILD: {
 			ToolsConsole console = getBuildConsole(null, clearConsole);
@@ -127,14 +127,14 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 		throw assertFail();
 	}
 	
-	protected LangOperationConsoleHandler createConsoleHandler(ProcessStartKind kind, ToolsConsole console, 
+	protected OperationConsoleMonitor createConsoleHandler(ProcessStartKind kind, ToolsConsole console, 
 			IOConsoleOutputStream stdOut, IOConsoleOutputStream stdErr) {
-		return new LangOperationConsoleHandler(kind, console, stdOut, stdErr);
+		return new OperationConsoleMonitor(kind, console, stdOut, stdErr);
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public class LangOperationConsoleHandler implements IOperationConsoleHandler {
+	public class OperationConsoleMonitor implements IOperationMonitor {
 		
 		protected final ProcessStartKind kind;
 		protected final ToolsConsole console;
@@ -144,7 +144,7 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 		
 		public boolean errorOnNonZeroExitValueForBuild = false;
 		
-		public LangOperationConsoleHandler(ProcessStartKind kind, ToolsConsole console, 
+		public OperationConsoleMonitor(ProcessStartKind kind, ToolsConsole console, 
 				IOConsoleOutputStream stdOut, IOConsoleOutputStream stdErr) {
 			this.kind = assertNotNull(kind);
 			this.console = assertNotNull(console);

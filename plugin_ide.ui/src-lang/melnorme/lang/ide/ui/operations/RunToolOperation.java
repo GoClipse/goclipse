@@ -20,7 +20,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
@@ -60,7 +60,7 @@ public class RunToolOperation extends AbstractUIOperation {
 	protected void doBackgroundComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
 		
-		IOperationConsoleHandler opHandler = getToolManager().startNewOperation(opViewOptions);
+		IOperationMonitor opHandler = getToolManager().startNewOperation(opViewOptions);
 		
 		opHandler.writeInfoMessage(
 			TextMessageUtils.headerBIG(getOperationStartMessage())

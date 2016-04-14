@@ -28,8 +28,8 @@ import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NoopOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NullOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.operations.build.BuildManager_Test.TestsBuildManager.SampleStrictBuildType;
@@ -114,9 +114,9 @@ public class BuildManager_Test extends CommonTest {
 			
 			@Override
 			public CommonBuildTargetOperation getBuildOperation(
-					ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+					ToolManager toolManager, BuildTarget bt, IOperationMonitor opMonitor
 			) throws CommonException {
-				return new CommonBuildTargetOperation(toolManager, bt, opHandler) {
+				return new CommonBuildTargetOperation(toolManager, bt, opMonitor) {
 					@Override
 					protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
 							throws CommonException, OperationCancellation {
@@ -351,7 +351,7 @@ public class BuildManager_Test extends CommonTest {
 		}
 	}
 	
-	protected NoopOperationConsoleHandler consoleHandler = new NoopOperationConsoleHandler();
+	protected NullOperationMonitor opMonitor = new NullOperationMonitor();
 	
 	protected void testBuildOperation() throws CommonException, StatusException {
 		ToolManager toolMgr = buildMgr.getToolManager();
@@ -364,12 +364,12 @@ public class BuildManager_Test extends CommonTest {
 		assertTrue(btB.getData().getBuildArguments() != null);
 		
 		assertAreEqual(
-			btA.getBuildOperation(toolMgr, consoleHandler).getEffectiveProccessCommandLine(), 
+			btA.getBuildOperation(toolMgr, opMonitor).getEffectiveProccessCommandLine(), 
 			list("default:", "build_args")
 		);
 		
 		assertAreEqual(
-			btB.getBuildOperation(toolMgr, consoleHandler).getEffectiveProccessCommandLine(), 
+			btB.getBuildOperation(toolMgr, opMonitor).getEffectiveProccessCommandLine(), 
 			list("B:", "build_args")
 		);
 		
@@ -409,7 +409,7 @@ public class BuildManager_Test extends CommonTest {
 		BuildTarget newBuildTarget = buildInfo.buildMgr.createBuildTarget(buildInfo.project, dataCopy);
 		
 		ToolManager toolMgr = buildInfo.buildMgr.getToolManager();
-		CommonBuildTargetOperation buildOperation = newBuildTarget.getBuildOperation(toolMgr, consoleHandler);
+		CommonBuildTargetOperation buildOperation = newBuildTarget.getBuildOperation(toolMgr, opMonitor);
 		return buildOperation.getEffectiveProccessCommandLine();
 	}
 	
