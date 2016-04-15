@@ -19,6 +19,30 @@ public interface IValidationSource {
 		return se == null ? StatusLevel.OK : se.getSeverity().toStatusLevel(); 
 	}
 	
+	default void validate() throws StatusException {
+		IStatusMessage validationStatus = getValidationStatus();
+		if(validationStatus != null) {
+			throw validationStatus.toStatusException();
+		}
+	}
+	
+	public static interface IValidationSourceX extends IValidationSource {
+		
+		@Override
+		default IStatusMessage getValidationStatus() {
+			try {
+				validate();
+				return null;
+			} catch(StatusException e) {
+				return e;
+			}
+		}
+		
+		@Override
+		abstract void validate() throws StatusException;
+		
+	}
+	
 	/* -----------------  ----------------- */
 	
 	static IStatusMessage getHighestStatus(Iterable<? extends IValidationSource> validationSources) {

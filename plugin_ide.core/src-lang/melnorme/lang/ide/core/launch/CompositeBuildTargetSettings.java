@@ -42,10 +42,10 @@ public abstract class CompositeBuildTargetSettings {
 	}
 	
 	protected BuildTarget getValidBuildTarget2(BuildTarget originalBuildTarget) {
-		BuildTargetData data = originalBuildTarget.getDataCopy();
-		
 		String buildArguments = getBuildArguments();
 		String executablePath = getExecutablePath();
+		
+		BuildTargetData data = originalBuildTarget.getDataCopy();
 		
 		if(buildArguments != null) {
 			data.buildArguments = buildArguments;
@@ -53,13 +53,7 @@ public abstract class CompositeBuildTargetSettings {
 		if(executablePath != null) {
 			data.executablePath = executablePath;
 		}
-		return new BuildTarget(
-			originalBuildTarget.getProject(), 
-			originalBuildTarget.getBundleInfo(), 
-			data, 
-			originalBuildTarget.getBuildType(), 
-			originalBuildTarget.getBuildConfiguration()
-		);
+		return originalBuildTarget.getDerivedBuildTarget(data);
 	}
 	
 }

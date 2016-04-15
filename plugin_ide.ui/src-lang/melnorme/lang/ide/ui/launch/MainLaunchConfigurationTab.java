@@ -22,21 +22,27 @@ import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.preferences.BuildTargetSettingsComponent;
+import melnorme.lang.ide.ui.preferences.BuildTargetEditor;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.CommonException;
 
 /**
- * A main LaunchConfigurationTa with project selection field, and program path selection field.
+ * A main LaunchConfiguration with project selection field, 
+ * and build target editor (including program path selection field).
  */
 public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfigurationTab {
 	
+	protected final BuildManager buildManager = LangCore.getBuildManager();
+	
+	protected final BuildTargetSource buildTargetSource = init_buildTargetSource();
 	protected final BuildTargetField buildTargetField = init_createBuildTargetField();
-	protected final BuildTargetSettingsComponent buildTargetSettings = init_BuildTargetSettingsComponent();
+	protected final BuildTargetEditor buildTargetEditor = init_BuildTargetSettingsComponent();
 	
 	public MainLaunchConfigurationTab() {
 		this(true);
@@ -48,16 +54,34 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		}
 	}
 	
+	protected BuildTargetSource init_buildTargetSource() {
+		return new BuildTargetSource() {
+			@Override
+			public String getProjectName() {
+				return MainLaunchConfigurationTab.this.getProjectName();
+			}
+			
+			@Override
+			public String getBuildTargetName() {
+				return MainLaunchConfigurationTab.this.getBuildTargetName();
+			}
+		};
+	}
+	
 	protected BuildTargetField init_createBuildTargetField() {
 		return new BuildTargetField();
 	}
 	
 	protected BuildManager getBuildManager() {
-		return LangCore.getBuildManager();
+		return buildManager;
+	}
+	
+	protected ToolManager getToolManager() {
+		return getBuildManager().getToolManager();
 	}
 	
 	protected String getProgramPathString() {
-		return buildTargetSettings.programPathField.getFieldValue();
+		return buildTargetEditor.programPathField.getFieldValue();
 	}
 	
 	protected String getBuildTargetName() {
@@ -65,19 +89,19 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	protected boolean isDefaultProgramPath() {
-		return buildTargetSettings.programPathField.isUseDefault();
+		return buildTargetEditor.programPathField.isUseDefault();
 	}
 	
-	protected BuildTargetSettingsComponent init_BuildTargetSettingsComponent() {
-		BuildTargetSettingsComponent component = new BuildTargetSettingsComponent(
+	protected BuildTargetEditor init_BuildTargetSettingsComponent() {
+		BuildTargetEditor component = new BuildTargetEditor(
+			getBuildManager(),
+			false,
 			this::getDefaultBuildTargetCommand,
 			this::getDefaultProgramPath
-		) {
-			{ createEnablementFields = false; }
-		};
+		);
 		component.programPathField.setLabelText(LangUIMessages.LaunchTab_ProgramPathField_title);
 		
-		component.buildArgumentsField.getUseDefaultField().setLabelText(
+		component.buildCommandField.getCommandArgumentsField().getUseDefaultField().setLabelText(
 			LangUIMessages.LaunchTab_Fields_useBuildTargetSettings);
 		component.programPathField.getUseDefaultField().setLabelText(
 			LangUIMessages.LaunchTab_Fields_useBuildTargetSettings);
@@ -85,18 +109,6 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	/* -----------------  ----------------- */
-	
-	protected final BuildTargetSource buildTargetSource = new BuildTargetSource() {
-		@Override
-		public String getProjectName() {
-			return MainLaunchConfigurationTab.this.getProjectName();
-		}
-		
-		@Override
-		public String getBuildTargetName() {
-			return MainLaunchConfigurationTab.this.getBuildTargetName();
-		}
-	};
 	
 	protected String getDefaultBuildTargetCommand() throws CommonException {
 		return buildTargetSource.getBuildTarget().getEffectiveBuildCommand();
@@ -110,19 +122,22 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		return new CompositeBuildTargetSettings(buildTargetSource) {
 			@Override
 			public String getBuildArguments() {
-				return buildTargetSettings.getEffectiveBuildArgumentsValue();
+				return buildTargetEditor.getEffectiveBuildArgumentsValue();
 			}
 			
 			@Override
 			public String getExecutablePath() {
-				return buildTargetSettings.getEffectiveProgramPathValue();
+				return buildTargetEditor.getEffectiveProgramPathValue();
 			}
 		};
 	}
 	
 	@Override
-	protected void doValidate() throws CommonException, CoreException {
-		getBuildTargetSettings().getValidBuildTarget().validateForBuild();
+	protected void doValidate() throws StatusException {
+		super.doValidate();
+		
+		buildTargetField.validate();
+		buildTargetEditor.validate();
 	}
 	
 	/* ----------------- bindings ----------------- */
@@ -131,10 +146,8 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		projectField.addListener(this::projectFieldChanged);
 		buildTargetField.addListener(this::buildTargetFieldChanged);
 		
-		buildTargetSettings.buildArgumentsField.addListener(() -> updateLaunchConfigurationDialog());
-		buildTargetSettings.buildArgumentsField.addListener(() -> 
-			buildTargetSettings.programPathField.updateDefaultFieldValue());
-		buildTargetSettings.programPathField.addListener(() -> updateLaunchConfigurationDialog());
+		buildTargetEditor.buildCommandField.addListener(() -> updateLaunchConfigurationDialog());
+		buildTargetEditor.programPathField.addListener(() -> updateLaunchConfigurationDialog());
 	}
 	
 	public void projectFieldChanged() {
@@ -155,8 +168,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	public void buildTargetFieldChanged() {
 		IProject project = getValidProjectOrNull();
 		if(project != null) {
-			buildTargetSettings.buildArgumentsField.updateDefaultFieldValue();
-			buildTargetSettings.programPathField.updateDefaultFieldValue();
+			buildTargetEditor.updateWidgetFromInput();
 			updateLaunchConfigurationDialog();
 		}
 	}
@@ -167,7 +179,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	@Override
 	protected void createCustomControls(Composite parent) {
 		buildTargetField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
-		buildTargetSettings.createComponent(parent, new GridData(GridData.FILL_BOTH));
+		buildTargetEditor.createComponent(parent, new GridData(GridData.FILL_BOTH));
 	}
 	
 	/* ----------------- Apply/Revert/Defaults ----------------- */
@@ -197,8 +209,8 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	protected void initializeBuildTargetSettings(BuildTargetLaunchCreator btLaunchCreator) {
-		buildTargetSettings.buildArgumentsField.setEffectiveFieldValue(btLaunchCreator.getBuildArguments());
-		buildTargetSettings.programPathField.setEffectiveFieldValue(btLaunchCreator.getExecutablePath());
+		buildTargetEditor.buildCommandField.setEffectiveFieldValue(btLaunchCreator.getBuildArguments());
+		buildTargetEditor.programPathField.setEffectiveFieldValue(btLaunchCreator.getExecutablePath());
 	}
 	
 	@Override
@@ -206,8 +218,8 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		return new BuildTargetLaunchCreator(
 			getProjectName(),
 			getBuildTargetName(),
-			buildTargetSettings.buildArgumentsField.getEffectiveFieldValue(),
-			buildTargetSettings.programPathField.getEffectiveFieldValue()
+			buildTargetEditor.buildCommandField.getEffectiveFieldValue(),
+			buildTargetEditor.programPathField.getEffectiveFieldValue()
 		);
 	}
 	

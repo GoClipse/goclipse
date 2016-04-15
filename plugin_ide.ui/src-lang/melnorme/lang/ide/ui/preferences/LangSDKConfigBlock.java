@@ -48,6 +48,7 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 		public final ButtonTextField sdkLocationField = createSdkLocationField();
 		
 		public LanguageSDKLocationGroup() {
+			super(true);
 			this.addSubComponent(sdkLocationField);
 			
 			initBindings();

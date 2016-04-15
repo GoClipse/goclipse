@@ -58,6 +58,8 @@ public abstract class LangUIMessages extends LangUIMessages_Actual {
 			"Variables...";
 	public static final String LaunchTab_Fields_useBuildTargetSettings = 
 			"Use Build Target settings";
+	public static final String Fields_CommandArguments = 
+			"Command arguments:";
 	
 	public static final String LaunchTab_ProgramPathField_title = 
 			"Path of launch executable:";

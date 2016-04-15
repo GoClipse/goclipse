@@ -15,7 +15,7 @@ import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.utilbox.fields.IFieldView;
 
 public interface IValidatableWidget extends IWidgetComponent, IStatusFieldSource {
-
+	
 	@Override
 	default IFieldView<IStatusMessage> getStatusField() {
 		return IFieldView.NULL_FIELD_VIEW();

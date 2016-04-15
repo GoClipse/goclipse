@@ -18,6 +18,10 @@ public class StatusException extends CommonException implements IStatusMessage {
 	
 	protected final Severity severity;
 	
+	public StatusException(String message) {
+		this(Severity.ERROR, message, null);
+	}
+	
 	public StatusException(Severity severity, String message) {
 		this(severity, message, null);
 	}
@@ -35,6 +39,11 @@ public class StatusException extends CommonException implements IStatusMessage {
 	@Override
 	public String getMessage() {
 		return super.getMessage();
+	}
+	
+	@Override
+	public StatusException toStatusException() {
+		return this;
 	}
 	
 	@Override

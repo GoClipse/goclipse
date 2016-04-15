@@ -4,14 +4,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.BundleInfo;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.operations.build.CommandInvocation;
-import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.build.BuildTargetOperation;
+import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
@@ -57,10 +56,9 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(IOperationMonitor opMonitor,
-				ToolManager toolMgr, BuildTarget bt, CommandInvocation buildCommand
-		) throws CommonException {
-			return new LANGUAGE_BuildTargetOperation(opMonitor, toolMgr, bt.getBuildTargetName(), buildCommand);
+		public BuildTargetOperation getBuildOperation(BuildOperationParameters buildOpParams)
+				throws CommonException {
+			return new LANGUAGE_BuildTargetOperation(buildOpParams);
 		}
 	}
 	
@@ -91,11 +89,10 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 	
 	/* ----------------- Build ----------------- */
 	
-	protected static class LANGUAGE_BuildTargetOperation extends CommonBuildTargetOperation {
+	protected static class LANGUAGE_BuildTargetOperation extends BuildTargetOperation {
 		
-		public LANGUAGE_BuildTargetOperation(IOperationMonitor opMonitor, 
-				ToolManager toolManager, String buildTargetName, CommandInvocation buildCommand) {
-			super(opMonitor, toolManager, buildTargetName, buildCommand);
+		public LANGUAGE_BuildTargetOperation(BuildOperationParameters buildOpParams) {
+			super(buildOpParams);
 		}
 		
 		@Override

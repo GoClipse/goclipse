@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui.preferences;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
@@ -29,31 +28,45 @@ import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractDisableableWidget;
+import melnorme.util.swt.components.AbstractCompositeWidget;
+import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 
-public class ProjectBuildConfigurationComponent extends AbstractDisableableWidget 
+public class ProjectBuildConfigurationComponent extends AbstractCompositeWidget 
 	implements IPreferencesEditor {
 	
+	protected final BuildManager buildManager = LangCore.getBuildManager();
+	
 	protected final IProject project;
-	protected final BuildTargetField buildTargetField = init_createBuildTargetField();
-	protected final BuildTargetSettingsComponent buildTargetSettingsComponent 
-		= init_createBuildTargetSettingsComponent();
+	protected final BuildTargetField buildTargetField;
+	protected final BuildTargetEditor buildTargetEditor;
 	
 	protected final HashMap2<String, BuildTargetData> buildOptionsToChange = new HashMap2<>();
 	
 	public ProjectBuildConfigurationComponent(IProject project) {
+		super(false);
+		
 		this.project = project;
+		
+		this.buildTargetField = init_createBuildTargetField();
+		this.buildTargetEditor = init_createBuildTargetSettingsComponent();
+		addSubComponent(buildTargetField);
+		addSubComponent(buildTargetEditor);
+		
+		buildTargetField.addListener(true, () -> handleBuildTargetChanged());
+		
 		initialize();
 	}
 	
 	protected BuildTargetField init_createBuildTargetField() {
 		return new BuildTargetField();
 	}
-	protected BuildTargetSettingsComponent init_createBuildTargetSettingsComponent() {
-		return new BuildTargetSettingsComponent(
+	protected BuildTargetEditor init_createBuildTargetSettingsComponent() {
+		return new BuildTargetEditor(
+			getBuildManager(),
+			true,
 			this::getDefaultBuildCommand, 
 			this::getDefaultExecutablePath
 		);
@@ -63,14 +76,14 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 		return buildTargetField;
 	}
 	
-	public BuildTargetSettingsComponent getBuildTargetSettings() {
-		return buildTargetSettingsComponent;
+	public BuildTargetEditor getBuildTargetEditor() {
+		return buildTargetEditor;
 	}
 	
 	/* -----------------  ----------------- */
 	
 	protected BuildManager getBuildManager() {
-		return LangCore.getBuildManager();
+		return buildManager;
 	}
 	
 	public IProject getValidProject() throws CommonException {
@@ -106,20 +119,20 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 			buildOptionsToChange.put(buildTarget.getTargetName(), buildTarget.getDataCopy());
 		}
 		
-		buildTargetField.addListener(() -> handleBuildTargetChanged());
-		
 		buildTargetField.setFieldOptions(
 			buildInfo.getBuildTargets().map((buildTarget) -> buildTarget.getTargetName()));
 	}
 	
 	protected void handleBuildTargetChanged() {
 		String buildTargetName = getBuildTargetName();
+		buildTargetEditor.setEnabled(buildTargetName != null);
+		
 		if(buildTargetName == null) {
 			return;
 		}
 		
-		buildTargetSettingsComponent.btData = buildOptionsToChange.get(buildTargetName);
-		buildTargetSettingsComponent.inputChanged(buildTargetSettingsComponent.btData);
+		buildTargetEditor.btData = buildOptionsToChange.get(buildTargetName);
+		buildTargetEditor.inputChanged(buildTargetEditor.btData);
 	}
 	
 	/* -----------------  ----------------- */
@@ -161,11 +174,7 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	
 	@Override
 	protected void createContents(Composite topControl) {
-		buildTargetField.createComponent(topControl,
-			gdFillDefaults().grab(true, false).hint(150, SWT.DEFAULT).create());
-		
-		buildTargetSettingsComponent.createComponent(topControl, 
-			gdFillDefaults().grab(true, false).hint(200, SWT.DEFAULT).create());
+		super.createContents(topControl);
 		
 		SWTFactoryUtil.createPushButton2(topControl, 
 			"Restore all targets to defaults", null,
@@ -175,9 +184,8 @@ public class ProjectBuildConfigurationComponent extends AbstractDisableableWidge
 	}
 	
 	@Override
-	protected void doSetEnabled(boolean enabled) {
-		buildTargetField.setEnabled(enabled);
-		buildTargetSettingsComponent.setEnabled(enabled && getBuildTargetName() != null);
+	protected GridData getLayoutData(IDisableableWidget subComponent) {
+		return super.getLayoutData(subComponent);
 	}
 	
 	/* ----------------- apply/restore ----------------- */

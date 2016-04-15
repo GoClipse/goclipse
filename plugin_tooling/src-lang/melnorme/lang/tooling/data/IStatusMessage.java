@@ -20,4 +20,8 @@ public interface IStatusMessage {
 		return getSeverity().isHigherSeverity(other.getSeverity());
 	}
 	
+	default StatusException toStatusException() {
+		return new StatusException(getSeverity(), getMessage());
+	}
+	
 }

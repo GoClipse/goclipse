@@ -39,7 +39,7 @@ public class CommonException extends Exception {
 		super(assertNotNull(message), cause);
 	}
 	
-	public StatusException toStatusError() {
+	public StatusException toStatusException() {
 		return toStatusException(Severity.ERROR);
 	}
 	
