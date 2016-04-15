@@ -30,7 +30,7 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NullOpe
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.build.BuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -172,7 +172,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		return projectLoc.resolve_fromValid("src");
 	}
 	
-	protected CommonBuildTargetOperation getBuildOperation(BuildTarget bt) throws CommonException {
+	protected BuildTargetOperation getBuildOperation(BuildTarget bt) throws CommonException {
 		return bt.getBuildOperation(getToolManager(), new NullOperationMonitor());
 	}
 	

@@ -27,11 +27,11 @@ import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NullOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.operations.build.BuildManager_Test.TestsBuildManager.SampleStrictBuildType;
+import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.tests.BuildTestsHelper;
 import melnorme.lang.ide.core.tests.CoreTestWithProject;
@@ -112,10 +112,9 @@ public class BuildManager_Test extends CoreTestWithProject {
 			}
 			
 			@Override
-			public CommonBuildTargetOperation getBuildOperation(IOperationMonitor opMonitor,
-					ToolManager toolMgr, BuildTarget bt, CommandInvocation buildCommand
-			) throws CommonException {
-				return new CommonBuildTargetOperation(opMonitor, toolManager, bt.getBuildTargetName(), buildCommand) {
+			public BuildTargetOperation getBuildOperation(BuildOperationParameters buildOpParams)
+					throws CommonException {
+				return new BuildTargetOperation(buildOpParams) {
 					@Override
 					protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
 							throws CommonException, OperationCancellation {
@@ -399,7 +398,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 		BuildTarget newBuildTarget = buildInfo.buildMgr.createBuildTarget(buildInfo.project, dataCopy);
 		
 		ToolManager toolMgr = buildInfo.buildMgr.getToolManager();
-		CommonBuildTargetOperation buildOperation = newBuildTarget.getBuildOperation(toolMgr, opMonitor);
+		BuildTargetOperation buildOperation = newBuildTarget.getBuildOperation(toolMgr, opMonitor);
 		return buildOperation.getEffectiveProccessCommandLine();
 	}
 	

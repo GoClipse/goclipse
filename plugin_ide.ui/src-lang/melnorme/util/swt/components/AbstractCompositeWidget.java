@@ -12,6 +12,8 @@ package melnorme.util.swt.components;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
@@ -23,12 +25,17 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 	private final ArrayList2<AbstractDisableableWidget> subComponents = new ArrayList2<>();
 	
 	protected boolean createInlined = true;
-	
-	public AbstractCompositeWidget() {
-	}
+	protected GridDataFactory defaultRowLayout;
 	
 	public AbstractCompositeWidget(boolean createInlined) {
 		this.createInlined = createInlined;
+		this.defaultRowLayout = gdFillDefaults().grab(true, false).hint(200, SWT.DEFAULT);
+	}
+	
+	protected void addSubComponents(AbstractDisableableWidget... subComponents) {
+		for (AbstractDisableableWidget subComponent : subComponents) {
+			addSubComponent(subComponent);
+		}
 	}
 	
 	protected <T extends AbstractDisableableWidget> T addSubComponent(T subComponent) {
@@ -55,14 +62,22 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 			});
 		} else {
 			getSubWidgets().forEach(subComponent -> {
-				subComponent.createComponent(topControl, createSubComponentDefaultGridData());
+				createSubComponent(topControl, subComponent);
 			});
 		}
 		
 	}
 	
+	protected void createSubComponent(Composite topControl, IDisableableWidget subComponent) {
+		subComponent.createComponent(topControl, getLayoutData(subComponent));
+	}
+	
+	protected GridData getLayoutData(@SuppressWarnings("unused") IDisableableWidget subComponent) {
+		return createSubComponentDefaultGridData();
+	}
+	
 	protected GridData createSubComponentDefaultGridData() {
-		return gdFillDefaults().grab(true, false).create();
+		return defaultRowLayout.create();
 	}
 	
 	@Override
@@ -74,6 +89,13 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 	protected final void doSetEnabled(boolean enabled) {
 		subComponents.forEach(subComponent -> {
 			subComponent.updateControlEnablement2();
+		});
+	}
+	
+	@Override
+	protected void doUpdateWidgetFromInput() {
+		subComponents.forEach(subComponent -> {
+			subComponent.updateWidgetFromInput();
 		});
 	}
 	

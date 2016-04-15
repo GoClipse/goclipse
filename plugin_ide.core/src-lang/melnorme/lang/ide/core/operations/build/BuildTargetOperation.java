@@ -12,6 +12,7 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
@@ -23,19 +24,36 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class CommonBuildTargetOperation extends AbstractToolManagerOperation {
+public abstract class BuildTargetOperation extends AbstractToolManagerOperation {
 	
+	public static class BuildOperationParameters {
+		
+		public IOperationMonitor opMonitor;
+		public ToolManager toolManager;
+		public IProject project;
+		public String buildTargetName;
+		public CommandInvocation buildCommand;
+		
+		public BuildOperationParameters(IOperationMonitor opMonitor, ToolManager toolManager, IProject project,
+				String buildTargetName, CommandInvocation buildCommand) {
+			this.opMonitor = opMonitor;
+			this.toolManager = toolManager;
+			this.project = project;
+			this.buildTargetName = buildTargetName;
+			this.buildCommand = buildCommand;
+		}
+		
+	}
 	protected final IOperationMonitor opMonitor;
 	protected final String buildTargetName;
 	protected final CommandInvocation buildCommand;
 	
-	public CommonBuildTargetOperation(IOperationMonitor opMonitor, 
-			ToolManager toolManager, String buildTargetName, CommandInvocation buildCommand) {
-		super(toolManager, buildCommand.getProject());
+	public BuildTargetOperation(BuildOperationParameters buildOpParams) {
+		super(buildOpParams.toolManager, buildOpParams.project);
 		assertNotNull(this.project);
-		this.opMonitor = assertNotNull(opMonitor);
-		this.buildTargetName = assertNotNull(buildTargetName);
-		this.buildCommand = assertNotNull(buildCommand);
+		this.opMonitor = assertNotNull(buildOpParams.opMonitor);
+		this.buildTargetName = assertNotNull(buildOpParams.buildTargetName);
+		this.buildCommand = assertNotNull(buildOpParams.buildCommand);
 	}
 	
 	public String getBuildTargetName() {

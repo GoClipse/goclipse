@@ -84,6 +84,13 @@ public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget
 		domainField.addListener(listener);
 	}
 	
+	public void addListener(boolean initialize, IFieldValueListener listener) {
+		addListener(listener);
+		if(initialize) {
+			listener.fieldValueChanged();
+		}
+	}
+	
 	@Override
 	public void removeListener(IFieldValueListener listener) {
 		domainField.removeListener(listener);

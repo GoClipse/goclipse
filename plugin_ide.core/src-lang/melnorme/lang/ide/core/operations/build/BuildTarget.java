@@ -12,6 +12,8 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.util.Optional;
+
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.BundleInfo;
@@ -20,10 +22,13 @@ import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
+import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.AbstractValidator;
+import melnorme.lang.tooling.data.Severity;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.util.ValidationMessages;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -51,7 +56,7 @@ public class BuildTarget extends AbstractValidator {
 		this.project = assertNotNull(project);
 		this.bundleInfo = assertNotNull(bundleInfo);
 		
-		this.targetData = assertNotNull(buildTargetData);
+		this.targetData = assertNotNull(buildTargetData.copy());
 		assertNotNull(buildTargetData.getTargetName());
 		this.buildType = assertNotNull(buildType);
 		
@@ -96,7 +101,7 @@ public class BuildTarget extends AbstractValidator {
 	}
 	
 	public BuildTargetData getDataCopy() {
-		return new BuildTargetData(targetData);
+		return targetData.copy();
 	}
 	
 	public String getBuildConfigName() {
@@ -123,13 +128,27 @@ public class BuildTarget extends AbstractValidator {
 		return bundleInfo;
 	}
 	
-	/* -----------------  ----------------- */
-	
-	public String getDefaultBuildCommand() throws CommonException {
-		return getBuildType().getDefaultCommandLine(this);
+	public BuildTarget getDerivedBuildTarget(BuildTargetData data) {
+		return new BuildTarget(
+			getProject(), 
+			getBundleInfo(), 
+			data, 
+			getBuildType(), 
+			getBuildConfiguration()
+		);
 	}
 	
-	public String getEffectiveBuildCommand() throws CommonException {
+	/* -----------------  ----------------- */
+	
+	public String getDefaultBuildCommand() throws StatusException {
+		try {
+			return getBuildType().getDefaultCommandLine(this);
+		} catch(CommonException e) {
+			throw e.toStatusException();
+		}
+	}
+	
+	public String getEffectiveBuildCommand() throws StatusException {
 		String buildOptions = targetData.getBuildArguments();
 		if(buildOptions != null) {
 			return buildOptions;
@@ -139,7 +158,7 @@ public class BuildTarget extends AbstractValidator {
 	
 	/* -----------------  ----------------- */
 	
-	public String getEffectiveValidExecutablePath() throws CommonException {
+	public String getEffectiveValidExecutablePath() throws StatusException {
 		String executablePath = targetData.getExecutablePath();
 		if(executablePath != null) {
 			return executablePath;
@@ -148,10 +167,10 @@ public class BuildTarget extends AbstractValidator {
 		return getDefaultExecutablePath();
 	}
 	
-	public String getDefaultExecutablePath() throws CommonException {
+	public String getDefaultExecutablePath() throws StatusException {
 		LaunchArtifact mainLaunchArtifact = getMainLaunchArtifact();
 		if(mainLaunchArtifact == null) {
-			throw new CommonException(LaunchMessages.MSG_BuildTarget_NoExecutableAvailable());
+			throw new StatusException(LaunchMessages.MSG_BuildTarget_NoExecutableAvailable());
 		}
 		return mainLaunchArtifact.getArtifactPath();
 	}
@@ -160,39 +179,57 @@ public class BuildTarget extends AbstractValidator {
 		return getBuildType().getSubTargetLaunchArtifacts(this);
 	}
 	
-	public LaunchArtifact getMainLaunchArtifact() throws CommonException {
-		return getBuildType().getMainLaunchArtifact(this);
+	public LaunchArtifact getMainLaunchArtifact() throws StatusException {
+		try {
+			return getBuildType().getMainLaunchArtifact(this);
+		} catch(CommonException e) {
+			throw e.toStatusException();
+		}
 	}
 	
-	public Location getValidExecutableLocation() throws CommonException {
-		return getValidExecutableLocation2(getEffectiveValidExecutablePath());
+	public Location getValidExecutableLocation() throws StatusException {
+		return getValidExecutableLocation(getEffectiveValidExecutablePath());
 	}
 	
-	public Location getValidExecutableLocation2(String exeFilePathString) throws CommonException {
+	public Location getValidExecutableLocation(String exeFilePathString) throws StatusException {
 		if(exeFilePathString == null || exeFilePathString.isEmpty()) {
-			throw new CommonException(LaunchMessages.BuildTarget_NoArtifactPathSpecified);
+			throw new StatusException(LaunchMessages.BuildTarget_NoArtifactPathSpecified);
 		}
 		
-		Location exeFileLocation = Location.create(getProjectLocation(), exeFilePathString);
+		Location exeFileLocation;
+		try {
+			exeFileLocation = Location.create(getProjectLocation(), exeFilePathString);
+		} catch(CommonException e) {
+			throw e.toStatusException();
+		}
 		
 		if(exeFileLocation.toFile().exists() && !exeFileLocation.toFile().isFile()) {
-			error(ValidationMessages.Location_NotAFile(exeFileLocation));
+			throw new StatusException(Severity.ERROR, ValidationMessages.Location_NotAFile(exeFileLocation));
 		}
 		return exeFileLocation;
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public void validateForBuild() throws CommonException {
-		getEffectiveBuildCommand();
-		/* FIXME: validation issue */
-		getValidExecutableLocation();
+	public void validateForBuild(ToolManager toolManager) throws StatusException {
+		getCommandInvocation(toolManager).validate();
+		getValidExecutableLocation(); // TODO: Build Target Editor validate this
 	}
 	
-	public CommonBuildTargetOperation getBuildOperation(ToolManager toolManager, IOperationMonitor opMonitor)
+	public CommandInvocation getCommandInvocation(ToolManager toolManager) throws StatusException {
+		String buildCommandString = getEffectiveBuildCommand();
+		VariablesResolver variablesResolver = toolManager.getVariablesManager(Optional.of(getProject()));
+		return new CommandInvocation(buildCommandString, variablesResolver);
+	}
+	
+	public BuildTargetOperation getBuildOperation(ToolManager toolManager, IOperationMonitor opMonitor)
 			throws CommonException {
 		assertNotNull(opMonitor);
-		return getBuildType().getBuildOperation(toolManager, this, opMonitor);
+		
+		CommandInvocation buildCommand = this.getCommandInvocation(toolManager);
+		
+		return getBuildType().getBuildOperation(new BuildOperationParameters(opMonitor, 
+			toolManager, this.getProject(), this.getBuildTargetName(), buildCommand));
 	}
 	
 }

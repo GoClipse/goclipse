@@ -40,16 +40,6 @@ public class BuildTargetData implements BuildTargetDataView {
 		this.executablePath = executablePath;
 	}
 	
-	public BuildTargetData(BuildTargetDataView data) {
-		this(
-			data.getTargetName(),
-			data.isNormalBuildEnabled(),
-			data.isAutoBuildEnabled(),
-			data.getBuildArguments(),
-			data.getExecutablePath()
-		);
-	}
-	
 	public BuildTargetData setData(BuildTargetDataView data) {
 		this.targetName = data.getTargetName();
 		this.normalBuildEnabled = data.isNormalBuildEnabled(); 

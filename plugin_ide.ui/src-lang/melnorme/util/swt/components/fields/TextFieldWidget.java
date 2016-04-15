@@ -39,6 +39,10 @@ public class TextFieldWidget extends LabelledFieldWidget<String> {
 		super(domainField, labelText);
 	}
 	
+	public void setDefaultTextStyle(int defaultTextStyle) {
+		this.defaultTextStyle = defaultTextStyle;
+	}
+	
 	@Override
 	public int getPreferredLayoutColumns() {
 		return 2;

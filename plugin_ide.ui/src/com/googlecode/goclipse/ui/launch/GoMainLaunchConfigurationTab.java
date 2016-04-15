@@ -28,7 +28,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
-import melnorme.lang.ide.ui.preferences.BuildTargetSettingsComponent;
+import melnorme.lang.ide.ui.preferences.BuildTargetEditor;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.data.StatusException;
@@ -67,10 +67,10 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	}
 	
 	@Override
-	protected BuildTargetSettingsComponent init_BuildTargetSettingsComponent() {
-		BuildTargetSettingsComponent component = super.init_BuildTargetSettingsComponent();
+	protected BuildTargetEditor init_BuildTargetSettingsComponent() {
+		BuildTargetEditor component = super.init_BuildTargetSettingsComponent();
 		
-		component.buildArgumentsField.getUseDefaultField().setLabelText(
+		component.buildCommandField.getCommandArgumentsField().getUseDefaultField().setLabelText(
 			EnablementButtonTextField.LABEL_UseDefault);
 		component.programPathField.getUseDefaultField().setLabelText(
 			EnablementButtonTextField.LABEL_UseDefault);
@@ -101,7 +101,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	protected void createCustomControls(Composite parent) {
 		goPackageField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
 //		buildTargetField.createComponent(parent, new GridData(GridData.FILL_HORIZONTAL));
-		buildTargetSettings.createComponent(parent, new GridData(GridData.FILL_BOTH));
+		buildTargetEditor.createComponent(parent, new GridData(GridData.FILL_BOTH));
 	}
 	
 	protected class GoPackageField extends EnablementButtonTextField {

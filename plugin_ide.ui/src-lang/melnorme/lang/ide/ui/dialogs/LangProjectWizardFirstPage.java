@@ -40,6 +40,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -147,7 +148,11 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		protected TextFieldWidget textField = new TextFieldWidget(WizardMessages.LangNewProject_NameGroup_label);
 		
 		public NameGroup() {
+			super(true);
 			addSubComponent(textField);
+			
+			IValidationSourceX validationSource = () -> getProjectHandle2();
+			validation.addFieldValidation(true, textField, validationSource);
 		}
 		
 		public String getName() {
@@ -160,10 +165,6 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 		public IProject getProjectHandle2() throws StatusException {
 			return new ProjectValidator().getProjectHandle(getName());
-		}
-		
-		protected void validate() throws StatusException {
-			getProjectHandle2();
 		}
 		
 		/* -----------------  ----------------- */
@@ -195,6 +196,9 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			);
 		
 			nameGroup.getNameField().addListener(this::updateDefaultFieldValue);
+			
+			IValidationSourceX validationSource = () -> doValidate();
+			validation.addFieldValidation(true, this, validationSource);
 		}
 		
 		protected String getProjectName() {
@@ -227,16 +231,18 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			return Path.fromOSString(getLocationString());
 		}
 		
-		public void validate() throws CommonException {
+		public void doValidate() throws StatusException {
 			IProject project = nameGroup.getProjectHandle2();
 			
 			if(project.exists() && !isDefaultLocation()) {
-				throw new CommonException(WizardMessages.LangNewProject_Location_projectExistsCannotChangeLocation);
+				throw new StatusException(Severity.ERROR,
+					WizardMessages.LangNewProject_Location_projectExistsCannotChangeLocation);
 			}
 			
 			IPath projectLocation = getProjectLocation();
 			if(projectLocation == null) {
-				throw new CommonException(WizardMessages.LangNewProject_Location_invalidLocation);
+				throw new StatusException(Severity.ERROR,
+					WizardMessages.LangNewProject_Location_invalidLocation);
 			}
 			
 			EclipseUtils.validate(

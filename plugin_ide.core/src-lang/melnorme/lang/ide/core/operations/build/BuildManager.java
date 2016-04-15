@@ -17,7 +17,6 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
@@ -29,6 +28,7 @@ import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.project_model.ProjectBasedModel;
@@ -332,19 +332,8 @@ public abstract class BuildManager {
 			return null;
 		}
 		
-		public final CommonBuildTargetOperation getBuildOperation(
-				ToolManager toolManager, BuildTarget bt, IOperationMonitor opMonitor
-		) throws CommonException {
-			
-			String buildCommandString = bt.getEffectiveBuildCommand();
-			CommandInvocation buildCommand = new CommandInvocation(buildCommandString, toolManager, 
-				Optional.of(bt.getProject()));
-			return getBuildOperation(opMonitor, toolManager, bt, buildCommand);
-		}
-		
-		public abstract CommonBuildTargetOperation getBuildOperation(IOperationMonitor opMonitor,
-				ToolManager toolMgr, BuildTarget bt, CommandInvocation buildCommand
-		) throws CommonException;
+		public abstract BuildTargetOperation getBuildOperation(BuildOperationParameters buildOpParams) 
+				throws CommonException;
 		
 	}
 	

@@ -23,9 +23,8 @@ public abstract class AbstractCompositePreferencesBlock extends AbstractComposit
 	protected final PreferencesPageContext prefContext;
 	
 	public AbstractCompositePreferencesBlock(PreferencesPageContext prefContext) {
-		super();
+		super(false);
 		this.prefContext = assertNotNull(prefContext);
-		createInlined = false;
 	}
 	
 	protected void bindToDerivedPreference(IField<String> field, DerivedValuePreference<?> pref) {

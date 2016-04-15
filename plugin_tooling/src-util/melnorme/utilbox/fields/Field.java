@@ -13,20 +13,16 @@ package melnorme.utilbox.fields;
 /**
  * Default implementation of a {@link IField}, an observable property.
  */
-public class Field<VALUE> extends EventSource<IFieldValueListener> implements IField<VALUE> {
+public class Field<TYPE> extends EventSource<IFieldValueListener> implements IField<TYPE> {
 	
-	private VALUE value; // private to prevent direct modifications.
-	
-	public Field(VALUE defaultFieldValue) {
-		this.value = defaultFieldValue;
-	}
+	private TYPE value; // private to prevent direct modifications.
 	
 	public Field() {
-		this.value = getDefaultFieldValue();
+		this(null);
 	}
 	
-	protected VALUE getDefaultFieldValue() {
-		return null;
+	public Field(TYPE defaultFieldValue) {
+		this.value = defaultFieldValue;
 	}
 	
 	/* ----------------- listeners ----------------- */
@@ -44,12 +40,12 @@ public class Field<VALUE> extends EventSource<IFieldValueListener> implements IF
 	}
 	
 	@Override
-	public VALUE getFieldValue() {
+	public TYPE getFieldValue() {
 		return value;
 	}
 	
 	@Override
-	public void setFieldValue(VALUE value) {
+	public void setFieldValue(TYPE value) {
 		doSetFieldValue(value);
 	}
 	
@@ -59,7 +55,7 @@ public class Field<VALUE> extends EventSource<IFieldValueListener> implements IF
 		return notifyingListeners;
 	}
 	
-	protected void doSetFieldValue(VALUE newValue) {
+	protected void doSetFieldValue(TYPE newValue) {
 		if(notifyingListeners) {
 			handleReentrantSetValue(newValue);
 		} else {
@@ -76,7 +72,7 @@ public class Field<VALUE> extends EventSource<IFieldValueListener> implements IF
 		
 	}
 	
-	protected void handleReentrantSetValue(VALUE newValue) {
+	protected void handleReentrantSetValue(TYPE newValue) {
 		// This shouldn't happen in the first place, bad style.
 		this.value = newValue;
 	}

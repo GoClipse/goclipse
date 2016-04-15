@@ -12,43 +12,40 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.util.Optional;
-
-import org.eclipse.core.resources.IProject;
 import org.eclipse.debug.core.DebugPlugin;
 
-import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.tooling.data.IStatusMessage;
+import melnorme.lang.tooling.data.IValidationSource;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
-public class CommandInvocation {
+public class CommandInvocation implements IValidationSource {
 	
-	protected final String commandInvocation;
-	protected final ToolManager toolManager;
-	protected final Optional<IProject> project; 
+	protected final String commandArguments;
+	protected final VariablesResolver variablesResolver;
 	
-	public CommandInvocation(String commandInvocation, ToolManager toolManager, Optional<IProject> project) {
-		this.commandInvocation = assertNotNull(commandInvocation);
-		this.toolManager = assertNotNull(toolManager);
-		this.project = assertNotNull(project);
-	}
-	
-	public ToolManager getToolManager() {
-		return toolManager;
-	}
-	
-	public IProject getProject() {
-		return project.get();
+	public CommandInvocation(String commandArguments, VariablesResolver variablesResolver) {
+		this.commandArguments = assertNotNull(commandArguments);
+		this.variablesResolver = assertNotNull(variablesResolver);
 	}
 	
 	public Indexable<String> getEffectiveCommandLine() throws CommonException {
-		VariablesResolver variablesManager = getToolManager().getVariablesManager(project);
-		
-		String evaluatedCommandLine = variablesManager.performStringSubstitution(commandInvocation);
+		String evaluatedCommandLine = variablesResolver.performStringSubstitution(commandArguments);
 		
 		String[] evaluatedArguments = DebugPlugin.parseArguments(evaluatedCommandLine);
 		return new ArrayList2<>(evaluatedArguments);
+	}
+	
+	@Override
+	public IStatusMessage getValidationStatus() {
+		try {
+			getEffectiveCommandLine();
+		} catch(CommonException e) {
+			return e.toStatusException(Severity.WARNING);
+		}
+		return null;
 	}
 	
 }

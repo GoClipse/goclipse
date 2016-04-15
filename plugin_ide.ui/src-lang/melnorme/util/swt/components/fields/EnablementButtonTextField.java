@@ -89,6 +89,12 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 	
 	protected abstract String getDefaultFieldValue() throws CommonException;
 	
+	@Override
+	protected void doUpdateWidgetFromValue() {
+		updateDefaultFieldValue();
+		super.doUpdateWidgetFromValue();
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override

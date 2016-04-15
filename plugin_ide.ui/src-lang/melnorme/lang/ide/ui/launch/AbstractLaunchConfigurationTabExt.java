@@ -46,6 +46,7 @@ public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchCo
 	@Override
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		setErrorMessage(null);
+		setWarningMessage(null);
 		setMessage(null);
 		
 		try {

@@ -12,43 +12,43 @@ package melnorme.lang.ide.ui.preferences;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.swt.widgets.Composite;
-
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.BuildTargetDataView;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
-import melnorme.util.swt.components.AbstractWidget;
+import melnorme.util.swt.components.AbstractCompositeWidget;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
 
-public class BuildTargetSettingsComponent extends AbstractWidget {
+public class BuildTargetEditor extends AbstractCompositeWidget {
 	
-	protected final BuildManager buildManager = LangCore.getBuildManager();
-	
-	protected boolean createEnablementFields = true;
+	protected final BuildManager buildManager;
 	
 	protected final CheckBoxField normalEnableField;
 	protected final CheckBoxField autoEnableField;
 	
 	protected final CommonGetter<String> getDefaultBuildCommand;
-	public final BuildArgumentsField buildArgumentsField;
+	public final CommandInvocationEditor buildCommandField;
 	protected final CommonGetter<String> getDefaultProgramPath;
 	public final EnablementButtonTextField programPathField;
 	
-	
 	protected BuildTargetData btData = new BuildTargetData();
 	
-	public BuildTargetSettingsComponent(
+	public BuildTargetEditor(
+			BuildManager buildManager,
+			boolean createEnablementFields,
 			CommonGetter<String> getDefaultBuildCommand, 
 			CommonGetter<String> getDefaultProgramPath
 	) {
+		super(false);
+		this.buildManager = assertNotNull(buildManager);
+		
 		this.getDefaultBuildCommand = assertNotNull(getDefaultBuildCommand);
 		this.getDefaultProgramPath = assertNotNull(getDefaultProgramPath);
 		
@@ -58,20 +58,25 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 		autoEnableField = new CheckBoxField(BuildManagerMessages.LABEL_EnableForAutoBuild);
 		autoEnableField.addListener(() -> btData.autoBuildEnabled = autoEnableField.getBooleanFieldValue());
 		
-		buildArgumentsField = init_createArgumentsField();
-		buildArgumentsField.addListener(() -> btData.buildArguments = getEffectiveBuildArgumentsValue());
+		if(createEnablementFields) {
+			addSubComponents(normalEnableField, autoEnableField);
+		}
 		
-		programPathField = init_createProgramPathField();
+		buildCommandField = addSubComponent(init_createArgumentsField());
+		buildCommandField.addListener(() -> btData.buildArguments = getEffectiveBuildArgumentsValue());
+		
+		programPathField = addSubComponent(init_createProgramPathField());
 		programPathField.addListener(() -> btData.executablePath = getEffectiveProgramPathValue());
+//		buildCommandField.addListener(() -> programPathField.updateDefaultFieldValue());
 	}
 	
 	protected BuildManager getBuildManager() {
 		return buildManager;
 	}
 	
-	protected BuildArgumentsField init_createArgumentsField() {
+	protected CommandInvocationEditor init_createArgumentsField() {
 		VariablesResolver varResolver = buildManager.getToolManager().getVariablesManager(null);
-		return new BuildArgumentsField(getDefaultBuildCommand, varResolver);
+		return new CommandInvocationEditor(getDefaultBuildCommand, varResolver);
 	}
 	
 	protected EnablementButtonTextField init_createProgramPathField() {	
@@ -81,22 +86,18 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 	/* ----------------- bindings ----------------- */
 	
 	public String getEffectiveBuildArgumentsValue() {
-		return buildArgumentsField.getEffectiveFieldValue();
+		return buildCommandField.getEffectiveFieldValue();
 	}
 	
 	public String getEffectiveProgramPathValue() {
 		return programPathField.getEffectiveFieldValue();
 	}
 	
-	public void inputChanged(BuildTargetData buildTargetData) {
-		normalEnableField.setFieldValue(buildTargetData.normalBuildEnabled);
-		autoEnableField.setFieldValue(buildTargetData.autoBuildEnabled);
-		buildArgumentsField.setEffectiveFieldValue(buildTargetData.buildArguments);
-		programPathField.setEffectiveFieldValue(buildTargetData.executablePath);
-	}
-	
-	@Override
-	protected void updateWidgetFromInput() {
+	public void inputChanged(BuildTargetDataView buildTargetData) {
+		normalEnableField.setFieldValue(buildTargetData.isNormalBuildEnabled());
+		autoEnableField.setFieldValue(buildTargetData.isAutoBuildEnabled());
+		buildCommandField.setEffectiveFieldValue(buildTargetData.getBuildArguments());
+		programPathField.setEffectiveFieldValue(buildTargetData.getExecutablePath());
 	}
 	
 	/* -----------------  ----------------- */
@@ -104,24 +105,6 @@ public class BuildTargetSettingsComponent extends AbstractWidget {
 	@Override
 	public int getPreferredLayoutColumns() {
 		return 1;
-	}
-	
-	@Override
-	protected void createContents(Composite topControl) {
-		if(createEnablementFields) {
-			normalEnableField.createComponent(topControl, horizontalExpandDefault());
-			autoEnableField.createComponent(topControl, horizontalExpandDefault());
-		}
-		
-		buildArgumentsField.createComponent(topControl, horizontalExpandDefault(200));
-		programPathField.createComponent(topControl, horizontalExpandDefault());
-	}
-	
-	public void setEnabled(boolean enabled) {
-		normalEnableField.setEnabled(enabled);
-		autoEnableField.setEnabled(enabled);
-		buildArgumentsField.setEnabled(enabled);
-		programPathField.setEnabled(enabled);
 	}
 	
 	public class ProgramPathField extends EnablementButtonTextField {

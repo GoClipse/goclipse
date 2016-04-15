@@ -31,7 +31,6 @@ import melnorme.lang.ide.ui.fields.ProjectField;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.utilbox.core.CommonException;
 
 public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchConfigurationTabExt {
 	
@@ -63,7 +62,7 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	}
 	
 	@Override
-	protected void doValidate() throws StatusException, CommonException, CoreException {
+	protected void doValidate() throws StatusException {
 		getValidProject();
 	}
 	

@@ -8,30 +8,26 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations.build;
+package melnorme.lang.tooling.data;
 
+import melnorme.lang.tooling.data.IValidationSource.IValidationSourceX;
+import melnorme.utilbox.fields.Field;
 
-public interface BuildTargetDataView {
+/* FIXME: create ValidatedField */
+public class SelfValidatedField<TYPE extends IValidationSource> extends Field<TYPE> 
+	implements IValidationSourceX, IValidatableField<TYPE> {
 	
-	String getTargetName();
+	public SelfValidatedField() {
+		super();
+	}
 	
-	boolean isNormalBuildEnabled();
+	public SelfValidatedField(TYPE defaultFieldValue) {
+		super(defaultFieldValue);
+	}
 	
-	boolean isAutoBuildEnabled();
-	
-	String getBuildArguments();
-	
-	String getExecutablePath();
-	
-	
-	default BuildTargetData copy() {
-		return new BuildTargetData(
-			getTargetName(),
-			isNormalBuildEnabled(),
-			isAutoBuildEnabled(),
-			getBuildArguments(),
-			getExecutablePath()
-		);
+	@Override
+	public void validate() throws StatusException {
+		get().validate();
 	}
 	
 }

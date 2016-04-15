@@ -13,7 +13,10 @@ package melnorme.util.swt.components;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import org.eclipse.swt.widgets.Control;
+
 import melnorme.lang.ide.ui.preferences.common.AbstractWidgetExt;
+import melnorme.util.swt.SWTUtil;
 
 /**
  * An {@link AbstractWidget} extended with {@link #setEnabled(boolean)} functionality.
@@ -64,6 +67,12 @@ public abstract class AbstractDisableableWidget extends AbstractWidgetExt
 	}
 	
 	protected void doUpdateWidgetFromInput() {
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected void setControlEnabled(Control control, boolean enabled) {
+		SWTUtil.setEnabledIfOk(control, enabled);
 	}
 	
 }
