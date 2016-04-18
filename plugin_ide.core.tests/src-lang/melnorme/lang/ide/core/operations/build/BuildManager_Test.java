@@ -29,13 +29,11 @@ import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NullOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.operations.build.BuildManager_Test.TestsBuildManager.SampleStrictBuildType;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.tests.BuildTestsHelper;
 import melnorme.lang.ide.core.tests.CoreTestWithProject;
-import melnorme.lang.ide.core.tests.SampleProject;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.data.StatusException;
@@ -157,85 +155,48 @@ public class BuildManager_Test extends CoreTestWithProject {
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
+		initSampleProject();
 		
-		try(SampleProject sampleProj = initSampleProject()){
-			
-			buildMgr.loadProjectBuildInfo(project, bundleInfo);
-			
-			ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
-			assertNotNull(buildInfo);
-			checkBuildTargets(buildInfo.getBuildTargets().toArrayList(), list(
-				sampleBT_A,
-				sampleBT_B,
-				sampleBT_STRICT)
-			);
-
-			assertEquals(
-				buildMgr.getBuildTarget(project, "TargetA", true).getData(),
-				sampleBT_A);
-			assertEquals(
-				buildMgr.getBuildTarget(project, "TargetB", true).getData(),
-				sampleBT_B);
-			verifyThrows(
-				() -> buildMgr.getBuildTarget(project, "TargetA#default", true).getData(),
-				CommonException.class,
-				LaunchMessages.BuildTarget_NotFound);
-			
-			verifyThrows(
-				() -> buildMgr.getBuildTarget(project, "TargetA"+SEP+"bad_config", false).getData(),
-				CommonException.class,
-				"No such build type: `bad_config`"); // Build Type not found
-			
-			assertEquals(
-				buildMgr.getBuildTarget(project, "ImplicitTarget"+SEP+"default", false).getData(),
-				bt("ImplicitTarget"+SEP+"default", false, false, null, null));
-			
-			verifyThrows(
-				() -> buildMgr.getBuildTarget(project, "ImplicitTarget"+SEP+"strict", false).getData(),
-				CommonException.class,
-				"Build configuration `ImplicitTarget` not found"); // Config not found
-			
-		}
-		
-		try(SampleProject sampleProj = initSampleProject()){
-			testSaveLoadProjectInfo();
-		}
-		
-		try(SampleProject sampleProj = initSampleProject()){
-			testBuildOperation();
-		}
-	}
-	
-	protected void testSaveLoadProjectInfo() throws CommonException {
-		
-		SampleStrictBuildType buildType = buildMgr.new SampleStrictBuildType("default");
-		BuildConfiguration buildConfig = new BuildConfiguration("configA", null);
-		
-		BuildTarget btA = new BuildTarget(project, bundleInfo, bt("TargetA", false, true, "new1", "new3"), 
-			buildType, buildConfig);
-		BuildTarget btNonExistentButValid = new BuildTarget(project, bundleInfo, 
-			new BuildTargetData("TargetA" + SEP + "default", true, false), 
-			buildType, buildConfig);
-		BuildTarget btNonExistent = new BuildTarget(project, bundleInfo, 
-			new BuildTargetData("TargetA" + SEP + "NonExistentType", false, true), 
-			buildType, buildConfig);
-		
-		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, 
-			new ArrayList2<>(btA, btNonExistentButValid, btNonExistent));
-		buildMgr.setProjectBuildInfo(project, newProjectBuildInfo);
-		buildMgr.saveProjectInfo(project);
-		
-		buildMgr.getBuildModel().removeProjectInfo(project);
-		assertTrue(buildMgr.getBuildModel().getProjectInfo(project) == null);
 		buildMgr.loadProjectBuildInfo(project, bundleInfo);
 		
 		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
+		assertNotNull(buildInfo);
 		checkBuildTargets(buildInfo.getBuildTargets().toArrayList(), list(
-			bt("TargetA", false, true, "new1", "new3"), // Ensure TargetA uses previous settings
+			sampleBT_A,
 			sampleBT_B,
 			sampleBT_STRICT)
 		);
+
+		assertEquals(
+			buildMgr.getBuildTarget(project, "TargetA", true).getData(),
+			sampleBT_A);
+		assertEquals(
+			buildMgr.getBuildTarget(project, "TargetB", true).getData(),
+			sampleBT_B);
+		verifyThrows(
+			() -> buildMgr.getBuildTarget(project, "TargetA#default", true).getData(),
+			CommonException.class,
+			LaunchMessages.BuildTarget_NotFound);
 		
+		verifyThrows(
+			() -> buildMgr.getBuildTarget(project, "TargetA"+SEP+"bad_config", false).getData(),
+			CommonException.class,
+			"No such build type: `bad_config`"); // Build Type not found
+		
+		assertEquals(
+			buildMgr.getBuildTarget(project, "ImplicitTarget"+SEP+"default", false).getData(),
+			bt("ImplicitTarget"+SEP+"default", false, false, null, null));
+		
+		verifyThrows(
+			() -> buildMgr.getBuildTarget(project, "ImplicitTarget"+SEP+"strict", false).getData(),
+			CommonException.class,
+			"Build configuration `ImplicitTarget` not found"); // Config not found
+			
+		
+		test_compositeBuildTargetSettings();
+		test_BuildType();
+		
+		testBuildOperation();
 	}
 	
 	public void checkBuildTargets(Indexable<BuildTarget> buildTargets, Indexable<BuildTargetDataView> expectedSettings) {
@@ -248,28 +209,23 @@ public class BuildManager_Test extends CoreTestWithProject {
 	
 	/* -----------------  ----------------- */
 	
-	@Test
-	public void test_compositeBuildTargetSettings() throws Exception { test_compositeBuildTargetSettings$(); }
-	public void test_compositeBuildTargetSettings$() throws Exception {
+	public void test_compositeBuildTargetSettings() throws Exception {
 		
-		try(SampleProject sampleProj = initSampleProject()){
-			
-			assertEquals(
-				btSettings("TargetA", null, null).getValidBuildTarget().getData(), 
-				bt("TargetA", true, false, null, null));
-			
-			assertEquals(
-				btSettings("TargetB", null, null).getValidBuildTarget().getData(), 
-				bt("TargetB", false, true, "B: build_args", "B: exe_path"));
-			
-			assertEquals(
-				btSettings("TargetB", "ARGS", "EXEPATH").getValidBuildTarget().getData(), 
-				bt("TargetB", false, true, "ARGS", "EXEPATH"));
-			
-			assertEquals(
-				btSettings("ImplicitTarget", "ARGS", "EXEPATH").getValidBuildTarget().getData(), 
-				bt("ImplicitTarget", false, false, "ARGS", "EXEPATH"));
-		}
+		assertEquals(
+			btSettings("TargetA", null, null).getValidBuildTarget().getData(), 
+			bt("TargetA", true, false, null, null));
+		
+		assertEquals(
+			btSettings("TargetB", null, null).getValidBuildTarget().getData(), 
+			bt("TargetB", false, true, "B: build_args", "B: exe_path"));
+		
+		assertEquals(
+			btSettings("TargetB", "ARGS", "EXEPATH").getValidBuildTarget().getData(), 
+			bt("TargetB", false, true, "ARGS", "EXEPATH"));
+		
+		assertEquals(
+			btSettings("ImplicitTarget", "ARGS", "EXEPATH").getValidBuildTarget().getData(), 
+			bt("ImplicitTarget", false, false, "ARGS", "EXEPATH"));
 		
 	}
 	
@@ -314,30 +270,22 @@ public class BuildManager_Test extends CoreTestWithProject {
 	
 	/* -----------------  ----------------- */
 	
-	@Test
-	public void testBuildType() throws Exception { testBuildType$(); }
-	public void testBuildType$() throws Exception {
-		
+	public void test_BuildType() throws Exception {
 		BuildManager.BuildType buildType = buildMgr.new SampleBuildType("default");
 		
-		try(SampleProject sampleProj = initSampleProject()){
+		ProjectBuildInfo buildInfo = buildMgr.getValidBuildInfo(project);
+		BundleInfo bundleInfo = buildInfo.getBundleInfo();
+		
+		BuildTargetData targetA = bt("SampleTarget", true, true, null, null);
+		BuildTarget buildTargetA = BuildTarget.create(project, bundleInfo, targetA, buildType, "");
+		verifyThrows(() -> buildTargetA.getEffectiveValidExecutablePath(), CommonException.class, 
+			LaunchMessages.MSG_BuildTarget_NoExecutableAvailable());
+		
+		BuildTargetData target2 = bt("SampleTarget2", true, true, "sample args", "sample path");
+		BuildTarget buildTarget2 = BuildTarget.create(project, bundleInfo, target2, buildType, "");
+		
+		assertAreEqual(buildTarget2.getEffectiveValidExecutablePath(), "sample path");
 			
-			IProject project = sampleProj.getProject();
-
-			ProjectBuildInfo buildInfo = buildMgr.getValidBuildInfo(project);
-			BundleInfo bundleInfo = buildInfo.getBundleInfo();
-
-			BuildTargetData targetA = bt("SampleTarget", true, true, null, null);
-			BuildTarget buildTargetA = BuildTarget.create(project, bundleInfo, targetA, buildType, "");
-			verifyThrows(() -> buildTargetA.getEffectiveValidExecutablePath(), CommonException.class, 
-				LaunchMessages.MSG_BuildTarget_NoExecutableAvailable());
-			
-			BuildTargetData target2 = bt("SampleTarget2", true, true, "sample args", "sample path");
-			BuildTarget buildTarget2 = BuildTarget.create(project, bundleInfo, target2, buildType, "");
-			
-			assertAreEqual(buildTarget2.getEffectiveValidExecutablePath(), "sample path");
-			
-		}
 	}
 	
 	protected NullOperationMonitor opMonitor = new NullOperationMonitor();
@@ -349,13 +297,13 @@ public class BuildManager_Test extends CoreTestWithProject {
 		BuildTarget btA = buildMgr.getBuildTarget(project, "TargetA", true);
 		assertTrue(btA.getData().getBuildArguments() == null);
 		
-		BuildTarget btB = buildMgr.getBuildTarget(project, "TargetB", true);
-		assertTrue(btB.getData().getBuildArguments() != null);
-		
 		assertAreEqual(
 			btA.getBuildOperation(toolMgr, opMonitor).getEffectiveProccessCommandLine(), 
-			list("default:", "build_args")
+			list(strSDKTool(), "default:", "build_args")
 		);
+		
+		BuildTarget btB = buildMgr.getBuildTarget(project, "TargetB", true);
+		assertTrue(btB.getData().getBuildArguments() != null);
 		
 		assertAreEqual(
 			btB.getBuildOperation(toolMgr, opMonitor).getEffectiveProccessCommandLine(), 
@@ -363,16 +311,23 @@ public class BuildManager_Test extends CoreTestWithProject {
 		);
 		
 		testBuildOperation_Vars(buildInfo, btB);
+		
+		// Test invalid command - empty
+		verifyThrows(
+			() -> getBuildOperation(buildInfo, btB, ""), 
+			
+			CommonException.class, "Build command is empty"
+		);
+		
 	}
 	
 	protected void testBuildOperation_Vars(ProjectBuildInfo buildInfo, BuildTarget btB) throws CommonException {
-		ToolchainPreferences.SDK_PATH2.setValue(project, "my_tool_path");
 		
 		// Test var resolution - SDK tool var
 		assertAreEqual(
 			getBuildOperation(buildInfo, btB, variableRefString(VAR_NAME_SdkToolPath) + " build"),
 			
-			list("my_tool_path", "build")
+			list(strSDKTool(), "build")
 		);
 		
 		// Test var resolution - undefined var
@@ -400,6 +355,43 @@ public class BuildManager_Test extends CoreTestWithProject {
 		ToolManager toolMgr = buildInfo.buildMgr.getToolManager();
 		BuildTargetOperation buildOperation = newBuildTarget.getBuildOperation(toolMgr, opMonitor);
 		return buildOperation.getEffectiveProccessCommandLine();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Test
+	public void test_SaveLoadProjectInfo() throws Exception { test_SaveLoadProjectInfo$(); }
+	public void test_SaveLoadProjectInfo$() throws Exception {
+		initSampleProject();
+		
+		SampleStrictBuildType buildType = buildMgr.new SampleStrictBuildType("default");
+		BuildConfiguration buildConfig = new BuildConfiguration("configA", null);
+		
+		BuildTarget btA = new BuildTarget(project, bundleInfo, bt("TargetA", false, true, "new1", "new3"), 
+			buildType, buildConfig);
+		BuildTarget btNonExistentButValid = new BuildTarget(project, bundleInfo, 
+			new BuildTargetData("TargetA" + SEP + "default", true, false), 
+			buildType, buildConfig);
+		BuildTarget btNonExistent = new BuildTarget(project, bundleInfo, 
+			new BuildTargetData("TargetA" + SEP + "NonExistentType", false, true), 
+			buildType, buildConfig);
+		
+		ProjectBuildInfo newProjectBuildInfo = new ProjectBuildInfo(buildMgr, project, bundleInfo, 
+			new ArrayList2<>(btA, btNonExistentButValid, btNonExistent));
+		buildMgr.setProjectBuildInfo(project, newProjectBuildInfo);
+		buildMgr.saveProjectInfo(project);
+		
+		buildMgr.getBuildModel().removeProjectInfo(project);
+		assertTrue(buildMgr.getBuildModel().getProjectInfo(project) == null);
+		buildMgr.loadProjectBuildInfo(project, bundleInfo);
+		
+		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
+		checkBuildTargets(buildInfo.getBuildTargets().toArrayList(), list(
+			bt("TargetA", false, true, "new1", "new3"), // Ensure TargetA uses previous settings
+			sampleBT_B,
+			sampleBT_STRICT)
+		);
+		
 	}
 	
 }

@@ -42,6 +42,7 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 
 class AnnotationsModelManager {
 	
@@ -72,7 +73,7 @@ public class ModelReconcilationTest extends CommonCoreTest {
 		super.dispose();
 	}
 	
-	public void initProject() throws CoreException {
+	public void initProject() throws CoreException, CommonException {
 		fixtureProject = new SampleProject(ModelReconcilationTest.class.getSimpleName()) {
 			@Override
 			protected void fillProject() throws CoreException {
@@ -81,7 +82,6 @@ public class ModelReconcilationTest extends CommonCoreTest {
 				
 				ResourceUtils.writeStringToFile(folder.getFile("fileA"), "default contents A", null);
 				ResourceUtils.writeStringToFile(folder.getFile("fileB"), "default contents B", null);
-				
 			}
 		};
 	}

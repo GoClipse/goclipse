@@ -20,4 +20,18 @@ public interface IDisposable {
 	
 	void dispose();
 	
+	/* -----------------  ----------------- */
+	
+	/** 
+	 * Dispose given disposable, and return null. 
+	 * The null return is just syntax sugar to nullify a disposed variable in one line, like this:
+	 * <code>myObject = IDisposable.dispose(myObject) </code>. 
+	 */
+	static <T extends IDisposable> T dispose(T disposable) {
+		if (disposable != null) {
+			disposable.dispose();
+		}
+		return null;
+	}
+	
 }

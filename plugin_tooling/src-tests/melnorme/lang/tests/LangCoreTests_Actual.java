@@ -8,18 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.components;
+package melnorme.lang.tests;
 
-import melnorme.lang.tooling.data.IStatusFieldSource;
-import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.utilbox.fields.IFieldView;
+import melnorme.lang.tooling.LANG_SPECIFIC;
+import melnorme.utilbox.misc.Location;
 
-public interface IValidatableWidget extends IWidgetComponent, IStatusFieldSource {
+@LANG_SPECIFIC
+public class LangCoreTests_Actual {
 	
-	/* FIXME: WTF */
-	@Override
-	default IFieldView<IStatusMessage> getStatusField() {
-		return IFieldView.NULL_FIELD_VIEW();
-	}
-	
+	public static Location SAMPLE_SDK_PATH = LangToolingTestResources.getTestResourceLoc("default_SDK");
+			
 }

@@ -9,6 +9,8 @@ import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
+import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
+import melnorme.lang.tooling.ops.SDKLocationValidator;
 
 public class LangCore_Actual {
 	
@@ -30,6 +32,7 @@ public class LangCore_Actual {
 	
 	/* ----------------- Owned singletons: ----------------- */
 	
+	protected final CorePreferences corePrefs;
 	protected final ToolManager toolManager;
 	protected final LANGUAGE_BundleModelManager bundleManager;
 	protected final BuildManager buildManager;
@@ -38,10 +41,20 @@ public class LangCore_Actual {
 	public LangCore_Actual() {
 		instance = (LangCore) this;
 		
+		corePrefs = createCorePreferences();
 		toolManager = createToolManagerSingleton();
 		bundleManager = createBundleModelManager();
 		buildManager = createBuildManager(bundleManager.getModel());
 		sourceModelManager = createSourceModelManager();
+	}
+	
+	protected CorePreferences createCorePreferences() {
+		return new CorePreferences() {
+			@Override
+			protected SDKLocationValidator getSDKLocationValidator() {
+				return new LANGUAGE_SDKLocationValidator();
+			}
+		};
 	}
 	
 	public static LANGUAGE_ToolManager createToolManagerSingleton() {
@@ -62,6 +75,9 @@ public class LangCore_Actual {
 	
 	/* -----------------  ----------------- */
 	
+	public static CorePreferences preferences() {
+		return instance.corePrefs;
+	}
 	
 	public static ToolManager getToolManager() {
 		return instance.toolManager;

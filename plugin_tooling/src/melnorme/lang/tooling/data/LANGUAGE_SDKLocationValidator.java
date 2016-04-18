@@ -21,11 +21,11 @@ public class LANGUAGE_SDKLocationValidator extends SDKLocationValidator {
 	
 	@Override
 	protected String getSDKExecutable_append() {
-		return "bin/ls"; // TODO: LANG 
+		return "bin/foobar"; // TODO: LANG 
 	}
 	
 	@Override
 	protected String getSDKExecutableErrorMessage(Location exeLocation) {
-		return "Foo executable not found."; // TODO: LANG
+		return "foobar executable not found."; // TODO: LANG
 	}
 }

@@ -34,8 +34,16 @@ public class CommandInvocation implements IValidationSource {
 	public Indexable<String> getEffectiveCommandLine() throws CommonException {
 		String evaluatedCommandLine = variablesResolver.performStringSubstitution(commandArguments);
 		
+		if(evaluatedCommandLine.trim().isEmpty()) {
+			handleEmptyCommandLine();
+		}
+		
 		String[] evaluatedArguments = DebugPlugin.parseArguments(evaluatedCommandLine);
 		return new ArrayList2<>(evaluatedArguments);
+	}
+	
+	protected void handleEmptyCommandLine() throws CommonException {
+		throw new CommonException("No command specified.");
 	}
 	
 	@Override

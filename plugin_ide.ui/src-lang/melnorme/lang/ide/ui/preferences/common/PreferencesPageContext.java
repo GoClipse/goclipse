@@ -12,10 +12,12 @@ package melnorme.lang.ide.ui.preferences.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import melnorme.lang.ide.core.CorePreferences.PreferenceField;
 import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.tooling.data.CompositeValidatableField;
+import melnorme.util.swt.components.FieldWidget;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IField;
@@ -44,6 +46,10 @@ public class PreferencesPageContext implements IPreferencesEditor {
 	 */
 	public void addPrefElement(IPreferencesEditor prefElement) {
 		prefAdapters.add(prefElement);
+	}
+	public void bindToPreference(FieldWidget<String> field, PreferenceField<?> prefField) {
+		bindToPreference(field, prefField.getGlobalPreference());
+		field.getValidation().addFieldValidation(true, field, prefField.getValidator());
 	}
 	public <T> void bindToPreference(IProperty<T> field, IProjectPreference<T> pref) {
 		bindToPreference(field, pref.getGlobalPreference());

@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
@@ -110,7 +111,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		return new PreferencesLookupHelper(getQualifier());
 	}
 	
-	protected IPreferencesAccess prefScopes(IProject project) {
+	protected IPreferencesAccess prefScopes(Optional<IProject> project) {
 		return new PreferencesLookupHelper(getQualifier(), project);
 	}
 	
@@ -153,12 +154,12 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		try {
 			prefs.flush();
 		} catch(BackingStoreException e) {
-			throw toCommonException(e);
+			throwCommonException(e);
 		}
 	}
 	
-	public static CommonException toCommonException(BackingStoreException e) throws CommonException {
-		return new CommonException(e.getMessage(), e.getCause());
+	public static void throwCommonException(BackingStoreException e) throws CommonException {
+		throw new CommonException(e.getMessage(), e.getCause());
 	}
 	
 	protected void handlePreferenceChange(PreferenceChangeEvent event) {
@@ -193,7 +194,7 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		}
 		
 		@Override
-		public Supplier<T> getProperty(IProject project) {
+		public Supplier<T> getProperty(Optional<IProject> project) {
 			return new Supplier<T>() {
 				@Override
 				public T get() {
@@ -203,21 +204,25 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		}
 		
 		@Override
-		public T getStoredValue(IProject project) {
+		public T getStoredValue(Optional<IProject> project) {
 			return getProjectScopeValue(project);
 		}
 		
 		@Override
 		public void setValue(IProject project, T value) throws CommonException {
-			try {
-				setProjectScopeValue(project, value);
-			} catch(BackingStoreException e) {
-				toCommonException(e);
-			}
+			doSetValue(project, value);
+			flush(project);
 		}
 		
 		@Override
-		public T getEffectiveValue(IProject project) {
+		public void doSetValue(IProject project, T value) {
+			assertNotNull(project);
+			IEclipsePreferences projectPreferences = getProjectNode(project);
+			setPrefValue(projectPreferences, value);
+		}
+		
+		@Override
+		public T getEffectiveValue(Optional<IProject> project) {
 			assertNotNull(getEnableProjectSettingPref());
 			if(project != null && getEnableProjectSettingPref().getStoredValue(project) == true) {
 				return getStoredValue(project);
@@ -232,14 +237,16 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		
 	};
 	
-	protected final T getProjectScopeValue(IProject project) {
+	protected final T getProjectScopeValue(Optional<IProject> project) {
 		return getPrefValue(prefScopes(project));
 	}
 	
-	protected final void setProjectScopeValue(IProject project, T value) throws BackingStoreException {
-		IEclipsePreferences projectPreferences = getProjectNode(project);
-		setPrefValue(projectPreferences, value);
-		projectPreferences.flush();
+	protected void flush(IProject project) throws CommonException {
+		try {
+			getProjectNode(project).flush();
+		} catch(BackingStoreException e) {
+			throwCommonException(e);
+		}
 	}
 	
 	protected IEclipsePreferences getProjectNode(IProject project) {

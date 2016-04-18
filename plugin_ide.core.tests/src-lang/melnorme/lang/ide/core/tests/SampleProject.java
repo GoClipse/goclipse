@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.tests;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.resources.IFile;
@@ -18,7 +19,11 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.core.operations.ICoreOperation;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 
@@ -26,8 +31,29 @@ public class SampleProject implements AutoCloseable {
 	
 	public final IProject project;
 	
-	public SampleProject(String name) throws CoreException {
-		project = CommonCoreTest.createAndOpenProject(name, true);
+	public SampleProject(String name) throws CoreException, CommonException {
+		this(name, true);
+	}
+	
+	public SampleProject(String name, boolean create) throws CoreException, CommonException {
+		this.project = EclipseUtils.getWorkspaceRoot().getProject(name);
+		if(create) {
+			create();
+		}
+	}
+	
+	public final void create() throws CoreException, CommonException {
+		ICoreOperation operation = (pm) -> doCreate();
+		try {
+			ResourceUtils.runCommonOperationInWorkspace(operation, null, null);
+		} catch(OperationCancellation e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	public void doCreate() throws CoreException, CommonException {
+		IProject newProject = CommonCoreTest.createAndOpenProject(project.getName(), true);
+		assertEquals(project, newProject);
 		fillProject();
 		CommonCoreTest.setupLangProject(project, false);
 		assertTrue(project.getNature(LangNature.NATURE_ID) != null);

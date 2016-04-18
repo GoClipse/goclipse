@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
@@ -27,14 +28,16 @@ public interface IProjectPreference<T> {
 	
 	T getDefaultValue();
 	
-	T getStoredValue(IProject project);
+	T getStoredValue(Optional<IProject> project);
+	
+	void doSetValue(IProject project, T value);
 	
 	void setValue(IProject project, T value) throws CommonException;
 	
-	T getEffectiveValue(IProject project);
+	T getEffectiveValue(Optional<IProject> project);
 	
 	IProjectPreference<Boolean> getEnableProjectSettingPref();
 	
-	Supplier<T> getProperty(IProject project);
+	Supplier<T> getProperty(Optional<IProject> project);
 	
 }

@@ -16,13 +16,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.wizard.WizardPage;
 
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.WizardMessages_Actual;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
-import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
-import melnorme.lang.tooling.data.ValidationException;
 
 /**
  * LANG_NAME New Project Wizard.
@@ -61,12 +57,6 @@ class LANGUAGE_ProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	public LANGUAGE_ProjectWizardFirstPage() {
 		setTitle(WizardMessages_Actual.LangNewProject_Page1_pageTitle);
 		setDescription(WizardMessages_Actual.LangNewProject_Page1_pageDescription);
-	}
-	
-	@Override
-	protected void validatePreferences() throws ValidationException {
-		PreferenceHelper<String> globalPref = ToolchainPreferences.SDK_PATH2.getGlobalPreference();
-		new LANGUAGE_SDKLocationValidator().getValidatedField(globalPref.get());
 	}
 	
 }

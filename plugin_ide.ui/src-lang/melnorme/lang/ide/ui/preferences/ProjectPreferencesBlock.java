@@ -17,6 +17,8 @@ import static melnorme.lang.ide.ui.utils.ControlUtils.createOpenPreferencesDialo
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.Optional;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
@@ -132,11 +134,11 @@ public abstract class ProjectPreferencesBlock extends AbstractPreferencesBlock2 
 			this.preference = preference;
 			this.project = project;
 			
-			property.set(preference.getStoredValue(project));
+			property.set(preference.getStoredValue(Optional.of(project)));
 		}
 		
 		public void updateFieldFromInput() {
-			property.set(preference.getStoredValue(project));
+			property.set(preference.getStoredValue(Optional.of(project)));
 		}
 		
 		@Override

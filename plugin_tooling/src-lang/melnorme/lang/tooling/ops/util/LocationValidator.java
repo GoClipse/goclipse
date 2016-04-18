@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops.util;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.data.IValidator;
@@ -41,6 +43,25 @@ public class LocationValidator extends PathValidator implements IValidator<Strin
 	
 	public IValidator<String, Location> asLocationValidator() {
 		return asLocationValidator;
+	}
+	
+	public static class LocationValidator2 implements IValidator<String, Location> {
+		
+		protected final LocationValidator validator;
+		
+		public LocationValidator2(String fieldNamePrefix) {
+			this(new LocationValidator(fieldNamePrefix));
+		}
+		
+		public LocationValidator2(LocationValidator pathValidator) {
+			this.validator = assertNotNull(pathValidator);
+		}
+		
+		@Override
+		public Location getValidatedField(String pathString) throws StatusException {
+			return validator.getValidatedLocation(pathString);
+		}
+		
 	}
 	
 }

@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
@@ -164,7 +165,7 @@ public abstract class BuildManager {
 	}
 	
 	protected String getBuildTargetsPref(IProject project) {
-		return StringUtil.emptyAsNull(BUILD_TARGETS_DATA.getStoredValue(project));
+		return StringUtil.emptyAsNull(BUILD_TARGETS_DATA.getStoredValue(Optional.of(project)));
 	}
 	
 	/* ----------------- ProjectBuildInfo ----------------- */
