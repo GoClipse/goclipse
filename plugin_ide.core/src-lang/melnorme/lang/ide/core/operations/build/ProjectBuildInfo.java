@@ -18,8 +18,8 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
+import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;

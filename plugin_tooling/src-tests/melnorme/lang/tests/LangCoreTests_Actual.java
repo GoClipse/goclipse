@@ -11,11 +11,18 @@
 package melnorme.lang.tests;
 
 import melnorme.lang.tooling.LANG_SPECIFIC;
+import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.utilbox.misc.Location;
 
 @LANG_SPECIFIC
+/* FIXME: rename. */
 public class LangCoreTests_Actual {
 	
 	public static Location SAMPLE_SDK_PATH = LangToolingTestResources.getTestResourceLoc("mock_sdk");
+	
+	@SuppressWarnings("unused")
+	public static BundleInfo createSampleBundleInfoA(String name, String version) {
+		return new BundleInfo();
+	}
 			
 }

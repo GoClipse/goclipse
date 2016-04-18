@@ -55,7 +55,15 @@ public abstract class CoreTestWithProject extends CommonCoreTest_ActualClass {
 	protected IProject project;
 	
 	protected SampleProject initSampleProject() throws CoreException, CommonException {
-		return setSampleProject(new TestsProject(getClass().getSimpleName(), false));
+		return setSampleProject(new TestsProject(getClass().getSimpleName(), false) {
+			@Override
+			protected void customizeAfterCreate() {
+				customizeProjectAfterCreate();
+			}
+		});
+	}
+	
+	protected void customizeProjectAfterCreate() {
 	}
 	
 	protected SampleProject setSampleProject(SampleProject sampleProject) throws CoreException, CommonException {

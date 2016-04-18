@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.junit.Test;
 
-import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.launch.BuildTargetSource;
@@ -32,10 +31,12 @@ import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager_Test.TestsBuildManager.SampleStrictBuildType;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
-import melnorme.lang.ide.core.tests.BuildTestsHelper;
 import melnorme.lang.ide.core.tests.CoreTestWithProject;
+import melnorme.lang.tests.LangCoreTests_Actual;
+import melnorme.lang.tooling.bundle.BuildConfigMessages;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
+import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -126,7 +127,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 				if(list("ConfigA", "ConfigB").contains(buildConfigName)) {
 					return new BuildConfiguration(buildConfigName, null);
 				}
-				throw new CommonException(BuildManagerMessages.BuildConfig_NotFound(buildConfigName));
+				throw new CommonException(BuildConfigMessages.BuildConfig_NotFound(buildConfigName));
 			}
 		}
 		
@@ -148,7 +149,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 	
 	protected String SEP = buildMgr.getBuildTargetNameParser().getNameSeparator();
 	
-	protected final BundleInfo bundleInfo = BuildTestsHelper.createSampleBundleInfoA("SampleBundle", null);
+	protected final BundleInfo bundleInfo = LangCoreTests_Actual.createSampleBundleInfoA("SampleBundle", null);
 	
 	/* -----------------  ----------------- */
 	
@@ -157,7 +158,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 	public void test$() throws Exception {
 		initSampleProject();
 		
-		buildMgr.loadProjectBuildInfo(project, bundleInfo);
+		buildMgr.bundleProjectAdded(project, bundleInfo);
 		
 		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
 		assertNotNull(buildInfo);

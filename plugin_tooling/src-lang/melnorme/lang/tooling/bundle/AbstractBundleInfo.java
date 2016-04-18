@@ -8,10 +8,8 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.project_model;
+package melnorme.lang.tooling.bundle;
 
-import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
-import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
@@ -25,7 +23,7 @@ public abstract class AbstractBundleInfo {
 				return buildConfig;
 			}
 		}
-		throw new CommonException(BuildManagerMessages.BuildConfig_NotFound(buildConfigName));
+		throw new CommonException(BuildConfigMessages.BuildConfig_NotFound(buildConfigName));
 	}
 	
 }

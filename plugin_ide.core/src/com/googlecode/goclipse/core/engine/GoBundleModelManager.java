@@ -11,12 +11,13 @@
 package com.googlecode.goclipse.core.engine;
 
 import org.eclipse.core.resources.IProject;
+
 import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
 
-import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
+import melnorme.lang.tooling.bundle.BundleInfo;
 
 public class GoBundleModelManager extends BundleModelManager<GoBundleModel> {
 	

@@ -18,7 +18,7 @@ import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.ui.actions.StartGocodeServerOperation;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.utilbox.ownership.IDisposable;
+import melnorme.utilbox.ownership.Disposable;
 
 public class GoUIPlugin extends LangUIPlugin {
 	
@@ -43,7 +43,7 @@ public class GoUIPlugin extends LangUIPlugin {
 	
 	@Override
 	protected void doCustomStop(BundleContext context) {
-		IDisposable.dispose(gocodeServerManager);
+		Disposable.dispose(gocodeServerManager);
 		gocodeServerManager = null;
 	}
 	

@@ -12,13 +12,16 @@ package melnorme.lang.ide.core.project_model;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.util.HashSet;
+
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.utils.CoreExecutors;
+import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.SimpleLogger;
+import melnorme.utilbox.ownership.Disposable;
 
 public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel> 
 	extends ProjectBasedModelManager implements IBundleModelManager {
@@ -94,9 +97,29 @@ public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel>
 	
 	@Override
 	protected void bundleProjectAdded(IProject project) {
+		if(ignoredProjects.contains(project)) {
+			return;
+		}
 		model.setProjectInfo(project, createNewInfo(project));
 	}
 	
 	protected abstract BundleInfo createNewInfo(IProject project);
+	
+	/* -----------------  ----------------- */
+	
+	protected final HashSet<IProject> ignoredProjects = new HashSet<>();
+	
+	/** Ignore all manifest updates for given project. 
+	 * This is intended to be used only for debugging or testing code.  */
+	public Disposable enableIgnoreProject(IProject project) {
+		ignoredProjects.add(project);
+		
+		return new Disposable() {
+			@Override
+			public void dispose() {
+				ignoredProjects.remove(project);
+			}
+		};
+	}
 	
 }

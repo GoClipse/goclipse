@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.project_model;
 
-import melnorme.lang.ide.core.BundleInfo;
+import melnorme.lang.tooling.bundle.BundleInfo;
 
 public class LangBundleModel extends CommonLangBundleModel<BundleInfo> {
 	
