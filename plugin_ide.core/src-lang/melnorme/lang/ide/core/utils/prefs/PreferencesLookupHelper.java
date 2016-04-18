@@ -13,6 +13,8 @@ package melnorme.lang.ide.core.utils.prefs;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 
+import java.util.Optional;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.Platform;
@@ -22,6 +24,7 @@ import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper.IPreferencesAccess;
+import melnorme.utilbox.misc.MiscUtil;
 
 public class PreferencesLookupHelper implements IPreferencesAccess {
 	
@@ -32,11 +35,12 @@ public class PreferencesLookupHelper implements IPreferencesAccess {
 		this(qualifier, null);
 	}
 	
-	public PreferencesLookupHelper(String qualifier, IProject project) {
+	public PreferencesLookupHelper(String qualifier, Optional<IProject> project) {
 		this.qualifier = qualifier;
 		
-		if(project != null) {
-			contexts = array(new ProjectScope(project), InstanceScope.INSTANCE, DefaultScope.INSTANCE);
+		project = MiscUtil.toOptional(project);
+		if(project.isPresent()) {
+			contexts = array(new ProjectScope(project.get()), InstanceScope.INSTANCE, DefaultScope.INSTANCE);
 		} else {
 			contexts = array(InstanceScope.INSTANCE, DefaultScope.INSTANCE);
 		}

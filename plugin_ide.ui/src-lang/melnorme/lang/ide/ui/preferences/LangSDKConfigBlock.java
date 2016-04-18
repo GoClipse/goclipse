@@ -13,7 +13,7 @@ package melnorme.lang.ide.ui.preferences;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.widgets.Composite;
 
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -55,8 +55,7 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 		}
 		
 		protected void initBindings() {
-			prefContext.bindToPreference(sdkLocationField, ToolchainPreferences.SDK_PATH2);
-			validation.addFieldValidation(true, sdkLocationField, getSDKValidator());
+			prefContext.bindToPreference(sdkLocationField, LangCore.preferences().SDK_LOCATION);
 		}
 		
 		protected ButtonTextField createSdkLocationField() {

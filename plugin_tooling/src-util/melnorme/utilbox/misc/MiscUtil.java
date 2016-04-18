@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Predicate;
-import melnorme.utilbox.ownership.IDisposable;
 
 public class MiscUtil extends PathUtil {
 	
@@ -163,14 +162,6 @@ public class MiscUtil extends PathUtil {
 		} catch (IOException e) {
 			throw assertFail();
 		}
-	}
-	
-	/** Dispose given disposable, and return null. Mean to be used for variables. */
-	public static <T extends IDisposable> T dispose(T disposable) {
-		if (disposable != null) {
-			disposable.dispose();
-		}
-		return null;
 	}
 	
 }

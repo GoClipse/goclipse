@@ -12,8 +12,6 @@ package melnorme.utilbox.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,29 +33,6 @@ public class CommonTestExt extends CommonTest {
 	}
 	
 	/* -------- iteration/checkers -------- */
-	
-	public static interface Visitor<T> {
-		void visit(T obj);
-	}
-	
-	@SafeVarargs
-	public static <T, PRED extends Visitor<T>> void visitContainer(Collection<T> coll, PRED... predicates) {
-		Iterator<T> iterator = coll.iterator();
-		assertTrue(coll.size() == predicates.length);
-		for (int i = 0; iterator.hasNext(); i++) {
-			T next = iterator.next();
-			predicates[i].visit(next);
-		}
-	}
-	
-	@SafeVarargs
-	public static <T, PRED extends Visitor<T>> void visitContainer(T[] coll, PRED... predicates) {
-		assertTrue(coll.length == predicates.length);
-		for (int i = 0; i < coll.length; i++) {
-			T next = coll[i];
-			predicates[i].visit(next);
-		}
-	}
 	
 	public static final Location IGNORE_PATH = PathUtil.DEFAULT_ROOT_LOC.resolve_fromValid("###NO_CHECK###");
 	public static final String IGNORE_STR = "###NO_CHECK###";

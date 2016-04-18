@@ -10,19 +10,13 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core;
 
-import static melnorme.lang.ide.core.operations.ToolchainPreferences.USE_PROJECT_SETTINGS;
-
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.OptionalStringPreference;
-import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface GoEnvironmentPrefs {
-	
-	IProjectPreference<String> GO_ROOT = new StringPreference(LangCore.PLUGIN_ID, 
-		"com.googlecode.goclipse.goroot", "", USE_PROJECT_SETTINGS).getProjectPreference();
 	
 	IProjectPreference<String> GO_PATH = new OptionalStringPreference(LangCore.PLUGIN_ID, 
 		"com.googlecode.goclipse.gopath", ToolchainPreferences.USE_PROJECT_SETTINGS).getProjectPreference();

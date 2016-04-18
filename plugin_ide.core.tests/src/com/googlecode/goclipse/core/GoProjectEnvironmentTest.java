@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.junit.Test;
 
@@ -25,6 +26,9 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.tests.SampleProject;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.tests.TestsWorkingDir;
@@ -35,11 +39,23 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	public static final GoRoot SAMPLE_GO_ROOT = CommonGoToolingTest.SAMPLE_GO_ROOT;
 	public static final GoPath SAMPLE_GO_PATH = CommonGoToolingTest.SAMPLE_GO_PATH;
 	
+	public class SampleGoEnvProject extends SampleProject {
+		
+		public SampleGoEnvProject(String name) throws CoreException, CommonException {
+			super(name);
+		}
+		
+		@Override
+		protected void fillProject() throws CoreException {
+			ResourceUtils.createFolder(project.getFolder("src"), true, null);
+		}
+		
+	}
+	
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		
-		GoEnvironmentPrefs.GO_ROOT.getGlobalPreference().setInstanceScopeValue(SAMPLE_GO_ROOT.asString());
+		LangCore.preferences().SDK_LOCATION.getGlobalPreference().setInstanceScopeValue(SAMPLE_GO_ROOT.asString());
 		GoEnvironmentPrefs.GO_PATH.getGlobalPreference().setInstanceScopeValue(SAMPLE_GOPATH_Entry.toString());
 		TestsWorkingDir.deleteDir(SAMPLE_GOPATH_Entry);
 		
@@ -53,7 +69,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 		}
 		
 		// Test with sample project.
-		try (SampleGoProject sampleProject = new SampleGoProject(getClass().getSimpleName())){
+		try (SampleGoEnvProject sampleProject = new SampleGoEnvProject(getClass().getSimpleName())){
 			IProject project = sampleProject.getProject();
 			IPath location = project.getLocation();
 			
@@ -68,7 +84,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 			checkEnvGoPath(project, list(location.toOSString(), goPathEntryOther), false);
 		}
 		
-		try (SampleGoProject sampleProject = new SampleGoProject(getClass().getSimpleName())){
+		try (SampleGoEnvProject sampleProject = new SampleGoEnvProject(getClass().getSimpleName())){
 			IProject project = sampleProject.getProject();
 			
 			GoEnvironmentPrefs.GO_PATH.getGlobalPreference().setInstanceScopeValue(SAMPLE_GO_PATH.asString());

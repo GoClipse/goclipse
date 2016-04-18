@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.CoreUtil.list;
 
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -23,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 
+import melnorme.lang.ide.core.CorePreferences.PreferenceField;
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
@@ -64,13 +64,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	/* -----------------  ----------------- */
 	
 	public Path getSDKToolPath(IProject project) throws CommonException {
-		Path validatedPath = getSDKToolPathValidator().getValidatedPath(getSDKPathPreference(project));
-		assertNotNull(validatedPath);
-		return validatedPath;
-	}
-	
-	public String getSDKPathPreference(IProject project) {
-		return ToolchainPreferences.SDK_PATH2.getEffectiveValue(project);
+		return LangCore.preferences().SDK_LOCATION.getValue(project);
 	}
 	
 	public abstract PathValidator getSDKToolPathValidator();
@@ -81,6 +75,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
 	public VariablesResolver getVariablesManager(Optional<IProject> project) {
 		project = MiscUtil.toOptional(project);
+		
 		VariablesResolver variablesResolver = new VariablesResolver(globalVarManager);
 		
 		setupVariableResolver(variablesResolver, project);
@@ -88,18 +83,13 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	}
 	
 	protected void setupVariableResolver(VariablesResolver variablesResolver, Optional<IProject> project) {
-		Supplier<String> sdkToolPath;
 		
-		if(project.isPresent()) {
-			sdkToolPath = ToolchainPreferences.SDK_PATH2.getProperty(project.get());
-		} else {
-			sdkToolPath = ToolchainPreferences.SDK_PATH2.getGlobalPreference();
-		}
-		
+		PreferenceField<Path> pref = LangCore.preferences().SDK_LOCATION;
 		variablesResolver.putDynamicVar(new SupplierAdapterVar(
 			LangCore_Actual.VAR_NAME_SdkToolPath, 
 			LangCore_Actual.VAR_NAME_SdkToolPath_DESCRIPTION, 
-			sdkToolPath)
+			pref.getRawPreference(project), 
+			pref.getValidator_toString())
 		);
 	}
 	

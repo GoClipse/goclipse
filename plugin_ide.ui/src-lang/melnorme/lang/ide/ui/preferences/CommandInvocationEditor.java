@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui.preferences;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.ui.StringVariableSelectionDialog;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 
 import melnorme.lang.ide.core.operations.build.CommandInvocation;
@@ -42,8 +41,8 @@ public class CommandInvocationEditor extends AbstractCompositeWidget {
 		this.variablesResolver = variablesResolver;
 		
 		commandArgumentsField = new CommandArgumentsField();
-		commandArgumentsField.setLabelText(LangUIMessages.Fields_BuildCommand /* FIXME: */);
-		commandArgumentsField.setDefaultTextStyle(SWT.MULTI | SWT.BORDER);
+		commandArgumentsField.setLabelText("Command Invocation");
+		commandArgumentsField.setMultiLineStyle();
 		
 		addSubComponent(commandArgumentsField);
 		
@@ -66,9 +65,17 @@ public class CommandInvocationEditor extends AbstractCompositeWidget {
 			}
 		}
 		if(commandArguments == null) {
-			throw new StatusException("No commands supplied.");
+			handleNoBuildCommandSupplied();
 		}
-		new CommandInvocation(commandArguments, variablesResolver).validate();;
+		doValidate(commandArguments);
+	}
+	
+	protected void handleNoBuildCommandSupplied() throws StatusException {
+		throw new StatusException("No command supplied.");
+	}
+	
+	protected void doValidate(String commandArguments) throws StatusException {
+		new CommandInvocation(commandArguments, variablesResolver).validate();
 	}
 	
 	public class CommandArgumentsField extends EnablementButtonTextField {

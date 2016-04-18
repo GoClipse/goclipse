@@ -14,11 +14,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildCommandInvocation;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.BuildTargetDataView;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.components.AbstractCompositeWidget;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
@@ -76,7 +78,7 @@ public class BuildTargetEditor extends AbstractCompositeWidget {
 	
 	protected CommandInvocationEditor init_createArgumentsField() {
 		VariablesResolver varResolver = buildManager.getToolManager().getVariablesManager(null);
-		return new CommandInvocationEditor(getDefaultBuildCommand, varResolver);
+		return new BuildCommandEditor(getDefaultBuildCommand, varResolver);
 	}
 	
 	protected EnablementButtonTextField init_createProgramPathField() {	
@@ -105,6 +107,26 @@ public class BuildTargetEditor extends AbstractCompositeWidget {
 	@Override
 	public int getPreferredLayoutColumns() {
 		return 1;
+	}
+	
+	public static class BuildCommandEditor extends CommandInvocationEditor {
+		
+		public BuildCommandEditor(CommonGetter<String> getDefaultCommandArguments,
+				VariablesResolver variablesResolver) {
+			super(getDefaultCommandArguments, variablesResolver);
+			
+			commandArgumentsField.setLabelText(LangUIMessages.Fields_BuildCommand);
+		}
+		
+		@Override
+		protected void handleNoBuildCommandSupplied() throws StatusException {
+			throw new StatusException("No build command supplied.");
+		}
+		
+		@Override
+		protected void doValidate(String commandArguments) throws StatusException {
+			new BuildCommandInvocation(commandArguments, variablesResolver).validate();
+		}
 	}
 	
 	public class ProgramPathField extends EnablementButtonTextField {

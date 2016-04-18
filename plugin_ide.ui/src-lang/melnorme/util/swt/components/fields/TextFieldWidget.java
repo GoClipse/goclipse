@@ -43,6 +43,10 @@ public class TextFieldWidget extends LabelledFieldWidget<String> {
 		this.defaultTextStyle = defaultTextStyle;
 	}
 	
+	public void setMultiLineStyle() {
+		this.defaultTextStyle |= SWT.MULTI;
+	}
+	
 	@Override
 	public int getPreferredLayoutColumns() {
 		return 2;

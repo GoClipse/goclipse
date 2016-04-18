@@ -40,17 +40,6 @@ public class GoSDKConfigBlock extends LangSDKConfigBlock {
 		return new GoSDKLocationValidator();
 	}
 	
-	@Override
-	protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
-		return new LanguageSDKLocationGroup() {
-			@Override
-			protected void initBindings() {
-				prefContext.bindToPreference(sdkLocationField, GoEnvironmentPrefs.GO_ROOT);
-				validation.addFieldValidation(true, sdkLocationField, getSDKValidator());
-			}
-		};
-	}
-	
 
 	/* -----------------  ----------------- */
 	

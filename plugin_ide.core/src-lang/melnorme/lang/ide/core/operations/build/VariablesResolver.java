@@ -24,6 +24,8 @@ import org.eclipse.core.variables.IValueVariable;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ForwardingVariableManager;
 import melnorme.lang.ide.core.utils.StringSubstitutionEngine;
+import melnorme.lang.tooling.data.IValidator;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
@@ -144,12 +146,20 @@ public class VariablesResolver {
 		
 		protected final String name;
 		protected final String description;
-		protected final Supplier<String> fieldView;
+		protected final Supplier<String> value;
+		protected final IValidator<String, String> validator;
 		
-		public SupplierAdapterVar(String name, String description, Supplier<String> fieldView) {
+		public SupplierAdapterVar(String name, String description, Supplier<String> value) {
+			this(name, description, value, null);
+		}
+		
+		public SupplierAdapterVar(String name, String description, Supplier<String> value,
+				IValidator<String, String> validator) {
 			this.name = assertNotNull(name);
 			this.description = assertNotNull(description);
-			this.fieldView = assertNotNull(fieldView);
+			this.value = assertNotNull(value);
+			
+			this.validator = validator;
 		}
 		
 		@Override
@@ -173,7 +183,15 @@ public class VariablesResolver {
 				throw LangCore.createCoreException(
 					MessageFormat.format("Variable {0} does not accept arguments.", getName()) , null);
 			}
-			return fieldView.get();
+			if(validator != null) {
+				try {
+					return validator.getValidatedField(value.get());
+				} catch(StatusException e) {
+					String msg = MessageFormat.format("Variable {0} error: {1}", getName(),  e.getMessage());
+					throw LangCore.createCoreException(msg, e.getCause());
+				}
+			}
+			return value.get();
 		}
 	}
 	

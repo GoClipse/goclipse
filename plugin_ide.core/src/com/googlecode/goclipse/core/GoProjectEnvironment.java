@@ -13,6 +13,8 @@ package com.googlecode.goclipse.core;
 import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
 import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
+import java.util.Optional;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
@@ -23,6 +25,7 @@ import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.utilbox.collections.ArrayList2;
@@ -32,7 +35,7 @@ import melnorme.utilbox.misc.Location;
 public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
 	public static GoRoot getEffectiveGoRoot(IProject project) {
-		String prefValue = GoEnvironmentPrefs.GO_ROOT.getEffectiveValue(project);
+		String prefValue = LangCore.preferences().SDK_LOCATION.getEffectiveValue(Optional.ofNullable(project));
 		return new GoRoot(nullAsEmpty(prefValue));
 	}
 	
@@ -54,7 +57,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 			return rawGoPath;
 		}
 		
-		if(GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH.getEffectiveValue(project)) {
+		if(GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH.getEffectiveValue(Optional.of(project))) {
 			// Add project location to the end of GOPATH
 			ArrayList2<String> newGoPathEntries = new ArrayList2<>(rawGoPath.getGoPathEntries());
 			newGoPathEntries.add(projectLoc.toPathString());
@@ -74,7 +77,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
 	protected static String getEffectiveValueFromEnv(IProjectPreference<String> pref, IProject project, 
 			String envAlternative) {
-		String prefValue = pref.getEffectiveValue(project);
+		String prefValue = pref.getEffectiveValue(Optional.ofNullable(project));
 		if(prefValue == null) {
 			return nullAsEmpty(System.getenv(envAlternative));
 		}

@@ -10,15 +10,15 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.utilbox.misc.MiscUtil;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.osgi.framework.BundleContext;
 
 import com.googlecode.goclipse.core.tools.GocodeServerManager;
 import com.googlecode.goclipse.ui.actions.StartGocodeServerOperation;
+
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.utilbox.ownership.IDisposable;
 
 public class GoUIPlugin extends LangUIPlugin {
 	
@@ -43,7 +43,7 @@ public class GoUIPlugin extends LangUIPlugin {
 	
 	@Override
 	protected void doCustomStop(BundleContext context) {
-		MiscUtil.dispose(gocodeServerManager);
+		IDisposable.dispose(gocodeServerManager);
 		gocodeServerManager = null;
 	}
 	

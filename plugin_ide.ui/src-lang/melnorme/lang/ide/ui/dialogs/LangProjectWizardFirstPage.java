@@ -375,7 +375,9 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 	}
 	
-	protected abstract void validatePreferences() throws CommonException;
+	protected void validatePreferences() throws StatusException {
+		LangCore.preferences().SDK_LOCATION.getValue();
+	}
 	
 	protected boolean validateDialog() {
 		IStatus validationStatus = getValidationStatus();

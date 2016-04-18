@@ -32,6 +32,7 @@ import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
+import melnorme.lang.ide.core.tests.CoreTestWithProject.TestsProject;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -57,8 +58,8 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 			epath(TESTS_GO_WORKSPACE.resolve_fromValid("src/package")), true, null);
 		setupLangProject(project2, false);
 		
-		GoEnvironmentPrefs.GO_ROOT.setValue(project, CommonGoToolingTest.MOCK_GOROOT.toString());
-		GoEnvironmentPrefs.GO_ROOT.setValue(project2, CommonGoToolingTest.MOCK_GOROOT.toString());
+		TestsProject.setTestsSDKPath(project);
+		TestsProject.setTestsSDKPath(project2);
 		ToolchainPreferences.USE_PROJECT_SETTINGS.setValue(project, true);
 		ToolchainPreferences.USE_PROJECT_SETTINGS.setValue(project2, true);
 	}
@@ -127,13 +128,13 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	protected void testBuildOperation() throws CommonException, OperationCancellation {
 		BuildTarget bt = buildMgr.getBuildInfo(project).getBuildTargets().iterator().next();
 		
-		GoEnvironmentPrefs.GO_ROOT.setValue(project, "");
+		LangCore.preferences().SDK_LOCATION.doSetRawValue(project, "");
 		
 		// Test GOROOT validation
 		verifyThrows(() -> getBuildOperation(bt), null, "GOROOT is empty");
 		
 		// setup GOROOT 
-		GoEnvironmentPrefs.GO_ROOT.setValue(project, CommonGoToolingTest.MOCK_GOROOT.toString());
+		LangCore.preferences().SDK_LOCATION.doSetRawValue(project, CommonGoToolingTest.MOCK_GOROOT.toString());
 		
 		verifyThrows(() -> getBuildOperation(bt), null, "location does not contain a `src`");
 		// setup src dir

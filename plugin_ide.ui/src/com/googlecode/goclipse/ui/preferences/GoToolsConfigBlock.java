@@ -13,10 +13,10 @@ package com.googlecode.goclipse.ui.preferences;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-import com.googlecode.goclipse.core.GoEnvironmentPrefs;
 import com.googlecode.goclipse.core.GoToolPreferences;
 import com.googlecode.goclipse.ui.editor.actions.GoFmtOperation;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.preferences.AbstractToolLocationGroup;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
@@ -120,7 +120,7 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 		
 		@Override
 		protected String getDefaultFieldValue() throws CommonException {
-			Location rootLoc = Location.create(GoEnvironmentPrefs.GO_ROOT.getGlobalPreference().get());
+			Location rootLoc = Location.create(LangCore.preferences().SDK_LOCATION.getGlobalPreference().get());
 			return GoFmtOperation.getGofmtLocationFromGoRoot(rootLoc).toPathString();
 		}
 		

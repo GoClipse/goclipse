@@ -219,7 +219,18 @@ public class BuildTarget extends AbstractValidator {
 	public CommandInvocation getCommandInvocation(ToolManager toolManager) throws StatusException {
 		String buildCommandString = getEffectiveBuildCommand();
 		VariablesResolver variablesResolver = toolManager.getVariablesManager(Optional.of(getProject()));
-		return new CommandInvocation(buildCommandString, variablesResolver);
+		return new BuildCommandInvocation(buildCommandString, variablesResolver);
+	}
+	
+	public static class BuildCommandInvocation extends CommandInvocation {
+		public BuildCommandInvocation(String commandArguments, VariablesResolver variablesResolver) {
+			super(commandArguments, variablesResolver);
+		}
+		
+		@Override
+		protected void handleEmptyCommandLine() throws CommonException {
+			throw new CommonException("Build command is empty.");
+		}
 	}
 	
 	public BuildTargetOperation getBuildOperation(ToolManager toolManager, IOperationMonitor opMonitor)

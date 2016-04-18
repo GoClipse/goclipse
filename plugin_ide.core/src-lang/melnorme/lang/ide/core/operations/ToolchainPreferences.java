@@ -20,7 +20,7 @@ public interface ToolchainPreferences {
 	IProjectPreference<Boolean> USE_PROJECT_SETTINGS = new BooleanPreference(
 		"toolchain_prefs.use_project_settings", false).getProjectPreference();
 	
-	public static final IProjectPreference<String> SDK_PATH2 = new StringPreference(LangCore.PLUGIN_ID, "sdk_path", "", 
+	public static final IProjectPreference<String> SDK_PATH = new StringPreference(LangCore.PLUGIN_ID, "sdk_path", "", 
 		USE_PROJECT_SETTINGS).getProjectPreference();
 	
 	public static final BooleanPreference FORMAT_ON_SAVE =

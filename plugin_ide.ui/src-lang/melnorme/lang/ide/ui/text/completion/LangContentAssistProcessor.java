@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.bindings.TriggerSequence;
@@ -220,7 +221,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		try {
 			proposals = cat.computeCompletionProposals(context);
 		} catch(CommonException ce) {
-			if(ContentAssistPreferences.ShowDialogIfContentAssistErrors.getEffectiveValue(project)) {
+			if(ContentAssistPreferences.ShowDialogIfContentAssistErrors.getEffectiveValue(Optional.of(project))) {
 				handleExceptionInUI(ce);
 			} else {
 				LangCore.logError(LangUIMessages.ContentAssistProcessor_opName, ce);

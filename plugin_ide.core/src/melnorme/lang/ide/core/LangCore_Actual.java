@@ -5,6 +5,7 @@ import com.googlecode.goclipse.core.engine.GoBundleModelManager.GoBundleModel;
 import com.googlecode.goclipse.core.engine.GoSourceModelManager;
 import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.core.operations.GoToolManager;
+import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.ToolManager;
@@ -31,6 +32,7 @@ public class LangCore_Actual {
 	
 	/* ----------------- Owned singletons: ----------------- */
 	
+	protected final CorePreferences corePrefs;
 	protected final ToolManager toolManager;
 	protected final GoBundleModelManager bundleManager;
 	protected final GoBuildManager buildManager;
@@ -39,10 +41,20 @@ public class LangCore_Actual {
 	public LangCore_Actual() {
 		instance = (LangCore) this;
 		
+		corePrefs = createCorePreferences();
 		toolManager = createToolManagerSingleton();
 		bundleManager = createBundleModelManager();
 		buildManager = createBuildManager(bundleManager.getModel());
 		sourceModelManager = createSourceModelManager();
+	}
+	
+	protected CorePreferences createCorePreferences() {
+		return new CorePreferences() {
+			@Override
+			protected GoSDKLocationValidator getSDKLocationValidator() {
+				return new GoSDKLocationValidator();
+			}
+		};
 	}
 	
 	public static GoToolManager createToolManagerSingleton() {
@@ -63,6 +75,9 @@ public class LangCore_Actual {
 		
 	/* -----------------  ----------------- */
 	
+	public static CorePreferences preferences() {
+		return instance.corePrefs;
+	}
 	
 	public static ToolManager getToolManager() {
 		return instance.toolManager;
