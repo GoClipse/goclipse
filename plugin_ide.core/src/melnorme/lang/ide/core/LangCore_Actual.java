@@ -10,7 +10,6 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
-import melnorme.lang.tooling.ops.SDKLocationValidator;
 
 public class LangCore_Actual {
 	
@@ -51,7 +50,7 @@ public class LangCore_Actual {
 	protected CorePreferences createCorePreferences() {
 		return new CorePreferences() {
 			@Override
-			protected SDKLocationValidator getSDKLocationValidator() {
+			public LANGUAGE_SDKLocationValidator getSDKLocationValidator() {
 				return new LANGUAGE_SDKLocationValidator();
 			}
 		};

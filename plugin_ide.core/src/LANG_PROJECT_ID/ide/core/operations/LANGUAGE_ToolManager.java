@@ -11,14 +11,7 @@
 package LANG_PROJECT_ID.ide.core.operations;
 
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
-import melnorme.lang.tooling.ops.util.PathValidator;
 
 public class LANGUAGE_ToolManager extends ToolManager {
-	
-	@Override
-	public PathValidator getSDKToolPathValidator() {
-		return new LANGUAGE_SDKLocationValidator();
-	}
 	
 }

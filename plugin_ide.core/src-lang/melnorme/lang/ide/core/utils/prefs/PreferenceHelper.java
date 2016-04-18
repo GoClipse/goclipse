@@ -194,11 +194,11 @@ public abstract class PreferenceHelper<T> implements IGlobalPreference<T> {
 		}
 		
 		@Override
-		public Supplier<T> getProperty(Optional<IProject> project) {
+		public Supplier<T> getEffectiveValueProperty(Optional<IProject> project) {
 			return new Supplier<T>() {
 				@Override
 				public T get() {
-					return getStoredValue(project);
+					return getEffectiveValue(project);
 				}
 			};
 		}

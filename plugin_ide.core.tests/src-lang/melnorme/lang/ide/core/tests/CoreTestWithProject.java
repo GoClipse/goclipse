@@ -37,6 +37,10 @@ public abstract class CoreTestWithProject extends CommonCoreTest_ActualClass {
 		public void doCreate() throws CoreException, CommonException {
 			super.doCreate();
 			
+			setTestsSDKPath(project);
+		}
+		
+		public static void setTestsSDKPath(IProject project) {
 			String SDK_PATH = LangCoreTests_Actual.SAMPLE_SDK_PATH.toString();
 			SDK_LOCATION.doSetRawValue(project, SDK_PATH);
 		}
@@ -84,7 +88,7 @@ public abstract class CoreTestWithProject extends CommonCoreTest_ActualClass {
 	
 	protected Path getSDKToolPath() throws StatusException {
 		assertNotNull(project);
-		return SDK_LOCATION.getValue(project);
+		return SDK_LOCATION.getValue2(project);
 	}
 	
 	protected String strSDKTool() throws StatusException {

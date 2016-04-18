@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.optional;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -24,9 +25,10 @@ import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.tooling.data.IValidator;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.ops.SDKLocationValidator;
+import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.misc.Location;
 
+/* FIXME: rename? */
 public abstract class CorePreferences {
 	
 	public final PreferenceField<Path> SDK_LOCATION;
@@ -35,7 +37,11 @@ public abstract class CorePreferences {
 		SDK_LOCATION = newPathPreference(ToolchainPreferences.SDK_PATH, getSDKLocationValidator());
 	}
 	
-	protected abstract SDKLocationValidator getSDKLocationValidator();
+	/**
+	 * @return the SDK location validator. In most cases this value is a location, 
+	 * but for some languages a relative path may be allowed.
+	 */
+	public abstract PathValidator getSDKLocationValidator();
 	
 	public static PreferenceField<Path> newPathPreference(
 			IProjectPreference<String> pref, IValidator<String, Path> validator) {
@@ -60,12 +66,11 @@ public abstract class CorePreferences {
 			this.validator_toString = (value) -> backToString.apply(validator.getValidatedField(value));
 		}
 		
-		public TYPE getValue(IProject project) throws StatusException {
-			return validator.getValidatedField(preference.getStoredValue(Optional.of(project)));
+		public IProjectPreference<String> getProjectPreference() {
+			return preference;
 		}
-		
-		public TYPE getValue() throws StatusException {
-			return validator.getValidatedField(preference.getGlobalPreference().get());
+		public PreferenceHelper<String> getGlobalPreference() {
+			return preference.getGlobalPreference();
 		}
 		
 		public IValidator<String, TYPE> getValidator() {
@@ -76,13 +81,27 @@ public abstract class CorePreferences {
 			return validator_toString;
 		}
 		
-		public PreferenceHelper<String> getGlobalPreference() {
-			return preference.getGlobalPreference();
+		/* ----------------- ----------------- */
+		
+		public TYPE getValue() throws StatusException {
+			return validator.getValidatedField(preference.getGlobalPreference().get());
 		}
 		
-		public Supplier<String> getRawPreference(Optional<IProject> project) {
+		/* FIXME: rename */
+		public TYPE getValue2(IProject project) throws StatusException {
+			return validator.getValidatedField(preference.getEffectiveValue(optional(project)));
+		}
+		
+		public final String getRawValue(IProject project) {
+			return getRawValue(optional(project));
+		}
+		public String getRawValue(Optional<IProject> project) {
+			return preference.getEffectiveValue(project);
+		}
+		
+		public Supplier<String> getRawValueSupplier(Optional<IProject> project) {
 			if(project.isPresent()) {
-				return preference.getProperty(project);
+				return preference.getEffectiveValueProperty(project);
 			} else {
 				return preference.getGlobalPreference();
 			}

@@ -13,9 +13,9 @@ package melnorme.lang.ide.ui.text.completion;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.optional;
 
 import java.text.MessageFormat;
-import java.util.Optional;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.bindings.TriggerSequence;
@@ -221,7 +221,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		try {
 			proposals = cat.computeCompletionProposals(context);
 		} catch(CommonException ce) {
-			if(ContentAssistPreferences.ShowDialogIfContentAssistErrors.getEffectiveValue(Optional.of(project))) {
+			if(ContentAssistPreferences.ShowDialogIfContentAssistErrors.getEffectiveValue(optional(project))) {
 				handleExceptionInUI(ce);
 			} else {
 				LangCore.logError(LangUIMessages.ContentAssistProcessor_opName, ce);
