@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 
-import melnorme.lang.ide.core.CorePreferences;
-import melnorme.lang.ide.core.CorePreferences.PreferenceField;
+import melnorme.lang.ide.core.CoreSettings;
+import melnorme.lang.ide.core.CoreSettings.SettingsField;
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
@@ -56,7 +56,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
  */
 public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
-	protected final CorePreferences preferences = LangCore.preferences();
+	protected final CoreSettings settings = LangCore.settings();
 	
 	public ToolManager() {
 	}
@@ -67,12 +67,11 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	/* -----------------  ----------------- */
 	
 	public Path getSDKToolPath(IProject project) throws CommonException {
-		return preferences.SDK_LOCATION.getValue2(project);
+		return settings.SDK_LOCATION.getValue(project);
 	}
 	
-	/* FIXME: rename */
-	public PathValidator getSDKToolPathValidator2() {
-		return preferences.getSDKLocationValidator();
+	public PathValidator getSDKToolPathValidator() {
+		return settings.getSDKLocationValidator();
 	}
 	
 	/* -----------------  ----------------- */
@@ -90,7 +89,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
 	protected void setupVariableResolver(VariablesResolver variablesResolver, Optional<IProject> project) {
 		
-		PreferenceField<Path> pref = LangCore.preferences().SDK_LOCATION;
+		SettingsField<Path> pref = LangCore.settings().SDK_LOCATION;
 		variablesResolver.putDynamicVar(new SupplierAdapterVar(
 			LangCore_Actual.VAR_NAME_SdkToolPath, 
 			LangCore_Actual.VAR_NAME_SdkToolPath_DESCRIPTION, 

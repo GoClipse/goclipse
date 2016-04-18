@@ -55,7 +55,7 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 		}
 		
 		protected void initBindings() {
-			prefContext.bindToPreference(sdkLocationField, LangCore.preferences().SDK_LOCATION);
+			prefContext.bindToPreference(sdkLocationField, LangCore.settings().SDK_LOCATION);
 		}
 		
 		protected ButtonTextField createSdkLocationField() {

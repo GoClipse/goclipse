@@ -29,7 +29,7 @@ import melnorme.utilbox.misc.CollectionUtil;
 public class CoreUtil /* extends Assert */ {
 	
 	/** @return {@link Optional#ofNullable(Object)} of given value. */
-	public static <T> Optional<T> optional(T value) {
+	public static <T> Optional<T> option(T value) {
 		return Optional.ofNullable(value);
 	}
 	

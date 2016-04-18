@@ -19,7 +19,7 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
-import melnorme.lang.ide.core.CorePreferences.PreferenceField;
+import melnorme.lang.ide.core.CoreSettings.SettingsField;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tests.LangCoreTests_Actual;
 import melnorme.lang.tooling.data.StatusException;
@@ -50,7 +50,7 @@ public abstract class CoreTestWithProject extends CommonCoreTest_ActualClass {
 		super();
 	}
 	
-	protected static final PreferenceField<Path> SDK_LOCATION = LangCore.preferences().SDK_LOCATION;
+	protected static final SettingsField<Path> SDK_LOCATION = LangCore.settings().SDK_LOCATION;
 	protected SampleProject sampleProject;
 	protected IProject project;
 	
@@ -88,7 +88,7 @@ public abstract class CoreTestWithProject extends CommonCoreTest_ActualClass {
 	
 	protected Path getSDKToolPath() throws StatusException {
 		assertNotNull(project);
-		return SDK_LOCATION.getValue2(project);
+		return SDK_LOCATION.getValue(project);
 	}
 	
 	protected String strSDKTool() throws StatusException {

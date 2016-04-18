@@ -12,7 +12,7 @@ package melnorme.lang.ide.ui.preferences.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.lang.ide.core.CorePreferences.PreferenceField;
+import melnorme.lang.ide.core.CoreSettings.SettingsField;
 import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
@@ -47,7 +47,7 @@ public class PreferencesPageContext implements IPreferencesEditor {
 	public void addPrefElement(IPreferencesEditor prefElement) {
 		prefAdapters.add(prefElement);
 	}
-	public void bindToPreference(FieldWidget<String> field, PreferenceField<?> prefField) {
+	public void bindToPreference(FieldWidget<String> field, SettingsField<?> prefField) {
 		bindToPreference(field, prefField.getGlobalPreference());
 		field.getValidation().addFieldValidation(true, field, prefField.getValidator());
 	}
