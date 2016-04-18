@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.CoreUtil.list;
 
 import java.nio.file.Path;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoToolPreferences;
@@ -34,8 +33,7 @@ public class GoFmtOperation extends AbstractEditorGoToolOperation {
 	}
 	
 	@Override
-	protected ProcessBuilder prepareProcessBuilder(Path goSDKPath, GoEnvironment goEnv)
-			throws CoreException, CommonException {
+	protected ProcessBuilder prepareProcessBuilder(GoEnvironment goEnv) throws CommonException {
 		Path gofmt = getGofmtLocation(goEnv);
 		Indexable<String> cmd = list(gofmt.toString());
 		return goEnv.createProcessBuilder(cmd, null, true);

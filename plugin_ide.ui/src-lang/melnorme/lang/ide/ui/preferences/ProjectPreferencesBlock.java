@@ -16,8 +16,7 @@ import static melnorme.lang.ide.ui.preferences.PreferencesMessages.LABEL_UseProj
 import static melnorme.lang.ide.ui.utils.ControlUtils.createOpenPreferencesDialogLink;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Optional;
+import static melnorme.utilbox.core.CoreUtil.optional;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -134,11 +133,11 @@ public abstract class ProjectPreferencesBlock extends AbstractPreferencesBlock2 
 			this.preference = preference;
 			this.project = project;
 			
-			property.set(preference.getStoredValue(Optional.of(project)));
+			property.set(preference.getStoredValue(optional(project)));
 		}
 		
 		public void updateFieldFromInput() {
-			property.set(preference.getStoredValue(Optional.of(project)));
+			property.set(preference.getStoredValue(optional(project)));
 		}
 		
 		@Override

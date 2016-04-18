@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
 
+import melnorme.lang.ide.core.CorePreferences;
 import melnorme.lang.ide.core.CorePreferences.PreferenceField;
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
@@ -55,6 +56,8 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
  */
 public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
+	protected final CorePreferences preferences = LangCore.preferences();
+	
 	public ToolManager() {
 	}
 	
@@ -64,10 +67,13 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	/* -----------------  ----------------- */
 	
 	public Path getSDKToolPath(IProject project) throws CommonException {
-		return LangCore.preferences().SDK_LOCATION.getValue(project);
+		return preferences.SDK_LOCATION.getValue2(project);
 	}
 	
-	public abstract PathValidator getSDKToolPathValidator();
+	/* FIXME: rename */
+	public PathValidator getSDKToolPathValidator2() {
+		return preferences.getSDKLocationValidator();
+	}
 	
 	/* -----------------  ----------------- */
 	
@@ -88,7 +94,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 		variablesResolver.putDynamicVar(new SupplierAdapterVar(
 			LangCore_Actual.VAR_NAME_SdkToolPath, 
 			LangCore_Actual.VAR_NAME_SdkToolPath_DESCRIPTION, 
-			pref.getRawPreference(project), 
+			pref.getRawValueSupplier(project), 
 			pref.getValidator_toString())
 		);
 	}

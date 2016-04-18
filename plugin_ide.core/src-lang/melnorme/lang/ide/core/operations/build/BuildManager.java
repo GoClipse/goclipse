@@ -14,10 +14,10 @@ import static melnorme.lang.ide.core.LangCore_Actual.VAR_NAME_SdkToolPath;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.utilbox.core.CoreUtil.optional;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
@@ -165,7 +165,7 @@ public abstract class BuildManager {
 	}
 	
 	protected String getBuildTargetsPref(IProject project) {
-		return StringUtil.emptyAsNull(BUILD_TARGETS_DATA.getStoredValue(Optional.of(project)));
+		return StringUtil.emptyAsNull(BUILD_TARGETS_DATA.getStoredValue(optional(project)));
 	}
 	
 	/* ----------------- ProjectBuildInfo ----------------- */
@@ -179,6 +179,7 @@ public abstract class BuildManager {
 	}
 	
 	protected void loadProjectBuildInfo(IProject project, BundleInfo newBundleInfo) {
+		assertNotNull(project);
 		assertNotNull(newBundleInfo);
 		
 		final ProjectBuildInfo currentBuildInfo = buildModel.getProjectInfo(project);

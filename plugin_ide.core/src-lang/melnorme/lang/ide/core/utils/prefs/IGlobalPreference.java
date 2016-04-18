@@ -10,7 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.prefs;
 
-import java.util.Optional;
+import static melnorme.utilbox.core.CoreUtil.optional;
+
 import java.util.function.Supplier;
 
 import org.eclipse.core.resources.IProject;
@@ -36,7 +37,7 @@ public interface IGlobalPreference<T> extends Supplier<T> {
 	IProjectPreference<T> getProjectPreference();
 	
 	default T getEffectiveValue(IProject project) {
-		return getProjectPreference().getEffectiveValue(Optional.of(project));
+		return getProjectPreference().getEffectiveValue(optional(project));
 	}
 	
 }

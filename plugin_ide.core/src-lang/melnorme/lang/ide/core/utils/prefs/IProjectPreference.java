@@ -38,6 +38,6 @@ public interface IProjectPreference<T> {
 	
 	IProjectPreference<Boolean> getEnableProjectSettingPref();
 	
-	Supplier<T> getProperty(Optional<IProject> project);
+	Supplier<T> getEffectiveValueProperty(Optional<IProject> project);
 	
 }

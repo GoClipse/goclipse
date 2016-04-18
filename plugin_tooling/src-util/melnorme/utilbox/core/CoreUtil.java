@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -26,6 +27,11 @@ import melnorme.utilbox.misc.CollectionUtil;
  * Utils for miscellaneous Java core language functionality. 
  */
 public class CoreUtil /* extends Assert */ {
+	
+	/** @return {@link Optional#ofNullable(Object)} of given value. */
+	public static <T> Optional<T> optional(T value) {
+		return Optional.ofNullable(value);
+	}
 	
 	/** @return whether the two given objects are the same (including null) or equal. */
 	public static boolean areEqual(Object o1, Object o2) {

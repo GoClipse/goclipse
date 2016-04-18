@@ -88,7 +88,7 @@ public abstract class CoreTestWithProject extends CommonCoreTest_ActualClass {
 	
 	protected Path getSDKToolPath() throws StatusException {
 		assertNotNull(project);
-		return SDK_LOCATION.getValue(project);
+		return SDK_LOCATION.getValue2(project);
 	}
 	
 	protected String strSDKTool() throws StatusException {

@@ -13,15 +13,12 @@ package com.googlecode.goclipse.ui.editor.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
-import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.LangCore;
@@ -49,12 +46,10 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		
-		Path goSDKPath = GoToolManager.getDefault().getSDKToolPath(project);
-		pb = prepareProcessBuilder(goSDKPath, goEnv);
+		pb = prepareProcessBuilder(goEnv);
 	}
 	
-	protected abstract ProcessBuilder prepareProcessBuilder(Path goSDKPath, GoEnvironment goEnv) 
-			throws CoreException, CommonException;
+	protected abstract ProcessBuilder prepareProcessBuilder(GoEnvironment goEnv) throws CommonException;
 	
 	@Override
 	protected String doBackgroundValueComputation(IProgressMonitor monitor)

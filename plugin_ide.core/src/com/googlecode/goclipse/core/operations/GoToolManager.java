@@ -10,21 +10,8 @@
  *******************************************************************************/
 package com.googlecode.goclipse.core.operations;
 
-import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
-
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.tooling.ops.util.PathValidator;
 
 public class GoToolManager extends ToolManager {
-	
-	public static GoToolManager getDefault() {
-		return (GoToolManager) LangCore.getToolManager();
-	}
-	
-	@Override
-	public PathValidator getSDKToolPathValidator() {
-		return new GoSDKLocationValidator();
-	}
 	
 }

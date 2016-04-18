@@ -24,6 +24,7 @@ import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
  */
 public class GocodeServerManager implements IDisposable {
 	
+	protected final GoToolManager toolMgr = LangCore.getToolManager();
 	protected ExternalProcessNotifyingHelper gocodeProcess;
 	
 	public GocodeServerManager() {
@@ -76,7 +77,6 @@ public class GocodeServerManager implements IDisposable {
 		ProcessBuilder pb = new ProcessBuilder(commandLine);
 		
 		try {
-			GoToolManager toolMgr = GoToolManager.getDefault();
 			IOperationMonitor opMonitor = toolMgr.startNewOperation(ProcessStartKind.ENGINE_SERVER, true, false);
 			String prefixText = "==== Starting gocode server ====\n";
 			gocodeProcess = toolMgr.new RunToolTask(opMonitor, prefixText, pb, 
