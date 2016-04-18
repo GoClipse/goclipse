@@ -3,7 +3,6 @@ package LANG_PROJECT_ID.ide.core.operations;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -16,6 +15,7 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser2;
+import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;

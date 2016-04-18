@@ -14,6 +14,7 @@ package melnorme.lang.ide.core.project_model;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Platform;
 
+import melnorme.lang.tooling.bundle.AbstractBundleInfo;
 import melnorme.utilbox.misc.SimpleLogger;
 
 public abstract class CommonLangBundleModel<T extends AbstractBundleInfo> extends ProjectBasedModel<T> {

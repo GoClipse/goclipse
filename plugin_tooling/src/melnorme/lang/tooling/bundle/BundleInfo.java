@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,19 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.project_model;
+package melnorme.lang.tooling.bundle;
 
-import org.eclipse.core.resources.IProject;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 
-import melnorme.lang.tooling.bundle.AbstractBundleInfo;
-
-
-public interface IBundleModelManager {
+public class BundleInfo extends AbstractBundleInfo {
 	
-	void startManager();
-	void shutdownManager();
+	public BundleInfo() {
+	}
 	
-	LangBundleModel getModel();
-	
-	AbstractBundleInfo getProjectInfo(IProject project);
+	@Override
+	public Indexable<BuildConfiguration> getBuildConfigurations() {
+		return ArrayList2.create(new BuildConfiguration("", null));
+	}
 	
 }

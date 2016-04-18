@@ -8,21 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core;
+package melnorme.lang.tooling.bundle;
 
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
-import melnorme.lang.tooling.bundle.BuildConfiguration;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 
-public class BundleInfo extends AbstractBundleInfo {
+public abstract class AbstractBundleInfo {
 	
-	public BundleInfo() {
-	}
+	public abstract Indexable<BuildConfiguration> getBuildConfigurations();
 	
-	@Override
-	public Indexable<BuildConfiguration> getBuildConfigurations() {
-		return ArrayList2.create(new BuildConfiguration("", null));
+	public BuildConfiguration getBuildConfiguration_nonNull(String buildConfigName) throws CommonException {
+		for(BuildConfiguration buildConfig : getBuildConfigurations()) {
+			if(buildConfig.getName().equals(buildConfigName)) {
+				return buildConfig;
+			}
+		}
+		throw new CommonException(BuildConfigMessages.BuildConfig_NotFound(buildConfigName));
 	}
 	
 }

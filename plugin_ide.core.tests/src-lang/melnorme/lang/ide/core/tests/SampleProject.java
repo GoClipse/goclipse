@@ -23,14 +23,19 @@ import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.operations.ICoreOperation;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tests.LangCoreTests_Actual;
+import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.ownership.Disposable;
 
 
 public class SampleProject implements AutoCloseable {
 	
 	public final IProject project;
+	public BundleInfo sampleBundleInfo = LangCoreTests_Actual.createSampleBundleInfoA("SampleBundle", null);
+	public Disposable bundleModelIgnoreReg;
 	
 	public SampleProject(String name) throws CoreException, CommonException {
 		this(name, true);
@@ -56,14 +61,30 @@ public class SampleProject implements AutoCloseable {
 		IProject newProject = CommonCoreTest.createAndOpenProject(project.getName(), true);
 		assertEquals(project, newProject);
 		fillProject();
+		
+		setupBundleModel();
+		
 		CommonCoreTest.setupLangProject(project, false);
 		assertTrue(project.getNature(LangNature.NATURE_ID) != null);
+		
+		customizeAfterCreate();
 		
 		LangCore.settings().SDK_LOCATION.getEnableProjectSettingsPref().doSetValue(newProject, true);
 	}
 	
+	protected void setupBundleModel() {
+		if(sampleBundleInfo != null) {
+			bundleModelIgnoreReg = LangCore.getBundleModelManager().enableIgnoreProject(project);
+			LangCore.getBundleModel().setBundleInfo(project, sampleBundleInfo);
+		}
+	}
+	
+	protected void customizeAfterCreate() {
+	}
+	
 	public void cleanUp() throws CoreException {
 		project.delete(true, null);
+		bundleModelIgnoreReg = Disposable.dispose(bundleModelIgnoreReg);
 	}
 	
 	protected void fillProject() throws CoreException {

@@ -12,10 +12,10 @@ package LANG_PROJECT_ID.ide.core.bundle_model;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore_Actual.LANGUAGE_BundleModel;
 import melnorme.lang.ide.core.project_model.BundleManifestResourceListener;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
+import melnorme.lang.tooling.bundle.BundleInfo;
 
 public class LANGUAGE_BundleModelManager extends BundleModelManager<LANGUAGE_BundleModel> {
 	
