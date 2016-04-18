@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.operations.ICoreOperation;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -57,6 +58,8 @@ public class SampleProject implements AutoCloseable {
 		fillProject();
 		CommonCoreTest.setupLangProject(project, false);
 		assertTrue(project.getNature(LangNature.NATURE_ID) != null);
+		
+		LangCore.settings().SDK_LOCATION.getEnableProjectSettingsPref().doSetValue(newProject, true);
 	}
 	
 	public void cleanUp() throws CoreException {

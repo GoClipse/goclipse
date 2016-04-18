@@ -14,5 +14,5 @@ install: ""
 
 script:
   - export MAVEN_OPTS="-Xmx2g"
-  - mvn clean package
+  - mvn clean verify
  

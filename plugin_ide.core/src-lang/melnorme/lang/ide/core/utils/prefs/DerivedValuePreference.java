@@ -11,7 +11,7 @@
 package melnorme.lang.ide.core.utils.prefs;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.CoreUtil.optional;
+import static melnorme.utilbox.core.CoreUtil.option;
 
 import org.eclipse.core.resources.IProject;
 
@@ -52,7 +52,7 @@ public class DerivedValuePreference<VALUE> {
 	}
 	
 	public VALUE getDerivedValue(IProject project) throws StatusException {
-		String stringValue = preference.getProjectPreference().getEffectiveValue(optional(project));
+		String stringValue = preference.getProjectPreference().getEffectiveValue(option(project));
 		return validator.getValidatedField(stringValue);
 	}
 	

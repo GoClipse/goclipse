@@ -55,7 +55,7 @@ public class GoProjectEnvironmentTest extends CommonGoCoreTest {
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		LangCore.preferences().SDK_LOCATION.getGlobalPreference().setInstanceScopeValue(SAMPLE_GO_ROOT.asString());
+		LangCore.settings().SDK_LOCATION.getGlobalPreference().setInstanceScopeValue(SAMPLE_GO_ROOT.asString());
 		GoEnvironmentPrefs.GO_PATH.getGlobalPreference().setInstanceScopeValue(SAMPLE_GOPATH_Entry.toString());
 		TestsWorkingDir.deleteDir(SAMPLE_GOPATH_Entry);
 		

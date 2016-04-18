@@ -13,7 +13,7 @@ package melnorme.lang.ide.ui.text.completion;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.optional;
+import static melnorme.utilbox.core.CoreUtil.option;
 
 import java.text.MessageFormat;
 
@@ -221,7 +221,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		try {
 			proposals = cat.computeCompletionProposals(context);
 		} catch(CommonException ce) {
-			if(ContentAssistPreferences.ShowDialogIfContentAssistErrors.getEffectiveValue(optional(project))) {
+			if(ContentAssistPreferences.ShowDialogIfContentAssistErrors.getEffectiveValue(option(project))) {
 				handleExceptionInUI(ce);
 			} else {
 				LangCore.logError(LangUIMessages.ContentAssistProcessor_opName, ce);

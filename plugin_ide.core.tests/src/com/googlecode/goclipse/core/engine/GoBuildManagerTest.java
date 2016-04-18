@@ -128,13 +128,13 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 	protected void testBuildOperation() throws CommonException, OperationCancellation {
 		BuildTarget bt = buildMgr.getBuildInfo(project).getBuildTargets().iterator().next();
 		
-		LangCore.preferences().SDK_LOCATION.doSetRawValue(project, "");
+		LangCore.settings().SDK_LOCATION.doSetRawValue(project, "");
 		
 		// Test GOROOT validation
 		verifyThrows(() -> getBuildOperation(bt), null, "GOROOT is empty");
 		
 		// setup GOROOT 
-		LangCore.preferences().SDK_LOCATION.doSetRawValue(project, CommonGoToolingTest.MOCK_GOROOT.toString());
+		LangCore.settings().SDK_LOCATION.doSetRawValue(project, CommonGoToolingTest.MOCK_GOROOT.toString());
 		
 		verifyThrows(() -> getBuildOperation(bt), null, "location does not contain a `src`");
 		// setup src dir

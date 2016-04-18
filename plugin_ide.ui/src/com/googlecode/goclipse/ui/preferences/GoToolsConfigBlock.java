@@ -120,7 +120,7 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 		
 		@Override
 		protected String getDefaultFieldValue() throws CommonException {
-			Location rootLoc = Location.create(LangCore.preferences().SDK_LOCATION.getGlobalPreference().get());
+			Location rootLoc = Location.create(LangCore.settings().SDK_LOCATION.getGlobalPreference().get());
 			return GoFmtOperation.getGofmtLocationFromGoRoot(rootLoc).toPathString();
 		}
 		

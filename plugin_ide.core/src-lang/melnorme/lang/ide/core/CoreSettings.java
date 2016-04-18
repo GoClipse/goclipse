@@ -11,7 +11,7 @@
 package melnorme.lang.ide.core;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.CoreUtil.optional;
+import static melnorme.utilbox.core.CoreUtil.option;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -28,12 +28,11 @@ import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.misc.Location;
 
-/* FIXME: rename? */
-public abstract class CorePreferences {
+public abstract class CoreSettings {
 	
-	public final PreferenceField<Path> SDK_LOCATION;
+	public final SettingsField<Path> SDK_LOCATION;
 	
-	public CorePreferences() {
+	public CoreSettings() {
 		SDK_LOCATION = newPathPreference(ToolchainPreferences.SDK_PATH, getSDKLocationValidator());
 	}
 	
@@ -43,34 +42,38 @@ public abstract class CorePreferences {
 	 */
 	public abstract PathValidator getSDKLocationValidator();
 	
-	public static PreferenceField<Path> newPathPreference(
+	public static SettingsField<Path> newPathPreference(
 			IProjectPreference<String> pref, IValidator<String, Path> validator) {
-		return new PreferenceField<>(pref, validator, (path) -> path.toString());
+		return new SettingsField<>(pref, validator, (path) -> path.toString());
 	}
 	
-	public static PreferenceField<Location> newLocationPreference(
+	public static SettingsField<Location> newLocationPreference(
 			IProjectPreference<String> pref, IValidator<String, Location> validator) {
-		return new PreferenceField<>(pref, validator, (loc) -> loc.toString());
+		return new SettingsField<>(pref, validator, (loc) -> loc.toString());
 	}
 	
-	public static class PreferenceField<TYPE> {
+	public static class SettingsField<TYPE> {
+		// TODO: actually make this a Field
 		
 		public final IProjectPreference<String> preference;
 		public final IValidator<String, TYPE> validator;
 		public final IValidator<String, String> validator_toString;
 		
-		public PreferenceField(IProjectPreference<String> preference, IValidator<String, TYPE> validator, 
+		public SettingsField(IProjectPreference<String> preference, IValidator<String, TYPE> validator, 
 				Function<TYPE, String> backToString) {
 			this.preference = assertNotNull(preference);
 			this.validator = assertNotNull(validator);
 			this.validator_toString = (value) -> backToString.apply(validator.getValidatedField(value));
 		}
 		
+		public PreferenceHelper<String> getGlobalPreference() {
+			return preference.getGlobalPreference();
+		}
 		public IProjectPreference<String> getProjectPreference() {
 			return preference;
 		}
-		public PreferenceHelper<String> getGlobalPreference() {
-			return preference.getGlobalPreference();
+		public IProjectPreference<Boolean> getEnableProjectSettingsPref() {
+			return getProjectPreference().getEnableProjectSettingPref();
 		}
 		
 		public IValidator<String, TYPE> getValidator() {
@@ -86,14 +89,15 @@ public abstract class CorePreferences {
 		public TYPE getValue() throws StatusException {
 			return validator.getValidatedField(preference.getGlobalPreference().get());
 		}
-		
-		/* FIXME: rename */
-		public TYPE getValue2(IProject project) throws StatusException {
-			return validator.getValidatedField(preference.getEffectiveValue(optional(project)));
+		public TYPE getValue(IProject project) throws StatusException {
+			return getValue(option(project));
+		}
+		public TYPE getValue(Optional<IProject> project) throws StatusException {
+			return validator.getValidatedField(preference.getEffectiveValue(project));
 		}
 		
 		public final String getRawValue(IProject project) {
-			return getRawValue(optional(project));
+			return getRawValue(option(project));
 		}
 		public String getRawValue(Optional<IProject> project) {
 			return preference.getEffectiveValue(project);

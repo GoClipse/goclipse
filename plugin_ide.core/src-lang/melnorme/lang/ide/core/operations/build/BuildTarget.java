@@ -11,8 +11,7 @@
 package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Optional;
+import static melnorme.utilbox.core.CoreUtil.option;
 
 import org.eclipse.core.resources.IProject;
 
@@ -218,7 +217,7 @@ public class BuildTarget extends AbstractValidator {
 	
 	public CommandInvocation getCommandInvocation(ToolManager toolManager) throws StatusException {
 		String buildCommandString = getEffectiveBuildCommand();
-		VariablesResolver variablesResolver = toolManager.getVariablesManager(Optional.of(getProject()));
+		VariablesResolver variablesResolver = toolManager.getVariablesManager(option(getProject()));
 		return new BuildCommandInvocation(buildCommandString, variablesResolver);
 	}
 	

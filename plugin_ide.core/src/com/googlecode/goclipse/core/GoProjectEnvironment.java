@@ -11,7 +11,7 @@
 package com.googlecode.goclipse.core;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
-import static melnorme.utilbox.core.CoreUtil.optional;
+import static melnorme.utilbox.core.CoreUtil.option;
 import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import java.util.Optional;
@@ -36,7 +36,7 @@ import melnorme.utilbox.misc.Location;
 public class GoProjectEnvironment implements GoEnvironmentConstants {
 	
 	public static GoRoot getEffectiveGoRoot(IProject project) {
-		String prefValue = LangCore.preferences().SDK_LOCATION.getRawValue(project);
+		String prefValue = LangCore.settings().SDK_LOCATION.getRawValue(project);
 		return new GoRoot(nullAsEmpty(prefValue));
 	}
 	
@@ -58,7 +58,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 			return rawGoPath;
 		}
 		
-		if(GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH.getEffectiveValue(optional(project))) {
+		if(GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH.getEffectiveValue(option(project))) {
 			// Add project location to the end of GOPATH
 			ArrayList2<String> newGoPathEntries = new ArrayList2<>(rawGoPath.getGoPathEntries());
 			newGoPathEntries.add(projectLoc.toPathString());
