@@ -224,8 +224,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		public void doRun() throws StatusException {
 			
-			try(Disposable reg = buildManager.disableAutoBuilds()) {
-				
+			try(Disposable reg = buildManager.autoBuildsEnablement().enterDisable()) {
 				// Note: this needs to run in UI
 				BuildUtilities.saveEditors(list(getProject()));
 			}

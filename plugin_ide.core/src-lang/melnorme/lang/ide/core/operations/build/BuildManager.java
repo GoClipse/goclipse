@@ -42,14 +42,13 @@ import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.utils.EnablementCounter;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.ownership.Disposable;
-import melnorme.utilbox.ownership.Disposable.CheckedDisposable;
 
 
 public abstract class BuildManager {
@@ -474,19 +473,10 @@ public abstract class BuildManager {
 	
 	/* ----------------- Build operations ----------------- */
 	
-	protected int autoBuildEnableCounter = 0;
+	protected final EnablementCounter autoBuildsEnablement = new EnablementCounter();
 	
-	public Disposable disableAutoBuilds() {
-		autoBuildEnableCounter--;
-		return new CheckedDisposable(() -> enableAutoBuilds());
-	}
-	
-	public void enableAutoBuilds() {
-		autoBuildEnableCounter++;
-	}
-	
-	public boolean isAutoBuildsEnabled() {
-		return autoBuildEnableCounter == 0;
+	public EnablementCounter autoBuildsEnablement() {
+		return autoBuildsEnablement;
 	}
 	
 	protected BuildOperationCreator createBuildOperationCreator(IOperationMonitor opMonitor, IProject project) {

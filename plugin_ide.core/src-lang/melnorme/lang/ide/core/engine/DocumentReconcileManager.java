@@ -190,7 +190,7 @@ public class DocumentReconcileManager extends AbstractAgentManager {
 			}
 			
 			protected void handleDocumentSaved() {
-				if(!getBuildManager().isAutoBuildsEnabled() || isUnderBuildAction()) {
+				if(!getBuildManager().autoBuildsEnablement().isEnabled() || isUnderBuildAction()) {
 					// Cancel the current reconciliation task, because there is no point to it
 					// A normal, full build will be performed instead.
 					projectReconciler.cancelPendingReconciliation(project);

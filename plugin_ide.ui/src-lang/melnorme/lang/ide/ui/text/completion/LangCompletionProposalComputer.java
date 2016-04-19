@@ -16,6 +16,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IEditorPart;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager.ToolManagerEngineToolRunner;
@@ -24,6 +25,7 @@ import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
@@ -34,6 +36,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.ownership.Disposable;
 
 public abstract class LangCompletionProposalComputer extends AbstractCompletionProposalComputer {
 	
@@ -61,6 +64,11 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 			TimeoutProgressMonitor pm)
 			throws CoreException, CommonException, OperationCancellation, OperationSoftFailure
 	{
+		
+		if(needsEditorSave()) {
+			doEditorSave(context, pm);
+		}
+		
 		LangCompletionResult result = doComputeProposals(context, offset, pm);
 		Indexable<ToolCompletionProposal> resultProposals = result.getValidatedProposals();
 		
@@ -70,6 +78,23 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		}
 		
 		return proposals;
+	}
+	
+	protected boolean needsEditorSave() {
+		return false;
+	}
+	
+	protected void doEditorSave(SourceOperationContext context, TimeoutProgressMonitor pm) throws CoreException {
+		IEditorPart editor = context.getEditor_nonNull();
+		if(editor instanceof AbstractLangEditor) {
+			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
+			
+			try(Disposable disposable = langEditor.saveActionsEnablement().enterDisable()) {
+				editor.doSave(pm);
+			}
+		} else {
+			editor.doSave(pm);
+		}
 	}
 	
 	protected abstract LangCompletionResult doComputeProposals(SourceOperationContext context,
