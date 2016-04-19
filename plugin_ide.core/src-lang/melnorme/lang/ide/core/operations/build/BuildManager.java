@@ -48,6 +48,8 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.ownership.Disposable;
+import melnorme.utilbox.ownership.Disposable.CheckedDisposable;
 
 
 public abstract class BuildManager {
@@ -62,7 +64,7 @@ public abstract class BuildManager {
 	
 	protected final BuildModel buildModel;
 	protected final LangBundleModel bundleModel;
-	protected final ToolManager toolManager; 
+	protected final ToolManager toolManager;
 	
 	public BuildManager(LangBundleModel bundleModel, ToolManager toolManager) {
 		this(new BuildModel(), bundleModel, toolManager);
@@ -464,12 +466,28 @@ public abstract class BuildManager {
 		assertNotNull(buildType);
 		BuildTarget foundBT = buildInfo.getBuildTargets().findElement((bt) -> bt.getBuildType() == buildType);
 		if(foundBT == null) {
-			throw CommonException.fromMsgFormat(BuildManagerMessages.NO_BUILD_TARGET_FOUND_FOR_BUILD_TYPE_0, buildType.getName());
+			throw CommonException.fromMsgFormat(
+				BuildManagerMessages.NO_BUILD_TARGET_FOUND_FOR_BUILD_TYPE_0, buildType.getName());
 		}
 		return foundBT;
 	}
 	
 	/* ----------------- Build operations ----------------- */
+	
+	protected int autoBuildEnableCounter = 0;
+	
+	public Disposable disableAutoBuilds() {
+		autoBuildEnableCounter--;
+		return new CheckedDisposable(() -> enableAutoBuilds());
+	}
+	
+	public void enableAutoBuilds() {
+		autoBuildEnableCounter++;
+	}
+	
+	public boolean isAutoBuildsEnabled() {
+		return autoBuildEnableCounter == 0;
+	}
 	
 	protected BuildOperationCreator createBuildOperationCreator(IOperationMonitor opMonitor, IProject project) {
 		return new BuildOperationCreator(project, opMonitor);

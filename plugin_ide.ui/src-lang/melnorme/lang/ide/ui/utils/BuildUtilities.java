@@ -36,6 +36,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.BuildAction;
 import org.eclipse.ui.ide.ResourceUtil;
 
+import melnorme.utilbox.collections.Indexable;
+
 // Copied from org.eclipse.ui.internal.ide.actions
 /**
  * This class contains convenience methods used by the various build commands
@@ -177,7 +179,7 @@ public class BuildUtilities {
 	 * @param projects The projects in which to save editors, or <code>null</code>
 	 * to save editors in all projects.
 	 */
-	public static void saveEditors(Collection<IProject> projects) {
+	public static void saveEditors(Indexable<IProject> projects) {
 		if (!BuildAction.isSaveAllSet()) {
 			return;
 		}

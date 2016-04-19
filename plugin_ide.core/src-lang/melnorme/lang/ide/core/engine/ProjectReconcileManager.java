@@ -69,6 +69,17 @@ abstract class AbstractProjectReconcileManager {
 		
 	}
 	
+	public void cancelPendingReconciliation(IProject project) {
+		synchronized (projectInfosLock) {
+			ProjectReconcileTask currentReconcileTask = projectInfos.get(project);
+			
+			// Cancel the previous task
+			if(currentReconcileTask != null) {
+				currentReconcileTask.cancel(); 
+			}
+		}
+	}
+	
 	protected void removeProjectInfo(ProjectReconcileTask projectReconcileTask) {
 		synchronized (projectInfosLock) {
 			projectInfos.remove(projectReconcileTask.project, projectReconcileTask);

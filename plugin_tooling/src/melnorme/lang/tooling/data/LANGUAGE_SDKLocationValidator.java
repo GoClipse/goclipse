@@ -11,7 +11,6 @@
 package melnorme.lang.tooling.data;
 
 import melnorme.lang.tooling.ops.SDKLocationValidator;
-import melnorme.utilbox.misc.Location;
 
 public class LANGUAGE_SDKLocationValidator extends SDKLocationValidator {
 	
@@ -24,8 +23,4 @@ public class LANGUAGE_SDKLocationValidator extends SDKLocationValidator {
 		return "bin/foobar"; // TODO: LANG 
 	}
 	
-	@Override
-	protected String getSDKExecutableErrorMessage(Location exeLocation) {
-		return "foobar executable not found."; // TODO: LANG
-	}
 }
