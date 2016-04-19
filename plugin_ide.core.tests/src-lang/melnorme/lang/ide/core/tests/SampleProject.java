@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangNature;
-import melnorme.lang.ide.core.operations.ICoreOperation;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils.CoreOperation;
 import melnorme.lang.tests.LangCoreTests_Actual;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -49,9 +49,9 @@ public class SampleProject implements AutoCloseable {
 	}
 	
 	public final void create() throws CoreException, CommonException {
-		ICoreOperation operation = (pm) -> doCreate();
+		CoreOperation operation = (pm) -> doCreate();
 		try {
-			ResourceUtils.runCommonOperationInWorkspace(operation, null, null);
+			ResourceUtils.runWorkspaceOperation(null, operation);
 		} catch(OperationCancellation e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

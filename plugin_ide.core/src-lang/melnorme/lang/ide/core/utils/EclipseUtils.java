@@ -30,6 +30,7 @@ import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ICommonOperation;
+import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
@@ -162,6 +163,10 @@ public class EclipseUtils {
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
+	}
+	
+	public static EclipseCancelMonitor cm(IProgressMonitor pm) {
+		return new EclipseCancelMonitor(pm);
 	}
 	
 }

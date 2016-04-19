@@ -32,8 +32,8 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.Process
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.ide.core.operations.build.VariablesResolver.SupplierAdapterVar;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.tooling.data.StatusException;
@@ -146,10 +146,6 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
 	/* ----------------- ----------------- */
 	
-	public static EclipseCancelMonitor cm(IProgressMonitor pm) {
-		return new EclipseCancelMonitor(pm);
-	}
-	
 	public IOperationMonitor startNewBuildOperation() {
 		return startNewBuildOperation(false);
 	}
@@ -213,7 +209,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
 	public final RunToolTask newRunProcessTask(IOperationMonitor opMonitor, ProcessBuilder pb, 
 			IProgressMonitor pm) {
-		return newRunProcessTask(opMonitor, pb, cm(pm));
+		return newRunProcessTask(opMonitor, pb, EclipseUtils.cm(pm));
 	}
 	public RunToolTask newRunProcessTask(IOperationMonitor opMonitor, ProcessBuilder pb, ICancelMonitor cm) {
 		String prefixText = ">> Running: ";
@@ -248,7 +244,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String processInput, IProgressMonitor pm) 
 			throws CoreException, OperationCancellation {
 		try {
-			return runEngineTool(pb, processInput, cm(pm));
+			return runEngineTool(pb, processInput, EclipseUtils.cm(pm));
 		} catch(CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}

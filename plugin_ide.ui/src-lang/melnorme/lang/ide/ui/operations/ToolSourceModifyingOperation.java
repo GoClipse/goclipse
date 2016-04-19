@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.operations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -17,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PlatformUI;
 
 import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.utils.ProcessUtils;
@@ -30,13 +33,13 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
  */
 public class ToolSourceModifyingOperation extends RunToolOperation {
 	
-	protected IResource lockingRule;
+	protected IResource resource;
 	
 	public ToolSourceModifyingOperation(String operationName, IProject project, Indexable<String> commands,
-			StartOperationOptions opViewOptions) {
+			StartOperationOptions opViewOptions, @SuppressWarnings("unused") boolean APIdummy) {
 		super(operationName, project, commands, opViewOptions);
 		
-		lockingRule = project;
+		resource = assertNotNull(project);
 	}
 	
 	@Override
@@ -53,7 +56,7 @@ public class ToolSourceModifyingOperation extends RunToolOperation {
 	protected void runProcessTask(RunToolTask runToolTask, IProgressMonitor pm) 
 			throws CommonException, OperationCancellation, CoreException {
 		
-		ResourceUtils.runToolOperation(lockingRule, pm, 
+		ResourceUtils.runOperation(resource, pm, 
 			(pm2) -> {
 				pm2.setTaskName(getTaskName());
 				ExternalProcessResult result = runToolTask.runProcess();
@@ -64,8 +67,12 @@ public class ToolSourceModifyingOperation extends RunToolOperation {
 			});
 	}
 	
-	protected void do_refreshResources(IProgressMonitor pm) throws CoreException {
-		lockingRule.refreshLocal(IResource.DEPTH_INFINITE, pm);
+	protected void do_refreshResources(IProgressMonitor pm) throws CommonException {
+		try {
+			resource.refreshLocal(IResource.DEPTH_INFINITE, pm);
+		} catch(CoreException e) {
+			throw LangCore.createCommonException(e);
+		}
 	}
 	
 }
