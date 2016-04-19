@@ -42,7 +42,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ICoreOperation;
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.ThrowingRunnable;
@@ -135,64 +135,93 @@ public class ResourceUtils {
 	
 	/* -----------------  ----------------- */
 	
-	public static void runToolOperation(ISchedulingRule rule, IProgressMonitor monitor, 
-			ICoreOperation operation) throws CoreException, OperationCancellation, CommonException {
-		runToolOperationInWorkspace(operation, rule, monitor);
-	}
-	
-	public static void runToolOperationInWorkspace(ICoreOperation operation, ISchedulingRule rule, 
-			IProgressMonitor monitor) throws CoreException, OperationCancellation, CommonException {
+	public static void runCoreOperation2(ISchedulingRule rule, IProgressMonitor pm, ICommonOperation operation)
+			throws CoreException, CommonException, OperationCancellation {
+		assertNotNull(rule);
 		
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-			
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				try {
 					operation.execute(monitor);
-				} catch(CommonException | OperationCancellation e) {
-					throw new CoreExceptionWrapper(e);
+				} catch(CommonException e) {
+					throw new CommonException_CEWrapper(e);
+				} catch(OperationCancellation e) {
+					throw new CancellationException_CEWrapper(e);
 				}
 			}
 		};
 		
 		try {
-			ResourceUtils.getWorkspace().run(runnable, rule, IWorkspace.AVOID_UPDATE, monitor);
-		} catch(CoreExceptionWrapper cew) {
-			Exception wrapped = cew.getWrapped();
-			if(wrapped instanceof CommonException) {
-				throw (CommonException) wrapped;
-			}
-			if(wrapped instanceof OperationCancellation) {
-				throw (OperationCancellation) wrapped;
-			}
-			assertFail();
+			ResourceUtils.getWorkspace().run(runnable, rule, IWorkspace.AVOID_UPDATE, pm);
+		} catch(CommonException_CEWrapper cew) {
+			throw cew.wrapped;
+		} catch(CancellationException_CEWrapper cew) {
+			throw cew.wrapped;
 		}
 	}
 	
-	
-	public static void runCommonOperationInWorkspace(ICoreOperation operation, ISchedulingRule rule, 
-			IProgressMonitor monitor) throws OperationCancellation, CommonException {
+	public static void runOperation(ISchedulingRule rule, IProgressMonitor pm, ICommonOperation operation)
+			throws CommonException, OperationCancellation {
 		try {
-			runToolOperationInWorkspace(operation, rule, monitor);
+			runCoreOperation2(rule, pm, operation);
 		} catch(CoreException e) {
 			throw LangCore.createCommonException(e);
 		}
 	}
 	
+	public static void runWorkspaceOperation(IProgressMonitor pm, ICommonOperation operation) 
+			throws OperationCancellation, CommonException {
+		try {
+			runCoreOperation2(getWorkspaceRoot(), pm, operation);
+		} catch(CoreException e) {
+			throw LangCore.createCommonException(e);
+		}
+	}
+	
+	public static void runProjectOperation(IProgressMonitor pm, IProject project, ICommonOperation operation) 
+			throws OperationCancellation, CommonException {
+		runOperation(project, pm, operation);
+	}
+	
+	public static interface CoreOperation extends ICommonOperation {
+		
+		@Override
+		default void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
+			try {
+				execute_do(pm);
+			} catch(CoreException e) {
+				throw LangCore.createCommonException(e);
+			}
+		}
+		
+		public abstract void execute_do(IProgressMonitor pm) 
+				throws CoreException, CommonException, OperationCancellation;
+		
+	}
+	
+	/* -----------------  ----------------- */
+	
 	@SuppressWarnings("serial")
-	public static class CoreExceptionWrapper extends CoreException {
+	protected static class CommonException_CEWrapper extends CoreException {
 		
-		protected final Exception wrapped;
+		public final CommonException wrapped;
 		
-		public CoreExceptionWrapper(Exception wrapped) {
+		public CommonException_CEWrapper(CommonException wrapped) {
 			super(LangCore.createErrorStatus("Error: ", wrapped));
 			this.wrapped = assertNotNull(wrapped);
 		}
+	}
+	
+	@SuppressWarnings("serial")
+	protected static class CancellationException_CEWrapper extends CoreException {
 		
-		public Exception getWrapped() {
-			return wrapped;
+		public final OperationCancellation wrapped;
+		
+		public CancellationException_CEWrapper(OperationCancellation wrapped) {
+			super(LangCore.createErrorStatus("Error: ", wrapped));
+			this.wrapped = assertNotNull(wrapped);
 		}
-		
 	}
 	
 	/* ----------------- File read/write ----------------- */
@@ -292,16 +321,6 @@ public class ResourceUtils {
 		
 		project.open(pm);
 		return project;
-	}
-	
-	@Deprecated
-	public static void deleteProject_unchecked(String projectName) {
-		IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
-		try {
-			project.delete(true, null);
-		} catch (CoreException e) {
-			// Ignore
-		}
 	}
 	
 	public static void tryDeleteProject(String projectName) throws CoreException {

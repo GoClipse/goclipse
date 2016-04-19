@@ -51,6 +51,7 @@ import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
+import melnorme.lang.utils.EnablementCounter;
 import melnorme.utilbox.misc.ArrayUtil;
 
 public abstract class AbstractLangEditor extends TextEditorExt {
@@ -271,12 +272,21 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	/* ----------------- save ----------------- */
 	
+	protected final EnablementCounter saveActionsEnablement = new EnablementCounter();
+	
+	public EnablementCounter saveActionsEnablement() {
+		return saveActionsEnablement;
+	}
+	
 	@Override
 	protected void performSave(boolean overwrite, IProgressMonitor pm) {
-		IProject associatedProject = EditorUtils.getAssociatedProject(getEditorInput());
-		if(ToolchainPreferences.FORMAT_ON_SAVE.getEffectiveValue(associatedProject)) {
-			BasicUIOperation formatOperation = LangUIPlugin_Actual.getFormatOperation(this);
-			formatOperation.executeAndHandle();
+		
+		if(saveActionsEnablement.isEnabled()) {
+			IProject associatedProject = EditorUtils.getAssociatedProject(getEditorInput());
+			if(ToolchainPreferences.FORMAT_ON_SAVE.getEffectiveValue(associatedProject)) {
+				BasicUIOperation formatOperation = LangUIPlugin_Actual.getFormatOperation(this);
+				formatOperation.executeAndHandle();
+			}
 		}
 		
 		super.performSave(overwrite, pm);

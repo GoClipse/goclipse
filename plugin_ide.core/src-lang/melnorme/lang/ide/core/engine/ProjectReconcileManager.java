@@ -21,11 +21,11 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.CompositeBuildOperation;
 import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.concurrency.ResultFuture.LatchFuture;
@@ -67,6 +67,17 @@ abstract class AbstractProjectReconcileManager {
 			getExecutor().submit(newReconcileTask.asFutureTask);
 		}
 		
+	}
+	
+	public void cancelPendingReconciliation(IProject project) {
+		synchronized (projectInfosLock) {
+			ProjectReconcileTask currentReconcileTask = projectInfos.get(project);
+			
+			// Cancel the previous task
+			if(currentReconcileTask != null) {
+				currentReconcileTask.cancel(); 
+			}
+		}
 	}
 	
 	protected void removeProjectInfo(ProjectReconcileTask projectReconcileTask) {
@@ -154,8 +165,7 @@ public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 				toolMgr.startNewOperation(ProcessStartKind.BUILD, true, false);
 		try {
 			
-			CompositeBuildOperation buildOp = 
-					buildMgr.newProjectBuildOperation(opMonitor, project, true, true);
+			ICommonOperation buildOp = buildMgr.newProjectBuildOperation(opMonitor, project, true, true);
 			
 			buildOp.execute(cancelMonitor);
 		} catch(CommonException e) {

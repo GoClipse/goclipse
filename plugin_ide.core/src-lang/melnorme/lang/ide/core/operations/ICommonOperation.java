@@ -11,7 +11,6 @@
 package melnorme.lang.ide.core.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -20,12 +19,8 @@ public interface ICommonOperation {
 	
 	void execute(IProgressMonitor pm) throws CommonException, OperationCancellation;
 	
-	default void execute_adapted(IProgressMonitor pm) throws CommonException, OperationCancellation {
-		try {
-			execute(pm);
-		} catch(OperationCanceledException oce) {
-			throw new OperationCancellation();
-		}
-	}
+	/* -----------------  ----------------- */
+	
+	public static ICommonOperation NULL_COMMON_OPERATION = (pm) -> { };
 	
 }

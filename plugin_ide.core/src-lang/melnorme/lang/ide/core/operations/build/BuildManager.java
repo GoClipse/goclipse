@@ -42,6 +42,7 @@ import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.utils.EnablementCounter;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
@@ -62,7 +63,7 @@ public abstract class BuildManager {
 	
 	protected final BuildModel buildModel;
 	protected final LangBundleModel bundleModel;
-	protected final ToolManager toolManager; 
+	protected final ToolManager toolManager;
 	
 	public BuildManager(LangBundleModel bundleModel, ToolManager toolManager) {
 		this(new BuildModel(), bundleModel, toolManager);
@@ -464,12 +465,19 @@ public abstract class BuildManager {
 		assertNotNull(buildType);
 		BuildTarget foundBT = buildInfo.getBuildTargets().findElement((bt) -> bt.getBuildType() == buildType);
 		if(foundBT == null) {
-			throw CommonException.fromMsgFormat(BuildManagerMessages.NO_BUILD_TARGET_FOUND_FOR_BUILD_TYPE_0, buildType.getName());
+			throw CommonException.fromMsgFormat(
+				BuildManagerMessages.NO_BUILD_TARGET_FOUND_FOR_BUILD_TYPE_0, buildType.getName());
 		}
 		return foundBT;
 	}
 	
 	/* ----------------- Build operations ----------------- */
+	
+	protected final EnablementCounter autoBuildsEnablement = new EnablementCounter();
+	
+	public EnablementCounter autoBuildsEnablement() {
+		return autoBuildsEnablement;
+	}
 	
 	protected BuildOperationCreator createBuildOperationCreator(IOperationMonitor opMonitor, IProject project) {
 		return new BuildOperationCreator(project, opMonitor);
@@ -490,9 +498,12 @@ public abstract class BuildManager {
 		return newBuildOperation(buildOp, project, true, targetsToBuild);
 	}
 	
-	public final CompositeBuildOperation newProjectBuildOperation(IOperationMonitor opMonitor, IProject project,
+	public final ICommonOperation newProjectBuildOperation(IOperationMonitor opMonitor, IProject project,
 			boolean clearMarkers, boolean isAuto) throws CommonException {
 		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets(!isAuto);
+		if(isAuto && enabledTargets.isEmpty()) {
+			return ICommonOperation.NULL_COMMON_OPERATION;
+		}
 		return newBuildOperation(opMonitor, project, clearMarkers, enabledTargets);
 	}
 	

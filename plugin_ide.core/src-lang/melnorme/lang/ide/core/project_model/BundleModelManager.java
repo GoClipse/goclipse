@@ -96,10 +96,14 @@ public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel>
 	}
 	
 	@Override
-	protected void bundleProjectAdded(IProject project) {
+	protected final void bundleProjectAdded(IProject project) {
 		if(ignoredProjects.contains(project)) {
 			return;
 		}
+		handleBundleProjectAdded(project);
+	}
+	
+	protected void handleBundleProjectAdded(IProject project) {
 		model.setProjectInfo(project, createNewInfo(project));
 	}
 	

@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.navigator;
 
 import static java.text.MessageFormat.format;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.list;
 import static melnorme.utilbox.core.fntypes.CommonGetter.getOrNull;
 import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
@@ -53,6 +54,7 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.ownership.Disposable;
 
 public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	
@@ -221,6 +223,12 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		}
 		
 		public void doRun() throws StatusException {
+			
+			try(Disposable reg = buildManager.autoBuildsEnablement().enterDisable()) {
+				// Note: this needs to run in UI
+				BuildUtilities.saveEditors(list(getProject()));
+			}
+			
 			new AbstractUIOperation(getJobTitle()) {
 				@Override
 				protected void doBackgroundComputation(IProgressMonitor pm)
@@ -340,8 +348,6 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		
 		@Override
 		public void doRun() throws StatusException {
-			BuildUtilities.saveEditors(null); // This needs to run in UI
-			
 			super.doRun();
 		}
 		

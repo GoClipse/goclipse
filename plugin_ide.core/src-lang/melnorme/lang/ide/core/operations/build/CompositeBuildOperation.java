@@ -37,9 +37,8 @@ public class CompositeBuildOperation implements ICommonOperation {
 		if(rule == null) {
 			doExecute(monitor);
 		} else {
-			ResourceUtils.runCommonOperationInWorkspace((pm) -> doExecute(pm), rule, monitor);
+			ResourceUtils.runOperation(rule, monitor, (pm) -> doExecute(pm));
 		}
-		
 	}
 	
 	protected void doExecute(IProgressMonitor monitor) throws CommonException, OperationCancellation {

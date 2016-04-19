@@ -60,6 +60,10 @@ public class DocumentReconcileManager extends AbstractAgentManager {
 		return CoreExecutors.newExecutorTaskAgent(DocumentReconcileManager.class);
 	}
 	
+	protected BuildManager getBuildManager() {
+		return projectReconciler.buildMgr;
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public DocumentReconcileConnection connectDocument(IDocument document, StructureInfo structureInfo) {
@@ -162,14 +166,40 @@ public class DocumentReconcileManager extends AbstractAgentManager {
 			public void dirtyStateChanged(IFileBuffer buffer, boolean isDirty) {
 				if(buffer == textFileBuffer) {
 					if(!isDirty) {
-						// Mark the file save as completed
-						fileSaveFuture.setCompleted();
 						handleDocumentSaved();
 					}
 				}
 			}
 			
+			/** Determine if document save was invoked under a Build action.
+			 * Uses a hack to determine this, unfortunately there is currently no other way to figure this out.
+			 * TODO: submit a bug report
+			 */
+			public boolean isUnderBuildAction() {
+				StackTraceElement[] stackTrace = new Exception().getStackTrace();
+				for (StackTraceElement stackTraceElement : stackTrace) {
+					if(!stackTraceElement.getMethodName().equals("run")) {
+						continue;
+					}
+					String className = stackTraceElement.getClassName();
+					if(className.endsWith(".BuildAction") || className.endsWith(".GlobalBuildAction")) {
+						return true;
+					}
+				}
+				return false;
+			}
+			
 			protected void handleDocumentSaved() {
+				if(!getBuildManager().autoBuildsEnablement().isEnabled() || isUnderBuildAction()) {
+					// Cancel the current reconciliation task, because there is no point to it
+					// A normal, full build will be performed instead.
+					projectReconciler.cancelPendingReconciliation(project);
+					fileSaveFuture.setCompleted();
+					return;
+				}
+				// Mark the file save as completed
+				fileSaveFuture.setCompleted();
+				
 				StructureUpdateTask structureUpdateTask = structureInfo.documentSaved(document);
 				
 				if(structureUpdateTask != null && project != null) {
