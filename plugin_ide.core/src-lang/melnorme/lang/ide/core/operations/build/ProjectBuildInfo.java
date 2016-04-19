@@ -106,7 +106,11 @@ public class ProjectBuildInfo {
 	}
 	
 	/* -----------------  ----------------- */
-		
+	
+	public ProjectBuildInfo getUpdatedInfo() {
+		return buildMgr.getBuildInfo(project);
+	}
+	
 	public final void changeEnable(String buildTargetName, boolean newNormalBuildEnabled, boolean newAutoBuildEnabled)
 			throws CommonException {
 		BuildTarget oldBuildTarget = buildMgr.getDefinedBuildTarget(project, buildTargetName);

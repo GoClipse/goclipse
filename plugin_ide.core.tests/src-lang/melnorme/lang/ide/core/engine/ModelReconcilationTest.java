@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IDocument;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
@@ -55,8 +54,6 @@ class AnnotationsModelManager {
 	
 }
 
-/* FIXME: review test*/
-@Ignore
 public class ModelReconcilationTest extends CommonCoreTest {
 	
 	protected ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
@@ -137,7 +134,7 @@ public class ModelReconcilationTest extends CommonCoreTest {
 		buildInfo.getBuildTargets().forEach((bt) -> {
 			try {
 				// Disable the auto/check build
-				buildInfo.changeEnable(bt.getBuildTargetName(), bt.isNormalBuildEnabled(), false);
+				buildInfo.getUpdatedInfo().changeEnable(bt.getBuildTargetName(), bt.isNormalBuildEnabled(), false);
 			} catch(Exception e) {
 				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 			}

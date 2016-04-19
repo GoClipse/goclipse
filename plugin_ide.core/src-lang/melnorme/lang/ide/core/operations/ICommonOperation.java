@@ -19,4 +19,8 @@ public interface ICommonOperation {
 	
 	void execute(IProgressMonitor pm) throws CommonException, OperationCancellation;
 	
+	/* -----------------  ----------------- */
+	
+	public static ICommonOperation NULL_COMMON_OPERATION = (pm) -> { };
+	
 }

@@ -490,9 +490,12 @@ public abstract class BuildManager {
 		return newBuildOperation(buildOp, project, true, targetsToBuild);
 	}
 	
-	public final CompositeBuildOperation newProjectBuildOperation(IOperationMonitor opMonitor, IProject project,
+	public final ICommonOperation newProjectBuildOperation(IOperationMonitor opMonitor, IProject project,
 			boolean clearMarkers, boolean isAuto) throws CommonException {
 		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets(!isAuto);
+		if(isAuto && enabledTargets.isEmpty()) {
+			return ICommonOperation.NULL_COMMON_OPERATION;
+		}
 		return newBuildOperation(opMonitor, project, clearMarkers, enabledTargets);
 	}
 	

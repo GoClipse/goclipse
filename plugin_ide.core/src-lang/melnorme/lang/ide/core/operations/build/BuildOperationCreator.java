@@ -62,6 +62,10 @@ public class BuildOperationCreator implements BuildManagerMessages {
 			throws CommonException {
 		operations = ArrayList2.create();
 		
+		if(buildOps.isEmpty()) {
+			return new CompositeBuildOperation(operations, null);
+		}
+		
 		addCompositeBuildOperationMessage();
 		
 		if(clearMarkers) {
