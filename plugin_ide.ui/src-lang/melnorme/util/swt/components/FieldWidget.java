@@ -13,6 +13,7 @@ package melnorme.util.swt.components;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import melnorme.lang.tooling.data.IValidationSource;
 import melnorme.lang.tooling.data.IValidator;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.fields.Field;
@@ -122,8 +123,16 @@ public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget
 	
 	/* -----------------  ----------------- */
 	
-	public void addFieldValidator(IValidator<VALUE, ?> validator) {
-		validation.addFieldValidation(true, this, validator);
+	public void addFieldValidator(boolean init, IValidator<VALUE, ?> validator) {
+		validation.addFieldValidator(init, this, validator);
+	}
+	
+	public void addFieldValidation(boolean init, IValidationSource validationSource) {
+		validation.addFieldValidation(init, this, validationSource);
+	}
+	
+	public void addFieldValidationX(boolean init, IValidationSourceX validationSource) {
+		validation.addFieldValidation(init, this, validationSource);
 	}
 	
 }

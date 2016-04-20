@@ -11,7 +11,7 @@
 package melnorme.lang.ide.ui.preferences.common;
 
 
-import melnorme.lang.tooling.data.CompositeValidatableField;
+import melnorme.lang.tooling.data.ValidationField;
 import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.IValidatableWidget;
@@ -19,7 +19,7 @@ import melnorme.utilbox.fields.IFieldView;
 
 public abstract class AbstractWidgetExt extends AbstractWidget implements IValidatableWidget {
 	
-	protected final CompositeValidatableField validation = new CompositeValidatableField();
+	protected final ValidationField validation = new ValidationField();
 	
 	public AbstractWidgetExt() {
 		super();
@@ -30,7 +30,7 @@ public abstract class AbstractWidgetExt extends AbstractWidget implements IValid
 		return validation;
 	}
 	
-	public CompositeValidatableField getValidation() {
+	public ValidationField getValidation() {
 		return validation;
 	}
 	

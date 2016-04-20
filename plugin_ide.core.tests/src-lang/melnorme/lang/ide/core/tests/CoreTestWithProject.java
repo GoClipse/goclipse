@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.CoreSettings.SettingsField;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.tests.LangCoreTests_Actual;
+import melnorme.lang.tests.ToolingTests_Actual;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.ownership.IDisposable;
@@ -41,7 +41,7 @@ public abstract class CoreTestWithProject extends CommonCoreTest_ActualClass {
 		}
 		
 		public static void setTestsSDKPath(IProject project) {
-			String SDK_PATH = LangCoreTests_Actual.SAMPLE_SDK_PATH.toString();
+			String SDK_PATH = ToolingTests_Actual.SAMPLE_SDK_PATH.toString();
 			SDK_LOCATION.doSetRawValue(project, SDK_PATH);
 		}
 	}

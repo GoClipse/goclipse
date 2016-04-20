@@ -11,15 +11,7 @@
 package melnorme.util.swt.components;
 
 import melnorme.lang.tooling.data.IStatusFieldSource;
-import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.utilbox.fields.IFieldView;
 
 public interface IValidatableWidget extends IWidgetComponent, IStatusFieldSource {
-	
-	/* FIXME: WTF */
-	@Override
-	default IFieldView<IStatusMessage> getStatusField() {
-		return IFieldView.NULL_FIELD_VIEW();
-	}
 	
 }

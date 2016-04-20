@@ -31,6 +31,10 @@ public class CommandInvocation implements IValidationSource {
 		this.variablesResolver = assertNotNull(variablesResolver);
 	}
 	
+	public String getCommandArguments() {
+		return commandArguments;
+	}
+	
 	public Indexable<String> getEffectiveCommandLine() throws CommonException {
 		String evaluatedCommandLine = variablesResolver.performStringSubstitution(commandArguments);
 		

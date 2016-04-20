@@ -16,7 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.util.swt.components.AbstractCompositeWidget;
-import melnorme.utilbox.fields.IField;
+import melnorme.util.swt.components.FieldWidget;
 
 public abstract class AbstractCompositePreferencesBlock extends AbstractCompositeWidget {
 	
@@ -27,8 +27,8 @@ public abstract class AbstractCompositePreferencesBlock extends AbstractComposit
 		this.prefContext = assertNotNull(prefContext);
 	}
 	
-	protected void bindToDerivedPreference(IField<String> field, DerivedValuePreference<?> pref) {
-		prefContext.bindToValidatedPreference(field, pref, validation);
+	protected void bindFieldToDerivedPreference(FieldWidget<String> field, DerivedValuePreference<?> pref) {
+		prefContext.bindToValidatedPreference(field, pref);
 	}
 	
 }

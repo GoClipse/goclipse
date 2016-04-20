@@ -197,8 +197,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 			nameGroup.getNameField().addListener(this::updateDefaultFieldValue);
 			
-			IValidationSourceX validationSource = () -> doValidate();
-			validation.addFieldValidation(true, this, validationSource);
+			addFieldValidationX(true, () -> doValidate());
 		}
 		
 		protected String getProjectName() {

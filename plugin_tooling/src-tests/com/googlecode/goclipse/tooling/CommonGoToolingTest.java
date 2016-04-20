@@ -17,7 +17,7 @@ import com.googlecode.goclipse.tooling.env.GoPath;
 import com.googlecode.goclipse.tooling.env.GoRoot;
 
 import melnorme.lang.tests.CommonToolingTest;
-import melnorme.lang.tests.LangCoreTests_Actual;
+import melnorme.lang.tests.ToolingTests_Actual;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
@@ -26,7 +26,7 @@ public class CommonGoToolingTest extends CommonToolingTest {
 	
 	public static final Location TESTS_WORKDIR = TestsWorkingDir.getWorkingDir();
 	
-	public static final Location MOCK_GOROOT = LangCoreTests_Actual.SAMPLE_SDK_PATH;
+	public static final Location MOCK_GOROOT = ToolingTests_Actual.SAMPLE_SDK_PATH;
 	public static final GoRoot SAMPLE_GO_ROOT = new GoRoot(MOCK_GOROOT.toString());
 	
 	public static final Location SAMPLE_GOPATH_Entry = TESTS_WORKDIR.resolve_valid("goPathEntry");

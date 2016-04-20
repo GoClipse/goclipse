@@ -32,7 +32,7 @@ import melnorme.lang.ide.core.operations.build.BuildManager_Test.TestsBuildManag
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.tests.CoreTestWithProject;
-import melnorme.lang.tests.LangCoreTests_Actual;
+import melnorme.lang.tests.ToolingTests_Actual;
 import melnorme.lang.tooling.bundle.BuildConfigMessages;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
@@ -149,7 +149,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 	
 	protected String SEP = buildMgr.getBuildTargetNameParser().getNameSeparator();
 	
-	protected final BundleInfo bundleInfo = LangCoreTests_Actual.createSampleBundleInfoA("SampleBundle", null);
+	protected final BundleInfo bundleInfo = ToolingTests_Actual.createSampleBundleInfoA("SampleBundle", null);
 	
 	/* -----------------  ----------------- */
 	

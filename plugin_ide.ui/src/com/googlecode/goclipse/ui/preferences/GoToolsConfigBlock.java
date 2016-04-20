@@ -66,7 +66,7 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 		public GoOracleGroup() {
 			super("oracle");
 			
-			bindToDerivedPreference(toolLocationField, GoToolPreferences.GO_ORACLE_Path);
+			bindFieldToDerivedPreference(toolLocationField, GoToolPreferences.GO_ORACLE_Path);
 		}
 		
 		@Override
@@ -84,7 +84,7 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 		public GoDefGroup() {
 			super("godef");
 			
-			bindToDerivedPreference(toolLocationField, GoToolPreferences.GODEF_Path);
+			bindFieldToDerivedPreference(toolLocationField, GoToolPreferences.GODEF_Path);
 		}
 		
 		@Override
@@ -105,7 +105,7 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 			super("gofmt:", "Use default location (from Go installation).");
 			
 			prefContext.bindToPreference(asEffectiveValueProperty2(), GoToolPreferences.GOFMT_Path.getPreference());
-			validation.addFieldValidation(true, buttonTextField, GoToolPreferences.GOFMT_Path.getValidator());
+			buttonTextField.addFieldValidator(true, GoToolPreferences.GOFMT_Path.getValidator());
 			
 			this.formatOnSaveField = new CheckBoxField("Format automatically on editor save.");
 			

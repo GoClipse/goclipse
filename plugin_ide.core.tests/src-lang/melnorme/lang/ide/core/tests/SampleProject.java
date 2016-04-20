@@ -23,7 +23,7 @@ import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils.CoreOperation;
-import melnorme.lang.tests.LangCoreTests_Actual;
+import melnorme.lang.tests.ToolingTests_Actual;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -34,7 +34,7 @@ import melnorme.utilbox.ownership.Disposable;
 public class SampleProject implements AutoCloseable {
 	
 	public final IProject project;
-	public BundleInfo sampleBundleInfo = LangCoreTests_Actual.createSampleBundleInfoA("SampleBundle", null);
+	public BundleInfo sampleBundleInfo = ToolingTests_Actual.createSampleBundleInfoA("SampleBundle", null);
 	public Disposable bundleModelIgnoreReg;
 	
 	public SampleProject(String name) throws CoreException, CommonException {

@@ -23,33 +23,21 @@ import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
-import melnorme.lang.tooling.data.CompositeValidatableField;
-import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.FieldWidget;
-import melnorme.util.swt.components.IValidatableWidget;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
-import melnorme.utilbox.fields.IField;
-import melnorme.utilbox.fields.IFieldView;
 
-public abstract class AbstractPreferencesBlock2 extends AbstractWidget implements IValidatableWidget {
+public abstract class AbstractPreferencesBlock2 extends AbstractWidgetExt {
 	
-	protected final CompositeValidatableField validation = new CompositeValidatableField();
 	protected final PreferencesPageContext prefContext;
 	
 	public AbstractPreferencesBlock2(PreferencesPageContext prefContext) {
 		this.prefContext = assertNotNull(prefContext);
 	}
 	
-	@Override
-	public IFieldView<IStatusMessage> getStatusField() {
-		return validation;
-	}
-	
-	public final void bindToDerivedPreference(IField<String> field, DerivedValuePreference<?> pref) {
+	public final void bindToDerivedPreference(FieldWidget<String> field, DerivedValuePreference<?> pref) {
 		prefContext.bindToValidatedPreference(field, pref, validation);
 	}
 	
