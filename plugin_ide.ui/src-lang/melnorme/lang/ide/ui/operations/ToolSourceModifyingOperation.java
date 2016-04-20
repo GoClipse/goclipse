@@ -36,7 +36,7 @@ public class ToolSourceModifyingOperation extends RunToolOperation {
 	protected IResource resource;
 	
 	public ToolSourceModifyingOperation(String operationName, IProject project, Indexable<String> commands,
-			StartOperationOptions opViewOptions, @SuppressWarnings("unused") boolean APIdummy) {
+			StartOperationOptions opViewOptions) {
 		super(operationName, project, commands, opViewOptions);
 		
 		resource = assertNotNull(project);

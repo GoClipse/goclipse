@@ -63,7 +63,7 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 			}
 			
 			PathValidator validator = (new LocationOrSinglePathValidator(getEngineToolName())).setFileOnly(true);
-			validation.addFieldValidation(false, toolLocationField, validator);
+			toolLocationField.addFieldValidator(false, validator);
 			
 			prefContext.bindToPreference(toolLocationField, ToolchainPreferences.DAEMON_PATH);
 			prefContext.bindToPreference(startServerAutomatically, ToolchainPreferences.AUTO_START_DAEMON);

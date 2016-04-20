@@ -15,11 +15,15 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IFieldView;
 
-public class CompositeValidatableField extends Field<IStatusMessage> implements IValidationSource {
+public class ValidationField extends Field<IStatusMessage> implements IValidationSource {
 	
 	protected final ArrayList2<IValidationSource> validators = new ArrayList2<>();
 	
-	public <SOURCE> void addFieldValidation(boolean init, IFieldView<SOURCE> field, IValidator<SOURCE, ?> validator) {
+	public ValidationField() {
+		super(null);
+	}
+	
+	public <SOURCE> void addFieldValidator(boolean init, IFieldView<SOURCE> field, IValidator<SOURCE, ?> validator) {
 		addFieldValidation(init, field, new ValidatableField<>(field, validator));
 	}
 	
