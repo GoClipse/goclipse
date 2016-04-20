@@ -15,7 +15,6 @@ import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.utilbox.misc.Location;
 
 @LANG_SPECIFIC
-/* FIXME: rename. */
 public class ToolingTests_Actual {
 	
 	public static Location SAMPLE_SDK_PATH = LangToolingTestResources.getTestResourceLoc("mock_sdk");

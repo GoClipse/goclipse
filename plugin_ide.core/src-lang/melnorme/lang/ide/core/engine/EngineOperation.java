@@ -56,9 +56,17 @@ public abstract class EngineOperation<RET> {
 			return doRunEngineOperation(pm);
 		}
 		
-		/* FIXME: should use a cached thread pool? */
-		ExecutorTaskAgent completionExecutor = CoreExecutors.newExecutorTaskAgent(opName + " - Executor");
-		
+		// Use a one-time executor
+		ExecutorTaskAgent completionExecutor = CoreExecutors.newExecutorTaskAgent(opName + " - Task Executor");
+		try {
+			return runEngineOperationWithExecutor(pm, completionExecutor);
+		} finally {
+			completionExecutor.shutdownNow();
+		}
+	}
+	
+	protected RET runEngineOperationWithExecutor(final IProgressMonitor pm, ExecutorTaskAgent completionExecutor)
+			throws CoreException, OperationCancellation, CommonException {
 		Future<RET> future = completionExecutor.submit(new Callable<RET>() {
 			@Override
 			public RET call() throws CommonException, CoreException, OperationCancellation {
@@ -84,13 +92,11 @@ public abstract class EngineOperation<RET> {
 			throw LangCore.createCoreException("Timeout performing " + opName + ".", null);
 		} catch (InterruptedException e) {
 			throw LangCore.createCoreException("Interrupted.", e);
-		} finally {
-			completionExecutor.shutdown();
 		}
 	}
 	
 	protected RET doRunEngineOperation(final IProgressMonitor pm) 
-			throws CommonException, CoreException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		StructureInfo structureInfo = sourceModelMgr.getStoredStructureInfo(new LocationKey(location));
 		if(structureInfo != null) {
 			structureInfo.awaitUpdatedData(pm);
@@ -100,6 +106,6 @@ public abstract class EngineOperation<RET> {
 	}
 	
 	protected abstract RET doRunOperationWithWorkingCopy(IProgressMonitor pm) 
-			throws CommonException, CoreException, OperationCancellation;
+			throws CommonException, OperationCancellation;
 	
 }
