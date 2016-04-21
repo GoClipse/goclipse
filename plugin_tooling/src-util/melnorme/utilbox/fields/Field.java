@@ -10,10 +10,14 @@
  *******************************************************************************/
 package melnorme.utilbox.fields;
 
+import melnorme.utilbox.collections.Indexable;
+
 /**
  * Default implementation of a {@link IField}, an observable property.
  */
-public class Field<TYPE> extends EventSource<IFieldValueListener> implements IField<TYPE> {
+public class Field<TYPE> implements IField<TYPE> {
+	
+	protected final ListenerListHelper<FieldValueListener<TYPE>> listeners = new ListenerListHelper<>();
 	
 	private TYPE value; // private to prevent direct modifications.
 	
@@ -25,12 +29,27 @@ public class Field<TYPE> extends EventSource<IFieldValueListener> implements IFi
 		this.value = defaultFieldValue;
 	}
 	
+	@Override
+	public void addListener(FieldValueListener<TYPE> listener) {
+		listeners.addListener(listener);
+	}
+	
+	@Override
+	public void removeListener(FieldValueListener<TYPE> listener) {
+		listeners.removeListener(listener);
+	}
+	
+	protected Indexable<FieldValueListener<TYPE>> getListeners() {
+		return listeners.getListeners();
+	}
+	
 	/* ----------------- listeners ----------------- */
 	
 	public void fireFieldValueChanged() {
+		TYPE newFieldValue = getFieldValue();
 		fieldValueChanged();
-		for (IFieldValueListener listener : listeners.getListeners()) {
-			listener.fieldValueChanged();
+		for (FieldValueListener<? super TYPE> listener : listeners.getListeners()) {
+			listener.fieldValueChanged(newFieldValue);
 		}
 	}
 	

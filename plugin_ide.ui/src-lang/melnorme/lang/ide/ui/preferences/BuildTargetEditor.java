@@ -55,20 +55,20 @@ public class BuildTargetEditor extends AbstractCompositeWidget {
 		this.getDefaultProgramPath = assertNotNull(getDefaultProgramPath);
 		
 		normalEnableField = new CheckBoxField(BuildManagerMessages.LABEL_EnableForNormalBuild);
-		normalEnableField.addListener(() -> btData.normalBuildEnabled = normalEnableField.getBooleanFieldValue());
+		normalEnableField.addListener((newValue) -> btData.normalBuildEnabled = newValue);
 		
 		autoEnableField = new CheckBoxField(BuildManagerMessages.LABEL_EnableForAutoBuild);
-		autoEnableField.addListener(() -> btData.autoBuildEnabled = autoEnableField.getBooleanFieldValue());
+		autoEnableField.addListener((newValue) -> btData.autoBuildEnabled = newValue);
 		
 		if(createEnablementFields) {
 			addSubComponents(normalEnableField, autoEnableField);
 		}
 		
 		buildCommandField = addSubComponent(init_createArgumentsField());
-		buildCommandField.addListener(() -> btData.buildArguments = getEffectiveBuildArgumentsValue());
+		buildCommandField.addChangeListener(() -> btData.buildArguments = getEffectiveBuildArgumentsValue());
 		
 		programPathField = addSubComponent(init_createProgramPathField());
-		programPathField.addListener(() -> btData.executablePath = getEffectiveProgramPathValue());
+		programPathField.addListener((__) -> btData.executablePath = getEffectiveProgramPathValue());
 //		buildCommandField.addListener(() -> programPathField.updateDefaultFieldValue());
 	}
 	

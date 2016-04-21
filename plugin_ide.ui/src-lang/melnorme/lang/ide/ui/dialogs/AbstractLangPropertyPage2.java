@@ -65,7 +65,7 @@ public abstract class AbstractLangPropertyPage2<WIDGET extends IValidatableWidge
 	protected Control doCreateContents(Composite parent, IProject project) {
 		Control component = preferencesWidget.createComponent(parent);
 		
-		preferencesWidget.getStatusField().registerListener(true, () -> updateStatusMessage());
+		preferencesWidget.getStatusField().registerListener(true, (__) -> updateStatusMessage());
 		
 		return component;
 	}

@@ -38,7 +38,7 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	
 	public ProjectBasedLaunchConfigurationTab() {
 		super();
-		projectField.addListener(() -> updateLaunchConfigurationDialog());
+		projectField.addChangeListener(this::updateLaunchConfigurationDialog);
 	}
 	
 	protected final String getProjectName() {

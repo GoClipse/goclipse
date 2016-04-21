@@ -25,7 +25,7 @@ import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
-import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 
 public class CommandInvocationEditor extends AbstractCompositeWidget {
 	
@@ -120,8 +120,8 @@ public class CommandInvocationEditor extends AbstractCompositeWidget {
 		return commandArgumentsField;
 	}
 	
-	public void addListener(IFieldValueListener listener) {
-		commandArgumentsField.addListener(listener);
+	public void addChangeListener(FieldChangeListener listener) {
+		commandArgumentsField.addChangeListener(listener);
 	}
 	
 	public String getEffectiveFieldValue() {

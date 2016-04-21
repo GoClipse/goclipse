@@ -25,9 +25,9 @@ import melnorme.lang.ide.ui.ContentAssistPreferences;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.ProjectionViewerExt;
 import melnorme.lang.ide.ui.editor.SourceViewerConfigurer;
-import melnorme.lang.ide.ui.text.coloring.ThemedColorPreference;
+import melnorme.lang.ide.ui.text.coloring.TextStyling;
 import melnorme.util.swt.jface.text.ColorManager2;
-import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.fields.FieldValueListener;
 import melnorme.utilbox.fields.IFieldView;
 import melnorme.utilbox.ownership.IOwner;
 
@@ -47,8 +47,8 @@ public class ContentAssistPreferenceHandler extends SourceViewerConfigurer
 		return LangUIPlugin.getInstance().getColorManager();
 	}
 	
-	protected Color getColor(ThemedColorPreference colorPref) {
-		return getColorManager().getColor(colorPref.get().rgb);
+	protected Color getColor(TextStyling textStyling) {
+		return getColorManager().getColor(textStyling.rgb);
 	}
 	
 	/* -----------------  ----------------- */
@@ -57,56 +57,56 @@ public class ContentAssistPreferenceHandler extends SourceViewerConfigurer
 	protected void doConfigureViewer() {
 		assistant.enableAutoActivation(true);
 		
-		listenToField(AUTO_INSERT__SingleProposals, () -> {
-			assistant.enableAutoInsert(AUTO_INSERT__SingleProposals.get());
+		listenToField(AUTO_INSERT__SingleProposals, (newValue) -> {
+			assistant.enableAutoInsert(newValue);
 		});
 		
-		listenToField(AUTO_INSERT__CommonPrefixes, () -> {
-			assistant.enablePrefixCompletion(AUTO_INSERT__CommonPrefixes.get());
+		listenToField(AUTO_INSERT__CommonPrefixes, (newValue) -> {
+			assistant.enablePrefixCompletion(newValue);
 		});
 		
-		listenToField(AUTO_ACTIVATE__DotTrigger, () -> {
+		listenToField(AUTO_ACTIVATE__DotTrigger, (__) -> {
 			setAutoActivationTriggers(assistant, store);
 		});
-		listenToField(AUTO_ACTIVATE__DoubleColonTrigger, () -> {
+		listenToField(AUTO_ACTIVATE__DoubleColonTrigger, (__) -> {
 			setAutoActivationTriggers(assistant, store);
 		});
-		listenToField(AUTO_ACTIVATE__AlphaNumericTrigger, () -> {
+		listenToField(AUTO_ACTIVATE__AlphaNumericTrigger, (__) -> {
 			setAutoActivationTriggers(assistant, store);
 		});
 		
-		listenToField(AUTO_ACTIVATE__Delay, () -> {
-			assistant.setAutoActivationDelay(AUTO_ACTIVATE__Delay.get());
+		listenToField(AUTO_ACTIVATE__Delay, (newValue) -> {
+			assistant.setAutoActivationDelay(newValue);
 		});
 		
 		
-		listenToField(PROPOSALS_FOREGROUND_2, () -> {
-			assistant.setProposalSelectorForeground(getColor(PROPOSALS_FOREGROUND_2));
+		listenToField(PROPOSALS_FOREGROUND_2, (newValue) -> {
+			assistant.setProposalSelectorForeground(getColor(newValue));
 		});
 		
-		listenToField(PROPOSALS_BACKGROUND_2, () -> {
-			assistant.setProposalSelectorBackground(getColor(PROPOSALS_BACKGROUND_2));
+		listenToField(PROPOSALS_BACKGROUND_2, (newValue) -> {
+			assistant.setProposalSelectorBackground(getColor(newValue));
 		});
 		
-		listenToField(PARAMETERS_BACKGROUND_2, () -> {
-			Color paramsFg = getColor(PARAMETERS_FOREGROUND_2);
+		listenToField(PARAMETERS_BACKGROUND_2, (newValue) -> {
+			Color paramsFg = getColor(newValue);
 			assistant.setContextInformationPopupForeground(paramsFg);
 			assistant.setContextSelectorForeground(paramsFg);
 		});
 		
-		listenToField(PROPOSALS_FOREGROUND_2, () -> {
-			Color paramsBg = getColor(PARAMETERS_BACKGROUND_2);
+		listenToField(PROPOSALS_FOREGROUND_2, (newValue) -> {
+			Color paramsBg = getColor(newValue);
 			assistant.setContextInformationPopupBackground(paramsBg);
 			assistant.setContextSelectorBackground(paramsBg);
 		});
 		
 	}
 	
-	public <T> void listenToField(IGlobalPreference<T> preference, IFieldValueListener listener) {
+	public <T> void listenToField(IGlobalPreference<T> preference, FieldValueListener<T> listener) {
 		listenToField(preference.asField(), listener);
 	}
 	
-	public <T> void listenToField(IFieldView<T> field, IFieldValueListener listener) {
+	public <T> void listenToField(IFieldView<T> field, FieldValueListener<T> listener) {
 		IOwner configurationOwned = sourceViewer.getConfigurationOwned();
 		
 		field.bindOwnedListener(configurationOwned, true, listener);

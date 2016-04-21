@@ -21,7 +21,7 @@ import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.part.IPageBookViewPage;
 
-import melnorme.lang.ide.ui.text.coloring.ThemedColorPreference;
+import melnorme.lang.ide.ui.text.coloring.TextStyling;
 import melnorme.util.swt.jface.text.ColorManager;
 import melnorme.utilbox.ownership.OwnedObjects;
 
@@ -51,23 +51,23 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 		ui_bindActivateOnErrorsListeners();
 		
 		ToolsConsolePrefs.INFO_COLOR.asField().bindOwnedListener(owned, true, 
-			() -> infoOut.setColor(getManagedColor(ToolsConsolePrefs.INFO_COLOR)));
+			(newValue) -> infoOut.setColor(getManagedColor(newValue)));
 		ToolsConsolePrefs.STDERR_COLOR.asField().bindOwnedListener(owned, true, 
-			() -> stdErr.setColor(getManagedColor(ToolsConsolePrefs.STDERR_COLOR)));
+			(newValue) -> stdErr.setColor(getManagedColor(newValue)));
 		ToolsConsolePrefs.STDOUT_COLOR.asField().bindOwnedListener(owned, true, 
-			() -> stdOut.setColor(getManagedColor(ToolsConsolePrefs.STDOUT_COLOR)));
+			(newValue) -> stdOut.setColor(getManagedColor(newValue)));
 		ToolsConsolePrefs.BACKGROUND_COLOR.asField().bindOwnedListener(owned, true, 
-			() -> setBackground(getManagedColor(ToolsConsolePrefs.BACKGROUND_COLOR)));
+			(newValue) -> setBackground(getManagedColor(newValue)));
 	}
 	
 	protected void ui_bindActivateOnErrorsListeners() {
 		ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.asField().bindOwnedListener(owned, true,
-			() -> stdErr.setActivateOnWrite(ToolsConsolePrefs.ACTIVATE_ON_ERROR_MESSAGES.get())
+			(newValue) -> stdErr.setActivateOnWrite(newValue)
 		);
 	}
 	
-	protected static Color getManagedColor(ThemedColorPreference colorPref) {
-		return ColorManager.getDefault().getColor(colorPref.get().rgb);
+	protected static Color getManagedColor(TextStyling textStyling) {
+		return ColorManager.getDefault().getColor(textStyling.rgb);
 	}
 	
 	@Override

@@ -20,7 +20,7 @@ import melnorme.utilbox.collections.Indexable;
  * This class is designed to be thread safe.
  * @see also {@link org.eclipse.core.runtime.ListenerList} 
  */
-public class ListenerListHelper<LISTENER> implements IEventSource<LISTENER> {
+public class ListenerListHelper<LISTENER> {
 	
 	private volatile Indexable<LISTENER> listeners;
 	
@@ -37,7 +37,6 @@ public class ListenerListHelper<LISTENER> implements IEventSource<LISTENER> {
 		return listeners;
 	}
 	
-	@Override
 	public synchronized void addListener(LISTENER listener) {
 		ArrayList2<LISTENER> newListeners = new ArrayList2<>(listeners);
 		newListeners.add(listener);
@@ -45,7 +44,6 @@ public class ListenerListHelper<LISTENER> implements IEventSource<LISTENER> {
 		setNewListeners(newListeners);
 	}
 	
-	@Override
 	public synchronized void removeListener(LISTENER listener) {
 		ArrayList2<LISTENER> newListeners = new ArrayList2<LISTENER>(listeners);
 		for (Iterator<LISTENER> iter = newListeners.iterator(); iter.hasNext(); ) {

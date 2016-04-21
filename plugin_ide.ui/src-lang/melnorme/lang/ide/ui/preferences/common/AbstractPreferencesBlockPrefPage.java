@@ -31,7 +31,7 @@ public abstract class AbstractPreferencesBlockPrefPage extends AbstractLangPrefe
 		
 		preferencesBlock = init_createPreferencesBlock(prefContext);
 		
-		preferencesBlock.getStatusField().registerListener(true, () -> updateStatusMessage());
+		preferencesBlock.getStatusField().registerListener(true, (__) -> updateStatusMessage());
 	}
 	
 	protected abstract IValidatableWidget init_createPreferencesBlock(PreferencesPageContext prefContext);

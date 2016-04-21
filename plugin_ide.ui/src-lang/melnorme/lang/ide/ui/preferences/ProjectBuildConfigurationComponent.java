@@ -55,7 +55,7 @@ public class ProjectBuildConfigurationComponent extends AbstractCompositeWidget
 		addSubComponent(buildTargetField);
 		addSubComponent(buildTargetEditor);
 		
-		buildTargetField.addListener(true, () -> handleBuildTargetChanged());
+		buildTargetField.addListener(true, (__) -> handleBuildTargetChanged());
 		
 		initialize();
 	}

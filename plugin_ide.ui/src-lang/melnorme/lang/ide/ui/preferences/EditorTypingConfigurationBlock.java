@@ -24,7 +24,7 @@ import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.ComboBoxField;
 import melnorme.util.swt.components.fields.NumberField;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
-import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 
 public class EditorTypingConfigurationBlock extends AbstractPreferencesBlock2 {
 	
@@ -114,7 +114,7 @@ public class EditorTypingConfigurationBlock extends AbstractPreferencesBlock2 {
 			CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE, 
 			indentationSizeField
 		);
-		IFieldValueListener indentModeValueListener = new IFieldValueListener() {
+		FieldChangeListener indentModeValueListener = new FieldChangeListener() {
 			@Override
 			public void fieldValueChanged() {
 				boolean enabled = areEqual(indentModeField.getFieldStringValue(), 
@@ -122,7 +122,7 @@ public class EditorTypingConfigurationBlock extends AbstractPreferencesBlock2 {
 				indentationSizeField.setEnabled(enabled);
 			}
 		};
-		indentModeField.addListener(indentModeValueListener);
+		indentModeField.addChangeListener(indentModeValueListener);
 		indentModeValueListener.fieldValueChanged();
 	}
 	

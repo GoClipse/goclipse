@@ -11,21 +11,14 @@
 package melnorme.util.swt.components;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.utilbox.fields.IFieldValueListener;
-import melnorme.utilbox.tests.CommonTest;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
+import melnorme.utilbox.tests.CommonTest;
+
 public abstract class AbstractFieldComponentTest extends CommonTest {
-	
-	public class FieldListener implements IFieldValueListener {
-		@Override
-		public void fieldValueChanged() {
-			valueChangeCount++;
-		}
-	}
 	
 	@Test
 	public void runTest() throws Exception {
@@ -51,12 +44,10 @@ public abstract class AbstractFieldComponentTest extends CommonTest {
 		assertTrue(field.isCreated() == false);
 		checkValueIsNotNull();
 		
-		field.addListener(new IFieldValueListener() {
-			@Override
-			public void fieldValueChanged() {
-				valueChangeCount++;
-			}
+		field.addChangeListener(() -> {
+			valueChangeCount++;
 		});
+		
 		__checkUpdatesInvariant();
 		
 		Shell shell = new Shell(Display.getDefault());

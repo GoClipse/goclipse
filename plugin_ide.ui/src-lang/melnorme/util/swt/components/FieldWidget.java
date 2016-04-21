@@ -19,8 +19,9 @@ import melnorme.lang.tooling.data.validation.ValidationSource;
 import melnorme.lang.tooling.data.validation.Validator;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.fields.Field;
+import melnorme.utilbox.fields.FieldValueListener;
+import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 import melnorme.utilbox.fields.IField;
-import melnorme.utilbox.fields.IFieldValueListener;
 
 /**
  * Field component with a field value that can be manipulated (get/set) even if the 
@@ -44,7 +45,7 @@ public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget
 	
 	public FieldWidget(Field<VALUE> domainField) {
 		this.domainField = domainField;
-		this.domainField.addListener(new IFieldValueListener() {
+		this.domainField.addChangeListener(new FieldChangeListener() {
 			@Override
 			public void fieldValueChanged() {
 				if(!settingValueFromControl) {
@@ -83,19 +84,12 @@ public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget
 	}
 	
 	@Override
-	public void addListener(IFieldValueListener listener) {
+	public void addListener(FieldValueListener<VALUE> listener) {
 		domainField.addListener(listener);
 	}
 	
-	public void addListener(boolean initialize, IFieldValueListener listener) {
-		addListener(listener);
-		if(initialize) {
-			listener.fieldValueChanged();
-		}
-	}
-	
 	@Override
-	public void removeListener(IFieldValueListener listener) {
+	public void removeListener(FieldValueListener<VALUE> listener) {
 		domainField.removeListener(listener);
 	}
 	

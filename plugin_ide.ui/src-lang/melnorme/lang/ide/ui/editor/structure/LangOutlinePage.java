@@ -11,12 +11,6 @@
 package melnorme.lang.ide.ui.editor.structure;
 
 
-import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.utilbox.fields.IFieldValueListener;
-import melnorme.utilbox.ownership.IDisposable;
-
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -26,6 +20,12 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.IShowInTarget;
 import org.eclipse.ui.part.ShowInContext;
+
+import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.tooling.structure.StructureElement;
+import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
+import melnorme.utilbox.ownership.IDisposable;
 
 public class LangOutlinePage extends AbstractContentOutlinePage implements IAdaptable, IDisposable {
 	
@@ -49,8 +49,8 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 		
 		customizeCreateControl();
 		
-		editor.getStructureField().registerListener(structureListener);
-		editor.getSelectedElementField().registerListener(structureListener);
+		editor.getStructureField().registerChangeListener(false, structureListener);
+		editor.getSelectedElementField().registerChangeListener(false, structureListener);
 		
 		updateTreeViewer();
 	}
@@ -64,18 +64,13 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 	
 	@Override
 	public void dispose() {
-		editor.getSelectedElementField().removeListener(structureListener);
-		editor.getStructureField().removeListener(structureListener);
+		editor.getSelectedElementField().removeChangeListener(structureListener);
+		editor.getStructureField().removeChangeListener(structureListener);
 		
 		super.dispose();
 	}
 	
-	protected final IFieldValueListener structureListener = new IFieldValueListener() {
-		@Override
-		public void fieldValueChanged() {
-			updateTreeViewer();
-		}
-	};
+	protected final FieldChangeListener structureListener = () -> updateTreeViewer();
 	
 	protected void updateTreeViewer() {
 		if(getTreeViewer() == null) {
