@@ -10,8 +10,22 @@
  *******************************************************************************/
 package melnorme.utilbox.fields;
 
-public interface IFieldValueListener {
+public interface FieldValueListener<VALUE> {
 	
-	void fieldValueChanged();
+	void fieldValueChanged(VALUE newValue);
+	
+	/* ----------------- util ----------------- */
+	
+	@SuppressWarnings("rawtypes")
+	public interface FieldChangeListener extends FieldValueListener {
+		
+		@Override
+		default void fieldValueChanged(Object newValue) {
+			fieldValueChanged();
+		}
+		
+		void fieldValueChanged();
+		
+	}
 	
 }

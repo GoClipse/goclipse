@@ -29,7 +29,7 @@ public class ValidationField extends Field<IStatusMessage> implements Validation
 	
 	public void addFieldValidation(boolean init, IFieldView<?> field, ValidationSource validationSource) {
 		validators.add(validationSource);
-		field.registerListener(init, () -> updateFieldValue());
+		field.registerListener(init, (__) -> updateFieldValue());
 	}
 	
 	public void addValidatableField(boolean init, IValidatableField<?> statusField) {

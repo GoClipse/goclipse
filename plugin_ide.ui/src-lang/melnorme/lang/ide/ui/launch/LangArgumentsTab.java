@@ -41,7 +41,7 @@ public class LangArgumentsTab extends AbstractLaunchConfigurationTabExt {
 	protected final LangWorkingDirectoryBlock workingDirectoryBlock = new LangWorkingDirectoryBlock();
 	
 	public LangArgumentsTab() {
-		argumentsBlock.addListener(() -> updateLaunchConfigurationDialog());
+		argumentsBlock.addChangeListener(this::updateLaunchConfigurationDialog);
 	}
 	
 	/* ----------------- Control creation ----------------- */

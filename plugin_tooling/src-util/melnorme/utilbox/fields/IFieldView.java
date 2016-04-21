@@ -12,6 +12,7 @@ package melnorme.utilbox.fields;
 
 import java.util.function.Supplier;
 
+import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.ownership.IOwner;
 
@@ -27,45 +28,69 @@ public interface IFieldView<VALUE> extends Supplier<VALUE> {
 	
 	VALUE getFieldValue();
 	
-	void addListener(IFieldValueListener listener);
+	void addListener(FieldValueListener<VALUE> listener);
 	
-	void removeListener(IFieldValueListener listener);
+	default void addListener(boolean initialize, FieldValueListener<VALUE> listener) {
+		addListener(listener);
+		if(initialize) {
+			listener.fieldValueChanged(getFieldValue());
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	default void addChangeListener(FieldChangeListener listener) {
+		addListener(listener);
+	}
+	
+	void removeListener(FieldValueListener<VALUE> listener);
+	
+	@SuppressWarnings("unchecked")
+	default void removeChangeListener(FieldChangeListener listener) {
+		removeListener(listener);
+	}
 	
 	/* -----------------  ----------------- */
 	
-	default FieldListenerRegistration registerListener(IFieldValueListener listener) {
+	default FieldListenerRegistration registerListener(FieldValueListener<VALUE> listener) {
 		addListener(listener);
 		return new FieldListenerRegistration(this, listener);
 	}
 	
-	default FieldListenerRegistration registerListener(boolean initListener, IFieldValueListener listener) {
+	default FieldListenerRegistration registerListener(boolean initListener, FieldValueListener<VALUE> listener) {
 		FieldListenerRegistration binding = registerListener(listener);
 		if(initListener) {
-			listener.fieldValueChanged();
+			listener.fieldValueChanged(getFieldValue());
 		}
 		return binding;
+	}
+	
+	@SuppressWarnings("unchecked")
+	default FieldListenerRegistration registerChangeListener(boolean initListener, FieldChangeListener listener) {
+		return registerListener(initListener, listener);
 	}
 	
 	/**
 	 * Register a value changed listener, that automatically get unregistered when given ownedList is disposed.
 	 */
-	default void bindOwnedListener(IOwner owner, IFieldValueListener listener) {
+	default void bindOwnedListener(IOwner owner, FieldValueListener<VALUE> listener) {
 		registerListener(listener).bindLifetime(owner);
 	}
 	
-	default void bindOwnedListener(IOwner owner, boolean initListener, IFieldValueListener listener) {
+	default void bindOwnedListener(IOwner owner, boolean initListener, FieldValueListener<VALUE> listener) {
 		registerListener(listener).bindLifetime(owner);
 		if(initListener) {
-			listener.fieldValueChanged();
+			listener.fieldValueChanged(getFieldValue());
 		}
 	}
 	
 	public static class FieldListenerRegistration implements IDisposable {
 		
-		protected final IFieldView<?> field;
-		protected final IFieldValueListener listener;
+		@SuppressWarnings("rawtypes")
+		protected final IFieldView field;
+		@SuppressWarnings("rawtypes")
+		protected final FieldValueListener listener;
 		
-		public FieldListenerRegistration(IFieldView<?> field, IFieldValueListener listener) {
+		public <T> FieldListenerRegistration(IFieldView<T> field, FieldValueListener<T> listener) {
 			this.field = field;
 			this.listener = listener;
 		}
@@ -96,12 +121,12 @@ public interface IFieldView<VALUE> extends Supplier<VALUE> {
 		}
 		
 		@Override
-		public void addListener(IFieldValueListener listener) {
+		public void addListener(FieldValueListener<Object> listener) {
 			// Do nothing
 		}
 		
 		@Override
-		public void removeListener(IFieldValueListener listener) {
+		public void removeListener(FieldValueListener<Object> listener) {
 			// Do nothing
 		}
 		

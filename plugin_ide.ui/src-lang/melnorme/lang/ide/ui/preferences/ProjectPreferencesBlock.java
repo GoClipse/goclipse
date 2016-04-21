@@ -52,7 +52,7 @@ public abstract class ProjectPreferencesBlock extends AbstractPreferencesBlock2 
 		this.projectSettingsBlock = init_createProjectSettingsBlock2();
 		
 		useProjectSettingsField.registerListener(
-			() -> projectSettingsBlock.setEnabled(useProjectSettingsField.getFieldValue()));
+			(newValue) -> projectSettingsBlock.setEnabled(newValue));
 		
 		prefContext.bindToPreference(useProjectSettingsField, useProjectSettingsPref);
 		

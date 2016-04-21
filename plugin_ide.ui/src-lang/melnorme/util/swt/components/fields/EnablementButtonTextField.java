@@ -34,7 +34,7 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 		this.createUseDefaultComponent = useDefaultCheckboxLabel != null;
 		
 		useDefaultField.setFieldValue(createUseDefaultComponent);
-		useDefaultField.addListener(this::updateDefaultFieldValue);
+		useDefaultField.addChangeListener(this::updateDefaultFieldValue);
 	}
 	
 	protected CheckBoxField createUseDefaultField(String enablementCheckBoxLabel) {
@@ -122,7 +122,7 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 		if(createUseDefaultComponent) {
 			Composite enablementTopControl = useDefaultField.createComponent(topControl);
 			GridDataFactory.swtDefaults().span(getPreferredLayoutColumns(), 1).applyTo(enablementTopControl);
-			useDefaultField.addListener(this::updateWidgetFromInput);
+			useDefaultField.addChangeListener(this::updateWidgetFromInput);
 		}
 	}
 	

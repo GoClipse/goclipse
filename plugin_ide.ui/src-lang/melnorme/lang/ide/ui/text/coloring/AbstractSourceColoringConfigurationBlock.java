@@ -54,7 +54,7 @@ import melnorme.util.swt.jface.LabeledTreeElement.LabeledTreeElementLabelProvide
 import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.text.ColorManager2;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 import melnorme.utilbox.fields.IField;
 import melnorme.utilbox.fields.IProperty;
 import melnorme.utilbox.misc.StreamUtil;
@@ -223,7 +223,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		underlineCheckboxField = new CheckBoxField(PreferencesMessages.DLTKEditorPreferencePage_underline);
 		underlineCheckboxField.createComponent(itemEditorComposite, gdFillDefaults().indent(20, 0).create());
 		
-		enableField.addListener(new ChangeStylingField() {
+		enableField.addChangeListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.isEnabled = enableField.getBooleanFieldValue();
@@ -231,31 +231,31 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 			}
 		});
 		
-		colorField.addListener(new ChangeStylingField() {
+		colorField.addChangeListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.rgb = colorField.getFieldValue();
 			}
 		});
-		boldCheckboxField.addListener(new ChangeStylingField() {
+		boldCheckboxField.addChangeListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.isBold = boldCheckboxField.getBooleanFieldValue();
 			}
 		});
-		italicCheckboxField.addListener(new ChangeStylingField() {
+		italicCheckboxField.addChangeListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.isItalic = italicCheckboxField.getBooleanFieldValue();
 			}
 		});
-		striketroughCheckboxField.addListener(new ChangeStylingField() {
+		striketroughCheckboxField.addChangeListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.isStrikethrough = striketroughCheckboxField.getBooleanFieldValue();
 			}
 		});
-		underlineCheckboxField.addListener(new ChangeStylingField() {
+		underlineCheckboxField.addChangeListener(new ChangeStylingField() {
 			@Override
 			protected void changeStylingValue(TextStylingData data) {
 				data.isUnderline = underlineCheckboxField.getBooleanFieldValue();
@@ -292,7 +292,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		handleAppearanceColorListSelectionChanged();
 	}
 	
-	protected abstract class ChangeStylingField implements IFieldValueListener {
+	protected abstract class ChangeStylingField implements FieldChangeListener {
 		@Override
 		public void fieldValueChanged() {
 			IProperty<TextStyling> field = getSelectedColoringItem().temporaryPref;

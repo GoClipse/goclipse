@@ -13,7 +13,7 @@ package melnorme.utilbox.fields;
 
 import melnorme.utilbox.collections.Indexable;
 
-public class EventSource<T> implements IEventSource<T> {
+public class EventSource<T> {
 	
 	protected final ListenerListHelper<T> listeners = new ListenerListHelper<>();
 	
@@ -21,12 +21,10 @@ public class EventSource<T> implements IEventSource<T> {
 		super();
 	}
 	
-	@Override
 	public void addListener(T listener) {
 		listeners.addListener(listener);
 	}
 	
-	@Override
 	public void removeListener(T listener) {
 		listeners.removeListener(listener);
 	}

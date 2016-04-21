@@ -52,7 +52,7 @@ import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.util.swt.components.fields.TextFieldWidget;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.IFieldValueListener;
+import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 import melnorme.utilbox.misc.StringUtil;
 
 public abstract class LangProjectWizardFirstPage extends WizardPage {
@@ -123,14 +123,9 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		projectValidationGroup.createComponent(parent, sectionGDF().hint(500, SWT.DEFAULT).create());
 		prefValidationGroup.createComponent(parent, sectionGDF().hint(500, SWT.DEFAULT).create());
 		
-		IFieldValueListener listener = new IFieldValueListener() {
-			@Override
-			public void fieldValueChanged() {
-				validateDialog();
-			}
-		};
-		nameGroup.textField.addListener(listener);
-		locationGroup.addListener(listener);
+		FieldChangeListener listener = this::validateDialog;
+		nameGroup.textField.addChangeListener(listener);
+		locationGroup.addChangeListener(listener);
 		
 		validateDialog();
 	}
@@ -195,7 +190,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 				WizardMessages.LangNewProject_Location_Directory_buttonLabel
 			);
 		
-			nameGroup.getNameField().addListener(this::updateDefaultFieldValue);
+			nameGroup.getNameField().addChangeListener(this::updateDefaultFieldValue);
 			
 			addFieldValidationX(true, () -> doValidate());
 		}

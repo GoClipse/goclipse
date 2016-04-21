@@ -22,9 +22,9 @@ import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener2;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.Field;
-import melnorme.utilbox.fields.IFieldValueListener;
-import melnorme.utilbox.fields.IFieldView;
+import melnorme.utilbox.fields.FieldValueListener;
 import melnorme.utilbox.fields.IField;
+import melnorme.utilbox.fields.IFieldView;
 
 public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPreferenceIdentifier {
 	
@@ -49,8 +49,8 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 		this.defaultPref = new TextStylingPreference(qualifer, key, defaultValue);
 		this.darkPref = new TextStylingPreference(qualifer, key_Dark, defaultValueDark);
 		
-		this.defaultPref.asField().registerListener(() -> updateEffectiveValue());
-		this.darkPref.asField().registerListener(() -> updateEffectiveValue());
+		this.defaultPref.asField().registerListener((__) -> updateEffectiveValue());
+		this.darkPref.asField().registerListener((__) -> updateEffectiveValue());
 		
 		LangUI.getInstance().getThemeHelper().asOwner().bind(new ThemeChangeListener2() {
 			@Override
@@ -127,12 +127,12 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 	
 	
 	@Override
-	public void addListener(IFieldValueListener listener) {
+	public void addListener(FieldValueListener<TextStyling> listener) {
 		asField().addListener(listener);
 	}
 	
 	@Override
-	public void removeListener(IFieldValueListener listener) {
+	public void removeListener(FieldValueListener<TextStyling> listener) {
 		asField().removeListener(listener);
 	}
 	
