@@ -10,20 +10,18 @@
  *******************************************************************************/
 package melnorme.lang.tooling.data;
 
-public interface IValidator<VALUE, RESULT> {
+public interface ValidatedValueSource<VALUE> extends ValidationSource {
 	
-	public RESULT getValidatedField(VALUE value) throws StatusException;
+	public VALUE getValidatedValue() throws StatusException;
 	
-	static <SOURCE> IStatusMessage getFieldStatus(IValidator<SOURCE, ?> validator, SOURCE value) {
-		if(validator == null) {
-			return null;
-		}
+	@Override
+	default StatusException getValidationStatus() {
 		try {
-			validator.getValidatedField(value);
+			getValidatedValue();
+			return null;
 		} catch (StatusException se) {
 			return se;
 		}
-		return null;
-	} 
+	}
 	
 }

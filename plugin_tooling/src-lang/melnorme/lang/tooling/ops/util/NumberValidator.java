@@ -23,7 +23,7 @@ public class NumberValidator {
 	}
 	
 	public int validateInteger(String numberString) throws CommonException {
-		if(numberString.length() == 0) {
+		if(numberString == null || numberString.length() == 0) {
 			throw new CommonException(ValidationMessages.NumberField_empty_input);
 		}
 		

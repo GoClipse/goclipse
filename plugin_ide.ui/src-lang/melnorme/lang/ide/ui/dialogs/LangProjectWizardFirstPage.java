@@ -151,7 +151,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 			super(true);
 			addSubComponent(textField);
 			
-			IValidationSourceX validationSource = () -> getProjectHandle2();
+			ValidationSourceX validationSource = () -> getProjectHandle2();
 			validation.addFieldValidation(true, textField, validationSource);
 		}
 		

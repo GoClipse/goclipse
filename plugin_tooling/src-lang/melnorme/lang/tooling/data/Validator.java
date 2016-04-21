@@ -10,18 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.tooling.data;
 
-import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.lang.tooling.data.IValidationSource;
-import melnorme.utilbox.fields.IFieldView;
-
-
-public interface IStatusFieldSource extends IValidationSource {
+/**
+ * Validates a given VALUE into a RESULT.
+ */
+public interface Validator<VALUE, RESULT> {
 	
-	@Override
-	public default IStatusMessage getValidationStatus() {
-		return getStatusField().getFieldValue();
-	}
-	
-	IFieldView<IStatusMessage> getStatusField();
+	public RESULT validateField(VALUE value) throws StatusException;
 	
 }

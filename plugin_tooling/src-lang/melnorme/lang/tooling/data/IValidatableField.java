@@ -12,6 +12,6 @@ package melnorme.lang.tooling.data;
 
 import melnorme.utilbox.fields.IFieldView;
 
-public interface IValidatableField<TYPE> extends IFieldView<TYPE>, IValidationSource {
+public interface IValidatableField<TYPE> extends IFieldView<TYPE>, ValidationSource {
 	
 }
