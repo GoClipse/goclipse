@@ -8,22 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
 
-public interface IValidator<VALUE, RESULT> {
-	
-	public RESULT getValidatedField(VALUE value) throws StatusException;
-	
-	static <SOURCE> IStatusMessage getFieldStatus(IValidator<SOURCE, ?> validator, SOURCE value) {
-		if(validator == null) {
-			return null;
-		}
-		try {
-			validator.getValidatedField(value);
-		} catch (StatusException se) {
-			return se;
-		}
-		return null;
-	} 
+import melnorme.utilbox.fields.IFieldView;
+
+public interface IValidatableField<TYPE> extends IFieldView<TYPE>, ValidationSource {
 	
 }

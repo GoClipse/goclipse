@@ -10,8 +10,17 @@
  *******************************************************************************/
 package melnorme.util.swt.components;
 
-import melnorme.lang.tooling.data.IStatusFieldSource;
+import melnorme.lang.tooling.data.IStatusMessage;
+import melnorme.lang.tooling.data.validation.ValidationSource;
+import melnorme.utilbox.fields.IFieldView;
 
-public interface IValidatableWidget extends IWidgetComponent, IStatusFieldSource {
+public interface IValidatableWidget extends IWidgetComponent, ValidationSource {
+	
+	@Override
+	public default IStatusMessage getValidationStatus() {
+		return getStatusField().getFieldValue();
+	}
+	
+	IFieldView<IStatusMessage> getStatusField();
 	
 }

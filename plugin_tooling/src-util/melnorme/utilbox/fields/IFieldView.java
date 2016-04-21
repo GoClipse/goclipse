@@ -18,14 +18,14 @@ import melnorme.utilbox.ownership.IOwner;
 /**
  * A read-only access for an observable value.
  */
-public interface IFieldView<TYPE> extends Supplier<TYPE> {
+public interface IFieldView<VALUE> extends Supplier<VALUE> {
 	
 	@Override
-	default TYPE get() {
+	default VALUE get() {
 		return getFieldValue();
 	}
 	
-	TYPE getFieldValue();
+	VALUE getFieldValue();
 	
 	void addListener(IFieldValueListener listener);
 	

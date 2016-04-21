@@ -8,9 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
 
-public interface IValidationSource {
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.function.Supplier;
+
+import melnorme.lang.tooling.data.IStatusMessage;
+import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.StatusLevel;
+
+public interface ValidationSource {
 	
 	public IStatusMessage getValidationStatus();
 	
@@ -26,7 +34,11 @@ public interface IValidationSource {
 		}
 	}
 	
-	public static interface IValidationSourceX extends IValidationSource {
+	/**
+	 * Essentially the same as {@link ValidationSource}, but for implementers 
+	 * wishing to implement the {@link #validate()} method instead of {@link #getValidationStatus()}.
+	 */
+	public static interface ValidationSourceX extends ValidationSource {
 		
 		@Override
 		default IStatusMessage getValidationStatus() {
@@ -43,11 +55,27 @@ public interface IValidationSource {
 		
 	}
 	
+	public static class ValidatableField<SOURCE> implements ValidationSourceX {
+		
+		public final Supplier<SOURCE> property;
+		public final Validator<SOURCE, ?> validator;
+		
+		public ValidatableField(Supplier<SOURCE> field, Validator<SOURCE, ?> validator) {
+			this.property = assertNotNull(field);
+			this.validator = assertNotNull(validator);
+		}
+		
+		@Override
+		public void validate() throws StatusException {
+			validator.validateField(property.get());
+		}
+	}
+	
 	/* -----------------  ----------------- */
 	
-	static IStatusMessage getHighestStatus(Iterable<? extends IValidationSource> validationSources) {
+	static IStatusMessage getHighestStatus(Iterable<? extends ValidationSource> validationSources) {
 		IStatusMessage highestSE = null;
-		for(IValidationSource validationSource : validationSources) {
+		for(ValidationSource validationSource : validationSources) {
 			
 			IStatusMessage se = validationSource.getValidationStatus();
 			if(se != null) {

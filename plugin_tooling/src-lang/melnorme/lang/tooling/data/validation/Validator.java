@@ -8,22 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.data.StatusException;
 
-public class AbstractValidatorExt extends AbstractValidator {
+/**
+ * Validates a given VALUE into a RESULT.
+ */
+public interface Validator<VALUE, RESULT> {
 	
-	public AbstractValidatorExt() {
-	}
-	
-	protected ValidationException createException(Severity severity, String message) {
-		assertNotNull(severity);
-		return new ValidationException(severity, getFullMessage(message), message, null);
-	}
-	
-	protected String getFullMessage(String simpleMessage) {
-		return simpleMessage;
-	}
+	public RESULT validateField(VALUE value) throws StatusException;
 	
 }

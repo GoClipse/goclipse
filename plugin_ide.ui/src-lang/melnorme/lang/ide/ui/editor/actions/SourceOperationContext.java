@@ -64,6 +64,10 @@ public class SourceOperationContext {
 		return document;
 	}
 	
+	public String getSource() {
+		return document.get();
+	}
+	
 	public int getInvocationOffset() {
 		return offset;
 	}
@@ -88,7 +92,7 @@ public class SourceOperationContext {
 	}
 	
 	public Location getEditorInputLocation() throws CoreException {
-		Location fileLocation = EditorUtils.getLocationFromEditorInput(editor.getEditorInput());
+		Location fileLocation = EditorUtils.getLocationFromEditorInput(getEditor_nonNull().getEditorInput());
 		if(fileLocation == null) {
 			throw LangCore.createCoreException("Error, invalid location for editor input.", null);
 		}
@@ -96,8 +100,12 @@ public class SourceOperationContext {
 	}
 	
 	/** Can be null. */
-	public IProject getProject() {
-		return EditorUtils.getAssociatedProject(editor.getEditorInput());
+	public IProject getProject() throws CoreException {
+		return EditorUtils.getAssociatedProject(getEditor_nonNull().getEditorInput());
+	}
+	
+	public boolean isSourceDocumentDirty() throws CoreException {
+		return getEditor_nonNull().isDirty();
 	}
 	
 	public int getInvocationLine_0() throws CoreException {

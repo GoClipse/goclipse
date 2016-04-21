@@ -15,22 +15,22 @@ import static melnorme.utilbox.core.CoreUtil.option;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.tooling.data.IValidatableValue;
-import melnorme.lang.tooling.data.IValidator;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.validation.ValidatedValueSource;
+import melnorme.lang.tooling.data.validation.Validator;
 
 public class DerivedValuePreference<VALUE> {
 	
 	protected final StringPreference preference;
-	protected final IValidator<String, VALUE> validator;
+	protected final Validator<String, VALUE> validator;
 	
 	public DerivedValuePreference(String pluginId, String key, String defaultValue, 
 			IProjectPreference<Boolean> useProjectPref /* can be null*/,
-			IValidator<String, VALUE> validator) {
+			Validator<String, VALUE> validator) {
 		this(new StringPreference(pluginId, key, defaultValue, useProjectPref), validator);
 	}
 	
-	public DerivedValuePreference(StringPreference preference, IValidator<String, VALUE> validator) {
+	public DerivedValuePreference(StringPreference preference, Validator<String, VALUE> validator) {
 		this.preference = assertNotNull(preference);
 		this.validator = assertNotNull(validator);
 	}
@@ -39,21 +39,21 @@ public class DerivedValuePreference<VALUE> {
 		return preference;
 	}
 	
-	public IValidator<String, VALUE> getValidator() {
+	public Validator<String, VALUE> getValidator() {
 		return validator;
 	}
 	
-	public IValidatableValue<VALUE> getValidatableValue(IProject project) {
+	public ValidatedValueSource<VALUE> getValidatableValue(IProject project) {
 		return () -> getDerivedValue(project);
 	}
 	
 	public VALUE getDerivedValue() throws StatusException {
-		return validator.getValidatedField(preference.get());
+		return validator.validateField(preference.get());
 	}
 	
 	public VALUE getDerivedValue(IProject project) throws StatusException {
 		String stringValue = preference.getProjectPreference().getEffectiveValue(option(project));
-		return validator.getValidatedField(stringValue);
+		return validator.validateField(stringValue);
 	}
 	
 }

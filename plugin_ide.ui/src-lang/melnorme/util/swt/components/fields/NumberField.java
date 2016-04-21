@@ -13,7 +13,6 @@ package melnorme.util.swt.components.fields;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.lang.tooling.data.IValidatableField;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.util.NumberValidator;
@@ -21,18 +20,19 @@ import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IProperty;
 
-public class NumberField extends TextFieldExt implements IValidatableField<String> {
+public class NumberField extends TextFieldExt {
 	
 	public NumberField(String label, int textLimit) {
 		super(label, textLimit);
+		
+		getValidation().addFieldValidation(true, this, this::validatePositiveNumber);
 	}
 	
-	@Override
-	public IStatusMessage getValidationStatus() {
-		return validatePositiveNumber2(getFieldValue());
+	public IStatusMessage validatePositiveNumber() {
+		return validatePositiveNumber(getFieldValue());
 	}
 	
-	public StatusException validatePositiveNumber2(String number) {
+	public StatusException validatePositiveNumber(String number) {
 		try {
 			doValidatePositiveNumber(number);
 			return null;

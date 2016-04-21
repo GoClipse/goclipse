@@ -14,16 +14,16 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.data.IValidator;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.ValidationException;
+import melnorme.lang.tooling.data.validation.ValidationException;
+import melnorme.lang.tooling.data.validation.Validator;
 import melnorme.utilbox.misc.Location;
 
-public class LocationValidator extends PathValidator implements IValidator<String, Path> {
+public class LocationValidator extends PathValidator implements Validator<String, Path> {
 	
-	public final IValidator<String, Location> asLocationValidator = new IValidator<String, Location>() {
+	public final Validator<String, Location> asLocationValidator = new Validator<String, Location>() {
 		@Override
-		public Location getValidatedField(String value) throws StatusException {
+		public Location validateField(String value) throws StatusException {
 			return getValidatedLocation(value);
 		}
 	};
@@ -37,15 +37,15 @@ public class LocationValidator extends PathValidator implements IValidator<Strin
 	}
 	
 	@Override
-	public Path getValidatedField(String pathString) throws ValidationException {
+	public Path validateField(String pathString) throws ValidationException {
 		return getValidatedLocation(pathString).path;
 	}
 	
-	public IValidator<String, Location> asLocationValidator() {
+	public Validator<String, Location> asLocationValidator() {
 		return asLocationValidator;
 	}
 	
-	public static class LocationValidator2 implements IValidator<String, Location> {
+	public static class LocationValidator2 implements Validator<String, Location> {
 		
 		protected final LocationValidator validator;
 		
@@ -58,7 +58,7 @@ public class LocationValidator extends PathValidator implements IValidator<Strin
 		}
 		
 		@Override
-		public Location getValidatedField(String pathString) throws StatusException {
+		public Location validateField(String pathString) throws StatusException {
 			return validator.getValidatedLocation(pathString);
 		}
 		

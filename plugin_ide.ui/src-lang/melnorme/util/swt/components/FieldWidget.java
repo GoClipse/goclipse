@@ -13,8 +13,10 @@ package melnorme.util.swt.components;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import melnorme.lang.tooling.data.IValidationSource;
-import melnorme.lang.tooling.data.IValidator;
+import melnorme.lang.tooling.data.validation.IValidatableField;
+import melnorme.lang.tooling.data.validation.ValidationField;
+import melnorme.lang.tooling.data.validation.ValidationSource;
+import melnorme.lang.tooling.data.validation.Validator;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IField;
@@ -25,7 +27,7 @@ import melnorme.utilbox.fields.IFieldValueListener;
  * componented is not created.
  */
 public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget 
-	implements IField<VALUE> {
+	implements IField<VALUE>, IValidatableField<VALUE> {
 	
 	private final Field<VALUE> domainField;
 	
@@ -123,16 +125,21 @@ public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget
 	
 	/* -----------------  ----------------- */
 	
-	public void addFieldValidator(boolean init, IValidator<VALUE, ?> validator) {
-		validation.addFieldValidator(init, this, validator);
+	@Override
+	public ValidationField getValidation() {
+		return super.getValidation();
 	}
 	
-	public void addFieldValidation(boolean init, IValidationSource validationSource) {
-		validation.addFieldValidation(init, this, validationSource);
+	public void addFieldValidator(boolean init, Validator<VALUE, ?> validator) {
+		getValidation().addFieldValidator(init, this, validator);
 	}
 	
-	public void addFieldValidationX(boolean init, IValidationSourceX validationSource) {
-		validation.addFieldValidation(init, this, validationSource);
+	public void addFieldValidation(boolean init, ValidationSource validationSource) {
+		getValidation().addFieldValidation(init, this, validationSource);
+	}
+	
+	public void addFieldValidationX(boolean init, ValidationSourceX validationSource) {
+		getValidation().addFieldValidation(init, this, validationSource);
 	}
 	
 }

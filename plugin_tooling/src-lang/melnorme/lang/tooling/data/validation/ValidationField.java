@@ -8,26 +8,26 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
 
-import melnorme.lang.tooling.data.IValidatableValue.ValidatableField;
+import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IFieldView;
 
-public class ValidationField extends Field<IStatusMessage> implements IValidationSource {
+public class ValidationField extends Field<IStatusMessage> implements ValidationSource {
 	
-	protected final ArrayList2<IValidationSource> validators = new ArrayList2<>();
+	protected final ArrayList2<ValidationSource> validators = new ArrayList2<>();
 	
 	public ValidationField() {
 		super(null);
 	}
 	
-	public <SOURCE> void addFieldValidator(boolean init, IFieldView<SOURCE> field, IValidator<SOURCE, ?> validator) {
+	public <SOURCE> void addFieldValidator(boolean init, IFieldView<SOURCE> field, Validator<SOURCE, ?> validator) {
 		addFieldValidation(init, field, new ValidatableField<>(field, validator));
 	}
 	
-	public void addFieldValidation(boolean init, IFieldView<?> field, IValidationSource validationSource) {
+	public void addFieldValidation(boolean init, IFieldView<?> field, ValidationSource validationSource) {
 		validators.add(validationSource);
 		field.registerListener(init, () -> updateFieldValue());
 	}
@@ -41,7 +41,7 @@ public class ValidationField extends Field<IStatusMessage> implements IValidatio
 	}
 	
 	public void updateFieldValue() {
-		setFieldValue(IValidationSource.getHighestStatus(validators));
+		setFieldValue(ValidationSource.getHighestStatus(validators));
 	}
 	
 	@Override

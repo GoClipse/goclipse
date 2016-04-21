@@ -8,20 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
 
-import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.lang.tooling.data.IValidationSource;
-import melnorme.utilbox.fields.IFieldView;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import melnorme.lang.tooling.data.Severity;
 
-public interface IStatusFieldSource extends IValidationSource {
+public class AbstractValidatorExt extends AbstractValidator {
 	
-	@Override
-	public default IStatusMessage getValidationStatus() {
-		return getStatusField().getFieldValue();
+	public AbstractValidatorExt() {
 	}
 	
-	IFieldView<IStatusMessage> getStatusField();
+	protected ValidationException createException(Severity severity, String message) {
+		assertNotNull(severity);
+		return new ValidationException(severity, getFullMessage(message), message, null);
+	}
+	
+	protected String getFullMessage(String simpleMessage) {
+		return simpleMessage;
+	}
 	
 }

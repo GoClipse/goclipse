@@ -46,7 +46,7 @@ public class CommandInvocationEditor extends AbstractCompositeWidget {
 		
 		addSubComponent(commandArgumentsField);
 		
-		IValidationSourceX validationSource = this::validateArguments;
+		ValidationSourceX validationSource = this::validateArguments;
 		validation.addFieldValidation(true, commandArgumentsField, validationSource);
 	}
 	

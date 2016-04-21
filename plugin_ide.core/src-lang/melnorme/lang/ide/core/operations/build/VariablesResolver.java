@@ -24,8 +24,8 @@ import org.eclipse.core.variables.IValueVariable;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ForwardingVariableManager;
 import melnorme.lang.ide.core.utils.StringSubstitutionEngine;
-import melnorme.lang.tooling.data.IValidator;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.validation.Validator;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
@@ -147,14 +147,14 @@ public class VariablesResolver {
 		protected final String name;
 		protected final String description;
 		protected final Supplier<String> value;
-		protected final IValidator<String, String> validator;
+		protected final Validator<String, String> validator;
 		
 		public SupplierAdapterVar(String name, String description, Supplier<String> value) {
 			this(name, description, value, null);
 		}
 		
 		public SupplierAdapterVar(String name, String description, Supplier<String> value,
-				IValidator<String, String> validator) {
+				Validator<String, String> validator) {
 			this.name = assertNotNull(name);
 			this.description = assertNotNull(description);
 			this.value = assertNotNull(value);
@@ -185,7 +185,7 @@ public class VariablesResolver {
 			}
 			if(validator != null) {
 				try {
-					return validator.getValidatedField(value.get());
+					return validator.validateField(value.get());
 				} catch(StatusException e) {
 					String msg = MessageFormat.format("Variable {0} error: {1}", getName(),  e.getMessage());
 					throw LangCore.createCoreException(msg, e.getCause());

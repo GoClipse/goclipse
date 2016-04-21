@@ -23,8 +23,8 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
-import melnorme.lang.tooling.data.IValidator;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.validation.Validator;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.misc.Location;
 
@@ -43,12 +43,12 @@ public abstract class CoreSettings {
 	public abstract PathValidator getSDKLocationValidator();
 	
 	public static SettingsField<Path> newPathPreference(
-			IProjectPreference<String> pref, IValidator<String, Path> validator) {
+			IProjectPreference<String> pref, Validator<String, Path> validator) {
 		return new SettingsField<>(pref, validator, (path) -> path.toString());
 	}
 	
 	public static SettingsField<Location> newLocationPreference(
-			IProjectPreference<String> pref, IValidator<String, Location> validator) {
+			IProjectPreference<String> pref, Validator<String, Location> validator) {
 		return new SettingsField<>(pref, validator, (loc) -> loc.toString());
 	}
 	
@@ -56,14 +56,14 @@ public abstract class CoreSettings {
 		// TODO: actually make this a Field
 		
 		public final IProjectPreference<String> preference;
-		public final IValidator<String, TYPE> validator;
-		public final IValidator<String, String> validator_toString;
+		public final Validator<String, TYPE> validator;
+		public final Validator<String, String> validator_toString;
 		
-		public SettingsField(IProjectPreference<String> preference, IValidator<String, TYPE> validator, 
+		public SettingsField(IProjectPreference<String> preference, Validator<String, TYPE> validator, 
 				Function<TYPE, String> backToString) {
 			this.preference = assertNotNull(preference);
 			this.validator = assertNotNull(validator);
-			this.validator_toString = (value) -> backToString.apply(validator.getValidatedField(value));
+			this.validator_toString = (value) -> backToString.apply(validator.validateField(value));
 		}
 		
 		public PreferenceHelper<String> getGlobalPreference() {
@@ -76,24 +76,24 @@ public abstract class CoreSettings {
 			return getProjectPreference().getEnableProjectSettingPref();
 		}
 		
-		public IValidator<String, TYPE> getValidator() {
+		public Validator<String, TYPE> getValidator() {
 			return validator;
 		}
 		
-		public IValidator<String, String> getValidator_toString() {
+		public Validator<String, String> getValidator_toString() {
 			return validator_toString;
 		}
 		
 		/* ----------------- ----------------- */
 		
 		public TYPE getValue() throws StatusException {
-			return validator.getValidatedField(preference.getGlobalPreference().get());
+			return validator.validateField(preference.getGlobalPreference().get());
 		}
 		public TYPE getValue(IProject project) throws StatusException {
 			return getValue(option(project));
 		}
 		public TYPE getValue(Optional<IProject> project) throws StatusException {
-			return validator.getValidatedField(preference.getEffectiveValue(project));
+			return validator.validateField(preference.getEffectiveValue(project));
 		}
 		
 		public final String getRawValue(IProject project) {
