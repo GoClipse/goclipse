@@ -17,7 +17,7 @@ import melnorme.utilbox.collections.Indexable;
  */
 public class Field<TYPE> implements IField<TYPE> {
 	
-	protected final ListenerListHelper<FieldValueListener<TYPE>> listeners = new ListenerListHelper<>();
+	protected final ListenerListHelper<FieldValueListener<? super TYPE>> listeners = new ListenerListHelper<>();
 	
 	private TYPE value; // private to prevent direct modifications.
 	
@@ -30,16 +30,16 @@ public class Field<TYPE> implements IField<TYPE> {
 	}
 	
 	@Override
-	public void addListener(FieldValueListener<TYPE> listener) {
+	public void addListener(FieldValueListener<? super TYPE> listener) {
 		listeners.addListener(listener);
 	}
 	
 	@Override
-	public void removeListener(FieldValueListener<TYPE> listener) {
+	public void removeListener(FieldValueListener<? super TYPE> listener) {
 		listeners.removeListener(listener);
 	}
 	
-	protected Indexable<FieldValueListener<TYPE>> getListeners() {
+	protected Indexable<FieldValueListener<? super TYPE>> getListeners() {
 		return listeners.getListeners();
 	}
 	

@@ -64,8 +64,8 @@ public class LangOutlinePage extends AbstractContentOutlinePage implements IAdap
 	
 	@Override
 	public void dispose() {
-		editor.getSelectedElementField().removeChangeListener(structureListener);
-		editor.getStructureField().removeChangeListener(structureListener);
+		editor.getSelectedElementField().removeListener(structureListener);
+		editor.getStructureField().removeListener(structureListener);
 		
 		super.dispose();
 	}

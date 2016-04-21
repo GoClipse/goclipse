@@ -127,12 +127,12 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 	
 	
 	@Override
-	public void addListener(FieldValueListener<TextStyling> listener) {
+	public void addListener(FieldValueListener<? super TextStyling> listener) {
 		asField().addListener(listener);
 	}
 	
 	@Override
-	public void removeListener(FieldValueListener<TextStyling> listener) {
+	public void removeListener(FieldValueListener<? super TextStyling> listener) {
 		asField().removeListener(listener);
 	}
 	

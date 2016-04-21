@@ -16,8 +16,7 @@ public interface FieldValueListener<VALUE> {
 	
 	/* ----------------- util ----------------- */
 	
-	@SuppressWarnings("rawtypes")
-	public interface FieldChangeListener extends FieldValueListener {
+	public interface FieldChangeListener extends FieldValueListener<Object> {
 		
 		@Override
 		default void fieldValueChanged(Object newValue) {
