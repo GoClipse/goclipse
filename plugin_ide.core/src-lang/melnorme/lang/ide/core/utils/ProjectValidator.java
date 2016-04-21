@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
-import melnorme.lang.tooling.data.AbstractValidator;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.validation.AbstractValidator;
 
 public class ProjectValidator extends AbstractValidator {
 	

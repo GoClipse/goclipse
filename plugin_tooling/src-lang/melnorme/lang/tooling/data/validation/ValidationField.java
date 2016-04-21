@@ -8,8 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
 
+import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IFieldView;

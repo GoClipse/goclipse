@@ -8,7 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
+
+import melnorme.lang.tooling.data.StatusException;
 
 public interface ValidatedValueSource<VALUE> extends ValidationSource {
 	

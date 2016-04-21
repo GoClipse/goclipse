@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
 
 import melnorme.utilbox.fields.IFieldView;
 

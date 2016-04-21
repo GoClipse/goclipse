@@ -24,7 +24,7 @@ import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.Validator;
+import melnorme.lang.tooling.data.validation.Validator;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.misc.Location;
 

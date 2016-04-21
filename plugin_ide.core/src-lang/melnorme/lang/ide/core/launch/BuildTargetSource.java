@@ -17,7 +17,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.utils.ProjectValidator;
-import melnorme.lang.tooling.data.AbstractValidator;
+import melnorme.lang.tooling.data.validation.AbstractValidator;
 import melnorme.utilbox.core.CommonException;
 
 public abstract class BuildTargetSource extends AbstractValidator {

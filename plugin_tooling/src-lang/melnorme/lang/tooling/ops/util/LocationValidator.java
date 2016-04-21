@@ -14,9 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.data.Validator;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.ValidationException;
+import melnorme.lang.tooling.data.validation.ValidationException;
+import melnorme.lang.tooling.data.validation.Validator;
 import melnorme.utilbox.misc.Location;
 
 public class LocationValidator extends PathValidator implements Validator<String, Path> {

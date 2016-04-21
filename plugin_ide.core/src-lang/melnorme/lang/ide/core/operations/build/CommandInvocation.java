@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import org.eclipse.debug.core.DebugPlugin;
 
 import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.lang.tooling.data.ValidationSource;
 import melnorme.lang.tooling.data.Severity;
+import melnorme.lang.tooling.data.validation.ValidationSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;

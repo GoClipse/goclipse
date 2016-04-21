@@ -8,9 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
 
 import java.text.MessageFormat;
+
+import melnorme.lang.tooling.data.Severity;
+import melnorme.lang.tooling.data.StatusException;
 
 public class AbstractValidator {
 	

@@ -8,9 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import melnorme.lang.tooling.data.Severity;
 
 public class AbstractValidatorExt extends AbstractValidator {
 	

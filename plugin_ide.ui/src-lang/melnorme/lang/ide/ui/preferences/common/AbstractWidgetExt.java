@@ -12,7 +12,7 @@ package melnorme.lang.ide.ui.preferences.common;
 
 
 import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.lang.tooling.data.ValidationField;
+import melnorme.lang.tooling.data.validation.ValidationField;
 import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.IValidatableWidget;
 import melnorme.utilbox.fields.IFieldView;

@@ -8,11 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.lang.tooling.data.validation;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.function.Supplier;
+
+import melnorme.lang.tooling.data.IStatusMessage;
+import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.StatusLevel;
 
 public interface ValidationSource {
 	
