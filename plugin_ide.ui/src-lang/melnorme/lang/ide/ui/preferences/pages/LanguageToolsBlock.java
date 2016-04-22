@@ -28,12 +28,7 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 	public LanguageToolsBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
 		
-		addSubComponent(init_createEngineToolGroup());
-	}
-	
-	@Override
-	public int getPreferredLayoutColumns() {
-		return 1;
+		addChildWidget(init_createEngineToolGroup());
 	}
 	
 	protected EngineToolGroup init_createEngineToolGroup() {
@@ -57,7 +52,7 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 			super(getEngineToolName() + ": ", 3);
 			
 			this.toolLocationField = initToolLocationField();
-			addSubComponent(toolLocationField);
+			addChildWidget(toolLocationField);
 			if(toolLocationField instanceof DownloadToolTextField) {
 				layoutColumns = 4;
 			}
@@ -70,8 +65,8 @@ public class LanguageToolsBlock extends AbstractCompositePreferencesBlock {
 			prefContext.bindToPreference(showErrorsDialog, ContentAssistPreferences.ShowDialogIfContentAssistErrors
 				.getGlobalPreference());
 			
-			addSubComponent(startServerAutomatically);
-			addSubComponent(showErrorsDialog);
+			addChildWidget(startServerAutomatically);
+			addChildWidget(showErrorsDialog);
 		}
 		
 		protected ButtonTextField initToolLocationField() {

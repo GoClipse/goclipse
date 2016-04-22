@@ -17,7 +17,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractCompositeWidget;
+import melnorme.util.swt.components.CompositeWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 
@@ -29,7 +29,7 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 		super(prefContext);
 		
 		this.sdkLocationGroup = init_createSDKLocationGroup();
-		addSubComponent(sdkLocationGroup);
+		addChildWidget(sdkLocationGroup);
 	}
 	
 	protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
@@ -38,18 +38,14 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 	
 	protected abstract PathValidator getSDKValidator();
 	
-	@Override
-	public int getPreferredLayoutColumns() {
-		return 1;
-	}
-	
-	public class LanguageSDKLocationGroup extends AbstractCompositeWidget {
+	public class LanguageSDKLocationGroup extends CompositeWidget {
 		
 		public final ButtonTextField sdkLocationField = createSdkLocationField();
 		
 		public LanguageSDKLocationGroup() {
 			super(true);
-			this.addSubComponent(sdkLocationField);
+			this.layoutColumns = 3;
+			this.addChildWidget(sdkLocationField);
 			
 			initBindings();
 		}
@@ -70,11 +66,6 @@ public abstract class LangSDKConfigBlock extends AbstractCompositePreferencesBlo
 		@Override
 		protected GridLayoutFactory createTopLevelLayout() {
 			return GridLayoutFactory.swtDefaults().numColumns(getPreferredLayoutColumns());
-		}
-		
-		@Override
-		public int getPreferredLayoutColumns() {
-			return 3;
 		}
 		
 	}

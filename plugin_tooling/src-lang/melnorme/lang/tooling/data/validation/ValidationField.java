@@ -19,12 +19,20 @@ public class ValidationField extends Field<IStatusMessage> implements Validation
 	
 	protected final ArrayList2<ValidationSource> validators = new ArrayList2<>();
 	
+	protected IStatusMessage explicitStatus;
+	
 	public ValidationField() {
 		super(null);
+		
+		validators.add(() -> explicitStatus);
 	}
 	
 	public <SOURCE> void addFieldValidator(boolean init, IFieldView<SOURCE> field, Validator<SOURCE, ?> validator) {
 		addFieldValidation(init, field, new ValidatableField<>(field, validator));
+	}
+	
+	public final void addFieldValidationX(boolean init, IFieldView<?> field, ValidationSourceX validationSource) {
+		addFieldValidation(init, field, validationSource);
 	}
 	
 	public void addFieldValidation(boolean init, IFieldView<?> field, ValidationSource validationSource) {
@@ -47,6 +55,15 @@ public class ValidationField extends Field<IStatusMessage> implements Validation
 	@Override
 	public IStatusMessage getValidationStatus() {
 		return getFieldValue();
+	}
+	
+	public void setExplicitStatus(IStatusMessage explicitStatus) {
+		doSetExplicitStatus(explicitStatus);
+		updateFieldValue();
+	}
+	
+	protected void doSetExplicitStatus(IStatusMessage explicitStatus) {
+		this.explicitStatus = explicitStatus;
 	}
 	
 }

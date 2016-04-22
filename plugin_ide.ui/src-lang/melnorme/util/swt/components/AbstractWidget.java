@@ -83,30 +83,32 @@ public abstract class AbstractWidget implements IWidgetComponent {
  	
 	/* ----------------- Shortcut utils ----------------- */
 	
-	protected static GridLayoutFactory glSwtDefaults() {
-		return GridLayoutFactory.swtDefaults();
-	}
-	
-	protected static GridLayoutFactory glFillDefaults() {
-		return GridLayoutFactory.fillDefaults();
-	}
-	
-	/* -----------------  ----------------- */
-	
-	protected static GridDataFactory gdSwtDefaults() {
+	protected static GridDataFactory gdfSwtDefaults() {
 		return GridDataFactory.swtDefaults();
 	}
 	
-	protected static GridDataFactory gdFillDefaults() {
+	protected static GridDataFactory gdfFillDefaults() {
 		return GridDataFactory.fillDefaults();
 	}
 	
-	public static GridData horizontalExpandDefault() {
-		return horizontalExpandDefault(SWT.DEFAULT);
+	public static GridDataFactory gdfGrabHorizontal() {
+		return gdfGrabHorizontal(SWT.DEFAULT);
 	}
 	
-	public static GridData horizontalExpandDefault(int hHint) {
-		return gdFillDefaults().grab(true, false).hint(hHint, SWT.DEFAULT).create();
+	public static GridDataFactory gdfGrabHorizontal(int hHint) {
+		return gdfFillDefaults().grab(true, false).hint(hHint, SWT.DEFAULT);
+	}
+	
+	public static GridData gdGrabHorizontal() {
+		return gdGrabHorizontal(SWT.DEFAULT);
+	}
+	
+	public static GridData gdGrabHorizontal(int hHint) {
+		return gdfGrabHorizontal(hHint).create();
+	}
+	
+	public static GridData gdGrabAll(int xHint, int yHint) {
+		return gdfFillDefaults().grab(true, true).hint(xHint, yHint).create();
 	}
 	
 }

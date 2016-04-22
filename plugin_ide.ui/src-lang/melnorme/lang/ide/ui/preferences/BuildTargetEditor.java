@@ -21,14 +21,14 @@ import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.util.swt.components.AbstractCompositeWidget;
+import melnorme.util.swt.components.CompositeWidget;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
 
-public class BuildTargetEditor extends AbstractCompositeWidget {
+public class BuildTargetEditor extends CompositeWidget {
 	
 	protected final BuildManager buildManager;
 	
@@ -61,13 +61,13 @@ public class BuildTargetEditor extends AbstractCompositeWidget {
 		autoEnableField.addListener((newValue) -> btData.autoBuildEnabled = newValue);
 		
 		if(createEnablementFields) {
-			addSubComponents(normalEnableField, autoEnableField);
+			addChildWidget(normalEnableField, autoEnableField);
 		}
 		
-		buildCommandField = addSubComponent(init_createArgumentsField());
+		buildCommandField = addChildWidget(init_createArgumentsField());
 		buildCommandField.addChangeListener(() -> btData.buildArguments = getEffectiveBuildArgumentsValue());
 		
-		programPathField = addSubComponent(init_createProgramPathField());
+		programPathField = addChildWidget(init_createProgramPathField());
 		programPathField.addListener((__) -> btData.executablePath = getEffectiveProgramPathValue());
 //		buildCommandField.addListener(() -> programPathField.updateDefaultFieldValue());
 	}
@@ -88,7 +88,7 @@ public class BuildTargetEditor extends AbstractCompositeWidget {
 	/* ----------------- bindings ----------------- */
 	
 	public String getEffectiveBuildArgumentsValue() {
-		return buildCommandField.getEffectiveFieldValue();
+		return buildCommandField.getEffectiveFieldValue1();
 	}
 	
 	public String getEffectiveProgramPathValue() {
@@ -98,16 +98,11 @@ public class BuildTargetEditor extends AbstractCompositeWidget {
 	public void inputChanged(BuildTargetDataView buildTargetData) {
 		normalEnableField.setFieldValue(buildTargetData.isNormalBuildEnabled());
 		autoEnableField.setFieldValue(buildTargetData.isAutoBuildEnabled());
-		buildCommandField.setEffectiveFieldValue(buildTargetData.getBuildArguments());
+		buildCommandField.setEffectiveFieldValue1(buildTargetData.getBuildArguments());
 		programPathField.setEffectiveFieldValue(buildTargetData.getExecutablePath());
 	}
 	
 	/* -----------------  ----------------- */
-	
-	@Override
-	public int getPreferredLayoutColumns() {
-		return 1;
-	}
 	
 	public static class BuildCommandEditor extends CommandInvocationEditor {
 		
@@ -115,7 +110,7 @@ public class BuildTargetEditor extends AbstractCompositeWidget {
 				VariablesResolver variablesResolver) {
 			super(getDefaultCommandArguments, variablesResolver);
 			
-			commandArgumentsField.setLabelText(LangUIMessages.Fields_BuildCommand);
+			this.label = LangUIMessages.Fields_BuildCommand;
 		}
 		
 		@Override
@@ -145,7 +140,7 @@ public class BuildTargetEditor extends AbstractCompositeWidget {
 		}
 		
 		@Override
-		protected String getNewValueFromButtonSelection2() throws CommonException, OperationCancellation {
+		protected String getNewValueFromButtonSelection() throws CommonException, OperationCancellation {
 			return getFieldValue() + ControlUtils.openStringVariableSelectionDialog(text.getShell());
 		}
 		

@@ -26,7 +26,7 @@ public class DirectoryTextField extends ButtonTextField {
 	}
 	
 	@Override
-	protected String getNewValueFromButtonSelection2() throws OperationCancellation {
+	protected String getNewValueFromButtonSelection() throws OperationCancellation {
 		return openDirectoryDialog(getFieldValue(), button.getShell());
 	}
 	

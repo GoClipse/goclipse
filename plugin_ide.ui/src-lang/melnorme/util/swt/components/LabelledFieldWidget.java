@@ -45,8 +45,8 @@ public abstract class LabelledFieldWidget<VALUE> extends FieldWidget<VALUE>{
 		);
 	}
 	
-	public LabelledFieldWidget(Field<VALUE> domainField, String labelText) {
-		super(domainField);
+	public LabelledFieldWidget(Field<VALUE> field, String labelText) {
+		super(field);
 		this.labelText = labelText;
 	}
 	

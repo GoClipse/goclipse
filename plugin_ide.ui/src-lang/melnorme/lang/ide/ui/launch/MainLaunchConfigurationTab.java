@@ -101,7 +101,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		);
 		component.programPathField.setLabelText(LangUIMessages.LaunchTab_ProgramPathField_title);
 		
-		component.buildCommandField.getCommandArgumentsField().getUseDefaultField().setLabelText(
+		component.buildCommandField.getEnablementField().setLabelText(
 			LangUIMessages.LaunchTab_Fields_useBuildTargetSettings);
 		component.programPathField.getUseDefaultField().setLabelText(
 			LangUIMessages.LaunchTab_Fields_useBuildTargetSettings);
@@ -209,7 +209,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	protected void initializeBuildTargetSettings(BuildTargetLaunchCreator btLaunchCreator) {
-		buildTargetEditor.buildCommandField.setEffectiveFieldValue(btLaunchCreator.getBuildArguments());
+		buildTargetEditor.buildCommandField.setEffectiveFieldValue1(btLaunchCreator.getBuildArguments());
 		buildTargetEditor.programPathField.setEffectiveFieldValue(btLaunchCreator.getExecutablePath());
 	}
 	
@@ -218,7 +218,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		return new BuildTargetLaunchCreator(
 			getProjectName(),
 			getBuildTargetName(),
-			buildTargetEditor.buildCommandField.getEffectiveFieldValue(),
+			buildTargetEditor.buildCommandField.getEffectiveFieldValue1(),
 			buildTargetEditor.programPathField.getEffectiveFieldValue()
 		);
 	}

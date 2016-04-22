@@ -18,10 +18,9 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTFactoryUtil;
 
-public abstract class AbstractGroupWidget extends AbstractCompositeWidget {
+public abstract class AbstractGroupWidget extends CompositeWidget {
 	
 	public String groupLabel;
-	protected int layoutColumns;
 	
 	public AbstractGroupWidget(String groupLabel, int layoutColumns) {
 		super(true);
@@ -37,11 +36,6 @@ public abstract class AbstractGroupWidget extends AbstractCompositeWidget {
 	@Override
 	protected GridLayoutFactory createTopLevelLayout() {
 		return GridLayoutFactory.swtDefaults().numColumns(getPreferredLayoutColumns());
-	}
-	
-	@Override
-	public int getPreferredLayoutColumns() {
-		return layoutColumns;
 	}
 	
 }

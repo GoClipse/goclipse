@@ -26,17 +26,17 @@ public class TextFieldWidget extends LabelledFieldWidget<String> {
 	protected int defaultTextStyle = SWT.SINGLE | SWT.BORDER;
 	protected Text text;
 	
-	public TextFieldWidget(String label) {
-		this(label, SWT.SINGLE | SWT.BORDER);
+	public TextFieldWidget(String labelText) {
+		this(labelText, SWT.SINGLE | SWT.BORDER);
 	}
 	
-	public TextFieldWidget(String label, int textStyle) {
-		super(label, Option_AllowNull.NO, "");
+	public TextFieldWidget(String labelText, int textStyle) {
+		super(labelText, Option_AllowNull.NO, "");
 		this.defaultTextStyle = textStyle;
 	}
 	
-	public TextFieldWidget(Field<String> domainField, String labelText) {
-		super(domainField, labelText);
+	public TextFieldWidget(Field<String> field, String labelText) {
+		super(field, labelText);
 	}
 	
 	public void setDefaultTextStyle(int defaultTextStyle) {

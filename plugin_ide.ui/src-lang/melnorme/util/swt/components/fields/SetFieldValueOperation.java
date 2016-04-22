@@ -16,16 +16,16 @@ import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.utils.operation.CommonOperationCallable;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
-import melnorme.util.swt.components.FieldWidget;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.fields.IField;
 
 public class SetFieldValueOperation<T> extends BasicUIOperation {
 	
-	protected final FieldWidget<T> field;
+	protected final IField<T> field;
 	protected final CommonOperationCallable<T> newValueCallable;
 	
-	public SetFieldValueOperation(FieldWidget<T> field, CommonOperationCallable<T> callable) {
+	public SetFieldValueOperation(IField<T> field, CommonOperationCallable<T> callable) {
 		this.field = assertNotNull(field);
 		this.newValueCallable = assertNotNull(callable);
 	}
