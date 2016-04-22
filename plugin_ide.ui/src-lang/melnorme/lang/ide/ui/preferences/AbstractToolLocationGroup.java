@@ -25,7 +25,7 @@ public abstract class AbstractToolLocationGroup extends AbstractGroupWidget {
 		this.toolName = toolName;
 		
 		this.toolLocationField = initToolLocationField();
-		addSubComponent(toolLocationField);
+		addChildWidget(toolLocationField);
 	}
 	
 	protected DownloadToolTextField initToolLocationField() {

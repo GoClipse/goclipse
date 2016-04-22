@@ -71,11 +71,11 @@ public abstract class DownloadToolTextField extends ButtonTextField {
 	
 	@Override
 	protected BasicUIOperation getButtonHandler() {
-		return new SetFieldValueOperation<String>(this, this::getNewValueFromButtonSelection2);
+		return new SetFieldValueOperation<String>(this, this::getNewValueFromButtonSelection);
 	}
 	
 	@Override
-	protected String getNewValueFromButtonSelection2() throws OperationCancellation {
+	protected String getNewValueFromButtonSelection() throws OperationCancellation {
 		return ControlUtils.openFileDialog(getFieldValue(), button.getShell());
 	}
 	

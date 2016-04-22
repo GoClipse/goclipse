@@ -24,19 +24,20 @@ import melnorme.util.swt.SWTUtil;
 public abstract class AbstractDisableableWidget extends AbstractWidgetExt 
 	implements IDisableableWidget {
 	
-	protected AbstractDisableableWidget parent;
+	protected AbstractDisableableWidget parentWidget;
 	protected boolean enabled = true;
+	public boolean onlyValidateWhenEnabled = true;
 	
 	public AbstractDisableableWidget() {
 	}
 	
 	public void setParent(AbstractDisableableWidget parent) {
-		assertTrue(this.parent == null);
-		this.parent = assertNotNull(parent);
+		assertTrue(this.parentWidget == null);
+		this.parentWidget = assertNotNull(parent);
 	}
 	
 	public boolean isEnabled() {
-		return enabled && (parent == null || parent.isEnabled());
+		return enabled && (parentWidget == null || parentWidget.isEnabled());
 	}
 	
 	@Override
@@ -53,10 +54,12 @@ public abstract class AbstractDisableableWidget extends AbstractWidgetExt
 	protected abstract void doSetEnabled(boolean enabled);
 	
 	protected void updateValidationStatusForEnablement() {
-		if(!isEnabled()) {
-			validation.set(null);
-		} else {
-			validation.updateFieldValue();
+		if(onlyValidateWhenEnabled) {
+			if(!isEnabled()) {
+				validation.set(null);
+			} else {
+				validation.updateFieldValue();
+			}
 		}
 	}
 	

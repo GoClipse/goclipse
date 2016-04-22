@@ -91,7 +91,7 @@ public class RadioSelectionField<E extends Enum<?>> extends LabelledFieldWidget<
 		int numColumns = gridLayout.numColumns;
 		
 		for(Button button : radioButtons) {
-			button.setLayoutData(gdFillDefaults().span(numColumns, 1).grab(true, false).create());
+			button.setLayoutData(gdfFillDefaults().span(numColumns, 1).grab(true, false).create());
 		}
 	}
 	

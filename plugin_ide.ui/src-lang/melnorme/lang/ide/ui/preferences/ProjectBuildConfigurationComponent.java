@@ -28,13 +28,13 @@ import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractCompositeWidget;
+import melnorme.util.swt.components.CompositeWidget;
 import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 
-public class ProjectBuildConfigurationComponent extends AbstractCompositeWidget 
+public class ProjectBuildConfigurationComponent extends CompositeWidget 
 	implements IPreferencesEditor {
 	
 	protected final BuildManager buildManager = LangCore.getBuildManager();
@@ -52,8 +52,8 @@ public class ProjectBuildConfigurationComponent extends AbstractCompositeWidget
 		
 		this.buildTargetField = init_createBuildTargetField();
 		this.buildTargetEditor = init_createBuildTargetSettingsComponent();
-		addSubComponent(buildTargetField);
-		addSubComponent(buildTargetEditor);
+		addChildWidget(buildTargetField);
+		addChildWidget(buildTargetEditor);
 		
 		buildTargetField.addListener(true, (__) -> handleBuildTargetChanged());
 		
@@ -166,11 +166,6 @@ public class ProjectBuildConfigurationComponent extends AbstractCompositeWidget
 	}
 	
 	/* -----------------  ----------------- */
-	
-	@Override
-	public int getPreferredLayoutColumns() {
-		return 1;
-	}
 	
 	@Override
 	protected void createContents(Composite topControl) {

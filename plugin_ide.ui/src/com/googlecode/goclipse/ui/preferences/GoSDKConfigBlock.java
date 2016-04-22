@@ -25,13 +25,14 @@ import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.fields.Field;
 
 public class GoSDKConfigBlock extends LangSDKConfigBlock {
 	
 	public GoSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
 		
-		addSubComponent(new GoPathGroup());
+		addChildWidget(new GoPathGroup());
 		
 	}
 	
@@ -50,19 +51,19 @@ public class GoSDKConfigBlock extends LangSDKConfigBlock {
 		public GoPathGroup() {
 			super("Eclipse GOPATH:", "Use same value as the GOPATH environment variable.");
 			
-			prefContext.bindToPreference(asEffectiveValueProperty2(), GoEnvironmentPrefs.GO_PATH);
+			prefContext.bindToPreference(asEffectiveValueProperty(), GoEnvironmentPrefs.GO_PATH);
 			
 			this.gopathAppendProjectLocField = new CheckBoxField(
 					"Also add project location to GOPATH, if it's not contained there already.");
-			addSubComponent(gopathAppendProjectLocField);
+			addChildWidget(gopathAppendProjectLocField);
 			prefContext.bindToPreference(gopathAppendProjectLocField, GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH);
 		}
 		
 		@Override
-		protected ButtonTextField init_createButtonTextField() {
-			return new ButtonTextField(null, "Add Folder") {
+		protected ButtonTextField init_createButtonTextField(Field<String> field) {
+			return new ButtonTextField(field, null, "Add Folder") {
 				@Override
-				protected String getNewValueFromButtonSelection2() throws CommonException, OperationCancellation {
+				protected String getNewValueFromButtonSelection() throws CommonException, OperationCancellation {
 					String newValue = DirectoryTextField.openDirectoryDialog("", text.getShell());
 					return getFieldValue() + File.pathSeparator + newValue;
 				}

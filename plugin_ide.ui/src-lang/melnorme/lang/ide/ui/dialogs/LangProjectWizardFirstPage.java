@@ -45,7 +45,7 @@ import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
-import melnorme.util.swt.components.AbstractCompositeWidget;
+import melnorme.util.swt.components.CompositeWidget;
 import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
@@ -138,13 +138,14 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 	}
 	
-	public static class NameGroup extends AbstractCompositeWidget {
+	public static class NameGroup extends CompositeWidget {
 		
 		protected TextFieldWidget textField = new TextFieldWidget(WizardMessages.LangNewProject_NameGroup_label);
 		
 		public NameGroup() {
 			super(true);
-			addSubComponent(textField);
+			addChildWidget(textField);
+			this.layoutColumns = 2;
 			
 			ValidationSourceX validationSource = () -> getProjectHandle2();
 			validation.addFieldValidation(true, textField, validationSource);
@@ -163,11 +164,6 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 		
 		/* -----------------  ----------------- */
-		
-		@Override
-		public int getPreferredLayoutColumns() {
-			return 2;
-		}
 		
 		public void postSetFocus() {
 			SWTUtil.post_setFocus(textField.getFieldControl());
@@ -261,7 +257,7 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		}
 		
 		@Override
-		protected String getNewValueFromButtonSelection2() throws OperationCancellation {
+		protected String getNewValueFromButtonSelection() throws OperationCancellation {
 			return DirectoryTextField.openDirectoryDialog(getFieldValue(), button.getShell());
 		}
 		

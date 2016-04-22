@@ -104,7 +104,7 @@ public abstract class EnablementButtonTextField extends ButtonTextField {
 	
 	@Override
 	protected GridLayoutFactory createTopLevelLayout() {
-		return glSwtDefaults().numColumns(getPreferredLayoutColumns());
+		return GridLayoutFactory.swtDefaults().numColumns(getPreferredLayoutColumns());
 	}
 	
 	@Override

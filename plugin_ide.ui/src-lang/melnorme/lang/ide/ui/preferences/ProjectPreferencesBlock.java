@@ -90,7 +90,7 @@ public abstract class ProjectPreferencesBlock extends AbstractPreferencesBlock2 
 		SWTFactoryUtil.createLabel(topControl, SWT.SEPARATOR | SWT.HORIZONTAL, "", 
 			GridDataFactory.fillDefaults().span(2, 1).create());
 		
-		projectSettingsBlock.createComponent(topControl, gdFillDefaults().span(2, 1).grab(true, false).create());
+		projectSettingsBlock.createComponent(topControl, gdfFillDefaults().span(2, 1).grab(true, false).create());
 		
 		// Update projectSettingsBlock setEnabled status - because setEnabled only works after the control is created.
 		useProjectSettingsField.fireFieldValueChanged();

@@ -54,7 +54,7 @@ public class ProjectField extends ButtonTextField {
 	
 	@Override
 	protected GridLayoutFactory createTopLevelLayout() {
-		return glSwtDefaults().numColumns(getPreferredLayoutColumns());
+		return GridLayoutFactory.swtDefaults().numColumns(getPreferredLayoutColumns());
 	}
 	
 	@Override
@@ -70,7 +70,7 @@ public class ProjectField extends ButtonTextField {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected String getNewValueFromButtonSelection2() throws OperationCancellation {
+	protected String getNewValueFromButtonSelection() throws OperationCancellation {
 		IProject project = chooseProject();
 		return project == null ? null : project.getName();
 	}

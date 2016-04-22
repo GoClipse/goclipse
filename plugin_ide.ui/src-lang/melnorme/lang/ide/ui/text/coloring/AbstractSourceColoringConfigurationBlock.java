@@ -176,24 +176,24 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		Link openPrefsLink = ControlUtils.createOpenPreferencesDialogLinkedText(topControl, 
 			PreferencesMessages.DLTKEditorColoringConfigurationBlock_link);
 		openPrefsLink.setLayoutData(
-			gdFillDefaults().hint(pc.convertWidthInCharsToPixels(50), SWT.DEFAULT).create());
+			gdfFillDefaults().hint(pc.convertWidthInCharsToPixels(50), SWT.DEFAULT).create());
 		
 		ControlUtils.createHorizontalSpacer(topControl, 1, pc);
 		
 		SWTFactoryUtil.createLabel(topControl, SWT.LEFT, 
 			PreferencesMessages.DLTKEditorPreferencePage_coloring_element, 
-			gdFillDefaults().create());
+			gdfFillDefaults().create());
 		
 		Composite editorComposite = SWTFactoryUtil.createComposite(topControl);
 		editorComposite.setLayoutData(
-			gdFillDefaults().grab(true, false).create());
+			gdfFillDefaults().grab(true, false).create());
 		editorComposite.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
 		
 		treeViewer = new TreeViewerExt(editorComposite, SWT.SINGLE | SWT.BORDER);
 		treeViewer.setContentProvider(new ElementContentProvider2());
 		treeViewer.setLabelProvider(new LabeledTreeElementLabelProvider());
 		treeViewer.getTree().setLayoutData(
-			gdFillDefaults().hint(pc.convertWidthInCharsToPixels(40), pc.convertHeightInCharsToPixels(10)).create());
+			gdfFillDefaults().hint(pc.convertWidthInCharsToPixels(40), pc.convertHeightInCharsToPixels(10)).create());
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -206,22 +206,22 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		
 		Composite itemEditorComposite = new Composite(editorComposite, SWT.NONE);
 		itemEditorComposite.setLayoutData(
-			gdFillDefaults().create());
+			gdfFillDefaults().create());
 		itemEditorComposite.setLayout(GridLayoutFactory.swtDefaults().extendedMargins(5, 20, 5, 5).create());
 		
 		enableField = new CheckBoxField(PreferencesMessages.DLTKEditorPreferencePage_enable);
-		enableField.createComponent(itemEditorComposite, gdFillDefaults().create());
+		enableField.createComponent(itemEditorComposite, gdfFillDefaults().create());
 		
 		colorField = new ColorField(PreferencesMessages.DLTKEditorPreferencePage_color);
-		colorField.createComponent(itemEditorComposite, gdFillDefaults().indent(20, 0).create());
+		colorField.createComponent(itemEditorComposite, gdfFillDefaults().indent(20, 0).create());
 		boldCheckboxField = new CheckBoxField(PreferencesMessages.DLTKEditorPreferencePage_bold);
-		boldCheckboxField.createComponent(itemEditorComposite, gdFillDefaults().indent(20, 0).create());
+		boldCheckboxField.createComponent(itemEditorComposite, gdfFillDefaults().indent(20, 0).create());
 		italicCheckboxField = new CheckBoxField(PreferencesMessages.DLTKEditorPreferencePage_italic);
-		italicCheckboxField.createComponent(itemEditorComposite, gdFillDefaults().indent(20, 0).create());
+		italicCheckboxField.createComponent(itemEditorComposite, gdfFillDefaults().indent(20, 0).create());
 		striketroughCheckboxField = new CheckBoxField(PreferencesMessages.DLTKEditorPreferencePage_strikethrough);
-		striketroughCheckboxField.createComponent(itemEditorComposite, gdFillDefaults().indent(20, 0).create());
+		striketroughCheckboxField.createComponent(itemEditorComposite, gdfFillDefaults().indent(20, 0).create());
 		underlineCheckboxField = new CheckBoxField(PreferencesMessages.DLTKEditorPreferencePage_underline);
-		underlineCheckboxField.createComponent(itemEditorComposite, gdFillDefaults().indent(20, 0).create());
+		underlineCheckboxField.createComponent(itemEditorComposite, gdfFillDefaults().indent(20, 0).create());
 		
 		enableField.addChangeListener(new ChangeStylingField() {
 			@Override
@@ -264,12 +264,12 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 		
 		SWTFactoryUtil.createLabel(topControl, SWT.LEFT, 
 			PreferencesMessages.DLTKEditorPreferencePage_preview, 
-			gdFillDefaults().create());
+			gdfFillDefaults().create());
 		
 		
 		Control previewViewerControl = createPreviewViewer(topControl);
 		previewViewerControl.setLayoutData(
-			gdFillDefaults().hint(pc.convertWidthInCharsToPixels(50), pc.convertHeightInCharsToPixels(15)).
+			gdfFillDefaults().hint(pc.convertWidthInCharsToPixels(50), pc.convertHeightInCharsToPixels(15)).
 			grab(true, true).
 			create());
 		

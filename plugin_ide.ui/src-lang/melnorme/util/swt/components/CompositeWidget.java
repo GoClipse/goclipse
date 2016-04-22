@@ -20,25 +20,26 @@ import org.eclipse.swt.widgets.Composite;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 
-public abstract class AbstractCompositeWidget extends AbstractDisableableWidget {
+public class CompositeWidget extends AbstractDisableableWidget {
 	
 	private final ArrayList2<AbstractDisableableWidget> subComponents = new ArrayList2<>();
 	
 	protected boolean createInlined = true;
+	protected int layoutColumns = 1;
 	protected GridDataFactory defaultRowLayout;
 	
-	public AbstractCompositeWidget(boolean createInlined) {
+	public CompositeWidget(boolean createInlined) {
 		this.createInlined = createInlined;
-		this.defaultRowLayout = gdFillDefaults().grab(true, false).hint(200, SWT.DEFAULT);
+		this.defaultRowLayout = gdfFillDefaults().grab(true, false).hint(200, SWT.DEFAULT);
 	}
 	
-	protected void addSubComponents(AbstractDisableableWidget... subComponents) {
+	public void addChildWidget(AbstractDisableableWidget... subComponents) {
 		for (AbstractDisableableWidget subComponent : subComponents) {
-			addSubComponent(subComponent);
+			addChildWidget(subComponent);
 		}
 	}
 	
-	protected <T extends AbstractDisableableWidget> T addSubComponent(T subComponent) {
+	public <T extends AbstractDisableableWidget> T addChildWidget(T subComponent) {
 		assertNotNull(subComponent);
 		validation.addStatusField(true, subComponent.getStatusField());
 		subComponent.setParent(this);
@@ -46,9 +47,23 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 		return subComponent;
 	}
 	
-	protected final Indexable<IDisableableWidget> getSubWidgets() {
+	public final Indexable<IDisableableWidget> getChildWidgets() {
 		return subComponents.<IDisableableWidget>upcastTypeParameter();
 	}
+	
+	@Override
+	public final int getPreferredLayoutColumns() {
+		return layoutColumns;
+	}
+	
+	@Override
+	protected void doUpdateWidgetFromInput() {
+		subComponents.forEach(subComponent -> {
+			subComponent.updateWidgetFromInput();
+		});
+	}
+	
+	/* ----------------- Controls ----------------- */
 	
 	@Override
 	protected void createContents(Composite topControl) {
@@ -57,11 +72,11 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 	
 	protected void createSubComponents(Composite topControl, boolean createInlined) {
 		if(createInlined) {
-			getSubWidgets().forEach(subComponent -> {
+			getChildWidgets().forEach(subComponent -> {
 				subComponent.createComponentInlined(topControl);
 			});
 		} else {
-			getSubWidgets().forEach(subComponent -> {
+			getChildWidgets().forEach(subComponent -> {
 				createSubComponent(topControl, subComponent);
 			});
 		}
@@ -81,21 +96,9 @@ public abstract class AbstractCompositeWidget extends AbstractDisableableWidget 
 	}
 	
 	@Override
-	protected void _verifyContract_IDisableableComponent() {
-		// No need to check, only possible children are AbstractComponentExt
-	}
-	
-	@Override
 	protected final void doSetEnabled(boolean enabled) {
 		subComponents.forEach(subComponent -> {
 			subComponent.updateControlEnablement2();
-		});
-	}
-	
-	@Override
-	protected void doUpdateWidgetFromInput() {
-		subComponents.forEach(subComponent -> {
-			subComponent.updateWidgetFromInput();
 		});
 	}
 	

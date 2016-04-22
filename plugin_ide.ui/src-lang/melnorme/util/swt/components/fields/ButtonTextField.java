@@ -23,19 +23,21 @@ import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.WidgetSelectedRunner;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.fields.Field;
 
 public abstract class ButtonTextField extends TextFieldWidget {
 	
 	protected String buttonLabel;
+	
 	protected Button button;
 	
-	public ButtonTextField(String label, int textStyle, String buttonLabel) {
-		super(label, textStyle);
+	public ButtonTextField(String labelText, String buttonLabel) {
+		super(labelText);
 		this.buttonLabel = buttonLabel;
 	}
 	
-	public ButtonTextField(String label, String buttonLabel) {
-		super(label);
+	public ButtonTextField(Field<String> field, String labelText, String buttonLabel) {
+		super(field, labelText);
 		this.buttonLabel = buttonLabel;
 	}
 	
@@ -69,14 +71,14 @@ public abstract class ButtonTextField extends TextFieldWidget {
 	}
 	
 	protected BasicUIOperation getButtonHandler() {
-		return new SetFieldValueOperation<String>(this, this::getNewValueFromButtonSelection2);
+		return new SetFieldValueOperation<String>(this, this::getNewValueFromButtonSelection);
 	}
 	
 	protected String getButtonOperationErrorMessage() {
 		return "Error:";
 	}
 	
-	protected abstract String getNewValueFromButtonSelection2() 
+	protected abstract String getNewValueFromButtonSelection() 
 			throws CoreException, CommonException, OperationCancellation;
 	
 	@Override

@@ -15,10 +15,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
-import melnorme.util.swt.components.AbstractCompositeWidget;
+import melnorme.util.swt.components.CompositeWidget;
 import melnorme.util.swt.components.FieldWidget;
 
-public abstract class AbstractCompositePreferencesBlock extends AbstractCompositeWidget {
+public abstract class AbstractCompositePreferencesBlock extends CompositeWidget {
 	
 	protected final PreferencesPageContext prefContext;
 	

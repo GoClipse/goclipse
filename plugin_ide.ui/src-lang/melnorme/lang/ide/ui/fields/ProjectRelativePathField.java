@@ -39,7 +39,7 @@ public class ProjectRelativePathField extends EnablementButtonTextField {
 	}
 	
 	@Override
-	protected String getNewValueFromButtonSelection2() throws CommonException, OperationCancellation {
+	protected String getNewValueFromButtonSelection() throws CommonException, OperationCancellation {
 		return ControlUtils.openProgramPathDialog(projectGetter.get(), button);
 	}
 	

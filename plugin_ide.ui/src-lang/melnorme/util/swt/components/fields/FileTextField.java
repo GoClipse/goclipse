@@ -26,7 +26,7 @@ public class FileTextField extends ButtonTextField {
 	}
 	
 	@Override
-	protected String getNewValueFromButtonSelection2() throws OperationCancellation {
+	protected String getNewValueFromButtonSelection() throws OperationCancellation {
 		return ControlUtils.openFileDialog(getFieldValue(), button.getShell());
 	}
 	

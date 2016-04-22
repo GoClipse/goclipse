@@ -70,7 +70,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	protected BuildTargetEditor init_BuildTargetSettingsComponent() {
 		BuildTargetEditor component = super.init_BuildTargetSettingsComponent();
 		
-		component.buildCommandField.getCommandArgumentsField().getUseDefaultField().setLabelText(
+		component.buildCommandField.getEnablementField().setLabelText(
 			EnablementButtonTextField.LABEL_UseDefault);
 		component.programPathField.getUseDefaultField().setLabelText(
 			EnablementButtonTextField.LABEL_UseDefault);
@@ -122,7 +122,7 @@ public class GoMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		}
 		
 		@Override
-		protected String getNewValueFromButtonSelection2() throws StatusException, OperationCancellation {
+		protected String getNewValueFromButtonSelection() throws StatusException, OperationCancellation {
 			return GoMainLaunchConfigurationTab.this.openProgramPathDialog(getValidProject());
 		}
 	}

@@ -22,13 +22,16 @@ import melnorme.lang.ide.ui.preferences.AbstractToolLocationGroup;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.ide.ui.preferences.pages.DownloadToolTextField;
 import melnorme.lang.ide.ui.preferences.pages.LanguageToolsBlock;
+import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField2;
 import melnorme.util.swt.components.fields.FileTextField;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.misc.Location;
 
 public class GoToolsConfigBlock extends LanguageToolsBlock {
@@ -36,9 +39,9 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 	public GoToolsConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
 		
-		addSubComponent(new GoOracleGroup());
-		addSubComponent(new GoDefGroup());
-		addSubComponent(new GoFmtGroup());
+		addChildWidget(new GoOracleGroup());
+		addChildWidget(new GoDefGroup());
+		addChildWidget(new GoFmtGroup());
 	}
 	
 	@Override
@@ -104,18 +107,23 @@ public class GoToolsConfigBlock extends LanguageToolsBlock {
 		public GoFmtGroup() {
 			super("gofmt:", "Use default location (from Go installation).");
 			
-			prefContext.bindToPreference(asEffectiveValueProperty2(), GoToolPreferences.GOFMT_Path.getPreference());
+			prefContext.bindToPreference(asEffectiveValueProperty(), GoToolPreferences.GOFMT_Path.getPreference());
 			buttonTextField.addFieldValidator(true, GoToolPreferences.GOFMT_Path.getValidator());
 			
 			this.formatOnSaveField = new CheckBoxField("Format automatically on editor save.");
 			
-			this.addSubComponent(formatOnSaveField);
+			this.addChildWidget(formatOnSaveField);
 			prefContext.bindToPreference(this.formatOnSaveField, ToolchainPreferences.FORMAT_ON_SAVE);
 		}
 		
 		@Override
-		protected ButtonTextField init_createButtonTextField() {
-			return new FileTextField("Executable:");
+		protected ButtonTextField init_createButtonTextField(Field<String> field) {
+			return new ButtonTextField(field, "Executable:", FileTextField.DEFAULT_BUTTON_LABEL) {
+				@Override
+				protected String getNewValueFromButtonSelection() throws OperationCancellation {
+					return ControlUtils.openFileDialog(getFieldValue(), button.getShell());
+				}
+			};
 		}
 		
 		@Override

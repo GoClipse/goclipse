@@ -44,7 +44,7 @@ public class BuildTargetField extends ComboOptionsField {
 	
 	@Override
 	protected void createContents_layout() {
-		combo.setLayoutData(gdFillDefaults().grab(false, false).hint(200, SWT.DEFAULT).create());
+		combo.setLayoutData(gdfFillDefaults().grab(false, false).hint(200, SWT.DEFAULT).create());
 	}
 	
 	@Override

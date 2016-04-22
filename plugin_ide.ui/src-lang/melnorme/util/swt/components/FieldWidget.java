@@ -30,7 +30,7 @@ import melnorme.utilbox.fields.IField;
 public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget 
 	implements IField<VALUE>, IValidatableField<VALUE> {
 	
-	private final Field<VALUE> domainField;
+	private final Field<VALUE> field;
 	
 	protected boolean listenersNeedNotify;
 	protected boolean settingValueFromControl;
@@ -44,8 +44,8 @@ public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget
 	}
 	
 	public FieldWidget(Field<VALUE> domainField) {
-		this.domainField = domainField;
-		this.domainField.addChangeListener(new FieldChangeListener() {
+		this.field = domainField;
+		this.field.addChangeListener(new FieldChangeListener() {
 			@Override
 			public void fieldValueChanged() {
 				if(!settingValueFromControl) {
@@ -55,9 +55,13 @@ public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget
 		});
 	}
 	
+	public Field<VALUE> getField() {
+		return field;
+	}
+	
 	@Override
 	public VALUE getFieldValue() {
-		return domainField.getFieldValue();
+		return field.getFieldValue();
 	}
 	
 	@Override
@@ -76,21 +80,21 @@ public abstract class FieldWidget<VALUE> extends AbstractDisableableWidget
 	}
 	
 	protected void doSetFieldValue(VALUE newValue) {
-		domainField.setFieldValue(newValue);
+		field.setFieldValue(newValue);
 	}
 	
 	public void fireFieldValueChanged() {
-		domainField.fireFieldValueChanged();
+		field.fireFieldValueChanged();
 	}
 	
 	@Override
-	public void addListener(FieldValueListener<VALUE> listener) {
-		domainField.addListener(listener);
+	public void addListener(FieldValueListener<? super VALUE> listener) {
+		field.addListener(listener);
 	}
 	
 	@Override
-	public void removeListener(FieldValueListener<VALUE> listener) {
-		domainField.removeListener(listener);
+	public void removeListener(FieldValueListener<? super VALUE> listener) {
+		field.removeListener(listener);
 	}
 	
 	/* -----------------  ----------------- */

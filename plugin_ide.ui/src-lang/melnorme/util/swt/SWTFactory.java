@@ -12,6 +12,7 @@ package melnorme.util.swt;
 
 import static melnorme.util.swt.SWTLayoutUtil.setLayoutData;
 
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -51,6 +52,15 @@ public class SWTFactory {
 	
 	public static Composite createComposite(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
+		return composite;
+	}
+	
+	public static Composite createGridComposite(Composite parent, int columns, GridData gridData) {
+		Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(columns).create());
+		if(gridData != null) {
+			composite.setLayoutData(gridData);
+		}
 		return composite;
 	}
 	

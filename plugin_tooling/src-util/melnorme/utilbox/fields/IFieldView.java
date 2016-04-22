@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.utilbox.fields;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.function.Supplier;
 
 import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
@@ -28,7 +30,7 @@ public interface IFieldView<VALUE> extends Supplier<VALUE> {
 	
 	VALUE getFieldValue();
 	
-	void addListener(FieldValueListener<VALUE> listener);
+	void addListener(FieldValueListener<? super VALUE> listener);
 	
 	default void addListener(boolean initialize, FieldValueListener<VALUE> listener) {
 		addListener(listener);
@@ -37,26 +39,23 @@ public interface IFieldView<VALUE> extends Supplier<VALUE> {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	// Alternative method to be used with lambda expressions.
 	default void addChangeListener(FieldChangeListener listener) {
 		addListener(listener);
 	}
 	
-	void removeListener(FieldValueListener<VALUE> listener);
+	void removeListener(FieldValueListener<? super VALUE> listener);
 	
-	@SuppressWarnings("unchecked")
-	default void removeChangeListener(FieldChangeListener listener) {
-		removeListener(listener);
-	}
 	
 	/* -----------------  ----------------- */
 	
-	default FieldListenerRegistration registerListener(FieldValueListener<VALUE> listener) {
+	default FieldListenerRegistration registerListener(FieldValueListener<? super VALUE> listener) {
 		addListener(listener);
 		return new FieldListenerRegistration(this, listener);
 	}
 	
-	default FieldListenerRegistration registerListener(boolean initListener, FieldValueListener<VALUE> listener) {
+	default FieldListenerRegistration registerListener(
+			boolean initListener, FieldValueListener<? super VALUE> listener) {
 		FieldListenerRegistration binding = registerListener(listener);
 		if(initListener) {
 			listener.fieldValueChanged(getFieldValue());
@@ -64,7 +63,6 @@ public interface IFieldView<VALUE> extends Supplier<VALUE> {
 		return binding;
 	}
 	
-	@SuppressWarnings("unchecked")
 	default FieldListenerRegistration registerChangeListener(boolean initListener, FieldChangeListener listener) {
 		return registerListener(initListener, listener);
 	}
@@ -85,14 +83,13 @@ public interface IFieldView<VALUE> extends Supplier<VALUE> {
 	
 	public static class FieldListenerRegistration implements IDisposable {
 		
-		@SuppressWarnings("rawtypes")
-		protected final IFieldView field;
+		protected final IFieldView<?> field;
 		@SuppressWarnings("rawtypes")
 		protected final FieldValueListener listener;
 		
-		public <T> FieldListenerRegistration(IFieldView<T> field, FieldValueListener<T> listener) {
-			this.field = field;
-			this.listener = listener;
+		public <T> FieldListenerRegistration(IFieldView<T> field, FieldValueListener<? super T> listener) {
+			this.field = assertNotNull(field);
+			this.listener = assertNotNull(listener);
 		}
 		
 		@Override

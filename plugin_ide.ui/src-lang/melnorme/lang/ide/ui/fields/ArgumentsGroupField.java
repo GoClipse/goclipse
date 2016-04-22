@@ -25,7 +25,8 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 public class ArgumentsGroupField extends ButtonTextField {
 	
 	public ArgumentsGroupField(String labelText) {
-		super(labelText, SWT.MULTI | SWT.BORDER, LangUIMessages.Fields_VariablesButtonLabel);
+		super(labelText, LangUIMessages.Fields_VariablesButtonLabel);
+		setMultiLineStyle();
 	}
 	
 	@Override
@@ -57,7 +58,7 @@ public class ArgumentsGroupField extends ButtonTextField {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected String getNewValueFromButtonSelection2() throws OperationCancellation {
+	protected String getNewValueFromButtonSelection() throws OperationCancellation {
 		return getFieldValue() + ControlUtils.openStringVariableSelectionDialog(text.getShell());
 	}
 	
