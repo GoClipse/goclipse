@@ -21,9 +21,10 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.utils.DocumentSerializerHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
-public class BuildTargetsSerializer extends DocumentSerializerHelper {
+public class BuildTargetsSerializer extends DocumentSerializerHelper<Indexable<? extends BuildTargetDataView>> {
 
 	private static final String BUILD_TARGETS_ElemName = "build_targets";
 	private static final String TARGET_ElemName = "target";
@@ -38,23 +39,19 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 	
 	protected final BuildManager buildManager;
 	
+	protected final CommandInvocationSerializer commandSerializer = new CommandInvocationSerializer();
+	
 	public BuildTargetsSerializer(BuildManager buildManager) {
 		this.buildManager = buildManager;
 	}
 	
 	public String writeProjectBuildInfo(ProjectBuildInfo projectBuildInfo) throws CommonException {
 		Collection2<BuildTarget> buildTargets = projectBuildInfo.getBuildTargets();
-		return writeProjectBuildInfo(buildTargets.map((elem) -> elem.getData()));
+		return writeToString(buildTargets.map((elem) -> elem.getData()));
 	}
 	
-	public String writeProjectBuildInfo(Iterable<? extends BuildTargetDataView> buildTargets) throws CommonException {
-		Document doc = getDocumentBuilder().newDocument();
-		writeDocument(doc, buildTargets);
-		
-		return documentToString(doc);
-	}
-	
-	protected void writeDocument(Document doc, Iterable<? extends BuildTargetDataView> buildTargets) {
+	@Override
+	protected void writeDocument(Document doc, Indexable<? extends BuildTargetDataView> buildTargets) {
 		Element buildTargetsElem = doc.createElementNS(LangCore.PLUGIN_ID, BUILD_TARGETS_ElemName);
 		doc.appendChild(buildTargetsElem);
 		
@@ -64,7 +61,8 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		
 	}
 	
-	public ArrayList2<BuildTargetData> readProjectBuildInfo(String targetsXml) throws CommonException {
+	@Override
+	public ArrayList2<BuildTargetData> readFromString(String targetsXml) throws CommonException {
 		Document doc = parseDocumentFromXml(targetsXml);
 		
 		Node buildTargetsElem = doc.getFirstChild();
@@ -93,7 +91,8 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 		targetElem.setAttribute(PROP_AUTO_ENABLED, Boolean.toString(btd.isAutoBuildEnabled()));
 		targetElem.setAttribute(PROP_FORMAT_VERSION2, "true");
 		
-		setOptionalAttribute(targetElem, PROP_ARGUMENTS, btd.getBuildArguments());
+		commandSerializer.writeToParent(targetElem, btd.getBuildCommand());
+		
 		setOptionalAttribute(targetElem, PROP_EXE_PATH, btd.getExecutablePath());
 		
 		return targetElem;
@@ -101,13 +100,21 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 	
 	protected BuildTargetData readBuildTargetElement(Node targetElem) throws CommonException {
 		String nodeName = targetElem.getNodeName();
-		if(nodeName.equals(TARGET_ElemName)) {
+		if(!nodeName.equals(TARGET_ElemName)) {
+			throw new CommonException("XML element not recognized : " + nodeName);
+		} else {
 			
 			BuildTargetData buildTargetData = new BuildTargetData();
 			buildTargetData.normalBuildEnabled = getBooleanAttribute(targetElem, PROP_ENABLED, false);
 			buildTargetData.autoBuildEnabled = getBooleanAttribute(targetElem, PROP_AUTO_ENABLED, false);
 			buildTargetData.targetName = getAttribute(targetElem, PROP_NAME, "");
-			buildTargetData.buildArguments = getAttribute(targetElem, PROP_ARGUMENTS, null);
+			
+			for(int ix = 0; ix < targetElem.getChildNodes().getLength(); ix++) {
+				Node node = targetElem.getChildNodes().item(ix);
+				if(node.getNodeName().equals(CommandInvocationSerializer.PROP_COMMAND_INVOCATION)) {
+					buildTargetData.buildCommand = commandSerializer.readFromNode(node);
+				}
+			}
 			buildTargetData.executablePath = getAttribute(targetElem, PROP_EXE_PATH, null);
 			
 			if(getAttribute(targetElem, PROP_FORMAT_VERSION2, null) == null) {
@@ -115,13 +122,12 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper {
 				String buildArgs_old = getAttribute(targetElem, PROP_ARGUMENTS, null);
 				if(buildArgs_old != null) {
 					// Try to migrate from previous settings format
-					buildTargetData.buildArguments = variableRefString(VAR_NAME_SdkToolPath) + " " + buildArgs_old; 
+					buildTargetData.buildCommand = 
+							new CommandInvocation(variableRefString(VAR_NAME_SdkToolPath) + " " + buildArgs_old); 
 				}
 			}
 			
 			return createBuildTarget(targetElem, buildTargetData);
-		} else {
-			throw new CommonException("XML element not recognized : " + nodeName);
 		}
 	}
 	

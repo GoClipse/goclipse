@@ -20,7 +20,7 @@ public class BuildTargetData implements BuildTargetDataView {
 	public String targetName;
 	public boolean normalBuildEnabled;
 	public boolean autoBuildEnabled;
-	public String buildArguments;
+	public CommandInvocation buildCommand;
 	public String executablePath;
 	
 	public BuildTargetData() {
@@ -33,10 +33,10 @@ public class BuildTargetData implements BuildTargetDataView {
 	}
 	
 	public BuildTargetData(String targetName, boolean normalBuildEnabled, boolean autoBuildEnabled, 
-			String buildArguments, String executablePath) {
+			CommandInvocation buildCommand, String executablePath) {
 		this(targetName, normalBuildEnabled, autoBuildEnabled);
 		
-		this.buildArguments = buildArguments;
+		this.buildCommand = buildCommand;
 		this.executablePath = executablePath;
 	}
 	
@@ -44,7 +44,7 @@ public class BuildTargetData implements BuildTargetDataView {
 		this.targetName = data.getTargetName();
 		this.normalBuildEnabled = data.isNormalBuildEnabled(); 
 		this.autoBuildEnabled = data.isAutoBuildEnabled();
-		this.buildArguments = data.getBuildArguments();
+		this.buildCommand = data.getBuildCommand();
 		this.executablePath = data.getExecutablePath();
 		
 		assertAreEqual(this, data);
@@ -62,13 +62,13 @@ public class BuildTargetData implements BuildTargetDataView {
 				areEqual(targetName, other.targetName) &&
 				areEqual(normalBuildEnabled, other.normalBuildEnabled) &&
 				areEqual(autoBuildEnabled, other.autoBuildEnabled) &&
-				areEqual(buildArguments, other.buildArguments) &&
+				areEqual(buildCommand, other.buildCommand) &&
 				areEqual(executablePath, other.executablePath);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(targetName, normalBuildEnabled, autoBuildEnabled, buildArguments);
+		return HashcodeUtil.combinedHashCode(targetName, normalBuildEnabled, autoBuildEnabled, buildCommand);
 	}
 	
 	/* -----------------  ----------------- */
@@ -89,8 +89,8 @@ public class BuildTargetData implements BuildTargetDataView {
 	}
 	
 	@Override
-	public String getBuildArguments() {
-		return buildArguments;
+	public CommandInvocation getBuildCommand() {
+		return buildCommand;
 	}
 	
 	@Override

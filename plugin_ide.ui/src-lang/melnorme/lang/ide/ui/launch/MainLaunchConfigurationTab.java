@@ -26,6 +26,7 @@ import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.preferences.BuildTargetEditor;
@@ -97,7 +98,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		BuildTargetEditor component = new BuildTargetEditor(
 			getBuildManager(),
 			false,
-			this::getDefaultBuildTargetCommand,
+			this::getDefaultBuildTargetBuildCommand,
 			this::getDefaultProgramPath
 		);
 		component.programPathField.setLabelText(LangUIMessages.LaunchTab_ProgramPathField_title);
@@ -111,8 +112,8 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	/* -----------------  ----------------- */
 	
-	protected String getDefaultBuildTargetCommand() throws CommonException {
-		return buildTargetSource.getBuildTarget().getEffectiveBuildCommand();
+	protected CommandInvocation getDefaultBuildTargetBuildCommand() throws CommonException {
+		return buildTargetSource.getBuildTarget().getEffectiveBuildCommand2();
 	}
 	
 	protected String getDefaultProgramPath() throws CommonException {
@@ -122,8 +123,8 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	protected CompositeBuildTargetSettings getBuildTargetSettings() throws CommonException {
 		return new CompositeBuildTargetSettings(buildTargetSource) {
 			@Override
-			public String getBuildArguments() {
-				return buildTargetEditor.getEffectiveBuildArgumentsValue();
+			public CommandInvocation getBuildCommand() {
+				return buildTargetEditor.getEffectiveBuildCommand();
 			}
 			
 			@Override
@@ -176,7 +177,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	protected BuildTargetData getBuildTargetData() {
 		return new BuildTargetData(getBuildTargetName(), true, true, 
-			buildTargetEditor.buildCommandField.getEffectiveFieldValue1(), 
+			buildTargetEditor.buildCommandField.getEffectiveFieldValue(), 
 			buildTargetEditor.programPathField.getEffectiveFieldValue());
 	}
 	
@@ -197,12 +198,16 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	@Override
 	protected BuildTargetLaunchCreator doInitializeFrom_createSettings(ILaunchConfiguration config) 
-			throws CoreException {
-		return new BuildTargetLaunchCreator(config);
+			throws CommonException {
+		try {
+			return new BuildTargetLaunchCreator(config);
+		} catch(CoreException e) {
+			throw LangCore.createCommonException(e);
+		}
 	}
 	
 	@Override
-	public void doInitializeFrom(ILaunchConfiguration config) throws CoreException {
+	public void doInitializeFrom(ILaunchConfiguration config) throws CommonException {
 		BuildTargetLaunchCreator buildSettings = doInitializeFrom_createSettings(config);
 		
 		super.initializeFrom(buildSettings);
@@ -215,7 +220,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	}
 	
 	protected void initializeBuildTargetSettings(BuildTargetLaunchCreator btLaunchCreator) {
-		buildTargetEditor.buildCommandField.setEffectiveFieldValue1(btLaunchCreator.getBuildArguments());
+		buildTargetEditor.buildCommandField.setEffectiveFieldValue(btLaunchCreator.getBuildCommand());
 		buildTargetEditor.programPathField.setEffectiveFieldValue(btLaunchCreator.getExecutablePath());
 	}
 	

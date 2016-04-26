@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2016 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,23 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.launch;
+package melnorme.lang.ide.core.utils.operation;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.core.runtime.CoreException;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.core.CommonException;
 
-public interface ILaunchConfigSerializer {
-
-	ProjectLaunchSettings initFrom(IResource contextualResource);
+public interface CoreRunnable<R> {
 	
-	default void saveToConfig(ILaunchConfigurationWorkingCopy config) throws CommonException {
-		saveToConfig(config, false);
+	public R execute() throws CoreException, CommonException;
+	
+	public static <R> R toCoreException(CoreRunnable<R> coreRunnable) throws CoreException {
+		try {
+			return coreRunnable.execute();
+		} catch(CommonException e) {
+			throw LangCore.createCoreException(e);
+		}
 	}
-	
-	void saveToConfig(ILaunchConfigurationWorkingCopy config, boolean rename) throws CommonException;
 	
 }

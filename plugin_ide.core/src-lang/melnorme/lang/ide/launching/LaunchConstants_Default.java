@@ -4,8 +4,8 @@ public interface LaunchConstants_Default {
 	
 	public static final String ATTR_PROJECT_NAME = "project";
 	public static final String ATTR_BUILD_TARGET = "buildTarget";
-	public static final String ATTR_BUILD_ARGUMENTS_USE_DEFAULT = "buildArguments_UseDefault";
-	public static final String ATTR_BUILD_ARGUMENTS = "buildArguments";
+	public static final String ATTR_BUILD_COMMAND_USE_DEFAULT = "buildCommand_UseDefault";
+	public static final String ATTR_BUILD_COMMAND = "buildCommand";
 	public static final String ATTR_PROGRAM_PATH_USE_DEFAULT = "programPath_UseDefault";
 	public static final String ATTR_PROGRAM_PATH = "programPath";
 	
