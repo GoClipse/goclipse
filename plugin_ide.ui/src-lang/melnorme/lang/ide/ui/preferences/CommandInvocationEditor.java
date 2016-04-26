@@ -30,7 +30,6 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
 import melnorme.utilbox.fields.Field;
-import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 
 public class CommandInvocationEditor extends EnablementCompositeWidget<CommandInvocation> {
 	
@@ -161,10 +160,6 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	}
 	
 	/* FIXME: review */
-	public void addChangeListener(FieldChangeListener listener) {
-		commandArgumentsField.addChangeListener(listener);
-	}
-	
 	public String getEffectiveFieldValue1() {
 		CommandInvocation effectiveValue = getEffectiveFieldValue();
 		return effectiveValue == null ? null : effectiveValue.getCommandArguments();

@@ -18,17 +18,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.CompositeWidget;
 import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.IProperty;
 
-public abstract class EnablementCompositeWidget<VALUE> extends CompositeWidget {
+public abstract class EnablementCompositeWidget<VALUE> extends FieldCompositeWidget<VALUE> {
 	
 	public static final String LABEL_UseDefault = "Use default value.";
-	
-	protected final Field<VALUE> valueField = init_valueField();
 	
 	protected String label;
 	
@@ -44,13 +40,7 @@ public abstract class EnablementCompositeWidget<VALUE> extends CompositeWidget {
 		enablementField.setFieldValue(true);
 		enablementField.addChangeListener(this::handleEnablementChanged);
 		addChildWidget(enablementField);
-		
-		valueField.addChangeListener(this::updateWidgetFromInput);
 	}
-	
-	protected Field<VALUE> init_valueField() {
-		return new Field<>();
-	} 
 	
 	protected CheckBoxField init_createUseDefaultField(String enablementCheckBoxLabel) {
 		return new CheckBoxField(enablementCheckBoxLabel);
@@ -62,10 +52,6 @@ public abstract class EnablementCompositeWidget<VALUE> extends CompositeWidget {
 	
 	public boolean isUseDefault() {
 		return enablementField.getBooleanFieldValue();
-	}
-	
-	protected Field<VALUE> getField() {
-		return valueField;
 	}
 	
 	/* -----------------  ----------------- */

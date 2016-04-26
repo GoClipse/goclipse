@@ -25,6 +25,7 @@ import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.preferences.BuildTargetEditor;
@@ -146,7 +147,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		projectField.addChangeListener(this::projectFieldChanged);
 		buildTargetField.addChangeListener(this::buildTargetFieldChanged);
 		
-		buildTargetEditor.buildCommandField.addChangeListener(() -> updateLaunchConfigurationDialog());
+		buildTargetEditor.buildCommandField.getField().addChangeListener(this::updateLaunchConfigurationDialog);
 		buildTargetEditor.programPathField.addChangeListener(this::updateLaunchConfigurationDialog);
 	}
 	
@@ -168,11 +169,16 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	public void buildTargetFieldChanged() {
 		IProject project = getValidProjectOrNull();
 		if(project != null) {
-			buildTargetEditor.updateWidgetFromInput();
+			buildTargetEditor.setInput(getBuildTargetData());
 			updateLaunchConfigurationDialog();
 		}
 	}
 	
+	protected BuildTargetData getBuildTargetData() {
+		return new BuildTargetData(getBuildTargetName(), true, true, 
+			buildTargetEditor.buildCommandField.getEffectiveFieldValue1(), 
+			buildTargetEditor.programPathField.getEffectiveFieldValue());
+	}
 	
 	/* ----------------- Control creation ----------------- */
 	
@@ -215,11 +221,10 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 	
 	@Override
 	protected ProjectLaunchSettings getLaunchSettingsFromTab() {
+		BuildTargetData btData = getBuildTargetData();
 		return new BuildTargetLaunchCreator(
 			getProjectName(),
-			getBuildTargetName(),
-			buildTargetEditor.buildCommandField.getEffectiveFieldValue1(),
-			buildTargetEditor.programPathField.getEffectiveFieldValue()
+			btData
 		);
 	}
 	

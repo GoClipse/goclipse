@@ -16,7 +16,6 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
 import melnorme.lang.ide.core.operations.build.BuildTarget.BuildCommandInvocation;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.operations.build.BuildTargetDataView;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
@@ -65,7 +64,9 @@ public class BuildTargetEditor extends CompositeWidget {
 		}
 		
 		buildCommandField = addChildWidget(init_createArgumentsField());
-		buildCommandField.addChangeListener(() -> btData.buildArguments = getEffectiveBuildArgumentsValue());
+		buildCommandField.getField().addChangeListener(() -> {
+			btData.buildArguments = getEffectiveBuildArgumentsValue();
+		});
 		
 		programPathField = addChildWidget(init_createProgramPathField());
 		programPathField.addListener((__) -> btData.executablePath = getEffectiveProgramPathValue());
@@ -85,7 +86,7 @@ public class BuildTargetEditor extends CompositeWidget {
 		return new ProgramPathField();
 	}
 	
-	/* ----------------- bindings ----------------- */
+	/* ----------------- input ----------------- */
 	
 	public String getEffectiveBuildArgumentsValue() {
 		return buildCommandField.getEffectiveFieldValue1();
@@ -95,7 +96,8 @@ public class BuildTargetEditor extends CompositeWidget {
 		return programPathField.getEffectiveFieldValue();
 	}
 	
-	public void inputChanged(BuildTargetDataView buildTargetData) {
+	public void setInput(BuildTargetData buildTargetData) {
+		this.btData = buildTargetData; 
 		normalEnableField.setFieldValue(buildTargetData.isNormalBuildEnabled());
 		autoEnableField.setFieldValue(buildTargetData.isAutoBuildEnabled());
 		buildCommandField.setEffectiveFieldValue1(buildTargetData.getBuildArguments());

@@ -131,8 +131,8 @@ public class ProjectBuildConfigurationComponent extends CompositeWidget
 			return;
 		}
 		
-		buildTargetEditor.btData = buildOptionsToChange.get(buildTargetName);
-		buildTargetEditor.inputChanged(buildTargetEditor.btData);
+		BuildTargetData buildTargetData = buildOptionsToChange.get(buildTargetName);
+		buildTargetEditor.setInput(buildTargetData);
 	}
 	
 	/* -----------------  ----------------- */

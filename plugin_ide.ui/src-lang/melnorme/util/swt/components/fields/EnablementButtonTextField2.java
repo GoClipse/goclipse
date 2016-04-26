@@ -22,11 +22,11 @@ public abstract class EnablementButtonTextField2 extends EnablementCompositeWidg
 	
 	public EnablementButtonTextField2(String label) {
 		this(label, LABEL_UseDefault);
-		this.layoutColumns = 2;
 	}
 	
 	public EnablementButtonTextField2(String label, String useDefaultCheckboxLabel) {
 		super(label, useDefaultCheckboxLabel);
+		this.createInlined = false;
 		
 		this.buttonTextField = init_createButtonTextField(getField());
 		addChildWidget(buttonTextField);
