@@ -37,6 +37,7 @@ import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
 import melnorme.lang.ide.core.operations.ICommonOperation;
+import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.operation.OperationUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -134,8 +135,8 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			}
 			
 			@Override
-			public String getBuildArguments() {
-				return launchSettings.getBuildArguments();
+			public CommandInvocation getBuildCommand() {
+				return launchSettings.getBuildCommand();
 			}
 		};
 		

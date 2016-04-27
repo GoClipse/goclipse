@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
+import static melnorme.lang.ide.core.utils.operation.CoreRunnable.toCoreException;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
@@ -93,21 +94,23 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		
 		@Override
 		public boolean matchesLaunchConfiguration(ILaunchConfiguration config) throws CoreException {
-			BuildTargetLaunchCreator otherLaunchSettings = new BuildTargetLaunchCreator(config);
+			BuildTargetLaunchCreator otherLaunchSettings = toCoreException(
+				() -> new BuildTargetLaunchCreator(config)); 
 			
 			BuildTargetData data = btLaunchCreator.data;
 			BuildTargetData otherData = otherLaunchSettings.data;
 			return 
 				areEqual(getProjectName(), otherLaunchSettings.projectName) &&
 				areEqual(data.targetName, otherData.targetName) &&
-				areEqual(data.buildArguments, otherData.buildArguments) &&
+				areEqual(data.buildCommand, otherData.buildCommand) &&
 				areEqual(data.executablePath, otherData.executablePath)
 				;
 		}
 		
 		@Override
 		public ILaunchConfiguration createNewConfiguration() throws CoreException {
-			return btLaunchCreator.createNewConfiguration(getLaunchConfigType());
+			return toCoreException(
+				() -> btLaunchCreator.createNewConfiguration(getLaunchConfigType()));
 		}
 		
 	}

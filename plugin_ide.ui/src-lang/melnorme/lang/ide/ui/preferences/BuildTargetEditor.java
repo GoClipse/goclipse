@@ -14,10 +14,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildManagerMessages;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildCommandInvocation;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.operations.build.BuildTargetDataView;
+import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
+import melnorme.lang.ide.core.operations.build.CommandInvocation.ValidatedCommandArgumentsSource;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.tooling.data.StatusException;
@@ -35,7 +35,7 @@ public class BuildTargetEditor extends CompositeWidget {
 	protected final CheckBoxField normalEnableField;
 	protected final CheckBoxField autoEnableField;
 	
-	protected final CommonGetter<String> getDefaultBuildCommand;
+	protected final CommonGetter<CommandInvocation> getDefaultBuildCommand;
 	public final CommandInvocationEditor buildCommandField;
 	protected final CommonGetter<String> getDefaultProgramPath;
 	public final EnablementButtonTextField programPathField;
@@ -45,7 +45,7 @@ public class BuildTargetEditor extends CompositeWidget {
 	public BuildTargetEditor(
 			BuildManager buildManager,
 			boolean createEnablementFields,
-			CommonGetter<String> getDefaultBuildCommand, 
+			CommonGetter<CommandInvocation> getDefaultBuildCommand, 
 			CommonGetter<String> getDefaultProgramPath
 	) {
 		super(false);
@@ -65,7 +65,9 @@ public class BuildTargetEditor extends CompositeWidget {
 		}
 		
 		buildCommandField = addChildWidget(init_createArgumentsField());
-		buildCommandField.addChangeListener(() -> btData.buildArguments = getEffectiveBuildArgumentsValue());
+		buildCommandField.getField().addChangeListener(() -> {
+			btData.buildCommand = getEffectiveBuildCommand();
+		});
 		
 		programPathField = addChildWidget(init_createProgramPathField());
 		programPathField.addListener((__) -> btData.executablePath = getEffectiveProgramPathValue());
@@ -85,20 +87,21 @@ public class BuildTargetEditor extends CompositeWidget {
 		return new ProgramPathField();
 	}
 	
-	/* ----------------- bindings ----------------- */
+	/* ----------------- input ----------------- */
 	
-	public String getEffectiveBuildArgumentsValue() {
-		return buildCommandField.getEffectiveFieldValue1();
+	public CommandInvocation getEffectiveBuildCommand() {
+		return buildCommandField.getEffectiveFieldValue();
 	}
 	
 	public String getEffectiveProgramPathValue() {
 		return programPathField.getEffectiveFieldValue();
 	}
 	
-	public void inputChanged(BuildTargetDataView buildTargetData) {
+	public void setInput(BuildTargetData buildTargetData) {
+		this.btData = buildTargetData; 
 		normalEnableField.setFieldValue(buildTargetData.isNormalBuildEnabled());
 		autoEnableField.setFieldValue(buildTargetData.isAutoBuildEnabled());
-		buildCommandField.setEffectiveFieldValue1(buildTargetData.getBuildArguments());
+		buildCommandField.setEffectiveFieldValue(buildTargetData.getBuildCommand());
 		programPathField.setEffectiveFieldValue(buildTargetData.getExecutablePath());
 	}
 	
@@ -106,9 +109,9 @@ public class BuildTargetEditor extends CompositeWidget {
 	
 	public static class BuildCommandEditor extends CommandInvocationEditor {
 		
-		public BuildCommandEditor(CommonGetter<String> getDefaultCommandArguments,
+		public BuildCommandEditor(CommonGetter<CommandInvocation> getDefaultBuildCommand,
 				VariablesResolver variablesResolver) {
-			super(getDefaultCommandArguments, variablesResolver);
+			super(getDefaultBuildCommand, variablesResolver);
 			
 			this.label = LangUIMessages.Fields_BuildCommand;
 		}
@@ -120,7 +123,13 @@ public class BuildTargetEditor extends CompositeWidget {
 		
 		@Override
 		protected void doValidate(String commandArguments) throws StatusException {
-			new BuildCommandInvocation(commandArguments, variablesResolver).validate();
+			try {
+				new CommandInvocation(commandArguments).validate(variablesResolver);
+			} catch(StatusException se) {
+				if(se.getMessage() == ValidatedCommandArgumentsSource.MSG_NO_COMMAND_SPECIFIED) {
+					handleNoBuildCommandSupplied();
+				}
+			}
 		}
 	}
 	

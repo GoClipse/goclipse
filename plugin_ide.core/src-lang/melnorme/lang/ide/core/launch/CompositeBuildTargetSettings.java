@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.utilbox.core.CommonException;
 
 /** 
@@ -28,7 +29,7 @@ public abstract class CompositeBuildTargetSettings {
 	}
 	
 	// can be null
-	public abstract String getBuildArguments();
+	public abstract CommandInvocation getBuildCommand();
 	
 	// can be null
 	public abstract String getExecutablePath();
@@ -42,13 +43,13 @@ public abstract class CompositeBuildTargetSettings {
 	}
 	
 	protected BuildTarget getValidBuildTarget2(BuildTarget originalBuildTarget) {
-		String buildArguments = getBuildArguments();
+		CommandInvocation buildCommand = getBuildCommand();
 		String executablePath = getExecutablePath();
 		
 		BuildTargetData data = originalBuildTarget.getDataCopy();
 		
-		if(buildArguments != null) {
-			data.buildArguments = buildArguments;
+		if(buildCommand != null) {
+			data.buildCommand = buildCommand;
 		}
 		if(executablePath != null) {
 			data.executablePath = executablePath;

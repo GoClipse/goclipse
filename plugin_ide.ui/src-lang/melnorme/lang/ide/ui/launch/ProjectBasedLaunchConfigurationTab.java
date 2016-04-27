@@ -29,8 +29,11 @@ import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.fields.ProjectField;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.CommonRunnable;
 
 public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchConfigurationTabExt {
 	
@@ -111,7 +114,8 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
 		IResource contextResource = WorkbenchUtils.getContextResource();
-		getDefaultProjectSettings(contextResource).saveToConfig(config, true);
+		runOperation(
+			() -> getDefaultProjectSettings(contextResource).saveToConfig(config, true));
 	}
 	
 	protected ILaunchConfigSerializer getDefaultProjectSettings(IResource contextResource) {
@@ -122,19 +126,15 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	
 	@Override
 	public void initializeFrom(ILaunchConfiguration config) {
-		try {
-			doInitializeFrom(config);
-		} catch(CoreException ce) {
-			LangCore.logStatus(ce);
-		}
+		runOperation(() -> doInitializeFrom(config));
 	}
 	
-	public void doInitializeFrom(ILaunchConfiguration config) throws CoreException {
+	public void doInitializeFrom(ILaunchConfiguration config) throws CommonException {
 		initializeFrom(doInitializeFrom_createSettings(config));
 	}
 	
 	protected abstract ProjectLaunchSettings doInitializeFrom_createSettings(ILaunchConfiguration config) 
-			throws CoreException;
+			throws CommonException;
 	
 	protected void initializeFrom(ProjectLaunchSettings projectSettings) {
 		projectField.setFieldValue(projectSettings.projectName);
@@ -142,7 +142,16 @@ public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchC
 	
 	@Override
 	public final void performApply(ILaunchConfigurationWorkingCopy config) {
-		getLaunchSettingsFromTab().saveToConfig(config);
+		runOperation(
+			() -> getLaunchSettingsFromTab().saveToConfig(config));
+	}
+	
+	public void runOperation(CommonRunnable op) {
+		try {
+			op.run();
+		} catch(CommonException e) {
+			LangCore.logStatusException(e.toStatusException(Severity.ERROR));
+		}
 	}
 	
 	protected abstract ProjectLaunchSettings getLaunchSettingsFromTab();

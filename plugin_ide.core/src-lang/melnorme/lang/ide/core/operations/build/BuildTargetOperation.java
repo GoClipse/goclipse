@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.option;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -73,7 +74,8 @@ public abstract class BuildTargetOperation extends AbstractToolManagerOperation 
 	}
 	
 	public Indexable<String> getEffectiveProccessCommandLine() throws CommonException {
-		return buildCommand.getEffectiveCommandLine();
+		VariablesResolver variablesManager = toolManager.getVariablesManager(option(getProject()));
+		return buildCommand.getValidatedCommandArguments(variablesManager).getValidatedValue();
 	}
 	
 	public ProcessBuilder getToolProcessBuilder() throws CommonException, OperationCancellation {

@@ -22,6 +22,8 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.CommandInvocation;
+import melnorme.lang.ide.core.operations.build.CommandInvocationSerializer;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.utilbox.core.CommonException;
@@ -29,14 +31,11 @@ import melnorme.utilbox.misc.StringUtil;
 
 public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	
+	protected final CommandInvocationSerializer commandInvocationSerializer = new CommandInvocationSerializer();
+	
 	public BuildTargetData data = new BuildTargetData();
 	
 	public BuildTargetLaunchCreator() {
-	}
-	
-	public BuildTargetLaunchCreator(String projectName, 
-			String targetName, String buildArguments, String executablePath) {
-		this(projectName, new BuildTargetData(targetName, true, true, buildArguments, executablePath));
 	}
 	
 	public BuildTargetLaunchCreator(String projectName, BuildTargetData data) {
@@ -44,22 +43,23 @@ public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 		this.data = data;
 	}
 	
-	public BuildTargetLaunchCreator(ILaunchConfiguration config) throws CoreException {
+	public BuildTargetLaunchCreator(ILaunchConfiguration config) throws CoreException, CommonException {
 		super(config);
 		
 		data.targetName = config.getAttribute(LaunchConstants.ATTR_BUILD_TARGET, "");
 		data.executablePath = LaunchUtils.getOptionalAttribute(config, 
 			LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, LaunchConstants.ATTR_PROGRAM_PATH);
-		data.buildArguments = LaunchUtils.getOptionalAttribute(config, 
-			LaunchConstants.ATTR_BUILD_ARGUMENTS_USE_DEFAULT, LaunchConstants.ATTR_BUILD_ARGUMENTS);
+		data.buildCommand = commandInvocationSerializer.readFromString(
+			LaunchUtils.getOptionalAttribute(config, 
+				LaunchConstants.ATTR_BUILD_COMMAND_USE_DEFAULT, LaunchConstants.ATTR_BUILD_COMMAND));
 	}
 	
 	public String getTargetName() {
 		return data.targetName;
 	}
 	
-	public String getBuildArguments() {
-		return data.buildArguments;
+	public CommandInvocation getBuildCommand() {
+		return data.buildCommand;
 	}
 	
 	public String getExecutablePath() {
@@ -81,7 +81,7 @@ public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 		
 		BuildTarget defaultBuildTarget = buildInfo.getDefaultBuildTarget();
 		data.targetName = defaultBuildTarget.getTargetName(); 
-		data.buildArguments = null;
+		data.buildCommand = null;
 		data.executablePath = null;
 		
 		return this;
@@ -97,11 +97,13 @@ public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	}
 	
 	@Override
-	protected void saveToConfig_rest(ILaunchConfigurationWorkingCopy config) {
+	protected void saveToConfig_rest(ILaunchConfigurationWorkingCopy config) throws CommonException {
+		String serializedBuildCommand = commandInvocationSerializer.writeToString(data.buildCommand);
+		
 		config.setAttribute(LaunchConstants.ATTR_BUILD_TARGET, getTargetName());
 		LaunchUtils.setOptionalValue(config, 
-			LaunchConstants.ATTR_BUILD_ARGUMENTS_USE_DEFAULT, 
-			LaunchConstants.ATTR_BUILD_ARGUMENTS, data.buildArguments);
+			LaunchConstants.ATTR_BUILD_COMMAND_USE_DEFAULT, 
+			LaunchConstants.ATTR_BUILD_COMMAND, serializedBuildCommand);
 		LaunchUtils.setOptionalValue(config, 
 			LaunchConstants.ATTR_PROGRAM_PATH_USE_DEFAULT, 
 			LaunchConstants.ATTR_PROGRAM_PATH, data.executablePath);

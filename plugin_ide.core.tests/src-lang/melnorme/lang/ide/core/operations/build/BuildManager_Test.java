@@ -12,6 +12,7 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.lang.ide.core.LangCore_Actual.VAR_NAME_SdkToolPath;
 import static melnorme.lang.ide.core.operations.build.BuildTargetsSerializer_Test.bt;
+import static melnorme.lang.ide.core.operations.build.BuildTargetsSerializer_Test.cmd;
 import static melnorme.lang.ide.core.operations.build.VariablesResolver.variableRefString;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -232,11 +233,12 @@ public class BuildManager_Test extends CoreTestWithProject {
 	
 	protected CompositeBuildTargetSettings btSettings(
 			String buildTargetName, String buildArguments, String artifactPath) {
-		return getBuiltTargetSettingsValidator(project.getName(), buildTargetName, buildArguments, artifactPath);
+		CommandInvocation buildCommand = buildArguments == null ? null : new CommandInvocation(buildArguments);
+		return getBuiltTargetSettingsValidator(project.getName(), buildTargetName, buildCommand, artifactPath);
 	}
 	
 	protected CompositeBuildTargetSettings getBuiltTargetSettingsValidator(
-			String projectName, String buildTargetName, String buildArguments, String artifactPath) {
+			String projectName, String buildTargetName, CommandInvocation buildCommand, String artifactPath) {
 		
 		BuildTargetSource buildTargetSource = new BuildTargetSource() {
 			@Override
@@ -257,8 +259,8 @@ public class BuildManager_Test extends CoreTestWithProject {
 		
 		CompositeBuildTargetSettings btSettings = new CompositeBuildTargetSettings(buildTargetSource) {
 			@Override
-			public String getBuildArguments() {
-				return buildArguments;
+			public CommandInvocation getBuildCommand() {
+				return buildCommand;
 			}
 			
 			@Override
@@ -296,7 +298,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
 		
 		BuildTarget btA = buildMgr.getBuildTarget(project, "TargetA", true);
-		assertTrue(btA.getData().getBuildArguments() == null);
+		assertTrue(btA.getData().getBuildCommand() == null);
 		
 		assertAreEqual(
 			btA.getBuildOperation(toolMgr, opMonitor).getEffectiveProccessCommandLine(), 
@@ -304,7 +306,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 		);
 		
 		BuildTarget btB = buildMgr.getBuildTarget(project, "TargetB", true);
-		assertTrue(btB.getData().getBuildArguments() != null);
+		assertTrue(btB.getData().getBuildCommand() != null);
 		
 		assertAreEqual(
 			btB.getBuildOperation(toolMgr, opMonitor).getEffectiveProccessCommandLine(), 
@@ -317,7 +319,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 		verifyThrows(
 			() -> getBuildOperation(buildInfo, btB, ""), 
 			
-			CommonException.class, "Build command is empty"
+			CommonException.class, "No command specified"
 		);
 		
 	}
@@ -350,7 +352,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 	protected Indexable<String> getBuildOperation(ProjectBuildInfo buildInfo, BuildTarget btB, String buildArguments)
 			throws CommonException {
 		BuildTargetData dataCopy = btB.getDataCopy();
-		dataCopy.buildArguments = buildArguments;
+		dataCopy.buildCommand = cmd(buildArguments);
 		BuildTarget newBuildTarget = buildInfo.buildMgr.createBuildTarget(buildInfo.project, dataCopy);
 		
 		ToolManager toolMgr = buildInfo.buildMgr.getToolManager();

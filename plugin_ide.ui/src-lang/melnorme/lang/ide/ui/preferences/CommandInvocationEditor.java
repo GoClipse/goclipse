@@ -30,25 +30,24 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
 import melnorme.utilbox.fields.Field;
-import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 
 public class CommandInvocationEditor extends EnablementCompositeWidget<CommandInvocation> {
 	
 	protected final Field<CommandInvocation> commandInvocation;
 
-	protected final CommonGetter<String> getDefaultArguments;
+	protected final CommonGetter<CommandInvocation> getDefaultArguments;
 	protected final VariablesResolver variablesResolver;
 	
 	protected final TextFieldWidget commandArgumentsField;
 	
-	public CommandInvocationEditor(CommonGetter<String> getDefaultCommandArguments,
+	public CommandInvocationEditor(CommonGetter<CommandInvocation> getDefaultCommandInvocation,
 			VariablesResolver variablesResolver) {
 		super("Command Invocation:", LABEL_UseDefault);
 		this.createInlined = false;
 		
 		this.commandInvocation = getField();
 		
-		this.getDefaultArguments = getDefaultCommandArguments;
+		this.getDefaultArguments = getDefaultCommandInvocation;
 		this.variablesResolver = variablesResolver;
 		
 		commandArgumentsField = init_createButtonTextField();
@@ -77,12 +76,12 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	}
 	
 	protected void updateCommandInvocationField() {
-		commandInvocation.set(new CommandInvocation(commandArgumentsField.get(), variablesResolver));
+		commandInvocation.set(new CommandInvocation(commandArgumentsField.get()));
 	}
 	
 	@Override
 	protected CommandInvocation getDefaultFieldValue() throws CommonException {
-		return new CommandInvocation(getDefaultArguments.get(), variablesResolver);
+		return getDefaultArguments.get();
 	}
 	
 	/* ----------------- controls & layout ----------------- */
@@ -90,7 +89,7 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	protected void createButtonArea() {
 		ButtonWidget environmentVarButton = new ButtonWidget("Edit Environment variables...", 
 			this::handleEditEnvironmentVars);
-		ButtonWidget variablesDialogButton = new ButtonWidget("Insert/Edit Command Variables...", 
+		ButtonWidget variablesDialogButton = new ButtonWidget("Insert/Edit Substitution Variables...", 
 			new SetFieldValueOperation<String>(commandArgumentsField, this::newValueFromCommandVariablesDialog));
 		
 		/* FIXME:  buttons layout issue */
@@ -139,7 +138,7 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	}
 	
 	protected void doValidate(String commandArguments) throws StatusException {
-		new CommandInvocation(commandArguments, variablesResolver).validate();
+		new CommandInvocation(commandArguments).validate(variablesResolver);
 	}
 	
 	/* ----------------- button handlers ----------------- */
@@ -158,22 +157,6 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 		Shell shell = getButtonTextField().getFieldControl().getShell();
 		/* FIXME: todo EnvironmentVar*/
 		MessageDialog.openInformation(shell, "TODO", "NOT Implement");
-	}
-	
-	/* FIXME: review */
-	public void addChangeListener(FieldChangeListener listener) {
-		commandArgumentsField.addChangeListener(listener);
-	}
-	
-	public String getEffectiveFieldValue1() {
-		CommandInvocation effectiveValue = getEffectiveFieldValue();
-		return effectiveValue == null ? null : effectiveValue.getCommandArguments();
-	}
-	
-	public void setEffectiveFieldValue1(String buildArguments) {
-		setEffectiveFieldValue(
-			buildArguments == null ? null : new CommandInvocation(buildArguments, variablesResolver));
-		
 	}
 	
 }

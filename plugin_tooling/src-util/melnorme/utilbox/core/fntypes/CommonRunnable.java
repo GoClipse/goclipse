@@ -8,30 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations.build;
+package melnorme.utilbox.core.fntypes;
 
+import melnorme.utilbox.core.CommonException;
 
-public interface BuildTargetDataView {
-	
-	String getTargetName();
-	
-	boolean isNormalBuildEnabled();
-	
-	boolean isAutoBuildEnabled();
-	
-	CommandInvocation getBuildCommand();
-	
-	String getExecutablePath();
-	
-	
-	default BuildTargetData copy() {
-		return new BuildTargetData(
-			getTargetName(),
-			isNormalBuildEnabled(),
-			isAutoBuildEnabled(),
-			getBuildCommand(),
-			getExecutablePath()
-		);
-	}
+public interface CommonRunnable extends ThrowingRunnable<CommonException>{
 	
 }

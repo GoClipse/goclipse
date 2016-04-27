@@ -82,7 +82,8 @@ public class ProjectLaunchSettings implements ILaunchConfigSerializer {
 		return DebugPlugin.getDefault().getLaunchManager();
 	}
 	
-	public ILaunchConfiguration createNewConfiguration(ILaunchConfigurationType launchCfgType) throws CoreException {
+	public ILaunchConfiguration createNewConfiguration(ILaunchConfigurationType launchCfgType) 
+			throws CoreException, CommonException {
 		String suggestedName = getSuggestedConfigName();
 		
 		String launchName = getLaunchManager().generateLaunchConfigurationName(suggestedName);
@@ -106,7 +107,7 @@ public class ProjectLaunchSettings implements ILaunchConfigSerializer {
 	}
 	
 	@Override
-	public void saveToConfig(ILaunchConfigurationWorkingCopy config, boolean rename) {
+	public void saveToConfig(ILaunchConfigurationWorkingCopy config, boolean rename) throws CommonException {
 		config.setAttribute(LaunchConstants.ATTR_PROJECT_NAME, projectName);
 		
 		config.setMappedResources(array(getProject()));
@@ -121,7 +122,7 @@ public class ProjectLaunchSettings implements ILaunchConfigSerializer {
 	}
 	
 	@SuppressWarnings("unused")
-	protected void saveToConfig_rest(ILaunchConfigurationWorkingCopy config) {
+	protected void saveToConfig_rest(ILaunchConfigurationWorkingCopy config) throws CommonException {
 	}
 	
 }

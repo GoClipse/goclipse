@@ -53,12 +53,12 @@ public class ThemeHelper extends LifecycleObject implements IDisposable {
 		return activeTheme == null ? "" : activeTheme.getId();
 	}
 	
-	public abstract static class ThemeChangeListener2 implements EventHandler, IDisposable {
+	public abstract static class ThemeChangeListener implements EventHandler, IDisposable {
 		
 		protected final BundleContext context = LangUI.getInstance().getBundleContext(); 
 		protected final ServiceRegistration<?> svcRegistration;
 		
-		public ThemeChangeListener2() {
+		public ThemeChangeListener() {
 			Dictionary<String, String> properties = new Hashtable<>();
 			properties.put(EventConstants.EVENT_TOPIC, IThemeEngine.Events.THEME_CHANGED);
 			svcRegistration = context.registerService(EventHandler.class, this, properties);

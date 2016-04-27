@@ -207,7 +207,7 @@ public abstract class BuildManager {
 		if(targetsPrefValue != null) {
 			ArrayList2<BuildTargetData> buildTargetsData;
 			try {
-				buildTargetsData = createSerializer().readProjectBuildInfo(targetsPrefValue);
+				buildTargetsData = createSerializer().readFromString(targetsPrefValue);
 			} catch(CommonException ce) {
 				LangCore.logError("Error reading project build-info.", ce);
 				return existingBuildTargets;

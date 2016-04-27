@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 
 import melnorme.utilbox.core.CommonException;
 
-public class DocumentSerializerHelper {
+public abstract class DocumentSerializerHelper<ELEMENT> {
 	
 	protected DocumentBuilder getDocumentBuilder() throws CommonException {
 		try {
@@ -43,6 +43,18 @@ public class DocumentSerializerHelper {
 			throw new CommonException("Error obtaining XML DocumentBuilder: ", e);
 		}
 	}
+	
+	public String writeToString(ELEMENT buildTargets) throws CommonException {
+		Document doc = getDocumentBuilder().newDocument();
+		writeDocument(doc, buildTargets);
+		return documentToString(doc);
+	}
+	
+	protected abstract void writeDocument(Document doc, ELEMENT buildTargets);
+	
+	/* ----------------- read ----------------- */
+	
+	public abstract ELEMENT readFromString(String targetsXml) throws CommonException;
 	
 	public String documentToString(Document doc) throws TransformerFactoryConfigurationError, CommonException {
 		Transformer transformer;
@@ -77,7 +89,7 @@ public class DocumentSerializerHelper {
 		}
 	}
 	
-	protected String getAttribute(Node targetElem, String keyName, String defaultValue) {
+	public static String getAttribute(Node targetElem, String keyName, String defaultValue) {
 		Node attribute = targetElem.getAttributes().getNamedItem(keyName);
 		if(attribute == null) {
 			return defaultValue;
@@ -85,7 +97,7 @@ public class DocumentSerializerHelper {
 		return attribute.getTextContent();
 	}
 	
-	protected boolean getBooleanAttribute(Node targetElem, String keyName, boolean defaultValue) {
+	public static boolean getBooleanAttribute(Node targetElem, String keyName, boolean defaultValue) {
 		String enabledStr = getAttribute(targetElem, keyName, null);
 		if(enabledStr == null) {
 			return defaultValue;

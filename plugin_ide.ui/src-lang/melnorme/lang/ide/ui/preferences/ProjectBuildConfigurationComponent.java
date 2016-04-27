@@ -21,6 +21,7 @@ import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
+import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
@@ -131,8 +132,8 @@ public class ProjectBuildConfigurationComponent extends CompositeWidget
 			return;
 		}
 		
-		buildTargetEditor.btData = buildOptionsToChange.get(buildTargetName);
-		buildTargetEditor.inputChanged(buildTargetEditor.btData);
+		BuildTargetData buildTargetData = buildOptionsToChange.get(buildTargetName);
+		buildTargetEditor.setInput(buildTargetData);
 	}
 	
 	/* -----------------  ----------------- */
@@ -153,8 +154,9 @@ public class ProjectBuildConfigurationComponent extends CompositeWidget
 		return buildTargetSource.getBuildTarget();
 	}
 	
-	public String getDefaultBuildCommand() throws CommonException {
-		return getOriginalBuildTarget().getDefaultBuildCommand();
+	public CommandInvocation getDefaultBuildCommand() throws CommonException {
+		String defaultBuildCommandArgs = getOriginalBuildTarget().getDefaultBuildCommand();
+		return new CommandInvocation(defaultBuildCommandArgs);
 	}
 	
 	public String getDefaultExecutablePath() throws CommonException {

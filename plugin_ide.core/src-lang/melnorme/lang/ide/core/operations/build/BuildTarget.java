@@ -147,12 +147,12 @@ public class BuildTarget extends AbstractValidator {
 		}
 	}
 	
-	public String getEffectiveBuildCommand() throws StatusException {
-		String buildOptions = targetData.getBuildArguments();
-		if(buildOptions != null) {
-			return buildOptions;
+	public CommandInvocation getEffectiveBuildCommand2() throws StatusException {
+		CommandInvocation buildCommand = targetData.getBuildCommand();
+		if(buildCommand != null) {
+			return buildCommand;
 		}
-		return getDefaultBuildCommand();
+		return new CommandInvocation(getDefaultBuildCommand());
 	}
 	
 	/* -----------------  ----------------- */
@@ -211,35 +211,17 @@ public class BuildTarget extends AbstractValidator {
 	/* -----------------  ----------------- */
 	
 	public void validateForBuild(ToolManager toolManager) throws StatusException {
-		getCommandInvocation(toolManager).validate();
-		getValidExecutableLocation(); // TODO: Build Target Editor validate this
-	}
-	
-	public CommandInvocation getCommandInvocation(ToolManager toolManager) throws StatusException {
-		String buildCommandString = getEffectiveBuildCommand();
 		VariablesResolver variablesResolver = toolManager.getVariablesManager(option(getProject()));
-		return new BuildCommandInvocation(buildCommandString, variablesResolver);
-	}
-	
-	public static class BuildCommandInvocation extends CommandInvocation {
-		public BuildCommandInvocation(String commandArguments, VariablesResolver variablesResolver) {
-			super(commandArguments, variablesResolver);
-		}
-		
-		@Override
-		protected void handleEmptyCommandLine() throws CommonException {
-			throw new CommonException("Build command is empty.");
-		}
+		getEffectiveBuildCommand2().validate(variablesResolver);
+		getValidExecutableLocation(); // TODO: Build Target Editor validate this
 	}
 	
 	public BuildTargetOperation getBuildOperation(ToolManager toolManager, IOperationMonitor opMonitor)
 			throws CommonException {
 		assertNotNull(opMonitor);
 		
-		CommandInvocation buildCommand = this.getCommandInvocation(toolManager);
-		
 		return getBuildType().getBuildOperation(new BuildOperationParameters(opMonitor, 
-			toolManager, this.getProject(), this.getBuildTargetName(), buildCommand));
+			toolManager, getProject(), getBuildTargetName(), getEffectiveBuildCommand2()));
 	}
 	
 }

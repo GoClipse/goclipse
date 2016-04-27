@@ -8,30 +8,28 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations.build;
+package melnorme.util.swt.components.fields;
 
 
-public interface BuildTargetDataView {
+import melnorme.util.swt.components.CompositeWidget;
+import melnorme.utilbox.fields.Field;
+
+public class FieldCompositeWidget<VALUE> extends CompositeWidget {
 	
-	String getTargetName();
+	protected final Field<VALUE> valueField = init_valueField();
 	
-	boolean isNormalBuildEnabled();
+	public FieldCompositeWidget(boolean createInlined) {
+		super(createInlined);
+		
+		valueField.addChangeListener(this::updateWidgetFromInput);
+	}
 	
-	boolean isAutoBuildEnabled();
+	protected Field<VALUE> init_valueField() {
+		return new Field<>();
+	}
 	
-	CommandInvocation getBuildCommand();
-	
-	String getExecutablePath();
-	
-	
-	default BuildTargetData copy() {
-		return new BuildTargetData(
-			getTargetName(),
-			isNormalBuildEnabled(),
-			isAutoBuildEnabled(),
-			getBuildCommand(),
-			getExecutablePath()
-		);
+	public Field<VALUE> getField() {
+		return valueField;
 	}
 	
 }

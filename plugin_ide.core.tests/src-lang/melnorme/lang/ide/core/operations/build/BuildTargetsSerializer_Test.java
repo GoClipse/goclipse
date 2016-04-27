@@ -21,15 +21,24 @@ import melnorme.utilbox.tests.CommonTest;
 
 public class BuildTargetsSerializer_Test extends CommonTest {
 	
+	public static CommandInvocation cmd(String commandArguments) {
+		return commandArguments == null ? null :new CommandInvocation(commandArguments);
+	}
+	
 	public static BuildTargetData bt(String targetName, boolean enabled, boolean autoEnabled, 
 			String buildArguments, String executablePath) {
+		return btd(targetName, enabled, autoEnabled, cmd(buildArguments), executablePath);
+	}
+	
+	public static BuildTargetData btd(String targetName, boolean enabled, boolean autoEnabled, 
+			CommandInvocation buildCommand, String executablePath) {
 		BuildTargetData bt = new BuildTargetData(
-					targetName, 
-					enabled, 
-					autoEnabled,
-					buildArguments, 
-					executablePath
-				);
+			targetName, 
+			enabled, 
+			autoEnabled,
+			buildCommand, 
+			executablePath
+		);
 		
 		assertEquals(bt, bt);
 		assertEquals(bt, new BuildTargetData().setData(bt));
@@ -44,18 +53,18 @@ public class BuildTargetsSerializer_Test extends CommonTest {
 	public void test$() throws Exception {
 		testSerialize(new ArrayList2<>());
 		testSerialize(new ArrayList2<>(bt("", false, false, null, null)));
-		testSerialize(new ArrayList2<>(bt("", true, true, "-opt", "foo.exe")));
+		testSerialize(new ArrayList2<>(btd("", true, true, cmd("-opt"), "foo.exe")));
 		testSerialize(new ArrayList2<>(
-				bt("", false, true, "", ""),
-				bt("blah", true, false, "-opt", "foo.exe"),
+				btd("", false, true, cmd(""), ""),
+				btd("blah", true, false, cmd("-opt"), "foo.exe"),
 				bt("xxx", true, false, null, "foo/bar.ooo")
 		));
 	}
 	
 	protected void testSerialize(ArrayList2<BuildTargetData> buildTargetsData) {
 		try {
-			String xml = serializer.writeProjectBuildInfo(buildTargetsData);
-			assertAreEqual(buildTargetsData, serializer.readProjectBuildInfo(xml));
+			String xml = serializer.writeToString(buildTargetsData);
+			assertAreEqual(buildTargetsData, serializer.readFromString(xml));
 		} catch(CommonException e) {
 			assertFail();
 		}
