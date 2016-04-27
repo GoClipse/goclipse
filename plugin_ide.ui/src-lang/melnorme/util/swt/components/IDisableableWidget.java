@@ -26,35 +26,24 @@ public interface IDisableableWidget extends IWidgetComponent {
 	 */
 	void setEnabled(boolean enabled);
 	
-	
-	/* -----------------  ----------------- */
-	
 	default void _IDisableableComponent$verifyContract() {
-		_verify_setEnabled(getClass());
+		DisableableWidgetContractCheckHelper.verify_setEnabled_contract(getClass());
 	}
 	
-	public static void _verify_setEnabled(Class<?> klass) {
+}
+
+
+class DisableableWidgetContractCheckHelper {
+	
+	public static void verify_setEnabled_contract(Class<?> klass) {
 		if(klass == AbstractDisableableWidget.class) {
 			return;
 		}
 		
-		boolean needsMethodOverride = false;
+		boolean needs_setEnabled_MethodOverride = 
+				!Modifier.isAbstract(klass.getModifiers()) && hasUIControlField(klass);
 		
-		Field[] declaredFields = klass.getDeclaredFields();
-		for(Field field : declaredFields) {
-			if(field.getName().startsWith("this$")) {
-				continue;
-			}
-			if(Modifier.isStatic(field.getModifiers()) || field.getType().isPrimitive()) {
-				continue;
-			}
-			if(isUIControlField(field)) {
-				needsMethodOverride = true;
-				break;
-			}
-			
-		}
-		if(needsMethodOverride) {
+		if(needs_setEnabled_MethodOverride) {
 			
 			// if the subclass has declared new UI control fields, ensure it has override setEnabled too
 			
@@ -70,10 +59,27 @@ public interface IDisableableWidget extends IWidgetComponent {
 			
 		} else {
 			
-			_verify_setEnabled(klass.getSuperclass());
+			verify_setEnabled_contract(klass.getSuperclass());
 			return;
 		}
 		
+	}
+	
+	public static boolean hasUIControlField(Class<?> klass) {
+		Field[] declaredFields = klass.getDeclaredFields();
+		for(Field field : declaredFields) {
+			if(field.getName().startsWith("this$")) {
+				continue;
+			}
+			if(Modifier.isStatic(field.getModifiers()) || field.getType().isPrimitive()) {
+				continue;
+			}
+			if(isUIControlField(field)) {
+				return true;
+			}
+			
+		}
+		return false;
 	}
 	
 	public static boolean isUIControlField(Field field) {
