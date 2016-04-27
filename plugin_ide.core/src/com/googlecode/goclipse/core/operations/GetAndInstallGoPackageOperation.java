@@ -12,25 +12,18 @@ package com.googlecode.goclipse.core.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoPath;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 
-public class GetAndInstallGoPackageOperation implements CoreOperationRunnable {
+public class GetAndInstallGoPackageOperation {
 	
 	protected final ToolManager toolMgr = LangCore.getToolManager();
 	
@@ -47,13 +40,12 @@ public class GetAndInstallGoPackageOperation implements CoreOperationRunnable {
 	
 	protected Location workingDir;
 	
-	@Override
-	public void doRun(IProgressMonitor monitor) throws CommonException, CoreException, OperationCancellation {
-		ProcessBuilder pb = getProcessToStart();
-		
-		IOperationMonitor opMonitor = toolMgr.startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, true);
-		toolMgr.newRunProcessTask(opMonitor, pb, monitor).runProcess();
-	}
+//	public void doRun(IProgressMonitor monitor) throws CommonException, CoreException, OperationCancellation {
+//		ProcessBuilder pb = getProcessToStart();
+//		
+//		IOperationMonitor opMonitor = toolMgr.startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, true);
+//		toolMgr.newRunProcessTask(opMonitor, pb, monitor).runProcess();
+//	}
 	
 	public ProcessBuilder getProcessToStart() throws CommonException {
 		workingDir = getFirstGoPathEntry(goEnv);
