@@ -54,6 +54,7 @@ public abstract class LangImages {
 	
 	/* ---------------- Common Lang images ---------------- */
 	
+	public static final String ICONS = "icons-lang/";
 	public static final String LANG_ACTIONS = "icons-lang/actions/";
 	public static final String LANG_OVERLAYS = "icons-lang/overlays/";
 	public static final String LANG_NAVIGATOR = "icons-lang/navigator/";
@@ -76,6 +77,9 @@ public abstract class LangImages {
 	public static final ImageHandle IMG_SCROLL_LOCK = createManaged(LANG_ACTIONS, "lock_co.png");
 	public static final ImageHandle IMG_CLEAR_CONSOLE = createManaged(LANG_ACTIONS, "clear_co.png");
 	public static final ImageHandle IMG_PIN_CONSOLE = createManaged(LANG_ACTIONS, "pin.png");
+	
+	public static final ImageHandle IMG_ENV_VAR = createManaged(ICONS, "envvar_obj.png");
+	public static final ImageHandle IMG_ENVIRONMENT = createManaged(ICONS, "environment_obj.png");
 	
 	
 	/* ----------------- overlay decorations ----------------- */
@@ -126,8 +130,8 @@ public abstract class LangImages {
 	
 	/* -----------------  Debug  ----------------- */
 	
-	public static final ImageDescriptor BREAKPOINT_ENABLED = createUnmanaged("icons-lang", "brkp_obj.png");
-	public static final ImageDescriptor BREAKPOINT_DISABLED = createUnmanaged("icons-lang", "brkpd_obj.png");
+	public static final ImageDescriptor BREAKPOINT_ENABLED = createUnmanaged(ICONS, "brkp_obj.png");
+	public static final ImageDescriptor BREAKPOINT_DISABLED = createUnmanaged(ICONS, "brkpd_obj.png");
 	
 	/* ----------------- Image cache keyed by ImageDescriptor ----------------- */
 	

@@ -83,11 +83,11 @@ public abstract class AbstractWidget implements IWidgetComponent {
  	
 	/* ----------------- Shortcut utils ----------------- */
 	
-	protected static GridDataFactory gdfSwtDefaults() {
+	public static GridDataFactory gdfSwtDefaults() {
 		return GridDataFactory.swtDefaults();
 	}
 	
-	protected static GridDataFactory gdfFillDefaults() {
+	public static GridDataFactory gdfFillDefaults() {
 		return GridDataFactory.fillDefaults();
 	}
 	

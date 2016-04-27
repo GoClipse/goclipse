@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.ui.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -65,7 +65,7 @@ public class BuildTargetEditor extends CompositeWidget {
 		}
 		
 		buildCommandField = addChildWidget(init_createArgumentsField());
-		buildCommandField.getField().addChangeListener(() -> {
+		buildCommandField.addEffectiveValueChangeListener(() -> {
 			btData.buildCommand = getEffectiveBuildCommand();
 		});
 		

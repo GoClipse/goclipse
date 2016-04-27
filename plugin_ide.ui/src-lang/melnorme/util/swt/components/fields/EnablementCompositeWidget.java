@@ -21,6 +21,7 @@ import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IProperty;
+import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 
 public abstract class EnablementCompositeWidget<VALUE> extends FieldCompositeWidget<VALUE> {
 	
@@ -66,7 +67,7 @@ public abstract class EnablementCompositeWidget<VALUE> extends FieldCompositeWid
 				defaultFieldValue = null;
 				getValidation().setExplicitStatus(e.toStatusException());
 			}
-			getField().setFieldValue(defaultFieldValue);
+			field().setFieldValue(defaultFieldValue);
 		}
 		updateChildrenEnablement();
 	}
@@ -85,14 +86,14 @@ public abstract class EnablementCompositeWidget<VALUE> extends FieldCompositeWid
 	/* ----------------- effective value ----------------- */
 	
 	public VALUE getEffectiveFieldValue() {
-		return isUseDefault() ? null : getField().getFieldValue();
+		return isUseDefault() ? null : field().getFieldValue();
 	}
 	
 	public void setEffectiveFieldValue(VALUE effectiveFieldValue) {
 		getEnablementField().setFieldValue(effectiveFieldValue == null);
 		
 		if(effectiveFieldValue != null) {
-			getField().setFieldValue(effectiveFieldValue);
+			field().setFieldValue(effectiveFieldValue);
 		}
 	}
 	
@@ -110,6 +111,11 @@ public abstract class EnablementCompositeWidget<VALUE> extends FieldCompositeWid
 	
 	public IProperty<VALUE> asEffectiveValueProperty() {
 		return effectiveValueProperty;
+	}
+	
+	public void addEffectiveValueChangeListener(FieldChangeListener listener) {
+		getEnablementField().addChangeListener(listener);
+		field().addChangeListener(listener);
 	}
 	
 	/* -----------------  ----------------- */

@@ -8,10 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.ui.build;
 
 import org.eclipse.debug.ui.StringVariableSelectionDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -19,8 +18,10 @@ import org.eclipse.swt.widgets.Shell;
 
 import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
+import melnorme.lang.ide.ui.fields.FieldDialog;
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.ops.EnvironmentSettings;
 import melnorme.util.swt.components.ButtonWidget;
 import melnorme.util.swt.components.CompositeWidget;
 import melnorme.util.swt.components.fields.EnablementCompositeWidget;
@@ -45,7 +46,7 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 		super("Command Invocation:", LABEL_UseDefault);
 		this.createInlined = false;
 		
-		this.commandInvocation = getField();
+		this.commandInvocation = field();
 		
 		this.getDefaultArguments = getDefaultCommandInvocation;
 		this.variablesResolver = variablesResolver;
@@ -131,7 +132,12 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	/* -----------------  ----------------- */
 	
 	protected void validateArguments() throws StatusException {
-		getFieldValue().validate(variablesResolver);
+		CommandInvocation fieldValue = getFieldValue();
+		if(fieldValue == null) {
+			return;
+		}
+		
+		fieldValue.validate(variablesResolver);
 	}
 	
 	/* ----------------- button handlers ----------------- */
@@ -148,8 +154,22 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	
 	protected void handleEditEnvironmentVars() {
 		Shell shell = getButtonTextField().getFieldControl().getShell();
-		/* FIXME: todo EnvironmentVar*/
-		MessageDialog.openInformation(shell, "TODO", "NOT Implement");
+		
+		CommandInvocation cmd = getFieldValue();
+		EnvironmentSettings envSettings = new EnvironmentSettings(
+			cmd.getEnvironmentVars().copyToHashMap(), cmd.isAppendEnvironment());
+		
+		try {
+			envSettings = new FieldDialog<>(shell, new EnvironmentSettingsEditor()).openDialog(envSettings);
+		} catch(OperationCancellation e) {
+			return;
+		}
+		
+		setFieldValue(new CommandInvocation(
+			cmd.getCommandArguments(),
+			envSettings.envVars.copy(),
+			envSettings.appendEnv
+		));
 	}
 	
 }

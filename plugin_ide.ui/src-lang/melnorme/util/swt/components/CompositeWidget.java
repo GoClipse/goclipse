@@ -96,7 +96,7 @@ public class CompositeWidget extends AbstractDisableableWidget {
 	}
 	
 	@Override
-	protected final void doSetEnabled(boolean enabled) {
+	protected void doSetEnabled(boolean enabled) {
 		subComponents.forEach(subComponent -> {
 			subComponent.updateControlEnablement2();
 		});

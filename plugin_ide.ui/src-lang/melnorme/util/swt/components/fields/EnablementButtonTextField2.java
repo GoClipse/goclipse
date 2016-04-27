@@ -28,7 +28,7 @@ public abstract class EnablementButtonTextField2 extends EnablementCompositeWidg
 		super(label, useDefaultCheckboxLabel);
 		this.createInlined = false;
 		
-		this.buttonTextField = init_createButtonTextField(getField());
+		this.buttonTextField = init_createButtonTextField(field());
 		addChildWidget(buttonTextField);
 	}
 	
