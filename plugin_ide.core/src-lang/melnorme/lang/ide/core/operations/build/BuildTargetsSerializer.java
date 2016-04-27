@@ -37,12 +37,9 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper<Indexable<?
 	
 	/* -----------------  ----------------- */
 	
-	protected final BuildManager buildManager;
-	
 	protected final CommandInvocationSerializer commandSerializer = new CommandInvocationSerializer();
 	
-	public BuildTargetsSerializer(BuildManager buildManager) {
-		this.buildManager = buildManager;
+	public BuildTargetsSerializer() {
 	}
 	
 	public String writeProjectBuildInfo(ProjectBuildInfo projectBuildInfo) throws CommonException {
@@ -61,8 +58,14 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper<Indexable<?
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList2<BuildTargetData> readFromString(String targetsXml) throws CommonException {
+		return (ArrayList2<BuildTargetData>) super.readFromString(targetsXml);
+	}
+	
+	@Override
+	public ArrayList2<BuildTargetData> doReadFromString(String targetsXml) throws CommonException {
 		Document doc = parseDocumentFromXml(targetsXml);
 		
 		Node buildTargetsElem = doc.getFirstChild();
@@ -93,7 +96,7 @@ public class BuildTargetsSerializer extends DocumentSerializerHelper<Indexable<?
 		
 		commandSerializer.writeToParent(targetElem, btd.getBuildCommand());
 		
-		setOptionalAttribute(targetElem, PROP_EXE_PATH, btd.getExecutablePath());
+		setAttribute(targetElem, PROP_EXE_PATH, btd.getExecutablePath());
 		
 		return targetElem;
 	}

@@ -117,17 +117,12 @@ public class BuildTargetEditor extends CompositeWidget {
 		}
 		
 		@Override
-		protected void handleNoBuildCommandSupplied() throws StatusException {
-			throw new StatusException("No build command supplied.");
-		}
-		
-		@Override
-		protected void doValidate(String commandArguments) throws StatusException {
+		protected void validateArguments() throws StatusException {
 			try {
-				new CommandInvocation(commandArguments).validate(variablesResolver);
+				super.validateArguments();
 			} catch(StatusException se) {
 				if(se.getMessage() == ValidatedCommandArgumentsSource.MSG_NO_COMMAND_SPECIFIED) {
-					handleNoBuildCommandSupplied();
+					throw new StatusException("No build command supplied.");
 				}
 			}
 		}

@@ -19,20 +19,26 @@ import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.validation.ValidatedValueSource;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.collections.MapAccess;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.HashcodeUtil;
 
 public class CommandInvocation {
 	
 	protected final String commandArguments;
+	protected final MapAccess<String, String> environmentVars; // Can be null
+	protected final boolean appendEnvironment;
 	
 	public CommandInvocation(String commandArguments) {
-		this.commandArguments = assertNotNull(commandArguments);
+		this(commandArguments, null, true);
 	}
 	
-	public String getCommandArguments() {
-		return commandArguments;
+	public CommandInvocation(String commandArguments, MapAccess<String, String> envVars, boolean appendEnv) {
+		this.commandArguments = assertNotNull(commandArguments);
+		this.environmentVars = envVars != null ? envVars : new HashMap2<>();
+		this.appendEnvironment = appendEnv;
 	}
 	
 	@Override
@@ -42,13 +48,30 @@ public class CommandInvocation {
 		
 		CommandInvocation other = (CommandInvocation) obj;
 		
-		return areEqual(commandArguments, other.commandArguments);
+		return 
+			areEqual(commandArguments, other.commandArguments) &&
+			areEqual(environmentVars, other.environmentVars) &&
+			areEqual(appendEnvironment, other.appendEnvironment);
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combinedHashCode(commandArguments);
+		return HashcodeUtil.combinedHashCode(commandArguments, environmentVars);
 	}
+	
+	public String getCommandArguments() {
+		return commandArguments;
+	}
+	
+	public MapAccess<String, String> getEnvironmentVars() {
+		return environmentVars;
+	}
+	
+	public boolean isAppendEnvironment() {
+		return appendEnvironment;
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public void validate(VariablesResolver variablesResolver) throws StatusException {
 		getValidatedCommandArguments(variablesResolver).validate();
@@ -80,17 +103,21 @@ public class CommandInvocation {
 		}
 		
 		public Indexable<String> doGetValidatedValue(VariablesResolver variablesResolver) throws CommonException {
+			if(commandArguments == null) {
+				handleNoCommandLine();
+			}
+			
 			String evaluatedCommandLine = variablesResolver.performStringSubstitution(commandArguments);
 			
 			if(evaluatedCommandLine.trim().isEmpty()) {
-				handleEmptyCommandLine();
+				handleNoCommandLine();
 			}
 			
 			String[] evaluatedArguments = DebugPlugin.parseArguments(evaluatedCommandLine);
 			return new ArrayList2<>(evaluatedArguments);
 		}
 		
-		protected void handleEmptyCommandLine() throws CommonException {
+		protected void handleNoCommandLine() throws CommonException {
 			throw new CommonException(MSG_NO_COMMAND_SPECIFIED);
 		}
 		

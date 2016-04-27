@@ -76,7 +76,12 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	}
 	
 	protected void updateCommandInvocationField() {
-		commandInvocation.set(new CommandInvocation(commandArgumentsField.get()));
+		CommandInvocation current = commandInvocation.get();
+		commandInvocation.set(new CommandInvocation(
+			commandArgumentsField.get(), 
+			current.getEnvironmentVars(), 
+			current.isAppendEnvironment()
+		));
 	}
 	
 	@Override
@@ -126,19 +131,7 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	/* -----------------  ----------------- */
 	
 	protected void validateArguments() throws StatusException {
-		String commandArguments = this.commandArgumentsField.get();
-		if(commandArguments == null) {
-			handleNoBuildCommandSupplied();
-		}
-		doValidate(commandArguments);
-	}
-	
-	protected void handleNoBuildCommandSupplied() throws StatusException {
-		throw new StatusException("No command supplied.");
-	}
-	
-	protected void doValidate(String commandArguments) throws StatusException {
-		new CommandInvocation(commandArguments).validate(variablesResolver);
+		getFieldValue().validate(variablesResolver);
 	}
 	
 	/* ----------------- button handlers ----------------- */

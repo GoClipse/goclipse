@@ -28,8 +28,13 @@ public class FieldCompositeWidget<VALUE> extends CompositeWidget {
 		return new Field<>();
 	}
 	
+	/* FIXME: rename*/
 	public Field<VALUE> getField() {
 		return valueField;
+	}
+	
+	public VALUE getFieldValue() {
+		return valueField.get();
 	}
 	
 }
