@@ -34,7 +34,7 @@ import org.osgi.service.event.Event;
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener2;
+import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
@@ -274,7 +274,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 			create());
 		
 		Display display = topControl.getShell().getDisplay();
-		ThemeChangeListener2 themeChangeListener = new ThemeChangeListener2() {
+		ThemeChangeListener themeChangeListener = new ThemeChangeListener() {
 			@Override
 			public void handleEvent(Event event) {
 				// Reload prefs for new theme. use asyncExec because ThemeChangeListener order is not guaranteed.
@@ -284,7 +284,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractP
 				});
 			}
 		};
-		topControl.addDisposeListener((e) -> themeChangeListener.dispose()); 
+		topControl.addDisposeListener((e) -> themeChangeListener.close()); 
 	}
 	
 	@Override

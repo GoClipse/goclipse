@@ -18,7 +18,7 @@ import org.osgi.service.event.Event;
 import melnorme.lang.ide.core.utils.prefs.IPreferenceIdentifier;
 import melnorme.lang.ide.ui.LangUI;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener2;
+import melnorme.lang.ide.ui.ThemeHelper.ThemeChangeListener;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.Field;
@@ -52,7 +52,7 @@ public class ThemedTextStylingPreference implements IFieldView<TextStyling>, IPr
 		this.defaultPref.asField().registerListener((__) -> updateEffectiveValue());
 		this.darkPref.asField().registerListener((__) -> updateEffectiveValue());
 		
-		LangUI.getInstance().getThemeHelper().asOwner().bind(new ThemeChangeListener2() {
+		LangUI.getInstance().getThemeHelper().asOwner().bind(new ThemeChangeListener() {
 			@Override
 			public void handleEvent(Event event) {
 				updateEffectiveValue();
