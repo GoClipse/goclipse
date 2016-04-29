@@ -39,9 +39,9 @@ public class FieldDialog<VALUE> extends Dialog {
 	}
 	
 	public VALUE openDialog(VALUE initialValue) throws OperationCancellation {
-		int result = open();
-		
 		fieldEditor.field().set(initialValue);
+		
+		int result = open();
 		if(result == Dialog.OK) {
 			return fieldEditor.field().get();
 		}
