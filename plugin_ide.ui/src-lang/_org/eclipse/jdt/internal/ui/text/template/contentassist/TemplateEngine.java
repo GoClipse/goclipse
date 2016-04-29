@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -38,6 +37,7 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.templates.LangTemplateProposal;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
 
 
@@ -87,7 +87,7 @@ public class TemplateEngine {
 		return fProposals.toArray(new TemplateProposal[fProposals.size()]);
 	}
 
-	public void complete(SourceOperationContext sourceContext) throws CoreException {
+	public void complete(SourceOperationContext sourceContext) throws CommonException {
 		
 	    IDocument document = sourceContext.getDocument();
 		final int completionPosition = sourceContext.getInvocationOffset();
@@ -146,7 +146,7 @@ public class TemplateEngine {
 		return LangUIPlugin.getTemplateRegistry().getTemplateStore().getTemplates();
 	}
 	
-	public List<ICompletionProposal> completeAndReturnResults(SourceOperationContext context) throws CoreException {
+	public List<ICompletionProposal> completeAndReturnResults(SourceOperationContext context) throws CommonException {
 		complete(context);
 		
 		TemplateProposal[] templateProposals = getResults();

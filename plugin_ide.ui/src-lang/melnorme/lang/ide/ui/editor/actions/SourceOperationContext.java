@@ -17,6 +17,7 @@ import melnorme.lang.ide.core.ISourceFile;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IProject;
@@ -84,27 +85,27 @@ public class SourceOperationContext {
 		return editor;
 	}
 	
-	public IEditorPart getEditor_nonNull() throws CoreException {
+	public IEditorPart getEditor_nonNull() throws CommonException {
 		if(editor == null) {
-			throw LangCore.createCoreException("Error, no editor available.", null);
+			throw new CommonException("Error, no editor available.");
 		}
 		return editor;
 	}
 	
-	public Location getEditorInputLocation() throws CoreException {
+	public Location getEditorInputLocation() throws CommonException {
 		Location fileLocation = EditorUtils.getLocationFromEditorInput(getEditor_nonNull().getEditorInput());
 		if(fileLocation == null) {
-			throw LangCore.createCoreException("Error, invalid location for editor input.", null);
+			throw new CommonException("Error, invalid location for editor input.");
 		}
 		return fileLocation;
 	}
 	
 	/** Can be null. */
-	public IProject getProject() throws CoreException {
+	public IProject getProject() throws CommonException {
 		return EditorUtils.getAssociatedProject(getEditor_nonNull().getEditorInput());
 	}
 	
-	public boolean isSourceDocumentDirty() throws CoreException {
+	public boolean isSourceDocumentDirty() throws CommonException {
 		return getEditor_nonNull().isDirty();
 	}
 	
@@ -124,7 +125,7 @@ public class SourceOperationContext {
 		}
 	}
 	
-	public ISourceFile getSourceFile() throws CoreException {
+	public ISourceFile getSourceFile() throws CommonException {
 		final Location sourceFileLoc = getEditorInputLocation();
 		return new ISourceFile() {
 			@Override
