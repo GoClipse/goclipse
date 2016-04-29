@@ -356,7 +356,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 		
 		ToolManager toolMgr = buildInfo.buildMgr.getToolManager();
 		BuildTargetOperation buildOperation = newBuildTarget.getBuildOperation(toolMgr, opMonitor);
-		return buildOperation.getConfiguredProcessBuilder().command();
+		return buildOperation.getConfiguredProcessBuilder2().command();
 	}
 	
 	/* -----------------  ----------------- */

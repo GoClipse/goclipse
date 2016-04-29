@@ -240,6 +240,9 @@ public class GoBuildManager extends BuildManager {
 		@Override
 		public ProcessBuilder getToolProcessBuilder() throws CommonException, OperationCancellation {
 			ProcessBuilder pb = super.getToolProcessBuilder();
+			if(workingDirectory != null) {
+				pb.directory(workingDirectory.toFile());
+			}
 			goEnv.setupProcessEnv(pb, true);
 			return pb;
 		}
@@ -320,7 +323,7 @@ public class GoBuildManager extends BuildManager {
 				
 				@Override
 				public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
-					Indexable<String> commandLineOriginal = getEffectiveProccessCommandLine();
+					Indexable<String> commandLineOriginal = new ArrayList2<>(getEffectiveProccessCommandLine());
 					
 					ProcessBuilder pb = getToolProcessBuilder();
 					
