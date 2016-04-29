@@ -84,7 +84,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		return false;
 	}
 	
-	protected void doEditorSave(SourceOperationContext context, TimeoutProgressMonitor pm) throws CoreException {
+	protected void doEditorSave(SourceOperationContext context, TimeoutProgressMonitor pm) throws CommonException {
 		IEditorPart editor = context.getEditor_nonNull();
 		if(editor instanceof AbstractLangEditor) {
 			AbstractLangEditor langEditor = (AbstractLangEditor) editor;

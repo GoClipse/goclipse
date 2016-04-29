@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -46,6 +45,7 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.util.swt.jface.text.ColorManager2;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.misc.Location;
 
@@ -106,7 +106,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 			// Try to adapt as Location
 			Location location = EditorUtils.getLocationFromEditorInput(input);
 			return new LocationKey(location);
-		} catch(CoreException e) {
+		} catch(CommonException e) {
 			// Is input thread-safe? We assume so since IEditorInput is supposed to be immutable.
 			return new LocationKey(input);
 		}

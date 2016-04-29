@@ -22,6 +22,7 @@ import org.eclipse.ui.editors.text.TextEditor;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
 import melnorme.utilbox.ownership.IOwner;
@@ -123,7 +124,7 @@ public class TextEditorExt extends TextEditor {
 		return WorkbenchUtils.getActivePart(getSite()) == this;
 	}
 	
-	public Location getInputLocation() throws CoreException {
+	public Location getInputLocation() throws CommonException {
 		return EditorUtils.getLocationFromEditorInput(getEditorInput());
 	}
 	

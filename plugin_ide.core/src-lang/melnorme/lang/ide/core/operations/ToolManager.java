@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
@@ -246,12 +245,8 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	/* ----------------- ----------------- */
 	
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String processInput, IProgressMonitor pm) 
-			throws CoreException, OperationCancellation {
-		try {
-			return runEngineTool(pb, processInput, EclipseUtils.cm(pm));
-		} catch(CommonException ce) {
-			throw LangCore.createCoreException(ce);
-		}
+			throws CommonException, OperationCancellation {
+		return runEngineTool(pb, processInput, EclipseUtils.cm(pm));
 	}
 	
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String processInput, ICancelMonitor cm)

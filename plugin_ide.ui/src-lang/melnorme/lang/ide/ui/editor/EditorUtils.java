@@ -168,23 +168,19 @@ public class EditorUtils {
 		return null;
 	}
 	
-	public static Location getLocationFromEditorInput(IEditorInput editorInput) throws CoreException {
+	public static Location getLocationFromEditorInput(IEditorInput editorInput) throws CommonException {
 		Path filePath = getFilePathFromEditorInput(editorInput);
 		if (filePath == null) {
-			throw LangCore.createCoreException("Error: Could not determine file path for editor.", null);
+			throw new CommonException("Error: Could not determine file path for editor.", null);
 		}
 		
-		try {
-			return Location.createValidLocation(filePath, "Invalid editorInput path: ");
-		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce);
-		}
+		return Location.createValidLocation(filePath, "Invalid editorInput path: ");
 	}
 	
 	public static Location getLocationOrNull(IEditorInput editorInput) {
 		try {
 			return getLocationFromEditorInput(editorInput);
-		} catch(CoreException e) {
+		} catch(CommonException e) {
 			return null;
 		}
 	}

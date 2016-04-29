@@ -18,16 +18,14 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import melnorme.lang.ide.core.LangCore;
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 public abstract class EngineOperation<RET> {
 	
@@ -49,7 +47,7 @@ public abstract class EngineOperation<RET> {
 	}
 	
 	public RET runEngineOperation(final IProgressMonitor pm) 
-			throws CommonException, CoreException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		
 		if(timeoutMillis <= 0 ) {
 			// Run directly
@@ -66,10 +64,10 @@ public abstract class EngineOperation<RET> {
 	}
 	
 	protected RET runEngineOperationWithExecutor(final IProgressMonitor pm, ExecutorTaskAgent completionExecutor)
-			throws CoreException, OperationCancellation, CommonException {
+			throws CommonException, OperationCancellation {
 		Future<RET> future = completionExecutor.submit(new Callable<RET>() {
 			@Override
-			public RET call() throws CommonException, CoreException, OperationCancellation {
+			public RET call() throws CommonException, OperationCancellation {
 				return doRunEngineOperation(pm);
 			}
 		});
@@ -77,9 +75,6 @@ public abstract class EngineOperation<RET> {
 		try {
 			return future.get(timeoutMillis, TimeUnit.MILLISECONDS);
 		} catch(ExecutionException e) {
-			if(e.getCause() instanceof CoreException) {
-				throw (CoreException) e.getCause(); 
-			}
 			if(e.getCause() instanceof OperationCancellation) {
 				throw (OperationCancellation) e.getCause(); 
 			}
@@ -87,11 +82,11 @@ public abstract class EngineOperation<RET> {
 				throw (CommonException) e.getCause(); 
 			}
 			
-			throw LangCore.createCoreException("Error performing " + opName + ".", e.getCause());
+			throw new CommonException("Error performing " + opName + ".", e.getCause());
 		} catch (TimeoutException e) {
-			throw LangCore.createCoreException("Timeout performing " + opName + ".", null);
+			throw new CommonException("Timeout performing " + opName + ".", null);
 		} catch (InterruptedException e) {
-			throw LangCore.createCoreException("Interrupted.", e);
+			throw new CommonException("Interrupted.", e);
 		}
 	}
 	
