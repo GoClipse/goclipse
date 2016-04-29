@@ -11,7 +11,6 @@
 package melnorme.lang.ide.ui.build;
 
 import org.eclipse.debug.ui.StringVariableSelectionDialog;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -78,6 +77,9 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 	
 	protected void updateCommandInvocationField() {
 		CommandInvocation current = commandInvocation.get();
+		if(current == null) {
+			return;
+		}
 		commandInvocation.set(new CommandInvocation(
 			commandArgumentsField.get(), 
 			current.getEnvironmentVars(), 
@@ -98,7 +100,6 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 		ButtonWidget variablesDialogButton = new ButtonWidget("Insert/Edit Substitution Variables...", 
 			new SetFieldValueOperation<String>(commandArgumentsField, this::newValueFromCommandVariablesDialog));
 		
-		/* FIXME:  buttons layout issue */
 		CompositeWidget buttonArea = addChildWidget(new CompositeWidget(false) {
 			
 			{ layoutColumns = 2; }
@@ -107,11 +108,9 @@ public class CommandInvocationEditor extends EnablementCompositeWidget<CommandIn
 			protected void createContents(Composite topControl) {
 				super.createContents(topControl);
 				
-				environmentVarButton.getButton().setLayoutData(
-					GridDataFactory.fillDefaults().create());
-				
-				variablesDialogButton.getButton().setLayoutData(
-					gdfGrabHorizontal().align(GridData.END, GridData.CENTER).create());
+				GridData layoutData = (GridData) variablesDialogButton.getButton().getLayoutData();
+				layoutData.grabExcessHorizontalSpace = true;
+				layoutData.horizontalAlignment = GridData.END;
 			}
 		});
 		buttonArea.addChildWidget(environmentVarButton);

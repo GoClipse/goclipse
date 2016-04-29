@@ -46,7 +46,7 @@ public abstract class AbstractWidget implements IWidgetComponent {
 		updateWidgetFromInput();
 	}
 	
-	protected final Composite createTopLevelControl(Composite parent) {
+	protected Composite createTopLevelControl(Composite parent) {
 		Composite topControl = doCreateTopLevelControl(parent);
 		topControl.setLayout(createTopLevelLayout().create());
 		return topControl;

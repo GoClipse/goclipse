@@ -174,7 +174,7 @@ public class ProjectBuildConfigurationComponent extends CompositeWidget
 	protected void createContents(Composite topControl) {
 		super.createContents(topControl);
 		
-		SWTFactoryUtil.createPushButton2(topControl, 
+		SWTFactoryUtil.createPushButton(topControl, 
 			"Restore all targets to defaults", null,
 			new GridData(GridData.HORIZONTAL_ALIGN_END),
 			(e) -> loadDefaults()

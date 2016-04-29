@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
-import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.WidgetSelectedRunner;
@@ -82,7 +82,7 @@ public abstract class DownloadToolTextField extends ButtonTextField {
 	/* -----------------  Download Button  ----------------- */
 	
 	protected void createContents_DownloadButton(Composite topControl) {
-		downloadButton = SWTFactoryUtil.createPushButton(topControl, downloadButtonLabel, null);
+		downloadButton = SWTFactory.createPushButton(topControl, downloadButtonLabel, null);
 		downloadButton.addSelectionListener(new WidgetSelectedRunner(getDownloadButtonHandler()));
 	}
 	

@@ -12,7 +12,6 @@ package melnorme.util.swt.components;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
@@ -48,10 +47,14 @@ public class ButtonWidget extends AbstractDisableableWidget {
 	}
 	
 	@Override
+	protected Composite createTopLevelControl(Composite parent) {
+		// Don't create parent composite
+		return parent;
+	}
+	
+	@Override
 	protected void createContents(Composite topControl) {
-		button = SWTFactory.createButton(topControl, SWT.PUSH, buttonLabel);
-		/* FIXME: button width */
-//		button = SWTFactoryUtil.createPushButton(topControl, buttonLabel, null);
+		button = SWTFactory.createPushButton(topControl, buttonLabel, null);
 		button.addSelectionListener(new WidgetSelectedRunner(buttonHandler));
 	}
 	

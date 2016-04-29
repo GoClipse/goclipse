@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
-import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTLayoutUtil;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.WidgetSelectedRunner;
@@ -66,7 +66,7 @@ public abstract class ButtonTextField extends TextFieldWidget {
 	/* -----------------  Button  ----------------- */
 	
 	protected void createContents_Button(Composite topControl) {
-		button = SWTFactoryUtil.createPushButton(topControl, getButtonLabel(), null);
+		button = SWTFactory.createPushButton(topControl, getButtonLabel(), null);
 		button.addSelectionListener(new WidgetSelectedRunner(getButtonHandler()));
 	}
 	
