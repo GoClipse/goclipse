@@ -66,7 +66,7 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	}
 	
 	@Override
-	protected void handleComputationResult() throws CoreException, CommonException {
+	protected void handleComputationResult() throws CommonException {
 		if(statusErrorMessage != null) {
 			handleStatusErrorMessage(statusErrorMessage);
 		}

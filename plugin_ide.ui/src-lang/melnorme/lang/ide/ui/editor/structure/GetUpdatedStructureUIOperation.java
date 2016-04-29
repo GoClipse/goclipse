@@ -55,7 +55,7 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	protected StructureInfo structureInfo;
 	
 	@Override
-	protected boolean isBackgroundComputationNecessary() throws CoreException, CommonException, OperationCancellation {
+	protected boolean isBackgroundComputationNecessary() throws CommonException {
 		if(structureInfo.isStale()) {
 			return true;
 		} else {
@@ -70,10 +70,9 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	}
 	
 	@Override
-	protected void handleComputationResult() throws CoreException, CommonException {
+	protected void handleComputationResult() throws CommonException {
 		if(result == null) {
-			throw LangCore.createCoreException(
-				"Could not retrieve source file structure for: " + structureInfo.getKey2(), null);
+			throw new CommonException("Could not retrieve source file structure for: " + structureInfo.getKey2());
 		}
 	}
 	

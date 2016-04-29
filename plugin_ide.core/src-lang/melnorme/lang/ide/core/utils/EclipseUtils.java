@@ -169,4 +169,40 @@ public class EclipseUtils {
 		return new EclipseCancelMonitor(pm);
 	}
 	
+	public static void run(CoreRunnable coreRunnable) throws CommonException {
+		try {
+			coreRunnable.execute();
+		} catch(CoreException e) {
+			throw LangCore.createCommonException(e);
+		}
+	}
+	
+	public static <R> R call(CoreCallable<R> coreCallable) throws CommonException {
+		try {
+			return coreCallable.execute();
+		} catch(CoreException e) {
+			throw LangCore.createCommonException(e);
+		}
+	}
+	
+	public static <R> R callCore(CoreCallable<R> coreCallable) throws CoreException {
+		try {
+			return coreCallable.execute();
+		} catch(CommonException e) {
+			throw LangCore.createCoreException(e);
+		}
+	}
+	
+	public interface CoreRunnable {
+		
+		public void execute() throws CoreException, CommonException;
+		
+	}
+	
+	public interface CoreCallable<R> {
+		
+		public R execute() throws CoreException, CommonException;
+		
+	}
+	
 }

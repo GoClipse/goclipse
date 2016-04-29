@@ -20,7 +20,6 @@ import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 import java.text.MessageFormat;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
@@ -232,7 +231,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			new AbstractUIOperation(getJobTitle()) {
 				@Override
 				protected void doBackgroundComputation(IProgressMonitor pm)
-						throws CoreException, CommonException, OperationCancellation {
+						throws CommonException, OperationCancellation {
 					doJobRun(pm);
 				}
 			}.executeAndHandleAsynchronouslyInJob();
@@ -243,7 +242,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		}
 		
 		@SuppressWarnings("unused") 
-		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+		protected void doJobRun(IProgressMonitor pm) throws CommonException, OperationCancellation {
 		}
 		
 	}
@@ -255,7 +254,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		}
 		
 		@Override
-		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+		protected void doJobRun(IProgressMonitor pm) throws CommonException, OperationCancellation {
 			Collection2<BuildTarget> enabledTargets = getBuildInfo().getBuildTargets();
 			getBuildManager().newBuildTargetsOperation(getProject(), enabledTargets).execute(pm);
 		}
@@ -268,7 +267,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		}
 		
 		@Override
-		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+		protected void doJobRun(IProgressMonitor pm) throws CommonException, OperationCancellation {
 			ArrayList2<BuildTarget> enabledTargets = getBuildInfo().getEnabledTargets(true);
 			getBuildManager().newBuildTargetsOperation(getProject(), enabledTargets).execute(pm);
 		}
@@ -352,7 +351,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 		}
 		
 		@Override
-		protected void doJobRun(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+		protected void doJobRun(IProgressMonitor pm) throws CommonException, OperationCancellation {
 			getBuildManager().newBuildTargetOperation(getProject(), buildTarget).execute(pm);
 		}
 		

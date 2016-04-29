@@ -10,7 +10,6 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.actions;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -32,7 +31,7 @@ public class LANGUAGE_OpenDefinitionOperation extends AbstractOpenElementOperati
 	
 	@Override
 	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor)
-			throws CoreException, OperationCancellation {
+			throws OperationCancellation {
 		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
 			
 		}
@@ -40,7 +39,7 @@ public class LANGUAGE_OpenDefinitionOperation extends AbstractOpenElementOperati
 	}
 	
 	@Override
-	protected void handleComputationResult() throws CoreException, CommonException  {
+	protected void handleComputationResult() throws CommonException  {
 		if(result == null) {
 			throw new CommonException("Feature not implemented.");
 		}

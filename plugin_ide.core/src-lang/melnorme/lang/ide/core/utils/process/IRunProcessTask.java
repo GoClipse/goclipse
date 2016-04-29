@@ -16,11 +16,9 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-import org.eclipse.core.runtime.CoreException;
-
 public interface IRunProcessTask extends Callable<ExternalProcessResult> {
 	
 	@Override
-	ExternalProcessResult call() throws CoreException, CommonException, OperationCancellation;
+	ExternalProcessResult call() throws CommonException, OperationCancellation;
 	
 }
