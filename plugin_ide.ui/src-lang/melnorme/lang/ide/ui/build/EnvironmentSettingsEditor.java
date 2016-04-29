@@ -1,5 +1,7 @@
 package melnorme.lang.ide.ui.build;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,6 +44,7 @@ import _org.eclipse.debug.internal.ui.MultipleInputDialog;
 import _org.eclipse.debug.internal.ui.SWTFactory;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.tooling.ops.EnvironmentSettings;
+import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.fields.FieldCompositeWidget;
 import melnorme.util.swt.jface.AbstractContentProvider;
@@ -119,6 +122,9 @@ public class EnvironmentSettingsEditor extends EnvironmentSettingsEditor_Base {
 	 */
 	public EnvironmentSettingsEditor() {
 		super(false);
+		
+		field().set(new EnvironmentSettings());
+		field().addListener((newValue) -> assertNotNull(newValue));
 	}
 	
 	{
@@ -171,8 +177,10 @@ public class EnvironmentSettingsEditor extends EnvironmentSettingsEditor_Base {
 		replaceEnvironment= SWTFactory.createRadioButton(comp, LaunchConfigurationsMessages.EnvironmentTab_17);
 		
 		field().addListener(true, (newValue) -> {
-			appendEnvironment.setSelection(newValue.appendEnv);
-	        replaceEnvironment.setSelection(!newValue.appendEnv);
+			if(SWTUtil.isOkToUse(appendEnvironment)) {
+				appendEnvironment.setSelection(newValue.appendEnv);
+		        replaceEnvironment.setSelection(!newValue.appendEnv);
+			}
 		});
 	}
 	
@@ -259,8 +267,10 @@ public class EnvironmentSettingsEditor extends EnvironmentSettingsEditor_Base {
 		});
 		
 		field().addListener(true, (newValue) -> {
-			environmentTable.setInput(field().get());
-			environmentTable.refresh();
+			if(SWTUtil.isOkToUse(environmentTable.getTable())) {
+				environmentTable.setInput(field().get());
+				environmentTable.refresh();
+			}
 		});
 	}
 	
