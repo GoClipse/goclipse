@@ -27,8 +27,8 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
 import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.launch.ProjectLaunchSettings;
+import melnorme.lang.ide.ui.build.BuildTargetEditor;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
-import melnorme.lang.ide.ui.preferences.BuildTargetEditor;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.data.StatusException;

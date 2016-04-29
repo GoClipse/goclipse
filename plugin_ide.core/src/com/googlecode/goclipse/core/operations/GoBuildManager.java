@@ -238,10 +238,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected ProcessBuilder getProcessBuilder3(Indexable<String> commandLine)
-				throws CommonException {
-			ProcessBuilder pb = getToolManager().createToolProcessBuilder(commandLine, workingDirectory);
-			
+		public ProcessBuilder getToolProcessBuilder() throws CommonException, OperationCancellation {
+			ProcessBuilder pb = super.getToolProcessBuilder();
 			goEnv.setupProcessEnv(pb, true);
 			return pb;
 		}
@@ -324,8 +322,10 @@ public class GoBuildManager extends BuildManager {
 				public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
 					Indexable<String> commandLineOriginal = getEffectiveProccessCommandLine();
 					
+					ProcessBuilder pb = getToolProcessBuilder();
+					
 					if(!isMultipleGoPackagesCommandInvocation(commandLineOriginal)) {
-						runBuildToolAndProcessOutput(getProcessBuilder3(commandLineOriginal), pm);
+						runBuildToolAndProcessOutput(pb, pm);
 						return;
 					}
 					
@@ -343,7 +343,8 @@ public class GoBuildManager extends BuildManager {
 					for (GoPackageName goPackage : sourcePackages) {
 						argumentsTemplate.set(lastArgIx, goPackage.getFullNameAsString());
 						
-						runBuildToolAndProcessOutput(getProcessBuilder3(argumentsTemplate), pm);
+						pb.command(argumentsTemplate);
+						runBuildToolAndProcessOutput(pb, pm);
 					}
 					
 				}
