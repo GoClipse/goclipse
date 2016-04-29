@@ -162,7 +162,7 @@ public abstract class BuildManager {
 			new StringPreference("build_targets", "").getProjectPreference();
 	
 	protected BuildTargetsSerializer createSerializer() {
-		return new BuildTargetsSerializer(this);
+		return new BuildTargetsSerializer();
 	}
 	
 	protected String getBuildTargetsPref(IProject project) {

@@ -30,7 +30,7 @@ public class CompositeWidget extends AbstractDisableableWidget {
 	
 	public CompositeWidget(boolean createInlined) {
 		this.createInlined = createInlined;
-		this.defaultRowLayout = gdfFillDefaults().grab(true, false).hint(200, SWT.DEFAULT);
+		this.defaultRowLayout = gdfFillDefaults().grab(true, false).hint(SWT.DEFAULT, SWT.DEFAULT);
 	}
 	
 	public void addChildWidget(AbstractDisableableWidget... subComponents) {
@@ -96,7 +96,7 @@ public class CompositeWidget extends AbstractDisableableWidget {
 	}
 	
 	@Override
-	protected final void doSetEnabled(boolean enabled) {
+	protected void doSetEnabled(boolean enabled) {
 		subComponents.forEach(subComponent -> {
 			subComponent.updateControlEnablement2();
 		});

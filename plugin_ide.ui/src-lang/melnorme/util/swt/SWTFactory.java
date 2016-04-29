@@ -12,7 +12,9 @@ package melnorme.util.swt;
 
 import static melnorme.util.swt.SWTLayoutUtil.setLayoutData;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -127,18 +129,28 @@ public class SWTFactory {
 		return button;
 	}
 	
-	public static Button createPushButton2(Composite parent, String label, Image image) {
-		return createButton(parent, SWT.PUSH, label, image, new GridData());	
+	public static Button createPushButton(Composite parent, String label, Image image) {
+		return createPushButton(parent, label, image, new GridData());
 	}
 	
-	public static Button createPushButton2(Composite parent, String label, Image image, GridData gridData) {
-		Button button = createPushButton2(parent, label, image);
-		return setLayoutData(button, gridData);
+	public static Button createPushButton(Composite parent, String label, Image image, GridData gridData) {
+		Button button = createButton(parent, SWT.PUSH, label, image, gridData);
+		if(gridData != null) {
+			gridData.minimumWidth = getButtonWidthHint(button);
+			setLayoutData(button, gridData);
+		}
+		return button;
 	}
 	
-	public static Button createPushButton2(Composite parent, String label, Image image, GridData gridData, 
+	public static int getButtonWidthHint(Button button) {
+		PixelConverter converter = new PixelConverter(button);
+		int widthHint = converter.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		return Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+	}
+	
+	public static Button createPushButton(Composite parent, String label, Image image, GridData gridData, 
 			WidgetSelectedListener listener) {
-		Button button = createPushButton2(parent, label, image);
+		Button button = createPushButton(parent, label, image);
 		button.addSelectionListener(listener);
 		return setLayoutData(button, gridData);
 	}

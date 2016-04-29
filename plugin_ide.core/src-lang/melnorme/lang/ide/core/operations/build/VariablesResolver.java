@@ -98,7 +98,7 @@ public class VariablesResolver {
 		
 		@Override
 		public IDynamicVariable[] getDynamicVariables() {
-			HashMap2<String, IDynamicVariable> newMap = dynamicVariables.copy();
+			HashMap2<String, IDynamicVariable> newMap = dynamicVariables.copyToHashMap();
 			
 			IDynamicVariable[] parentVars = super.getDynamicVariables();
 			for (IDynamicVariable parentVar : parentVars) {

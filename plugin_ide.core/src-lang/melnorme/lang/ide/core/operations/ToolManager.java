@@ -114,7 +114,11 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	}
 	
 	public ProcessBuilder createToolProcessBuilder(Indexable<String> commandLine, Location workingDir) {
-		return ProcessUtils.createProcessBuilder(commandLine, workingDir);
+		return modifyToolProcessBuilder(ProcessUtils.createProcessBuilder(commandLine, workingDir));
+	}
+	
+	public ProcessBuilder modifyToolProcessBuilder(ProcessBuilder pb) {
+		return pb;
 	}
 	
 	public ProcessBuilder createSimpleProcessBuilder(IProject project, String... commands) 

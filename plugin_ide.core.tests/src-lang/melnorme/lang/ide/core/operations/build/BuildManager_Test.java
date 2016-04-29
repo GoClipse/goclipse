@@ -233,8 +233,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 	
 	protected CompositeBuildTargetSettings btSettings(
 			String buildTargetName, String buildArguments, String artifactPath) {
-		CommandInvocation buildCommand = buildArguments == null ? null : new CommandInvocation(buildArguments);
-		return getBuiltTargetSettingsValidator(project.getName(), buildTargetName, buildCommand, artifactPath);
+		return getBuiltTargetSettingsValidator(project.getName(), buildTargetName, cmd(buildArguments), artifactPath);
 	}
 	
 	protected CompositeBuildTargetSettings getBuiltTargetSettingsValidator(
@@ -349,15 +348,15 @@ public class BuildManager_Test extends CoreTestWithProject {
 		
 	}
 	
-	protected Indexable<String> getBuildOperation(ProjectBuildInfo buildInfo, BuildTarget btB, String buildArguments)
+	protected Iterable<String> getBuildOperation(ProjectBuildInfo buildInfo, BuildTarget btB, String buildArguments)
 			throws CommonException {
 		BuildTargetData dataCopy = btB.getDataCopy();
-		dataCopy.buildCommand = cmd(buildArguments);
+		dataCopy.buildCommand = new CommandInvocation(buildArguments);
 		BuildTarget newBuildTarget = buildInfo.buildMgr.createBuildTarget(buildInfo.project, dataCopy);
 		
 		ToolManager toolMgr = buildInfo.buildMgr.getToolManager();
 		BuildTargetOperation buildOperation = newBuildTarget.getBuildOperation(toolMgr, opMonitor);
-		return buildOperation.getEffectiveProccessCommandLine();
+		return buildOperation.getConfiguredProcessBuilder().command();
 	}
 	
 	/* -----------------  ----------------- */

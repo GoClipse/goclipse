@@ -29,7 +29,7 @@ import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.ide.ui.preferences.BuildTargetEditor;
+import melnorme.lang.ide.ui.build.BuildTargetEditor;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.CommonException;
@@ -148,7 +148,7 @@ public abstract class MainLaunchConfigurationTab extends ProjectBasedLaunchConfi
 		projectField.addChangeListener(this::projectFieldChanged);
 		buildTargetField.addChangeListener(this::buildTargetFieldChanged);
 		
-		buildTargetEditor.buildCommandField.getField().addChangeListener(this::updateLaunchConfigurationDialog);
+		buildTargetEditor.buildCommandField.field().addChangeListener(this::updateLaunchConfigurationDialog);
 		buildTargetEditor.programPathField.addChangeListener(this::updateLaunchConfigurationDialog);
 	}
 	

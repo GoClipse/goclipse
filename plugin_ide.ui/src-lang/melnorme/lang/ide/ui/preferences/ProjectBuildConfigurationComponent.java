@@ -24,6 +24,7 @@ import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.ProjectValidator;
+import melnorme.lang.ide.ui.build.BuildTargetEditor;
 import melnorme.lang.ide.ui.launch.BuildTargetField;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesEditor;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
@@ -173,7 +174,7 @@ public class ProjectBuildConfigurationComponent extends CompositeWidget
 	protected void createContents(Composite topControl) {
 		super.createContents(topControl);
 		
-		SWTFactoryUtil.createPushButton2(topControl, 
+		SWTFactoryUtil.createPushButton(topControl, 
 			"Restore all targets to defaults", null,
 			new GridData(GridData.HORIZONTAL_ALIGN_END),
 			(e) -> loadDefaults()

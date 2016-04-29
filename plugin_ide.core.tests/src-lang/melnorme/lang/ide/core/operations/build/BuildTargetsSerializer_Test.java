@@ -14,16 +14,72 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import org.junit.Test;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.tests.CommonTest;
 
 public class BuildTargetsSerializer_Test extends CommonTest {
 	
+	private static final String STRING_ENCODING__ALL_ASCII = "value:a;b\\\"()dff{}[]";
+	
 	public static CommandInvocation cmd(String commandArguments) {
-		return commandArguments == null ? null :new CommandInvocation(commandArguments);
+		if(commandArguments == null) {
+			return null;
+		}
+		HashMap2<String, String> map = new HashMap2<>();
+		map.put("MY_ENV_VAR", STRING_ENCODING__ALL_ASCII);
+		return new CommandInvocation(commandArguments, map, true);
 	}
+	
+	public static CommandInvocation cmd(String commandArguments, boolean append, Pair<String, String>[] entries) {
+		HashMap2<String, String> envMap = null;
+		
+		if(entries != null) {
+			envMap = new HashMap2<>();
+			for (Pair<String,String> pair : entries) {
+				envMap.put(pair.getFirst(), pair.getSecond());
+			}
+		}
+		return new CommandInvocation(commandArguments, envMap, append);
+	}
+	
+	public static Pair<String, String> entry(String key, String value) {
+		return new Pair<>(key, value);
+	}
+	
+	@Test
+	public void test_CommandInvocation() throws Exception { test_CommandInvocation$(); }
+	public void test_CommandInvocation$() throws Exception {
+		testSerializeCmd(null);
+		testSerializeCmd(cmd("", true, null));
+		testSerializeCmd(cmd("", false, null));
+		testSerializeCmd(cmd("asdf", true, array()));
+		
+		testSerializeCmd(cmd("asdf", true, array(
+			entry("one", "1")
+		)));
+		testSerializeCmd(cmd("asdf", true, array(
+			entry("one", "")
+		)));
+		testSerializeCmd(cmd("asdf", true, array(
+			entry("one", "1"),
+			entry("two", ""),
+			entry(STRING_ENCODING__ALL_ASCII, STRING_ENCODING__ALL_ASCII)
+		)));
+	}
+	
+	protected void testSerializeCmd(CommandInvocation command) {
+		CommandInvocationSerializer serializer = new CommandInvocationSerializer();
+		try {
+			String xml = serializer.writeToString(command);
+			assertAreEqual(command, serializer.readFromString(xml));
+		} catch(CommonException e) {
+			assertFail();
+		}
+	}
+	
 	
 	public static BuildTargetData bt(String targetName, boolean enabled, boolean autoEnabled, 
 			String buildArguments, String executablePath) {
@@ -45,19 +101,18 @@ public class BuildTargetsSerializer_Test extends CommonTest {
 		return bt;
 	}
 	
-	protected final BuildManager buildMgr = LangCore.getBuildManager();
-	protected BuildTargetsSerializer serializer = buildMgr.createSerializer();
+	protected BuildTargetsSerializer serializer = new BuildTargetsSerializer();
 	
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
 		testSerialize(new ArrayList2<>());
-		testSerialize(new ArrayList2<>(bt("", false, false, null, null)));
+		testSerialize(new ArrayList2<>(btd("", false, false, null, null)));
 		testSerialize(new ArrayList2<>(btd("", true, true, cmd("-opt"), "foo.exe")));
 		testSerialize(new ArrayList2<>(
 				btd("", false, true, cmd(""), ""),
 				btd("blah", true, false, cmd("-opt"), "foo.exe"),
-				bt("xxx", true, false, null, "foo/bar.ooo")
+				btd("xxx", true, false, null, "foo/bar.ooo")
 		));
 	}
 	

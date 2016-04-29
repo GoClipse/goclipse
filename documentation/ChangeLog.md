@@ -7,6 +7,7 @@ It's now possible to specify a command other than the default one (the `go` tool
  * Added a setting to invoke a special build target when a Go editor is saved.
    * This allows invoking a build command (informally called a "check-build") that only checks for compiler errors, but doesn't not produce binaries. This has the potential to be faster than a full build.
    * Default is `go build`. ##TODO
+ * Added support for modifying the environment variables of a Build Target's build command. (fixes #191)
   
  * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
 

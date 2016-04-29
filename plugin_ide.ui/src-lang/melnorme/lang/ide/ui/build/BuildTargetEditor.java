@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.lang.ide.ui.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -65,7 +65,7 @@ public class BuildTargetEditor extends CompositeWidget {
 		}
 		
 		buildCommandField = addChildWidget(init_createArgumentsField());
-		buildCommandField.getField().addChangeListener(() -> {
+		buildCommandField.addEffectiveValueChangeListener(() -> {
 			btData.buildCommand = getEffectiveBuildCommand();
 		});
 		
@@ -117,17 +117,12 @@ public class BuildTargetEditor extends CompositeWidget {
 		}
 		
 		@Override
-		protected void handleNoBuildCommandSupplied() throws StatusException {
-			throw new StatusException("No build command supplied.");
-		}
-		
-		@Override
-		protected void doValidate(String commandArguments) throws StatusException {
+		protected void validateArguments() throws StatusException {
 			try {
-				new CommandInvocation(commandArguments).validate(variablesResolver);
+				super.validateArguments();
 			} catch(StatusException se) {
 				if(se.getMessage() == ValidatedCommandArgumentsSource.MSG_NO_COMMAND_SPECIFIED) {
-					handleNoBuildCommandSupplied();
+					throw new StatusException("No build command supplied.");
 				}
 			}
 		}

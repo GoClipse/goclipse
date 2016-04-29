@@ -20,7 +20,7 @@ import melnorme.utilbox.core.CoreUtil;
  * Extension to {@link java.util.LinkedHashMap}, with some helper methods,
  * and implementing the read-only interface {@link Collection2}.
  */
-public class LinkedHashMap2<K, V> extends LinkedHashMap<K, V> implements Collection2<Map.Entry<K, V>> {
+public class LinkedHashMap2<K, V> extends LinkedHashMap<K, V> implements MapAccess<K, V> {
 	
 	private static final long serialVersionUID = -7612795787860334443L;
 	
@@ -53,6 +53,13 @@ public class LinkedHashMap2<K, V> extends LinkedHashMap<K, V> implements Collect
 	
 	public Collection2<V> getValuesView() {
 		return valuesView;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public HashMap2<K, V> copyToHashMap() {
+		return new HashMap2<>(this);
 	}
 	
 }

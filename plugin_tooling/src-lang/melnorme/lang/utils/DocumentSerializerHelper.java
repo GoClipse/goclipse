@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.utils;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -29,10 +31,12 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.StringUtil;
 
 public abstract class DocumentSerializerHelper<ELEMENT> {
 	
@@ -44,7 +48,17 @@ public abstract class DocumentSerializerHelper<ELEMENT> {
 		}
 	}
 	
+	protected Document getDocumentParent(Node parentElement) {
+		if(parentElement instanceof Document) {
+			return (Document) parentElement;
+		}
+		return parentElement.getOwnerDocument();
+	}
+	
 	public String writeToString(ELEMENT buildTargets) throws CommonException {
+		if(buildTargets == null) {
+			return "";
+		}
 		Document doc = getDocumentBuilder().newDocument();
 		writeDocument(doc, buildTargets);
 		return documentToString(doc);
@@ -54,7 +68,14 @@ public abstract class DocumentSerializerHelper<ELEMENT> {
 	
 	/* ----------------- read ----------------- */
 	
-	public abstract ELEMENT readFromString(String targetsXml) throws CommonException;
+	public ELEMENT readFromString(String targetsXml) throws CommonException {
+		if(StringUtil.emptyAsNull(targetsXml) == null) {
+			return null;
+		}
+		return doReadFromString(targetsXml);
+	}
+	
+	public abstract ELEMENT doReadFromString(String targetsXml) throws CommonException;
 	
 	public String documentToString(Document doc) throws TransformerFactoryConfigurationError, CommonException {
 		Transformer transformer;
@@ -73,7 +94,25 @@ public abstract class DocumentSerializerHelper<ELEMENT> {
 		return writer.toString();
 	}
 	
-	protected static void setOptionalAttribute(Element targetElem, String name, String value) {
+	/* -----------------  ----------------- */
+	
+	public Element addChild(Element parent, String elementName) {
+		assertNotNull(elementName);
+		Element newChild = parent.getOwnerDocument().createElement(elementName);
+		parent.appendChild(newChild);
+		return newChild;
+	}
+	
+	public Text addTextChild(Element targetElem, String value) {
+		if(value == null) {
+			return null;
+		}
+		Text newChild = targetElem.getOwnerDocument().createTextNode(value);
+		targetElem.appendChild(newChild);
+		return newChild;
+	}
+	
+	protected static void setAttribute(Element targetElem, String name, String value) {
 		if(value != null) {
 			targetElem.setAttribute(name, value);
 		}

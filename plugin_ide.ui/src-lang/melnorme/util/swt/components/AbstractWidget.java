@@ -46,7 +46,7 @@ public abstract class AbstractWidget implements IWidgetComponent {
 		updateWidgetFromInput();
 	}
 	
-	protected final Composite createTopLevelControl(Composite parent) {
+	protected Composite createTopLevelControl(Composite parent) {
 		Composite topControl = doCreateTopLevelControl(parent);
 		topControl.setLayout(createTopLevelLayout().create());
 		return topControl;
@@ -83,11 +83,11 @@ public abstract class AbstractWidget implements IWidgetComponent {
  	
 	/* ----------------- Shortcut utils ----------------- */
 	
-	protected static GridDataFactory gdfSwtDefaults() {
+	public static GridDataFactory gdfSwtDefaults() {
 		return GridDataFactory.swtDefaults();
 	}
 	
-	protected static GridDataFactory gdfFillDefaults() {
+	public static GridDataFactory gdfFillDefaults() {
 		return GridDataFactory.fillDefaults();
 	}
 	
