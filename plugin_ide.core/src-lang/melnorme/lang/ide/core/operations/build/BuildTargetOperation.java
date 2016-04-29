@@ -20,6 +20,7 @@ import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -75,16 +76,16 @@ public abstract class BuildTargetOperation extends AbstractToolManagerOperation 
 	
 	public Indexable<String> getEffectiveProccessCommandLine() throws CommonException {
 		VariablesResolver variablesManager = toolManager.getVariablesManager(option(getProject()));
-		return buildCommand.getValidatedCommandArguments(variablesManager).getValidatedValue();
+		return buildCommand.validateCommandArguments(variablesManager);
+	}
+	
+	public ProcessBuilder getConfiguredProcessBuilder() throws StatusException {
+		VariablesResolver variablesManager = toolManager.getVariablesManager(option(getProject()));
+		return buildCommand.getProcessBuilder(variablesManager);
 	}
 	
 	public ProcessBuilder getToolProcessBuilder() throws CommonException, OperationCancellation {
-		return getProcessBuilder3(getEffectiveProccessCommandLine());
-	}
-	
-	protected ProcessBuilder getProcessBuilder3(Indexable<String> commandLine) 
-			throws CommonException, OperationCancellation {
-		return getToolManager().createToolProcessBuilder(commandLine, getProjectLocation());
+		return getToolManager().modifyToolProcessBuilder(getConfiguredProcessBuilder());
 	}
 	
 	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IProgressMonitor pm)

@@ -348,7 +348,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 		
 	}
 	
-	protected Indexable<String> getBuildOperation(ProjectBuildInfo buildInfo, BuildTarget btB, String buildArguments)
+	protected Iterable<String> getBuildOperation(ProjectBuildInfo buildInfo, BuildTarget btB, String buildArguments)
 			throws CommonException {
 		BuildTargetData dataCopy = btB.getDataCopy();
 		dataCopy.buildCommand = new CommandInvocation(buildArguments);
@@ -356,7 +356,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 		
 		ToolManager toolMgr = buildInfo.buildMgr.getToolManager();
 		BuildTargetOperation buildOperation = newBuildTarget.getBuildOperation(toolMgr, opMonitor);
-		return buildOperation.getEffectiveProccessCommandLine();
+		return buildOperation.getConfiguredProcessBuilder().command();
 	}
 	
 	/* -----------------  ----------------- */

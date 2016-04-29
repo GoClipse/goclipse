@@ -13,11 +13,15 @@ package melnorme.lang.ide.core.operations.build;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.eclipse.debug.core.DebugPlugin;
 
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.validation.ValidatedValueSource;
+import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.collections.Indexable;
@@ -73,8 +77,31 @@ public class CommandInvocation {
 	
 	/* -----------------  ----------------- */
 	
+	public ProcessBuilder getProcessBuilder(VariablesResolver variablesResolver) throws StatusException {
+		Indexable<String> CommandLine = validateCommandArguments(variablesResolver);
+		
+		ProcessBuilder pb = ProcessUtils.createProcessBuilder(CommandLine, null);
+		
+		setupEnvironment(pb.environment());
+		
+		return pb;
+	}
+	
+	public void setupEnvironment(Map<String, String> environment) {
+		if(!isAppendEnvironment()) {
+			environment.clear();			
+		}
+		for (Entry<String, String> envVar : getEnvironmentVars()) {
+			environment.put(envVar.getKey(), envVar.getValue());
+		}
+	}
+	
 	public void validate(VariablesResolver variablesResolver) throws StatusException {
-		getValidatedCommandArguments(variablesResolver).validate();
+		validateCommandArguments(variablesResolver);
+	}
+	
+	public Indexable<String> validateCommandArguments(VariablesResolver variablesResolver) throws StatusException {
+		return getValidatedCommandArguments(variablesResolver).getValidatedValue();
 	}
 	
 	public ValidatedCommandArgumentsSource getValidatedCommandArguments(VariablesResolver variablesResolver) {

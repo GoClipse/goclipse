@@ -12,7 +12,6 @@ package melnorme.lang.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.File;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.ToolingMessages;
@@ -24,16 +23,11 @@ import melnorme.utilbox.misc.Location;
 public class ProcessUtils {
 	
 	public static ProcessBuilder createProcessBuilder(Indexable<String> commandLine, Location workingDir) {
-		File file = workingDir == null ? null : workingDir.toFile();
-		return createProcessBuilder(commandLine, file); 
-	}
-	
-	public static ProcessBuilder createProcessBuilder(Indexable<String> commandLine, File workingDir) {
 		assertTrue(commandLine.size() > 0);
 		
 		ProcessBuilder pb = new ProcessBuilder(commandLine.toArrayList());
 		if(workingDir != null) {
-			pb.directory(workingDir);
+			pb.directory(workingDir.toFile());
 		}
 		return pb;
 	}
