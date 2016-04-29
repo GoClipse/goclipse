@@ -14,44 +14,43 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 import melnorme.lang.ide.core.LangCoreMessages;
-import melnorme.lang.ide.core.operations.ICoreOperation;
-import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public class ProgressServiceExecutor {
 	
-	protected final ICoreOperation coreOperation;
+	protected final ICommonOperation coreOperation;
 	protected final IProgressService progressService;
 	
-	public ProgressServiceExecutor(ICoreOperation coreOperation) {
+	public ProgressServiceExecutor(ICommonOperation coreOperation) {
 		this(coreOperation, PlatformUI.getWorkbench().getProgressService());
 	}
 	
-	public ProgressServiceExecutor(ICoreOperation coreOperation, IProgressService progressService) {
+	public ProgressServiceExecutor(ICommonOperation coreOperation, IProgressService progressService) {
 		this.coreOperation = assertNotNull(coreOperation);
 		this.progressService = assertNotNull(progressService);
 	}
 	
-	public void execute() throws CoreException, CommonException, OperationCancellation {
+	public void execute() throws CommonException, OperationCancellation {
 		runUnder(progressService);
 	}
 	
-	public void runUnder(IProgressService ps) throws CoreException, CommonException, OperationCancellation {
+	public void runUnder(IProgressService ps) throws CommonException, OperationCancellation {
 		try {
 			ps.busyCursorWhile(new IRunnableWithProgress() {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException {
 					try {
-						coreOperation.execute_adapted(monitor);
-					} catch(CoreException | CommonException | OperationCancellation e) {
+						coreOperation.execute(monitor);
+					} catch(CommonException | OperationCancellation e) {
+						// wrap exception
 						throw new InvocationTargetException(e);
 					}
 				}
@@ -59,15 +58,15 @@ public class ProgressServiceExecutor {
 		} catch (InvocationTargetException ite) {
 			try {
 				throw ite.getCause();
-			} catch(CoreException | CommonException | OperationCancellation original) {
+			} catch(CommonException | OperationCancellation original) {
 				throw original; // rethrow as original exception
 			} catch(Throwable e) {
 				// This should not happen either, unless doRun threw a RuntimeException
-				throw LangUIPlugin.createCoreException(LangCoreMessages.LangCore_internalError, e);
+				throw new CommonException(LangCoreMessages.LangCore_internalError, e);
 			} 
 		} catch (InterruptedException e) {
 			// This should not happen
-			throw LangUIPlugin.createCoreException(LangCoreMessages.LangCore_internalError, e);
+			throw new CommonException(LangCoreMessages.LangCore_internalError, e);
 		}
 		
 	}

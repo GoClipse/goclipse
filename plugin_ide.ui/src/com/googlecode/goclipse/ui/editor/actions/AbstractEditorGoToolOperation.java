@@ -53,7 +53,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	
 	@Override
 	protected String doBackgroundValueComputation(IProgressMonitor monitor)
-			throws CoreException, CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		
 		ToolManager toolMgr = LangCore.getToolManager();
 		

@@ -12,7 +12,6 @@ package melnorme.lang.ide.ui.utils.operations;
 
 import java.text.MessageFormat;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,6 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.progress.IProgressService;
 
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -52,7 +52,7 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	 * and always runs in the UI thread.
 	 */
 	@Override
-	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+	protected void doOperation() throws CommonException, OperationCancellation {
 		if(!isBackgroundComputationNecessary()) {
 			// No need for background computation
 			handleComputationResult();
@@ -61,11 +61,11 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 		runInBackgroundExecutor();
 	}
 	
-	protected boolean isBackgroundComputationNecessary() throws CoreException, CommonException, OperationCancellation {
+	protected boolean isBackgroundComputationNecessary() throws CommonException {
 		return true;
 	}
 	
-	protected void runInBackgroundExecutor() throws CoreException, CommonException, OperationCancellation {
+	protected void runInBackgroundExecutor() throws CommonException, OperationCancellation {
 		if(runInAsynchronousJob) {
 			runAsynchronouslyInBackgroundJob();
 		} else {
@@ -73,16 +73,15 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 		}
 	}
 	
-	protected void runInProgressServiceExecutor() throws CoreException, CommonException, OperationCancellation {
+	protected void runInProgressServiceExecutor() throws CommonException, OperationCancellation {
 		new ProgressServiceExecutor(this::runBackgroundComputation).execute();
 		handleComputationResult();
 	}
 	
-	protected void runBackgroundComputation(IProgressMonitor monitor) 
-			throws CoreException, CommonException, OperationCancellation {
+	protected void runBackgroundComputation(IProgressMonitor monitor) throws CommonException, OperationCancellation {
 		monitor.setTaskName(getTaskName());
 		
-		doBackgroundComputation(monitor);
+		backgroundOp.execute(monitor);
 	}
 	
 	/** @return the task name for the progress dialog. This method must be thread-safe. */
@@ -104,8 +103,6 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 					
 					display.asyncExec(() -> handleComputationResult_handled());
 					
-				} catch(CoreException ce) {
-					display.asyncExec(() -> handleError(ce));
 				} catch(CommonException ce) {
 					display.asyncExec(() -> handleError(ce));
 				} catch(OperationCancellation e) {
@@ -118,23 +115,22 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 		}
 		.schedule();
 	}
+	protected final ICommonOperation backgroundOp = this::doBackgroundComputation;
 	
 	/** Perform the long running computation. Runs in a background thread. */
 	protected abstract void doBackgroundComputation(IProgressMonitor monitor) 
-			throws CoreException, CommonException, OperationCancellation;
+			throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
 	
 	/** Handle long running computation result. This runs in UI thread. */
-	protected void handleComputationResult() throws CoreException, CommonException, OperationCancellation {
+	protected void handleComputationResult() throws CommonException, OperationCancellation {
 		// Default: do nothing
 	}
 	
 	protected void handleComputationResult_handled()  {
 		try {
 			handleComputationResult();
-		} catch(CoreException ce) {
-			handleError(ce);
 		} catch(CommonException ce) {
 			handleError(ce);
 		} catch(OperationCancellation e) {

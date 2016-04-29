@@ -1,6 +1,5 @@
 package com.googlecode.goclipse.core.tools;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -44,7 +43,7 @@ public class GocodeServerManager implements IDisposable {
 		return gocodeProcess != null;
 	}
 	
-	public void requestServerStart(IPath path, IProgressMonitor monitor) throws CoreException {
+	public void requestServerStart(IPath path, IProgressMonitor monitor) throws CommonException {
 		boolean needsStart = prepareServerStart(path);
 		
 		if(needsStart) {
@@ -52,16 +51,16 @@ public class GocodeServerManager implements IDisposable {
 		}
 	}
 	
-	public boolean prepareServerStart(IPath gocodePath) throws CoreException {
+	public boolean prepareServerStart(IPath gocodePath) throws CommonException {
 		if(gocodePath == null || gocodePath.isEmpty()) {
-			throw LangCore.createCoreException("No gocode path provided.", null);
+			throw new CommonException("No gocode path provided.", null);
 		}
 		
 		// TODO: check path hasn't changed
 		return gocodeProcess == null;
 	}
 	
-	public void doStartServer(IPath gocodePath, IProgressMonitor monitor) throws CoreException {
+	public void doStartServer(IPath gocodePath, IProgressMonitor monitor) throws CommonException {
 		
 		
 		ArrayList2<String> commandLine = new ArrayList2<String>();
@@ -76,14 +75,10 @@ public class GocodeServerManager implements IDisposable {
 		
 		ProcessBuilder pb = new ProcessBuilder(commandLine);
 		
-		try {
 			IOperationMonitor opMonitor = toolMgr.startNewOperation(ProcessStartKind.ENGINE_SERVER, true, false);
 			String prefixText = "==== Starting gocode server ====\n";
 			gocodeProcess = toolMgr.new RunToolTask(opMonitor, prefixText, pb, 
 				new EclipseCancelMonitor(monitor)).startProcess();
-		} catch (CommonException ce) {
-			throw LangCore.createCoreException(ce.getMessage(), ce.getCause());
-		}
 	}
 	
 	public void stopServer() {

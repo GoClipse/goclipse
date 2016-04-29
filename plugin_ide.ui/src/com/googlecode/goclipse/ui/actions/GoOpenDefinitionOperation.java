@@ -75,7 +75,7 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 	
 	@Override
 	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor) 
-			throws CoreException, CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		
 		GoEnvironment goEnv = GoProjectEnvironment.getGoEnvironment(project);
 		

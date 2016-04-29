@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.ui.ILaunchShortcut;
 
@@ -41,7 +40,7 @@ public class GoLaunchShortcut extends LangLaunchShortcut implements ILaunchShort
 	
 	@Override
 	protected ILaunchable getLaunchTargetForElement(Object element, IProgressMonitor pm)
-			throws CoreException, CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		
 		IResource resource;
 		if(element instanceof IResource) {

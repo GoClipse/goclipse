@@ -13,16 +13,15 @@ package melnorme.lang.ide.ui.operations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
-import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
+import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.collections.Indexable;
@@ -50,7 +49,7 @@ public class RunToolOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+	protected void doOperation() throws CommonException, OperationCancellation {
 		pb = createProcessBuilder();
 		
 		super.doOperation();
@@ -58,7 +57,7 @@ public class RunToolOperation extends AbstractUIOperation {
 	
 	@Override
 	protected void doBackgroundComputation(IProgressMonitor monitor)
-			throws CoreException, CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		
 		IOperationMonitor opHandler = getToolManager().startNewOperation(opViewOptions);
 		
@@ -74,12 +73,12 @@ public class RunToolOperation extends AbstractUIOperation {
 		return LangCoreMessages.RunningCommand;
 	}
 	
-	protected ProcessBuilder createProcessBuilder() throws CoreException, CommonException {
+	protected ProcessBuilder createProcessBuilder() throws CommonException {
 		return getToolManager().createSimpleProcessBuilder(project, getCommands());
 	}
 	
 	protected void runProcessTask(RunToolTask runToolTask, @SuppressWarnings("unused") IProgressMonitor pm) 
-			throws CommonException, OperationCancellation, CoreException {
+			throws CommonException, OperationCancellation {
 		runToolTask.runProcess();
 	}
 	
@@ -97,7 +96,7 @@ public class RunToolOperation extends AbstractUIOperation {
 		}
 		
 		@Override
-		protected ProcessBuilder createProcessBuilder() throws CoreException, CommonException {
+		protected ProcessBuilder createProcessBuilder() throws CommonException {
 			return getToolManager().createSDKProcessBuilder(project, getCommands());
 		}
 		

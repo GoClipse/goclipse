@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.launch;
 
-import static melnorme.lang.ide.core.utils.operation.CoreRunnable.toCoreException;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
@@ -35,7 +34,7 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 	
 	@Override
 	protected ILaunchable getLaunchTargetForElement(Object element, IProgressMonitor pm)
-			throws CoreException, CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		
 		IProject project = getAssociatedProject(element);
 		if(project == null) {
@@ -51,7 +50,7 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 	@SuppressWarnings("unused")
 	protected BuildTargetLaunchable getLaunchableForElement(Object element, IProject project,
 			BuildTargetLaunchCreator btLaunchCreator, IProgressMonitor pm) 
-		throws CoreException, CommonException, OperationCancellation 
+		throws CommonException, OperationCancellation 
 	{
 		return new BuildTargetLaunchable(project, btLaunchCreator);
 	}
@@ -94,7 +93,7 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		
 		@Override
 		public boolean matchesLaunchConfiguration(ILaunchConfiguration config) throws CoreException {
-			BuildTargetLaunchCreator otherLaunchSettings = toCoreException(
+			BuildTargetLaunchCreator otherLaunchSettings = EclipseUtils.callCore(
 				() -> new BuildTargetLaunchCreator(config)); 
 			
 			BuildTargetData data = btLaunchCreator.data;
@@ -109,7 +108,7 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		
 		@Override
 		public ILaunchConfiguration createNewConfiguration() throws CoreException {
-			return toCoreException(
+			return EclipseUtils.callCore(
 				() -> btLaunchCreator.createNewConfiguration(getLaunchConfigType()));
 		}
 		

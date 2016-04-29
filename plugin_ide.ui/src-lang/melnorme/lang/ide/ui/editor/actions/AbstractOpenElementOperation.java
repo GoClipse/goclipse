@@ -26,6 +26,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
@@ -94,15 +95,15 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	
 	@Override
 	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
-			throws CoreException, CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		return performLongRunningComputation_doAndGetResult(monitor);
 	}
 	
 	protected abstract FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor) 
-			throws CoreException, CommonException, OperationCancellation;
+			throws CommonException, OperationCancellation;
 	
 	@Override
-	protected void handleComputationResult() throws CoreException, CommonException {
+	protected void handleComputationResult() throws CommonException {
 		super.handleComputationResult();
 		
 		if(result == null) {
@@ -116,7 +117,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 		
 		SourceLineColumnRange sourceRange = result.getSourceRange();
 		
-		openEditorForLocation(result.getFileLocation(), sourceRange);
+		EclipseUtils.run(() -> openEditorForLocation(result.getFileLocation(), sourceRange));
 	}
 	
 	protected void openEditorForLocation(Location fileLoc, SourceLineColumnRange sourceRange) 

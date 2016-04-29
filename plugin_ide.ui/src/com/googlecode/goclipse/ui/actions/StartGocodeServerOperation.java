@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.googlecode.goclipse.ui.actions;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -32,7 +31,7 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected boolean isBackgroundComputationNecessary() throws CoreException, CommonException, OperationCancellation {
+	protected boolean isBackgroundComputationNecessary() throws CommonException {
 		if (ToolchainPreferences.AUTO_START_DAEMON.get() == false) {
 			return false; // stop operation
 		}
@@ -43,12 +42,8 @@ public class StartGocodeServerOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void doBackgroundComputation(IProgressMonitor monitor) throws CoreException, OperationCancellation {
+	protected void doBackgroundComputation(IProgressMonitor monitor) throws CommonException, OperationCancellation {
 		gocodeServerManager.doStartServer(gocodePath, monitor);
-	}
-	
-	@Override
-	protected void handleComputationResult() throws CoreException {
 	}
 	
 }

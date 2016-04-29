@@ -18,9 +18,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PlatformUI;
 
-import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
+import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.Indexable;
@@ -43,7 +43,7 @@ public class ToolSourceModifyingOperation extends RunToolOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+	protected void doOperation() throws CommonException, OperationCancellation {
 		boolean result = PlatformUI.getWorkbench().saveAllEditors(true);
 		if(result == false) {
 			throw new OperationCancellation();
@@ -54,7 +54,7 @@ public class ToolSourceModifyingOperation extends RunToolOperation {
 	
 	@Override
 	protected void runProcessTask(RunToolTask runToolTask, IProgressMonitor pm) 
-			throws CommonException, OperationCancellation, CoreException {
+			throws CommonException, OperationCancellation {
 		
 		ResourceUtils.runOperation(resource, pm, 
 			(pm2) -> {

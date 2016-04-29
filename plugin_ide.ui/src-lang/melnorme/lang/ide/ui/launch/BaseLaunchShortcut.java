@@ -97,7 +97,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 			
 			@Override
 			protected ILaunchable[] doBackgroundValueComputation(IProgressMonitor pm)
-					throws CoreException, CommonException, OperationCancellation {
+					throws CommonException, OperationCancellation {
 				
 				HashSet2<ILaunchable> launchables = new HashSet2<>();
 				for(Object element : elements) {
@@ -107,7 +107,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 			};
 			
 			@Override
-			protected void handleComputationResult() throws CoreException, CommonException, OperationCancellation {
+			protected void handleComputationResult() throws CommonException, OperationCancellation {
 				handleFoundLaunchables(result, mode);
 			}
 
@@ -119,7 +119,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	/* -----------------  Find launchables from selection  ----------------- */
 	
 	protected void doFindLaunchables(HashSet2<ILaunchable> launchTargets, Object element, IProgressMonitor pm) 
-			throws CoreException, CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		ILaunchable launchTarget = getLaunchTargetForElement(element, pm);
 		if(launchTarget != null) {
 			launchTargets.add(launchTarget);
@@ -127,7 +127,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	}
 	
 	protected abstract ILaunchable getLaunchTargetForElement(Object element, IProgressMonitor pm) 
-		throws CoreException, CommonException, OperationCancellation;
+		throws CommonException, OperationCancellation;
 
 	/* -----------------  Handle found launchables  ----------------- */
 	
