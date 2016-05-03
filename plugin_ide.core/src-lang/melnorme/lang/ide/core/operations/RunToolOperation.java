@@ -46,7 +46,7 @@ public class RunToolOperation implements ICommonOperation {
 	}
 	
 	@Override
-	public void doBackgroundComputation(IProgressMonitor pm) throws CommonException, OperationCancellation {
+	public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
 		pb = createProcessBuilder();
 		
 		IOperationMonitor opHandler = getToolManager().startNewOperation(opViewOptions);
