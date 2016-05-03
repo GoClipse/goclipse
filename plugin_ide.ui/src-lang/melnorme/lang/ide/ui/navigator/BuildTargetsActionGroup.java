@@ -43,7 +43,7 @@ import melnorme.lang.ide.ui.launch.LangLaunchShortcut.BuildTargetLaunchable;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider.ViewPartActionGroup;
 import melnorme.lang.ide.ui.utils.BuildUtilities;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
-import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
+import melnorme.lang.ide.ui.utils.operations.AbstractJobUIOperation;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
@@ -228,13 +228,13 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 				BuildUtilities.saveEditors(list(getProject()));
 			}
 			
-			new AbstractUIOperation(getJobTitle()) {
+			new AbstractJobUIOperation(getJobTitle()) {
 				@Override
 				protected void doBackgroundComputation(IProgressMonitor pm)
 						throws CommonException, OperationCancellation {
 					doJobRun(pm);
 				}
-			}.executeAndHandleAsynchronouslyInJob();
+			}.executeAndHandle();
 		}
 		
 		protected String getJobTitle() {

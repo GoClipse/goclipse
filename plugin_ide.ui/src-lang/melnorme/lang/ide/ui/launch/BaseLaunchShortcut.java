@@ -107,10 +107,10 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 			};
 			
 			@Override
-			protected void handleComputationResult() throws CommonException, OperationCancellation {
+			protected void handleComputationResult() throws CommonException {
 				handleFoundLaunchables(result, mode);
 			}
-
+			
 		}
 		.executeAndGetHandledResult();
 	}
@@ -132,8 +132,13 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	/* -----------------  Handle found launchables  ----------------- */
 	
 	protected void handleFoundLaunchables(ILaunchable[] launchables, String mode) 
-			throws CommonException, OperationCancellation {
-		ILaunchable launchableResource = getLaunchableResource(launchables);
+			throws CommonException {
+		ILaunchable launchableResource;
+		try {
+			launchableResource = getLaunchableResource(launchables);
+		} catch(OperationCancellation e) {
+			return;
+		}
 		launchTarget(launchableResource, mode);
 	}
 	
