@@ -39,6 +39,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public abstract class LangNewProjectWizard extends Wizard 
@@ -171,12 +172,9 @@ public abstract class LangNewProjectWizard extends Wizard
 		}
 		
 		@Override
-		protected void configureCreatedProject(IProgressMonitor monitor) throws CoreException {
-			try {
-				LangNewProjectWizard.this.configureCreatedProject(this, monitor);
-			} catch(CommonException ce) {
-				throw LangCore.createCoreException(ce);
-			}
+		protected void configureCreatedProject(IProgressMonitor monitor) 
+				throws CoreException, CommonException, OperationCancellation {
+			LangNewProjectWizard.this.configureCreatedProject(this, monitor);
 		}
 		
 		public void createFolder(IContainer container, IProgressMonitor monitor) throws CoreException {
@@ -198,7 +196,6 @@ public abstract class LangNewProjectWizard extends Wizard
 					}
 				}
 			});
-
 		}
 		
 		public void createFile(IFile file, String contents, boolean openEditor, IProgressMonitor monitor) 
@@ -236,7 +233,7 @@ public abstract class LangNewProjectWizard extends Wizard
 	}
 	
 	protected abstract void configureCreatedProject(ProjectCreator_ForWizard projectCreator, IProgressMonitor monitor)
-			throws CoreException, CommonException;
+			throws OperationCancellation, CommonException, CoreException;
 	
 	/* -----------------  ----------------- */
 	

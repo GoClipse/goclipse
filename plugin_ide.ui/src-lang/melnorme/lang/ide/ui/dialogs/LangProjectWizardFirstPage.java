@@ -120,14 +120,18 @@ public abstract class LangProjectWizardFirstPage extends WizardPage {
 		
 		nameGroup.createComponent(parent, sectionGDF().create());
 		locationGroup.createComponent(parent, sectionGDF().create());
-		projectValidationGroup.createComponent(parent, sectionGDF().hint(500, SWT.DEFAULT).create());
-		prefValidationGroup.createComponent(parent, sectionGDF().hint(500, SWT.DEFAULT).create());
+		createContents_ValidationGroups(parent);
 		
 		FieldChangeListener listener = this::validateDialog;
 		nameGroup.textField.addChangeListener(listener);
 		locationGroup.addChangeListener(listener);
 		
 		validateDialog();
+	}
+	
+	protected void createContents_ValidationGroups(Composite parent) {
+		projectValidationGroup.createComponent(parent, sectionGDF().hint(500, SWT.DEFAULT).create());
+		prefValidationGroup.createComponent(parent, sectionGDF().hint(500, SWT.DEFAULT).create());
 	}
 	
 	@Override
