@@ -21,14 +21,15 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.utils.UIOperationsHelper;
+import melnorme.lang.ide.core.utils.ResourceUtils.CoreOperation;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
 /**
  * Component to create (and removed) new Lang projects, usually used by New Project wizards.
@@ -64,25 +65,28 @@ public abstract class ProjectCreationOperation {
 	
 	public abstract IPath getProjectLocation2();
 	
-	protected boolean runOperation(WorkspaceModifyOperation op, boolean isCancellable, String errorTitle) {
-		return UIOperationsHelper.runAndHandle(getRunnableContext(), op, isCancellable, errorTitle);
+	protected boolean runOperation(boolean isCancellabe, String errorTitle, CoreOperation operation) {
+		try {
+			ResourceUtils.runOperationInWorkspace(getRunnableContext(), isCancellabe, operation);
+			return true;
+		} catch(OperationCancellation e) {
+			return false;
+		} catch(CommonException e) {
+			UIOperationsStatusHandler.handleStatus(true, errorTitle, e);
+		}
+		return false;
 	}
 	
 	public boolean performCreateProject() {
-		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
-			@Override
-			protected void execute(IProgressMonitor monitor) throws CoreException, InterruptedException {
-				doCreateProject(monitor);
-			}
-		};
-		return runOperation(op, true, WizardMessages.LangNewProject_createProjectError_title);
+		return runOperation(true, WizardMessages.LangNewProject_createProjectError_title, this::doCreateProject);
 	}
 	
-	protected void doCreateProject(IProgressMonitor monitor) throws CoreException {
+	protected void doCreateProject(IProgressMonitor monitor) 
+			throws CoreException, CommonException, OperationCancellation {
 		createdProject = null;
 		
 		if(getProject() == null) {
-			throw LangCore.createCoreException("No project name specified.", null);
+			throw new CommonException("No project name specified.");
 		}
 		
 		if(!getProject().exists()) {
@@ -113,16 +117,12 @@ public abstract class ProjectCreationOperation {
 	/**
 	 * Configure created Lang project. Don't forget to add revert actions.
 	 */
-	protected abstract void configureCreatedProject(IProgressMonitor monitor) throws CoreException;
+	protected abstract void configureCreatedProject(IProgressMonitor monitor) 
+			throws CommonException, OperationCancellation, CoreException;
 	
 	public boolean revertProjectCreation() {
-		WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
-			@Override
-			protected void execute(IProgressMonitor monitor) throws CoreException {
-				doRevertProjectCreation(monitor);
-			}
-		};
-		return runOperation(op, false, WizardMessages.LangNewProject_removeProjectError_title);
+		return runOperation(true, WizardMessages.LangNewProject_removeProjectError_title, 
+			this::doRevertProjectCreation);
 	}
 	
 	protected void doRevertProjectCreation(IProgressMonitor monitor) throws CoreException {
