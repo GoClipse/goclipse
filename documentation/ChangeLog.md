@@ -23,6 +23,7 @@ It's now possible to specify a command other than the default one (the `go` tool
  * Fixed: Incorrect icon for errors and warnings in preference page status.
  * Fixed: Can't save preference pages with empty fields.
  * Fixed: Problem markers for the #build-tests target would not be created for Eclipse projects inside a GOPATH entry.
+ * Fixed: Pressing Tab key does not indent according to Editor indentation preferences.
  
 ### 0.14.0
  * Added on-the-fly parser errors in the editor (uses Go `oracle`).

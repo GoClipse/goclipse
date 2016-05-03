@@ -78,7 +78,13 @@ public abstract class ProjectCreationOperation {
 	}
 	
 	public boolean performCreateProject() {
-		return runOperation(true, WizardMessages.LangNewProject_createProjectError_title, this::doCreateProject);
+		boolean success = runOperation(true, 
+			WizardMessages.LangNewProject_createProjectError_title, this::doCreateProject);
+		
+		if(!success) {
+			revertProjectCreation();
+		}
+		return success;
 	}
 	
 	protected void doCreateProject(IProgressMonitor monitor) 
@@ -112,6 +118,7 @@ public abstract class ProjectCreationOperation {
 		}
 		createdProject = getProject();
 		configureCreatedProject(monitor);
+		ResourceUtils.refresh(getProject(), monitor);
 	}
 	
 	/**

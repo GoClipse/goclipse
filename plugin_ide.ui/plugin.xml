@@ -187,6 +187,12 @@
 			sequence="M1+O">
 		</key>		
 		<key
+			commandId="org.eclipse.ui.edit.text.shiftLeft"
+			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M2+Tab">
+		</key>
+		<key
 			commandId="com.googlecode.goclipse.ui.commands.Format"
 			contextId="com.googlecode.goclipse.ui.Contexts.Editor"
 			sequence="M1+M2+F"
