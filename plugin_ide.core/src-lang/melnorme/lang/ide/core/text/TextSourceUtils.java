@@ -14,6 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Arrays;
 
+import org.eclipse.jface.text.IRegion;
+
 import melnorme.lang.utils.parse.StringParseSource;
 
 public class TextSourceUtils {
@@ -46,6 +48,10 @@ public class TextSourceUtils {
 	public static String getLineIndentForOffset(String source, int offset) {
 		int lineStart = TextSourceUtils.findLineStartForOffset(source, offset);
 		return getLineIndentForLineStart(source, lineStart);
+	}
+	
+	public static String getLineIndentForLine(String source, IRegion line) {
+		return TextSourceUtils.getLineIndentForLineStart(source, line.getOffset());
 	}
 	
 	public static String getLineIndentForLineStart(String source, int lineStart) {

@@ -11,15 +11,21 @@
 package melnorme.lang.ide.ui.editor;
 
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.utilbox.ownership.IDisposable;
-
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.text.TextSourceUtils;
+import melnorme.utilbox.misc.NumberUtil;
+import melnorme.utilbox.ownership.IDisposable;
 
 public class LangSourceViewer extends ProjectionViewerExt implements ISourceViewerExt {
 	
@@ -30,6 +36,55 @@ public class LangSourceViewer extends ProjectionViewerExt implements ISourceView
 	public LangSourceViewer(Composite parent, IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
 			boolean showAnnotationsOverview, int styles) {
 		super(parent, verticalRuler, overviewRuler, showAnnotationsOverview, styles);
+	}
+	
+	/* -----------------  Shift operation  ----------------- */
+	
+	@Override
+	public boolean canDoOperation(int operation) {
+		if (getTextWidget() == null)
+			return false;
+		
+		switch (operation) {
+		case SHIFT_LEFT:
+			return isEditable() && fIndentChars != null;
+		case SHIFT_RIGHT:
+			return isEditable() && fIndentChars != null && (areMultipleLinesSelected() || isCursorAtIndent());
+		}
+		
+		return super.canDoOperation(operation);
+	}
+	
+	protected boolean isCursorAtIndent() {
+		IDocument document = getDocument();
+		if(document == null) {
+			return false;
+		}
+		
+		Point sel = getSelectedRange();
+		try {
+			int startLine = document.getLineOfOffset(sel.x);
+			IRegion line = document.getLineInformation(startLine);
+			int lineStart = line.getOffset();
+			
+			String indent = TextSourceUtils.getLineIndentForLine(document.get(), line);
+			return NumberUtil.isInRange(lineStart, sel.x, lineStart + indent.length());
+		} catch(BadLocationException x) {
+		}
+		return false;
+	}
+	
+	@Override
+	protected void shift(boolean useDefaultPrefixes, boolean right, boolean ignoreWhitespace) {
+		Point selection = getSelectedRange();
+		
+		super.shift(useDefaultPrefixes, right, ignoreWhitespace);
+		
+		Point newSelection = getSelectedRange();
+		if(selection.y == 0 && selection.x == newSelection.x) {
+			// Prevent the shift from creating a selection, this happens due to a quirk in shift operation	
+			setSelectedRange(selection.x + newSelection.y, 0);
+		}
 	}
 	
 	/* ----------------- Quick Outline ----------------- */

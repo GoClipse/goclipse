@@ -178,6 +178,12 @@
 			sequence="M1+O">
 		</key>
 		<key
+			commandId="org.eclipse.ui.edit.text.shiftLeft"
+			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M2+Tab">
+		</key>
+		<key
 			commandId="LANG_PROJECT_ID.ide.ui.commands.Format"
 			contextId="LANG_PROJECT_ID.ide.ui.Contexts.Editor"
 			sequence="M1+M2+F"
