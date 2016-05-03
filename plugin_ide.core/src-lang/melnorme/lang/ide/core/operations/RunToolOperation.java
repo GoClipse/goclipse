@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.operations;
+package melnorme.lang.ide.core.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -20,15 +20,13 @@ import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
-import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
-import melnorme.lang.ide.ui.utils.operations.AbstractUIOperation;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public class RunToolOperation extends AbstractUIOperation {
+public class RunToolOperation implements ICommonOperation {
 			
 	protected final IProject project;
 	protected final Indexable<String> commands;
@@ -36,9 +34,8 @@ public class RunToolOperation extends AbstractUIOperation {
 	
 	protected ProcessBuilder pb;
 	
-	public RunToolOperation(String operationName, IProject project, Indexable<String> commands,
+	public RunToolOperation(IProject project, Indexable<String> commands,
 			StartOperationOptions opViewOptions) {
-		super(operationName);
 		this.project = project;
 		this.commands = assertNotNull(commands);
 		this.opViewOptions = assertNotNull(opViewOptions);
@@ -49,15 +46,8 @@ public class RunToolOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CommonException, OperationCancellation {
+	public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
 		pb = createProcessBuilder();
-		
-		super.doOperation();
-	}
-	
-	@Override
-	protected void doBackgroundComputation(IProgressMonitor monitor)
-			throws CommonException, OperationCancellation {
 		
 		IOperationMonitor opHandler = getToolManager().startNewOperation(opViewOptions);
 		
@@ -65,16 +55,16 @@ public class RunToolOperation extends AbstractUIOperation {
 			TextMessageUtils.headerBIG(getOperationStartMessage())
 		);
 		
-		RunToolTask runToolTask = getToolManager().newRunProcessTask(opHandler, pb, monitor);
-		runProcessTask(runToolTask, monitor);
-	}
-	
-	protected String getOperationStartMessage() {
-		return LangCoreMessages.RunningCommand;
+		RunToolTask runToolTask = getToolManager().newRunProcessTask(opHandler, pb, pm);
+		runProcessTask(runToolTask, pm);
 	}
 	
 	protected ProcessBuilder createProcessBuilder() throws CommonException {
 		return getToolManager().createSimpleProcessBuilder(project, getCommands());
+	}
+	
+	protected String getOperationStartMessage() {
+		return LangCoreMessages.RunningCommand;
 	}
 	
 	protected void runProcessTask(RunToolTask runToolTask, @SuppressWarnings("unused") IProgressMonitor pm) 
@@ -90,9 +80,8 @@ public class RunToolOperation extends AbstractUIOperation {
 	
 	public static class RunSDKToolOperation extends RunToolOperation {
 		
-		public RunSDKToolOperation(String operationName, IProject project, Indexable<String> commands) {
-			super(operationName, project, commands, 
-				new StartOperationOptions(ProcessStartKind.BUILD, true, true));
+		public RunSDKToolOperation(IProject project, Indexable<String> commands) {
+			super(project, commands, new StartOperationOptions(ProcessStartKind.BUILD, true, true));
 		}
 		
 		@Override
