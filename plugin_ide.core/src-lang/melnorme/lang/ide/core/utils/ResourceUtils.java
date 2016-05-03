@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -39,7 +40,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.jface.operation.IRunnableContext;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ICommonOperation;
@@ -215,6 +219,47 @@ public class ResourceUtils {
 		public abstract void execute_do(IProgressMonitor pm) 
 				throws CoreException, CommonException, OperationCancellation;
 		
+	}
+	
+	public static void runOperation(IRunnableContext context, ICommonOperation op, boolean isCancellable) 
+			throws OperationCancellation, CommonException {
+		try {
+			context.run(true, isCancellable, new IRunnableWithProgress() {
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					try {
+						op.execute(monitor);
+					} catch(CommonException e) {
+						throw new InvocationTargetException(e);
+					} catch(OperationCancellation | OperationCanceledException e) {
+						throw new InterruptedException();
+					}
+				}
+			});
+		} catch (InterruptedException e) {
+			throw new OperationCancellation();
+		} catch (InvocationTargetException e) {
+			Throwable targetException = e.getTargetException();
+			if(targetException instanceof InterruptedException) {
+				throw new OperationCancellation();
+			}
+			if(targetException instanceof CommonException) {
+				throw (CommonException) targetException;
+			}
+			if(targetException instanceof RuntimeException) {
+				throw (RuntimeException) targetException;
+			}
+			
+			assertFail(); // Should not be possible
+		}
+	}
+	
+	public static void runOperationInWorkspace(IRunnableContext context, boolean isCancellable, ICommonOperation op) 
+			throws OperationCancellation, CommonException {
+		
+		runOperation(context, (pm) -> {
+			ResourceUtils.runOperation(ResourceUtils.getWorkspaceRoot(), pm, op);
+		}, isCancellable);
 	}
 	
 	/* -----------------  ----------------- */

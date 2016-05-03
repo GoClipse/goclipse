@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.operations;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.PlatformUI;
 
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.RunToolOperationOnResource;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.ui.utils.operations.UIOperation;
@@ -27,7 +28,11 @@ public class ToolSourceModifyingOperation extends UIOperation {
 	
 	public ToolSourceModifyingOperation(String operationName, IProject project, Indexable<String> commands,
 			StartOperationOptions opViewOptions) {
-		super(operationName, new RunToolOperationOnResource(project, commands, opViewOptions));
+		this(operationName, new RunToolOperationOnResource(project, commands, opViewOptions));
+	}
+	
+	public ToolSourceModifyingOperation(String operationName, ICommonOperation backgroundOp) {
+		super(operationName, backgroundOp);
 	}
 	
 	@Override
