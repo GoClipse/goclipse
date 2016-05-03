@@ -47,9 +47,9 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 	}
 	
 	@Override
-	protected final void doBackgroundComputation(IProgressMonitor monitor) 
+	protected final void doBackgroundComputation(IProgressMonitor pm) 
 			throws CommonException, OperationCancellation {
-		result = doBackgroundValueComputation(monitor);
+		result = doBackgroundValueComputation(pm);
 	}
 	
 	protected abstract RESULT doBackgroundValueComputation(IProgressMonitor monitor) 

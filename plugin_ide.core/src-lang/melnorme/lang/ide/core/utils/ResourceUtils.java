@@ -133,6 +133,16 @@ public class ResourceUtils {
 		return Location.create(location.toFile().toPath());
 	}
 	
+	/* -----------------  Direct resource operations  ----------------- */
+	
+	public static void refresh(IResource resource, IProgressMonitor pm) throws CommonException {
+		try {
+			resource.refreshLocal(IResource.DEPTH_INFINITE, pm);
+		} catch(CoreException e) {
+			throw LangCore.createCommonException(e);
+		}
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public static void runCoreOperation2(ISchedulingRule rule, IProgressMonitor pm, ICommonOperation operation)
@@ -168,6 +178,13 @@ public class ResourceUtils {
 		} catch(CoreException e) {
 			throw LangCore.createCommonException(e);
 		}
+	}
+	
+	public static void runOperationUnderResource(IResource resource, IProgressMonitor pm, ICommonOperation operation)
+			throws CommonException, OperationCancellation {
+		runOperation(resource, pm, operation);
+		
+		refresh(resource, pm);
 	}
 	
 	public static void runWorkspaceOperation(IProgressMonitor pm, ICommonOperation operation) 

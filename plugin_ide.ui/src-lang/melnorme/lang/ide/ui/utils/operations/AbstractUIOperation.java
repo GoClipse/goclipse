@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.progress.IProgressService;
 
-import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -52,10 +51,10 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 		return true;
 	}
 	
-	protected void runBackgroundComputation(IProgressMonitor monitor) throws CommonException, OperationCancellation {
-		monitor.setTaskName(getTaskName());
+	protected void runBackgroundComputation(IProgressMonitor pm) throws CommonException, OperationCancellation {
+		pm.setTaskName(getTaskName());
 		
-		backgroundOp.execute(monitor);
+		doBackgroundComputation(pm);
 	}
 	
 	/** @return the task name for the progress dialog. This method must be thread-safe. */
@@ -65,10 +64,8 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	
 	/* -----------------  ----------------- */
 	
-	protected final ICommonOperation backgroundOp = this::doBackgroundComputation;
-	
 	/** Perform the long running computation. Runs in a background thread. */
-	protected abstract void doBackgroundComputation(IProgressMonitor monitor) 
+	protected abstract void doBackgroundComputation(IProgressMonitor pm) 
 			throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
