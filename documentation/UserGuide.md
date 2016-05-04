@@ -26,6 +26,25 @@ The path to the executable of these two tools should be configured in the `LANG_
 ##### Project creation:
 A new LANG_NAME project is created with the New Project Wizard: from the Project Explorer context menu, select `New / Project...` and then `LANG_NAME / LANG_NAME Project`. The same wizard is used to add a pre-existing project: simply use the location field to select a pre-existing location for your project.
 
+##### Building:
+A project has a set of Build Targets, each being a command invocation that builds the source code into one or more artifacts, and reports back possible compilation errors to the IDE. Build Targets can be configured directly from the Project Explorer. 
+
+Build Targets can be enabled for a regular project build, or for auto-check. Auto-check is invoked when an editor is saved and no syntax errors are present in the source code. Normally it does not produce any artifacts, it just checks for compilation errors. **Note that auto-check is a different setting than the Eclipse workspace "Project / Build Automatically" option**. LANG_IDE_NAME ignores the later option by default. Auto-check is also not invoked if a file is saved automatically due to a regular build being requested. 
+
+From the context menu of a Build Target, you can also directly create a Run or Debug launch configuration for one the generated executables. 
+
+### Editor and Navigation
+
+##### Editor newline auto-indentation:
+The editor will auto-indent new lines after an Enter is pressed. Pressing Backspace with the cursor after the indent characters in the start of the line will delete the indent and preceding newline, thus joining the rest of the line with the previous line. Pressing Delete before a newline will have an identical effect.
+This is unlike most source editors - if instead you want to just remove one level of indent (or delete the preceding Tab), press Shift-Tab. 
+
+##### Content Assist / Open Definition:
+Content Assist (also know as Code Completion, Auto Complete) is invoked with `Ctrl-Space`. 
+
+The Open Definition functionality is invoked by pressing F3 in the source editor. 
+Open Definition is also available in the editor context menu and by means of editor *hyper-linking* 
+(hold Ctrl and click on a reference with the mouse cursor). 
 
 ### Launch and Debug:
 To run a LANG_NAME project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open 'Run' / 'Run Configurations...'. Then double click 'LANG_NAME Application" to create a new LANG_NAME launch, and configure it accordingly. You can run these launches from the 'Run Configurations...', or for quicker access, from the Launch button in the Eclipse toolbar.

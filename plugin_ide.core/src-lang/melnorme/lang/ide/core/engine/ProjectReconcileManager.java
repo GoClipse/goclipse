@@ -165,7 +165,7 @@ public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 		try {
 			buildMgr.newProjectBuildOperation(opMonitor, project, true, true).execute(cancelMonitor);
 		} catch(CommonException e) {
-			opMonitor.writeInfoMessage("Error during check-build:\n" + e.getLineRender() + "\n");
+			opMonitor.writeInfoMessage("Error during auto-check:\n" + e.getLineRender() + "\n");
 		} catch(OperationCancellation e) {
 			return;
 		}

@@ -5,9 +5,10 @@
  * Added customization of the build command for Build Targets:
 It's now possible to specify a command other than the default one (the $$SDK tool). 
    * Note however that the $$IDE still expects the output of the command (the error messages) to be in the same format as the default tool.
- * Added a setting to invoke a special build target when a $IDE editor is saved.
-   * This allows invoking a build command (informally called a "check-build") that only checks for compiler errors, but doesn't not produce binaries. This has the potential to be faster than a full build.
-   * Default is `` for $$IDE
+ * Added support for invoking a specific Build Target when a $IDE editor is saved. This is called "auto-check", and is intended for build commands that only check for compilation errors, but don't produce artifacts. This has the potential to be faster than a regular build. 
+   * The default is `` for $$IDE
+   * Added [Building](documentation/UserGuide.md#building) section to documentation.
+   * The goal for the future is to enable invoking this command on-the-fly (as the user types), although for this to be useful in practice it will likely require the compiler to support incremental compilation (or be super fast otherwise).
  * Added support for modifying the environment variables of a Build Target's build command.  
   
  * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
