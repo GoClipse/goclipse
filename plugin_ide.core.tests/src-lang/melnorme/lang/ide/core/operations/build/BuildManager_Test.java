@@ -70,12 +70,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 		
 		@Override
 		public BuildTargetNameParser getBuildTargetNameParser() {
-			return new BuildTargetNameParser() {
-				@Override
-				public String getNameSeparator() {
-					return "#";
-				};
-			};
+			return new BuildTargetNameParser("#");
 		}
 		
 		@Override

@@ -10,15 +10,23 @@
  *******************************************************************************/
 package melnorme.lang.tooling.bundle;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 
 import melnorme.utilbox.misc.StringUtil;
 
 public class BuildTargetNameParser {
 	
+	protected final String nameSeparator;
+	
 	public BuildTargetNameParser() {
+		this(":");
 	}
 	
+	public BuildTargetNameParser(String nameSeparator) {
+		this.nameSeparator = assertNotNull(nameSeparator);
+	}
+
 	public String getBuildConfig(String buildTargetName) {
 		return getBuildConfigName(buildTargetName);
 	}
@@ -27,8 +35,8 @@ public class BuildTargetNameParser {
 		return getBuildTypeName(buildTargetName);
 	}
 	
-	public String getNameSeparator() {
-		return " #";
+	public final String getNameSeparator() {
+		return nameSeparator;
 	}
 	
 	public String getFullName(String buildConfig, String buildType) {

@@ -25,7 +25,7 @@ public interface BuildManagerMessages extends BuildConfigMessages {
 	public String MSG_NoBuildTargetsEnabled = "No build targets enabled.";
 	
 	public String LABEL_EnableForNormalBuild = "Enable for workspace build";
-	public String LABEL_EnableForAutoBuild = "Enable for auto-check (automatically invoke on editor save)";
+	public String LABEL_EnableForAutoBuild = "Enable for auto-check (invoke on editor save)";
 	
 	public String NAME_BuildEnabledTargetsAction = "Build Enabled";
 	public String NAME_BuildAllTargetsAction = "Build All";

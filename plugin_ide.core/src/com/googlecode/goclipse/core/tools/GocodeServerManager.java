@@ -75,7 +75,7 @@ public class GocodeServerManager implements IDisposable {
 		
 		ProcessBuilder pb = new ProcessBuilder(commandLine);
 		
-			IOperationMonitor opMonitor = toolMgr.startNewOperation(ProcessStartKind.ENGINE_SERVER2, true, false);
+			IOperationMonitor opMonitor = toolMgr.startNewOperation(ProcessStartKind.ENGINE_SERVER, true, false);
 			String prefixText = "==== Starting gocode server ====\n";
 			gocodeProcess = toolMgr.new RunToolTask(opMonitor, prefixText, pb, 
 				new EclipseCancelMonitor(monitor)).startProcess();

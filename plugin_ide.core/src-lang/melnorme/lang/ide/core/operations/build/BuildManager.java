@@ -252,15 +252,13 @@ public abstract class BuildManager {
 		Indexable<BuildConfiguration> buildConfigs = newBundleInfo.getBuildConfigurations();
 		for(BuildConfiguration buildConfig : buildConfigs) {
 			
-			Indexable<BuildType> buildTypes = getBuildTypes();
-			for(BuildType buildType : buildTypes) {
+			for(BuildType buildType : getBuildTypes()) {
 				
 				String targetName = getBuildTargetName2(buildConfig.getName(), buildType.getName());
 				
 				BuildTargetData newBuildTargetData = new BuildTargetData(targetName, isFirstConfig, false); 
 				
-				buildTargets.add(
-					createDefaultBuildTarget(project, newBundleInfo, buildConfig, buildType, newBuildTargetData));
+				addDefaultBuildTarget(buildTargets, project, newBundleInfo, buildConfig, buildType, newBuildTargetData);
 				isFirstConfig = false;
 			}
 			
@@ -268,9 +266,9 @@ public abstract class BuildManager {
 		return buildTargets;
 	}
 	
-	protected BuildTarget createDefaultBuildTarget(IProject project, BundleInfo newBundleInfo,
-			BuildConfiguration buildConfig, BuildType buildType, BuildTargetData buildTargetData) {
-		return new BuildTarget(project, newBundleInfo, buildTargetData, buildType, buildConfig);
+	protected void addDefaultBuildTarget(ArrayList2<BuildTarget> buildTargets, IProject project, BundleInfo bundleInfo,
+			BuildConfiguration buildConfig, BuildType buildType, BuildTargetData btd) {
+		buildTargets.add(new BuildTarget(project, bundleInfo, btd, buildType, buildConfig));
 	}
 	
 	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {

@@ -92,12 +92,12 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	@Override
-	protected BuildTarget createDefaultBuildTarget(IProject project, BundleInfo newBundleInfo,
-			BuildConfiguration buildConfig, BuildType buildType, BuildTargetData buildTargetData) {
+	protected void addDefaultBuildTarget(ArrayList2<BuildTarget> buildTargets, IProject project, BundleInfo bundleInfo,
+			BuildConfiguration buildConfig, BuildType buildType, BuildTargetData btd) {
 		if(buildType.getName().equals(BUILD_TYPE_BuildCheck)) {
-			buildTargetData.autoBuildEnabled = true;
+			btd.autoBuildEnabled = true;
 		}
-		return super.createDefaultBuildTarget(project, newBundleInfo, buildConfig, buildType, buildTargetData);
+		super.addDefaultBuildTarget(buildTargets, project, bundleInfo, buildConfig, buildType, btd);
 	}
 	
 	/* -----------------  ----------------- */
