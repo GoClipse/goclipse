@@ -21,7 +21,7 @@ public class ToolingTests_Actual {
 	
 	@SuppressWarnings("unused")
 	public static BundleInfo createSampleBundleInfoA(String name, String version) {
-		return new BundleInfo();
+		return new BundleInfo(name);
 	}
 			
 }

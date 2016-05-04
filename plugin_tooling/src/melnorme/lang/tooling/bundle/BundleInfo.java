@@ -15,7 +15,8 @@ import melnorme.utilbox.collections.Indexable;
 
 public class BundleInfo extends AbstractBundleInfo {
 	
-	public BundleInfo() {
+	public BundleInfo(String bundleName) {
+		super(bundleName);
 	}
 	
 	@Override

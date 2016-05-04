@@ -94,7 +94,7 @@ public abstract class BuildManager {
 			for(Entry<String, BundleInfo> entry : projectInfos.entrySet()) {
 				IProject project = ResourceUtils.getProject(entry.getKey());
 				BundleInfo bundleInfo = entry.getValue();
-				bundleProjectAdded(project, bundleInfo);
+				bundleProjectAddedOrModified(project, bundleInfo);
 			}
 		}
 	}
@@ -107,7 +107,7 @@ public abstract class BuildManager {
 		public void notifyUpdateEvent(UpdateEvent<BundleInfo> updateEvent) {
 			synchronized (init_Lock) {
 				if(updateEvent.newProjectInfo2 != null) {
-					bundleProjectAdded(updateEvent.project, updateEvent.newProjectInfo2);
+					bundleProjectAddedOrModified(updateEvent.project, updateEvent.newProjectInfo2);
 				} else {
 					bundleProjectRemoved(updateEvent.project);
 				}
@@ -171,12 +171,24 @@ public abstract class BuildManager {
 	
 	/* ----------------- ProjectBuildInfo ----------------- */
 	
-	protected void bundleProjectAdded(IProject project, BundleInfo newBundleInfo) {
+	protected void bundleProjectAddedOrModified(IProject project, BundleInfo newBundleInfo) {
 		loadProjectBuildInfo(project, newBundleInfo);
 	}
 	
 	protected void bundleProjectRemoved(IProject project) {
 		buildModel.removeProjectInfo(project);
+	}
+	
+	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
+		return buildModel.setProjectInfo(project, newProjectBuildInfo);
+	}
+	
+	public void tryUpdateProjectBuildInfo(IProject project, ProjectBuildInfo oldInfo, ProjectBuildInfo newInfo) 
+			throws CommonException {
+		boolean success = buildModel.updateProjectInfo(project, oldInfo, newInfo);
+		if(!success) {
+			throw new CommonException(BuildManagerMessages.ERROR_ProjectBuildSettingsOutOfDate);
+		}
 	}
 	
 	protected void loadProjectBuildInfo(IProject project, BundleInfo newBundleInfo) {
@@ -231,18 +243,25 @@ public abstract class BuildManager {
 			BundleInfo newBundleInfo, Map<String, BuildTarget> currentBuildTargets) {
 		
 		ArrayList2<BuildTarget> buildTargets = getDefaultBuildTargets(project, newBundleInfo);
-	
+		
 		for(int ix = 0; ix < buildTargets.size(); ix++) {
 			BuildTarget buildTarget = buildTargets.get(ix);
 			
 			BuildTarget currentBuildTarget = currentBuildTargets.get(buildTarget.getTargetName());
 			
 			if(currentBuildTarget != null) {
-				buildTargets.set(ix, currentBuildTarget);
+				buildTargets.set(ix, createBuildTargetForNewBundleInfo(
+					newBundleInfo, buildTarget, currentBuildTarget.getDataCopy()));
 			}
 		}
 		
 		return buildTargets;
+	}
+	
+	protected BuildTarget createBuildTargetForNewBundleInfo(BundleInfo newBundleInfo, BuildTarget defaultBuildTarget, 
+			BuildTargetData btd) {
+		return new BuildTarget(defaultBuildTarget.getProject(), newBundleInfo, btd, 
+			defaultBuildTarget.getBuildType(), defaultBuildTarget.getBuildConfiguration());
 	}
 	
 	protected ArrayList2<BuildTarget> getDefaultBuildTargets(IProject project, BundleInfo newBundleInfo) {
@@ -269,18 +288,6 @@ public abstract class BuildManager {
 	protected void addDefaultBuildTarget(ArrayList2<BuildTarget> buildTargets, IProject project, BundleInfo bundleInfo,
 			BuildConfiguration buildConfig, BuildType buildType, BuildTargetData btd) {
 		buildTargets.add(new BuildTarget(project, bundleInfo, btd, buildType, buildConfig));
-	}
-	
-	public ProjectBuildInfo setProjectBuildInfo(IProject project, ProjectBuildInfo newProjectBuildInfo) {
-		return buildModel.setProjectInfo(project, newProjectBuildInfo);
-	}
-	
-	public void tryUpdateProjectBuildInfo(IProject project, ProjectBuildInfo oldInfo, ProjectBuildInfo newInfo) 
-			throws CommonException {
-		boolean success = buildModel.updateProjectInfo(project, oldInfo, newInfo);
-		if(!success) {
-			throw new CommonException(BuildManagerMessages.ERROR_ProjectBuildSettingsOutOfDate);
-		}
 	}
 	
 	public void saveProjectInfo(IProject project) {

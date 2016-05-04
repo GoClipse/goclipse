@@ -30,7 +30,7 @@ public class LANGUAGE_BundleModelManager extends BundleModelManager<LANGUAGE_Bun
 	
 	@Override
 	protected BundleInfo createNewInfo(IProject project) {
-		return new BundleInfo();
+		return new BundleInfo("default");
 	}
 	
 }
