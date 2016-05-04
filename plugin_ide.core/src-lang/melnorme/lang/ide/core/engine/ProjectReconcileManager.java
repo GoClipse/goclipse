@@ -19,12 +19,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
-import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
-import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -149,27 +146,26 @@ abstract class AbstractProjectReconcileManager {
 public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 	
 	protected final BuildManager buildMgr;
-	protected final ToolManager toolMgr;
 	
 	protected boolean checkBuildOnSave = false;
 	
-	public ProjectReconcileManager(ICommonExecutor executor, BuildManager buildMgr, ToolManager toolMgr) {
+	public ProjectReconcileManager(ICommonExecutor executor, BuildManager buildMgr) {
 		super(executor);
 		this.buildMgr = assertNotNull(buildMgr);
-		this.toolMgr = assertNotNull(toolMgr);
 	}
 	
 	@Override
 	public void doProjectReconcile(IProject project, IProgressMonitor cancelMonitor) {
+		// We would actually like to clear the console, but due to Eclipse UI bug/limitation
+		// clearing the console activates it. :(
+		boolean clearConsole = false;
 		IOperationMonitor opMonitor = 
-				toolMgr.startNewOperation(ProcessStartKind.BUILD, true, false);
+				buildMgr.getToolManager().startNewOperation(ProcessStartKind.BUILD, clearConsole, false);
+		
 		try {
-			
-			ICommonOperation buildOp = buildMgr.newProjectBuildOperation(opMonitor, project, true, true);
-			
-			buildOp.execute(cancelMonitor);
+			buildMgr.newProjectBuildOperation(opMonitor, project, true, true).execute(cancelMonitor);
 		} catch(CommonException e) {
-			LangCore.logWarning("Error during auto-build", e);
+			opMonitor.writeInfoMessage("Error during check-build:\n" + e.getLineRender() + "\n");
 		} catch(OperationCancellation e) {
 			return;
 		}

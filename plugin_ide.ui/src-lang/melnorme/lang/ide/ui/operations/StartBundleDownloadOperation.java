@@ -120,7 +120,7 @@ public abstract class StartBundleDownloadOperation extends BasicUIOperation {
 	}
 	
 	protected IOperationMonitor inJob_handleOperationStart() {
-		return toolMgr.startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, true);
+		return toolMgr.startNewOperation(ProcessStartKind.ENGINE_TOOLS2, false, true);
 	}
 	
 	protected void afterDownloadJobCompletes_inUI() {

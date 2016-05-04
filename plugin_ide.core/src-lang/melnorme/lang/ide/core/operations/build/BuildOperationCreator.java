@@ -63,7 +63,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		operations = ArrayList2.create();
 		
 		if(buildOps.isEmpty()) {
-			return new CompositeBuildOperation(operations, null);
+			return new CompositeBuildOperation(opMonitor, operations, null);
 		}
 		
 		addCompositeBuildOperationMessage();
@@ -98,7 +98,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		// Note: the locking rule has to be the whole workspace, because the build might read dependent projects
 		// and also error markers can be created globally
 		ISchedulingRule rule = ResourceUtils.getWorkspaceRoot();
-		return new CompositeBuildOperation(operations, rule);
+		return new CompositeBuildOperation(opMonitor, operations, rule);
 	}
 	
 	protected boolean addOperation(ICommonOperation toolOp) {
