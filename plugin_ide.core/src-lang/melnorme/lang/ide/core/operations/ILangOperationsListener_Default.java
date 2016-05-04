@@ -26,8 +26,8 @@ public interface ILangOperationsListener_Default {
 	
 	public enum ProcessStartKind {
 		BUILD,
-		ENGINE_SERVER,
-		ENGINE_TOOLS
+		ENGINE_SERVER2,
+		ENGINE_TOOLS2
 	}
 	
 	default IOperationMonitor beginBuildOperation(boolean explicitConsoleNotify) {

@@ -251,7 +251,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String processInput, ICancelMonitor cm)
 			throws CommonException, OperationCancellation {
-		IOperationMonitor opMonitor = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
+		IOperationMonitor opMonitor = startNewOperation(ProcessStartKind.ENGINE_TOOLS2, false, false);
 		return new RunToolTask(opMonitor, pb, cm).runProcess(processInput);
 	}
 	
@@ -265,7 +265,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 		@Override
 		public ExternalProcessResult runProcess(ProcessBuilder pb, String input, ICancelMonitor cm) 
 				throws CommonException, OperationCancellation {
-			IOperationMonitor opMonitor = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
+			IOperationMonitor opMonitor = startNewOperation(ProcessStartKind.ENGINE_TOOLS2, false, false);
 			return new RunToolTask(opMonitor, pb, cm).runProcess(input);
 		}
 		

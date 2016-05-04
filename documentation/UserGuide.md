@@ -34,22 +34,17 @@ A Goclipse project can work in two ways:
 
  > In the `src` folder you can create Go source files that will be compiled into a library package (and placed into `pkg`), or into an executable (and placed in `bin`). See http://golang.org/doc/code.html for more information on the organization of a Go workspace.
 
-##### Build:
-The `go` tool will be used to build the project. The output of this tool will be displayed in a console. Additionally, error markers resulting from the build will be collected and displayed in the the Go editor and the Problems view.
+##### Building:
+A project has a set of Build Targets, each being a command invocation that builds the source code into one or more artifacts, and reports back possible compilation errors to the IDE. Build Targets can be configured directly from the Project Explorer. 
 
-Each Go project has 3 built-in Build Targets, which are ways in how the project can be built. 
-These can be viewed and configured in the Project Explorer:
+Build Targets can be enabled for a regular project build, or for auto-check. Auto-check is invoked when an editor is saved and no syntax errors are present in the source code. Normally it does not produce any artifacts, it just checks for compilation errors. **Note that auto-check is a different setting than the Eclipse workspace "Project / Build Automatically" option**. LANG_IDE_NAME ignores the later option by default. Auto-check is also not invoked if a file is saved automatically due to a regular build being requested. 
 
-<div align="center">
-<a href="screenshots/UserGuide_BuildTargets.png?raw=true"><img src="screenshots/UserGuide_BuildTargets.png" /><a/> 
-</div>
+From the context menu of a Build Target, you can also directly create a Run or Debug launch configuration for one the generated executables. 
 
-The modes are:
- * `./... #build`: The default build. Builds all Go packages present in the project (excluding test packages).
- * `./... #build-tests`: Builds all Go test packages present in the project. 
- * `./... #[run-tests]`: Builds all and *runs* Go tests.
-
-Each target can be enabled or disabled individually when performing Eclipse project builds. (There is not much point to have both `#build-tests` and `#[run-tests]` enabled though.)
+Each Go project has 3 built-in Build Targets:
+ * `build`: The default build. Builds all Go packages present in the project (excluding test packages).
+ * `build-tests`: Builds all Go test packages present in the project. 
+ * `[run-tests]`: Builds all and *runs* Go tests.
 
 
 ### Editor and Navigation

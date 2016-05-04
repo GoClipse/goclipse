@@ -51,4 +51,45 @@ public class CommonException extends Exception {
 		}
 	}
 	
+	/**
+	 * Render this exception and all the chained exception into a user-readable string.
+	 * The string will be one line only, assuming all the exceptions don't have newlines in their messages.  
+	 */
+	public String getLineRender() {
+		return new ExceptionStringRenderer().getLineRender(this);
+	}
+	
+	public static class ExceptionStringRenderer {
+		
+		public String getLineRender(Throwable exception) {
+			StringBuilder sb = new StringBuilder();
+			renderToString(sb, exception);
+			return sb.toString();
+		}
+		
+		public void renderToString(StringBuilder sb, Throwable exception) {
+			String message = exception.getMessage();
+			if(message != null) {
+				sb.append(message);
+			} else {
+				sb.append("["+exception.getClass().getSimpleName()+"]");
+			}
+			
+			Throwable cause = exception.getCause();
+			if(cause != null) {
+				renderCause(sb, message, cause);
+			}
+		}
+		
+		public void renderCause(StringBuilder sb, String message, Throwable cause) {
+			if(message == null) {
+				sb.append(" ");
+			} else if(!message.endsWith(":") && !message.endsWith(": ")) {
+				sb.append(": ");
+			}
+			
+			renderToString(sb, cause);
+		}
+	}
+	
 }
