@@ -115,11 +115,15 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 			ToolsConsole console = getBuildConsole(null, clearConsole);
 			return createConsoleHandler(kind, console, console.stdOut, console.stdErr);
 		}
-		case ENGINE_SERVER2: {
+		case CHECK_BUILD: {
+			ToolsConsole console = getBuildConsole(null, clearConsole);
+			return createConsoleHandler(kind, console, console.stdOut, console.stdErr_silent);
+		}
+		case ENGINE_SERVER: {
 			EngineToolsConsole console = EngineToolsConsole.getConsole(clearConsole);
 			return createConsoleHandler(kind, console, console.serverStdOut, console.serverStdErr);
 		}
-		case ENGINE_TOOLS2: {
+		case ENGINE_TOOLS: {
 			EngineToolsConsole console = EngineToolsConsole.getConsole(clearConsole);
 			return createConsoleHandler(kind, console, console.stdOut, console.stdErr);
 		}

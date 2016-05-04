@@ -28,6 +28,8 @@ import melnorme.utilbox.ownership.OwnedObjects;
 public class ToolsConsole extends AbstractProcessMessageConsole {
 	
 	public final IOConsoleOutputStream infoOut;
+	public final IOConsoleOutputStream stdErr_silent; // An alternative to stdErr that never activate on write
+	
 	protected final OwnedObjects owned = new OwnedObjects();
 	
 	public ToolsConsole(String name, ImageDescriptor imageDescriptor) {
@@ -38,6 +40,7 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 		super(name, imageDescriptor);
 		
 		infoOut = newOutputStream();
+		stdErr_silent = newOutputStream();
 		
 		if(initializeColors) {
 			postToUI_initOutputStreamColors();
@@ -53,7 +56,10 @@ public class ToolsConsole extends AbstractProcessMessageConsole {
 		ToolsConsolePrefs.INFO_COLOR.asField().bindOwnedListener(owned, true, 
 			(newValue) -> infoOut.setColor(getManagedColor(newValue)));
 		ToolsConsolePrefs.STDERR_COLOR.asField().bindOwnedListener(owned, true, 
-			(newValue) -> stdErr.setColor(getManagedColor(newValue)));
+			(newValue) -> {
+				stdErr.setColor(getManagedColor(newValue));
+				stdErr_silent.setColor(getManagedColor(newValue));
+			});
 		ToolsConsolePrefs.STDOUT_COLOR.asField().bindOwnedListener(owned, true, 
 			(newValue) -> stdOut.setColor(getManagedColor(newValue)));
 		ToolsConsolePrefs.BACKGROUND_COLOR.asField().bindOwnedListener(owned, true, 

@@ -160,7 +160,7 @@ public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 		// clearing the console activates it. :(
 		boolean clearConsole = false;
 		IOperationMonitor opMonitor = 
-				buildMgr.getToolManager().startNewOperation(ProcessStartKind.BUILD, clearConsole, false);
+				buildMgr.getToolManager().startNewOperation(ProcessStartKind.CHECK_BUILD, clearConsole, false);
 		
 		try {
 			buildMgr.newProjectBuildOperation(opMonitor, project, true, true).execute(cancelMonitor);
