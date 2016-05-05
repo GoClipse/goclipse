@@ -15,15 +15,14 @@ package melnorme.utilbox.concurrency;
  * consisting of a single worker thread running in the background,
  * whose purpose is to execute tasks submitted to it in sequence.
  *   
- * It works in a way similar to an event loop, or an Actor in the Actor concurrency model.  
+ * It works in a similar way to an event loop, or an Actor in the Actor concurrency model.  
  */
 public interface ITaskAgent extends ICommonExecutor {
 	
 	/** 
-	 * Wait for all tasks that have been submitted so far to complete.
+	 * Waits for all tasks that have been submitted so far to complete.
+	 * It will not wait for tasks submitted after it begins waiting.
 	 */
-	void waitForPendingTasks();
-	
-	/* ----------------------------------- */
+	void waitForPendingTasks() throws InterruptedException;
 	
 }

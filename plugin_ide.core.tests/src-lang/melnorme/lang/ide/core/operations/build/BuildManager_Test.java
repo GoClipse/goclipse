@@ -154,7 +154,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 	public void test$() throws Exception {
 		initSampleProject();
 		
-		buildMgr.bundleProjectAdded(project, bundleInfo);
+		buildMgr.bundleProjectAddedOrModified(project, bundleInfo);
 		
 		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
 		assertNotNull(buildInfo);
@@ -189,11 +189,12 @@ public class BuildManager_Test extends CoreTestWithProject {
 			CommonException.class,
 			"Build configuration `ImplicitTarget` not found"); // Config not found
 			
+
+		test_BundleInfoUpdates(buildInfo);
 		
 		test_compositeBuildTargetSettings();
 		test_BuildType();
-		
-		testBuildOperation();
+		test_BuildOperation();
 	}
 	
 	public void checkBuildTargets(Indexable<BuildTarget> buildTargets, Indexable<BuildTargetDataView> expectedSettings) {
@@ -201,6 +202,26 @@ public class BuildManager_Test extends CoreTestWithProject {
 		for(int ix = 0; ix < buildTargets.size(); ix++) {
 			BuildTargetDataView expectedData = expectedSettings.get(ix);
 			assertTrue(buildTargets.get(ix).getData().equals(expectedData));
+		}
+	}
+	
+	protected void test_BundleInfoUpdates(ProjectBuildInfo buildInfo) throws CommonException, StatusException {
+		{
+			BuildTargetData newBTD = sampleBT_A.copy();
+			newBTD.normalBuildEnabled = !newBTD.normalBuildEnabled;
+			newBTD.autoBuildEnabled = !newBTD.autoBuildEnabled;
+			buildInfo.changeBuildTarget("TargetA", newBTD);
+			
+			assertEquals(buildMgr.getBuildTarget(project, "TargetA", true).getData(), newBTD);
+			
+			BundleInfo bundleInfo2 = ToolingTests_Actual.createSampleBundleInfoA("SampleBundle2", null);
+			buildMgr.bundleProjectAddedOrModified(project, bundleInfo2);
+			
+			assertEquals(buildMgr.getBuildTarget(project, "TargetA", true).getData(), newBTD);
+			assertTrue(buildMgr.getBuildTarget(project, "TargetA", true).bundleInfo == bundleInfo2);
+			
+			buildInfo.getUpdatedInfo().changeBuildTarget("TargetA", sampleBT_A.copy());
+			assertEquals(buildMgr.getBuildTarget(project, "TargetA", true).getData(), sampleBT_A);
 		}
 	}
 	
@@ -287,7 +308,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 	
 	protected NullOperationMonitor opMonitor = new NullOperationMonitor();
 	
-	protected void testBuildOperation() throws CommonException, StatusException {
+	protected void test_BuildOperation() throws CommonException, StatusException {
 		ToolManager toolMgr = buildMgr.getToolManager();
 		ProjectBuildInfo buildInfo = buildMgr.getBuildInfo(project);
 		

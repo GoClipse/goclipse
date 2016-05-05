@@ -13,18 +13,16 @@ package melnorme.utilbox.concurrency;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * An implementation of {@link ITaskAgent} based on an {@link ExecutorService}.
  */
-public class ExecutorTaskAgent extends ThreadPoolExecutorExt implements ExecutorService, ITaskAgent {
+public class ExecutorTaskAgent extends ThreadPoolExecutorExt implements ITaskAgent {
 	
 	public static ITaskAgent createExecutorAgent(String name, UncaughtExceptionHandler ueHandler) {
 		return new ExecutorTaskAgent(name, ueHandler);
@@ -35,24 +33,8 @@ public class ExecutorTaskAgent extends ThreadPoolExecutorExt implements Executor
 	}
 	
 	@Override
-	public List<Runnable> shutdownNow() {
-		List<Runnable> remaining = super.shutdownNow();
-		for (Runnable runnable : remaining) {
-			if(runnable instanceof FutureTask<?>) {
-				FutureTask<?> futureTask = (FutureTask<?>) runnable;
-				futureTask.cancel(true);
-			}
-		}
-		return remaining;
-	}
-	
-	@Override
-	public void waitForPendingTasks() {
-		try {
-			awaitPendingTasks();
-		} catch (InterruptedException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		} 
+	public void waitForPendingTasks() throws InterruptedException {
+		awaitPendingTasks();
 	}
 	
 	public void awaitPendingTasks() throws InterruptedException {

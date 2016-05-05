@@ -10,10 +10,18 @@
  *******************************************************************************/
 package melnorme.lang.tooling.bundle;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
 public abstract class AbstractBundleInfo {
+	
+	protected final String bundleName;
+	
+	public AbstractBundleInfo(String bundleName) {
+		this.bundleName = assertNotNull(bundleName);
+	}
 	
 	public abstract Indexable<BuildConfiguration> getBuildConfigurations();
 	

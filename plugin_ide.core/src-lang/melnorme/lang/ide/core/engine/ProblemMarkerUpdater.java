@@ -30,21 +30,18 @@ import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.utilbox.concurrency.ICommonExecutor;
+import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.ownership.IDisposable;
+import melnorme.utilbox.ownership.LifecycleObject;
 
-public class ProblemMarkerUpdater extends AbstractAgentManager {
+public class ProblemMarkerUpdater extends LifecycleObject {
 	
 	protected SourceModelManager sourceModelManager;
+	protected final ITaskAgent executor = CoreExecutors.newExecutorTaskAgent(getClass());
 	
 	public ProblemMarkerUpdater() {
-	}
-	
-	@Override
-	protected ICommonExecutor init_executor() {
-		return CoreExecutors.newExecutorTaskAgent(getClass());
 	}
 	
 	public void install(SourceModelManager sourceModelManager) {
@@ -58,7 +55,7 @@ public class ProblemMarkerUpdater extends AbstractAgentManager {
 	@Override
 	protected void dispose_post() {
 		super.dispose_post();
-		executor.shutdownNow();
+		executor.shutdownNowAndCancelAll();
 	}
 	
 	protected final IStructureModelListener problemUpdaterListener = new IStructureModelListener() {

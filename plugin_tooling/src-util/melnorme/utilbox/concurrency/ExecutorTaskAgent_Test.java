@@ -44,7 +44,7 @@ public class ExecutorTaskAgent_Test extends CommonTestExt {
 		firstTask.awaitTaskEntry();
 		assertTrue(secondTaskFuture.isCancelled() == false);
 		
-		List<Runnable> cancelledTasks = agent.shutdownNow();
+		List<Runnable> cancelledTasks = agent.shutdownNowAndCancelAll();
 		assertTrue(cancelledTasks.size() == 1);
 		
 		assertTrue(secondTaskFuture.isCancelled() == true);
@@ -67,12 +67,14 @@ public class ExecutorTaskAgent_Test extends CommonTestExt {
 		LatchRunnable firstTask = new LatchRunnable(false);
 		agent.submit(firstTask);
 		
-		agent.submit(new LatchRunnable(true));
+		Future<?> future = agent.submit(new LatchRunnable(true));
 		
 		firstTask.awaitTaskEntry();
 		
-		List<Runnable> cancelledTasks = agent.shutdownNow();
+		assertTrue(future.isDone() == false);
+		List<Runnable> cancelledTasks = agent.shutdownNowAndCancelAll();
 		assertTrue(cancelledTasks.size() == 1);
+		assertTrue(future.isCancelled());
 		
 		agent.awaitTermination();
 	}

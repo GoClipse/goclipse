@@ -36,7 +36,7 @@ public class GoBundleModelManager extends BundleModelManager<GoBundleModel> {
 	
 	@Override
 	protected BundleInfo createNewInfo(IProject project) {
-		return new BundleInfo();
+		return new BundleInfo("default");
 	}
 	
 }
