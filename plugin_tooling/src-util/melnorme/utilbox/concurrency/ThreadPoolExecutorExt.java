@@ -16,10 +16,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.MiscUtil.isUncheckedException;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,7 +33,7 @@ import java.util.function.Consumer;
  *  - Safer handling of uncaught exceptions, they must be handled by given UncaughtExceptionHandler.
  *  - Has a few minor utils.
  */
-public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements ICommonExecutor {
+public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements ExecutorService, ICommonExecutor {
 	
 	public static interface UncaughtExceptionHandler extends Consumer<Throwable> { }
 	
@@ -69,6 +72,20 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements ICommon
 	}
 	
 	/* -----------------  ----------------- */
+	
+	@Override
+	public List<Runnable> shutdownNowAndCancelAll() {
+		List<Runnable> remaining = super.shutdownNow();
+		for (Runnable runnable : remaining) {
+			if(runnable instanceof FutureTask<?>) {
+				FutureTask<?> futureTask = (FutureTask<?>) runnable;
+				futureTask.cancel(true);
+			}
+		}
+		return remaining;
+	}
+	
+	/* -----------------  Uncaught exception handling  ----------------- */
 	
 	public static class ExecutorThreadFactory extends NamingThreadFactory {
 		

@@ -70,7 +70,7 @@ public abstract class BundleModelManager<BUNDLE_MODEL extends LangBundleModel>
 	
 	@Override
 	protected void dispose_pre() {
-		modelAgent.shutdownNow();
+		modelAgent.shutdownNowAndCancelAll();
 	}
 	
 	/* -----------------  ----------------- */

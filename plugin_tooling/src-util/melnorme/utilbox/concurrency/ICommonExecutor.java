@@ -10,16 +10,18 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A few minor additions to {@link IBasicExecutorExt}
+ * A few minor additions to {@link IBasicExecutor}
  * 
  */
 public interface ICommonExecutor extends IBasicExecutor {
 	
 	/* -----------------  Additions  ----------------- */
 	
+	/** @return the name of this executor. Used mainly for debugging purposes, such as thread naming. */
 	String getName();
 	
 	/** 
@@ -27,6 +29,11 @@ public interface ICommonExecutor extends IBasicExecutor {
 	 * This is intented to be used by tests code only, it shouldn't be meaningful otherwise. 
 	 */
 	long getSubmittedTaskCount();
+	
+	/**
+	 * Do {@link #shutdownNow()} and cancel pending tasks.
+	 */
+	List<Runnable> shutdownNowAndCancelAll();
 	
 	/**
 	 * Indefinitely wait for the executor to terminate.

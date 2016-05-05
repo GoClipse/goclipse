@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.utils.concurrency;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
@@ -20,7 +19,6 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.SafeFuture;
-import melnorme.utilbox.core.Assert.AssertFailedException;
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.fields.ListenerListHelper;
 
@@ -176,16 +174,6 @@ public class ConcurrentlyDerivedData<DATA, SELF> {
 	}
 	
 	public class DataUpdateFuture implements SafeFuture<DATA> {
-		@Override
-		public boolean cancel(boolean mayInterruptIfRunning) throws AssertFailedException {
-			throw assertFail();
-		}
-		
-		@Override
-		public boolean isCancelled() {
-			return false;
-		}
-		
 		@Override
 		public boolean isDone() {
 			return !isStale();
