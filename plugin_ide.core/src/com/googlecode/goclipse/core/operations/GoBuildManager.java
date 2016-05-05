@@ -170,7 +170,7 @@ public class GoBuildManager extends BuildManager {
 				return null;
 			}
 			
-			Location binFolderLocation = getBinFolderLocation(bt);
+			Location binFolderLocation = GoProjectEnvironment.getBinFolderLocation(bt.getProject());
 			
 			String binFilePath = getBinFilePath(getValidGoPackageName(bt.getBuildConfigName()));
 			String exePath = binFolderLocation.resolve(binFilePath + MiscUtil.getExecutableSuffix()).toString();
@@ -316,8 +316,6 @@ public class GoBuildManager extends BuildManager {
 				{
 					// We need to change working directory to bin, 
 					// because our commands create executable files in the working directory.
-					/* FIXME: review this possible bug for GOPATH sub-projects */
-//					workingDirectory = getBinFolderLocation(bt);
 					workingDirectory = GoProjectEnvironment.getBinFolderLocation(project);
 				}
 				
