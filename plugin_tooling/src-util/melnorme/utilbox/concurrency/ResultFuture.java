@@ -28,13 +28,15 @@ import java.util.concurrent.TimeoutException;
  * since it doesn't throw an unchecked exception for cancellation.
  *
  */
-public class ResultFuture<DATA> implements Future<DATA> {
+public class ResultFuture<DATA, EXC extends Throwable> implements Future<DATA>, FutureX<DATA, EXC> {
 	
 	protected final CountDownLatch completionLatch = new CountDownLatch(1);
 	protected final Object lock = new Object();
 	
     protected volatile ResultStatus status = ResultStatus.INITIAL;
 	protected volatile DATA resultValue;
+	/** Note: resultException is either a EXC, or a RuntimeException. */
+	protected volatile Throwable resultException;
 	
 	public enum ResultStatus { INITIAL, RESULT_SET, CANCELLED }
 	
@@ -72,6 +74,26 @@ public class ResultFuture<DATA> implements Future<DATA> {
 		}
 	}
 	
+	public void setExceptionResult(EXC exceptionResult) {
+		doSetExceptionResult(exceptionResult);
+	}
+	
+	public void setRuntimeExceptionResult(RuntimeException exceptionResult) {
+		doSetExceptionResult(exceptionResult);
+	}
+	
+	protected void doSetExceptionResult(Throwable exceptionResult) {
+		synchronized (lock) {
+			if(isDone()) {
+				handleReSetResult();
+				return;
+			}
+			this.resultException = exceptionResult;
+			status = ResultStatus.RESULT_SET;
+			completionLatch.countDown();
+		}
+	}
+	
 	public boolean cancel() {
 		synchronized (lock) {
 			if(isDone()) {
@@ -99,26 +121,39 @@ public class ResultFuture<DATA> implements Future<DATA> {
 		}
 	}
 	
+	@Override
 	public DATA awaitResult() 
-			throws OperationCancellation, InterruptedException {
+			throws EXC, OperationCancellation, InterruptedException {
 		awaitCompletion();
 		return getResult();
 	}
 	
+	@Override
 	public DATA awaitResult(long timeout, TimeUnit unit) 
-			throws OperationCancellation, InterruptedException, TimeoutException {
+			throws EXC, OperationCancellation, InterruptedException, TimeoutException {
 		awaitCompletion(timeout, unit);
 		return getResult();
 	}
 	
-	protected DATA getResult() throws OperationCancellation {
+	protected DATA getResult() throws EXC, OperationCancellation {
 		if(isCancelled()) {
 			throw new OperationCancellation();
 		}
+		throwIfExceptionResult();
 		return resultValue;
 	}
 	
-	public void awaitSuccess() throws OperationCancellation, InterruptedException {
+	@SuppressWarnings("unchecked")
+	protected void throwIfExceptionResult() throws EXC {
+		if(resultException instanceof RuntimeException) {
+			throw (RuntimeException) resultException;
+		}
+		if(resultException != null) {
+			throw (EXC) resultException;
+		}
+	}
+	
+	public void awaitSuccess() throws EXC, OperationCancellation, InterruptedException {
 		awaitResult();
 	}
 	
@@ -133,7 +168,7 @@ public class ResultFuture<DATA> implements Future<DATA> {
 	public DATA get() throws InterruptedException, ExecutionException {
 		try {
 			return awaitResult();
-		} catch(OperationCancellation e) {
+		} catch(Throwable e) {
 			throw toExecutionException(e);
 		}
 	}
@@ -142,19 +177,19 @@ public class ResultFuture<DATA> implements Future<DATA> {
 	public DATA get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
 		try {
 			return awaitResult(timeout, unit);
-		} catch(OperationCancellation e) {
+		} catch(Throwable e) {
 			throw toExecutionException(e);
 		}
 	}
 	
-	public ExecutionException toExecutionException(OperationCancellation e) throws ExecutionException {
+	public ExecutionException toExecutionException(Throwable e) throws ExecutionException {
 		// Don't throw java.util.concurrent.CancellationException because it is a RuntimeException
 		return new ExecutionException(e);
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public static class LatchFuture extends ResultFuture<Object> {
+	public static class LatchFuture extends ResultFuture<Object, RuntimeException> {
 		
 		public void setCompleted() {
 			setResult(null);

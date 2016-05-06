@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import melnorme.utilbox.core.fntypes.CallableX;
+
 /**
  * An extension to {@link ThreadPoolExecutor}: 
  *  - Safer handling of uncaught exceptions, they must be handled by given UncaughtExceptionHandler.
@@ -69,6 +71,13 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	public void execute(Runnable command) {
 		executeCount.incrementAndGet();
 		super.execute(command);
+	}
+	
+	@Override
+	public <RET, EXC extends Exception> FutureX<RET, EXC> submitX(CallableX<RET, EXC> callable) {
+		ResultFutureTask<RET, EXC> command = new ResultFutureTask<RET, EXC>(callable);
+		execute(command);
+		return command;
 	}
 	
 	/* -----------------  ----------------- */

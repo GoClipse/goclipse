@@ -61,6 +61,7 @@ abstract class AbstractProjectReconcileManager {
 			
 			projectInfos.put(project, newReconcileTask);
 			
+			/* FIXME: review */
 			getExecutor().submit(newReconcileTask.asFutureTask);
 		}
 		

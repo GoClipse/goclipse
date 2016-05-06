@@ -13,11 +13,17 @@ package melnorme.utilbox.concurrency;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import melnorme.utilbox.core.fntypes.CallableX;
+
 /**
  * A few minor additions to {@link IBasicExecutor}
  * 
  */
 public interface ICommonExecutor extends IBasicExecutor {
+	
+	void execute(Runnable runnable);
+	
+	<RET, EXC extends Exception> FutureX<RET, EXC> submitX(CallableX<RET, EXC> callable);
 	
 	/* -----------------  Additions  ----------------- */
 	

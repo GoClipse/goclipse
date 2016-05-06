@@ -12,7 +12,6 @@ package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
@@ -79,7 +78,7 @@ public abstract class ButtonTextField extends TextFieldWidget {
 	}
 	
 	protected abstract String getNewValueFromButtonSelection() 
-			throws CoreException, CommonException, OperationCancellation;
+			throws CommonException, OperationCancellation;
 	
 	@Override
 	protected void doSetEnabled(boolean enabled) {

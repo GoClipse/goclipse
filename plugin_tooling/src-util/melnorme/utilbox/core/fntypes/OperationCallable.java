@@ -8,18 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.operation;
+package melnorme.utilbox.core.fntypes;
 
 import java.util.concurrent.Callable;
-
-import org.eclipse.core.runtime.CoreException;
 
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
-public interface CommonOperationCallable<RET> extends Callable<RET> {
+public interface OperationCallable<RET> extends Callable<RET> {
 	
 	@Override
-	RET call() throws CoreException, CommonException, OperationCancellation;
+	RET call() throws CommonException, OperationCancellation;
 	
 }

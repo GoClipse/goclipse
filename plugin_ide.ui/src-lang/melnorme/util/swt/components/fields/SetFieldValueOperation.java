@@ -14,18 +14,18 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.core.runtime.CoreException;
 
-import melnorme.lang.ide.core.utils.operation.CommonOperationCallable;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.OperationCallable;
 import melnorme.utilbox.fields.IField;
 
 public class SetFieldValueOperation<T> extends BasicUIOperation {
 	
 	protected final IField<T> field;
-	protected final CommonOperationCallable<T> newValueCallable;
+	protected final OperationCallable<T> newValueCallable;
 	
-	public SetFieldValueOperation(IField<T> field, CommonOperationCallable<T> callable) {
+	public SetFieldValueOperation(IField<T> field, OperationCallable<T> callable) {
 		this.field = assertNotNull(field);
 		this.newValueCallable = assertNotNull(callable);
 	}
