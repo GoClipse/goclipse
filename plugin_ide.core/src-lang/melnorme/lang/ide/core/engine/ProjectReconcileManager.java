@@ -13,11 +13,9 @@ package melnorme.lang.ide.core.engine;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.HashMap;
-import java.util.concurrent.FutureTask;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
@@ -61,8 +59,7 @@ abstract class AbstractProjectReconcileManager {
 			
 			projectInfos.put(project, newReconcileTask);
 			
-			/* FIXME: review */
-			getExecutor().submit(newReconcileTask.asFutureTask);
+			getExecutor().submitTask(newReconcileTask.asFutureTask);
 		}
 		
 	}
@@ -84,10 +81,7 @@ abstract class AbstractProjectReconcileManager {
 		}
 	}
 	
-	public class ProjectReconcileTask {
-		
-		protected final IProgressMonitor cancelMonitor = new NullProgressMonitor();
-		protected final FutureTask<?> asFutureTask = new FutureTask<>(() -> run(), null);
+	public class ProjectReconcileTask extends MonitorFutureTask<RuntimeException> {
 		
 		protected final IProject project;
 		protected final ProjectReconcileTask previousReconcileTask;
@@ -103,11 +97,6 @@ abstract class AbstractProjectReconcileManager {
 			this.fileSaveFuture = assertNotNull(fileSaveFuture);
 		}
 		
-		public void cancel() {
-			cancelMonitor.setCanceled(true);
-			asFutureTask.cancel(true);
-		}
-		
 		public void awaitPreconditions() throws OperationCancellation, InterruptedException {
 			fileSaveFuture.awaitResult();
 			
@@ -116,7 +105,8 @@ abstract class AbstractProjectReconcileManager {
 			}
 		}
 		
-		public void run() {
+		@Override
+		protected void runTask() {
 			try {
 				try {
 					if(previousReconcileTask != null) {
