@@ -11,9 +11,12 @@
 package melnorme.utilbox.concurrency;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import melnorme.utilbox.core.fntypes.CallableX;
+import melnorme.utilbox.core.fntypes.CommonResult;
+import melnorme.utilbox.core.fntypes.OperationCallable;
 
 /**
  * A few minor additions to {@link IBasicExecutor}
@@ -21,11 +24,16 @@ import melnorme.utilbox.core.fntypes.CallableX;
  */
 public interface ICommonExecutor extends IBasicExecutor {
 	
-	void execute(Runnable runnable);
-	
+	/** Same as {@link #submit(Callable)}, but with a more strict exception throwing API. */
 	<RET, EXC extends Exception> FutureX<RET, EXC> submitX(CallableX<RET, EXC> callable);
 	
-	/* -----------------  Additions  ----------------- */
+	/** Similar to {@link #submit(Callable)}, but using an {@link OperationCallable}. */
+	<RET> CommonFuture<RET> submitOp(OperationCallable<RET> opCallable);
+	
+	/** Alias interface */
+	public static interface CommonFuture<RET> extends FutureX<CommonResult<RET>, RuntimeException> {
+		
+	}
 	
 	/** @return the name of this executor. Used mainly for debugging purposes, such as thread naming. */
 	String getName();

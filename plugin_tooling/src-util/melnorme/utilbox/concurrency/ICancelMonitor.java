@@ -15,6 +15,8 @@ public interface ICancelMonitor {
 	
 	public boolean isCanceled();
 	
+	/* -----------------  ----------------- */
+	
 	public class NullCancelMonitor implements ICancelMonitor {
 		
 		@Override
@@ -25,6 +27,7 @@ public interface ICancelMonitor {
 	}
 	
 	public static final NullCancelMonitor NULL_MONITOR = new NullCancelMonitor();
+	
 	
 	public static void checkCancelation(ICancelMonitor cm) throws OperationCancellation {
 		if(cm.isCanceled()) {

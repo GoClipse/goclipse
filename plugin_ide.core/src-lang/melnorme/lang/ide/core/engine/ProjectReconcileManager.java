@@ -109,7 +109,7 @@ abstract class AbstractProjectReconcileManager {
 		}
 		
 		public void awaitPreconditions() throws OperationCancellation, InterruptedException {
-			fileSaveFuture.awaitSuccess();
+			fileSaveFuture.awaitResult();
 			
 			if(structureUpdateTask != null) {
 				structureUpdateTask.structureInfo.awaitUpdatedData();

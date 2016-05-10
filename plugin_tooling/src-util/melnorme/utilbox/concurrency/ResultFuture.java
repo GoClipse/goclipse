@@ -125,17 +125,17 @@ public class ResultFuture<DATA, EXC extends Throwable> implements Future<DATA>, 
 	public DATA awaitResult() 
 			throws EXC, OperationCancellation, InterruptedException {
 		awaitCompletion();
-		return getResult();
+		return getResult_afterCompletion();
 	}
 	
 	@Override
 	public DATA awaitResult(long timeout, TimeUnit unit) 
 			throws EXC, OperationCancellation, InterruptedException, TimeoutException {
 		awaitCompletion(timeout, unit);
-		return getResult();
+		return getResult_afterCompletion();
 	}
 	
-	protected DATA getResult() throws EXC, OperationCancellation {
+	protected DATA getResult_afterCompletion() throws EXC, OperationCancellation {
 		if(isCancelled()) {
 			throw new OperationCancellation();
 		}
@@ -151,10 +151,6 @@ public class ResultFuture<DATA, EXC extends Throwable> implements Future<DATA>, 
 		if(resultException != null) {
 			throw (EXC) resultException;
 		}
-	}
-	
-	public void awaitSuccess() throws EXC, OperationCancellation, InterruptedException {
-		awaitResult();
 	}
 	
 	/* -----------------  ----------------- */
