@@ -10,12 +10,21 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
-import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.Executor;
 
 import melnorme.utilbox.core.fntypes.CallableX;
 
-public class ResultFutureTask<RET, EXC extends Exception> extends ResultFuture<RET, EXC> 
-	implements RunnableFuture<RET> {
+/**
+ * A runnable ResultFuture.
+ * 
+ * This object is not a {@link Runnable}, nor is the run method public,  
+ * in order to prevent it being submited to {@link ExecutorService#submit(Runnable)},
+ * which would result in a Future with non-working cancellation.
+ * 
+ * Instead, {@link #submitTo(Executor)} should be used instead.
+ * 
+ */
+public class ResultFutureTask<RET, EXC extends Exception> extends ResultFuture<RET, EXC> {
 	
 	protected final CallableX<RET, EXC> callable;
 	
@@ -23,8 +32,7 @@ public class ResultFutureTask<RET, EXC extends Exception> extends ResultFuture<R
 		this.callable = callable;
 	}
 	
-	@Override
-	public final void run() {
+	protected final void run() {
 		try {
 			RET resultValue = doRun();
 			setResult(resultValue);
@@ -39,6 +47,11 @@ public class ResultFutureTask<RET, EXC extends Exception> extends ResultFuture<R
 	
 	protected RET doRun() throws EXC {
 		return callable.call();
+	}
+	
+	public ResultFuture<RET, EXC> submitTo(Executor executor) {
+		executor.execute(this::run);
+		return this;
 	}
 	
 }

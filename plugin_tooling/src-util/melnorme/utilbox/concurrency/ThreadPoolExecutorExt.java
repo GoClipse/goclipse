@@ -78,14 +78,14 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	@Override
 	public <RET, EXC extends Exception> FutureX<RET, EXC> submitX(CallableX<RET, EXC> callable) {
 		ResultFutureTask<RET, EXC> command = new ResultFutureTask<RET, EXC>(callable);
-		execute(command);
+		command.submitTo(this);
 		return command;
 	}
 	
 	@Override
 	public <RET> CommonFuture<RET> submitOp(OperationCallable<RET> opCallable) {
 		CommonResultFutureTask<RET> command = new CommonResultFutureTask<>(opCallable.toResultCallable());
-		execute(command);
+		command.submitTo(this);
 		return command;
 	}
 	

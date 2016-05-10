@@ -11,53 +11,99 @@
 package melnorme.utilbox.concurrency;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
 
 import org.junit.Test;
 
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.tests.CommonTest;
 
 public class ResultFutureTask_Test extends CommonTest {
 	
+	public static class NeverendingCallable implements CallableX<Object, RuntimeException> {
+		
+		protected final CountDownLatch entryLatch = new CountDownLatch(1);
+		
+		@Override
+		public Object call() throws RuntimeException { 
+			try {
+				entryLatch.countDown();
+				
+				new CountDownLatch(1).await();
+				throw assertFail();
+			} catch(InterruptedException e) {
+				return "";
+			}
+		}
+	}
+	
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		{
-			ResultFutureTask<Object, CommonException> resultFutureTask = new ResultFutureTask<>(() -> { 
+		
+		// Test await result
+		assertEquals("result", submitAndAwaitResult(new ResultFutureTask<>(() -> "result")));
+		
+		// Test Exception handling
+		verifyThrows(() -> {
+			submitAndAwaitResult(new ResultFutureTask<Object, CommonException>(() -> { 
 				throw new CommonException("xxx1");
-			});
-			ForkJoinPool.commonPool().execute(resultFutureTask);
-			
-			try {
-				resultFutureTask.awaitResult();
-				assertFail();
-			} catch(CommonException e) {
-				assertEquals(e.getMessage(), "xxx1");
-				// continue;
-			}
-		}
+			}));
+		}, CommonException.class, "xxx1");
 		
-		{
-			ResultFutureTask<Object, RuntimeException> resultFutureTask = new ResultFutureTask<>(() -> { 
+		// Test RuntimeException handling
+		verifyThrows(() -> {
+			submitAndAwaitResult(new ResultFutureTask<>(() -> { 
 				throw new RuntimeException("xxx2");
-			});
-			ForkJoinPool.commonPool().execute(resultFutureTask);
+			}));
+		}, RuntimeException.class, "xxx2");
+		
+		testCancellation$();
+		
+	}
+	
+	protected void testCancellation$() throws InterruptedException, OperationCancellation {
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		
+		{
+			NeverendingCallable neverending = new NeverendingCallable();
+			ResultFutureTask<Object, RuntimeException> resultFutureTask = new ResultFutureTask<>(neverending);
+			Future<?> future = resultFutureTask.submitTo(executor);
+			neverending.entryLatch.await();
 			
-			verifyThrows(() -> resultFutureTask.awaitResult(), RuntimeException.class, "xxx2");
+			// Test cancellation through Future API
+			future.cancel(true);
+			assertTrue(resultFutureTask.isCancelled());
+			verifyThrows(() -> resultFutureTask.awaitResult(), OperationCancellation.class);
 		}
 		
 		{
-			ResultFutureTask<Object, RuntimeException> resultFutureTask = new ResultFutureTask<>(() -> { 
-				return "result";
-			});
+			new ResultFutureTask<>(new NeverendingCallable()).submitTo(executor);
 			
-			ForkJoinPool.commonPool().execute(resultFutureTask);
+			ResultFutureTask<Object, RuntimeException> resultFutureTask = new ResultFutureTask<>(
+					new NeverendingCallable());
+			Future<?> future = resultFutureTask.submitTo(executor);
 			
-			assertEquals(resultFutureTask.awaitResult(), "result");
+			// Test cancellation through Future API - when task has not started yet
+			future.cancel(true);
+			assertTrue(resultFutureTask.isCancelled());
+			verifyThrows(() -> resultFutureTask.awaitResult(), OperationCancellation.class);
 		}
-
+		
+		executor.shutdownNow();
+	}
+	
+	protected <EXC extends Exception> Object submitAndAwaitResult(ResultFutureTask<Object, EXC> resultFutureTask)
+			throws OperationCancellation, InterruptedException, EXC {
+		resultFutureTask.submitTo(ForkJoinPool.commonPool());
+		return resultFutureTask.awaitResult();
 	}
 	
 }

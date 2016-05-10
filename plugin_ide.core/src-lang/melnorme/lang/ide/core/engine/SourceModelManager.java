@@ -198,7 +198,7 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 		protected synchronized void queueUpdateTask(StructureUpdateTask updateTask) {
 			setUpdateTask(updateTask);
 			
-			executor.submit(updateTask);
+			executor.submitR(updateTask);
 		}
 		
 		@Override

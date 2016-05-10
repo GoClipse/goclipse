@@ -67,7 +67,7 @@ public class ProblemMarkerUpdater extends LifecycleObject {
 			
 			assertTrue(Job.getJobManager().currentRule() == null);
 			
-			executor.submit(new UpdateProblemMarkersTask(structureInfo));
+			executor.submitR(new UpdateProblemMarkersTask(structureInfo));
 		}
 	};
 	

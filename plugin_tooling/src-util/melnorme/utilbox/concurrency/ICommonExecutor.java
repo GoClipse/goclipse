@@ -12,7 +12,6 @@ package melnorme.utilbox.concurrency;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.core.fntypes.CommonResult;
@@ -24,15 +23,22 @@ import melnorme.utilbox.core.fntypes.OperationCallable;
  */
 public interface ICommonExecutor extends IBasicExecutor {
 	
-	/** Same as {@link #submit(Callable)}, but with a more strict exception throwing API. */
+	/** Same as {@link ExecutorService#submit(Callable)}, but with a more strict exception throwing API. */
 	<RET, EXC extends Exception> FutureX<RET, EXC> submitX(CallableX<RET, EXC> callable);
 	
-	/** Similar to {@link #submit(Callable)}, but using an {@link OperationCallable}. */
+	/** Similar to {@link #submitX(CallableX)}, but using an {@link OperationCallable}. */
 	<RET> CommonFuture<RET> submitOp(OperationCallable<RET> opCallable);
 	
 	/** Alias interface */
 	public static interface CommonFuture<RET> extends FutureX<CommonResult<RET>, RuntimeException> {
 		
+	}
+	
+	default <RET> FutureX<RET, RuntimeException> submitR(Runnable runnable) {
+		return submitX(() -> {
+			runnable.run();
+			return null;
+		});
 	}
 	
 	/** @return the name of this executor. Used mainly for debugging purposes, such as thread naming. */
@@ -48,14 +54,5 @@ public interface ICommonExecutor extends IBasicExecutor {
 	 * Do {@link #shutdownNow()} and cancel pending tasks.
 	 */
 	List<Runnable> shutdownNowAndCancelAll();
-	
-	/**
-	 * Indefinitely wait for the executor to terminate.
-	 * @throws InterruptedException if interrupted.
-	 */
-	default void awaitTermination() throws InterruptedException {
-		while(!awaitTermination(1000, TimeUnit.SECONDS)) {
-		}
-	}
 	
 }
