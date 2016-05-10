@@ -47,6 +47,7 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 	
 	public SourceModelManager(DocumentReconcileManager reconcileMgr, ProblemMarkerUpdater problemUpdater) {
 		this.reconcileMgr = assertNotNull(reconcileMgr);
+		asOwner().bind(reconcileMgr);
 		
 		if(problemUpdater != null) {
 			problemUpdater.install(this);

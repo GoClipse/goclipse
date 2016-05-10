@@ -59,6 +59,11 @@ public class DocumentReconcileManager extends AbstractAgentManager {
 		return CoreExecutors.newExecutorTaskAgent(DocumentReconcileManager.class);
 	}
 	
+	@Override
+	protected void dispose_post() {
+		executor.shutdownNowAndCancelAll();
+	}
+	
 	protected BuildManager getBuildManager() {
 		return projectReconciler.buildMgr;
 	}
