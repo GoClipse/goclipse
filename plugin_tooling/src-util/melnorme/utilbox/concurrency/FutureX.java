@@ -39,4 +39,26 @@ public interface FutureX<RESULT, EXCEPTION extends Throwable> {
 	RESULT awaitResult(long timeout, TimeUnit unit) 
 			throws EXCEPTION, OperationCancellation, InterruptedException, TimeoutException;
 	
+	/** Same as {@link #awaitResult()}, 
+	 * but throw InterruptedException as an OperationCancellation. */
+	default RESULT getResult() 
+			throws EXCEPTION, OperationCancellation {
+		try {
+			return awaitResult();
+		} catch(InterruptedException e) {
+			throw new OperationCancellation();
+		}
+	}
+	
+	/** Same as {@link #awaitResult(long, TimeUnit)}, 
+	 * but throw InterruptedException and TimeoutException as an OperationCancellation. */
+	default RESULT getResult(long timeout, TimeUnit unit) 
+			throws EXCEPTION, OperationCancellation {
+		try {
+			return awaitResult(timeout, unit);
+		} catch(InterruptedException | TimeoutException e) {
+			throw new OperationCancellation();
+		}
+	}
+	
 }

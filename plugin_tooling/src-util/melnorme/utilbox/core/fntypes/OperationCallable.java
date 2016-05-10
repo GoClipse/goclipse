@@ -20,4 +20,21 @@ public interface OperationCallable<RET> extends Callable<RET> {
 	@Override
 	RET call() throws CommonException, OperationCancellation;
 	
+	default CallableX<CommonResult<RET>, RuntimeException> toResultCallable() {
+		OperationCallable<RET> operationCallable = OperationCallable.this;
+		
+		return new CallableX<CommonResult<RET>, RuntimeException>() {
+			@Override
+			public CommonResult<RET> call() throws RuntimeException {
+				try {
+					return new CommonResult<>(operationCallable.call());
+				} catch(CommonException e) {
+					return new CommonResult<>(null, e);
+				} catch(OperationCancellation e) {
+					return new CommonResult<>(null, e);
+				}
+			}
+		};
+	}
+	
 }

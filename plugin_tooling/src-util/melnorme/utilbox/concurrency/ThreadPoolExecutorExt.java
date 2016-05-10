@@ -29,6 +29,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import melnorme.utilbox.core.fntypes.CallableX;
+import melnorme.utilbox.core.fntypes.CommonResult;
+import melnorme.utilbox.core.fntypes.OperationCallable;
 
 /**
  * An extension to {@link ThreadPoolExecutor}: 
@@ -78,6 +80,22 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 		ResultFutureTask<RET, EXC> command = new ResultFutureTask<RET, EXC>(callable);
 		execute(command);
 		return command;
+	}
+	
+	@Override
+	public <RET> CommonFuture<RET> submitOp(OperationCallable<RET> opCallable) {
+		CommonResultFutureTask<RET> command = new CommonResultFutureTask<>(opCallable.toResultCallable());
+		execute(command);
+		return command;
+	}
+	
+	// This is only needed because CommonFuture is not a true alias.
+	protected class CommonResultFutureTask<RET> extends ResultFutureTask<CommonResult<RET>, RuntimeException> 
+		implements CommonFuture<RET> {
+		
+		public CommonResultFutureTask(CallableX<CommonResult<RET>, RuntimeException> callable) {
+			super(callable);
+		}
 	}
 	
 	/* -----------------  ----------------- */
