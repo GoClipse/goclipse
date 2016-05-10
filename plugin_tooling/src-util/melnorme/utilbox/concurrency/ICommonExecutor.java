@@ -23,6 +23,11 @@ import melnorme.utilbox.core.fntypes.OperationCallable;
  */
 public interface ICommonExecutor extends IBasicExecutor {
 	
+	/** @return the name of this executor. Used mainly for debugging purposes, such as thread naming. */
+	String getName();
+	
+	/* -----------------  ----------------- */
+	
 	/** Same as {@link ExecutorService#submit(Callable)}, but with a more strict exception throwing API. */
 	<RET, EXC extends Exception> FutureX<RET, EXC> submitX(CallableX<RET, EXC> callable);
 	
@@ -41,14 +46,16 @@ public interface ICommonExecutor extends IBasicExecutor {
 		});
 	}
 	
-	/** @return the name of this executor. Used mainly for debugging purposes, such as thread naming. */
-	String getName();
+	/** Submit a {@link FutureTask2} for execution. */
+	void submitTask(FutureTask2<?, RuntimeException> futureTask);
 	
 	/** 
 	 * @return the total number of tasks that have been submitted for execution (including possibly rejected tasks).
 	 * This is intented to be used by tests code only, it shouldn't be meaningful otherwise. 
 	 */
 	long getSubmittedTaskCount();
+	
+	/* -----------------  ----------------- */
 	
 	/**
 	 * Do {@link #shutdownNow()} and cancel pending tasks.

@@ -13,7 +13,6 @@ package melnorme.lang.ide.core.engine;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.HashMap;
-import java.util.concurrent.FutureTask;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,6 +22,7 @@ import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.utilbox.concurrency.FutureTask2;
 import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.concurrency.ResultFuture.LatchFuture;
@@ -61,8 +61,7 @@ abstract class AbstractProjectReconcileManager {
 			
 			projectInfos.put(project, newReconcileTask);
 			
-			/* FIXME: review */
-			getExecutor().submitR(newReconcileTask.asFutureTask);
+			getExecutor().submitTask(newReconcileTask.asFutureTask2);
 		}
 		
 	}
@@ -87,7 +86,10 @@ abstract class AbstractProjectReconcileManager {
 	public class ProjectReconcileTask {
 		
 		protected final IProgressMonitor cancelMonitor = new NullProgressMonitor();
-		protected final FutureTask<?> asFutureTask = new FutureTask<>(() -> run(), null);
+		/* FIXME: review*/
+		protected final FutureTask2<?, RuntimeException> asFutureTask2 = new FutureTask2<>(() -> {
+			run(); return null;	
+		});
 		
 		protected final IProject project;
 		protected final ProjectReconcileTask previousReconcileTask;
@@ -105,7 +107,7 @@ abstract class AbstractProjectReconcileManager {
 		
 		public void cancel() {
 			cancelMonitor.setCanceled(true);
-			asFutureTask.cancel(true);
+			asFutureTask2.cancel(true);
 		}
 		
 		public void awaitPreconditions() throws OperationCancellation, InterruptedException {

@@ -17,7 +17,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Future;
 
 import org.junit.Test;
 
@@ -25,7 +24,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.tests.CommonTest;
 
-public class ResultFutureTask_Test extends CommonTest {
+public class FutureTask2_Test extends CommonTest {
 	
 	public static class NeverendingCallable implements CallableX<Object, RuntimeException> {
 		
@@ -49,20 +48,20 @@ public class ResultFutureTask_Test extends CommonTest {
 	public void test$() throws Exception {
 		
 		// Test await result
-		assertEquals("result", submitAndAwaitResult(new ResultFutureTask<>(() -> "result")));
+		assertEquals("result", submitAndAwaitResult(() -> "result"));
 		
 		// Test Exception handling
 		verifyThrows(() -> {
-			submitAndAwaitResult(new ResultFutureTask<Object, CommonException>(() -> { 
+			submitAndAwaitResult(() -> { 
 				throw new CommonException("xxx1");
-			}));
+			});
 		}, CommonException.class, "xxx1");
 		
 		// Test RuntimeException handling
 		verifyThrows(() -> {
-			submitAndAwaitResult(new ResultFutureTask<>(() -> { 
+			submitAndAwaitResult(() -> { 
 				throw new RuntimeException("xxx2");
-			}));
+			});
 		}, RuntimeException.class, "xxx2");
 		
 		testCancellation$();
@@ -74,36 +73,33 @@ public class ResultFutureTask_Test extends CommonTest {
 		
 		{
 			NeverendingCallable neverending = new NeverendingCallable();
-			ResultFutureTask<Object, RuntimeException> resultFutureTask = new ResultFutureTask<>(neverending);
-			Future<?> future = resultFutureTask.submitTo(executor);
+			FutureX<?, ?> future = new FutureTask2<>(neverending).submitTo(executor);
 			neverending.entryLatch.await();
 			
 			// Test cancellation through Future API
 			future.cancel(true);
-			assertTrue(resultFutureTask.isCancelled());
-			verifyThrows(() -> resultFutureTask.awaitResult(), OperationCancellation.class);
+			assertTrue(future.isCancelled());
+			verifyThrows(() -> future.awaitResult(), OperationCancellation.class);
 		}
 		
 		{
-			new ResultFutureTask<>(new NeverendingCallable()).submitTo(executor);
+			new FutureTask2<>(new NeverendingCallable()).submitTo(executor);
 			
-			ResultFutureTask<Object, RuntimeException> resultFutureTask = new ResultFutureTask<>(
-					new NeverendingCallable());
-			Future<?> future = resultFutureTask.submitTo(executor);
+			FutureX<?, ?> future = new FutureTask2<>(new NeverendingCallable()).submitTo(executor);
 			
 			// Test cancellation through Future API - when task has not started yet
 			future.cancel(true);
-			assertTrue(resultFutureTask.isCancelled());
-			verifyThrows(() -> resultFutureTask.awaitResult(), OperationCancellation.class);
+			assertTrue(future.isCancelled());
+			verifyThrows(() -> future.awaitResult(), OperationCancellation.class);
 		}
 		
 		executor.shutdownNow();
 	}
 	
-	protected <EXC extends Exception> Object submitAndAwaitResult(ResultFutureTask<Object, EXC> resultFutureTask)
+	protected <EXC extends Exception> Object submitAndAwaitResult(CallableX<Object, EXC> callable)
 			throws OperationCancellation, InterruptedException, EXC {
-		resultFutureTask.submitTo(ForkJoinPool.commonPool());
-		return resultFutureTask.awaitResult();
+		FutureX<Object, EXC> future = new FutureTask2<>(callable).submitTo(ForkJoinPool.commonPool());
+		return future.awaitResult();
 	}
 	
 }
