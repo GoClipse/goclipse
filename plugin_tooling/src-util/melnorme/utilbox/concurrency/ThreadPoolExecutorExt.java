@@ -77,11 +77,11 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	}
 	
 	@Override
-	public void submitTask(FutureTask2<?, RuntimeException> futureTask) {
+	public void submitTask(FutureTaskX<?, RuntimeException> futureTask) {
 		submitTo(this, futureTask);
 	}
 	
-	public static <FT extends FutureTask2<?, ?>> FT submitTo(Executor executor, FT futureTask2) {
+	public static <FT extends FutureTaskX<?, ?>> FT submitTo(Executor executor, FT futureTask2) {
 		executor.execute(futureTask2.asFutureTask());
 		return futureTask2;
 	}
@@ -102,7 +102,7 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	
 	@Override
 	public <RET, EXC extends Exception> FutureX<RET, EXC> submitX(CallableX<RET, EXC> callable) {
-		return submitTo(this, new FutureTask2<>(callable));
+		return submitTo(this, new FutureTaskX<>(callable));
 	}
 	
 	@Override
@@ -111,7 +111,7 @@ public class ThreadPoolExecutorExt extends ThreadPoolExecutor implements Executo
 	}
 	
 	// This adapter is only needed because CommonFuture is not a true alias.
-	protected class CommonResultFutureTask<RET> extends FutureTask2<CommonResult<RET>, RuntimeException> 
+	protected class CommonResultFutureTask<RET> extends FutureTaskX<CommonResult<RET>, RuntimeException> 
 		implements CommonFuture<RET> {
 		
 		public CommonResultFutureTask(CallableX<CommonResult<RET>, RuntimeException> callable) {

@@ -16,13 +16,11 @@ import java.util.HashMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.utilbox.concurrency.FutureTask2;
 import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.concurrency.ResultFuture.LatchFuture;
@@ -61,7 +59,7 @@ abstract class AbstractProjectReconcileManager {
 			
 			projectInfos.put(project, newReconcileTask);
 			
-			getExecutor().submitTask(newReconcileTask.asFutureTask2);
+			getExecutor().submitTask(newReconcileTask.asFutureTask);
 		}
 		
 	}
@@ -83,13 +81,7 @@ abstract class AbstractProjectReconcileManager {
 		}
 	}
 	
-	public class ProjectReconcileTask {
-		
-		protected final IProgressMonitor cancelMonitor = new NullProgressMonitor();
-		/* FIXME: review*/
-		protected final FutureTask2<?, RuntimeException> asFutureTask2 = new FutureTask2<>(() -> {
-			run(); return null;	
-		});
+	public class ProjectReconcileTask extends MonitorFutureTask<RuntimeException> {
 		
 		protected final IProject project;
 		protected final ProjectReconcileTask previousReconcileTask;
@@ -105,11 +97,6 @@ abstract class AbstractProjectReconcileManager {
 			this.fileSaveFuture = assertNotNull(fileSaveFuture);
 		}
 		
-		public void cancel() {
-			cancelMonitor.setCanceled(true);
-			asFutureTask2.cancel(true);
-		}
-		
 		public void awaitPreconditions() throws OperationCancellation, InterruptedException {
 			fileSaveFuture.awaitResult();
 			
@@ -118,7 +105,8 @@ abstract class AbstractProjectReconcileManager {
 			}
 		}
 		
-		public void run() {
+		@Override
+		protected void runTask() {
 			try {
 				try {
 					if(previousReconcileTask != null) {

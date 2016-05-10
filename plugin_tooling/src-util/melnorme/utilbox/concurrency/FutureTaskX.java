@@ -19,39 +19,39 @@ import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.core.Assert.AssertFailedException;
 import melnorme.utilbox.core.fntypes.CallableX;
+import melnorme.utilbox.core.fntypes.ThrowingRunnable;
 
 /**
- * A {@link FutureX}. 
- * Uses a {@link FutureTask} as an implementation. 
- * 
+ * An extension to {@link FutureTask}, implementing {@link FutureX}. 
  */
-public class FutureTask2<RET, EXC extends Exception> implements FutureX<RET, EXC> {
+public class FutureTaskX<RET, EXC extends Exception> extends FutureTask<RET> implements FutureX<RET, EXC> {
 	
-	protected final FutureTask<RET> futureTask;
+	public FutureTaskX(ThrowingRunnable<EXC> runnable) {
+		this(() -> { runnable.run(); return null; });
+	}
 	
-	public FutureTask2(CallableX<RET, EXC> callable) {
-		this.futureTask = new FutureTask<>(callable);
+	public FutureTaskX(CallableX<RET, EXC> callable) {
+		super(callable);
+	}
+	
+	public FutureTask<RET> asFutureTask() {
+		return this;
 	}
 	
 	@Override
 	public boolean cancel(boolean mayInterruptIfRunning) {
-		return futureTask.cancel(mayInterruptIfRunning);
+		return super.cancel(mayInterruptIfRunning);
 	}
 	
-	@Override
-	public boolean isCancelled() {
-		return futureTask.isCancelled();
+	public void before_cancel(@SuppressWarnings("unused") boolean mayInterruptIfRunning) {
 	}
 	
-	@Override
-	public boolean isDone() {
-		return futureTask.isDone();
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
 	public RET awaitResult() throws EXC, OperationCancellation, InterruptedException {
 		try {
-			return futureTask.get();
+			return get();
 		} catch(CancellationException e) {
 			throw new OperationCancellation();
 		} catch(ExecutionException e) {
@@ -63,7 +63,7 @@ public class FutureTask2<RET, EXC extends Exception> implements FutureX<RET, EXC
 	public RET awaitResult(long timeout, TimeUnit unit)
 			throws EXC, OperationCancellation, InterruptedException, TimeoutException {
 		try {
-			return futureTask.get(timeout, unit);
+			return get(timeout, unit);
 		} catch(CancellationException e) {
 			throw new OperationCancellation();
 		} catch(ExecutionException e) {
@@ -83,10 +83,6 @@ public class FutureTask2<RET, EXC extends Exception> implements FutureX<RET, EXC
 	}
 	
 	/* -----------------  ----------------- */
-	
-	public FutureTask<RET> asFutureTask() {
-		return futureTask;
-	}
 	
 	public FutureX<RET, EXC> submitTo(Executor executor) {
 		return ThreadPoolExecutorExt.submitTo(executor, this);

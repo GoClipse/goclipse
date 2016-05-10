@@ -17,6 +17,7 @@ import melnorme.utilbox.core.CommonException;
 
 public interface ICommonOperation {
 	
+	/* FIXME: review, use cancelMonitor */
 	void execute(IProgressMonitor pm) throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */

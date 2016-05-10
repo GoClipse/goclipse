@@ -46,8 +46,8 @@ public interface ICommonExecutor extends IBasicExecutor {
 		});
 	}
 	
-	/** Submit a {@link FutureTask2} for execution. */
-	void submitTask(FutureTask2<?, RuntimeException> futureTask);
+	/** Submit a {@link FutureTaskX} for execution. */
+	void submitTask(FutureTaskX<?, RuntimeException> futureTask);
 	
 	/** 
 	 * @return the total number of tasks that have been submitted for execution (including possibly rejected tasks).
