@@ -46,7 +46,6 @@ public abstract class AbstractToolManagerOperation implements ICommonOperation {
 		return ResourceUtils.getProjectLocation2(project);
 	}
 	
-	/* FIXME: remove redundant IOperationMonitor */
 	protected ExternalProcessResult runBuildTool(IToolOperationMonitor opMonitor, ProcessBuilder pb, 
 			IOperationMonitor om) 
 			throws CommonException, OperationCancellation {

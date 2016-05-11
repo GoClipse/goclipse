@@ -95,6 +95,10 @@ public interface IOperationMonitor extends ICancelMonitor {
 	
 	public class NullOperationMonitor extends BasicOperationMonitor {
 		
+		public NullOperationMonitor() {
+			this(new NullCancelMonitor());
+		}
+		
 		public NullOperationMonitor(ICancelMonitor cm) {
 			super(cm, null, true);
 		}
