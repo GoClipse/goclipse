@@ -41,4 +41,21 @@ public interface SafeFuture<DATA> extends Future<DATA> {
 	@Override
 	public DATA get(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException;
 	
+	/* -----------------  ----------------- */
+	
+	default DATA awaitData(ICancelMonitor cm) throws OperationCancellation {
+		
+		while(true) {
+			cm.checkCancellation();
+			
+			try {
+				return this.get(100, TimeUnit.MILLISECONDS);
+			} catch(InterruptedException e) {
+				throw new OperationCancellation();
+			} catch(TimeoutException e) {
+				continue;
+			}
+		}
+	}
+	
 }

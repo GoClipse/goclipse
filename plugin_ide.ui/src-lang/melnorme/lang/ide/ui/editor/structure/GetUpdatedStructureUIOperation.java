@@ -14,6 +14,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -22,7 +23,6 @@ import melnorme.utilbox.core.CommonException;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<SourceFileStructure> {
 	
@@ -65,8 +65,8 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	}
 	
 	@Override
-	protected SourceFileStructure doBackgroundValueComputation(IProgressMonitor pm) throws OperationCancellation {
-		return structureInfo.awaitUpdatedData(pm);
+	protected SourceFileStructure doBackgroundValueComputation(IOperationMonitor om) throws OperationCancellation {
+		return structureInfo.awaitUpdatedData(om);
 	}
 	
 	@Override

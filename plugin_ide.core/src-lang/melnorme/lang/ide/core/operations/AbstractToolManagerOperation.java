@@ -13,11 +13,12 @@ package melnorme.lang.ide.core.operations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -45,11 +46,12 @@ public abstract class AbstractToolManagerOperation implements ICommonOperation {
 		return ResourceUtils.getProjectLocation2(project);
 	}
 	
+	/* FIXME: remove redundant IOperationMonitor */
 	protected ExternalProcessResult runBuildTool(IToolOperationMonitor opMonitor, ProcessBuilder pb, 
-			IProgressMonitor pm) 
+			IOperationMonitor om) 
 			throws CommonException, OperationCancellation {
 		ToolManager toolMgr = getToolManager();
-		RunToolTask newRunToolTask = toolMgr.newRunProcessTask(opMonitor, pb, pm);
+		RunToolTask newRunToolTask = toolMgr.newRunProcessTask(opMonitor, pb, om);
 		return newRunToolTask.runProcess();
 	}
 	

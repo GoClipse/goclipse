@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
@@ -30,11 +31,13 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.ops.IOperationMonitor.BasicOperationMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -157,25 +160,49 @@ public class EclipseUtils {
 	
 	/* ----------------- ops ----------------- */
 	
-	public static void execute_asCore(IProgressMonitor pm, ICommonOperation commonOperation)
+	public static void execute_asCore(IOperationMonitor om, ICommonOperation commonOperation)
 			throws OperationCancellation, CoreException {
 		try {
-			commonOperation.execute(pm);
+			commonOperation.execute(om);
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
 	}
 	
 	public static ICancelMonitor cm(IProgressMonitor pm) {
-		return new ICancelMonitor() {
+		return new EclipseCancelMonitor(pm);
+	}
+	
+	public static class EclipseCancelMonitor implements ICancelMonitor {
+		
+		protected final IProgressMonitor pm;
+		
+		public EclipseCancelMonitor(IProgressMonitor pm) {
+			this.pm = assertNotNull(pm);
+		}
+		
+		@Override
+		public boolean isCanceled() {
+			return pm.isCanceled();
+		}
+	}
+	
+	public static IOperationMonitor om(IProgressMonitor pm) {
+		return new BasicOperationMonitor(cm(pm), null, true) {
+			
 			@Override
-			public boolean isCanceled() {
-				return pm.isCanceled();
+			public void setTaskName(String taskName) {
+				pm.setTaskName(taskName);
 			}
 		};
 	}
 	
 	public static IProgressMonitor pm(ICancelMonitor cm) {
+		if(cm instanceof EclipseCancelMonitor) {
+			EclipseCancelMonitor ecm = (EclipseCancelMonitor) cm;
+			return ecm.pm;
+		}
+		
 		return new NullProgressMonitor() {
 			@Override
 			public boolean isCanceled() {

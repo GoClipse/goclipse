@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -35,7 +36,7 @@ public abstract class AbstractJobUIOperation extends AbstractUIOperation {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
-					runBackgroundComputation(monitor);
+					runBackgroundComputation(EclipseUtils.om(monitor));
 					
 					display.asyncExec(() -> handleComputationResult_handled());
 					

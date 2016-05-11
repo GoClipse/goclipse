@@ -118,7 +118,7 @@ public abstract class ProjectCreationOperation {
 		}
 		createdProject = getProject();
 		configureCreatedProject(monitor);
-		ResourceUtils.refresh(getProject(), monitor);
+		ResourceUtils.refresh(getProject(), EclipseUtils.om(monitor));
 	}
 	
 	/**

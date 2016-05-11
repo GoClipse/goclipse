@@ -12,12 +12,12 @@ package melnorme.lang.ide.core.operations.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
-import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -40,7 +40,7 @@ public class CompositeBuildOperation implements ICommonOperation {
 	}
 	
 	@Override
-	public void execute(IProgressMonitor monitor) throws CommonException, OperationCancellation {
+	public void execute(IOperationMonitor monitor) throws CommonException, OperationCancellation {
 		
 		if(rule == null) {
 			doExecute(monitor);
@@ -49,7 +49,7 @@ public class CompositeBuildOperation implements ICommonOperation {
 		}
 	}
 	
-	protected void doExecute(IProgressMonitor monitor) throws CommonException, OperationCancellation {
+	protected void doExecute(IOperationMonitor monitor) throws CommonException, OperationCancellation {
 		if(monitor.isCanceled()) {
 			return;
 		}

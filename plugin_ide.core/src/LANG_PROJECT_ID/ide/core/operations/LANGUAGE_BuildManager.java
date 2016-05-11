@@ -1,7 +1,6 @@
 package LANG_PROJECT_ID.ide.core.operations;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
@@ -17,6 +16,7 @@ import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser2;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -96,13 +96,13 @@ public final class LANGUAGE_BuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm) 
+		protected void processBuildOutput(ExternalProcessResult processResult, IOperationMonitor om) 
 				throws CommonException {
 			ArrayList2<ToolSourceMessage> buildErrors = new ArrayList2<>(); 
 			
 			// TODO: Lang process build result
 			
-			new ToolMarkersHelper().addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation2(project), pm);
+			new ToolMarkersHelper().addErrorMarkers(buildErrors, ResourceUtils.getProjectLocation2(project), om);
 		}
 	}
 	

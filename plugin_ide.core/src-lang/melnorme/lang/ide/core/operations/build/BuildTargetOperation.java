@@ -14,12 +14,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.option;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -61,11 +60,11 @@ public abstract class BuildTargetOperation extends AbstractToolManagerOperation 
 	}
 	
 	@Override
-	public void execute(IProgressMonitor parentPM) throws CommonException, OperationCancellation {
-		try(ProgressSubTaskHelper pm = new ProgressSubTaskHelper(parentPM, getBuildOperationName())) {
+	public void execute(IOperationMonitor parentOM) throws CommonException, OperationCancellation {
+		parentOM.runSubTask(getBuildOperationName(), (om) -> {
 			ProcessBuilder pb = getToolProcessBuilder();
-			runBuildToolAndProcessOutput(pb, pm);
-		}
+			runBuildToolAndProcessOutput(pb, om);
+		});
 	}
 	
 	protected String getBuildOperationName() {
@@ -87,12 +86,12 @@ public abstract class BuildTargetOperation extends AbstractToolManagerOperation 
 		return getToolManager().modifyToolProcessBuilder(getConfiguredProcessBuilder2());
 	}
 	
-	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IProgressMonitor pm)
+	public void runBuildToolAndProcessOutput(ProcessBuilder pb, IOperationMonitor om)
 			throws CommonException, OperationCancellation {
-		processBuildOutput(runBuildTool(opMonitor, pb, pm), pm);
+		processBuildOutput(runBuildTool(opMonitor, pb, om), om);
 	}
 	
-	protected abstract void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
+	protected abstract void processBuildOutput(ExternalProcessResult processResult, IOperationMonitor om)
 			throws CommonException, OperationCancellation;
 			
 }

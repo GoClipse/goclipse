@@ -13,7 +13,6 @@ package melnorme.lang.ide.core.operations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
@@ -22,6 +21,8 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.Process
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
+import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -46,7 +47,7 @@ public class RunToolOperation implements ICommonOperation {
 	}
 	
 	@Override
-	public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
+	public void execute(IOperationMonitor pm) throws CommonException, OperationCancellation {
 		pb = createProcessBuilder();
 		
 		IToolOperationMonitor opHandler = getToolManager().startNewOperation(opViewOptions);
@@ -67,7 +68,7 @@ public class RunToolOperation implements ICommonOperation {
 		return LangCoreMessages.RunningCommand;
 	}
 	
-	protected void runProcessTask(RunToolTask runToolTask, @SuppressWarnings("unused") IProgressMonitor pm) 
+	protected void runProcessTask(RunToolTask runToolTask, @SuppressWarnings("unused") IOperationMonitor om) 
 			throws CommonException, OperationCancellation {
 		runToolTask.runProcess();
 	}

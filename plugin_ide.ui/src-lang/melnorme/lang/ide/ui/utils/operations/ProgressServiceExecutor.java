@@ -20,7 +20,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 import melnorme.lang.ide.core.LangCoreMessages;
-import melnorme.lang.ide.core.operations.ICommonOperation;
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.tooling.ops.ICommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -48,7 +49,7 @@ public class ProgressServiceExecutor {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException {
 					try {
-						coreOperation.execute(monitor);
+						coreOperation.execute(EclipseUtils.om(monitor));
 					} catch(CommonException | OperationCancellation e) {
 						// wrap exception
 						throw new InvocationTargetException(e);

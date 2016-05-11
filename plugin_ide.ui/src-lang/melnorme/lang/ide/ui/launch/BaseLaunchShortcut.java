@@ -17,7 +17,6 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -38,6 +37,7 @@ import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;
@@ -96,7 +96,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 		new CalculateValueUIOperation<ILaunchable[]>("Configuring launch") {
 			
 			@Override
-			protected ILaunchable[] doBackgroundValueComputation(IProgressMonitor pm)
+			protected ILaunchable[] doBackgroundValueComputation(IOperationMonitor pm)
 					throws CommonException, OperationCancellation {
 				
 				HashSet2<ILaunchable> launchables = new HashSet2<>();
@@ -118,15 +118,15 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	
 	/* -----------------  Find launchables from selection  ----------------- */
 	
-	protected void doFindLaunchables(HashSet2<ILaunchable> launchTargets, Object element, IProgressMonitor pm) 
+	protected void doFindLaunchables(HashSet2<ILaunchable> launchTargets, Object element, IOperationMonitor om) 
 			throws CommonException, OperationCancellation {
-		ILaunchable launchTarget = getLaunchTargetForElement(element, pm);
+		ILaunchable launchTarget = getLaunchTargetForElement(element, om);
 		if(launchTarget != null) {
 			launchTargets.add(launchTarget);
 		}
 	}
 	
-	protected abstract ILaunchable getLaunchTargetForElement(Object element, IProgressMonitor pm) 
+	protected abstract ILaunchable getLaunchTargetForElement(Object element, IOperationMonitor om) 
 		throws CommonException, OperationCancellation;
 
 	/* -----------------  Handle found launchables  ----------------- */

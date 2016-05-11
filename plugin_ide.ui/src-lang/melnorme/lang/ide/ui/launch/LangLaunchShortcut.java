@@ -16,13 +16,13 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.ui.ILaunchShortcut;
 
 import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -33,7 +33,7 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 	}
 	
 	@Override
-	protected ILaunchable getLaunchTargetForElement(Object element, IProgressMonitor pm)
+	protected ILaunchable getLaunchTargetForElement(Object element, IOperationMonitor om)
 			throws CommonException, OperationCancellation {
 		
 		IProject project = getAssociatedProject(element);
@@ -44,12 +44,12 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		BuildTargetLaunchCreator btLaunchCreator = new BuildTargetLaunchCreator();
 		btLaunchCreator.initFromProject(project);
 		
-		return getLaunchableForElement(element, project, btLaunchCreator, pm);
+		return getLaunchableForElement(element, project, btLaunchCreator, om);
 	}
 	
 	@SuppressWarnings("unused")
 	protected BuildTargetLaunchable getLaunchableForElement(Object element, IProject project,
-			BuildTargetLaunchCreator btLaunchCreator, IProgressMonitor pm) 
+			BuildTargetLaunchCreator btLaunchCreator, IOperationMonitor om) 
 		throws CommonException, OperationCancellation 
 	{
 		return new BuildTargetLaunchable(project, btLaunchCreator);

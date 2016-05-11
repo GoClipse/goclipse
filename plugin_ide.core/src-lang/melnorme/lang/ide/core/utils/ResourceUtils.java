@@ -46,7 +46,8 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ICommonOperation;
+import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.ThrowingRunnable;
@@ -139,9 +140,9 @@ public class ResourceUtils {
 	
 	/* -----------------  Direct resource operations  ----------------- */
 	
-	public static void refresh(IResource resource, IProgressMonitor pm) throws CommonException {
+	public static void refresh(IResource resource, IOperationMonitor om) throws CommonException {
 		try {
-			resource.refreshLocal(IResource.DEPTH_INFINITE, pm);
+			resource.refreshLocal(IResource.DEPTH_INFINITE, EclipseUtils.pm(om));
 		} catch(CoreException e) {
 			throw LangCore.createCommonException(e);
 		}
@@ -157,7 +158,7 @@ public class ResourceUtils {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				try {
-					operation.execute(monitor);
+					operation.execute(EclipseUtils.om(monitor));
 				} catch(CommonException e) {
 					throw new CommonException_CEWrapper(e);
 				} catch(OperationCancellation e) {
@@ -175,20 +176,20 @@ public class ResourceUtils {
 		}
 	}
 	
-	public static void runOperation(ISchedulingRule rule, IProgressMonitor pm, ICommonOperation operation)
+	public static void runOperation(ISchedulingRule rule, IOperationMonitor om, ICommonOperation operation)
 			throws CommonException, OperationCancellation {
 		try {
-			runCoreOperation2(rule, pm, operation);
+			runCoreOperation2(rule, EclipseUtils.pm(om), operation);
 		} catch(CoreException e) {
 			throw LangCore.createCommonException(e);
 		}
 	}
 	
-	public static void runOperationUnderResource(IResource resource, IProgressMonitor pm, ICommonOperation operation)
+	public static void runOperationUnderResource(IResource resource, IOperationMonitor om, ICommonOperation operation)
 			throws CommonException, OperationCancellation {
-		runOperation(resource, pm, operation);
+		runOperation(resource, om, operation);
 		
-		refresh(resource, pm);
+		refresh(resource, om);
 	}
 	
 	public static void runWorkspaceOperation(IProgressMonitor pm, ICommonOperation operation) 
@@ -200,17 +201,17 @@ public class ResourceUtils {
 		}
 	}
 	
-	public static void runProjectOperation(IProgressMonitor pm, IProject project, ICommonOperation operation) 
+	public static void runProjectOperation(IOperationMonitor om, IProject project, ICommonOperation operation) 
 			throws OperationCancellation, CommonException {
-		runOperation(project, pm, operation);
+		runOperation(project, om, operation);
 	}
 	
 	public static interface CoreOperation extends ICommonOperation {
 		
 		@Override
-		default void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
+		default void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
 			try {
-				execute_do(pm);
+				execute_do(EclipseUtils.pm(om));
 			} catch(CoreException e) {
 				throw LangCore.createCommonException(e);
 			}
@@ -228,7 +229,7 @@ public class ResourceUtils {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					try {
-						op.execute(monitor);
+						op.execute(EclipseUtils.om(monitor));
 					} catch(CommonException e) {
 						throw new InvocationTargetException(e);
 					} catch(OperationCancellation | OperationCanceledException e) {

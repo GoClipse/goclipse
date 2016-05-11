@@ -8,26 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.engine;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
+package melnorme.lang.utils.concurrency;
 
 import melnorme.utilbox.concurrency.FutureTaskX;
+import melnorme.utilbox.concurrency.ICancelMonitor.CancelMonitor;
 
 /**
  * Wrap a {@link FutureTaskX} around a cancel monitor
  */
 public abstract class MonitorFutureTask<EXC extends Exception> {
-
-	protected final IProgressMonitor cancelMonitor = new NullProgressMonitor();
+	
+	protected final CancelMonitor cancelMonitor = new CancelMonitor();
 	protected final FutureTaskX<?, EXC> asFutureTask;
 	
 	public MonitorFutureTask() {
 		this.asFutureTask = new FutureTaskX<Object, EXC>(this::runTask) {
 			@Override
 			public void before_cancel(boolean mayInterruptIfRunning) {
-				cancelMonitor.setCanceled(true);
+				cancelMonitor.cancel();
 			}
 		};
 	}
@@ -36,8 +34,12 @@ public abstract class MonitorFutureTask<EXC extends Exception> {
 		asFutureTask.cancel(true);
 	}
 	
-	protected boolean isCancelled() {
+	public boolean isCancelled() {
 		return cancelMonitor.isCanceled();
+	}
+	
+	public FutureTaskX<?, EXC> asFutureTask() {
+		return asFutureTask;
 	}
 	
 	protected abstract void runTask() throws EXC;

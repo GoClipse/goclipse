@@ -10,7 +10,6 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.actions;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.ui.LangUIMessages;
@@ -18,6 +17,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
@@ -30,7 +30,7 @@ public class LANGUAGE_OpenDefinitionOperation extends AbstractOpenElementOperati
 	}
 	
 	@Override
-	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor)
+	protected FindDefinitionResult performLongRunningComputation_doAndGetResult(IOperationMonitor monitor)
 			throws OperationCancellation {
 		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
 			

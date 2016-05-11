@@ -40,6 +40,9 @@ public class CommonResult<DATA> {
 	}
 	
 	protected void throwIfExceptionResult() throws CommonException, OperationCancellation  {
+		if(resultException == null) {
+			return;
+		}
 		if(resultException instanceof OperationCancellation) {
 			throw (OperationCancellation) resultException;
 		}

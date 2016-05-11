@@ -19,7 +19,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.LangCore;
@@ -39,6 +38,7 @@ import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -111,7 +111,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 					throws CommonException {
 				return new BuildTargetOperation(buildOpParams) {
 					@Override
-					protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm)
+					protected void processBuildOutput(ExternalProcessResult processResult, IOperationMonitor om)
 							throws CommonException, OperationCancellation {
 					}
 				};

@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Display;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.data.Severity;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -48,12 +49,12 @@ public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperat
 	}
 	
 	@Override
-	protected final void doBackgroundComputation(IProgressMonitor pm) 
+	protected final void doBackgroundComputation(IOperationMonitor om) 
 			throws CommonException, OperationCancellation {
-		result = doBackgroundValueComputation(pm);
+		result = doBackgroundValueComputation(om);
 	}
 	
-	protected abstract RESULT doBackgroundValueComputation(IProgressMonitor monitor) 
+	protected abstract RESULT doBackgroundValueComputation(IOperationMonitor monitor) 
 			throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */

@@ -14,12 +14,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.DocumentReconcileManager.DocumentReconcileConnection;
-import melnorme.lang.ide.core.utils.operation.OperationUtils;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.DataUpdateTask;
@@ -220,8 +219,8 @@ public abstract class SourceModelManager extends AbstractAgentManager {
 			}
 		}
 		
-		public SourceFileStructure awaitUpdatedData(IProgressMonitor pm) throws OperationCancellation {
-			return OperationUtils.awaitData(asFuture(), pm);
+		public SourceFileStructure awaitUpdatedData(IOperationMonitor om) throws OperationCancellation {
+			return asFuture().awaitData(om);
 		}
 		
 	}

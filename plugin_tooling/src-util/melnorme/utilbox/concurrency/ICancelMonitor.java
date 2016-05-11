@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.utilbox.concurrency;
 
+import java.util.concurrent.CountDownLatch;
 
 public interface ICancelMonitor {
 	
@@ -17,6 +18,14 @@ public interface ICancelMonitor {
 	
 	default void checkCancellation() throws OperationCancellation {
 		checkCancelation(this);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static void checkCancelation(ICancelMonitor cm) throws OperationCancellation {
+		if(cm.isCanceled()) {
+			throw new OperationCancellation();
+		}
 	}
 	
 	/* -----------------  ----------------- */
@@ -30,13 +39,25 @@ public interface ICancelMonitor {
 		
 	}
 	
-	public static final NullCancelMonitor NULL_MONITOR = new NullCancelMonitor();
-	
-	
-	public static void checkCancelation(ICancelMonitor cm) throws OperationCancellation {
-		if(cm.isCanceled()) {
-			throw new OperationCancellation();
+	public class CancelMonitor implements ICancelMonitor {
+		
+		protected volatile boolean isCancelled = false;
+		protected final CountDownLatch cancelLatch = new CountDownLatch(1);
+		
+		@Override
+		public boolean isCanceled() {
+			return isCancelled;
 		}
+		
+		public CountDownLatch getCancelLatch() {
+			return cancelLatch;
+		}
+		
+		public void cancel() {
+			isCancelled = true;
+			cancelLatch.countDown();
+		}
+		
 	}
 	
 }
