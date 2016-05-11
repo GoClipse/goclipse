@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.ui.ILaunchShortcut;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
@@ -25,6 +24,7 @@ import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -39,7 +39,7 @@ public class GoLaunchShortcut extends LangLaunchShortcut implements ILaunchShort
 	}
 	
 	@Override
-	protected ILaunchable getLaunchTargetForElement(Object element, IProgressMonitor pm)
+	protected ILaunchable getLaunchTargetForElement(Object element, IOperationMonitor om)
 			throws CommonException, OperationCancellation {
 		
 		IResource resource;

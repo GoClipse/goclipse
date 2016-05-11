@@ -20,17 +20,18 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
-import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
+import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.ops.IOperationMonitor.IOperationSubMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -84,9 +85,9 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		// refresh project
 		addOperation(new ICommonOperation() {
 			@Override
-			public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
+			public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
 				try {
-					project.refreshLocal(IResource.DEPTH_INFINITE, pm);
+					project.refreshLocal(IResource.DEPTH_INFINITE, EclipseUtils.pm(om));
 				} catch(CoreException e) {
 					throw LangCore.createCommonException(e);
 				}
@@ -111,8 +112,8 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	}
 	
 	protected ICommonOperation doCreateClearBuildMarkersOperation() {
-		return (pm) -> {
-			boolean hadDeletedMarkers = doDeleteProjectMarkers(buildProblemId, pm);
+		return (om) -> {
+			boolean hadDeletedMarkers = doDeleteProjectMarkers(buildProblemId, om);
 			if(hadDeletedMarkers) {
 				opMonitor.writeInfoMessage(
 					format(MSG_ClearingMarkers, project.getName()) + "\n");
@@ -120,13 +121,14 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		};
 	}
 	
-	protected boolean doDeleteProjectMarkers(String markerType, IProgressMonitor parentPM) {
+	protected boolean doDeleteProjectMarkers(String markerType, IOperationMonitor parentOM) 
+			throws OperationCancellation {
 		
-		try(ProgressSubTaskHelper pm 
-				= new ProgressSubTaskHelper(parentPM, LangCoreMessages.BUILD_ClearingProblemMarkers)) {
+		try(IOperationSubMonitor om = parentOM.enterSubTask(LangCoreMessages.BUILD_ClearingProblemMarkers)) {
 			
 			try {
 				IMarker[] findMarkers = project.findMarkers(markerType, true, IResource.DEPTH_INFINITE);
+				parentOM.checkCancellation();
 				if(findMarkers.length != 0) {
 					project.deleteMarkers(markerType, true, IResource.DEPTH_INFINITE);
 					return true;
@@ -151,7 +153,7 @@ public class BuildOperationCreator implements BuildManagerMessages {
 		}
 		
 		@Override
-		public void execute(IProgressMonitor monitor) {
+		public void execute(IOperationMonitor monitor) {
 			executeDo();
 		}
 		

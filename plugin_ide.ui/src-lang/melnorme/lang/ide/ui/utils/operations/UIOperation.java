@@ -12,9 +12,8 @@ package melnorme.lang.ide.ui.utils.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
-import melnorme.lang.ide.core.operations.ICommonOperation;
+import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -28,8 +27,8 @@ public class UIOperation extends AbstractUIOperation {
 	}
 	
 	@Override
-	protected void doBackgroundComputation(IProgressMonitor pm) throws CommonException, OperationCancellation {
-		backgroundOp.execute(pm);
+	protected void doBackgroundComputation(IOperationMonitor om) throws CommonException, OperationCancellation {
+		backgroundOp.execute(om);
 	}
 	
 }

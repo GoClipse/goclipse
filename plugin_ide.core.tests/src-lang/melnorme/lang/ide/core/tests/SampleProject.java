@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.eclipse.core.resources.IFile;
@@ -53,7 +54,7 @@ public class SampleProject implements AutoCloseable {
 		try {
 			ResourceUtils.runWorkspaceOperation(null, operation);
 		} catch(OperationCancellation e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			assertFail();
 		}
 	}
 	

@@ -10,17 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops;
 
-import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
-/* FIXME: rename*/
-public interface IOperationContext extends ICancelMonitor {
-
-	// TODO: in future we might add methods here to report progress to UI, similar to IProgressMonitor
+public interface ICommonOperation {
+	
+	void execute(IOperationMonitor om) throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */
 	
-	public class NullOperationContext extends NullCancelMonitor implements IOperationContext {
-		
-	}
+	public static ICommonOperation NULL_COMMON_OPERATION = (pm) -> { };
 	
 }

@@ -17,7 +17,6 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Display;
@@ -34,6 +33,7 @@ import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.ops.IToolOperationService;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.utilbox.concurrency.ICancelMonitor;
@@ -94,12 +94,12 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	}
 	
 	@Override
-	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
+	protected FindDefinitionResult doBackgroundValueComputation(IOperationMonitor monitor)
 			throws CommonException, OperationCancellation {
 		return performLongRunningComputation_doAndGetResult(monitor);
 	}
 	
-	protected abstract FindDefinitionResult performLongRunningComputation_doAndGetResult(IProgressMonitor monitor) 
+	protected abstract FindDefinitionResult performLongRunningComputation_doAndGetResult(IOperationMonitor monitor) 
 			throws CommonException, OperationCancellation;
 	
 	@Override

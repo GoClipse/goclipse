@@ -18,10 +18,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.utils.CoreExecutors;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -46,29 +45,29 @@ public abstract class EngineOperation<RET> {
 		this.opName = assertNotNull(opName);
 	}
 	
-	public RET runEngineOperation(final IProgressMonitor pm) 
+	public RET runEngineOperation(final IOperationMonitor om) 
 			throws CommonException, OperationCancellation {
 		
 		if(timeoutMillis <= 0 ) {
 			// Run directly
-			return doRunEngineOperation(pm);
+			return doRunEngineOperation(om);
 		}
 		
 		// Use a one-time executor
 		ExecutorTaskAgent completionExecutor = CoreExecutors.newExecutorTaskAgent(opName + " - Task Executor");
 		try {
-			return runEngineOperationWithExecutor(pm, completionExecutor);
+			return runEngineOperationWithExecutor(om, completionExecutor);
 		} finally {
 			completionExecutor.shutdownNow();
 		}
 	}
 	
-	protected RET runEngineOperationWithExecutor(final IProgressMonitor pm, ExecutorTaskAgent completionExecutor)
+	protected RET runEngineOperationWithExecutor(final IOperationMonitor om, ExecutorTaskAgent completionExecutor)
 			throws CommonException, OperationCancellation {
 		Future<RET> future = completionExecutor.submit(new Callable<RET>() {
 			@Override
 			public RET call() throws CommonException, OperationCancellation {
-				return doRunEngineOperation(pm);
+				return doRunEngineOperation(om);
 			}
 		});
 		
@@ -90,17 +89,17 @@ public abstract class EngineOperation<RET> {
 		}
 	}
 	
-	protected RET doRunEngineOperation(final IProgressMonitor pm) 
+	protected RET doRunEngineOperation(final IOperationMonitor om) 
 			throws CommonException, OperationCancellation {
 		StructureInfo structureInfo = sourceModelMgr.getStoredStructureInfo(new LocationKey(location));
 		if(structureInfo != null) {
-			structureInfo.awaitUpdatedData(pm);
+			structureInfo.awaitUpdatedData(om);
 		}
 		
-		return doRunOperationWithWorkingCopy(pm);
+		return doRunOperationWithWorkingCopy(om);
 	}
 	
-	protected abstract RET doRunOperationWithWorkingCopy(IProgressMonitor pm) 
+	protected abstract RET doRunOperationWithWorkingCopy(IOperationMonitor om) 
 			throws CommonException, OperationCancellation;
 	
 }

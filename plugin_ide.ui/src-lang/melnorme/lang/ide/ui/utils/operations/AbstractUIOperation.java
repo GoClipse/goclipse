@@ -12,9 +12,9 @@ package melnorme.lang.ide.ui.utils.operations;
 
 import java.text.MessageFormat;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.progress.IProgressService;
 
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -30,7 +30,7 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	
 	/**
 	 * Run this UI operation. There are two phases/tasks to it:
-	 * The first one is some work being done in a background thread - {@link #doBackgroundComputation(IProgressMonitor)}.
+	 * The first one is some work being done in a background thread - {@link #doBackgroundComputation(IOperationMonitor)}.
 	 * The second one, {@link #handleComputationResult()} is executed after the background works completes, 
 	 * and always runs in the UI thread.
 	 */
@@ -51,10 +51,8 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 		return true;
 	}
 	
-	protected void runBackgroundComputation(IProgressMonitor pm) throws CommonException, OperationCancellation {
-		pm.setTaskName(getTaskName());
-		
-		doBackgroundComputation(pm);
+	protected void runBackgroundComputation(IOperationMonitor om) throws CommonException, OperationCancellation {
+		om.runSubTask(getTaskName(), this::doBackgroundComputation);
 	}
 	
 	/** @return the task name for the progress dialog. This method must be thread-safe. */
@@ -65,7 +63,7 @@ public abstract class AbstractUIOperation extends BasicUIOperation {
 	/* -----------------  ----------------- */
 	
 	/** Perform the long running computation. Runs in a background thread. */
-	protected abstract void doBackgroundComputation(IProgressMonitor pm) 
+	protected abstract void doBackgroundComputation(IOperationMonitor om) 
 			throws CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */

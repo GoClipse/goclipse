@@ -28,9 +28,11 @@ import org.eclipse.jface.text.IDocument;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.data.Severity;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.HashMap2;
@@ -52,11 +54,11 @@ public class ToolMarkersHelper {
 	
 	protected final HashMap2<Path, Document> documents = new HashMap2<>();
 	
-	public void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath, IProgressMonitor pm) 
+	public void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Location rootPath, IOperationMonitor om) 
 			throws CommonException {
 		
 		try {
-			doAddErrorMarkers(buildErrors, rootPath, pm);
+			doAddErrorMarkers(buildErrors, rootPath, EclipseUtils.pm(om));
 		} catch(CoreException e) {
 			throw LangCore.createCommonException(e);
 		}

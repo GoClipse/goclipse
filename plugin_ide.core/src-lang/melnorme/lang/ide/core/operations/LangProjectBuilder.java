@@ -34,7 +34,7 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOp
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.core.utils.operation.OperationUtils;
+import melnorme.lang.tooling.ops.ICommonOperation;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -140,7 +140,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	protected void clearErrorMarkers(IProject project, IProgressMonitor pm) 
 			throws CoreException, OperationCancellation {
 		ICommonOperation clearMarkersOp = buildManager.newProjectClearMarkersOperation(workspaceOpMonitor, project);
-		EclipseUtils.execute_asCore(pm, clearMarkersOp);
+		EclipseUtils.execute_asCore(EclipseUtils.om(pm), clearMarkersOp);
 	}
 	
 	protected void handleEndWorkspaceBuild2() {
@@ -190,7 +190,7 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 			return null; // Ignore auto build
 		}
 		try {
-			createBuildOp().execute(monitor);
+			createBuildOp().execute(EclipseUtils.om(monitor));
 		} catch (CommonException ce) {
 			throw LangCore.createCoreException(ce);
 		}
@@ -209,7 +209,6 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 		try {
 			ProcessBuilder pb = createCleanPB();
-			OperationUtils.checkMonitorCancelation(monitor);
 			doClean(monitor, pb);
 		} catch (OperationCancellation e) {
 			// return

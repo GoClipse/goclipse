@@ -12,11 +12,11 @@ package melnorme.lang.ide.core.operations;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -33,10 +33,10 @@ public class RunToolOperationOnResource extends RunToolOperation {
 	}
 	
 	@Override
-	protected void runProcessTask(RunToolTask runToolTask, IProgressMonitor pm) 
+	protected void runProcessTask(RunToolTask runToolTask, IOperationMonitor om) 
 			throws CommonException, OperationCancellation {
 		
-		ResourceUtils.runOperationUnderResource(resource, pm, 
+		ResourceUtils.runOperationUnderResource(resource, om, 
 			(pm2) -> {
 				ExternalProcessResult result = runToolTask.runProcess();
 				

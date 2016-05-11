@@ -18,7 +18,6 @@ import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 
 import com.googlecode.goclipse.core.GoCoreMessages;
@@ -46,6 +45,7 @@ import melnorme.lang.tooling.bundle.BuildTargetNameParser2;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
@@ -263,7 +263,7 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void processBuildOutput(ExternalProcessResult buildAllResult, IProgressMonitor pm) 
+		protected void processBuildOutput(ExternalProcessResult buildAllResult, IOperationMonitor om) 
 				throws CommonException, OperationCancellation {
 			GoBuildOutputProcessor buildOutput = new GoBuildOutputProcessor() {
 				@Override
@@ -273,7 +273,7 @@ public class GoBuildManager extends BuildManager {
 			};
 			buildOutput.parseOutput(buildAllResult);
 			
-			new ToolMarkersHelper().addErrorMarkers(buildOutput.getBuildErrors(), workingDirectory, pm);
+			new ToolMarkersHelper().addErrorMarkers(buildOutput.getBuildErrors(), workingDirectory, om);
 		}
 		
 	}
@@ -320,13 +320,13 @@ public class GoBuildManager extends BuildManager {
 				}
 				
 				@Override
-				public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
+				public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
 					Indexable<String> commandLineOriginal = new ArrayList2<>(getEffectiveProccessCommandLine());
 					
 					ProcessBuilder pb = getToolProcessBuilder();
 					
 					if(!isMultipleGoPackagesCommandInvocation(commandLineOriginal)) {
-						runBuildToolAndProcessOutput(pb, pm);
+						runBuildToolAndProcessOutput(pb, om);
 						return;
 					}
 					
@@ -345,7 +345,7 @@ public class GoBuildManager extends BuildManager {
 						argumentsTemplate.set(lastArgIx, goPackage.getFullNameAsString());
 						
 						pb.command(argumentsTemplate);
-						runBuildToolAndProcessOutput(pb, pm);
+						runBuildToolAndProcessOutput(pb, om);
 					}
 					
 				}

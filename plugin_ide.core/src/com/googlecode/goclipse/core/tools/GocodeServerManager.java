@@ -1,7 +1,6 @@
 package com.googlecode.goclipse.core.tools;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 
@@ -9,10 +8,10 @@ import com.googlecode.goclipse.core.operations.GoToolManager;
 import com.googlecode.goclipse.tooling.gocode.GocodeCompletionOperation;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
-import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.ownership.IDisposable;
@@ -43,7 +42,7 @@ public class GocodeServerManager implements IDisposable {
 		return gocodeProcess != null;
 	}
 	
-	public void requestServerStart(IPath path, IProgressMonitor monitor) throws CommonException {
+	public void requestServerStart(IPath path, IOperationMonitor monitor) throws CommonException {
 		boolean needsStart = prepareServerStart(path);
 		
 		if(needsStart) {
@@ -60,7 +59,7 @@ public class GocodeServerManager implements IDisposable {
 		return gocodeProcess == null;
 	}
 	
-	public void doStartServer(IPath gocodePath, IProgressMonitor monitor) throws CommonException {
+	public void doStartServer(IPath gocodePath, IOperationMonitor monitor) throws CommonException {
 		
 		
 		ArrayList2<String> commandLine = new ArrayList2<String>();
@@ -77,8 +76,7 @@ public class GocodeServerManager implements IDisposable {
 		
 			IToolOperationMonitor opMonitor = toolMgr.startNewOperation(ProcessStartKind.ENGINE_SERVER, true, false);
 			String prefixText = "==== Starting gocode server ====\n";
-			gocodeProcess = toolMgr.new RunToolTask(opMonitor, prefixText, pb, 
-				EclipseUtils.cm(monitor)).startProcess();
+			gocodeProcess = toolMgr.new RunToolTask(opMonitor, prefixText, pb, monitor).startProcess();
 	}
 	
 	public void stopServer() {

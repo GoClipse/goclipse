@@ -36,10 +36,10 @@ import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfo;
 import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
-import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.build.CommandInvocation;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
-import melnorme.lang.ide.core.utils.operation.OperationUtils;
+import melnorme.lang.tooling.ops.ICommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -191,7 +191,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		ICommonOperation buildOperation = config.getBuildOperation();
 		if(buildOperation != null) {
-			buildOperation.execute(pm);
+			buildOperation.execute(EclipseUtils.om(pm));
 			return false;
 		} else {
 			return super.buildForLaunch(configuration, mode, pm);
@@ -209,9 +209,7 @@ public abstract class LangLaunchConfigurationDelegate extends LaunchConfiguratio
 	@Override
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
 			throws CoreException {
-		monitor = (monitor == null) ? new NullProgressMonitor() : monitor;	
-		
-		OperationUtils.checkMonitorCancelation_OCE(monitor);
+		monitor = (monitor == null) ? new NullProgressMonitor() : monitor;
 		
 		try {
 			monitor.beginTask(LaunchMessages.LCD_StartingLaunchConfiguration(configuration.getName()), 10);

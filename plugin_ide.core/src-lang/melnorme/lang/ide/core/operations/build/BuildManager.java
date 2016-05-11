@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.Platform;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
@@ -42,6 +41,7 @@ import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
 import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.ops.ICommonOperation;
 import melnorme.lang.utils.EnablementCounter;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;

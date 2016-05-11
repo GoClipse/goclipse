@@ -15,12 +15,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.HashMap;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.tooling.ops.IOperationMonitor.NullOperationMonitor;
+import melnorme.lang.utils.concurrency.MonitorFutureTask;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICommonExecutor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.concurrency.ResultFuture.LatchFuture;
@@ -59,7 +61,7 @@ abstract class AbstractProjectReconcileManager {
 			
 			projectInfos.put(project, newReconcileTask);
 			
-			getExecutor().submitTask(newReconcileTask.asFutureTask);
+			getExecutor().submitTask(newReconcileTask.asFutureTask());
 		}
 		
 	}
@@ -130,7 +132,7 @@ abstract class AbstractProjectReconcileManager {
 		
 	}
 	
-	public abstract void doProjectReconcile(IProject project, IProgressMonitor cancelMonitor);
+	public abstract void doProjectReconcile(IProject project, ICancelMonitor opMonitor);
 	
 }
 
@@ -146,7 +148,7 @@ public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 	}
 	
 	@Override
-	public void doProjectReconcile(IProject project, IProgressMonitor cancelMonitor) {
+	public void doProjectReconcile(IProject project, ICancelMonitor cm) {
 		// We would actually like to clear the console, but due to Eclipse UI bug/limitation
 		// clearing the console activates it. :(
 		boolean clearConsole = false;
@@ -154,7 +156,7 @@ public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 				buildMgr.getToolManager().startNewOperation(ProcessStartKind.CHECK_BUILD, clearConsole, false);
 		
 		try {
-			buildMgr.newProjectBuildOperation(opMonitor, project, true, true).execute(cancelMonitor);
+			buildMgr.newProjectBuildOperation(opMonitor, project, true, true).execute(new NullOperationMonitor(cm));
 		} catch(CommonException e) {
 			opMonitor.writeInfoMessage("Error during auto-check:\n" + e.getLineRender() + "\n");
 		} catch(OperationCancellation e) {
