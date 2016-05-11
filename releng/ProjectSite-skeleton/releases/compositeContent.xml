@@ -6,7 +6,7 @@
     <property name='p2.atomic.composite.loading' value='true'/>
   </properties>
   <children size='2'>
-    <child location='http://download.eclipse.org/releases/mars'/>
+    <child location='http://download.eclipse.org/tools/cdt/releases/8.8.1'/>
     <child location='local-repo'/>
   </children>
 </repository>
