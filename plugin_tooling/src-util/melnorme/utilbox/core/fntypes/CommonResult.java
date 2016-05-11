@@ -34,7 +34,7 @@ public class CommonResult<DATA> {
 		this.resultException = resultException;
 	}
 	
-	protected DATA get() throws CommonException, OperationCancellation {
+	public DATA get() throws CommonException, OperationCancellation {
 		throwIfExceptionResult();
 		return resultValue;
 	}
