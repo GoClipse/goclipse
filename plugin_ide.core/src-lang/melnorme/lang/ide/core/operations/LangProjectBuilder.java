@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -94,8 +94,8 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		assertTrue(getProject() != null);
 	}
 	
-	protected static HashMap2<String, IOperationMonitor> workspaceOpMonitorMap = new HashMap2<>();
-	protected IOperationMonitor workspaceOpMonitor;
+	protected static HashMap2<String, IToolOperationMonitor> workspaceOpMonitorMap = new HashMap2<>();
+	protected IToolOperationMonitor workspaceOpMonitor;
 	
 	protected void prepareForBuild(IProgressMonitor pm) throws CoreException, OperationCancellation {
 		handleBeginWorkspaceBuild(pm);

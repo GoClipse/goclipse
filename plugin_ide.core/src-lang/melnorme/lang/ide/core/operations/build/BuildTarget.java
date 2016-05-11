@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildType;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
@@ -216,7 +216,7 @@ public class BuildTarget extends AbstractValidator {
 		getValidExecutableLocation(); // TODO: Build Target Editor validate this
 	}
 	
-	public BuildTargetOperation getBuildOperation(ToolManager toolManager, IOperationMonitor opMonitor)
+	public BuildTargetOperation getBuildOperation(ToolManager toolManager, IToolOperationMonitor opMonitor)
 			throws CommonException {
 		assertNotNull(opMonitor);
 		

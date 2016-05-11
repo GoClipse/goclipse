@@ -25,10 +25,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
-import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
+import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.ide.ui.utils.operations.RunOperationAsJob;
@@ -112,14 +112,14 @@ public abstract class StartBundleDownloadOperation extends BasicUIOperation {
 	protected void scheduleDownloadJob(ProcessBuilder pb) {
 		new RunOperationAsJob(downloadBundleJobName, (pm) -> {
 			
-			IOperationMonitor opMonitor = inJob_handleOperationStart();
+			IToolOperationMonitor opMonitor = inJob_handleOperationStart();
 			
-			toolMgr.new RunToolTask(opMonitor, pb, new EclipseCancelMonitor(pm)).runProcess(null);
+			toolMgr.new RunToolTask(opMonitor, pb, EclipseUtils.cm(pm)).runProcess(null);
 			Display.getDefault().asyncExec(() -> afterDownloadJobCompletes_inUI());
 		}).schedule();
 	}
 	
-	protected IOperationMonitor inJob_handleOperationStart() {
+	protected IToolOperationMonitor inJob_handleOperationStart() {
 		return toolMgr.startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, true);
 	}
 	

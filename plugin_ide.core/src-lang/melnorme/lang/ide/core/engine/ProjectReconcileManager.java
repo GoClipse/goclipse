@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.utilbox.concurrency.ICommonExecutor;
@@ -150,7 +150,7 @@ public class ProjectReconcileManager extends AbstractProjectReconcileManager {
 		// We would actually like to clear the console, but due to Eclipse UI bug/limitation
 		// clearing the console activates it. :(
 		boolean clearConsole = false;
-		IOperationMonitor opMonitor = 
+		IToolOperationMonitor opMonitor = 
 				buildMgr.getToolManager().startNewOperation(ProcessStartKind.CHECK_BUILD, clearConsole, false);
 		
 		try {

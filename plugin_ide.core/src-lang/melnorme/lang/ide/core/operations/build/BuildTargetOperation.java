@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -28,13 +28,13 @@ public abstract class BuildTargetOperation extends AbstractToolManagerOperation 
 	
 	public static class BuildOperationParameters {
 		
-		public IOperationMonitor opMonitor;
+		public IToolOperationMonitor opMonitor;
 		public ToolManager toolManager;
 		public IProject project;
 		public String buildTargetName;
 		public CommandInvocation buildCommand;
 		
-		public BuildOperationParameters(IOperationMonitor opMonitor, ToolManager toolManager, IProject project,
+		public BuildOperationParameters(IToolOperationMonitor opMonitor, ToolManager toolManager, IProject project,
 				String buildTargetName, CommandInvocation buildCommand) {
 			this.opMonitor = opMonitor;
 			this.toolManager = toolManager;
@@ -44,7 +44,7 @@ public abstract class BuildTargetOperation extends AbstractToolManagerOperation 
 		}
 		
 	}
-	protected final IOperationMonitor opMonitor;
+	protected final IToolOperationMonitor opMonitor;
 	protected final String buildTargetName;
 	protected final CommandInvocation buildCommand;
 	

@@ -97,10 +97,10 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IOperationMonitor beginOperation(ProcessStartKind kind, boolean clearConsole, 
+	public IToolOperationMonitor beginOperation(ProcessStartKind kind, boolean clearConsole, 
 			boolean activateConsole) {
 		
-		IOperationMonitor opHandler = doBeginOperation(kind, clearConsole);
+		IToolOperationMonitor opHandler = doBeginOperation(kind, clearConsole);
 		
 		if(activateConsole){
 			opHandler.activate();
@@ -109,7 +109,7 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 		return opHandler;
 	}
 	
-	protected IOperationMonitor doBeginOperation(ProcessStartKind kind, boolean clearConsole) {
+	protected IToolOperationMonitor doBeginOperation(ProcessStartKind kind, boolean clearConsole) {
 		switch (kind) {
 		case BUILD: {
 			ToolsConsole console = getBuildConsole(null, clearConsole);
@@ -138,7 +138,7 @@ public abstract class LangOperationsConsoleUIHandler implements ILangOperationsL
 	
 	/* -----------------  ----------------- */
 	
-	public class OperationConsoleMonitor implements IOperationMonitor {
+	public class OperationConsoleMonitor implements IToolOperationMonitor {
 		
 		protected final ProcessStartKind kind;
 		protected final ToolsConsole console;

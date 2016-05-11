@@ -26,7 +26,7 @@ import melnorme.lang.ide.core.CoreSettings.SettingsField;
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
@@ -149,54 +149,54 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
 	/* ----------------- ----------------- */
 	
-	public IOperationMonitor startNewBuildOperation() {
+	public IToolOperationMonitor startNewBuildOperation() {
 		return startNewBuildOperation(false);
 	}
 	
-	public IOperationMonitor startNewBuildOperation(boolean explicitConsoleNotify) {
+	public IToolOperationMonitor startNewBuildOperation(boolean explicitConsoleNotify) {
 		return startNewOperation(ProcessStartKind.BUILD, true, explicitConsoleNotify);
 	}
 	
-	public IOperationMonitor startNewOperation(ProcessStartKind kind, boolean clearConsole, 
+	public IToolOperationMonitor startNewOperation(ProcessStartKind kind, boolean clearConsole, 
 			boolean activateConsole) {
 		return startNewOperation(new StartOperationOptions(kind, clearConsole, activateConsole));
 	}
 	
-	public IOperationMonitor startNewOperation(StartOperationOptions options) {
+	public IToolOperationMonitor startNewOperation(StartOperationOptions options) {
 		
-		AggregatedOperationMonitor aggregatedHandlers = new AggregatedOperationMonitor();
+		AggregatedToolOperationMonitor aggregatedHandlers = new AggregatedToolOperationMonitor();
 		
 		for(ILangOperationsListener processListener : getListeners()) {
-			IOperationMonitor handler = processListener.beginOperation(options);
+			IToolOperationMonitor handler = processListener.beginOperation(options);
 			aggregatedHandlers.monitors.add(handler);
 		}
 		return aggregatedHandlers;
 	}
 	
-	public static class AggregatedOperationMonitor implements IOperationMonitor {
+	public static class AggregatedToolOperationMonitor implements IToolOperationMonitor {
 		
-		public final ArrayList2<IOperationMonitor> monitors = new ArrayList2<>();
+		public final ArrayList2<IToolOperationMonitor> monitors = new ArrayList2<>();
 		
-		public AggregatedOperationMonitor() {
+		public AggregatedToolOperationMonitor() {
 		}
 		
 		@Override
 		public void handleProcessStart(String prefixText, ProcessBuilder pb, ProcessStartHelper processStartHelper) {
-			for (IOperationMonitor monitor : monitors) {
+			for (IToolOperationMonitor monitor : monitors) {
 				monitor.handleProcessStart(prefixText, pb, processStartHelper);
 			}
 		}
 		
 		@Override
 		public void writeInfoMessage(String operationMessage) {
-			for (IOperationMonitor monitor : monitors) {
+			for (IToolOperationMonitor monitor : monitors) {
 				monitor.writeInfoMessage(operationMessage);
 			}
 		}
 		
 		@Override
 		public void activate() {
-			for (IOperationMonitor monitor : monitors) {
+			for (IToolOperationMonitor monitor : monitors) {
 				monitor.activate();
 			}
 		}
@@ -206,29 +206,29 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	/* -----------------  ----------------- */
 	
 	public final RunToolTask newRunBuildToolOperation(ProcessBuilder pb, IProgressMonitor pm) {
-		IOperationMonitor opHandler = startNewBuildOperation();
+		IToolOperationMonitor opHandler = startNewBuildOperation();
 		return newRunProcessTask(opHandler, pb, pm);
 	}
 	
-	public final RunToolTask newRunProcessTask(IOperationMonitor opMonitor, ProcessBuilder pb, 
+	public final RunToolTask newRunProcessTask(IToolOperationMonitor opMonitor, ProcessBuilder pb, 
 			IProgressMonitor pm) {
 		return newRunProcessTask(opMonitor, pb, EclipseUtils.cm(pm));
 	}
-	public RunToolTask newRunProcessTask(IOperationMonitor opMonitor, ProcessBuilder pb, ICancelMonitor cm) {
+	public RunToolTask newRunProcessTask(IToolOperationMonitor opMonitor, ProcessBuilder pb, ICancelMonitor cm) {
 		String prefixText = ">> Running: ";
 		return new RunToolTask(opMonitor, prefixText, pb, cm);
 	}
 	
 	public class RunToolTask extends AbstractRunProcessTask {
 		
-		protected final IOperationMonitor opMonitor;
+		protected final IToolOperationMonitor opMonitor;
 		protected final String prefixText;
 		
-		public RunToolTask(IOperationMonitor opMonitor, ProcessBuilder pb, ICancelMonitor cm) {
+		public RunToolTask(IToolOperationMonitor opMonitor, ProcessBuilder pb, ICancelMonitor cm) {
 			this(opMonitor, null, pb, cm);
 		}
 		
-		public RunToolTask(IOperationMonitor opMonitor, String prefixText, 
+		public RunToolTask(IToolOperationMonitor opMonitor, String prefixText, 
 				ProcessBuilder pb, ICancelMonitor cm) {
 			super(pb, cm);
 			this.prefixText = prefixText;
@@ -251,7 +251,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	
 	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String processInput, ICancelMonitor cm)
 			throws CommonException, OperationCancellation {
-		IOperationMonitor opMonitor = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
+		IToolOperationMonitor opMonitor = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
 		return new RunToolTask(opMonitor, pb, cm).runProcess(processInput);
 	}
 	
@@ -265,7 +265,7 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 		@Override
 		public ExternalProcessResult runProcess(ProcessBuilder pb, String input, ICancelMonitor cm) 
 				throws CommonException, OperationCancellation {
-			IOperationMonitor opMonitor = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
+			IToolOperationMonitor opMonitor = startNewOperation(ProcessStartKind.ENGINE_TOOLS, false, false);
 			return new RunToolTask(opMonitor, pb, cm).runProcess(input);
 		}
 		
