@@ -12,10 +12,10 @@ package LANG_PROJECT_ID.ide.ui.editor;
 
 import org.eclipse.core.runtime.CoreException;
 
-import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
@@ -23,7 +23,7 @@ public class LANGUAGE_CompletionProposalComputer extends LangCompletionProposalC
 	
 	@Override
 	protected LangCompletionResult doComputeProposals(SourceOperationContext context, int offset,
-			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+			ICancelMonitor cm) throws CoreException, CommonException, OperationCancellation {
 		return new LangCompletionResult("NOT IMPLEMENTED");
 	}
 	
