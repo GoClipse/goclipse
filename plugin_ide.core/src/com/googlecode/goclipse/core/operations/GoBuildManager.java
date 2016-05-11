@@ -30,7 +30,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import com.googlecode.goclipse.tooling.env.GoWorkspaceLocation;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -398,7 +398,7 @@ public class GoBuildManager extends BuildManager {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected BuildOperationCreator createBuildOperationCreator(IOperationMonitor opMonitor, IProject project) {
+	protected BuildOperationCreator createBuildOperationCreator(IToolOperationMonitor opMonitor, IProject project) {
 		return new BuildOperationCreator(project, opMonitor) {
 			@Override
 			protected void addCompositeBuildOperationMessage() throws CommonException {

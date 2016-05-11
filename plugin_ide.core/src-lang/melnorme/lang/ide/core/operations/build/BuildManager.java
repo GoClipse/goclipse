@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Platform;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.LaunchMessages;
 import melnorme.lang.ide.core.operations.ICommonOperation;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
@@ -484,11 +484,11 @@ public abstract class BuildManager {
 		return autoBuildsEnablement;
 	}
 	
-	protected BuildOperationCreator createBuildOperationCreator(IOperationMonitor opMonitor, IProject project) {
+	protected BuildOperationCreator createBuildOperationCreator(IToolOperationMonitor opMonitor, IProject project) {
 		return new BuildOperationCreator(project, opMonitor);
 	}
 	
-	public ICommonOperation newProjectClearMarkersOperation(IOperationMonitor opMonitor, IProject project) {
+	public ICommonOperation newProjectClearMarkersOperation(IToolOperationMonitor opMonitor, IProject project) {
 		return createBuildOperationCreator(opMonitor, project).newClearBuildMarkersOperation();
 	}
 	
@@ -499,11 +499,11 @@ public abstract class BuildManager {
 	
 	public final CompositeBuildOperation newBuildTargetsOperation(IProject project, 
 			Collection2<BuildTarget> targetsToBuild) throws CommonException {
-		IOperationMonitor buildOp = getToolManager().startNewBuildOperation();
+		IToolOperationMonitor buildOp = getToolManager().startNewBuildOperation();
 		return newBuildOperation(buildOp, project, true, targetsToBuild);
 	}
 	
-	public final ICommonOperation newProjectBuildOperation(IOperationMonitor opMonitor, IProject project,
+	public final ICommonOperation newProjectBuildOperation(IToolOperationMonitor opMonitor, IProject project,
 			boolean clearMarkers, boolean isAuto) throws CommonException {
 		ArrayList2<BuildTarget> enabledTargets = getValidBuildInfo(project).getEnabledTargets(!isAuto);
 		if(isAuto && enabledTargets.isEmpty()) {
@@ -514,7 +514,7 @@ public abstract class BuildManager {
 	
 	/* ----------------- ----------------- */
 	
-	public CompositeBuildOperation newBuildOperation(IOperationMonitor opMonitor, IProject project, 
+	public CompositeBuildOperation newBuildOperation(IToolOperationMonitor opMonitor, IProject project, 
 			boolean clearMarkers, Collection2<BuildTarget> targetsToBuild) throws CommonException {
 		assertNotNull(opMonitor);
 		ArrayList2<ICommonOperation> buildCommands = 
@@ -523,7 +523,7 @@ public abstract class BuildManager {
 		return newTopLevelBuildOperation(opMonitor, project, clearMarkers, buildCommands);
 	}
 	
-	public CompositeBuildOperation newTopLevelBuildOperation(IOperationMonitor opMonitor, IProject project,
+	public CompositeBuildOperation newTopLevelBuildOperation(IToolOperationMonitor opMonitor, IProject project,
 			boolean clearMarkers, Collection2<ICommonOperation> buildCommands) throws CommonException {
 		BuildOperationCreator buildOpCreator = createBuildOperationCreator(opMonitor, project);
 		

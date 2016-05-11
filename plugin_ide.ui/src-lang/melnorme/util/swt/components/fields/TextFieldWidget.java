@@ -45,6 +45,7 @@ public class TextFieldWidget extends LabelledFieldWidget<String> {
 	
 	public void setMultiLineStyle() {
 		this.defaultTextStyle |= SWT.MULTI;
+		this.defaultTextStyle &= ~SWT.SINGLE;
 	}
 	
 	@Override

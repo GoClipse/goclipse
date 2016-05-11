@@ -24,17 +24,18 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ICommonOperation;
-import melnorme.lang.ide.core.utils.operation.EclipseCancelMonitor;
 import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -165,8 +166,22 @@ public class EclipseUtils {
 		}
 	}
 	
-	public static EclipseCancelMonitor cm(IProgressMonitor pm) {
-		return new EclipseCancelMonitor(pm);
+	public static ICancelMonitor cm(IProgressMonitor pm) {
+		return new ICancelMonitor() {
+			@Override
+			public boolean isCanceled() {
+				return pm.isCanceled();
+			}
+		};
+	}
+	
+	public static IProgressMonitor pm(ICancelMonitor cm) {
+		return new NullProgressMonitor() {
+			@Override
+			public boolean isCanceled() {
+				return cm.isCanceled();
+			}
+		};
 	}
 	
 	public static void run(CoreRunnable coreRunnable) throws CommonException {

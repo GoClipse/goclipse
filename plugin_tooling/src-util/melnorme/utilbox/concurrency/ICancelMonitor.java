@@ -15,6 +15,10 @@ public interface ICancelMonitor {
 	
 	public boolean isCanceled();
 	
+	default void checkCancellation() throws OperationCancellation {
+		checkCancelation(this);
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public class NullCancelMonitor implements ICancelMonitor {

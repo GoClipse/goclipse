@@ -10,13 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.utils.process;
 
-import java.util.concurrent.Callable;
-
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.OperationCallable;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public interface IRunProcessTask extends Callable<ExternalProcessResult> {
+public interface IRunProcessTask extends OperationCallable<ExternalProcessResult> {
 	
 	@Override
 	ExternalProcessResult call() throws CommonException, OperationCancellation;

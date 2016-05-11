@@ -27,7 +27,7 @@ import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.launch.BuildTargetSource;
 import melnorme.lang.ide.core.launch.CompositeBuildTargetSettings;
 import melnorme.lang.ide.core.launch.LaunchMessages;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NullOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.NullToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager_Test.TestsBuildManager.SampleStrictBuildType;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
@@ -306,7 +306,7 @@ public class BuildManager_Test extends CoreTestWithProject {
 			
 	}
 	
-	protected NullOperationMonitor opMonitor = new NullOperationMonitor();
+	protected NullToolOperationMonitor opMonitor = new NullToolOperationMonitor();
 	
 	protected void test_BuildOperation() throws CommonException, StatusException {
 		ToolManager toolMgr = buildMgr.getToolManager();

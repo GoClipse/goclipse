@@ -27,7 +27,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.ICommonOperation;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.utils.ProgressSubTaskHelper;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
@@ -45,9 +45,9 @@ public class BuildOperationCreator implements BuildManagerMessages {
 	protected final String buildProblemId = LangCore_Actual.BUILD_PROBLEM_ID;
 	
 	protected final IProject project;
-	protected final IOperationMonitor opMonitor;
+	protected final IToolOperationMonitor opMonitor;
 	
-	public BuildOperationCreator(IProject project, IOperationMonitor opMonitor) {
+	public BuildOperationCreator(IProject project, IToolOperationMonitor opMonitor) {
 		this.project = project;
 		this.opMonitor = assertNotNull(opMonitor);
 	}
