@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.text.completion;
 
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -20,7 +21,7 @@ import org.eclipse.ui.IEditorPart;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager.ToolManagerEngineToolRunner;
-import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.LangImageProvider;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
@@ -32,8 +33,10 @@ import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.lang.utils.concurrency.TimeoutCancelMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.ownership.Disposable;
@@ -44,13 +47,16 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 	protected Indexable<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context,
 			int offset) throws CoreException, CommonException, OperationSoftFailure {
 		
-		final TimeoutProgressMonitor pm = new TimeoutProgressMonitor(5000);
+		final TimeoutCancelMonitor cm = new TimeoutCancelMonitor(5000);
 		try {
+			if(needsEditorSave()) {
+				doEditorSave(context, EclipseUtils.pm(cm));
+			}
 			
-			return computeProposals(context, offset, pm);
+			return computeProposals(context, offset, cm);
 			
 		} catch (OperationCancellation e) {
-			if(pm.isCanceled()) {
+			if(cm.isCanceled()) {
 				throw new CommonException(LangUIMessages.ContentAssist_Timeout);
 			}
 			// This shouldn't be possible in most concrete implementations,
@@ -60,31 +66,11 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		
 	}
 	
-	protected Indexable<ICompletionProposal> computeProposals(SourceOperationContext context, int offset,
-			TimeoutProgressMonitor pm)
-			throws CoreException, CommonException, OperationCancellation, OperationSoftFailure
-	{
-		
-		if(needsEditorSave()) {
-			doEditorSave(context, pm);
-		}
-		
-		LangCompletionResult result = doComputeProposals(context, offset, pm);
-		Indexable<ToolCompletionProposal> resultProposals = result.getValidatedProposals();
-		
-		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
-		for (ToolCompletionProposal proposal : resultProposals) {
-			proposals.add(adaptToolProposal(proposal));
-		}
-		
-		return proposals;
-	}
-	
 	protected boolean needsEditorSave() {
 		return false;
 	}
 	
-	protected void doEditorSave(SourceOperationContext context, TimeoutProgressMonitor pm) throws CommonException {
+	protected void doEditorSave(SourceOperationContext context, IProgressMonitor pm) throws CommonException {
 		IEditorPart editor = context.getEditor_nonNull();
 		if(editor instanceof AbstractLangEditor) {
 			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
@@ -97,8 +83,24 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		}
 	}
 	
+	protected Indexable<ICompletionProposal> computeProposals(SourceOperationContext context, int offset,
+			ICancelMonitor cm)
+			throws CoreException, CommonException, OperationCancellation, OperationSoftFailure
+	{
+		
+		LangCompletionResult result = doComputeProposals(context, offset, cm);
+		Indexable<ToolCompletionProposal> resultProposals = result.getValidatedProposals();
+		
+		ArrayList2<ICompletionProposal> proposals = new ArrayList2<>();
+		for (ToolCompletionProposal proposal : resultProposals) {
+			proposals.add(adaptToolProposal(proposal));
+		}
+		
+		return proposals;
+	}
+	
 	protected abstract LangCompletionResult doComputeProposals(SourceOperationContext context,
-			int offset, TimeoutProgressMonitor pm) 
+			int offset, ICancelMonitor cm) 
 			throws CoreException, CommonException, OperationCancellation;
 	
 	/* -----------------  ----------------- */

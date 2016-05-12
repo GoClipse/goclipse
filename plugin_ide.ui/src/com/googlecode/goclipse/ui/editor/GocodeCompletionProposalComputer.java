@@ -13,11 +13,10 @@ import com.googlecode.goclipse.tooling.gocode.GocodeOutputParser;
 import com.googlecode.goclipse.ui.GoUIPlugin;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -27,7 +26,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 	
 	@Override
 	protected LangCompletionResult doComputeProposals(SourceOperationContext context, int offset,
-			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+			ICancelMonitor cm) throws CoreException, CommonException, OperationCancellation {
 		Location fileLoc = context.getEditorInputLocation();
 		IDocument document = context.getDocument();
 		
@@ -42,7 +41,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		
 		// TODO: we should run this operation outside the UI thread.
 		GocodeCompletionOperation client = new GocodeCompletionOperation(
-			getEngineToolRunner(), goEnvironment, gocodePath.toOSString(), EclipseUtils.cm(pm));
+			getEngineToolRunner(), goEnvironment, gocodePath.toOSString(), cm);
 		
 		String source = document.get();
 		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), source, offset);

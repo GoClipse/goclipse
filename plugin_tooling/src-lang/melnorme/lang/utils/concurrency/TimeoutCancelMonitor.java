@@ -8,19 +8,19 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.utils.operation;
+package melnorme.lang.utils.concurrency;
 
-import org.eclipse.core.runtime.IProgressMonitor;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 
 /**
  * A progress monitor whose only job is to act as a cancellation monitor, using a timeout.
  */
-public class TimeoutProgressMonitor implements IProgressMonitor {
+public class TimeoutCancelMonitor implements ICancelMonitor {
 	
 	protected int timeoutMillis;
 	protected long startTimeMillis = -1;
 	
-	public TimeoutProgressMonitor(int timeoutMillis) {
+	public TimeoutCancelMonitor(int timeoutMillis) {
 		this.timeoutMillis = timeoutMillis;
 		this.startTimeMillis = System.currentTimeMillis();
 	}
@@ -30,39 +30,8 @@ public class TimeoutProgressMonitor implements IProgressMonitor {
 	}
 	
 	@Override
-	public void beginTask(String name, int totalWork) {
-	}
-	
-	@Override
 	public boolean isCanceled() {
 		return System.currentTimeMillis() - startTimeMillis > timeoutMillis;
-	}
-	
-	@Override
-	public void done() {
-	}
-	
-	@Override
-	public void internalWorked(double work) {
-	}
-	
-	@Override
-	public void setCanceled(boolean value) {
-		if(value) {
-			timeoutMillis = 0;
-		}
-	}
-	
-	@Override
-	public void setTaskName(String name) {
-	}
-	
-	@Override
-	public void subTask(String name) {
-	}
-	
-	@Override
-	public void worked(int work) {
 	}
 	
 }

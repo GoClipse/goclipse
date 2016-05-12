@@ -272,6 +272,7 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	/* ----------------- save ----------------- */
 	
+	/** Whether save actions are enabled or not. */
 	protected final EnablementCounter saveActionsEnablement = new EnablementCounter();
 	
 	public EnablementCounter saveActionsEnablement() {
