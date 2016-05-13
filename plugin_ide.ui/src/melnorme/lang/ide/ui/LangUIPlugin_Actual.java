@@ -2,7 +2,6 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -61,7 +60,7 @@ public final class LangUIPlugin_Actual {
 	public static BasicUIOperation getFormatOperation(ITextEditor editor) {
 		return new BasicUIOperation() {
 			@Override
-			protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+			protected void doOperation() throws CommonException, OperationCancellation {
 				// TODO: LANG: Format operation
 				throw new CommonException("Operation not implemented");
 			}

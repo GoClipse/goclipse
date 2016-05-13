@@ -10,14 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
+
+import melnorme.utilbox.core.CommonException;
 
 public interface ISourceViewerExt extends ISourceViewer {
 	
 	IContentAssistant getContentAssistant();
 	
-	void showOutline() throws CoreException;
+	void showOutline() throws CommonException;
 	
 }

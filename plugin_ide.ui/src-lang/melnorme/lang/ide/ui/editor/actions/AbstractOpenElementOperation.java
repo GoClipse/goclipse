@@ -82,7 +82,7 @@ public abstract class AbstractOpenElementOperation extends AbstractEditorOperati
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException, CommonException {
+	protected void prepareOperation() throws CommonException {
 		super.prepareOperation();
 		
 		if(! (new SourceRange(0, source.length())).contains(range)) {

@@ -58,8 +58,6 @@ public abstract class BasicUIOperation implements Runnable {
 		
 		try {
 			execute0();
-		} catch(CoreException ce) {
-			handleError(ce);
 		} catch(CommonException ce) {
 			handleError(ce);
 		} catch(RuntimeException re) {
@@ -87,7 +85,7 @@ public abstract class BasicUIOperation implements Runnable {
 	
 	/* -----------------  ----------------- */
 	
-	protected final void execute0() throws CoreException, CommonException {
+	protected final void execute0() throws CommonException {
 		prepareOperation();
 		try {
 			doOperation();
@@ -96,12 +94,12 @@ public abstract class BasicUIOperation implements Runnable {
 		}
 	}
 	
-	protected void prepareOperation() throws CoreException, CommonException {
+	protected void prepareOperation() throws CommonException {
 	}
 	
-	protected abstract void doOperation() throws CoreException, CommonException, OperationCancellation;
+	protected abstract void doOperation() throws CommonException, OperationCancellation;
 	
-	protected void handleOperationCancellation() throws CoreException, CommonException {
+	protected void handleOperationCancellation() throws CommonException {
 	}
 	
 }

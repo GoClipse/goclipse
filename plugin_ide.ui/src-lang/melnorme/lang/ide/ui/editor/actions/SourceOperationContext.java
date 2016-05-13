@@ -13,21 +13,20 @@ package melnorme.lang.ide.ui.editor.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.core.ISourceFile;
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import melnorme.lang.ide.core.ISourceFile;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 public class SourceOperationContext {
 	
@@ -109,19 +108,19 @@ public class SourceOperationContext {
 		return getEditor_nonNull().isDirty();
 	}
 	
-	public int getInvocationLine_0() throws CoreException {
+	public int getInvocationLine_0() throws CommonException {
 		try {
 			return getDocument().getLineOfOffset(getInvocationOffset());
 		} catch (BadLocationException e) {
-			throw LangCore.createCoreException("Could not get line position.", e);
+			throw new CommonException("Could not get line position.", e);
 		}
 	}
 	
-	public int getInvocationColumn_0() throws CoreException {
+	public int getInvocationColumn_0() throws CommonException {
 		try {
 			return getInvocationOffset() - getDocument().getLineInformation(getInvocationLine_0()).getOffset();
 		} catch (BadLocationException e) {
-			throw LangCore.createCoreException("Could not get column position.", e);
+			throw new CommonException("Could not get column position.", e);
 		}
 	}
 	

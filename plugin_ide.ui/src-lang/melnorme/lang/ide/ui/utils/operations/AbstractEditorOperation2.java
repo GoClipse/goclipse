@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.nio.file.Path;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentRewriteSession;
 import org.eclipse.jface.text.DocumentRewriteSessionType;
@@ -31,7 +30,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
@@ -59,9 +57,9 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException, CommonException {
+	protected void prepareOperation() throws CommonException {
 		if(inputLoc == null) {
-			throw LangCore.createCoreException("Could not determine filesystem path from editor input", null); 
+			throw new CommonException("Could not determine filesystem path from editor input"); 
 		}
 	}
 	

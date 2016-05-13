@@ -13,7 +13,6 @@ package melnorme.lang.ide.ui.utils.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorPart;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
@@ -36,7 +35,7 @@ public abstract class BasicEditorOperation extends BasicUIOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+	protected void doOperation() throws CommonException, OperationCancellation {
 		if(editorPart instanceof AbstractLangEditor) {
 			AbstractLangEditor langEditor = (AbstractLangEditor) editorPart;
 			doRunWithEditor(langEditor);
@@ -46,6 +45,6 @@ public abstract class BasicEditorOperation extends BasicUIOperation {
 	}
 	
 	/** editor: not null */
-	protected abstract void doRunWithEditor(AbstractLangEditor editor) throws CoreException, CommonException;
+	protected abstract void doRunWithEditor(AbstractLangEditor editor) throws CommonException;
 	
 }
