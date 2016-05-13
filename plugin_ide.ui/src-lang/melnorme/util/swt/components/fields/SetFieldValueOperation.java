@@ -12,8 +12,6 @@ package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import org.eclipse.core.runtime.CoreException;
-
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -31,14 +29,14 @@ public class SetFieldValueOperation<T> extends BasicUIOperation {
 	}
 	
 	@Override
-	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+	protected void doOperation() throws CommonException, OperationCancellation {
 		T result = getNewFieldValue();
 		if(result != null) {
 			field.setFieldValue(result);
 		}
 	}
 	
-	protected T getNewFieldValue() throws CoreException, CommonException, OperationCancellation {
+	protected T getNewFieldValue() throws CommonException, OperationCancellation {
 		return newValueCallable.call();
 	}
 	

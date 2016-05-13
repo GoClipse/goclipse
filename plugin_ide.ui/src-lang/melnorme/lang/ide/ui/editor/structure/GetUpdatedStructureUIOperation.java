@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.editor.structure;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
@@ -19,10 +21,6 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import org.eclipse.core.runtime.CoreException;
 
 public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<SourceFileStructure> {
 	
@@ -45,9 +43,9 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException {
+	protected void prepareOperation() throws CommonException {
 		if(editor.modelRegistration == null) {
-			throw LangCore.createCoreException("Editor not connected to a structure model.", null);
+			throw new CommonException("Editor not connected to a structure model.", null);
 		}
 		structureInfo = editor.modelRegistration.structureInfo;
 	}

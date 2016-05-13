@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 
 import melnorme.lang.ide.ui.preferences.pages.DownloadToolTextField;
@@ -48,7 +47,7 @@ public abstract class StartToolDownload_FromField extends StartBundleDownloadOpe
 	protected String toolBinPath;
 	
 	@Override
-	protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+	protected void doOperation() throws CommonException, OperationCancellation {
 		ProcessBuilder pb = getProcessToStart_andSetToolPath();
 		assertNotNull(toolBinPath);
 		

@@ -17,7 +17,6 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -46,7 +45,7 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException, CommonException {
+	protected void prepareOperation() throws CommonException {
 		super.prepareOperation();
 		assertNotNull(inputLoc);
 		editor.doSave(new NullProgressMonitor());

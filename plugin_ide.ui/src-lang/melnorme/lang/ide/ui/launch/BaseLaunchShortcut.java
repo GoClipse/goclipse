@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.ControlUtils;
@@ -180,8 +181,12 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	public void launchTarget(ILaunchable launchTarget, String mode) {
 		new BasicUIOperation("Preparing launch") {
 			@Override
-			protected void doOperation() throws CoreException, CommonException, OperationCancellation {
-				doLaunchTarget(launchTarget, mode);
+			protected void doOperation() throws CommonException, OperationCancellation {
+				try {
+					doLaunchTarget(launchTarget, mode);
+				} catch(CoreException e) {
+					throw LangCore.createCommonException(e);
+				}
 			};
 		}.executeAndHandle();
 	}

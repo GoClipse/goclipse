@@ -11,7 +11,6 @@
 package melnorme.lang.ide.ui.editor;
 
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -22,8 +21,8 @@ import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.text.TextSourceUtils;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.NumberUtil;
 import melnorme.utilbox.ownership.IDisposable;
 
@@ -108,11 +107,11 @@ public class LangSourceViewer extends ProjectionViewerExt implements ISourceView
 	}
 	
 	@Override
-	public void showOutline() throws CoreException {
+	public void showOutline() throws CommonException {
 		if(outlinePresenter != null) {
 			outlinePresenter.showInformation();
 		} else {
-			throw LangCore.createCoreException("Outline not available. ", null);
+			throw new CommonException("Outline not available. ", null);
 		}
 	}
 	

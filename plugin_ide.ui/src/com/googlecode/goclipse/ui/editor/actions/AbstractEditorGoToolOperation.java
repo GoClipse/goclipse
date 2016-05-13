@@ -14,7 +14,6 @@ package com.googlecode.goclipse.ui.editor.actions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
@@ -40,7 +39,7 @@ public abstract class AbstractEditorGoToolOperation extends AbstractEditorOperat
 	}
 	
 	@Override
-	protected void prepareOperation() throws CoreException, CommonException {
+	protected void prepareOperation() throws CommonException {
 		
 		project = EditorUtils.getAssociatedProject(editorInput);
 		

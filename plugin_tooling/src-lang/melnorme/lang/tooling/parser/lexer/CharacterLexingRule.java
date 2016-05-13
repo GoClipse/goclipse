@@ -35,7 +35,8 @@ public class CharacterLexingRule extends LexingUtils implements IPredicateLexing
 	
 	protected boolean consumeBody(ICharacterReader reader) {
 		if(reader.tryConsume((char) 0x5c)) {
-			return reader.tryConsume('\'') || consumeCommonEscape(reader) || consumeUnicodeEscapeSequence(reader);
+			return reader.tryConsume('\'') || reader.tryConsume('\"') ||
+				   consumeCommonEscape(reader) || consumeUnicodeEscapeSequence(reader);
 		};
 		
 		if(reader.lookaheadIsEOS() || reader.lookahead() == '\'') {
