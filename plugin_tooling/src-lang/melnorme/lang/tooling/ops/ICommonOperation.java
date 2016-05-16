@@ -21,4 +21,23 @@ public interface ICommonOperation {
 	
 	public static ICommonOperation NULL_COMMON_OPERATION = (pm) -> { };
 	
+	/* -----------------  ----------------- */
+	
+	public static abstract class ResultCommonOperation<T> implements ICommonOperation {
+		
+		protected T result;
+		
+		@Override
+		public final void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
+			result = call(om);
+		}
+		
+		protected abstract T call(IOperationMonitor om) throws CommonException, OperationCancellation ;
+		
+		public T getResult() {
+			return result;
+		}
+		
+	}
+	
 }
