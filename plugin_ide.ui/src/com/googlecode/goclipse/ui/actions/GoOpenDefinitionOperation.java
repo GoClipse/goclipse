@@ -48,7 +48,7 @@ public class GoOpenDefinitionOperation extends AbstractOpenElementOperation {
 	protected void prepareOperation() throws CommonException {
 		super.prepareOperation();
 		assertNotNull(inputLoc);
-		editor.doSave(new NullProgressMonitor());
+		saveEditor(new NullProgressMonitor());
 		
 		byteOffset = getByteOffsetForInvocationEncoding();
 	}
