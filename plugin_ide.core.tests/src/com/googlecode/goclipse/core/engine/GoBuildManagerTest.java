@@ -147,7 +147,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		
 		/* ----------------- setup a project not CONTAINED in a Go-workspace 'src' entry ----------------- */
 		Location projectParentLoc = getProjectLocation().resolve_fromValid("..");
-		GoEnvironmentPrefs.GO_PATH.setValue(project, projectParentLoc.toString());
+		GoEnvironmentPrefs.GO_PATH.setValue(project, projectParentLoc.resolve_fromValid("other").toString());
 		GoEnvironmentPrefs.APPEND_PROJECT_LOC_TO_GOPATH.setValue(project, false);
 //		createSourceDir(projectParentLoc);
 		
@@ -162,7 +162,7 @@ public class GoBuildManagerTest extends CommonGoCoreTest {
 		// Test operation working directory
 		assertEquals(
 			getBuildOperation(bt2).getToolProcessBuilder().directory().toString(), 
-			ResourceUtils.loc(project2.getLocation()).toString());
+			TESTS_GO_WORKSPACE.resolve_fromValid("src").toString());
 	}
 	
 	protected void createSourceDir(Location projectLoc) {

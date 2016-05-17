@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling.env;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class GoWorkspaceLocation {
 	protected final Location location;
 	
 	public GoWorkspaceLocation(Location location) {
-		this.location = location;
+		this.location = assertNotNull(location);
 	}
 	
 	@Override

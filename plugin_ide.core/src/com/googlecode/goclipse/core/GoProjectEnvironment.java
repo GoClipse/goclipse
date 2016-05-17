@@ -52,7 +52,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 			return rawGoPath;
 		}
 		
-		GoWorkspaceLocation goPathEntry = rawGoPath.findGoPathEntryForSourcePath(projectLoc);
+		GoWorkspaceLocation goPathEntry = rawGoPath.findGoPathEntryForSourceLocation(projectLoc);
 		if(goPathEntry != null) {
 			// GOPATH already contains project location
 			return rawGoPath;
@@ -73,7 +73,7 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 	}
 	
 	public static boolean isProjectInsideGoPathSourceFolder(IProject project, GoPath goPath) throws CommonException {
-		return goPath.findGoPathEntryForSourcePath(ResourceUtils.getProjectLocation2(project)) != null;
+		return goPath.findGoPathEntryForSourceLocation(ResourceUtils.getProjectLocation2(project)) != null;
 	}
 	
 	protected static String getEffectiveValueFromEnv(IProjectPreference<String> pref, IProject project, 
@@ -104,19 +104,6 @@ public class GoProjectEnvironment implements GoEnvironmentConstants {
 		GoEnvironment goEnv = getGoEnvironment(project);
 		goEnv.validate();
 		return goEnv;
-	}
-	
-	public static Location getAssociatedSourceFolder(GoPath goPath, Location projectLoc) throws CommonException {
-		
-		if(goPath.findExactGoPathEntry(projectLoc) != null) {
-			return projectLoc.resolve_valid("src");
-		}
-		
-		if(goPath.findGoPathEntryForSourcePath(projectLoc) != null) {
-			return projectLoc;
-		}
-		
-		throw new CommonException(GoCoreMessages.ERROR_GOPATH_DoesNotContainProject());
 	}
 	
 	public static ArrayList2<GoPackageName> findSourcePackages(IProject project, GoEnvironment goEnvironment)

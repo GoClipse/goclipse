@@ -70,7 +70,7 @@ public class GoPath {
 		return StringUtil.collToString(goPathElements, File.pathSeparator);
 	}
 	
-	public GoWorkspaceLocation findExactGoPathEntry(Location location) {
+	public GoWorkspaceLocation findGoPathEntryAt(Location location) {
 		assertNotNull(location);
 		
 		for (String pathElement : goPathElements) {
@@ -100,7 +100,7 @@ public class GoPath {
 	
 	/** @return the GOPATH entry that contains the given sourcePath, if it's in the "src" folder of that entry. 
 	 * Return null otherwise. */
-	public GoWorkspaceLocation findGoPathEntryForSourcePath(Location sourcePath) {
+	public GoWorkspaceLocation findGoPathEntryForSourceLocation(Location sourcePath) {
 		GoWorkspaceLocation goWorkspace = findGoPathEntry(sourcePath);
 		
 		if(goWorkspace != null && sourcePath.startsWith(goWorkspace.getSrcLocation())) {
@@ -140,6 +140,16 @@ public class GoPath {
 		}
 		
 		return workspaceEntry.findSourcePackages(subLocation);
+	}
+	
+	public Location getSourceRootforLocation(Location location) {
+		
+		GoWorkspaceLocation goPathEntryForLoc = findGoPathEntry(location);
+		if(goPathEntryForLoc != null) {
+			return goPathEntryForLoc.location.resolve_valid("src");
+		}
+		
+		return null;
 	}
 	
 }

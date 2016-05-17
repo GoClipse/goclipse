@@ -11,9 +11,7 @@
 package com.googlecode.goclipse.core.operations;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
-import static melnorme.utilbox.core.CoreUtil.array;
-import static melnorme.utilbox.misc.PathUtil.createResolvedPath;
-
+import static melnorme.utilbox.core.CoreUtil.list;
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
@@ -64,8 +62,8 @@ public class GoBuildManager extends BuildManager {
 	}
 	
 	public static final String BUILD_TYPE_Build = "build";
-	public static final String BUILD_TYPE_BuildCheck = "check";
 	public static final String BUILD_TYPE_BuildTests = "build-tests";
+	public static final String BUILD_TYPE_Lint = "lint";
 	public static final String BUILD_TYPE_RunTests = "[run-tests]";
 	
 	public static final Indexable<BuildType> BUILD_TYPES = createDefaultBuildTypes();
@@ -76,7 +74,7 @@ public class GoBuildManager extends BuildManager {
 		return ArrayList2.create(
 			new GoDefaultBuildType(BUILD_TYPE_Build),
 			new GoTestBuildType(),
-			new GoCheckBuildType(),
+			new GoLintBuildType(),
 			new GoRunTestsBuildType()
 		);
 	}
@@ -94,9 +92,9 @@ public class GoBuildManager extends BuildManager {
 	@Override
 	protected void addDefaultBuildTarget(ArrayList2<BuildTarget> buildTargets, IProject project, BundleInfo bundleInfo,
 			BuildConfiguration buildConfig, BuildType buildType, BuildTargetData btd) {
-		if(buildType.getName().equals(BUILD_TYPE_BuildCheck)) {
-			btd.autoBuildEnabled = true;
-		}
+//		if(buildType.getName().equals(BUILD_TYPE_BuildCheck)) {
+//			btd.autoBuildEnabled = true;
+//		}
 		super.addDefaultBuildTarget(buildTargets, project, bundleInfo, buildConfig, buildType, btd);
 	}
 	
@@ -120,24 +118,27 @@ public class GoBuildManager extends BuildManager {
 		
 		@Override
 		public String getDefaultCommandArguments(BuildTarget bt) throws CommonException {
-			ArrayList2<String> buildArgs = getPackageSpecCommand(bt, getBuildCommand());
+			ArrayList2<String> buildArgs = getDefaultCommandArguments_list(bt);
 			return DebugPlugin.renderArguments(buildArgs.toArray(String.class), null);
 		}
 		
-		protected ArrayList2<String> getPackageSpecCommand(BuildTarget bt, String... buildCommands) 
+		protected ArrayList2<String> getDefaultCommandArguments_list(BuildTarget bt) throws CommonException {
+			Indexable<String> baseCommand = getBuildCommand2();
+			ArrayList2<String> commandLine = baseCommand.toArrayList().addElements("-v", "-gcflags", "-N -l");
+			addPackageSpecCommand(bt, commandLine);
+			return commandLine;
+		}
+		
+		protected void addPackageSpecCommand(BuildTarget bt, ArrayList2<String> buildCommand) 
 				throws CommonException {
-			ArrayList2<String> buildArgs = new ArrayList2<>();
-			buildArgs.addElements(buildCommands);
-			
 			String goPackageSpec = getGoPackageSpec(
 				bt.getProject(), 
 				bt.getBuildConfigName()
 			);
-			buildArgs.addElements("-v", "-gcflags", "-N -l", goPackageSpec);
-			return buildArgs;
+			buildCommand.addElements(goPackageSpec);
 		}
 		
-		protected abstract String[] getBuildCommand();
+		protected abstract Indexable<String> getBuildCommand2();
 		
 		protected String getGoPackageSpec(IProject project, String goPackageSpec) throws CommonException {
 			
@@ -194,8 +195,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected String[] getBuildCommand() {
-			return array("build");
+		protected Indexable<String> getBuildCommand2() {
+			return list("install");
 		}
 		
 		@Override
@@ -205,14 +206,21 @@ public class GoBuildManager extends BuildManager {
 		
 	}
 	
-	public static class GoCheckBuildType extends GoDefaultBuildType {
-		public GoCheckBuildType() {
-			super(BUILD_TYPE_BuildCheck);
+	public static class GoLintBuildType extends GoDefaultBuildType {
+		public GoLintBuildType() {
+			super(BUILD_TYPE_Lint);
 		}
 		
 		@Override
-		protected String[] getBuildCommand() {
-			return array("install");
+		public String getDefaultCommandLine(BuildTarget bt) throws CommonException {
+			return getDefaultCommandArguments(bt);
+		}
+
+		@Override
+		protected ArrayList2<String> getDefaultCommandArguments_list(BuildTarget bt) throws CommonException {
+			ArrayList2<String> commandLine = new ArrayList2<>("gometalinter");
+			addPackageSpecCommand(bt, commandLine);
+			return commandLine;
 		}
 	}
 	
@@ -228,10 +236,13 @@ public class GoBuildManager extends BuildManager {
 			Location projectLoc = getProjectLocation();
 			
 			goEnv = GoProjectEnvironment.getValidatedGoEnvironment(project);
-			sourceBaseDir = GoProjectEnvironment.getAssociatedSourceFolder(goEnv.getGoPath(), projectLoc);
+			sourceBaseDir = goEnv.getGoPath().getSourceRootforLocation(projectLoc);	
+			if(sourceBaseDir == null) {
+				throw new CommonException(GoCoreMessages.ERROR_GOPATH_DoesNotContainProject());
+			}
 			
 			if(sourceBaseDir.getParent().equals(projectLoc)) {
-				checkGoFilesInSourceRoot();
+				checkForGoFilesInSourceRoot(sourceBaseDir);
 			}
 			
 			workingDirectory = sourceBaseDir;
@@ -247,7 +258,7 @@ public class GoBuildManager extends BuildManager {
 			return pb;
 		}
 		
-		protected void checkGoFilesInSourceRoot() throws CommonException {
+		protected void checkForGoFilesInSourceRoot(Location sourceBaseDir) throws CommonException {
 			CheckSrcFolderRootFilesWithNoPackage srcCheck = new CheckSrcFolderRootFilesWithNoPackage();
 			
 			if(!sourceBaseDir.toFile().exists()) {
@@ -285,8 +296,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected String[] getBuildCommand() {
-			return array("test", "-c");
+		protected Indexable<String> getBuildCommand2() {
+			return list("test", "-c");
 		}
 		
 		@Override
@@ -335,10 +346,10 @@ public class GoBuildManager extends BuildManager {
 					String goPackageToBuild = StringUtil.trimEnd(argumentsTemplate.get(lastArgIx), "...");
 					
 					GoWorkspaceLocation goWorkspace = goEnv.getGoPath().findGoPathEntry(getProjectLocation());
-					GoPackageName baseGoPackage = goEnv.getGoPath().findGoPackageForLocation(getProjectLocation());
-					if(baseGoPackage != null) {
-						goPackageToBuild = createResolvedPath(baseGoPackage.toString(), goPackageToBuild).toString(); 
-					}
+//					GoPackageName baseGoPackage = goEnv.getGoPath().findGoPackageForLocation(getProjectLocation());
+//					if(baseGoPackage != null) {
+//						goPackageToBuild = createResolvedPath(baseGoPackage.toString(), goPackageToBuild).toString(); 
+//					}
 					Collection2<GoPackageName> sourcePackages = goWorkspace.findSubPackages(goPackageToBuild);
 					
 					for (GoPackageName goPackage : sourcePackages) {
@@ -363,8 +374,8 @@ public class GoBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected String[] getBuildCommand() {
-			return array("test");
+		protected Indexable<String> getBuildCommand2() {
+			return list("test");
 		}
 		
 		@Override
