@@ -53,6 +53,7 @@ import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.utils.EnablementCounter;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.ownership.Disposable;
 
 public abstract class AbstractLangEditor extends TextEditorExt {
 	
@@ -277,6 +278,12 @@ public abstract class AbstractLangEditor extends TextEditorExt {
 	
 	public EnablementCounter saveActionsEnablement() {
 		return saveActionsEnablement;
+	}
+	
+	public void saveWithoutSaveActions(IProgressMonitor pm) {
+		try(Disposable disposable = saveActionsEnablement().enterDisable()) {
+			doSave(pm);
+		}
 	}
 	
 	@Override

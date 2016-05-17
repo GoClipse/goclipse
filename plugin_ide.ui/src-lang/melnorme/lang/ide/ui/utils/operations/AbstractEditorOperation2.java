@@ -11,10 +11,12 @@
 package melnorme.lang.ide.ui.utils.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.nio.file.Path;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentRewriteSession;
 import org.eclipse.jface.text.DocumentRewriteSessionType;
@@ -63,6 +65,19 @@ public abstract class AbstractEditorOperation2<RESULT> extends CalculateValueUIO
 		}
 	}
 	
+	public void saveEditor(NullProgressMonitor pm) {
+		assertTrue(Display.getCurrent() != null);
+		
+		if(editor instanceof AbstractLangEditor) {
+			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
+			langEditor.saveWithoutSaveActions(pm);
+		} else {
+			editor.doSave(pm);
+		}
+	}
+	
+	/* -----------------  ----------------- */ 
+		
 	@Override
 	protected void handleComputationResult() throws CommonException {
 		if(statusErrorMessage != null) {

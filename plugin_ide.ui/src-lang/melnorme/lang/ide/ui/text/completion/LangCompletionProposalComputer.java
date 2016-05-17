@@ -39,7 +39,6 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.ownership.Disposable;
 
 public abstract class LangCompletionProposalComputer extends AbstractCompletionProposalComputer {
 	
@@ -74,10 +73,7 @@ public abstract class LangCompletionProposalComputer extends AbstractCompletionP
 		IEditorPart editor = context.getEditor_nonNull();
 		if(editor instanceof AbstractLangEditor) {
 			AbstractLangEditor langEditor = (AbstractLangEditor) editor;
-			
-			try(Disposable disposable = langEditor.saveActionsEnablement().enterDisable()) {
-				editor.doSave(pm);
-			}
+			langEditor.saveWithoutSaveActions(pm);
 		} else {
 			editor.doSave(pm);
 		}
