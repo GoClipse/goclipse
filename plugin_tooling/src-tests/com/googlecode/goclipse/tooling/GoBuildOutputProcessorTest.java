@@ -31,6 +31,10 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	
 	protected static final Path BUILD_OUTPUT_TestResources = getTestResourcePath("buildOutput");
 	
+	protected static ToolSourceMessage warning(Path path, int line, int column, String errorMessage) {
+		return new ToolSourceMessage(path, new SourceLineColumnRange(line, column), Severity.WARNING, errorMessage);
+	}
+	
 	protected static ToolSourceMessage error(Path path, int line, int column, String errorMessage) {
 		return new ToolSourceMessage(path, new SourceLineColumnRange(line, column), Severity.ERROR, errorMessage);
 	}
@@ -57,18 +61,18 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		testParseError(buildProcessor, "asdfsdaf/asdfsd", listFrom()); 
 		
 		
-		List<ToolSourceMessage> OUTPUTA_Errors = listFrom(
-			error(path("MyGoLibFoo/libfoo/blah.go"), 7, -1, "undefined: asdfsd"),
-			error(path("MyGoLibFoo/libfoo/blah.go"), 10, -1, "not enough arguments in call to fmt.Printf"),
-			error(path("MyGoLibFoo/foo.go"), 3, -1, "undefined: ziggy"),
-			error(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src/samplePackage/foo.go").path, 5, -1, "undefined: ziggy2")
-		);
 		testParseError(buildProcessor,
-			readTemplatedFiled(BUILD_OUTPUT_TestResources.resolve("outputA.txt")),
-			OUTPUTA_Errors);
+			readTemplatedFile(BUILD_OUTPUT_TestResources.resolve("outputA.txt")),
+			
+			listFrom(
+				error(path("MyGoLibFoo/libfoo/blah.go"), 7, -1, "undefined: asdfsd"),
+				error(path("MyGoLibFoo/libfoo/blah.go"), 10, -1, "not enough arguments in call to fmt.Printf"),
+				error(path("MyGoLibFoo/foo.go"), 3, -1, "undefined: ziggy"),
+				error(TR_SAMPLE_GOPATH_ENTRY.resolve_valid("src/samplePackage/foo.go").path, 5, -1, "undefined: ziggy2")
+			));
 		
 		
-		String OUTPUT_B = readTemplatedFiled(BUILD_OUTPUT_TestResources.resolve("outputB.txt"));
+		String OUTPUT_B = readTemplatedFile(BUILD_OUTPUT_TestResources.resolve("outputB.txt"));
 		
 		String errorMessage1 = findMatch(OUTPUT_B, "cannot find package \"xxx.*\\n.*\\n.*", 0).replace("\r", "");
 		String errorMessage2 = findMatch(OUTPUT_B, "cannot find package \"yyy.*\\n.*\\n.*", 0).replace("\r", "");
@@ -83,6 +87,21 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		testParseError(buildProcessor,
 			OUTPUT_B,
 			OUTPUTB_Errors);
+		
+		// Test gometalinter format
+		testParseError(buildProcessor, 
+			"path/file:3:: <message> (<linter>)"+"\n"+
+			"path/file:3:10: <message> (<linter>)"+"\n"+
+			"path/file:4:11:warning: This is a warning!"
+			
+			, 
+			listFrom(
+				error(path("path/file"), 3, -1, "<message> (<linter>)"),
+				error(path("path/file"), 3, 10, "<message> (<linter>)"),
+				warning(path("path/file"), 4, 11, "This is a warning!")
+			)
+		); 
+		
 	}
 	
 	protected void testParseError(GoBuildOutputProcessor buildProcessor, String stderr, List<?> expected) 
@@ -91,7 +110,7 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 		assertEquals(buildProcessor.getBuildErrors(), expected);
 	}
 	
-	protected String readTemplatedFiled(Path filePath) {
+	protected String readTemplatedFile(Path filePath) {
 		String fileContents = readStringFromFile(filePath);
 		return fileContents.replaceAll(
 			Pattern.quote("$$TESTRESOURCE_SAMPLE_GOPATH_ENTRY$$"), 

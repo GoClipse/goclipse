@@ -124,7 +124,7 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 		
 		Path filePath = parsePath(msgdata.pathString).normalize();
 		int lineNo = parsePositiveInt(msgdata.lineString);
-		int column = parseOptionalPositiveInt(msgdata.columnString);
+		int column = parseOptionalPositiveInt(StringUtil.emptyAsNull(msgdata.columnString));
 		
 		int endline = parseOptionalPositiveInt(msgdata.endLineString);
 		int endColumn = parseOptionalPositiveInt(msgdata.endColumnString);

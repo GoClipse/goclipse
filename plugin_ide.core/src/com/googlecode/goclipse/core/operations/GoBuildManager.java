@@ -218,7 +218,7 @@ public class GoBuildManager extends BuildManager {
 
 		@Override
 		protected ArrayList2<String> getDefaultCommandArguments_list(BuildTarget bt) throws CommonException {
-			ArrayList2<String> commandLine = new ArrayList2<>("gometalinter");
+			ArrayList2<String> commandLine = new ArrayList2<>("gometalinter", "-t");
 			addPackageSpecCommand(bt, commandLine);
 			return commandLine;
 		}
@@ -346,10 +346,6 @@ public class GoBuildManager extends BuildManager {
 					String goPackageToBuild = StringUtil.trimEnd(argumentsTemplate.get(lastArgIx), "...");
 					
 					GoWorkspaceLocation goWorkspace = goEnv.getGoPath().findGoPathEntry(getProjectLocation());
-//					GoPackageName baseGoPackage = goEnv.getGoPath().findGoPackageForLocation(getProjectLocation());
-//					if(baseGoPackage != null) {
-//						goPackageToBuild = createResolvedPath(baseGoPackage.toString(), goPackageToBuild).toString(); 
-//					}
 					Collection2<GoPackageName> sourcePackages = goWorkspace.findSubPackages(goPackageToBuild);
 					
 					for (GoPackageName goPackage : sourcePackages) {

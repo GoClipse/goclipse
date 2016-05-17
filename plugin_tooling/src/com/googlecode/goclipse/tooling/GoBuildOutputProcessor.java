@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.googlecode.goclipse.tooling;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +21,8 @@ import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	
@@ -31,6 +34,13 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 		return "go build";
 	}
 	
+	@Override
+	protected ArrayList<ToolSourceMessage> doHandleProcessResult(ExternalProcessResult result) throws CommonException {
+		ArrayList<ToolSourceMessage> msgs = parse(result.getStdErrBytes().toString(StringUtil.UTF8));
+		msgs.addAll(parse(result.getStdOutBytes().toString(StringUtil.UTF8)));
+		return msgs;
+	}
+	
 	public ArrayList2<ToolSourceMessage> getBuildErrors() {
 		return buildMessages;
 	}
@@ -38,7 +48,8 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	protected static final Pattern ERROR_LINE_Regex = Pattern.compile(
 			"^([^:\\n]*):" + // file
 			"(\\d*):" + // line
-			"((\\d*):)?" + // column
+			"(\\d*)?(:)?" + // column
+			"((warning|error|info):)?" + // type
 			"\\s(.*)$" // error message
 	);
 	
@@ -74,8 +85,9 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 		
 		msgData.pathString = pathDevicePrefix + matcher.group(1);
 		msgData.lineString = matcher.group(2);
-		msgData.columnString = matcher.group(4);
-		msgData.messageText = matcher.group(5);
+		msgData.columnString = matcher.group(3);
+		msgData.messageTypeString = matcher.group(6);
+		msgData.messageText = matcher.group(7);
 		
 		while(true) {
 			int readChar = output.lookahead();
@@ -87,9 +99,15 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 			}
 		}
 		
-		msgData.messageTypeString = StatusLevel.ERROR.toString();
-		
 		return msgData;
+	}
+	
+	@Override
+	protected ToolSourceMessage createMessage(ToolMessageData msgdata) throws CommonException {
+		if(msgdata.messageTypeString == null) {
+			msgdata.messageTypeString = StatusLevel.ERROR.toString();
+		}
+		return super.createMessage(msgdata);
 	}
 	
 }
