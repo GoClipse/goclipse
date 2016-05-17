@@ -3,7 +3,7 @@
   	<extensionContent id="LangIDE-introExtension" style="intro.css" name="User Guide Extension" path="overview/@">
 		<group style-id="content-group" id="com-googlecode-goclipse-introLink-group">
        		<link label="GoClipse User Guide" 
-       		url="http://org.eclipse.ui.intro/openBrowser?url=http://goclipse.github.io/" 
+       		url="http://org.eclipse.ui.intro/openBrowser?url=https://github.com/GoClipse/goclipse/blob/latest/documentation/UserGuide.md#user-guide" 
        		id="com-googlecode-goclipse-introLink" style-id="content-link">
           		<text>The configuration and user manual for GoClipse (recommended read).</text>
        		</link>
