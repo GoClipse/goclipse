@@ -35,7 +35,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
-import melnorme.lang.tooling.ops.IToolOperationService;
+import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.lang.utils.validators.PathValidator;
 import melnorme.utilbox.collections.ArrayList2;

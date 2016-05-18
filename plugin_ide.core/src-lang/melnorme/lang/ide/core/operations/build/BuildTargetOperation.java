@@ -18,6 +18,8 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.operations.AbstractToolManagerOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
+import melnorme.lang.tooling.commands.CommandInvocation;
+import melnorme.lang.tooling.commands.IVariablesResolver;
 import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -76,7 +78,7 @@ public abstract class BuildTargetOperation extends AbstractToolManagerOperation 
 	}
 	
 	public ProcessBuilder getConfiguredProcessBuilder2() throws CommonException {
-		VariablesResolver variablesManager = toolManager.getVariablesManager(option(getProject()));
+		IVariablesResolver variablesManager = toolManager.getVariablesManager(option(getProject()));
 		ProcessBuilder pb = buildCommand.getProcessBuilder(variablesManager);
 		pb.directory(getProjectLocation().toFile());
 		return pb;

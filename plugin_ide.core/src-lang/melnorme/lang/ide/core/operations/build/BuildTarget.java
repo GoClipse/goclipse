@@ -25,6 +25,8 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
+import melnorme.lang.tooling.commands.CommandInvocation;
+import melnorme.lang.tooling.commands.IVariablesResolver;
 import melnorme.lang.utils.validators.AbstractValidator;
 import melnorme.lang.utils.validators.ValidationMessages;
 import melnorme.utilbox.collections.Indexable;
@@ -211,7 +213,7 @@ public class BuildTarget extends AbstractValidator {
 	/* -----------------  ----------------- */
 	
 	public void validateForBuild(ToolManager toolManager) throws StatusException {
-		VariablesResolver variablesResolver = toolManager.getVariablesManager(option(getProject()));
+		IVariablesResolver variablesResolver = toolManager.getVariablesManager(option(getProject()));
 		getEffectiveBuildCommand2().validate(variablesResolver);
 		getValidExecutableLocation(); // TODO: Build Target Editor validate this
 	}

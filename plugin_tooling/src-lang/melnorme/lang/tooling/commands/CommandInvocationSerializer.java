@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations.build;
+package melnorme.lang.tooling.commands;
 
 import static melnorme.utilbox.misc.CollectionUtil.nullToEmpty;
 

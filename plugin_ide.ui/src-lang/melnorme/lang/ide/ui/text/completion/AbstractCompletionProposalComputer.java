@@ -16,7 +16,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 

@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.operations.build.CommandInvocation;
+import melnorme.lang.tooling.commands.CommandInvocation;
 import melnorme.utilbox.core.CommonException;
 
 /** 

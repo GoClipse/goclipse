@@ -13,6 +13,7 @@ package melnorme.lang.ide.core.operations.build;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertAreEqual;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
+import melnorme.lang.tooling.commands.CommandInvocation;
 import melnorme.utilbox.misc.HashcodeUtil;
 
 public class BuildTargetData implements BuildTargetDataView {

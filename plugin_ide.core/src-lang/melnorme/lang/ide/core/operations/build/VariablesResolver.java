@@ -24,13 +24,14 @@ import org.eclipse.core.variables.IValueVariable;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ForwardingVariableManager;
 import melnorme.lang.ide.core.utils.StringSubstitutionEngine;
+import melnorme.lang.tooling.commands.IVariablesResolver;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.validation.Validator;
 import melnorme.utilbox.status.StatusException;
 
-public class VariablesResolver {
+public class VariablesResolver implements IVariablesResolver {
 	
 	protected final IStringVariableManager parentVarMgr;
 	protected final OverlayVariableManager varMgr;
@@ -40,6 +41,7 @@ public class VariablesResolver {
 		this.varMgr = new OverlayVariableManager(parentVarMgr);
 	}
 	
+	@Override
 	public String performStringSubstitution(String expression) throws CommonException {
 		try {
 			return varMgr.performStringSubstitution(expression, true);

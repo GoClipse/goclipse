@@ -18,6 +18,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.tooling.commands.CommandInvocation;
+import melnorme.lang.tooling.commands.CommandInvocationSerializer;
 import melnorme.lang.utils.DocumentSerializerHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;

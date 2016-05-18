@@ -14,6 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import org.junit.Test;
 
+import melnorme.lang.tooling.commands.CommandInvocation;
+import melnorme.lang.tooling.commands.CommandInvocationSerializer;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;

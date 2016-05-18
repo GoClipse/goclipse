@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations.build;
 
+import melnorme.lang.tooling.commands.CommandInvocation;
 
 public interface BuildTargetDataView {
 	
