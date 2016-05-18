@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.structure;
 
 
-import melnorme.lang.tooling.ops.util.SourceLinesInfo;
+import melnorme.lang.tooling.parser.SourceLinesInfo;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.components;
+package melnorme.utilbox.fields.validation;
 
-import melnorme.utilbox.fields.IFieldView;
-import melnorme.utilbox.fields.validation.ValidationSource;
-import melnorme.utilbox.status.IStatusMessage;
+import melnorme.utilbox.status.StatusException;
 
-public interface IValidatableWidget extends IWidgetComponent, ValidationSource {
+/**
+ * Validates a given VALUE into a RESULT.
+ */
+public interface Validator<VALUE, RESULT> {
 	
-	@Override
-	public default IStatusMessage getValidationStatus() {
-		return getStatusField().getFieldValue();
-	}
-	
-	IFieldView<IStatusMessage> getStatusField();
+	public RESULT validateField(VALUE value) throws StatusException;
 	
 }

@@ -24,10 +24,10 @@ import org.eclipse.core.variables.IValueVariable;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ForwardingVariableManager;
 import melnorme.lang.ide.core.utils.StringSubstitutionEngine;
-import melnorme.lang.tooling.data.validation.Validator;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.fields.validation.Validator;
 import melnorme.utilbox.status.StatusException;
 
 public class VariablesResolver {

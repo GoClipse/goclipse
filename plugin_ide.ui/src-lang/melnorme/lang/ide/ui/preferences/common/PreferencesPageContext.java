@@ -16,12 +16,12 @@ import melnorme.lang.ide.core.CoreSettings.SettingsField;
 import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.IGlobalPreference;
 import melnorme.lang.ide.core.utils.prefs.IProjectPreference;
-import melnorme.lang.tooling.data.validation.ValidationField;
 import melnorme.util.swt.components.FieldWidget;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IField;
 import melnorme.utilbox.fields.IProperty;
+import melnorme.utilbox.fields.validation.ValidationField;
 
 public class PreferencesPageContext implements IPreferencesEditor {
 	

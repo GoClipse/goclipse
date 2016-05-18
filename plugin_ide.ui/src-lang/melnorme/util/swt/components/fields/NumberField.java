@@ -12,7 +12,7 @@ package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import melnorme.lang.tooling.ops.util.NumberValidator;
+import melnorme.lang.utils.validators.NumberValidator;
 import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IProperty;

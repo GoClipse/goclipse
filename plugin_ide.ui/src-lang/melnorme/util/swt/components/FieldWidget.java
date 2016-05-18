@@ -13,14 +13,14 @@ package melnorme.util.swt.components;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import melnorme.lang.tooling.data.validation.IValidatableField;
-import melnorme.lang.tooling.data.validation.ValidationField;
-import melnorme.lang.tooling.data.validation.ValidationSource;
-import melnorme.lang.tooling.data.validation.Validator;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.fields.Field;
 import melnorme.utilbox.fields.FieldValueListener;
 import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
+import melnorme.utilbox.fields.validation.IValidatableField;
+import melnorme.utilbox.fields.validation.ValidationField;
+import melnorme.utilbox.fields.validation.ValidationSource;
+import melnorme.utilbox.fields.validation.Validator;
 import melnorme.utilbox.fields.IField;
 
 /**

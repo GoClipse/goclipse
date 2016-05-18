@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
-import melnorme.lang.tooling.ops.util.PathValidator;
+import melnorme.lang.utils.validators.PathValidator;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.CompositeWidget;
 import melnorme.util.swt.components.fields.ButtonTextField;
