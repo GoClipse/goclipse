@@ -18,8 +18,6 @@ import java.util.Map.Entry;
 
 import org.eclipse.debug.core.DebugPlugin;
 
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.validation.ValidatedValueSource;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
@@ -28,6 +26,8 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.collections.MapAccess;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.HashcodeUtil;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
 
 public class CommandInvocation {
 	

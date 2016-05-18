@@ -17,11 +17,11 @@ import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.preference.PreferencePage;
 
-import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.status.IStatusMessage;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusLevel;
 
 public class DialogPageUtils {
 	

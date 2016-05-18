@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.utilbox.misc;
 
-import melnorme.lang.tooling.data.StatusException;
+import melnorme.utilbox.status.StatusException;
 
 
 public interface ILogHandler {

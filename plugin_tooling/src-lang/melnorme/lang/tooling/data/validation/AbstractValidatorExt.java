@@ -12,7 +12,7 @@ package melnorme.lang.tooling.data.validation;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.lang.tooling.data.Severity;
+import melnorme.utilbox.status.Severity;
 
 public class AbstractValidatorExt extends AbstractValidator {
 	

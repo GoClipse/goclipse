@@ -15,11 +15,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.misc.ILogHandler;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
 
 /**
  * Extends {@link ExternalProcessHelper} to allow optional listeners to be notified

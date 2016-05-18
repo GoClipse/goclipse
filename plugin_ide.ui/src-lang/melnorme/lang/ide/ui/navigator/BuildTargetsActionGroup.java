@@ -44,8 +44,6 @@ import melnorme.lang.ide.ui.utils.BuildUtilities;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.operations.AbstractJobUIOperation;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -54,6 +52,8 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.ownership.Disposable;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
 
 public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	

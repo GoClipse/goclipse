@@ -11,7 +11,6 @@
 package melnorme.util.swt;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import melnorme.lang.tooling.data.StatusLevel;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -22,6 +21,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+
+import melnorme.utilbox.status.StatusLevel;
 
 /**
  * Miscelleanous SWT utilities.

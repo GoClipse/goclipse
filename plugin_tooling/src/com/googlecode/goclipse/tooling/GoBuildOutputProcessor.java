@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.BuildOutputParser;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.lang.utils.parse.LexingUtils;
@@ -23,6 +22,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.status.StatusLevel;
 
 public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	

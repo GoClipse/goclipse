@@ -12,13 +12,13 @@ package melnorme.lang.tooling.ops.util;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.validation.AbstractValidatorExt;
 import melnorme.lang.tooling.data.validation.ValidationException;
 import melnorme.lang.tooling.data.validation.Validator;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
+import melnorme.utilbox.status.Severity;
 
 public class PathValidator extends AbstractValidatorExt implements Validator<String, Path> {
 	

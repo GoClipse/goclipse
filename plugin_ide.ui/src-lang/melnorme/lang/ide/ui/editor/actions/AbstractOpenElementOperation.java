@@ -31,7 +31,6 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.ops.IToolOperationService;
@@ -41,6 +40,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.status.StatusException;
 
 public abstract class AbstractOpenElementOperation extends AbstractEditorOperation2<FindDefinitionResult> 
 	implements IToolOperationService {

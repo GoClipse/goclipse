@@ -29,11 +29,11 @@ import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.fields.ProjectField;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonRunnable;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
 
 public abstract class ProjectBasedLaunchConfigurationTab extends AbstractLaunchConfigurationTabExt {
 	

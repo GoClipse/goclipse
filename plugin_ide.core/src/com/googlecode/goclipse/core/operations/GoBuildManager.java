@@ -12,6 +12,7 @@ package com.googlecode.goclipse.core.operations;
 
 import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
 import static melnorme.utilbox.core.CoreUtil.list;
+
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
@@ -42,7 +43,6 @@ import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser2;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -54,6 +54,7 @@ import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.status.StatusLevel;
 
 public class GoBuildManager extends BuildManager {
 	

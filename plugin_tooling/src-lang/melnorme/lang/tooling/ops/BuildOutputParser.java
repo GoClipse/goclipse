@@ -15,13 +15,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusLevel;
 
 
 public abstract class BuildOutputParser extends AbstractToolOutputParser2<ArrayList<ToolSourceMessage>> {

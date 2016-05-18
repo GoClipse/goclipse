@@ -14,8 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.text.MessageFormat;
 
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
 
 /**
  * A generic status exception.

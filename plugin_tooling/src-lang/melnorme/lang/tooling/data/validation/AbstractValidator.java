@@ -12,8 +12,8 @@ package melnorme.lang.tooling.data.validation;
 
 import java.text.MessageFormat;
 
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
 
 public class AbstractValidator {
 	

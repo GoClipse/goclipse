@@ -31,7 +31,6 @@ import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
@@ -40,6 +39,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.status.Severity;
 
 public class ToolMarkersHelper {
 	

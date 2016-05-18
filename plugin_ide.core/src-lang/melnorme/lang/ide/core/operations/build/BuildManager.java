@@ -40,7 +40,6 @@ import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.ICommonOperation;
 import melnorme.lang.utils.EnablementCounter;
 import melnorme.utilbox.collections.ArrayList2;
@@ -49,6 +48,7 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.status.StatusException;
 
 
 public abstract class BuildManager {

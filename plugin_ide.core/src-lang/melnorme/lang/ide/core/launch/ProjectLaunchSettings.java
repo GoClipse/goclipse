@@ -26,8 +26,8 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.launching.LaunchConstants;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.status.StatusException;
 
 public class ProjectLaunchSettings implements ILaunchConfigSerializer {
 	

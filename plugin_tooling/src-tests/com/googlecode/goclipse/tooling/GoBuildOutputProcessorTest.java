@@ -21,10 +21,10 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.status.Severity;
 
 
 public class GoBuildOutputProcessorTest extends CommonGoToolingTest {

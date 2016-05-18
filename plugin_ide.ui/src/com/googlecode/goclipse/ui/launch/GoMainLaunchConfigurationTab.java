@@ -31,7 +31,6 @@ import melnorme.lang.ide.ui.build.BuildTargetEditor;
 import melnorme.lang.ide.ui.launch.MainLaunchConfigurationTab;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.ComboOptionsField;
 import melnorme.util.swt.components.fields.EnablementButtonTextField;
@@ -39,6 +38,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.status.StatusException;
 
 /**
  * Go Launch config tab uses the BuildTarget field in a different way.
