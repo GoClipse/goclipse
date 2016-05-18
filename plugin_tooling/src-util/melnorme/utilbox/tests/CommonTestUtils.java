@@ -233,7 +233,7 @@ public class CommonTestUtils {
 	/* ----------------- path utils ----------------- */
 	
 	public static Path path(String pathString) {
-		return PathUtil.createPathOrNull(pathString);
+		return PathUtil.createValidPath(pathString);
 	}
 	
 	public static Location loc(String pathString) {
