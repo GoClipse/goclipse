@@ -15,12 +15,13 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.debug.core.DebugPlugin;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.utils.ArgumentsParser;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
@@ -78,8 +79,8 @@ public class ProcessLaunchInfoValidator {
 	
 	/* -----------------  ----------------- */
 
-	public String[] getProgramArguments() throws CoreException {
-		return DebugPlugin.parseArguments(programArguments);
+	public Indexable<String> getProgramArguments() throws CoreException {
+		return ArgumentsParser.parse(programArguments);
 	}
 	
 	/* -----------------  ----------------- */
@@ -99,7 +100,7 @@ public class ProcessLaunchInfoValidator {
 		
 		Location programLoc = getValidExecutableFileLocation(); // not null
 		
-		String[] processArgs = getProgramArguments();
+		String[] processArgs = getProgramArguments().toArray(String.class);
 		IPath workingDirectory = getWorkingDirectory();
 		Map<String, String> configEnv = getValidEnvironmentVars();
 		

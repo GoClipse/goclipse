@@ -16,10 +16,8 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.debug.core.DebugPlugin;
-
+import melnorme.lang.tooling.utils.ArgumentsParser;
 import melnorme.lang.utils.ProcessUtils;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.collections.MapAccess;
@@ -140,8 +138,7 @@ public class CommandInvocation {
 				handleNoCommandLine();
 			}
 			
-			String[] evaluatedArguments = DebugPlugin.parseArguments(evaluatedCommandLine);
-			return new ArrayList2<>(evaluatedArguments);
+			return ArgumentsParser.parse(evaluatedCommandLine);
 		}
 		
 		protected void handleNoCommandLine() throws CommonException {
