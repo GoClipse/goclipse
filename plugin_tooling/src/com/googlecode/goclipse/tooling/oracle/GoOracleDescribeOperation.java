@@ -21,7 +21,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public class GoOracleDescribeOperation extends ToolOutputParseHelper {
+public class GoOracleDescribeOperation implements ToolOutputParseHelper {
 	
 	protected final String goOraclePath;
 	

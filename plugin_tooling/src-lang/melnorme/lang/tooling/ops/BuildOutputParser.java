@@ -19,13 +19,12 @@ import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 
-public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayList<ToolSourceMessage>> {
+public abstract class BuildOutputParser extends AbstractToolOutputParser2<ArrayList<ToolSourceMessage>> {
 	
 	protected ArrayList2<ToolSourceMessage> buildMessages;
 	
@@ -36,22 +35,8 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser<ArrayLi
 		return buildMessages;
 	}
 	
-	public final ArrayList<ToolSourceMessage> parseOutput(ExternalProcessResult buildResult) 
-			throws CommonException, OperationCancellation {
-		try {
-			return handleProcessResult(buildResult);
-		} catch(OperationSoftFailure e) {
-			throw e.toCommonException();
-		}
-	}
-	
 	@Override
-	protected void handleNonZeroExitCode(ExternalProcessResult result) throws CommonException {
-		// Ignore non-zero exit
-	}
-	
-	@Override
-	protected ArrayList<ToolSourceMessage> doHandleProcessResult(ExternalProcessResult result) throws CommonException {
+	public ArrayList<ToolSourceMessage> parseResult(ExternalProcessResult result) throws CommonException {
 		return parse(result.getStdErrBytes().toString(StringUtil.UTF8));
 	}
 	

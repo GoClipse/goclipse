@@ -15,7 +15,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
-public abstract class AbstractToolOperation2<RESULT> extends ToolOutputParseHelper {
+public abstract class AbstractToolOperation2<RESULT> implements ToolOutputParseHelper {
 	
 	public AbstractToolOperation2() {
 		super();

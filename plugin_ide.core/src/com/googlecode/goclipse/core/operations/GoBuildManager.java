@@ -282,7 +282,7 @@ public class GoBuildManager extends BuildManager {
 					LangCore.logError(ce.getMessage(), ce.getCause());
 				}
 			};
-			buildOutput.parseOutput(buildAllResult);
+			buildOutput.parseResult(buildAllResult);
 			
 			new ToolMarkersHelper().addErrorMarkers(buildOutput.getBuildErrors(), workingDirectory, om);
 		}

@@ -25,7 +25,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 
-public class GocodeCompletionOperation extends ToolOutputParseHelper {
+public class GocodeCompletionOperation implements ToolOutputParseHelper {
 	
 	public static final boolean USE_TCP = true;
 	

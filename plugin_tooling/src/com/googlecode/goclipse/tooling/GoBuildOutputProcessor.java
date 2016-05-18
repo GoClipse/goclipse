@@ -30,13 +30,9 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	}
 	
 	@Override
-	protected String getToolProcessName() {
-		return "go build";
-	}
-	
-	@Override
-	protected ArrayList<ToolSourceMessage> doHandleProcessResult(ExternalProcessResult result) throws CommonException {
-		ArrayList<ToolSourceMessage> msgs = parse(result.getStdErrBytes().toString(StringUtil.UTF8));
+	public ArrayList<ToolSourceMessage> parseResult(ExternalProcessResult result) throws CommonException {
+		ArrayList<ToolSourceMessage> msgs = new ArrayList2<>();
+		msgs.addAll(parse(result.getStdErrBytes().toString(StringUtil.UTF8)));
 		msgs.addAll(parse(result.getStdOutBytes().toString(StringUtil.UTF8)));
 		return msgs;
 	}

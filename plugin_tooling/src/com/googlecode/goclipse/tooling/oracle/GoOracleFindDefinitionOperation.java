@@ -20,6 +20,7 @@ import com.googlecode.goclipse.tooling.env.GoEnvironment;
 import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.IProcessRunner;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.lang.tooling.ops.ToolOutputParseHelper;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -79,7 +80,7 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 		if(areEqual(desc, "identifier")) {
 			JSONObject value = describe.getJSONObject("value");
 			String sourceLocStr = getString(value, "objpos", "Definition not available.");
-			return parsePathLineColumn(sourceLocStr, ":");
+			return ToolOutputParseHelper.parsePathLineColumn(sourceLocStr, ":");
 		}
 		if(areEqual(detail, "type")) {
 			final String DEFINITION_OF = "definition of ";
@@ -90,7 +91,7 @@ public class GoOracleFindDefinitionOperation extends GoOracleDescribeOperation {
 			}
 			JSONObject value = describe.getJSONObject("type");
 			String sourceLocStr = getString(value, "namepos", "Definition not available.");
-			return parsePathLineColumn(sourceLocStr, ":");
+			return ToolOutputParseHelper.parsePathLineColumn(sourceLocStr, ":");
 		}
 		
 		throw new CommonException(

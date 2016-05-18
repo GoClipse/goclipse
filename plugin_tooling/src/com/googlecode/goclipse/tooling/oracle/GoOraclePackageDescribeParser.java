@@ -33,6 +33,7 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ops.AbstractStructureParser;
 import melnorme.lang.tooling.ops.LineColumnPosition;
 import melnorme.lang.tooling.ops.SourceFileLocation;
+import melnorme.lang.tooling.ops.ToolOutputParseHelper;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
@@ -271,7 +272,7 @@ public class GoOraclePackageDescribeParser extends AbstractStructureParser {
 		String columnStr = matcher.group(4);
 		String message = matcher.group(5);
 		
-		LineColumnPosition lcPost = parseLineColumn(lineStr, columnStr, 1, 1);
+		LineColumnPosition lcPost = ToolOutputParseHelper.parseLineColumn(lineStr, columnStr, 1, 1);
 		
 		int offset = sourceLinesInfo.getValidatedOffset_1(lcPost.line, lcPost.column);
 		String source = sourceLinesInfo.getSource();
