@@ -46,8 +46,8 @@ import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.tooling.ops.ICommonOperation;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.ThrowingRunnable;

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import melnorme.lang.tooling.toolchain.ToolSourceMessage;
+import melnorme.lang.tooling.common.ToolSourceMessage;
 import melnorme.lang.tooling.toolchain.ops.BuildOutputParser;
 import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.lang.utils.parse.StringCharSource;

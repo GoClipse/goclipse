@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import melnorme.lang.tooling.toolchain.SourceLineColumnRange;
-import melnorme.lang.tooling.toolchain.ToolSourceMessage;
+import melnorme.lang.tooling.common.SourceLineColumnRange;
+import melnorme.lang.tooling.common.ToolSourceMessage;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;

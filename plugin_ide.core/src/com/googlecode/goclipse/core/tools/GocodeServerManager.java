@@ -11,7 +11,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.ownership.IDisposable;

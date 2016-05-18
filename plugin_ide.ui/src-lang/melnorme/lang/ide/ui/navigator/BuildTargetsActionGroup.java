@@ -44,7 +44,7 @@ import melnorme.lang.ide.ui.utils.BuildUtilities;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.operations.AbstractJobUIOperation;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;

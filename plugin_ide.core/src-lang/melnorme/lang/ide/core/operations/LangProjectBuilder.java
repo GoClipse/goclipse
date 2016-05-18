@@ -34,7 +34,7 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOp
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.ICommonOperation;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;

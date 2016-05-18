@@ -17,8 +17,8 @@ import org.json.JSONObject;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.tooling.toolchain.FindDefinitionResult;
-import melnorme.lang.tooling.toolchain.ops.IProcessRunner;
+import melnorme.lang.tooling.common.ops.IProcessRunner;
+import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.utilbox.concurrency.ICancelMonitor;

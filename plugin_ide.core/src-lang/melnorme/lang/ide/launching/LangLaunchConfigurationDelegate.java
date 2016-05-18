@@ -39,7 +39,7 @@ import melnorme.lang.ide.core.launch.ProcessLaunchInfoValidator;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.tooling.commands.CommandInvocation;
-import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.ICommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 

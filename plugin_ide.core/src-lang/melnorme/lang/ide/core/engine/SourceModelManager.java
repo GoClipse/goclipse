@@ -18,7 +18,7 @@ import org.eclipse.jface.text.IDocument;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.DocumentReconcileManager.DocumentReconcileConnection;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData;
 import melnorme.lang.utils.concurrency.ConcurrentlyDerivedData.DataUpdateTask;

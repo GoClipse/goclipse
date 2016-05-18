@@ -12,8 +12,8 @@ package melnorme.lang.ide.ui.utils.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.lang.tooling.ops.ICommonOperation;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 

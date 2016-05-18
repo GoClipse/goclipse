@@ -12,9 +12,8 @@ package melnorme.lang.tooling.toolchain.ops;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.toolchain.FindDefinitionResult;
-import melnorme.lang.tooling.toolchain.LineColumnPosition;
-import melnorme.lang.tooling.toolchain.SourceLineColumnRange;
+import melnorme.lang.tooling.common.LineColumnPosition;
+import melnorme.lang.tooling.common.SourceLineColumnRange;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;

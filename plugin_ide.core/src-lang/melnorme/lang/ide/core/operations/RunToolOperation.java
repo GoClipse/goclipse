@@ -21,8 +21,8 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.Process
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
-import melnorme.lang.tooling.ops.ICommonOperation;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;

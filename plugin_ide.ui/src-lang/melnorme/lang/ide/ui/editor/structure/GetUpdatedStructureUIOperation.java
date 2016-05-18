@@ -16,7 +16,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.concurrency.OperationCancellation;

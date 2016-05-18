@@ -23,7 +23,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;

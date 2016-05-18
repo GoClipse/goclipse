@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.toolchain.ops;
 
+import melnorme.lang.tooling.common.ops.IProcessRunner;
 import melnorme.utilbox.misc.ILogHandler;
 
 /**

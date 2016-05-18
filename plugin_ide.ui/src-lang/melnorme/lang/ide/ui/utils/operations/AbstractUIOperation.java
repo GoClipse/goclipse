@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 
 import org.eclipse.ui.progress.IProgressService;
 
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.toolchain;
+package melnorme.lang.tooling.common;
 
 import java.nio.file.Path;
 
