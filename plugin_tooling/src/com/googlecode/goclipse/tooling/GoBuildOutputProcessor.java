@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import melnorme.lang.tooling.ops.BuildOutputParser;
-import melnorme.lang.tooling.ops.ToolSourceMessage;
+import melnorme.lang.tooling.toolchain.ToolSourceMessage;
+import melnorme.lang.tooling.toolchain.ops.BuildOutputParser;
 import melnorme.lang.utils.parse.LexingUtils;
-import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -52,7 +52,7 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	public static final Pattern WINDOWS_DRIVE_LETTER = Pattern.compile("[a-zA-Z]:\\\\.*", Pattern.DOTALL);
 	
 	@Override
-	protected ToolMessageData parseMessageData(StringParseSource output) throws CommonException {
+	protected ToolMessageData parseMessageData(StringCharSource output) throws CommonException {
 		String outputLine = LexingUtils.consumeLine(output);
 		
 		if(outputLine.startsWith("# ")) {

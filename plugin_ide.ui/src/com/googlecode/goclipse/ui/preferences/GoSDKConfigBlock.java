@@ -17,8 +17,8 @@ import com.googlecode.goclipse.tooling.GoSDKLocationValidator;
 
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
-import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.lang.utils.EnvUtils;
+import melnorme.lang.utils.validators.PathValidator;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.CheckBoxField;
 import melnorme.util.swt.components.fields.DirectoryTextField;

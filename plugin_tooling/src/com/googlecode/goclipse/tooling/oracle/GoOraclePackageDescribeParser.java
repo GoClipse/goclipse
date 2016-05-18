@@ -27,19 +27,18 @@ import org.json.JSONObject;
 
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
-import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ops.AbstractStructureParser;
-import melnorme.lang.tooling.ops.LineColumnPosition;
-import melnorme.lang.tooling.ops.SourceFileLocation;
-import melnorme.lang.tooling.ops.ToolOutputParseHelper;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.lang.tooling.structure.AbstractStructureParser;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.lang.tooling.structure.StructureElementKind;
+import melnorme.lang.tooling.toolchain.LineColumnPosition;
+import melnorme.lang.tooling.toolchain.SourceFileLocation;
+import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.lang.utils.parse.LexingUtils;
 import melnorme.lang.utils.parse.StringCharSource;
-import melnorme.lang.utils.parse.StringParseSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -216,7 +215,7 @@ public class GoOraclePackageDescribeParser extends AbstractStructureParser {
 	}
 	
 	protected int parseIdentifierStart(String source) {
-		StringParseSource parser = new StringParseSource(source);
+		StringCharSource parser = new StringCharSource(source);
 		return LexingUtils.matchJavaIdentifier(parser);
 	}
 	

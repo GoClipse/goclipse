@@ -30,7 +30,7 @@ import _org.eclipse.jdt.internal.corext.template.java.JavaFormatter;
 import melnorme.lang.ide.core.ISourceFile;
 import melnorme.lang.ide.core.text.DocumentModification;
 import melnorme.lang.ide.core.text.TextSourceUtils;
-import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class LangContext extends JavaContext {
@@ -88,7 +88,7 @@ public class LangContext extends JavaContext {
 		
 		StringBuilder newContents = new StringBuilder();
 		
-		StringParseSource parser = new StringParseSource(docString);
+		StringCharSource parser = new StringCharSource(docString);
 		String start = parser.consumeUntil(delimeter);
 		newContents.append(start);
 		
@@ -119,7 +119,7 @@ public class LangContext extends JavaContext {
 		
 		ArrayList2<DocumentModification> changes = new ArrayList2<>();
 		
-		StringParseSource parser = new StringParseSource(document.get());
+		StringCharSource parser = new StringCharSource(document.get());
 		parser.consumeUntil(delimeter);
 		while(true) {
 			if(!parser.tryConsume(delimeter)) {

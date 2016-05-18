@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.ast;
 
 import melnorme.lang.tooling.LANG_SPECIFIC;
+import melnorme.lang.tooling.common.ParserError;
 
 @LANG_SPECIFIC
 public enum ParserErrorTypes {

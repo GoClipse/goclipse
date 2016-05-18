@@ -21,8 +21,8 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
-import melnorme.lang.tooling.ops.SourceLineColumnRange;
-import melnorme.lang.tooling.ops.ToolSourceMessage;
+import melnorme.lang.tooling.toolchain.SourceLineColumnRange;
+import melnorme.lang.tooling.toolchain.ToolSourceMessage;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.status.Severity;
 

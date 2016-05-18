@@ -14,11 +14,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.tooling.ops.AbstractSingleToolOperation;
-import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.IToolOperationService;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
-import melnorme.lang.tooling.ops.ToolOutputParseHelper;
+import melnorme.lang.tooling.toolchain.FindDefinitionResult;
+import melnorme.lang.tooling.toolchain.ops.AbstractSingleToolOperation;
+import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -72,7 +72,7 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 	}
 	
 	@Override
-	protected FindDefinitionResult parseProcessOutput(StringCharSource output) throws CommonException {
+	public FindDefinitionResult parseProcessOutput(StringCharSource output) throws CommonException {
 		return ToolOutputParseHelper.parsePathLineColumn(output.getSource().trim(), ":");
 	}
 	

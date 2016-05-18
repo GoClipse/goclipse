@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.structure;
 
-import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.common.ParserError;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.Location;

@@ -11,7 +11,7 @@
 package com.googlecode.goclipse.tooling;
 
 import melnorme.lang.utils.parse.LexingUtils;
-import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.core.CommonException;
 
 public class GoSourceFileUtil {
@@ -21,7 +21,7 @@ public class GoSourceFileUtil {
 	 */
 	public static int findPackageDeclaration_NameStart(String source) throws CommonException {
 		
-		StringParseSource parser = new StringParseSource(source);
+		StringCharSource parser = new StringCharSource(source);
 		
 		while(parser.hasCharAhead()) {
 			
@@ -56,7 +56,7 @@ public class GoSourceFileUtil {
 		throw new CommonException("Go package declaration not found. ");
 	}
 	
-	protected static void consumeSpaces(StringParseSource parser) {
+	protected static void consumeSpaces(StringCharSource parser) {
 		while(parser.tryConsume(" ")) {
 		}
 	}

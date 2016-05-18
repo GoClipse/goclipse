@@ -18,8 +18,8 @@ import org.junit.Test;
 
 import com.googlecode.goclipse.tooling.CommonGoToolingTest;
 
-import melnorme.lang.tooling.ops.FindDefinitionResult;
-import melnorme.lang.tooling.ops.SourceLineColumnRange;
+import melnorme.lang.tooling.toolchain.FindDefinitionResult;
+import melnorme.lang.tooling.toolchain.SourceLineColumnRange;
 import melnorme.utilbox.core.CommonException;
 
 public class GoOracleFindDefinitionOperation_Test extends CommonGoToolingTest {

@@ -6,7 +6,7 @@ import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
-import melnorme.lang.tooling.ops.AbstractToolOperation2;
+import melnorme.lang.tooling.toolchain.ops.AbstractToolOperation2;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
@@ -39,7 +39,7 @@ public class GocodeOutputParser extends AbstractToolOperation2<ArrayList2<ToolCo
 	}
 	
 	@Override
-	protected ArrayList2<ToolCompletionProposal> parseProcessOutput(StringCharSource parseSource)
+	public ArrayList2<ToolCompletionProposal> parseProcessOutput(StringCharSource parseSource)
 			throws CommonException {
 		String prefix = lastWord(source, offset);
 		

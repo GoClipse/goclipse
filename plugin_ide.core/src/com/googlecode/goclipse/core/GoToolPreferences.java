@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
 import melnorme.lang.ide.core.utils.prefs.OptionalStringPreference;
-import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
+import melnorme.lang.utils.validators.LocationOrSinglePathValidator;
 
 public interface GoToolPreferences {
 	

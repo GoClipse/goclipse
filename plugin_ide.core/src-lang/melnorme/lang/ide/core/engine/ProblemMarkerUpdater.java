@@ -28,7 +28,7 @@ import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.common.ParserError;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;

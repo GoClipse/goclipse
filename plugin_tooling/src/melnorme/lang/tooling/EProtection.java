@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling;
 
-import melnorme.lang.tooling.parser.ISourceRepresentation;
+import melnorme.lang.tooling.ast.ISourceRepresentation;
 
 public enum EProtection implements ISourceRepresentation {
 	

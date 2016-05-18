@@ -16,7 +16,7 @@ import java.text.MessageFormat;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.tooling.ops.ToolOutputParseHelper;
+import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
