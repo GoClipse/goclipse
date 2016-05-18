@@ -17,7 +17,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.actions.AbstractOpenElementOperation;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.toolchain.FindDefinitionResult;
+import melnorme.lang.tooling.toolchain.ops.FindDefinitionResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
