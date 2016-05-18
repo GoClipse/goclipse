@@ -20,31 +20,25 @@ import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.misc.StringUtil;
 
 
-@SuppressWarnings("static-method")
-public class ToolOutputParseHelper {
+public interface ToolOutputParseHelper {
 	
-	public ToolOutputParseHelper() {
-	}
-	
-	/* ----------------- Common parsing utils ----------------- */
-	
-	protected final int parsePositiveInt(String integerString) throws CommonException {
+	default int parsePositiveInt(String integerString) throws CommonException {
 		return NumberUtil.parsePositiveInt(integerString);
 	}
 	
-	protected final int parseInt(String integerString) throws CommonException {
+	default int parseInt(String integerString) throws CommonException {
 		return NumberUtil.parseInt(integerString);
 	}
 
-	protected final int parseInt(String integerString, String errorMessage) throws CommonException {
+	default int parseInt(String integerString, String errorMessage) throws CommonException {
 		return NumberUtil.parseInt(integerString, errorMessage);
 	}
 	
-	protected final Path parsePath(String pathString) throws CommonException {
+	default Path parsePath(String pathString) throws CommonException {
 		return MiscUtil.createPath(pathString);
 	}
 	
-	protected final Location parseLocation(String pathString) throws CommonException {
+	default Location parseLocation(String pathString) throws CommonException {
 		return Location.create(pathString);
 	}
 	

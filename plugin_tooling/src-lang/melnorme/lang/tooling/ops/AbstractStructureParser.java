@@ -18,7 +18,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.NumberUtil;
 import melnorme.utilbox.misc.StringUtil;
 
-public abstract class AbstractStructureParser extends ToolOutputParseHelper {
+public abstract class AbstractStructureParser {
 	
 	protected final Location location;
 	protected final SourceLinesInfo sourceLinesInfo;
@@ -43,7 +43,7 @@ public abstract class AbstractStructureParser extends ToolOutputParseHelper {
 		if(locationString.startsWith("@")) {
 			locationString = locationString.substring(1);
 		}
-		return parsePositiveInt(locationString);
+		return NumberUtil.parsePositiveInt(locationString);
 	}
 	
 }
