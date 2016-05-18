@@ -38,7 +38,7 @@ import melnorme.lang.ide.ui.utils.ControlUtils;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashSet2;

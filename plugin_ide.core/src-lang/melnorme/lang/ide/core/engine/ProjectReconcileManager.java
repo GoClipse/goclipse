@@ -20,7 +20,7 @@ import melnorme.lang.ide.core.engine.SourceModelManager.StructureUpdateTask;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.tooling.ops.IOperationMonitor.NullOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
 import melnorme.lang.utils.concurrency.MonitorFutureTask;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ICommonExecutor;

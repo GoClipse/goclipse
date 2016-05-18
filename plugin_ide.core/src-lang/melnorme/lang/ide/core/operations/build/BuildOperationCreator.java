@@ -29,9 +29,9 @@ import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOp
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
-import melnorme.lang.tooling.ops.ICommonOperation;
-import melnorme.lang.tooling.ops.IOperationMonitor;
-import melnorme.lang.tooling.ops.IOperationMonitor.IOperationSubMonitor;
+import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor.IOperationSubMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.concurrency.OperationCancellation;

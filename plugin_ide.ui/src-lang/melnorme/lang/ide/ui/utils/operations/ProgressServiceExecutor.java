@@ -21,7 +21,7 @@ import org.eclipse.ui.progress.IProgressService;
 
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.ICommonOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 

@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.DebugPlugin;
 
-import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.ICommonOperation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 

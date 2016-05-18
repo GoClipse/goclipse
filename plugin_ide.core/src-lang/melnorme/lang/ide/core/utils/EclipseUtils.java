@@ -31,9 +31,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.tooling.ops.ICommonOperation;
-import melnorme.lang.tooling.ops.IOperationMonitor;
-import melnorme.lang.tooling.ops.IOperationMonitor.BasicOperationMonitor;
+import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor.BasicOperationMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
