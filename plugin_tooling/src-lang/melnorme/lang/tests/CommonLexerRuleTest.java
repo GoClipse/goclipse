@@ -12,7 +12,7 @@ package melnorme.lang.tests;
 
 
 import melnorme.lang.tooling.parser.lexer.IPredicateLexingRule;
-import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.lang.utils.parse.StringCharSource;
 
 public abstract class CommonLexerRuleTest extends CommonToolingTest {
 	
@@ -43,7 +43,7 @@ public abstract class CommonLexerRuleTest extends CommonToolingTest {
 	protected abstract IPredicateLexingRule createLexingRule();
 	
 	public static void testRule(IPredicateLexingRule lexRule, String source, int expectedTokenLength) {
-		StringParseSource reader = new StringParseSource(source);
+		StringCharSource reader = new StringCharSource(source);
 		boolean isMatch = lexRule.tryMatch(reader);
 
 		assertEquals(isMatch, expectedTokenLength > 0);

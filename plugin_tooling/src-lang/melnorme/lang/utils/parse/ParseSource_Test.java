@@ -185,7 +185,7 @@ public abstract class ParseSource_Test extends CommonToolingTest {
 	public static class StringParseSource_Test extends ParseSource_Test {
 		@Override
 		protected ICharacterReader createParseSource(String source) {
-			return new StringParseSource(source);
+			return new StringCharSource(source);
 		}
 		
 		@Override

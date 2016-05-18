@@ -13,7 +13,7 @@ package melnorme.lang.tooling.ops.util;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import melnorme.lang.utils.parse.LexingUtils;
-import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 
@@ -25,7 +25,7 @@ public class SourceLinesInfo {
 	public SourceLinesInfo(String source) {
 		this.source = source;
 		
-		StringParseSource parser = new StringParseSource(source);
+		StringCharSource parser = new StringCharSource(source);
 		
 		calculateLines(parser);
 	}
@@ -34,7 +34,7 @@ public class SourceLinesInfo {
 		return source;
 	}
 	
-	protected void calculateLines(StringParseSource parser) {
+	protected void calculateLines(StringCharSource parser) {
 		lines = new ArrayList2<>();
 		
 		int lineStartOffset = 0;
@@ -47,7 +47,7 @@ public class SourceLinesInfo {
 		
 	}
 	
-	protected void consumeNewLine(StringParseSource parser) {
+	protected void consumeNewLine(StringCharSource parser) {
 		while(true) {
 			String newlineSequence = LexingUtils.determineNewlineSequenceAt(parser, 0);
 			if(newlineSequence != null) {
@@ -116,7 +116,7 @@ public class SourceLinesInfo {
 	}
 	
 	public int getIdentifierAt(int validatedOffset) {
-		StringParseSource parser = new StringParseSource(source);
+		StringCharSource parser = new StringCharSource(source);
 		parser.consume(validatedOffset);
 		return LexingUtils.matchJavaIdentifier(parser);
 	}

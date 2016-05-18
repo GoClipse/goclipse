@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
-import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.lang.utils.parse.StringCharSource;
 
 public class CharacterLexingRule_Test {
 	
@@ -52,7 +52,7 @@ public class CharacterLexingRule_Test {
 	}
 	
 	protected void testRule(CharacterLexingRule rule, String source, int expectedMatchLength) {
-		StringParseSource reader = new StringParseSource(source);
+		StringCharSource reader = new StringCharSource(source);
 		boolean expectedMatches = expectedMatchLength > 0;
 		
 		assertTrue(rule.tryMatch(reader) == expectedMatches);

@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.ops;
 
 
-import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -30,10 +30,10 @@ public abstract class AbstractToolOutputParser2<RESULT> implements ToolOutputPar
 	/* -----------------  ----------------- */
 	
 	public RESULT parse(String outputSource) throws CommonException {
-		return parse(new StringParseSource(outputSource));
+		return parse(new StringCharSource(outputSource));
 	}
 	
-	protected abstract RESULT parse(StringParseSource outputParseSource) throws CommonException;
+	protected abstract RESULT parse(StringCharSource outputParseSource) throws CommonException;
 	
 	protected abstract void handleParseError(CommonException ce) throws CommonException;
 	

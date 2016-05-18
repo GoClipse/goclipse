@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 import org.eclipse.jface.text.IRegion;
 
-import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.lang.utils.parse.StringCharSource;
 
 public class TextSourceUtils {
 
@@ -70,7 +70,7 @@ public class TextSourceUtils {
 		assertTrue(endLimit <= source.length());
 		assertTrue(offset <= endLimit);
 		
-		StringParseSource parseSource = new StringParseSource(source);
+		StringCharSource parseSource = new StringCharSource(source);
 		parseSource.consume(offset);
 		
 		while(offset < endLimit) {
@@ -87,7 +87,7 @@ public class TextSourceUtils {
 	public static int findLineStartForOffset(String source, int offset) {
 		assertTrue(offset <= source.length());
 		
-		StringParseSource parseSource = new StringParseSource(source);
+		StringCharSource parseSource = new StringCharSource(source);
 		
 		while(offset > 0) {
 			int previousChar = parseSource.lookahead(offset-1);

@@ -53,11 +53,11 @@ public abstract class AbstractToolOperation2<RESULT> implements ToolOutputParseH
 		return parseProcessOutput(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
 	
-	protected final RESULT parseProcessOutput(String source) 
+	public final RESULT parseProcessOutput(String source) 
 			throws CommonException, OperationCancellation, OperationSoftFailure {
 		return parseProcessOutput(new StringCharSource(source));
 	}
 	
-	protected abstract RESULT parseProcessOutput(StringCharSource outputParseSource) throws CommonException;
+	public abstract RESULT parseProcessOutput(StringCharSource outputParseSource) throws CommonException;
 	
 }

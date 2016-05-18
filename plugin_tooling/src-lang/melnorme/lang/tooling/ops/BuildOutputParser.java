@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -44,11 +44,11 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser2<ArrayL
 		return parse(stderr);
 	}
 	@Override
-	protected ArrayList<ToolSourceMessage> parse(StringParseSource output) throws CommonException {
+	protected ArrayList<ToolSourceMessage> parse(StringCharSource output) throws CommonException {
 		return parseMessages(output);
 	}
 	
-	protected ArrayList<ToolSourceMessage> parseMessages(StringParseSource output) {
+	protected ArrayList<ToolSourceMessage> parseMessages(StringCharSource output) {
 		buildMessages = new ArrayList2<>();
 		
 		while(output.hasCharAhead()) {
@@ -58,7 +58,7 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser2<ArrayL
 		return buildMessages;
 	}
 	
-	protected void doParseToolMessage(StringParseSource output) {
+	protected void doParseToolMessage(StringCharSource output) {
 		try {
 			ToolMessageData toolMessage = parseMessageData(output);
 			
@@ -74,7 +74,7 @@ public abstract class BuildOutputParser extends AbstractToolOutputParser2<ArrayL
 		buildMessages.add(createMessage(toolMessage));
 	}
 	
-	protected abstract ToolMessageData parseMessageData(StringParseSource output) throws CommonException;
+	protected abstract ToolMessageData parseMessageData(StringCharSource output) throws CommonException;
 	
 	protected final void handleMessageParseError(CommonException ce) {
 		handleParseError(ce);
