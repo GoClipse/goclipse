@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.ops;
+package melnorme.lang.tooling.structure;
 
 
 import melnorme.lang.tooling.ops.util.SourceLinesInfo;
