@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
-import melnorme.lang.tooling.ops.IProcessRunner;
+import melnorme.lang.tooling.toolchain.ops.IProcessRunner;
 import melnorme.lang.tooling.toolchain.ops.ToolOutputParseHelper;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ICancelMonitor;

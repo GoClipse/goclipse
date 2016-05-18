@@ -11,7 +11,6 @@
 package melnorme.lang.tooling.toolchain.ops;
 
 import melnorme.lang.tooling.ToolingMessages;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;

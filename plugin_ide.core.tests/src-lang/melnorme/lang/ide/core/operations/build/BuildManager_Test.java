@@ -37,6 +37,7 @@ import melnorme.lang.tooling.bundle.BuildConfigMessages;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BundleInfo;
+import melnorme.lang.tooling.commands.CommandInvocation;
 import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;

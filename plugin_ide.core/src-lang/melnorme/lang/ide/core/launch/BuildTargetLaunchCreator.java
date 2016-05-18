@@ -22,10 +22,10 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
-import melnorme.lang.ide.core.operations.build.CommandInvocation;
-import melnorme.lang.ide.core.operations.build.CommandInvocationSerializer;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.launching.LaunchConstants;
+import melnorme.lang.tooling.commands.CommandInvocation;
+import melnorme.lang.tooling.commands.CommandInvocationSerializer;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 

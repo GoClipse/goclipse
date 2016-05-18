@@ -12,7 +12,7 @@ package melnorme.lang.tooling.completion;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ToolCompletionProposal;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.Indexable;
 
 public class LangCompletionResult {

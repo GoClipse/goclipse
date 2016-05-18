@@ -44,10 +44,6 @@ public class StringCharSource extends OffsetBasedCharacterReader<RuntimeExceptio
 		return sourceSubString(offset, offset + length);
 	}
 	
-	protected String sourceSubString(int startPos, int endPos) {
-		return source.substring(readPosition + startPos, readPosition + endPos);
-	}
-	
 	@Override
 	public int bufferedCharCount() {
 		return source.length() - readPosition;
@@ -59,10 +55,14 @@ public class StringCharSource extends OffsetBasedCharacterReader<RuntimeExceptio
 		assertTrue(readPosition <= source.length());
 	}
 	
-	/* -----------------  ----------------- */
-	
 	@Override
 	protected void doUnread() {
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected String sourceSubString(int startPos, int endPos) {
+		return source.substring(readPosition + startPos, readPosition + endPos);
 	}
 	
 }

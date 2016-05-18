@@ -15,11 +15,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
-import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.ide.ui.fields.FieldDialog;
 import melnorme.lang.ide.ui.utils.ControlUtils;
-import melnorme.lang.tooling.ops.EnvironmentSettings;
+import melnorme.lang.tooling.commands.CommandInvocation;
+import melnorme.lang.tooling.commands.EnvironmentSettings;
 import melnorme.util.swt.components.ButtonWidget;
 import melnorme.util.swt.components.CompositeWidget;
 import melnorme.util.swt.components.fields.EnablementCompositeWidget;

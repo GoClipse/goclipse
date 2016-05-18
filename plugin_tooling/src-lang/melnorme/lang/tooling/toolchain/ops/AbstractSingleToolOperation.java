@@ -13,8 +13,6 @@ package melnorme.lang.tooling.toolchain.ops;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.lang.tooling.ops.IToolOperationService;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;

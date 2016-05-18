@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import _org.eclipse.debug.internal.ui.MultipleInputDialog;
 import _org.eclipse.debug.internal.ui.SWTFactory;
 import melnorme.lang.ide.ui.LangImages;
-import melnorme.lang.tooling.ops.EnvironmentSettings;
+import melnorme.lang.tooling.commands.EnvironmentSettings;
 import melnorme.util.swt.SWTUtil;
 import melnorme.util.swt.components.AbstractWidget;
 import melnorme.util.swt.components.fields.FieldCompositeWidget;

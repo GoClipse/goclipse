@@ -21,7 +21,7 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.AbstractCompletionProposalComputer;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.collections.ListView;
 import melnorme.utilbox.core.CommonException;

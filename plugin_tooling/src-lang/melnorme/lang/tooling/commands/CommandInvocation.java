@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations.build;
+package melnorme.lang.tooling.commands;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
@@ -16,10 +16,8 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.debug.core.DebugPlugin;
-
+import melnorme.lang.tooling.utils.ArgumentsParser;
 import melnorme.lang.utils.ProcessUtils;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.HashMap2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.collections.MapAccess;
@@ -77,7 +75,7 @@ public class CommandInvocation {
 	
 	/* -----------------  ----------------- */
 	
-	public ProcessBuilder getProcessBuilder(VariablesResolver variablesResolver) throws StatusException {
+	public ProcessBuilder getProcessBuilder(IVariablesResolver variablesResolver) throws StatusException {
 		Indexable<String> CommandLine = validateCommandArguments(variablesResolver);
 		
 		ProcessBuilder pb = ProcessUtils.createProcessBuilder(CommandLine, null);
@@ -96,15 +94,15 @@ public class CommandInvocation {
 		}
 	}
 	
-	public void validate(VariablesResolver variablesResolver) throws StatusException {
+	public void validate(IVariablesResolver variablesResolver) throws StatusException {
 		validateCommandArguments(variablesResolver);
 	}
 	
-	public Indexable<String> validateCommandArguments(VariablesResolver variablesResolver) throws StatusException {
+	public Indexable<String> validateCommandArguments(IVariablesResolver variablesResolver) throws StatusException {
 		return getValidatedCommandArguments(variablesResolver).getValidatedValue();
 	}
 	
-	public ValidatedCommandArgumentsSource getValidatedCommandArguments(VariablesResolver variablesResolver) {
+	public ValidatedCommandArgumentsSource getValidatedCommandArguments(IVariablesResolver variablesResolver) {
 		return new ValidatedCommandArgumentsSource(commandArguments, variablesResolver);
 	}
 	
@@ -112,10 +110,10 @@ public class CommandInvocation {
 		
 		public static final String MSG_NO_COMMAND_SPECIFIED = "No command specified.";
 		
-		protected final VariablesResolver variablesResolver;
+		protected final IVariablesResolver variablesResolver;
 		protected final String commandArguments;
 		
-		public ValidatedCommandArgumentsSource(String commandArguments, VariablesResolver variablesResolver) {
+		public ValidatedCommandArgumentsSource(String commandArguments, IVariablesResolver variablesResolver) {
 			this.commandArguments = commandArguments;
 			this.variablesResolver = variablesResolver;
 		}
@@ -129,7 +127,7 @@ public class CommandInvocation {
 			}
 		}
 		
-		public Indexable<String> doGetValidatedValue(VariablesResolver variablesResolver) throws CommonException {
+		public Indexable<String> doGetValidatedValue(IVariablesResolver variablesResolver) throws CommonException {
 			if(commandArguments == null) {
 				handleNoCommandLine();
 			}
@@ -140,8 +138,7 @@ public class CommandInvocation {
 				handleNoCommandLine();
 			}
 			
-			String[] evaluatedArguments = DebugPlugin.parseArguments(evaluatedCommandLine);
-			return new ArrayList2<>(evaluatedArguments);
+			return ArgumentsParser.parse(evaluatedCommandLine);
 		}
 		
 		protected void handleNoCommandLine() throws CommonException {

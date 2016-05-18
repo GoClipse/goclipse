@@ -10,6 +10,25 @@
  *******************************************************************************/
 package melnorme.lang.utils.parse;
 
+import java.util.function.Predicate;
+
+import melnorme.lang.tooling.parser.lexer.CharacterReader_SubReader;
+
 public interface ICharacterReader extends ICharSource<RuntimeException> {
+	
+	// TODO: this could be moved to ICharSource
+	
+	default String consumeUntil(Predicate<ICharacterReader> untilPredicate) throws RuntimeException {
+		CharacterReader_SubReader subReader = new CharacterReader_SubReader(this);
+		while(subReader.hasCharAhead() && !untilPredicate.test(subReader)) {
+			subReader.consume();
+		}
+		
+		int consumedCount = subReader.getConsumedCount();
+		if(consumedCount == 0) {
+			return null;
+		}
+		return this.consumeString(consumedCount);
+	}
 	
 }

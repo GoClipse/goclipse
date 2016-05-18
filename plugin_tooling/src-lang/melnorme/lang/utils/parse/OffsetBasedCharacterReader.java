@@ -14,13 +14,17 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 public abstract class OffsetBasedCharacterReader<EXC extends Exception> extends BasicCharSource<EXC> {
 	
-	protected int readPosition;
+	protected int readPosition = 0;
 	
 	public OffsetBasedCharacterReader() {
 		super();
 	}
 	
 	public int getReadPosition() {
+		return readPosition;
+	}
+	
+	public int getConsumedCount() {
 		return readPosition;
 	}
 	
