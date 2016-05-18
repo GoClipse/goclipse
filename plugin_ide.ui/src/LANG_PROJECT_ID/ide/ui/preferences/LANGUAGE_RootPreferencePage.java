@@ -10,11 +10,11 @@
  *******************************************************************************/
 package LANG_PROJECT_ID.ide.ui.preferences;
 
+import LANG_PROJECT_ID.tooling.toolchain.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.ide.ui.preferences.pages.RootPreferencePage;
-import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
-import melnorme.lang.tooling.ops.SDKLocationValidator;
+import melnorme.lang.tooling.toolchain.ops.SDKLocationValidator;
 
 
 /**

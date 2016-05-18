@@ -8,9 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package LANG_PROJECT_ID.tooling.toolchain;
 
-import melnorme.lang.tooling.ops.SDKLocationValidator;
+import melnorme.lang.tooling.toolchain.ops.SDKLocationValidator;
 
 public class LANGUAGE_SDKLocationValidator extends SDKLocationValidator {
 	

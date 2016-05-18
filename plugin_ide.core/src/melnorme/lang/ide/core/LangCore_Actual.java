@@ -4,12 +4,12 @@ import LANG_PROJECT_ID.ide.core.bundle_model.LANGUAGE_BundleModelManager;
 import LANG_PROJECT_ID.ide.core.engine.LANGUAGE_SourceModelManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_BuildManager;
 import LANG_PROJECT_ID.ide.core.operations.LANGUAGE_ToolManager;
+import LANG_PROJECT_ID.tooling.toolchain.LANGUAGE_SDKLocationValidator;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
-import melnorme.lang.tooling.data.LANGUAGE_SDKLocationValidator;
 
 public class LangCore_Actual {
 	

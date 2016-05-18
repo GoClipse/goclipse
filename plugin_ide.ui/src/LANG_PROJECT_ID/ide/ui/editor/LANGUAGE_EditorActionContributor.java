@@ -14,8 +14,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import LANG_PROJECT_ID.ide.ui.actions.LANGUAGE_OpenDefinitionOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
 
 public class LANGUAGE_EditorActionContributor extends LangEditorActionContributor {
 	
