@@ -19,8 +19,8 @@ import melnorme.lang.tooling.ops.FindDefinitionResult;
 import melnorme.lang.tooling.ops.IToolOperationService;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.lang.tooling.ops.ToolOutputParseHelper;
+import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -46,6 +46,11 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 	}
 	
 	@Override
+	protected String getToolProcessName() {
+		return getToolName();
+	}
+	
+	@Override
 	protected ProcessBuilder createProcessBuilder() throws CommonException {
 		Location toolLoc = Location.create(toolPath);
 		ArrayList2<String> commandLine = new ArrayList2<>(
@@ -67,10 +72,8 @@ public class GodefOperation extends AbstractSingleToolOperation<FindDefinitionRe
 	}
 	
 	@Override
-	protected FindDefinitionResult handleProcessOutput(String output)
-			throws CommonException, OperationCancellation, OperationSoftFailure {
-		output = output.trim();
-		return ToolOutputParseHelper.parsePathLineColumn(output, ":");
+	protected FindDefinitionResult parseProcessOutput(StringCharSource output) throws CommonException {
+		return ToolOutputParseHelper.parsePathLineColumn(output.getSource().trim(), ":");
 	}
 	
 }

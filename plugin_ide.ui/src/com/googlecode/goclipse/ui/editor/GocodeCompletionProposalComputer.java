@@ -46,7 +46,7 @@ public class GocodeCompletionProposalComputer extends LangCompletionProposalComp
 		String source = document.get();
 		ExternalProcessResult processResult = client.execute(fileLoc.toPathString(), source, offset);
 		
-		return new LangCompletionResult(new GocodeOutputParser(offset, source).parse(processResult));
+		return new LangCompletionResult(new GocodeOutputParser(offset, source).parseResult(processResult));
 	}
 	
 }

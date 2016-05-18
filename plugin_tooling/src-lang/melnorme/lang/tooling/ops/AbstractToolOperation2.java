@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ops;
 
+import melnorme.lang.tooling.ToolingMessages;
+import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
@@ -21,6 +23,14 @@ public abstract class AbstractToolOperation2<RESULT> implements ToolOutputParseH
 		super();
 	}
 	
+	public RESULT parseResult(ExternalProcessResult result) throws CommonException, OperationCancellation {
+		try {
+			return handleProcessResult(result);
+		} catch(OperationSoftFailure e) {
+			throw e.toCommonException();
+		}
+	}
+	
 	public RESULT handleProcessResult(ExternalProcessResult result) 
 			throws CommonException, OperationCancellation, OperationSoftFailure {
 		if(result.exitValue != 0) {
@@ -30,15 +40,24 @@ public abstract class AbstractToolOperation2<RESULT> implements ToolOutputParseH
 		return doHandleProcessResult(result);
 	}
 	
-	protected abstract void handleNonZeroExitCode(ExternalProcessResult result) 
-			throws CommonException, OperationCancellation, OperationSoftFailure;
+	protected void handleNonZeroExitCode(ExternalProcessResult result) 
+			throws CommonException, OperationSoftFailure {
+		throw new CommonException(
+			ToolingMessages.PROCESS_CompletedWithNonZeroValue(getToolProcessName(), result.exitValue));
+	}
+	
+	protected abstract String getToolProcessName();
 	
 	protected RESULT doHandleProcessResult(ExternalProcessResult result) 
 			throws CommonException, OperationCancellation, OperationSoftFailure {
-		return handleProcessOutput(result.getStdOutBytes().toString(StringUtil.UTF8));
+		return parseProcessOutput(result.getStdOutBytes().toString(StringUtil.UTF8));
 	}
 	
-	protected abstract RESULT handleProcessOutput(String output) 
-			throws CommonException, OperationCancellation, OperationSoftFailure;
+	protected final RESULT parseProcessOutput(String source) 
+			throws CommonException, OperationCancellation, OperationSoftFailure {
+		return parseProcessOutput(new StringCharSource(source));
+	}
+	
+	protected abstract RESULT parseProcessOutput(StringCharSource outputParseSource) throws CommonException;
 	
 }

@@ -6,12 +6,12 @@ import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
-import melnorme.lang.tooling.ops.AbstractToolOutputParser;
-import melnorme.lang.utils.parse.StringParseSource;
+import melnorme.lang.tooling.ops.AbstractToolOperation2;
+import melnorme.lang.utils.parse.StringCharSource;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 
-public class GocodeOutputParser extends AbstractToolOutputParser<ArrayList2<ToolCompletionProposal>> {
+public class GocodeOutputParser extends AbstractToolOperation2<ArrayList2<ToolCompletionProposal>> {
 	
 	public static String lastWord(String source, int offset) {
 		for (int n = offset - 1; n >= 0; n--) {
@@ -39,7 +39,8 @@ public class GocodeOutputParser extends AbstractToolOutputParser<ArrayList2<Tool
 	}
 	
 	@Override
-	protected ArrayList2<ToolCompletionProposal> parse(StringParseSource parseSource) throws CommonException {
+	protected ArrayList2<ToolCompletionProposal> parseProcessOutput(StringCharSource parseSource)
+			throws CommonException {
 		String prefix = lastWord(source, offset);
 		
 		String stdout = parseSource.getSource();
@@ -82,7 +83,6 @@ public class GocodeOutputParser extends AbstractToolOutputParser<ArrayList2<Tool
 		return null;
 	}
 	
-	@Override
 	protected void handleParseError(CommonException ce) throws CommonException {
 		throw ce;
 	}
