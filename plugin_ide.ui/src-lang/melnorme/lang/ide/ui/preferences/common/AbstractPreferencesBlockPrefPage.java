@@ -14,9 +14,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
-import melnorme.lang.tooling.data.IStatusMessage;
 import melnorme.util.swt.components.IValidatableWidget;
 import melnorme.util.swt.components.IWidgetComponent;
+import melnorme.utilbox.status.IStatusMessage;
 
 /**
  * Abstract preference page wrapping {@link IWidgetComponent}.

@@ -40,8 +40,6 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ProjectValidator;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.SWTUtil;
@@ -54,6 +52,8 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
 
 public abstract class LangProjectWizardFirstPage extends WizardPage {
 	

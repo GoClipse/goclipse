@@ -31,10 +31,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.ICommonOperation;
 import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.ops.IOperationMonitor.BasicOperationMonitor;
@@ -42,6 +38,10 @@ import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.status.IStatusMessage;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
+import melnorme.utilbox.status.StatusLevel;
 
 public class EclipseUtils {
 	

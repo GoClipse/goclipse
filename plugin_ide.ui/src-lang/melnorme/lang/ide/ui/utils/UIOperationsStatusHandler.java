@@ -17,9 +17,9 @@ import org.eclipse.swt.widgets.Shell;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCoreMessages;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
 
 public class UIOperationsStatusHandler {
 	

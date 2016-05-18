@@ -18,11 +18,11 @@ import org.eclipse.swt.widgets.Display;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
-import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.status.Severity;
 
 public abstract class CalculateValueUIOperation<RESULT> extends AbstractUIOperation {
 	

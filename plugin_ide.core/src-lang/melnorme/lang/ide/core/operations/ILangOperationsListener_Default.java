@@ -11,7 +11,7 @@
 package melnorme.lang.ide.core.operations;
 
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.utilbox.status.StatusLevel;
 
 public interface ILangOperationsListener_Default {
 	

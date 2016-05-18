@@ -30,9 +30,9 @@ import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.build.BuildTargetEditor;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.status.StatusException;
 
 /**
  * A main LaunchConfiguration with project selection field, 

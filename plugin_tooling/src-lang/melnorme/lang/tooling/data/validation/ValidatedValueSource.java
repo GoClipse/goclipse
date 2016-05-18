@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.data.validation;
 
-import melnorme.lang.tooling.data.StatusException;
+import melnorme.utilbox.status.StatusException;
 
 public interface ValidatedValueSource<VALUE> extends ValidationSource {
 	

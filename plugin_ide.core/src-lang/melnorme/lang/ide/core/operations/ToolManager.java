@@ -35,8 +35,6 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
-import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.IToolOperationService;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.lang.utils.ProcessUtils;
@@ -49,6 +47,8 @@ import melnorme.utilbox.fields.EventSource;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.status.StatusException;
+import melnorme.utilbox.status.StatusLevel;
 
 /**
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).

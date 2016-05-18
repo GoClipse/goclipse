@@ -12,8 +12,8 @@ package melnorme.lang.tooling.ops.util;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.data.validation.ValidationException;
+import melnorme.utilbox.status.Severity;
 
 public class LocationOrSinglePathValidator extends PathValidator {
 	

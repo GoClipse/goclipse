@@ -25,13 +25,13 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.validation.AbstractValidator;
 import melnorme.lang.tooling.ops.util.ValidationMessages;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
 
 public class BuildTarget extends AbstractValidator {
 	

@@ -12,13 +12,13 @@ package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.util.NumberValidator;
 import melnorme.util.swt.components.IDisableableWidget;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.IProperty;
+import melnorme.utilbox.status.IStatusMessage;
+import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusException;
 
 public class NumberField extends TextFieldExt {
 	

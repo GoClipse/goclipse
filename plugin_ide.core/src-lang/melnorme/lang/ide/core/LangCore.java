@@ -17,9 +17,9 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ILogHandler;
+import melnorme.utilbox.status.StatusException;
 
 public class LangCore extends LangCore_Actual {
 	

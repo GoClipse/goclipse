@@ -16,8 +16,8 @@ import static melnorme.utilbox.misc.HashcodeUtil.getHashCode;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.data.Severity;
 import melnorme.utilbox.misc.HashcodeUtil;
+import melnorme.utilbox.status.Severity;
 
 public class ToolSourceMessage {
 	

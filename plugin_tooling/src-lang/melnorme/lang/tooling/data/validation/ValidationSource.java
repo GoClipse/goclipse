@@ -14,9 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.function.Supplier;
 
-import melnorme.lang.tooling.data.IStatusMessage;
-import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.utilbox.status.IStatusMessage;
+import melnorme.utilbox.status.StatusException;
+import melnorme.utilbox.status.StatusLevel;
 
 public interface ValidationSource {
 	

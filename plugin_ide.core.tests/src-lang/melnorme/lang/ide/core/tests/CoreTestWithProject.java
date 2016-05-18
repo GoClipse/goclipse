@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.CoreSettings.SettingsField;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tests.ToolingTests_Actual;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.ownership.IDisposable;
+import melnorme.utilbox.status.StatusException;
 
 public abstract class CoreTestWithProject extends CommonCoreTest_ActualClass {
 	

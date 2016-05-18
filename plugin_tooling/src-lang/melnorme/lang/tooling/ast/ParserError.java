@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.Comparator;
 
-import melnorme.lang.tooling.data.Severity;
+import melnorme.utilbox.status.Severity;
 
 public class ParserError {
 	

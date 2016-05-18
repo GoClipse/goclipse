@@ -19,7 +19,6 @@ import melnorme.lang.ide.core.operations.build.CommandInvocation;
 import melnorme.lang.ide.core.operations.build.VariablesResolver;
 import melnorme.lang.ide.ui.fields.FieldDialog;
 import melnorme.lang.ide.ui.utils.ControlUtils;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.EnvironmentSettings;
 import melnorme.util.swt.components.ButtonWidget;
 import melnorme.util.swt.components.CompositeWidget;
@@ -30,6 +29,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CommonGetter;
 import melnorme.utilbox.fields.Field;
+import melnorme.utilbox.status.StatusException;
 
 public class CommandInvocationEditor extends EnablementCompositeWidget<CommandInvocation> {
 	

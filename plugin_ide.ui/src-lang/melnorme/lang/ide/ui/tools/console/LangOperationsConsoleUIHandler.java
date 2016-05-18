@@ -33,11 +33,11 @@ import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.lang.ide.ui.utils.StatusMessageDialog;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
+import melnorme.utilbox.status.StatusLevel;
 
 
 public abstract class LangOperationsConsoleUIHandler implements ILangOperationsListener {

@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import melnorme.lang.ide.launching.LaunchConstants;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangUIMessages;
-import melnorme.lang.tooling.data.StatusException;
+import melnorme.utilbox.status.StatusException;
 
 
 //BM: Original based on org.eclipse.cdt.launch.ui.CArgumentsTab

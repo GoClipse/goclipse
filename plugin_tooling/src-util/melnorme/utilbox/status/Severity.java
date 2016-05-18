@@ -8,47 +8,49 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.data;
+package melnorme.utilbox.status;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import melnorme.utilbox.core.CommonException;
 
-public enum StatusLevel {
-	OK,
+public enum Severity {
 	INFO,
 	WARNING,
 	ERROR,
 	;
 	
-	public boolean isOkStatus() {
-		return this == OK;
+	public boolean isError() {
+		return this == Severity.ERROR;
 	}
 	
-	public Severity toSeverity() {
-		switch (this) {
-		case OK:
-		case INFO: return Severity.INFO;
-		case WARNING: return Severity.WARNING;
-		case ERROR: return Severity.ERROR;
-		}
-		throw assertFail();
+	public boolean isHigherSeverity(Severity other) {
+		return ordinal() > other.ordinal();
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public static StatusLevel fromString(String messageTypeString) throws CommonException {
-		if(messageTypeString == null) {
+	public static Severity fromString(String severityString) throws CommonException {
+		if(severityString == null) {
 			return null;
 		}
 		
-		switch (messageTypeString.toLowerCase()) {
-		case "warning": return WARNING;
-		case "error": return ERROR;
-		case "info": return INFO;
-		case "ok": return INFO;
+		switch (severityString.toUpperCase()) {
+		case "WARNING": return WARNING;
+		case "ERROR": return ERROR;
+		case "INFO": return INFO;
 		default:
-			throw new CommonException("Invalid Status: " + messageTypeString);
+			throw new CommonException("Invalid Severity string `" + severityString + "`.");
 		}
 	}
+	
+	public StatusLevel toStatusLevel() {
+		switch (this) {
+		case INFO: return StatusLevel.INFO;
+		case WARNING: return StatusLevel.WARNING;
+		case ERROR: return StatusLevel.ERROR;
+		}
+		throw assertFail();
+	}
+	
 }

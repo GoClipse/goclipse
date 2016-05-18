@@ -18,8 +18,8 @@ import org.eclipse.swt.widgets.Display;
 
 import melnorme.lang.ide.ui.LangUIMessages;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.status.StatusException;
 
 public abstract class AbstractLaunchConfigurationTabExt extends AbstractLaunchConfigurationTab {
 	

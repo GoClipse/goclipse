@@ -22,9 +22,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.util.swt.SWTFactory;
 import melnorme.util.swt.SWTUtil;
+import melnorme.utilbox.status.StatusLevel;
 
 public abstract class StatusMessageDialog extends IconAndMessageDialog {
 	

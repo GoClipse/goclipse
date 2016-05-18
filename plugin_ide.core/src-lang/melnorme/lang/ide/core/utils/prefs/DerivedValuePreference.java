@@ -15,9 +15,9 @@ import static melnorme.utilbox.core.CoreUtil.option;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.validation.ValidatedValueSource;
 import melnorme.lang.tooling.data.validation.Validator;
+import melnorme.utilbox.status.StatusException;
 
 public class DerivedValuePreference<VALUE> {
 	
