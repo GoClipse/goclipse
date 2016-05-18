@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.ops.util;
+package melnorme.lang.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
