@@ -50,7 +50,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 	
 	public static interface ILaunchable {
 		
-		String getLabel();
+		String getFullLabel();
 		
 		IProject getProject();
 		
@@ -171,7 +171,7 @@ public abstract class BaseLaunchShortcut implements ILaunchShortcut {
 			@Override
 			public String getText(Object element) {
 				ILaunchable launchable = (ILaunchable) element;
-				return "[" + launchable.getProjectName() + "]" + launchable.getLabel();
+				return launchable.getFullLabel();
 			}
 		};
 	}

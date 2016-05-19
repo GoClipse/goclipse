@@ -83,8 +83,8 @@ public abstract class LangLaunchShortcut extends BaseLaunchShortcut implements I
 		}
 		
 		@Override
-		public String getLabel() {
-			return getBuildTargetName();
+		public String getFullLabel() {
+			return btLaunchCreator.getSuggestedConfigName();
 		}
 		
 		public String getBuildTargetName() {

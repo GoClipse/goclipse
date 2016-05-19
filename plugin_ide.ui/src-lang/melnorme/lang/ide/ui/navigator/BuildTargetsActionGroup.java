@@ -402,6 +402,12 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			protected String getSuggestedConfigName_do() {
 				return nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(launchNameSuggestion));
 			}
+			
+			@Override
+			protected String getSuggestedLabelForBuildTarget(String buildTargetName) {
+				return emptyAsNull(launchNameSuggestion);
+			}
+			
 		};
 	}
 	
