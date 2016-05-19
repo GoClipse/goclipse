@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Improved the default names for automatically created launch configuration.
+
  * Added customization of the build command for Build Targets:
 It's now possible to specify a command other than the default one (the `go` tool). 
    * Note however that Goclipse still expects the output of the command (the error messages) to be in the same format as the default tool.
