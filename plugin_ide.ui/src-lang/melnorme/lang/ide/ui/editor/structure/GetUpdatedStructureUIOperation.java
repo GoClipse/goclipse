@@ -70,7 +70,8 @@ public class GetUpdatedStructureUIOperation extends CalculateValueUIOperation<So
 	@Override
 	protected void handleComputationResult() throws CommonException {
 		if(result == null) {
-			throw new CommonException("Could not retrieve source file structure for: " + structureInfo.getKey2());
+			throw new CommonException(
+				"Could not retrieve source file structure for: " + structureInfo.getKey2().getLabel());
 		}
 	}
 	

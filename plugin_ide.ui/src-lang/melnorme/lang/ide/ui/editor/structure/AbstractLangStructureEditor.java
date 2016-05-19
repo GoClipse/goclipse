@@ -108,7 +108,7 @@ public abstract class AbstractLangStructureEditor extends AbstractLangEditor {
 			return new LocationKey(location);
 		} catch(CommonException e) {
 			// Is input thread-safe? We assume so since IEditorInput is supposed to be immutable.
-			return new LocationKey(input);
+			return new LocationKey(input, input.toString());
 		}
 	}
 	

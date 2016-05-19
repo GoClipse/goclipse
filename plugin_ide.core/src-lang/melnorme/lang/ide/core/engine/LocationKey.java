@@ -27,20 +27,27 @@ public class LocationKey {
 	
 	protected final Location location;
 	protected final Object alternative;
+	protected final String alternativeLabel;
 	
 	public LocationKey(Location location) {
 		this.location = assertNotNull(location);
 		this.alternative = null;
+		this.alternativeLabel = null;
 	}
 	
-	public LocationKey(Object alternative) {
+	public LocationKey(Object alternative, String alternativeLabel) {
 		this.location = null;
 		this.alternative = alternative;
+		this.alternativeLabel = assertNotNull(alternativeLabel);
 	}
 	
 	/** @return the underlying location. Can be null if this key is a non-location  */
 	public Location getLocation() {
 		return location;
+	}
+	
+	public String getLabel() {
+		return location != null ? location.toString() : alternativeLabel;
 	}
 	
 	@Override
@@ -60,7 +67,7 @@ public class LocationKey {
 	
 	@Override
 	public String toString() {
-		return "KEY:" + (location != null ? location.toString() : "[alternative]"); 
+		return "KEY:" + getLabel(); 
 	}
 	
 }

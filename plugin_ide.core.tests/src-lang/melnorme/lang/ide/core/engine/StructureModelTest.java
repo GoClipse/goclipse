@@ -108,9 +108,9 @@ public class StructureModelTest extends CommonCoreTest {
 	public void testWorkflows$() throws Exception {
 		initializeTestsEngineClient();
 		
-		assertTrue(mgr.getStoredStructureInfo(new LocationKey("Blah")) == null);
+		assertTrue(mgr.getStoredStructureInfo(new LocationKey("Blah", "Blah")) == null);
 		
-		LocationKey key = new LocationKey("Key1");
+		LocationKey key = new LocationKey("Key1", "Key1");
 		
 		testBasicFlow(key, new Document(), true);
 		
