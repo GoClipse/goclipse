@@ -287,7 +287,7 @@ public class GoBuildManager extends BuildManager {
 			};
 			ArrayList<ToolSourceMessage> buildMessages = buildOutput.parseResult(buildAllResult);
 			
-			new ToolMarkersHelper().addErrorMarkers(buildMessages, workingDirectory, om);
+			new ToolMarkersHelper(true).addErrorMarkers(buildMessages, workingDirectory, om);
 		}
 		
 	}
