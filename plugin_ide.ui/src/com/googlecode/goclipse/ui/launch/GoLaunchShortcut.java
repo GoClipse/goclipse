@@ -17,9 +17,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.debug.ui.ILaunchShortcut;
 
 import com.googlecode.goclipse.core.GoProjectEnvironment;
+import com.googlecode.goclipse.core.operations.GoBuildManager;
 import com.googlecode.goclipse.tooling.GoPackageName;
 import com.googlecode.goclipse.tooling.env.GoEnvironment;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.launch.BuildTargetLaunchCreator;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -30,6 +32,8 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 public class GoLaunchShortcut extends LangLaunchShortcut implements ILaunchShortcut {
+	
+	public final GoBuildManager buildManager = LangCore.getBuildManager();
 	
 	public static final String LAUNCH_CONFIG_ID = "com.googlecode.goclipse.launch.goLaunchType";
 	
@@ -70,7 +74,9 @@ public class GoLaunchShortcut extends LangLaunchShortcut implements ILaunchShort
 		}
 		
 		BuildTargetLaunchCreator btLaunchCreator = new BuildTargetLaunchCreator().initFromProject(project);
-		btLaunchCreator.data.targetName = goPackageName.getFullNameAsString();
+		btLaunchCreator.data.targetName = buildManager.getBuildTargetName2(
+			goPackageName.asString(), GoBuildManager.BUILD_TYPE_Build);
+		
 		return new BuildTargetLaunchable(project, btLaunchCreator);
 	}
 	

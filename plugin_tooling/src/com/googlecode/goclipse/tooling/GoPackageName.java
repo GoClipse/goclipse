@@ -74,6 +74,10 @@ public class GoPackageName extends AbstractElementName2 implements Comparable<Go
 		return elementName;
 	}
 	
+	public String asString() {
+		return elementName;
+	}
+	
 	@Override
 	public int compareTo(GoPackageName other) {
 		return elementName.compareTo(other.elementName);
