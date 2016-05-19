@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.launch;
 
+import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import org.eclipse.core.resources.IProject;
@@ -27,6 +28,7 @@ import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.commands.CommandInvocation;
 import melnorme.lang.tooling.commands.CommandInvocationSerializer;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.StringUtil;
 
 public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	
@@ -35,6 +37,7 @@ public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	protected final CommandInvocationSerializer commandInvocationSerializer = new CommandInvocationSerializer();
 	
 	public BuildTargetData data = new BuildTargetData();
+	public String launchNameSuffixSuggestion;
 	
 	public BuildTargetLaunchCreator() {
 	}
@@ -42,6 +45,11 @@ public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	public BuildTargetLaunchCreator(String projectName, BuildTargetData data) {
 		super(projectName);
 		this.data = data;
+	}
+	
+	public BuildTargetLaunchCreator(String projectName, BuildTargetData data, String launchNameSuffixSuggestion) {
+		this(projectName, data);
+		this.launchNameSuffixSuggestion = launchNameSuffixSuggestion;
 	}
 	
 	public BuildTargetLaunchCreator(ILaunchConfiguration config) throws CoreException, CommonException {
@@ -90,6 +98,10 @@ public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	
 	@Override
 	protected String getSuggestedConfigName_do() {
+		if(launchNameSuffixSuggestion != null) {
+			return nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(launchNameSuffixSuggestion));
+		}
+		
 		String launchName = nullAsEmpty(projectName) + getSuggestedConfigName_targetSuffix();
 		if(data.executablePath != null) {
 			launchName += "["+data.executablePath+"]";	
@@ -98,11 +110,11 @@ public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	}
 	
 	protected String getSuggestedConfigName_targetSuffix() {
-		if(data.targetName == null || data.targetName.isEmpty()) {
+		if(emptyAsNull(data.targetName) == null) {
 			return "";
 		}
 		String suggestedLabel = getSuggestedLabelForBuildTarget(data.targetName);
-		if(suggestedLabel == null) {
+		if(emptyAsNull(suggestedLabel) == null) {
 			return "";
 		}
 		return " - " + suggestedLabel;

@@ -14,8 +14,6 @@ import static java.text.MessageFormat.format;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.list;
 import static melnorme.utilbox.core.fntypes.CommonGetter.getOrNull;
-import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
-import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import java.text.MessageFormat;
 
@@ -50,7 +48,6 @@ import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.ownership.Disposable;
 import melnorme.utilbox.status.Severity;
 import melnorme.utilbox.status.StatusException;
@@ -387,7 +384,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 	}
 	
 	public static BuildTargetLaunchCreator buildTargetLaunchCreator(IProject project, 
-			String targetName, String executablePath, String launchNameSuggestion) {
+			String targetName, String executablePath, String launchNameSuffixSuggestion) {
 		
 		BuildTargetData buildTargetData = new BuildTargetData(
 			targetName,
@@ -397,18 +394,7 @@ public abstract class BuildTargetsActionGroup extends ViewPartActionGroup {
 			executablePath
 		);
 		
-		return new BuildTargetLaunchCreator(project.getName(), buildTargetData) {
-			@Override
-			protected String getSuggestedConfigName_do() {
-				return nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(launchNameSuggestion));
-			}
-			
-			@Override
-			protected String getSuggestedLabelForBuildTarget(String buildTargetName) {
-				return emptyAsNull(launchNameSuggestion);
-			}
-			
-		};
+		return new BuildTargetLaunchCreator(project.getName(), buildTargetData, launchNameSuffixSuggestion);
 	}
 	
 	protected abstract LangLaunchShortcut createLaunchShortcut();
