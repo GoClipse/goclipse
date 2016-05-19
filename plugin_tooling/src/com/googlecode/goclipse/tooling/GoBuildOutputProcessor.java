@@ -37,10 +37,6 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 		return msgs;
 	}
 	
-	public ArrayList2<ToolSourceMessage> getBuildErrors() {
-		return buildMessages;
-	}
-	
 	protected static final Pattern ERROR_LINE_Regex = Pattern.compile(
 			"^([^:\\n]*):" + // file
 			"(\\d*):" + // line

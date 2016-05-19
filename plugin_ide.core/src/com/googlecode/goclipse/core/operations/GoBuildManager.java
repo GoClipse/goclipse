@@ -14,6 +14,7 @@ import static melnorme.lang.ide.core.utils.ResourceUtils.loc;
 import static melnorme.utilbox.core.CoreUtil.list;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -43,6 +44,7 @@ import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.bundle.BuildTargetNameParser2;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.bundle.LaunchArtifact;
+import melnorme.lang.tooling.common.ToolSourceMessage;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -283,9 +285,9 @@ public class GoBuildManager extends BuildManager {
 					LangCore.logError(ce.getMessage(), ce.getCause());
 				}
 			};
-			buildOutput.parseResult(buildAllResult);
+			ArrayList<ToolSourceMessage> buildMessages = buildOutput.parseResult(buildAllResult);
 			
-			new ToolMarkersHelper().addErrorMarkers(buildOutput.getBuildErrors(), workingDirectory, om);
+			new ToolMarkersHelper().addErrorMarkers(buildMessages, workingDirectory, om);
 		}
 		
 	}

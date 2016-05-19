@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.CoreUtil.listFrom;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -106,8 +107,8 @@ public class GoBuildOutputProcessorTest extends CommonGoToolingTest {
 	
 	protected void testParseError(GoBuildOutputProcessor buildProcessor, String stderr, List<?> expected) 
 			throws CommonException {
-		buildProcessor.parseMessages(stderr);
-		assertEquals(buildProcessor.getBuildErrors(), expected);
+		ArrayList<ToolSourceMessage> buildMessages = buildProcessor.parseMessages(stderr);
+		assertEquals(buildMessages, expected);
 	}
 	
 	protected String readTemplatedFile(Path filePath) {
