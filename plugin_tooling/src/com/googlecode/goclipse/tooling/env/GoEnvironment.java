@@ -134,7 +134,7 @@ public class GoEnvironment {
 		
 		if(goRootInPath) {
 			// Add GoRoot to path. See #113 for rationale
-			EnvUtils.addDirToPathEnv(getGoRoot_Location().toPath(), pb);
+			EnvUtils.addLocationToPathEnv(getGoRoot_Location(), pb);
 		}
 	}
 	
