@@ -55,9 +55,8 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 	protected ToolMessageData parseMessageData(StringCharSource output) throws CommonException {
 		String outputLine = LexingUtils.consumeLine(output);
 		
-		if(outputLine.startsWith("# ")) {
-			// Not necessary for now
-			return null;
+		if(!outputLine.contains(":") || outputLine.startsWith("# ") || outputLine.startsWith("WARNING:")) {
+			return null; // Ignore line
 		}
 		
 		String pathDevicePrefix = "";
@@ -66,10 +65,6 @@ public abstract class GoBuildOutputProcessor extends BuildOutputParser {
 			// Remove Windows drive letter from path, cause it will mess up regex
 			pathDevicePrefix = outputLine.substring(0, 2);
 			outputLine = outputLine.substring(2);
-		}
-		
-		if(!outputLine.contains(":")) {
-			return null; // Ignore line
 		}
 		
 		ToolMessageData msgData = new ToolMessageData();
