@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.launch;
 
-import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import org.eclipse.core.resources.IProject;
@@ -24,12 +23,14 @@ import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetData;
 import melnorme.lang.ide.core.operations.build.ProjectBuildInfo;
 import melnorme.lang.ide.launching.LaunchConstants;
+import melnorme.lang.tooling.bundle.BuildTargetNameParser;
 import melnorme.lang.tooling.commands.CommandInvocation;
 import melnorme.lang.tooling.commands.CommandInvocationSerializer;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.StringUtil;
 
 public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
+	
+	protected final BuildManager buildManager = LangCore.getBuildManager();
 	
 	protected final CommandInvocationSerializer commandInvocationSerializer = new CommandInvocationSerializer();
 	
@@ -89,11 +90,31 @@ public class BuildTargetLaunchCreator extends ProjectLaunchSettings {
 	
 	@Override
 	protected String getSuggestedConfigName_do() {
-		String launchName = nullAsEmpty(projectName) + StringUtil.prefixStr(" - ", emptyAsNull(data.targetName));
+		String launchName = nullAsEmpty(projectName) + getSuggestedConfigName_targetSuffix();
 		if(data.executablePath != null) {
 			launchName += "["+data.executablePath+"]";	
 		}
 		return launchName;
+	}
+	
+	protected String getSuggestedConfigName_targetSuffix() {
+		if(data.targetName == null || data.targetName.isEmpty()) {
+			return "";
+		}
+		String suggestedLabel = getSuggestedLabelForBuildTarget(data.targetName);
+		if(suggestedLabel == null) {
+			return "";
+		}
+		return " - " + suggestedLabel;
+	}
+	
+	/** @return the preferred label for given build target name. Can be null */
+	protected String getSuggestedLabelForBuildTarget(String buildTargetName) {
+		BuildTargetNameParser nameParser = buildManager.getBuildTargetNameParser();
+		// Let the label be only the build config part, and ignore build type:  
+		// for most languages that's what will make most sense.
+		
+		return nameParser.getBuildConfig(buildTargetName);
 	}
 	
 	@Override

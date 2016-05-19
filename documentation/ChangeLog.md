@@ -2,6 +2,8 @@
 [Latest features on top]
 
 ### (NextVersion)
+ * Improved the default names for automatically created launch configuration.
+
  * Added customization of the build command for Build Targets:
 It's now possible to specify a command other than the default one (the $$SDK tool). 
    * Note however that the $$IDE still expects the output of the command (the error messages) to be in the same format as the default tool.
