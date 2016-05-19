@@ -36,6 +36,7 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask.ProcessStartHelper;
 import melnorme.lang.tooling.toolchain.ops.IToolOperationService;
+import melnorme.lang.utils.EnvUtils;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.lang.utils.validators.PathValidator;
 import melnorme.utilbox.collections.ArrayList2;
@@ -46,6 +47,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.EventSource;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import melnorme.utilbox.status.StatusException;
 import melnorme.utilbox.status.StatusLevel;
@@ -117,6 +119,8 @@ public abstract class ToolManager extends EventSource<ILangOperationsListener> {
 	}
 	
 	public ProcessBuilder modifyToolProcessBuilder(ProcessBuilder pb) {
+		Path cmdExePath = PathUtil.createPathOrNull(pb.command().get(0));
+		EnvUtils.addCmdDirToPathEnv(cmdExePath, pb);
 		return pb;
 	}
 	

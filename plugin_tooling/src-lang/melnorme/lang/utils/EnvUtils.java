@@ -22,20 +22,29 @@ import melnorme.utilbox.misc.StringUtil;
 public class EnvUtils {
 	
 	/** 
-	 * Add given cmdExePath to the PATH. This helps with certain tool issues on certain OSes, 
-	 * like OS X 10.10. See for example: https://github.com/GoClipse/goclipse/issues/91#issuecomment-82555504
+	 * Add the parent directory of given cmdExePath to the PATH. 
+	 * This helps workaround certain tool issues on some OSes like OS X.
+	 * 
+	 * See for example: https://github.com/GoClipse/goclipse/issues/91#issuecomment-82555504
+	 * or: https://github.com/RustDT/RustDT/issues/31
 	 */
-	public static void addDirToPathEnv(Path cmdExePath, ProcessBuilder pb) {
+	public static void addCmdDirToPathEnv(Path cmdExePath, ProcessBuilder pb) {
+		Location cmdLoc = Location.createValidOrNull(cmdExePath);
+		if(cmdLoc == null) {
+			return;
+		}
+		cmdLoc = cmdLoc.getParent();
+		if(cmdLoc == null) {
+			return;
+		}
+		addLocationToPathEnv(cmdLoc, pb);
+	}
+	
+	public static void addLocationToPathEnv(Location dirLoc, ProcessBuilder pb) {
 		Map<String, String> environment = pb.environment();
 		
 		String pathEnv = getVarFromEnvMap(environment, "PATH");
-		
-		Path cmdDir = cmdExePath.getParent();
-		if(cmdDir == null || !cmdDir.isAbsolute()) {
-			return;
-		}
-		
-		String newPathEnv = cmdDir.toString() + File.pathSeparator + StringUtil.nullAsEmpty(pathEnv);
+		String newPathEnv = dirLoc.toString() + File.pathSeparator + StringUtil.nullAsEmpty(pathEnv);
 		
 		putVarInEnvMap(environment, "PATH", newPathEnv);
 	}

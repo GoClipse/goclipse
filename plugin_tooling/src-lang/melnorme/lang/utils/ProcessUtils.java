@@ -50,7 +50,7 @@ public class ProcessUtils {
 		ProcessBuilder pb = createProcessBuilder(cmdExePath, workingDir, arguments);
 		
 		if(addCmdDirToPath) {
-			EnvUtils.addDirToPathEnv(cmdExePath, pb);
+			EnvUtils.addCmdDirToPathEnv(cmdExePath, pb);
 		}
 		
 		return pb;
